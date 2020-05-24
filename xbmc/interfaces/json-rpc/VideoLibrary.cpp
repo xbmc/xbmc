@@ -1052,7 +1052,7 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
       CBookmark bookmark;
       double total = (double)parameterObject["resume"]["total"].asDouble();
       if (total <= 0.0 && !videodatabase.GetResumeBookMark(details.m_strFileNameAndPath, bookmark))
-        bookmark.totalTimeInSeconds = details.m_streamDetails.GetVideoDuration();
+        bookmark.totalTimeInSeconds = details.GetStreamDetails().GetVideoDuration();
       else
         bookmark.totalTimeInSeconds = total;
 

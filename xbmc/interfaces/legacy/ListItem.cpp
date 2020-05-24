@@ -722,7 +722,7 @@ namespace XBMCAddon
           else if (key == "language")
             video->m_strLanguage = value;
         }
-        GetVideoInfoTag()->m_streamDetails.AddStream(video);
+        GetVideoInfoTag()->GetStreamDetails().AddStream(video);
       }
       else if (StringUtils::CompareNoCase(cType, "audio") == 0)
       {
@@ -739,7 +739,7 @@ namespace XBMCAddon
           else if (key == "channels")
             audio->m_iChannels = strtol(value.c_str(), nullptr, 10);
         }
-        GetVideoInfoTag()->m_streamDetails.AddStream(audio);
+        GetVideoInfoTag()->GetStreamDetails().AddStream(audio);
       }
       else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
       {
@@ -752,9 +752,9 @@ namespace XBMCAddon
           if (key == "language")
             subtitle->m_strLanguage = value;
         }
-        GetVideoInfoTag()->m_streamDetails.AddStream(subtitle);
+        GetVideoInfoTag()->GetStreamDetails().AddStream(subtitle);
       }
-      GetVideoInfoTag()->m_streamDetails.DetermineBestStreams();
+      GetVideoInfoTag()->GetStreamDetails().DetermineBestStreams();
     } // end ListItem::addStreamInfo
 
     void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */)

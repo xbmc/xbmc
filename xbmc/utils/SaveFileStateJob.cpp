@@ -72,12 +72,12 @@ void CSaveFileState::DoWork(CFileItem& item,
         {
           // FileItem from plugin can lack information, make sure all needed fields are set
           CVideoInfoTag *tag = item.GetVideoInfoTag();
-          CStreamDetails streams = tag->m_streamDetails;
+          CStreamDetails streams = tag->GetStreamDetails();
           if (videodatabase.LoadVideoInfo(progressTrackingFile, *tag))
           {
             item.SetPath(progressTrackingFile);
             item.ClearProperty("original_listitem_url");
-            tag->m_streamDetails = streams;
+            tag->SetStreamDetails(streams);
           }
         }
 
@@ -141,9 +141,9 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           // Check whether the item's db streamdetails need updating
           if (!videodatabase.GetStreamDetails(dbItem) ||
-              dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
+              dbItem.GetVideoInfoTag()->GetStreamDetails() != item.GetVideoInfoTag()->GetStreamDetails())
           {
-            videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
+            videodatabase.SetStreamDetailsForFile(*item.GetVideoInfoTag(), progressTrackingFile);
             updateListing = true;
           }
         }

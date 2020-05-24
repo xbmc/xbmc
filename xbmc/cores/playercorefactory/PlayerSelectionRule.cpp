@@ -147,7 +147,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
       return;
     }
 
-    CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
+    CStreamDetails streamDetails = item.GetVideoInfoTag()->GetStreamDetails();
 
     if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(streamDetails.GetAudioCodec(), regExp))
       return;

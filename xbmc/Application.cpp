@@ -3169,7 +3169,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
     if (m_stackHelper.GetRegisteredStack(file) != nullptr)
     {
       // also update video info tag with total time
-      fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, resumeBookmark.totalTimeInSeconds);
+      fileItem.GetVideoInfoTag()->GetStreamDetails().SetVideoDuration(0, resumeBookmark.totalTimeInSeconds);
     }
   }
   else

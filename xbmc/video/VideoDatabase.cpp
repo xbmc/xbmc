@@ -126,7 +126,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text, idParentPath integer)");
 
   CLog::Log(LOGINFO, "create files table");
-  m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, dateAdded text)");
+  m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, dateAdded text, streamdetails text)");
 
   CLog::Log(LOGINFO, "create tvshow table");
   columns = "CREATE TABLE tvshow ( idShow integer primary key";
@@ -353,6 +353,7 @@ void CVideoDatabase::CreateViews()
                                       "  files.playCount AS playCount,"
                                       "  files.lastPlayed AS lastPlayed,"
                                       "  files.dateAdded AS dateAdded,"
+                                      "  files.streamdetails AS streamdetails,"
                                       "  tvshow.c%02d AS strTitle,"
                                       "  tvshow.c%02d AS genre,"
                                       "  tvshow.c%02d AS studio,"
@@ -486,6 +487,7 @@ void CVideoDatabase::CreateViews()
               "  files.playCount as playCount,"
               "  files.lastPlayed as lastPlayed,"
               "  files.dateAdded as dateAdded, "
+              "  files.streamdetails AS streamdetails, "
               "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
               "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
               "  bookmark.playerState AS playerState "
@@ -509,6 +511,7 @@ void CVideoDatabase::CreateViews()
                                       "  files.playCount AS playCount,"
                                       "  files.lastPlayed AS lastPlayed, "
                                       "  files.dateAdded AS dateAdded, "
+                                      "  files.streamdetails AS streamdetails, "
                                       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
                                       "  bookmark.playerState AS playerState, "
@@ -2293,7 +2296,7 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
     }
 
     // get streamdetails
-    GetStreamDetails(details);
+    details.m_streamDetails.FromString(m_pDS->fv("files.streamdetails").get_asString());
 
     return !details.IsEmpty();
   }
@@ -2450,7 +2453,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     }
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
+      SetStreamDetailsForFileId(details, GetFileId(strFilenameAndPath));
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
@@ -2852,9 +2855,9 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
     if (details.HasStreamDetails())
     {
       if (details.m_iFileId != -1)
-        SetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
+        SetStreamDetailsForFileId(details, details.m_iFileId);
       else
-        SetStreamDetailsForFile(details.m_streamDetails, strFilenameAndPath);
+        SetStreamDetailsForFile(details, strFilenameAndPath);
     }
 
     // ensure we have this season already added
@@ -2971,7 +2974,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const std::string& strFilenameAndPat
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "tag", details.GetTags());
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
+      SetStreamDetailsForFileId(details, GetFileId(strFilenameAndPath));
 
     SetArtForItem(idMVideo, MediaTypeMusicVideo, artwork);
 
@@ -3000,7 +3003,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const std::string& strFilenameAndPat
   return -1;
 }
 
-void CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details, const std::string &strFileNameAndPath)
+void CVideoDatabase::SetStreamDetailsForFile(const CVideoInfoTag& details, const std::string &strFileNameAndPath)
 {
   // AddFile checks to make sure the file isn't already in the DB first
   int idFile = AddFile(strFileNameAndPath);
@@ -3009,7 +3012,7 @@ void CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details, cons
   SetStreamDetailsForFileId(details, idFile);
 }
 
-void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
+void CVideoDatabase::SetStreamDetailsForFileId(const CVideoInfoTag& details, int idFile)
 {
   if (idFile < 0)
     return;
@@ -3019,38 +3022,44 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     BeginTransaction();
     m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
 
-    for (int i=1; i<=details.GetVideoStreamCount(); i++)
+    // update the files table
+    m_pDS->exec(PrepareSQL("UPDATE files SET streamdetails='%s' WHERE idFile = %i", details.m_streamDetails.ToString().c_str(), idFile));
+
+    const auto streamdetails = details.GetStreamDetails();
+
+    for (int i=1; i<= streamdetails.GetVideoStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
         "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage) "
         "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s')",
         idFile, (int)CStreamDetail::VIDEO,
-        details.GetVideoCodec(i).c_str(), details.GetVideoAspect(i),
-        details.GetVideoWidth(i), details.GetVideoHeight(i), details.GetVideoDuration(i),
-        details.GetStereoMode(i).c_str(),
-        details.GetVideoLanguage(i).c_str()));
+        streamdetails.GetVideoCodec(i).c_str(), streamdetails.GetVideoAspect(i),
+        streamdetails.GetVideoWidth(i), streamdetails.GetVideoHeight(i), streamdetails.GetVideoDuration(i),
+        streamdetails.GetStereoMode(i).c_str(),
+        streamdetails.GetVideoLanguage(i).c_str()));
     }
-    for (int i=1; i<=details.GetAudioStreamCount(); i++)
+    for (int i=1; i<= streamdetails.GetAudioStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
         "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage) "
         "VALUES (%i,%i,'%s',%i,'%s')",
         idFile, (int)CStreamDetail::AUDIO,
-        details.GetAudioCodec(i).c_str(), details.GetAudioChannels(i),
-        details.GetAudioLanguage(i).c_str()));
+        streamdetails.GetAudioCodec(i).c_str(), streamdetails.GetAudioChannels(i),
+        streamdetails.GetAudioLanguage(i).c_str()));
     }
-    for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
+    for (int i=1; i<= streamdetails.GetSubtitleStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
         "(idFile, iStreamType, strSubtitleLanguage) "
         "VALUES (%i,%i,'%s')",
         idFile, (int)CStreamDetail::SUBTITLE,
-        details.GetSubtitleLanguage(i).c_str()));
+        streamdetails.GetSubtitleLanguage(i).c_str()));
     }
 
     // update the runtime information, if empty
-    if (details.GetVideoDuration())
+    if (streamdetails.GetVideoDuration())
     {
+      // TODO(Montellese): is this really necessary or can we get the type from CVideoInfoTag?
       std::vector<std::pair<std::string, int> > tables;
       tables.emplace_back("movie", VIDEODB_ID_RUNTIME);
       tables.emplace_back("episode", VIDEODB_ID_EPISODE_RUNTIME);
@@ -3058,7 +3067,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
       for (const auto &i : tables)
       {
         std::string sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
-                                    i.first.c_str(), i.second, details.GetVideoDuration(), idFile, i.second);
+                                    i.first.c_str(), i.second, streamdetails.GetVideoDuration(), idFile, i.second);
         m_pDS->exec(sql);
       }
     }
@@ -3695,6 +3704,9 @@ int CVideoDatabase::GetDbId(const std::string &query)
 void CVideoDatabase::DeleteStreamDetails(int idFile)
 {
   m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
+
+  // remove the streamdetails from the files table as well
+  m_pDS->exec(PrepareSQL("UPDATE files SET streamdetails='' WHERE idFile = %i", idFile));
 }
 
 void CVideoDatabase::DeleteSet(int idSet)
@@ -4034,7 +4046,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
     }
 
     if (getDetails & VideoDbDetailsStream)
-      GetStreamDetails(details);
+      details.m_streamDetails.FromString(record->at(VIDEODB_DETAILS_MOVIE_STREAMDETAILS).get_asString());
 
     details.m_parsedDetails = getDetails;
   }
@@ -4163,7 +4175,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
       GetBookMarkForEpisode(details, details.m_EpBookmark);
 
     if (getDetails & VideoDbDetailsStream)
-      GetStreamDetails(details);
+      details.m_streamDetails.FromString(record->at(VIDEODB_DETAILS_EPISODE_STREAMDETAILS).get_asString());
 
     details.m_parsedDetails = getDetails;
   }
@@ -4211,7 +4223,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
   if (getDetails)
   {
     if (getDetails & VideoDbDetailsStream)
-      GetStreamDetails(details);
+      details.m_streamDetails.FromString(record->at(VIDEODB_DETAILS_MUSICVIDEO_STREAMDETAILS).get_asString());
 
     details.m_parsedDetails = getDetails;
   }
@@ -5782,6 +5794,27 @@ void CVideoDatabase::UpdateTables(int iVersion)
       }
       pDS->close();
     }
+
+    // migrate streamdetails
+    // add the streamdetails column to the files table
+    m_pDS->exec("ALTER TABLE files ADD streamdetails text");
+
+    // fill the files table with the serialized form of the existing streamdetails
+    pDS->query("SELECT DISTINCT idFile FROM streamdetails");
+    while (!pDS->eof())
+    {
+      videoInfoTag.Reset();
+      videoInfoTag.m_iFileId = pDS->fv(0).get_asInt();
+      if (GetStreamDetails(videoInfoTag))
+      {
+        const auto sql = PrepareSQL("UPDATE files SET streamdetails='%s' WHERE idFile = %i",
+          videoInfoTag.m_streamDetails.ToString().c_str(), videoInfoTag.m_iFileId);
+        m_pDS->exec(sql);
+      }
+
+      pDS->next();
+    }
+    pDS->close();
   }
 }
 
@@ -7410,7 +7443,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
       movieFieldLabels.insert(movieFieldLabels.end(), movieExtraFieldLabels.begin(), movieExtraFieldLabels.end());
 
       // fields in the movie_view view
-      static const std::vector<std::string> movieViewFieldLabels = {
+      const std::vector<std::string> movieViewFieldLabels = {
         "strSet",
         "strSetOverview",
         "strFileName",
@@ -7418,6 +7451,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         "playCount",
         "lastPlayed",
         "dateAdded",
+        (getDetails & VideoDbDetailsStream) ? "streamdetails" : "'' as streamdetails",
         "resumeTimeInSeconds",
         "totalTimeInSeconds",
         "playerState",

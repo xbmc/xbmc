@@ -109,7 +109,7 @@ bool CThumbExtractor::DoWork()
     // construct the thumb cache file
     CTextureDetails details;
     details.file = CTextureCache::GetCacheFile(m_target) + ".jpg";
-    result = CDVDFileInfo::ExtractThumb(m_item, details, m_fillStreamDetails ? &m_item.GetVideoInfoTag()->m_streamDetails : nullptr, m_pos);
+    result = CDVDFileInfo::ExtractThumb(m_item, details, m_fillStreamDetails ? &m_item.GetVideoInfoTag()->GetStreamDetails() : nullptr, m_pos);
     if (result)
     {
       CTextureCache::GetInstance().AddCachedTexture(m_target, details);
@@ -147,16 +147,16 @@ bool CThumbExtractor::DoWork()
       if (URIUtils::IsStack(m_listpath))
       {
         // Don't know the total time of the stack, so set duration to zero to avoid confusion
-        info->m_streamDetails.SetVideoDuration(0, 0);
+        info->GetStreamDetails().SetVideoDuration(0, 0);
 
         // Restore original stack path
         m_item.SetPath(m_listpath);
       }
 
       if (info->m_iFileId < 0)
-        db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
+        db.SetStreamDetailsForFile(*info, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
       else
-        db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
+        db.SetStreamDetailsForFileId(*info, info->m_iFileId);
 
       // overwrite the runtime value if the one from streamdetails is available
       if (info->m_iDbId > 0
@@ -675,7 +675,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 
   if (item.HasVideoInfoTag())
   {
-    CStreamDetails& details = item.GetVideoInfoTag()->m_streamDetails;
+    CStreamDetails& details = item.GetVideoInfoTag()->GetStreamDetails();
 
     // add audio language properties
     for (int i = 1; i <= details.GetAudioStreamCount(); i++)
@@ -700,7 +700,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 
   // detect stereomode for videos
   if (item.HasVideoInfoTag())
-    stereoMode = item.GetVideoInfoTag()->m_streamDetails.GetStereoMode();
+    stereoMode = item.GetVideoInfoTag()->GetStreamDetails().GetStereoMode();
 
   if (stereoMode.empty())
   {

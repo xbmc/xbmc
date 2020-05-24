@@ -4896,7 +4896,7 @@ void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
   GetAudioStreamInfo(CURRENT_STREAM, audioInfo);
   GetSubtitleStreamInfo(CURRENT_STREAM, subtitleInfo);
 
-  item.GetVideoInfoTag()->m_streamDetails.SetStreams(videoInfo, m_processInfo->GetMaxTime()/1000, audioInfo, subtitleInfo);
+  item.GetVideoInfoTag()->GetStreamDetails().SetStreams(videoInfo, m_processInfo->GetMaxTime()/1000, audioInfo, subtitleInfo);
 }
 
 //------------------------------------------------------------------------------

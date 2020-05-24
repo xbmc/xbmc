@@ -227,7 +227,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
         {
           std::string fieldValue = itr->asString();
           if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume" ||
-             (fieldValue == "streamdetails" && !fileItem->GetVideoInfoTag()->m_streamDetails.HasItems()))
+             (fieldValue == "streamdetails" && !fileItem->GetVideoInfoTag()->GetStreamDetails().HasItems()))
             additionalInfo = true;
         }
 

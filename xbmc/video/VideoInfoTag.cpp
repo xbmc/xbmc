@@ -296,10 +296,186 @@ static const auto CastJsonDeserializer = [](const std::string& data) -> std::vec
   return actors;
 };
 
+static const auto StreamDetailsJsonSerializer = [](const CStreamDetails& values) -> std::string
+{
+  rapidjson::StringBuffer stringBuffer;
+  rapidjson::Writer<rapidjson::StringBuffer> writer(stringBuffer);
+  if (!writer.StartArray())
+    return false;
+
+  size_t streamCount = 0;
+
+  // serialize video streams
+  for (size_t i = 0; i < values.GetVideoStreamCount(); ++i)
+  {
+    if (!writer.StartObject())
+      return false;
+
+    const auto stream = static_cast<const CStreamDetailVideo*>(values.GetNthStream(CStreamDetail::VIDEO, i));
+    if (!writer.Key("type") || !writer.String("video") ||
+        !writer.Key("width") || !writer.Int(stream->m_iWidth) ||
+        !writer.Key("height") || !writer.Int(stream->m_iHeight) ||
+        !writer.Key("aspect") || !writer.Double(stream->m_fAspect) ||
+        !writer.Key("duration") || !writer.Int(stream->m_iDuration) ||
+        !writer.Key("codec") || !writer.String(stream->m_strCodec.c_str()) ||
+        !writer.Key("stereomode") || !writer.String(stream->m_strStereoMode.c_str()) ||
+        !writer.Key("language") || !writer.String(stream->m_strLanguage.c_str()))
+      return false;
+
+    writer.EndObject(8);
+
+    streamCount += 1;
+  }
+
+  // serialize audio streams
+  for (size_t i = 0; i < values.GetAudioStreamCount(); ++i)
+  {
+    if (!writer.StartObject())
+      return false;
+
+    const auto stream = static_cast<const CStreamDetailAudio*>(values.GetNthStream(CStreamDetail::AUDIO, i));
+    if (!writer.Key("type") || !writer.String("audio") ||
+        !writer.Key("channels") || !writer.Int(stream->m_iChannels) ||
+        !writer.Key("codec") || !writer.String(stream->m_strCodec.c_str()) ||
+        !writer.Key("language") || !writer.String(stream->m_strLanguage.c_str()))
+      return false;
+
+    writer.EndObject(4);
+
+    streamCount += 1;
+  }
+
+  // serialize subtitle streams
+  for (size_t i = 0; i < values.GetSubtitleStreamCount(); ++i)
+  {
+    if (!writer.StartObject())
+      return false;
+
+    const auto stream = static_cast<const CStreamDetailSubtitle*>(values.GetNthStream(CStreamDetail::SUBTITLE, i));
+    if (!writer.Key("type") || !writer.String("subtitle") ||
+        !writer.Key("language") || !writer.String(stream->m_strLanguage.c_str()))
+      return false;
+
+    writer.EndObject(2);
+
+    streamCount += 1;
+  }
+
+  writer.EndArray(streamCount);
+
+  if (!writer.IsComplete())
+    return false;
+
+  return stringBuffer.GetString();
+};
+
+static const auto StreamDetailsJsonDeserializer = [](const std::string& data) -> CStreamDetails
+{
+  if (data.empty())
+    return {};
+
+  rapidjson::Document doc;
+  doc.Parse<rapidjson::kParseIterativeFlag>(data.c_str(), data.size());
+  if (doc.HasParseError() || !doc.IsArray())
+    return {};
+
+  CStreamDetails streamDetails;
+  for (const auto& value : doc.GetArray())
+  {
+    if (!value.IsObject() || !value.HasMember("type"))
+      continue;
+
+    const auto& typeJson = value["type"];
+    if (!typeJson.IsString())
+      continue;
+
+    const std::string type = typeJson.GetString();
+    if (type == "video")
+    {
+      if (!value.HasMember("width") || !value.HasMember("height") || !value.HasMember("aspect") ||
+          !value.HasMember("duration") || !value.HasMember("codec") ||
+          !value.HasMember("stereomode") || !value.HasMember("language"))
+        continue;
+
+      const auto& width = value["width"];
+      if (!width.IsInt())
+        continue;
+      const auto& height = value["height"];
+      if (!height.IsInt())
+        continue;
+      const auto& aspect = value["aspect"];
+      if (!aspect.IsDouble())
+        continue;
+      const auto& duration = value["duration"];
+      if (!duration.IsInt())
+        continue;
+      const auto& codec = value["codec"];
+      if (!codec.IsString())
+        continue;
+      const auto& stereomode = value["stereomode"];
+      if (!stereomode.IsString())
+        continue;
+      const auto& language = value["language"];
+      if (!language.IsString())
+        continue;
+
+      auto stream = new CStreamDetailVideo();
+      stream->m_iWidth = width.GetInt();
+      stream->m_iHeight = height.GetInt();
+      stream->m_fAspect = static_cast<float>(aspect.GetDouble());
+      stream->m_iDuration = duration.GetInt();
+      stream->m_strCodec = codec.GetString();
+      stream->m_strStereoMode = stereomode.GetString();
+      stream->m_strLanguage = language.GetString();
+      streamDetails.AddStream(stream);
+    }
+    else if (type == "audio")
+    {
+      if (!value.HasMember("channels") || !value.HasMember("codec") ||
+          !value.HasMember("language"))
+        continue;
+
+      const auto& channels = value["channels"];
+      if (!channels.IsInt())
+        continue;
+      const auto& codec = value["codec"];
+      if (!codec.IsString())
+        continue;
+      const auto& language = value["language"];
+      if (!language.IsString())
+        continue;
+
+      auto stream = new CStreamDetailAudio();
+      stream->m_iChannels = channels.GetInt();
+      stream->m_strCodec = codec.GetString();
+      stream->m_strLanguage = language.GetString();
+      streamDetails.AddStream(stream);
+    }
+    else if (type == "subtitle")
+    {
+      if (!value.HasMember("language"))
+        continue;
+
+      const auto& language = value["language"];
+      if (!language.IsString())
+        continue;
+
+      auto stream = new CStreamDetailSubtitle();
+      stream->m_strLanguage = language.GetString();
+      streamDetails.AddStream(stream);
+    }
+    else
+      continue;
+  }
+
+  return streamDetails;
+};
+
 CVideoInfoTag::CVideoInfoTag()
   : m_cast(CastJsonSerializer, CastJsonDeserializer),
     m_tags(StringVectorJsonSerializer, StringVectorJsonDeserializer),
     m_ratings(RatingMapJsonSerializer, RatingMapJsonDeserializer, "default"),
+    m_streamDetails(StreamDetailsJsonSerializer, StreamDetailsJsonDeserializer),
     m_uniqueIDs(UniqueIDMapJsonSerializer, UniqueIDMapJsonDeserializer, "unknown")
 {
   Reset();
@@ -356,7 +532,7 @@ void CVideoInfoTag::Reset()
   m_lastPlayed.Reset();
   m_showLink.clear();
   m_namedSeasons.clear();
-  m_streamDetails.Reset();
+  m_streamDetails->Reset();
   m_playCount = PLAYCOUNT_NOT_SET;
   m_EpBookmark.Reset();
   m_EpBookmark.type = CBookmark::EPISODE;
@@ -514,34 +690,34 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetStringArray(movie, "studio", m_studio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
-  if (m_streamDetails.HasItems())
+  if (m_streamDetails->HasItems())
   {
     // it goes fileinfo/streamdetails/[video|audio|subtitle]
     TiXmlElement fileinfo("fileinfo");
     TiXmlElement streamdetails("streamdetails");
-    for (int iStream=1; iStream<=m_streamDetails.GetVideoStreamCount(); iStream++)
+    for (int iStream=1; iStream<=m_streamDetails->GetVideoStreamCount(); iStream++)
     {
       TiXmlElement stream("video");
-      XMLUtils::SetString(&stream, "codec", m_streamDetails.GetVideoCodec(iStream));
-      XMLUtils::SetFloat(&stream, "aspect", m_streamDetails.GetVideoAspect(iStream));
-      XMLUtils::SetInt(&stream, "width", m_streamDetails.GetVideoWidth(iStream));
-      XMLUtils::SetInt(&stream, "height", m_streamDetails.GetVideoHeight(iStream));
-      XMLUtils::SetInt(&stream, "durationinseconds", m_streamDetails.GetVideoDuration(iStream));
-      XMLUtils::SetString(&stream, "stereomode", m_streamDetails.GetStereoMode(iStream));
+      XMLUtils::SetString(&stream, "codec", m_streamDetails->GetVideoCodec(iStream));
+      XMLUtils::SetFloat(&stream, "aspect", m_streamDetails->GetVideoAspect(iStream));
+      XMLUtils::SetInt(&stream, "width", m_streamDetails->GetVideoWidth(iStream));
+      XMLUtils::SetInt(&stream, "height", m_streamDetails->GetVideoHeight(iStream));
+      XMLUtils::SetInt(&stream, "durationinseconds", m_streamDetails->GetVideoDuration(iStream));
+      XMLUtils::SetString(&stream, "stereomode", m_streamDetails->GetStereoMode(iStream));
       streamdetails.InsertEndChild(stream);
     }
-    for (int iStream=1; iStream<=m_streamDetails.GetAudioStreamCount(); iStream++)
+    for (int iStream=1; iStream<=m_streamDetails->GetAudioStreamCount(); iStream++)
     {
       TiXmlElement stream("audio");
-      XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
-      XMLUtils::SetString(&stream, "language", m_streamDetails.GetAudioLanguage(iStream));
-      XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
+      XMLUtils::SetString(&stream, "codec", m_streamDetails->GetAudioCodec(iStream));
+      XMLUtils::SetString(&stream, "language", m_streamDetails->GetAudioLanguage(iStream));
+      XMLUtils::SetInt(&stream, "channels", m_streamDetails->GetAudioChannels(iStream));
       streamdetails.InsertEndChild(stream);
     }
-    for (int iStream=1; iStream<=m_streamDetails.GetSubtitleStreamCount(); iStream++)
+    for (int iStream=1; iStream<=m_streamDetails->GetSubtitleStreamCount(); iStream++)
     {
       TiXmlElement stream("subtitle");
-      XMLUtils::SetString(&stream, "language", m_streamDetails.GetSubtitleLanguage(iStream));
+      XMLUtils::SetString(&stream, "language", m_streamDetails->GetSubtitleLanguage(iStream));
       streamdetails.InsertEndChild(stream);
     }
     fileinfo.InsertEndChild(streamdetails);
@@ -677,7 +853,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
     ar << m_iTrack;
-    ar << dynamic_cast<IArchivable&>(m_streamDetails);
+    ar << dynamic_cast<IArchivable&>(GetStreamDetails());
     ar << m_showLink;
     ar << static_cast<int>(m_namedSeasons.size());
     for (const auto& namedSeason : m_namedSeasons)
@@ -789,7 +965,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
-    ar >> dynamic_cast<IArchivable&>(m_streamDetails);
+    ar >> dynamic_cast<IArchivable&>(GetStreamDetails());
     ar >> m_showLink;
 
     int namedSeasonSize;
@@ -895,7 +1071,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
   value["showlink"] = m_showLink;
-  m_streamDetails.Serialize(value["streamdetails"]);
+  m_streamDetails->Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
   resume["position"] = m_resumePoint.timeInSeconds;
   resume["total"] = m_resumePoint.totalTimeInSeconds;
@@ -973,16 +1149,16 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldTag:                      sortable[FieldTag] = *m_tags; break;
 
-  case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
-  case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect(); break;
-  case FieldVideoCodec:               sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec(); break;
-  case FieldStereoMode:               sortable[FieldStereoMode] = m_streamDetails.GetStereoMode(); break;
+  case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails->GetVideoHeight(); break;
+  case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails->GetVideoAspect(); break;
+  case FieldVideoCodec:               sortable[FieldVideoCodec] = m_streamDetails->GetVideoCodec(); break;
+  case FieldStereoMode:               sortable[FieldStereoMode] = m_streamDetails->GetStereoMode(); break;
 
-  case FieldAudioChannels:            sortable[FieldAudioChannels] = m_streamDetails.GetAudioChannels(); break;
-  case FieldAudioCodec:               sortable[FieldAudioCodec] = m_streamDetails.GetAudioCodec(); break;
-  case FieldAudioLanguage:            sortable[FieldAudioLanguage] = m_streamDetails.GetAudioLanguage(); break;
+  case FieldAudioChannels:            sortable[FieldAudioChannels] = m_streamDetails->GetAudioChannels(); break;
+  case FieldAudioCodec:               sortable[FieldAudioCodec] = m_streamDetails->GetAudioCodec(); break;
+  case FieldAudioLanguage:            sortable[FieldAudioLanguage] = m_streamDetails->GetAudioLanguage(); break;
 
-  case FieldSubtitleLanguage:         sortable[FieldSubtitleLanguage] = m_streamDetails.GetSubtitleLanguage(); break;
+  case FieldSubtitleLanguage:         sortable[FieldSubtitleLanguage] = m_streamDetails->GetSubtitleLanguage(); break;
 
   case FieldInProgress:               sortable[FieldInProgress] = m_resumePoint.IsPartWay(); break;
   case FieldDateAdded:                sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty; break;
@@ -1415,7 +1591,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
-        m_streamDetails.AddStream(p);
+        m_streamDetails->AddStream(p);
       }
       nodeDetail = NULL;
       while ((nodeDetail = nodeStreamDetails->IterateChildren("video", nodeDetail)))
@@ -1436,7 +1612,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strStereoMode);
         StringUtils::ToLower(p->m_strLanguage);
-        m_streamDetails.AddStream(p);
+        m_streamDetails->AddStream(p);
       }
       nodeDetail = NULL;
       while ((nodeDetail = nodeStreamDetails->IterateChildren("subtitle", nodeDetail)))
@@ -1445,10 +1621,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         if (XMLUtils::GetString(nodeDetail, "language", value))
           p->m_strLanguage = StringUtils::Trim(value);
         StringUtils::ToLower(p->m_strLanguage);
-        m_streamDetails.AddStream(p);
+        m_streamDetails->AddStream(p);
       }
     }
-    m_streamDetails.DetermineBestStreams();
+    m_streamDetails->DetermineBestStreams();
   }  /* if fileinfo */
 
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
@@ -1502,7 +1678,22 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
 bool CVideoInfoTag::HasStreamDetails() const
 {
-  return m_streamDetails.HasItems();
+  return m_streamDetails->HasItems();
+}
+
+CStreamDetails& CVideoInfoTag::GetStreamDetails()
+{
+  return m_streamDetails.value();
+}
+
+const CStreamDetails& CVideoInfoTag::GetStreamDetails() const
+{
+  return m_streamDetails.value();
+}
+
+void CVideoInfoTag::SetStreamDetails(CStreamDetails streamDetails)
+{
+  m_streamDetails = std::move(streamDetails);
 }
 
 bool CVideoInfoTag::IsEmpty() const
@@ -1523,7 +1714,7 @@ unsigned int CVideoInfoTag::GetDuration() const
    Prefer the duration from the stream if it isn't too
    small (60%) compared to the duration from the tag.
    */
-  unsigned int duration = m_streamDetails.GetVideoDuration();
+  unsigned int duration = m_streamDetails->GetVideoDuration();
   if (duration > m_duration * 0.6)
     return duration;
 

@@ -214,7 +214,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
           else if (info.m_info == CONTAINER_TOTALTIME && item->HasMusicInfoTag())
             count += item->GetMusicInfoTag()->GetDuration();
           else if (info.m_info == CONTAINER_TOTALTIME && item->HasVideoInfoTag())
-            count += item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
+            count += item->GetVideoInfoTag()->GetStreamDetails().GetVideoDuration();
         }
         if (info.m_info == CONTAINER_TOTALTIME && count > 0)
         {

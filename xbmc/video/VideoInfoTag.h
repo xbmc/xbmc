@@ -94,6 +94,9 @@ public:
   const std::vector<SActorInfo>& GetCast() const;
   const std::string GetCastAsString(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
+  CStreamDetails& GetStreamDetails();
+  const CStreamDetails& GetStreamDetails() const;
+  void SetStreamDetails(CStreamDetails streamDetails);
   bool IsEmpty() const;
 
   const std::string& GetPath() const
@@ -282,7 +285,7 @@ public:
   int m_iIdShow;
   int m_iIdSeason;
   CFanart m_fanart;
-  CStreamDetails m_streamDetails;
+  CLazySerializedProperty<CStreamDetails> m_streamDetails;
   CDateTime m_dateAdded;
   MediaType m_type;
   int m_relevance; // Used for actors' number of appearances

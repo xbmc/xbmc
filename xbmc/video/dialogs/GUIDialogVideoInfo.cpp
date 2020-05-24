@@ -229,7 +229,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         { // Just copy over the stream details and the thumb if we don't already have one
           if (!m_movieItem->HasArt("thumb"))
             m_movieItem->SetArt("thumb", item->GetArt("thumb"));
-          m_movieItem->GetVideoInfoTag()->m_streamDetails = item->GetVideoInfoTag()->m_streamDetails;
+          m_movieItem->GetVideoInfoTag()->SetStreamDetails(item->GetVideoInfoTag()->GetStreamDetails());
         }
         return true;
       }
@@ -1083,7 +1083,7 @@ void CGUIDialogVideoInfo::PlayTrailer()
   CFileItem item;
   item.SetPath(m_movieItem->GetVideoInfoTag()->m_strTrailer);
   *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
-  item.GetVideoInfoTag()->m_streamDetails.Reset();
+  item.GetVideoInfoTag()->GetStreamDetails().Reset();
   item.GetVideoInfoTag()->m_strTitle = StringUtils::Format("%s (%s)",
                                                            m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),
                                                            g_localizeStrings.Get(20410).c_str());
