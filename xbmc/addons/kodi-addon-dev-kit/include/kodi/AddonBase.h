@@ -30,22 +30,109 @@ struct IRenderHelper;
 } // namespace gui
 
 //==============================================================================
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_CSettingValue class CSettingValue
+/// @brief Inside addon main instance used helper class to give settings value.
 ///
+/// This is used on @ref addon::CAddonBase::SetSetting() to inform addon about
+/// settings change by used. This becomes then used to give the related value
+/// name.
+///
+/// ----------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_addon_addonbase_Defs_CSettingValue_Help
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Here is a code example how this is used:**
+///
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/AddonBase.h>
+///
+/// enum myEnumValue
+/// {
+///   valueA,
+///   valueB,
+///   valueC
+/// };
+///
+/// std::string m_myStringValue;
+/// int m_myIntegerValue;
+/// bool m_myBooleanValue;
+/// float m_myFloatingPointValue;
+/// myEnumValue m_myEnumValue;
+///
+///
+/// ADDON_STATUS CMyAddon::SetSetting(const std::string& settingName, const kodi::CSettingValue& settingValue)
+/// {
+///   if (settingName == "my_string_value")
+///     m_myStringValue = settingValue.GetString();
+///   else if (settingName == "my_integer_value")
+///     m_myIntegerValue = settingValue.GetInt();
+///   else if (settingName == "my_boolean_value")
+///     m_myBooleanValue = settingValue.GetBoolean();
+///   else if (settingName == "my_float_value")
+///     m_myFloatingPointValue = settingValue.GetFloat();
+///   else if (settingName == "my_enum_value")
+///     m_myEnumValue = settingValue.GetEnum<myEnumValue>();
+/// }
+/// ~~~~~~~~~~~~~
+///
+/// @note The asked type should match the type used on settings.xml.
+///
+///@{
 class CSettingValue
 {
 public:
   explicit CSettingValue(const void* settingValue) : m_settingValue(settingValue) {}
 
   bool empty() const { return (m_settingValue == nullptr) ? true : false; }
+
+  /// @defgroup cpp_kodi_addon_addonbase_Defs_CSettingValue_Help Value Help
+  /// @ingroup cpp_kodi_addon_addonbase_Defs_CSettingValue
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_addon_addonbase_Defs_CSettingValue :</b>
+  /// | Name | Type | Get call
+  /// |------|------|----------
+  /// | **Settings value as string** | `std::string` | @ref CSettingValue::GetString "GetString"
+  /// | **Settings value as integer** | `int` | @ref CSettingValue::GetInt "GetInt"
+  /// | **Settings value as unsigned integer** | `unsigned int` | @ref CSettingValue::GetUInt "GetUInt"
+  /// | **Settings value as boolean** | `bool` | @ref CSettingValue::GetBoolean "GetBoolean"
+  /// | **Settings value as floating point** | `float` | @ref CSettingValue::GetFloat "GetFloat"
+  /// | **Settings value as enum** | `enum` | @ref CSettingValue::GetEnum "GetEnum"
+
+  /// @addtogroup cpp_kodi_addon_addonbase_Defs_CSettingValue
+  ///@{
+
+  /// @brief To get settings value as string.
   std::string GetString() const { return (const char*)m_settingValue; }
+
+  /// @brief To get settings value as integer.
   int GetInt() const { return *(const int*)m_settingValue; }
+
+  /// @brief To get settings value as unsigned integer.
   unsigned int GetUInt() const { return *(const unsigned int*)m_settingValue; }
+
+  /// @brief To get settings value as boolean.
   bool GetBoolean() const { return *(const bool*)m_settingValue; }
+
+  /// @brief To get settings value as floating point.
   float GetFloat() const { return *(const float*)m_settingValue; }
+
+  /// @brief To get settings value as enum.
+  /// @note Inside settings.xml them stored as integer.
+  template<typename enumType>
+  enumType GetEnum() const
+  {
+    return static_cast<enumType>(*(const int*)m_settingValue);
+  }
+
+  ///@}
 
 private:
   const void* m_settingValue;
 };
+///@}
 //------------------------------------------------------------------------------
 
 namespace addon
@@ -210,10 +297,62 @@ public:
 
   virtual ADDON_STATUS GetStatus() { return ADDON_STATUS_OK; }
 
-  virtual ADDON_STATUS SetSetting(const std::string& settingName, const CSettingValue& settingValue)
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief To inform addon about changed settings values.
+  ///
+  /// This becomes called for every entry defined inside his settings.xml and
+  /// as **last** call the one where last in xml (to identify end of calls).
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_addonbase_Defs_CSettingValue_Help
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// **Here is a code example how this is used:**
+  ///
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/AddonBase.h>
+  ///
+  /// enum myEnumValue
+  /// {
+  ///   valueA,
+  ///   valueB,
+  ///   valueC
+  /// };
+  ///
+  /// std::string m_myStringValue;
+  /// int m_myIntegerValue;
+  /// bool m_myBooleanValue;
+  /// float m_myFloatingPointValue;
+  /// myEnumValue m_myEnumValue;
+  ///
+  ///
+  /// ADDON_STATUS CMyAddon::SetSetting(const std::string& settingName, const kodi::CSettingValue& settingValue)
+  /// {
+  ///   if (settingName == "my_string_value")
+  ///     m_myStringValue = settingValue.GetString();
+  ///   else if (settingName == "my_integer_value")
+  ///     m_myIntegerValue = settingValue.GetInt();
+  ///   else if (settingName == "my_boolean_value")
+  ///     m_myBooleanValue = settingValue.GetBoolean();
+  ///   else if (settingName == "my_float_value")
+  ///     m_myFloatingPointValue = settingValue.GetFloat();
+  ///   else if (settingName == "my_enum_value")
+  ///     m_myEnumValue = settingValue.GetEnum<myEnumValue>();
+  /// }
+  /// ~~~~~~~~~~~~~
+  ///
+  /// @note The asked type should match the type used on settings.xml.
+  ///
+  virtual ADDON_STATUS SetSetting(const std::string& settingName,
+                                  const kodi::CSettingValue& settingValue)
   {
     return ADDON_STATUS_UNKNOWN;
   }
+  //----------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_addon_addonbase
@@ -396,7 +535,7 @@ private:
 } /* namespace addon */
 
 //==============================================================================
-/// @ingroup cpp_kodi_addon_addonbase
+/// @ingroup cpp_kodi_addon
 /// @brief To get used version inside Kodi itself about asked type.
 ///
 /// This thought to allow a addon a handling of newer addon versions within
@@ -487,6 +626,7 @@ inline std::string GetLibPath()
 /// @note This method uses limited buffer (16k) for the formatted output.
 /// So data, which will not fit into it, will be silently discarded.
 ///
+///
 /// ----------------------------------------------------------------------------
 ///
 /// **Example:**
@@ -511,7 +651,42 @@ inline void Log(const AddonLog loglevel, const char* format, ...)
 }
 //------------------------------------------------------------------------------
 
-//============================================================================
+//##############################################################################
+/// @ingroup cpp_kodi
+/// @defgroup cpp_kodi_settings 1. Setting control
+/// @brief **Functions to handle settings access**\n
+/// This can be used to get and set the addon related values inside his
+/// settings.xml.
+///
+/// The settings style is given with installed part on e.g.
+/// <b>`$HOME/.kodi/addons/myspecial.addon/resources/settings.xml`</b>. The
+/// related edit becomes then stored inside
+/// <b>`$HOME/.kodi/userdata/addon_data/myspecial.addon/settings.xml`</b>.
+///
+/*!@{*/
+
+//==============================================================================
+/// @brief Check and get a string setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @param[out] settingValue The given setting value
+/// @return true if setting was successfully found and "settingValue" is set
+///
+/// @note If returns false, the "settingValue" is not changed.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// std::string value;
+/// if (!kodi::CheckSettingString("my_string_value", value))
+///   value = "my_default_if_setting_not_work";
+/// ~~~~~~~~~~~~~
 ///
 inline bool CheckSettingString(const std::string& settingName, std::string& settingValue)
 {
@@ -528,9 +703,25 @@ inline bool CheckSettingString(const std::string& settingName, std::string& sett
   }
   return ret;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Get string setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @return The value of setting, empty if not found;
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// std::string value = kodi::GetSettingString("my_string_value");
+/// ~~~~~~~~~~~~~
 ///
 inline std::string GetSettingString(const std::string& settingName)
 {
@@ -538,9 +729,26 @@ inline std::string GetSettingString(const std::string& settingName)
   CheckSettingString(settingName, settingValue);
   return settingValue;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Set string setting of addon.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of setting
+/// @param[in] settingValue The setting value to write
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// std::string value = "my_new_name for";
+/// kodi::SetSettingString("my_string_value", value);
+/// ~~~~~~~~~~~~~
 ///
 inline void SetSettingString(const std::string& settingName, const std::string& settingValue)
 {
@@ -549,9 +757,30 @@ inline void SetSettingString(const std::string& settingName, const std::string& 
   CAddonBase::m_interface->toKodi->set_setting_string(CAddonBase::m_interface->toKodi->kodiBase,
                                                       settingName.c_str(), settingValue.c_str());
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Check and get a integer setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @param[out] settingValue The given setting value
+/// @return true if setting was successfully found and "settingValue" is set
+///
+/// @note If returns false, the "settingValue" is not changed.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// int value = 0;
+/// if (!kodi::CheckSettingInt("my_integer_value", value))
+///   value = 123; // My default of them
+/// ~~~~~~~~~~~~~
 ///
 inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
 {
@@ -560,9 +789,25 @@ inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
   return CAddonBase::m_interface->toKodi->get_setting_int(CAddonBase::m_interface->toKodi->kodiBase,
                                                           settingName.c_str(), &settingValue);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Get integer setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @return The value of setting, <b>`0`</b> if not found;
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// int value = kodi::GetSettingInt("my_integer_value");
+/// ~~~~~~~~~~~~~
 ///
 inline int GetSettingInt(const std::string& settingName)
 {
@@ -570,9 +815,26 @@ inline int GetSettingInt(const std::string& settingName)
   CheckSettingInt(settingName, settingValue);
   return settingValue;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Set integer setting of addon.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of setting
+/// @param[in] settingValue The setting value to write
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// int value = 123;
+/// kodi::SetSettingInt("my_integer_value", value);
+/// ~~~~~~~~~~~~~
 ///
 inline void SetSettingInt(const std::string& settingName, int settingValue)
 {
@@ -581,9 +843,30 @@ inline void SetSettingInt(const std::string& settingName, int settingValue)
   CAddonBase::m_interface->toKodi->set_setting_int(CAddonBase::m_interface->toKodi->kodiBase,
                                                    settingName.c_str(), settingValue);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Check and get a boolean setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @param[out] settingValue The given setting value
+/// @return true if setting was successfully found and "settingValue" is set
+///
+/// @note If returns false, the "settingValue" is not changed.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// bool value = false;
+/// if (!kodi::CheckSettingBoolean("my_boolean_value", value))
+///   value = true; // My default of them
+/// ~~~~~~~~~~~~~
 ///
 inline bool CheckSettingBoolean(const std::string& settingName, bool& settingValue)
 {
@@ -592,9 +875,25 @@ inline bool CheckSettingBoolean(const std::string& settingName, bool& settingVal
   return CAddonBase::m_interface->toKodi->get_setting_bool(
       CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Get boolean setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @return The value of setting, <b>`false`</b> if not found;
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// bool value = kodi::GetSettingBoolean("my_boolean_value");
+/// ~~~~~~~~~~~~~
 ///
 inline bool GetSettingBoolean(const std::string& settingName)
 {
@@ -602,9 +901,26 @@ inline bool GetSettingBoolean(const std::string& settingName)
   CheckSettingBoolean(settingName, settingValue);
   return settingValue;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Set boolean setting of addon.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of setting
+/// @param[in] settingValue The setting value to write
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// bool value = true;
+/// kodi::SetSettingBoolean("my_boolean_value", value);
+/// ~~~~~~~~~~~~~
 ///
 inline void SetSettingBoolean(const std::string& settingName, bool settingValue)
 {
@@ -613,9 +929,30 @@ inline void SetSettingBoolean(const std::string& settingName, bool settingValue)
   CAddonBase::m_interface->toKodi->set_setting_bool(CAddonBase::m_interface->toKodi->kodiBase,
                                                     settingName.c_str(), settingValue);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Check and get a floating point setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @param[out] settingValue The given setting value
+/// @return true if setting was successfully found and "settingValue" is set
+///
+/// @note If returns false, the "settingValue" is not changed.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// float value = 0.0f;
+/// if (!kodi::CheckSettingBoolean("my_float_value", value))
+///   value = 1.0f; // My default of them
+/// ~~~~~~~~~~~~~
 ///
 inline bool CheckSettingFloat(const std::string& settingName, float& settingValue)
 {
@@ -624,9 +961,25 @@ inline bool CheckSettingFloat(const std::string& settingName, float& settingValu
   return CAddonBase::m_interface->toKodi->get_setting_float(
       CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Get floating point setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @return The value of setting, <b>`0.0`</b> if not found;
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// float value = kodi::GetSettingFloat("my_float_value");
+/// ~~~~~~~~~~~~~
 ///
 inline float GetSettingFloat(const std::string& settingName)
 {
@@ -634,9 +987,26 @@ inline float GetSettingFloat(const std::string& settingName)
   CheckSettingFloat(settingName, settingValue);
   return settingValue;
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @brief Set floating point setting of addon.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of setting
+/// @param[in] settingValue The setting value to write
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// float value = 1.0f;
+/// kodi::SetSettingFloat("my_float_value", value);
+/// ~~~~~~~~~~~~~
 ///
 inline void SetSettingFloat(const std::string& settingName, float settingValue)
 {
@@ -645,7 +1015,129 @@ inline void SetSettingFloat(const std::string& settingName, float settingValue)
   CAddonBase::m_interface->toKodi->set_setting_float(CAddonBase::m_interface->toKodi->kodiBase,
                                                      settingName.c_str(), settingValue);
 }
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Check and get a enum setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @param[out] settingValue The given setting value
+/// @return true if setting was successfully found and "settingValue" is set
+///
+/// @remark The enums are used as integer inside settings.xml.
+/// @note If returns false, the "settingValue" is not changed.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// enum myEnumValue
+/// {
+///   valueA,
+///   valueB,
+///   valueC
+/// };
+///
+/// myEnumValue value;
+/// if (!kodi::CheckSettingEnum<myEnumValue>("my_enum_value", value))
+///   value = valueA; // My default of them
+/// ~~~~~~~~~~~~~
+///
+template<typename enumType>
+inline bool CheckSettingEnum(const std::string& settingName, enumType& settingValue)
+{
+  using namespace kodi::addon;
+
+  int settingValueInt = static_cast<int>(settingValue);
+  bool ret = CAddonBase::m_interface->toKodi->get_setting_int(
+      CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValueInt);
+  if (ret)
+    settingValue = static_cast<enumType>(settingValueInt);
+  return ret;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Get enum setting value.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of asked setting
+/// @return The value of setting, forced to <b>`0`</b> if not found;
+///
+/// @remark The enums are used as integer inside settings.xml.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// enum myEnumValue
+/// {
+///   valueA,
+///   valueB,
+///   valueC
+/// };
+///
+/// myEnumValue value = kodi::GetSettingEnum<myEnumValue>("my_enum_value");
+/// ~~~~~~~~~~~~~
+///
+template<typename enumType>
+inline enumType GetSettingEnum(const std::string& settingName)
+{
+  enumType settingValue = static_cast<enumType>(0);
+  CheckSettingEnum(settingName, settingValue);
+  return settingValue;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Set enum setting of addon.
+///
+/// The setting name relate to names used in his <b>settings.xml</b> file.
+///
+/// @param[in] settingName The name of setting
+/// @param[in] settingValue The setting value to write
+///
+/// @remark The enums are used as integer inside settings.xml.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+///
+/// enum myEnumValue
+/// {
+///   valueA,
+///   valueB,
+///   valueC
+/// };
+///
+/// myEnumValue value = valueA;
+/// kodi::SetSettingEnum<myEnumValue>("my_enum_value", value);
+/// ~~~~~~~~~~~~~
+///
+template<typename enumType>
+inline void SetSettingEnum(const std::string& settingName, enumType settingValue)
+{
+  using namespace kodi::addon;
+
+  CAddonBase::m_interface->toKodi->set_setting_int(CAddonBase::m_interface->toKodi->kodiBase,
+                                                   settingName.c_str(),
+                                                   static_cast<int>(settingValue));
+}
+//------------------------------------------------------------------------------
+
+/*!@}*/
 
 //============================================================================
 ///

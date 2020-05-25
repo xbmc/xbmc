@@ -86,6 +86,11 @@ Here is a table of the types currently possible:
   \defgroup cpp_kodi_addon_addonbase class CAddonBase
   \ingroup cpp_kodi_addon
   */
+    /*!
+    \defgroup cpp_kodi_addon_addonbase_Defs Definitions, structures and enumerators
+    \ingroup cpp_kodi_addon_addonbase
+    @brief **General definition values**
+    */
   /*!
   \defgroup cpp_kodi_addon_instances Addon type instances
   \ingroup cpp_kodi_addon
