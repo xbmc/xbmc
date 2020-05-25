@@ -102,7 +102,7 @@ int CInputStreamPVRBase::GetBlockSize()
 
 bool CInputStreamPVRBase::GetTimes(Times &times)
 {
-  PVR_STREAM_TIMES streamTimes;
+  PVR_STREAM_TIMES streamTimes = {};
   if (m_client && m_client->GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
   {
     times.startTime = streamTimes.startTime;
