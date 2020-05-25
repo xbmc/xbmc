@@ -20,10 +20,42 @@
 #include "pvr/pvr_stream.h"
 #include "pvr/pvr_timers.h"
 
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C" main interface function tables between Kodi and addon
+//
+// Values related to all parts and not used direct on addon, are to define here.
+//
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
+
+  /*!
+   * @internal
+   * @brief PVR "C" basis API interface
+   *
+   * This field contains things that are exchanged between Kodi and Addon
+   * and is the basis of the PVR-side "C" API.
+   *
+   * @warning Care should be taken when making changes in this fields!\n
+   * Changes can destroy API in addons that have already been created. If a
+   * necessary change or new feature is added, the version of the PVR
+   * at @ref ADDON_INSTANCE_VERSION_PVR_MIN must be increased too.\n
+   * \n
+   * Conditional changes can be made in some places, without min PVR version
+   * increase. The add-on should then use CreateInstanceEx and add partial tests
+   * for this in the C++ header.
+   *
+   * Have by add of new parts a look about **Doxygen** `\\ingroup`, so that
+   * added parts included in documentation.
+   *
+   * If you add addon side related documentation, where his dev need know,
+   * use `///`. For parts only for Kodi make it like here.
+   *
+   * @endinternal
+   */
+
+  struct AddonInstance_PVR;
 
   /*!
    * @brief Structure to define typical standard values

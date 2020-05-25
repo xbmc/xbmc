@@ -8,11 +8,21 @@
 
 #pragma once
 
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C" Standard PVR definitions
+//
+// Values related to all parts and not used direct on addon, are to define here.
+//
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
+  /*!
+   * @brief API array sizes which are used for data exchange between
+   * Kodi and addon.
+   */
+  ///@{
   #define PVR_ADDON_NAME_STRING_LENGTH 1024
   #define PVR_ADDON_URL_STRING_LENGTH 1024
   #define PVR_ADDON_DESC_STRING_LENGTH 1024
@@ -26,13 +36,20 @@ extern "C"
   #define PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE 512
   #define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
   #define PVR_ADDON_DATE_STRING_LENGTH 32
+  ///@}
 
+  /*!
+   * @brief "C" Representation of a general attribute integer value.
+   */
   typedef struct PVR_ATTRIBUTE_INT_VALUE
   {
     int iValue;
     char strDescription[PVR_ADDON_ATTRIBUTE_DESC_LENGTH];
   } PVR_ATTRIBUTE_INT_VALUE;
 
+  /*!
+   * @brief "C" Representation of a named value.
+   */
   typedef struct PVR_NAMED_VALUE
   {
     char strName[PVR_ADDON_NAME_STRING_LENGTH];

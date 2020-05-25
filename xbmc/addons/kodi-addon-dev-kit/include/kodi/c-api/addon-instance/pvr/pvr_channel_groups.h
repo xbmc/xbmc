@@ -12,11 +12,20 @@
 
 #include <stdbool.h>
 
+//¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+// "C" Definitions group 3 - PVR channel group
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
+  /*!
+   * @brief "C" PVR add-on channel group.
+   *
+   * Structure used to interface in "C" between Kodi and Addon.
+   *
+   * See @ref kodi::addon::PVRChannelGroup for description of values.
+   */
   typedef struct PVR_CHANNEL_GROUP
   {
     char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
@@ -24,6 +33,13 @@ extern "C"
     unsigned int iPosition;
   } PVR_CHANNEL_GROUP;
 
+  /*!
+   * @brief "C" PVR add-on channel group member.
+   *
+   * Structure used to interface in "C" between Kodi and Addon.
+   *
+   * See @ref kodi::addon::PVRChannelGroupMember for description of values.
+   */
   typedef struct PVR_CHANNEL_GROUP_MEMBER
   {
     char strGroupName[PVR_ADDON_NAME_STRING_LENGTH];
