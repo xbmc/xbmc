@@ -144,3 +144,9 @@ Here is a table of the types currently possible:
 \ingroup cpp
 \brief **Graphical functions for Windows and Dialogs to show**
 */
+/*!
+\defgroup cpp_kodi_tools Interface - kodi::tools
+\ingroup cpp
+\brief **Helper tools and functions**\n
+This group includes things that only work indirectly with Kodi.
+*/

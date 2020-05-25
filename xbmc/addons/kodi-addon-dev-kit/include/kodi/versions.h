@@ -65,13 +65,19 @@
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_XML_ID        "kodi.binary.global.filesystem"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_DEPENDS       "Filesystem.h" \
                                                       "c-api/filesystem.h" \
-                                                      "gui/gl/Shader.h"
+                                                      "gui/gl/Shader.h" \
+                                                      "tools/DllHelper.h"
 
 #define ADDON_GLOBAL_VERSION_NETWORK                  "1.0.3"
 #define ADDON_GLOBAL_VERSION_NETWORK_MIN              "1.0.0"
 #define ADDON_GLOBAL_VERSION_NETWORK_XML_ID           "kodi.binary.global.network"
 #define ADDON_GLOBAL_VERSION_NETWORK_DEPENDS          "Network.h" \
                                                       "c-api/network.h"
+
+#define ADDON_GLOBAL_VERSION_TOOLS                    "1.0.0"
+#define ADDON_GLOBAL_VERSION_TOOLS_MIN                "1.0.0"
+#define ADDON_GLOBAL_VERSION_TOOLS_XML_ID             "kodi.binary.global.tools"
+#define ADDON_GLOBAL_VERSION_TOOLS_DEPENDS            "tools/DllHelper.h"
 
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "2.0.1"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "2.0.1"
@@ -153,7 +159,10 @@ typedef enum ADDON_TYPE
   ADDON_GLOBAL_GENERAL = 3,
   ADDON_GLOBAL_NETWORK = 4,
   ADDON_GLOBAL_FILESYSTEM = 5,
-  ADDON_GLOBAL_MAX = 5, // Last used global id, used in loops to check versions. Need to change if new global type becomes added.
+  ADDON_GLOBAL_TOOLS = 6,
+  // Last used global id, used in loops to check versions.
+  // Need to change if new global type becomes added!
+  ADDON_GLOBAL_MAX = 6,
 
   /* addon type instances */
 
@@ -236,6 +245,10 @@ inline const char* GetTypeVersion(int type)
     case ADDON_GLOBAL_NETWORK:
       return ADDON_GLOBAL_VERSION_NETWORK;
 #endif
+#if !defined(BUILD_KODI_ADDON) || defined(ADDON_GLOBAL_VERSION_TOOLS_USED)
+    case ADDON_GLOBAL_TOOLS:
+      return ADDON_GLOBAL_VERSION_TOOLS;
+#endif
 
     /* addon type instances */
 #if !defined(BUILD_KODI_ADDON) || defined(ADDON_INSTANCE_VERSION_AUDIODECODER_USED)
@@ -311,6 +324,8 @@ inline const char* GetTypeMinVersion(int type)
       return ADDON_GLOBAL_VERSION_FILESYSTEM_MIN;
     case ADDON_GLOBAL_NETWORK:
       return ADDON_GLOBAL_VERSION_NETWORK_MIN;
+    case ADDON_GLOBAL_TOOLS:
+      return ADDON_GLOBAL_VERSION_TOOLS_MIN;
 
     /* addon type instances */
     case ADDON_INSTANCE_AUDIODECODER:
@@ -363,6 +378,8 @@ inline const char* GetTypeName(int type)
       return "Filesystem";
     case ADDON_GLOBAL_NETWORK:
       return "Network";
+    case ADDON_GLOBAL_TOOLS:
+      return "Tools";
 
     /* addon type instances */
     case ADDON_INSTANCE_AUDIODECODER:
@@ -414,6 +431,8 @@ inline int GetTypeId(const char* name)
       return ADDON_GLOBAL_FILESYSTEM;
     else if (strcmp(name, "network") == 0)
       return ADDON_GLOBAL_NETWORK;
+    else if (strcmp(name, "tools") == 0)
+      return ADDON_GLOBAL_TOOLS;
     else if (strcmp(name, "audiodecoder") == 0)
       return ADDON_INSTANCE_AUDIODECODER;
     else if (strcmp(name, "audioencoder") == 0)
