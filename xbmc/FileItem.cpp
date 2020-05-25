@@ -834,7 +834,8 @@ bool CFileItem::IsVideo() const
   //! @todo If the file is a zip file, ask the game clients if any support this
   // file before assuming it is video.
 
-  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+  return URIUtils::HasExtension(GetDynPath(),
+                                CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
 }
 
 bool CFileItem::IsEPG() const
@@ -921,7 +922,8 @@ bool CFileItem::IsAudio() const
   //! @todo If the file is a zip file, ask the game clients if any support this
   // file before assuming it is audio
 
-  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions());
+  return URIUtils::HasExtension(GetDynPath(),
+                                CServiceBroker::GetFileExtensionProvider().GetMusicExtensions());
 }
 
 bool CFileItem::IsDeleted() const

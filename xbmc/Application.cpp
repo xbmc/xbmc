@@ -2680,6 +2680,17 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
     if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume) ||
         item.GetDynPath() == item.GetPath()) // GetPluginResult resolved to an empty path
       return false;
+
+    // we may have been called as part of a playlist without knowing what the content type of
+    // the plugin:// item was. Since we now can infer the type, compare and notify
+    // if content changed.
+    if (iPlaylist != PLAYLIST_NONE)
+    {
+      if (iPlaylist == PLAYLIST_MUSIC && item.IsVideo())
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+      else if (iPlaylist == PLAYLIST_VIDEO && item.IsAudio())
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
+    }
   }
   // if after the 5 resolution attempts the item is still a plugin just return, it isn't playable
   if (URIUtils::IsPlugin(item.GetDynPath()))
