@@ -594,13 +594,15 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     "radeon",
     "nouveau",
     "vmwgfx",
+    "exynos",
     "msm",
     "imx-drm",
     "rockchip",
     "vc4",
     "virtio_gpu",
-    "sun4i-drm",
+    "mediatek",
     "meson",
+    "sun4i-drm",
     "vboxvideo",
   };
 
