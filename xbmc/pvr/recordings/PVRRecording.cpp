@@ -97,7 +97,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   if (strlen(recording.strFirstAired) > 0)
     m_firstAired.SetFromW3CDateTime(recording.strFirstAired);
   m_iFlags = recording.iFlags;
-  m_sizeInBytes = recording.sizeInBytes;
+  if (recording.sizeInBytes >= 0)
+    m_sizeInBytes = recording.sizeInBytes;
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
@@ -604,10 +605,4 @@ int64_t CPVRRecording::GetSizeInBytes() const
 {
   CSingleLock lock(m_critSection);
   return m_sizeInBytes;
-}
-
-void CPVRRecording::SetSizeInBytes(int64_t sizeInBytes)
-{
-  CSingleLock lock(m_critSection);
-  m_sizeInBytes = sizeInBytes;
 }
