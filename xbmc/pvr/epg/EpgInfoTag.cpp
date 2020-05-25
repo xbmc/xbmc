@@ -196,12 +196,8 @@ int CPVREpgInfoTag::ClientID() const
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  const std::shared_ptr<CPVRPlaybackState> playbackState =
-      CServiceBroker::GetPVRManager().PlaybackState();
-  if (playbackState && playbackState->IsPlayingChannel(ClientID(), UniqueChannelID()))
-    return playbackState->GetPlaybackTime();
-  else
-    return CDateTime::GetUTCDateTime();
+  return CServiceBroker::GetPVRManager().PlaybackState()->GetChannelPlaybackTime(ClientID(),
+                                                                                 UniqueChannelID());
 }
 
 bool CPVREpgInfoTag::IsActive() const

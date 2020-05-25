@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "utils/log.h"
@@ -65,7 +66,9 @@ void CPVREpgTagsCache::Reset()
 
 void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
 {
-  const CDateTime activeTime = CServiceBroker::GetPVRManager().PlaybackState()->GetPlaybackTime();
+  const CDateTime activeTime =
+      CServiceBroker::GetPVRManager().PlaybackState()->GetChannelPlaybackTime(
+          m_channelData->ClientId(), m_channelData->UniqueClientChannelId());
 
   if (m_nowActiveStart.IsValid() && m_nowActiveEnd.IsValid() && m_nowActiveStart <= activeTime &&
       m_nowActiveEnd > activeTime)
