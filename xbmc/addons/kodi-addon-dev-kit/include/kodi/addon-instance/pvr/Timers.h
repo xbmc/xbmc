@@ -28,15 +28,15 @@ public:
     m_cStructure->state = PVR_TIMER_STATE_NEW;
     m_cStructure->iTimerType = PVR_TIMER_TYPE_NONE;
     m_cStructure->iParentClientIndex = 0;
-    m_cStructure->iClientChannelUid = -1;
+    m_cStructure->iClientChannelUid = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->startTime = 0;
     m_cStructure->endTime = 0;
     m_cStructure->bStartAnyTime = false;
     m_cStructure->bEndAnyTime = false;
     m_cStructure->bFullTextEpgSearch = false;
-    m_cStructure->iPriority = -1;
-    m_cStructure->iLifetime = -1;
-    m_cStructure->iMaxRecordings = -1;
+    m_cStructure->iPriority = PVR_TIMER_VALUE_NOT_AVAILABLE;
+    m_cStructure->iLifetime = PVR_TIMER_VALUE_NOT_AVAILABLE;
+    m_cStructure->iMaxRecordings = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iRecordingGroup = 0;
     m_cStructure->firstDay = 0;
     m_cStructure->iWeekdays = PVR_WEEKDAY_NONE;
@@ -44,8 +44,8 @@ public:
     m_cStructure->iEpgUid = 0;
     m_cStructure->iMarginStart = 0;
     m_cStructure->iMarginEnd = 0;
-    m_cStructure->iGenreType = -1;
-    m_cStructure->iGenreSubType = -1;
+    m_cStructure->iGenreType = PVR_TIMER_VALUE_NOT_AVAILABLE;
+    m_cStructure->iGenreSubType = PVR_TIMER_VALUE_NOT_AVAILABLE;
   }
   PVRTimer(const PVRTimer& data) : CStructHdl(data) {}
   PVRTimer(const PVR_TIMER* data) : CStructHdl(data) {}

@@ -26,19 +26,19 @@ public:
     m_cStructure->iSeriesNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodeNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
     m_cStructure->recordingTime = 0;
-    m_cStructure->iDuration = -1;
-    m_cStructure->iPriority = -1;
-    m_cStructure->iLifetime = -1;
-    m_cStructure->iGenreType = -1;
-    m_cStructure->iGenreSubType = -1;
-    m_cStructure->iPlayCount = -1;
-    m_cStructure->iLastPlayedPosition = -1;
+    m_cStructure->iDuration = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iPriority = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iLifetime = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iGenreType = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iGenreSubType = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iPlayCount = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iLastPlayedPosition = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->bIsDeleted = false;
     m_cStructure->iEpgEventId = 0;
-    m_cStructure->iChannelUid = -1;
+    m_cStructure->iChannelUid = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
     m_cStructure->iFlags = 0;
-    m_cStructure->sizeInBytes = -1;
+    m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
   }
   PVRRecording(const PVRRecording& recording) : CStructHdl(recording) {}
   PVRRecording(const PVR_RECORDING* recording) : CStructHdl(recording) {}
