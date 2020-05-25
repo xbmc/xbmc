@@ -16,7 +16,6 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
-#include <algorithm>
 #include <sstream>
 
 template<typename TKey, typename TValue>
@@ -482,14 +481,6 @@ void CSettingList::Reset()
     values.push_back(it->Clone(it->GetId()));
 
   SetValue(values);
-}
-
-bool CSettingList::FindIntInList(int value) const
-{
-  return std::find_if(m_values.cbegin(), m_values.cend(), [&](const SettingPtr& setting)
-  {
-    return setting->GetType() == SettingType::Integer && std::static_pointer_cast<CSettingInt>(setting)->GetValue() == value;
-  }) != m_values.cend();
 }
 
 bool CSettingList::FromString(const std::vector<std::string> &value)

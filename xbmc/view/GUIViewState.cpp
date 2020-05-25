@@ -34,8 +34,10 @@
 #include "pvr/windows/GUIViewStatePVR.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/URIUtils.h"
 #include "video/GUIViewStateVideo.h"
 #include "view/ViewState.h"
@@ -509,7 +511,12 @@ bool CGUIViewState::AutoPlayNextVideoItem() const
   else
     settingValue = SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
 
-  return settingValue >= 0 && CServiceBroker::GetSettingsComponent()->GetSettings()->FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
+  const auto setting = std::dynamic_pointer_cast<CSettingList>(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM));
+
+  return settingValue >= 0 && setting != nullptr &&
+         CSettingUtils::FindIntInList(setting, settingValue);
 }
 
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)

@@ -36,4 +36,13 @@ public:
 
   static std::vector<CVariant> ListToValues(std::shared_ptr<const CSettingList> setting, const std::vector< std::shared_ptr<CSetting> > &values);
   static bool ValuesToList(std::shared_ptr<const CSettingList> setting, const std::vector<CVariant> &values, std::vector< std::shared_ptr<CSetting> > &newValues);
+
+  /*!
+   \brief Search in a list of Ints for a given value.
+
+   \param settingList CSettingList instance
+   \param value value to search for
+   \return True if value was found in list, false otherwise
+  */
+  static bool FindIntInList(std::shared_ptr<const CSettingList> settingList, int value);
 };

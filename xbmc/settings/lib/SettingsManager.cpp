@@ -685,14 +685,6 @@ bool CSettingsManager::SetList(const std::string &id, const std::vector< std::sh
   return std::static_pointer_cast<CSettingList>(setting)->SetValue(value);
 }
 
-bool CSettingsManager::FindIntInList(const std::string &id, int value) const
-{
-  CSharedLock lock(m_settingsCritical);
-  std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(GetSetting(id)));
-
-  return setting && setting->FindIntInList(value);
-}
-
 bool CSettingsManager::SetDefault(const std::string &id)
 {
   CSharedLock lock(m_settingsCritical);

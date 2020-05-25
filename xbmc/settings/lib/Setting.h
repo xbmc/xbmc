@@ -191,7 +191,6 @@ public:
   bool SetValue(const SettingList &values);
   const SettingList& GetDefault() const { return m_defaults; }
   void SetDefault(const SettingList &values);
-  bool FindIntInList(int value) const;
 
 protected:
   void copy(const CSettingList &setting);

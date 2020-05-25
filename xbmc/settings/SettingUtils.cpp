@@ -12,6 +12,8 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include <algorithm>
+
 std::vector<CVariant> CSettingUtils::GetList(std::shared_ptr<const CSettingList> settingList)
 {
   return ListToValues(settingList, settingList->GetValue());
@@ -117,4 +119,17 @@ bool CSettingUtils::ValuesToList(std::shared_ptr<const CSettingList> setting, co
   }
 
   return true;
+}
+
+bool CSettingUtils::FindIntInList(std::shared_ptr<const CSettingList> settingList, int value)
+{
+  if (settingList == nullptr || settingList->GetElementType() != SettingType::Integer)
+    return false;
+
+  const auto values = settingList->GetValue();
+  const auto matchingValue =
+      std::find_if(values.begin(), values.end(), [value](const SettingPtr& setting) {
+        return std::static_pointer_cast<CSettingInt>(setting)->GetValue() == value;
+      });
+  return matchingValue != values.end();
 }

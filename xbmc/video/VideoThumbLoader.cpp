@@ -23,6 +23,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "music/MusicDatabase.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -356,10 +357,8 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
   if (pItem->HasArt("thumb") && pItem->HasVideoInfoTag() &&
       pItem->GetVideoInfoTag()->m_type == MediaTypeEpisode &&
-      pItem->GetVideoInfoTag()->GetPlayCount() == 0 &&
-      setting && 
-      !setting->FindIntInList(CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE)
-     )
+      pItem->GetVideoInfoTag()->GetPlayCount() == 0 && setting &&
+      !CSettingUtils::FindIntInList(setting, CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE))
   {
     // use fanart if available
     if (pItem->HasArt("fanart"))
