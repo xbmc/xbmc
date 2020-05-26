@@ -1003,10 +1003,6 @@ int CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const C
     std::string propertyValue = itr->asString();
     if (propertyValue == "cast")
       details = details | VideoDbDetailsCast;
-    else if (propertyValue == "ratings")
-      details = details | VideoDbDetailsRating;
-    else if (propertyValue == "uniqueid")
-      details = details | VideoDbDetailsUniqueID;
     else if (propertyValue == "showlink")
       details = details | VideoDbDetailsShowLink;
     else if (propertyValue == "streamdetails")

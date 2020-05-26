@@ -13,6 +13,7 @@
 #include "utils/EmbeddedArt.h"
 #include "utils/Fanart.h"
 #include "utils/ISortable.h"
+#include "utils/LazySerializedProperty.h"
 #include "utils/ScraperUrl.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
@@ -266,7 +267,7 @@ public:
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   int m_iTrack;
-  CDefaultedMap<std::string, CRating> m_ratings;
+  CLazySerializedProperty<CDefaultedMap<std::string, CRating>> m_ratings;
   int m_iIdRating;
   int m_iUserRating;
   CBookmark m_EpBookmark;
@@ -284,7 +285,7 @@ public:
   // TODO: cannot be private, because of 'struct SDbTableOffsets'
   unsigned int m_duration; ///< duration in seconds
 
-  CDefaultedMap<std::string, std::string> m_uniqueIDs;
+  CLazySerializedProperty<CDefaultedMap<std::string, std::string>> m_uniqueIDs;
 
 private:
   /* \brief Parse our native XML format for video info.

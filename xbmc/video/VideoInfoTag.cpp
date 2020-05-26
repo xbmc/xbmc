@@ -14,6 +14,8 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/JSONVariantParser.h"
+#include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -24,9 +26,161 @@
 #include <string>
 #include <vector>
 
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+
+static const auto UniqueIDMapJsonSerializer =
+    [](const CDefaultedMap<std::string, std::string>& values) -> std::string {
+  rapidjson::StringBuffer stringBuffer;
+  rapidjson::Writer<rapidjson::StringBuffer> writer(stringBuffer);
+  if (!writer.StartObject())
+    return false;
+
+  const auto defaultValue = values.GetDefault();
+  if (!writer.Key("default") || !writer.String(defaultValue.c_str(), defaultValue.size()))
+    return false;
+
+  if (!writer.Key("uniqueids") || !writer.StartObject())
+    return false;
+  const auto& uniqueIDs = values.Get();
+  for (const auto& value : uniqueIDs)
+  {
+    if (!writer.Key(value.first.c_str()) ||
+        !writer.String(value.second.c_str(), value.second.size()))
+      return false;
+  }
+  writer.EndObject(uniqueIDs.size());
+
+  writer.EndObject(2);
+
+  if (!writer.IsComplete())
+    return false;
+
+  return stringBuffer.GetString();
+};
+
+static const auto UniqueIDMapJsonDeserializer =
+    [](const std::string& data) -> CDefaultedMap<std::string, std::string> {
+  if (data.empty())
+    return {};
+
+  rapidjson::Document doc;
+  doc.Parse<rapidjson::kParseIterativeFlag>(data.c_str(), data.size());
+  if (doc.HasParseError() || !doc.IsObject() || !doc.HasMember("default") ||
+      !doc.HasMember("uniqueids"))
+    return {};
+
+  const auto& defaultValue = doc["default"];
+  if (!defaultValue.IsString())
+    return {};
+
+  const auto& jsonValues = doc["uniqueids"];
+  if (!jsonValues.IsObject())
+    return {};
+
+  std::map<std::string, std::string> uniqueIDs;
+  for (auto value = jsonValues.MemberBegin(); value != jsonValues.MemberEnd(); ++value)
+  {
+    if (!value->value.IsString())
+      continue;
+
+    uniqueIDs.emplace(value->name.GetString(), value->value.GetString());
+  }
+
+  CDefaultedMap<std::string, std::string> values;
+  values.Set(std::move(uniqueIDs), defaultValue.GetString());
+
+  return values;
+};
+
+static const auto RatingMapJsonSerializer =
+    [](const CDefaultedMap<std::string, CRating>& values) -> std::string {
+  rapidjson::StringBuffer stringBuffer;
+  rapidjson::Writer<rapidjson::StringBuffer> writer(stringBuffer);
+  if (!writer.StartObject())
+    return false;
+
+  const auto defaultValue = values.GetDefault();
+  if (!writer.Key("default") || !writer.String(defaultValue.c_str(), defaultValue.size()))
+    return false;
+
+  if (!writer.Key("ratings") || !writer.StartObject())
+    return false;
+  const auto& ratings = values.Get();
+  for (const auto& rating : ratings)
+  {
+    if (!writer.Key(rating.first.c_str()) || !writer.StartObject())
+      return false;
+
+    if (!writer.Key("rating") || !writer.Double(rating.second.rating))
+      return false;
+
+    if (!writer.Key("votes") || !writer.Int(rating.second.votes))
+      return false;
+
+    writer.EndObject(2);
+  }
+  writer.EndObject(ratings.size());
+
+  writer.EndObject(2);
+
+  if (!writer.IsComplete())
+    return false;
+
+  return stringBuffer.GetString();
+};
+
+static const auto RatingMapJsonDeserializer =
+    [](const std::string& data) -> CDefaultedMap<std::string, CRating> {
+  if (data.empty())
+    return {};
+
+  rapidjson::Document doc;
+  doc.Parse<rapidjson::kParseIterativeFlag>(data.c_str(), data.size());
+  if (doc.HasParseError() || !doc.IsObject() || !doc.HasMember("default") ||
+      !doc.HasMember("ratings"))
+    return {};
+
+  const auto& defaultValue = doc["default"];
+  if (!defaultValue.IsString())
+    return {};
+
+  const auto& jsonValues = doc["ratings"];
+  if (!jsonValues.IsObject())
+    return {};
+
+  RatingMap ratings;
+  for (auto value = jsonValues.MemberBegin(); value != jsonValues.MemberEnd(); ++value)
+  {
+    if (!value->value.IsObject() || !value->value.HasMember("rating") ||
+        !value->value.HasMember("votes"))
+      continue;
+
+    const auto& ratingJsonValue = value->value["rating"];
+    if (!ratingJsonValue.IsDouble())
+      continue;
+
+    const auto& votesJsonValue = value->value["votes"];
+    if (!votesJsonValue.IsInt())
+      continue;
+
+    CRating rating;
+    rating.rating = ratingJsonValue.GetDouble();
+    rating.votes = votesJsonValue.GetInt();
+
+    ratings.emplace(value->name.GetString(), rating);
+  }
+
+  CDefaultedMap<std::string, CRating> values;
+  values.Set(std::move(ratings), defaultValue.GetString());
+
+  return values;
+};
+
 CVideoInfoTag::CVideoInfoTag()
-  : m_ratings("default"),
-    m_uniqueIDs("unknown")
+  : m_ratings(RatingMapJsonSerializer, RatingMapJsonDeserializer, "default"),
+    m_uniqueIDs(UniqueIDMapJsonSerializer, UniqueIDMapJsonDeserializer, "unknown")
 {
   Reset();
 };
@@ -67,11 +221,11 @@ void CVideoInfoTag::Reset()
   m_iSeason = -1;
   m_iEpisode = -1;
   m_iIdUniqueID = -1;
-  m_uniqueIDs.Clear();
+  m_uniqueIDs->Clear();
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
   m_iIdRating = -1;
-  m_ratings.Clear();
+  m_ratings->Clear();
   m_iUserRating = 0;
   m_iDbId = -1;
   m_iFileId = -1;
@@ -116,11 +270,11 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
   if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
-  if (!m_ratings.Empty())
+  if (!m_ratings->Empty())
   {
     TiXmlElement ratings("ratings");
-    const auto& defaultRating = m_ratings.GetDefault();
-    for (const auto& it : m_ratings.Get())
+    const auto& defaultRating = m_ratings->GetDefault();
+    for (const auto& it : m_ratings->Get())
     {
       TiXmlElement rating("rating");
       rating.SetAttribute("name", it.first.c_str());
@@ -205,8 +359,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }
 
   XMLUtils::SetString(movie, "id", GetUniqueID());
-  const auto& defaultUniqueID = m_uniqueIDs.GetDefault();
-  for (const auto& uniqueid : m_uniqueIDs.Get())
+  const auto& defaultUniqueID = m_uniqueIDs->GetDefault();
+  for (const auto& uniqueid : m_uniqueIDs->Get())
   {
     TiXmlElement uniqueID("uniqueid");
     uniqueID.SetAttribute("type", uniqueid.first);
@@ -379,17 +533,17 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iTop250;
     ar << m_iSeason;
     ar << m_iEpisode;
-    ar << (int)m_uniqueIDs.Size();
-    const auto& defaultUniqueID = m_uniqueIDs.GetDefault();
-    for (const auto& i : m_uniqueIDs.Get())
+    ar << (int)m_uniqueIDs->Size();
+    const auto& defaultUniqueID = m_uniqueIDs->GetDefault();
+    for (const auto& i : m_uniqueIDs->Get())
     {
       ar << i.first;
       ar << (i.first == defaultUniqueID);
       ar << i.second;
     }
-    ar << (int)m_ratings.Size();
-    const auto& defaultRating = m_ratings.GetDefault();
-    for (const auto& i : m_ratings.Get())
+    ar << (int)m_ratings->Size();
+    const auto& defaultRating = m_ratings->GetDefault();
+    for (const auto& i : m_ratings->Get())
     {
       ar << i.first;
       ar << (i.first == defaultRating);
@@ -600,13 +754,13 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["year"] = m_premiered.GetYear();
   value["season"] = m_iSeason;
   value["episode"] = m_iEpisode;
-  for (const auto& i : m_uniqueIDs.Get())
+  for (const auto& i : m_uniqueIDs->Get())
     value["uniqueid"][i.first] = i.second;
 
   value["rating"] = GetRating().rating;
   CVariant ratings = CVariant(CVariant::VariantTypeObject);
-  const auto& defaultRating = m_ratings.GetDefault();
-  for (const auto& i : m_ratings.Get())
+  const auto& defaultRating = m_ratings->GetDefault();
+  for (const auto& i : m_ratings->Get())
   {
     CVariant rating;
     rating["rating"] = i.second.rating;
@@ -720,17 +874,17 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 const CRating CVideoInfoTag::GetRating(std::string type) const
 {
-  return m_ratings.GetValue(type);
+  return m_ratings->GetValue(type);
 }
 
 const std::map<std::string, CRating>& CVideoInfoTag::GetRatings() const
 {
-  return m_ratings.Get();
+  return m_ratings->Get();
 }
 
 const std::string& CVideoInfoTag::GetDefaultRating() const
 {
-  return m_ratings.GetDefault();
+  return m_ratings->GetDefault();
 }
 
 bool CVideoInfoTag::HasYear() const
@@ -764,22 +918,22 @@ const CDateTime& CVideoInfoTag::GetFirstAired() const
 
 const std::string CVideoInfoTag::GetUniqueID(std::string type) const
 {
-  return m_uniqueIDs.GetValue(type);
+  return m_uniqueIDs->GetValue(type);
 }
 
 const std::map<std::string, std::string>& CVideoInfoTag::GetUniqueIDs() const
 {
-  return m_uniqueIDs.Get();
+  return m_uniqueIDs->Get();
 }
 
 const std::string& CVideoInfoTag::GetDefaultUniqueID() const
 {
-  return m_uniqueIDs.GetDefault();
+  return m_uniqueIDs->GetDefault();
 }
 
 bool CVideoInfoTag::HasUniqueID() const
 {
-  return !m_uniqueIDs.Empty();
+  return !m_uniqueIDs->Empty();
 }
 
 const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
@@ -1337,7 +1491,7 @@ void CVideoInfoTag::SetRating(CRating rating, const std::string& type /* = "" */
   if (rating.rating <= 0 || rating.rating > 10)
     return;
 
-  m_ratings.SetValue(rating, type, def);
+  m_ratings->SetValue(rating, type, def);
 }
 
 void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */, bool def /* = false */)
@@ -1346,31 +1500,31 @@ void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */, 
     return;
 
   CRating rat;
-  if (!m_ratings.TryGetValue(rat, type))
+  if (!m_ratings->TryGetValue(rat, type))
     return;
 
   rat.rating = rating;
-  m_ratings.SetValue(rat, type, def);
+  m_ratings->SetValue(rat, type, def);
 }
 
 void CVideoInfoTag::RemoveRating(const std::string& type)
 {
-  m_ratings.RemoveValue(type);
+  m_ratings->RemoveValue(type);
 }
 
 void CVideoInfoTag::SetRatings(RatingMap ratings)
 {
-  m_ratings.Set(std::move(ratings));
+  m_ratings->Set(std::move(ratings));
 }
 
 void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
 {
   CRating rat;
-  if (!m_ratings.TryGetValue(rat, type))
+  if (!m_ratings->TryGetValue(rat, type))
     return;
 
   rat.votes = votes;
-  m_ratings.SetValue(rat, type);
+  m_ratings->SetValue(rat, type);
 }
 
 void CVideoInfoTag::SetPremiered(CDateTime premiered)
@@ -1408,7 +1562,7 @@ void CVideoInfoTag::SetUniqueIDs(std::map<std::string, std::string> uniqueIDs)
   if (emptyUniqueID != uniqueIDs.end())
     uniqueIDs.erase(emptyUniqueID);
 
-  m_uniqueIDs.Set(std::move(uniqueIDs));
+  m_uniqueIDs->Set(std::move(uniqueIDs));
 }
 
 void CVideoInfoTag::SetSet(std::string set)
@@ -1494,12 +1648,12 @@ void CVideoInfoTag::SetUniqueID(const std::string& uniqueid, const std::string& 
   if (uniqueid.empty())
     return;
 
-  m_uniqueIDs.SetValue(uniqueid, type, isDefaultID);
+  m_uniqueIDs->SetValue(uniqueid, type, isDefaultID);
 }
 
 void CVideoInfoTag::RemoveUniqueID(const std::string& type)
 {
-  m_uniqueIDs.RemoveValue(type);
+  m_uniqueIDs->RemoveValue(type);
 }
 
 void CVideoInfoTag::SetNamedSeasons(std::map<int, std::string> namedSeasons)
