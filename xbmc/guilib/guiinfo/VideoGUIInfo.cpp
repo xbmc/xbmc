@@ -25,6 +25,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -351,15 +352,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         {
           std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>( 
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
-          if (tag->m_type != MediaTypeTvShow &&
-              tag->m_type != MediaTypeVideoCollection &&
-              tag->GetPlayCount() == 0 &&
-              setting &&
-              (
-               (tag->m_type == MediaTypeMovie && (!setting->FindIntInList(CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES))) ||  
-               (tag->m_type == MediaTypeEpisode && (!setting->FindIntInList(CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES)))
-              )
-             ) 
+          if (tag->m_type != MediaTypeTvShow && tag->m_type != MediaTypeVideoCollection &&
+              tag->GetPlayCount() == 0 && setting &&
+              ((tag->m_type == MediaTypeMovie &&
+                !CSettingUtils::FindIntInList(
+                    setting, CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES)) ||
+               (tag->m_type == MediaTypeEpisode &&
+                !CSettingUtils::FindIntInList(
+                    setting, CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES))))
           {
             value = g_localizeStrings.Get(20370);
           }
