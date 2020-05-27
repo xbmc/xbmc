@@ -37,12 +37,18 @@ public:
   /*!
    \brief Get an instance of the touch input manager
    */
-  static CGenericTouchInputHandler &GetInstance();
+  static CGenericTouchInputHandler& GetInstance();
   static constexpr int MAX_POINTERS = 2;
 
   // implementation of ITouchInputHandler
-  bool HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer = 0, float size = 0.0f) override;
-  bool UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size = 0.0f) override;
+  bool HandleTouchInput(TouchInput event,
+                        float x,
+                        float y,
+                        int64_t time,
+                        int32_t pointer = 0,
+                        float size = 0.0f) override;
+  bool UpdateTouchPointer(
+      int32_t pointer, float x, float y, int64_t time, float size = 0.0f) override;
 
 private:
   // private construction, and no assignments; use the provided singleton methods
@@ -51,7 +57,8 @@ private:
   CGenericTouchInputHandler(const CGenericTouchInputHandler&) = delete;
   CGenericTouchInputHandler const& operator=(CGenericTouchInputHandler const&) = delete;
 
-  typedef enum {
+  typedef enum
+  {
     TouchGestureUnknown = 0,
     // only primary pointer active but stationary so far
     TouchGestureSingleTouch,
@@ -73,7 +80,11 @@ private:
   void OnTimeout() override;
 
   void saveLastTouch();
-  void setGestureState(TouchGestureState gestureState) { m_gestureStateOld = m_gestureState; m_gestureState = gestureState; }
+  void setGestureState(TouchGestureState gestureState)
+  {
+    m_gestureStateOld = m_gestureState;
+    m_gestureState = gestureState;
+  }
   void triggerDetectors(TouchInput event, int32_t pointer);
   float AdjustPointerSize(float size);
 

@@ -31,7 +31,12 @@ public:
    *
    * \param other Touch to copy x/y coordinates and time from
    */
-  void copy(const Touch &other) { x = other.x; y = other.y; time = other.time; }
+  void copy(const Touch& other)
+  {
+    x = other.x;
+    y = other.y;
+    time = other.time;
+  }
 
   int64_t time = -1; // in nanoseconds
 };
@@ -49,7 +54,13 @@ public:
   /*!
    * \brief Resets the pointer and all its touches
    */
-  void reset() { down = {}; last = {}; moving = false; size = 0.0f; }
+  void reset()
+  {
+    down = {};
+    last = {};
+    moving = false;
+    size = 0.0f;
+  }
 
   /*!
    * \brief Checks if the "down" touch is valid
@@ -69,7 +80,7 @@ public:
    *
    * \return True if the velocity is valid otherwise false
    */
-  bool velocity(float &velocityX, float &velocityY, bool fromLast = true) const
+  bool velocity(float& velocityX, float& velocityY, bool fromLast = true) const
   {
     int64_t fromTime = last.time;
     float fromX = last.x;

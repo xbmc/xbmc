@@ -20,13 +20,13 @@
 class CGenericTouchRotateDetector : public IGenericTouchGestureDetector
 {
 public:
-  CGenericTouchRotateDetector(ITouchActionHandler *handler, float dpi);
+  CGenericTouchRotateDetector(ITouchActionHandler* handler, float dpi);
   ~CGenericTouchRotateDetector() override = default;
 
-  bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
-  bool OnTouchUp(unsigned int index, const Pointer &pointer) override;
-  bool OnTouchMove(unsigned int index, const Pointer &pointer) override;
-  bool OnTouchUpdate(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchDown(unsigned int index, const Pointer& pointer) override;
+  bool OnTouchUp(unsigned int index, const Pointer& pointer) override;
+  bool OnTouchMove(unsigned int index, const Pointer& pointer) override;
+  bool OnTouchUpdate(unsigned int index, const Pointer& pointer) override;
 
 private:
   /*!

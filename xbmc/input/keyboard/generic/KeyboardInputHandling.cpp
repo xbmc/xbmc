@@ -16,9 +16,9 @@
 using namespace KODI;
 using namespace KEYBOARD;
 
-CKeyboardInputHandling::CKeyboardInputHandling(IKeyboardInputHandler* handler, JOYSTICK::IButtonMap* buttonMap) :
-  m_handler(handler),
-  m_buttonMap(buttonMap)
+CKeyboardInputHandling::CKeyboardInputHandling(IKeyboardInputHandler* handler,
+                                               JOYSTICK::IButtonMap* buttonMap)
+  : m_handler(handler), m_buttonMap(buttonMap)
 {
 }
 

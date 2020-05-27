@@ -14,17 +14,17 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  class CGUIDialogNewJoystick : protected CThread
-  {
-  public:
-    CGUIDialogNewJoystick();
-    ~CGUIDialogNewJoystick() override = default;
+class CGUIDialogNewJoystick : protected CThread
+{
+public:
+  CGUIDialogNewJoystick();
+  ~CGUIDialogNewJoystick() override = default;
 
-    void ShowAsync();
+  void ShowAsync();
 
-  protected:
-    // implementation of CThread
-    void Process() override;
-  };
-}
-}
+protected:
+  // implementation of CThread
+  void Process() override;
+};
+} // namespace JOYSTICK
+} // namespace KODI

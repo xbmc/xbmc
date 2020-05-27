@@ -15,10 +15,10 @@
 class IKeymapEnvironment;
 
 /*!
-  * \brief Interface for mapping buttons to Kodi actions
-  *
-  * \sa CJoystickUtils::MakeKeyName
-  */
+ * \brief Interface for mapping buttons to Kodi actions
+ *
+ * \sa CJoystickUtils::MakeKeyName
+ */
 class IKeymap
 {
 public:
@@ -34,7 +34,7 @@ public:
   /*!
    * \brief Access properties of the keymapping environment
    */
-  virtual const IKeymapEnvironment *Environment() const = 0;
+  virtual const IKeymapEnvironment* Environment() const = 0;
 
   /*!
    * \brief Get the actions for a given key name
@@ -47,10 +47,10 @@ public:
 };
 
 /*!
-  * \brief Interface for mapping buttons to Kodi actions for specific windows
-  *
-  * \sa CJoystickUtils::MakeKeyName
-  */
+ * \brief Interface for mapping buttons to Kodi actions for specific windows
+ *
+ * \sa CJoystickUtils::MakeKeyName
+ */
 class IWindowKeymap
 {
 public:
@@ -70,7 +70,9 @@ public:
    * \param keyName   The key name created by CJoystickUtils::MakeKeyName()
    * \param action    The action to map
    */
-  virtual void MapAction(int windowId, const std::string &keyName, KODI::JOYSTICK::KeymapAction action) = 0;
+  virtual void MapAction(int windowId,
+                         const std::string& keyName,
+                         KODI::JOYSTICK::KeymapAction action) = 0;
 
   /*!
    * \brief Get the actions for a given key name and window ID
@@ -80,5 +82,6 @@ public:
    *
    * \return A list of actions associated with the given key for the given window
    */
-  virtual const KODI::JOYSTICK::KeymapActionGroup& GetActions(int windowId, const std::string& keyName) const = 0;
+  virtual const KODI::JOYSTICK::KeymapActionGroup& GetActions(int windowId,
+                                                              const std::string& keyName) const = 0;
 };

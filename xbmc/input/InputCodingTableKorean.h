@@ -25,7 +25,7 @@ public:
 
   void SetTextPrev(const std::string& strTextPrev) override;
   std::string ConvertString(const std::string& strCode) override;
-  int GetType() override { return TYPE_CONVERT_STRING;  }
+  int GetType() override { return TYPE_CONVERT_STRING; }
 
 protected:
   int MergeCode(int choseong, int jungseong, int jongseong);

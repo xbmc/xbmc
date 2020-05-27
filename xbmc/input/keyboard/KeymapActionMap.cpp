@@ -20,6 +20,7 @@ using namespace KEYBOARD;
 
 unsigned int CKeymapActionMap::GetActionID(const CKey& key)
 {
-  CAction action = CServiceBroker::GetInputManager().GetAction(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key);
+  CAction action = CServiceBroker::GetInputManager().GetAction(
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key);
   return action.GetID();
 }

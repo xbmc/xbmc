@@ -18,7 +18,7 @@
 
 using namespace KODI::MESSAGING;
 
-CGenericTouchActionHandler &CGenericTouchActionHandler::GetInstance()
+CGenericTouchActionHandler& CGenericTouchActionHandler::GetInstance()
 {
   static CGenericTouchActionHandler sTouchAction;
   return sTouchAction;
@@ -41,7 +41,8 @@ bool CGenericTouchActionHandler::OnSingleTouchHold(float x, float y)
   return true;
 }
 
-bool CGenericTouchActionHandler::OnSingleTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
+bool CGenericTouchActionHandler::OnSingleTouchMove(
+    float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
 {
   return true;
 }
@@ -61,7 +62,13 @@ bool CGenericTouchActionHandler::OnMultiTouchHold(float x, float y, int32_t poin
   return true;
 }
 
-bool CGenericTouchActionHandler::OnMultiTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY, int32_t pointer)
+bool CGenericTouchActionHandler::OnMultiTouchMove(float x,
+                                                  float y,
+                                                  float offsetX,
+                                                  float offsetY,
+                                                  float velocityX,
+                                                  float velocityY,
+                                                  int32_t pointer)
 {
   return true;
 }
@@ -78,14 +85,16 @@ bool CGenericTouchActionHandler::OnTouchGestureStart(float x, float y)
   return true;
 }
 
-bool CGenericTouchActionHandler::OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
+bool CGenericTouchActionHandler::OnTouchGesturePan(
+    float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
 {
   sendEvent(ACTION_GESTURE_PAN, x, y, offsetX, offsetY, velocityX, velocityY);
 
   return true;
 }
 
-bool CGenericTouchActionHandler::OnTouchGestureEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
+bool CGenericTouchActionHandler::OnTouchGestureEnd(
+    float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
 {
   sendEvent(ACTION_GESTURE_END, velocityX, velocityY, x, y, offsetX, offsetY);
 
@@ -108,7 +117,14 @@ void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers 
   sendEvent(ACTION_TOUCH_LONGPRESS, x, y, 0.0f, 0.0f, 0.0f, 0.0f, pointers);
 }
 
-void CGenericTouchActionHandler::OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers /* = 1 */)
+void CGenericTouchActionHandler::OnSwipe(TouchMoveDirection direction,
+                                         float xDown,
+                                         float yDown,
+                                         float xUp,
+                                         float yUp,
+                                         float velocityX,
+                                         float velocityY,
+                                         int32_t pointers /* = 1 */)
 {
   if (pointers <= 0 || pointers > 10)
     return;
@@ -140,14 +156,15 @@ void CGenericTouchActionHandler::OnRotate(float centerX, float centerY, float an
 
 int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 {
-  CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int> (std::round(x)), static_cast<int> (std::round(y)));
+  CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int>(std::round(x)),
+                  static_cast<int>(std::round(y)));
   if (!CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg))
     return 0;
 
   int result = 0;
   if (msg.GetPointer())
   {
-    int *p = static_cast<int*>(msg.GetPointer());
+    int* p = static_cast<int*>(msg.GetPointer());
     msg.SetPointer(nullptr);
     result = *p;
     delete p;
@@ -155,7 +172,14 @@ int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
   return result;
 }
 
-void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float x2 /* = 0.0f */, float y2 /* = 0.0f */, float x3, float y3, int pointers /* = 1 */)
+void CGenericTouchActionHandler::sendEvent(int actionId,
+                                           float x,
+                                           float y,
+                                           float x2 /* = 0.0f */,
+                                           float y2 /* = 0.0f */,
+                                           float x3,
+                                           float y3,
+                                           int pointers /* = 1 */)
 {
   XBMC_Event newEvent{XBMC_TOUCH};
 
@@ -177,8 +201,8 @@ void CGenericTouchActionHandler::focusControl(float x, float y)
 {
   XBMC_Event newEvent{XBMC_SETFOCUS};
 
-  newEvent.focus.x = static_cast<int> (std::round(x));
-  newEvent.focus.y = static_cast<int> (std::round(y));
+  newEvent.focus.x = static_cast<int>(std::round(x));
+  newEvent.focus.y = static_cast<int>(std::round(y));
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)

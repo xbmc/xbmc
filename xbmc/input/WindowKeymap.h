@@ -17,12 +17,15 @@
 class CWindowKeymap : public IWindowKeymap
 {
 public:
-  explicit CWindowKeymap(const std::string &controllerId);
+  explicit CWindowKeymap(const std::string& controllerId);
 
   // implementation of IWindowKeymap
   std::string ControllerID() const override { return m_controllerId; }
-  void MapAction(int windowId, const std::string& keyName, KODI::JOYSTICK::KeymapAction action) override;
-  const KODI::JOYSTICK::KeymapActionGroup& GetActions(int windowId, const std::string& keyName) const override;
+  void MapAction(int windowId,
+                 const std::string& keyName,
+                 KODI::JOYSTICK::KeymapAction action) override;
+  const KODI::JOYSTICK::KeymapActionGroup& GetActions(int windowId,
+                                                      const std::string& keyName) const override;
 
 private:
   // Construction parameter

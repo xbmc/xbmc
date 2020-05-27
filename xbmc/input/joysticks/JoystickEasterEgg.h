@@ -18,28 +18,28 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  /*!
-   * \brief Hush!!!
-   */
-  class CJoystickEasterEgg : public IButtonSequence
-  {
-  public:
-    explicit CJoystickEasterEgg(const std::string& controllerId);
-    ~CJoystickEasterEgg() override = default;
+/*!
+ * \brief Hush!!!
+ */
+class CJoystickEasterEgg : public IButtonSequence
+{
+public:
+  explicit CJoystickEasterEgg(const std::string& controllerId);
+  ~CJoystickEasterEgg() override = default;
 
-    // implementation of IButtonSequence
-    bool OnButtonPress(const FeatureName& feature) override;
-    bool IsCapturing() override;
+  // implementation of IButtonSequence
+  bool OnButtonPress(const FeatureName& feature) override;
+  bool IsCapturing() override;
 
-    static void OnFinish(void);
+  static void OnFinish(void);
 
-  private:
-    // Construction parameters
-    const std::string m_controllerId;
+private:
+  // Construction parameters
+  const std::string m_controllerId;
 
-    static const std::map<std::string, std::vector<FeatureName>> m_sequence;
+  static const std::map<std::string, std::vector<FeatureName>> m_sequence;
 
-    unsigned int m_state;
-  };
-}
-}
+  unsigned int m_state;
+};
+} // namespace JOYSTICK
+} // namespace KODI

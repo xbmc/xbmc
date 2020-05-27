@@ -16,5 +16,6 @@ class IInputCodingTable;
 class CInputCodingTableFactory
 {
 public:
-  static IInputCodingTable* CreateCodingTable(const std::string& strTableName, const TiXmlElement* element);
+  static IInputCodingTable* CreateCodingTable(const std::string& strTableName,
+                                              const TiXmlElement* element);
 };

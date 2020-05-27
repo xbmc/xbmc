@@ -22,14 +22,13 @@ namespace
 constexpr int TOUCH_HOLD_TIMEOUT = 500;
 }
 
-CGenericTouchInputHandler::CGenericTouchInputHandler()
-     : m_holdTimer(new CTimer(this))
+CGenericTouchInputHandler::CGenericTouchInputHandler() : m_holdTimer(new CTimer(this))
 {
 }
 
 CGenericTouchInputHandler::~CGenericTouchInputHandler() = default;
 
-CGenericTouchInputHandler &CGenericTouchInputHandler::GetInstance()
+CGenericTouchInputHandler& CGenericTouchInputHandler::GetInstance()
 {
   static CGenericTouchInputHandler sTouchInput;
   return sTouchInput;
@@ -46,7 +45,12 @@ float CGenericTouchInputHandler::AdjustPointerSize(float size)
 }
 
 
-bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer /* = 0 */, float size /* = 0.0f */)
+bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event,
+                                                 float x,
+                                                 float y,
+                                                 int64_t time,
+                                                 int32_t pointer /* = 0 */,
+                                                 float size /* = 0.0f */)
 {
   if (time < 0 || pointer < 0 || pointer >= MAX_POINTERS)
     return false;
@@ -103,13 +107,15 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
 
         // If we so far assumed single touch or still have the primary
         // pointer of a previous multi touch pressed down, we can update to multi touch
-        if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold ||
+        if (m_gestureState == TouchGestureSingleTouch ||
+            m_gestureState == TouchGestureSingleTouchHold ||
             m_gestureState == TouchGestureMultiTouchDone)
         {
           result = OnMultiTouchDown(x, y, pointer);
           m_holdTimer->Stop(true);
 
-          if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold)
+          if (m_gestureState == TouchGestureSingleTouch ||
+              m_gestureState == TouchGestureSingleTouchHold)
             m_holdTimer->Start(TOUCH_HOLD_TIMEOUT);
 
           setGestureState(TouchGestureMultiTouchStart);
@@ -127,8 +133,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
     case TouchInputUp:
     {
       // unexpected event => abort
-      if (!m_pointers[pointer].valid() ||
-          m_gestureState == TouchGestureUnknown)
+      if (!m_pointers[pointer].valid() || m_gestureState == TouchGestureUnknown)
         break;
 
       triggerDetectors(event, pointer);
@@ -136,7 +141,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       m_holdTimer->Stop(false);
 
       // Just a single tap with a pointer
-      if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold)
+      if (m_gestureState == TouchGestureSingleTouch ||
+          m_gestureState == TouchGestureSingleTouchHold)
       {
         result = OnSingleTouchEnd(x, y);
 
@@ -150,9 +156,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
         float velocityY = 0.0f; // number of pixels per second
         m_pointers[pointer].velocity(velocityX, velocityY, false);
 
-        result = OnTouchGestureEnd(x, y,
-                                   x - m_pointers[pointer].down.x, y - m_pointers[pointer].down.y,
-                                   velocityX, velocityY);
+        result = OnTouchGestureEnd(x, y, x - m_pointers[pointer].down.x,
+                                   y - m_pointers[pointer].down.y, velocityX, velocityY);
       }
       // we are in multi-touch
       else
@@ -161,7 +166,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       // If we were in multi touch mode and lifted one pointer
       // we can go into the TouchGestureMultiTouchDone state which will allow
       // the user to go back into multi touch mode without lifting the primary pointer
-      if (m_gestureState == TouchGestureMultiTouchStart || m_gestureState == TouchGestureMultiTouchHold || m_gestureState == TouchGestureMultiTouch)
+      if (m_gestureState == TouchGestureMultiTouchStart ||
+          m_gestureState == TouchGestureMultiTouchHold || m_gestureState == TouchGestureMultiTouch)
       {
         setGestureState(TouchGestureMultiTouchDone);
 
@@ -182,15 +188,14 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
           float velocityY = 0.0f; // number of pixels per second
           m_pointers[pointer].velocity(velocityX, velocityY, false);
 
-          result = OnTouchGestureEnd(x, y,
-                                     x - m_pointers[pointer].down.x, y - m_pointers[pointer].down.y,
-                                     velocityX, velocityY);
+          result = OnTouchGestureEnd(x, y, x - m_pointers[pointer].down.x,
+                                     y - m_pointers[pointer].down.y, velocityX, velocityY);
 
           // if neither of the two pointers moved we have a single tap with multiple pointers
-          if (m_gestureStateOld != TouchGestureMultiTouchHold && m_gestureStateOld != TouchGestureMultiTouch)
+          if (m_gestureStateOld != TouchGestureMultiTouchHold &&
+              m_gestureStateOld != TouchGestureMultiTouch)
             OnTap(std::abs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
-                  std::abs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
-                  2);
+                  std::abs((m_pointers[0].down.y + m_pointers[1].down.y) / 2), 2);
         }
 
         setGestureState(TouchGestureUnknown);
@@ -203,26 +208,29 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
     case TouchInputMove:
     {
       // unexpected event => abort
-      if (!m_pointers[pointer].valid() ||
-          m_gestureState == TouchGestureUnknown ||
+      if (!m_pointers[pointer].valid() || m_gestureState == TouchGestureUnknown ||
           m_gestureState == TouchGestureMultiTouchDone)
         break;
 
-      bool moving = std::any_of(m_pointers.cbegin(), m_pointers.cend(), [](Pointer const& p) { return p.valid() && p.moving; });
+      bool moving = std::any_of(m_pointers.cbegin(), m_pointers.cend(),
+                                [](Pointer const& p) { return p.valid() && p.moving; });
 
       if (moving)
       {
         m_holdTimer->Stop();
 
         // the touch is moving so we start a gesture
-        if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureMultiTouchStart)
+        if (m_gestureState == TouchGestureSingleTouch ||
+            m_gestureState == TouchGestureMultiTouchStart)
           result = OnTouchGestureStart(m_pointers[pointer].down.x, m_pointers[pointer].down.y);
       }
 
       triggerDetectors(event, pointer);
 
       // Check if the touch has moved far enough to count as movement
-      if ((m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureMultiTouchStart) && !m_pointers[pointer].moving)
+      if ((m_gestureState == TouchGestureSingleTouch ||
+           m_gestureState == TouchGestureMultiTouchStart) &&
+          !m_pointers[pointer].moving)
         break;
 
       if (m_gestureState == TouchGestureSingleTouch)
@@ -245,7 +253,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       m_pointers[pointer].velocity(velocityX, velocityY);
 
       if (m_pointers[pointer].moving &&
-         (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold || m_gestureState == TouchGesturePan))
+          (m_gestureState == TouchGestureSingleTouch ||
+           m_gestureState == TouchGestureSingleTouchHold || m_gestureState == TouchGesturePan))
         result = OnSingleTouchMove(x, y, offsetX, offsetY, velocityX, velocityY);
 
       // Let's see if we have a pan gesture (i.e. the primary and only pointer moving)
@@ -259,7 +268,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       else if (m_gestureState == TouchGestureMultiTouch)
       {
         if (moving)
-          result = OnMultiTouchMove(x, y,offsetX, offsetY, velocityX, velocityY, pointer);
+          result = OnMultiTouchMove(x, y, offsetX, offsetY, velocityX, velocityY, pointer);
       }
       else
         break;
@@ -275,7 +284,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
   return false;
 }
 
-bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size /* = 0.0f */)
+bool CGenericTouchInputHandler::UpdateTouchPointer(
+    int32_t pointer, float x, float y, int64_t time, float size /* = 0.0f */)
 {
   if (pointer < 0 || pointer >= MAX_POINTERS)
     return false;
@@ -332,8 +342,7 @@ void CGenericTouchInputHandler::OnTimeout()
 
         OnMultiTouchHold(m_pointers[0].down.x, m_pointers[0].down.y);
         OnLongPress(std::abs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
-                    std::abs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
-                    2);
+                    std::abs((m_pointers[0].down.y + m_pointers[1].down.y) / 2), 2);
       }
       break;
 
@@ -377,7 +386,7 @@ void CGenericTouchInputHandler::triggerDetectors(TouchInput event, int32_t point
       return;
   }
 
-  for (auto it = m_detectors.begin(); it != m_detectors.end(); )
+  for (auto it = m_detectors.begin(); it != m_detectors.end();)
   {
     if ((*it)->IsDone())
       it = m_detectors.erase(it);

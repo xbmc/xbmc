@@ -18,14 +18,14 @@ public:
   /*!
    * \brief Get a list of all known window names
    */
-  static void GetWindows(std::vector<std::string> &windowList);
+  static void GetWindows(std::vector<std::string>& windowList);
 
   /*!
    * \brief Translate between a window name and its ID
    * \param window The name of the window
    * \return ID of the window, or WINDOW_INVALID if not found
    */
-  static int TranslateWindow(const std::string &window);
+  static int TranslateWindow(const std::string& window);
 
   /*!
    * \brief Translate between a window id and it's name
@@ -49,18 +49,18 @@ public:
 private:
   struct WindowMapItem
   {
-    const char *windowName;
+    const char* windowName;
     int windowId;
   };
 
   struct WindowNameCompare
   {
-    bool operator()(const WindowMapItem &lhs, const WindowMapItem &rhs) const;
+    bool operator()(const WindowMapItem& lhs, const WindowMapItem& rhs) const;
   };
 
   struct WindowIDCompare
   {
-    bool operator()(const WindowMapItem &lhs, const WindowMapItem &rhs) const;
+    bool operator()(const WindowMapItem& lhs, const WindowMapItem& rhs) const;
   };
 
   using WindowMapByName = std::set<WindowMapItem, WindowNameCompare>;

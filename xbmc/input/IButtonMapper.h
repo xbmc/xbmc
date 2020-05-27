@@ -11,14 +11,14 @@
 class TiXmlNode;
 
 /*!
-  * \brief Interface for classes that can map buttons to Kodi actions
-  */
+ * \brief Interface for classes that can map buttons to Kodi actions
+ */
 class IButtonMapper
 {
 public:
   virtual ~IButtonMapper() = default;
 
-  virtual void MapActions(int windowId, const TiXmlNode *pDevice) = 0;
+  virtual void MapActions(int windowId, const TiXmlNode* pDevice) = 0;
 
   virtual void Clear() = 0;
 };

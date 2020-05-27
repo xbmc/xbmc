@@ -14,7 +14,7 @@
 class CActionTranslator
 {
 public:
-  static void GetActions(std::vector<std::string> &actionList);
+  static void GetActions(std::vector<std::string>& actionList);
   static bool IsAnalog(unsigned int actionId);
-  static bool TranslateString(std::string strAction, unsigned int &actionId);
+  static bool TranslateString(std::string strAction, unsigned int& actionId);
 };

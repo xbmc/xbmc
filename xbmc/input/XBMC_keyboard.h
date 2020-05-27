@@ -26,20 +26,20 @@
      this is a UNICODE character corresponding to the keypress.  If the
      high 9 bits of the character are 0, then this maps to the equivalent
      ASCII character:
-	char ch;
-	if ( (keysym.unicode & 0xFF80) == 0 ) {
-		ch = keysym.unicode & 0x7F;
-	} else {
-		An international character..
-	}
+        char ch;
+        if ( (keysym.unicode & 0xFF80) == 0 ) {
+                ch = keysym.unicode & 0x7F;
+        } else {
+                An international character..
+        }
  */
-typedef struct XBMC_keysym {
-	unsigned char scancode;			/* hardware specific scancode */
-	XBMCKey sym;			/* SDL virtual keysym */
-	XBMCMod mod;			/* current key modifiers */
-	uint16_t unicode;			/* translated character */
+typedef struct XBMC_keysym
+{
+  unsigned char scancode; /* hardware specific scancode */
+  XBMCKey sym; /* SDL virtual keysym */
+  XBMCMod mod; /* current key modifiers */
+  uint16_t unicode; /* translated character */
 } XBMC_keysym;
 
 /* This is the mask which refers to all hotkey bindings */
-#define XBMC_ALL_HOTKEYS		0xFFFFFFFF
-
+#define XBMC_ALL_HOTKEYS 0xFFFFFFFF

@@ -24,10 +24,15 @@ public:
   void MapActions(int windowID, const TiXmlNode* bDevice) override;
   void Clear() override;
 
-  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
+  bool TranslateTouchAction(
+      int window, int touchAction, int touchPointers, int& action, std::string& actionString);
 
 private:
-  bool TranslateAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString);
+  bool TranslateAction(int window,
+                       unsigned int touchCommand,
+                       int touchPointers,
+                       unsigned int& actionId,
+                       std::string& actionString);
 
   struct CTouchAction
   {
@@ -41,9 +46,11 @@ private:
   using WindowID = int;
   using TouchMap = std::map<WindowID, TouchActionMap>;
 
-  unsigned int GetActionID(WindowID window, TouchActionKey touchActionKey, std::string &actionString);
+  unsigned int GetActionID(WindowID window,
+                           TouchActionKey touchActionKey,
+                           std::string& actionString);
 
-  static unsigned int TranslateTouchCommand(const TiXmlElement *pButton, CTouchAction &action);
+  static unsigned int TranslateTouchCommand(const TiXmlElement* pButton, CTouchAction& action);
 
   static unsigned int GetTouchActionKey(unsigned int touchCommandId, int touchPointers);
 

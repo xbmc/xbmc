@@ -14,16 +14,16 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode *pCustomController)
+void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode* pCustomController)
 {
   CustomControllerButtonMap buttonMap;
   std::string controllerName;
 
-  const TiXmlElement *pController = pCustomController->ToElement();
+  const TiXmlElement* pController = pCustomController->ToElement();
   if (pController != nullptr)
   {
     // Transform loose name to new family, including altnames
-    const char *name = pController->Attribute("name");
+    const char* name = pController->Attribute("name");
     if (name != nullptr)
       controllerName = name;
   }
@@ -35,7 +35,7 @@ void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode *pCus
   }
 
   // Parse map
-  const TiXmlElement *pButton = pCustomController->FirstChildElement();
+  const TiXmlElement* pButton = pCustomController->FirstChildElement();
   int id = 0;
   while (pButton != nullptr)
   {
@@ -63,7 +63,11 @@ void CCustomControllerTranslator::Clear()
   m_customControllersMap.clear();
 }
 
-bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
+bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId,
+                                                                  const std::string& controllerName,
+                                                                  int buttonId,
+                                                                  int& action,
+                                                                  std::string& strAction)
 {
   unsigned int actionId = ACTION_NONE;
 
@@ -85,18 +89,22 @@ bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId, 
   return actionId != ACTION_NONE;
 }
 
-bool CCustomControllerTranslator::TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction)
+bool CCustomControllerTranslator::TranslateString(int windowId,
+                                                  const std::string& controllerName,
+                                                  int buttonId,
+                                                  unsigned int& actionId,
+                                                  std::string& strAction)
 {
   // Resolve the correct custom controller
   auto it = m_customControllersMap.find(controllerName);
   if (it == m_customControllersMap.end())
     return false;
 
-  const CustomControllerWindowMap &windowMap = it->second;
+  const CustomControllerWindowMap& windowMap = it->second;
   auto it2 = windowMap.find(windowId);
   if (it2 != windowMap.end())
   {
-    const CustomControllerButtonMap &buttonMap = it2->second;
+    const CustomControllerButtonMap& buttonMap = it2->second;
     auto it3 = buttonMap.find(buttonId);
     if (it3 != buttonMap.end())
     {

@@ -18,43 +18,41 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-const std::map<std::string, std::vector<FeatureName>> CJoystickEasterEgg::m_sequence =
-{
-  {
-    DEFAULT_CONTROLLER_ID,
+const std::map<std::string, std::vector<FeatureName>> CJoystickEasterEgg::m_sequence = {
     {
-      "up",
-      "up",
-      "down",
-      "down",
-      "left",
-      "right",
-      "left",
-      "right",
-      "b",
-      "a",
+        DEFAULT_CONTROLLER_ID,
+        {
+            "up",
+            "up",
+            "down",
+            "down",
+            "left",
+            "right",
+            "left",
+            "right",
+            "b",
+            "a",
+        },
     },
-  },
-  {
-    DEFAULT_REMOTE_ID,
     {
-      "up",
-      "up",
-      "down",
-      "down",
-      "left",
-      "right",
-      "left",
-      "right",
-      "back",
-      "ok",
+        DEFAULT_REMOTE_ID,
+        {
+            "up",
+            "up",
+            "down",
+            "down",
+            "left",
+            "right",
+            "left",
+            "right",
+            "back",
+            "ok",
+        },
     },
-  },
 };
 
-CJoystickEasterEgg::CJoystickEasterEgg(const std::string& controllerId) :
-  m_controllerId(controllerId),
-  m_state(0)
+CJoystickEasterEgg::CJoystickEasterEgg(const std::string& controllerId)
+  : m_controllerId(controllerId), m_state(0)
 {
 }
 
@@ -96,7 +94,7 @@ bool CJoystickEasterEgg::IsCapturing()
 
 void CJoystickEasterEgg::OnFinish(void)
 {
-  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  GAME::CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
   gameSettings.ToggleGames();
 
   WINDOW_SOUND sound = gameSettings.GamesEnabled() ? SOUND_INIT : SOUND_DEINIT;

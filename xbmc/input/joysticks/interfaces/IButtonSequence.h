@@ -14,18 +14,18 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  class IButtonSequence
-  {
-  public:
-    virtual ~IButtonSequence() = default;
+class IButtonSequence
+{
+public:
+  virtual ~IButtonSequence() = default;
 
-    virtual bool OnButtonPress(const FeatureName& feature) = 0;
+  virtual bool OnButtonPress(const FeatureName& feature) = 0;
 
-    /*!
-     * \brief Returns true if a sequence is being captured to prevent input
-     *        from falling through to the application
-     */
-    virtual bool IsCapturing() = 0;
-  };
-}
-}
+  /*!
+   * \brief Returns true if a sequence is being captured to prevent input
+   *        from falling through to the application
+   */
+  virtual bool IsCapturing() = 0;
+};
+} // namespace JOYSTICK
+} // namespace KODI

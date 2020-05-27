@@ -15,7 +15,14 @@ CKey::CKey(void)
 
 CKey::~CKey(void) = default;
 
-CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
+CKey::CKey(uint32_t buttonCode,
+           uint8_t leftTrigger,
+           uint8_t rightTrigger,
+           float leftThumbX,
+           float leftThumbY,
+           float rightThumbX,
+           float rightThumbY,
+           float repeat)
 {
   Reset();
   m_buttonCode = buttonCode;
@@ -35,7 +42,13 @@ CKey::CKey(uint32_t buttonCode, unsigned int held)
   m_held = held;
 }
 
-CKey::CKey(uint32_t keycode, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, uint32_t lockingModifiers, unsigned int held)
+CKey::CKey(uint32_t keycode,
+           uint8_t vkey,
+           wchar_t unicode,
+           char ascii,
+           uint32_t modifiers,
+           uint32_t lockingModifiers,
+           unsigned int held)
 {
   Reset();
   if (vkey) // FIXME: This needs cleaning up - should we always use the unicode key where available?
@@ -79,23 +92,24 @@ void CKey::Reset()
 
 CKey& CKey::operator=(const CKey& key)
 {
-  if (&key == this) return * this;
-  m_leftTrigger  = key.m_leftTrigger;
+  if (&key == this)
+    return *this;
+  m_leftTrigger = key.m_leftTrigger;
   m_rightTrigger = key.m_rightTrigger;
-  m_leftThumbX   = key.m_leftThumbX;
-  m_leftThumbY   = key.m_leftThumbY;
-  m_rightThumbX  = key.m_rightThumbX;
-  m_rightThumbY  = key.m_rightThumbY;
-  m_repeat       = key.m_repeat;
-  m_fromService  = key.m_fromService;
-  m_buttonCode   = key.m_buttonCode;
-  m_keycode      = key.m_keycode;
-  m_vkey         = key.m_vkey;
-  m_unicode     = key.m_unicode;
-  m_ascii       = key.m_ascii;
-  m_modifiers    = key.m_modifiers;
+  m_leftThumbX = key.m_leftThumbX;
+  m_leftThumbY = key.m_leftThumbY;
+  m_rightThumbX = key.m_rightThumbX;
+  m_rightThumbY = key.m_rightThumbY;
+  m_repeat = key.m_repeat;
+  m_fromService = key.m_fromService;
+  m_buttonCode = key.m_buttonCode;
+  m_keycode = key.m_keycode;
+  m_vkey = key.m_vkey;
+  m_unicode = key.m_unicode;
+  m_ascii = key.m_ascii;
+  m_modifiers = key.m_modifiers;
   m_lockingModifiers = key.m_lockingModifiers;
-  m_held         = key.m_held;
+  m_held = key.m_held;
   return *this;
 }
 
@@ -137,7 +151,8 @@ bool CKey::FromKeyboard() const
 
 bool CKey::IsAnalogButton() const
 {
-  if ((GetButtonCode() > 261 && GetButtonCode() < 270) || (GetButtonCode() > 279 && GetButtonCode() < 284))
+  if ((GetButtonCode() > 261 && GetButtonCode() < 270) ||
+      (GetButtonCode() > 279 && GetButtonCode() < 284))
     return true;
 
   return false;
