@@ -22,23 +22,22 @@ using namespace GAME;
 
 namespace
 {
-  struct ScalingMethodProperties
-  {
-    int nameIndex;
-    int categoryIndex;
-    int descriptionIndex;
-    RETRO::SCALINGMETHOD scalingMethod;
-  };
+struct ScalingMethodProperties
+{
+  int nameIndex;
+  int categoryIndex;
+  int descriptionIndex;
+  RETRO::SCALINGMETHOD scalingMethod;
+};
 
-  const std::vector<ScalingMethodProperties> scalingMethods =
-  {
-    { 16301, 16296, 16298, RETRO::SCALINGMETHOD::NEAREST },
-    { 16302, 16297, 16299, RETRO::SCALINGMETHOD::LINEAR },
-  };
-}
+const std::vector<ScalingMethodProperties> scalingMethods = {
+    {16301, 16296, 16298, RETRO::SCALINGMETHOD::NEAREST},
+    {16302, 16297, 16299, RETRO::SCALINGMETHOD::LINEAR},
+};
+} // namespace
 
-CDialogGameVideoFilter::CDialogGameVideoFilter() :
-  CDialogGameVideoSelect(WINDOW_DIALOG_GAME_VIDEO_FILTER)
+CDialogGameVideoFilter::CDialogGameVideoFilter()
+  : CDialogGameVideoSelect(WINDOW_DIALOG_GAME_VIDEO_FILTER)
 {
 }
 
@@ -66,26 +65,28 @@ void CDialogGameVideoFilter::InitVideoFilters()
 {
   if (m_gameVideoHandle)
   {
-    for (const auto &scalingMethodProps : scalingMethods)
+    for (const auto& scalingMethodProps : scalingMethods)
     {
       if (m_gameVideoHandle->SupportsScalingMethod(scalingMethodProps.scalingMethod))
       {
         RETRO::CRenderVideoSettings videoSettings;
         videoSettings.SetScalingMethod(scalingMethodProps.scalingMethod);
 
-        CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
+        CFileItemPtr item =
+            std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
-        item->SetProperty("game.videofilter", CVariant{ videoSettings.GetVideoFilter() });
-        item->SetProperty("game.videofilterdescription", CVariant{ g_localizeStrings.Get(scalingMethodProps.descriptionIndex) });
+        item->SetProperty("game.videofilter", CVariant{videoSettings.GetVideoFilter()});
+        item->SetProperty("game.videofilterdescription",
+                          CVariant{g_localizeStrings.Get(scalingMethodProps.descriptionIndex)});
         m_items.Add(std::move(item));
       }
     }
   }
 }
 
-void CDialogGameVideoFilter::GetItems(CFileItemList &items)
+void CDialogGameVideoFilter::GetItems(CFileItemList& items)
 {
-  for (const auto &item : m_items)
+  for (const auto& item : m_items)
     items.Add(item);
 }
 
@@ -99,7 +100,7 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
     std::string description;
     GetProperties(*item, videoFilter, description);
 
-    CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+    CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
     if (gameSettings.VideoFilter() != videoFilter)
     {
@@ -119,7 +120,7 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 
 unsigned int CDialogGameVideoFilter::GetFocusedItem() const
 {
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+  CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
   for (int i = 0; i < m_items.Size(); i++)
   {
@@ -141,7 +142,9 @@ void CDialogGameVideoFilter::PostExit()
   m_items.Clear();
 }
 
-void CDialogGameVideoFilter::GetProperties(const CFileItem &item, std::string &videoFilter, std::string &description)
+void CDialogGameVideoFilter::GetProperties(const CFileItem& item,
+                                           std::string& videoFilter,
+                                           std::string& description)
 {
   videoFilter = item.GetProperty("game.videofilter").asString();
   description = item.GetProperty("game.videofilterdescription").asString();

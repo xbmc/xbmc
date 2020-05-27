@@ -15,7 +15,8 @@
 using namespace KODI;
 using namespace GAME;
 
-bool CGameClientStreamVideo::OpenStream(RETRO::IRetroPlayerStream* stream, const game_stream_properties& properties)
+bool CGameClientStreamVideo::OpenStream(RETRO::IRetroPlayerStream* stream,
+                                        const game_stream_properties& properties)
 {
   RETRO::CRetroPlayerVideo* videoStream = dynamic_cast<RETRO::CRetroPlayerVideo*>(stream);
   if (videoStream == nullptr)
@@ -24,7 +25,8 @@ bool CGameClientStreamVideo::OpenStream(RETRO::IRetroPlayerStream* stream, const
     return false;
   }
 
-  std::unique_ptr<RETRO::VideoStreamProperties> videoProperties(TranslateProperties(properties.video));
+  std::unique_ptr<RETRO::VideoStreamProperties> videoProperties(
+      TranslateProperties(properties.video));
   if (videoProperties)
   {
     if (videoStream->OpenStream(static_cast<const RETRO::StreamProperties&>(*videoProperties)))
@@ -55,18 +57,15 @@ void CGameClientStreamVideo::AddData(const game_stream_packet& packet)
     RETRO::VideoRotation rotation = CGameClientTranslator::TranslateRotation(video.rotation);
 
     RETRO::VideoStreamPacket videoPacket{
-      video.width,
-      video.height,
-      rotation,
-      video.data,
-      video.size,
+        video.width, video.height, rotation, video.data, video.size,
     };
 
     m_stream->AddStreamData(static_cast<const RETRO::StreamPacket&>(videoPacket));
   }
 }
 
-RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(const game_stream_video_properties &properties)
+RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
+    const game_stream_video_properties& properties)
 {
   const AVPixelFormat pixelFormat = CGameClientTranslator::TranslatePixelFormat(properties.format);
   if (pixelFormat == AV_PIX_FMT_NONE)
@@ -92,7 +91,8 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(const 
   }
 
   if (nominalWidth > maxWidth || nominalHeight > maxHeight)
-    CLog::Log(LOGERROR, "GAME: Nominal dimensions (%ux%u) bigger than max dimensions (%ux%u)", nominalWidth, nominalHeight, maxWidth, maxHeight);
+    CLog::Log(LOGERROR, "GAME: Nominal dimensions (%ux%u) bigger than max dimensions (%ux%u)",
+              nominalWidth, nominalHeight, maxWidth, maxHeight);
 
   float pixelAspectRatio;
 
@@ -103,12 +103,6 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(const 
   else
     pixelAspectRatio = properties.aspect_ratio * nominalHeight / nominalWidth;
 
-  return new RETRO::VideoStreamProperties{
-    pixelFormat,
-    nominalWidth,
-    nominalHeight,
-    maxWidth,
-    maxHeight,
-    pixelAspectRatio
-  };
+  return new RETRO::VideoStreamProperties{pixelFormat, nominalWidth, nominalHeight,
+                                          maxWidth,    maxHeight,    pixelAspectRatio};
 }

@@ -19,14 +19,13 @@ using namespace GAME;
 
 // --- CControllerNode ---------------------------------------------------------
 
-CControllerNode::CControllerNode() :
-  m_hub(new CControllerHub)
+CControllerNode::CControllerNode() : m_hub(new CControllerHub)
 {
 }
 
 CControllerNode::~CControllerNode() = default;
 
-CControllerNode &CControllerNode::operator=(const CControllerNode &rhs)
+CControllerNode& CControllerNode::operator=(const CControllerNode& rhs)
 {
   if (this != &rhs)
   {
@@ -50,15 +49,14 @@ void CControllerNode::SetController(ControllerPtr controller)
   m_controller = std::move(controller);
 }
 
-void CControllerNode::GetControllers(ControllerVector &controllers) const
+void CControllerNode::GetControllers(ControllerVector& controllers) const
 {
-  const ControllerPtr &myController = m_controller;
+  const ControllerPtr& myController = m_controller;
 
   auto it = std::find_if(controllers.begin(), controllers.end(),
-    [&myController](const ControllerPtr &controller)
-    {
-      return myController->ID() == controller->ID();
-    });
+                         [&myController](const ControllerPtr& controller) {
+                           return myController->ID() == controller->ID();
+                         });
 
   if (it == controllers.end())
     controllers.emplace_back(m_controller);
@@ -76,11 +74,11 @@ void CControllerNode::SetHub(CControllerHub hub)
   m_hub.reset(new CControllerHub(std::move(hub)));
 }
 
-bool CControllerNode::IsControllerAccepted(const std::string &controllerId) const
+bool CControllerNode::IsControllerAccepted(const std::string& controllerId) const
 {
   bool bAccepted = false;
 
-  for (const auto &port : m_hub->Ports())
+  for (const auto& port : m_hub->Ports())
   {
     if (port.IsControllerAccepted(controllerId))
     {
@@ -92,12 +90,12 @@ bool CControllerNode::IsControllerAccepted(const std::string &controllerId) cons
   return bAccepted;
 }
 
-bool CControllerNode::IsControllerAccepted(const std::string &portAddress,
-                                           const std::string &controllerId) const
+bool CControllerNode::IsControllerAccepted(const std::string& portAddress,
+                                           const std::string& controllerId) const
 {
   bool bAccepted = false;
 
-  for (const auto &port : m_hub->Ports())
+  for (const auto& port : m_hub->Ports())
   {
     if (port.IsControllerAccepted(portAddress, controllerId))
     {
@@ -118,7 +116,7 @@ bool CControllerNode::ProvidesInput() const
 
 CControllerPortNode::~CControllerPortNode() = default;
 
-CControllerPortNode &CControllerPortNode::operator=(const CControllerPortNode &rhs)
+CControllerPortNode& CControllerPortNode::operator=(const CControllerPortNode& rhs)
 {
   if (this != &rhs)
   {
@@ -133,7 +131,7 @@ CControllerPortNode &CControllerPortNode::operator=(const CControllerPortNode &r
   return *this;
 }
 
-const CControllerNode &CControllerPortNode::ActiveController() const
+const CControllerNode& CControllerPortNode::ActiveController() const
 {
   if (m_bConnected && m_active < m_controllers.size())
     return m_controllers[m_active];
@@ -142,7 +140,7 @@ const CControllerNode &CControllerPortNode::ActiveController() const
   return invalid;
 }
 
-CControllerNode &CControllerPortNode::ActiveController()
+CControllerNode& CControllerPortNode::ActiveController()
 {
   if (m_bConnected && m_active < m_controllers.size())
     return m_controllers[m_active];
@@ -167,7 +165,7 @@ void CControllerPortNode::SetCompatibleControllers(ControllerNodeVec controllers
   m_controllers = std::move(controllers);
 }
 
-bool CControllerPortNode::IsControllerAccepted(const std::string &controllerId) const
+bool CControllerPortNode::IsControllerAccepted(const std::string& controllerId) const
 {
   // Base case
   CControllerPort port;
@@ -176,7 +174,7 @@ bool CControllerPortNode::IsControllerAccepted(const std::string &controllerId) 
     return true;
 
   // Visit nodes
-  for (const auto &node : m_controllers)
+  for (const auto& node : m_controllers)
   {
     if (node.IsControllerAccepted(controllerId))
       return true;
@@ -185,8 +183,8 @@ bool CControllerPortNode::IsControllerAccepted(const std::string &controllerId) 
   return false;
 }
 
-bool CControllerPortNode::IsControllerAccepted(const std::string &portAddress,
-                                               const std::string &controllerId) const
+bool CControllerPortNode::IsControllerAccepted(const std::string& portAddress,
+                                               const std::string& controllerId) const
 {
   bool bAccepted = false;
 
@@ -201,7 +199,7 @@ bool CControllerPortNode::IsControllerAccepted(const std::string &portAddress,
   else
   {
     // Visit nodes
-    for (const auto &node : m_controllers)
+    for (const auto& node : m_controllers)
     {
       if (node.IsControllerAccepted(portAddress, controllerId))
       {
@@ -214,10 +212,10 @@ bool CControllerPortNode::IsControllerAccepted(const std::string &portAddress,
   return bAccepted;
 }
 
-void CControllerPortNode::GetControllerPort(CControllerPort &port) const
+void CControllerPortNode::GetControllerPort(CControllerPort& port) const
 {
   std::vector<std::string> accepts;
-  for (const CControllerNode &node : m_controllers)
+  for (const CControllerNode& node : m_controllers)
     accepts.emplace_back(node.Controller()->ID());
 
   port = CControllerPort(m_portId, std::move(accepts));
@@ -227,7 +225,7 @@ void CControllerPortNode::GetControllerPort(CControllerPort &port) const
 
 CControllerHub::~CControllerHub() = default;
 
-CControllerHub &CControllerHub::operator=(const CControllerHub &rhs)
+CControllerHub& CControllerHub::operator=(const CControllerHub& rhs)
 {
   if (this != &rhs)
   {
@@ -247,11 +245,11 @@ void CControllerHub::SetPorts(ControllerPortVec ports)
   m_ports = std::move(ports);
 }
 
-bool CControllerHub::IsControllerAccepted(const std::string &controllerId) const
+bool CControllerHub::IsControllerAccepted(const std::string& controllerId) const
 {
   bool bAccepted = false;
 
-  for (const CControllerPortNode &port : m_ports)
+  for (const CControllerPortNode& port : m_ports)
   {
     if (port.IsControllerAccepted(controllerId))
     {
@@ -263,12 +261,12 @@ bool CControllerHub::IsControllerAccepted(const std::string &controllerId) const
   return bAccepted;
 }
 
-bool CControllerHub::IsControllerAccepted(const std::string &portAddress,
-                                          const std::string &controllerId) const
+bool CControllerHub::IsControllerAccepted(const std::string& portAddress,
+                                          const std::string& controllerId) const
 {
   bool bAccepted = false;
 
-  for (const CControllerPortNode &port : m_ports)
+  for (const CControllerPortNode& port : m_ports)
   {
     if (port.IsControllerAccepted(portAddress, controllerId))
     {
@@ -287,30 +285,31 @@ ControllerVector CControllerHub::GetControllers() const
   return controllers;
 }
 
-void CControllerHub::GetControllers(ControllerVector &controllers) const
+void CControllerHub::GetControllers(ControllerVector& controllers) const
 {
-  for (const CControllerPortNode &port : m_ports)
+  for (const CControllerPortNode& port : m_ports)
   {
-    for (const CControllerNode &node : port.CompatibleControllers())
+    for (const CControllerNode& node : port.CompatibleControllers())
       node.GetControllers(controllers);
   }
 }
 
-const CControllerPortNode &CControllerHub::GetPort(const std::string &address) const
+const CControllerPortNode& CControllerHub::GetPort(const std::string& address) const
 {
   return GetPort(m_ports, address);
 }
 
-const CControllerPortNode &CControllerHub::GetPort(const ControllerPortVec &ports, const std::string &address)
+const CControllerPortNode& CControllerHub::GetPort(const ControllerPortVec& ports,
+                                                   const std::string& address)
 {
-  for (const CControllerPortNode &port : ports)
+  for (const CControllerPortNode& port : ports)
   {
     if (port.Address() == address)
       return port;
 
-    for (const CControllerNode &controller : port.CompatibleControllers())
+    for (const CControllerNode& controller : port.CompatibleControllers())
     {
-      for (const CControllerPortNode &controllerPort : controller.Hub().Ports())
+      for (const CControllerPortNode& controllerPort : controller.Hub().Ports())
       {
         if (port.Address() == address)
           return controllerPort;

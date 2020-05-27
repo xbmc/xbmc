@@ -38,20 +38,20 @@ CGameInfoTag& CGameInfoTag::operator=(const CGameInfoTag& tag)
 {
   if (this != &tag)
   {
-    m_bLoaded          = tag.m_bLoaded;
-    m_strURL           = tag.m_strURL;
-    m_strTitle         = tag.m_strTitle;
-    m_strPlatform      = tag.m_strPlatform;
-    m_genres           = tag.m_genres;
-    m_strDeveloper     = tag.m_strDeveloper;
-    m_strOverview      = tag.m_strOverview;
-    m_year             = tag.m_year;
-    m_strID            = tag.m_strID;
-    m_strRegion        = tag.m_strRegion;
-    m_strPublisher     = tag.m_strPublisher;
-    m_strFormat        = tag.m_strFormat;
+    m_bLoaded = tag.m_bLoaded;
+    m_strURL = tag.m_strURL;
+    m_strTitle = tag.m_strTitle;
+    m_strPlatform = tag.m_strPlatform;
+    m_genres = tag.m_genres;
+    m_strDeveloper = tag.m_strDeveloper;
+    m_strOverview = tag.m_strOverview;
+    m_year = tag.m_year;
+    m_strID = tag.m_strID;
+    m_strRegion = tag.m_strRegion;
+    m_strPublisher = tag.m_strPublisher;
+    m_strFormat = tag.m_strFormat;
     m_strCartridgeType = tag.m_strCartridgeType;
-    m_strGameClient    = tag.m_strGameClient;
+    m_strGameClient = tag.m_strGameClient;
   }
   return *this;
 }
@@ -65,19 +65,32 @@ bool CGameInfoTag::operator==(const CGameInfoTag& tag) const
 
     if (m_bLoaded)
     {
-      if (m_strURL           != tag.m_strURL)           return false;
-      if (m_strTitle         != tag.m_strTitle)         return false;
-      if (m_strPlatform      != tag.m_strPlatform)      return false;
-      if (m_genres           != tag.m_genres)           return false;
-      if (m_strDeveloper     != tag.m_strDeveloper)     return false;
-      if (m_strOverview      != tag.m_strOverview)      return false;
-      if (m_year             != tag.m_year)             return false;
-      if (m_strID            != tag.m_strID)            return false;
-      if (m_strRegion        != tag.m_strRegion)        return false;
-      if (m_strPublisher     != tag.m_strPublisher)     return false;
-      if (m_strFormat        != tag.m_strFormat)        return false;
-      if (m_strCartridgeType != tag.m_strCartridgeType) return false;
-      if (m_strGameClient    != tag.m_strGameClient)    return false;
+      if (m_strURL != tag.m_strURL)
+        return false;
+      if (m_strTitle != tag.m_strTitle)
+        return false;
+      if (m_strPlatform != tag.m_strPlatform)
+        return false;
+      if (m_genres != tag.m_genres)
+        return false;
+      if (m_strDeveloper != tag.m_strDeveloper)
+        return false;
+      if (m_strOverview != tag.m_strOverview)
+        return false;
+      if (m_year != tag.m_year)
+        return false;
+      if (m_strID != tag.m_strID)
+        return false;
+      if (m_strRegion != tag.m_strRegion)
+        return false;
+      if (m_strPublisher != tag.m_strPublisher)
+        return false;
+      if (m_strFormat != tag.m_strFormat)
+        return false;
+      if (m_strCartridgeType != tag.m_strCartridgeType)
+        return false;
+      if (m_strGameClient != tag.m_strGameClient)
+        return false;
     }
   }
   return true;
@@ -123,20 +136,20 @@ void CGameInfoTag::Archive(CArchive& ar)
 
 void CGameInfoTag::Serialize(CVariant& value) const
 {
-  value["loaded"]        = m_bLoaded;
-  value["url"]           = m_strURL;
-  value["name"]          = m_strTitle;
-  value["platform"]      = m_strPlatform;
-  value["genres"]        = m_genres;
-  value["developer"]     = m_strDeveloper;
-  value["overview"]      = m_strOverview;
-  value["year"]          = m_year;
-  value["id"]            = m_strID;
-  value["region"]        = m_strRegion;
-  value["publisher"]     = m_strPublisher;
-  value["format"]        = m_strFormat;
+  value["loaded"] = m_bLoaded;
+  value["url"] = m_strURL;
+  value["name"] = m_strTitle;
+  value["platform"] = m_strPlatform;
+  value["genres"] = m_genres;
+  value["developer"] = m_strDeveloper;
+  value["overview"] = m_strOverview;
+  value["year"] = m_year;
+  value["id"] = m_strID;
+  value["region"] = m_strRegion;
+  value["publisher"] = m_strPublisher;
+  value["format"] = m_strFormat;
   value["cartridgetype"] = m_strCartridgeType;
-  value["gameclient"]    = m_strGameClient;
+  value["gameclient"] = m_strGameClient;
 }
 
 void CGameInfoTag::ToSortable(SortItem& sortable, Field field) const

@@ -16,9 +16,9 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IRetroPlayerStream;
-  struct VideoStreamProperties;
-}
+class IRetroPlayerStream;
+struct VideoStreamProperties;
+} // namespace RETRO
 
 namespace GAME
 {
@@ -41,7 +41,8 @@ protected:
 
 private:
   // Utility functions
-  static RETRO::VideoStreamProperties* TranslateProperties(const game_stream_video_properties &properties);
+  static RETRO::VideoStreamProperties* TranslateProperties(
+      const game_stream_video_properties& properties);
 };
 
 } // namespace GAME

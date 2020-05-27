@@ -14,29 +14,29 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIScalarFeatureButton : public CGUIFeatureButton
+class CGUIScalarFeatureButton : public CGUIFeatureButton
+{
+public:
+  CGUIScalarFeatureButton(const CGUIButtonControl& buttonTemplate,
+                          IConfigurationWizard* wizard,
+                          const CControllerFeature& feature,
+                          unsigned int index);
+
+  ~CGUIScalarFeatureButton() override = default;
+
+  // implementation of IFeatureButton
+  bool PromptForInput(CEvent& waitEvent) override;
+  bool IsFinished() const override;
+  void Reset() override;
+
+private:
+  enum class STATE
   {
-  public:
-    CGUIScalarFeatureButton(const CGUIButtonControl& buttonTemplate,
-                            IConfigurationWizard* wizard,
-                            const CControllerFeature& feature,
-                            unsigned int index);
-
-    ~CGUIScalarFeatureButton() override = default;
-
-    // implementation of IFeatureButton
-    bool PromptForInput(CEvent& waitEvent) override;
-    bool IsFinished() const override;
-    void Reset() override;
-
-  private:
-    enum class STATE
-    {
-      NEED_INPUT,
-      FINISHED,
-    };
-
-    STATE m_state;
+    NEED_INPUT,
+    FINISHED,
   };
-}
-}
+
+  STATE m_state;
+};
+} // namespace GAME
+} // namespace KODI

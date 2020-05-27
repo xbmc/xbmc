@@ -18,30 +18,30 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIDialogIgnoreInput : public CGUIDialogButtonCapture
-  {
-  public:
-    CGUIDialogIgnoreInput() = default;
+class CGUIDialogIgnoreInput : public CGUIDialogButtonCapture
+{
+public:
+  CGUIDialogIgnoreInput() = default;
 
-    ~CGUIDialogIgnoreInput() override = default;
+  ~CGUIDialogIgnoreInput() override = default;
 
-    // specialization of IButtonMapper via CGUIDialogButtonCapture
-    bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override;
+  // specialization of IButtonMapper via CGUIDialogButtonCapture
+  bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override;
 
-  protected:
-    // implementation of CGUIDialogButtonCapture
-    std::string GetDialogText() override;
-    std::string GetDialogHeader() override;
-    bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                              IKeymap* keymap,
-                              const JOYSTICK::CDriverPrimitive& primitive) override;
-    void OnClose(bool bAccepted) override;
+protected:
+  // implementation of CGUIDialogButtonCapture
+  std::string GetDialogText() override;
+  std::string GetDialogHeader() override;
+  bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                            IKeymap* keymap,
+                            const JOYSTICK::CDriverPrimitive& primitive) override;
+  void OnClose(bool bAccepted) override;
 
-  private:
-    bool AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
+private:
+  bool AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
 
-    std::string m_deviceName;
-    std::vector<JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
-  };
-}
-}
+  std::string m_deviceName;
+  std::vector<JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
+};
+} // namespace GAME
+} // namespace KODI

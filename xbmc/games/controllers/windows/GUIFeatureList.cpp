@@ -28,14 +28,14 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, GameClientPtr gameClient) :
-  m_window(window),
-  m_guiList(nullptr),
-  m_guiButtonTemplate(nullptr),
-  m_guiGroupTitle(nullptr),
-  m_guiFeatureSeparator(nullptr),
-  m_gameClient(std::move(gameClient)),
-  m_wizard(new CGUIConfigurationWizard)
+CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, GameClientPtr gameClient)
+  : m_window(window),
+    m_guiList(nullptr),
+    m_guiButtonTemplate(nullptr),
+    m_guiGroupTitle(nullptr),
+    m_guiFeatureSeparator(nullptr),
+    m_gameClient(std::move(gameClient)),
+    m_wizard(new CGUIConfigurationWizard)
 {
 }
 
@@ -48,8 +48,10 @@ CGUIFeatureList::~CGUIFeatureList(void)
 bool CGUIFeatureList::Initialize(void)
 {
   m_guiList = dynamic_cast<CGUIControlGroupList*>(m_window->GetControl(CONTROL_FEATURE_LIST));
-  m_guiButtonTemplate = dynamic_cast<CGUIButtonControl*>(m_window->GetControl(CONTROL_FEATURE_BUTTON_TEMPLATE));
-  m_guiGroupTitle = dynamic_cast<CGUILabelControl*>(m_window->GetControl(CONTROL_FEATURE_GROUP_TITLE));
+  m_guiButtonTemplate =
+      dynamic_cast<CGUIButtonControl*>(m_window->GetControl(CONTROL_FEATURE_BUTTON_TEMPLATE));
+  m_guiGroupTitle =
+      dynamic_cast<CGUILabelControl*>(m_window->GetControl(CONTROL_FEATURE_GROUP_TITLE));
   m_guiFeatureSeparator = dynamic_cast<CGUIImage*>(m_window->GetControl(CONTROL_FEATURE_SEPARATOR));
 
   if (m_guiButtonTemplate)
@@ -118,14 +120,16 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
     // Add a separator if the group list isn't empty
     if (m_guiFeatureSeparator && m_guiList->GetTotalSize() > 0)
     {
-      CGUIFeatureSeparator* pSeparator = new CGUIFeatureSeparator(*m_guiFeatureSeparator, m_buttonCount);
+      CGUIFeatureSeparator* pSeparator =
+          new CGUIFeatureSeparator(*m_guiFeatureSeparator, m_buttonCount);
       m_guiList->AddControl(pSeparator);
     }
 
     // Add the group title
     if (m_guiGroupTitle && !groupName.empty())
     {
-      CGUIFeatureGroupTitle* pGroupTitle = new CGUIFeatureGroupTitle(*m_guiGroupTitle, groupName, m_buttonCount);
+      CGUIFeatureGroupTitle* pGroupTitle =
+          new CGUIFeatureGroupTitle(*m_guiGroupTitle, groupName, m_buttonCount);
       m_guiList->AddControl(pGroupTitle);
     }
 
@@ -141,7 +145,7 @@ void CGUIFeatureList::OnSelect(unsigned int buttonIndex)
 {
   // Generate list of buttons for the wizard
   std::vector<IFeatureButton*> buttons;
-  for ( ; buttonIndex < m_buttonCount; buttonIndex++)
+  for (; buttonIndex < m_buttonCount; buttonIndex++)
   {
     IFeatureButton* control = GetButtonControl(buttonIndex);
     if (control == nullptr)
@@ -179,7 +183,8 @@ void CGUIFeatureList::CleanupButtons(void)
     m_guiList->ClearAll();
 }
 
-std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(const std::vector<CControllerFeature>& features) const
+std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(
+    const std::vector<CControllerFeature>& features) const
 {
   std::vector<FeatureGroup> groups;
 
@@ -198,7 +203,7 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
 
     if (!groups.empty())
     {
-      FeatureGroup &previousGroup = *groups.rbegin();
+      FeatureGroup& previousGroup = *groups.rbegin();
       if (feature.CategoryLabel() == previousGroup.groupName)
       {
         // Add feature to previous group
@@ -208,7 +213,7 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
         // If feature is a key, add it to the preceding virtual group as well
         if (feature.Category() == JOYSTICK::FEATURE_CATEGORY::KEY && groups.size() >= 2)
         {
-          FeatureGroup &virtualGroup = *(groups.rbegin() + 1);
+          FeatureGroup& virtualGroup = *(groups.rbegin() + 1);
           if (virtualGroup.bIsVirtualKey)
             virtualGroup.features.emplace_back(feature);
         }
@@ -252,7 +257,8 @@ bool CGUIFeatureList::HasButton(JOYSTICK::FEATURE_TYPE type) const
   return CGUIFeatureTranslator::GetButtonType(type) != BUTTON_TYPE::UNKNOWN;
 }
 
-std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CControllerFeature>& features, unsigned int startIndex)
+std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(
+    const std::vector<CControllerFeature>& features, unsigned int startIndex)
 {
   std::vector<CGUIButtonControl*> buttons;
 
@@ -262,7 +268,8 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CC
   {
     BUTTON_TYPE buttonType = CGUIFeatureTranslator::GetButtonType(feature.Type());
 
-    CGUIButtonControl* pButton = CGUIFeatureFactory::CreateButton(buttonType, *m_guiButtonTemplate, m_wizard, feature, buttonIndex);
+    CGUIButtonControl* pButton = CGUIFeatureFactory::CreateButton(buttonType, *m_guiButtonTemplate,
+                                                                  m_wizard, feature, buttonIndex);
 
     // If successful, add button to result
     if (pButton != nullptr)
@@ -275,7 +282,8 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CC
   return buttons;
 }
 
-CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(const std::vector<CControllerFeature>& features, unsigned int buttonIndex)
+CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(
+    const std::vector<CControllerFeature>& features, unsigned int buttonIndex)
 {
   // Expose keycodes to the wizard
   for (const CControllerFeature& feature : features)
@@ -284,5 +292,6 @@ CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(const std::vector<CContro
       m_wizard->RegisterKey(feature);
   }
 
-  return CGUIFeatureFactory::CreateButton(BUTTON_TYPE::SELECT_KEY, *m_guiButtonTemplate, m_wizard, CControllerFeature(), buttonIndex);
+  return CGUIFeatureFactory::CreateButton(BUTTON_TYPE::SELECT_KEY, *m_guiButtonTemplate, m_wizard,
+                                          CControllerFeature(), buttonIndex);
 }

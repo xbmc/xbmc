@@ -18,8 +18,8 @@ using namespace GAME;
 CGUIWheelButton::CGUIWheelButton(const CGUIButtonControl& buttonTemplate,
                                  IConfigurationWizard* wizard,
                                  const CControllerFeature& feature,
-                                 unsigned int index) :
-  CGUIFeatureButton(buttonTemplate, wizard, feature, index)
+                                 unsigned int index)
+  : CGUIFeatureButton(buttonTemplate, wizard, feature, index)
 {
   Reset();
 }
@@ -37,11 +37,11 @@ bool CGUIWheelButton::PromptForInput(CEvent& waitEvent)
   {
     case STATE::WHEEL_LEFT:
       strPrompt = g_localizeStrings.Get(35098); // "Move %s left"
-      strWarn   = g_localizeStrings.Get(35099); // "Move %s left (%d)"
+      strWarn = g_localizeStrings.Get(35099); // "Move %s left (%d)"
       break;
     case STATE::WHEEL_RIGHT:
       strPrompt = g_localizeStrings.Get(35096); // "Move %s right"
-      strWarn   = g_localizeStrings.Get(35097); // "Move %s right (%d)"
+      strWarn = g_localizeStrings.Get(35097); // "Move %s right (%d)"
       break;
     default:
       break;
@@ -71,8 +71,10 @@ JOYSTICK::WHEEL_DIRECTION CGUIWheelButton::GetWheelDirection(void) const
 
   switch (m_state)
   {
-    case STATE::WHEEL_LEFT:  return WHEEL_DIRECTION::LEFT;
-    case STATE::WHEEL_RIGHT: return WHEEL_DIRECTION::RIGHT;
+    case STATE::WHEEL_LEFT:
+      return WHEEL_DIRECTION::LEFT;
+    case STATE::WHEEL_RIGHT:
+      return WHEEL_DIRECTION::RIGHT;
     default:
       break;
   }

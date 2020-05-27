@@ -24,8 +24,8 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items) :
-  CGUIViewState(items)
+CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items)
+  : CGUIViewState(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
@@ -37,10 +37,12 @@ CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items) :
   }
   else
   {
-    AddSortMethod(SortByFile, 561, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Label, empty
-    AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Label, Size
+    AddSortMethod(SortByFile, 561,
+                  LABEL_MASKS("%F", "%I", "%L", "")); // Filename, Size | Label, empty
+    AddSortMethod(SortBySize, 553,
+                  LABEL_MASKS("%L", "%I", "%L", "%I")); // Filename, Size | Label, Size
 
-    const CViewState *viewState = CViewStateSettings::GetInstance().Get("games");
+    const CViewState* viewState = CViewStateSettings::GetInstance().Get("games");
     if (viewState)
     {
       SetSortMethod(viewState->m_sortDescription);
@@ -72,7 +74,7 @@ std::string CGUIViewStateWindowGames::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowGames::GetSources()
 {
-  VECSOURCES *pGameSources = CMediaSourceSettings::GetInstance().GetSources("games");
+  VECSOURCES* pGameSources = CMediaSourceSettings::GetInstance().GetSources("games");
 
   // Guard against source type not existing
   if (pGameSources == nullptr)

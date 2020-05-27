@@ -19,56 +19,56 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGUIGameVideoHandle;
+class CGUIGameVideoHandle;
 }
 
 namespace GAME
 {
-  class CDialogGameVideoSelect : public CGUIDialog
-  {
-  public:
-    ~CDialogGameVideoSelect() override;
+class CDialogGameVideoSelect : public CGUIDialog
+{
+public:
+  ~CDialogGameVideoSelect() override;
 
-    // implementation of CGUIControl via CGUIDialog
-    bool OnMessage(CGUIMessage &message) override;
+  // implementation of CGUIControl via CGUIDialog
+  bool OnMessage(CGUIMessage& message) override;
 
-    // implementation of CGUIWindow via CGUIDialog
-    void FrameMove() override;
-    void OnDeinitWindow(int nextWindowID) override;
+  // implementation of CGUIWindow via CGUIDialog
+  void FrameMove() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
-  protected:
-    CDialogGameVideoSelect(int windowId);
+protected:
+  CDialogGameVideoSelect(int windowId);
 
-    // implementation of CGUIWindow via CGUIDialog
-    void OnWindowUnload() override;
-    void OnWindowLoaded() override;
-    void OnInitWindow() override;
+  // implementation of CGUIWindow via CGUIDialog
+  void OnWindowUnload() override;
+  void OnWindowLoaded() override;
+  void OnInitWindow() override;
 
-    // Video select interface
-    virtual std::string GetHeading() = 0;
-    virtual void PreInit() = 0;
-    virtual void GetItems(CFileItemList &items) = 0;
-    virtual void OnItemFocus(unsigned int index) = 0;
-    virtual unsigned int GetFocusedItem() const = 0;
-    virtual void PostExit() = 0;
+  // Video select interface
+  virtual std::string GetHeading() = 0;
+  virtual void PreInit() = 0;
+  virtual void GetItems(CFileItemList& items) = 0;
+  virtual void OnItemFocus(unsigned int index) = 0;
+  virtual unsigned int GetFocusedItem() const = 0;
+  virtual void PostExit() = 0;
 
-    void OnDescriptionChange(const std::string &description);
+  void OnDescriptionChange(const std::string& description);
 
-    std::shared_ptr<RETRO::CGUIGameVideoHandle> m_gameVideoHandle;
+  std::shared_ptr<RETRO::CGUIGameVideoHandle> m_gameVideoHandle;
 
-  private:
-    void Update();
-    void Clear();
+private:
+  void Update();
+  void Clear();
 
-    void OnRefreshList();
+  void OnRefreshList();
 
-    void SaveSettings();
+  void SaveSettings();
 
-    void RegisterDialog();
-    void UnregisterDialog();
+  void RegisterDialog();
+  void UnregisterDialog();
 
-    std::unique_ptr<CGUIViewControl> m_viewControl;
-    std::unique_ptr<CFileItemList> m_vecItems;
-  };
-}
-}
+  std::unique_ptr<CGUIViewControl> m_viewControl;
+  std::unique_ptr<CFileItemList> m_vecItems;
+};
+} // namespace GAME
+} // namespace KODI

@@ -12,27 +12,27 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \brief Input callbacks
+ *
+ * @todo Remove this file when Game API is updated for input polling
+ */
+class IGameInputCallback
+{
+public:
+  virtual ~IGameInputCallback() = default;
+
   /*!
-   * \brief Input callbacks
+   * \brief Return true if the input source accepts input
    *
-   * @todo Remove this file when Game API is updated for input polling
+   * \return True if input should be processed, false otherwise
    */
-  class IGameInputCallback
-  {
-  public:
-    virtual ~IGameInputCallback() = default;
+  virtual bool AcceptsInput() const = 0;
 
-    /*!
-     * \brief Return true if the input source accepts input
-     *
-     * \return True if input should be processed, false otherwise
-     */
-    virtual bool AcceptsInput() const = 0;
-
-    /*!
-     * \brief Poll the input source for input
-     */
-    virtual void PollInput() = 0;
-  };
-}
-}
+  /*!
+   * \brief Poll the input source for input
+   */
+  virtual void PollInput() = 0;
+};
+} // namespace GAME
+} // namespace KODI

@@ -17,33 +17,34 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGameClientTopology
-  {
-  public:
-    CGameClientTopology() = default;
-    CGameClientTopology(GameClientPortVec ports, int playerLimit);
+class CGameClientTopology
+{
+public:
+  CGameClientTopology() = default;
+  CGameClientTopology(GameClientPortVec ports, int playerLimit);
 
-    void Clear();
+  void Clear();
 
-    int PlayerLimit() const { return m_playerLimit; }
+  int PlayerLimit() const { return m_playerLimit; }
 
-    const CControllerTree &ControllerTree() const { return m_controllers; }
-    CControllerTree &ControllerTree() { return m_controllers; }
+  const CControllerTree& ControllerTree() const { return m_controllers; }
+  CControllerTree& ControllerTree() { return m_controllers; }
 
-  private:
-    static CControllerTree GetControllerTree(const GameClientPortVec &ports);
-    static CControllerPortNode GetPortNode(const GameClientPortPtr &port, const std::string &address);
-    static CControllerNode GetControllerNode(const GameClientDevicePtr &device, const std::string &portAddress);
+private:
+  static CControllerTree GetControllerTree(const GameClientPortVec& ports);
+  static CControllerPortNode GetPortNode(const GameClientPortPtr& port, const std::string& address);
+  static CControllerNode GetControllerNode(const GameClientDevicePtr& device,
+                                           const std::string& portAddress);
 
-    // Utility function
-    static std::string MakeAddress(const std::string &baseAddress, const std::string &nodeId);
+  // Utility function
+  static std::string MakeAddress(const std::string& baseAddress, const std::string& nodeId);
 
-    // Game API parameters
-    GameClientPortVec m_ports;
-    int m_playerLimit = -1;
+  // Game API parameters
+  GameClientPortVec m_ports;
+  int m_playerLimit = -1;
 
-    // Controller parameters
-    CControllerTree m_controllers;
-  };
-}
-}
+  // Controller parameters
+  CControllerTree m_controllers;
+};
+} // namespace GAME
+} // namespace KODI

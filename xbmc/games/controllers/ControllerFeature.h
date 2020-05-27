@@ -34,7 +34,7 @@ public:
 
   JOYSTICK::FEATURE_TYPE Type(void) const { return m_type; }
   JOYSTICK::FEATURE_CATEGORY Category(void) const { return m_category; }
-  const std::string &Name(void) const { return m_strName; }
+  const std::string& Name(void) const { return m_strName; }
 
   // GUI properties
   std::string Label(void) const;
@@ -51,7 +51,7 @@ public:
                    int categoryLabelId);
 
 private:
-  const CController *m_controller = nullptr; // Used for translating addon-specific labels
+  const CController* m_controller = nullptr; // Used for translating addon-specific labels
   JOYSTICK::FEATURE_TYPE m_type = JOYSTICK::FEATURE_TYPE::UNKNOWN;
   JOYSTICK::FEATURE_CATEGORY m_category = JOYSTICK::FEATURE_CATEGORY::UNKNOWN;
   int m_categoryLabelId = -1;
@@ -61,5 +61,5 @@ private:
   KEYBOARD::KeySymbol m_keycode = XBMCK_UNKNOWN;
 };
 
-}
-}
+} // namespace GAME
+} // namespace KODI

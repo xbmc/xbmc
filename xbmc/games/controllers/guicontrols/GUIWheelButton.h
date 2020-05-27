@@ -14,31 +14,31 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIWheelButton : public CGUIFeatureButton
+class CGUIWheelButton : public CGUIFeatureButton
+{
+public:
+  CGUIWheelButton(const CGUIButtonControl& buttonTemplate,
+                  IConfigurationWizard* wizard,
+                  const CControllerFeature& feature,
+                  unsigned int index);
+
+  ~CGUIWheelButton() override = default;
+
+  // implementation of IFeatureButton
+  bool PromptForInput(CEvent& waitEvent) override;
+  bool IsFinished() const override;
+  JOYSTICK::WHEEL_DIRECTION GetWheelDirection() const override;
+  void Reset() override;
+
+private:
+  enum class STATE
   {
-  public:
-    CGUIWheelButton(const CGUIButtonControl& buttonTemplate,
-                    IConfigurationWizard* wizard,
-                    const CControllerFeature& feature,
-                    unsigned int index);
-
-    ~CGUIWheelButton() override = default;
-
-    // implementation of IFeatureButton
-    bool PromptForInput(CEvent& waitEvent) override;
-    bool IsFinished() const override;
-    JOYSTICK::WHEEL_DIRECTION GetWheelDirection() const override;
-    void Reset() override;
-
-  private:
-    enum class STATE
-    {
-      WHEEL_LEFT,
-      WHEEL_RIGHT,
-      FINISHED,
-    };
-
-    STATE m_state;
+    WHEEL_LEFT,
+    WHEEL_RIGHT,
+    FINISHED,
   };
-}
-}
+
+  STATE m_state;
+};
+} // namespace GAME
+} // namespace KODI

@@ -22,17 +22,16 @@
 using namespace KODI;
 using namespace GAME;
 
-CControllerLayout::CControllerLayout() :
-  m_topology(new CControllerTopology)
+CControllerLayout::CControllerLayout() : m_topology(new CControllerTopology)
 {
 }
 
-CControllerLayout::CControllerLayout(const CControllerLayout &other) :
-  m_controller(other.m_controller),
-  m_labelId(other.m_labelId),
-  m_icon(other.m_icon),
-  m_strImage(other.m_strImage),
-  m_topology(new CControllerTopology(*other.m_topology))
+CControllerLayout::CControllerLayout(const CControllerLayout& other)
+  : m_controller(other.m_controller),
+    m_labelId(other.m_labelId),
+    m_icon(other.m_icon),
+    m_strImage(other.m_strImage),
+    m_topology(new CControllerTopology(*other.m_topology))
 {
 }
 
@@ -52,14 +51,16 @@ bool CControllerLayout::IsValid(bool bLog) const
   if (m_labelId < 0)
   {
     if (bLog)
-      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_LABEL);
+      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT,
+                LAYOUT_XML_ATTR_LAYOUT_LABEL);
     return false;
   }
 
   if (m_strImage.empty())
   {
     if (bLog)
-      CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
+      CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT,
+                LAYOUT_XML_ATTR_LAYOUT_IMAGE);
     return false;
   }
 
@@ -86,7 +87,9 @@ std::string CControllerLayout::ImagePath(void) const
   return path;
 }
 
-void CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller, std::vector<CControllerFeature> &features)
+void CControllerLayout::Deserialize(const TiXmlElement* pElement,
+                                    const CController* controller,
+                                    std::vector<CControllerFeature>& features)
 {
   if (pElement == nullptr || controller == nullptr)
     return;
@@ -113,23 +116,27 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
   if (!image.empty())
     m_strImage = image;
 
-  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr; pChild = pChild->NextSiblingElement())
+  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr;
+       pChild = pChild->NextSiblingElement())
   {
     if (pChild->ValueStr() == LAYOUT_XML_ELM_CATEGORY)
     {
       // Category
       std::string strCategory = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_NAME);
-      JOYSTICK::FEATURE_CATEGORY category = CControllerTranslator::TranslateFeatureCategory(strCategory);
+      JOYSTICK::FEATURE_CATEGORY category =
+          CControllerTranslator::TranslateFeatureCategory(strCategory);
 
       // Category label
       int categoryLabelId = -1;
 
-      std::string strCategoryLabelId = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_LABEL);
+      std::string strCategoryLabelId =
+          XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_LABEL);
       if (!strCategoryLabelId.empty())
         std::istringstream(strCategoryLabelId) >> categoryLabelId;
 
       // Features
-      for (const TiXmlElement* pFeature = pChild->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
+      for (const TiXmlElement* pFeature = pChild->FirstChildElement(); pFeature != nullptr;
+           pFeature = pFeature->NextSiblingElement())
       {
         CControllerFeature feature;
 

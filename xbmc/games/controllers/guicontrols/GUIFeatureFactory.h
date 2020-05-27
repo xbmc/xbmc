@@ -16,22 +16,22 @@ namespace KODI
 {
 namespace GAME
 {
-  class CControllerFeature;
-  class IConfigurationWizard;
+class CControllerFeature;
+class IConfigurationWizard;
 
-  class CGUIFeatureFactory
-  {
-  public:
-    /*!
-     * \brief Create a button of the specified type
-     * \param type The type of button control being created
-     * \return A button control, or nullptr if type is invalid
-     */
-    static CGUIButtonControl* CreateButton(BUTTON_TYPE type,
-                                           const CGUIButtonControl& buttonTemplate,
-                                           IConfigurationWizard* wizard,
-                                           const CControllerFeature& feature,
-                                           unsigned int index);
-  };
-}
-}
+class CGUIFeatureFactory
+{
+public:
+  /*!
+   * \brief Create a button of the specified type
+   * \param type The type of button control being created
+   * \return A button control, or nullptr if type is invalid
+   */
+  static CGUIButtonControl* CreateButton(BUTTON_TYPE type,
+                                         const CGUIButtonControl& buttonTemplate,
+                                         IConfigurationWizard* wizard,
+                                         const CControllerFeature& feature,
+                                         unsigned int index);
+};
+} // namespace GAME
+} // namespace KODI

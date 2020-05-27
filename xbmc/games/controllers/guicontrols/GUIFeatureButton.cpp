@@ -21,10 +21,8 @@ using namespace GAME;
 CGUIFeatureButton::CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,
                                      IConfigurationWizard* wizard,
                                      const CControllerFeature& feature,
-                                     unsigned int index) :
-  CGUIButtonControl(buttonTemplate),
-  m_feature(feature),
-  m_wizard(wizard)
+                                     unsigned int index)
+  : CGUIButtonControl(buttonTemplate), m_feature(feature), m_wizard(wizard)
 {
   // Initialize CGUIButtonControl
   SetLabel(m_feature.Label());
@@ -39,7 +37,10 @@ void CGUIFeatureButton::OnUnFocus(void)
   m_wizard->OnUnfocus(this);
 }
 
-bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent)
+bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt,
+                                 const std::string& strWarn,
+                                 const std::string& strFeature,
+                                 CEvent& waitEvent)
 {
   using namespace MESSAGING;
 

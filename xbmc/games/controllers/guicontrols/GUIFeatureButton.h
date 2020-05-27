@@ -18,43 +18,51 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIFeatureButton : public CGUIButtonControl,
-                            public IFeatureButton
+class CGUIFeatureButton : public CGUIButtonControl, public IFeatureButton
+{
+public:
+  CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,
+                    IConfigurationWizard* wizard,
+                    const CControllerFeature& feature,
+                    unsigned int index);
+
+  ~CGUIFeatureButton() override = default;
+
+  // implementation of CGUIControl via CGUIButtonControl
+  void OnUnFocus() override;
+
+  // partial implementation of IFeatureButton
+  const CControllerFeature& Feature() const override { return m_feature; }
+  INPUT::CARDINAL_DIRECTION GetCardinalDirection() const override
   {
-  public:
-    CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,
-                      IConfigurationWizard* wizard,
-                      const CControllerFeature& feature,
-                      unsigned int index);
+    return INPUT::CARDINAL_DIRECTION::NONE;
+  }
+  JOYSTICK::WHEEL_DIRECTION GetWheelDirection() const override
+  {
+    return JOYSTICK::WHEEL_DIRECTION::NONE;
+  }
+  JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection() const override
+  {
+    return JOYSTICK::THROTTLE_DIRECTION::NONE;
+  }
 
-    ~CGUIFeatureButton() override = default;
+protected:
+  bool DoPrompt(const std::string& strPrompt,
+                const std::string& strWarn,
+                const std::string& strFeature,
+                CEvent& waitEvent);
 
-    // implementation of CGUIControl via CGUIButtonControl
-    void OnUnFocus() override;
+  // FSM helper
+  template<typename T>
+  T GetNextState(T state)
+  {
+    return static_cast<T>(static_cast<int>(state) + 1);
+  }
 
-    // partial implementation of IFeatureButton
-    const CControllerFeature& Feature() const override { return m_feature; }
-    INPUT::CARDINAL_DIRECTION GetCardinalDirection() const override { return INPUT::CARDINAL_DIRECTION::NONE; }
-    JOYSTICK::WHEEL_DIRECTION GetWheelDirection() const override { return JOYSTICK::WHEEL_DIRECTION::NONE; }
-    JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection() const override
-    {
-      return JOYSTICK::THROTTLE_DIRECTION::NONE;
-    }
+  const CControllerFeature m_feature;
 
-  protected:
-    bool DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent);
-
-    // FSM helper
-    template <typename T>
-    T GetNextState(T state)
-    {
-      return static_cast<T>(static_cast<int>(state) + 1);
-    }
-
-    const CControllerFeature m_feature;
-
-  private:
-    IConfigurationWizard* const  m_wizard;
-  };
-}
-}
+private:
+  IConfigurationWizard* const m_wizard;
+};
+} // namespace GAME
+} // namespace KODI

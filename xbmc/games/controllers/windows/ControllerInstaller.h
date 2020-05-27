@@ -14,15 +14,15 @@ namespace KODI
 {
 namespace GAME
 {
-  class CControllerInstaller : public CThread
-  {
-  public:
-    CControllerInstaller();
-    ~CControllerInstaller() override = default;
+class CControllerInstaller : public CThread
+{
+public:
+  CControllerInstaller();
+  ~CControllerInstaller() override = default;
 
-  protected:
-    // implementation of CThread
-    void Process() override;
-  };
-}
-}
+protected:
+  // implementation of CThread
+  void Process() override;
+};
+} // namespace GAME
+} // namespace KODI

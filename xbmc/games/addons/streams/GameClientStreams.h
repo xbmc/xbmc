@@ -17,7 +17,7 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IStreamManager;
+class IStreamManager;
 }
 
 namespace GAME
@@ -29,12 +29,12 @@ class IGameClientStream;
 class CGameClientStreams
 {
 public:
-  CGameClientStreams(CGameClient &gameClient);
+  CGameClientStreams(CGameClient& gameClient);
 
   void Initialize(RETRO::IStreamManager& streamManager);
   void Deinitialize();
 
-  IGameClientStream* OpenStream(const game_stream_properties &properties);
+  IGameClientStream* OpenStream(const game_stream_properties& properties);
   void CloseStream(IGameClientStream* stream);
 
 private:

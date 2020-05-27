@@ -29,7 +29,9 @@ using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace GAME;
 
-std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &gamePath, const GameClientVector& candidates, const GameClientVector& installable)
+std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& gamePath,
+                                                             const GameClientVector& candidates,
+                                                             const GameClientVector& installable)
 {
   std::string gameClient;
 
@@ -53,13 +55,14 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
   }
 
   // "Select emulator for {0:s}"
-  CGUIDialogSelect *dialog = GetDialog(StringUtils::Format(g_localizeStrings.Get(35258), extension));
+  CGUIDialogSelect* dialog =
+      GetDialog(StringUtils::Format(g_localizeStrings.Get(35258), extension));
   if (dialog != nullptr)
   {
     // Turn the addons into items
     CFileItemList items;
     CFileItemList installableItems;
-    for (const auto &candidate : candidates)
+    for (const auto& candidate : candidates)
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(candidate, candidate->ID()));
       item->SetLabel2(g_localizeStrings.Get(35257)); // "Installed"
@@ -67,7 +70,7 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
         item->SetLabel2(item->GetLabel2() + ", " + g_localizeStrings.Get(35259)); // "Saved"
       items.Add(std::move(item));
     }
-    for (const auto &addon : installable)
+    for (const auto& addon : installable)
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(addon, addon->ID()));
       installableItems.Add(std::move(item));
@@ -96,7 +99,8 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
       {
         gameClient = items[selectedIndex]->GetPath();
 
-        CLog::Log(LOGDEBUG, "Select game client dialog: User selected emulator %s", gameClient.c_str());
+        CLog::Log(LOGDEBUG, "Select game client dialog: User selected emulator %s",
+                  gameClient.c_str());
 
         if (Install(gameClient))
         {
@@ -109,7 +113,8 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
       }
       else
       {
-        CLog::Log(LOGDEBUG, "Select game client dialog: User selected invalid emulator %d", selectedIndex);
+        CLog::Log(LOGDEBUG, "Select game client dialog: User selected invalid emulator %d",
+                  selectedIndex);
       }
     }
     else
@@ -121,7 +126,7 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
   return gameClient;
 }
 
-bool CGUIDialogSelectGameClient::Install(const std::string &gameClient)
+bool CGUIDialogSelectGameClient::Install(const std::string& gameClient)
 {
   // If the addon isn't installed we need to install it
   bool bInstalled = CServiceBroker::GetAddonMgr().IsAddonInstalled(gameClient);
@@ -141,7 +146,7 @@ bool CGUIDialogSelectGameClient::Install(const std::string &gameClient)
   return bInstalled;
 }
 
-bool CGUIDialogSelectGameClient::Enable(const std::string &gameClient)
+bool CGUIDialogSelectGameClient::Enable(const std::string& gameClient)
 {
   bool bSuccess = true;
 
@@ -151,28 +156,33 @@ bool CGUIDialogSelectGameClient::Enable(const std::string &gameClient)
   return bSuccess;
 }
 
-CGUIDialogSelect *CGUIDialogSelectGameClient::GetDialog(const std::string &title)
+CGUIDialogSelect* CGUIDialogSelectGameClient::GetDialog(const std::string& title)
 {
-  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+          WINDOW_DIALOG_SELECT);
   if (dialog != nullptr)
   {
     dialog->Reset();
-    dialog->SetHeading(CVariant{ title });
+    dialog->SetHeading(CVariant{title});
     dialog->SetUseDetails(true);
   }
 
   return dialog;
 }
 
-void CGUIDialogSelectGameClient::LogGameClients(const GameClientVector& candidates, const GameClientVector& installable)
+void CGUIDialogSelectGameClient::LogGameClients(const GameClientVector& candidates,
+                                                const GameClientVector& installable)
 {
-  CLog::Log(LOGDEBUG, "Select game client dialog: Found %u candidates", static_cast<unsigned int>(candidates.size()));
+  CLog::Log(LOGDEBUG, "Select game client dialog: Found %u candidates",
+            static_cast<unsigned int>(candidates.size()));
   for (const auto& gameClient : candidates)
     CLog::Log(LOGDEBUG, "Adding %s as a candidate", gameClient->ID().c_str());
 
   if (!installable.empty())
   {
-    CLog::Log(LOGDEBUG, "Select game client dialog: Found %u installable clients", static_cast<unsigned int>(installable.size()));
+    CLog::Log(LOGDEBUG, "Select game client dialog: Found %u installable clients",
+              static_cast<unsigned int>(installable.size()));
     for (const auto& gameClient : installable)
       CLog::Log(LOGDEBUG, "Adding %s as an installable client", gameClient->ID().c_str());
   }

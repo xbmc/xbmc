@@ -17,20 +17,22 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIFeatureGroupTitle : public CGUILabelControl
-  {
-  public:
-    CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int buttonIndex);
+class CGUIFeatureGroupTitle : public CGUILabelControl
+{
+public:
+  CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate,
+                        const std::string& groupName,
+                        unsigned int buttonIndex);
 
-    ~CGUIFeatureGroupTitle() override = default;
-  };
+  ~CGUIFeatureGroupTitle() override = default;
+};
 
-  class CGUIFeatureSeparator : public CGUIImage
-  {
-  public:
-    CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int buttonIndex);
+class CGUIFeatureSeparator : public CGUIImage
+{
+public:
+  CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int buttonIndex);
 
-    ~CGUIFeatureSeparator() override = default;
-  };
-}
-}
+  ~CGUIFeatureSeparator() override = default;
+};
+} // namespace GAME
+} // namespace KODI

@@ -22,7 +22,7 @@ public:
   ~CGameClientStreamSwFramebuffer() override = default;
 
   // Implementation of IGameClientStream via CGameClientStreamVideo
-  bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer &buffer) override;
+  bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer& buffer) override;
 };
 
 } // namespace GAME

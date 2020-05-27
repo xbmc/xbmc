@@ -20,17 +20,18 @@
 using namespace KODI;
 using namespace GAME;
 
-const std::vector<CDialogGameStretchMode::StretchModeProperties> CDialogGameStretchMode::m_allStretchModes =
-{
-  { 630,   RETRO::STRETCHMODE::Normal },
-//  { 631,   RETRO::STRETCHMODE::Zoom }, //! @todo RetroArch allows trimming some outer pixels
-  { 632,   RETRO::STRETCHMODE::Stretch4x3 },
-  { 35232, RETRO::STRETCHMODE::Fullscreen },
-  { 635,   RETRO::STRETCHMODE::Original },
+const std::vector<CDialogGameStretchMode::StretchModeProperties>
+    CDialogGameStretchMode::m_allStretchModes = {
+        {630, RETRO::STRETCHMODE::Normal},
+        //  { 631,   RETRO::STRETCHMODE::Zoom }, //! @todo RetroArch allows trimming some outer
+        //  pixels
+        {632, RETRO::STRETCHMODE::Stretch4x3},
+        {35232, RETRO::STRETCHMODE::Fullscreen},
+        {635, RETRO::STRETCHMODE::Original},
 };
 
-CDialogGameStretchMode::CDialogGameStretchMode() :
-  CDialogGameVideoSelect(WINDOW_DIALOG_GAME_STRETCH_MODE)
+CDialogGameStretchMode::CDialogGameStretchMode()
+  : CDialogGameVideoSelect(WINDOW_DIALOG_GAME_STRETCH_MODE)
 {
 }
 
@@ -43,7 +44,7 @@ void CDialogGameStretchMode::PreInit()
 {
   m_stretchModes.clear();
 
-  for (const auto &stretchMode : m_allStretchModes)
+  for (const auto& stretchMode : m_allStretchModes)
   {
     bool bSupported = false;
 
@@ -72,15 +73,16 @@ void CDialogGameStretchMode::PreInit()
   }
 }
 
-void CDialogGameStretchMode::GetItems(CFileItemList &items)
+void CDialogGameStretchMode::GetItems(CFileItemList& items)
 {
-  for (const auto &stretchMode : m_stretchModes)
+  for (const auto& stretchMode : m_stretchModes)
   {
     CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(stretchMode.stringIndex));
 
-    const std::string stretchModeId = RETRO::CRetroPlayerUtils::StretchModeToIdentifier(stretchMode.stretchMode);
+    const std::string stretchModeId =
+        RETRO::CRetroPlayerUtils::StretchModeToIdentifier(stretchMode.stretchMode);
     if (!stretchModeId.empty())
-      item->SetProperty("game.stretchmode", CVariant{ stretchModeId });
+      item->SetProperty("game.stretchmode", CVariant{stretchModeId});
     items.Add(std::move(item));
   }
 }
@@ -91,7 +93,7 @@ void CDialogGameStretchMode::OnItemFocus(unsigned int index)
   {
     const RETRO::STRETCHMODE stretchMode = m_stretchModes[index].stretchMode;
 
-    CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+    CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
     if (gameSettings.StretchMode() != stretchMode)
     {
       gameSettings.SetStretchMode(stretchMode);
@@ -102,7 +104,7 @@ void CDialogGameStretchMode::OnItemFocus(unsigned int index)
 
 unsigned int CDialogGameStretchMode::GetFocusedItem() const
 {
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+  CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
   for (unsigned int i = 0; i < m_stretchModes.size(); i++)
   {

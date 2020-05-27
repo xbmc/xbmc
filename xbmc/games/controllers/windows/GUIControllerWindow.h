@@ -18,51 +18,51 @@ namespace KODI
 {
 namespace GAME
 {
-  class CControllerInstaller;
-  class IControllerList;
-  class IFeatureList;
+class CControllerInstaller;
+class IControllerList;
+class IFeatureList;
 
-  class CGUIControllerWindow : public CGUIDialog
-  {
-  public:
-    CGUIControllerWindow(void);
-    ~CGUIControllerWindow() override;
+class CGUIControllerWindow : public CGUIDialog
+{
+public:
+  CGUIControllerWindow(void);
+  ~CGUIControllerWindow() override;
 
-    // implementation of CGUIControl via CGUIDialog
-    void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
-    bool OnMessage(CGUIMessage& message) override;
+  // implementation of CGUIControl via CGUIDialog
+  void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
+  bool OnMessage(CGUIMessage& message) override;
 
-  protected:
-    // implementation of CGUIWindow via CGUIDialog
-    void OnInitWindow() override;
-    void OnDeinitWindow(int nextWindowID) override;
+protected:
+  // implementation of CGUIWindow via CGUIDialog
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
-  private:
-    void OnControllerFocused(unsigned int controllerIndex);
-    void OnControllerSelected(unsigned int controllerIndex);
-    void OnFeatureFocused(unsigned int featureIndex);
-    void OnFeatureSelected(unsigned int featureIndex);
-    void UpdateButtons(void);
+private:
+  void OnControllerFocused(unsigned int controllerIndex);
+  void OnControllerSelected(unsigned int controllerIndex);
+  void OnFeatureFocused(unsigned int featureIndex);
+  void OnFeatureSelected(unsigned int featureIndex);
+  void UpdateButtons(void);
 
-    // Callbacks for events
-    void OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
-    void OnEvent(const ADDON::AddonEvent& event);
+  // Callbacks for events
+  void OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
+  void OnEvent(const ADDON::AddonEvent& event);
 
-    // Action for the available button
-    void GetMoreControllers(void);
-    void GetAllControllers();
-    void ResetController(void);
-    void ShowHelp(void);
-    void ShowButtonCaptureDialog(void);
+  // Action for the available button
+  void GetMoreControllers(void);
+  void GetAllControllers();
+  void ResetController(void);
+  void ShowHelp(void);
+  void ShowButtonCaptureDialog(void);
 
-    IControllerList* m_controllerList = nullptr;
-    IFeatureList* m_featureList = nullptr;
+  IControllerList* m_controllerList = nullptr;
+  IFeatureList* m_featureList = nullptr;
 
-    // Game paremeters
-    GameClientPtr m_gameClient;
+  // Game paremeters
+  GameClientPtr m_gameClient;
 
-    // Controller parameters
-    std::unique_ptr<CControllerInstaller> m_installer;
-  };
-}
-}
+  // Controller parameters
+  std::unique_ptr<CControllerInstaller> m_installer;
+};
+} // namespace GAME
+} // namespace KODI

@@ -15,13 +15,13 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIFeatureTranslator
-  {
-  public:
-    /*!
-     * \brief Get the type of button control used to map the feature
-     */
-    static BUTTON_TYPE GetButtonType(JOYSTICK::FEATURE_TYPE featureType);
-  };
-}
-}
+class CGUIFeatureTranslator
+{
+public:
+  /*!
+   * \brief Get the type of button control used to map the feature
+   */
+  static BUTTON_TYPE GetButtonType(JOYSTICK::FEATURE_TYPE featureType);
+};
+} // namespace GAME
+} // namespace KODI

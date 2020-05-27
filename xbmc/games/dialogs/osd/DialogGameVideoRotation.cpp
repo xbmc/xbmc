@@ -18,8 +18,8 @@
 using namespace KODI;
 using namespace GAME;
 
-CDialogGameVideoRotation::CDialogGameVideoRotation() :
-  CDialogGameVideoSelect(WINDOW_DIALOG_GAME_VIDEO_ROTATION)
+CDialogGameVideoRotation::CDialogGameVideoRotation()
+  : CDialogGameVideoSelect(WINDOW_DIALOG_GAME_VIDEO_ROTATION)
 {
 }
 
@@ -39,12 +39,12 @@ void CDialogGameVideoRotation::PreInit()
   m_rotations.push_back(90);
 }
 
-void CDialogGameVideoRotation::GetItems(CFileItemList &items)
+void CDialogGameVideoRotation::GetItems(CFileItemList& items)
 {
   for (unsigned int rotation : m_rotations)
   {
     CFileItemPtr item = std::make_shared<CFileItem>(GetRotationLabel(rotation));
-    item->SetProperty("game.videorotation", CVariant{ rotation });
+    item->SetProperty("game.videorotation", CVariant{rotation});
     items.Add(std::move(item));
   }
 }
@@ -55,7 +55,7 @@ void CDialogGameVideoRotation::OnItemFocus(unsigned int index)
   {
     const unsigned int rotationDegCCW = m_rotations[index];
 
-    CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+    CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
     if (gameSettings.RotationDegCCW() != rotationDegCCW)
     {
       gameSettings.SetRotationDegCCW(rotationDegCCW);
@@ -66,7 +66,7 @@ void CDialogGameVideoRotation::OnItemFocus(unsigned int index)
 
 unsigned int CDialogGameVideoRotation::GetFocusedItem() const
 {
-  CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+  CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
   for (unsigned int i = 0; i < m_rotations.size(); i++)
   {
@@ -87,16 +87,16 @@ std::string CDialogGameVideoRotation::GetRotationLabel(unsigned int rotationDegC
 {
   switch (rotationDegCCW)
   {
-  case 0:
-    return g_localizeStrings.Get(35228); // 0
-  case 90:
-    return g_localizeStrings.Get(35231); // 270
-  case 180:
-    return g_localizeStrings.Get(35230); // 180
-  case 270:
-    return g_localizeStrings.Get(35229); // 90
-  default:
-    break;
+    case 0:
+      return g_localizeStrings.Get(35228); // 0
+    case 90:
+      return g_localizeStrings.Get(35231); // 270
+    case 180:
+      return g_localizeStrings.Get(35230); // 180
+    case 270:
+      return g_localizeStrings.Get(35229); // 90
+    default:
+      break;
   }
 
   return "";

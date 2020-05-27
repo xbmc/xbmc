@@ -16,15 +16,15 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIGameController::CGUIGameController(int parentID, int controlID, float posX, float posY, float width, float height)
+CGUIGameController::CGUIGameController(
+    int parentID, int controlID, float posX, float posY, float width, float height)
   : CGUIImage(parentID, controlID, posX, posY, width, height, CTextureInfo())
 {
   // Initialize CGUIControl
   ControlType = GUICONTROL_GAMECONTROLLER;
 }
 
-CGUIGameController::CGUIGameController(const CGUIGameController &from)
-  : CGUIImage(from)
+CGUIGameController::CGUIGameController(const CGUIGameController& from) : CGUIImage(from)
 {
   // Initialize CGUIControl
   ControlType = GUICONTROL_GAMECONTROLLER;

@@ -14,31 +14,31 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIThrottleButton : public CGUIFeatureButton
+class CGUIThrottleButton : public CGUIFeatureButton
+{
+public:
+  CGUIThrottleButton(const CGUIButtonControl& buttonTemplate,
+                     IConfigurationWizard* wizard,
+                     const CControllerFeature& feature,
+                     unsigned int index);
+
+  ~CGUIThrottleButton() override = default;
+
+  // implementation of IFeatureButton
+  bool PromptForInput(CEvent& waitEvent) override;
+  bool IsFinished() const override;
+  JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection() const override;
+  void Reset() override;
+
+private:
+  enum class STATE
   {
-  public:
-    CGUIThrottleButton(const CGUIButtonControl& buttonTemplate,
-                       IConfigurationWizard* wizard,
-                       const CControllerFeature& feature,
-                       unsigned int index);
-
-    ~CGUIThrottleButton() override = default;
-
-    // implementation of IFeatureButton
-    bool PromptForInput(CEvent& waitEvent) override;
-    bool IsFinished() const override;
-    JOYSTICK::THROTTLE_DIRECTION GetThrottleDirection() const override;
-    void Reset() override;
-
-  private:
-    enum class STATE
-    {
-      THROTTLE_UP,
-      THROTTLE_DOWN,
-      FINISHED,
-    };
-
-    STATE m_state;
+    THROTTLE_UP,
+    THROTTLE_DOWN,
+    FINISHED,
   };
-}
-}
+
+  STATE m_state;
+};
+} // namespace GAME
+} // namespace KODI
