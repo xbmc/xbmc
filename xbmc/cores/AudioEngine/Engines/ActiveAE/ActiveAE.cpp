@@ -596,6 +596,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_stats.SetSuspended(true);
           m_state = AE_TOP_CONFIGURED_SUSPEND;
           m_extDeferData = true;
+          m_extSuspended = true;
           return;
         case CActiveAEControlProtocol::DISPLAYLOST:
           if (m_sink.GetDeviceType(m_mode == MODE_PCM ? m_settings.device : m_settings.passthroughdevice) == AE_DEVTYPE_HDMI)
@@ -852,10 +853,13 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CActiveAEControlProtocol::DISPLAYRESET:
+          if (m_extSuspended)
+            return;
           CLog::Log(LOGDEBUG,"CActiveAE - display reset event");
           displayReset = true;
         case CActiveAEControlProtocol::INIT:
           m_extError = false;
+          m_extSuspended = false;
           if (!displayReset)
           {
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
