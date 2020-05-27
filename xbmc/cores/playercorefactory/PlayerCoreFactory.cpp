@@ -67,14 +67,26 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const std::string& nameId, IPlayerCall
   return m_vecPlayerConfigs[idx]->CreatePlayer(callback);
 }
 
-void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players) const
+void CPlayerCoreFactory::GetPlayers(std::vector<std::string>& players,
+                                    PlayerCoreFilter filter) const
 {
   CSingleLock lock(m_section);
   players.clear();
-  for (auto conf: m_vecPlayerConfigs)
+  for (auto conf : m_vecPlayerConfigs)
   {
-    if (conf->m_bPlaysAudio || conf->m_bPlaysVideo)
-      players.push_back(conf->m_name);
+    if (filter == PLAYS_VIDEO && !conf->m_bPlaysVideo)
+      continue;
+    else if (filter == PLAYS_AUDIO && !conf->m_bPlaysAudio)
+      continue;
+    else if (filter == PLAYS_AUDIO_ONLY &&
+             (!conf->m_bPlaysAudio || conf->m_bPlaysVideo || conf->m_bPlaysGame))
+      continue;
+    else if (filter == PLAYS_GAMES && !conf->m_bPlaysGame)
+      continue;
+    else if (filter == PLAYS_AUDIO_OR_VIDEO && !(conf->m_bPlaysVideo || conf->m_bPlaysAudio))
+      continue;
+
+    players.push_back(conf->m_name);
   }
 }
 
@@ -103,7 +115,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetDynPath()).c_str());
 
   std::vector<std::string>validPlayers;
-  GetPlayers(validPlayers);
+  GetPlayers(validPlayers, PlayerCoreFilter::PLAYS_AUDIO_OR_VIDEO);
 
   // Process rules
   for (auto rule: m_vecCoreSelectionRules)
@@ -240,6 +252,17 @@ bool CPlayerCoreFactory::PlaysVideo(const std::string& player) const
   return m_vecPlayerConfigs[idx]->m_bPlaysVideo;
 }
 
+bool CPlayerCoreFactory::PlaysGame(const std::string& player) const
+{
+  CSingleLock lock(m_section);
+  size_t idx = GetPlayerIndex(player);
+
+  if (m_vecPlayerConfigs.empty() || idx > m_vecPlayerConfigs.size())
+    return false;
+
+  return m_vecPlayerConfigs[idx]->m_bPlaysGame;
+}
+
 std::string CPlayerCoreFactory::GetDefaultPlayer(const CFileItem& item) const
 {
   std::vector<std::string>players;
@@ -278,7 +301,7 @@ std::string CPlayerCoreFactory::SelectPlayerDialog(const std::vector<std::string
 std::string CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY) const
 {
   std::vector<std::string>players;
-  GetPlayers(players);
+  GetPlayers(players, PlayerCoreFilter::PLAYS_AUDIO_OR_VIDEO);
   return SelectPlayerDialog(players, posX, posY);
 }
 
@@ -328,6 +351,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     m_vecPlayerConfigs.push_back(paplayer);
 
     CPlayerCoreConfig* retroPlayer = new CPlayerCoreConfig("RetroPlayer", "game", nullptr);
+    retroPlayer->m_bPlaysGame = true;
     m_vecPlayerConfigs.push_back(retroPlayer);
   }
 

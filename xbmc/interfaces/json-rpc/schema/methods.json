@@ -203,7 +203,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "media", "type": "string", "enum": [ "all", "video", "audio" ], "default": "all" }
+      { "name": "media", "type": "string", "enum": [ "all", "video", "audio", "game" ], "default": "all" }
     ],
     "returns": {
       "type": "array",
@@ -214,7 +214,8 @@
           "name": { "$ref": "Global.String.NotEmpty", "required": true },
           "type": { "type": "string", "enum": [ "internal", "external", "remote" ], "required": true },
           "playsvideo": { "type": "boolean", "required": true },
-          "playsaudio": { "type": "boolean", "required": true }
+          "playsaudio": { "type": "boolean", "required": true },
+          "playsgame": { "type": "boolean", "required": true }
         }
       }
     }

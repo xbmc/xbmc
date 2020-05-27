@@ -26,6 +26,19 @@ class CSettings;
 class IPlayer;
 class IPlayerCallback;
 
+/*! Options for filtering the list of configured players
+    \sa \ref PlayerCoreFactory_GetPlayers_Filter "GetPlayers"
+*/
+enum PlayerCoreFilter
+{
+  ALL = 0, /*!< disables the filter, allowing to retrieve all configured players */
+  PLAYS_VIDEO = 1, /*!< filters by the capability of playing video */
+  PLAYS_AUDIO = 2, /*!< filters by the capability of playing audio */
+  PLAYS_GAMES = 3, /*!< filters by the capability of playing games */
+  PLAYS_AUDIO_ONLY = 4, /*!< filters by the capability of only playing audio (not video) */
+  PLAYS_AUDIO_OR_VIDEO = 5 /*!< filters by the capability of playing either audio or video */
+};
+
 class CPlayerCoreFactory : public ISettingsHandler
 {
 public:
@@ -39,12 +52,27 @@ public:
   IPlayer* CreatePlayer(const std::string& nameId, IPlayerCallback& callback) const;
   void GetPlayers(const CFileItem& item, std::vector<std::string>&players) const;   //Players supporting the specified file
   void GetPlayers(std::vector<std::string>&players, bool audio, bool video) const;  //All audio players and/or video players
-  void GetPlayers(std::vector<std::string>&players) const;                          //All players
+
+  /*!
+   * Get the list of configured players that match the provided filter
+   * \anchor PlayerCoreFactory_GetPlayers_Filter
+   * \param[in,out] players the vector of players to fill (will be reset)
+   * \param[in] filter the filtering option
+   */
+  void GetPlayers(std::vector<std::string>& players, PlayerCoreFilter filter) const;
+
   void GetPlayers(std::vector<std::string>&players, std::string &type) const;
   void GetRemotePlayers(std::vector<std::string>&players) const;                    //All remote players we can attach to
   std::string GetPlayerType(const std::string &player) const;
   bool PlaysAudio(const std::string &player) const;
   bool PlaysVideo(const std::string &player) const;
+
+  /*!
+   * Indicates whether the provided player supports playing games
+   * \param[in] player the player to check
+   * \return true if the provided player supports playing games
+  */
+  bool PlaysGame(const std::string& player) const;
 
   std::string GetDefaultPlayer(const CFileItem& item) const;
   std::string SelectPlayerDialog(const std::vector<std::string>&players, float posX = 0, float posY = 0) const;

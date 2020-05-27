@@ -31,7 +31,9 @@ public:
   {
     m_bPlaysAudio = false;
     m_bPlaysVideo = false;
+    m_bPlaysGame = false;
 
+    /// @todo: external players should also support launching games (game attribute in config)
     if (pConfig)
     {
       m_config = static_cast<TiXmlElement*>(pConfig->Clone());
@@ -71,6 +73,12 @@ public:
   {
     return m_bPlaysVideo;
   }
+
+  /*!
+   * Indicates whether this player configuration supports games
+   * \return true if this player instance supports playing games
+  */
+  bool PlaysGame() const { return m_bPlaysGame; }
 
   IPlayer* CreatePlayer(IPlayerCallback& callback) const
   {
@@ -120,5 +128,6 @@ public:
   std::string m_type;
   bool m_bPlaysAudio;
   bool m_bPlaysVideo;
+  bool m_bPlaysGame;
   TiXmlElement* m_config;
 };

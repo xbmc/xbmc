@@ -112,16 +112,13 @@ JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITranspo
   std::vector<std::string> players;
 
   if (media == "all")
-  {
-    playerCoreFactory.GetPlayers(players);
-  }
-  else
-  {
-    bool video = false;
-    if (media == "video")
-      video = true;
-    playerCoreFactory.GetPlayers(players, true, video);
-  }
+    playerCoreFactory.GetPlayers(players, PlayerCoreFilter::ALL);
+  else if (media == "video")
+    playerCoreFactory.GetPlayers(players, PlayerCoreFilter::PLAYS_VIDEO);
+  else if (media == "audio")
+    playerCoreFactory.GetPlayers(players, PlayerCoreFilter::PLAYS_AUDIO_ONLY);
+  else if (media == "game")
+    playerCoreFactory.GetPlayers(players, PlayerCoreFilter::PLAYS_GAMES);
 
   for (auto playername: players)
   {
@@ -130,6 +127,7 @@ JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITranspo
 
     player["playsvideo"] = playerCoreFactory.PlaysVideo(playername);
     player["playsaudio"] = playerCoreFactory.PlaysAudio(playername);
+    player["playsgame"] = playerCoreFactory.PlaysGame(playername);
     player["type"] = playerCoreFactory.GetPlayerType(playername);
 
     result.push_back(player);
