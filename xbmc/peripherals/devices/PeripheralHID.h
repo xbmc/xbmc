@@ -13,16 +13,21 @@
 
 namespace PERIPHERALS
 {
-  class CPeripheralHID : public CPeripheral
+class CPeripheralHID : public CPeripheral
+{
+public:
+  CPeripheralHID(CPeripherals& manager,
+                 const PeripheralScanResult& scanResult,
+                 CPeripheralBus* bus);
+  ~CPeripheralHID(void) override;
+  bool InitialiseFeature(const PeripheralFeature feature) override;
+  virtual bool LookupSymAndUnicode(XBMC_keysym& keysym, uint8_t* key, char* unicode)
   {
-  public:
-    CPeripheralHID(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralHID(void) override;
-    bool InitialiseFeature(const PeripheralFeature feature) override;
-    virtual bool LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key, char *unicode) { return false; }
-    void OnSettingChanged(const std::string &strChangedSetting) override;
+    return false;
+  }
+  void OnSettingChanged(const std::string& strChangedSetting) override;
 
-  protected:
-    std::string m_strKeymap;
-  };
-}
+protected:
+  std::string m_strKeymap;
+};
+} // namespace PERIPHERALS

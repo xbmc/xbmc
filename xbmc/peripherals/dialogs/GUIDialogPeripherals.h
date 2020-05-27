@@ -17,25 +17,24 @@ namespace PERIPHERALS
 {
 class CPeripherals;
 
-class CGUIDialogPeripherals : public CGUIDialogSelect,
-                              protected Observer
+class CGUIDialogPeripherals : public CGUIDialogSelect, protected Observer
 {
 public:
   CGUIDialogPeripherals();
   ~CGUIDialogPeripherals() override;
 
-  void RegisterPeripheralManager(CPeripherals &manager);
+  void RegisterPeripheralManager(CPeripherals& manager);
   void UnregisterPeripheralManager();
 
   CFileItemPtr GetItem(unsigned int pos) const;
 
-  static void Show(CPeripherals &manager);
+  static void Show(CPeripherals& manager);
 
   // implementation of CGUIControl via CGUIDialogSelect
   bool OnMessage(CGUIMessage& message) override;
 
   // implementation of Observer
-  void Notify(const Observable &obs, const ObservableMessage msg) override;
+  void Notify(const Observable& obs, const ObservableMessage msg) override;
 
 private:
   // implementation of CGUIWindow via CGUIDialogSelect
@@ -45,8 +44,8 @@ private:
   void UpdatePeripheralsAsync();
   void UpdatePeripheralsSync();
 
-  CPeripherals *m_manager = nullptr;
+  CPeripherals* m_manager = nullptr;
   CFileItemList m_peripherals;
   mutable CCriticalSection m_peripheralsMutex;
 };
-}
+} // namespace PERIPHERALS

@@ -15,10 +15,13 @@
 
 using namespace PERIPHERALS;
 
-CPeripheralHID::CPeripheralHID(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
-  CPeripheral(manager, scanResult, bus)
+CPeripheralHID::CPeripheralHID(CPeripherals& manager,
+                               const PeripheralScanResult& scanResult,
+                               CPeripheralBus* bus)
+  : CPeripheral(manager, scanResult, bus)
 {
-  m_strDeviceName = scanResult.m_strDeviceName.empty() ? g_localizeStrings.Get(35001) : scanResult.m_strDeviceName;
+  m_strDeviceName = scanResult.m_strDeviceName.empty() ? g_localizeStrings.Get(35001)
+                                                       : scanResult.m_strDeviceName;
   m_features.push_back(FEATURE_HID);
 }
 
@@ -64,18 +67,20 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
       }
     }
 
-    CLog::Log(LOGDEBUG, "%s - initialised HID device (%s:%s)", __FUNCTION__, m_strVendorId.c_str(), m_strProductId.c_str());
+    CLog::Log(LOGDEBUG, "%s - initialised HID device (%s:%s)", __FUNCTION__, m_strVendorId.c_str(),
+              m_strProductId.c_str());
   }
 
   return CPeripheral::InitialiseFeature(feature);
 }
 
-void CPeripheralHID::OnSettingChanged(const std::string &strChangedSetting)
+void CPeripheralHID::OnSettingChanged(const std::string& strChangedSetting)
 {
-  if (m_bInitialised && ((StringUtils::EqualsNoCase(strChangedSetting, "keymap") && !GetSettingBool("do_not_use_custom_keymap")) || StringUtils::EqualsNoCase(strChangedSetting, "keymap_enabled")))
+  if (m_bInitialised && ((StringUtils::EqualsNoCase(strChangedSetting, "keymap") &&
+                          !GetSettingBool("do_not_use_custom_keymap")) ||
+                         StringUtils::EqualsNoCase(strChangedSetting, "keymap_enabled")))
   {
     m_bInitialised = false;
     InitialiseFeature(FEATURE_HID);
   }
 }
-

@@ -17,8 +17,10 @@ using namespace PERIPHERALS;
 std::atomic<long> CPeripheralImon::m_lCountOfImonsConflictWithDInput(0L);
 
 
-CPeripheralImon::CPeripheralImon(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
-  CPeripheralHID(manager, scanResult, bus)
+CPeripheralImon::CPeripheralImon(CPeripherals& manager,
+                                 const PeripheralScanResult& scanResult,
+                                 CPeripheralBus* bus)
+  : CPeripheralHID(manager, scanResult, bus)
 {
   m_features.push_back(FEATURE_IMON);
   m_bImonConflictsWithDInput = false;
@@ -55,15 +57,17 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
   return CPeripheralHID::InitialiseFeature(feature);
 }
 
-void CPeripheralImon::AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order)
+void CPeripheralImon::AddSetting(const std::string& strKey,
+                                 std::shared_ptr<const CSetting> setting,
+                                 int order)
 {
 #if !defined(TARGET_WINDOWS)
-  if (strKey.compare("disable_winjoystick")!=0)
+  if (strKey.compare("disable_winjoystick") != 0)
 #endif // !TARGET_WINDOWS
     CPeripheralHID::AddSetting(strKey, setting, order);
 }
 
-void CPeripheralImon::OnSettingChanged(const std::string &strChangedSetting)
+void CPeripheralImon::OnSettingChanged(const std::string& strChangedSetting)
 {
   if (strChangedSetting.compare("disable_winjoystick") == 0)
   {
@@ -73,7 +77,7 @@ void CPeripheralImon::OnSettingChanged(const std::string &strChangedSetting)
       if (--m_lCountOfImonsConflictWithDInput == 0)
         ActionOnImonConflict(false);
     }
-    else if(!m_bImonConflictsWithDInput && GetSettingBool("disable_winjoystick"))
+    else if (!m_bImonConflictsWithDInput && GetSettingBool("disable_winjoystick"))
     {
       m_bImonConflictsWithDInput = true;
       ++m_lCountOfImonsConflictWithDInput;
@@ -85,4 +89,3 @@ void CPeripheralImon::OnSettingChanged(const std::string &strChangedSetting)
 void CPeripheralImon::ActionOnImonConflict(bool deviceInserted /*= true*/)
 {
 }
-

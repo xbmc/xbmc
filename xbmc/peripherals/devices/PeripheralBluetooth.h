@@ -12,10 +12,12 @@
 
 namespace PERIPHERALS
 {
-  class CPeripheralBluetooth : public CPeripheral
-  {
-  public:
-    CPeripheralBluetooth(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralBluetooth(void) override = default;
-  };
-}
+class CPeripheralBluetooth : public CPeripheral
+{
+public:
+  CPeripheralBluetooth(CPeripherals& manager,
+                       const PeripheralScanResult& scanResult,
+                       CPeripheralBus* bus);
+  ~CPeripheralBluetooth(void) override = default;
+};
+} // namespace PERIPHERALS

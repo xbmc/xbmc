@@ -18,26 +18,26 @@
 
 namespace CEC
 {
-  class ICECAdapter;
+class ICECAdapter;
 }
 
 namespace PERIPHERALS
 {
-  class CPeripherals;
+class CPeripherals;
 
-  class CPeripheralBusCEC : public CPeripheralBus
-  {
-  public:
-    explicit CPeripheralBusCEC(CPeripherals& manager);
-    ~CPeripheralBusCEC(void) override;
+class CPeripheralBusCEC : public CPeripheralBus
+{
+public:
+  explicit CPeripheralBusCEC(CPeripherals& manager);
+  ~CPeripheralBusCEC(void) override;
 
-    /*!
-     * @see PeripheralBus::PerformDeviceScan()
-     */
-    bool PerformDeviceScan(PeripheralScanResults &results) override;
+  /*!
+   * @see PeripheralBus::PerformDeviceScan()
+   */
+  bool PerformDeviceScan(PeripheralScanResults& results) override;
 
-  private:
-    CEC::ICECAdapter*         m_cecAdapter;
-    CEC::libcec_configuration m_configuration;
-  };
-}
+private:
+  CEC::ICECAdapter* m_cecAdapter;
+  CEC::libcec_configuration m_configuration;
+};
+} // namespace PERIPHERALS

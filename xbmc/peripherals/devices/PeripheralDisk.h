@@ -12,10 +12,12 @@
 
 namespace PERIPHERALS
 {
-  class CPeripheralDisk : public CPeripheral
-  {
-  public:
-    CPeripheralDisk(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralDisk(void) override = default;
-  };
-}
+class CPeripheralDisk : public CPeripheral
+{
+public:
+  CPeripheralDisk(CPeripherals& manager,
+                  const PeripheralScanResult& scanResult,
+                  CPeripheralBus* bus);
+  ~CPeripheralDisk(void) override = default;
+};
+} // namespace PERIPHERALS

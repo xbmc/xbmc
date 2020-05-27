@@ -19,15 +19,14 @@ using namespace PERIPHERALS;
 using namespace XbmcThreads;
 
 // Default event scan rate when no polling handles are held
-#define DEFAULT_SCAN_RATE_HZ  60
+#define DEFAULT_SCAN_RATE_HZ 60
 
 // Timeout when a polling handle is held but doesn't trigger scan. This reduces
 // input latency when the game is running at < 1/4 speed.
-#define WATCHDOG_TIMEOUT_MS   80
+#define WATCHDOG_TIMEOUT_MS 80
 
-CEventScanner::CEventScanner(IEventScannerCallback &callback) :
-  CThread("PeripEventScanner"),
-  m_callback(callback)
+CEventScanner::CEventScanner(IEventScannerCallback& callback)
+  : CThread("PeripEventScanner"), m_callback(callback)
 {
 }
 
@@ -57,7 +56,7 @@ EventPollHandlePtr CEventScanner::RegisterPollHandle()
   return handle;
 }
 
-void CEventScanner::Activate(CEventPollHandle &handle)
+void CEventScanner::Activate(CEventPollHandle& handle)
 {
   {
     CSingleLock lock(m_handleMutex);
@@ -67,7 +66,7 @@ void CEventScanner::Activate(CEventPollHandle &handle)
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event poll handle activated");
 }
 
-void CEventScanner::Deactivate(CEventPollHandle &handle)
+void CEventScanner::Deactivate(CEventPollHandle& handle)
 {
   {
     CSingleLock lock(m_handleMutex);
@@ -93,7 +92,7 @@ void CEventScanner::HandleEvents(bool bWait)
   }
 }
 
-void CEventScanner::Release(CEventPollHandle &handle)
+void CEventScanner::Release(CEventPollHandle& handle)
 {
   {
     CSingleLock lock(m_handleMutex);
@@ -117,7 +116,7 @@ EventLockHandlePtr CEventScanner::RegisterLock()
   return handle;
 }
 
-void CEventScanner::ReleaseLock(CEventLockHandle &handle)
+void CEventScanner::ReleaseLock(CEventLockHandle& handle)
 {
   {
     CSingleLock lock(m_lockMutex);

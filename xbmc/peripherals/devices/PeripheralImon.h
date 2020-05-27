@@ -16,23 +16,28 @@ class CSetting;
 
 namespace PERIPHERALS
 {
-  class CPeripheralImon : public CPeripheralHID
+class CPeripheralImon : public CPeripheralHID
+{
+public:
+  CPeripheralImon(CPeripherals& manager,
+                  const PeripheralScanResult& scanResult,
+                  CPeripheralBus* bus);
+  ~CPeripheralImon(void) override = default;
+  bool InitialiseFeature(const PeripheralFeature feature) override;
+  void OnSettingChanged(const std::string& strChangedSetting) override;
+  void OnDeviceRemoved() override;
+  void AddSetting(const std::string& strKey,
+                  std::shared_ptr<const CSetting> setting,
+                  int order) override;
+  inline bool IsImonConflictsWithDInput() { return m_bImonConflictsWithDInput; }
+  static inline long GetCountOfImonsConflictWithDInput()
   {
-  public:
-    CPeripheralImon(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralImon(void) override = default;
-    bool InitialiseFeature(const PeripheralFeature feature) override;
-    void OnSettingChanged(const std::string &strChangedSetting) override;
-    void OnDeviceRemoved() override;
-    void AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order) override;
-    inline bool IsImonConflictsWithDInput()
-    { return m_bImonConflictsWithDInput;}
-    static inline long GetCountOfImonsConflictWithDInput()
-    { return m_lCountOfImonsConflictWithDInput; }
-    static void ActionOnImonConflict(bool deviceInserted = true);
+    return m_lCountOfImonsConflictWithDInput;
+  }
+  static void ActionOnImonConflict(bool deviceInserted = true);
 
-  private:
-    bool m_bImonConflictsWithDInput;
-    static std::atomic<long> m_lCountOfImonsConflictWithDInput;
-  };
-}
+private:
+  bool m_bImonConflictsWithDInput;
+  static std::atomic<long> m_lCountOfImonsConflictWithDInput;
+};
+} // namespace PERIPHERALS

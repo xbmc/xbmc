@@ -21,9 +21,9 @@ public:
   ~CGUIDialogPeripheralSettings() override;
 
   // specializations of CGUIControl
-  bool OnMessage(CGUIMessage &message) override;
+  bool OnMessage(CGUIMessage& message) override;
 
-  virtual void SetFileItem(const CFileItem *item);
+  virtual void SetFileItem(const CFileItem* item);
 
 protected:
   // implementations of ISettingCallback
@@ -38,8 +38,8 @@ protected:
   // specialization of CGUIDialogSettingsManualBase
   void InitializeSettings() override;
 
-  CFileItem *m_item;
+  CFileItem* m_item;
   bool m_initialising = false;
   std::map<std::string, std::shared_ptr<CSetting>> m_settingsMap;
 };
-}
+} // namespace PERIPHERALS

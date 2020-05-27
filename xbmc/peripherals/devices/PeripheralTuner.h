@@ -12,10 +12,12 @@
 
 namespace PERIPHERALS
 {
-  class CPeripheralTuner : public CPeripheral
-  {
-  public:
-    CPeripheralTuner(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralTuner(void) override = default;
-  };
-}
+class CPeripheralTuner : public CPeripheral
+{
+public:
+  CPeripheralTuner(CPeripherals& manager,
+                   const PeripheralScanResult& scanResult,
+                   CPeripheralBus* bus);
+  ~CPeripheralTuner(void) override = default;
+};
+} // namespace PERIPHERALS

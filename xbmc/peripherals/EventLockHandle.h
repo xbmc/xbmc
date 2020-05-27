@@ -10,39 +10,39 @@
 
 namespace PERIPHERALS
 {
-  class CEventLockHandle;
+class CEventLockHandle;
+
+/*!
+ * \brief Callback implemented by event scanner
+ */
+class IEventLockCallback
+{
+public:
+  virtual ~IEventLockCallback(void) = default;
+
+  virtual void ReleaseLock(CEventLockHandle& handle) = 0;
+};
+
+/*!
+ * \brief Handle returned by the event scanner to disable event processing
+ *
+ * When held, this disables event processing.
+ */
+class CEventLockHandle
+{
+public:
+  /*!
+   * \brief Create an event lock handle
+   */
+  CEventLockHandle(IEventLockCallback& callback);
 
   /*!
-   * \brief Callback implemented by event scanner
+   * \brief Handle is automatically released when this class is destructed
    */
-  class IEventLockCallback
-  {
-  public:
-    virtual ~IEventLockCallback(void) = default;
+  ~CEventLockHandle(void);
 
-    virtual void ReleaseLock(CEventLockHandle &handle) = 0;
-  };
-
-  /*!
-   * \brief Handle returned by the event scanner to disable event processing
-   *
-   * When held, this disables event processing.
-   */
-  class CEventLockHandle
-  {
-  public:
-    /*!
-     * \brief Create an event lock handle
-     */
-    CEventLockHandle(IEventLockCallback &callback);
-
-    /*!
-     * \brief Handle is automatically released when this class is destructed
-     */
-    ~CEventLockHandle(void);
-
-  private:
-    // Construction parameters
-    IEventLockCallback &m_callback;
-  };
-}
+private:
+  // Construction parameters
+  IEventLockCallback& m_callback;
+};
+} // namespace PERIPHERALS
