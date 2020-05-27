@@ -12,29 +12,29 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGameWindowFullScreen;
-  class CGUIGameControl;
-  class IRenderManager;
-  class CGUIRenderTarget;
+class CGameWindowFullScreen;
+class CGUIGameControl;
+class IRenderManager;
+class CGUIRenderTarget;
 
-  class CGUIRenderTargetFactory
-  {
-  public:
-    CGUIRenderTargetFactory(IRenderManager *renderManager);
+class CGUIRenderTargetFactory
+{
+public:
+  CGUIRenderTargetFactory(IRenderManager* renderManager);
 
-    /*!
-     * \brief Create a render target for the fullscreen window
-     */
-    CGUIRenderTarget *CreateRenderFullScreen(CGameWindowFullScreen &window);
+  /*!
+   * \brief Create a render target for the fullscreen window
+   */
+  CGUIRenderTarget* CreateRenderFullScreen(CGameWindowFullScreen& window);
 
-    /*!
-     * \brief Create a render target for a game control
-     */
-    CGUIRenderTarget *CreateRenderControl(CGUIGameControl &gameControl);
+  /*!
+   * \brief Create a render target for a game control
+   */
+  CGUIRenderTarget* CreateRenderControl(CGUIGameControl& gameControl);
 
-  private:
-    // Construction parameters
-    IRenderManager *m_renderManager;
-  };
-}
-}
+private:
+  // Construction parameters
+  IRenderManager* m_renderManager;
+};
+} // namespace RETRO
+} // namespace KODI

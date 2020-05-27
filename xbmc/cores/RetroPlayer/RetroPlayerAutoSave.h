@@ -16,37 +16,36 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGameClient;
-  class CGameSettings;
-}
+class CGameClient;
+class CGameSettings;
+} // namespace GAME
 
 namespace RETRO
 {
-  class IAutoSaveCallback
-  {
-  public:
-    virtual ~IAutoSaveCallback() = default;
+class IAutoSaveCallback
+{
+public:
+  virtual ~IAutoSaveCallback() = default;
 
-    virtual bool IsAutoSaveEnabled() const = 0;
-    virtual std::string CreateSavestate() = 0;
-  };
+  virtual bool IsAutoSaveEnabled() const = 0;
+  virtual std::string CreateSavestate() = 0;
+};
 
-  class CRetroPlayerAutoSave : protected CThread
-  {
-  public:
-    explicit CRetroPlayerAutoSave(IAutoSaveCallback &callback,
-                                  GAME::CGameSettings &settings);
+class CRetroPlayerAutoSave : protected CThread
+{
+public:
+  explicit CRetroPlayerAutoSave(IAutoSaveCallback& callback, GAME::CGameSettings& settings);
 
-    ~CRetroPlayerAutoSave() override;
+  ~CRetroPlayerAutoSave() override;
 
-  protected:
-    // implementation of CThread
-    void Process() override;
+protected:
+  // implementation of CThread
+  void Process() override;
 
-  private:
-    // Construction parameters
-    IAutoSaveCallback &m_callback;
-    GAME::CGameSettings &m_settings;
-  };
-}
-}
+private:
+  // Construction parameters
+  IAutoSaveCallback& m_callback;
+  GAME::CGameSettings& m_settings;
+};
+} // namespace RETRO
+} // namespace KODI

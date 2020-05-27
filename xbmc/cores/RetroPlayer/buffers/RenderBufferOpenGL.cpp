@@ -17,11 +17,8 @@ using namespace RETRO;
 CRenderBufferOpenGL::CRenderBufferOpenGL(GLuint pixeltype,
                                          GLuint internalformat,
                                          GLuint pixelformat,
-                                         GLuint bpp) :
-  m_pixeltype(pixeltype),
-  m_internalformat(internalformat),
-  m_pixelformat(pixelformat),
-  m_bpp(bpp)
+                                         GLuint bpp)
+  : m_pixeltype(pixeltype), m_internalformat(internalformat), m_pixelformat(pixelformat), m_bpp(bpp)
 {
 }
 
@@ -36,7 +33,8 @@ void CRenderBufferOpenGL::CreateTexture()
 
   glBindTexture(m_textureTarget, m_textureId);
 
-  glTexImage2D(m_textureTarget, 0, m_internalformat, m_width, m_height, 0, m_pixelformat, m_pixeltype, NULL);
+  glTexImage2D(m_textureTarget, 0, m_internalformat, m_width, m_height, 0, m_pixelformat,
+               m_pixeltype, NULL);
 
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -63,7 +61,8 @@ bool CRenderBufferOpenGL::UploadTexture()
   //! We want to use PBO's instead of glTexSubImage2D!
   //! This code has been borrowed from OpenGL ES in order
   //! to remove GL dependencies on GLES.
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, m_pixelformat, m_pixeltype, m_data.data());
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, m_pixelformat, m_pixeltype,
+                  m_data.data());
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
   return true;

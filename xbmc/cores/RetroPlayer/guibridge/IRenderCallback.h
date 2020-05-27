@@ -14,13 +14,13 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IRenderCallback
-  {
-  public:
-    virtual ~IRenderCallback() = default;
+class IRenderCallback
+{
+public:
+  virtual ~IRenderCallback() = default;
 
-    virtual bool SupportsRenderFeature(RENDERFEATURE feature) const = 0;
-    virtual bool SupportsScalingMethod(SCALINGMETHOD method) const = 0;
-  };
-}
-}
+  virtual bool SupportsRenderFeature(RENDERFEATURE feature) const = 0;
+  virtual bool SupportsScalingMethod(SCALINGMETHOD method) const = 0;
+};
+} // namespace RETRO
+} // namespace KODI

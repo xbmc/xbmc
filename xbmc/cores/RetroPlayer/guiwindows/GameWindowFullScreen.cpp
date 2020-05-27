@@ -30,9 +30,9 @@ using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace RETRO;
 
-CGameWindowFullScreen::CGameWindowFullScreen(void) :
-  CGUIWindow(WINDOW_FULLSCREEN_GAME, "VideoFullScreen.xml"),
-  m_fullscreenText(new CGameWindowFullScreenText(*this))
+CGameWindowFullScreen::CGameWindowFullScreen(void)
+  : CGUIWindow(WINDOW_FULLSCREEN_GAME, "VideoFullScreen.xml"),
+    m_fullscreenText(new CGameWindowFullScreenText(*this))
 {
   // initialize CGUIControl
   m_controlStats = new GUICONTROLSTATS;
@@ -50,7 +50,7 @@ CGameWindowFullScreen::~CGameWindowFullScreen()
   delete m_controlStats;
 }
 
-void CGameWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
+void CGameWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList& dirtyregion)
 {
   if (m_renderHandle->IsDirty())
     MarkDirtyRegion();
@@ -61,7 +61,9 @@ void CGameWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &
 
   //! @todo This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
   //!       which is probably the job of the renderer as it can more easily track resizing etc.
-  m_renderRegion.SetRect(0, 0, static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()), static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()));
+  m_renderRegion.SetRect(
+      0, 0, static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
+      static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()));
 }
 
 void CGameWindowFullScreen::Render()
@@ -78,44 +80,44 @@ void CGameWindowFullScreen::RenderEx()
   m_renderHandle->RenderEx();
 }
 
-bool CGameWindowFullScreen::OnAction(const CAction &action)
+bool CGameWindowFullScreen::OnAction(const CAction& action)
 {
   switch (action.GetID())
   {
-  case ACTION_SHOW_OSD:
-  case ACTION_TRIGGER_OSD:
-  {
-    TriggerOSD();
-    return true;
-  }
-  case ACTION_MOUSE_MOVE:
-  {
-    if (action.GetAmount(2) || action.GetAmount(3))
+    case ACTION_SHOW_OSD:
+    case ACTION_TRIGGER_OSD:
     {
       TriggerOSD();
       return true;
     }
-    break;
-  }
-  case ACTION_MOUSE_LEFT_CLICK:
-  {
-    TriggerOSD();
-    return true;
-  }
-  case ACTION_SHOW_GUI:
-  {
-    // Switch back to the menu
-    CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
-    return true;
-  }
-  case ACTION_ASPECT_RATIO:
-  {
-    // Toggle the aspect ratio mode (only if the info is onscreen)
-    //g_application.GetAppPlayer().SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
-    return true;
-  }
-  default:
-    break;
+    case ACTION_MOUSE_MOVE:
+    {
+      if (action.GetAmount(2) || action.GetAmount(3))
+      {
+        TriggerOSD();
+        return true;
+      }
+      break;
+    }
+    case ACTION_MOUSE_LEFT_CLICK:
+    {
+      TriggerOSD();
+      return true;
+    }
+    case ACTION_SHOW_GUI:
+    {
+      // Switch back to the menu
+      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
+      return true;
+    }
+    case ACTION_ASPECT_RATIO:
+    {
+      // Toggle the aspect ratio mode (only if the info is onscreen)
+      // g_application.GetAppPlayer().SetRenderViewMode(CViewModeSettings::GetNextQuickCycleViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode));
+      return true;
+    }
+    default:
+      break;
   }
 
   return CGUIWindow::OnAction(action);
@@ -125,15 +127,15 @@ bool CGameWindowFullScreen::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_SETFOCUS:
-  case GUI_MSG_LOSTFOCUS:
-  {
-    if (message.GetSenderId() != WINDOW_FULLSCREEN_GAME)
-      return true;
-    break;
-  }
-  default:
-    break;
+    case GUI_MSG_SETFOCUS:
+    case GUI_MSG_LOSTFOCUS:
+    {
+      if (message.GetSenderId() != WINDOW_FULLSCREEN_GAME)
+        return true;
+      break;
+    }
+    default:
+      break;
   }
 
   return CGUIWindow::OnMessage(message);
@@ -170,7 +172,8 @@ void CGameWindowFullScreen::OnWindowLoaded()
 
 void CGameWindowFullScreen::OnInitWindow()
 {
-  GUIINFO::CPlayerGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider();
+  GUIINFO::CPlayerGUIInfo& guiInfo =
+      CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider();
   guiInfo.SetShowInfo(false);
   guiInfo.SetDisplayAfterSeek(0); // Make sure display after seek is off
 
@@ -180,7 +183,7 @@ void CGameWindowFullScreen::OnInitWindow()
   CGUIWindow::OnInitWindow();
 
   // Show OSD help
-  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  GAME::CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
   if (gameSettings.ShowOSDHelp())
     TriggerOSD();
   else
@@ -208,7 +211,7 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
 
 void CGameWindowFullScreen::TriggerOSD()
 {
-  CGUIDialog *pOSD = GetOSD();
+  CGUIDialog* pOSD = GetOSD();
   if (pOSD != nullptr)
   {
     if (!pOSD->IsDialogRunning())
@@ -216,7 +219,7 @@ void CGameWindowFullScreen::TriggerOSD()
   }
 }
 
-CGUIDialog *CGameWindowFullScreen::GetOSD()
+CGUIDialog* CGameWindowFullScreen::GetOSD()
 {
   return CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_GAME_OSD);
 }

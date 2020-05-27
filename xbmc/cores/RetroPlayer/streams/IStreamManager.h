@@ -37,5 +37,5 @@ public:
   virtual void CloseStream(StreamPtr stream) = 0;
 };
 
-}
-}
+} // namespace RETRO
+} // namespace KODI

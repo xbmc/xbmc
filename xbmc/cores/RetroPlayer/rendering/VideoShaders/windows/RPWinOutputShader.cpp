@@ -19,12 +19,12 @@ bool CRPWinOutputShader::Create(SCALINGMETHOD scalingMethod)
   DefinesMap defines;
   switch (scalingMethod)
   {
-  case SCALINGMETHOD::NEAREST:
-    defines["SAMP_NEAREST"] = "";
-    break;
-  case SCALINGMETHOD::LINEAR:
-  default:
-    break;
+    case SCALINGMETHOD::NEAREST:
+      defines["SAMP_NEAREST"] = "";
+      break;
+    case SCALINGMETHOD::LINEAR:
+    default:
+      break;
   }
 
   std::string effectPath("special://xbmc/system/shaders/rp_output_d3d.fx");
@@ -36,32 +36,36 @@ bool CRPWinOutputShader::Create(SCALINGMETHOD scalingMethod)
   }
 
   // Create input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  D3D11_INPUT_ELEMENT_DESC layout[] = {
+      {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+      {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
   };
   return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
-void CRPWinOutputShader::Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
-  , CRect &viewPort, CD3DTexture *target, unsigned range)
+void CRPWinOutputShader::Render(CD3DTexture& sourceTexture,
+                                CRect sourceRect,
+                                const CPoint points[4],
+                                CRect& viewPort,
+                                CD3DTexture* target,
+                                unsigned range)
 {
   PrepareParameters(sourceTexture.GetWidth(), sourceTexture.GetHeight(), sourceRect, points);
   SetShaderParameters(sourceTexture, range, viewPort);
-  Execute({ target }, 4);
+  Execute({target}, 4);
 }
 
-void CRPWinOutputShader::PrepareParameters(unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4])
+void CRPWinOutputShader::PrepareParameters(unsigned sourceWidth,
+                                           unsigned sourceHeight,
+                                           CRect sourceRect,
+                                           const CPoint points[4])
 {
   bool changed = false;
   for (int i = 0; i < 4 && !changed; ++i)
     changed = points[i] != m_destPoints[i];
 
-  if (m_sourceWidth != sourceWidth ||
-    m_sourceHeight != sourceHeight ||
-    m_sourceRect != sourceRect ||
-    changed)
+  if (m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight ||
+      m_sourceRect != sourceRect || changed)
   {
     m_sourceWidth = sourceWidth;
     m_sourceHeight = sourceHeight;
@@ -101,14 +105,16 @@ void CRPWinOutputShader::PrepareParameters(unsigned sourceWidth, unsigned source
   }
 }
 
-void CRPWinOutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned range, CRect &viewPort)
+void CRPWinOutputShader::SetShaderParameters(CD3DTexture& sourceTexture,
+                                             unsigned range,
+                                             CRect& viewPort)
 {
   m_effect.SetTechnique("OUTPUT_T");
   m_effect.SetResources("g_Texture", sourceTexture.GetAddressOfSRV(), 1);
 
-  float viewPortArray[2] = { viewPort.Width(), viewPort.Height() };
+  float viewPortArray[2] = {viewPort.Width(), viewPort.Height()};
   m_effect.SetFloatArray("g_viewPort", viewPortArray, 2);
 
-  float params[3] = { static_cast<float>(range) };
+  float params[3] = {static_cast<float>(range)};
   m_effect.SetFloatArray("m_params", params, 1);
 }

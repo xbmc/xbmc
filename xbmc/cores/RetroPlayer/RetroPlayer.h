@@ -22,114 +22,114 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGameServices;
+class CGameServices;
 }
 
 namespace RETRO
 {
-  class CRetroPlayerInput;
-  class CRPProcessInfo;
-  class CRPRenderManager;
-  class CRPStreamManager;
-  class IPlayback;
+class CRetroPlayerInput;
+class CRPProcessInfo;
+class CRPRenderManager;
+class CRPStreamManager;
+class IPlayback;
 
-  class CRetroPlayer : public IPlayer,
-                       public IRenderLoop,
-                       public IGameCallback,
-                       public IPlaybackCallback,
-                       public IAutoSaveCallback
-  {
-  public:
-    explicit CRetroPlayer(IPlayerCallback& callback);
-    ~CRetroPlayer() override;
+class CRetroPlayer : public IPlayer,
+                     public IRenderLoop,
+                     public IGameCallback,
+                     public IPlaybackCallback,
+                     public IAutoSaveCallback
+{
+public:
+  explicit CRetroPlayer(IPlayerCallback& callback);
+  ~CRetroPlayer() override;
 
-    // implementation of IPlayer
-    bool OpenFile(const CFileItem& file, const CPlayerOptions& options) override;
-    bool CloseFile(bool reopen = false) override;
-    bool IsPlaying() const override;
-    bool CanPause() override;
-    void Pause() override;
-    bool HasVideo() const override { return true; }
-    bool HasAudio() const override { return true; }
-    bool HasGame() const override { return true; }
-    bool CanSeek() override;
-    void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
-    void SeekPercentage(float fPercent = 0) override;
-    float GetCachePercentage() override;
-    void SetMute(bool bOnOff) override;
-    void SeekTime(int64_t iTime = 0) override;
-    bool SeekTimeRelative(int64_t iTime) override;
-    void SetSpeed(float speed) override;
-    bool OnAction(const CAction &action) override;
-    std::string GetPlayerState() override;
-    bool SetPlayerState(const std::string& state) override;
-    void FrameMove() override;
-    void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
-    bool IsRenderingVideo() override;
-    bool HasGameAgent() override;
+  // implementation of IPlayer
+  bool OpenFile(const CFileItem& file, const CPlayerOptions& options) override;
+  bool CloseFile(bool reopen = false) override;
+  bool IsPlaying() const override;
+  bool CanPause() override;
+  void Pause() override;
+  bool HasVideo() const override { return true; }
+  bool HasAudio() const override { return true; }
+  bool HasGame() const override { return true; }
+  bool CanSeek() override;
+  void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
+  void SeekPercentage(float fPercent = 0) override;
+  float GetCachePercentage() override;
+  void SetMute(bool bOnOff) override;
+  void SeekTime(int64_t iTime = 0) override;
+  bool SeekTimeRelative(int64_t iTime) override;
+  void SetSpeed(float speed) override;
+  bool OnAction(const CAction& action) override;
+  std::string GetPlayerState() override;
+  bool SetPlayerState(const std::string& state) override;
+  void FrameMove() override;
+  void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
+  bool IsRenderingVideo() override;
+  bool HasGameAgent() override;
 
-    // Implementation of IGameCallback
-    std::string GameClientID() const override;
+  // Implementation of IGameCallback
+  std::string GameClientID() const override;
 
-    // Implementation of IPlaybackCallback
-    void SetPlaybackSpeed(double speed) override;
-    void EnableInput(bool bEnable) override;
+  // Implementation of IPlaybackCallback
+  void SetPlaybackSpeed(double speed) override;
+  void EnableInput(bool bEnable) override;
 
-    // Implementation of IAutoSaveCallback
-    bool IsAutoSaveEnabled() const override;
-    std::string CreateSavestate() override;
+  // Implementation of IAutoSaveCallback
+  bool IsAutoSaveEnabled() const override;
+  std::string CreateSavestate() override;
 
-  private:
-    void SetSpeedInternal(double speed);
+private:
+  void SetSpeedInternal(double speed);
 
-    /*!
-     * \brief Called when the speed changes
-     * \param newSpeed The new speed, possibly equal to the previous speed
-     */
-    void OnSpeedChange(double newSpeed);
+  /*!
+   * \brief Called when the speed changes
+   * \param newSpeed The new speed, possibly equal to the previous speed
+   */
+  void OnSpeedChange(double newSpeed);
 
-    // Playback functions
-    void CreatePlayback(bool bRestoreState);
-    void ResetPlayback();
+  // Playback functions
+  void CreatePlayback(bool bRestoreState);
+  void ResetPlayback();
 
-    /*!
-     * \brief Opens the OSD
-     */
-    void OpenOSD();
+  /*!
+   * \brief Opens the OSD
+   */
+  void OpenOSD();
 
-    /*!
-     * \brief Closes the OSD and shows the FullscreenGame window
-     */
-    void CloseOSD();
+  /*!
+   * \brief Closes the OSD and shows the FullscreenGame window
+   */
+  void CloseOSD();
 
-    void RegisterWindowCallbacks();
-    void UnregisterWindowCallbacks();
+  void RegisterWindowCallbacks();
+  void UnregisterWindowCallbacks();
 
-    /**
-     * \brief Dump game information (if any) to the debug log.
-     */
-    void PrintGameInfo(const CFileItem &file) const;
+  /**
+   * \brief Dump game information (if any) to the debug log.
+   */
+  void PrintGameInfo(const CFileItem& file) const;
 
-    uint64_t GetTime();
-    uint64_t GetTotalTime();
+  uint64_t GetTime();
+  uint64_t GetTotalTime();
 
-    // Construction parameters
-    GAME::CGameServices &m_gameServices;
+  // Construction parameters
+  GAME::CGameServices& m_gameServices;
 
-    // Subsystems
-    std::unique_ptr<CRPProcessInfo>    m_processInfo;
-    std::unique_ptr<CRPRenderManager>  m_renderManager;
-    std::unique_ptr<CRPStreamManager>  m_streamManager;
-    std::unique_ptr<CRetroPlayerInput> m_input;
-    std::unique_ptr<IPlayback>         m_playback;
-    std::unique_ptr<IPlaybackControl> m_playbackControl;
-    std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
+  // Subsystems
+  std::unique_ptr<CRPProcessInfo> m_processInfo;
+  std::unique_ptr<CRPRenderManager> m_renderManager;
+  std::unique_ptr<CRPStreamManager> m_streamManager;
+  std::unique_ptr<CRetroPlayerInput> m_input;
+  std::unique_ptr<IPlayback> m_playback;
+  std::unique_ptr<IPlaybackControl> m_playbackControl;
+  std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
 
-    // Game parameters
-    GAME::GameClientPtr                m_gameClient;
+  // Game parameters
+  GAME::GameClientPtr m_gameClient;
 
-    // Synchronization parameters
-    CCriticalSection                   m_mutex;
-  };
-}
-}
+  // Synchronization parameters
+  CCriticalSection m_mutex;
+};
+} // namespace RETRO
+} // namespace KODI

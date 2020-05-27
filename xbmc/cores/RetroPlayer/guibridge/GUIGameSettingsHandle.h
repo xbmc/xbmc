@@ -14,19 +14,19 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGUIGameRenderManager;
+class CGUIGameRenderManager;
 
-  class CGUIGameSettingsHandle
-  {
-  public:
-    CGUIGameSettingsHandle(CGUIGameRenderManager &renderManager);
-    virtual ~CGUIGameSettingsHandle();
+class CGUIGameSettingsHandle
+{
+public:
+  CGUIGameSettingsHandle(CGUIGameRenderManager& renderManager);
+  virtual ~CGUIGameSettingsHandle();
 
-    std::string GameClientID();
+  std::string GameClientID();
 
-  private:
-    // Construction parameters
-    CGUIGameRenderManager &m_renderManager;
-  };
-}
-}
+private:
+  // Construction parameters
+  CGUIGameRenderManager& m_renderManager;
+};
+} // namespace RETRO
+} // namespace KODI

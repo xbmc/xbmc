@@ -21,97 +21,97 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
                                         unsigned int sourceHeight,
                                         float screenWidth,
                                         float screenHeight,
-                                        float &pixelRatio,
-                                        float &zoomAmount)
+                                        float& pixelRatio,
+                                        float& zoomAmount)
 {
   const float sourceFrameRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
 
   switch (stretchMode)
   {
-  case STRETCHMODE::Normal:
-  {
-    switch (rotationDegCCW)
+    case STRETCHMODE::Normal:
     {
-      case 90:
-      case 270:
+      switch (rotationDegCCW)
       {
-        pixelRatio = 1.0f / (sourceFrameRatio * sourceFrameRatio);
-        break;
+        case 90:
+        case 270:
+        {
+          pixelRatio = 1.0f / (sourceFrameRatio * sourceFrameRatio);
+          break;
+        }
+        default:
+          pixelRatio = 1.0f;
+          break;
       }
-      default:
-        pixelRatio = 1.0f;
-        break;
+      zoomAmount = 1.0f;
+
+      break;
     }
-    zoomAmount = 1.0f;
-
-    break;
-  }
-  case STRETCHMODE::Stretch4x3:
-  {
-    // Stretch to 4:3 ratio
-    pixelRatio = (4.0f / 3.0f) / sourceFrameRatio;
-    zoomAmount = 1.0f;
-
-    break;
-  }
-  case STRETCHMODE::Fullscreen:
-  {
-    // Stretch to the limits of the screen
-    pixelRatio = (screenWidth / screenHeight) / sourceFrameRatio;
-    zoomAmount = 1.0f;
-
-    break;
-  }
-  case STRETCHMODE::Original:
-  {
-    switch (rotationDegCCW)
+    case STRETCHMODE::Stretch4x3:
     {
-      case 90:
-      case 270:
+      // Stretch to 4:3 ratio
+      pixelRatio = (4.0f / 3.0f) / sourceFrameRatio;
+      zoomAmount = 1.0f;
+
+      break;
+    }
+    case STRETCHMODE::Fullscreen:
+    {
+      // Stretch to the limits of the screen
+      pixelRatio = (screenWidth / screenHeight) / sourceFrameRatio;
+      zoomAmount = 1.0f;
+
+      break;
+    }
+    case STRETCHMODE::Original:
+    {
+      switch (rotationDegCCW)
       {
-        pixelRatio = 1.0f / (sourceFrameRatio * sourceFrameRatio);
-        break;
+        case 90:
+        case 270:
+        {
+          pixelRatio = 1.0f / (sourceFrameRatio * sourceFrameRatio);
+          break;
+        }
+        default:
+          pixelRatio = 1.0f;
+          break;
       }
-      default:
-        pixelRatio = 1.0f;
-        break;
-    }
 
-    // Calculate the correct zoom amount
-    // First zoom to full width
-    float newHeight = screenWidth / pixelRatio;
-    if (newHeight > screenHeight)
-    {
-      // Zoom to full height
-      newHeight = screenHeight;
-    }
-
-    // Now work out the zoom amount so that no zoom is done
-    zoomAmount = sourceHeight / newHeight;
-
-    switch (rotationDegCCW)
-    {
-      case 90:
-      case 270:
+      // Calculate the correct zoom amount
+      // First zoom to full width
+      float newHeight = screenWidth / pixelRatio;
+      if (newHeight > screenHeight)
       {
-        zoomAmount *= sourceFrameRatio;
-        break;
+        // Zoom to full height
+        newHeight = screenHeight;
       }
-      default:
-        break;
-    }
 
-    break;
-  }
-  default:
-    break;
+      // Now work out the zoom amount so that no zoom is done
+      zoomAmount = sourceHeight / newHeight;
+
+      switch (rotationDegCCW)
+      {
+        case 90:
+        case 270:
+        {
+          zoomAmount *= sourceFrameRatio;
+          break;
+        }
+        default:
+          break;
+      }
+
+      break;
+    }
+    default:
+      break;
   }
 }
 
-void CRenderUtils::CalcNormalRenderRect(const CRect &viewRect,
+void CRenderUtils::CalcNormalRenderRect(const CRect& viewRect,
                                         float outputFrameRatio,
                                         float zoomAmount,
-                                        CRect &destRect)
+                                        CRect& destRect)
 {
   const float offsetX = viewRect.x1;
   const float offsetY = viewRect.y1;
@@ -155,9 +155,7 @@ void CRenderUtils::CalcNormalRenderRect(const CRect &viewRect,
   destRect.y2 = destRect.y1 + MathUtils::round_int(newHeight);
 }
 
-void CRenderUtils::ClipRect(const CRect &viewRect,
-                            CRect &sourceRect,
-                            CRect &destRect)
+void CRenderUtils::ClipRect(const CRect& viewRect, CRect& sourceRect, CRect& destRect)
 {
   const float offsetX = viewRect.x1;
   const float offsetY = viewRect.y1;
@@ -177,47 +175,47 @@ void CRenderUtils::ClipRect(const CRect &viewRect,
   }
 }
 
-std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect &destRect,
+std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect& destRect,
                                                       unsigned int orientationDegCCW)
 {
   std::array<CPoint, 4> rotatedDestCoords{};
 
   switch (orientationDegCCW)
   {
-  case 0:
-  {
-    rotatedDestCoords[0] = CPoint{ destRect.x1, destRect.y1 }; // Top left
-    rotatedDestCoords[1] = CPoint{ destRect.x2, destRect.y1 }; // Top right
-    rotatedDestCoords[2] = CPoint{ destRect.x2, destRect.y2 }; // Bottom right
-    rotatedDestCoords[3] = CPoint{ destRect.x1, destRect.y2 }; // Bottom left
-    break;
-  }
-  case 90:
-  {
-    rotatedDestCoords[0] = CPoint{ destRect.x1, destRect.y2 }; // Bottom left
-    rotatedDestCoords[1] = CPoint{ destRect.x1, destRect.y1 }; // Top left
-    rotatedDestCoords[2] = CPoint{ destRect.x2, destRect.y1 }; // Top right
-    rotatedDestCoords[3] = CPoint{ destRect.x2, destRect.y2 }; // Bottom right
-    break;
-  }
-  case 180:
-  {
-    rotatedDestCoords[0] = CPoint{ destRect.x2, destRect.y2 }; // Bottom right
-    rotatedDestCoords[1] = CPoint{ destRect.x1, destRect.y2 }; // Bottom left
-    rotatedDestCoords[2] = CPoint{ destRect.x1, destRect.y1 }; // Top left
-    rotatedDestCoords[3] = CPoint{ destRect.x2, destRect.y1 }; // Top right
-    break;
-  }
-  case 270:
-  {
-    rotatedDestCoords[0] = CPoint{ destRect.x2, destRect.y1 }; // Top right
-    rotatedDestCoords[1] = CPoint{ destRect.x2, destRect.y2 }; // Bottom right
-    rotatedDestCoords[2] = CPoint{ destRect.x1, destRect.y2 }; // Bottom left
-    rotatedDestCoords[3] = CPoint{ destRect.x1, destRect.y1 }; // Top left
-    break;
-  }
-  default:
-    break;
+    case 0:
+    {
+      rotatedDestCoords[0] = CPoint{destRect.x1, destRect.y1}; // Top left
+      rotatedDestCoords[1] = CPoint{destRect.x2, destRect.y1}; // Top right
+      rotatedDestCoords[2] = CPoint{destRect.x2, destRect.y2}; // Bottom right
+      rotatedDestCoords[3] = CPoint{destRect.x1, destRect.y2}; // Bottom left
+      break;
+    }
+    case 90:
+    {
+      rotatedDestCoords[0] = CPoint{destRect.x1, destRect.y2}; // Bottom left
+      rotatedDestCoords[1] = CPoint{destRect.x1, destRect.y1}; // Top left
+      rotatedDestCoords[2] = CPoint{destRect.x2, destRect.y1}; // Top right
+      rotatedDestCoords[3] = CPoint{destRect.x2, destRect.y2}; // Bottom right
+      break;
+    }
+    case 180:
+    {
+      rotatedDestCoords[0] = CPoint{destRect.x2, destRect.y2}; // Bottom right
+      rotatedDestCoords[1] = CPoint{destRect.x1, destRect.y2}; // Bottom left
+      rotatedDestCoords[2] = CPoint{destRect.x1, destRect.y1}; // Top left
+      rotatedDestCoords[3] = CPoint{destRect.x2, destRect.y1}; // Top right
+      break;
+    }
+    case 270:
+    {
+      rotatedDestCoords[0] = CPoint{destRect.x2, destRect.y1}; // Top right
+      rotatedDestCoords[1] = CPoint{destRect.x2, destRect.y2}; // Bottom right
+      rotatedDestCoords[2] = CPoint{destRect.x1, destRect.y2}; // Bottom left
+      rotatedDestCoords[3] = CPoint{destRect.x1, destRect.y1}; // Top left
+      break;
+    }
+    default:
+      break;
   }
 
   return rotatedDestCoords;

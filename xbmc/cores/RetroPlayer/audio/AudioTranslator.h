@@ -15,22 +15,22 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CAudioTranslator
-  {
-  public:
-    /*!
-     * \brief Translate audio PCM format (Game API to AudioEngine).
-     * \param format The audio PCM format to translate.
-     * \return Translated audio PCM format.
-     */
-    static AEDataFormat TranslatePCMFormat(PCMFormat format);
+class CAudioTranslator
+{
+public:
+  /*!
+   * \brief Translate audio PCM format (Game API to AudioEngine).
+   * \param format The audio PCM format to translate.
+   * \return Translated audio PCM format.
+   */
+  static AEDataFormat TranslatePCMFormat(PCMFormat format);
 
-    /*!
-     * \brief Translate audio channels (Game API to AudioEngine).
-     * \param format The audio channels to translate.
-     * \return Translated audio channels.
-     */
-    static AEChannel TranslateAudioChannel(AudioChannel channel);
-  };
-}
-}
+  /*!
+   * \brief Translate audio channels (Game API to AudioEngine).
+   * \param format The audio channels to translate.
+   * \return Translated audio channels.
+   */
+  static AEChannel TranslateAudioChannel(AudioChannel channel);
+};
+} // namespace RETRO
+} // namespace KODI

@@ -22,25 +22,32 @@ public:
   ~CRPWinOutputShader() = default;
 
   bool Create(SCALINGMETHOD scalingMethod);
-  void Render(CD3DTexture &sourceTexture, CRect sourceRect, const CPoint points[4]
-    , CRect &viewPort, CD3DTexture *target, unsigned range = 0);
+  void Render(CD3DTexture& sourceTexture,
+              CRect sourceRect,
+              const CPoint points[4],
+              CRect& viewPort,
+              CD3DTexture* target,
+              unsigned range = 0);
 
 private:
-  void PrepareParameters(unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]);
-  void SetShaderParameters(CD3DTexture& sourceTexture, unsigned range, CRect &viewPort);
+  void PrepareParameters(unsigned sourceWidth,
+                         unsigned sourceHeight,
+                         CRect sourceRect,
+                         const CPoint points[4]);
+  void SetShaderParameters(CD3DTexture& sourceTexture, unsigned range, CRect& viewPort);
 
-  unsigned m_sourceWidth{ 0 };
-  unsigned m_sourceHeight{ 0 };
-  CRect m_sourceRect{ 0.f, 0.f, 0.f, 0.f };
-  CPoint m_destPoints[4] =
-  {
-    { 0.f, 0.f },
-    { 0.f, 0.f },
-    { 0.f, 0.f },
-    { 0.f, 0.f },
+  unsigned m_sourceWidth{0};
+  unsigned m_sourceHeight{0};
+  CRect m_sourceRect{0.f, 0.f, 0.f, 0.f};
+  CPoint m_destPoints[4] = {
+      {0.f, 0.f},
+      {0.f, 0.f},
+      {0.f, 0.f},
+      {0.f, 0.f},
   };
 
-  struct CUSTOMVERTEX {
+  struct CUSTOMVERTEX
+  {
     FLOAT x;
     FLOAT y;
     FLOAT z;

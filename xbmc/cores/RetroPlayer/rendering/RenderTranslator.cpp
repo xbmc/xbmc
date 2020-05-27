@@ -13,33 +13,33 @@
 using namespace KODI;
 using namespace RETRO;
 
-const char *CRenderTranslator::TranslatePixelFormat(AVPixelFormat format)
+const char* CRenderTranslator::TranslatePixelFormat(AVPixelFormat format)
 {
   switch (format)
   {
-  case AV_PIX_FMT_0RGB32:
-    return "0RGB32";
-  case AV_PIX_FMT_RGB565:
-    return "RGB565";
-  case AV_PIX_FMT_RGB555:
-    return "RGB555";
-  default:
-    break;
+    case AV_PIX_FMT_0RGB32:
+      return "0RGB32";
+    case AV_PIX_FMT_RGB565:
+      return "RGB565";
+    case AV_PIX_FMT_RGB555:
+      return "RGB555";
+    default:
+      break;
   }
 
   return "unknown";
 }
 
-const char *CRenderTranslator::TranslateScalingMethod(SCALINGMETHOD scalingMethod)
+const char* CRenderTranslator::TranslateScalingMethod(SCALINGMETHOD scalingMethod)
 {
   switch (scalingMethod)
   {
-  case SCALINGMETHOD::NEAREST:
-    return "nearest";
-  case SCALINGMETHOD::LINEAR:
-    return "linear";
-  default:
-    break;
+    case SCALINGMETHOD::NEAREST:
+      return "nearest";
+    case SCALINGMETHOD::LINEAR:
+      return "linear";
+    default:
+      break;
   }
 
   return "";
@@ -51,23 +51,23 @@ unsigned int CRenderTranslator::TranslateWidthToBytes(unsigned int width, AVPixe
 
   switch (format)
   {
-  case AV_PIX_FMT_0RGB32:
-  {
-    bpp = sizeof(uint32_t);
-    break;
-  }
-  case AV_PIX_FMT_RGB555:
-  {
-    bpp = sizeof(uint16_t);
-    break;
-  }
-  case AV_PIX_FMT_RGB565:
-  {
-    bpp = sizeof(uint16_t);
-    break;
-  }
-  default:
-    break;
+    case AV_PIX_FMT_0RGB32:
+    {
+      bpp = sizeof(uint32_t);
+      break;
+    }
+    case AV_PIX_FMT_RGB555:
+    {
+      bpp = sizeof(uint16_t);
+      break;
+    }
+    case AV_PIX_FMT_RGB565:
+    {
+      bpp = sizeof(uint16_t);
+      break;
+    }
+    default:
+      break;
   }
 
   return width * bpp;

@@ -26,100 +26,107 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRenderContext;
-  class CRPWinOutputShader;
+class CRenderContext;
+class CRPWinOutputShader;
 
-  class CWinRendererFactory : public IRendererFactory
-  {
-  public:
-    virtual ~CWinRendererFactory() = default;
+class CWinRendererFactory : public IRendererFactory
+{
+public:
+  virtual ~CWinRendererFactory() = default;
 
-    // implementation of IRendererFactory
-    std::string RenderSystemName() const override;
-    CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) override;
-    RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
-  };
+  // implementation of IRendererFactory
+  std::string RenderSystemName() const override;
+  CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
+                                  CRenderContext& context,
+                                  std::shared_ptr<IRenderBufferPool> bufferPool) override;
+  RenderBufferPoolVector CreateBufferPools(CRenderContext& context) override;
+};
 
-  class CWinRenderBuffer : public CRenderBufferSysMem
-  {
-  public:
-    CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat);
-    ~CWinRenderBuffer() override = default;
+class CWinRenderBuffer : public CRenderBufferSysMem
+{
+public:
+  CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat);
+  ~CWinRenderBuffer() override = default;
 
-    // implementation of IRenderBuffer via CRenderBufferSysMem
-    bool UploadTexture() override;
+  // implementation of IRenderBuffer via CRenderBufferSysMem
+  bool UploadTexture() override;
 
-    CD3DTexture *GetTarget() { return m_intermediateTarget.get(); }
+  CD3DTexture* GetTarget() { return m_intermediateTarget.get(); }
 
-  private:
-    bool CreateTexture();
-    bool GetTexture(uint8_t*& data, unsigned int& stride);
-    bool ReleaseTexture();
+private:
+  bool CreateTexture();
+  bool GetTexture(uint8_t*& data, unsigned int& stride);
+  bool ReleaseTexture();
 
-    bool CreateScalingContext();
-    void ScalePixels(uint8_t *source, unsigned int sourceStride, uint8_t *target, unsigned int targetStride);
+  bool CreateScalingContext();
+  void ScalePixels(uint8_t* source,
+                   unsigned int sourceStride,
+                   uint8_t* target,
+                   unsigned int targetStride);
 
-    static AVPixelFormat GetPixFormat(DXGI_FORMAT dxFormat);
+  static AVPixelFormat GetPixFormat(DXGI_FORMAT dxFormat);
 
-    // Construction parameters
-    const AVPixelFormat m_pixFormat;
-    const DXGI_FORMAT m_targetDxFormat;
+  // Construction parameters
+  const AVPixelFormat m_pixFormat;
+  const DXGI_FORMAT m_targetDxFormat;
 
-    AVPixelFormat m_targetPixFormat;
-    std::unique_ptr<CD3DTexture> m_intermediateTarget;
+  AVPixelFormat m_targetPixFormat;
+  std::unique_ptr<CD3DTexture> m_intermediateTarget;
 
-    SwsContext *m_swsContext = nullptr;
-  };
+  SwsContext* m_swsContext = nullptr;
+};
 
-  class CWinRenderBufferPool : public CBaseRenderBufferPool
-  {
-  public:
-    CWinRenderBufferPool();
-    ~CWinRenderBufferPool() override = default;
+class CWinRenderBufferPool : public CBaseRenderBufferPool
+{
+public:
+  CWinRenderBufferPool();
+  ~CWinRenderBufferPool() override = default;
 
-    // implementation of IRenderBufferPool via CRenderBufferPoolSysMem
-    bool IsCompatible(const CRenderVideoSettings &renderSettings) const override;
+  // implementation of IRenderBufferPool via CRenderBufferPoolSysMem
+  bool IsCompatible(const CRenderVideoSettings& renderSettings) const override;
 
-    // implementation of CBaseRenderBufferPool via CRenderBufferPoolSysMem
-    IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
+  // implementation of CBaseRenderBufferPool via CRenderBufferPoolSysMem
+  IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
 
-    // DirectX interface
-    bool ConfigureDX(DXGI_FORMAT dxFormat);
-    CRPWinOutputShader *GetShader(SCALINGMETHOD scalingMethod) const;
+  // DirectX interface
+  bool ConfigureDX(DXGI_FORMAT dxFormat);
+  CRPWinOutputShader* GetShader(SCALINGMETHOD scalingMethod) const;
 
-  private:
-    static const std::vector<SCALINGMETHOD> &GetScalingMethods();
+private:
+  static const std::vector<SCALINGMETHOD>& GetScalingMethods();
 
-    void CompileOutputShaders();
+  void CompileOutputShaders();
 
-    DXGI_FORMAT m_targetDxFormat = DXGI_FORMAT_UNKNOWN;
-    std::map<SCALINGMETHOD, std::unique_ptr<CRPWinOutputShader>> m_outputShaders;
-  };
+  DXGI_FORMAT m_targetDxFormat = DXGI_FORMAT_UNKNOWN;
+  std::map<SCALINGMETHOD, std::unique_ptr<CRPWinOutputShader>> m_outputShaders;
+};
 
-  class CRPWinRenderer : public CRPBaseRenderer
-  {
-  public:
-    CRPWinRenderer(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool);
-    ~CRPWinRenderer() override = default;
+class CRPWinRenderer : public CRPBaseRenderer
+{
+public:
+  CRPWinRenderer(const CRenderSettings& renderSettings,
+                 CRenderContext& context,
+                 std::shared_ptr<IRenderBufferPool> bufferPool);
+  ~CRPWinRenderer() override = default;
 
-    // implementation of CRPBaseRenderer
-    bool Supports(RENDERFEATURE feature) const override;
-    SCALINGMETHOD GetDefaultScalingMethod() const override { return DEFAULT_SCALING_METHOD; }
+  // implementation of CRPBaseRenderer
+  bool Supports(RENDERFEATURE feature) const override;
+  SCALINGMETHOD GetDefaultScalingMethod() const override { return DEFAULT_SCALING_METHOD; }
 
-    static bool SupportsScalingMethod(SCALINGMETHOD method);
+  static bool SupportsScalingMethod(SCALINGMETHOD method);
 
-    /*!
-     * \brief The default scaling method of the renderer
-     */
-    static const SCALINGMETHOD DEFAULT_SCALING_METHOD = SCALINGMETHOD::NEAREST;
+  /*!
+   * \brief The default scaling method of the renderer
+   */
+  static const SCALINGMETHOD DEFAULT_SCALING_METHOD = SCALINGMETHOD::NEAREST;
 
-  protected:
-    // implementation of CRPBaseRenderer
-    bool ConfigureInternal() override;
-    void RenderInternal(bool clear, uint8_t alpha) override;
+protected:
+  // implementation of CRPBaseRenderer
+  bool ConfigureInternal() override;
+  void RenderInternal(bool clear, uint8_t alpha) override;
 
-  private:
-    void Render(CD3DTexture& target);
-  };
-}
-}
+private:
+  void Render(CD3DTexture& target);
+};
+} // namespace RETRO
+} // namespace KODI

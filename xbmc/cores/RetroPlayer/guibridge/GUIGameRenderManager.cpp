@@ -22,9 +22,9 @@ using namespace RETRO;
 
 CGUIGameRenderManager::~CGUIGameRenderManager() = default;
 
-void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory,
-                                           IRenderCallback *callback,
-                                           IGameCallback *gameCallback)
+void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory* factory,
+                                           IRenderCallback* callback,
+                                           IGameCallback* gameCallback)
 {
   // Set factory
   {
@@ -68,7 +68,7 @@ void CGUIGameRenderManager::UnregisterPlayer()
   }
 }
 
-std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGameControl &control)
+std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGameControl& control)
 {
   CSingleLock lock(m_targetMutex);
 
@@ -84,7 +84,8 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGam
   return renderHandle;
 }
 
-std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(CGameWindowFullScreen &window)
+std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(
+    CGameWindowFullScreen& window)
 {
   CSingleLock lock(m_targetMutex);
 
@@ -100,7 +101,8 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(CGameWin
   return renderHandle;
 }
 
-std::shared_ptr<CGUIGameVideoHandle> CGUIGameRenderManager::RegisterDialog(GAME::CDialogGameVideoSelect &dialog)
+std::shared_ptr<CGUIGameVideoHandle> CGUIGameRenderManager::RegisterDialog(
+    GAME::CDialogGameVideoSelect& dialog)
 {
   return std::make_shared<CGUIGameVideoHandle>(*this);
 }
@@ -110,60 +112,60 @@ std::shared_ptr<CGUIGameSettingsHandle> CGUIGameRenderManager::RegisterGameSetti
   return std::make_shared<CGUIGameSettingsHandle>(*this);
 }
 
-void CGUIGameRenderManager::UnregisterHandle(CGUIRenderHandle *handle)
+void CGUIGameRenderManager::UnregisterHandle(CGUIRenderHandle* handle)
 {
   CSingleLock lock(m_targetMutex);
 
   m_renderTargets.erase(handle);
 }
 
-void CGUIGameRenderManager::Render(CGUIRenderHandle *handle)
+void CGUIGameRenderManager::Render(CGUIRenderHandle* handle)
 {
   CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
   {
-    const std::shared_ptr<CGUIRenderTarget> &renderTarget = it->second;
+    const std::shared_ptr<CGUIRenderTarget>& renderTarget = it->second;
     if (renderTarget)
       renderTarget->Render();
   }
 }
 
-void CGUIGameRenderManager::RenderEx(CGUIRenderHandle *handle)
+void CGUIGameRenderManager::RenderEx(CGUIRenderHandle* handle)
 {
   CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
   {
-    const std::shared_ptr<CGUIRenderTarget> &renderTarget = it->second;
+    const std::shared_ptr<CGUIRenderTarget>& renderTarget = it->second;
     if (renderTarget)
       renderTarget->RenderEx();
   }
 }
 
-void CGUIGameRenderManager::ClearBackground(CGUIRenderHandle *handle)
+void CGUIGameRenderManager::ClearBackground(CGUIRenderHandle* handle)
 {
   CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
   {
-    const std::shared_ptr<CGUIRenderTarget> &renderTarget = it->second;
+    const std::shared_ptr<CGUIRenderTarget>& renderTarget = it->second;
     if (renderTarget)
       renderTarget->ClearBackground();
   }
 }
 
-bool CGUIGameRenderManager::IsDirty(CGUIRenderHandle *handle)
+bool CGUIGameRenderManager::IsDirty(CGUIRenderHandle* handle)
 {
   CSingleLock lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
   {
-    const std::shared_ptr<CGUIRenderTarget> &renderTarget = it->second;
+    const std::shared_ptr<CGUIRenderTarget>& renderTarget = it->second;
     if (renderTarget)
       return renderTarget->IsDirty();
   }
@@ -212,10 +214,10 @@ void CGUIGameRenderManager::UpdateRenderTargets()
 {
   if (m_factory != nullptr)
   {
-    for (auto &it: m_renderTargets)
+    for (auto& it : m_renderTargets)
     {
-      CGUIRenderHandle *handle = it.first;
-      std::shared_ptr<CGUIRenderTarget> &renderTarget = it.second;
+      CGUIRenderHandle* handle = it.first;
+      std::shared_ptr<CGUIRenderTarget>& renderTarget = it.second;
 
       if (!renderTarget)
         renderTarget.reset(CreateRenderTarget(handle));
@@ -223,27 +225,28 @@ void CGUIGameRenderManager::UpdateRenderTargets()
   }
   else
   {
-    for (auto &it : m_renderTargets)
+    for (auto& it : m_renderTargets)
       it.second.reset();
   }
 }
 
-CGUIRenderTarget *CGUIGameRenderManager::CreateRenderTarget(CGUIRenderHandle *handle)
+CGUIRenderTarget* CGUIGameRenderManager::CreateRenderTarget(CGUIRenderHandle* handle)
 {
   switch (handle->Type())
   {
-  case RENDER_HANDLE::CONTROL:
-  {
-    CGUIRenderControlHandle *controlHandle = static_cast<CGUIRenderControlHandle*>(handle);
-    return m_factory->CreateRenderControl(controlHandle->GetControl());
-  }
-  case RENDER_HANDLE::WINDOW:
-  {
-    CGUIRenderFullScreenHandle *fullScreenHandle = static_cast<CGUIRenderFullScreenHandle*>(handle);
-    return m_factory->CreateRenderFullScreen(fullScreenHandle->GetWindow());
-  }
-  default:
-    break;
+    case RENDER_HANDLE::CONTROL:
+    {
+      CGUIRenderControlHandle* controlHandle = static_cast<CGUIRenderControlHandle*>(handle);
+      return m_factory->CreateRenderControl(controlHandle->GetControl());
+    }
+    case RENDER_HANDLE::WINDOW:
+    {
+      CGUIRenderFullScreenHandle* fullScreenHandle =
+          static_cast<CGUIRenderFullScreenHandle*>(handle);
+      return m_factory->CreateRenderFullScreen(fullScreenHandle->GetWindow());
+    }
+    default:
+      break;
   }
 
   return nullptr;

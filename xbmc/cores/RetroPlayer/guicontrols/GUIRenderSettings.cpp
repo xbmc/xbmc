@@ -14,8 +14,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CGUIRenderSettings::CGUIRenderSettings(CGUIGameControl &guiControl) :
-  m_guiControl(guiControl)
+CGUIRenderSettings::CGUIRenderSettings(CGUIGameControl& guiControl) : m_guiControl(guiControl)
 {
 }
 
@@ -62,14 +61,14 @@ void CGUIRenderSettings::SetSettings(CRenderSettings settings)
   m_renderSettings = std::move(settings);
 }
 
-void CGUIRenderSettings::SetDimensions(const CRect &dimensions)
+void CGUIRenderSettings::SetDimensions(const CRect& dimensions)
 {
   CSingleLock lock(m_mutex);
 
   m_renderDimensions = dimensions;
 }
 
-void CGUIRenderSettings::SetVideoFilter(const std::string &videoFilter)
+void CGUIRenderSettings::SetVideoFilter(const std::string& videoFilter)
 {
   CSingleLock lock(m_mutex);
 

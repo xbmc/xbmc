@@ -13,7 +13,8 @@
 #include <stdint.h>
 #include <vector>
 
-extern "C" {
+extern "C"
+{
 #include <libavutil/pixfmt.h>
 }
 
@@ -21,23 +22,23 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRenderBufferSysMem : public CBaseRenderBuffer
-  {
-  public:
-    CRenderBufferSysMem() = default;
-    ~CRenderBufferSysMem() override = default;
+class CRenderBufferSysMem : public CBaseRenderBuffer
+{
+public:
+  CRenderBufferSysMem() = default;
+  ~CRenderBufferSysMem() override = default;
 
-    // implementation of IRenderBuffer
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
-    size_t GetFrameSize() const override;
-    uint8_t *GetMemory() override;
+  // implementation of IRenderBuffer
+  bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
+  size_t GetFrameSize() const override;
+  uint8_t* GetMemory() override;
 
-    // Utility functions
-    static size_t GetBufferSize(AVPixelFormat format, unsigned int width, unsigned int height);
+  // Utility functions
+  static size_t GetBufferSize(AVPixelFormat format, unsigned int width, unsigned int height);
 
-  protected:
-    std::vector<uint8_t> m_data;
-  };
+protected:
+  std::vector<uint8_t> m_data;
+};
 
-}
-}
+} // namespace RETRO
+} // namespace KODI

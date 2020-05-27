@@ -12,7 +12,7 @@ using namespace KODI;
 using namespace RETRO;
 
 // Pad forward to nearest boundary of bytes
-#define PAD_TO_CEIL(x, bytes)  ((((x) + (bytes) - 1) / (bytes)) * (bytes))
+#define PAD_TO_CEIL(x, bytes) ((((x) + (bytes)-1) / (bytes)) * (bytes))
 
 CLinearMemoryStream::CLinearMemoryStream()
 {

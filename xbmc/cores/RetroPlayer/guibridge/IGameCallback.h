@@ -14,17 +14,17 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IGameCallback
-  {
-  public:
-    virtual ~IGameCallback() = default;
+class IGameCallback
+{
+public:
+  virtual ~IGameCallback() = default;
 
-    /*!
-     * \brief Get the game client being used to play the game
-     *
-     * \return The game client's ID, or empty if no game is being played
-     */
-    virtual std::string GameClientID() const = 0;
-  };
-}
-}
+  /*!
+   * \brief Get the game client being used to play the game
+   *
+   * \return The game client's ID, or empty if no game is being played
+   */
+  virtual std::string GameClientID() const = 0;
+};
+} // namespace RETRO
+} // namespace KODI

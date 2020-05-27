@@ -12,41 +12,41 @@ namespace KODI
 {
 namespace RETRO
 {
-  /*!
-   * \brief The playback client being controlled
-   */
-  class IPlaybackCallback
-  {
-  public:
-    virtual ~IPlaybackCallback() = default;
-
-    /*!
-     * \brief Set the playback speed
-     *
-     * \param speed The new speed
-     */
-    virtual void SetPlaybackSpeed(double speed) = 0;
-
-    /*!
-     * \brief Enable/disable game input
-     *
-     * \param bEnable True to enable input, false to disable input
-     */
-    virtual void EnableInput(bool bEnable) = 0;
-  };
+/*!
+ * \brief The playback client being controlled
+ */
+class IPlaybackCallback
+{
+public:
+  virtual ~IPlaybackCallback() = default;
 
   /*!
-   * \brief Class that can control playback and input
+   * \brief Set the playback speed
+   *
+   * \param speed The new speed
    */
-  class IPlaybackControl
-  {
-  public:
-    virtual ~IPlaybackControl() = default;
+  virtual void SetPlaybackSpeed(double speed) = 0;
 
-    /*!
-     * \brief Called every frame
-     */
-    virtual void FrameMove() = 0;
-  };
-}
-}
+  /*!
+   * \brief Enable/disable game input
+   *
+   * \param bEnable True to enable input, false to disable input
+   */
+  virtual void EnableInput(bool bEnable) = 0;
+};
+
+/*!
+ * \brief Class that can control playback and input
+ */
+class IPlaybackControl
+{
+public:
+  virtual ~IPlaybackControl() = default;
+
+  /*!
+   * \brief Called every frame
+   */
+  virtual void FrameMove() = 0;
+};
+} // namespace RETRO
+} // namespace KODI

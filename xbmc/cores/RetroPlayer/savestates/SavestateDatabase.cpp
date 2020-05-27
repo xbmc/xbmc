@@ -28,7 +28,7 @@ std::unique_ptr<ISavestate> CSavestateDatabase::CreateSavestate()
   return savestate;
 }
 
-bool CSavestateDatabase::AddSavestate(const std::string &gamePath, const ISavestate& save)
+bool CSavestateDatabase::AddSavestate(const std::string& gamePath, const ISavestate& save)
 {
   bool bSuccess = false;
 
@@ -36,7 +36,7 @@ bool CSavestateDatabase::AddSavestate(const std::string &gamePath, const ISavest
 
   CLog::Log(LOGDEBUG, "Saving savestate to %s", CURL::GetRedacted(savestatePath).c_str());
 
-  const uint8_t *data = nullptr;
+  const uint8_t* data = nullptr;
   size_t size = 0;
   if (save.Serialize(data, size))
   {
@@ -79,16 +79,17 @@ bool CSavestateDatabase::GetSavestate(const std::string& gamePath, ISavestate& s
       if (readLength != static_cast<ssize_t>(savestateData.size()))
       {
         CLog::Log(LOGERROR, "Failed to read savestate %s of size %d bytes",
-          CURL::GetRedacted(savestatePath).c_str(),
-          size);
+                  CURL::GetRedacted(savestatePath).c_str(), size);
         savestateData.clear();
       }
     }
     else
-      CLog::Log(LOGERROR, "Failed to get savestate length: %s", CURL::GetRedacted(savestatePath).c_str());
+      CLog::Log(LOGERROR, "Failed to get savestate length: %s",
+                CURL::GetRedacted(savestatePath).c_str());
   }
   else
-    CLog::Log(LOGERROR, "Failed to open savestate file %s", CURL::GetRedacted(savestatePath).c_str());
+    CLog::Log(LOGERROR, "Failed to open savestate file %s",
+              CURL::GetRedacted(savestatePath).c_str());
 
   if (!savestateData.empty())
     bSuccess = save.Deserialize(std::move(savestateData));
@@ -96,7 +97,9 @@ bool CSavestateDatabase::GetSavestate(const std::string& gamePath, ISavestate& s
   return bSuccess;
 }
 
-bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items, const std::string& gamePath, const std::string& gameClient /* = "" */)
+bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items,
+                                          const std::string& gamePath,
+                                          const std::string& gameClient /* = "" */)
 {
   //! @todo
   return false;
@@ -114,7 +117,8 @@ bool CSavestateDatabase::DeleteSavestate(const std::string& path)
   return false;
 }
 
-bool CSavestateDatabase::ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient /* = "" */)
+bool CSavestateDatabase::ClearSavestatesOfGame(const std::string& gamePath,
+                                               const std::string& gameClient /* = "" */)
 {
   //! @todo
   return false;

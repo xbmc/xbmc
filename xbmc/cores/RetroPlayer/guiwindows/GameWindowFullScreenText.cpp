@@ -15,8 +15,8 @@
 using namespace KODI;
 using namespace RETRO;
 
-CGameWindowFullScreenText::CGameWindowFullScreenText(CGUIWindow &fullscreenWindow) :
-  m_fullscreenWindow(fullscreenWindow)
+CGameWindowFullScreenText::CGameWindowFullScreenText(CGUIWindow& fullscreenWindow)
+  : m_fullscreenWindow(fullscreenWindow)
 {
 }
 
@@ -47,7 +47,7 @@ void CGameWindowFullScreenText::FrameMove()
   }
 }
 
-const std::string &CGameWindowFullScreenText::GetText(unsigned int lineIndex) const
+const std::string& CGameWindowFullScreenText::GetText(unsigned int lineIndex) const
 {
   if (lineIndex < m_lines.size())
     return m_lines[lineIndex];
@@ -64,7 +64,7 @@ void CGameWindowFullScreenText::SetText(unsigned int lineIndex, std::string line
   m_lines[lineIndex] = std::move(line);
 }
 
-const std::vector<std::string> &CGameWindowFullScreenText::GetText() const
+const std::vector<std::string>& CGameWindowFullScreenText::GetText() const
 {
   return m_lines;
 }
@@ -105,7 +105,7 @@ int CGameWindowFullScreenText::GetID() const
   return m_fullscreenWindow.GetID();
 }
 
-bool CGameWindowFullScreenText::OnMessage(CGUIMessage &message)
+bool CGameWindowFullScreenText::OnMessage(CGUIMessage& message)
 {
   return m_fullscreenWindow.OnMessage(message);
 }
@@ -114,11 +114,14 @@ int CGameWindowFullScreenText::GetControlID(unsigned int lineIndex)
 {
   switch (lineIndex)
   {
-  case 0: return LABEL_ROW1;
-  case 1: return LABEL_ROW2;
-  case 2: return LABEL_ROW3;
-  default:
-    break;
+    case 0:
+      return LABEL_ROW1;
+    case 1:
+      return LABEL_ROW2;
+    case 2:
+      return LABEL_ROW3;
+    default:
+      break;
   }
 
   return -1;

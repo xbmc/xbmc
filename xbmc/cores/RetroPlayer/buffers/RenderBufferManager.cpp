@@ -23,24 +23,22 @@ CRenderBufferManager::~CRenderBufferManager()
   FlushPools();
 }
 
-void CRenderBufferManager::RegisterPools(IRendererFactory *factory, RenderBufferPoolVector pools)
+void CRenderBufferManager::RegisterPools(IRendererFactory* factory, RenderBufferPoolVector pools)
 {
   CSingleLock lock(m_critSection);
 
   m_pools.emplace_back(RenderBufferPools{factory, std::move(pools)});
 }
 
-RenderBufferPoolVector CRenderBufferManager::GetPools(IRendererFactory *factory)
+RenderBufferPoolVector CRenderBufferManager::GetPools(IRendererFactory* factory)
 {
   RenderBufferPoolVector bufferPools;
 
   CSingleLock lock(m_critSection);
 
-  auto it = std::find_if(m_pools.begin(), m_pools.end(),
-    [factory](const RenderBufferPools &pools)
-    {
-      return pools.factory == factory;
-    });
+  auto it = std::find_if(m_pools.begin(), m_pools.end(), [factory](const RenderBufferPools& pools) {
+    return pools.factory == factory;
+  });
 
   if (it != m_pools.end())
     bufferPools = it->pools;
@@ -54,9 +52,9 @@ std::vector<IRenderBufferPool*> CRenderBufferManager::GetBufferPools()
 
   CSingleLock lock(m_critSection);
 
-  for (const auto &pools : m_pools)
+  for (const auto& pools : m_pools)
   {
-    for (const auto &pool : pools.pools)
+    for (const auto& pool : pools.pools)
       bufferPools.emplace_back(pool.get());
   }
 
@@ -67,20 +65,20 @@ void CRenderBufferManager::FlushPools()
 {
   CSingleLock lock(m_critSection);
 
-  for (const auto &pools : m_pools)
+  for (const auto& pools : m_pools)
   {
-    for (const auto &pool : pools.pools)
+    for (const auto& pool : pools.pools)
       pool->Flush();
   }
 }
 
-std::string CRenderBufferManager::GetRenderSystemName(IRenderBufferPool *renderBufferPool) const
+std::string CRenderBufferManager::GetRenderSystemName(IRenderBufferPool* renderBufferPool) const
 {
   CSingleLock lock(m_critSection);
 
-  for (const auto &pools : m_pools)
+  for (const auto& pools : m_pools)
   {
-    for (const auto &pool : pools.pools)
+    for (const auto& pool : pools.pools)
     {
       if (pool.get() == renderBufferPool)
         return pools.factory->RenderSystemName();
@@ -95,9 +93,9 @@ bool CRenderBufferManager::HasScalingMethod(SCALINGMETHOD scalingMethod) const
   CRenderVideoSettings videoSettings;
   videoSettings.SetScalingMethod(scalingMethod);
 
-  for (const auto &pools : m_pools)
+  for (const auto& pools : m_pools)
   {
-    for (const auto &pool : pools.pools)
+    for (const auto& pool : pools.pools)
       if (pool->IsCompatible(videoSettings))
         return true;
   }
