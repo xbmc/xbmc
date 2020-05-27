@@ -6573,6 +6573,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
     // (includes xsp limits from filter, but not sort limits)
     total = static_cast<int>(strtol(
         GetSingleValue("SELECT COUNT(1) FROM song " + strSQLExtra, m_pDS).c_str(), nullptr, 10));
+    resultcount = static_cast<size_t>(total);
 
     int iAddedFields = GetOrderFilter(MediaTypeSong, sortDescription, extFilter);
     // Replace songview field names in order by with song, album path table field names
