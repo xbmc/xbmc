@@ -202,7 +202,7 @@ CDateTime CRepositoryUpdater::LastUpdated() const
 
 void CRepositoryUpdater::ScheduleUpdate()
 {
-  const CDateTimeSpan interval(0, 24, 0, 0);
+  const CDateTimeSpan interval(0, 4, 0, 0);
 
   CSingleLock lock(m_criticalSection);
   m_timer.Stop(true);
