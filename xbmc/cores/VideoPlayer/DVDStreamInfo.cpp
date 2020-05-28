@@ -73,17 +73,15 @@ void CDVDStreamInfo::Clear()
   orientation = 0;
 }
 
-bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
+bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare)
 {
-  if( codec     != right.codec
-  ||  type      != right.type
-  ||  uniqueId  != right.uniqueId
-  ||  demuxerId != right.demuxerId
-  ||  codec_tag != right.codec_tag
-  ||  flags     != right.flags)
+  if (codec != right.codec || type != right.type ||
+      ((compare & COMPARE_ID) && uniqueId != right.uniqueId) ||
+      ((compare & COMPARE_ID) && demuxerId != right.demuxerId) || codec_tag != right.codec_tag ||
+      flags != right.flags)
     return false;
 
-  if( withextradata )
+  if (compare & COMPARE_EXTRADATA)
   {
     if( extrasize != right.extrasize ) return false;
     if( extrasize )
@@ -171,7 +169,7 @@ bool CDVDStreamInfo::Equal(const CDemuxStream& right, bool withextradata)
 {
   CDVDStreamInfo info;
   info.Assign(right, withextradata);
-  return Equal(info, withextradata);
+  return Equal(info, withextradata ? COMPARE_ALL : COMPARE_ALL & ~COMPARE_EXTRADATA);
 }
 
 

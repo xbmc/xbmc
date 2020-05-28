@@ -1005,12 +1005,14 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
 bool CDVDVideoCodecAndroidMediaCodec::Reconfigure(CDVDStreamInfo &hints)
 {
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reconfigure called");
-  if (m_hints.Equal(hints, false))
+  if (m_hints.Equal(hints, CDVDStreamInfo::COMPARE_ALL &
+                               ~(CDVDStreamInfo::COMPARE_ID | CDVDStreamInfo::COMPARE_EXTRADATA)))
   {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reconfigure: true");
     m_hints = hints;
     return true;
   }
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reconfigure: false");
   return false;
 }
 
