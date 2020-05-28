@@ -16,6 +16,7 @@
 #include "threads/Thread.h"
 #include "utils/EventStream.h"
 
+#include <atomic>
 #include <list>
 #include <map>
 #include <memory>
@@ -196,6 +197,16 @@ namespace PVR
      */
     void OnPlaybackStopped();
 
+    /*!
+     * @brief Inform the epg container that the system is going to sleep
+     */
+    void OnSystemSleep();
+
+    /*!
+     * @brief Inform the epg container that the system gets awake from sleep
+     */
+    void OnSystemWake();
+
   private:
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -286,5 +297,7 @@ namespace PVR
     bool m_bUpdateNotificationPending = false; /*!< true while an epg updated notification to observers is pending. */
     CPVRSettings m_settings;
     CEventSource<PVREvent> m_events;
+
+    std::atomic<bool> m_bSuspended = {false};
   };
 }

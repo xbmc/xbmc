@@ -335,7 +335,7 @@ void CPVREpgContainer::Process()
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     {
       CSingleLock lock(m_critSection);
-      bUpdateEpg = (iNow >= m_iNextEpgUpdate);
+      bUpdateEpg = (iNow >= m_iNextEpgUpdate) && !m_bSuspended;
     }
 
     /* update the EPG */
@@ -343,12 +343,15 @@ void CPVREpgContainer::Process()
       m_bIsInitialising = false;
 
     /* clean up old entries */
-    if (!m_bStop && iNow >= m_iLastEpgCleanup + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEpgCleanupInterval)
+    if (!m_bStop && !m_bSuspended &&
+        iNow >= m_iLastEpgCleanup + CServiceBroker::GetSettingsComponent()
+                                        ->GetAdvancedSettings()
+                                        ->m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
 
-    while (!m_bStop)
+    while (!m_bStop && !m_bSuspended)
     {
       CEpgUpdateRequest request;
       {
@@ -367,7 +370,7 @@ void CPVREpgContainer::Process()
     /* check for pending EPG tag changes */
 
     // during Kodi startup, addons may push updates very early, even before EPGs are ready to use.
-    if (!m_bStop && CServiceBroker::GetPVRManager().EpgsCreated())
+    if (!m_bStop && !m_bSuspended && CServiceBroker::GetPVRManager().EpgsCreated())
     {
       unsigned int iProcessed = 0;
       XbmcThreads::EndTime processTimeslice(1000); // max 1 sec per cycle, regardless of how many events are in the queue
@@ -396,7 +399,7 @@ void CPVREpgContainer::Process()
       }
     }
 
-    if (!m_bStop)
+    if (!m_bStop && !m_bSuspended)
     {
       {
         CSingleLock lock(m_critSection);
@@ -858,6 +861,16 @@ void CPVREpgContainer::OnPlaybackStopped()
 {
   CSingleLock lock(m_critSection);
   m_bPlaying = false;
+}
+
+void CPVREpgContainer::OnSystemSleep()
+{
+  m_bSuspended = true;
+}
+
+void CPVREpgContainer::OnSystemWake()
+{
+  m_bSuspended = false;
 }
 
 } // namespace PVR
