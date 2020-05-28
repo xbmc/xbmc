@@ -63,7 +63,7 @@ FOR %%b in (%*) DO (
 
 SET PreferredToolArchitecture=x64
 SET buildconfig=Release
-set WORKSPACE=%base_dir%\kodi-build
+set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
 
 
   :: sets the BRANCH env var

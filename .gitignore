@@ -98,7 +98,7 @@ cmake_install.cmake
 /kodi-test
 /kodi-xrandr
 /*.patch
-/kodi-build/
+/kodi-build*/
 /gtestresults.xml
 
 # /addons/

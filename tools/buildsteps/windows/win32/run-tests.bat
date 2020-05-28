@@ -1,5 +1,8 @@
 @ECHO OFF
 
 PUSHD %~dp0\..
+
+SET TARGET_PLATFORM=x86
+
 CALL run-tests.bat
 POPD
