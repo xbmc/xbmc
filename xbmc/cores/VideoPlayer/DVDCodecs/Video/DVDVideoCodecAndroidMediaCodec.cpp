@@ -658,6 +658,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       {
         m_codec = std::shared_ptr<CJNIMediaCodec>(
             new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(m_codecname)));
+        if (xbmc_jnienv()->ExceptionCheck())
+        {
+          xbmc_jnienv()->ExceptionClear();
+          m_codec = nullptr;
+        }
         if (!m_codec)
         {
           CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open cannot create codec");
@@ -772,6 +777,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   if (!m_opened)
     return;
 
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s", __func__);
+
   // invalidate any inflight outputbuffers
   FlushInternal();
 
@@ -786,6 +793,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   if (m_codec)
   {
     m_codec->stop();
+    m_codec->release();
     m_codec = nullptr;
     m_state = MEDIACODEC_STATE_STOPPED;
   }
