@@ -331,6 +331,7 @@ protected:
   unsigned int m_extKeepConfig;
   bool m_extDeferData;
   std::queue<time_t> m_extLastDeviceChange;
+  bool m_extSuspended = false;
   bool m_isWinSysReg = false;
 
   enum
