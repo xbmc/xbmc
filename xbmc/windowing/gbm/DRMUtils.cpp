@@ -792,6 +792,8 @@ void CDRMUtils::DestroyDrm()
 
   for (auto crtc : m_crtcs)
   {
+    if (!crtc)
+      continue;
     drmModeFreeCrtc(crtc->crtc);
     FreeProperties(crtc);
     delete crtc;
