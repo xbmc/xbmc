@@ -834,12 +834,8 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
   size_t iSize(packet.iSize);
 
   if (m_state == MEDIACODEC_STATE_ENDOFSTREAM)
-  {
-    // We received a packet but already reached EOS. Flush...
-    FlushInternal();
-    m_codec->flush();
-    m_state = MEDIACODEC_STATE_FLUSHED;
-  }
+    // We received a packet but already reached EOS. Reset...
+    Reset();
 
   if (pData && iSize)
   {
@@ -1010,6 +1006,11 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 bool CDVDVideoCodecAndroidMediaCodec::Reconfigure(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reconfigure called");
+  if (m_hints.Equal(hints, false))
+  {
+    m_hints = hints;
+    return true;
+  }
   return false;
 }
 
