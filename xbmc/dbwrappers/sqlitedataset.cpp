@@ -284,6 +284,12 @@ const char *SqliteDatabase::getErrorMsg() {
    return error.c_str();
 }
 
+static int AlphaNumericCollation(
+    void* not_used, int nKey1, const void* pKey1, int nKey2, const void* pKey2)
+{
+  return StringUtils::AlphaNumericCollation(nKey1, pKey1, nKey2, pKey2);
+}
+
 int SqliteDatabase::connect(bool create) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
@@ -317,6 +323,12 @@ int SqliteDatabase::connect(bool create) {
       {
         CLog::Log(LOGFATAL, "SqliteDatabase: %s is read only", db_fullpath.c_str());
         throw std::runtime_error("SqliteDatabase: " + db_fullpath + " is read only");
+      }
+      errorCode = sqlite3_create_collation(conn, "ALPHANUM", SQLITE_UTF8, 0, AlphaNumericCollation);
+      if (errorCode != SQLITE_OK)
+      {
+        CLog::Log(LOGFATAL, "SqliteDatabase: can not register collation");
+        throw std::runtime_error("SqliteDatabase: can not register collation " + db_fullpath);
       }
       active = true;
       return DB_CONNECTION_OK;

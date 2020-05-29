@@ -1410,7 +1410,7 @@ void CFileItem::FillInDefaultIcon()
     }
   }
   // Set the icon overlays (if applicable)
-  if (!HasOverlay())
+  if (!HasOverlay() && !HasProperty("icon_never_overlay"))
   {
     if (URIUtils::IsInRAR(m_strPath))
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);

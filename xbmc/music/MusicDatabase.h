@@ -692,6 +692,7 @@ private:
   /*! \brief (Re)Create the generic database views for songs and albums
    */
   virtual void CreateViews();
+  void CreateNativeDBFunctions();
 
   void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);
 
