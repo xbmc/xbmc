@@ -4611,7 +4611,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir, const Filt
 
     bool extended = false;
     bool limitedInSQL =
-      extFilter.limit.empty() && (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+      extFilter.limit.empty() && (sorting.limitStart > 0 || sorting.limitEnd > 0);
 
     // if there are extra WHERE conditions (from media filter dialog) we might
     // need access to songview or albumview for these conditions
@@ -4668,8 +4668,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir, const Filt
     // Apply any limiting directly in SQL and so sort as well
     if (limitedInSQL)
     {
-      extFilter.limit =
-          DatabaseUtils::BuildLimitClauseOnly(sortDescription.limitEnd, sortDescription.limitStart);
+      extFilter.limit = DatabaseUtils::BuildLimitClauseOnly(sorting.limitEnd, sorting.limitStart);
     }
 
     // Apply sort in SQL
@@ -4832,7 +4831,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
 
     bool extended = false;
     bool limitedInSQL =
-      extFilter.limit.empty() && (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+      extFilter.limit.empty() && (sorting.limitStart > 0 || sorting.limitEnd > 0);
 
     // If there are extra WHERE conditions (from media filter dialog) we might
     // need access to songview for these conditions
@@ -4881,7 +4880,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     if (limitedInSQL)
     {
       extFilter.limit =
-          DatabaseUtils::BuildLimitClauseOnly(sortDescription.limitEnd, sortDescription.limitStart);
+          DatabaseUtils::BuildLimitClauseOnly(sorting.limitEnd, sorting.limitStart);
     }
 
     // Apply sort in SQL
@@ -4934,8 +4933,8 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     if (!DatabaseUtils::GetDatabaseResults(MediaTypeAlbum, fields, m_pDS, results))
       return false;
     // Store item list sort order
-    items.SetSortMethod(sortDescription.sortBy);
-    items.SetSortOrder(sortDescription.sortOrder);
+    items.SetSortMethod(sorting.sortBy);
+    items.SetSortOrder(sorting.sortOrder);
 
     // Get albums from returned rows
     items.Reserve(results.size());
@@ -5043,8 +5042,8 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     // Apply any limiting directly in SQL if there is either no special sorting or random sort
     // When limited, random sort is also applied in SQL
     bool limitedInSQL = extFilter.limit.empty() &&
-      (sortDescription.sortBy == SortByNone || sortDescription.sortBy == SortByRandom) &&
-      (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+      (sorting.sortBy == SortByNone || sorting.sortBy == SortByRandom) &&
+      (sorting.limitStart > 0 || sorting.limitEnd > 0);
 
     if (countOnly || limitedInSQL)
     {
@@ -5065,10 +5064,10 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     // Apply limits and random sort order directly in SQL
     if (limitedInSQL)
     {
-      if (sortDescription.sortBy == SortByRandom)
+      if (sorting.sortBy == SortByRandom)
         strSQLExtra += PrepareSQL(" ORDER BY RANDOM()");
       strSQLExtra +=
-          DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+          DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
     else
       strSQLExtra += PrepareSQL(" ORDER BY albumview.idAlbum, iDisc");
@@ -5101,8 +5100,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     // Limit when SortByNone already applied in SQL,
     // Need guaranteed ordering for dataset processing to group by disc title
     // so apply sort later to fileitems list rather than dataset
-    sorting = sortDescription;
-    if (sortDescription.sortBy != SortByNone)
+    if (sorting.sortBy != SortByNone)
       sorting.sortBy = SortByNone;
     if (!SortUtils::SortFromDataset(sorting, MediaTypeAlbum, m_pDS, results))
       return false;
@@ -5173,9 +5171,9 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
 
     // Finally do any sorting in items list we have not been able to do before in SQL or dataset,
     // that is when have join with songartistview and sorting other than random with limit
-    if (sortDescription.sortBy != SortByNone &&
-        !(limitedInSQL && sortDescription.sortBy == SortByRandom))
-      items.Sort(sortDescription);
+    if (sorting.sortBy != SortByNone &&
+        !(limitedInSQL && sorting.sortBy == SortByRandom))
+      items.Sort(sorting);
 
     CLog::Log(LOGDEBUG, "{0}: Time to fill list with discs {1}ms query took {2}ms",
       __FUNCTION__, XbmcThreads::SystemClockMillis() - time, querytime);
@@ -5256,7 +5254,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     if (limitedInSQL)
     {
       extFilter.limit =
-          DatabaseUtils::BuildLimitClauseOnly(sortDescription.limitEnd, sortDescription.limitStart);
+          DatabaseUtils::BuildLimitClauseOnly(sorting.limitEnd, sorting.limitStart);
     }
 
     // Apply sort in SQL
@@ -5353,8 +5351,8 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     if (!DatabaseUtils::GetDatabaseResults(MediaTypeSong, fields, m_pDS, results))
       return false;
     // Store item list sort order
-    items.SetSortMethod(sortDescription.sortBy);
-    items.SetSortOrder(sortDescription.sortOrder);
+    items.SetSortMethod(sorting.sortBy);
+    items.SetSortOrder(sorting.sortOrder);
 
     // Get songs from returned rows. If join songartistview then there is a row for every artist
     items.Reserve(total);
@@ -5420,8 +5418,8 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // CGUIMediaWindow::Update in both cases.
     // So sorting here is currently redundant, but the consistent place to do it.
     // !@ todo: do sorting once, preferably in SQL
-    if (sortDescription.sortBy == SortByRandom && artistData)
-      items.Sort(sortDescription);
+    if (sorting.sortBy == SortByRandom && artistData)
+      items.Sort(sorting);
 
     CLog::Log(LOGDEBUG, "{0}: Time to fill list with songs {1}ms query took {2}ms", __FUNCTION__,
               XbmcThreads::SystemClockMillis() - time, querytime);
@@ -5467,11 +5465,11 @@ bool CMusicDatabase::GetSongsByWhere(const std::string &baseDir, const Filter &f
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+        sorting.sortBy == SortByNone &&
+       (sorting.limitStart > 0 || sorting.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
     strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*") + strSQLExtra;
@@ -5495,7 +5493,7 @@ bool CMusicDatabase::GetSongsByWhere(const std::string &baseDir, const Filter &f
 
     DatabaseResults results;
     results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeSong, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeSong, m_pDS, results))
       return false;
 
     // get data from returned rows
@@ -6321,6 +6319,8 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
     size_t resultcount = 0;
     Filter extFilter;
     CMusicDbUrl musicUrl;
+    // sorting passed into GetFilter() but not used as we only want to use the Const sortDescription
+    // passed in at the start of the function
     SortDescription sorting = sortDescription;
     if (!musicUrl.FromString(baseDir) || !GetFilter(musicUrl, extFilter, sorting))
       return false;
@@ -6726,6 +6726,8 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
     size_t resultcount = 0;
     Filter extFilter;
     CMusicDbUrl musicUrl;
+    // sorting passed into GetFilter() but not used as we only want to use the Const sortDescription
+    // passed into the function
     SortDescription sorting = sortDescription;
     if (!musicUrl.FromString(baseDir) || !GetFilter(musicUrl, extFilter, sorting))
       return false;
