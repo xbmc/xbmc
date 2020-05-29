@@ -55,8 +55,8 @@ public:
    \param window the window id
    \param key the key to query the action for
    \param fallback if no action is directly configured for the given window, obtain the action from
-   fallback window, if exists or from global config as last resort \return the action matching the
-   key
+   fallback window, if exists or from global config as last resort
+   \return the action matching the key
    */
   CAction GetAction(int window, const CKey& key, bool fallback = true);
 

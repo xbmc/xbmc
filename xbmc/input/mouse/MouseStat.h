@@ -107,11 +107,11 @@ private:
 
    The actions we detect are:
     * short clicks - down/up press of the mouse within short_click_time ms, where the pointer stays
-   within click_confines pixels
+      within click_confines pixels
     * long clicks - down/up press of the mouse greater than short_click_time ms, where the pointers
-   stays within click_confines pixels
+      stays within click_confines pixels
     * double clicks - a further down press of the mouse within double_click_time of the up press of
-   a short click, where the pointer stays within click_confines pixels
+      a short click, where the pointer stays within click_confines pixels
     * drag - the mouse is down and has been moved more than click_confines pixels
 
    \sa CMouseStat
@@ -172,9 +172,9 @@ private:
 
   /*! \brief detect whether the mouse has moved
 
-  Uses a trigger threshold of 2 pixels to detect mouse movement
+   Uses a trigger threshold of 2 pixels to detect mouse movement
 
-  \return whether the mouse has moved past the trigger threshold.
+   \return whether the mouse has moved past the trigger threshold.
    */
   bool MovedPastThreshold() const;
 
