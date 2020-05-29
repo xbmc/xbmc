@@ -2009,7 +2009,8 @@ void CVideoPlayer::HandlePlaySpeed()
       m_VideoPlayerAudio->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
     }
     else if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
-             m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT)
+             (m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT ||
+             m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC))
     {
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
@@ -2336,6 +2337,8 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
       UpdateCorrection(pPacket, correction);
       lastdts = pPacket->dts;
       CLog::Log(LOGDEBUG, "CVideoPlayer::CheckContinuity - update correction: %f", correction);
+      if (current.avsync == CCurrentStream::AV_SYNC_CHECK)
+        current.avsync = CCurrentStream::AV_SYNC_CONT;
     }
     else
     {
