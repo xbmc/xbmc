@@ -17,15 +17,15 @@ class IKeymapEnvironment;
 class CKeymap : public IKeymap
 {
 public:
-  CKeymap(std::shared_ptr<const IWindowKeymap> keymap, const IKeymapEnvironment *environment);
+  CKeymap(std::shared_ptr<const IWindowKeymap> keymap, const IKeymapEnvironment* environment);
 
   // implementation of IKeymap
   std::string ControllerID() const override;
   const IKeymapEnvironment* Environment() const override { return m_environment; }
-  const KODI::JOYSTICK::KeymapActionGroup &GetActions(const std::string& keyName) const override;
+  const KODI::JOYSTICK::KeymapActionGroup& GetActions(const std::string& keyName) const override;
 
 private:
   // Construction parameters
   const std::shared_ptr<const IWindowKeymap> m_keymap;
-  const IKeymapEnvironment *const m_environment;
+  const IKeymapEnvironment* const m_environment;
 };

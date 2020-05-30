@@ -16,45 +16,45 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGameWindowFullScreenText;
-  class CGUIRenderHandle;
+class CGameWindowFullScreenText;
+class CGUIRenderHandle;
 
-  class CGameWindowFullScreen : public CGUIWindow
-  {
-  public:
-    CGameWindowFullScreen();
-    ~CGameWindowFullScreen() override;
+class CGameWindowFullScreen : public CGUIWindow
+{
+public:
+  CGameWindowFullScreen();
+  ~CGameWindowFullScreen() override;
 
-    // implementation of CGUIControl via CGUIWindow
-    void Process(unsigned int currentTime, CDirtyRegionList &dirtyregion) override;
-    void Render() override;
-    void RenderEx() override;
-    bool OnAction(const CAction &action) override;
-    bool OnMessage(CGUIMessage& message) override;
+  // implementation of CGUIControl via CGUIWindow
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregion) override;
+  void Render() override;
+  void RenderEx() override;
+  bool OnAction(const CAction& action) override;
+  bool OnMessage(CGUIMessage& message) override;
 
-    // implementation of CGUIWindow
-    void FrameMove() override;
-    void ClearBackground() override;
-    bool HasVisibleControls() override;
-    void OnWindowLoaded() override;
-    void OnDeinitWindow(int nextWindowID) override;
+  // implementation of CGUIWindow
+  void FrameMove() override;
+  void ClearBackground() override;
+  bool HasVisibleControls() override;
+  void OnWindowLoaded() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
-  protected:
-    // implementation of CGUIWindow
-    void OnInitWindow() override;
+protected:
+  // implementation of CGUIWindow
+  void OnInitWindow() override;
 
-  private:
-    void TriggerOSD();
-    CGUIDialog *GetOSD();
+private:
+  void TriggerOSD();
+  CGUIDialog* GetOSD();
 
-    void RegisterWindow();
-    void UnregisterWindow();
+  void RegisterWindow();
+  void UnregisterWindow();
 
-    // GUI parameters
-    std::unique_ptr<CGameWindowFullScreenText> m_fullscreenText;
+  // GUI parameters
+  std::unique_ptr<CGameWindowFullScreenText> m_fullscreenText;
 
-    // Rendering parameters
-    std::shared_ptr<CGUIRenderHandle> m_renderHandle;
-  };
-}
-}
+  // Rendering parameters
+  std::shared_ptr<CGUIRenderHandle> m_renderHandle;
+};
+} // namespace RETRO
+} // namespace KODI

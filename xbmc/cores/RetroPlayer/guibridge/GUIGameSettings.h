@@ -21,35 +21,34 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRPProcessInfo;
+class CRPProcessInfo;
 
-  class CGUIGameSettings : public IGUIRenderSettings,
-                           public Observer
-  {
-  public:
-    CGUIGameSettings(CRPProcessInfo &processInfo);
-    ~CGUIGameSettings() override;
+class CGUIGameSettings : public IGUIRenderSettings, public Observer
+{
+public:
+  CGUIGameSettings(CRPProcessInfo& processInfo);
+  ~CGUIGameSettings() override;
 
-    // implementation of IGUIRenderSettings
-    CRenderSettings GetSettings() const override;
+  // implementation of IGUIRenderSettings
+  CRenderSettings GetSettings() const override;
 
-    // implementation of Observer
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
+  // implementation of Observer
+  void Notify(const Observable& obs, const ObservableMessage msg) override;
 
-  private:
-    void UpdateSettings();
+private:
+  void UpdateSettings();
 
-    // Construction parameters
-    CRPProcessInfo &m_processInfo;
+  // Construction parameters
+  CRPProcessInfo& m_processInfo;
 
-    // GUI parameters
-    CGameSettings &m_guiSettings;
+  // GUI parameters
+  CGameSettings& m_guiSettings;
 
-    // Render parameters
-    CRenderSettings m_renderSettings;
+  // Render parameters
+  CRenderSettings m_renderSettings;
 
-    // Synchronization parameters
-    mutable CCriticalSection m_mutex;
-  };
-}
-}
+  // Synchronization parameters
+  mutable CCriticalSection m_mutex;
+};
+} // namespace RETRO
+} // namespace KODI

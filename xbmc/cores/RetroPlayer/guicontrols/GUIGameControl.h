@@ -25,30 +25,30 @@ class CGUIGameControl : public CGUIControl
 {
 public:
   CGUIGameControl(int parentID, int controlID, float posX, float posY, float width, float height);
-  CGUIGameControl(const CGUIGameControl &other);
+  CGUIGameControl(const CGUIGameControl& other);
   ~CGUIGameControl() override;
 
   // GUI functions
-  void SetVideoFilter(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &videoFilter);
-  void SetStretchMode(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &stretchMode);
-  void SetRotation(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &rotation);
+  void SetVideoFilter(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& videoFilter);
+  void SetStretchMode(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& stretchMode);
+  void SetRotation(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& rotation);
 
   // Rendering functions
   bool HasVideoFilter() const { return m_bHasVideoFilter; }
   bool HasStretchMode() const { return m_bHasStretchMode; }
   bool HasRotation() const { return m_bHasRotation; }
-  IGUIRenderSettings *GetRenderSettings() const;
+  IGUIRenderSettings* GetRenderSettings() const;
 
   // implementation of CGUIControl
-  CGUIGameControl *Clone() const override { return new CGUIGameControl(*this); };
-  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  CGUIGameControl* Clone() const override { return new CGUIGameControl(*this); };
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void Render() override;
   void RenderEx() override;
   bool CanFocus() const override;
   void SetPosition(float posX, float posY) override;
   void SetWidth(float width) override;
   void SetHeight(float height) override;
-  void UpdateInfo(const CGUIListItem *item = nullptr) override;
+  void UpdateInfo(const CGUIListItem* item = nullptr) override;
 
 private:
   void Reset();
@@ -69,5 +69,5 @@ private:
   std::shared_ptr<CGUIRenderHandle> m_renderHandle;
 };
 
-}
-}
+} // namespace RETRO
+} // namespace KODI

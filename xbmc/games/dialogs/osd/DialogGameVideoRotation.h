@@ -17,27 +17,27 @@ namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameVideoRotation : public CDialogGameVideoSelect
-  {
-  public:
-    CDialogGameVideoRotation();
-    ~CDialogGameVideoRotation() override = default;
+class CDialogGameVideoRotation : public CDialogGameVideoSelect
+{
+public:
+  CDialogGameVideoRotation();
+  ~CDialogGameVideoRotation() override = default;
 
-  protected:
-    // implementation of CDialogGameVideoSelect
-    std::string GetHeading() override;
-    void PreInit() override;
-    void GetItems(CFileItemList &items) override;
-    void OnItemFocus(unsigned int index) override;
-    unsigned int GetFocusedItem() const override;
-    void PostExit() override;
+protected:
+  // implementation of CDialogGameVideoSelect
+  std::string GetHeading() override;
+  void PreInit() override;
+  void GetItems(CFileItemList& items) override;
+  void OnItemFocus(unsigned int index) override;
+  unsigned int GetFocusedItem() const override;
+  void PostExit() override;
 
-  private:
-    // Helper functions
-    static std::string GetRotationLabel(unsigned int rotationDegCCW);
+private:
+  // Helper functions
+  static std::string GetRotationLabel(unsigned int rotationDegCCW);
 
-    // Dialog parameters
-    std::vector<unsigned int> m_rotations; // Degrees counter-clockwise
-  };
-}
-}
+  // Dialog parameters
+  std::vector<unsigned int> m_rotations; // Degrees counter-clockwise
+};
+} // namespace GAME
+} // namespace KODI

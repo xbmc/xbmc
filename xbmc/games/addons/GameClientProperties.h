@@ -46,7 +46,7 @@ private:
   const char* GetLibraryPath(void);
 
   // List of proxy DLLs needed to load the game client
-  const char** GetProxyDllPaths(const ADDON::VECADDONS &addons);
+  const char** GetProxyDllPaths(const ADDON::VECADDONS& addons);
 
   // Number of proxy DLLs needed to load the game client
   unsigned int GetProxyDllCount(void) const;
@@ -67,7 +67,7 @@ private:
   unsigned int GetExtensionCount(void) const;
 
   // Helper functions
-  bool GetProxyAddons(ADDON::VECADDONS &addons);
+  bool GetProxyAddons(ADDON::VECADDONS& addons);
   void AddProxyDll(const GameClientPtr& gameClient);
   bool HasProxyDll(const std::string& strLibPath) const;
 
@@ -76,10 +76,10 @@ private:
   AddonProps_Game& m_properties;
 
   // Buffers to hold the strings
-  std::string        m_strLibraryPath;
+  std::string m_strLibraryPath;
   std::vector<char*> m_proxyDllPaths;
   std::vector<char*> m_resourceDirectories;
-  std::string        m_strProfileDirectory;
+  std::string m_strProfileDirectory;
   std::vector<char*> m_extensions;
 };
 

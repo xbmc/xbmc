@@ -12,83 +12,83 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGameWindowFullScreen;
-  class CGUIGameControl;
-  class IRenderManager;
+class CGameWindowFullScreen;
+class CGUIGameControl;
+class IRenderManager;
 
-  // --- CGUIRenderTarget ------------------------------------------------------
+// --- CGUIRenderTarget ------------------------------------------------------
+
+/*!
+ * \brief A target of rendering commands
+ *
+ * This class abstracts the destination of rendering commands. As a result,
+ * controls and windows are given a unified API.
+ */
+class CGUIRenderTarget
+{
+public:
+  CGUIRenderTarget(IRenderManager* renderManager);
+
+  virtual ~CGUIRenderTarget() = default;
 
   /*!
-   * \brief A target of rendering commands
-   *
-   * This class abstracts the destination of rendering commands. As a result,
-   * controls and windows are given a unified API.
+   * \brief Draw the frame to the rendering area
    */
-  class CGUIRenderTarget
-  {
-  public:
-    CGUIRenderTarget(IRenderManager *renderManager);
+  virtual void Render() = 0;
 
-    virtual ~CGUIRenderTarget() = default;
+  /*!
+   * \brief Draw the frame to the rendering area differently somehow
+   */
+  virtual void RenderEx() = 0;
 
-    /*!
-     * \brief Draw the frame to the rendering area
-     */
-    virtual void Render() = 0;
+  /*!
+   * \brief Clear the background of the rendering area
+   */
+  virtual void ClearBackground() {} //! @todo
 
-    /*!
-     * \brief Draw the frame to the rendering area differently somehow
-     */
-    virtual void RenderEx() = 0;
+  /*!
+   * \brief Check of the rendering area is dirty
+   */
+  virtual bool IsDirty() { return true; } //! @todo
 
-    /*!
-     * \brief Clear the background of the rendering area
-     */
-    virtual void ClearBackground() { } //! @todo
+protected:
+  // Construction parameters
+  IRenderManager* const m_renderManager;
+};
 
-    /*!
-     * \brief Check of the rendering area is dirty
-     */
-    virtual bool IsDirty() { return true; } //! @todo
+// --- CGUIRenderControl -----------------------------------------------------
 
-  protected:
-    // Construction parameters
-    IRenderManager *const m_renderManager;
-  };
+class CGUIRenderControl : public CGUIRenderTarget
+{
+public:
+  CGUIRenderControl(IRenderManager* renderManager, CGUIGameControl& gameControl);
+  ~CGUIRenderControl() override = default;
 
-  // --- CGUIRenderControl -----------------------------------------------------
+  // implementation of CGUIRenderTarget
+  void Render() override;
+  void RenderEx() override;
 
-  class CGUIRenderControl : public CGUIRenderTarget
-  {
-  public:
-    CGUIRenderControl(IRenderManager *renderManager, CGUIGameControl &gameControl);
-    ~CGUIRenderControl() override = default;
+private:
+  // Construction parameters
+  CGUIGameControl& m_gameControl;
+};
 
-    // implementation of CGUIRenderTarget
-    void Render() override;
-    void RenderEx() override;
+// --- CGUIRenderFullScreen --------------------------------------------------
 
-  private:
-    // Construction parameters
-    CGUIGameControl &m_gameControl;
-  };
+class CGUIRenderFullScreen : public CGUIRenderTarget
+{
+public:
+  CGUIRenderFullScreen(IRenderManager* renderManager, CGameWindowFullScreen& window);
+  ~CGUIRenderFullScreen() override = default;
 
-  // --- CGUIRenderFullScreen --------------------------------------------------
+  // implementation of CGUIRenderTarget
+  void Render() override;
+  void RenderEx() override;
+  void ClearBackground() override;
 
-  class CGUIRenderFullScreen : public CGUIRenderTarget
-  {
-  public:
-    CGUIRenderFullScreen(IRenderManager *renderManager, CGameWindowFullScreen &window);
-    ~CGUIRenderFullScreen() override = default;
-
-    // implementation of CGUIRenderTarget
-    void Render() override;
-    void RenderEx() override;
-    void ClearBackground() override;
-
-  private:
-    // Construction parameters
-    CGameWindowFullScreen &m_window;
-  };
-}
-}
+private:
+  // Construction parameters
+  CGameWindowFullScreen& m_window;
+};
+} // namespace RETRO
+} // namespace KODI

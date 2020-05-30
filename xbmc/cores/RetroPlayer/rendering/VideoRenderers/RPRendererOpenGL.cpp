@@ -13,7 +13,7 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "utils/log.h"
 
-#define BUFFER_OFFSET(i) (static_cast<char *>(NULL) + (i))
+#define BUFFER_OFFSET(i) (static_cast<char*>(NULL) + (i))
 
 using namespace KODI;
 using namespace RETRO;
@@ -25,20 +25,25 @@ std::string CRendererFactoryOpenGL::RenderSystemName() const
   return "OpenGL";
 }
 
-CRPBaseRenderer *CRendererFactoryOpenGL::CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool)
+CRPBaseRenderer* CRendererFactoryOpenGL::CreateRenderer(
+    const CRenderSettings& settings,
+    CRenderContext& context,
+    std::shared_ptr<IRenderBufferPool> bufferPool)
 {
   return new CRPRendererOpenGL(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryOpenGL::CreateBufferPools(CRenderContext &context)
+RenderBufferPoolVector CRendererFactoryOpenGL::CreateBufferPools(CRenderContext& context)
 {
-  return { std::make_shared<CRenderBufferPoolOpenGL>() };
+  return {std::make_shared<CRenderBufferPoolOpenGL>()};
 }
 
 // --- CRPRendererOpenGL -------------------------------------------------------
 
-CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) :
-  CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
+CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
+                                     CRenderContext& context,
+                                     std::shared_ptr<IRenderBufferPool> bufferPool)
+  : CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
   // Initialize CRPRendererOpenGL
   m_clearColour = m_context.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
@@ -58,9 +63,11 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings &renderSettings, CRen
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
   glEnableVertexAttribArray(vertLoc);
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                        BUFFER_OFFSET(offsetof(PackedVertex, x)));
   glEnableVertexAttribArray(loc);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                        BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
   // Set up black bars VAO/VBO
   glGenVertexArrays(1, &m_blackbarsVAO);
@@ -128,16 +135,13 @@ void CRPRendererOpenGL::FlushInternal()
 
 bool CRPRendererOpenGL::Supports(RENDERFEATURE feature) const
 {
-  return feature == RENDERFEATURE::STRETCH         ||
-         feature == RENDERFEATURE::ZOOM            ||
-         feature == RENDERFEATURE::PIXEL_RATIO     ||
-         feature == RENDERFEATURE::ROTATION;
+  return feature == RENDERFEATURE::STRETCH || feature == RENDERFEATURE::ZOOM ||
+         feature == RENDERFEATURE::PIXEL_RATIO || feature == RENDERFEATURE::ROTATION;
 }
 
 bool CRPRendererOpenGL::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  return method == SCALINGMETHOD::NEAREST ||
-         method == SCALINGMETHOD::LINEAR;
+  return method == SCALINGMETHOD::NEAREST || method == SCALINGMETHOD::LINEAR;
 }
 
 void CRPRendererOpenGL::ClearBackBuffer()
@@ -159,94 +163,94 @@ void CRPRendererOpenGL::DrawBlackBars()
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
-  //top quad
+  // top quad
   if (m_rotatedDestCoords[0].y > 0.0)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
     vertices[quad].y = 0.0;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_context.GetScreenWidth();
-    vertices[quad+1].y = 0;
-    vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_context.GetScreenWidth();
-    vertices[quad+2].y = m_rotatedDestCoords[0].y;
-    vertices[quad+2].z = 0;
-    vertices[quad+3] = vertices[quad+2];
-    vertices[quad+4].x = 0;
-    vertices[quad+4].y = m_rotatedDestCoords[0].y;
-    vertices[quad+4].z = 0;
-    vertices[quad+5] = vertices[quad];
+    vertices[quad + 1].x = m_context.GetScreenWidth();
+    vertices[quad + 1].y = 0;
+    vertices[quad + 1].z = 0;
+    vertices[quad + 2].x = m_context.GetScreenWidth();
+    vertices[quad + 2].y = m_rotatedDestCoords[0].y;
+    vertices[quad + 2].z = 0;
+    vertices[quad + 3] = vertices[quad + 2];
+    vertices[quad + 4].x = 0;
+    vertices[quad + 4].y = m_rotatedDestCoords[0].y;
+    vertices[quad + 4].z = 0;
+    vertices[quad + 5] = vertices[quad];
     count += 6;
   }
 
-  //bottom quad
+  // bottom quad
   if (m_rotatedDestCoords[2].y < m_context.GetScreenHeight())
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
     vertices[quad].y = m_rotatedDestCoords[2].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_context.GetScreenWidth();
-    vertices[quad+1].y = m_rotatedDestCoords[2].y;
-    vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_context.GetScreenWidth();
-    vertices[quad+2].y = m_context.GetScreenHeight();
-    vertices[quad+2].z = 0;
-    vertices[quad+3] = vertices[quad+2];
-    vertices[quad+4].x = 0;
-    vertices[quad+4].y = m_context.GetScreenHeight();
-    vertices[quad+4].z = 0;
-    vertices[quad+5] = vertices[quad];
+    vertices[quad + 1].x = m_context.GetScreenWidth();
+    vertices[quad + 1].y = m_rotatedDestCoords[2].y;
+    vertices[quad + 1].z = 0;
+    vertices[quad + 2].x = m_context.GetScreenWidth();
+    vertices[quad + 2].y = m_context.GetScreenHeight();
+    vertices[quad + 2].z = 0;
+    vertices[quad + 3] = vertices[quad + 2];
+    vertices[quad + 4].x = 0;
+    vertices[quad + 4].y = m_context.GetScreenHeight();
+    vertices[quad + 4].z = 0;
+    vertices[quad + 5] = vertices[quad];
     count += 6;
   }
 
-  //left quad
+  // left quad
   if (m_rotatedDestCoords[0].x > 0.0)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
     vertices[quad].y = m_rotatedDestCoords[0].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_rotatedDestCoords[0].x;
-    vertices[quad+1].y = m_rotatedDestCoords[0].y;
-    vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_rotatedDestCoords[3].x;
-    vertices[quad+2].y = m_rotatedDestCoords[3].y;
-    vertices[quad+2].z = 0;
-    vertices[quad+3] = vertices[quad+2];
-    vertices[quad+4].x = 0;
-    vertices[quad+4].y = m_rotatedDestCoords[3].y;
-    vertices[quad+4].z = 0;
-    vertices[quad+5] = vertices[quad];
+    vertices[quad + 1].x = m_rotatedDestCoords[0].x;
+    vertices[quad + 1].y = m_rotatedDestCoords[0].y;
+    vertices[quad + 1].z = 0;
+    vertices[quad + 2].x = m_rotatedDestCoords[3].x;
+    vertices[quad + 2].y = m_rotatedDestCoords[3].y;
+    vertices[quad + 2].z = 0;
+    vertices[quad + 3] = vertices[quad + 2];
+    vertices[quad + 4].x = 0;
+    vertices[quad + 4].y = m_rotatedDestCoords[3].y;
+    vertices[quad + 4].z = 0;
+    vertices[quad + 5] = vertices[quad];
     count += 6;
   }
 
-  //right quad
+  // right quad
   if (m_rotatedDestCoords[2].x < m_context.GetScreenWidth())
   {
     GLubyte quad = count;
     vertices[quad].x = m_rotatedDestCoords[1].x;
     vertices[quad].y = m_rotatedDestCoords[1].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_context.GetScreenWidth();
-    vertices[quad+1].y = m_rotatedDestCoords[1].y;
-    vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_context.GetScreenWidth();
-    vertices[quad+2].y = m_rotatedDestCoords[2].y;
-    vertices[quad+2].z = 0;
-    vertices[quad+3] = vertices[quad+2];
-    vertices[quad+4].x = m_rotatedDestCoords[1].x;
-    vertices[quad+4].y = m_rotatedDestCoords[2].y;
-    vertices[quad+4].z = 0;
-    vertices[quad+5] = vertices[quad];
+    vertices[quad + 1].x = m_context.GetScreenWidth();
+    vertices[quad + 1].y = m_rotatedDestCoords[1].y;
+    vertices[quad + 1].z = 0;
+    vertices[quad + 2].x = m_context.GetScreenWidth();
+    vertices[quad + 2].y = m_rotatedDestCoords[2].y;
+    vertices[quad + 2].z = 0;
+    vertices[quad + 3] = vertices[quad + 2];
+    vertices[quad + 4].x = m_rotatedDestCoords[1].x;
+    vertices[quad + 4].y = m_rotatedDestCoords[2].y;
+    vertices[quad + 4].z = 0;
+    vertices[quad + 5] = vertices[quad];
     count += 6;
   }
 
   glBindVertexArray(m_blackbarsVAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex)*count, &vertices[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * count, &vertices[0], GL_STATIC_DRAW);
 
   glDrawArrays(GL_TRIANGLES, 0, count);
 
@@ -259,7 +263,7 @@ void CRPRendererOpenGL::DrawBlackBars()
 
 void CRPRendererOpenGL::Render(uint8_t alpha)
 {
-  CRenderBufferOpenGL *renderBuffer = static_cast<CRenderBufferOpenGL*>(m_renderBuffer);
+  CRenderBufferOpenGL* renderBuffer = static_cast<CRenderBufferOpenGL*>(m_renderBuffer);
 
   if (renderBuffer == nullptr)
     return;
@@ -312,14 +316,15 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
   glBindVertexArray(m_mainVAO);
-  
+
   glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
   // No need to bind the index VBO, it's part of VAO state
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
-  glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
+  glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
+              (colour[3] / 255.0f));
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 

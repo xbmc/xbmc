@@ -15,8 +15,8 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRetroPlayerInput::CRetroPlayerInput(PERIPHERALS::CPeripherals &peripheralManager) :
-  m_peripheralManager(peripheralManager)
+CRetroPlayerInput::CRetroPlayerInput(PERIPHERALS::CPeripherals& peripheralManager)
+  : m_peripheralManager(peripheralManager)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[INPUT]: Initializing input");
 

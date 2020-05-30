@@ -30,7 +30,7 @@ const char* CRetroPlayerUtils::StretchModeToIdentifier(STRETCHMODE stretchMode)
   return "";
 }
 
-STRETCHMODE CRetroPlayerUtils::IdentifierToStretchMode(const std::string &stretchMode)
+STRETCHMODE CRetroPlayerUtils::IdentifierToStretchMode(const std::string& stretchMode)
 {
   if (stretchMode == STRETCHMODE_NORMAL_ID)
     return STRETCHMODE::Normal;

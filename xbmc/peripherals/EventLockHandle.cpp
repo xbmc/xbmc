@@ -10,8 +10,7 @@
 
 using namespace PERIPHERALS;
 
-CEventLockHandle::CEventLockHandle(IEventLockCallback &callback) :
-  m_callback(callback)
+CEventLockHandle::CEventLockHandle(IEventLockCallback& callback) : m_callback(callback)
 {
 }
 

@@ -8,7 +8,7 @@
 
 #include "GenericTouchPinchDetector.h"
 
-bool CGenericTouchPinchDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
+bool CGenericTouchPinchDetector::OnTouchDown(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;
@@ -20,7 +20,7 @@ bool CGenericTouchPinchDetector::OnTouchDown(unsigned int index, const Pointer &
   return true;
 }
 
-bool CGenericTouchPinchDetector::OnTouchUp(unsigned int index, const Pointer &pointer)
+bool CGenericTouchPinchDetector::OnTouchUp(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;
@@ -44,7 +44,7 @@ bool CGenericTouchPinchDetector::OnTouchUp(unsigned int index, const Pointer &po
   return true;
 }
 
-bool CGenericTouchPinchDetector::OnTouchMove(unsigned int index, const Pointer &pointer)
+bool CGenericTouchPinchDetector::OnTouchMove(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;
@@ -59,7 +59,7 @@ bool CGenericTouchPinchDetector::OnTouchMove(unsigned int index, const Pointer &
   Pointer& secondaryPointer = m_pointers[1];
 
   if (!primaryPointer.valid() || !secondaryPointer.valid() ||
-     (!primaryPointer.moving && !secondaryPointer.moving))
+      (!primaryPointer.moving && !secondaryPointer.moving))
     return false;
 
   // calculate zoom/pinch

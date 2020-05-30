@@ -13,8 +13,10 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIControllerButton::CGUIControllerButton(const CGUIButtonControl& buttonControl, const std::string& label, unsigned int index) :
-  CGUIButtonControl(buttonControl)
+CGUIControllerButton::CGUIControllerButton(const CGUIButtonControl& buttonControl,
+                                           const std::string& label,
+                                           unsigned int index)
+  : CGUIButtonControl(buttonControl)
 {
   // Initialize CGUIButtonControl
   SetLabel(label);

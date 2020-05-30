@@ -19,8 +19,7 @@ namespace KODI
 namespace GAME
 {
 
-class CGameSettings : public ISettingCallback,
-                      public Observable
+class CGameSettings : public ISettingCallback, public Observable
 {
 public:
   CGameSettings();
@@ -44,4 +43,4 @@ private:
 };
 
 } // namespace GAME
-}
+} // namespace KODI

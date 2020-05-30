@@ -14,13 +14,13 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRPProcessInfoWayland : public CRPProcessInfo
-  {
-  public:
-    CRPProcessInfoWayland();
+class CRPProcessInfoWayland : public CRPProcessInfo
+{
+public:
+  CRPProcessInfoWayland();
 
-    static CRPProcessInfo* Create();
-    static void Register();
-  };
-}
-}
+  static CRPProcessInfo* Create();
+  static void Register();
+};
+} // namespace RETRO
+} // namespace KODI

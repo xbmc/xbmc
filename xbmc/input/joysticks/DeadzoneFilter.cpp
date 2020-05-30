@@ -20,26 +20,29 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-#define AXIS_EPSILON  0.01f // Allowed noise for detecting discrete D-pads (value of 0.007 when centered has been observed)
+#define AXIS_EPSILON \
+  0.01f // Allowed noise for detecting discrete D-pads (value of 0.007 when centered has been
+        // observed)
 
 // Settings for analog sticks
-#define SETTING_LEFT_STICK_DEADZONE   "left_stick_deadzone"
-#define SETTING_RIGHT_STICK_DEADZONE  "right_stick_deadzone"
+#define SETTING_LEFT_STICK_DEADZONE "left_stick_deadzone"
+#define SETTING_RIGHT_STICK_DEADZONE "right_stick_deadzone"
 
-CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral* peripheral) :
-  m_buttonMap(buttonMap),
-  m_peripheral(peripheral)
+CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral* peripheral)
+  : m_buttonMap(buttonMap), m_peripheral(peripheral)
 {
   if (m_buttonMap->ControllerID() != DEFAULT_CONTROLLER_ID)
-    CLog::Log(LOGERROR, "ERROR: Must use default controller profile instead of %s", m_buttonMap->ControllerID().c_str());
+    CLog::Log(LOGERROR, "ERROR: Must use default controller profile instead of %s",
+              m_buttonMap->ControllerID().c_str());
 }
 
 float CDeadzoneFilter::FilterAxis(unsigned int axisIndex, float axisValue)
 {
   float deadzone = 0.0f;
 
-  bool bSuccess = GetDeadzone(axisIndex, deadzone, DEFAULT_LEFT_STICK_NAME, SETTING_LEFT_STICK_DEADZONE) ||
-                  GetDeadzone(axisIndex, deadzone, DEFAULT_RIGHT_STICK_NAME, SETTING_RIGHT_STICK_DEADZONE);
+  bool bSuccess =
+      GetDeadzone(axisIndex, deadzone, DEFAULT_LEFT_STICK_NAME, SETTING_LEFT_STICK_DEADZONE) ||
+      GetDeadzone(axisIndex, deadzone, DEFAULT_RIGHT_STICK_NAME, SETTING_RIGHT_STICK_DEADZONE);
 
   if (bSuccess)
     return ApplyDeadzone(axisValue, deadzone);
@@ -51,13 +54,16 @@ float CDeadzoneFilter::FilterAxis(unsigned int axisIndex, float axisValue)
   return axisValue;
 }
 
-bool CDeadzoneFilter::GetDeadzone(unsigned int axisIndex, float& deadzone, const char* featureName, const char* settingName)
+bool CDeadzoneFilter::GetDeadzone(unsigned int axisIndex,
+                                  float& deadzone,
+                                  const char* featureName,
+                                  const char* settingName)
 {
   std::vector<ANALOG_STICK_DIRECTION> dirs = {
-    ANALOG_STICK_DIRECTION::UP,
-    ANALOG_STICK_DIRECTION::RIGHT,
-    ANALOG_STICK_DIRECTION::DOWN,
-    ANALOG_STICK_DIRECTION::LEFT,
+      ANALOG_STICK_DIRECTION::UP,
+      ANALOG_STICK_DIRECTION::RIGHT,
+      ANALOG_STICK_DIRECTION::DOWN,
+      ANALOG_STICK_DIRECTION::LEFT,
   };
 
   CDriverPrimitive primitive;

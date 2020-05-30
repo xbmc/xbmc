@@ -16,52 +16,52 @@ using namespace RETRO;
 
 namespace
 {
-  const uint8_t SCHEMA_VERSION = 1;
+const uint8_t SCHEMA_VERSION = 1;
 
-  /*!
-   * \brief The initial size of the FlatBuffer's memory buffer
-   *
-   * 1024 is the default size in the FlatBuffers header. We might as well use
-   * this until our size requirements are more known.
-   */
-  const size_t INITIAL_FLATBUFFER_SIZE = 1024;
+/*!
+ * \brief The initial size of the FlatBuffer's memory buffer
+ *
+ * 1024 is the default size in the FlatBuffers header. We might as well use
+ * this until our size requirements are more known.
+ */
+const size_t INITIAL_FLATBUFFER_SIZE = 1024;
 
-  /*!
-   * \brief Translate the save type (RetroPlayer to FlatBuffers)
-   */
-  SaveType TranslateType(SAVE_TYPE type)
+/*!
+ * \brief Translate the save type (RetroPlayer to FlatBuffers)
+ */
+SaveType TranslateType(SAVE_TYPE type)
+{
+  switch (type)
   {
-    switch (type)
-    {
     case SAVE_TYPE::AUTO:
       return SaveType_Auto;
     case SAVE_TYPE::MANUAL:
       return SaveType_Manual;
     default:
       break;
-    }
-
-    return SaveType_Unknown;
   }
 
-  /*!
-   * \brief Translate the save type (FlatBuffers to RetroPlayer)
-   */
-  SAVE_TYPE TranslateType(SaveType type)
+  return SaveType_Unknown;
+}
+
+/*!
+ * \brief Translate the save type (FlatBuffers to RetroPlayer)
+ */
+SAVE_TYPE TranslateType(SaveType type)
+{
+  switch (type)
   {
-    switch (type)
-    {
     case SaveType_Auto:
       return SAVE_TYPE::AUTO;
     case SaveType_Manual:
       return SAVE_TYPE::MANUAL;
     default:
       break;
-    }
-
-    return SAVE_TYPE::UNKNOWN;
   }
+
+  return SAVE_TYPE::UNKNOWN;
 }
+} // namespace
 
 CSavestateFlatBuffer::CSavestateFlatBuffer()
 {
@@ -77,7 +77,7 @@ void CSavestateFlatBuffer::Reset()
   m_savestate = nullptr;
 }
 
-bool CSavestateFlatBuffer::Serialize(const uint8_t *&data, size_t &size) const
+bool CSavestateFlatBuffer::Serialize(const uint8_t*& data, size_t& size) const
 {
   // Check if savestate was deserialized from vector or built with FlatBuffers
   if (!m_data.empty())
@@ -130,9 +130,9 @@ std::string CSavestateFlatBuffer::Label() const
   return label;
 }
 
-void CSavestateFlatBuffer::SetLabel(const std::string &label)
+void CSavestateFlatBuffer::SetLabel(const std::string& label)
 {
-  m_labelOffset.reset(new StringOffset{ m_builder->CreateString(label) });
+  m_labelOffset.reset(new StringOffset{m_builder->CreateString(label)});
 }
 
 CDateTime CSavestateFlatBuffer::Created() const
@@ -145,9 +145,9 @@ CDateTime CSavestateFlatBuffer::Created() const
   return created;
 }
 
-void CSavestateFlatBuffer::SetCreated(const CDateTime &created)
+void CSavestateFlatBuffer::SetCreated(const CDateTime& created)
 {
-  m_createdOffset.reset(new StringOffset{ m_builder->CreateString(created.GetAsRFC1123DateTime()) });
+  m_createdOffset.reset(new StringOffset{m_builder->CreateString(created.GetAsRFC1123DateTime())});
 }
 
 std::string CSavestateFlatBuffer::GameFileName() const
@@ -160,9 +160,9 @@ std::string CSavestateFlatBuffer::GameFileName() const
   return gameFileName;
 }
 
-void CSavestateFlatBuffer::SetGameFileName(const std::string &gameFileName)
+void CSavestateFlatBuffer::SetGameFileName(const std::string& gameFileName)
 {
-  m_gameFileNameOffset.reset(new StringOffset{ m_builder->CreateString(gameFileName) });
+  m_gameFileNameOffset.reset(new StringOffset{m_builder->CreateString(gameFileName)});
 }
 
 uint64_t CSavestateFlatBuffer::TimestampFrames() const
@@ -198,9 +198,9 @@ std::string CSavestateFlatBuffer::GameClientID() const
   return gameClientId;
 }
 
-void CSavestateFlatBuffer::SetGameClientID(const std::string &gameClientId)
+void CSavestateFlatBuffer::SetGameClientID(const std::string& gameClientId)
 {
-  m_emulatorAddonIdOffset.reset(new StringOffset{ m_builder->CreateString(gameClientId) });
+  m_emulatorAddonIdOffset.reset(new StringOffset{m_builder->CreateString(gameClientId)});
 }
 
 std::string CSavestateFlatBuffer::GameClientVersion() const
@@ -213,12 +213,12 @@ std::string CSavestateFlatBuffer::GameClientVersion() const
   return gameClientVersion;
 }
 
-void CSavestateFlatBuffer::SetGameClientVersion(const std::string &gameClientVersion)
+void CSavestateFlatBuffer::SetGameClientVersion(const std::string& gameClientVersion)
 {
-  m_emulatorVersionOffset.reset(new StringOffset{ m_builder->CreateString(gameClientVersion) });
+  m_emulatorVersionOffset.reset(new StringOffset{m_builder->CreateString(gameClientVersion)});
 }
 
-const uint8_t *CSavestateFlatBuffer::GetMemoryData() const
+const uint8_t* CSavestateFlatBuffer::GetMemoryData() const
 {
   if (m_savestate != nullptr && m_savestate->memory_data())
     return m_savestate->memory_data()->data();
@@ -234,11 +234,12 @@ size_t CSavestateFlatBuffer::GetMemorySize() const
   return 0;
 }
 
-uint8_t *CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
+uint8_t* CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
 {
-  uint8_t *memoryBuffer = nullptr;
+  uint8_t* memoryBuffer = nullptr;
 
-  m_memoryDataOffset.reset(new VectorOffset{ m_builder->CreateUninitializedVector(size, &memoryBuffer) });
+  m_memoryDataOffset.reset(
+      new VectorOffset{m_builder->CreateUninitializedVector(size, &memoryBuffer)});
 
   return memoryBuffer;
 }
@@ -274,7 +275,8 @@ void CSavestateFlatBuffer::Finalize()
 
   savestateBuilder.add_timestamp_frames(m_timestampFrames);
 
-  const uint64_t wallClockNs = static_cast<uint64_t>(m_timestampWallClock * 1000.0 * 1000.0 * 1000.0);
+  const uint64_t wallClockNs =
+      static_cast<uint64_t>(m_timestampWallClock * 1000.0 * 1000.0 * 1000.0);
   savestateBuilder.add_timestamp_wall_clock_ns(wallClockNs);
 
   if (m_emulatorAddonIdOffset)
@@ -306,13 +308,12 @@ bool CSavestateFlatBuffer::Deserialize(std::vector<uint8_t> data)
   flatbuffers::Verifier verifier(data.data(), data.size());
   if (VerifySavestateBuffer(verifier))
   {
-    const Savestate *savestate = GetSavestate(data.data());
+    const Savestate* savestate = GetSavestate(data.data());
 
     if (savestate->version() != SCHEMA_VERSION)
     {
       CLog::Log(LOGERROR, "RetroPlayer[SAVE): Schema version %u not supported, must be version %u",
-        savestate->version(),
-        SCHEMA_VERSION);
+                savestate->version(), SCHEMA_VERSION);
     }
     else
     {

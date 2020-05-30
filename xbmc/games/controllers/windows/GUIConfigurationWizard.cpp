@@ -26,15 +26,14 @@
 using namespace KODI;
 using namespace GAME;
 
-#define ESC_KEY_CODE  27
-#define SKIPPING_DETECTION_MS  200
+#define ESC_KEY_CODE 27
+#define SKIPPING_DETECTION_MS 200
 
 // Duration to wait for axes to neutralize after mapping is finished
-#define POST_MAPPING_WAIT_TIME_MS  (5 * 1000)
+#define POST_MAPPING_WAIT_TIME_MS (5 * 1000)
 
-CGUIConfigurationWizard::CGUIConfigurationWizard() :
-  CThread("GUIConfigurationWizard"),
-  m_actionMap(new KEYBOARD::CKeymapActionMap)
+CGUIConfigurationWizard::CGUIConfigurationWizard()
+  : CThread("GUIConfigurationWizard"), m_actionMap(new KEYBOARD::CKeymapActionMap)
 {
   InitializeState();
 }
@@ -52,7 +51,8 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_deviceName.clear();
 }
 
-void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
+void CGUIConfigurationWizard::Run(const std::string& strControllerId,
+                                  const std::vector<IFeatureButton*>& buttons)
 {
   Abort();
 
@@ -98,7 +98,7 @@ bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
   return bWasRunning;
 }
 
-void CGUIConfigurationWizard::RegisterKey(const CControllerFeature &key)
+void CGUIConfigurationWizard::RegisterKey(const CControllerFeature& key)
 {
   if (key.Keycode() != XBMCK_UNKNOWN)
     m_keyMap[key.Keycode()] = key;
@@ -140,7 +140,8 @@ void CGUIConfigurationWizard::Process(void)
           if (button->Feature().Type() == FEATURE_TYPE::UNKNOWN)
             CLog::Log(LOGDEBUG, "%s: Waiting for input", m_strControllerId.c_str());
           else
-            CLog::Log(LOGDEBUG, "%s: Waiting for input for feature \"%s\"", m_strControllerId.c_str(), button->Feature().Name().c_str());
+            CLog::Log(LOGDEBUG, "%s: Waiting for input for feature \"%s\"",
+                      m_strControllerId.c_str(), button->Feature().Name().c_str());
 
           if (!button->PromptForInput(m_inputEvent))
             Abort(false);
@@ -183,7 +184,8 @@ void CGUIConfigurationWizard::Process(void)
 
     if (bInMotion)
     {
-      CLog::Log(LOGDEBUG, "Configuration wizard: waiting %ums for axes to neutralize", POST_MAPPING_WAIT_TIME_MS);
+      CLog::Log(LOGDEBUG, "Configuration wizard: waiting %ums for axes to neutralize",
+                POST_MAPPING_WAIT_TIME_MS);
       m_motionlessEvent.WaitMSec(POST_MAPPING_WAIT_TIME_MS);
     }
   }
@@ -212,7 +214,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       std::string feature;
       if (buttonMap->GetFeature(primitive, feature))
       {
-        const auto &actions = keymap->GetActions(CJoystickUtils::MakeKeyName(feature)).actions;
+        const auto& actions = keymap->GetActions(CJoystickUtils::MakeKeyName(feature)).actions;
         if (!actions.empty())
         {
           //! @todo Handle multiple actions mapped to the same key
@@ -258,7 +260,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
           auto it = m_keyMap.find(primitive.Keycode());
           if (it != m_keyMap.end())
           {
-            const CControllerFeature &key = it->second;
+            const CControllerFeature& key = it->second;
             currentButton->SetKey(key);
             m_inputEvent.Set();
           }
@@ -280,8 +282,8 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         }
         else
         {
-          CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
-            m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
+          CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s", m_strControllerId.c_str(),
+                    feature.Name().c_str(), buttonMap->DeviceName().c_str());
 
           switch (feature.Type())
           {
@@ -357,7 +359,8 @@ void CGUIConfigurationWizard::OnEventFrame(const JOYSTICK::IButtonMap* buttonMap
     OnMotionless(buttonMap);
 }
 
-void CGUIConfigurationWizard::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex)
+void CGUIConfigurationWizard::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap,
+                                         unsigned int axisIndex)
 {
   CSingleLock lock(m_stateMutex);
 
@@ -443,7 +446,7 @@ bool CGUIConfigurationWizard::IsMapping() const
   return !m_deviceName.empty();
 }
 
-bool CGUIConfigurationWizard::IsMapping(const std::string &deviceName) const
+bool CGUIConfigurationWizard::IsMapping(const std::string& deviceName) const
 {
   return m_deviceName == deviceName;
 }

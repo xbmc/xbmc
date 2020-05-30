@@ -14,16 +14,16 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CSavestateUtils
-  {
-  public:
-    /*!
-     * \brief Calculate a savestate path for the specified game
-     *
-     * The savestate path is the game path with the extension replaced
-     * by ".sav".
-     */
-    static std::string MakePath(const std::string &gamePath);
-  };
-}
-}
+class CSavestateUtils
+{
+public:
+  /*!
+   * \brief Calculate a savestate path for the specified game
+   *
+   * The savestate path is the game path with the extension replaced
+   * by ".sav".
+   */
+  static std::string MakePath(const std::string& gamePath);
+};
+} // namespace RETRO
+} // namespace KODI

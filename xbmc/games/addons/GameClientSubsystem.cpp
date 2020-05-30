@@ -17,18 +17,18 @@
 using namespace KODI;
 using namespace GAME;
 
-CGameClientSubsystem::CGameClientSubsystem(CGameClient &gameClient,
-                                           AddonInstance_Game &addonStruct,
-                                           CCriticalSection &clientAccess) :
-  m_gameClient(gameClient),
-  m_struct(addonStruct),
-  m_clientAccess(clientAccess)
+CGameClientSubsystem::CGameClientSubsystem(CGameClient& gameClient,
+                                           AddonInstance_Game& addonStruct,
+                                           CCriticalSection& clientAccess)
+  : m_gameClient(gameClient), m_struct(addonStruct), m_clientAccess(clientAccess)
 {
 }
 
 CGameClientSubsystem::~CGameClientSubsystem() = default;
 
-GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess)
+GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient& gameClient,
+                                                            AddonInstance_Game& gameStruct,
+                                                            CCriticalSection& clientAccess)
 {
   GameClientSubsystems subsystems = {};
 
@@ -39,24 +39,24 @@ GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient &gameCli
   return subsystems;
 }
 
-void CGameClientSubsystem::DestroySubsystems(GameClientSubsystems &subsystems)
+void CGameClientSubsystem::DestroySubsystems(GameClientSubsystems& subsystems)
 {
   subsystems.Input.reset();
   subsystems.AddonProperties.reset();
   subsystems.Streams.reset();
 }
 
-CGameClientInput &CGameClientSubsystem::Input() const
+CGameClientInput& CGameClientSubsystem::Input() const
 {
   return m_gameClient.Input();
 }
 
-CGameClientProperties &CGameClientSubsystem::AddonProperties() const
+CGameClientProperties& CGameClientSubsystem::AddonProperties() const
 {
   return m_gameClient.AddonProperties();
 }
 
-CGameClientStreams &CGameClientSubsystem::Streams() const
+CGameClientStreams& CGameClientSubsystem::Streams() const
 {
   return m_gameClient.Streams();
 }

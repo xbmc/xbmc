@@ -18,39 +18,39 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGUIGameControl;
+class CGUIGameControl;
 
-  class CGUIRenderSettings : public IGUIRenderSettings
-  {
-  public:
-    CGUIRenderSettings(CGUIGameControl &guiControl);
-    ~CGUIRenderSettings() override = default;
+class CGUIRenderSettings : public IGUIRenderSettings
+{
+public:
+  CGUIRenderSettings(CGUIGameControl& guiControl);
+  ~CGUIRenderSettings() override = default;
 
-    // implementation of IGUIRenderSettings
-    bool HasVideoFilter() const override;
-    bool HasStretchMode() const override;
-    bool HasRotation() const override;
-    CRenderSettings GetSettings() const override;
-    CRect GetDimensions() const override;
+  // implementation of IGUIRenderSettings
+  bool HasVideoFilter() const override;
+  bool HasStretchMode() const override;
+  bool HasRotation() const override;
+  CRenderSettings GetSettings() const override;
+  CRect GetDimensions() const override;
 
-    // Render functions
-    void Reset();
-    void SetSettings(CRenderSettings settings);
-    void SetDimensions(const CRect &dimensions);
-    void SetVideoFilter(const std::string &videoFilter);
-    void SetStretchMode(STRETCHMODE stretchMode);
-    void SetRotationDegCCW(unsigned int rotationDegCCW);
+  // Render functions
+  void Reset();
+  void SetSettings(CRenderSettings settings);
+  void SetDimensions(const CRect& dimensions);
+  void SetVideoFilter(const std::string& videoFilter);
+  void SetStretchMode(STRETCHMODE stretchMode);
+  void SetRotationDegCCW(unsigned int rotationDegCCW);
 
-  private:
-    // Construction parameters
-    CGUIGameControl &m_guiControl;
+private:
+  // Construction parameters
+  CGUIGameControl& m_guiControl;
 
-    // Render parameters
-    CRenderSettings m_renderSettings;
-    CRect m_renderDimensions;
+  // Render parameters
+  CRenderSettings m_renderSettings;
+  CRect m_renderDimensions;
 
-    // Synchronization parameters
-    mutable CCriticalSection m_mutex;
-  };
-}
-}
+  // Synchronization parameters
+  mutable CCriticalSection m_mutex;
+};
+} // namespace RETRO
+} // namespace KODI

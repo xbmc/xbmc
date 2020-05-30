@@ -25,8 +25,7 @@ using namespace KODI;
 using namespace GAME;
 using namespace KODI::MESSAGING;
 
-CGUIDialogButtonCapture::CGUIDialogButtonCapture() :
-  CThread("ButtonCaptureDlg")
+CGUIDialogButtonCapture::CGUIDialogButtonCapture() : CThread("ButtonCaptureDlg")
 {
 }
 
@@ -43,7 +42,8 @@ void CGUIDialogButtonCapture::Show()
 
     Create();
 
-    bool bAccepted = HELPERS::ShowOKDialogText(CVariant{ GetDialogHeader() }, CVariant{ GetDialogText() });
+    bool bAccepted =
+        HELPERS::ShowOKDialogText(CVariant{GetDialogHeader()}, CVariant{GetDialogText()});
 
     StopThread(false);
 
@@ -65,7 +65,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    HELPERS::UpdateOKDialogText(CVariant{ 35013 }, CVariant{ GetDialogText() });
+    HELPERS::UpdateOKDialogText(CVariant{35013}, CVariant{GetDialogText()});
   }
 }
 
@@ -82,17 +82,18 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     std::string feature;
     if (buttonMap->GetFeature(primitive, feature))
     {
-      const auto &actions = keymap->GetActions(JOYSTICK::CJoystickUtils::MakeKeyName(feature)).actions;
+      const auto& actions =
+          keymap->GetActions(JOYSTICK::CJoystickUtils::MakeKeyName(feature)).actions;
       if (!actions.empty())
       {
         switch (actions.begin()->actionId)
         {
-        case ACTION_SELECT_ITEM:
-        case ACTION_NAV_BACK:
-        case ACTION_PREVIOUS_MENU:
-          return false;
-        default:
-          break;
+          case ACTION_SELECT_ITEM:
+          case ACTION_NAV_BACK:
+          case ACTION_PREVIOUS_MENU:
+            return false;
+          default:
+            break;
         }
       }
     }
@@ -117,13 +118,13 @@ void CGUIDialogButtonCapture::Notify(const Observable& obs, const ObservableMess
 {
   switch (msg)
   {
-  case ObservableMessagePeripheralsChanged:
-  {
-    CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
-    CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
-    break;
-  }
-  default:
-    break;
+    case ObservableMessagePeripheralsChanged:
+    {
+      CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
+      CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
+      break;
+    }
+    default:
+      break;
   }
 }

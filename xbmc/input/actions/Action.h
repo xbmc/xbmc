@@ -16,17 +16,30 @@ class CKey;
 
 /*!
   \ingroup actionkeys
-  \brief class encapsulating information regarding a particular user action to be sent to windows and controls
+  \brief class encapsulating information regarding a particular user action to be sent to windows
+  and controls
   */
 class CAction
 {
 public:
   CAction();
-  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const std::string &name = "", unsigned int holdTime = 0);
+  CAction(int actionID,
+          float amount1 = 1.0f,
+          float amount2 = 0.0f,
+          const std::string& name = "",
+          unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, float velocityX = 0.0f, float velocityY = 0.0f, const std::string &name = "");
-  CAction(int actionID, const std::string &name, const CKey &key);
-  CAction(int actionID, const std::string &name);
+  CAction(int actionID,
+          unsigned int state,
+          float posX,
+          float posY,
+          float offsetX,
+          float offsetY,
+          float velocityX = 0.0f,
+          float velocityY = 0.0f,
+          const std::string& name = "");
+  CAction(int actionID, const std::string& name, const CKey& key);
+  CAction(int actionID, const std::string& name);
 
   CAction(const CAction& other) { *this = other; }
   CAction& operator=(const CAction& rhs);
@@ -46,23 +59,26 @@ public:
   /*! \brief Human-readable name of the action
    \return name of the action
    */
-  const std::string &GetName() const { return m_name; };
+  const std::string& GetName() const { return m_name; };
 
   /*! \brief Text of the action if any
    \return text payload of this action.
    */
-  const std::string &GetText() const { return m_text; };
+  const std::string& GetText() const { return m_text; };
 
   /*! \brief Set the text payload of the action
    \param text to be set
    */
-  void SetText(const std::string &text) { m_text = text; };
+  void SetText(const std::string& text) { m_text = text; };
 
   /*! \brief Get an amount associated with this action
    \param zero-based index of amount to retrieve, defaults to 0
    \return an amount associated with this action
    */
-  float GetAmount(unsigned int index = 0) const { return (index < max_amounts) ? m_amount[index] : 0; };
+  float GetAmount(unsigned int index = 0) const
+  {
+    return (index < max_amounts) ? m_amount[index] : 0;
+  };
 
   /*! \brief Reset all amount values to zero
    */
@@ -91,17 +107,17 @@ public:
   bool IsAnalog() const;
 
 private:
-  int          m_id;
-  std::string   m_name;
+  int m_id;
+  std::string m_name;
 
   static const unsigned int max_amounts = 6; // Must be at least 6
-  float        m_amount[max_amounts] = {};
+  float m_amount[max_amounts] = {};
 
-  float        m_repeat = 0.0f;
+  float m_repeat = 0.0f;
   unsigned int m_holdTime = 0;
   unsigned int m_buttonCode = 0;
-  wchar_t      m_unicode = 0;
-  std::string  m_text;
+  wchar_t m_unicode = 0;
+  std::string m_text;
 };
 
 #endif

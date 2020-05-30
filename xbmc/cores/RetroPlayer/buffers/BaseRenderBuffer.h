@@ -17,24 +17,24 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CBaseRenderBuffer : public IRenderBuffer
-  {
-  public:
-    CBaseRenderBuffer();
-    ~CBaseRenderBuffer() override = default;
+class CBaseRenderBuffer : public IRenderBuffer
+{
+public:
+  CBaseRenderBuffer();
+  ~CBaseRenderBuffer() override = default;
 
-    // Partial implementation of IRenderBuffer
-    void Acquire() override;
-    void Acquire(std::shared_ptr<IRenderBufferPool> pool) override;
-    void Release() override;
-    IRenderBufferPool *GetPool() override { return m_pool.get(); }
+  // Partial implementation of IRenderBuffer
+  void Acquire() override;
+  void Acquire(std::shared_ptr<IRenderBufferPool> pool) override;
+  void Release() override;
+  IRenderBufferPool* GetPool() override { return m_pool.get(); }
 
-  protected:
-    // Reference counting
-    std::atomic_int m_refCount;
+protected:
+  // Reference counting
+  std::atomic_int m_refCount;
 
-    // Pool callback
-    std::shared_ptr<IRenderBufferPool> m_pool;
-  };
-}
-}
+  // Pool callback
+  std::shared_ptr<IRenderBufferPool> m_pool;
+};
+} // namespace RETRO
+} // namespace KODI

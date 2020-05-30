@@ -10,11 +10,11 @@
 
 namespace PERIPHERALS
 {
-  class IEventScannerCallback
-  {
-  public:
-    virtual ~IEventScannerCallback(void) = default;
+class IEventScannerCallback
+{
+public:
+  virtual ~IEventScannerCallback(void) = default;
 
-    virtual void ProcessEvents(void) = 0;
-  };
-}
+  virtual void ProcessEvents(void) = 0;
+};
+} // namespace PERIPHERALS

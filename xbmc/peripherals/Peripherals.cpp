@@ -8,19 +8,24 @@
 
 #include "Peripherals.h"
 
-#include <utility>
-
 #include "EventScanner.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
+
+#include <utility>
 #if defined(TARGET_ANDROID)
 #include "platform/android/peripherals/PeripheralBusAndroid.h"
 #endif
+#include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "Util.h"
 #include "bus/virtual/PeripheralBusAddon.h"
+#include "bus/virtual/PeripheralBusApplication.h"
 #include "devices/PeripheralBluetooth.h"
 #include "devices/PeripheralCecAdapter.h"
 #include "devices/PeripheralDisk.h"
@@ -32,29 +37,24 @@
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
-#include "FileItem.h"
-#include "bus/virtual/PeripheralBusApplication.h"
-#include "input/joysticks/interfaces/IButtonMapper.h"
-#include "interfaces/AnnouncementManager.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "GUIUserMessages.h"
 #include "input/Key.h"
+#include "input/joysticks/interfaces/IButtonMapper.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
 #include "peripherals/dialogs/GUIDialogPeripherals.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
-#include "Util.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
 
 #if defined(HAVE_LIBCEC)
 #include "bus/virtual/PeripheralBusCEC.h"
@@ -69,11 +69,11 @@ using namespace PERIPHERALS;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
-CPeripherals::CPeripherals(CInputManager &inputManager,
-                           GAME::CControllerManager &controllerProfiles) :
-  m_inputManager(inputManager),
-  m_controllerProfiles(controllerProfiles),
-  m_eventScanner(new CEventScanner(*this))
+CPeripherals::CPeripherals(CInputManager& inputManager,
+                           GAME::CControllerManager& controllerProfiles)
+  : m_inputManager(inputManager),
+    m_controllerProfiles(controllerProfiles),
+    m_eventScanner(new CEventScanner(*this))
 {
   // Register settings
   std::set<std::string> settingSet;
@@ -193,17 +193,17 @@ PeripheralBusPtr CPeripherals::GetBusByType(const PeripheralBusType type) const
 {
   CSingleLock lock(m_critSectionBusses);
 
-  const auto& bus = std::find_if(m_busses.cbegin(), m_busses.cend(),
-    [type](const PeripheralBusPtr& bus) {
-      return bus->Type() == type;
-    });
+  const auto& bus =
+      std::find_if(m_busses.cbegin(), m_busses.cend(),
+                   [type](const PeripheralBusPtr& bus) { return bus->Type() == type; });
   if (bus != m_busses.cend())
     return *bus;
 
   return nullptr;
 }
 
-PeripheralPtr CPeripherals::GetPeripheralAtLocation(const std::string &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
+PeripheralPtr CPeripherals::GetPeripheralAtLocation(
+    const std::string& strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   PeripheralPtr result;
 
@@ -226,19 +226,20 @@ PeripheralPtr CPeripherals::GetPeripheralAtLocation(const std::string &strLocati
   return result;
 }
 
-bool CPeripherals::HasPeripheralAtLocation(const std::string &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
+bool CPeripherals::HasPeripheralAtLocation(
+    const std::string& strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   return (GetPeripheralAtLocation(strLocation, busType) != nullptr);
 }
 
-PeripheralBusPtr CPeripherals::GetBusWithDevice(const std::string &strLocation) const
+PeripheralBusPtr CPeripherals::GetBusWithDevice(const std::string& strLocation) const
 {
   CSingleLock lock(m_critSectionBusses);
 
-  const auto& bus = std::find_if(m_busses.cbegin(), m_busses.cend(),
-    [&strLocation](const PeripheralBusPtr& bus) {
-    return bus->HasPeripheral(strLocation);
-  });
+  const auto& bus =
+      std::find_if(m_busses.cbegin(), m_busses.cend(), [&strLocation](const PeripheralBusPtr& bus) {
+        return bus->HasPeripheral(strLocation);
+      });
   if (bus != m_busses.cend())
     return *bus;
 
@@ -256,7 +257,10 @@ bool CPeripherals::SupportsFeature(PeripheralFeature feature) const
   return bSupportsFeature;
 }
 
-int CPeripherals::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
+int CPeripherals::GetPeripheralsWithFeature(
+    PeripheralVector& results,
+    const PeripheralFeature feature,
+    PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   CSingleLock lock(m_critSectionBusses);
   int iReturn(0);
@@ -282,13 +286,14 @@ size_t CPeripherals::GetNumberOfPeripherals() const
   return iReturn;
 }
 
-bool CPeripherals::HasPeripheralWithFeature(const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
+bool CPeripherals::HasPeripheralWithFeature(
+    const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   PeripheralVector dummy;
   return (GetPeripheralsWithFeature(dummy, feature, busType) > 0);
 }
 
-void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanResult& result)
+void CPeripherals::CreatePeripheral(CPeripheralBus& bus, const PeripheralScanResult& result)
 {
   PeripheralPtr peripheral;
   PeripheralScanResult mappedResult = result;
@@ -298,64 +303,69 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
   /* check whether there's something mapped in peripherals.xml */
   GetMappingForDevice(bus, mappedResult);
 
-  switch(mappedResult.m_mappedType)
+  switch (mappedResult.m_mappedType)
   {
-  case PERIPHERAL_HID:
-    peripheral = PeripheralPtr(new CPeripheralHID(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_HID:
+      peripheral = PeripheralPtr(new CPeripheralHID(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_NIC:
-    peripheral = PeripheralPtr(new CPeripheralNIC(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_NIC:
+      peripheral = PeripheralPtr(new CPeripheralNIC(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_DISK:
-    peripheral = PeripheralPtr(new CPeripheralDisk(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_DISK:
+      peripheral = PeripheralPtr(new CPeripheralDisk(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_NYXBOARD:
-    peripheral = PeripheralPtr(new CPeripheralNyxboard(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_NYXBOARD:
+      peripheral = PeripheralPtr(new CPeripheralNyxboard(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_TUNER:
-    peripheral = PeripheralPtr(new CPeripheralTuner(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_TUNER:
+      peripheral = PeripheralPtr(new CPeripheralTuner(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_BLUETOOTH:
-    peripheral = PeripheralPtr(new CPeripheralBluetooth(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_BLUETOOTH:
+      peripheral = PeripheralPtr(new CPeripheralBluetooth(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_CEC:
+    case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
-    if (bus.Type() == PERIPHERAL_BUS_CEC)
-      peripheral = PeripheralPtr(new CPeripheralCecAdapter(*this, mappedResult, &bus));
+      if (bus.Type() == PERIPHERAL_BUS_CEC)
+        peripheral = PeripheralPtr(new CPeripheralCecAdapter(*this, mappedResult, &bus));
 #else
-    if (!m_bMissingLibCecWarningDisplayed)
-    {
-      m_bMissingLibCecWarningDisplayed = true;
-      CLog::Log(LOGWARNING, "%s - libCEC support has not been compiled in, so the CEC adapter cannot be used.", __FUNCTION__);
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
-    }
+      if (!m_bMissingLibCecWarningDisplayed)
+      {
+        m_bMissingLibCecWarningDisplayed = true;
+        CLog::Log(
+            LOGWARNING,
+            "%s - libCEC support has not been compiled in, so the CEC adapter cannot be used.",
+            __FUNCTION__);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
+                                              g_localizeStrings.Get(36000),
+                                              g_localizeStrings.Get(36017));
+      }
 #endif
-    break;
+      break;
 
-  case PERIPHERAL_IMON:
-    peripheral = PeripheralPtr(new CPeripheralImon(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_IMON:
+      peripheral = PeripheralPtr(new CPeripheralImon(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_JOYSTICK:
-    peripheral = PeripheralPtr(new CPeripheralJoystick(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_JOYSTICK:
+      peripheral = PeripheralPtr(new CPeripheralJoystick(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_KEYBOARD:
-    peripheral = PeripheralPtr(new CPeripheralKeyboard(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_KEYBOARD:
+      peripheral = PeripheralPtr(new CPeripheralKeyboard(*this, mappedResult, &bus));
+      break;
 
-  case PERIPHERAL_MOUSE:
-    peripheral = PeripheralPtr(new CPeripheralMouse(*this, mappedResult, &bus));
-    break;
+    case PERIPHERAL_MOUSE:
+      peripheral = PeripheralPtr(new CPeripheralMouse(*this, mappedResult, &bus));
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 
   if (peripheral)
@@ -366,12 +376,13 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
       bus.Register(peripheral);
     else
     {
-      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, mappedResult.m_strLocation.c_str());
+      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__,
+                mappedResult.m_strLocation.c_str());
     }
   }
 }
 
-void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &peripheral)
+void CPeripherals::OnDeviceAdded(const CPeripheralBus& bus, const CPeripheral& peripheral)
 {
   OnDeviceChanged();
 
@@ -388,7 +399,7 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
 #endif
 }
 
-void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral &peripheral)
+void CPeripherals::OnDeviceDeleted(const CPeripheralBus& bus, const CPeripheral& peripheral)
 {
   OnDeviceChanged();
 
@@ -405,12 +416,14 @@ void CPeripherals::OnDeviceChanged()
 {
   // refresh settings (peripherals manager could be enabled/disabled now)
   CGUIMessage msgSettings(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msgSettings,
+                                                                 WINDOW_SETTINGS_SYSTEM);
 
   SetChanged();
 }
 
-bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const
+bool CPeripherals::GetMappingForDevice(const CPeripheralBus& bus,
+                                       PeripheralScanResult& result) const
 {
   CSingleLock lock(m_critSectionMappings);
 
@@ -423,11 +436,13 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScan
     else
     {
       for (const auto& peripheralID : mapping.m_PeripheralID)
-        if (peripheralID.m_iVendorId == result.m_iVendorId && peripheralID.m_iProductId == result.m_iProductId)
+        if (peripheralID.m_iVendorId == result.m_iVendorId &&
+            peripheralID.m_iProductId == result.m_iProductId)
           bProductMatch = true;
     }
 
-    bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
+    bool bBusMatch =
+        (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
     bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == result.m_type);
 
     if (bProductMatch && bBusMatch && bClassMatch)
@@ -435,8 +450,10 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScan
       std::string strVendorId, strProductId;
       PeripheralTypeTranslator::FormatHexString(result.m_iVendorId, strVendorId);
       PeripheralTypeTranslator::FormatHexString(result.m_iProductId, strProductId);
-      CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
-      result.m_mappedType    = mapping.m_mappedTo;
+      CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__,
+                strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(),
+                PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
+      result.m_mappedType = mapping.m_mappedTo;
       if (!mapping.m_strDeviceName.empty())
         result.m_strDeviceName = mapping.m_strDeviceName;
       return true;
@@ -446,7 +463,7 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScan
   return false;
 }
 
-void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
+void CPeripherals::GetSettingsFromMapping(CPeripheral& peripheral) const
 {
   CSingleLock lock(m_critSectionMappings);
 
@@ -459,12 +476,15 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
     else
     {
       for (const auto& peripheralID : mapping.m_PeripheralID)
-        if (peripheralID.m_iVendorId == peripheral.VendorId() && peripheralID.m_iProductId == peripheral.ProductId())
+        if (peripheralID.m_iVendorId == peripheral.VendorId() &&
+            peripheralID.m_iProductId == peripheral.ProductId())
           bProductMatch = true;
     }
 
-    bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == peripheral.GetBusType());
-    bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == peripheral.Type());
+    bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN ||
+                      mapping.m_busType == peripheral.GetBusType());
+    bool bClassMatch =
+        (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == peripheral.Type());
 
     if (bBusMatch && bProductMatch && bClassMatch)
     {
@@ -486,14 +506,15 @@ bool CPeripherals::LoadMappings()
     return true;
   }
 
-  TiXmlElement *pRootElement = xmlDoc.RootElement();
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
   {
     CLog::Log(LOGERROR, "%s - peripherals.xml does not contain <peripherals>", __FUNCTION__);
     return false;
   }
 
-  for (TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral"); currentNode; currentNode = currentNode->NextSiblingElement("peripheral"))
+  for (TiXmlElement* currentNode = pRootElement->FirstChildElement("peripheral"); currentNode;
+       currentNode = currentNode->NextSiblingElement("peripheral"))
   {
     PeripheralID id;
     PeripheralDeviceMapping mapping;
@@ -504,13 +525,15 @@ bool CPeripherals::LoadMappings()
     if (currentNode->Attribute("vendor_product"))
     {
       // The vendor_product attribute is a list of comma separated vendor:product pairs
-      std::vector<std::string> vpArray = StringUtils::Split(currentNode->Attribute("vendor_product"), ",");
+      std::vector<std::string> vpArray =
+          StringUtils::Split(currentNode->Attribute("vendor_product"), ",");
       for (const auto& i : vpArray)
       {
         std::vector<std::string> idArray = StringUtils::Split(i, ":");
         if (idArray.size() != 2)
         {
-          CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
+          CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute",
+                    __FUNCTION__, mapping.m_strDeviceName.c_str());
           continue;
         }
 
@@ -520,9 +543,12 @@ bool CPeripherals::LoadMappings()
       }
     }
 
-    mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(XMLUtils::GetAttribute(currentNode, "bus"));
-    mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(XMLUtils::GetAttribute(currentNode, "class"));
-    mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(XMLUtils::GetAttribute(currentNode, "mapTo"));
+    mapping.m_busType =
+        PeripheralTypeTranslator::GetBusTypeFromString(XMLUtils::GetAttribute(currentNode, "bus"));
+    mapping.m_class =
+        PeripheralTypeTranslator::GetTypeFromString(XMLUtils::GetAttribute(currentNode, "class"));
+    mapping.m_mappedTo =
+        PeripheralTypeTranslator::GetTypeFromString(XMLUtils::GetAttribute(currentNode, "mapTo"));
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
@@ -532,9 +558,10 @@ bool CPeripherals::LoadMappings()
   return true;
 }
 
-void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &settings)
+void CPeripherals::GetSettingsFromMappingsFile(
+    TiXmlElement* xmlNode, std::map<std::string, PeripheralDeviceSetting>& settings)
 {
-  TiXmlElement *currentNode = xmlNode->FirstChildElement("setting");
+  TiXmlElement* currentNode = xmlNode->FirstChildElement("setting");
   int iMaxOrder = 0;
 
   while (currentNode)
@@ -557,17 +584,19 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<s
     else if (strSettingsType == "int")
     {
       int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
-      int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
-      int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 1;
-      int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
+      int iMin = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
+      int iStep = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 1;
+      int iMax = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
       setting = std::make_shared<CSettingInt>(strKey, iLabelId, iValue, iMin, iStep, iMax);
     }
     else if (strSettingsType == "float")
     {
-      float fValue = currentNode->Attribute("value") ? (float) atof(currentNode->Attribute("value")) : 0;
-      float fMin   = currentNode->Attribute("min") ? (float) atof(currentNode->Attribute("min")) : 0;
-      float fStep  = currentNode->Attribute("step") ? (float) atof(currentNode->Attribute("step")) : 0;
-      float fMax   = currentNode->Attribute("max") ? (float) atof(currentNode->Attribute("max")) : 0;
+      float fValue =
+          currentNode->Attribute("value") ? (float)atof(currentNode->Attribute("value")) : 0;
+      float fMin = currentNode->Attribute("min") ? (float)atof(currentNode->Attribute("min")) : 0;
+      float fStep =
+          currentNode->Attribute("step") ? (float)atof(currentNode->Attribute("step")) : 0;
+      float fMax = currentNode->Attribute("max") ? (float)atof(currentNode->Attribute("max")) : 0;
       setting = std::make_shared<CSettingNumber>(strKey, iLabelId, fValue, fMin, fStep, fMax);
     }
     else if (StringUtils::EqualsNoCase(strSettingsType, "enum"))
@@ -604,10 +633,10 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<s
       if (iOrder < 0)
         iOrder = 0;
       if (iOrder > iMaxOrder)
-       iMaxOrder = iOrder;
+        iMaxOrder = iOrder;
 
       /* and add this new setting */
-      PeripheralDeviceSetting deviceSetting = { setting, iOrder };
+      PeripheralDeviceSetting deviceSetting = {setting, iOrder};
       settings[strKey] = deviceSetting;
     }
 
@@ -622,7 +651,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<s
   }
 }
 
-void CPeripherals::GetDirectory(const std::string &strPath, CFileItemList &items) const
+void CPeripherals::GetDirectory(const std::string& strPath, CFileItemList& items) const
 {
   if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return;
@@ -639,7 +668,7 @@ void CPeripherals::GetDirectory(const std::string &strPath, CFileItemList &items
   }
 }
 
-PeripheralPtr CPeripherals::GetByPath(const std::string &strPath) const
+PeripheralPtr CPeripherals::GetByPath(const std::string& strPath) const
 {
   PeripheralPtr result;
 
@@ -662,21 +691,23 @@ PeripheralPtr CPeripherals::GetByPath(const std::string &strPath) const
   return result;
 }
 
-bool CPeripherals::OnAction(const CAction &action)
+bool CPeripherals::OnAction(const CAction& action)
 {
   if (action.GetID() == ACTION_MUTE)
   {
     return ToggleMute();
   }
 
-  if (SupportsCEC() && action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
+  if (SupportsCEC() && action.GetAmount() &&
+      (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
   {
     PeripheralVector peripherals;
     if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
     {
       for (auto& peripheral : peripherals)
       {
-        std::shared_ptr<CPeripheralCecAdapter> cecDevice = std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
+        std::shared_ptr<CPeripheralCecAdapter> cecDevice =
+            std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
         if (cecDevice->HasAudioControl())
         {
           if (action.GetID() == ACTION_VOLUME_UP)
@@ -699,7 +730,8 @@ bool CPeripherals::IsMuted()
   {
     for (const auto& peripheral : peripherals)
     {
-      std::shared_ptr<CPeripheralCecAdapter> cecDevice = std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
+      std::shared_ptr<CPeripheralCecAdapter> cecDevice =
+          std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
       if (cecDevice->IsMuted())
         return true;
     }
@@ -715,7 +747,8 @@ bool CPeripherals::ToggleMute()
   {
     for (auto& peripheral : peripherals)
     {
-      std::shared_ptr<CPeripheralCecAdapter> cecDevice = std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
+      std::shared_ptr<CPeripheralCecAdapter> cecDevice =
+          std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
       if (cecDevice->HasAudioControl())
       {
         cecDevice->ToggleMute();
@@ -736,7 +769,8 @@ bool CPeripherals::ToggleDeviceState(CecStateChange mode /*= STATE_SWITCH_TOGGLE
   {
     for (auto& peripheral : peripherals)
     {
-      std::shared_ptr<CPeripheralCecAdapter> cecDevice = std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
+      std::shared_ptr<CPeripheralCecAdapter> cecDevice =
+          std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
       ret |= cecDevice->ToggleDeviceState(mode);
     }
   }
@@ -744,14 +778,15 @@ bool CPeripherals::ToggleDeviceState(CecStateChange mode /*= STATE_SWITCH_TOGGLE
   return ret;
 }
 
-bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
+bool CPeripherals::GetNextKeypress(float frameTime, CKey& key)
 {
   PeripheralVector peripherals;
   if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
   {
     for (auto& peripheral : peripherals)
     {
-      std::shared_ptr<CPeripheralCecAdapter> cecDevice = std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
+      std::shared_ptr<CPeripheralCecAdapter> cecDevice =
+          std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
       if (cecDevice->GetButton())
       {
         CKey newKey(cecDevice->GetButton(), cecDevice->GetHoldTime());
@@ -777,7 +812,8 @@ EventLockHandlePtr CPeripherals::RegisterEventLock()
 
 void CPeripherals::OnUserNotification()
 {
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_INPUT_RUMBLENOTIFY))
     return;
 
   PeripheralVector peripherals;
@@ -797,16 +833,19 @@ void CPeripherals::TestFeature(PeripheralFeature feature)
     if (peripheral->TestFeature(feature))
     {
       CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" tested %s feature",
-          peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+                peripheral->DeviceName().c_str(),
+                PeripheralTypeTranslator::FeatureToString(feature));
     }
     else
     {
       if (peripheral->HasFeature(feature))
         CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" failed to test %s feature",
-            peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+                  peripheral->DeviceName().c_str(),
+                  PeripheralTypeTranslator::FeatureToString(feature));
       else
         CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" doesn't support %s feature",
-            peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+                  peripheral->DeviceName().c_str(),
+                  PeripheralTypeTranslator::FeatureToString(feature));
     }
   }
 }
@@ -842,7 +881,8 @@ void CPeripherals::EnableButtonMapping()
 
 PeripheralAddonPtr CPeripherals::GetAddonWithButtonMap(const CPeripheral* device)
 {
-  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
+  PeripheralBusAddonPtr addonBus =
+      std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
 
   PeripheralAddonPtr addon;
 
@@ -855,7 +895,8 @@ PeripheralAddonPtr CPeripherals::GetAddonWithButtonMap(const CPeripheral* device
 
 void CPeripherals::ResetButtonMaps(const std::string& controllerId)
 {
-  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
+  PeripheralBusAddonPtr addonBus =
+      std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
 
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
@@ -900,7 +941,7 @@ void CPeripherals::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   if (setting == nullptr)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_LOCALE_LANGUAGE)
   {
     // user set language, no longer use the TV's language
@@ -918,7 +959,7 @@ void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
   if (setting == nullptr)
     return;
 
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_PERIPHERALS)
     CGUIDialogPeripherals::Show(*this);
   else if (settingId == CSettings::SETTING_INPUT_CONTROLLERCONFIG)
@@ -928,7 +969,9 @@ void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
   else if (settingId == CSettings::SETTING_INPUT_PERIPHERALLIBRARIES)
   {
     std::string strAddonId;
-    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_PERIPHERALDLL, strAddonId, false, true, true, false, true) == 1 && !strAddonId.empty())
+    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_PERIPHERALDLL, strAddonId, false, true,
+                                              true, false, true) == 1 &&
+        !strAddonId.empty())
     {
       ADDON::AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon))
@@ -941,17 +984,17 @@ void CPeripherals::OnApplicationMessage(MESSAGING::ThreadMessage* pMsg)
 {
   switch (pMsg->dwMessage)
   {
-  case TMSG_CECTOGGLESTATE:
-    *static_cast<bool*>(pMsg->lpVoid) = ToggleDeviceState(STATE_SWITCH_TOGGLE);
-    break;
+    case TMSG_CECTOGGLESTATE:
+      *static_cast<bool*>(pMsg->lpVoid) = ToggleDeviceState(STATE_SWITCH_TOGGLE);
+      break;
 
-  case TMSG_CECACTIVATESOURCE:
-    ToggleDeviceState(STATE_ACTIVATE_SOURCE);
-    break;
+    case TMSG_CECACTIVATESOURCE:
+      ToggleDeviceState(STATE_ACTIVATE_SOURCE);
+      break;
 
-  case TMSG_CECSTANDBY:
-    ToggleDeviceState(STATE_STANDBY);
-    break;
+    case TMSG_CECSTANDBY:
+      ToggleDeviceState(STATE_STANDBY);
+      break;
   }
 }
 
@@ -960,13 +1003,17 @@ int CPeripherals::GetMessageMask()
   return TMSG_MASK_PERIPHERALS;
 }
 
-void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                            const char* sender,
+                            const char* message,
+                            const CVariant& data)
 {
   if (flag == ANNOUNCEMENT::Player && strcmp(sender, "xbmc") == 0)
   {
     if (strcmp(message, "OnQuit") == 0)
     {
-      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
         PowerOffDevices();
     }
   }

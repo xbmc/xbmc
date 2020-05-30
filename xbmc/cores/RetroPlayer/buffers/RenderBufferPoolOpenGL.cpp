@@ -17,17 +17,14 @@
 using namespace KODI;
 using namespace RETRO;
 
-bool CRenderBufferPoolOpenGL::IsCompatible(const CRenderVideoSettings &renderSettings) const
+bool CRenderBufferPoolOpenGL::IsCompatible(const CRenderVideoSettings& renderSettings) const
 {
   return CRPRendererOpenGL::SupportsScalingMethod(renderSettings.GetScalingMethod());
 }
 
-IRenderBuffer *CRenderBufferPoolOpenGL::CreateRenderBuffer(void *header /* = nullptr */)
+IRenderBuffer* CRenderBufferPoolOpenGL::CreateRenderBuffer(void* header /* = nullptr */)
 {
-  return new CRenderBufferOpenGL(m_pixeltype,
-                                 m_internalformat,
-                                 m_pixelformat,
-                                 m_bpp);
+  return new CRenderBufferOpenGL(m_pixeltype, m_internalformat, m_pixelformat, m_bpp);
 }
 
 bool CRenderBufferPoolOpenGL::ConfigureInternal()
@@ -35,32 +32,32 @@ bool CRenderBufferPoolOpenGL::ConfigureInternal()
   // Configure CRenderBufferPoolOpenGLES
   switch (m_format)
   {
-  case AV_PIX_FMT_0RGB32:
-  {
-    m_pixeltype = GL_UNSIGNED_BYTE;
-    m_internalformat = GL_RGBA;
-    m_pixelformat = GL_BGRA;
-    m_bpp = sizeof(uint32_t);
-    return true;
-  }
-  case AV_PIX_FMT_RGB555:
-  {
-    m_pixeltype = GL_UNSIGNED_SHORT_5_5_5_1;
-    m_internalformat = GL_RGB;
-    m_pixelformat = GL_RGB;
-    m_bpp = sizeof(uint16_t);
-    return true;
-  }
-  case AV_PIX_FMT_RGB565:
-  {
-    m_pixeltype = GL_UNSIGNED_SHORT_5_6_5;
-    m_internalformat = GL_RGB;
-    m_pixelformat = GL_RGB;
-    m_bpp = sizeof(uint16_t);
-    return true;
-  }
-  default:
-    break;
+    case AV_PIX_FMT_0RGB32:
+    {
+      m_pixeltype = GL_UNSIGNED_BYTE;
+      m_internalformat = GL_RGBA;
+      m_pixelformat = GL_BGRA;
+      m_bpp = sizeof(uint32_t);
+      return true;
+    }
+    case AV_PIX_FMT_RGB555:
+    {
+      m_pixeltype = GL_UNSIGNED_SHORT_5_5_5_1;
+      m_internalformat = GL_RGB;
+      m_pixelformat = GL_RGB;
+      m_bpp = sizeof(uint16_t);
+      return true;
+    }
+    case AV_PIX_FMT_RGB565:
+    {
+      m_pixeltype = GL_UNSIGNED_SHORT_5_6_5;
+      m_internalformat = GL_RGB;
+      m_pixelformat = GL_RGB;
+      m_bpp = sizeof(uint16_t);
+      return true;
+    }
+    default:
+      break;
   }
 
   return false;

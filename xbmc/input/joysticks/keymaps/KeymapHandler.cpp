@@ -26,9 +26,8 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-CKeymapHandler::CKeymapHandler(IActionListener *actionHandler, const IKeymap *keymap) :
-  m_actionHandler(actionHandler),
-  m_keymap(keymap)
+CKeymapHandler::CKeymapHandler(IActionListener* actionHandler, const IKeymap* keymap)
+  : m_actionHandler(actionHandler), m_keymap(keymap)
 {
   assert(m_actionHandler != nullptr);
   assert(m_keymap != nullptr);
@@ -37,11 +36,11 @@ CKeymapHandler::CKeymapHandler(IActionListener *actionHandler, const IKeymap *ke
     m_easterEgg.reset(new CJoystickEasterEgg(ControllerID()));
 }
 
-bool CKeymapHandler::HotkeysPressed(const std::set<std::string> &keyNames) const
+bool CKeymapHandler::HotkeysPressed(const std::set<std::string>& keyNames) const
 {
   bool bHotkeysPressed = true;
 
-  for (const auto &hotkey : keyNames)
+  for (const auto& hotkey : keyNames)
   {
     auto it = m_keyHandlers.find(hotkey);
     if (it == m_keyHandlers.end() || !it->second->IsPressed())
@@ -80,7 +79,7 @@ bool CKeymapHandler::OnButtonPress(const FeatureName& feature, bool bPressed)
 
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   return handler->OnDigitalMotion(bPressed, 0);
 }
 
@@ -91,19 +90,24 @@ void CKeymapHandler::OnButtonHold(const FeatureName& feature, unsigned int holdT
 
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   handler->OnDigitalMotion(true, holdTimeMs);
 }
 
-bool CKeymapHandler::OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs)
+bool CKeymapHandler::OnButtonMotion(const FeatureName& feature,
+                                    float magnitude,
+                                    unsigned int motionTimeMs)
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   return handler->OnAnalogMotion(magnitude, motionTimeMs);
 }
 
-bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs)
+bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature,
+                                         float x,
+                                         float y,
+                                         unsigned int motionTimeMs)
 {
   using namespace INPUT;
 
@@ -129,7 +133,9 @@ bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, fl
   return bHandled;
 }
 
-bool CKeymapHandler::OnWheelMotion(const FeatureName& feature, float position, unsigned int motionTimeMs)
+bool CKeymapHandler::OnWheelMotion(const FeatureName& feature,
+                                   float position,
+                                   unsigned int motionTimeMs)
 {
   bool bHandled = false;
 
@@ -153,7 +159,9 @@ bool CKeymapHandler::OnWheelMotion(const FeatureName& feature, float position, u
   return bHandled;
 }
 
-bool CKeymapHandler::OnThrottleMotion(const FeatureName& feature, float position, unsigned int motionTimeMs)
+bool CKeymapHandler::OnThrottleMotion(const FeatureName& feature,
+                                      float position,
+                                      unsigned int motionTimeMs)
 {
   bool bHandled = false;
 
@@ -182,11 +190,14 @@ bool CKeymapHandler::OnAccelerometerMotion(const FeatureName& feature, float x, 
   return false; //! @todo implement
 }
 
-bool CKeymapHandler::ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs)
+bool CKeymapHandler::ActivateDirection(const FeatureName& feature,
+                                       float magnitude,
+                                       ANALOG_STICK_DIRECTION dir,
+                                       unsigned int motionTimeMs)
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature, dir);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   return handler->OnAnalogMotion(magnitude, motionTimeMs);
 }
 
@@ -194,15 +205,18 @@ void CKeymapHandler::DeactivateDirection(const FeatureName& feature, ANALOG_STIC
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature, dir);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   handler->OnAnalogMotion(0.0f, 0);
 }
 
-bool CKeymapHandler::ActivateDirection(const FeatureName& feature, float magnitude, WHEEL_DIRECTION dir, unsigned int motionTimeMs)
+bool CKeymapHandler::ActivateDirection(const FeatureName& feature,
+                                       float magnitude,
+                                       WHEEL_DIRECTION dir,
+                                       unsigned int motionTimeMs)
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature, dir);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   return handler->OnAnalogMotion(magnitude, motionTimeMs);
 }
 
@@ -210,15 +224,18 @@ void CKeymapHandler::DeactivateDirection(const FeatureName& feature, WHEEL_DIREC
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature, dir);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   handler->OnAnalogMotion(0.0f, 0);
 }
 
-bool CKeymapHandler::ActivateDirection(const FeatureName& feature, float magnitude, THROTTLE_DIRECTION dir, unsigned int motionTimeMs)
+bool CKeymapHandler::ActivateDirection(const FeatureName& feature,
+                                       float magnitude,
+                                       THROTTLE_DIRECTION dir,
+                                       unsigned int motionTimeMs)
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature, dir);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   return handler->OnAnalogMotion(magnitude, motionTimeMs);
 }
 
@@ -226,11 +243,11 @@ void CKeymapHandler::DeactivateDirection(const FeatureName& feature, THROTTLE_DI
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature, dir);
 
-  IKeyHandler *handler = GetKeyHandler(keyName);
+  IKeyHandler* handler = GetKeyHandler(keyName);
   handler->OnAnalogMotion(0.0f, 0);
 }
 
-IKeyHandler *CKeymapHandler::GetKeyHandler(const std::string &keyName)
+IKeyHandler* CKeymapHandler::GetKeyHandler(const std::string& keyName)
 {
   auto it = m_keyHandlers.find(keyName);
   if (it == m_keyHandlers.end())
@@ -243,12 +260,12 @@ IKeyHandler *CKeymapHandler::GetKeyHandler(const std::string &keyName)
   return it->second.get();
 }
 
-bool CKeymapHandler::HasAction(const std::string &keyName) const
+bool CKeymapHandler::HasAction(const std::string& keyName) const
 {
   bool bHasAction = false;
 
-  const auto &actions = m_keymap->GetActions(keyName).actions;
-  for (const auto &action : actions)
+  const auto& actions = m_keymap->GetActions(keyName).actions;
+  for (const auto& action : actions)
   {
     if (HotkeysPressed(action.hotkeys))
     {

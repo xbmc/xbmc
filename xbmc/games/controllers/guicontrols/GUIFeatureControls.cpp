@@ -13,8 +13,10 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIFeatureGroupTitle::CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int buttonIndex) :
-  CGUILabelControl(groupTitleTemplate)
+CGUIFeatureGroupTitle::CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate,
+                                             const std::string& groupName,
+                                             unsigned int buttonIndex)
+  : CGUILabelControl(groupTitleTemplate)
 {
   // Initialize CGUILabelControl
   SetLabel(groupName);
@@ -23,8 +25,9 @@ CGUIFeatureGroupTitle::CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleT
   AllocResources();
 }
 
-CGUIFeatureSeparator::CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int buttonIndex) :
-  CGUIImage(separatorTemplate)
+CGUIFeatureSeparator::CGUIFeatureSeparator(const CGUIImage& separatorTemplate,
+                                           unsigned int buttonIndex)
+  : CGUIImage(separatorTemplate)
 {
   // Initialize CGUIImage
   SetID(CONTROL_FEATURE_SEPARATORS_START + buttonIndex);

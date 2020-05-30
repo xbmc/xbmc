@@ -14,30 +14,30 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGameClient;
+class CGameClient;
 
+/*!
+ * \ingroup games
+ * \brief Handles events for hardware such as reset buttons
+ */
+class CGameClientHardware : public HARDWARE::IHardwareInput
+{
+public:
   /*!
-   * \ingroup games
-   * \brief Handles events for hardware such as reset buttons
+   * \brief Constructor
+   *
+   * \param gameClient The game client implementation
    */
-  class CGameClientHardware : public HARDWARE::IHardwareInput
-  {
-  public:
-    /*!
-     * \brief Constructor
-     *
-     * \param gameClient The game client implementation
-     */
-    explicit CGameClientHardware(CGameClient &gameClient);
+  explicit CGameClientHardware(CGameClient& gameClient);
 
-    ~CGameClientHardware() override = default;
+  ~CGameClientHardware() override = default;
 
-    // Implementation of IHardwareInput
-    void OnResetButton() override;
+  // Implementation of IHardwareInput
+  void OnResetButton() override;
 
-  private:
-    // Construction parameter
-    CGameClient &m_gameClient;
-  };
-}
-}
+private:
+  // Construction parameter
+  CGameClient& m_gameClient;
+};
+} // namespace GAME
+} // namespace KODI

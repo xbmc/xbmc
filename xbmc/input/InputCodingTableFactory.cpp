@@ -14,7 +14,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-IInputCodingTable* CInputCodingTableFactory::CreateCodingTable(const std::string& strTableName, const TiXmlElement* element)
+IInputCodingTable* CInputCodingTableFactory::CreateCodingTable(const std::string& strTableName,
+                                                               const TiXmlElement* element)
 {
   if (strTableName == "BaiduPY")
   {

@@ -32,17 +32,17 @@ public:
 
   enum ModifierKey
   {
-    ModifierKeyNone   = 0x00,
-    ModifierKeyShift  = 0x01,
+    ModifierKeyNone = 0x00,
+    ModifierKeyShift = 0x01,
     ModifierKeySymbol = 0x02
   };
 
   std::string GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers = 0) const;
 
 private:
-  static std::vector<std::string> BreakCharacters(const std::string &chars);
+  static std::vector<std::string> BreakCharacters(const std::string& chars);
 
-  typedef std::vector< std::vector<std::string> > KeyboardRows;
+  typedef std::vector<std::vector<std::string>> KeyboardRows;
   typedef std::map<unsigned int, KeyboardRows> Keyboards;
 
   std::string m_language;

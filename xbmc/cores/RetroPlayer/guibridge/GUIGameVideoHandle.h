@@ -14,21 +14,21 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CGUIGameRenderManager;
+class CGUIGameRenderManager;
 
-  class CGUIGameVideoHandle
-  {
-  public:
-    CGUIGameVideoHandle(CGUIGameRenderManager &renderManager);
-    virtual ~CGUIGameVideoHandle();
+class CGUIGameVideoHandle
+{
+public:
+  CGUIGameVideoHandle(CGUIGameRenderManager& renderManager);
+  virtual ~CGUIGameVideoHandle();
 
-    bool IsPlayingGame();
-    bool SupportsRenderFeature(RENDERFEATURE feature);
-    bool SupportsScalingMethod(SCALINGMETHOD method);
+  bool IsPlayingGame();
+  bool SupportsRenderFeature(RENDERFEATURE feature);
+  bool SupportsScalingMethod(SCALINGMETHOD method);
 
-  private:
-    // Construction parameters
-    CGUIGameRenderManager &m_renderManager;
-  };
-}
-}
+private:
+  // Construction parameters
+  CGUIGameRenderManager& m_renderManager;
+};
+} // namespace RETRO
+} // namespace KODI

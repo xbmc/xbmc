@@ -16,40 +16,40 @@ namespace KODI
 {
 namespace RETRO
 {
+/*!
+ * \brief Video settings provided by the rendering system
+ */
+class CRenderVideoSettings
+{
+public:
+  CRenderVideoSettings() { Reset(); }
+
+  void Reset();
+
+  bool operator==(const CRenderVideoSettings& rhs) const;
+  bool operator!=(const CRenderVideoSettings& rhs) const { return !(*this == rhs); }
+  bool operator<(const CRenderVideoSettings& rhs) const;
+  bool operator>(const CRenderVideoSettings& rhs) const { return !(*this == rhs || *this < rhs); }
+
   /*!
-   * \brief Video settings provided by the rendering system
+   * \brief Get a string representation of the video filter parameters
    */
-  class CRenderVideoSettings
-  {
-  public:
-    CRenderVideoSettings() { Reset(); }
+  std::string GetVideoFilter() const;
+  void SetVideoFilter(const std::string& videoFilter);
 
-    void Reset();
+  SCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
+  void SetScalingMethod(SCALINGMETHOD method) { m_scalingMethod = method; }
 
-    bool operator==(const CRenderVideoSettings &rhs) const;
-    bool operator!=(const CRenderVideoSettings &rhs) const { return !(*this == rhs); }
-    bool operator<(const CRenderVideoSettings &rhs) const;
-    bool operator>(const CRenderVideoSettings &rhs) const { return !(*this == rhs || *this < rhs); }
+  STRETCHMODE GetRenderStretchMode() const { return m_stretchMode; }
+  void SetRenderStretchMode(STRETCHMODE mode) { m_stretchMode = mode; }
 
-    /*!
-     * \brief Get a string representation of the video filter parameters
-     */
-    std::string GetVideoFilter() const;
-    void SetVideoFilter(const std::string &videoFilter);
+  unsigned int GetRenderRotation() const { return m_rotationDegCCW; }
+  void SetRenderRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
 
-    SCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
-    void SetScalingMethod(SCALINGMETHOD method) { m_scalingMethod = method; }
-
-    STRETCHMODE GetRenderStretchMode() const { return m_stretchMode; }
-    void SetRenderStretchMode(STRETCHMODE mode) { m_stretchMode = mode; }
-
-    unsigned int GetRenderRotation() const { return m_rotationDegCCW; }
-    void SetRenderRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
-
-  private:
-    SCALINGMETHOD m_scalingMethod;
-    STRETCHMODE m_stretchMode;
-    unsigned int m_rotationDegCCW;
-  };
-}
-}
+private:
+  SCALINGMETHOD m_scalingMethod;
+  STRETCHMODE m_stretchMode;
+  unsigned int m_rotationDegCCW;
+};
+} // namespace RETRO
+} // namespace KODI

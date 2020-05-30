@@ -10,8 +10,10 @@
 
 using namespace PERIPHERALS;
 
-CPeripheralTuner::CPeripheralTuner(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
-  CPeripheral(manager, scanResult, bus)
+CPeripheralTuner::CPeripheralTuner(CPeripherals& manager,
+                                   const PeripheralScanResult& scanResult,
+                                   CPeripheralBus* bus)
+  : CPeripheral(manager, scanResult, bus)
 {
   m_features.push_back(FEATURE_TUNER);
 }

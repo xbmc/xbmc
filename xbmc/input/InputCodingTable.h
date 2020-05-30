@@ -15,7 +15,11 @@
 class IInputCodingTable
 {
 public:
-  enum { TYPE_WORD_LIST, TYPE_CONVERT_STRING };
+  enum
+  {
+    TYPE_WORD_LIST,
+    TYPE_CONVERT_STRING
+  };
   virtual int GetType() { return TYPE_WORD_LIST; }
 
   virtual ~IInputCodingTable() = default;
@@ -33,7 +37,9 @@ public:
   */
   virtual void Deinitialize() {}
 
-  /*! \brief Can be overridden if initialization is expensive to avoid calling initialize more than needed
+  /*! \brief Can be overridden if initialization is expensive to avoid calling initialize more than
+      needed
+
       \return true if initialization has been done and was successful, false otherwise.
   */
   virtual bool IsInitialized() const { return true; }

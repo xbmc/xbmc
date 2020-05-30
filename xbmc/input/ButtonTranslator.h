@@ -49,18 +49,19 @@ public:
    \param key to search a mapping for
    \return true if a longpress mapping exists
    */
-  bool HasLongpressMapping(int window, const CKey &key);
+  bool HasLongpressMapping(int window, const CKey& key);
 
   /*! \brief Obtain the action configured for a given window and key
    \param window the window id
    \param key the key to query the action for
-   \param fallback if no action is directly configured for the given window, obtain the action from fallback window, if exists or from global config as last resort
+   \param fallback if no action is directly configured for the given window, obtain the action from
+   fallback window, if exists or from global config as last resort
    \return the action matching the key
    */
-  CAction GetAction(int window, const CKey &key, bool fallback = true);
+  CAction GetAction(int window, const CKey& key, bool fallback = true);
 
-  void RegisterMapper(const std::string &device, IButtonMapper *mapper);
-  void UnregisterMapper(IButtonMapper *mapper);
+  void RegisterMapper(const std::string& device, IButtonMapper* mapper);
+  void UnregisterMapper(IButtonMapper* mapper);
 
   static uint32_t TranslateString(std::string strMap, std::string strButton);
 
@@ -79,14 +80,14 @@ private:
   // m_deviceList contains the list of connected HID devices
   std::set<std::string> m_deviceList;
 
-  unsigned int GetActionCode(int window, const CKey &key, std::string &strAction) const;
+  unsigned int GetActionCode(int window, const CKey& key, std::string& strAction) const;
 
-  void MapWindowActions(const TiXmlNode *pWindow, int wWindowID);
-  void MapAction(uint32_t buttonCode, const std::string &szAction, buttonMap &map);
+  void MapWindowActions(const TiXmlNode* pWindow, int wWindowID);
+  void MapAction(uint32_t buttonCode, const std::string& szAction, buttonMap& map);
 
-  bool LoadKeymap(const std::string &keymapPath);
+  bool LoadKeymap(const std::string& keymapPath);
 
-  bool HasLongpressMapping_Internal(int window, const CKey &key);
+  bool HasLongpressMapping_Internal(int window, const CKey& key);
 
   std::map<std::string, IButtonMapper*> m_buttonMappers;
 };

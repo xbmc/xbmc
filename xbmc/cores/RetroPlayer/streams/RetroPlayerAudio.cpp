@@ -24,10 +24,8 @@ using namespace RETRO;
 
 const double MAX_DELAY = 0.3; // seconds
 
-CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) :
-  m_processInfo(processInfo),
-  m_pAudioStream(nullptr),
-  m_bAudioEnabled(true)
+CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo)
+  : m_processInfo(processInfo), m_pAudioStream(nullptr), m_bAudioEnabled(true)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Initializing audio");
 }
@@ -41,12 +39,14 @@ CRetroPlayerAudio::~CRetroPlayerAudio()
 
 bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
 {
-  const AudioStreamProperties& audioProperties = static_cast<const AudioStreamProperties&>(properties);
+  const AudioStreamProperties& audioProperties =
+      static_cast<const AudioStreamProperties&>(properties);
 
   const AEDataFormat pcmFormat = CAudioTranslator::TranslatePCMFormat(audioProperties.format);
   if (pcmFormat == AE_FMT_INVALID)
   {
-    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Unknown PCM format: %d", static_cast<int>(audioProperties.format));
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Unknown PCM format: %d",
+              static_cast<int>(audioProperties.format));
     return false;
   }
 
@@ -81,10 +81,10 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   if (audioEngine == nullptr)
     return false;
 
-  CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, format = %s, sample rate = %d, channels = %d",
-             CAEUtil::DataFormatToStr(pcmFormat)
-             , iSampleRate
-             , channelLayout.Count());
+  CLog::Log(
+      LOGINFO,
+      "RetroPlayer[AUDIO]: Creating audio stream, format = %s, sample rate = %d, channels = %d",
+      CAEUtil::DataFormatToStr(pcmFormat), iSampleRate, channelLayout.Count());
 
   AEAudioFormat audioFormat;
   audioFormat.m_dataFormat = pcmFormat;
@@ -105,7 +105,7 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   return true;
 }
 
-void CRetroPlayerAudio::AddStreamData(const StreamPacket &packet)
+void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
 {
   const AudioStreamPacket& audioPacket = static_cast<const AudioStreamPacket&>(packet);
 
@@ -115,14 +115,16 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket &packet)
     {
       const double delaySecs = m_pAudioStream->GetDelay();
 
-      const size_t frameSize = m_pAudioStream->GetChannelCount() * (CAEUtil::DataFormatToBits(m_pAudioStream->GetDataFormat()) >> 3);
+      const size_t frameSize = m_pAudioStream->GetChannelCount() *
+                               (CAEUtil::DataFormatToBits(m_pAudioStream->GetDataFormat()) >> 3);
 
       const unsigned int frameCount = static_cast<unsigned int>(audioPacket.size / frameSize);
 
       if (delaySecs > MAX_DELAY)
       {
         m_pAudioStream->Flush();
-        CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay (%0.2f ms) is too high - flushing", delaySecs * 1000);
+        CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay (%0.2f ms) is too high - flushing",
+                  delaySecs * 1000);
       }
 
       m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);

@@ -17,34 +17,34 @@ namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameStretchMode : public CDialogGameVideoSelect
+class CDialogGameStretchMode : public CDialogGameVideoSelect
+{
+public:
+  CDialogGameStretchMode();
+  ~CDialogGameStretchMode() override = default;
+
+protected:
+  // implementation of CDialogGameVideoSelect
+  std::string GetHeading() override;
+  void PreInit() override;
+  void GetItems(CFileItemList& items) override;
+  void OnItemFocus(unsigned int index) override;
+  unsigned int GetFocusedItem() const override;
+  void PostExit() override;
+
+private:
+  struct StretchModeProperties
   {
-  public:
-    CDialogGameStretchMode();
-    ~CDialogGameStretchMode() override = default;
-
-  protected:
-    // implementation of CDialogGameVideoSelect
-    std::string GetHeading() override;
-    void PreInit() override;
-    void GetItems(CFileItemList &items) override;
-    void OnItemFocus(unsigned int index) override;
-    unsigned int GetFocusedItem() const override;
-    void PostExit() override;
-
-  private:
-    struct StretchModeProperties
-    {
-      int stringIndex;
-      RETRO::STRETCHMODE stretchMode;
-    };
-
-    std::vector<StretchModeProperties> m_stretchModes;
-
-    /*!
-     * \brief The list of all the stretch modes along with their properties
-     */
-    static const std::vector<StretchModeProperties> m_allStretchModes;
+    int stringIndex;
+    RETRO::STRETCHMODE stretchMode;
   };
-}
-}
+
+  std::vector<StretchModeProperties> m_stretchModes;
+
+  /*!
+   * \brief The list of all the stretch modes along with their properties
+   */
+  static const std::vector<StretchModeProperties> m_allStretchModes;
+};
+} // namespace GAME
+} // namespace KODI

@@ -16,32 +16,29 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRenderContext;
+class CRenderContext;
 
-  class CRenderBufferOpenGL : public CRenderBufferSysMem
-  {
-  public:
-    CRenderBufferOpenGL(GLuint pixeltype,
-                        GLuint internalformat,
-                        GLuint pixelformat,
-                        GLuint bpp);
-    ~CRenderBufferOpenGL() override;
+class CRenderBufferOpenGL : public CRenderBufferSysMem
+{
+public:
+  CRenderBufferOpenGL(GLuint pixeltype, GLuint internalformat, GLuint pixelformat, GLuint bpp);
+  ~CRenderBufferOpenGL() override;
 
-    bool UploadTexture() override;
-    GLuint TextureID() const { return m_textureId; }
+  bool UploadTexture() override;
+  GLuint TextureID() const { return m_textureId; }
 
-  private:
-    // Construction parameters
-    const GLuint m_pixeltype;
-    const GLuint m_internalformat;
-    const GLuint m_pixelformat;
-    const GLuint m_bpp;
+private:
+  // Construction parameters
+  const GLuint m_pixeltype;
+  const GLuint m_internalformat;
+  const GLuint m_pixelformat;
+  const GLuint m_bpp;
 
-    const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
-    GLuint m_textureId = 0;
+  const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
+  GLuint m_textureId = 0;
 
-    void CreateTexture();
-    void DeleteTexture();
-  };
-}
-}
+  void CreateTexture();
+  void DeleteTexture();
+};
+} // namespace RETRO
+} // namespace KODI

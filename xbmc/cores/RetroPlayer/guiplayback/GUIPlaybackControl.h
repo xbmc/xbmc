@@ -14,39 +14,39 @@ namespace KODI
 {
 namespace RETRO
 {
-  /*!
-   * \brief Class to control playback by monitoring OSD status
-   */
-  class CGUIPlaybackControl : public IPlaybackControl
+/*!
+ * \brief Class to control playback by monitoring OSD status
+ */
+class CGUIPlaybackControl : public IPlaybackControl
+{
+public:
+  CGUIPlaybackControl(IPlaybackCallback& callback);
+
+  ~CGUIPlaybackControl() override;
+
+  // Implementation of IPlaybackControl
+  void FrameMove() override;
+
+private:
+  enum class GuiState
   {
-  public:
-    CGUIPlaybackControl(IPlaybackCallback &callback);
-
-    ~CGUIPlaybackControl() override;
-
-    // Implementation of IPlaybackControl
-    void FrameMove() override;
-
-  private:
-    enum class GuiState
-    {
-      UNKNOWN,
-      FULLSCREEN,
-      MENU_PAUSED,
-      MENU_PLAYING,
-    };
-
-    // Helper functions
-    GuiState NextState(bool bFullscreen, bool bInMenu, bool bInBackground);
-    static double GetTargetSpeed(GuiState state);
-    static bool AcceptsInput(GuiState state);
-
-    // Construction parameters
-    IPlaybackCallback &m_callback;
-
-    // State parameters
-    GuiState m_state = GuiState::UNKNOWN;
-    double m_previousSpeed = 0.0;
+    UNKNOWN,
+    FULLSCREEN,
+    MENU_PAUSED,
+    MENU_PLAYING,
   };
-}
-}
+
+  // Helper functions
+  GuiState NextState(bool bFullscreen, bool bInMenu, bool bInBackground);
+  static double GetTargetSpeed(GuiState state);
+  static bool AcceptsInput(GuiState state);
+
+  // Construction parameters
+  IPlaybackCallback& m_callback;
+
+  // State parameters
+  GuiState m_state = GuiState::UNKNOWN;
+  double m_previousSpeed = 0.0;
+};
+} // namespace RETRO
+} // namespace KODI

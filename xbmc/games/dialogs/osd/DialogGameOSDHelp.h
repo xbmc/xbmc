@@ -12,29 +12,29 @@ namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameOSD;
+class CDialogGameOSD;
 
-  class CDialogGameOSDHelp
-  {
-  public:
-    CDialogGameOSDHelp(CDialogGameOSD &dialog);
+class CDialogGameOSDHelp
+{
+public:
+  CDialogGameOSDHelp(CDialogGameOSD& dialog);
 
-    // Initialize help controls
-    void OnInitWindow();
+  // Initialize help controls
+  void OnInitWindow();
 
-    // Check if any help controls are visible
-    bool IsVisible();
+  // Check if any help controls are visible
+  bool IsVisible();
 
-  private:
-    // Utility functions
-    bool IsVisible(int windowId);
+private:
+  // Utility functions
+  bool IsVisible(int windowId);
 
-    // Construction parameters
-    CDialogGameOSD &m_dialog;
+  // Construction parameters
+  CDialogGameOSD& m_dialog;
 
-    // Help control IDs
-    static const int CONTROL_ID_HELP_TEXT;
-    static const int CONTROL_ID_GAME_CONTROLLER;
- };
-}
-}
+  // Help control IDs
+  static const int CONTROL_ID_HELP_TEXT;
+  static const int CONTROL_ID_GAME_CONTROLLER;
+};
+} // namespace GAME
+} // namespace KODI

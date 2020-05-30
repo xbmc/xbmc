@@ -11,8 +11,8 @@
 using namespace KODI;
 using namespace RETRO;
 
-#define VIDEO_FILTER_NEAREST  "nearest"
-#define VIDEO_FILTER_LINEAR   "linear"
+#define VIDEO_FILTER_NEAREST "nearest"
+#define VIDEO_FILTER_LINEAR "linear"
 
 void CRenderVideoSettings::Reset()
 {
@@ -21,23 +21,28 @@ void CRenderVideoSettings::Reset()
   m_rotationDegCCW = 0;
 }
 
-bool CRenderVideoSettings::operator==(const CRenderVideoSettings &rhs) const
+bool CRenderVideoSettings::operator==(const CRenderVideoSettings& rhs) const
 {
-  return m_scalingMethod == rhs.m_scalingMethod &&
-         m_stretchMode == rhs.m_stretchMode &&
+  return m_scalingMethod == rhs.m_scalingMethod && m_stretchMode == rhs.m_stretchMode &&
          m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
-bool CRenderVideoSettings::operator<(const CRenderVideoSettings &rhs) const
+bool CRenderVideoSettings::operator<(const CRenderVideoSettings& rhs) const
 {
-  if (m_scalingMethod < rhs.m_scalingMethod) return true;
-  if (m_scalingMethod > rhs.m_scalingMethod) return false;
+  if (m_scalingMethod < rhs.m_scalingMethod)
+    return true;
+  if (m_scalingMethod > rhs.m_scalingMethod)
+    return false;
 
-  if (m_stretchMode < rhs.m_stretchMode) return true;
-  if (m_stretchMode > rhs.m_stretchMode) return false;
+  if (m_stretchMode < rhs.m_stretchMode)
+    return true;
+  if (m_stretchMode > rhs.m_stretchMode)
+    return false;
 
-  if (m_rotationDegCCW < rhs.m_rotationDegCCW) return true;
-  if (m_rotationDegCCW > rhs.m_rotationDegCCW) return false;
+  if (m_rotationDegCCW < rhs.m_rotationDegCCW)
+    return true;
+  if (m_rotationDegCCW > rhs.m_rotationDegCCW)
+    return false;
 
   return false;
 }
@@ -46,18 +51,18 @@ std::string CRenderVideoSettings::GetVideoFilter() const
 {
   switch (m_scalingMethod)
   {
-  case SCALINGMETHOD::NEAREST:
-    return VIDEO_FILTER_NEAREST;
-  case SCALINGMETHOD::LINEAR:
-    return VIDEO_FILTER_LINEAR;
-  default:
-    break;
+    case SCALINGMETHOD::NEAREST:
+      return VIDEO_FILTER_NEAREST;
+    case SCALINGMETHOD::LINEAR:
+      return VIDEO_FILTER_LINEAR;
+    default:
+      break;
   }
 
   return "";
 }
 
-void CRenderVideoSettings::SetVideoFilter(const std::string &videoFilter)
+void CRenderVideoSettings::SetVideoFilter(const std::string& videoFilter)
 {
   if (videoFilter == VIDEO_FILTER_NEAREST)
   {

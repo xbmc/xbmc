@@ -21,54 +21,56 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  class IInputHandler;
-  class IInputProvider;
-  class IInputReceiver;
+class IInputHandler;
+class IInputProvider;
+class IInputReceiver;
+
+/*!
+ * \ingroup joystick
+ * \brief
+ */
+class CKeymapHandling : public Observer
+{
+public:
+  CKeymapHandling(IInputProvider* inputProvider,
+                  bool pPromiscuous,
+                  const IKeymapEnvironment* environment);
+
+  ~CKeymapHandling() override;
 
   /*!
-   * \ingroup joystick
+   * \brief Unregister the input provider
+   *
+   * Call this if the input provider is invalidated, such as if a user
+   * disconnects a controller. This prevents accessing the invalidated
+   * input provider when keymaps are unloaded upon destruction.
+   */
+  void UnregisterInputProvider() { m_inputProvider = nullptr; }
+
+  /*!
    * \brief
    */
-  class CKeymapHandling : public Observer
-  {
-  public:
-    CKeymapHandling(IInputProvider *inputProvider, bool pPromiscuous, const IKeymapEnvironment *environment);
+  IInputReceiver* GetInputReceiver(const std::string& controllerId) const;
 
-    ~CKeymapHandling() override;
+  /*!
+   * \brief
+   */
+  IKeymap* GetKeymap(const std::string& controllerId) const;
 
-    /*!
-     * \brief Unregister the input provider
-     *
-     * Call this if the input provider is invalidated, such as if a user
-     * disconnects a controller. This prevents accessing the invalidated
-     * input provider when keymaps are unloaded upon destruction.
-     */
-    void UnregisterInputProvider() { m_inputProvider = nullptr; }
+  // implementation of Observer
+  void Notify(const Observable& obs, const ObservableMessage msg) override;
 
-    /*!
-     * \brief
-     */
-    IInputReceiver *GetInputReceiver(const std::string &controllerId) const;
+private:
+  void LoadKeymaps();
+  void UnloadKeymaps();
 
-    /*!
-     * \brief
-     */
-    IKeymap *GetKeymap(const std::string &controllerId) const;
+  // Construction parameter
+  IInputProvider* m_inputProvider;
+  const bool m_pPromiscuous;
+  const IKeymapEnvironment* const m_environment;
 
-    // implementation of Observer
-    void Notify(const Observable& obs, const ObservableMessage msg) override;
-
-  private:
-    void LoadKeymaps();
-    void UnloadKeymaps();
-
-    // Construction parameter
-    IInputProvider *m_inputProvider;
-    const bool m_pPromiscuous;
-    const IKeymapEnvironment *const m_environment;
-
-    std::vector<std::unique_ptr<IKeymap>> m_keymaps;
-    std::vector<std::unique_ptr<IInputHandler>> m_inputHandlers;
-  };
-}
-}
+  std::vector<std::unique_ptr<IKeymap>> m_keymaps;
+  std::vector<std::unique_ptr<IInputHandler>> m_inputHandlers;
+};
+} // namespace JOYSTICK
+} // namespace KODI

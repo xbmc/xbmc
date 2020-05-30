@@ -17,27 +17,29 @@ namespace KODI
 {
 namespace RETRO
 {
-  class ISavestate;
+class ISavestate;
 
-  class CSavestateDatabase
-  {
-  public:
-    CSavestateDatabase();
-    virtual ~CSavestateDatabase() = default;
+class CSavestateDatabase
+{
+public:
+  CSavestateDatabase();
+  virtual ~CSavestateDatabase() = default;
 
-    std::unique_ptr<ISavestate> CreateSavestate();
+  std::unique_ptr<ISavestate> CreateSavestate();
 
-    bool AddSavestate(const std::string &gamePath, const ISavestate& save);
+  bool AddSavestate(const std::string& gamePath, const ISavestate& save);
 
-    bool GetSavestate(const std::string& gamePath, ISavestate& save);
+  bool GetSavestate(const std::string& gamePath, ISavestate& save);
 
-    bool GetSavestatesNav(CFileItemList& items, const std::string& gamePath, const std::string& gameClient = "");
+  bool GetSavestatesNav(CFileItemList& items,
+                        const std::string& gamePath,
+                        const std::string& gameClient = "");
 
-    bool RenameSavestate(const std::string& path, const std::string& label);
+  bool RenameSavestate(const std::string& path, const std::string& label);
 
-    bool DeleteSavestate(const std::string& path);
+  bool DeleteSavestate(const std::string& path);
 
-    bool ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient = "");
-  };
-}
-}
+  bool ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient = "");
+};
+} // namespace RETRO
+} // namespace KODI

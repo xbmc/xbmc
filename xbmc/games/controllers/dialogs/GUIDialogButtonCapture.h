@@ -20,48 +20,46 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIDialogButtonCapture : public JOYSTICK::IButtonMapper,
-                                  public Observer,
-                                  protected CThread
-  {
-  public:
-    CGUIDialogButtonCapture();
+class CGUIDialogButtonCapture : public JOYSTICK::IButtonMapper, public Observer, protected CThread
+{
+public:
+  CGUIDialogButtonCapture();
 
-    ~CGUIDialogButtonCapture() override = default;
+  ~CGUIDialogButtonCapture() override = default;
 
-    // implementation of IButtonMapper
-    std::string ControllerID() const override;
-    bool NeedsCooldown() const override { return false; }
-    bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                      IKeymap* keymap,
-                      const JOYSTICK::CDriverPrimitive& primitive) override;
-    void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override {}
-    void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override {}
+  // implementation of IButtonMapper
+  std::string ControllerID() const override;
+  bool NeedsCooldown() const override { return false; }
+  bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                    IKeymap* keymap,
+                    const JOYSTICK::CDriverPrimitive& primitive) override;
+  void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override {}
+  void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override {}
 
-    // implementation of Observer
-    void Notify(const Observable& obs, const ObservableMessage msg) override;
+  // implementation of Observer
+  void Notify(const Observable& obs, const ObservableMessage msg) override;
 
-    /*!
-     * \brief Show the dialog
-     */
-    void Show();
+  /*!
+   * \brief Show the dialog
+   */
+  void Show();
 
-  protected:
-    // implementation of CThread
-    void Process() override;
+protected:
+  // implementation of CThread
+  void Process() override;
 
-    virtual std::string GetDialogText() = 0;
-    virtual std::string GetDialogHeader() = 0;
-    virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                                      IKeymap* keymap,
-                                      const JOYSTICK::CDriverPrimitive& primitive) = 0;
-    virtual void OnClose(bool bAccepted) = 0;
+  virtual std::string GetDialogText() = 0;
+  virtual std::string GetDialogHeader() = 0;
+  virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                                    IKeymap* keymap,
+                                    const JOYSTICK::CDriverPrimitive& primitive) = 0;
+  virtual void OnClose(bool bAccepted) = 0;
 
-    CEvent m_captureEvent;
+  CEvent m_captureEvent;
 
-  private:
-    void InstallHooks();
-    void RemoveHooks();
-  };
-}
-}
+private:
+  void InstallHooks();
+  void RemoveHooks();
+};
+} // namespace GAME
+} // namespace KODI

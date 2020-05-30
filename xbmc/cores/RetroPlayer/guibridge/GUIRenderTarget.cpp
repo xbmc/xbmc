@@ -17,35 +17,35 @@ using namespace RETRO;
 
 // --- CGUIRenderTarget --------------------------------------------------------
 
-CGUIRenderTarget::CGUIRenderTarget(IRenderManager *renderManager) :
-  m_renderManager(renderManager)
+CGUIRenderTarget::CGUIRenderTarget(IRenderManager* renderManager) : m_renderManager(renderManager)
 {
 }
 
 // --- CGUIRenderControl -------------------------------------------------------
 
-CGUIRenderControl::CGUIRenderControl(IRenderManager *renderManager, CGUIGameControl &gameControl) :
-  CGUIRenderTarget(renderManager),
-  m_gameControl(gameControl)
+CGUIRenderControl::CGUIRenderControl(IRenderManager* renderManager, CGUIGameControl& gameControl)
+  : CGUIRenderTarget(renderManager), m_gameControl(gameControl)
 {
 }
 
 void CGUIRenderControl::Render()
 {
-  m_renderManager->RenderControl(true, true, m_gameControl.GetRenderRegion(), m_gameControl.GetRenderSettings());
+  m_renderManager->RenderControl(true, true, m_gameControl.GetRenderRegion(),
+                                 m_gameControl.GetRenderSettings());
 }
 
 void CGUIRenderControl::RenderEx()
 {
   //! @todo
-  //m_renderManager->RenderControl(false, false, m_gameControl.GetRenderRegion(), m_gameControl.GetRenderSettings());
+  // m_renderManager->RenderControl(false, false, m_gameControl.GetRenderRegion(),
+  // m_gameControl.GetRenderSettings());
 }
 
 // --- CGUIRenderFullScreen ----------------------------------------------------
 
-CGUIRenderFullScreen::CGUIRenderFullScreen(IRenderManager *renderManager, CGameWindowFullScreen &window) :
-  CGUIRenderTarget(renderManager),
-  m_window(window)
+CGUIRenderFullScreen::CGUIRenderFullScreen(IRenderManager* renderManager,
+                                           CGameWindowFullScreen& window)
+  : CGUIRenderTarget(renderManager), m_window(window)
 {
 }
 
@@ -57,7 +57,7 @@ void CGUIRenderFullScreen::Render()
 void CGUIRenderFullScreen::RenderEx()
 {
   //! @todo
-  //m_renderManager->RenderWindow(false, m_window.GetCoordsRes());
+  // m_renderManager->RenderWindow(false, m_window.GetCoordsRes());
 }
 
 void CGUIRenderFullScreen::ClearBackground()

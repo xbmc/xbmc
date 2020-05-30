@@ -20,21 +20,21 @@ using namespace GAME;
 
 namespace
 {
-  const std::string SETTING_GAMES_ENABLE = "gamesgeneral.enable";
-  const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
-  const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
-  const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
-  const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
-}
+const std::string SETTING_GAMES_ENABLE = "gamesgeneral.enable";
+const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
+const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
+const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
+const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
+} // namespace
 
 CGameSettings::CGameSettings()
 {
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   m_settings->RegisterCallback(this, {
-    SETTING_GAMES_ENABLEREWIND,
-    SETTING_GAMES_REWINDTIME,
-  });
+                                         SETTING_GAMES_ENABLEREWIND,
+                                         SETTING_GAMES_REWINDTIME,
+                                     });
 }
 
 CGameSettings::~CGameSettings()
@@ -92,8 +92,7 @@ void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 
   const std::string& settingId = setting->GetId();
 
-  if (settingId == SETTING_GAMES_ENABLEREWIND ||
-      settingId == SETTING_GAMES_REWINDTIME)
+  if (settingId == SETTING_GAMES_ENABLEREWIND || settingId == SETTING_GAMES_REWINDTIME)
   {
     SetChanged();
     NotifyObservers(ObservableMessageSettingsChanged);

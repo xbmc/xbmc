@@ -13,8 +13,7 @@
 using namespace KODI;
 using namespace GAME;
 
-CInputSink::CInputSink(JOYSTICK::IInputHandler* gameInput) :
-  m_gameInput(gameInput)
+CInputSink::CInputSink(JOYSTICK::IInputHandler* gameInput) : m_gameInput(gameInput)
 {
 }
 
@@ -33,12 +32,17 @@ bool CInputSink::OnButtonPress(const std::string& feature, bool bPressed)
   return true;
 }
 
-bool CInputSink::OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs)
+bool CInputSink::OnButtonMotion(const std::string& feature,
+                                float magnitude,
+                                unsigned int motionTimeMs)
 {
   return true;
 }
 
-bool CInputSink::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs)
+bool CInputSink::OnAnalogStickMotion(const std::string& feature,
+                                     float x,
+                                     float y,
+                                     unsigned int motionTimeMs)
 {
   return true;
 }
@@ -48,12 +52,16 @@ bool CInputSink::OnAccelerometerMotion(const std::string& feature, float x, floa
   return true;
 }
 
-bool CInputSink::OnWheelMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+bool CInputSink::OnWheelMotion(const std::string& feature,
+                               float position,
+                               unsigned int motionTimeMs)
 {
   return true;
 }
 
-bool CInputSink::OnThrottleMotion(const std::string& feature, float position, unsigned int motionTimeMs)
+bool CInputSink::OnThrottleMotion(const std::string& feature,
+                                  float position,
+                                  unsigned int motionTimeMs)
 {
   return true;
 }

@@ -12,10 +12,12 @@
 
 namespace PERIPHERALS
 {
-  class CPeripheralNIC : public CPeripheral
-  {
-  public:
-    CPeripheralNIC(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
-    ~CPeripheralNIC(void) override = default;
-  };
-}
+class CPeripheralNIC : public CPeripheral
+{
+public:
+  CPeripheralNIC(CPeripherals& manager,
+                 const PeripheralScanResult& scanResult,
+                 CPeripheralBus* bus);
+  ~CPeripheralNIC(void) override = default;
+};
+} // namespace PERIPHERALS

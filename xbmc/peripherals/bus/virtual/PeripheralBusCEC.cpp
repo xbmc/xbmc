@@ -13,8 +13,8 @@
 using namespace PERIPHERALS;
 using namespace CEC;
 
-CPeripheralBusCEC::CPeripheralBusCEC(CPeripherals& manager) :
-    CPeripheralBus("PeripBusCEC", manager, PERIPHERAL_BUS_CEC)
+CPeripheralBusCEC::CPeripheralBusCEC(CPeripherals& manager)
+  : CPeripheralBus("PeripBusCEC", manager, PERIPHERAL_BUS_CEC)
 {
   m_cecAdapter = CECInitialise(&m_configuration);
 }
@@ -25,7 +25,7 @@ CPeripheralBusCEC::~CPeripheralBusCEC(void)
     CECDestroy(m_cecAdapter);
 }
 
-bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
+bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults& results)
 {
   cec_adapter_descriptor deviceList[10];
   int8_t iFound = m_cecAdapter->DetectAdapters(deviceList, 10, NULL, true);
@@ -33,25 +33,25 @@ bool CPeripheralBusCEC::PerformDeviceScan(PeripheralScanResults &results)
   for (uint8_t iDevicePtr = 0; iDevicePtr < iFound; iDevicePtr++)
   {
     PeripheralScanResult result(m_type);
-    result.m_iVendorId   = deviceList[iDevicePtr].iVendorId;
-    result.m_iProductId  = deviceList[iDevicePtr].iProductId;
+    result.m_iVendorId = deviceList[iDevicePtr].iVendorId;
+    result.m_iProductId = deviceList[iDevicePtr].iProductId;
     result.m_strLocation = deviceList[iDevicePtr].strComName;
-    result.m_type        = PERIPHERAL_CEC;
+    result.m_type = PERIPHERAL_CEC;
 
     // override the bus type, so users don't have to reconfigure their adapters
-    switch(deviceList[iDevicePtr].adapterType)
+    switch (deviceList[iDevicePtr].adapterType)
     {
-    case ADAPTERTYPE_P8_EXTERNAL:
-    case ADAPTERTYPE_P8_DAUGHTERBOARD:
-      result.m_mappedBusType = PERIPHERAL_BUS_USB;
-      break;
-    case ADAPTERTYPE_RPI:
-      result.m_mappedBusType = PERIPHERAL_BUS_RPI;
-      /** the Pi's adapter cannot be removed, no need to rescan */
-      m_bNeedsPolling = false;
-      break;
-    default:
-      break;
+      case ADAPTERTYPE_P8_EXTERNAL:
+      case ADAPTERTYPE_P8_DAUGHTERBOARD:
+        result.m_mappedBusType = PERIPHERAL_BUS_USB;
+        break;
+      case ADAPTERTYPE_RPI:
+        result.m_mappedBusType = PERIPHERAL_BUS_RPI;
+        /** the Pi's adapter cannot be removed, no need to rescan */
+        m_bNeedsPolling = false;
+        break;
+      default:
+        break;
     }
 
     result.m_iSequence = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);

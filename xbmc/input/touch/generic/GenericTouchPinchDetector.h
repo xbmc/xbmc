@@ -20,12 +20,13 @@
 class CGenericTouchPinchDetector : public IGenericTouchGestureDetector
 {
 public:
-  CGenericTouchPinchDetector(ITouchActionHandler *handler, float dpi)
+  CGenericTouchPinchDetector(ITouchActionHandler* handler, float dpi)
     : IGenericTouchGestureDetector(handler, dpi)
-  { }
+  {
+  }
   ~CGenericTouchPinchDetector() override = default;
 
-  bool OnTouchDown(unsigned int index, const Pointer &pointer) override;
-  bool OnTouchUp(unsigned int index, const Pointer &pointer) override;
-  bool OnTouchMove(unsigned int index, const Pointer &pointer) override;
+  bool OnTouchDown(unsigned int index, const Pointer& pointer) override;
+  bool OnTouchUp(unsigned int index, const Pointer& pointer) override;
+  bool OnTouchMove(unsigned int index, const Pointer& pointer) override;
 };

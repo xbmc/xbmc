@@ -12,32 +12,32 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  class IInputHandler;
+class IInputHandler;
+
+/*!
+ * \ingroup joystick
+ * \brief Interface for classes that can provide input
+ */
+class IInputProvider
+{
+public:
+  virtual ~IInputProvider() = default;
 
   /*!
-   * \ingroup joystick
-   * \brief Interface for classes that can provide input
+   * \brief Register a handler for the provided input
+   *
+   * \param handler The handler to receive input provided by this class
+   * \param bPromiscuous  If true, receives all input (including handled input)
+   *                      in the background
    */
-  class IInputProvider
-  {
-  public:
-    virtual ~IInputProvider() = default;
+  virtual void RegisterInputHandler(IInputHandler* handler, bool bPromiscuous) = 0;
 
-    /*!
-     * \brief Register a handler for the provided input
-     *
-     * \param handler The handler to receive input provided by this class
-     * \param bPromiscuous  If true, receives all input (including handled input)
-     *                      in the background
-     */
-    virtual void RegisterInputHandler(IInputHandler* handler, bool bPromiscuous) = 0;
-
-    /*!
-     * \brief Unregister a handler
-     *
-     * \param handler The handler that was receiving input
-     */
-    virtual void UnregisterInputHandler(IInputHandler* handler) = 0;
-  };
-}
-}
+  /*!
+   * \brief Unregister a handler
+   *
+   * \param handler The handler that was receiving input
+   */
+  virtual void UnregisterInputHandler(IInputHandler* handler) = 0;
+};
+} // namespace JOYSTICK
+} // namespace KODI

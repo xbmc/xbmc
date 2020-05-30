@@ -16,15 +16,17 @@ void CRenderSettings::Reset()
   m_videoSettings.Reset();
 }
 
-bool CRenderSettings::operator==(const CRenderSettings &rhs) const
+bool CRenderSettings::operator==(const CRenderSettings& rhs) const
 {
   return m_videoSettings == rhs.m_videoSettings;
 }
 
-bool CRenderSettings::operator<(const CRenderSettings &rhs) const
+bool CRenderSettings::operator<(const CRenderSettings& rhs) const
 {
-  if (m_videoSettings < rhs.m_videoSettings) return true;
-  if (m_videoSettings > rhs.m_videoSettings) return false;
+  if (m_videoSettings < rhs.m_videoSettings)
+    return true;
+  if (m_videoSettings > rhs.m_videoSettings)
+    return false;
 
   return false;
 }

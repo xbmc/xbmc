@@ -17,46 +17,50 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRendererFactoryGuiTexture : public IRendererFactory
-  {
-  public:
-    ~CRendererFactoryGuiTexture() override = default;
+class CRendererFactoryGuiTexture : public IRendererFactory
+{
+public:
+  ~CRendererFactoryGuiTexture() override = default;
 
-    // implementation of IRendererFactory
-    std::string RenderSystemName() const override;
-    CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) override;
-    RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
-  };
+  // implementation of IRendererFactory
+  std::string RenderSystemName() const override;
+  CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
+                                  CRenderContext& context,
+                                  std::shared_ptr<IRenderBufferPool> bufferPool) override;
+  RenderBufferPoolVector CreateBufferPools(CRenderContext& context) override;
+};
 
-  class CRenderBufferPoolGuiTexture : public CBaseRenderBufferPool
-  {
-  public:
-    CRenderBufferPoolGuiTexture(SCALINGMETHOD scalingMethod);
-    ~CRenderBufferPoolGuiTexture() override = default;
+class CRenderBufferPoolGuiTexture : public CBaseRenderBufferPool
+{
+public:
+  CRenderBufferPoolGuiTexture(SCALINGMETHOD scalingMethod);
+  ~CRenderBufferPoolGuiTexture() override = default;
 
-    // implementation of IRenderBufferPool via CBaseRenderBufferPool
-    bool IsCompatible(const CRenderVideoSettings &renderSettings) const override;
+  // implementation of IRenderBufferPool via CBaseRenderBufferPool
+  bool IsCompatible(const CRenderVideoSettings& renderSettings) const override;
 
-    // implementation of CBaseRenderBufferPool
-    IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
+  // implementation of CBaseRenderBufferPool
+  IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
 
-  private:
-    SCALINGMETHOD m_scalingMethod;
-  };
+private:
+  SCALINGMETHOD m_scalingMethod;
+};
 
-  class CRPRendererGuiTexture : public CRPBaseRenderer
-  {
-  public:
-    CRPRendererGuiTexture(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool);
-    ~CRPRendererGuiTexture() override = default;
+class CRPRendererGuiTexture : public CRPBaseRenderer
+{
+public:
+  CRPRendererGuiTexture(const CRenderSettings& renderSettings,
+                        CRenderContext& context,
+                        std::shared_ptr<IRenderBufferPool> bufferPool);
+  ~CRPRendererGuiTexture() override = default;
 
-    // public implementation of CRPBaseRenderer
-    bool Supports(RENDERFEATURE feature) const override;
-    SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
+  // public implementation of CRPBaseRenderer
+  bool Supports(RENDERFEATURE feature) const override;
+  SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
 
-  protected:
-    // protected implementation of CRPBaseRenderer
-    void RenderInternal(bool clear, uint8_t alpha) override;
-  };
-}
-}
+protected:
+  // protected implementation of CRPBaseRenderer
+  void RenderInternal(bool clear, uint8_t alpha) override;
+};
+} // namespace RETRO
+} // namespace KODI

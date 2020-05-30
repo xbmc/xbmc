@@ -14,5 +14,5 @@
 class CAppTranslator
 {
 public:
-  static uint32_t TranslateAppCommand(const std::string &szButton);
+  static uint32_t TranslateAppCommand(const std::string& szButton);
 };

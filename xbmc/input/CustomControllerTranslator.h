@@ -24,10 +24,18 @@ public:
   void MapActions(int windowID, const TiXmlNode* pDevice) override;
   void Clear() override;
 
-  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
+  bool TranslateCustomControllerString(int windowId,
+                                       const std::string& controllerName,
+                                       int buttonId,
+                                       int& action,
+                                       std::string& strAction);
 
 private:
-  bool TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction);
+  bool TranslateString(int windowId,
+                       const std::string& controllerName,
+                       int buttonId,
+                       unsigned int& actionId,
+                       std::string& strAction);
 
   // Maps button id to action
   using CustomControllerButtonMap = std::map<int, std::string>;

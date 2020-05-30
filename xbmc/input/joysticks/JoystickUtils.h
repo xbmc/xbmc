@@ -56,7 +56,7 @@ public:
    *
    * \return A valid name for a key in the joystick keymap
    */
-  static std::string MakeKeyName(const FeatureName &feature);
+  static std::string MakeKeyName(const FeatureName& feature);
 
   /*!
    * \brief Create a key name used to index an action in the keymap
@@ -66,7 +66,7 @@ public:
    *
    * \return A valid name for a key in the joystick keymap
    */
-  static std::string MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir);
+  static std::string MakeKeyName(const FeatureName& feature, ANALOG_STICK_DIRECTION dir);
 
   /*!
    * \brief Create a key name used to index an action in the keymap
@@ -76,7 +76,7 @@ public:
    *
    * \return A valid name for a key in the joystick keymap
    */
-  static std::string MakeKeyName(const FeatureName &feature, WHEEL_DIRECTION dir);
+  static std::string MakeKeyName(const FeatureName& feature, WHEEL_DIRECTION dir);
 
   /*!
    * \brief Create a key name used to index an action in the keymap
@@ -86,25 +86,25 @@ public:
    *
    * \return A valid name for a key in the joystick keymap
    */
-  static std::string MakeKeyName(const FeatureName &feature, THROTTLE_DIRECTION dir);
+  static std::string MakeKeyName(const FeatureName& feature, THROTTLE_DIRECTION dir);
 
   /*!
-    * \brief Return a vector of the four cardinal directions
-    */
-  static const std::vector<ANALOG_STICK_DIRECTION> &GetAnalogStickDirections();
+   * \brief Return a vector of the four cardinal directions
+   */
+  static const std::vector<ANALOG_STICK_DIRECTION>& GetAnalogStickDirections();
 
   /*!
    * \brief Return a vector of the two wheel directions
    */
-  static const std::vector<WHEEL_DIRECTION> &GetWheelDirections();
+  static const std::vector<WHEEL_DIRECTION>& GetWheelDirections();
 
   /*!
    * \brief Return a vector of the two throttle directions
    */
-  static const std::vector<THROTTLE_DIRECTION> &GetThrottleDirections();
+  static const std::vector<THROTTLE_DIRECTION>& GetThrottleDirections();
 };
 
-}
-}
+} // namespace JOYSTICK
+} // namespace KODI
 
 /// \}

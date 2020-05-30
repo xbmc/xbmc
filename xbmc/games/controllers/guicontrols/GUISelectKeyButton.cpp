@@ -17,8 +17,8 @@ using namespace GAME;
 
 CGUISelectKeyButton::CGUISelectKeyButton(const CGUIButtonControl& buttonTemplate,
                                          IConfigurationWizard* wizard,
-                                         unsigned int index) :
-  CGUIFeatureButton(buttonTemplate, wizard, GetFeature(), index)
+                                         unsigned int index)
+  : CGUIFeatureButton(buttonTemplate, wizard, GetFeature(), index)
 {
 }
 
@@ -38,8 +38,8 @@ bool CGUISelectKeyButton::PromptForInput(CEvent& waitEvent)
   {
     case STATE::NEED_KEY:
     {
-      std::string strPrompt = g_localizeStrings.Get(35169);  // "Press a key"
-      std::string strWarn = g_localizeStrings.Get(35170);  // "Press a key ({1:d})"
+      std::string strPrompt = g_localizeStrings.Get(35169); // "Press a key"
+      std::string strWarn = g_localizeStrings.Get(35170); // "Press a key ({1:d})"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, "", waitEvent);
 
@@ -49,8 +49,8 @@ bool CGUISelectKeyButton::PromptForInput(CEvent& waitEvent)
     }
     case STATE::NEED_INPUT:
     {
-      std::string strPrompt = g_localizeStrings.Get(35090);  // "Press {0:s}"
-      std::string strWarn = g_localizeStrings.Get(35091);  // "Press {0:s} ({1:d})"
+      std::string strPrompt = g_localizeStrings.Get(35090); // "Press {0:s}"
+      std::string strWarn = g_localizeStrings.Get(35091); // "Press {0:s} ({1:d})"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, m_selectedKey.Label(), waitEvent);
 
@@ -70,7 +70,7 @@ bool CGUISelectKeyButton::IsFinished(void) const
   return m_state >= STATE::FINISHED;
 }
 
-void CGUISelectKeyButton::SetKey(const CControllerFeature &key)
+void CGUISelectKeyButton::SetKey(const CControllerFeature& key)
 {
   m_selectedKey = key;
 }

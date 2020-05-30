@@ -18,37 +18,37 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIDialogAxisDetection : public CGUIDialogButtonCapture
-  {
-  public:
-    CGUIDialogAxisDetection() = default;
+class CGUIDialogAxisDetection : public CGUIDialogButtonCapture
+{
+public:
+  CGUIDialogAxisDetection() = default;
 
-    ~CGUIDialogAxisDetection() override = default;
+  ~CGUIDialogAxisDetection() override = default;
 
-    // specialization of IButtonMapper via CGUIDialogButtonCapture
-    bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override;
-    void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
+  // specialization of IButtonMapper via CGUIDialogButtonCapture
+  bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override;
+  void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
 
-  protected:
-    // implementation of CGUIDialogButtonCapture
-    std::string GetDialogText() override;
-    std::string GetDialogHeader() override;
-    bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                              IKeymap* keymap,
-                              const JOYSTICK::CDriverPrimitive& primitive) override;
-    void OnClose(bool bAccepted) override {}
+protected:
+  // implementation of CGUIDialogButtonCapture
+  std::string GetDialogText() override;
+  std::string GetDialogHeader() override;
+  bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                            IKeymap* keymap,
+                            const JOYSTICK::CDriverPrimitive& primitive) override;
+  void OnClose(bool bAccepted) override {}
 
-  private:
-    void AddAxis(const std::string& deviceName, unsigned int axisIndex);
+private:
+  void AddAxis(const std::string& deviceName, unsigned int axisIndex);
 
-    // Axis types
-    using DeviceName = std::string;
-    using AxisIndex = unsigned int;
-    using AxisEntry = std::pair<DeviceName, AxisIndex>;
-    using AxisVector = std::vector<AxisEntry>;
+  // Axis types
+  using DeviceName = std::string;
+  using AxisIndex = unsigned int;
+  using AxisEntry = std::pair<DeviceName, AxisIndex>;
+  using AxisVector = std::vector<AxisEntry>;
 
-    // Axis detection
-    AxisVector m_detectedAxes;
-  };
-}
-}
+  // Axis detection
+  AxisVector m_detectedAxes;
+};
+} // namespace GAME
+} // namespace KODI

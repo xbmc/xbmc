@@ -8,5 +8,5 @@
 
 #pragma once
 
-#define GAME_STREAM_VIDEO_ID  1
-#define GAME_STREAM_AUDIO_ID  2
+#define GAME_STREAM_VIDEO_ID 1
+#define GAME_STREAM_AUDIO_ID 2

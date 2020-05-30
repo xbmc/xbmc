@@ -16,23 +16,24 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIGameController : public CGUIImage
-  {
-  public:
-    CGUIGameController(int parentID, int controlID, float posX, float posY, float width, float height);
-    CGUIGameController(const CGUIGameController &from);
+class CGUIGameController : public CGUIImage
+{
+public:
+  CGUIGameController(
+      int parentID, int controlID, float posX, float posY, float width, float height);
+  CGUIGameController(const CGUIGameController& from);
 
-    ~CGUIGameController() override = default;
+  ~CGUIGameController() override = default;
 
-    // implementation of CGUIControl via CGUIImage
-    CGUIGameController* Clone() const override;
-    void Render() override;
+  // implementation of CGUIControl via CGUIImage
+  CGUIGameController* Clone() const override;
+  void Render() override;
 
-    void ActivateController(const ControllerPtr& controller);
+  void ActivateController(const ControllerPtr& controller);
 
-  private:
-    ControllerPtr       m_currentController;
-    CCriticalSection    m_mutex;
-  };
-}
-}
+private:
+  ControllerPtr m_currentController;
+  CCriticalSection m_mutex;
+};
+} // namespace GAME
+} // namespace KODI

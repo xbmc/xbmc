@@ -55,9 +55,10 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
     return false;
   }
 
-  const TiXmlElement *keyboard = element->FirstChildElement("keyboard");
+  const TiXmlElement* keyboard = element->FirstChildElement("keyboard");
   if (element->Attribute("codingtable"))
-    m_codingtable = IInputCodingTablePtr(CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable"), element));
+    m_codingtable = IInputCodingTablePtr(
+        CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable"), element));
   else
     m_codingtable = NULL;
   while (keyboard != NULL)
@@ -89,7 +90,7 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
     }
 
     // parse keyboard rows
-    const TiXmlNode *row = keyboard->FirstChild("row");
+    const TiXmlNode* row = keyboard->FirstChild("row");
     while (row != NULL)
     {
       if (!row->NoChildren())
@@ -127,10 +128,13 @@ std::string CKeyboardLayout::GetIdentifier() const
 
 std::string CKeyboardLayout::GetName() const
 {
-  return StringUtils::Format(g_localizeStrings.Get(311).c_str(), m_language.c_str(), m_layout.c_str());
+  return StringUtils::Format(g_localizeStrings.Get(311).c_str(), m_language.c_str(),
+                             m_layout.c_str());
 }
 
-std::string CKeyboardLayout::GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers) const
+std::string CKeyboardLayout::GetCharAt(unsigned int row,
+                                       unsigned int column,
+                                       unsigned int modifiers) const
 {
   Keyboards::const_iterator mod = m_keyboards.find(modifiers);
   if (modifiers != ModifierKeyNone && mod != m_keyboards.end() && mod->second.empty())
@@ -152,7 +156,7 @@ std::string CKeyboardLayout::GetCharAt(unsigned int row, unsigned int column, un
   return "";
 }
 
-std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string &chars)
+std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string& chars)
 {
   std::vector<std::string> result;
   // break into utf8 characters

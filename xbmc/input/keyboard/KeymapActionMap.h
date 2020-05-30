@@ -14,15 +14,15 @@ namespace KODI
 {
 namespace KEYBOARD
 {
-  class CKeymapActionMap : public IActionMap
-  {
-  public:
-    CKeymapActionMap(void) = default;
+class CKeymapActionMap : public IActionMap
+{
+public:
+  CKeymapActionMap(void) = default;
 
-    ~CKeymapActionMap(void) override = default;
+  ~CKeymapActionMap(void) override = default;
 
-    // implementation of IActionMap
-    unsigned int GetActionID(const CKey& key) override;
-  };
-}
-}
+  // implementation of IActionMap
+  unsigned int GetActionID(const CKey& key) override;
+};
+} // namespace KEYBOARD
+} // namespace KODI

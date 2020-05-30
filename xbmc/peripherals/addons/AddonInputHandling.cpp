@@ -24,7 +24,10 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* peripheral, IInputHandler* handler, IDriverReceiver* receiver)
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
+                                         CPeripheral* peripheral,
+                                         IInputHandler* handler,
+                                         IDriverReceiver* receiver)
 {
   PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
 
@@ -54,7 +57,9 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* per
   }
 }
 
-CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* peripheral, KEYBOARD::IKeyboardInputHandler* handler)
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
+                                         CPeripheral* peripheral,
+                                         KEYBOARD::IKeyboardInputHandler* handler)
 {
   PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
 
@@ -76,7 +81,9 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* per
   }
 }
 
-CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* peripheral, MOUSE::IMouseInputHandler* handler)
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
+                                         CPeripheral* peripheral,
+                                         MOUSE::IMouseInputHandler* handler)
 {
   PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
 
@@ -122,7 +129,10 @@ bool CAddonInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return false;
 }
 
-bool CAddonInputHandling::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
+bool CAddonInputHandling::OnAxisMotion(unsigned int axisIndex,
+                                       float position,
+                                       int center,
+                                       unsigned int range)
 {
   if (m_driverHandler)
     return m_driverHandler->OnAxisMotion(axisIndex, position, center, range);

@@ -26,18 +26,17 @@
 using namespace KODI;
 using namespace GAME;
 
-CControllerInstaller::CControllerInstaller() :
-  CThread("ControllerInstaller")
+CControllerInstaller::CControllerInstaller() : CThread("ControllerInstaller")
 {
 }
 
 void CControllerInstaller::Process()
 {
-  CGUIComponent *gui = CServiceBroker::GetGUI();
+  CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui == nullptr)
     return;
 
-  CGUIWindowManager &windowManager = gui->GetWindowManager();
+  CGUIWindowManager& windowManager = gui->GetWindowManager();
 
   auto pSelectDialog = windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (pSelectDialog == nullptr)
@@ -48,19 +47,21 @@ void CControllerInstaller::Process()
     return;
 
   ADDON::VECADDONS installableAddons;
-  CServiceBroker::GetAddonMgr().GetInstallableAddons(installableAddons, ADDON::ADDON_GAME_CONTROLLER);
+  CServiceBroker::GetAddonMgr().GetInstallableAddons(installableAddons,
+                                                     ADDON::ADDON_GAME_CONTROLLER);
   if (installableAddons.empty())
   {
     // "Controller profiles"
     // "All available controller profiles are installed."
-    MESSAGING::HELPERS::ShowOKDialogText(CVariant{ 35050 }, CVariant{ 35062 });
+    MESSAGING::HELPERS::ShowOKDialogText(CVariant{35050}, CVariant{35062});
     return;
   }
 
-  CLog::Log(LOGDEBUG, "Controller installer: Found %u controller add-ons", installableAddons.size());
+  CLog::Log(LOGDEBUG, "Controller installer: Found %u controller add-ons",
+            installableAddons.size());
 
   CFileItemList items;
-  for (const auto &addon : installableAddons)
+  for (const auto& addon : installableAddons)
   {
     CFileItemPtr item(new CFileItem(addon->Name()));
     item->SetArt("icon", addon->Icon());
@@ -71,7 +72,7 @@ void CControllerInstaller::Process()
   pSelectDialog->SetHeading(39020); // "The following additional add-ons will be installed"
   pSelectDialog->SetUseDetails(true);
   pSelectDialog->EnableButton(true, 186); // "OK""
-  for (const auto &it : items)
+  for (const auto& it : items)
     pSelectDialog->Add(*it);
   pSelectDialog->Open();
 
@@ -81,27 +82,29 @@ void CControllerInstaller::Process()
     return;
   }
 
-  CLog::Log(LOGDEBUG, "Controller installer: Installing %u controller add-ons", installableAddons.size());
+  CLog::Log(LOGDEBUG, "Controller installer: Installing %u controller add-ons",
+            installableAddons.size());
 
-  pProgressDialog->SetHeading(CVariant{ 24086 }); // "Installing add-on..."
-  pProgressDialog->SetLine(0, CVariant{ "" });
-  pProgressDialog->SetLine(1, CVariant{ "" });
-  pProgressDialog->SetLine(2, CVariant{ "" });
+  pProgressDialog->SetHeading(CVariant{24086}); // "Installing add-on..."
+  pProgressDialog->SetLine(0, CVariant{""});
+  pProgressDialog->SetLine(1, CVariant{""});
+  pProgressDialog->SetLine(2, CVariant{""});
 
   pProgressDialog->Open();
 
   unsigned int installedCount = 0;
   while (installedCount < installableAddons.size())
   {
-    const auto &addon = installableAddons[installedCount];
+    const auto& addon = installableAddons[installedCount];
 
     // Set dialog text
     const std::string progressTemplate = g_localizeStrings.Get(24057); // "Installing {0:s}..."
     const std::string progressText = StringUtils::Format(progressTemplate, addon->Name());
-    pProgressDialog->SetLine(0, CVariant{ progressText });
+    pProgressDialog->SetLine(0, CVariant{progressText});
 
     // Set dialog percentage
-    const unsigned int percentage = 100 * (installedCount + 1) / static_cast<unsigned int>(installableAddons.size());
+    const unsigned int percentage =
+        100 * (installedCount + 1) / static_cast<unsigned int>(installableAddons.size());
     pProgressDialog->SetPercentage(percentage);
 
     if (!CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), false, false))

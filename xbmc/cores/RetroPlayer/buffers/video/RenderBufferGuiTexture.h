@@ -19,31 +19,31 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRenderBufferGuiTexture : public CBaseRenderBuffer
-  {
-  public:
-    CRenderBufferGuiTexture(SCALINGMETHOD scalingMethod);
-    ~CRenderBufferGuiTexture() override = default;
+class CRenderBufferGuiTexture : public CBaseRenderBuffer
+{
+public:
+  CRenderBufferGuiTexture(SCALINGMETHOD scalingMethod);
+  ~CRenderBufferGuiTexture() override = default;
 
-    // implementation of IRenderBuffer via CBaseRenderBuffer
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
-    size_t GetFrameSize() const override;
-    uint8_t *GetMemory() override;
-    bool UploadTexture() override;
-    void BindToUnit(unsigned int unit) override;
+  // implementation of IRenderBuffer via CBaseRenderBuffer
+  bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
+  size_t GetFrameSize() const override;
+  uint8_t* GetMemory() override;
+  bool UploadTexture() override;
+  void BindToUnit(unsigned int unit) override;
 
-    // GUI texture interface
-    CTexture *GetTexture() { return m_texture.get(); }
+  // GUI texture interface
+  CTexture* GetTexture() { return m_texture.get(); }
 
-  protected:
-    AVPixelFormat TranslateFormat(unsigned int textureFormat);
-    TEXTURE_SCALING TranslateScalingMethod(SCALINGMETHOD scalingMethod);
+protected:
+  AVPixelFormat TranslateFormat(unsigned int textureFormat);
+  TEXTURE_SCALING TranslateScalingMethod(SCALINGMETHOD scalingMethod);
 
-    // Texture parameters
-    SCALINGMETHOD m_scalingMethod;
-    unsigned int m_textureFormat = XB_FMT_UNKNOWN;
-    std::unique_ptr<CTexture> m_texture;
-  };
+  // Texture parameters
+  SCALINGMETHOD m_scalingMethod;
+  unsigned int m_textureFormat = XB_FMT_UNKNOWN;
+  std::unique_ptr<CTexture> m_texture;
+};
 
-}
-}
+} // namespace RETRO
+} // namespace KODI

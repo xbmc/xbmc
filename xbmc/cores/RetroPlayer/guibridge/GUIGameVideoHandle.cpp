@@ -13,8 +13,8 @@
 using namespace KODI;
 using namespace RETRO;
 
-CGUIGameVideoHandle::CGUIGameVideoHandle(CGUIGameRenderManager &renderManager) :
-  m_renderManager(renderManager)
+CGUIGameVideoHandle::CGUIGameVideoHandle(CGUIGameRenderManager& renderManager)
+  : m_renderManager(renderManager)
 {
 }
 

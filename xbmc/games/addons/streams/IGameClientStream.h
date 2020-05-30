@@ -16,7 +16,7 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IRetroPlayerStream;
+class IRetroPlayerStream;
 }
 
 namespace GAME
@@ -53,14 +53,17 @@ public:
    *
    * \return True if buffer was set, false otherwise
    */
-  virtual bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer& buffer) { return false; }
+  virtual bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer& buffer)
+  {
+    return false;
+  }
 
   /*!
    * \brief Free an allocated buffer
    *
    * \param buffer The buffer returned from GetStreamBuffer()
    */
-  virtual void ReleaseBuffer(game_stream_buffer& buffer) { }
+  virtual void ReleaseBuffer(game_stream_buffer& buffer) {}
 
   /*!
    * \brief Add a data packet to a stream

@@ -17,15 +17,14 @@
 using namespace KODI;
 using namespace GAME;
 
-CPort::CPort(JOYSTICK::IInputHandler *gameInput) :
-  m_gameInput(gameInput),
-  m_inputSink(new CInputSink(gameInput))
+CPort::CPort(JOYSTICK::IInputHandler* gameInput)
+  : m_gameInput(gameInput), m_inputSink(new CInputSink(gameInput))
 {
 }
 
 CPort::~CPort() = default;
 
-void CPort::RegisterInput(JOYSTICK::IInputProvider *provider)
+void CPort::RegisterInput(JOYSTICK::IInputProvider* provider)
 {
   // Give input sink the lowest priority by registering it before the other
   // input handlers
@@ -38,7 +37,7 @@ void CPort::RegisterInput(JOYSTICK::IInputProvider *provider)
   m_appInput.reset(new JOYSTICK::CKeymapHandling(provider, false, this));
 }
 
-void CPort::UnregisterInput(JOYSTICK::IInputProvider *provider)
+void CPort::UnregisterInput(JOYSTICK::IInputProvider* provider)
 {
   // Unregister in reverse order
   if (provider == nullptr)
@@ -83,7 +82,10 @@ bool CPort::OnButtonMotion(const std::string& feature, float magnitude, unsigned
   return m_gameInput->OnButtonMotion(feature, magnitude, motionTimeMs);
 }
 
-bool CPort::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs)
+bool CPort::OnAnalogStickMotion(const std::string& feature,
+                                float x,
+                                float y,
+                                unsigned int motionTimeMs)
 {
   if ((x != 0.0f || y != 0.0f) && !m_gameInput->AcceptsInput(feature))
     return false;

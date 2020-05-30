@@ -15,8 +15,8 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IRenderBufferPool;
-  using RenderBufferPoolPtr = std::shared_ptr<IRenderBufferPool>;
-  using RenderBufferPoolVector = std::vector<RenderBufferPoolPtr>;
-}
-}
+class IRenderBufferPool;
+using RenderBufferPoolPtr = std::shared_ptr<IRenderBufferPool>;
+using RenderBufferPoolVector = std::vector<RenderBufferPoolPtr>;
+} // namespace RETRO
+} // namespace KODI

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#if   defined(TARGET_WINDOWS_DESKTOP)
+#if defined(TARGET_WINDOWS_DESKTOP)
 #define HAVE_PERIPHERAL_BUS_USB 1
 #include "platform/win32/peripherals/PeripheralBusUSB.h"
 #elif defined(TARGET_WINDOWS_STORE)

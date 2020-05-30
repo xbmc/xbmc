@@ -17,29 +17,27 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRenderUtils
-  {
-  public:
-    static void CalculateStretchMode(STRETCHMODE stretchMode,
-                                     unsigned int rotationDegCCW,
-                                     unsigned int sourceWidth,
-                                     unsigned int sourceHeight,
-                                     float screenWidth,
-                                     float screenHeight,
-                                     float &pixelRatio,
-                                     float &zoomAmount);
+class CRenderUtils
+{
+public:
+  static void CalculateStretchMode(STRETCHMODE stretchMode,
+                                   unsigned int rotationDegCCW,
+                                   unsigned int sourceWidth,
+                                   unsigned int sourceHeight,
+                                   float screenWidth,
+                                   float screenHeight,
+                                   float& pixelRatio,
+                                   float& zoomAmount);
 
-    static void CalcNormalRenderRect(const CRect &viewRect,
-                                     float outputFrameRatio,
-                                     float zoomAmount,
-                                     CRect &destRect);
-    
-    static void ClipRect(const CRect &viewRect,
-                         CRect &sourceRect,
-                         CRect &destRect);
+  static void CalcNormalRenderRect(const CRect& viewRect,
+                                   float outputFrameRatio,
+                                   float zoomAmount,
+                                   CRect& destRect);
 
-    static std::array<CPoint, 4> ReorderDrawPoints(const CRect &destRect,
-                                                   unsigned int orientationDegCCW);
-  };
-}
-}
+  static void ClipRect(const CRect& viewRect, CRect& sourceRect, CRect& destRect);
+
+  static std::array<CPoint, 4> ReorderDrawPoints(const CRect& destRect,
+                                                 unsigned int orientationDegCCW);
+};
+} // namespace RETRO
+} // namespace KODI

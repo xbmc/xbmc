@@ -54,33 +54,51 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   }
   m_mouseState.dx = dx;
   m_mouseState.dy = dy;
-  m_mouseState.x  = std::max(0, std::min(m_maxX, m_mouseState.x + dx));
-  m_mouseState.y  = std::max(0, std::min(m_maxY, m_mouseState.y + dy));
+  m_mouseState.x = std::max(0, std::min(m_maxX, m_mouseState.x + dx));
+  m_mouseState.y = std::max(0, std::min(m_maxY, m_mouseState.y + dy));
 
   // Fill in the public members
   if (newEvent.type == XBMC_MOUSEBUTTONDOWN)
   {
-    if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = true;
-    if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = true;
-    if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = true;
-    if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = true;
-    if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = true;
-    if (newEvent.button.button == XBMC_BUTTON_X3) m_mouseState.button[MOUSE_EXTRA_BUTTON3] = true;
-    if (newEvent.button.button == XBMC_BUTTON_X4) m_mouseState.button[MOUSE_EXTRA_BUTTON4] = true;
-    if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 1;
-    if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = -1;
+    if (newEvent.button.button == XBMC_BUTTON_LEFT)
+      m_mouseState.button[MOUSE_LEFT_BUTTON] = true;
+    if (newEvent.button.button == XBMC_BUTTON_RIGHT)
+      m_mouseState.button[MOUSE_RIGHT_BUTTON] = true;
+    if (newEvent.button.button == XBMC_BUTTON_MIDDLE)
+      m_mouseState.button[MOUSE_MIDDLE_BUTTON] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X1)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON1] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X2)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON2] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X3)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON3] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X4)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON4] = true;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELUP)
+      m_mouseState.dz = 1;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN)
+      m_mouseState.dz = -1;
   }
   else if (newEvent.type == XBMC_MOUSEBUTTONUP)
   {
-    if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = false;
-    if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = false;
-    if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = false;
-    if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = false;
-    if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = false;
-    if (newEvent.button.button == XBMC_BUTTON_X3) m_mouseState.button[MOUSE_EXTRA_BUTTON3] = false;
-    if (newEvent.button.button == XBMC_BUTTON_X4) m_mouseState.button[MOUSE_EXTRA_BUTTON4] = false;
-    if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 0;
-    if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = 0;
+    if (newEvent.button.button == XBMC_BUTTON_LEFT)
+      m_mouseState.button[MOUSE_LEFT_BUTTON] = false;
+    if (newEvent.button.button == XBMC_BUTTON_RIGHT)
+      m_mouseState.button[MOUSE_RIGHT_BUTTON] = false;
+    if (newEvent.button.button == XBMC_BUTTON_MIDDLE)
+      m_mouseState.button[MOUSE_MIDDLE_BUTTON] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X1)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON1] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X2)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON2] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X3)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON3] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X4)
+      m_mouseState.button[MOUSE_EXTRA_BUTTON4] = false;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELUP)
+      m_mouseState.dz = 0;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN)
+      m_mouseState.dz = 0;
   }
 
   // Now check the current message and the previous state to find out if
@@ -97,35 +115,36 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 
     // CButtonState::Update does the hard work of checking the button state
     // and spotting drags, doubleclicks etc
-    CButtonState::BUTTON_ACTION action = m_buttonState[i].Update(now, m_mouseState.x, m_mouseState.y, m_mouseState.button[i]);
+    CButtonState::BUTTON_ACTION action =
+        m_buttonState[i].Update(now, m_mouseState.x, m_mouseState.y, m_mouseState.button[i]);
     switch (action)
     {
-    case CButtonState::MB_SHORT_CLICK:
-      bClick[i] = true;
-      bNothingDown = false;
-      break;
-    case CButtonState::MB_LONG_CLICK:
-      bLongClick[i] = true;
-      bNothingDown = false;
-      break;
-    case CButtonState::MB_DOUBLE_CLICK:
-      bDoubleClick[i] = true;
-      bNothingDown = false;
-      break;
-    case CButtonState::MB_DRAG_START:
-      bHold[i] = CButtonState::MB_DRAG_START;
-      bNothingDown = false;
-      break;
-    case CButtonState::MB_DRAG:
-      bHold[i] = CButtonState::MB_DRAG;
-      bNothingDown = false;
-      break;
-    case CButtonState::MB_DRAG_END:
-      bHold[i] = CButtonState::MB_DRAG_END;
-      bNothingDown = false;
-      break;
-    default:
-      break;
+      case CButtonState::MB_SHORT_CLICK:
+        bClick[i] = true;
+        bNothingDown = false;
+        break;
+      case CButtonState::MB_LONG_CLICK:
+        bLongClick[i] = true;
+        bNothingDown = false;
+        break;
+      case CButtonState::MB_DOUBLE_CLICK:
+        bDoubleClick[i] = true;
+        bNothingDown = false;
+        break;
+      case CButtonState::MB_DRAG_START:
+        bHold[i] = CButtonState::MB_DRAG_START;
+        bNothingDown = false;
+        break;
+      case CButtonState::MB_DRAG:
+        bHold[i] = CButtonState::MB_DRAG;
+        bNothingDown = false;
+        break;
+      case CButtonState::MB_DRAG_END:
+        bHold[i] = CButtonState::MB_DRAG_END;
+        bNothingDown = false;
+        break;
+      default:
+        break;
     }
   }
 
@@ -134,7 +153,7 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   // ignore any mouse messages by default
   m_Key = KEY_MOUSE_NOOP;
 
-  for (int button=0; button<MOUSE_MAX_BUTTON; ++button)
+  for (int button = 0; button < MOUSE_MAX_BUTTON; ++button)
   {
     // The bClick array is set true if CButtonState::Update spots a click
     // i.e. a button down followed by a button up.
@@ -173,15 +192,15 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
     {
       switch (bHold[MOUSE_RIGHT_BUTTON])
       {
-      case CButtonState::MB_DRAG:
-        m_Key = KEY_MOUSE_RDRAG;
-        break;
-      case CButtonState::MB_DRAG_START:
-        m_Key = KEY_MOUSE_RDRAG_START;
-        break;
-      case CButtonState::MB_DRAG_END:
-        m_Key = KEY_MOUSE_RDRAG_END;
-        break;
+        case CButtonState::MB_DRAG:
+          m_Key = KEY_MOUSE_RDRAG;
+          break;
+        case CButtonState::MB_DRAG_START:
+          m_Key = KEY_MOUSE_RDRAG_START;
+          break;
+        case CButtonState::MB_DRAG_END:
+          m_Key = KEY_MOUSE_RDRAG_END;
+          break;
       }
     }
 
@@ -226,7 +245,8 @@ void CMouseStat::SetActive(bool active /*=true*/)
   // 3. XBMC is not in fullscreen.
   CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
   if (winSystem)
-    winSystem->ShowOSMouse(m_mouseState.active && !IsEnabled() && !CServiceBroker::GetWinSystem()->IsFullScreen());
+    winSystem->ShowOSMouse(m_mouseState.active && !IsEnabled() &&
+                           !CServiceBroker::GetWinSystem()->IsFullScreen());
 }
 
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
@@ -251,7 +271,8 @@ bool CMouseStat::IsEnabled() const
 
 bool CMouseStat::MovedPastThreshold() const
 {
-  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
+  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >=
+          MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
 uint32_t CMouseStat::GetKey() const
@@ -262,7 +283,8 @@ uint32_t CMouseStat::GetKey() const
 int CMouseStat::GetHold(int ButtonID) const
 {
   switch (ButtonID)
-  { case MOUSE_LEFT_BUTTON:
+  {
+    case MOUSE_LEFT_BUTTON:
       return bHold[MOUSE_LEFT_BUTTON];
   }
   return false;
@@ -280,10 +302,13 @@ bool CMouseStat::CButtonState::InClickRange(int x, int y) const
 {
   int dx = x - m_x;
   int dy = y - m_y;
-  return (unsigned int)(dx*dx + dy*dy) <= click_confines*click_confines;
+  return (unsigned int)(dx * dx + dy * dy) <= click_confines * click_confines;
 }
 
-CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigned int time, int x, int y, bool down)
+CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigned int time,
+                                                                         int x,
+                                                                         int y,
+                                                                         bool down)
 {
   if (m_state == STATE_IN_DRAG)
   {
@@ -306,7 +331,7 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
   {
     if (down)
     {
-      if (!InClickRange(x,y))
+      if (!InClickRange(x, y))
       { // beginning a drag
         m_state = STATE_IN_DRAG;
         return MB_DRAG_START;
@@ -318,7 +343,7 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
       { // single click
         m_state = STATE_IN_DOUBLE_CLICK;
         m_time = time; // double click time and positioning is measured from the
-        m_x = x;       // end of a single click
+        m_x = x; // end of a single click
         m_y = y;
         return MB_SHORT_CLICK;
       }
@@ -331,8 +356,9 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
   }
   else if (m_state == STATE_IN_DOUBLE_CLICK)
   {
-    if (time - m_time > double_click_time || !InClickRange(x,y))
-    { // too long, or moved to much - reset to released state and re-update, as we may be starting a new click
+    if (time - m_time > double_click_time || !InClickRange(x, y))
+    { // too long, or moved to much - reset to released state and re-update, as we may be starting a
+      // new click
       m_state = STATE_RELEASED;
       return Update(time, x, y, down);
     }
@@ -350,4 +376,3 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
 
   return MB_NONE;
 }
-

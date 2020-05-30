@@ -14,12 +14,12 @@
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
 
-CGenericTouchRotateDetector::CGenericTouchRotateDetector(ITouchActionHandler *handler, float dpi)
-  : IGenericTouchGestureDetector(handler, dpi),
-    m_angle(0.0f)
-{ }
+CGenericTouchRotateDetector::CGenericTouchRotateDetector(ITouchActionHandler* handler, float dpi)
+  : IGenericTouchGestureDetector(handler, dpi), m_angle(0.0f)
+{
+}
 
-bool CGenericTouchRotateDetector::OnTouchDown(unsigned int index, const Pointer &pointer)
+bool CGenericTouchRotateDetector::OnTouchDown(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;
@@ -32,7 +32,7 @@ bool CGenericTouchRotateDetector::OnTouchDown(unsigned int index, const Pointer 
   return true;
 }
 
-bool CGenericTouchRotateDetector::OnTouchUp(unsigned int index, const Pointer &pointer)
+bool CGenericTouchRotateDetector::OnTouchUp(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;
@@ -56,7 +56,7 @@ bool CGenericTouchRotateDetector::OnTouchUp(unsigned int index, const Pointer &p
   return true;
 }
 
-bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer &pointer)
+bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;
@@ -71,7 +71,7 @@ bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer 
   Pointer& secondaryPointer = m_pointers[1];
 
   if (!primaryPointer.valid() || !secondaryPointer.valid() ||
-     (!primaryPointer.moving && !secondaryPointer.moving))
+      (!primaryPointer.moving && !secondaryPointer.moving))
     return false;
 
   CVector last = primaryPointer.last - secondaryPointer.last;
@@ -103,7 +103,7 @@ bool CGenericTouchRotateDetector::OnTouchMove(unsigned int index, const Pointer 
   return true;
 }
 
-bool CGenericTouchRotateDetector::OnTouchUpdate(unsigned int index, const Pointer &pointer)
+bool CGenericTouchRotateDetector::OnTouchUpdate(unsigned int index, const Pointer& pointer)
 {
   if (index >= MAX_POINTERS)
     return false;

@@ -34,8 +34,8 @@ enum class StreamType
 
 enum class PCMFormat
 {
- FMT_UNKNOWN,
- FMT_S16NE,
+  FMT_UNKNOWN,
+  FMT_S16NE,
 };
 
 enum class AudioChannel
@@ -82,5 +82,5 @@ enum class VideoRotation
   ROTATION_270_CCW,
 };
 
-}
-}
+} // namespace RETRO
+} // namespace KODI

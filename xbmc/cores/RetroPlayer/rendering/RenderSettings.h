@@ -14,21 +14,21 @@ namespace KODI
 {
 namespace RETRO
 {
-  class CRenderSettings
-  {
-  public:
-    CRenderSettings() { Reset(); }
+class CRenderSettings
+{
+public:
+  CRenderSettings() { Reset(); }
 
-    void Reset();
+  void Reset();
 
-    bool operator==(const CRenderSettings &rhs) const;
-    bool operator<(const CRenderSettings &rhs) const;
+  bool operator==(const CRenderSettings& rhs) const;
+  bool operator<(const CRenderSettings& rhs) const;
 
-    CRenderVideoSettings &VideoSettings() { return m_videoSettings; }
-    const CRenderVideoSettings &VideoSettings() const { return m_videoSettings; }
+  CRenderVideoSettings& VideoSettings() { return m_videoSettings; }
+  const CRenderVideoSettings& VideoSettings() const { return m_videoSettings; }
 
-  private:
-    CRenderVideoSettings m_videoSettings;
-  };
-}
-}
+private:
+  CRenderVideoSettings m_videoSettings;
+};
+} // namespace RETRO
+} // namespace KODI

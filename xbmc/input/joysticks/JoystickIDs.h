@@ -8,6 +8,6 @@
 
 #pragma once
 
- // Analog sticks on the default controller
-#define DEFAULT_LEFT_STICK_NAME   "leftstick"
-#define DEFAULT_RIGHT_STICK_NAME  "rightstick"
+// Analog sticks on the default controller
+#define DEFAULT_LEFT_STICK_NAME "leftstick"
+#define DEFAULT_RIGHT_STICK_NAME "rightstick"

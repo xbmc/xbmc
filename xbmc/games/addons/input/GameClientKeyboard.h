@@ -14,49 +14,51 @@ namespace KODI
 {
 namespace KEYBOARD
 {
-  class IKeyboardInputProvider;
+class IKeyboardInputProvider;
 }
 
 namespace GAME
 {
-  class CGameClient;
+class CGameClient;
+
+/*!
+ * \ingroup games
+ * \brief Handles keyboard events for games.
+ *
+ * Listens to keyboard events and forwards them to the games (as game_input_event).
+ */
+class CGameClientKeyboard : public KEYBOARD::IKeyboardInputHandler
+{
+public:
+  /*!
+   * \brief Constructor registers for keyboard events at CInputManager.
+   * \param gameClient The game client implementation.
+   * \param controllerId The controller profile used for input
+   * \param dllStruct The emulator or game to which the events are sent.
+   * \param inputProvider The interface providing us with keyboard input.
+   */
+  CGameClientKeyboard(CGameClient& gameClient,
+                      std::string controllerId,
+                      KEYBOARD::IKeyboardInputProvider* inputProvider);
 
   /*!
-   * \ingroup games
-   * \brief Handles keyboard events for games.
-   *
-   * Listens to keyboard events and forwards them to the games (as game_input_event).
+   * \brief Destructor unregisters from keyboard events from CInputManager.
    */
-  class CGameClientKeyboard : public KEYBOARD::IKeyboardInputHandler
-  {
-  public:
-    /*!
-     * \brief Constructor registers for keyboard events at CInputManager.
-     * \param gameClient The game client implementation.
-     * \param controllerId The controller profile used for input
-     * \param dllStruct The emulator or game to which the events are sent.
-     * \param inputProvider The interface providing us with keyboard input.
-     */
-    CGameClientKeyboard(CGameClient &gameClient,
-                        std::string controllerId,
-                        KEYBOARD::IKeyboardInputProvider *inputProvider);
+  ~CGameClientKeyboard() override;
 
-    /*!
-     * \brief Destructor unregisters from keyboard events from CInputManager.
-     */
-    ~CGameClientKeyboard() override;
+  // implementation of IKeyboardInputHandler
+  std::string ControllerID() const override;
+  bool HasKey(const KEYBOARD::KeyName& key) const override;
+  bool OnKeyPress(const KEYBOARD::KeyName& key, KEYBOARD::Modifier mod, uint32_t unicode) override;
+  void OnKeyRelease(const KEYBOARD::KeyName& key,
+                    KEYBOARD::Modifier mod,
+                    uint32_t unicode) override;
 
-    // implementation of IKeyboardInputHandler
-    std::string ControllerID() const override;
-    bool HasKey(const KEYBOARD::KeyName &key) const override;
-    bool OnKeyPress(const KEYBOARD::KeyName &key, KEYBOARD::Modifier mod, uint32_t unicode) override;
-    void OnKeyRelease(const KEYBOARD::KeyName &key, KEYBOARD::Modifier mod, uint32_t unicode) override;
-
-  private:
-    // Construction parameters
-    CGameClient &m_gameClient;
-    const std::string m_controllerId;
-    KEYBOARD::IKeyboardInputProvider *const m_inputProvider;
-  };
-}
-}
+private:
+  // Construction parameters
+  CGameClient& m_gameClient;
+  const std::string m_controllerId;
+  KEYBOARD::IKeyboardInputProvider* const m_inputProvider;
+};
+} // namespace GAME
+} // namespace KODI

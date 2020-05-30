@@ -24,39 +24,39 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGUIControllerWindow;
+class CGUIControllerWindow;
 
-  class CGUIControllerList : public IControllerList
-  {
-  public:
-    CGUIControllerList(CGUIWindow* window, IFeatureList* featureList, GameClientPtr gameClient);
-    ~CGUIControllerList() override { Deinitialize(); }
+class CGUIControllerList : public IControllerList
+{
+public:
+  CGUIControllerList(CGUIWindow* window, IFeatureList* featureList, GameClientPtr gameClient);
+  ~CGUIControllerList() override { Deinitialize(); }
 
-    // implementation of IControllerList
-    bool Initialize() override;
-    void Deinitialize() override;
-    bool Refresh(const std::string& controllerId) override;
-    void OnFocus(unsigned int controllerIndex) override;
-    void OnSelect(unsigned int controllerIndex) override;
-    int GetFocusedController() const override { return m_focusedController; }
-    void ResetController() override;
+  // implementation of IControllerList
+  bool Initialize() override;
+  void Deinitialize() override;
+  bool Refresh(const std::string& controllerId) override;
+  void OnFocus(unsigned int controllerIndex) override;
+  void OnSelect(unsigned int controllerIndex) override;
+  int GetFocusedController() const override { return m_focusedController; }
+  void ResetController() override;
 
-  private:
-    bool RefreshControllers(void);
+private:
+  bool RefreshControllers(void);
 
-    void CleanupButtons(void);
-    void OnEvent(const ADDON::AddonEvent& event);
+  void CleanupButtons(void);
+  void OnEvent(const ADDON::AddonEvent& event);
 
-    // GUI stuff
-    CGUIWindow* const     m_guiWindow;
-    IFeatureList* const   m_featureList;
-    CGUIControlGroupList* m_controllerList;
-    CGUIButtonControl*    m_controllerButton;
+  // GUI stuff
+  CGUIWindow* const m_guiWindow;
+  IFeatureList* const m_featureList;
+  CGUIControlGroupList* m_controllerList;
+  CGUIButtonControl* m_controllerButton;
 
-    // Game stuff
-    ControllerVector      m_controllers;
-    int                   m_focusedController;
-    GameClientPtr         m_gameClient;
-  };
-}
-}
+  // Game stuff
+  ControllerVector m_controllers;
+  int m_focusedController;
+  GameClientPtr m_gameClient;
+};
+} // namespace GAME
+} // namespace KODI

@@ -12,18 +12,18 @@ namespace KODI
 {
 namespace GAME
 {
-  /*!
-   * \brief Types of button controls that can populate the feature list
-   */
-  enum class BUTTON_TYPE
-  {
-    UNKNOWN,
-    BUTTON,
-    ANALOG_STICK,
-    RELATIVE_POINTER,
-    WHEEL,
-    THROTTLE,
-    SELECT_KEY,
-  };
-}
-}
+/*!
+ * \brief Types of button controls that can populate the feature list
+ */
+enum class BUTTON_TYPE
+{
+  UNKNOWN,
+  BUTTON,
+  ANALOG_STICK,
+  RELATIVE_POINTER,
+  WHEEL,
+  THROTTLE,
+  SELECT_KEY,
+};
+} // namespace GAME
+} // namespace KODI

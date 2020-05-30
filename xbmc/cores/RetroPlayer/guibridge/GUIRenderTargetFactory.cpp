@@ -13,17 +13,17 @@
 using namespace KODI;
 using namespace RETRO;
 
-CGUIRenderTargetFactory::CGUIRenderTargetFactory(IRenderManager *renderManager) :
-  m_renderManager(renderManager)
+CGUIRenderTargetFactory::CGUIRenderTargetFactory(IRenderManager* renderManager)
+  : m_renderManager(renderManager)
 {
 }
 
-CGUIRenderTarget *CGUIRenderTargetFactory::CreateRenderFullScreen(CGameWindowFullScreen &window)
+CGUIRenderTarget* CGUIRenderTargetFactory::CreateRenderFullScreen(CGameWindowFullScreen& window)
 {
   return new CGUIRenderFullScreen(m_renderManager, window);
 }
 
-CGUIRenderTarget *CGUIRenderTargetFactory::CreateRenderControl(CGUIGameControl &gameControl)
+CGUIRenderTarget* CGUIRenderTargetFactory::CreateRenderControl(CGUIGameControl& gameControl)
 {
   return new CGUIRenderControl(m_renderManager, gameControl);
 }

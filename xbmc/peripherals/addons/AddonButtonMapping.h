@@ -19,49 +19,54 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  class CButtonMapping;
-  class IButtonMap;
-  class IButtonMapper;
-}
-}
+class CButtonMapping;
+class IButtonMap;
+class IButtonMapper;
+} // namespace JOYSTICK
+} // namespace KODI
 
 namespace PERIPHERALS
 {
-  class CPeripheral;
-  class CPeripherals;
+class CPeripheral;
+class CPeripherals;
 
-  class CAddonButtonMapping : public KODI::JOYSTICK::IDriverHandler,
-                              public KODI::KEYBOARD::IKeyboardDriverHandler,
-                              public KODI::MOUSE::IMouseDriverHandler,
-                              public KODI::JOYSTICK::IButtonMapCallback
-  {
-  public:
-    CAddonButtonMapping(CPeripherals& manager, CPeripheral* peripheral, KODI::JOYSTICK::IButtonMapper* mapper);
+class CAddonButtonMapping : public KODI::JOYSTICK::IDriverHandler,
+                            public KODI::KEYBOARD::IKeyboardDriverHandler,
+                            public KODI::MOUSE::IMouseDriverHandler,
+                            public KODI::JOYSTICK::IButtonMapCallback
+{
+public:
+  CAddonButtonMapping(CPeripherals& manager,
+                      CPeripheral* peripheral,
+                      KODI::JOYSTICK::IButtonMapper* mapper);
 
-    ~CAddonButtonMapping(void) override;
+  ~CAddonButtonMapping(void) override;
 
-    // implementation of IDriverHandler
-    bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
-    bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state) override;
-    bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
-    void ProcessAxisMotions(void) override;
+  // implementation of IDriverHandler
+  bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
+  bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state) override;
+  bool OnAxisMotion(unsigned int axisIndex,
+                    float position,
+                    int center,
+                    unsigned int range) override;
+  void ProcessAxisMotions(void) override;
 
-    // implementation of IKeyboardDriverHandler
-    bool OnKeyPress(const CKey& key) override;
-    void OnKeyRelease(const CKey& key) override;
+  // implementation of IKeyboardDriverHandler
+  bool OnKeyPress(const CKey& key) override;
+  void OnKeyRelease(const CKey& key) override;
 
-    // implementation of IMouseDriverHandler
-    bool OnPosition(int x, int y) override;
-    bool OnButtonPress(KODI::MOUSE::BUTTON_ID button) override;
-    void OnButtonRelease(KODI::MOUSE::BUTTON_ID button) override;
+  // implementation of IMouseDriverHandler
+  bool OnPosition(int x, int y) override;
+  bool OnButtonPress(KODI::MOUSE::BUTTON_ID button) override;
+  void OnButtonRelease(KODI::MOUSE::BUTTON_ID button) override;
 
-    // implementation of IButtonMapCallback
-    void SaveButtonMap() override;
-    void ResetIgnoredPrimitives() override;
-    void RevertButtonMap() override;
+  // implementation of IButtonMapCallback
+  void SaveButtonMap() override;
+  void ResetIgnoredPrimitives() override;
+  void RevertButtonMap() override;
 
-  private:
-    std::unique_ptr<KODI::JOYSTICK::CButtonMapping> m_buttonMapping;
-    std::unique_ptr<KODI::JOYSTICK::IButtonMap>     m_buttonMap;
-  };
-}
+private:
+  std::unique_ptr<KODI::JOYSTICK::CButtonMapping> m_buttonMapping;
+  std::unique_ptr<KODI::JOYSTICK::IButtonMap> m_buttonMap;
+};
+} // namespace PERIPHERALS

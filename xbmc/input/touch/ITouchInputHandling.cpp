@@ -8,7 +8,7 @@
 
 #include "ITouchInputHandling.h"
 
-void ITouchInputHandling::RegisterHandler(ITouchActionHandler *touchHandler)
+void ITouchInputHandling::RegisterHandler(ITouchActionHandler* touchHandler)
 {
   m_handler = touchHandler;
 }
@@ -40,7 +40,8 @@ bool ITouchInputHandling::OnSingleTouchHold(float x, float y)
   return true;
 }
 
-bool ITouchInputHandling::OnSingleTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
+bool ITouchInputHandling::OnSingleTouchMove(
+    float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
 {
   if (m_handler)
     return m_handler->OnSingleTouchMove(x, y, offsetX, offsetY, velocityX, velocityY);
@@ -72,7 +73,13 @@ bool ITouchInputHandling::OnMultiTouchHold(float x, float y, int32_t pointers /*
   return true;
 }
 
-bool ITouchInputHandling::OnMultiTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY, int32_t pointer)
+bool ITouchInputHandling::OnMultiTouchMove(float x,
+                                           float y,
+                                           float offsetX,
+                                           float offsetY,
+                                           float velocityX,
+                                           float velocityY,
+                                           int32_t pointer)
 {
   if (m_handler)
     return m_handler->OnMultiTouchMove(x, y, offsetX, offsetY, velocityX, velocityY, pointer);
@@ -96,7 +103,8 @@ bool ITouchInputHandling::OnTouchGestureStart(float x, float y)
   return true;
 }
 
-bool ITouchInputHandling::OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
+bool ITouchInputHandling::OnTouchGesturePan(
+    float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
 {
   if (m_handler)
     return m_handler->OnTouchGesturePan(x, y, offsetX, offsetY, velocityX, velocityY);
@@ -104,7 +112,8 @@ bool ITouchInputHandling::OnTouchGesturePan(float x, float y, float offsetX, flo
   return true;
 }
 
-bool ITouchInputHandling::OnTouchGestureEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
+bool ITouchInputHandling::OnTouchGestureEnd(
+    float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
 {
   if (m_handler)
     return m_handler->OnTouchGestureEnd(x, y, offsetX, offsetY, velocityX, velocityY);
@@ -124,7 +133,14 @@ void ITouchInputHandling::OnLongPress(float x, float y, int32_t pointers /* = 1 
     m_handler->OnLongPress(x, y, pointers);
 }
 
-void ITouchInputHandling::OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers /* = 1 */)
+void ITouchInputHandling::OnSwipe(TouchMoveDirection direction,
+                                  float xDown,
+                                  float yDown,
+                                  float xUp,
+                                  float yUp,
+                                  float velocityX,
+                                  float velocityY,
+                                  int32_t pointers /* = 1 */)
 {
   if (m_handler)
     m_handler->OnSwipe(direction, xDown, yDown, xUp, yUp, velocityX, velocityY, pointers);

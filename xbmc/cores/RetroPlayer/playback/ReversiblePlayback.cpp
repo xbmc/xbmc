@@ -24,28 +24,30 @@
 using namespace KODI;
 using namespace RETRO;
 
-#define REWIND_FACTOR  0.25  // Rewind at 25% of gameplay speed
+#define REWIND_FACTOR 0.25 // Rewind at 25% of gameplay speed
 
-CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient, double fps, size_t serializeSize) :
-  m_gameClient(gameClient),
-  m_gameLoop(this, fps),
-  m_savestateDatabase(new CSavestateDatabase),
-  m_totalFrameCount(0),
-  m_pastFrameCount(0),
-  m_futureFrameCount(0),
-  m_playTimeMs(0),
-  m_totalTimeMs(0),
-  m_cacheTimeMs(0)
+CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
+                                         double fps,
+                                         size_t serializeSize)
+  : m_gameClient(gameClient),
+    m_gameLoop(this, fps),
+    m_savestateDatabase(new CSavestateDatabase),
+    m_totalFrameCount(0),
+    m_pastFrameCount(0),
+    m_futureFrameCount(0),
+    m_playTimeMs(0),
+    m_totalTimeMs(0),
+    m_cacheTimeMs(0)
 {
   UpdateMemoryStream();
 
-  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  GAME::CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
   gameSettings.RegisterObserver(this);
 }
 
 CReversiblePlayback::~CReversiblePlayback()
 {
-  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  GAME::CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
   gameSettings.UnregisterObserver(this);
 
   Deinitialize();
@@ -124,7 +126,9 @@ std::string CReversiblePlayback::CreateSavestate()
   const std::string label = now.GetAsLocalizedDateTime();
   const std::string gameFileName = URIUtils::GetFileName(m_gameClient->GetGamePath());
   const uint64_t timestampFrames = m_totalFrameCount;
-  const double timestampWallClock = (m_totalFrameCount / m_gameClient->GetFrameRate()); //! @todo Accumulate playtime instead of deriving it
+  const double timestampWallClock =
+      (m_totalFrameCount /
+       m_gameClient->GetFrameRate()); //! @todo Accumulate playtime instead of deriving it
   const std::string gameClientId = m_gameClient->ID();
   const std::string gameClientVersion = m_gameClient->Version().asString();
 
@@ -139,7 +143,7 @@ std::string CReversiblePlayback::CreateSavestate()
   savestate->SetGameClientID(gameClientId);
   savestate->SetGameClientVersion(gameClientVersion);
 
-  uint8_t *memoryData = savestate->GetMemoryBuffer(memorySize);
+  uint8_t* memoryData = savestate->GetMemoryBuffer(memorySize);
 
   {
     CSingleLock lock(m_mutex);
@@ -174,7 +178,8 @@ bool CReversiblePlayback::LoadSavestate(const std::string& path)
   bool bSuccess = false;
 
   std::unique_ptr<ISavestate> savestate = m_savestateDatabase->CreateSavestate();
-  if (m_savestateDatabase->GetSavestate(path, *savestate) && savestate->GetMemorySize() == memorySize)
+  if (m_savestateDatabase->GetSavestate(path, *savestate) &&
+      savestate->GetMemorySize() == memorySize)
   {
     {
       CSingleLock lock(m_mutex);
@@ -268,15 +273,15 @@ void CReversiblePlayback::UpdatePlaybackStats()
   m_cacheTimeMs = MathUtils::round_int(1000.0 * cached / m_gameLoop.FPS());
 }
 
-void CReversiblePlayback::Notify(const Observable &obs, const ObservableMessage msg)
+void CReversiblePlayback::Notify(const Observable& obs, const ObservableMessage msg)
 {
   switch (msg)
   {
-  case ObservableMessageSettingsChanged:
-    UpdateMemoryStream();
-    break;
-  default:
-    break;
+    case ObservableMessageSettingsChanged:
+      UpdateMemoryStream();
+      break;
+    default:
+      break;
   }
 }
 
@@ -286,7 +291,7 @@ void CReversiblePlayback::UpdateMemoryStream()
 
   bool bRewindEnabled = false;
 
-  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  GAME::CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
 
   if (m_gameClient->SerializeSize() > 0)
     bRewindEnabled = gameSettings.RewindEnabled();

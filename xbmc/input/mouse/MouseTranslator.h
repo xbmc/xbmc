@@ -20,7 +20,7 @@ public:
   /*!
    * \brief Translate a keymap element to a key ID
    */
-  static uint32_t TranslateCommand(const TiXmlElement *pButton);
+  static uint32_t TranslateCommand(const TiXmlElement* pButton);
 
   /*!
    * \brief Translate a mouse event ID to a mouse button index
@@ -30,5 +30,5 @@ public:
    *
    * \return True if successful, false otherwise
    */
-  static bool TranslateEventID(unsigned int eventId, KODI::MOUSE::BUTTON_ID &buttonId);
+  static bool TranslateEventID(unsigned int eventId, KODI::MOUSE::BUTTON_ID& buttonId);
 };

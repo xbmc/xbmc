@@ -29,42 +29,42 @@ namespace KODI
 {
 namespace GAME
 {
-  class CGameClientInput;
+class CGameClientInput;
+
+/*!
+ * \brief A container for the layout of a controller connected to a game
+ *        client input port
+ */
+class CGameClientController
+{
+public:
+  /*!
+   * \brief Construct a controller layout
+   *
+   * \brief controller The controller add-on
+   */
+  CGameClientController(CGameClientInput& input, ControllerPtr controller);
 
   /*!
-   * \brief A container for the layout of a controller connected to a game
-   *        client input port
+   * \brief Get a controller layout for the Game API
    */
-  class CGameClientController
-  {
-  public:
-    /*!
-     * \brief Construct a controller layout
-     *
-     * \brief controller The controller add-on
-     */
-    CGameClientController(CGameClientInput &input, ControllerPtr controller);
+  game_controller_layout TranslateController() const;
 
-    /*!
-     * \brief Get a controller layout for the Game API
-     */
-    game_controller_layout TranslateController() const;
+private:
+  // Construction parameters
+  CGameClientInput& m_input;
+  const ControllerPtr m_controller;
 
-  private:
-    // Construction parameters
-    CGameClientInput &m_input;
-    const ControllerPtr m_controller;
-
-    // Buffer parameters
-    std::string m_controllerId;
-    std::vector<char*> m_digitalButtons;
-    std::vector<char*> m_analogButtons;
-    std::vector<char*> m_analogSticks;
-    std::vector<char*> m_accelerometers;
-    std::vector<char*> m_keys;
-    std::vector<char*> m_relPointers;
-    std::vector<char*> m_absPointers;
-    std::vector<char*> m_motors;
-  };
+  // Buffer parameters
+  std::string m_controllerId;
+  std::vector<char*> m_digitalButtons;
+  std::vector<char*> m_analogButtons;
+  std::vector<char*> m_analogSticks;
+  std::vector<char*> m_accelerometers;
+  std::vector<char*> m_keys;
+  std::vector<char*> m_relPointers;
+  std::vector<char*> m_absPointers;
+  std::vector<char*> m_motors;
+};
 } // namespace GAME
 } // namespace KODI
