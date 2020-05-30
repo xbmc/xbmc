@@ -135,6 +135,8 @@ static const std::map<xkb_keysym_t, XBMCKey> xkbMap =
   { XKB_KEY_XF86Favorites, XBMCK_FAVORITES },
   { XKB_KEY_XF86HomePage, XBMCK_HOMEPAGE },
   // Unmapped: XBMCK_CONFIG, XBMCK_EPG
+  { XKB_KEY_XF86Subtitle, XBMCK_SUBTITLE },
+  { XKB_KEY_XF86AudioCycleTrack, XBMCVK_LANGUAGE },
 
   // Media keys
   { XKB_KEY_XF86Eject, XBMCK_EJECT },
