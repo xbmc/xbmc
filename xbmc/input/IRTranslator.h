@@ -12,6 +12,7 @@
 #include <memory>
 #include <string>
 
+class TiXmlElement;
 class TiXmlNode;
 
 class CIRTranslator
@@ -31,12 +32,15 @@ public:
 
   unsigned int TranslateButton(const std::string &szDevice, const std::string &szButton);
 
+  static uint32_t TranslateButton(const TiXmlElement* pButton);
+  static uint32_t TranslateUniversalRemoteButton(const TiXmlElement* pButton);
   static uint32_t TranslateString(std::string strButton);
   static uint32_t TranslateUniversalRemoteString(const std::string &szButton);
 
 private:
   bool LoadIRMap(const std::string &irMapPath);
   void MapRemote(TiXmlNode *pRemote, const std::string &szDevice);
+  static uint32_t ApplyModifiersToButton(const TiXmlElement* pButton, uint32_t iButtonCode);
 
   using IRButtonMap = std::map<std::string, std::string>;
 

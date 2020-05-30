@@ -35,6 +35,14 @@ CKey::CKey(uint32_t buttonCode, unsigned int held)
   m_held = held;
 }
 
+CKey::CKey(uint32_t buttonCode, unsigned int held, uint32_t modifiers)
+{
+  Reset();
+  m_buttonCode = buttonCode;
+  m_held = held;
+  m_modifiers = modifiers;
+}
+
 CKey::CKey(uint32_t keycode, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, uint32_t lockingModifiers, unsigned int held)
 {
   Reset();
