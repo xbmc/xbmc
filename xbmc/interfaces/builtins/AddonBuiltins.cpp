@@ -391,11 +391,11 @@ static int UpdateLocals(const std::vector<std::string>& params)
 ///   }
 ///   \table_row2_l{
 ///     <b>`EnableAddon(id)`</b>
-///     ,
+///     \anchor Builtin_EnableAddonId,
 ///     Enable the specified plugin/script
 ///     @param[in] id                    The add-on id
 ///     <p><hr>
-///     @skinning_v19 **[New builtin]**
+///     @skinning_v19 **[New builtin]** \link Builtin_EnableAddonId `EnableAddon(id)`\endlink
 ///     <p>
 ///   }
 ///   \table_row2_l{

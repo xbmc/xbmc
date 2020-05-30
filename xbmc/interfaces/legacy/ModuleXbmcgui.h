@@ -31,7 +31,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcgui
     /// @brief \python_func{ xbmcgui.getCurrentWindowId() }
-    ///-------------------------------------------------------------------------
     /// Returns the id for the current 'active' window as an integer.
     ///
     /// @return                        The currently active window Id
@@ -55,7 +54,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcgui
     /// @brief \python_func{ xbmcgui.getCurrentWindowDialogId() }
-    ///-------------------------------------------------------------------------
     /// Returns the id for the current 'active' dialog as an integer.
     ///
     /// @return                        The currently active dialog Id
@@ -79,7 +77,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcgui
     /// @brief \python_func{ getScreenHeight() }
-    ///-------------------------------------------------------------------------
     /// Returns the height of this screen.
     ///
     /// @return                       Screen height
@@ -97,7 +94,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmcgui
     /// @brief \python_func{ getScreenWidth() }
-    ///-------------------------------------------------------------------------
     /// Returns the width of this screen.
     ///
     /// @return                       Screen width

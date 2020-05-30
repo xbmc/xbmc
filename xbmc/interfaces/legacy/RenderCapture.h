@@ -56,7 +56,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmc_RenderCapture
       /// @brief \python_func{ getWidth() }
-      ///-----------------------------------------------------------------------
       /// Get width
       ///
       /// To get width of captured image as set during RenderCapture.capture().
@@ -73,7 +72,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmc_RenderCapture
       /// @brief \python_func{ getHeight() }
-      ///-----------------------------------------------------------------------
       /// Get height
       ///
       /// To get height of captured image as set during RenderCapture.capture().
@@ -89,7 +87,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmc_RenderCapture
       /// @brief \python_func{ getAspectRatio() }
-      ///-----------------------------------------------------------------------
       /// Get aspect ratio of currently displayed video.
       ///
       /// @return                        Aspect ratio
@@ -104,7 +101,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmc_RenderCapture
       /// @brief \python_func{ getImageFormat() }
-      ///-----------------------------------------------------------------------
       /// Get image format
       ///
       /// @return                        Format of captured image: 'BGRA'
@@ -125,7 +121,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmc_RenderCapture
       /// @brief \python_func{ getImage([msecs]) }
-      ///-----------------------------------------------------------------------
       /// Returns captured image as a bytearray.
       ///
       /// @param msecs               [opt] Milliseconds to wait. Waits
@@ -154,7 +149,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmc_RenderCapture
       /// @brief \python_func{ capture(width, height) }
-      ///-----------------------------------------------------------------------
       /// Issue capture request.
       ///
       /// @param width               Width capture image should be rendered to

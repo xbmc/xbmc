@@ -69,7 +69,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_keyboard
       /// @brief \python_func{ doModal([autoclose]) }
-      ///-----------------------------------------------------------------------
       /// Show keyboard and wait for user action.
       ///
       /// @param autoclose      [opt] integer - milliseconds to autoclose
@@ -95,7 +94,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_keyboard
       /// @brief \python_func{ setDefault(line) }
-      ///-----------------------------------------------------------------------
       /// Set the default text entry.
       ///
       /// @param line        string - default text entry.
@@ -119,7 +117,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_keyboard
       /// @brief \python_func{ setHiddenInput(hidden) }
-      ///-----------------------------------------------------------------------
       /// Allows hidden text entry.
       ///
       /// @param hidden        boolean - True for hidden text entry.
@@ -144,7 +141,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_keyboard
       /// @brief \python_func{ setHeading(heading) }
-      ///-----------------------------------------------------------------------
       /// Set the keyboard heading.
       ///
       /// @param heading        string - keyboard heading.
@@ -169,7 +165,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_keyboard
       /// @brief \python_func{ getText() }
-      ///-----------------------------------------------------------------------
       /// Returns the user input as a string.
       ///
       /// @note This will always return the text entry even if you cancel the keyboard.
@@ -197,7 +192,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_keyboard
       /// @brief \python_func{ isConfirmed() }
-      ///-----------------------------------------------------------------------
       /// Returns False if the user cancelled the input.
       ///
       /// @return     true if confirmed, if cancelled false

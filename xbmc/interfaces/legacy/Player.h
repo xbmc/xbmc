@@ -83,8 +83,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ play([item, listitem, windowed, startpos]) }
-      ///-----------------------------------------------------------------------
-      /// @brief Play a item.
+      /// Play an item.
       ///
       /// @param item                [opt] string - filename, url or playlist
       /// @param listitem            [opt] listitem - used with setInfo() to set
@@ -126,7 +125,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ stop() }
-      ///-----------------------------------------------------------------------
       /// Stop playing.
       ///
       stop();
@@ -138,7 +136,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ pause() }
-      ///-----------------------------------------------------------------------
       /// Pause or resume playing if already paused.
       ///
       pause();
@@ -150,7 +147,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ playnext() }
-      ///-----------------------------------------------------------------------
       /// Play next item in playlist.
       ///
       playnext();
@@ -162,7 +158,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ playprevious() }
-      ///-----------------------------------------------------------------------
       /// Play previous item in playlist.
       ///
       playprevious();
@@ -174,7 +169,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ playselected(selected) }
-      ///-----------------------------------------------------------------------
       /// Play a certain item from the current playlist.
       ///
       /// @param selected   Integer - Item to select
@@ -201,7 +195,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackStarted() }
-      ///-----------------------------------------------------------------------
       /// onPlayBackStarted method.
       ///
       /// Will be called when Kodi player starts. Video or audio might not be available at this point.
@@ -220,7 +213,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onAVStarted() }
-      ///-----------------------------------------------------------------------
       /// onAVStarted method.
       ///
       /// Will be called when Kodi has a video or audiostream.
@@ -238,7 +230,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onAVChange() }
-      ///-----------------------------------------------------------------------
       /// onAVChange method.
       ///
       /// Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes.
@@ -255,7 +246,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackEnded() }
-      ///-----------------------------------------------------------------------
       /// onPlayBackEnded method.
       ///
       /// Will be called when Kodi stops playing a file.
@@ -269,7 +259,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackStopped() }
-      ///-----------------------------------------------------------------------
       /// onPlayBackStopped method.
       ///
       /// Will be called when user stops Kodi playing a file.
@@ -283,7 +272,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackError() }
-      ///-----------------------------------------------------------------------
       /// onPlayBackError method.
       ///
       /// Will be called when playback stops due to an error.
@@ -297,7 +285,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackPaused() }
-      ///-----------------------------------------------------------------------
       /// onPlayBackPaused method.
       ///
       /// Will be called when user pauses a playing file.
@@ -311,7 +298,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackResumed() }
-      ///-----------------------------------------------------------------------
       /// onPlayBackResumed method.
       ///
       /// Will be called when user resumes a paused file.
@@ -325,7 +311,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onQueueNextItem() }
-      ///-----------------------------------------------------------------------
       /// onQueueNextItem method.
       ///
       /// Will be called when user queues the next item.
@@ -339,7 +324,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackSpeedChanged(speed) }
-      ///-----------------------------------------------------------------------
       /// onPlayBackSpeedChanged method.
       ///
       /// Will be called when players speed changes (eg. user FF/RW).
@@ -358,7 +342,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackSeek(time, seekOffset) }
-      ///-----------------------------------------------------------------------
       /// onPlayBackSeek method.
       ///
       /// Will be called when user seeks to a time.
@@ -375,7 +358,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayerCB
       /// @brief \python_func{ onPlayBackSeekChapter(chapter) }
-      ///-----------------------------------------------------------------------
       /// onPlayBackSeekChapter method.
       ///
       /// Will be called when user performs a chapter seek.
@@ -392,7 +374,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ isPlaying() }
-      ///-----------------------------------------------------------------------
       /// Check Kodi is playing something.
       ///
       /// @return                    True if Kodi is playing a file.
@@ -406,7 +387,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ isPlayingAudio() }
-      ///-----------------------------------------------------------------------
       /// Check for playing audio.
       ///
       /// @return                    True if Kodi is playing an audio file.
@@ -420,7 +400,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ isPlayingVideo() }
-      ///-----------------------------------------------------------------------
       /// Check for playing video.
       ///
       /// @return                    True if Kodi is playing a video.
@@ -434,7 +413,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ isPlayingRDS() }
-      ///-----------------------------------------------------------------------
       /// Check for playing radio data system (RDS).
       ///
       /// @return                    True if kodi is playing a radio data
@@ -449,7 +427,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ isExternalPlayer() }
-      ///-----------------------------------------------------------------------
       /// Check for external player.
       ///
       /// @return                    True if kodi is playing using an
@@ -468,7 +445,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getPlayingFile() }
-      ///-----------------------------------------------------------------------
       /// Returns the current playing file as a string.
       ///
       /// @note For LiveTV, returns a __pvr://__ url which is not translatable
@@ -486,7 +462,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getTime() }
-      ///-----------------------------------------------------------------------
       /// Get playing time.
       ///
       /// Returns the current time of the current playing media as fractional
@@ -504,7 +479,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ seekTime(seekTime) }
-      ///-----------------------------------------------------------------------
       /// Seek time.
       ///
       /// Seeks the specified amount of time as fractional seconds.
@@ -523,7 +497,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ setSubtitles(subtitleFile) }
-      ///-----------------------------------------------------------------------
       /// Set subtitle file and enable subtitles.
       ///
       /// @param subtitleFile        File to use as source ofsubtitles
@@ -537,7 +510,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ showSubtitles(visible) }
-      ///-----------------------------------------------------------------------
       /// Enable / disable subtitles.
       ///
       /// @param visible             [boolean] True for visible subtitles.
@@ -561,7 +533,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getSubtitles() }
-      ///-----------------------------------------------------------------------
       /// Get subtitle stream name.
       ///
       /// @return                    Stream name
@@ -575,7 +546,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getAvailableSubtitleStreams() }
-      ///-----------------------------------------------------------------------
       /// Get Subtitle stream names.
       ///
       /// @return                    List of subtitle streams as name
@@ -589,7 +559,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ setSubtitleStream(stream) }
-      ///-----------------------------------------------------------------------
       /// Set Subtitle Stream.
       ///
       /// @param iStream             [int] Subtitle stream to select for play
@@ -614,7 +583,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ updateInfoTag(item) }
-      ///-----------------------------------------------------------------------
       /// Update info labels for currently playing item.
       ///
       /// @param item ListItem with new info
@@ -643,7 +611,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getVideoInfoTag() }
-      ///-----------------------------------------------------------------------
       /// To get video info tag.
       ///
       /// Returns the VideoInfoTag of the current playing Movie.
@@ -662,7 +629,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getMusicInfoTag() }
-      ///-----------------------------------------------------------------------
       /// To get music info tag.
       ///
       /// Returns the MusicInfoTag of the current playing 'Song'.
@@ -680,7 +646,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getRadioRDSInfoTag() }
-      ///-----------------------------------------------------------------------
       /// To get Radio RDS info tag
       ///
       /// Returns the RadioRDSInfoTag of the current playing 'Radio Song if.
@@ -699,7 +664,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getTotalTime() }
-      ///-----------------------------------------------------------------------
       /// To get total playing time.
       ///
       /// Returns the total time of the current playing media in seconds.
@@ -717,7 +681,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getAvailableAudioStreams() }
-      ///-----------------------------------------------------------------------
       /// Get Audio stream names
       ///
       /// @return                    List of audio streams as name
@@ -731,7 +694,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ setAudioStream(stream) }
-      ///-----------------------------------------------------------------------
       /// Set Audio Stream.
       ///
       /// @param iStream             [int] Audio stream to select for play
@@ -755,7 +717,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getAvailableVideoStreams() }
-      ///-----------------------------------------------------------------------
       /// Get Video stream names
       ///
       /// @return                    List of video streams as name
@@ -769,7 +730,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ setVideoStream(stream) }
-      ///-----------------------------------------------------------------------
       /// Set Video Stream.
       ///
       /// @param iStream             [int] Video stream to select for play

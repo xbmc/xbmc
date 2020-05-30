@@ -10,7 +10,6 @@
 
 #include "AddonString.h"
 #include "Tuple.h"
-//#include "Monitor.h"
 
 #include "utils/LangCodeExpander.h"
 #include "swighelper.h"
@@ -42,7 +41,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.log(msg[, level]) }
-    ///-----------------------------------------------------------------------
     /// Write a string to Kodi's log file and the debug window.
     ///
     /// @param msg                 string - text to output.
@@ -91,7 +89,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.shutdown() }
-    ///-----------------------------------------------------------------------
     /// Shutdown the htpc.
     ///
     ///
@@ -113,7 +110,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.restart() }
-    ///-----------------------------------------------------------------------
     /// Restart the htpc.
     ///
     ///
@@ -135,7 +131,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.executescript(script) }
-    ///-----------------------------------------------------------------------
     /// Execute a python script.
     ///
     /// @param script                  string - script filename to execute.
@@ -159,7 +154,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.executebuiltin(function) }
-    ///-----------------------------------------------------------------------
     /// Execute a built in Kodi function.
     ///
     /// @param function                string - builtin function to execute.
@@ -186,7 +180,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.executeJSONRPC(jsonrpccommand) }
-    ///-----------------------------------------------------------------------
     /// Execute an JSONRPC command.
     ///
     /// @param jsonrpccommand       string - jsonrpc command to execute.
@@ -213,7 +206,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.sleep(time) }
-    ///-----------------------------------------------------------------------
     /// Sleeps for 'time' (msec).
     /// \anchor xbmc_Sleep
     ///
@@ -250,7 +242,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getLocalizedString(id) }
-    ///-----------------------------------------------------------------------
     /// Get a localized 'unicode string'.
     ///
     /// @param id                   integer - id# for string you want to
@@ -279,7 +270,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getSkinDir() }
-    ///-----------------------------------------------------------------------
     /// Get the active skin directory.
     ///
     /// @return                         The active skin directory as a string
@@ -307,7 +297,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getLanguage([format], [region]) }
-    ///-----------------------------------------------------------------------
     /// Get the active language.
     ///
     /// @param format               [opt] format of the returned language
@@ -342,7 +331,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getIPAddress() }
-    ///-----------------------------------------------------------------------
     /// Get the current ip address.
     ///
     /// @return The current ip address as a string
@@ -366,7 +354,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getDVDState() }
-    ///-----------------------------------------------------------------------
     /// Returns the dvd state as an integer.
     ///
     /// @return Values for state are:
@@ -397,7 +384,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getFreeMem() }
-    ///-----------------------------------------------------------------------
     /// Get amount of free memory in MB.
     ///
     /// @return The amount of free memory in MB as an integer
@@ -421,7 +407,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getInfoLabel(infotag) }
-    ///-----------------------------------------------------------------------
     /// Get a info label
     ///
     /// @param infotag               string - infoTag for value you want
@@ -449,7 +434,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getInfoImage(infotag) }
-    ///-----------------------------------------------------------------------
     /// Get filename including path to the InfoImage's thumbnail.
     ///
     /// @param infotag               string - infotag for value you want
@@ -479,7 +463,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.playSFX(filename,[useCached]) }
-    ///-----------------------------------------------------------------------
     /// Plays a wav file by filename
     ///
     /// @param filename              string - filename of the wav file to
@@ -509,7 +492,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.stopSFX() }
-    ///-----------------------------------------------------------------------
     /// Stops wav file
     ///
     ///
@@ -532,7 +514,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.enableNavSounds(yesNo) }
-    ///-----------------------------------------------------------------------
     /// Enables/Disables nav sounds
     ///
     /// @param yesNo                 bool - enable (True) or disable
@@ -557,7 +538,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCondVisibility(condition) }
-    ///-----------------------------------------------------------------------
     /// Get visibility conditions
     ///
     /// @param condition             string - condition to check
@@ -587,7 +567,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getGlobalIdleTime() }
-    ///-----------------------------------------------------------------------
     /// Get the elapsed idle time in seconds.
     ///
     /// @return Elapsed idle time in seconds as an integer
@@ -611,7 +590,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCacheThumbName(path) }
-    ///-----------------------------------------------------------------------
     /// Get thumb cache filename.
     ///
     /// @param path                  string - path to file
@@ -636,7 +614,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.translatePath(path)  }
-    ///-----------------------------------------------------------------------
     /// Returns the translated path.
     ///
     /// @param path                  string - Path to format
@@ -665,7 +642,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCleanMovieTitle(path[, usefoldername]) }
-    ///-----------------------------------------------------------------------
     /// Get clean movie title and year string if available.
     ///
     /// @param path                  string - String to clean
@@ -693,7 +669,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getRegion(id) }
-    ///-----------------------------------------------------------------------
     /// Returns your regions setting as a string for the specified id.
     ///
     /// @param id                    string - id of setting to return
@@ -721,7 +696,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getSupportedMedia(media) }
-    ///-----------------------------------------------------------------------
     /// Get the supported file types for the specific media.
     ///
     /// @param media                 string - media type
@@ -753,7 +727,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.skinHasImage(image) }
-    ///-----------------------------------------------------------------------
     /// Check skin for presence of Image.
     ///
     /// @param image                 string - image filename
@@ -779,10 +752,9 @@ namespace XBMCAddon
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
     /// \ingroup python_xbmc
+    ///
     /// @brief \python_func{ xbmc.startServer(typ, bStart, bWait) }
-    ///-------------------------------------------------------------------------
     /// Start or stop a server.
     ///
     /// @param typ                  integer - use SERVER_* constants
@@ -819,7 +791,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.audioSuspend() }
-    ///-----------------------------------------------------------------------
     /// Suspend Audio engine.
     ///
     ///
@@ -841,7 +812,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.audioResume() }
-    ///-----------------------------------------------------------------------
     /// Resume Audio engine.
     ///
     ///
@@ -863,7 +833,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getUserAgent() }
-    ///-----------------------------------------------------------------------
     /// @brief Returns Kodi's HTTP UserAgent string
     ///
     /// @return                           HTTP user agent
@@ -890,7 +859,6 @@ namespace XBMCAddon
     ///
     /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.convertLanguage(language, format) }
-    ///-----------------------------------------------------------------------
     /// @brief Returns the given language converted to the given format as a
     /// string.
     ///

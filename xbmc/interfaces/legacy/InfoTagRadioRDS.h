@@ -65,7 +65,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getTitle() }
-      ///-----------------------------------------------------------------------
       /// Title of the item on the air; i.e. song title.
       ///
       /// @return Title
@@ -79,7 +78,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getBand() }
-      ///-----------------------------------------------------------------------
       /// Band of the item on air.
       ///
       /// @return Band
@@ -93,7 +91,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getArtist() }
-      ///-----------------------------------------------------------------------
       /// Artist of the item on air.
       ///
       /// @return Artist
@@ -107,7 +104,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getComposer() }
-      ///-----------------------------------------------------------------------
       /// Get the Composer of the music.
       ///
       /// @return Composer
@@ -121,7 +117,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getConductor() }
-      ///-----------------------------------------------------------------------
       /// Get the Conductor of the Band.
       ///
       /// @return Conductor
@@ -135,7 +130,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getAlbum() }
-      ///-----------------------------------------------------------------------
       /// Album of item on air.
       ///
       /// @return Album name
@@ -149,7 +143,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getComment() }
-      ///-----------------------------------------------------------------------
       /// Get Comment text from channel.
       ///
       /// @return Comment
@@ -163,7 +156,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getAlbumTrackNumber() }
-      ///-----------------------------------------------------------------------
       /// Get the album track number of currently sended music.
       ///
       /// @return Track Number
@@ -177,7 +169,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoNews() }
-      ///-----------------------------------------------------------------------
       /// Get News informations.
       ///
       /// @return News Information
@@ -191,7 +182,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoNewsLocal() }
-      ///-----------------------------------------------------------------------
       /// Get Local news informations.
       ///
       /// @return Local News Information
@@ -205,7 +195,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoSport() }
-      ///-----------------------------------------------------------------------
       /// Get Sport informations.
       ///
       /// @return Sport Information
@@ -219,7 +208,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoStock() }
-      ///-----------------------------------------------------------------------
       /// Get Stock informations.
       ///
       /// @return Stock Information
@@ -233,7 +221,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoWeather() }
-      ///-----------------------------------------------------------------------
       /// Get Weather informations.
       ///
       /// @return Weather Information
@@ -247,7 +234,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoHoroscope() }
-      ///-----------------------------------------------------------------------
       /// Get Horoscope informations.
       ///
       /// @return Horoscope Information
@@ -261,7 +247,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoCinema() }
-      ///-----------------------------------------------------------------------
       /// Get Cinema informations.
       ///
       /// @return Cinema Information
@@ -275,7 +260,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoLottery() }
-      ///-----------------------------------------------------------------------
       /// Get Lottery informations.
       ///
       /// @return Lottery Information
@@ -289,7 +273,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getInfoOther() }
-      ///-----------------------------------------------------------------------
       /// Get other informations.
       ///
       /// @return Other Information
@@ -303,7 +286,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getEditorialStaff() }
-      ///-----------------------------------------------------------------------
       /// Get Editorial Staff names.
       ///
       /// @return Editorial Staff
@@ -317,7 +299,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getProgStation() }
-      ///-----------------------------------------------------------------------
       /// Name describing station.
       ///
       /// @return Program Station
@@ -331,7 +312,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getProgStyle() }
-      ///-----------------------------------------------------------------------
       /// The the radio channel style currently used.
       ///
       /// @return Program Style
@@ -345,7 +325,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getProgHost() }
-      ///-----------------------------------------------------------------------
       /// Host of current radio show.
       ///
       /// @return Program Host
@@ -359,7 +338,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getProgWebsite() }
-      ///-----------------------------------------------------------------------
       /// Link to URL (web page) for radio station homepage.
       ///
       /// @return Program Website
@@ -373,7 +351,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getProgNow() }
-      ///-----------------------------------------------------------------------
       /// Current radio program show.
       ///
       /// @return Program Now
@@ -387,7 +364,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getProgNext() }
-      ///-----------------------------------------------------------------------
       /// Next program show.
       ///
       /// @return Program Next
@@ -401,7 +377,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getPhoneHotline() }
-      ///-----------------------------------------------------------------------
       /// Telephone number of the radio station's hotline.
       ///
       /// @return Phone Hotline
@@ -415,7 +390,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getEMailHotline() }
-      ///-----------------------------------------------------------------------
       /// Email address of the radio station's studio.
       ///
       /// @return EMail Hotline
@@ -429,7 +403,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getPhoneStudio() }
-      ///-----------------------------------------------------------------------
       /// Telephone number of the radio station's studio.
       ///
       /// @return Phone Studio
@@ -443,7 +416,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getEMailStudio() }
-      ///-----------------------------------------------------------------------
       /// Email address of radio station studio.
       ///
       /// @return EMail Studio
@@ -457,7 +429,6 @@ namespace XBMCAddon
       ///
       /// @ingroup python_InfoTagRadioRDS
       /// @brief \python_func{ getSMSStudio() }
-      ///-----------------------------------------------------------------------
       /// SMS (Text Messaging) number for studio.
       ///
       /// @return SMS Studio

@@ -56,7 +56,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_mode() }
-      ///-----------------------------------------------------------------------
       /// To get file protection.
       ///
       /// @return                        st_mode
@@ -70,7 +69,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_ino() }
-      ///-----------------------------------------------------------------------
       /// To get inode number.
       ///
       /// @return                        st_ino
@@ -84,7 +82,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_dev() }
-      ///-----------------------------------------------------------------------
       /// To get ID of device containing file.
       ///
       /// The st_dev field describes the device on which this file resides.
@@ -100,7 +97,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_nlink() }
-      ///-----------------------------------------------------------------------
       /// To get number of hard links.
       ///
       /// @return                        st_nlink
@@ -114,7 +110,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_uid() }
-      ///-----------------------------------------------------------------------
       /// To get user ID of owner.
       ///
       /// @return                        st_uid
@@ -128,7 +123,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_gid() }
-      ///-----------------------------------------------------------------------
       /// To get group ID of owner.
       ///
       /// @return                        st_gid
@@ -142,7 +136,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_size() }
-      ///-----------------------------------------------------------------------
       /// To get total size, in bytes.
       ///
       /// The st_size field gives the size of the file (if it is a regular file
@@ -161,7 +154,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_atime() }
-      ///-----------------------------------------------------------------------
       /// To get time of last access.
       ///
       /// @return                        st_atime
@@ -175,7 +167,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_mtime() }
-      ///-----------------------------------------------------------------------
       /// To get time of last modification.
       ///
       /// @return                        st_mtime
@@ -189,7 +180,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_stat
       /// @brief \python_func{ st_ctime() }
-      ///-----------------------------------------------------------------------
       /// To get time of last status change.
       ///
       /// @return                        st_ctime

@@ -6385,6 +6385,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The BPM of a song.
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_BPM `ListItem.BPM`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.UniqueID(name)`</b>,
 ///                  \anchor ListItem_UniqueID
 ///                  _string_,
@@ -6398,18 +6400,20 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.BitRate`</b>,
 ///                  \anchor ListItem_BitRate
 ///                  _string_,
-///     @return The bitrate of a song. Actual rate for CBR, average rate for VBR.
+///     @return The bitrate of a song. Actual rate for CBR\, average rate for VBR.
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_BitRate `ListItem.BitRate`\endlink
 ///     <p>
-///   }///   \table_row3{   <b>`ListItem.SampleRate`</b>,
+///   }
+///   \table_row3{   <b>`ListItem.SampleRate`</b>,
 ///                  \anchor ListItem_SampleRate
 ///                  _string_,
-///     @return The sample rate of a song / 1000.0 eg 44.1, 48, 96 etc.
+///     @return The sample rate of a song / 1000.0 eg 44.1\, 48\, 96 etc.
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_SampleRate `ListItem.SampleRate`\endlink
 ///     <p>
-///   }///   \table_row3{   <b>`ListItem.MusicChannels`</b>,
+///   }
+///   \table_row3{   <b>`ListItem.MusicChannels`</b>,
 ///                  \anchor ListItem_MusicChannels
 ///                  _string_,
 ///     @return The number of audio channels of a song.

@@ -97,7 +97,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getLabel() }
-      ///-----------------------------------------------------------------------
       /// Returns the listitem label.
       ///
       /// @return                       Label of item
@@ -122,7 +121,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getLabel2() }
-      ///-----------------------------------------------------------------------
       /// Returns the second listitem label.
       ///
       /// @return                       Second label of item
@@ -147,7 +145,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setLabel(label) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's label.
       ///
       /// @param label              string or unicode - text string.
@@ -172,7 +169,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setLabel2(label) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's label2.
       ///
       /// @param label              string or unicode - text string.
@@ -197,7 +193,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setArt(values) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's art
       ///
       /// @param values             dictionary - pairs of `{ label: value }`.
@@ -236,7 +231,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setIsFolder(isFolder) }
-      ///-----------------------------------------------------------------------
       /// Sets if this listitem is a folder.
       ///
       /// @param isFolder            bool - True=folder / False=not a folder (default).
@@ -263,7 +257,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setUniqueIDs(values, defaultrating) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's uniqueID
       ///
       /// @param values             dictionary - pairs of `{ label: value }`.
@@ -298,7 +291,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setRating(type, rating, votes = 0, defaultt = False) }
-      ///-----------------------------------------------------------------------
       /// Sets a listitem's rating. It needs at least type and rating param
       ///
       /// @param type       string - the type of the rating. Any string.
@@ -334,7 +326,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addSeason(number, name = "") }
-      ///-----------------------------------------------------------------------
       /// Add a season with name to a listitem. It needs at least the season number
       ///
       /// @param number     int - the number of the season.
@@ -362,7 +353,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getArt(key) }
-      ///-----------------------------------------------------------------------
       /// Returns a listitem art path as a string, similar to an infolabel.\n
       ///
       /// @param key            string - art name.
@@ -398,7 +388,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getUniqueID(key) }
-      ///-----------------------------------------------------------------------
       /// Returns a listitem uniqueID as a string, similar to an infolabel.\n
       ///
       /// @param key            string - uniqueID name.
@@ -430,7 +419,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getRating(key) }
-      ///-----------------------------------------------------------------------
       /// Returns a listitem rating as a float.\n
       ///
       /// @param key            string - rating type.
@@ -462,7 +450,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getVotes(key) }
-      ///-----------------------------------------------------------------------
       /// Returns a listitem votes as a integer.\n
       ///
       /// @param key            string - rating type.
@@ -494,7 +481,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ select(selected) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's selected status.
       ///
       /// @param selected           bool - True=selected/False=not selected
@@ -520,7 +506,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ isSelected() }
-      ///-----------------------------------------------------------------------
       /// Returns the listitem's selected status.
       ///
       ///
@@ -546,7 +531,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setInfo(type, infoLabels) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's infoLabels.
       ///
       /// @param type               string - type of
@@ -699,8 +683,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setCast(actors) }
-      ///-----------------------------------------------------------------------
-      /// @brief Set cast including thumbnails
+      /// Set cast including thumbnails
       ///
       /// @param actors            list of dictionaries (see below for relevant keys)
       ///
@@ -733,8 +716,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setAvailableFanart(images) }
-      ///-----------------------------------------------------------------------
-      /// @brief Set available images (needed for video scrapers)
+      /// Set available images (needed for video scrapers)
       ///
       /// @param images            list of dictionaries (see below for relevant keys)
       ///
@@ -766,8 +748,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addAvailableArtwork(images) }
-      ///-----------------------------------------------------------------------
-      /// @brief Add an image to available artworks (needed for video scrapers)
+      /// Add an image to available artworks (needed for video scrapers)
       ///
       /// @param url            string (image path url)
       /// @param art_type       string (image type)
@@ -799,8 +780,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addStreamInfo(type, values) }
-      ///-----------------------------------------------------------------------
-      /// @brief Add a stream with details.
+      /// Add a stream with details.
       ///
       /// @param type              string - type of stream(video/audio/subtitle).
       /// @param values            dictionary - pairs of { label: value }.
@@ -846,7 +826,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addContextMenuItems([(label, action),*]) }
-      ///-----------------------------------------------------------------------
       /// Adds item(s) to the context menu for media lists.
       ///
       /// @param items               list - [(label, action),*] A list of tuples consisting of label and action pairs.
@@ -876,7 +855,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setProperty(key, value) }
-      ///-----------------------------------------------------------------------
       /// Sets a listitem property, similar to an infolabel.
       ///
       /// @param key            string - property name.
@@ -910,7 +888,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setProperties(values) }
-      ///-----------------------------------------------------------------------
       /// Sets multiple properties for listitem's
       ///
       /// @param values             dictionary - pairs of `{ label: value }`.
@@ -935,7 +912,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getProperty(key) }
-      ///-----------------------------------------------------------------------
       /// Returns a listitem property as a string, similar to an infolabel.
       ///
       /// @param key            string - property name.
@@ -963,7 +939,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setPath(path) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's path.
       ///
       /// @param path           string or unicode - path, activated when item is clicked.
@@ -989,7 +964,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setMimeType(mimetype) }
-      ///-----------------------------------------------------------------------
       /// Sets the listitem's mimetype if known.
       ///
       /// @param mimetype           string or unicode - mimetype
@@ -1006,7 +980,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setContentLookup(enable) }
-      ///-----------------------------------------------------------------------
       /// Enable or disable content lookup for item.
       ///
       /// If disabled, HEAD requests to e.g determine mime type will not be sent.
@@ -1026,7 +999,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setSubtitles(subtitleFiles) }
-      ///-----------------------------------------------------------------------
       /// Sets subtitles for this listitem.
       ///
       /// @param subtitleFiles list with path to subtitle files
@@ -1040,6 +1012,7 @@ namespace XBMCAddon
       /// listitem.setSubtitles(['special://temp/example.srt', 'http://example.com/example.srt'])
       /// ...
       /// ~~~~~~~~~~~~~
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
@@ -1052,7 +1025,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getPath() }
-      ///-----------------------------------------------------------------------
       /// Returns the path of this listitem.
       ///
       /// @return [string] filename
@@ -1071,7 +1043,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getVideoInfoTag() }
-      ///-----------------------------------------------------------------------
       /// Returns the VideoInfoTag for this item.
       ///
       /// @return     video info tag
@@ -1089,7 +1060,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getMusicInfoTag() }
-      ///-----------------------------------------------------------------------
       /// Returns the MusicInfoTag for this item.
       ///
       /// @return     music info tag

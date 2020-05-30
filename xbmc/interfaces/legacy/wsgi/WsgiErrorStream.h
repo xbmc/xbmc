@@ -41,9 +41,8 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcwsgi_WsgiErrorStream
       /// \python_func{ flush() }
-      ///------------------------------------------------------------------------
-      ///
       /// Since nothing is buffered this is a no-op.
+      ///
       ///
       flush();
 #else
@@ -54,13 +53,11 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcwsgi_WsgiErrorStream
       /// \python_func{ write(str) }
-      ///------------------------------------------------------------------------
-      ///
       /// Writes the given error message to the application's log file.
       ///
-      /// A trailing `\n` is removed.
-      ///
       /// @param str      A string to save in log file
+      ///
+      /// @note A trailing `\n` is removed.
       ///
       write(...);
 #else
@@ -71,8 +68,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcwsgi_WsgiErrorStream
       /// \python_func{ writelines(seq) }
-      ///------------------------------------------------------------------------
-      ///
       /// Joins the given list of error messages (without any separator) into
       /// a single error message which is written to the application's log file.
       ///
