@@ -127,6 +127,8 @@
 #include "dialogs/GUIDialogPlayEject.h"
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "video/dialogs/GUIDialogSubtitles.h"
+#include "video/dialogs/GUIDialogSubtitleSelect.h"
+#include "video/dialogs/GUIDialogAudioSelect.h"
 
 #include "peripherals/dialogs/GUIDialogPeripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
@@ -241,6 +243,8 @@ void CGUIWindowManager::CreateWindows()
 
   Add(new CGUIDialogMediaFilter);
   Add(new CGUIDialogSubtitles);
+  Add(new CGUIDialogSubtitleSelect);
+  Add(new CGUIDialogAudioSelect);
 
   Add(new CGUIWindowMusicPlayList);
   Add(new CGUIWindowMusicNav);
