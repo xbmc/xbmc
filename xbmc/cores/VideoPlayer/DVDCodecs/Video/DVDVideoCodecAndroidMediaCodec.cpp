@@ -1275,8 +1275,6 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec configure error");
     return false;
   }
-  m_codec->setVideoScalingMode(CJNIMediaCodec::VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
-
   m_state = MEDIACODEC_STATE_CONFIGURED;
 
   m_codec->start();
