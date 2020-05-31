@@ -6435,6 +6435,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_TvShowDBID `ListItem.TvShowDBID`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.AlbumStatus`</b>,
+///                  \anchor ListItem_AlbumStatus
+///                  _string_,
+///     @return The Musicbrainz release status of the album (offical, bootleg, promotion etc)
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_AlbumStatus `ListItem.AlbumStatus`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -6642,6 +6650,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isfinale",         LISTITEM_IS_FINALE },
                                   { "islive",           LISTITEM_IS_LIVE },
                                   { "tvshowdbid",       LISTITEM_TVSHOWDBID },
+                                  { "albumstatus",      LISTITEM_ALBUMSTATUS },
 };
 
 /// \page modules__infolabels_boolean_conditions

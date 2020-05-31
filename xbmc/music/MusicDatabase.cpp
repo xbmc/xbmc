@@ -153,6 +153,7 @@ void CMusicDatabase::CreateTables()
               " lastScraped varchar(20) default NULL, "
               " bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
               " strReleaseType text, "
+              " strReleaseStatus TEXT, "
               " iDiscTotal INTEGER NOT NULL DEFAULT 0, "
               " idInfoSetting INTEGER NOT NULL DEFAULT 0)");
 
@@ -322,6 +323,7 @@ void CMusicDatabase::CreateViews()
               "        song.idAlbum AS idAlbum, "
               "        strAlbum, "
               "        strPath, "
+              "        album.strReleaseStatus as strReleaseStatus,"
               "        album.bCompilation AS bCompilation,"
               "        album.bBoxedSet AS bBoxedSet, "
               "        album.strArtistDisp AS strAlbumArtists,"
@@ -358,6 +360,7 @@ void CMusicDatabase::CreateViews()
               "        strReview, "
               "        strLabel, "
               "        strType, "
+              "        strReleaseStatus, "
               "        album.strImage as strImage, "
               "        album.fRating, "
               "        album.iUserrating, "
@@ -557,7 +560,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                            album.GetGenreString(),
                            album.strReleaseDate, album.strOrigReleaseDate,
                            album.bBoxedSet,
-                           album.strLabel, album.strType,
+                           album.strLabel, album.strType, album.strReleaseStatus,
                            album.bCompilation, album.releaseType);
 
   // Add the album artists
@@ -711,7 +714,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
               StringUtils::Join(album.themes, itemSeparator),
               album.strReview,
               album.thumbURL.GetData(),
-              album.strLabel, album.strType,
+              album.strLabel, album.strType, album.strReleaseStatus,
               album.fRating, album.iUserrating, album.iVotes, 
               album.strReleaseDate, album.strOrigReleaseDate,
               album.bBoxedSet,
@@ -1083,6 +1086,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
                              const std::string& strReleaseDate, const std::string& strOrigReleaseDate,
                              bool bBoxedSet,
                              const std::string& strRecordLabel, const std::string& strType,
+                             const std::string& strReleaseStatus,
                              bool bCompilation, CAlbum::ReleaseType releaseType)
 {
   std::string strSQL;
@@ -1112,13 +1116,13 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
       strSQL = PrepareSQL(
           "INSERT INTO album (idAlbum, strAlbum, strArtistDisp, strGenres, "
           "strReleaseDate, strOrigReleaseDate, bBoxedSet, "
-          "strLabel, strType, bCompilation, strReleaseType, strMusicBrainzAlbumID, "
-          "strReleaseGroupMBID, strArtistSort) "
-          "values(NULL, '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, '%s'",
+          "strLabel, strType, bCompilation, strReleaseType, strReleaseStatus, "
+          "strMusicBrainzAlbumID, strReleaseGroupMBID, strArtistSort) "
+          "values(NULL, '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, '%s', '%s'",
           strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), 
           strReleaseDate.c_str(), strOrigReleaseDate.c_str(), bBoxedSet,
           strRecordLabel.c_str(), strType.c_str(), bCompilation,
-          CAlbum::ReleaseTypeToString(releaseType).c_str());
+          CAlbum::ReleaseTypeToString(releaseType).c_str(), strReleaseStatus.c_str());
 
       if (strMusicBrainzAlbumID.empty())
         strSQL += PrepareSQL(", NULL");
@@ -1166,11 +1170,13 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
       strSQL +=
           PrepareSQL(", strGenres = '%s', strReleaseDate= '%s', strOrigReleaseDate= '%s', "
                      "bBoxedSet=%i, strLabel = '%s', strType = '%s', "
-                     "bCompilation=%i, strReleaseType = '%s', lastScraped = NULL "
+                     "bCompilation=%i, strReleaseType = '%s',"
+                     "strReleaseStatus = '%s', lastScraped = NULL "
                      "WHERE idAlbum=%i",
                      strGenre.c_str(), strReleaseDate.c_str(), strOrigReleaseDate.c_str(), 
                      bBoxedSet, strRecordLabel.c_str(), strType.c_str(),
-                     bCompilation, CAlbum::ReleaseTypeToString(releaseType).c_str(), idAlbum);
+                     bCompilation, CAlbum::ReleaseTypeToString(releaseType).c_str(),
+                     strReleaseStatus.c_str(), idAlbum);
       m_pDS->exec(strSQL);
       DeleteAlbumArtistsByAlbum(idAlbum);
       DeleteAlbumSources(idAlbum);
@@ -1199,6 +1205,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                                 const std::string& strImage,
                                 const std::string& strLabel,
                                 const std::string& strType,
+                                const std::string& strReleaseStatus,
                                 float fRating,
                                 int iUserrating,
                                 int iVotes,
@@ -1220,7 +1227,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                       " strType = '%s', fRating = %f, iUserrating = %i, iVotes = %i,"
                       " strReleaseDate= '%s', strOrigReleaseDate= '%s', "
                       " bBoxedSet = %i, bCompilation = %i,"
-                      " strReleaseType = '%s',"
+                      " strReleaseType = '%s', strReleaseStatus = '%s', "
                       " lastScraped = '%s', bScrapedMBID = %i",
                       strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strThemes.c_str(),
@@ -1229,6 +1236,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                       strReleaseDate.c_str(), strOrigReleaseDate.c_str(),
                       bBoxedSet, bCompilation,
                       CAlbum::ReleaseTypeToString(releaseType).c_str(),
+                      strReleaseStatus.c_str(),
                       CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(),
                       bScrapedMBID);
   if (strMusicBrainzAlbumID.empty())
@@ -2596,6 +2604,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.themes = StringUtils::Split(record->at(offset + album_strThemes).get_asString(), itemSeparator);
   album.strLabel = record->at(offset + album_strLabel).get_asString();
   album.strType = record->at(offset + album_strType).get_asString();
+  album.strReleaseStatus = record->at(offset + album_strReleaseStatus).get_asString();
   album.bCompilation = record->at(offset + album_bCompilation).get_asInt() == 1;
   album.bScrapedMBID = record->at(offset + album_bScrapedMBID).get_asInt() == 1;
   album.strLastScraped = record->at(offset + album_lastScraped).get_asString();
@@ -6276,6 +6285,7 @@ static const translateJSONField JSONtoDBAlbum[] = {
   { "lastplayed",                "string", true,  "lastPlayed",             "" },  // Scalar subquery in view
   { "originaldate",              "string", true,  "strOrigReleaseDate",     "" },
   { "releasedate",               "string", true,  "strReleaseDate",         "" },
+  { "albumstatus",               "string", true,  "strReleaseStatus",       "" },
   // Scalar subquery fields
   { "year",                     "integer", true,  "iYear",                  "CAST(<datefield> AS INTEGER) AS iYear" }, //From strReleaseDate or strOrigReleaseDate
   { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource SEPARATOR '; ') FROM album_source WHERE album_source.idAlbum = albumview.idAlbum) AS sources" },
@@ -8138,6 +8148,8 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("ALTER TABLE song ADD iSampleRate INTEGER NOT NULL DEFAULT 0");
     m_pDS->exec("ALTER TABLE song ADD iChannels INTEGER NOT NULL DEFAULT 0");
   }
+  if (version < 77)
+    m_pDS->exec("ALTER TABLE album ADD strReleaseStatus TEXT");
 
   // Set the verion of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
@@ -8159,7 +8171,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 76; // Bumped for addition of functions to MySQL, SQLite v76 = v75
+  return 77; // Bumped for new tag processing (Musicbrainz album release status)
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()

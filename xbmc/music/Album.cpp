@@ -57,6 +57,7 @@ CAlbum::CAlbum(const CFileItem& item)
   dateAdded.Reset();
   lastPlayed.Reset();
   releaseType = tag.GetAlbumReleaseType();
+  strReleaseStatus = tag.GetAlbumReleaseStatus();
 }
 
 void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::vector<std::string>& hints,
@@ -315,6 +316,8 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   if ((override && !source.strType.empty()) || strType.empty())
     strType = source.strType;
 //  strPath = source.strPath; // don't merge the path
+  if ((override && !source.strReleaseStatus.empty()) || strReleaseStatus.empty())
+    strReleaseStatus = source.strReleaseStatus;
   fRating = source.fRating;
   iUserrating = source.iUserrating;
   iVotes = source.iVotes;
@@ -489,6 +492,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"label",strLabel);
   XMLUtils::GetString(album,"type",strType);
+  XMLUtils::GetString(album, "releasestatus", strReleaseStatus);
 
   XMLUtils::GetString(album, "releasedate", strReleaseDate);
   StringUtils::Trim(strReleaseDate);  // @todo: validate ISO8601 format
@@ -613,6 +617,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
 
   XMLUtils::SetString(album,      "review", strReview);
   XMLUtils::SetString(album,        "type", strType);
+  XMLUtils::SetString(album, "releasestatus", strReleaseStatus);
   XMLUtils::SetString(album, "releasedate", strReleaseDate);
   XMLUtils::SetString(album, "originalreleasedate", strOrigReleaseDate);
   XMLUtils::SetString(album,       "label", strLabel);
