@@ -587,12 +587,16 @@ void CPVRManager::OnSleep()
 
   SetWakeupCommand();
 
+  m_epgContainer.OnSystemSleep();
+
   m_addons->OnSystemSleep();
 }
 
 void CPVRManager::OnWake()
 {
   m_addons->OnSystemWake();
+
+  m_epgContainer.OnSystemWake();
 
   PublishEvent(PVREvent::SystemWake);
 
