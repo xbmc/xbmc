@@ -207,7 +207,8 @@
 		<value condition="Player.Forwarding32x | Player.Rewinding32x">32x</value>
 	</variable>
 	<variable name="SeekLabel">
-		<value condition="!String.IsEmpty(Player.SeekStepSize)">$LOCALIZE[773][COLOR=grey] $INFO[Player.SeekStepSize][/COLOR]</value>
+		<value condition="!String.IsEmpty(Player.SeekStepSize)">[COLOR button_focus]$LOCALIZE[773][/COLOR] $INFO[Player.SeekStepSize]</value>
+		<value condition="!String.IsEmpty(Player.SeekOffset)">[COLOR button_focus]$LOCALIZE[773][/COLOR] $INFO[Player.SeekOffset]</value>
 		<value condition="Player.Paused">$LOCALIZE[112]</value>
 		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
 		<value condition="Player.Rewinding">$LOCALIZE[31038] $VAR[VideoPlayerForwardRewindVar]</value>
@@ -307,15 +308,17 @@
   		<value condition="MusicPlayer.Content(livetv) + Player.HasAudio">$INFO[MusicPlayer.Title]</value> 
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.Title]</value>
 		<value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(Player.Art(tvshow.clearlogo))">$INFO[VideoPlayer.Season,[COLOR button_focus]S,[/COLOR]]$INFO[VideoPlayer.Episode,[COLOR button_focus]E,: [/COLOR]]$INFO[VideoPlayer.Title]</value>
-		<value condition="VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.TVShowTitle]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]</value>
-		<value condition="!VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]</value>
+		<value condition="VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.TVShowTitle]$INFO[VideoPlayer.Year, (,)]</value>
+		<value condition="!VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, (,)]</value>
 		<value condition="MusicPartyMode.Enabled">$LOCALIZE[589]</value>
 		<value>$LOCALIZE[31000]...</value>
 	</variable>
 	<variable name="OSDSubLabelVar">
-		<value condition="Window.IsActive(visualisation) + Integer.IsGreater(Playlist.Length,1) + Integer.IsGreater(Playlist.Position,0)">$LOCALIZE[554] $INFO[Playlist.Position] / $INFO[Playlist.Length]</value>
+		<value condition="Window.IsActive(visualisation) + Integer.IsGreater(Playlist.Length(music),1) + Integer.IsGreater(Playlist.Position(music),0)">$LOCALIZE[554] $INFO[Playlist.Position] / $INFO[Playlist.Length]</value>
 		<value condition="VideoPlayer.Content(musicvideos)">$INFO[VideoPlayer.Artist]$INFO[VideoPlayer.Album, - ]</value>
-		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.Season,[COLOR button_focus]S,[/COLOR]]$INFO[VideoPlayer.Episode,[COLOR button_focus]E,: [/COLOR]]$INFO[VideoPlayer.Title]</value>
+		<value condition="VideoPlayer.Content(episodes) + !player.chaptercount">$INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E,: ]$INFO[VideoPlayer.Title]</value>
+		<value condition="VideoPlayer.Content(episodes) + player.chaptercount">$INFO[VideoPlayer.Season,[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906][/CAPITALIZE]:[/COLOR] S]$INFO[VideoPlayer.Episode,E, - ]$INFO[VideoPlayer.Title,,[CR]]$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]$INFO[Player.ChapterName, - ]</value>
+		<value condition="player.chaptercount + [!VideoPlayer.Content(episodes) + !VideoPlayer.Content(LiveTV)]">$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]$INFO[Player.ChapterName, - ]</value>
 		<value condition="VideoPlayer.Content(LiveTV) | PVR.IsPlayingRecording | PVR.IsPlayingEpgTag">$INFO[VideoPlayer.ChannelNumberLabel,([COLOR button_focus],[/COLOR]) ]$INFO[VideoPlayer.ChannelName] $INFO[VideoPlayer.EpisodeName, - ]</value>
 		<value>$INFO[VideoPlayer.Genre]</value>
 	</variable>
