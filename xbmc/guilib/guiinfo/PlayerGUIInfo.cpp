@@ -182,6 +182,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         value = "+" + seekOffset;
       return true;
     }
+    case PLAYER_PROGRESS:
+      value = std::to_string(std::lrintf(g_application.GetPercentage()));
+      return true;
+    case PLAYER_PROGRESS_CACHE:
+      value = std::to_string(std::lrintf(g_application.GetCachePercentage()));
+      return true;
     case PLAYER_VOLUME:
       value = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolumeRatio()));
       return true;

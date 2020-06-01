@@ -495,14 +495,20 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///   }
 ///   \table_row3{   <b>`Player.Progress`</b>,
 ///                  \anchor Player_Progress
-///                  _integer_,
+///                  _integer_ / _string_,
 ///     @return The progress position as percentage.
+///     <p><hr>
+///     @skinning_v19 \link Player_Progress `Player.Progress`\endlink infolabel
+///     also exposed as a string.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ProgressCache`</b>,
 ///                  \anchor Player_ProgressCache
-///                  _integer_,
+///                  _integer_ / _string_,
 ///     @return How much of the file is cached above current play percentage
+///     <p><hr>
+///     @skinning_v19 \link Player_ProgressCache `Player.ProgressCache`\endlink
+///     infolabel also exposed as a string.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Volume`</b>,
