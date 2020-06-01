@@ -6286,6 +6286,7 @@ static const translateJSONField JSONtoDBAlbum[] = {
   { "originaldate",              "string", true,  "strOrigReleaseDate",     "" },
   { "releasedate",               "string", true,  "strReleaseDate",         "" },
   { "albumstatus",               "string", true,  "strReleaseStatus",       "" },
+
   // Scalar subquery fields
   { "year",                     "integer", true,  "iYear",                  "CAST(<datefield> AS INTEGER) AS iYear" }, //From strReleaseDate or strOrigReleaseDate
   { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource SEPARATOR '; ') FROM album_source WHERE album_source.idAlbum = albumview.idAlbum) AS sources" },
