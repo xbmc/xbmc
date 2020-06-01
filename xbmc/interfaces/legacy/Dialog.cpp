@@ -75,6 +75,7 @@ namespace XBMCAddon
 
     bool Dialog::info(const ListItem* item)
     {
+      DelayedCallGuard dcguard(languageHook);
       const AddonClass::Ref<xbmcgui::ListItem> listitem(item);
       if (listitem->item->HasVideoInfoTag())
       {
