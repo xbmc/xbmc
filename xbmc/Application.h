@@ -145,7 +145,8 @@ public:
   bool Create(const CAppParamParser &params);
   bool Cleanup() override;
 
-  bool IsInitialized() { return !m_bInitializing; }
+  bool IsInitialized() const { return !m_bInitializing; }
+  bool IsStopping() const { return m_bStop; }
 
   bool CreateGUI();
   bool InitWindow(RESOLUTION res = RES_INVALID);

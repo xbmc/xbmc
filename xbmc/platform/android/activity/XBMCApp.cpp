@@ -277,9 +277,12 @@ void CXBMCApp::onPause()
   EnableWakeLock(false);
   m_hasReqVisible = false;
 
-  IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
-  if (syscall)
-    static_cast<CAndroidPowerSyscall*>(syscall)->SetOnPause();
+  if (!g_application.IsStopping())
+  {
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnPause();
+  }
 }
 
 void CXBMCApp::onStop()
