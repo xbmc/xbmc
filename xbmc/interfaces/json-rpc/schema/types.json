@@ -266,7 +266,7 @@
               "canseek", "canchangespeed", "canmove", "canzoom", "canrotate",
               "canshuffle", "canrepeat", "currentaudiostream", "audiostreams",
               "subtitleenabled", "currentsubtitle", "subtitles", "live",
-              "currentvideostream", "videostreams" ]
+              "currentvideostream", "videostreams", "cachepercentage" ]
   },
   "Player.Property.Value": {
     "type": "object",
@@ -295,7 +295,8 @@
       "subtitleenabled": { "type": "boolean" },
       "currentsubtitle": { "$ref": "Player.Subtitle" },
       "subtitles": { "type": "array", "items": { "$ref": "Player.Subtitle" } },
-      "live": { "type": "boolean" }
+      "live": { "type": "boolean" },
+      "cachepercentage": { "$ref": "Player.Position.Percentage" }
     }
   },
   "Notifications.Item.Type": {
