@@ -84,7 +84,7 @@
 				<left>420</left>
 				<right>50</right>
 				<top>100</top>
-				<bottom>315</bottom>
+				<bottom>347</bottom>
 				<pagecontrol>60</pagecontrol>
 				<autoscroll delay="5000" repeat="7500" time="5000">!Control.HasFocus(60)</autoscroll>
 			</control>
@@ -92,7 +92,7 @@
 				<right>0</right>
 				<top>93</top>
 				<width>12</width>
-				<bottom>312</bottom>
+				<bottom>340</bottom>
 				<orientation>vertical</orientation>
 				<texturesliderbackground />
 				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
@@ -110,117 +110,6 @@
 				<right>0</right>
 				<height>3</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
-			<control type="group">
-				<bottom>0</bottom>
-				<height>330</height>
-				<control type="image">
-					<left>380</left>
-					<top>20</top>
-					<right>0</right>
-					<height>3</height>
-					<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-				</control>
-				<control type="grouplist">
-					<left>420</left>
-					<orientation>vertical</orientation>
-					<control type="label">
-						<description>Memory Text</description>
-						<width>730</width>
-						<height>80</height>
-						<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
-						<aligny>top</aligny>
-						<textoffsety>40</textoffsety>
-						<shadowcolor>black</shadowcolor>
-						<font>font27</font>
-					</control>
-					<control type="progress">
-						<description>Memory BAR</description>
-						<width>730</width>
-						<height>16</height>
-						<info>system.memory(used)</info>
-					</control>
-					<control type="label">
-						<description>CPU Text</description>
-						<width>730</width>
-						<height>40</height>
-						<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
-						<aligny>center</aligny>
-						<shadowcolor>black</shadowcolor>
-						<font>font27</font>
-						<visible>System.SupportsCPUUsage</visible>
-					</control>
-					<control type="progress">
-						<description>CPU BAR</description>
-						<width>730</width>
-						<height>16</height>
-						<info>System.CPUUsage</info>
-						<visible>System.SupportsCPUUsage</visible>
-					</control>
-				</control>
-				<control type="label">
-					<top>34</top>
-					<left>1210</left>
-					<width>auto</width>
-					<height>50</height>
-					<aligny>bottom</aligny>
-					<textoffsety>10</textoffsety>
-					<label>$LOCALIZE[31031]:</label>
-					<shadowcolor>black</shadowcolor>
-					<font>font25_title</font>
-				</control>
-				<control type="grouplist">
-					<description>Kodi build version</description>
-					<itemgap>10</itemgap>
-					<top>80</top>
-					<left>1210</left>
-					<width>820</width>
-					<height>45</height>
-					<orientation>horizontal</orientation>
-					<control type="label">
-						<description>Build label</description>
-						<width>auto</width>
-						<height>50</height>
-						<aligny>bottom</aligny>
-						<font>font12</font>
-						<textoffsety>10</textoffsety>
-						<label>$LOCALIZE[144]</label>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label" id="52">
-						<description>Kodi Build Version</description>
-						<height>50</height>
-						<aligny>bottom</aligny>
-						<textoffsety>10</textoffsety>
-						<font>font12</font>
-						<width>auto</width>
-						<textcolor>button_focus</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-				</control>
-				<control type="grouplist">
-					<description>Build date</description>
-					<itemgap>10</itemgap>
-					<top>125</top>
-					<left>1210</left>
-					<width>800</width>
-					<orientation>horizontal</orientation>
-					<control type="label">
-						<description>kodi Compiled Text</description>
-						<width>auto</width>
-						<height>25</height>
-						<label>$LOCALIZE[174]</label>
-						<font>font12</font>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label" id="53">
-						<description>Kodi Build Date</description>
-						<width>auto</width>
-						<font>font12</font>
-						<textcolor>button_focus</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-				</control>
 			</control>
 		</control>
 		<control type="group">
@@ -301,5 +190,143 @@
 			<param name="breadcrumbs_label" value="$LOCALIZE[130]" />
 		</include>
 		<include>BottomBar</include>
+		<control type="group">
+			<bottom>0</bottom>
+			<left>40</left>
+			<height>370</height>
+			<include>OpenClose_Right</include>
+			<control type="image">
+				<left>380</left>
+				<top>30</top>
+				<right>0</right>
+				<height>3</height>
+				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="grouplist">
+				<left>420</left>
+				<orientation>vertical</orientation>
+				<control type="label">
+					<description>Memory Text</description>
+					<width>auto</width>
+					<height>80</height>
+					<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
+					<aligny>top</aligny>
+					<textoffsety>40</textoffsety>
+					<shadowcolor>black</shadowcolor>
+					<font>font12</font>
+				</control>
+				<control type="progress">
+					<description>Memory BAR</description>
+					<width>730</width>
+					<height>16</height>
+					<info>system.memory(used)</info>
+				</control>
+				<control type="label">
+					<description>CPU Text</description>
+					<width>auto</width>
+					<height>40</height>
+					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+					<aligny>center</aligny>
+					<shadowcolor>black</shadowcolor>
+					<font>font12</font>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+				<control type="progress">
+					<description>CPU BAR</description>
+					<width>730</width>
+					<height>16</height>
+					<info>System.CPUUsage</info>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+			</control>
+			<control type="group">
+				<animation effect="slide" end="0,-55" time="0" condition="!System.SupportsCPUUsage">Conditional</animation>
+				<control type="label">
+					<top>155</top>
+					<left>420</left>
+					<width>auto</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<textoffsety>10</textoffsety>
+					<label>$LOCALIZE[31031]:</label>
+					<shadowcolor>black</shadowcolor>
+					<font>font25_title</font>
+				</control>
+				<control type="grouplist">
+					<description>Kodi build version</description>
+					<itemgap>10</itemgap>
+					<top>200</top>
+					<left>420</left>
+					<width>820</width>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>Build label</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>font12</font>
+						<label>$LOCALIZE[144]</label>
+						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="label">
+						<description>Kodi Build Version</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>font12</font>
+						<label>$INFO[System.BuildVersionShort]$INFO[System.BuildVersionCode, (,)]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>Git version</description>
+					<itemgap>10</itemgap>
+					<top>235</top>
+					<left>420</left>
+					<width>820</width>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>Git label</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>font12</font>
+						<label>Git:</label>
+						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="label">
+						<description>Git version</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>font12</font>
+						<label>$INFO[System.BuildVersionGit]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>Build date</description>
+					<itemgap>10</itemgap>
+					<top>270</top>
+					<left>420</left>
+					<width>820</width>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>kodi Compiled Text</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>font12</font>
+						<label>$LOCALIZE[174]</label>
+						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="label" id="53">
+						<description>Kodi Build Date</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+			</control>
+		</control>
 	</controls>
 </window>
