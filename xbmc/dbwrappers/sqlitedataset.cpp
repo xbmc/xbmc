@@ -473,19 +473,22 @@ long SqliteDatabase::nextid(const char* sname) {
   int id;/*,nrow,ncol;*/
   result_set res;
   char sqlcmd[512];
-  sprintf(sqlcmd,"select nextid from %s where seq_name = '%s'",sequence_table.c_str(), sname);
+  snprintf(sqlcmd, sizeof(sqlcmd), "SELECT nextid FROM %s WHERE seq_name = '%s'",
+           sequence_table.c_str(), sname);
   if ((last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,NULL)) != SQLITE_OK) {
     return DB_UNEXPECTED_RESULT;
     }
   if (res.records.empty()) {
     id = 1;
-    sprintf(sqlcmd,"insert into %s (nextid,seq_name) values (%d,'%s')",sequence_table.c_str(),id,sname);
+    snprintf(sqlcmd, sizeof(sqlcmd), "INSERT INTO %s (nextid,seq_name) VALUES (%d,'%s')",
+             sequence_table.c_str(), id, sname);
     if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;
   }
   else {
     id = res.records[0]->at(0).get_asInt()+1;
-    sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",sequence_table.c_str(),id,sname);
+    snprintf(sqlcmd, sizeof(sqlcmd), "UPDATE %s SET nextid=%d WHERE seq_name = '%s'",
+             sequence_table.c_str(), id, sname);
     if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;
   }
