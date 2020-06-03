@@ -70,3 +70,8 @@ std::string CCompileInfo::GetBuildDate()
   }
   return "1970-01-01";
 }
+
+const char*  CCompileInfo::GetVersionCode()
+{
+  return "@APP_VERSION_CODE@";
+}

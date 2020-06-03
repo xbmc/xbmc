@@ -108,6 +108,8 @@ public:
   static std::string GetDeviceName();
   static std::string GetVersion();
   static std::string GetVersionShort();
+  static std::string GetVersionCode();
+  static std::string GetVersionGit();
   static std::string GetBuildDate();
 
   bool HasInternet();
