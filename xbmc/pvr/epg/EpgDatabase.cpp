@@ -762,7 +762,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
-                 "WHERE idEpg = %u AND iStartTime > %u ORDER BY iStartTime ASC LIMIT 1;",
+                 "WHERE idEpg = %u AND iStartTime >= %u ORDER BY iStartTime ASC LIMIT 1;",
                  iEpgID, static_cast<unsigned int>(minStart));
 
   if (ResultQuery(strQuery))
@@ -867,7 +867,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEnd
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
-                 "WHERE idEpg = %u AND iEndTime > %u AND iStartTime <= %u ORDER BY iStartTime;",
+                 "WHERE idEpg = %u AND iEndTime >= %u AND iStartTime <= %u ORDER BY iStartTime;",
                  iEpgID, static_cast<unsigned int>(minEnd), static_cast<unsigned int>(maxStart));
 
   if (ResultQuery(strQuery))
@@ -907,7 +907,7 @@ bool CPVREpgDatabase::DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
   Filter filter;
 
   CSingleLock lock(m_critSection);
-  filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime > %u AND iStartTime <= %u", iEpgID,
+  filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime >= %u AND iStartTime <= %u", iEpgID,
                                 static_cast<unsigned int>(minEnd),
                                 static_cast<unsigned int>(maxStart)));
   return DeleteValues("epgtags", filter);

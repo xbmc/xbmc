@@ -96,7 +96,7 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
 
   if (m_database)
   {
-    const CDateTime minEventEnd = (*tags.m_changedTags.cbegin()).second->StartAsUTC();
+    const CDateTime minEventEnd = (*tags.m_changedTags.cbegin()).second->StartAsUTC() + ONE_SECOND;
     const CDateTime maxEventStart = (*tags.m_changedTags.crbegin()).second->EndAsUTC();
 
     std::vector<std::shared_ptr<CPVREpgInfoTag>> existingTags =
@@ -109,7 +109,7 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
       {
         const auto& changedTag = changedTagsEntry.second;
 
-        if (changedTag->EndAsUTC() > minEventEnd && changedTag->StartAsUTC() <= maxEventStart)
+        if (changedTag->EndAsUTC() > minEventEnd && changedTag->StartAsUTC() < maxEventStart)
         {
           // tag is in queried range, thus it could cause inconsistencies...
           ResolveConflictingTags(changedTag, existingTags);
@@ -210,7 +210,7 @@ void CPVREpgTagsContainer::FixOverlappingEvents(
                  currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
                  currentTag->EndAsUTC().GetAsDBDateTime());
 
-      previousTag->SetEndFromUTC(currentTag->StartAsUTC() - ONE_SECOND);
+      previousTag->SetEndFromUTC(currentTag->StartAsUTC());
       previousTag = currentTag;
       ++it;
     }
@@ -410,7 +410,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
       // nothing in the db yet. take what we have in memory.
       for (const auto& tag : m_changedTags)
       {
-        if (tag.second->EndAsUTC() > minEventEnd && tag.second->StartAsUTC() <= maxEventStart)
+        if (tag.second->EndAsUTC() > minEventEnd && tag.second->StartAsUTC() < maxEventStart)
           tags.emplace_back(tag.second);
       }
 
@@ -428,7 +428,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
         {
           const auto& changedTag = changedTagsEntry.second;
 
-          if (changedTag->EndAsUTC() > minEventEnd && changedTag->StartAsUTC() <= maxEventStart)
+          if (changedTag->EndAsUTC() > minEventEnd && changedTag->StartAsUTC() < maxEventStart)
           {
             // tag is in queried range, thus it could cause inconsistencies...
             ResolveConflictingTags(changedTag, tags);
@@ -447,10 +447,10 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
       {
         const CDateTime currStart = epgTag->StartAsUTC();
         const CDateTime prevEnd = result.back()->EndAsUTC();
-        if ((currStart - prevEnd) > ONE_SECOND)
+        if ((currStart - prevEnd) >= ONE_SECOND)
         {
           // insert gap tag before current tag
-          result.emplace_back(CreateGapTag(prevEnd, currStart - ONE_SECOND));
+          result.emplace_back(CreateGapTag(prevEnd, currStart));
         }
       }
 
@@ -467,8 +467,6 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
       CDateTime minStart = m_database->GetMinStartTime(m_iEpgID, maxEventStart);
       if (!minStart.IsValid() || minStart > timelineEnd)
         minStart = timelineEnd;
-      else
-        minStart -= ONE_SECOND;
 
       result.emplace_back(CreateGapTag(maxEnd, minStart));
     }
@@ -481,18 +479,15 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
         if (!maxEnd.IsValid() || maxEnd < timelineStart)
           maxEnd = timelineStart;
 
-        result.insert(result.begin(),
-                      CreateGapTag(maxEnd, result.front()->StartAsUTC() - ONE_SECOND));
+        result.insert(result.begin(), CreateGapTag(maxEnd, result.front()->StartAsUTC()));
       }
 
-      if (result.back()->EndAsUTC() <= maxEventStart)
+      if (result.back()->EndAsUTC() < maxEventStart)
       {
         // append gap tag
         CDateTime minStart = m_database->GetMinStartTime(m_iEpgID, maxEventStart);
         if (!minStart.IsValid() || minStart > timelineEnd)
           minStart = timelineEnd;
-        else
-          minStart -= ONE_SECOND;
 
         result.emplace_back(CreateGapTag(result.back()->EndAsUTC(), minStart));
       }
@@ -594,7 +589,7 @@ void CPVREpgTagsContainer::Persist(bool bCommit)
     for (const auto& tag : m_changedTags)
     {
       // remove any conflicting events from database before persisting the new event
-      m_database->DeleteEpgTagsByMinEndMaxStartTime(m_iEpgID, tag.second->StartAsUTC(),
+      m_database->DeleteEpgTagsByMinEndMaxStartTime(m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND,
                                                     tag.second->EndAsUTC() - ONE_SECOND);
 
       tag.second->Persist(m_database, false);

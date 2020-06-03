@@ -94,7 +94,7 @@ void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
     if (!m_nowActiveTag && m_database)
     {
       const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags =
-          m_database->GetEpgTagsByMinEndMaxStartTime(m_iEpgID, activeTime, activeTime);
+          m_database->GetEpgTagsByMinEndMaxStartTime(m_iEpgID, activeTime + ONE_SECOND, activeTime);
       if (!tags.empty())
       {
         if (tags.size() > 1)
@@ -114,12 +114,12 @@ void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
     {
       // we're in a gap. remember start and end time of that gap to avoid unneeded db load.
       if (m_lastEndedTag)
-        m_nowActiveStart = m_lastEndedTag->EndAsUTC() + ONE_SECOND;
+        m_nowActiveStart = m_lastEndedTag->EndAsUTC();
       else
         m_nowActiveStart = activeTime - CDateTimeSpan(1000, 0, 0, 0); // fake start far in the past
 
       if (m_nextStartingTag)
-        m_nowActiveEnd = m_nextStartingTag->StartAsUTC() - ONE_SECOND;
+        m_nowActiveEnd = m_nextStartingTag->StartAsUTC();
       else
         m_nowActiveEnd = activeTime + CDateTimeSpan(1000, 0, 0, 0); // fake end far in the future
     }
