@@ -1451,6 +1451,27 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         return FailedToExecute;
     }
   }
+  else if (property == "cachepercentage")
+  {
+    switch (player)
+    {
+      case Video:
+      case Audio:
+      {
+        result = g_application.GetCachePercentage();
+        break;
+      }
+
+      case Picture:
+      {
+        result = 0.0;
+        break;
+      }
+
+      default:
+        return FailedToExecute;
+    }
+  }
   else if (property == "totaltime")
   {
     switch (player)
