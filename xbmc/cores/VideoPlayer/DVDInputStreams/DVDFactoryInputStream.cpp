@@ -63,11 +63,6 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
       STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
 
-  // TODO; Retire for the above instead prior to Matrix release
-  if (fileitem.GetProperty("inputstreamclass").asString() ==
-      STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG)
-    return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
-
   if (fileitem.IsDiscImage())
   {
 #ifdef HAVE_LIBBLURAY
