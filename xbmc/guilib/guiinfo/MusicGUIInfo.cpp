@@ -343,6 +343,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         break;
       }
+      case LISTITEM_ALBUMSTATUS:
+        value = tag->GetAlbumReleaseStatus();
+        return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
         if (item->IsMusicDb())

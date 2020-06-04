@@ -21484,8 +21484,14 @@ msgctxt "#38080"
 msgid "BPM"
 msgstr ""
 
-#empty strings from id 38081 to 38099
-#strings 38081 to 38099 reserved for music library
+#. Music property - Album release status
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#38081"
+msgid "Release status"
+msgstr ""
+
+#empty strings from id 38082 to 38099
+#strings 38082 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml

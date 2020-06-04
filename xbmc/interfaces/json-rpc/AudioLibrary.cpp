@@ -782,6 +782,8 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
     album.strOrigReleaseDate = parameterObject["originaldate"].asString();
   if (ParameterNotNull(parameterObject, "releasedate"))
     album.strReleaseDate = parameterObject["releasedate"].asString();
+  if (ParameterNotNull(parameterObject, "albumstatus"))
+    album.strReleaseStatus = parameterObject["albumstatus"].asString();
 
   // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.

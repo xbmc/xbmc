@@ -141,6 +141,7 @@ typedef enum {
   FieldMusicBitRate,
   FieldSampleRate,
   FieldNoOfChannels,
+  FieldAlbumStatus,
   FieldMax
 } Field;
 

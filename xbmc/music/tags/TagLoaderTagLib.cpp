@@ -200,7 +200,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "MusicBrainz/Track Id")
       tag.SetMusicBrainzTrackID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Status")
-    {}
+      tag.SetAlbumReleaseStatus(it->second.front().toString().toCString(true));
     else if (it->first == "MusicBrainz/Album Type")
       SetReleaseType(tag, GetASFStringList(it->second));
     else if (it->first == "MusicIP/PUID")
@@ -361,6 +361,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
           SetAlbumArtist(tag, StringListToVectorString(stringList));
         else if (desc == "MUSICBRAINZ ALBUM TYPE")
           SetReleaseType(tag, StringListToVectorString(stringList));
+        else if (desc == "MUSICBRAINZ ALBUM STATUS")
+          tag.SetAlbumReleaseStatus(stringList.front().to8Bit(true));
         else if (desc == "REPLAYGAIN_TRACK_GAIN")
           replayGainInfo.ParseGain(ReplayGain::TRACK, stringList.front().toCString(true));
         else if (desc == "REPLAYGAIN_ALBUM_GAIN")
@@ -584,6 +586,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       SetReleaseType(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "BPM")
       tag.SetBPM(it->second.toString().toInt());
+    else if (it->first == "MUSICBRAINZ_ALBUMSTATUS")
+      tag.SetAlbumReleaseStatus(it->second.toString().to8Bit(true));
     else if (it->first == "COVER ART (FRONT)")
     {
       TagLib::ByteVector tdata = it->second.binaryData();
@@ -724,6 +728,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       SetReleaseType(tag, StringListToVectorString(it->second));
     else if (it->first == "BPM")
       tag.SetBPM(strtol(it->second.front().toCString(true), nullptr, 10));
+    else if (it->first == "RELEASESTATUS")
+      tag.SetAlbumReleaseStatus(it->second.front().toCString(true));
     else if (it->first == "RATING")
     {
       // Vorbis ratings are a mess because the standard forgot to mention anything about them.
@@ -901,6 +907,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetMusicBrainzTrackID(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Type")
       SetReleaseType(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Status")
+      tag.SetAlbumReleaseStatus(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "tmpo")
       tag.SetBPM(it->second.toIntPair().first);
     else if (it->first == "covr")

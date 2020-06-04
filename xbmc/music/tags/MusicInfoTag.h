@@ -82,6 +82,7 @@ public:
   int GetBitRate() const;
   int GetNoOfChannels() const;
   int GetSampleRate() const;
+  const std::string& GetAlbumReleaseStatus() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -147,6 +148,7 @@ public:
   void SetBitRate(int bitrate);
   void SetNoOfChannels(int channels);
   void SetSampleRate(int samplerate);
+  void SetAlbumReleaseStatus(const std::string& strReleaseStatus);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -237,6 +239,7 @@ protected:
   bool m_bBoxset;
   int m_iBPM;
   CAlbum::ReleaseType m_albumReleaseType;
+  std::string m_strReleaseStatus;
   int m_samplerate;
   int m_channels;
   int m_bitrate;

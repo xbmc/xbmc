@@ -306,6 +306,13 @@ const std::string MUSIC_INFO::CMusicInfoTag::GetReleaseYear() const
   return StringUtils::Left(m_strReleaseDate, 4);
 }
 
+// This is the Musicbrainz release status tag. See https://musicbrainz.org/doc/Release#Status
+
+const std::string& CMusicInfoTag::GetAlbumReleaseStatus() const
+{
+  return m_strReleaseStatus;
+}
+
 void CMusicInfoTag::SetURL(const std::string& strURL)
 {
   m_strURL = strURL;
@@ -721,6 +728,13 @@ void CMusicInfoTag::SetType(const MediaType mediaType)
   m_type = mediaType;
 }
 
+// This is the Musicbrainz release status tag. See https://musicbrainz.org/doc/Release#Status
+
+void CMusicInfoTag::SetAlbumReleaseStatus(const std::string& ReleaseStatus)
+{
+  m_strReleaseStatus = ReleaseStatus;
+}
+
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
@@ -755,6 +769,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
   SetMusicBrainzReleaseGroupID(album.strReleaseGroupMBID);
   SetMusicBrainzReleaseType(album.strType);
+  SetAlbumReleaseStatus(album.strReleaseStatus);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
   SetRecordLabel(album.strLabel);
@@ -901,6 +916,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["disctitle"] = m_strDiscSubtitle;
   value["releasedate"] = m_strReleaseDate;
   value["originaldate"] = m_strOriginalDate;
+  value["albumstatus"] = m_strReleaseStatus;
   value["bpm"] = m_iBPM;
   value["bitrate"] = m_bitrate;
   value["samplerate"] = m_samplerate;
@@ -995,6 +1011,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_iAlbumId;
     ar << m_iDbId;
     ar << m_type;
+    ar << m_strReleaseStatus;
     ar << m_strLyrics;
     ar << m_bCompilation;
     ar << m_listeners;
@@ -1058,6 +1075,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_iAlbumId;
     ar >> m_iDbId;
     ar >> m_type;
+    ar >> m_strReleaseStatus;
     ar >> m_strLyrics;
     ar >> m_bCompilation;
     ar >> m_listeners;
@@ -1105,6 +1123,7 @@ void CMusicInfoTag::Clear()
   m_cuesheet.clear();
   m_iDbId = -1;
   m_type.clear();
+  m_strReleaseStatus.clear();
   m_iTimesPlayed = 0;
   m_strReleaseDate.clear();
   m_strOriginalDate.clear();

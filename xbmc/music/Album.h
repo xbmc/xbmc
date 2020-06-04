@@ -49,6 +49,7 @@ public:
     strReview.clear();
     strLabel.clear();
     strType.clear();
+    strReleaseStatus.clear();
     strPath.clear();
     fRating = -1;
     iUserrating = -1;
@@ -151,6 +152,7 @@ public:
   std::string strReview;
   std::string strLabel;
   std::string strType;
+  std::string strReleaseStatus;
   std::string strPath;
   float fRating = -1;
   int iUserrating = -1;
