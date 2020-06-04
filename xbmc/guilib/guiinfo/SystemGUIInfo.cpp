@@ -198,6 +198,12 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_BUILD_DATE:
       value = CSysInfo::GetBuildDate();
       return true;
+    case SYSTEM_BUILD_VERSION_CODE:
+      value = CSysInfo::GetVersionCode();
+      return true;
+    case SYSTEM_BUILD_VERSION_GIT:
+      value = CSysInfo::GetVersionGit();
+      return true;
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_FREE_MEMORY_PERCENT:
     case SYSTEM_USED_MEMORY:
