@@ -54,7 +54,10 @@ namespace ADDON
 
   private:
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
-    static bool FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept;
+    static bool FetchIndex(const DirInfo& repo,
+                           std::string const& digest,
+                           VECADDONS& addons,
+                           const std::string& repoId) noexcept;
 
     static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
 

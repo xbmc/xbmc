@@ -155,7 +155,10 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   return true;
 }
 
-bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept
+bool CRepository::FetchIndex(const DirInfo& repo,
+                             std::string const& digest,
+                             VECADDONS& addons,
+                             const std::string& repoId) noexcept
 {
   XFILE::CCurlFile http;
 
@@ -189,7 +192,7 @@ bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VEC
     response = std::move(buffer);
   }
 
-  return CServiceBroker::GetAddonMgr().AddonsFromRepoXML(repo, response, addons);
+  return CServiceBroker::GetAddonMgr().AddonsFromRepoXML(repo, response, addons, repoId);
 }
 
 CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
@@ -218,7 +221,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
   for (const auto& dirTuple : dirChecksums)
   {
     VECADDONS tmp;
-    if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp))
+    if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp, ID()))
       return STATUS_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
