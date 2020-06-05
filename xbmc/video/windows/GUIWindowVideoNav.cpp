@@ -591,7 +591,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
     CFileItemPtr pItem = items[i];
     CFileItemPtr match;
 
-    if (!content.empty() && pItem->m_bIsFolder && !pItem->IsParentFolder())
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder())
     {
       // we need this for enabling the right context menu entries, like mark watched / unwatched
       pItem->SetProperty("IsVideoFolder", true);
