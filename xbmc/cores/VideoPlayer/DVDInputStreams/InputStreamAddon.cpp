@@ -73,16 +73,6 @@ bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem 
   if (!addon.isNull())
     return (addon.asString() == addonBase->ID());
 
-  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
-  addon = fileitem.GetProperty("inputstreamclass");
-  if (!addon.isNull())
-    return (addon.asString() == addonBase->ID());
-
-  // TODO: to be deprecated for the above prior to Matrix release - all addons must change
-  addon = fileitem.GetProperty("inputstreamaddon");
-  if (!addon.isNull())
-    return (addon.asString() == addonBase->ID());
-
   // check protocols
   std::string protocol = CURL(fileitem.GetDynPath()).GetProtocol();
   if (!protocol.empty())
