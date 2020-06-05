@@ -1515,7 +1515,7 @@
       "bitrate": { "type": "integer" },
       "samplerate": { "type": "integer" },
       "channels": { "type": "integer"},
-      "albumstatus": { "type": "string" },
+      "albumstatus": { "type": "string" }
     }
   },
   "List.Fields.All": {
