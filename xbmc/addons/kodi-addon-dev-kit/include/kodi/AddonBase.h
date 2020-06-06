@@ -734,6 +734,7 @@ inline bool CheckSettingString(const std::string& settingName, std::string& sett
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
+/// @param[in] defaultValue [opt] Default value if not found
 /// @return The value of setting, empty if not found;
 ///
 ///
@@ -746,9 +747,10 @@ inline bool CheckSettingString(const std::string& settingName, std::string& sett
 /// std::string value = kodi::GetSettingString("my_string_value");
 /// ~~~~~~~~~~~~~
 ///
-inline std::string GetSettingString(const std::string& settingName)
+inline std::string GetSettingString(const std::string& settingName,
+                                    const std::string& defaultValue = "")
 {
-  std::string settingValue;
+  std::string settingValue = defaultValue;
   CheckSettingString(settingName, settingValue);
   return settingValue;
 }
@@ -820,7 +822,8 @@ inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, <b>`0`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, <b>`0`</b> or defaultValue if not found
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -832,9 +835,9 @@ inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
 /// int value = kodi::GetSettingInt("my_integer_value");
 /// ~~~~~~~~~~~~~
 ///
-inline int GetSettingInt(const std::string& settingName)
+inline int GetSettingInt(const std::string& settingName, int defaultValue = 0)
 {
-  int settingValue = 0;
+  int settingValue = defaultValue;
   CheckSettingInt(settingName, settingValue);
   return settingValue;
 }
@@ -906,7 +909,8 @@ inline bool CheckSettingBoolean(const std::string& settingName, bool& settingVal
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, <b>`false`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, <b>`false`</b> or defaultValue if not found
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -918,9 +922,9 @@ inline bool CheckSettingBoolean(const std::string& settingName, bool& settingVal
 /// bool value = kodi::GetSettingBoolean("my_boolean_value");
 /// ~~~~~~~~~~~~~
 ///
-inline bool GetSettingBoolean(const std::string& settingName)
+inline bool GetSettingBoolean(const std::string& settingName, bool defaultValue = false)
 {
-  bool settingValue = false;
+  bool settingValue = defaultValue;
   CheckSettingBoolean(settingName, settingValue);
   return settingValue;
 }
@@ -992,7 +996,8 @@ inline bool CheckSettingFloat(const std::string& settingName, float& settingValu
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, <b>`0.0`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, <b>`0.0`</b> or defaultValue if not found
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -1004,9 +1009,9 @@ inline bool CheckSettingFloat(const std::string& settingName, float& settingValu
 /// float value = kodi::GetSettingFloat("my_float_value");
 /// ~~~~~~~~~~~~~
 ///
-inline float GetSettingFloat(const std::string& settingName)
+inline float GetSettingFloat(const std::string& settingName, float defaultValue = 0.0f)
 {
-  float settingValue = 0.0f;
+  float settingValue = defaultValue;
   CheckSettingFloat(settingName, settingValue);
   return settingValue;
 }
@@ -1091,7 +1096,8 @@ inline bool CheckSettingEnum(const std::string& settingName, enumType& settingVa
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, forced to <b>`0`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, forced to <b>`0`</b> or defaultValue if not found
 ///
 /// @remark The enums are used as integer inside settings.xml.
 ///
@@ -1113,9 +1119,10 @@ inline bool CheckSettingEnum(const std::string& settingName, enumType& settingVa
 /// ~~~~~~~~~~~~~
 ///
 template<typename enumType>
-inline enumType GetSettingEnum(const std::string& settingName)
+inline enumType GetSettingEnum(const std::string& settingName,
+                               enumType defaultValue = static_cast<enumType>(0))
 {
-  enumType settingValue = static_cast<enumType>(0);
+  enumType settingValue = defaultValue;
   CheckSettingEnum(settingName, settingValue);
   return settingValue;
 }
