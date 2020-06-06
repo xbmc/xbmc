@@ -195,7 +195,7 @@ void Interface_Base::addon_log_msg(void* kodiBase, const int addonLogLevel, cons
       break;
   }
 
-  CLog::Log(logLevel, "AddOnLog: {}: {}", addon->Name(), strMessage);
+  CLog::Log(logLevel, "AddOnLog: {}: {}", addon->ID(), strMessage);
 }
 
 bool Interface_Base::get_setting_bool(void* kodiBase, const char* id, bool* value)
