@@ -527,7 +527,6 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
           {
             // reminder is due / over due. announce it.
             m_remindersToAnnounce.push(timer);
-            CServiceBroker::GetPVRManager().PublishEvent(PVREvent::AnnounceReminder);
           }
 
           if (timer->EndAsUTC() >= now)
@@ -649,10 +648,10 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
 
   // announce changes
   if (bChanged)
-  {
-    lock.Leave();
     NotifyTimersEvent();
-  }
+
+  if (!m_remindersToAnnounce.empty())
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::AnnounceReminder);
 
   return bChanged;
 }
