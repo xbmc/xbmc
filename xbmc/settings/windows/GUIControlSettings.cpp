@@ -566,6 +566,7 @@ CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl* pButton,
     return;
 
   m_pButton->SetID(id);
+  UpdateFromSetting();
 }
 
 CGUIControlListSetting::~CGUIControlListSetting() = default;
