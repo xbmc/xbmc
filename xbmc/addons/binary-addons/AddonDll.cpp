@@ -305,7 +305,7 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
                                                 kodi::addon::GetTypeVersion(instanceType),
                                                 &addonInstance, parentInstance);
 
-  if (status == ADDON_STATUS_OK)
+  if (addonInstance)
   {
     m_usedInstances[instanceClass] = std::make_pair(instanceType, addonInstance);
   }

@@ -418,23 +418,7 @@ public:
                                       const std::string& version,
                                       KODI_HANDLE& addonInstance)
   {
-    /* The handling below is intended for the case of the add-on only one
-     * instance and this is integrated in the add-on base class.
-     */
-
-    /* Check about single instance usage:
-     * 1. The kodi side instance pointer must be equal to first one
-     * 2. The addon side instance pointer must be set
-     * 3. And the requested type must be equal with used add-on class
-     */
-    if (m_interface->firstKodiInstance == instance && m_interface->globalSingleInstance &&
-        static_cast<IAddonInstance*>(m_interface->globalSingleInstance)->m_type == instanceType)
-    {
-      addonInstance = m_interface->globalSingleInstance;
-      return ADDON_STATUS_OK;
-    }
-
-    return ADDON_STATUS_UNKNOWN;
+    return ADDON_STATUS_NOT_IMPLEMENTED;
   }
   //--------------------------------------------------------------------------
 
@@ -495,18 +479,63 @@ private:
     CAddonBase* base = static_cast<CAddonBase*>(m_interface->addonBase);
 
     ADDON_STATUS status = ADDON_STATUS_NOT_IMPLEMENTED;
-    if (parent != nullptr)
-      status = static_cast<IAddonInstance*>(parent)->CreateInstance(
-          instanceType, instanceID, instance, version, *addonInstance);
-    if (status == ADDON_STATUS_NOT_IMPLEMENTED)
-      status = base->CreateInstance(instanceType, instanceID, instance, version, *addonInstance);
+
+    /* Check about single instance usage:
+     * 1. The kodi side instance pointer must be equal to first one
+     * 2. The addon side instance pointer must be set
+     * 3. And the requested type must be equal with used add-on class
+     */
+    if (m_interface->firstKodiInstance == instance && m_interface->globalSingleInstance &&
+        static_cast<IAddonInstance*>(m_interface->globalSingleInstance)->m_type == instanceType)
+    {
+      /* The handling here is intended for the case of the add-on only one
+       * instance and this is integrated in the add-on base class.
+       */
+      *addonInstance = m_interface->globalSingleInstance;
+      status = ADDON_STATUS_OK;
+    }
+    else
+    {
+      /* Here it should use the CreateInstance instance function to allow
+       * creation of several on one addon.
+       */
+
+      /* Check first a parent is defined about (e.g. Codec within inputstream) */
+      if (parent != nullptr)
+        status = static_cast<IAddonInstance*>(parent)->CreateInstance(
+            instanceType, instanceID, instance, version, *addonInstance);
+
+      /* if no parent call the main instance creation function to get it */
+      if (status == ADDON_STATUS_NOT_IMPLEMENTED)
+      {
+        status = base->CreateInstance(instanceType, instanceID, instance, version, *addonInstance);
+      }
+    }
+
     if (*addonInstance == nullptr)
-      throw std::logic_error(
-          "kodi::addon::CAddonBase CreateInstance returns a empty instance pointer!");
+    {
+      if (status == ADDON_STATUS_OK)
+      {
+        m_interface->toKodi->addon_log_msg(m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
+                                           "kodi::addon::CAddonBase CreateInstance returned an "
+                                           "empty instance pointer, but reported OK!");
+        return ADDON_STATUS_PERMANENT_FAILURE;
+      }
+      else
+      {
+        return status;
+      }
+    }
 
     if (static_cast<IAddonInstance*>(*addonInstance)->m_type != instanceType)
-      throw std::logic_error("kodi::addon::CAddonBase CreateInstance with difference on given "
-                             "and returned instance type!");
+    {
+      m_interface->toKodi->addon_log_msg(
+          m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
+          "kodi::addon::CAddonBase CreateInstance difference between given and returned");
+      delete static_cast<IAddonInstance*>(*addonInstance);
+      *addonInstance = nullptr;
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
 
     // Store the used ID inside instance, to have on destroy calls by addon to identify
     static_cast<IAddonInstance*>(*addonInstance)->m_id = instanceID;
@@ -520,14 +549,8 @@ private:
 
     if (m_interface->globalSingleInstance == nullptr && instance != base)
     {
-      if (static_cast<IAddonInstance*>(instance)->m_type == instanceType)
-      {
-        base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
-        delete static_cast<IAddonInstance*>(instance);
-      }
-      else
-        throw std::logic_error("kodi::addon::CAddonBase DestroyInstance called with difference on "
-                               "given and present instance type!");
+      base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
+      delete static_cast<IAddonInstance*>(instance);
     }
   }
 };
