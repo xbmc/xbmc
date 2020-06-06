@@ -1857,7 +1857,7 @@ public:
   ///
   /// @return True on open or false on closed or failure
   ///
-  bool IsOpen() { return m_file != nullptr; }
+  bool IsOpen() const { return m_file != nullptr; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -2086,7 +2086,7 @@ public:
   ///
   /// @return The requested offset. On error, the value -1 is returned.
   ///
-  int64_t GetPosition()
+  int64_t GetPosition() const
   {
     using namespace kodi::addon;
 
@@ -2103,7 +2103,7 @@ public:
   ///
   /// @return The requested size. On error, the value -1 is returned.
   ///
-  int64_t GetLength()
+  int64_t GetLength() const
   {
     using namespace kodi::addon;
 
@@ -2120,7 +2120,7 @@ public:
   ///
   /// @return If you've reached the end of the file, AtEnd() returns true.
   ///
-  bool AtEnd()
+  bool AtEnd() const
   {
     using namespace kodi::addon;
 
@@ -2140,7 +2140,7 @@ public:
   ///
   /// @return The requested size. On error, the value -1 is returned.
   ///
-  int GetChunkSize()
+  int GetChunkSize() const
   {
     using namespace kodi::addon;
 
@@ -2157,7 +2157,7 @@ public:
   ///
   /// @return true if seek possible, false if not
   ///
-  bool IoControlGetSeekPossible()
+  bool IoControlGetSeekPossible() const
   {
     using namespace kodi::addon;
 
@@ -2178,7 +2178,7 @@ public:
   ///
   /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
   ///
-  bool IoControlGetCacheStatus(CacheStatus& status)
+  bool IoControlGetCacheStatus(CacheStatus& status) const
   {
     using namespace kodi::addon;
 
@@ -2295,7 +2295,7 @@ public:
   ///
   /// @return The current download speed.
   ///
-  double GetFileDownloadSpeed()
+  double GetFileDownloadSpeed() const
   {
     using namespace kodi::addon;
 
