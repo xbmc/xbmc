@@ -68,6 +68,15 @@ CInputStreamAddon::~CInputStreamAddon()
 
 bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem &fileitem)
 {
+  /// @todo Error for users to show deprecation, can be removed in Kodi 20
+  CVariant oldAddonProp = fileitem.GetProperty("inputstreamaddon");
+  if (!oldAddonProp.isNull())
+  {
+    CLog::Log(LOGERROR,
+              "CInputStreamAddon::%s - 'inputstreamaddon' has been deprecated, "
+              "please use `#KODIPROP:inputstream=%s` instead", __func__, oldAddonProp.asString());
+  }
+
   // check if a specific inputstream addon is requested
   CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM);
   if (!addon.isNull())
