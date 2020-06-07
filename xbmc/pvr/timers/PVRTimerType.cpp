@@ -45,7 +45,7 @@ const std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
                                                         PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
                                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
                                                         PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN));
+                                                        PVR_TIMER_TYPE_SUPPORTS_START_MARGIN));
 
   // time-based reminder rule
   allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
@@ -95,7 +95,7 @@ const std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
                                                         PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
                                                         PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN,
+                                                        PVR_TIMER_TYPE_SUPPORTS_START_MARGIN,
                                                         g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
 
   return allTypes;

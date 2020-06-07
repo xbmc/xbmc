@@ -277,6 +277,8 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE = 0x02000000; /*!< @brief this type should not appear on any create menus which don't provide an associated EPG tag with a series link */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE          = 0x04000000; /*!< @brief this type allows deletion of an otherwise read-only timer */
   const unsigned int PVR_TIMER_TYPE_IS_REMINDER                       = 0x08000000; /*!< @brief timers of this type do trigger a reminder if time is up by calling the Kodi callback 'ReminderNotification'. */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_MARGIN             = 0x10000000; /*!< @brief this type supports pre record time (PVR_TIMER.iMarginStart) */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_END_MARGIN               = 0x20000000; /*!< @brief this type supports post record time (PVR_TIMER.iMarginEnd) */
 
   /*!
    * @brief PVR timer weekdays (PVR_TIMER.iWeekdays values)
