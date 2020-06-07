@@ -177,7 +177,10 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
     *profileManager));
 
   m_contextMenuManager->Init();
-  m_PVRManager->Init();
+
+  // Init PVR manager after login, not already on login screen
+  if (!profileManager->UsingLoginScreen())
+    m_PVRManager->Init();
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
