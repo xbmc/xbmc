@@ -1212,10 +1212,23 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrmanager.usebackendchannelnumbersalways" type="boolean" label="19329" help="36358">
+          <level>3</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.usebackendchannelnumbersalways" operator="is">true</dependency>
+          </dependencies>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pvrmanager.usebackendchannelnumbers" type="boolean" label="19234" help="36206">
           <level>2</level>
           <dependencies>
-            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.usebackendchannelnumbers" operator="is">true</dependency>
+            <dependency type="visible">
+              <or>
+                <condition type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.usebackendchannelnumbers" operator="is">true</condition>
+                <condition setting="pvrmanager.usebackendchannelnumbersalways" operator="is">true</condition>
+              </or>
+            </dependency>
           </dependencies>
           <default>false</default>
           <control type="toggle" />

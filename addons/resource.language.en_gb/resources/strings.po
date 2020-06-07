@@ -11128,7 +11128,13 @@ msgctxt "#19328"
 msgid "Delete all watched recordings in this folder?"
 msgstr ""
 
-#empty strings from id 19329 to 19498
+#. label for PVR settings use backend channel numbers always
+#: system/settings/settings.xml
+msgctxt "#19329"
+msgid "Allow backend channel numbers with more than one PVR add-on"
+msgstr ""
+
+#empty strings from id 19330 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -18788,7 +18794,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36206"
-msgid "Use the channel numbering from the backend. Only works with one enabled PVR add-on!"
+msgid "Use the channel numbering from the backend."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19642,7 +19648,10 @@ msgctxt "#36357"
 msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
 msgstr ""
 
-#empty string with id 36358
+#: system/settings/settings.xml
+msgctxt "#36358"
+msgid "Allow using channel numbering from multiple backends. Note that the All channels group can contain multiple of the same channel number if using this option. This means that jump to channel number may not work correctly for the All channels group."
+msgstr ""
 
 #. Description of setting with label #36042 "Use limited colour range (16-235)"
 #: system/settings/settings.xml
