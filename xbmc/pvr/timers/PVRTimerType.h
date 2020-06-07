@@ -259,10 +259,24 @@ namespace PVR
     bool SupportsRecordOnlyNewEpisodes() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES) > 0; }
 
     /*!
-     * @brief Check whether this type supports pre and post record time.
-     * @return True if pre and post record time is supported, false otherwise.
+     * @brief Check whether this type supports pre record time.
+     * @return True if pre record time is supported, false otherwise.
      */
-    bool SupportsStartEndMargin() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN) > 0; }
+    bool SupportsStartMargin() const
+    {
+      return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_MARGIN) > 0 ||
+             (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN) > 0;
+    }
+
+    /*!
+     * @brief Check whether this type supports post record time.
+     * @return True if post record time is supported, false otherwise.
+     */
+    bool SupportsEndMargin() const
+    {
+      return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_END_MARGIN) > 0 ||
+             (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN) > 0;
+    }
 
     /*!
      * @brief Check whether this type supports recording priorities.

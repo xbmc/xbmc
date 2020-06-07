@@ -520,7 +520,7 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
         }
 
         // check for due timers and announce/delete them
-        int iMarginStart = timer->GetTimerType()->SupportsStartEndMargin() ? timer->MarginStart() : 0;
+        int iMarginStart = timer->GetTimerType()->SupportsStartMargin() ? timer->MarginStart() : 0;
         if (!timer->IsTimerRule() && (timer->StartAsUTC() - CDateTimeSpan(0, 0, iMarginStart, iMaxNotificationDelay)) < now)
         {
           if (timer->IsReminder() && timer->m_state != PVR_TIMER_STATE_DISABLED)

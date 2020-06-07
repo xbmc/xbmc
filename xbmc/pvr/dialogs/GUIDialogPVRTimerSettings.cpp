@@ -1231,9 +1231,9 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
     else if (cond == SETTING_TMR_NEW_EPISODES)
       return entry->second->SupportsRecordOnlyNewEpisodes();
     else if (cond == SETTING_TMR_BEGIN_PRE)
-      return entry->second->SupportsStartEndMargin();
+      return entry->second->SupportsStartMargin();
     else if (cond == SETTING_TMR_END_POST)
-      return entry->second->SupportsStartEndMargin();
+      return entry->second->SupportsEndMargin();
     else if (cond == SETTING_TMR_PRIORITY)
       return entry->second->SupportsPriority();
     else if (cond == SETTING_TMR_LIFETIME)

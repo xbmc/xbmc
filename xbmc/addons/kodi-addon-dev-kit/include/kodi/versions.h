@@ -110,7 +110,7 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
                                                       "addon-instance/PeripheralUtils.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "6.5.1"
+#define ADDON_INSTANCE_VERSION_PVR                    "6.5.2"
 #define ADDON_INSTANCE_VERSION_PVR_MIN                "6.5.1"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_dll.h" \
