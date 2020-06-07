@@ -1036,8 +1036,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   if (!m_opened)
     return VC_NONE;
 
-  if (m_state != MEDIACODEC_STATE_FLUSHED &&
-      (m_OutputDuration < m_fpsDuration || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) != 0))
+  if (m_OutputDuration < m_fpsDuration || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) != 0)
   {
     m_videobuffer.videoBuffer = pVideoPicture->videoBuffer;
 
