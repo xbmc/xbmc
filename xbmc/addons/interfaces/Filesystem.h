@@ -58,6 +58,8 @@ struct Interface_Filesystem
   static char* make_legal_filename(void* kodiBase, const char* filename);
   static char* make_legal_path(void* kodiBase, const char* path);
   static char* translate_special_protocol(void* kodiBase, const char* strSource);
+  static bool get_disk_space(
+      void* kodiBase, const char* path, uint64_t* capacity, uint64_t* free, uint64_t* available);
   static bool is_internet_stream(void* kodiBase, const char* path, bool strictCheck);
   static bool is_on_lan(void* kodiBase, const char* path);
   static bool is_remote(void* kodiBase, const char* path);

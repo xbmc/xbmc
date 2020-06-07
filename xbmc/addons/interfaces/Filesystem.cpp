@@ -15,6 +15,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "platform/Filesystem.h"
 #include "utils/Crc32.h"
 #include "utils/HttpHeader.h"
 #include "utils/StringUtils.h"
@@ -59,6 +60,7 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->make_legal_filename = make_legal_filename;
   addonInterface->toKodi->kodi_filesystem->make_legal_path = make_legal_path;
   addonInterface->toKodi->kodi_filesystem->translate_special_protocol = translate_special_protocol;
+  addonInterface->toKodi->kodi_filesystem->get_disk_space = get_disk_space;
   addonInterface->toKodi->kodi_filesystem->is_internet_stream = is_internet_stream;
   addonInterface->toKodi->kodi_filesystem->is_on_lan = is_on_lan;
   addonInterface->toKodi->kodi_filesystem->is_remote = is_remote;
@@ -424,6 +426,35 @@ char* Interface_Filesystem::translate_special_protocol(void* kodiBase, const cha
   }
 
   return strdup(CSpecialProtocol::TranslatePath(strSource).c_str());
+}
+
+bool Interface_Filesystem::get_disk_space(
+    void* kodiBase, const char* path, uint64_t* capacity, uint64_t* free, uint64_t* available)
+{
+  using namespace KODI::PLATFORM::FILESYSTEM;
+
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr || capacity == nullptr || free == nullptr ||
+      available == nullptr)
+  {
+    CLog::Log(
+        LOGERROR,
+        "Interface_Filesystem::{} - invalid data (addon='{}', path='{}, capacity='{}, free='{}, "
+        "available='{})",
+        __FUNCTION__, kodiBase, static_cast<const void*>(path), static_cast<void*>(capacity),
+        static_cast<void*>(free), static_cast<void*>(available));
+    return false;
+  }
+
+  std::error_code ec;
+  auto freeSpace = space(CSpecialProtocol::TranslatePath(path), ec);
+  if (ec.value() != 0)
+    return false;
+
+  *capacity = freeSpace.capacity;
+  *free = freeSpace.free;
+  *available = freeSpace.available;
+  return true;
 }
 
 bool Interface_Filesystem::is_internet_stream(void* kodiBase, const char* path, bool strictCheck)

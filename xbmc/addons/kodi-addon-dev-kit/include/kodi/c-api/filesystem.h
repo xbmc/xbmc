@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
 
@@ -286,6 +287,9 @@ extern "C"
     bool (*curl_add_option)(
         void* kodiBase, void* file, int type, const char* name, const char* value);
     bool (*curl_open)(void* kodiBase, void* file, unsigned int flags);
+
+    bool (*get_disk_space)(
+        void* kodiBase, const char* path, uint64_t* capacity, uint64_t* free, uint64_t* available);
   } AddonToKodiFuncTable_kodi_filesystem;
 
   //}}}

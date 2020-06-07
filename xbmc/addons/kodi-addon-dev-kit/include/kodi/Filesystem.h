@@ -1256,6 +1256,54 @@ inline std::string TranslateSpecialProtocol(const std::string& source)
 
 //==============================================================================
 /// @ingroup cpp_kodi_vfs_General
+/// @brief Retrieves information about the amount of space that is available on
+/// a disk volume.
+///
+/// Path can be also with Kodi's special protocol.
+///
+/// @param[in] path Path for where to check
+/// @param[out] capacity The total number of bytes in the file system
+/// @param[out] free The total number of free bytes in the file system
+/// @param[out] available The total number of free bytes available to a
+///                       non-privileged process
+/// @return true if successfully done and set
+///
+/// @warning This only works with paths belonging to OS. If <b>"special://"</b>
+/// is used, it must point to a place on your own OS.
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <climits> // for ULLONG_MAX
+/// #include <kodi/Filesystem.h>
+/// ...
+/// std::string path = "special://temp";
+/// uint64_t capacity = ULLONG_MAX;
+/// uint64_t free = ULLONG_MAX;
+/// uint64_t available = ULLONG_MAX;
+/// kodi::vfs::GetDiskSpace(path, capacity, free, available);
+/// fprintf(stderr, "Path '%s' sizes:\n", path.c_str());
+/// fprintf(stderr, " - capacity:  %lu MByte\n", capacity / 1024 / 1024);
+/// fprintf(stderr, " - free:      %lu MByte\n", free / 1024 / 1024);
+/// fprintf(stderr, " - available: %lu MByte\n", available / 1024 / 1024);
+/// ~~~~~~~~~~~~~
+///
+inline bool GetDiskSpace(const std::string& path,
+                         uint64_t& capacity,
+                         uint64_t& free,
+                         uint64_t& available)
+{
+  using namespace kodi::addon;
+
+  return CAddonBase::m_interface->toKodi->kodi_filesystem->get_disk_space(
+      CAddonBase::m_interface->toKodi->kodiBase, path.c_str(), &capacity, &free, &available);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_vfs_General
 /// @brief Return the file name from given complate path string.
 ///
 /// @param[in] path The complete path include file and directory
@@ -1314,7 +1362,6 @@ inline std::string GetDirectoryName(const std::string& path)
   return path.substr(0, iPosSlash + 1) + path.substr(iPosBar); // Path + options
 }
 //------------------------------------------------------------------------------
-
 
 //==============================================================================
 /// @ingroup cpp_kodi_vfs_General
