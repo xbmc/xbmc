@@ -262,27 +262,32 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate,
                                                 bool isRaw)
 {
   int minBufferSize = CJNIAudioTrack::getMinBufferSize(sampleRate, channelMask, encoding);
-  if (minBufferSize < 0)
-    return false;
+  bool supported = (minBufferSize > 0);
 
   // make sure to have enough buffer as minimum might not be enough to open
   if (!isRaw)
     minBufferSize *= 4;
 
-  jni::CJNIAudioTrack *jniAt = CreateAudioTrack(CJNIAudioManager::STREAM_MUSIC, sampleRate, channelMask, encoding, minBufferSize);
-
-  bool success = (jniAt && jniAt->getState() == CJNIAudioTrack::STATE_INITIALIZED);
-
-  // Deinitialize
-  if (jniAt)
+  if (supported)
   {
-    jniAt->stop();
-    jniAt->flush();
-    jniAt->release();
-    delete jniAt;
+    jni::CJNIAudioTrack* jniAt = CreateAudioTrack(CJNIAudioManager::STREAM_MUSIC, sampleRate,
+                                                  channelMask, encoding, minBufferSize);
+    supported = (jniAt && jniAt->getState() == CJNIAudioTrack::STATE_INITIALIZED);
+    if (supported)
+    {
+      jniAt->pause();
+      jniAt->flush();
+    }
+
+    if (jniAt)
+    {
+      jniAt->release();
+      delete jniAt;
+    }
   }
-  usleep(50 * 1000); // Enumeration only, reduce pressure while starting
-  return success;
+  CLog::Log(LOGDEBUG, "VerifySinkConfiguration samplerate: %d mask: %d encoding: %d success: %s",
+            sampleRate, channelMask, encoding, supported ? "true" : "false");
+  return supported;
 }
 
 
@@ -869,8 +874,12 @@ void CAESinkAUDIOTRACK::Drain()
     return;
 
   CLog::Log(LOGDEBUG, "Draining Audio");
-  m_at_jni->stop();
-  m_at_jni->pause();
+  if (IsInitialized())
+  {
+    m_at_jni->stop();
+    // stay ready
+    m_at_jni->pause();
+  }
   m_duration_written = 0;
   m_headPos = 0;
   m_timestampPos = 0;
