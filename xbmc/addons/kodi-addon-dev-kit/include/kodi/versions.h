@@ -38,8 +38,6 @@
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.2.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
-                                                      "xbmc_addon_dll.h" \
-                                                      "libXBMC_addon.h" \
                                                       "addon-instance/" \
                                                       "c-api/addon_base.h"
 
@@ -51,7 +49,7 @@
 #define ADDON_GLOBAL_VERSION_GUI                      "5.14.0"
 #define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.14.0"
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
-#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h" \
+#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "ActionIDs.h" \
                                                       "gui/"
 
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.1.0"

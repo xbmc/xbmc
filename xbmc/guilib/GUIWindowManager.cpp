@@ -10,6 +10,7 @@
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "Application.h"
+#include "addons/interfaces/gui/Window.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "GUIPassword.h"
@@ -130,7 +131,6 @@
 
 #include "peripherals/dialogs/GUIDialogPeripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
-#include "addons/interfaces/AddonInterfaces.h"
 
 /* Game related include files */
 #include "cores/RetroPlayer/guiwindows/GameWindowFullScreen.h"
@@ -920,7 +920,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   {
     if (pMsg->lpVoid)
     {
-      ADDON::CAddonInterfaces::OnApplicationMessage(pMsg);
+      static_cast<ADDON::CGUIAddonWindowDialog*>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
     }
   }
   break;

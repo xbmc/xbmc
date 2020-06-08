@@ -5,7 +5,6 @@
 # Keep this in alphabetical order
 set(CORE_ADDON_BINDINGS_FILES
     ${CORE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
-    ${CORE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
     ${CORE_SOURCE_DIR}/xbmc/input/actions/ActionIDs.h
     ${CORE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
 )

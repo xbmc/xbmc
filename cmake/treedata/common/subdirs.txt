@@ -3,7 +3,6 @@ xbmc/addons                                     addons
 xbmc/addons/addoninfo                           addons_addoninfo
 xbmc/addons/binary-addons                       addons_binary-addons
 xbmc/addons/interfaces                          addons_interfaces
-xbmc/addons/interfaces/Addon                    addons_interfaces_addon
 xbmc/addons/interfaces/gui                      addons_interfaces_gui
 xbmc/addons/interfaces/gui/controls             addons_interfaces_gui_controls
 xbmc/addons/interfaces/gui/dialogs              addons_interfaces_gui_dialogs

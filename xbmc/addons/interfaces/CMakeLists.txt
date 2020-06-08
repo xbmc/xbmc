@@ -1,12 +1,10 @@
 set(SOURCES AddonBase.cpp
-            AddonInterfaces.cpp
             AudioEngine.cpp
             General.cpp
             Filesystem.cpp
             Network.cpp)
 
 set(HEADERS AddonBase.h
-            AddonInterfaces.h
             AudioEngine.h
             General.h
             Filesystem.h

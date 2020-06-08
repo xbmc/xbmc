@@ -11,7 +11,6 @@
 #include "BinaryAddonManager.h"
 #include "DllAddon.h"
 #include "addons/Addon.h"
-#include "addons/interfaces/AddonInterfaces.h"
 #include "utils/XMLUtils.h"
 
 // Global addon callback handle classes
@@ -45,9 +44,6 @@ public:
 
   // addon settings
   void SaveSettings() override;
-
-  ADDON_STATUS Create(ADDON_TYPE type, void* funcTable, void* info);
-  void Destroy();
 
   bool DllLoaded(void) const;
 
@@ -112,7 +108,6 @@ public:
 protected:
   static std::string GetDllPath(const std::string& strFileName);
 
-  CAddonInterfaces* m_pHelpers = nullptr;
   std::string m_parentLib;
 
 private:
@@ -131,6 +126,13 @@ private:
    * @return The status of addon after the creation.
    */
   ADDON_STATUS Create(KODI_HANDLE firstKodiInstance);
+
+  /*!
+   * @brief Main addon destroying call function
+   *
+   * This becomes called only one time after the last addon instance becomes destroyed.
+   */
+  void Destroy();
 
   bool CheckAPIVersion(int type);
 
