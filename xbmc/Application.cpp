@@ -135,7 +135,6 @@
 
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "dialogs/GUIDialogCache.h"
-#include "dialogs/GUIDialogPlayEject.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
@@ -2802,20 +2801,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   if (item.IsDiscStub())
   {
-#ifdef HAS_DVD_DRIVE
-    // Display the Play Eject dialog if there is any optical disc drive
-    if (CServiceBroker::GetMediaManager().HasOpticalDrive())
-    {
-      if (CGUIDialogPlayEject::ShowAndGetInput(item))
-        // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
-        // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
-        return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
-    }
-    else
-#endif
-      HELPERS::ShowOKDialogText(CVariant{435}, CVariant{436});
-
-    return true;
+    return CServiceBroker::GetMediaManager().playStubFile(item);
   }
 
   if (item.IsPlayList())

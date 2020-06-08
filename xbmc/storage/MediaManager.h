@@ -29,6 +29,8 @@
 #define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
 #define DRIVE_NONE  5 // system doesn't have an optical drive
 
+class CFileItem;
+
 class CNetworkLocation
 {
 public:
@@ -87,6 +89,9 @@ public:
   void OnStorageUnsafelyRemoved(const std::string &label) override;
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override { }
+
+  bool playStubFile(const CFileItem& item);
+
 protected:
   std::vector<CNetworkLocation> m_locations;
 
