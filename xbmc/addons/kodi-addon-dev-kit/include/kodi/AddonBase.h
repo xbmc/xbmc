@@ -418,23 +418,7 @@ public:
                                       const std::string& version,
                                       KODI_HANDLE& addonInstance)
   {
-    /* The handling below is intended for the case of the add-on only one
-     * instance and this is integrated in the add-on base class.
-     */
-
-    /* Check about single instance usage:
-     * 1. The kodi side instance pointer must be equal to first one
-     * 2. The addon side instance pointer must be set
-     * 3. And the requested type must be equal with used add-on class
-     */
-    if (m_interface->firstKodiInstance == instance && m_interface->globalSingleInstance &&
-        static_cast<IAddonInstance*>(m_interface->globalSingleInstance)->m_type == instanceType)
-    {
-      addonInstance = m_interface->globalSingleInstance;
-      return ADDON_STATUS_OK;
-    }
-
-    return ADDON_STATUS_UNKNOWN;
+    return ADDON_STATUS_NOT_IMPLEMENTED;
   }
   //--------------------------------------------------------------------------
 
@@ -495,18 +479,63 @@ private:
     CAddonBase* base = static_cast<CAddonBase*>(m_interface->addonBase);
 
     ADDON_STATUS status = ADDON_STATUS_NOT_IMPLEMENTED;
-    if (parent != nullptr)
-      status = static_cast<IAddonInstance*>(parent)->CreateInstance(
-          instanceType, instanceID, instance, version, *addonInstance);
-    if (status == ADDON_STATUS_NOT_IMPLEMENTED)
-      status = base->CreateInstance(instanceType, instanceID, instance, version, *addonInstance);
+
+    /* Check about single instance usage:
+     * 1. The kodi side instance pointer must be equal to first one
+     * 2. The addon side instance pointer must be set
+     * 3. And the requested type must be equal with used add-on class
+     */
+    if (m_interface->firstKodiInstance == instance && m_interface->globalSingleInstance &&
+        static_cast<IAddonInstance*>(m_interface->globalSingleInstance)->m_type == instanceType)
+    {
+      /* The handling here is intended for the case of the add-on only one
+       * instance and this is integrated in the add-on base class.
+       */
+      *addonInstance = m_interface->globalSingleInstance;
+      status = ADDON_STATUS_OK;
+    }
+    else
+    {
+      /* Here it should use the CreateInstance instance function to allow
+       * creation of several on one addon.
+       */
+
+      /* Check first a parent is defined about (e.g. Codec within inputstream) */
+      if (parent != nullptr)
+        status = static_cast<IAddonInstance*>(parent)->CreateInstance(
+            instanceType, instanceID, instance, version, *addonInstance);
+
+      /* if no parent call the main instance creation function to get it */
+      if (status == ADDON_STATUS_NOT_IMPLEMENTED)
+      {
+        status = base->CreateInstance(instanceType, instanceID, instance, version, *addonInstance);
+      }
+    }
+
     if (*addonInstance == nullptr)
-      throw std::logic_error(
-          "kodi::addon::CAddonBase CreateInstance returns a empty instance pointer!");
+    {
+      if (status == ADDON_STATUS_OK)
+      {
+        m_interface->toKodi->addon_log_msg(m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
+                                           "kodi::addon::CAddonBase CreateInstance returned an "
+                                           "empty instance pointer, but reported OK!");
+        return ADDON_STATUS_PERMANENT_FAILURE;
+      }
+      else
+      {
+        return status;
+      }
+    }
 
     if (static_cast<IAddonInstance*>(*addonInstance)->m_type != instanceType)
-      throw std::logic_error("kodi::addon::CAddonBase CreateInstance with difference on given "
-                             "and returned instance type!");
+    {
+      m_interface->toKodi->addon_log_msg(
+          m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
+          "kodi::addon::CAddonBase CreateInstance difference between given and returned");
+      delete static_cast<IAddonInstance*>(*addonInstance);
+      *addonInstance = nullptr;
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
 
     // Store the used ID inside instance, to have on destroy calls by addon to identify
     static_cast<IAddonInstance*>(*addonInstance)->m_id = instanceID;
@@ -520,14 +549,8 @@ private:
 
     if (m_interface->globalSingleInstance == nullptr && instance != base)
     {
-      if (static_cast<IAddonInstance*>(instance)->m_type == instanceType)
-      {
-        base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
-        delete static_cast<IAddonInstance*>(instance);
-      }
-      else
-        throw std::logic_error("kodi::addon::CAddonBase DestroyInstance called with difference on "
-                               "given and present instance type!");
+      base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
+      delete static_cast<IAddonInstance*>(instance);
     }
   }
 };
@@ -711,6 +734,7 @@ inline bool CheckSettingString(const std::string& settingName, std::string& sett
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
+/// @param[in] defaultValue [opt] Default value if not found
 /// @return The value of setting, empty if not found;
 ///
 ///
@@ -723,9 +747,10 @@ inline bool CheckSettingString(const std::string& settingName, std::string& sett
 /// std::string value = kodi::GetSettingString("my_string_value");
 /// ~~~~~~~~~~~~~
 ///
-inline std::string GetSettingString(const std::string& settingName)
+inline std::string GetSettingString(const std::string& settingName,
+                                    const std::string& defaultValue = "")
 {
-  std::string settingValue;
+  std::string settingValue = defaultValue;
   CheckSettingString(settingName, settingValue);
   return settingValue;
 }
@@ -797,7 +822,8 @@ inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, <b>`0`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, <b>`0`</b> or defaultValue if not found
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -809,9 +835,9 @@ inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
 /// int value = kodi::GetSettingInt("my_integer_value");
 /// ~~~~~~~~~~~~~
 ///
-inline int GetSettingInt(const std::string& settingName)
+inline int GetSettingInt(const std::string& settingName, int defaultValue = 0)
 {
-  int settingValue = 0;
+  int settingValue = defaultValue;
   CheckSettingInt(settingName, settingValue);
   return settingValue;
 }
@@ -883,7 +909,8 @@ inline bool CheckSettingBoolean(const std::string& settingName, bool& settingVal
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, <b>`false`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, <b>`false`</b> or defaultValue if not found
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -895,9 +922,9 @@ inline bool CheckSettingBoolean(const std::string& settingName, bool& settingVal
 /// bool value = kodi::GetSettingBoolean("my_boolean_value");
 /// ~~~~~~~~~~~~~
 ///
-inline bool GetSettingBoolean(const std::string& settingName)
+inline bool GetSettingBoolean(const std::string& settingName, bool defaultValue = false)
 {
-  bool settingValue = false;
+  bool settingValue = defaultValue;
   CheckSettingBoolean(settingName, settingValue);
   return settingValue;
 }
@@ -969,7 +996,8 @@ inline bool CheckSettingFloat(const std::string& settingName, float& settingValu
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, <b>`0.0`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, <b>`0.0`</b> or defaultValue if not found
 ///
 ///
 /// ----------------------------------------------------------------------------
@@ -981,9 +1009,9 @@ inline bool CheckSettingFloat(const std::string& settingName, float& settingValu
 /// float value = kodi::GetSettingFloat("my_float_value");
 /// ~~~~~~~~~~~~~
 ///
-inline float GetSettingFloat(const std::string& settingName)
+inline float GetSettingFloat(const std::string& settingName, float defaultValue = 0.0f)
 {
-  float settingValue = 0.0f;
+  float settingValue = defaultValue;
   CheckSettingFloat(settingName, settingValue);
   return settingValue;
 }
@@ -1068,7 +1096,8 @@ inline bool CheckSettingEnum(const std::string& settingName, enumType& settingVa
 /// The setting name relate to names used in his <b>settings.xml</b> file.
 ///
 /// @param[in] settingName The name of asked setting
-/// @return The value of setting, forced to <b>`0`</b> if not found;
+/// @param[in] defaultValue [opt] Default value if not found
+/// @return The value of setting, forced to <b>`0`</b> or defaultValue if not found
 ///
 /// @remark The enums are used as integer inside settings.xml.
 ///
@@ -1090,9 +1119,10 @@ inline bool CheckSettingEnum(const std::string& settingName, enumType& settingVa
 /// ~~~~~~~~~~~~~
 ///
 template<typename enumType>
-inline enumType GetSettingEnum(const std::string& settingName)
+inline enumType GetSettingEnum(const std::string& settingName,
+                               enumType defaultValue = static_cast<enumType>(0))
 {
-  enumType settingValue = static_cast<enumType>(0);
+  enumType settingValue = defaultValue;
   CheckSettingEnum(settingName, settingValue);
   return settingValue;
 }
