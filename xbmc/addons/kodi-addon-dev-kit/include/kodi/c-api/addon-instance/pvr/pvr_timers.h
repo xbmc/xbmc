@@ -11,6 +11,7 @@
 #include "pvr_defines.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <time.h>
 
 #ifdef __cplusplus
@@ -122,7 +123,7 @@ extern "C"
   typedef struct PVR_TIMER_TYPE
   {
     unsigned int iId;
-    unsigned int iAttributes;
+    uint64_t iAttributes;
     char strDescription[PVR_ADDON_TIMERTYPE_STRING_LENGTH];
 
     unsigned int iPrioritiesSize;

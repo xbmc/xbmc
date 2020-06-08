@@ -51,8 +51,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_StopTime(m_StartTime + CDateTimeSpan(0, 2, 0, 0)),
   m_FirstDay(m_StartTime)
 {
-  static const unsigned int iMustHaveAttr = PVR_TIMER_TYPE_IS_MANUAL;
-  static const unsigned int iMustNotHaveAttr = PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+  static const uint64_t iMustHaveAttr = PVR_TIMER_TYPE_IS_MANUAL;
+  static const uint64_t iMustNotHaveAttr =
+      PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
   std::shared_ptr<CPVRTimerType> type;
 
@@ -127,8 +128,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr
     if (timer.iTimerType == PVR_TIMER_TYPE_NONE)
     {
       // Create type according to certain timer values.
-      unsigned int iMustHave = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
-      unsigned int iMustNotHave = PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+      uint64_t iMustHave = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
+      uint64_t iMustNotHave = PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
       if (timer.iEpgUid == PVR_TIMER_NO_EPG_UID && timer.iWeekdays != PVR_WEEKDAY_NONE)
         iMustHave |= PVR_TIMER_TYPE_IS_REPEATING;
@@ -775,7 +776,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
     newTimer->m_iClientId = channel->ClientID();
     newTimer->m_bIsRadio = channel->IsRadio();
 
-    int iMustHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL;
+    uint64_t iMustHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL;
     if (bCreateReminder)
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_REMINDER;
     if (bReadOnly)
@@ -892,15 +893,15 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
   newTag->SetStartFromUTC(tag->StartAsUTC());
   newTag->SetEndFromUTC(tag->EndAsUTC());
 
-  const int iMustNotHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL |
-                                  PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
-                                  PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE;
+  const uint64_t iMustNotHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL |
+                                       PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+                                       PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE;
   std::shared_ptr<CPVRTimerType> timerType;
   if (bCreateRule)
   {
     // create epg-based timer rule, prefer rule using series link if available.
 
-    int iMustHaveAttribs = PVR_TIMER_TYPE_IS_REPEATING;
+    uint64_t iMustHaveAttribs = PVR_TIMER_TYPE_IS_REPEATING;
     if (bCreateReminder)
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_REMINDER;
     if (bReadOnly)
@@ -931,7 +932,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
   {
     // create one-shot epg-based timer
 
-    int iMustHaveAttribs = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
+    uint64_t iMustHaveAttribs = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
     if (bCreateReminder)
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_REMINDER;
     if (bReadOnly)

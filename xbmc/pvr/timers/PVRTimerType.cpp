@@ -135,8 +135,9 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromIds(unsigned int iTypeId
   return {};
 }
 
-std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(
-  unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId)
+std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(uint64_t iMustHaveAttr,
+                                                                   uint64_t iMustNotHaveAttr,
+                                                                   int iClientId)
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();
   for (const auto& type : types)
@@ -175,10 +176,10 @@ CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId) :
   InitAttributeValues(type);
 }
 
-CPVRTimerType::CPVRTimerType(unsigned int iTypeId, unsigned int iAttributes, const std::string& strDescription) :
-  m_iTypeId(iTypeId),
-  m_iAttributes(iAttributes),
-  m_strDescription(strDescription)
+CPVRTimerType::CPVRTimerType(unsigned int iTypeId,
+                             uint64_t iAttributes,
+                             const std::string& strDescription)
+  : m_iTypeId(iTypeId), m_iAttributes(iAttributes), m_strDescription(strDescription)
 {
   InitDescription();
 }
