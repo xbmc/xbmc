@@ -394,6 +394,17 @@ public:
   ///
   /// The with "Valid implementation required." declared functions are mandatory,
   /// all others are an option.
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Basic parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Base_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Base_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -803,6 +814,16 @@ public:
   /// If a channel changes after the initial import, or if a new one was added,
   /// then the add-on should call @ref TriggerChannelUpdate().
   ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Channel parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Channels_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Channels_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -1003,6 +1024,16 @@ public:
   /// This is used to divide available addon channels into groups, which can
   /// then be selected by the user.
   ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Channel group parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_supportsChannelGroups_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_supportsChannelGroups_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -1154,6 +1185,16 @@ public:
   /// to true</b>\n
   /// The support of this is a pure option and not mandatory.
   ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Channel edit parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_supportsChannelEdit_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_supportsChannelEdit_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -1268,6 +1309,16 @@ public:
   ///
   /// @remarks Only used by Kodi if @ref PVRCapabilities::SetSupportsEPG "supportsEPG"
   /// is set to true.\n\n
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **EPG parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_EPGTag_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_EPGTag_source_addon_auto_check
   ///
   ///@{
 
@@ -1545,6 +1596,16 @@ public:
   /// is set to true.\n\n
   /// If a recordings changes after the initial import, or if a new one was added,
   /// then the add-on should call @ref TriggerRecordingUpdate().
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Recordings parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Recordings_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Recordings_source_addon_auto_check
   ///
   ///@{
 
@@ -1884,6 +1945,16 @@ public:
   /// If a timer changes after the initial import, or if a new one was added,
   /// then the add-on should call @ref TriggerTimerUpdate().
   ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Timer parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Timers_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Timers_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -2052,6 +2123,16 @@ public:
   /// @brief **Used to notify the pvr addon for power management events**\n
   /// Used to allow any energy savings.
   ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Power management events in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_PowerManagement_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_PowerManagement_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -2107,6 +2188,16 @@ public:
   /// @ingroup cpp_kodi_addon_pvr_Streams
   /// @brief **PVR TV stream**\n
   /// Stream processing regarding live TV.
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **TV stream parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Streams_TV_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Streams_TV_source_addon_auto_check
   ///
   ///@{
 
@@ -2192,6 +2283,16 @@ public:
   ///
   /// This is only on Live TV streams and only if @ref PVRCapabilities::SetHandlesDemuxing()
   /// has been set to "true".
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Stream demuxing parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Streams_TV_Demux_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Streams_TV_Demux_source_addon_auto_check
   ///
   ///@{
 
@@ -2345,6 +2446,16 @@ public:
   ///
   /// @note Demuxing is not possible with the recordings.
   ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Recording stream parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Streams_Recording_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Streams_Recording_source_addon_auto_check
+  ///
   ///@{
 
   //============================================================================
@@ -2422,6 +2533,16 @@ public:
   /// @brief **Various other PVR stream related functions**\n
   /// These apply to all other groups in inputstream and are therefore declared
   /// as several.
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Various stream parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Streams_Various_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_pvr_Streams_Various_source_addon_auto_check
   ///
   ///@{
 
