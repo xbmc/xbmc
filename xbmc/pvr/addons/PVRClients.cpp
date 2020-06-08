@@ -93,7 +93,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
 
   bool bFoundChangedAddon = changedAddonId.empty();
   std::vector<std::pair<BinaryAddonBasePtr, bool>> addonsWithStatus;
-  for (const auto &addon : addons)
+  for (const auto& addon : addons)
   {
     bool bEnabled = CServiceBroker::GetBinaryAddonManager().IsAddonEnabled(addon->ID());
     addonsWithStatus.emplace_back(std::make_pair(addon, bEnabled));

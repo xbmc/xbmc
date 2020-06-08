@@ -19,11 +19,12 @@ namespace ADDON
 typedef struct
 {
   const char* name;
-  TYPE        type;
-  int         pretty;
+  TYPE type;
+  int pretty;
   const char* icon;
 } TypeMapping;
 
+// clang-format off
 static const TypeMapping types[] =
   {{"unknown",                           ADDON_UNKNOWN,                 0, "" },
    {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016, "DefaultAddonAlbumInfo.png" },
@@ -66,6 +67,7 @@ static const TypeMapping types[] =
    {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
    {"kodi.imagedecoder",                 ADDON_IMAGEDECODER,        39015, "DefaultAddonImageDecoder.png" },
   };
+// clang-format on
 
 /**
  * static public helper functions

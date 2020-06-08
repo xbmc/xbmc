@@ -329,7 +329,8 @@ void CInputStreamPVRBase::UpdateStreamMap()
       dStream = streamSubtitle;
     }
     else if (stream.iCodecType == PVR_CODEC_TYPE_RDS &&
-             CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.enableradiords"))
+             CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 "pvrplayback.enableradiords"))
     {
       std::shared_ptr<CDemuxStreamRadioRDS> streamRadioRDS;
 

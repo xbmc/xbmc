@@ -488,7 +488,8 @@ namespace PVR
     int m_iClientId = -1; /*!< the identifier of the client that serves this channel */
     CPVRChannelNumber m_clientChannelNumber; /*!< the channel number on the client for the currently selected channel group */
     std::string m_strClientChannelName; /*!< the name of this channel on the client */
-    std::string m_strMimeType; /*!< the stream input type based mime type, see @ref https://www.iana.org/assignments/media-types/media-types.xhtml#video */
+    std::string
+        m_strMimeType; /*!< the stream input type based mime type, see @ref https://www.iana.org/assignments/media-types/media-types.xhtml#video */
     std::string m_strFileNameAndPath; /*!< the filename to be used by PVRManager to open and read the stream */
     int m_iClientEncryptionSystem = -1; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
     std::string m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */

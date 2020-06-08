@@ -48,18 +48,18 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
 }
 
 CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
-: m_bIsRadio(channel.bIsRadio),
-  m_bIsHidden(channel.bIsHidden),
-  m_strIconPath(channel.strIconPath),
-  m_strChannelName(channel.strChannelName),
-  m_bHasArchive(channel.bHasArchive),
-  m_bEPGEnabled(!channel.bIsHidden),
-  m_iUniqueId(channel.iUniqueId),
-  m_iClientId(iClientId),
-  m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber),
-  m_strClientChannelName(channel.strChannelName),
-  m_strMimeType(channel.strMimeType),
-  m_iClientEncryptionSystem(channel.iEncryptionSystem)
+  : m_bIsRadio(channel.bIsRadio),
+    m_bIsHidden(channel.bIsHidden),
+    m_strIconPath(channel.strIconPath),
+    m_strChannelName(channel.strChannelName),
+    m_bHasArchive(channel.bHasArchive),
+    m_bEPGEnabled(!channel.bIsHidden),
+    m_iUniqueId(channel.iUniqueId),
+    m_iClientId(iClientId),
+    m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber),
+    m_strClientChannelName(channel.strChannelName),
+    m_strMimeType(channel.strMimeType),
+    m_iClientEncryptionSystem(channel.iEncryptionSystem)
 {
   if (m_strChannelName.empty())
     m_strChannelName = StringUtils::Format("%s %d", g_localizeStrings.Get(19029).c_str(), m_iUniqueId);
