@@ -1,5 +1,4 @@
-set(HEADERS pvr.h
-            pvr_channel_groups.h
+set(HEADERS pvr_channel_groups.h
             pvr_channels.h
             pvr_defines.h
             pvr_edl.h
