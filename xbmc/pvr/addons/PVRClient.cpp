@@ -1797,7 +1797,7 @@ void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
   kodiTimers->UpdateFromClient(transferTimer);
 }
 
-void CPVRClient::cb_add_menu_hook(void* kodiInstance, PVR_MENUHOOK* hook)
+void CPVRClient::cb_add_menu_hook(void* kodiInstance, const PVR_MENUHOOK* hook)
 {
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!hook || !client)

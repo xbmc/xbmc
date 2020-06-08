@@ -718,7 +718,7 @@ public:
   /// ...
   /// ~~~~~~~~~~~~~
   ///
-  inline void AddMenuHook(kodi::addon::PVRMenuhook& hook)
+  inline void AddMenuHook(const kodi::addon::PVRMenuhook& hook)
   {
     m_instanceData->toKodi->AddMenuHook(m_instanceData->toKodi->kodiInstance, hook);
   }

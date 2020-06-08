@@ -77,7 +77,7 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // General callback functions
-    void (*AddMenuHook)(void* kodiInstance, struct PVR_MENUHOOK* hook);
+    void (*AddMenuHook)(void* kodiInstance, const struct PVR_MENUHOOK* hook);
     void (*RecordingNotification)(void* kodiInstance,
                                   const char* name,
                                   const char* fileName,

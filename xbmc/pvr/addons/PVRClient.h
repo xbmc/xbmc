@@ -1128,7 +1128,7 @@ private:
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    * @param hook The hook to add.
    */
-  static void cb_add_menu_hook(void* kodiInstance, PVR_MENUHOOK* hook);
+  static void cb_add_menu_hook(void* kodiInstance, const PVR_MENUHOOK* hook);
 
   /*!
    * @brief Display a notification in Kodi that a recording started or stopped on the server
