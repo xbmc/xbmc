@@ -421,6 +421,8 @@ void CAdvancedSettings::Initialize()
 
   m_userAgent = g_sysinfo.GetUserAgent();
 
+  m_nfsTimeout = 5;
+
   m_initialized = true;
 }
 
@@ -500,6 +502,14 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         passTag->RemoveChild(pass);
         passTag->LinkEndChild(new TiXmlText("*****"));
       }
+    }
+    if (network->FirstChildElement("nfstimeout"))
+    {
+#ifdef HAS_NFS_SET_TIMEOUT
+      XMLUtils::GetUInt(network, "nfstimeout", m_nfsTimeout, 0, 3600);
+#else
+      CLog::Log(LOGWARNING, "nfstimeout unsupported");
+#endif
     }
   }
 
