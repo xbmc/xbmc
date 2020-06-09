@@ -130,7 +130,7 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
   if (!inError)
   {
-    CJNIStorageVolumes vols = manager.getVolumeList();
+    CJNIStorageVolumes vols = manager.getStorageVolumes();
     if (xbmc_jnienv()->ExceptionCheck())
     {
       xbmc_jnienv()->ExceptionClear();
