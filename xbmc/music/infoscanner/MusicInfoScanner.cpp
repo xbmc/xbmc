@@ -1606,7 +1606,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
             items.Add(item);
           }
-          if (!pDialog && relevance > .99f) // we're so close, no reason to search further
+          if (!pDialog && relevance > .999f) // we're so close, no reason to search further
             break;
         }
 
