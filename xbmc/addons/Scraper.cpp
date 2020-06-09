@@ -757,6 +757,7 @@ void DetailsFromFileItem<CAlbum>(const CFileItem &item, CAlbum &album)
   album.strReleaseDate = FromString(item, "album.releasedate");
   if (album.strReleaseDate.empty())
     album.strReleaseDate = FromString(item, "album.year");
+  album.strOrigReleaseDate = FromString(item, "album.originaldate");
   album.strLabel = FromString(item, "album.label");
   album.strType = FromString(item, "album.type");
   album.strReleaseStatus = FromString(item, "album.releasestatus");

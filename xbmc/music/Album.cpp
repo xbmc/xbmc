@@ -291,7 +291,6 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   //@todo: validate ISO8601 format YYYY, YYYY-MM, or YYYY-MM-DD
   if ((override && !source.strReleaseDate.empty()) || strReleaseDate.empty())
     strReleaseDate = source.strReleaseDate;
-  //@todo: can scraper return original release date??
   if ((override && !source.strOrigReleaseDate.empty()) || strOrigReleaseDate.empty())
     strOrigReleaseDate = source.strOrigReleaseDate;
 
