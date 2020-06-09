@@ -761,7 +761,6 @@ void DetailsFromFileItem<CAlbum>(const CFileItem &item, CAlbum &album)
   album.strLabel = FromString(item, "album.label");
   album.strType = FromString(item, "album.type");
   album.strReleaseStatus = FromString(item, "album.releasestatus");
-  album.SetReleaseType(FromString(item, "album.release_type"));
   album.fRating = item.GetProperty("album.rating").asFloat();
   album.iUserrating = item.GetProperty("album.user_rating").asInteger32();
   album.iVotes = item.GetProperty("album.votes").asInteger32();
