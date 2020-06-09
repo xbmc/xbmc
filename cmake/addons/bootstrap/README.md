@@ -1,3 +1,4 @@
+![Kodi logo](https://github.com/xbmc/xbmc/raw/master/docs/resources/banner_slim.png)
 # KODI ADDON DEFINITIONS BOOTSTRAPPING
 This directory contains the cmake-based buildsystem for addon definitions
 bootstrapping which downloads the addon definitions from one or more addon
