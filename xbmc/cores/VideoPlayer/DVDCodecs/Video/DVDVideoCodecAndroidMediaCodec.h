@@ -154,7 +154,6 @@ protected:
   bool m_needSecureDecoder = false;
   int m_codecControlFlags;
   int m_state;
-  int m_noPictureLoop;
 
   std::shared_ptr<CJNIXBMCVideoView> m_jnivideoview;
   CJNISurface* m_jnisurface;
