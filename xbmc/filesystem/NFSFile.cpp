@@ -12,7 +12,10 @@
 
 #include "NFSFile.h"
 
+#include "ServiceBroker.h"
 #include "network/DNSNameCache.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
@@ -29,19 +32,19 @@
 #include <sys\stat.h>
 #endif
 
-//KEEP_ALIVE_TIMEOUT is decremented every half a second
-//360 * 0.5s == 180s == 3mins
-//so when no read was done for 3mins and files are open
-//do the nfs keep alive for the open files
+// KEEP_ALIVE_TIMEOUT is decremented every half a second
+// 360 * 0.5s == 180s == 3mins
+// so when no read was done for 3mins and files are open
+// do the nfs keep alive for the open files
 #define KEEP_ALIVE_TIMEOUT 360
 
-//6 mins (360s) cached context timeout
+// 6 mins (360s) cached context timeout
 #define CONTEXT_TIMEOUT 360000
 
-//return codes for getContextForExport
-#define CONTEXT_INVALID  0    //getcontext failed
-#define CONTEXT_NEW      1    //new context created
-#define CONTEXT_CACHED   2    //context cached and therefore already mounted (no new mount needed)
+// return codes for getContextForExport
+#define CONTEXT_INVALID 0 // getcontext failed
+#define CONTEXT_NEW 1 // new context created
+#define CONTEXT_CACHED 2 // context cached and therefore already mounted (no new mount needed)
 
 #if defined(TARGET_WINDOWS)
 #define S_IRGRP 0
@@ -53,10 +56,7 @@
 using namespace XFILE;
 
 CNfsConnection::CNfsConnection()
-: m_pNfsContext(NULL)
-, m_exportPath("")
-, m_hostName("")
-, m_resolvedHostName("")
+  : m_pNfsContext(NULL), m_exportPath(""), m_hostName(""), m_resolvedHostName("")
 {
 }
 
@@ -65,32 +65,38 @@ CNfsConnection::~CNfsConnection()
   Deinit();
 }
 
-void CNfsConnection::resolveHost(const CURL &url)
+void CNfsConnection::resolveHost(const CURL& url)
 {
-  //resolve if hostname has changed
+  // resolve if hostname has changed
   CDNSNameCache::Lookup(url.GetHostName(), m_resolvedHostName);
 }
 
-std::list<std::string> CNfsConnection::GetExportList(const CURL &url)
+std::list<std::string> CNfsConnection::GetExportList(const CURL& url)
 {
-    std::list<std::string> retList;
+  std::list<std::string> retList;
 
-    struct exportnode *exportlist, *tmp;
-    exportlist = mount_getexports(m_resolvedHostName.c_str());
-    tmp = exportlist;
+  struct exportnode *exportlist, *tmp;
+#ifdef HAS_NFS_MOUNT_GETEXPORTS_TIMEOUT
+  exportlist = mount_getexports_timeout(
+      m_resolvedHostName.c_str(),
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsTimeout * 1000);
+#else
+  exportlist = mount_getexports(m_resolvedHostName.c_str());
+#endif
+  tmp = exportlist;
 
-    for(tmp = exportlist; tmp!=NULL; tmp=tmp->ex_next)
-    {
-      std::string exportStr = std::string(tmp->ex_dir);
+  for (tmp = exportlist; tmp != NULL; tmp = tmp->ex_next)
+  {
+    std::string exportStr = std::string(tmp->ex_dir);
 
-      retList.push_back(exportStr);
-    }
+    retList.push_back(exportStr);
+  }
 
-    mount_free_export_list(exportlist);
-    retList.sort();
-    retList.reverse();
+  mount_free_export_list(exportlist);
+  retList.sort();
+  retList.reverse();
 
-    return retList;
+  return retList;
 }
 
 void CNfsConnection::clearMembers()
@@ -181,6 +187,7 @@ int CNfsConnection::getContextForExport(const std::string &exportname)
     {
       struct contextTimeout tmp;
       CSingleLock lock(openContextLock);
+      setTimeout(m_pNfsContext);
       tmp.pContext = m_pNfsContext;
       tmp.lastAccessedTime = XbmcThreads::SystemClockMillis();
       m_openContextMap[exportname] = tmp; //add context to list of all contexts
@@ -426,6 +433,7 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
 
     if(pTmpContext)
     {
+      setTimeout(pTmpContext);
       //we connect to the directory of the path. This will be the "root" path of this connection then.
       //So all fileoperations are relative to this mountpoint...
       nfsRet = nfs_mount(pTmpContext, m_resolvedHostName.c_str(), exportPath.c_str());
@@ -463,6 +471,15 @@ void CNfsConnection::AddIdleConnection()
   /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
    leaves the movie paused for a long while and then press stop */
   m_IdleTimeout = 180;
+}
+
+
+void CNfsConnection::setTimeout(struct nfs_context* context)
+{
+#ifdef HAS_NFS_SET_TIMEOUT
+  uint32_t timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsTimeout;
+  nfs_set_timeout(context, timeout > 0 ? timeout * 1000 : -1);
+#endif
 }
 
 CNfsConnection gNfsConnection;
@@ -589,7 +606,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   {
     if(buffer)
     {
-#if defined(TARGET_WINDOWS)//! @todo get rid of this define after gotham v13
+#if defined(TARGET_WINDOWS) //! @todo get rid of this define after gotham v13
       memcpy(buffer, &tmpBuffer, sizeof(struct __stat64));
 #else
       memset(buffer, 0, sizeof(struct __stat64));

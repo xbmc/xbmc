@@ -365,6 +365,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_openGlDebugging;
 
     std::string m_userAgent;
+    uint32_t m_nfsTimeout;
 
   private:
     void Initialize();
