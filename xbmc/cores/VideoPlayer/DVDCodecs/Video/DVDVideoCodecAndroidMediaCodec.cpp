@@ -77,6 +77,7 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_CONFIGURED,
   MEDIACODEC_STATE_FLUSHED,
   MEDIACODEC_STATE_RUNNING,
+  MEDIACODEC_STATE_WAIT_ENDOFSTREAM,
   MEDIACODEC_STATE_ENDOFSTREAM,
   MEDIACODEC_STATE_ERROR,
   MEDIACODEC_STATE_STOPPED
@@ -396,7 +397,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   m_render_surface = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
-  m_noPictureLoop = 0;
   m_codecControlFlags = 0;
   m_hints = hints;
   m_indexInputBuffer = -1;
@@ -835,9 +835,9 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
   uint8_t *pData(packet.pData);
   size_t iSize(packet.iSize);
 
-  if (m_state == MEDIACODEC_STATE_ENDOFSTREAM)
+  if (m_state == MEDIACODEC_STATE_ENDOFSTREAM || m_state == MEDIACODEC_STATE_ERROR)
   {
-    // We received a packet but already reached EOS. Reset...
+    // We received a packet but already reached EOS or Error. Reset...
     Reset();
   }
 
@@ -846,7 +846,10 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
     if (m_indexInputBuffer >= 0)
     {
       if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING))
+      {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData: Wrong state (%d)", m_state);
+        return false;
+      }
 
       if (m_mpeg2_sequence && CBitstreamConverter::mpeg2_sequence_header(pData, iSize, m_mpeg2_sequence))
       {
@@ -998,8 +1001,6 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
     // now we can flush the actual MediaCodec object
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state (%d)", m_state);
-    m_state = MEDIACODEC_STATE_FLUSHED;
-
     m_codec->flush();
     if (xbmc_jnienv()->ExceptionCheck())
     {
@@ -1007,14 +1008,29 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset: flush failed");
     }
 
-    CJNIMediaFormat mediaFormat = m_codec->getOutputFormat();
-    if (xbmc_jnienv()->ExceptionCheck())
+    if (m_state == MEDIACODEC_STATE_ERROR)
     {
-      xbmc_jnienv()->ExceptionClear();
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset: getOutputFormat failed");
+      m_codec->stop();
+      if (xbmc_jnienv()->ExceptionCheck())
+      {
+        xbmc_jnienv()->ExceptionClear();
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset: stop failed");
+      }
+      ConfigureMediaCodec();
     }
     else
-      InjectExtraData(mediaFormat);
+    {
+      CJNIMediaFormat mediaFormat = m_codec->getOutputFormat();
+      if (xbmc_jnienv()->ExceptionCheck())
+      {
+        xbmc_jnienv()->ExceptionClear();
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset: getOutputFormat failed");
+      }
+      else
+        InjectExtraData(mediaFormat);
+    }
+
+    m_state = MEDIACODEC_STATE_FLUSHED;
 
     // Invalidate our local VideoPicture bits
     m_videobuffer.pts = DVD_NOPTS_VALUE;
@@ -1044,6 +1060,9 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   if (!m_opened)
     return VC_NONE;
 
+  if (m_state == MEDIACODEC_STATE_ERROR || m_state == MEDIACODEC_STATE_ENDOFSTREAM)
+    return VC_EOF;
+
   if (m_OutputDuration < m_fpsDuration || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) != 0)
   {
     m_videobuffer.videoBuffer = pVideoPicture->videoBuffer;
@@ -1052,8 +1071,6 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
 
     if (retgp > 0)
     {
-      m_noPictureLoop = 0;
-
       pVideoPicture->videoBuffer = nullptr;
       pVideoPicture->SetParams(m_videobuffer);
       pVideoPicture->videoBuffer = m_videobuffer.videoBuffer;
@@ -1068,10 +1085,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
     else
     {
       m_videobuffer.videoBuffer = nullptr;
-      if (retgp == -1 || ((m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)!=0 && ++m_noPictureLoop == 10))  // EOS
+      if (retgp == -1 || m_state == MEDIACODEC_STATE_WAIT_ENDOFSTREAM) // EOS
       {
-        m_state = MEDIACODEC_STATE_ENDOFSTREAM;
-        m_noPictureLoop = 0;
+        m_state = (retgp == -2) ? MEDIACODEC_STATE_ERROR : MEDIACODEC_STATE_ENDOFSTREAM;
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::GetPicture VC_EOF");
         return VC_EOF;
       }
     }
@@ -1099,6 +1116,11 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
       CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::GetPicture VC_BUFFER");
       return VC_BUFFER;
     }
+  }
+  else if (m_state == MEDIACODEC_STATE_RUNNING)
+  {
+    SignalEndOfStream();
+    m_state = MEDIACODEC_STATE_WAIT_ENDOFSTREAM;
   }
   return VC_NONE;
 }
@@ -1129,7 +1151,7 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
 {
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: state: %d", __func__, m_state);
-  if (m_codec && (m_state == MEDIACODEC_STATE_RUNNING || m_state == MEDIACODEC_STATE_ENDOFSTREAM))
+  if (m_codec && (m_state == MEDIACODEC_STATE_RUNNING))
   {
     // Release all mediaodec output buffers to allow drain if we don't get inputbuffer early
     if (m_videoBufferPool)
@@ -1338,7 +1360,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 {
   int rtn = 0;
-  int64_t timeout_us = 10000;
+  int64_t timeout_us = (m_state == MEDIACODEC_STATE_WAIT_ENDOFSTREAM) ? 100000 : 10000;
   CJNIMediaCodecBufferInfo bufferInfo;
 
   ssize_t index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
@@ -1366,7 +1388,6 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 
     if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
     {
-      m_noPictureLoop = 0;
       m_codec->releaseOutputBuffer(index, false);
       if (xbmc_jnienv()->ExceptionCheck())
       {
