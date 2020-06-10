@@ -1552,7 +1552,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     {
       double bestRelevance = 0;
       double minRelevance = THRESHOLD;
-      if (scraper.GetAlbumCount() > 1) // score the matches
+      if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
       {
         //show dialog with all albums found
         if (pDialog)
