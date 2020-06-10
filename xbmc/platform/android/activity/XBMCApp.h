@@ -240,6 +240,7 @@ private:
   bool m_exiting;
   pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
+  static CCriticalSection m_activityResultMutex;
   static std::vector<androidPackage> m_applications;
   static std::vector<CActivityResultEvent*> m_activityResultEvents;
 

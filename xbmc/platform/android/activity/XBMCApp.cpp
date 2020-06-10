@@ -128,6 +128,7 @@ IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
+CCriticalSection CXBMCApp::m_activityResultMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
@@ -1166,6 +1167,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 
 void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
 {
+  CSingleLock lock(m_activityResultMutex);
   for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
   {
     if ((*it)->GetRequestCode() == requestCode)
@@ -1198,7 +1200,10 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
 {
   int ret = 0;
   CActivityResultEvent* event = new CActivityResultEvent(requestCode);
-  m_activityResultEvents.push_back(event);
+  {
+    CSingleLock lock(m_activityResultMutex);
+    m_activityResultEvents.push_back(event);
+  }
   startActivityForResult(intent, requestCode);
   if (event->Wait())
   {
