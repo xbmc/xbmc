@@ -3,12 +3,13 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=2.0.0
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+VERSION=17f882fbdbe7f739d1285f173781c1525a29a7fa
+# Github commit date of version hash
+COMMITDATE=2020-06-09
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-utils --disable-werror
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-utils --disable-examples
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
 
