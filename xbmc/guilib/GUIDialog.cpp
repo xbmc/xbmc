@@ -164,10 +164,6 @@ void CGUIDialog::UpdateVisibility()
 
 void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param /* = "" */)
 {
-  // Lock graphic context here as it is sometimes called from non rendering threads
-  // maybe we should have a critical section per window instead??
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-
   if (!CServiceBroker::GetGUI()->GetWindowManager().Initialized() ||
       (m_active && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
     return;
@@ -189,8 +185,6 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
   {
     if (!m_windowLoaded)
       Close(true);
-
-    lock.Leave();
 
     while (m_active)
     {
