@@ -17,7 +17,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #ifdef TARGET_DARWIN_EMBEDDED
-#include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/ios-common/DarwinEmbedUtils.h"
 #endif
 #ifdef TARGET_WINDOWS
 #include "platform/Environment.h"
@@ -304,8 +304,10 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
     CSpecialProtocol::SetXBMCPath(appPath);
 #if defined(TARGET_DARWIN_EMBEDDED)
     std::string appName = CCompileInfo::GetAppName();
-    CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
+    CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinEmbedUtils::GetAppRootFolder() + "/" +
+                                  appName);
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinEmbedUtils::GetAppRootFolder() +
+                                           "/" + appName + "/userdata");
 #else
     std::string appName = CCompileInfo::GetAppName();
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
@@ -316,7 +318,8 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
     StringUtils::ToLower(dotLowerAppName);
     // location for temp files
 #if defined(TARGET_DARWIN_EMBEDDED)
-    std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
+    std::string strTempPath = URIUtils::AddFileToFolder(
+        userHome, std::string(CDarwinEmbedUtils::GetAppRootFolder()) + "/" + appName + "/temp");
 #else
     std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
     XFILE::CDirectory::Create(strTempPath);
@@ -326,7 +329,7 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
 
     // xbmc.log file location
 #if defined(TARGET_DARWIN_EMBEDDED)
-    strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
+    strTempPath = userHome + "/" + std::string(CDarwinEmbedUtils::GetAppRootFolder());
 #else
     strTempPath = userHome + "/Library/Logs";
 #endif

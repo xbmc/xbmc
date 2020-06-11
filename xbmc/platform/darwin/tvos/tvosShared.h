@@ -11,6 +11,5 @@
 @interface tvosShared : NSObject
 + (NSString*)getSharedID;
 + (NSURL*)getSharedURL;
-+ (BOOL)isJailbroken;
 + (NSBundle*)mainAppBundle;
 @end

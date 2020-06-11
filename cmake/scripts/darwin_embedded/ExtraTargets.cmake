@@ -7,9 +7,11 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
   set(ENTITLEMENTS_OUT_PATH "${CMAKE_BINARY_DIR}/CMakeFiles/${TOPSHELF_EXTENSION_NAME}.dir/TopShelf.entitlements")
 
   set(SOURCES
-        ${TOPSHELF_DIR}/ServiceProvider.m
-        ${TOPSHELF_DIR}/../tvosShared.m)
+        ${TOPSHELF_DIR}/../../ios-common/DarwinEmbedUtils.mm
+        ${TOPSHELF_DIR}/ServiceProvider.mm
+        ${TOPSHELF_DIR}/../tvosShared.mm)
   set(HEADERS
+        ${TOPSHELF_DIR}/../../ios-common/DarwinEmbedUtils.h
         ${TOPSHELF_DIR}/ServiceProvider.h
         ${TOPSHELF_DIR}/../tvosShared.h)
   add_executable(${TOPSHELF_EXTENSION_NAME} MACOSX_BUNDLE ${SOURCES} ${HEADERS})

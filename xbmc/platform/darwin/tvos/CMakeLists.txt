@@ -3,7 +3,7 @@ set(SOURCES PreflightHandler.mm
             TVOSEAGLView.mm
             TVOSKeyboardView.mm
             TVOSSettingsHandler.mm
-            tvosShared.m
+            tvosShared.mm
             TVOSTopShelf.mm
             XBMCController.mm)
 
