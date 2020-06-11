@@ -40,7 +40,7 @@ void CEdl::Clear()
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
-  m_lastCutTime = 0;
+  m_lastCutTime = -1;
 }
 
 bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond)
