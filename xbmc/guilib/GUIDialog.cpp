@@ -162,11 +162,6 @@ void CGUIDialog::UpdateVisibility()
   }
 }
 
-void CGUIDialog::Open_Internal(const std::string &param /* = "" */)
-{
-  CGUIDialog::Open_Internal(m_modalityType != DialogModalityType::MODELESS, param);
-}
-
 void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param /* = "" */)
 {
   // Lock graphic context here as it is sometimes called from non rendering threads
@@ -207,14 +202,21 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
 
 void CGUIDialog::Open(const std::string &param /* = "" */)
 {
+  CGUIDialog::Open(m_modalityType != DialogModalityType::MODELESS, param);
+}
+
+
+void CGUIDialog::Open(bool bProcessRenderLoop, const std::string& param /* = "" */)
+{
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(CServiceBroker::GetWinSystem()->GetGfxContext());
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this), param);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, bProcessRenderLoop,
+                                                 static_cast<void*>(this), param);
   }
   else
-    Open_Internal(param);
+    Open_Internal(bProcessRenderLoop, param);
 }
 
 void CGUIDialog::Render()

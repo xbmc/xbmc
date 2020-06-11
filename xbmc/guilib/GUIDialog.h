@@ -45,6 +45,7 @@ public:
   void Render() override;
 
   void Open(const std::string &param = "");
+  void Open(bool bProcessRenderLoop, const std::string& param = "");
 
   bool OnBack(int actionID) override;
 
@@ -67,7 +68,6 @@ protected:
   using CGUIWindow::UpdateVisibility;
   virtual void UpdateVisibility();
 
-  virtual void Open_Internal(const std::string &param = "");
   virtual void Open_Internal(bool bProcessRenderLoop, const std::string &param = "");
   void OnDeinitWindow(int nextWindowID) override;
 

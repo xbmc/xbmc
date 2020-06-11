@@ -70,7 +70,7 @@ void CGUIDialogProgress::Open(const std::string &param /* = "" */)
     ShowProgressBar(true);
   }
 
-  CGUIDialog::Open_Internal(false, param);
+  CGUIDialog::Open(false, param);
 
   while (m_active && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
   {

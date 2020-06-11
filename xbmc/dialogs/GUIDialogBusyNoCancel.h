@@ -19,7 +19,7 @@ public:
   void Render() override;
 
 protected:
-  void Open_Internal(const std::string &param = "") override;
+  void Open_Internal(bool bProcessRenderLoop, const std::string& param = "") override;
   bool m_bLastVisible = false;
   float m_progress;
 };

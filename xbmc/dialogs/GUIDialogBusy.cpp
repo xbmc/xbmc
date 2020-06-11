@@ -109,7 +109,7 @@ CGUIDialogBusy::CGUIDialogBusy(void)
 
 CGUIDialogBusy::~CGUIDialogBusy(void) = default;
 
-void CGUIDialogBusy::Open_Internal(const std::string &param /* = "" */)
+void CGUIDialogBusy::Open_Internal(bool bProcessRenderLoop, const std::string& param /* = "" */)
 {
   m_bCanceled = false;
   m_bLastVisible = true;
