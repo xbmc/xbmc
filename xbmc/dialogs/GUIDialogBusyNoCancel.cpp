@@ -26,7 +26,8 @@ CGUIDialogBusyNoCancel::CGUIDialogBusyNoCancel(void)
 
 CGUIDialogBusyNoCancel::~CGUIDialogBusyNoCancel(void) = default;
 
-void CGUIDialogBusyNoCancel::Open_Internal(const std::string &param /* = "" */)
+void CGUIDialogBusyNoCancel::Open_Internal(bool bProcessRenderLoop,
+                                           const std::string& param /* = "" */)
 {
   m_bLastVisible = true;
   m_progress = -1;

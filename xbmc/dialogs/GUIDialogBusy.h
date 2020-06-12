@@ -47,7 +47,7 @@ public:
    */
   static bool WaitOnEvent(CEvent &event, unsigned int displaytime = 100, bool allowCancel = true);
 protected:
-  void Open_Internal(const std::string &param = "") override;
+  void Open_Internal(bool bProcessRenderLoop, const std::string& param = "") override;
   bool m_bCanceled;
   bool m_bLastVisible = false;
   float m_progress; ///< current progress

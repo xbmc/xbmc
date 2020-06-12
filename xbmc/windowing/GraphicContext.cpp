@@ -711,8 +711,6 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
 
 void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling)
 {
-  CSingleLock lock(*this);
-
   m_windowResolution = res;
   if (needsScaling && m_Resolution != RES_INVALID)
     GetGUIScaling(res, m_guiTransform.scaleX, m_guiTransform.scaleY, &m_guiTransform.matrix);
