@@ -39,6 +39,11 @@ namespace ADDON
     const AddonDllPtr& Addon() const { return m_addon; }
     BinaryAddonBasePtr GetAddonBase() const { return m_addonBase; };
 
+    virtual void OnPreInstall() {}
+    virtual void OnPostInstall(bool update, bool modal) {}
+    virtual void OnPreUnInstall() {}
+    virtual void OnPostUnInstall() {}
+
   private:
     ADDON_TYPE m_type;
     std::string m_instanceId;

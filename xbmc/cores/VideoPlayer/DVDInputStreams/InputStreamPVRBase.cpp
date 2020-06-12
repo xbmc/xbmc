@@ -263,7 +263,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
     std::shared_ptr<CDemuxStream> dStream = GetStreamInternal(stream.iPID);
 
-    if (stream.iCodecType == XBMC_CODEC_TYPE_AUDIO)
+    if (stream.iCodecType == PVR_CODEC_TYPE_AUDIO)
     {
       std::shared_ptr<CDemuxStreamAudio> streamAudio;
 
@@ -280,7 +280,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
       dStream = streamAudio;
     }
-    else if (stream.iCodecType == XBMC_CODEC_TYPE_VIDEO)
+    else if (stream.iCodecType == PVR_CODEC_TYPE_VIDEO)
     {
       std::shared_ptr<CDemuxStreamVideo> streamVideo;
 
@@ -308,7 +308,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
       dStream = streamTeletext;
     }
-    else if (stream.iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
+    else if (stream.iCodecType == PVR_CODEC_TYPE_SUBTITLE)
     {
       std::shared_ptr<CDemuxStreamSubtitle> streamSubtitle;
 
@@ -328,8 +328,9 @@ void CInputStreamPVRBase::UpdateStreamMap()
       }
       dStream = streamSubtitle;
     }
-    else if (stream.iCodecType == XBMC_CODEC_TYPE_RDS &&
-             CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.enableradiords"))
+    else if (stream.iCodecType == PVR_CODEC_TYPE_RDS &&
+             CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 "pvrplayback.enableradiords"))
     {
       std::shared_ptr<CDemuxStreamRadioRDS> streamRadioRDS;
 

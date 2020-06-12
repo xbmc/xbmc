@@ -53,17 +53,22 @@ namespace ADDON
 
     bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const;
 
-    AddonDllPtr GetAddon(const IAddonInstanceHandler* handler);
-    void ReleaseAddon(const IAddonInstanceHandler* handler);
+    AddonDllPtr GetAddon(IAddonInstanceHandler* handler);
+    void ReleaseAddon(IAddonInstanceHandler* handler);
 
     AddonDllPtr GetActiveAddon();
+
+    void OnPreInstall();
+    void OnPostInstall(bool update, bool modal);
+    void OnPreUnInstall();
+    void OnPostUnInstall();
 
   private:
     AddonInfoPtr m_addonInfo;
 
     CCriticalSection m_critSection;
     AddonDllPtr m_activeAddon;
-    std::unordered_set<const IAddonInstanceHandler*> m_activeAddonHandlers;
+    std::unordered_set<IAddonInstanceHandler*> m_activeAddonHandlers;
   };
 
 } /* namespace ADDON */

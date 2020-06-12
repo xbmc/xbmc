@@ -43,8 +43,11 @@ void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type,
 using namespace ADDON;
 using namespace kodi::addon;
 
-CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase, IVideoPlayer* player, const CFileItem& fileitem)
-  : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonBase),
+CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase,
+                                     IVideoPlayer* player,
+                                     const CFileItem& fileitem,
+                                     const std::string& instanceId)
+  : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonBase, nullptr, instanceId),
     CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem),
     m_player(player)
 {

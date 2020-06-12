@@ -13,6 +13,7 @@
 #include "TextureDatabase.h"
 #include "Util.h"
 #include "VideoLibrary.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h" // EPG_TAG_INVALID_UID
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "music/MusicThumbLoader.h"

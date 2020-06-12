@@ -38,8 +38,6 @@
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.2.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
-                                                      "xbmc_addon_dll.h" \
-                                                      "libXBMC_addon.h" \
                                                       "addon-instance/" \
                                                       "c-api/addon_base.h"
 
@@ -51,7 +49,7 @@
 #define ADDON_GLOBAL_VERSION_GUI                      "5.14.0"
 #define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.14.0"
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
-#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h" \
+#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "ActionIDs.h" \
                                                       "gui/"
 
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.1.0"
@@ -99,7 +97,7 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.3.1"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.3.2"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "2.3.1"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "addon-instance/Inputstream.h"
@@ -110,12 +108,30 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
                                                       "addon-instance/PeripheralUtils.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "6.5.2"
-#define ADDON_INSTANCE_VERSION_PVR_MIN                "6.5.1"
+#define ADDON_INSTANCE_VERSION_PVR                    "7.0.0"
+#define ADDON_INSTANCE_VERSION_PVR_MIN                "7.0.0"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
-#define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_dll.h" \
-                                                      "xbmc_pvr_types.h" \
-                                                      "libXBMC_pvr.h"
+#define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "c-api/addon-instance/pvr.h" \
+                                                      "c-api/addon-instance/pvr/pvr_channel_groups.h" \
+                                                      "c-api/addon-instance/pvr/pvr_channels.h" \
+                                                      "c-api/addon-instance/pvr/pvr_defines.h" \
+                                                      "c-api/addon-instance/pvr/pvr_edl.h" \
+                                                      "c-api/addon-instance/pvr/pvr_epg.h" \
+                                                      "c-api/addon-instance/pvr/pvr_general.h" \
+                                                      "c-api/addon-instance/pvr/pvr_menu_hook.h" \
+                                                      "c-api/addon-instance/pvr/pvr_recordings.h" \
+                                                      "c-api/addon-instance/pvr/pvr_stream.h" \
+                                                      "c-api/addon-instance/pvr/pvr_timers.h" \
+                                                      "addon-instance/PVR.h" \
+                                                      "addon-instance/pvr/ChannelGroups.h" \
+                                                      "addon-instance/pvr/Channels.h" \
+                                                      "addon-instance/pvr/EDL.h" \
+                                                      "addon-instance/pvr/EPG.h" \
+                                                      "addon-instance/pvr/General.h" \
+                                                      "addon-instance/pvr/MenuHook.h" \
+                                                      "addon-instance/pvr/Recordings.h" \
+                                                      "addon-instance/pvr/Stream.h" \
+                                                      "addon-instance/pvr/Timers.h"
 
 #define ADDON_INSTANCE_VERSION_SCREENSAVER            "2.0.1"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "2.0.1"

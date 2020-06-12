@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h"
 #include "pvr/channels/PVRChannelNumber.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
@@ -252,16 +252,16 @@ namespace PVR
     std::string ClientChannelName() const;
 
     /*!
-     * @brief The stream input type
+     * @brief The stream input mime type
      *
      * The stream input type
      * If it is empty, ffmpeg will try to scan the stream to find the right input format.
-     * See "xbmc/cores/VideoPlayer/Codecs/ffmpeg/libavformat/allformats.c" for a
+     * See https://www.iana.org/assignments/media-types/media-types.xhtml for a
      * list of the input formats.
      *
      * @return The stream input type
      */
-    std::string InputFormat() const;
+    std::string MimeType() const;
 
     /*!
      * @brief The path in the XBMC VFS to be used by PVRManager to open and read the stream.
@@ -488,7 +488,8 @@ namespace PVR
     int m_iClientId = -1; /*!< the identifier of the client that serves this channel */
     CPVRChannelNumber m_clientChannelNumber; /*!< the channel number on the client for the currently selected channel group */
     std::string m_strClientChannelName; /*!< the name of this channel on the client */
-    std::string m_strInputFormat; /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
+    std::string
+        m_strMimeType; /*!< the stream input type based mime type, see @ref https://www.iana.org/assignments/media-types/media-types.xhtml#video */
     std::string m_strFileNameAndPath; /*!< the filename to be used by PVRManager to open and read the stream */
     int m_iClientEncryptionSystem = -1; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
     std::string m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */

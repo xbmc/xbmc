@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "interfaces/IAnnouncer.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActionListener.h"

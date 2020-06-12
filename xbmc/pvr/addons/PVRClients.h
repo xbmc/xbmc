@@ -9,7 +9,7 @@
 #pragma once
 
 #include "addons/AddonManager.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "threads/CriticalSection.h"
 
 #include <functional>
@@ -48,8 +48,8 @@ namespace PVR
     int numRecordings = 0;
     int numDeletedRecordings = 0;
     int numChannels = 0;
-    long long diskUsed = 0;
-    long long diskTotal = 0;
+    uint64_t diskUsed = 0;
+    uint64_t diskTotal = 0;
   };
 
   class CPVRClients : public ADDON::IAddonMgrCallback
@@ -100,14 +100,6 @@ namespace PVR
      * @param event The addon event.
      */
     void OnAddonEvent(const ADDON::AddonEvent& event);
-
-    /*!
-     * @brief Get a client given its ID.
-     * @param strId The ID of the client.
-     * @param addon On success, filled with the client matching the given ID, null otherwise.
-     * @return True if the client was found, false otherwise.
-     */
-    bool GetClient(const std::string& strId, ADDON::AddonPtr& addon) const;
 
     /*!
      * @brief Get a client's numeric ID given its string ID.
@@ -344,7 +336,7 @@ namespace PVR
      * @param id The addon id.
      * @return True if the the addon represents a created client, false otherwise.
      */
-    bool IsCreatedClient(const std::string& id);
+    bool IsCreatedClient(const std::string& id) const;
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.

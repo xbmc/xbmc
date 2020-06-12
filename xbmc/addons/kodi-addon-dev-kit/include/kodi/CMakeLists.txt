@@ -5,13 +5,7 @@ set(HEADERS AddonBase.h
             Network.h
             StreamCodec.h
             StreamCrypto.h
-            libKODI_guilib.h
-            libXBMC_addon.h
-            libXBMC_pvr.h
-            versions.h
-            xbmc_addon_dll.h
-            xbmc_pvr_dll.h
-            xbmc_pvr_types.h)
+            versions.h)
 
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND SOURCES platform/android/System.h)

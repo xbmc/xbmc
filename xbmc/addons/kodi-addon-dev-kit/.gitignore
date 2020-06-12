@@ -29,3 +29,5 @@
 
 /docs
 /build
+
+include/groups.dox

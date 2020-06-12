@@ -8,7 +8,7 @@
 
 #include "PVRStreamProperties.h"
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "utils/StringUtils.h"
 
 using namespace PVR;

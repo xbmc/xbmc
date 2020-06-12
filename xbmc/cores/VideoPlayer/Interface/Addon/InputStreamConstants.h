@@ -17,6 +17,21 @@
 #define STREAM_PROPERTY_INPUTSTREAM "inputstream"
 
 /*!
+ * @brief Identification string for an input stream.
+ *
+ * This value can be used in addition to @ref STREAM_PROPERTY_INPUTSTREAM. It is
+ * used to provide the respective inpustream addon with additional
+ * identification.
+ *
+ * The difference between this and other stream properties is that it is also
+ * passed in the associated @ref kodi::addon::CAddonBase::CreateInstance call.
+ *
+ * This makes it possible to select different processing classes within the
+ * associated add-on.
+ */
+#define STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID "inputstream-instance-id"
+
+/*!
  * @brief "true" to denote that the stream that should be played is a
  * realtime stream. Any other value indicates that this is not a realtime
  * stream.

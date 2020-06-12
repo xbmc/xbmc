@@ -43,7 +43,10 @@ class CInputStreamAddon
   , public CDVDInputStream::IChapter
 {
 public:
-  CInputStreamAddon(ADDON::BinaryAddonBasePtr& addonBase, IVideoPlayer* player, const CFileItem& fileitem);
+  CInputStreamAddon(ADDON::BinaryAddonBasePtr& addonBase,
+                    IVideoPlayer* player,
+                    const CFileItem& fileitem,
+                    const std::string& instanceId);
   ~CInputStreamAddon() override;
 
   static bool Supports(ADDON::BinaryAddonBasePtr& addonBase, const CFileItem& fileitem);

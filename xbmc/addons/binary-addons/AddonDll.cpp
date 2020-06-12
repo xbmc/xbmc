@@ -151,66 +151,6 @@ bool CAddonDll::LoadDll()
   return true;
 }
 
-ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
-{
-  /* ensure that a previous instance is destroyed */
-  Destroy();
-
-  if (!funcTable)
-    return ADDON_STATUS_PERMANENT_FAILURE;
-
-  CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
-  m_initialized = false;
-
-  if (!LoadDll())
-    return ADDON_STATUS_PERMANENT_FAILURE;
-
-  /* Check requested instance version on add-on */
-  if (!CheckAPIVersion(type))
-    return ADDON_STATUS_PERMANENT_FAILURE;
-
-  /* Check versions about global parts on add-on (parts used on all types) */
-  for (unsigned int id = ADDON_GLOBAL_MAIN; id <= ADDON_GLOBAL_MAX; ++id)
-  {
-    if (!CheckAPIVersion(id))
-      return ADDON_STATUS_PERMANENT_FAILURE;
-  }
-
-  /* Load add-on function table (written by add-on itself) */
-  m_pDll->GetAddon(funcTable);
-
-  /* Allocate the helper function class to allow crosstalk over
-     helper libraries */
-  m_pHelpers = new CAddonInterfaces(this);
-
-  /* Call Create to make connections, initializing data or whatever is
-     needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(),
-                                       kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), info);
-
-  if (status == ADDON_STATUS_OK)
-  {
-    m_initialized = true;
-  }
-  else if (status == ADDON_STATUS_NEED_SETTINGS)
-  {
-    status = TransferSettings();
-    if (status == ADDON_STATUS_OK)
-      m_initialized = true;
-    else
-      new CAddonStatusHandler(ID(), status, "", false);
-  }
-  else
-  { // Addon failed initialization
-    CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-
-    std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
-    HELPERS::ShowOKDialogLines(CVariant{ heading }, CVariant{ 24070 }, CVariant{ 24071 });
-  }
-
-  return status;
-}
-
 ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 {
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
@@ -272,8 +212,6 @@ void CAddonDll::Destroy()
 
   Interface_Base::DeInitInterface(m_interface);
 
-  delete m_pHelpers;
-  m_pHelpers = nullptr;
   if (m_pDll)
   {
     delete m_pDll;
@@ -335,6 +273,30 @@ AddonPtr CAddonDll::GetRunningInstance() const
     return CServiceBroker::GetBinaryAddonManager().GetRunningAddon(ID());
 
   return AddonPtr();
+}
+
+void CAddonDll::OnPreInstall()
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPreInstall();
+}
+
+void CAddonDll::OnPostInstall(bool update, bool modal)
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPostInstall(update, modal);
+}
+
+void CAddonDll::OnPreUnInstall()
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPreUnInstall();
+}
+
+void CAddonDll::OnPostUnInstall()
+{
+  if (m_binaryAddonBase)
+    m_binaryAddonBase->OnPostUnInstall();
 }
 
 bool CAddonDll::DllLoaded(void) const

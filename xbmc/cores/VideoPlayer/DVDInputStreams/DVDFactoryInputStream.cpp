@@ -56,7 +56,13 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   for (auto addonInfo : addonInfos)
   {
     if (CInputStreamAddon::Supports(addonInfo, fileitem))
-      return std::shared_ptr<CInputStreamAddon>(new CInputStreamAddon(addonInfo, pPlayer, fileitem));
+    {
+      // Used to inform input stream about special identifier;
+      const std::string instanceId =
+          fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID).asString();
+
+      return std::make_shared<CInputStreamAddon>(addonInfo, pPlayer, fileitem, instanceId);
+    }
   }
 
   if (fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM).asString() ==
