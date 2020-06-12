@@ -479,7 +479,6 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
   if (setting == NULL)
     return false;
 
-  obj["value"] = setting->GetValue();
   obj["default"] = setting->GetDefault();
 
   switch (setting->GetOptionsType())
@@ -534,6 +533,10 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
       break;
   }
 
+  // this must be done after potentially calling CSettingInt::UpdateDynamicOptions() because it can
+  // change the value of the setting
+  obj["value"] = setting->GetValue();
+
   return true;
 }
 
@@ -557,7 +560,6 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
   if (setting == NULL)
     return false;
 
-  obj["value"] = setting->GetValue();
   obj["default"] = setting->GetDefault();
 
   obj["allowempty"] = setting->AllowEmpty();
@@ -610,6 +612,10 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
     default:
       break;
   }
+
+  // this must be done after potentially calling CSettingString::UpdateDynamicOptions() because it
+  // can change the value of the setting
+  obj["value"] = setting->GetValue();
 
   std::shared_ptr<const ISettingControl> control = setting->GetControl();
   if (control->GetFormat() == "path")

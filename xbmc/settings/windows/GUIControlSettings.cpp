@@ -101,10 +101,7 @@ static bool GetIntegerOptions(SettingConstPtr setting,
 {
   std::shared_ptr<const CSettingInt> pSettingInt = NULL;
   if (setting->GetType() == SettingType::Integer)
-  {
     pSettingInt = std::static_pointer_cast<const CSettingInt>(setting);
-    selectedOptions.insert(pSettingInt->GetValue());
-  }
   else if (setting->GetType() == SettingType::List)
   {
     std::shared_ptr<const CSettingList> settingList =
@@ -113,16 +110,7 @@ static bool GetIntegerOptions(SettingConstPtr setting,
       return false;
 
     pSettingInt = std::static_pointer_cast<const CSettingInt>(settingList->GetDefinition());
-    std::vector<CVariant> list = CSettingUtils::GetList(settingList);
-    for (const auto& itValue : list)
-    {
-      if (!itValue.isInteger())
-        return false;
-      selectedOptions.insert((int)itValue.asInteger());
-    }
   }
-  else
-    return false;
 
   switch (pSettingInt->GetOptionsType())
   {
@@ -194,6 +182,20 @@ static bool GetIntegerOptions(SettingConstPtr setting,
       break;
   }
 
+  // this must be done after potentially calling CSettingInt::UpdateDynamicOptions() because it can
+  // change the value of the setting
+  if (setting->GetType() == SettingType::Integer)
+    selectedOptions.insert(pSettingInt->GetValue());
+  else if (setting->GetType() == SettingType::List)
+  {
+    std::vector<CVariant> list =
+        CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting));
+    for (const auto& itValue : list)
+      selectedOptions.insert((int)itValue.asInteger());
+  }
+  else
+    return false;
+
   return true;
 }
 
@@ -205,10 +207,7 @@ static bool GetStringOptions(SettingConstPtr setting,
 {
   std::shared_ptr<const CSettingString> pSettingString = NULL;
   if (setting->GetType() == SettingType::String)
-  {
     pSettingString = std::static_pointer_cast<const CSettingString>(setting);
-    selectedOptions.insert(pSettingString->GetValue());
-  }
   else if (setting->GetType() == SettingType::List)
   {
     std::shared_ptr<const CSettingList> settingList =
@@ -217,16 +216,7 @@ static bool GetStringOptions(SettingConstPtr setting,
       return false;
 
     pSettingString = std::static_pointer_cast<const CSettingString>(settingList->GetDefinition());
-    std::vector<CVariant> list = CSettingUtils::GetList(settingList);
-    for (const auto& itValue : list)
-    {
-      if (!itValue.isString())
-        return false;
-      selectedOptions.insert(itValue.asString());
-    }
   }
-  else
-    return false;
 
   switch (pSettingString->GetOptionsType())
   {
@@ -279,6 +269,20 @@ static bool GetStringOptions(SettingConstPtr setting,
     default:
       break;
   }
+
+  // this must be done after potentially calling CSettingString::UpdateDynamicOptions() because it
+  // can change the value of the setting
+  if (setting->GetType() == SettingType::String)
+    selectedOptions.insert(pSettingString->GetValue());
+  else if (setting->GetType() == SettingType::List)
+  {
+    std::vector<CVariant> list =
+        CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting));
+    for (const auto& itValue : list)
+      selectedOptions.insert(itValue.asString());
+  }
+  else
+    return false;
 
   return true;
 }
