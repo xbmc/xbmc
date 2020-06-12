@@ -17,6 +17,7 @@
 
 class CFileItem;
 class CMediaSource;
+class CProfileManager;
 
 typedef std::vector<CMediaSource> VECSOURCES;
 
@@ -64,23 +65,29 @@ public:
   void LockSources(bool lock);
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources);
-  /*! \brief Tests if the user is allowed to access the path by looking up the matching Mediasource
-   \param strPath The folder path to access
-   \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
-   \return If access is granted, returns \e true
-   */
-  bool IsMediaPathUnlocked(const std::string& strPath, const std::string& strType);
+
+  void SetMediaSourcePath(const std::string& strMediaSourcePath)
+  {
+    m_strMediaSourcePath = strMediaSourcePath;
+  }
 
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   bool bMasterUser;
   int iMasterLockRetriesLeft;
-  std::string strMediasourcePath;
 
 private:
+  /*! \brief Helper function to test if the user is allowed to access the path
+   by looking up the matching Mediasource. Used internally by CheckMenuLock.
+   \param profileManager instance passed by ref. see CGUIPassword::CheckMenuLock
+   \param strType The type of share being accessed, e.g. "music", "video", etc.
+   \return If access is granted, returns \e true
+   */
+  bool IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& profileManager,
+                           const std::string& strType);
+
+  std::string m_strMediaSourcePath;
   int VerifyPassword(LockType btnType, const std::string& strPassword, const std::string& strHeading);
 };
 
 extern CGUIPassword g_passwordManager;
-
-

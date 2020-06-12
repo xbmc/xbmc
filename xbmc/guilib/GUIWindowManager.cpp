@@ -773,14 +773,18 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
 
   // make sure we check mediasources from home
   if (GetActiveWindow() == WINDOW_HOME)
-    g_passwordManager.strMediasourcePath = !params.empty() ? params[0] : "";
+  {
+    g_passwordManager.SetMediaSourcePath(!params.empty() ? params[0] : "");
+  }
   else
-    g_passwordManager.strMediasourcePath = "";
+  {
+    g_passwordManager.SetMediaSourcePath("");
+  }
 
   if (!g_passwordManager.CheckMenuLock(iWindowID))
   {
     CLog::Log(LOGERROR,
-              "MasterCode or Mediasource-code is wrong: Window with id {} will not be loaded! "
+              "MasterCode or MediaSource-code is wrong: Window with id {} will not be loaded! "
               "Enter a correct code!",
               iWindowID);
     if (GetActiveWindow() == WINDOW_INVALID && iWindowID != WINDOW_HOME)

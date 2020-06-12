@@ -29,7 +29,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
 #include <utility>
@@ -445,13 +444,13 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       break;
     case WINDOW_MUSIC_NAV:      // Music
       bCheckPW = profileManager->GetCurrentProfile().musicLocked();
-      if (!bCheckPW && strMediasourcePath != "") // check mediasource by path
-        return g_passwordManager.IsMediaPathUnlocked(strMediasourcePath, "music");
+      if (!bCheckPW && !m_strMediaSourcePath.empty()) // check mediasource by path
+        return g_passwordManager.IsMediaPathUnlocked(profileManager, "music");
       break;
     case WINDOW_VIDEO_NAV:      // Video
       bCheckPW = profileManager->GetCurrentProfile().videoLocked();
-      if (!bCheckPW && strMediasourcePath != "") // check mediasource by path
-        return g_passwordManager.IsMediaPathUnlocked(strMediasourcePath, "video");
+      if (!bCheckPW && !m_strMediaSourcePath.empty()) // check mediasource by path
+        return g_passwordManager.IsMediaPathUnlocked(profileManager, "video");
       break;
     case WINDOW_PICTURES:       // Pictures
       bCheckPW = profileManager->GetCurrentProfile().picturesLocked();
@@ -549,30 +548,25 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES
   return false;
 }
 
-bool CGUIPassword::IsMediaPathUnlocked(const std::string& strPath, const std::string& strType)
+bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& profileManager,
+                                       const std::string& strType)
 {
-  if (StringUtils::StartsWithNoCase(strPath, "root") ||
-      StringUtils::StartsWithNoCase(strPath, "library://"))
+  if (!StringUtils::StartsWithNoCase(m_strMediaSourcePath, "root") &&
+      !StringUtils::StartsWithNoCase(m_strMediaSourcePath, "library://"))
   {
-    // no mediasource-lookup needed
-    CLog::Log(LOGDEBUG, "CGUIPassword::IsMediaPathUnlocked - entering from {}", strPath);
-    return true;
+    if (!g_passwordManager.bMasterUser &&
+        profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    {
+      VECSOURCES& vecSources = *CMediaSourceSettings::GetInstance().GetSources(strType);
+      bool bName = false;
+      int iIndex = CUtil::GetMatchingSource(m_strMediaSourcePath, vecSources, bName);
+      if (iIndex > -1 && iIndex < static_cast<int>(vecSources.size()))
+      {
+        return g_passwordManager.IsItemUnlocked(&vecSources[iIndex], strType);
+      }
+    }
   }
 
-  const std::shared_ptr<CProfileManager> profileManager =
-      CServiceBroker::GetSettingsComponent()->GetProfileManager();
-  if (g_passwordManager.bMasterUser ||
-      profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
-    return true;
-
-  VECSOURCES& vecSources = *CMediaSourceSettings::GetInstance().GetSources(strType);
-  bool bName = false;
-  int iIndex = CUtil::GetMatchingSource(strPath, vecSources, bName);
-  if (iIndex > -1 && iIndex < static_cast<int>(vecSources.size()))
-    return g_passwordManager.IsItemUnlocked(&vecSources[iIndex], strType);
-
-  // need to add a missing filter (root/library.. etc.)
-  CLog::Log(LOGERROR, "CGUIPassword::IsMediaPathUnlocked - missing filter: {}", strPath);
   return true;
 }
 
