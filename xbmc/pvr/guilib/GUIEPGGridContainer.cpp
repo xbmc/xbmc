@@ -1862,6 +1862,8 @@ void CGUIEPGGridContainer::UpdateLayout()
       oldRulerLayout == m_rulerLayout && oldRulerDateLayout == m_rulerDateLayout)
     return; // nothing has changed, so don't update stuff
 
+  CSingleLock lock(m_critSection);
+
   m_channelHeight = m_channelLayout->Size(VERTICAL);
   m_channelWidth = m_channelLayout->Size(HORIZONTAL);
 
