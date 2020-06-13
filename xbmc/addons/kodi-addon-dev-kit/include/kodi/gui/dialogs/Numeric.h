@@ -50,11 +50,13 @@ namespace dialogs
     ///                                false if unsuccessful display, no user
     ///                                input, or canceled editing.
     ///
-    inline bool ShowAndVerifyNewPassword(std::string& newPassword)
+    inline bool ATTRIBUTE_HIDDEN ShowAndVerifyNewPassword(std::string& newPassword)
     {
       using namespace ::kodi::addon;
       char* pw = nullptr;
-      bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_new_password(CAddonBase::m_interface->toKodi->kodiBase, &pw);
+      bool ret =
+          CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_new_password(
+              CAddonBase::m_interface->toKodi->kodiBase, &pw);
       if (pw != nullptr)
       {
         newPassword = pw;
@@ -131,7 +133,9 @@ namespace dialogs
     /// }
     /// ~~~~~~~~~~~~~
     ///
-    inline int ShowAndVerifyPassword(const std::string& password, const std::string& heading, int retries)
+    inline int ATTRIBUTE_HIDDEN ShowAndVerifyPassword(const std::string& password,
+                                                      const std::string& heading,
+                                                      int retries)
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_password(CAddonBase::m_interface->toKodi->kodiBase,
@@ -152,7 +156,9 @@ namespace dialogs
     ///                                 input. false if unsuccessful display, no
     ///                                 user input, or canceled editing.
     ///
-    inline bool ShowAndVerifyInput(std::string& toVerify, const std::string& heading, bool verifyInput)
+    inline bool ATTRIBUTE_HIDDEN ShowAndVerifyInput(std::string& toVerify,
+                                                    const std::string& heading,
+                                                    bool verifyInput)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -199,7 +205,7 @@ namespace dialogs
     /// printf("Selected time it's %s and was on Dialog %s\n", buffer, bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowAndGetTime(tm& time, const std::string& heading)
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetTime(tm& time, const std::string& heading)
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_time(CAddonBase::m_interface->toKodi->kodiBase, &time, heading.c_str());
@@ -238,7 +244,7 @@ namespace dialogs
     /// printf("Selected date it's %s and was on Dialog %s\n", buffer, bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowAndGetDate(tm& date, const std::string& heading)
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetDate(tm& date, const std::string& heading)
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_date(CAddonBase::m_interface->toKodi->kodiBase, &date, heading.c_str());
@@ -258,7 +264,8 @@ namespace dialogs
     ///                                 display, no user input, or canceled
     ///                                 editing.
     ///
-    inline bool ShowAndGetIPAddress(std::string& ipAddress, const std::string& heading)
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetIPAddress(std::string& ipAddress,
+                                                     const std::string& heading)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -304,7 +311,9 @@ namespace dialogs
     ///                  strtoull(number.c_str(), nullptr, 0), bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowAndGetNumber(std::string& input, const std::string& heading, unsigned int autoCloseTimeoutMs = 0)
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetNumber(std::string& input,
+                                                  const std::string& heading,
+                                                  unsigned int autoCloseTimeoutMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -331,7 +340,7 @@ namespace dialogs
     ///                         if unsuccessful display, no user input, or
     ///                         canceled editing.
     ///
-    inline bool ShowAndGetSeconds(std::string& time, const std::string& heading)
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetSeconds(std::string& time, const std::string& heading)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;

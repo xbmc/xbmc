@@ -385,7 +385,7 @@ namespace kodi
 namespace addon
 {
 
-class CInstanceInputStream : public IAddonInstance
+class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
 {
 public:
   explicit CInstanceInputStream(KODI_HANDLE instance, const std::string& kodiVersion = "")

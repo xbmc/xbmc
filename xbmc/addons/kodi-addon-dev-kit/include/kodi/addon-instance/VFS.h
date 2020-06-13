@@ -547,7 +547,7 @@ namespace addon
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
 //----------------------------------------------------------------------------
-class CInstanceVFS : public IAddonInstance
+class ATTRIBUTE_HIDDEN CInstanceVFS : public IAddonInstance
 {
 public:
   //==========================================================================

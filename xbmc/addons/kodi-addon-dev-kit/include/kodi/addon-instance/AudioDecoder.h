@@ -191,7 +191,7 @@ namespace addon
 /// The destruction of the example class `CMyAudioDecoder` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class CInstanceAudioDecoder : public IAddonInstance
+class ATTRIBUTE_HIDDEN CInstanceAudioDecoder : public IAddonInstance
 {
 public:
   //==========================================================================

@@ -89,7 +89,7 @@ namespace tools
 /// ~~~~~~~~~~~~~
 ///
 ///@{
-class CDllHelper
+class ATTRIBUTE_HIDDEN CDllHelper
 {
 public:
   //============================================================================

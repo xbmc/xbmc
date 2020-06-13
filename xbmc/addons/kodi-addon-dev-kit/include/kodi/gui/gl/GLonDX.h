@@ -29,7 +29,7 @@ namespace gui
 namespace gl
 {
 
-class CGLonDX : public kodi::gui::IRenderHelper
+class ATTRIBUTE_HIDDEN CGLonDX : public kodi::gui::IRenderHelper
 {
 public:
   explicit CGLonDX() : m_pContext(reinterpret_cast<ID3D11DeviceContext*>(kodi::gui::GetHWContext())) {}

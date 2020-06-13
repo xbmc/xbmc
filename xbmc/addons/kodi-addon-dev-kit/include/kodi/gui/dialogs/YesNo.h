@@ -73,14 +73,16 @@ namespace dialogs
     ///          canceled ? "canceled" : "not canceled");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowAndGetInput(const std::string& heading, const std::string& text,
-                                bool& canceled, const std::string& noLabel = "",
-                                const std::string& yesLabel = "")
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
+                                                 const std::string& text,
+                                                 bool& canceled,
+                                                 const std::string& noLabel = "",
+                                                 const std::string& yesLabel = "")
     {
       using namespace ::kodi::addon;
-      return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_single_text(CAddonBase::m_interface->toKodi->kodiBase,
-                                                                                                    heading.c_str(), text.c_str(), &canceled,
-                                                                                                    noLabel.c_str(), yesLabel.c_str());
+      return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_single_text(
+          CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str(), &canceled,
+          noLabel.c_str(), yesLabel.c_str());
     }
     //--------------------------------------------------------------------------
 
@@ -115,9 +117,12 @@ namespace dialogs
     ///          ret ? "yes" : "no");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1,
-                                const std::string& line2, const std::string& noLabel = "",
-                                const std::string& yesLabel = "")
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
+                                                 const std::string& line0,
+                                                 const std::string& line1,
+                                                 const std::string& line2,
+                                                 const std::string& noLabel = "",
+                                                 const std::string& yesLabel = "")
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_line_text(CAddonBase::m_interface->toKodi->kodiBase,
@@ -161,9 +166,13 @@ namespace dialogs
     ///          canceled ? "canceled" : "not canceled");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1,
-                                const std::string& line2, bool& canceled, const std::string& noLabel = "",
-                                const std::string& yesLabel = "")
+    inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
+                                                 const std::string& line0,
+                                                 const std::string& line1,
+                                                 const std::string& line2,
+                                                 bool& canceled,
+                                                 const std::string& noLabel = "",
+                                                 const std::string& yesLabel = "")
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_line_button_text(CAddonBase::m_interface->toKodi->kodiBase,

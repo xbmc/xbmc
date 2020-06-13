@@ -143,7 +143,7 @@ namespace kodi
   namespace addon
   {
 
-    class CInstanceVideoCodec : public IAddonInstance
+    class ATTRIBUTE_HIDDEN CInstanceVideoCodec : public IAddonInstance
     {
     public:
       explicit CInstanceVideoCodec(KODI_HANDLE instance, const std::string& kodiVersion = "")
