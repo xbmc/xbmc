@@ -119,9 +119,10 @@ typedef struct kodi_version_t
 } kodi_version_t;
 //------------------------------------------------------------------------------
 
+namespace kodi
+{
+
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Returns the value of an addon property as a string
 ///
@@ -161,12 +162,9 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonInfo(const std::string& id)
   }
   return strReturn;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Opens this Add-Ons settings dialog.
 ///
@@ -187,12 +185,9 @@ inline bool ATTRIBUTE_HIDDEN OpenSettings()
 {
   return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->open_settings_dialog(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Returns an addon's localized 'unicode string'.
 ///
@@ -232,12 +227,9 @@ inline std::string ATTRIBUTE_HIDDEN GetLocalizedString(uint32_t labelId,
   }
   return retString;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Translate a string with an unknown encoding to UTF8.
 ///
@@ -274,12 +266,9 @@ inline bool ATTRIBUTE_HIDDEN UnknownToUTF8(const std::string& stringSrc,
   }
   return ret;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Returns the active language as a string.
 ///
@@ -316,12 +305,9 @@ inline std::string ATTRIBUTE_HIDDEN GetLanguage(LangFormats format = LANG_FMT_EN
   }
   return language;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Writes the C string pointed by format in the GUI. If format includes
 /// format specifiers (subsequences beginning with %), the additional arguments
@@ -407,12 +393,9 @@ inline void ATTRIBUTE_HIDDEN QueueFormattedNotification(QueueMsg type, const cha
   ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->queue_notification(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase,
                                                                            type, "", buffer, "", 5000, false, 1000);
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Queue a notification in the GUI.
 ///
@@ -469,12 +452,9 @@ inline void ATTRIBUTE_HIDDEN QueueNotification(QueueMsg type,
                                                                            type, header.c_str(), message.c_str(), imageFile.c_str(), displayTime,
                                                                            withSound, messageTime);
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Get the MD5 digest of the given text
 ///
@@ -501,12 +481,9 @@ inline std::string ATTRIBUTE_HIDDEN GetMD5(const std::string& text)
   free(md5ret);
   return md5;
 }
-} /* namespace kodi */
 //----------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief To get a temporary path for the addon
 ///
@@ -535,12 +512,9 @@ inline std::string ATTRIBUTE_HIDDEN GetTempAddonPath(const std::string& append =
   }
   return ret;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Returns your regions setting as a string for the specified id
 ///
@@ -577,12 +551,9 @@ inline std::string ATTRIBUTE_HIDDEN GetRegion(const std::string& id)
   }
   return strReturn;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Returns the amount of free memory in MByte (or as bytes) as an long
 /// integer
@@ -612,12 +583,9 @@ inline void ATTRIBUTE_HIDDEN GetFreeMem(long& free, long& total, bool asBytes = 
   AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   toKodi->kodi->get_free_mem(toKodi->kodiBase, &free, &total, asBytes);
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Returns the elapsed idle time in seconds as an integer
 ///
@@ -639,12 +607,9 @@ inline int ATTRIBUTE_HIDDEN GetGlobalIdleTime()
   AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   return toKodi->kodi->get_global_idle_time(toKodi->kodiBase);
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Get the currently used skin identification name from Kodi
 ///
@@ -679,11 +644,7 @@ inline std::string ATTRIBUTE_HIDDEN GetCurrentSkinId()
   }
   return strReturn;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
-
-namespace kodi
-{
 
 //==============================================================================
 /// @brief To check another addon is available and usable inside Kodi.
@@ -724,11 +685,7 @@ inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
 }
 //------------------------------------------------------------------------------
 
-} /* namespace kodi */
-
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief Get current Kodi informations and versions, returned data from the following
 /// <b><tt>kodi_version_t version; kodi::KodiVersion(version);</tt></b>
@@ -801,12 +758,9 @@ inline void ATTRIBUTE_HIDDEN KodiVersion(kodi_version_t& version)
     toKodi->free_string(toKodi->kodiBase, tag_revision);
   }
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief To get keyboard layout characters
 ///
@@ -872,12 +826,9 @@ inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
   }
   return ret;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
-namespace kodi {
-///
 /// \ingroup cpp_kodi
 /// @brief To change keyboard layout characters
 ///
@@ -924,5 +875,6 @@ inline bool ATTRIBUTE_HIDDEN ChangeKeyboardLayout(std::string& layout_name)
 
   return ret;
 }
-} /* namespace kodi */
 //------------------------------------------------------------------------------
+
+} /* namespace kodi */
