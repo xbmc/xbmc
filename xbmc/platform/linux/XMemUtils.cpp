@@ -167,10 +167,10 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
     fflush(procMeminfoFP);
   }
   lpBuffer->dwLength        = sizeof(MEMORYSTATUSEX);
-  lpBuffer->ullAvailPageFile = (info.freeswap * info.mem_unit);
-  lpBuffer->ullAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->ullAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->ullTotalPhys     = (info.totalram * info.mem_unit);
-  lpBuffer->ullTotalVirtual  = (info.totalram * info.mem_unit);
+  lpBuffer->ullAvailPageFile = (static_cast<uint64_t>(info.freeswap) * info.mem_unit);
+  lpBuffer->ullAvailPhys     = (static_cast<uint64_t>(info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->ullAvailVirtual  = (static_cast<uint64_t>(info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->ullTotalPhys     = (static_cast<uint64_t>(info.totalram) * info.mem_unit);
+  lpBuffer->ullTotalVirtual  = (static_cast<uint64_t>(info.totalram) * info.mem_unit);
 #endif
 }
