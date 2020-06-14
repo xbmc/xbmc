@@ -60,7 +60,7 @@ namespace gui
   /// @brief <b>Library definition values</b>
   ///
 
-  class CWindow : public CAddonGUIControlBase
+  class ATTRIBUTE_HIDDEN CWindow : public CAddonGUIControlBase
   {
   public:
     //==========================================================================

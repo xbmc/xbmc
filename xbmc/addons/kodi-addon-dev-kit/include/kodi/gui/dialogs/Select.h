@@ -104,16 +104,21 @@ namespace dialogs
     ///   fprintf(stderr, "Selected item is: %i\n", selected);
     /// ~~~~~~~~~~~~~
     ///
-    inline int Show(const std::string& heading, const std::vector<std::string>& entries, int selected = -1, unsigned int autoclose = 0)
+    inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
+                                     const std::vector<std::string>& entries,
+                                     int selected = -1,
+                                     unsigned int autoclose = 0)
     {
       using namespace ::kodi::addon;
       unsigned int size = static_cast<unsigned int>(entries.size());
-      const char** cEntries = (const char**)malloc(size*sizeof(const char**));
+      const char** cEntries = (const char**)malloc(size * sizeof(const char**));
       for (unsigned int i = 0; i < size; ++i)
       {
         cEntries[i] = entries[i].c_str();
       }
-      int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogSelect->open(CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size, selected, autoclose);
+      int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogSelect->open(
+          CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size, selected,
+          autoclose);
       free(cEntries);
       return ret;
     }
@@ -159,7 +164,10 @@ namespace dialogs
     ///   fprintf(stderr, "Selected item is: %i\n", selected);
     /// ~~~~~~~~~~~~~
     ///
-    inline int Show(const std::string& heading, std::vector<SSelectionEntry>& entries, int selected = -1, unsigned int autoclose = 0)
+    inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
+                                     std::vector<SSelectionEntry>& entries,
+                                     int selected = -1,
+                                     unsigned int autoclose = 0)
     {
       using namespace ::kodi::addon;
       unsigned int size = static_cast<unsigned int>(entries.size());
@@ -224,7 +232,9 @@ namespace dialogs
     /// }
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ShowMultiSelect(const std::string& heading, std::vector<SSelectionEntry>& entries, int autoclose = 0)
+    inline bool ATTRIBUTE_HIDDEN ShowMultiSelect(const std::string& heading,
+                                                 std::vector<SSelectionEntry>& entries,
+                                                 int autoclose = 0)
     {
       using namespace ::kodi::addon;
       unsigned int size = static_cast<unsigned int>(entries.size());

@@ -81,7 +81,7 @@ struct IRenderHelper;
 /// @note The asked type should match the type used on settings.xml.
 ///
 ///@{
-class CSettingValue
+class ATTRIBUTE_HIDDEN CSettingValue
 {
 public:
   explicit CSettingValue(const void* settingValue) : m_settingValue(settingValue) {}
@@ -148,7 +148,7 @@ namespace addon
  * @note This class is not need to know during add-on development thats why
  * commented with "*".
  */
-class IAddonInstance
+class ATTRIBUTE_HIDDEN IAddonInstance
 {
 public:
   explicit IAddonInstance(ADDON_TYPE type, const std::string& version)
@@ -567,7 +567,7 @@ private:
 /// @param[in] type The wanted type of @ref ADDON_TYPE to ask
 /// @return The version string about type in MAJOR.MINOR.PATCH style.
 ///
-inline std::string GetKodiTypeVersion(int type)
+inline std::string ATTRIBUTE_HIDDEN GetKodiTypeVersion(int type)
 {
   using namespace kodi::addon;
 
@@ -581,7 +581,7 @@ inline std::string GetKodiTypeVersion(int type)
 
 //==============================================================================
 ///
-inline std::string GetAddonPath(const std::string& append = "")
+inline std::string ATTRIBUTE_HIDDEN GetAddonPath(const std::string& append = "")
 {
   using namespace kodi::addon;
 
@@ -605,7 +605,7 @@ inline std::string GetAddonPath(const std::string& append = "")
 
 //==============================================================================
 ///
-inline std::string GetBaseUserPath(const std::string& append = "")
+inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = "")
 {
   using namespace kodi::addon;
 
@@ -629,7 +629,7 @@ inline std::string GetBaseUserPath(const std::string& append = "")
 
 //==============================================================================
 ///
-inline std::string GetLibPath()
+inline std::string ATTRIBUTE_HIDDEN GetLibPath()
 {
   using namespace kodi::addon;
 
@@ -660,7 +660,7 @@ inline std::string GetLibPath()
 ///
 /// ~~~~~~~~~~~~~
 ///
-inline void Log(const AddonLog loglevel, const char* format, ...)
+inline void ATTRIBUTE_HIDDEN Log(const AddonLog loglevel, const char* format, ...)
 {
   using namespace kodi::addon;
 
@@ -711,7 +711,8 @@ inline void Log(const AddonLog loglevel, const char* format, ...)
 ///   value = "my_default_if_setting_not_work";
 /// ~~~~~~~~~~~~~
 ///
-inline bool CheckSettingString(const std::string& settingName, std::string& settingValue)
+inline bool ATTRIBUTE_HIDDEN CheckSettingString(const std::string& settingName,
+                                                std::string& settingValue)
 {
   using namespace kodi::addon;
 
@@ -747,8 +748,8 @@ inline bool CheckSettingString(const std::string& settingName, std::string& sett
 /// std::string value = kodi::GetSettingString("my_string_value");
 /// ~~~~~~~~~~~~~
 ///
-inline std::string GetSettingString(const std::string& settingName,
-                                    const std::string& defaultValue = "")
+inline std::string ATTRIBUTE_HIDDEN GetSettingString(const std::string& settingName,
+                                                     const std::string& defaultValue = "")
 {
   std::string settingValue = defaultValue;
   CheckSettingString(settingName, settingValue);
@@ -775,7 +776,8 @@ inline std::string GetSettingString(const std::string& settingName,
 /// kodi::SetSettingString("my_string_value", value);
 /// ~~~~~~~~~~~~~
 ///
-inline void SetSettingString(const std::string& settingName, const std::string& settingValue)
+inline void ATTRIBUTE_HIDDEN SetSettingString(const std::string& settingName,
+                                              const std::string& settingValue)
 {
   using namespace kodi::addon;
 
@@ -807,7 +809,7 @@ inline void SetSettingString(const std::string& settingName, const std::string& 
 ///   value = 123; // My default of them
 /// ~~~~~~~~~~~~~
 ///
-inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
+inline bool ATTRIBUTE_HIDDEN CheckSettingInt(const std::string& settingName, int& settingValue)
 {
   using namespace kodi::addon;
 
@@ -835,7 +837,7 @@ inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
 /// int value = kodi::GetSettingInt("my_integer_value");
 /// ~~~~~~~~~~~~~
 ///
-inline int GetSettingInt(const std::string& settingName, int defaultValue = 0)
+inline int ATTRIBUTE_HIDDEN GetSettingInt(const std::string& settingName, int defaultValue = 0)
 {
   int settingValue = defaultValue;
   CheckSettingInt(settingName, settingValue);
@@ -862,7 +864,7 @@ inline int GetSettingInt(const std::string& settingName, int defaultValue = 0)
 /// kodi::SetSettingInt("my_integer_value", value);
 /// ~~~~~~~~~~~~~
 ///
-inline void SetSettingInt(const std::string& settingName, int settingValue)
+inline void ATTRIBUTE_HIDDEN SetSettingInt(const std::string& settingName, int settingValue)
 {
   using namespace kodi::addon;
 
@@ -894,7 +896,7 @@ inline void SetSettingInt(const std::string& settingName, int settingValue)
 ///   value = true; // My default of them
 /// ~~~~~~~~~~~~~
 ///
-inline bool CheckSettingBoolean(const std::string& settingName, bool& settingValue)
+inline bool ATTRIBUTE_HIDDEN CheckSettingBoolean(const std::string& settingName, bool& settingValue)
 {
   using namespace kodi::addon;
 
@@ -922,7 +924,8 @@ inline bool CheckSettingBoolean(const std::string& settingName, bool& settingVal
 /// bool value = kodi::GetSettingBoolean("my_boolean_value");
 /// ~~~~~~~~~~~~~
 ///
-inline bool GetSettingBoolean(const std::string& settingName, bool defaultValue = false)
+inline bool ATTRIBUTE_HIDDEN GetSettingBoolean(const std::string& settingName,
+                                               bool defaultValue = false)
 {
   bool settingValue = defaultValue;
   CheckSettingBoolean(settingName, settingValue);
@@ -949,7 +952,7 @@ inline bool GetSettingBoolean(const std::string& settingName, bool defaultValue 
 /// kodi::SetSettingBoolean("my_boolean_value", value);
 /// ~~~~~~~~~~~~~
 ///
-inline void SetSettingBoolean(const std::string& settingName, bool settingValue)
+inline void ATTRIBUTE_HIDDEN SetSettingBoolean(const std::string& settingName, bool settingValue)
 {
   using namespace kodi::addon;
 
@@ -981,7 +984,7 @@ inline void SetSettingBoolean(const std::string& settingName, bool settingValue)
 ///   value = 1.0f; // My default of them
 /// ~~~~~~~~~~~~~
 ///
-inline bool CheckSettingFloat(const std::string& settingName, float& settingValue)
+inline bool ATTRIBUTE_HIDDEN CheckSettingFloat(const std::string& settingName, float& settingValue)
 {
   using namespace kodi::addon;
 
@@ -1009,7 +1012,8 @@ inline bool CheckSettingFloat(const std::string& settingName, float& settingValu
 /// float value = kodi::GetSettingFloat("my_float_value");
 /// ~~~~~~~~~~~~~
 ///
-inline float GetSettingFloat(const std::string& settingName, float defaultValue = 0.0f)
+inline float ATTRIBUTE_HIDDEN GetSettingFloat(const std::string& settingName,
+                                              float defaultValue = 0.0f)
 {
   float settingValue = defaultValue;
   CheckSettingFloat(settingName, settingValue);
@@ -1036,7 +1040,7 @@ inline float GetSettingFloat(const std::string& settingName, float defaultValue 
 /// kodi::SetSettingFloat("my_float_value", value);
 /// ~~~~~~~~~~~~~
 ///
-inline void SetSettingFloat(const std::string& settingName, float settingValue)
+inline void ATTRIBUTE_HIDDEN SetSettingFloat(const std::string& settingName, float settingValue)
 {
   using namespace kodi::addon;
 
@@ -1077,7 +1081,8 @@ inline void SetSettingFloat(const std::string& settingName, float settingValue)
 /// ~~~~~~~~~~~~~
 ///
 template<typename enumType>
-inline bool CheckSettingEnum(const std::string& settingName, enumType& settingValue)
+inline bool ATTRIBUTE_HIDDEN CheckSettingEnum(const std::string& settingName,
+                                              enumType& settingValue)
 {
   using namespace kodi::addon;
 
@@ -1119,8 +1124,8 @@ inline bool CheckSettingEnum(const std::string& settingName, enumType& settingVa
 /// ~~~~~~~~~~~~~
 ///
 template<typename enumType>
-inline enumType GetSettingEnum(const std::string& settingName,
-                               enumType defaultValue = static_cast<enumType>(0))
+inline enumType ATTRIBUTE_HIDDEN GetSettingEnum(const std::string& settingName,
+                                                enumType defaultValue = static_cast<enumType>(0))
 {
   enumType settingValue = defaultValue;
   CheckSettingEnum(settingName, settingValue);
@@ -1157,7 +1162,7 @@ inline enumType GetSettingEnum(const std::string& settingName,
 /// ~~~~~~~~~~~~~
 ///
 template<typename enumType>
-inline void SetSettingEnum(const std::string& settingName, enumType settingValue)
+inline void ATTRIBUTE_HIDDEN SetSettingEnum(const std::string& settingName, enumType settingValue)
 {
   using namespace kodi::addon;
 
@@ -1171,7 +1176,7 @@ inline void SetSettingEnum(const std::string& settingName, enumType settingValue
 
 //============================================================================
 ///
-inline std::string TranslateAddonStatus(ADDON_STATUS status)
+inline std::string ATTRIBUTE_HIDDEN TranslateAddonStatus(ADDON_STATUS status)
 {
   switch (status)
   {

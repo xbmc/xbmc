@@ -14,7 +14,7 @@ namespace kodi
 {
 namespace gui
 {
-struct IRenderHelper
+struct ATTRIBUTE_HIDDEN IRenderHelper
 {
   virtual ~IRenderHelper() = default;
   virtual bool Init() = 0;
@@ -34,7 +34,7 @@ namespace kodi
 {
 namespace gui
 {
-struct CRenderHelperStub : public IRenderHelper
+struct ATTRIBUTE_HIDDEN CRenderHelperStub : public IRenderHelper
 {
   bool Init() override { return true; }
   void Begin() override { }
@@ -59,7 +59,7 @@ namespace gui
  *
  * Function defines here and not in CAddonBase because of a hen and egg problem.
  */
-inline std::shared_ptr<IRenderHelper> GetRenderHelper()
+inline std::shared_ptr<IRenderHelper> ATTRIBUTE_HIDDEN GetRenderHelper()
 {
   using namespace ::kodi::addon;
   if (static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper)

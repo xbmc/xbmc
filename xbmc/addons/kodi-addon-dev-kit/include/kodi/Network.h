@@ -36,7 +36,7 @@ namespace network
 /// @param[in] mac Network address of the host to wake.
 /// @return True if the magic packet was successfully sent, false otherwise.
 ///
-inline bool WakeOnLan(const std::string& mac)
+inline bool ATTRIBUTE_HIDDEN WakeOnLan(const std::string& mac)
 {
   using namespace ::kodi::addon;
 
@@ -63,7 +63,7 @@ inline bool WakeOnLan(const std::string& mac)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string GetIPAddress()
+inline std::string ATTRIBUTE_HIDDEN GetIPAddress()
 {
   using namespace ::kodi::addon;
 
@@ -97,7 +97,7 @@ inline std::string GetIPAddress()
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string GetHostname()
+inline std::string ATTRIBUTE_HIDDEN GetHostname()
 {
   using namespace ::kodi::addon;
 
@@ -132,7 +132,7 @@ inline std::string GetHostname()
 /// example output:
 ///   Kodi/19.0-ALPHA1 (X11; Linux x86_64) Ubuntu/20.04 App_Bitness/64 Version/19.0-ALPHA1-Git:20200522-0076d136d3-dirty
 ///
-inline std::string GetUserAgent()
+inline std::string ATTRIBUTE_HIDDEN GetUserAgent()
 {
   using namespace ::kodi::addon;
 
@@ -167,7 +167,7 @@ inline std::string GetUserAgent()
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool IsLocalHost(const std::string& hostname)
+inline bool ATTRIBUTE_HIDDEN IsLocalHost(const std::string& hostname)
 {
   using namespace ::kodi::addon;
 
@@ -184,7 +184,7 @@ inline bool IsLocalHost(const std::string& hostname)
 /// @param[in] offLineCheck Check if in private range, see https://en.wikipedia.org/wiki/Private_network
 /// @return True if host is on a LAN, false otherwise
 ///
-inline bool IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
+inline bool ATTRIBUTE_HIDDEN IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
 {
   using namespace kodi::addon;
 
@@ -218,7 +218,7 @@ inline bool IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
 /// ~~~~~~~~~~~~~
 /// For example, the string: François ,would be encoded as: Fran%C3%A7ois
 ///
-inline std::string URLEncode(const std::string& url)
+inline std::string ATTRIBUTE_HIDDEN URLEncode(const std::string& url)
 {
   using namespace ::kodi::addon;
 
@@ -260,7 +260,7 @@ inline std::string URLEncode(const std::string& url)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool DNSLookup(const std::string& hostName, std::string& ipAddress)
+inline bool ATTRIBUTE_HIDDEN DNSLookup(const std::string& hostName, std::string& ipAddress)
 {
   using namespace ::kodi::addon;
 

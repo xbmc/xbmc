@@ -52,11 +52,11 @@ namespace dialogs
     /// kodi::gui::dialogs::OK::ShowAndGetInput("Test dialog", "Hello World!\nI'm a call from add-on\n :) :D");
     /// ~~~~~~~~~~~~~
     ///
-    inline void ShowAndGetInput(const std::string& heading, const std::string& text)
+    inline void ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading, const std::string& text)
     {
       using namespace ::kodi::addon;
-      CAddonBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text(CAddonBase::m_interface->toKodi->kodiBase,
-                                                                                          heading.c_str(), text.c_str());
+      CAddonBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text(
+          CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
     }
     //--------------------------------------------------------------------------
 
@@ -80,7 +80,10 @@ namespace dialogs
     /// kodi::gui::dialogs::OK::ShowAndGetInput("Test dialog", "Hello World!", "I'm a call from add-on", " :) :D");
     /// ~~~~~~~~~~~~~
     ///
-    inline void ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2)
+    inline void ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
+                                                 const std::string& line0,
+                                                 const std::string& line1,
+                                                 const std::string& line2)
     {
       using namespace ::kodi::addon;
       CAddonBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_line_text(CAddonBase::m_interface->toKodi->kodiBase,

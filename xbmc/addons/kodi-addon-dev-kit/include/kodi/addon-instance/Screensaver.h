@@ -219,7 +219,7 @@ namespace addon
   /// Kodi's header. Manually deleting the add-on instance is not required.
   ///
   //----------------------------------------------------------------------------
-  class CInstanceScreensaver : public IAddonInstance
+  class ATTRIBUTE_HIDDEN CInstanceScreensaver : public IAddonInstance
   {
   public:
     //==========================================================================
