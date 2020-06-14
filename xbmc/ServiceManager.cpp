@@ -62,12 +62,6 @@ bool CServiceManager::InitForTesting()
     return false;
   }
 
-  if (!m_binaryAddonManager->Init())
-  {
-    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
-    return false;
-  }
-
   m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr));
 
   init_level = 1;
@@ -112,12 +106,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   if (!m_addonMgr->Init())
   {
     CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to start CAddonMgr", __FUNCTION__);
-    return false;
-  }
-
-  if (!m_binaryAddonManager->Init())
-  {
-    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
     return false;
   }
 

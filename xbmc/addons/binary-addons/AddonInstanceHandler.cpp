@@ -8,7 +8,6 @@
 
 #include "AddonInstanceHandler.h"
 
-#include "BinaryAddonBase.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

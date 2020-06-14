@@ -323,36 +323,6 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   return true;
 }
 
-bool CAddonMgr::GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList)
-{
-  CSingleLock lock(m_critSection);
-
-  for (auto addon : m_installedAddons)
-  {
-    BINARY_ADDON_LIST_ENTRY binaryAddon;
-    if (GetInstalledBinaryAddon(addon.first, binaryAddon))
-      binaryAddonList.push_back(std::move(binaryAddon));
-  }
-
-  return !binaryAddonList.empty();
-}
-
-bool CAddonMgr::GetInstalledBinaryAddon(const std::string& addonId, BINARY_ADDON_LIST_ENTRY& binaryAddon)
-{
-  bool ret = false;
-
-  CSingleLock lock(m_critSection);
-
-  AddonInfoPtr addon = GetAddonInfo(addonId);
-  if (addon)
-  {
-    binaryAddon = BINARY_ADDON_LIST_ENTRY(!IsAddonDisabled(addonId), addon);
-    ret = true;
-  }
-
-  return ret;
-}
-
 bool CAddonMgr::GetAddonsInternal(const TYPE& type, VECADDONS& addons, bool enabledOnly) const
 {
   CSingleLock lock(m_critSection);

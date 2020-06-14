@@ -23,64 +23,42 @@ namespace ADDON
 
   class CBinaryAddonBase;
   typedef std::shared_ptr<CBinaryAddonBase> BinaryAddonBasePtr;
-  typedef std::vector<BinaryAddonBasePtr> BinaryAddonBaseList;
 
   class CBinaryAddonManager
   {
   public:
     CBinaryAddonManager() = default;
     CBinaryAddonManager(const CBinaryAddonManager&) = delete;
-    ~CBinaryAddonManager();
-
-    bool ReInit()
-    {
-      DeInit();
-      return Init();
-    }
-    bool Init();
-    void DeInit();
+    ~CBinaryAddonManager() = default;
 
     /*!
-     * @brief Get a list of add-on's with info's for the on system available
-     * ones.
+     * @brief Create or get available addon instance handle base.
      *
-     * @param[out] addonInfos list where finded addon information becomes stored
-     * @param[in] enabledOnly If true are only enabled ones given back,
-     *                        if false all on system available. Default is true.
-     * @param[in] type        The requested type, with "ADDON_UNKNOWN"
-     *                        are all add-on types given back who match the case
-     *                        with value before.
-     *                        If a type id becomes added are only add-ons
-     *                        returned who match them. Default is for all types.
-     */
-    void GetAddonInfos(BinaryAddonBaseList& addonInfos, bool enabledOnly, const TYPE &type) const;
-
-    /*!
-     * @brief Get a list of disabled add-on's with info's for the on system
-     * available ones.
+     * On first call the binary addon base class becomes created, on every next
+     * call of addon id, this becomes given again and a counter about in
+     * @ref CBinaryAddonBase increased.
      *
-     * @param[out] addonInfos list where finded addon information becomes stored
-     * @param[in] type        The requested type, with "ADDON_UNKNOWN"
-     *                        are all add-on types given back who match the case
-     *                        with value before.
-     *                        If a type id becomes added are only add-ons
-     *                        returned who match them. Default is for all types.
-     */
-    void GetDisabledAddonInfos(BinaryAddonBaseList& addonInfos, const TYPE& type);
-
-    /*!
-     * @brief To get information from a installed add-on
+     * @param[in] addonBase related addon base to release
+     * @param[in] handler related instance handle class
      *
-     * @param[in] addonId the add-on id to get the info for
-     * @param[in] type if used becomes used type confirmed and is supported, if
-     *                 not a nullptr is returned
-     * @return add-on information pointer of installed add-on
+     * @warning This and @ref ReleaseAddonBase are only be called from
+     * @ref IAddonInstanceHandler, use nowhere else allowed!
+     *
      */
-    const BinaryAddonBasePtr GetInstalledAddonInfo(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN) const;
-
     BinaryAddonBasePtr GetAddonBase(const AddonInfoPtr& addonInfo,
                                     IAddonInstanceHandler* handler,
                                     AddonDllPtr& addon);
+
+    /*!
+     * @brief Release a running addon instance handle base.
+     *
+     * On last release call the here on map stored entry becomes
+     * removed and the dll unloaded.
+     *
+     * @param[in] addonBase related addon base to release
+     * @param[in] handler related instance handle class
+     *
+     */
     void ReleaseAddonBase(const BinaryAddonBasePtr& addonBase, IAddonInstanceHandler* handler);
 
     /*!
@@ -94,18 +72,8 @@ namespace ADDON
     AddonPtr GetRunningAddon(const std::string& addonId) const;
 
   private:
-    bool AddAddonBaseEntry(BINARY_ADDON_LIST_ENTRY& entry);
-
-    void OnEvent(const AddonEvent& event);
-    void EnableEvent(const std::string& addonId);
-    void DisableEvent(const std::string& addonId);
-    void InstalledChangeEvent();
-
     mutable CCriticalSection m_critSection;
 
-    typedef std::map<std::string, BinaryAddonBasePtr> BinaryAddonMgrBaseList;
-    BinaryAddonMgrBaseList m_installedAddons;
-    BinaryAddonMgrBaseList m_enabledAddons;
     std::map<std::string, BinaryAddonBasePtr> m_runningAddons;
   };
 
