@@ -50,34 +50,6 @@ void CBinaryAddonManager::DeInit()
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
-bool CBinaryAddonManager::HasInstalledAddons(const TYPE &type) const
-{
-  CSingleLock lock(m_critSection);
-  for (auto info : m_installedAddons)
-  {
-    if (info.second->HasType(type))
-      return true;
-  }
-  return false;
-}
-
-bool CBinaryAddonManager::HasEnabledAddons(const TYPE &type) const
-{
-  CSingleLock lock(m_critSection);
-  for (auto info : m_enabledAddons)
-  {
-    if (info.second->HasType(type))
-      return true;
-  }
-  return false;
-}
-
-bool CBinaryAddonManager::IsAddonInstalled(const std::string& addonId, const TYPE &type/* = ADDON_UNKNOWN*/)
-{
-  CSingleLock lock(m_critSection);
-  return (m_installedAddons.find(addonId) != m_installedAddons.end());
-}
-
 void CBinaryAddonManager::GetAddonInfos(BinaryAddonBaseList& addonInfos, bool enabledOnly, const TYPE &type) const
 {
   CSingleLock lock(m_critSection);

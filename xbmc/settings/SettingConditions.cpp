@@ -60,7 +60,7 @@ bool HasPeripherals(const std::string &condition, const std::string &value, Sett
 
 bool HasPeripheralLibraries(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return CServiceBroker::GetBinaryAddonManager().HasInstalledAddons(ADDON::ADDON_PERIPHERALDLL);
+  return CServiceBroker::GetAddonMgr().HasInstalledAddons(ADDON::ADDON_PERIPHERALDLL);
 }
 
 bool HasRumbleFeature(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)

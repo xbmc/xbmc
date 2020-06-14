@@ -41,33 +41,6 @@ namespace ADDON
     void DeInit();
 
     /*!
-     * @brief Checks system about given type to know related add-on's are
-     * installed.
-     *
-     * @param[in] type Add-on type to check installed
-     * @return true if given type is installed
-     */
-    bool HasInstalledAddons(const TYPE &type) const;
-
-    /*!
-     * @brief Checks system about given type to know related add-on's are
-     * installed and also minimum one enabled.
-     *
-     * @param[in] type Add-on type to check enabled
-     * @return true if given type is enabled
-     */
-    bool HasEnabledAddons(const TYPE &type) const;
-
-    /*!
-     * @brief Checks whether an addon is installed.
-     *
-     * @param[in] addonId id of the addon
-     * @param[in] type Add-on type to check installed
-     * @return true if installed
-     */
-    bool IsAddonInstalled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
-
-    /*!
      * @brief Get a list of add-on's with info's for the on system available
      * ones.
      *
