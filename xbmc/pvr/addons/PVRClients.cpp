@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"
