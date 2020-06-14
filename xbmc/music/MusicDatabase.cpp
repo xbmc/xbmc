@@ -212,7 +212,8 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE infosetting (idSetting INTEGER PRIMARY KEY, strScraperPath TEXT, strSettings TEXT)");
 
   CLog::Log(LOGINFO, "create discography table");
-  m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)");
+  m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text, "
+              "strReleaseGroupMBID TEXT)");
 
   CLog::Log(LOGINFO, "create art table");
   m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
@@ -1604,7 +1605,7 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
   DeleteArtistDiscography(artist.idArtist);
   for (const auto &disc : artist.discography)
   {
-    AddArtistDiscography(artist.idArtist, disc.first, disc.second);
+    AddArtistDiscography(artist.idArtist, disc);
   }
 
   // Set current artwork (held in art table)
@@ -1871,8 +1872,10 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
       while (!m_pDS->eof())
       {
         const dbiplus::sql_record* const record = m_pDS->get_sql_record();
-
-        artist.discography.emplace_back(record->at(discographyOffset + 1).get_asString(), record->at(discographyOffset + 2).get_asString());
+        CDiscoAlbum discoAlbum;
+        discoAlbum.strAlbum = record->at(discographyOffset + 1).get_asString();
+        discoAlbum.strYear = record->at(discographyOffset + 2).get_asString();
+        discoAlbum.strReleaseGroupMBID = record->at(discographyOffset + 3).get_asString();
         m_pDS->next();
       }
     }
@@ -1938,12 +1941,13 @@ bool CMusicDatabase::ClearArtistLastScrapedTime(int idArtist)
   return ExecuteQuery(strSQL);
 }
 
-int CMusicDatabase::AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear)
+int CMusicDatabase::AddArtistDiscography(int idArtist, const CDiscoAlbum& discoAlbum)
 {
-  std::string strSQL=PrepareSQL("INSERT INTO discography (idArtist, strAlbum, strYear) values(%i, '%s', '%s')",
-                               idArtist,
-                               strAlbum.c_str(),
-                               strYear.c_str());
+  std::string strSQL = PrepareSQL("INSERT INTO discography "
+                                  "(idArtist, strAlbum, strYear, strReleaseGroupMBID) "
+                                  "VALUES(%i, '%s', '%s', '%s')",
+                                  idArtist, discoAlbum.strAlbum.c_str(), discoAlbum.strYear.c_str(),
+                                  discoAlbum.strReleaseGroupMBID.c_str());
   return ExecuteQuery(strSQL);
 }
 
@@ -1962,19 +1966,64 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
     if (nullptr == m_pDS)
       return false;
 
-    // Combine entries from discography and album tables
-    // When title in both, album entry will be before disco entry
+    /* Combine entries from discography and album tables
+       Can not use CREATE TEMPORARY TABLE as MySQL does not support updates of table using
+       correlated subqueries to a temp table. An updatable join to temp table would work in MySQL
+       but SQLite not support updatable joins.
+    */
+    m_pDS->exec("CREATE TABLE tempDisco "
+                "(strAlbum TEXT, iYear INTEGER, mbid TEXT, idAlbum INTEGER)");
+
     std::string strSQL;
-    strSQL = PrepareSQL("SELECT strAlbum, "
-      "CAST(discography.strYear AS INTEGER) AS iYear, -1 AS idAlbum "
-      "FROM discography "
-      "WHERE discography.idArtist = %i "
-      "UNION "
-      "SELECT strAlbum, CAST(strReleaseDate AS INTEGER) AS iYear, album.idAlbum "
-      "FROM album JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
-      "WHERE album_artist.idArtist = %i "
-      "ORDER BY iYear, strAlbum, idAlbum DESC",
-      idArtist, idArtist);
+    strSQL = PrepareSQL("INSERT INTO tempDisco(strAlbum, iYear, mbid, idAlbum) "
+                        "SELECT strAlbum, CAST(discography.strYear AS INTEGER) AS iYear, "
+                        "strReleaseGroupMBID, NULL "
+                        "FROM discography WHERE idArtist = %i",
+                        idArtist);
+    m_pDS->exec(strSQL);
+
+    // Match albums on release group mbid, if multi-releases then first used
+    strSQL = "UPDATE tempDisco SET idAlbum = (SELECT album.idAlbum FROM album "
+             "WHERE album.strReleaseGroupMBID = tempDisco.mbid "
+             "AND album.strReleaseGroupMBID IS NOT NULL)";
+    m_pDS->exec(strSQL);
+    // Match remaining to albums by artist on title and year
+    strSQL = PrepareSQL("UPDATE tempDisco SET idAlbum = (SELECT album.idAlbum FROM album "
+                        "JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
+                        "WHERE album_artist.idArtist = %i "
+                        "AND NOT EXISTS(SELECT 1 FROM tempDisco AS td "
+                        "WHERE td.idAlbum = album.idAlbum) "
+                        "AND CAST(strOrigReleaseDate AS INTEGER) = tempDisco.iYear "
+                        "AND album.strAlbum = tempDisco.strAlbum) "
+                        "WHERE tempDisco.idAlbum is NULL",
+                        idArtist);
+    m_pDS->exec(strSQL);
+    // Match remaining to albums by artist on title only
+    strSQL = PrepareSQL("UPDATE tempDisco SET idAlbum = (SELECT album.idAlbum FROM album "
+                        "JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
+                        "WHERE album_artist.idArtist = %i "
+                        "AND NOT EXISTS(SELECT 1 FROM tempDisco AS td "
+                        "WHERE td.idAlbum = album.idAlbum) "
+                        "AND album.strAlbum = tempDisco.strAlbum) "
+                        "WHERE tempDisco.idAlbum is NULL",
+                        idArtist);
+    m_pDS->exec(strSQL);
+    // Use year from album table, when matched by name only it could be different
+    strSQL = PrepareSQL("UPDATE tempDisco "
+                        "SET iYear = (SELECT CAST(album.strOrigReleaseDate AS INTEGER) FROM album "
+                        "WHERE album.idAlbum = tempDisco.idAlbum) "
+                        "WHERE tempDisco.idAlbum > 0");
+    m_pDS->exec(strSQL);
+
+    // Combine distinctly with albums by artist that are not in discography
+    strSQL =
+        PrepareSQL("SELECT strAlbum, iYear, idAlbum FROM tempDisco "
+                   "UNION "
+                   "SELECT strAlbum, CAST(strOrigReleaseDate AS INTEGER) AS iYear, album.idAlbum "
+                   "FROM album JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
+                   "WHERE album_artist.idArtist = %i "
+                   "ORDER BY iYear, strAlbum, idAlbum",
+                   idArtist);
 
     if (!m_pDS->query(strSQL))
       return false;
@@ -1985,40 +2034,31 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
       return true;
     }
 
-    std::string strAlbum;
-    std::string strLastAlbum;
-    int iLastID = -1;
     while (!m_pDS->eof())
     {
       int idAlbum = m_pDS->fv("idAlbum").get_asInt();
-      strAlbum = m_pDS->fv("strAlbum").get_asString();
+      if (idAlbum == 0)
+        idAlbum = -1;
+      std::string strAlbum = m_pDS->fv("strAlbum").get_asString();
       if (!strAlbum.empty())
       {
-        if (strAlbum.compare(strLastAlbum) != 0)
-        { // Save new title (from album or discography)
           CFileItemPtr pItem(new CFileItem(strAlbum));
           pItem->SetLabel2(m_pDS->fv("iYear").get_asString());
           pItem->GetMusicInfoTag()->SetDatabaseId(idAlbum, MediaTypeAlbum);
-
           items.Add(pItem);
-          strLastAlbum = strAlbum;
-          iLastID = idAlbum;
-        }
-        else if (idAlbum > 0 && iLastID < 0)
-        { // Amend previously saved discography item to set album ID
-          items[items.Size() - 1]->GetMusicInfoTag()->SetDatabaseId(idAlbum, MediaTypeAlbum);
-        }
       }
       m_pDS->next();
     }
 
     // cleanup
     m_pDS->close();
+    m_pDS->exec("DROP TABLE tempDisco");
 
     return true;
   }
   catch (...)
   {
+    m_pDS->exec("DROP TABLE tempDisco");
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
@@ -8452,6 +8492,10 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec(PrepareSQL("UPDATE artist SET dateNew = '%s'", strUTCNow.c_str()));
     m_pDS->exec("UPDATE artist SET dateModified = dateNew");
   }
+  if (version < 79)
+  {
+    m_pDS->exec("ALTER TABLE discography ADD strReleaseGroupMBID TEXT");
+  }
 
   // Set the verion of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
@@ -8473,7 +8517,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 78;
+  return 79;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()

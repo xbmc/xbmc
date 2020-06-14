@@ -22,6 +22,14 @@ class TiXmlNode;
 class CAlbum;
 class CMusicDatabase;
 
+class CDiscoAlbum
+{
+public:
+  std::string strAlbum;
+  std::string strYear;
+  std::string strReleaseGroupMBID;
+};
+
 class CArtist
 {
 public:
@@ -105,7 +113,7 @@ public:
   CScraperUrl thumbURL; // Data for available thumbs
   CFanart fanart;  // Data for available fanart, urls etc.
   std::map<std::string, std::string> art;  // Current artwork - thumb, fanart etc.
-  std::vector<std::pair<std::string,std::string> > discography;
+  std::vector<CDiscoAlbum> discography;
   CDateTime dateAdded; // From related file creation or modification times, or when (re-)scanned
   CDateTime dateUpdated; // Time db record Last modified
   CDateTime dateNew;  // Time db record created
