@@ -1,7 +1,6 @@
 set(HEADERS addon_base.h
             audio_engine.h
             filesystem.h
-            general.h
             network.h)
 
 if(NOT ENABLE_STATIC_LIBS)

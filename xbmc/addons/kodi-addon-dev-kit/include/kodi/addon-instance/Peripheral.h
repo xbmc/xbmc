@@ -453,7 +453,7 @@ namespace kodi
 namespace addon
 {
 
-  class ATTRIBUTE_HIDDEN CInstancePeripheral : public IAddonInstance
+  class CInstancePeripheral : public IAddonInstance
   {
   public:
     CInstancePeripheral()

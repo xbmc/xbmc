@@ -20,7 +20,7 @@ namespace gui
 
   class CWindow;
 
-  class ATTRIBUTE_HIDDEN CAddonGUIControlBase
+  class CAddonGUIControlBase
   {
   public:
     GUIHANDLE GetControlHandle() const { return m_controlHandle; }
@@ -69,7 +69,7 @@ namespace gui
   /// @brief **Library definition values**
   ///
 
-  class ATTRIBUTE_HIDDEN CListItem : public CAddonGUIControlBase
+  class CListItem : public CAddonGUIControlBase
   {
   public:
     //==========================================================================

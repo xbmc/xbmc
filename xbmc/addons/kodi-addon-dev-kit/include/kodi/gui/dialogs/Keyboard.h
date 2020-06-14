@@ -76,23 +76,17 @@ namespace dialogs
     ///                   text.c_str(), bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(std::string& text,
-                                                 const std::string& heading,
-                                                 bool allowEmptyResult,
-                                                 bool hiddenInput = false,
-                                                 unsigned int autoCloseMs = 0)
+    inline bool ShowAndGetInput(std::string& text, const std::string& heading, bool allowEmptyResult, bool hiddenInput = false, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
-      bool ret =
-          CAddonBase::m_interface->toKodi->kodi_gui->dialogKeyboard->show_and_get_input_with_head(
-              CAddonBase::m_interface->toKodi->kodiBase, text.c_str(), &retString, heading.c_str(),
-              allowEmptyResult, hiddenInput, autoCloseMs);
+      bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogKeyboard->show_and_get_input_with_head(CAddonBase::m_interface->toKodi->kodiBase,
+                                                                                                         text.c_str(), &retString, heading.c_str(), allowEmptyResult,
+                                                                                                         hiddenInput, autoCloseMs);
       if (retString != nullptr)
       {
         text = retString;
-        CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                     retString);
+        CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, retString);
       }
       return ret;
     }
@@ -114,9 +108,7 @@ namespace dialogs
     ///                             false  if  unsuccessful   display,  no  user
     ///                             input, or canceled editing.
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(std::string& text,
-                                                 bool allowEmptyResult,
-                                                 unsigned int autoCloseMs = 0)
+    inline bool ShowAndGetInput(std::string& text, bool allowEmptyResult, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -148,10 +140,7 @@ namespace dialogs
     ///                              false  if  unsuccessful  display,  no  user
     ///                              input, or canceled editing.
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndGetNewPassword(std::string& newPassword,
-                                                       const std::string& heading,
-                                                       bool allowEmptyResult,
-                                                       unsigned int autoCloseMs = 0)
+    inline bool ShowAndGetNewPassword(std::string& newPassword, const std::string& heading, bool allowEmptyResult, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -181,8 +170,7 @@ namespace dialogs
     ///                               false  if  unsuccessful  display,  no  user
     ///                               input, or canceled editing.
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndGetNewPassword(std::string& newPassword,
-                                                       unsigned int autoCloseMs = 0)
+    inline bool ShowAndGetNewPassword(std::string& newPassword, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -263,10 +251,7 @@ namespace dialogs
     /// }
     /// ~~~~~~~~~~~~~
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndVerifyNewPassword(std::string& newPassword,
-                                                          const std::string& heading,
-                                                          bool allowEmptyResult,
-                                                          unsigned int autoCloseMs = 0)
+    inline bool ShowAndVerifyNewPassword(std::string& newPassword, const std::string& heading, bool allowEmptyResult, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -296,8 +281,7 @@ namespace dialogs
     ///                            false  if  unsuccessful   display,   no  user
     ///                            input, or canceled editing.
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndVerifyNewPassword(std::string& newPassword,
-                                                          unsigned int autoCloseMs = 0)
+    inline bool ShowAndVerifyNewPassword(std::string& newPassword, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -329,10 +313,7 @@ namespace dialogs
     ///                            unsuccessful input. -1 if no user  input  or
     ///                            canceled editing.
     ///
-    inline int ATTRIBUTE_HIDDEN ShowAndVerifyPassword(std::string& password,
-                                                      const std::string& heading,
-                                                      int retries,
-                                                      unsigned int autoCloseMs = 0)
+    inline int ShowAndVerifyPassword(std::string& password, const std::string& heading, int retries, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -366,9 +347,7 @@ namespace dialogs
     ///                            false   if  unsuccessful  display,   no  user
     ///                            input, or canceled editing.
     ///
-    inline bool ATTRIBUTE_HIDDEN ShowAndGetFilter(std::string& text,
-                                                  bool searching,
-                                                  unsigned int autoCloseMs = 0)
+    inline bool ShowAndGetFilter(std::string& text, bool searching, unsigned int autoCloseMs = 0)
     {
       using namespace ::kodi::addon;
       char* retString = nullptr;
@@ -393,8 +372,7 @@ namespace dialogs
     /// @return                    true   if    successful   done,    false   if
     ///                            unsuccessful or keyboard not present.
     ///
-    inline bool ATTRIBUTE_HIDDEN SendTextToActiveKeyboard(const std::string& text,
-                                                          bool closeKeyboard = false)
+    inline bool SendTextToActiveKeyboard(const std::string& text, bool closeKeyboard = false)
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogKeyboard->send_text_to_active_keyboard(CAddonBase::m_interface->toKodi->kodiBase,
@@ -409,7 +387,7 @@ namespace dialogs
     ///
     /// @return  true if keyboard present, false if not present
     ///
-    inline bool ATTRIBUTE_HIDDEN IsKeyboardActivated()
+    inline bool IsKeyboardActivated()
     {
       using namespace ::kodi::addon;
       return CAddonBase::m_interface->toKodi->kodi_gui->dialogKeyboard->is_keyboard_activated(CAddonBase::m_interface->toKodi->kodiBase);

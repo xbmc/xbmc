@@ -61,7 +61,7 @@ namespace controls
   } AddonGUISpinControlType;
   //----------------------------------------------------------------------------
 
-  class ATTRIBUTE_HIDDEN CSpin : public CAddonGUIControlBase
+  class CSpin : public CAddonGUIControlBase
   {
   public:
     //==========================================================================

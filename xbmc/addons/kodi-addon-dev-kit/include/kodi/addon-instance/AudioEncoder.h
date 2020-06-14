@@ -55,7 +55,7 @@ namespace kodi
 namespace addon
 {
 
-  class ATTRIBUTE_HIDDEN CInstanceAudioEncoder : public IAddonInstance
+  class CInstanceAudioEncoder : public IAddonInstance
   {
   public:
     //==========================================================================

@@ -1294,7 +1294,7 @@ namespace addon
 /// This class is created at addon by Kodi.
 ///
 //------------------------------------------------------------------------------
-class ATTRIBUTE_HIDDEN CInstanceGame : public IAddonInstance
+class CInstanceGame : public IAddonInstance
 {
 public:
   //============================================================================

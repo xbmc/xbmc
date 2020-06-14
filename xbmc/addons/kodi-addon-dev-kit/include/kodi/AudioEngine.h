@@ -99,8 +99,7 @@ namespace audioengine
 /// accordingly.
 ///
 //@{
-class ATTRIBUTE_HIDDEN AudioEngineFormat
-  : public addon::CStructHdl<AudioEngineFormat, AUDIO_ENGINE_FORMAT>
+class AudioEngineFormat : public addon::CStructHdl<AudioEngineFormat, AUDIO_ENGINE_FORMAT>
 {
 public:
   /*! \cond PRIVATE */
@@ -253,7 +252,7 @@ public:
 /// included to enjoy it.
 ///
 //----------------------------------------------------------------------------
-class ATTRIBUTE_HIDDEN CAEStream
+class CAEStream
 {
 public:
   //==========================================================================
@@ -602,7 +601,7 @@ private:
 ///
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetCurrentSinkFormat(AudioEngineFormat& format)
+inline bool GetCurrentSinkFormat(AudioEngineFormat& format)
 {
   using namespace kodi::addon;
   return CAddonBase::m_interface->toKodi->kodi_audioengine->get_current_sink_format(

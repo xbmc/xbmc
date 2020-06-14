@@ -381,7 +381,7 @@ namespace addon
 /// The destruction of the example class `CMyPVRClient` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstancePVRClient : public IAddonInstance
+class CInstancePVRClient : public IAddonInstance
 {
 public:
   //============================================================================

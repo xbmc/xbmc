@@ -9,9 +9,94 @@
 #pragma once
 
 #include "AddonBase.h"
-#include "c-api/general.h"
 
-#ifdef __cplusplus
+//==============================================================================
+/// \ingroup cpp_kodi_Defs
+/// @brief For kodi::CurrentKeyboardLayout used defines
+///
+typedef enum StdKbButtons
+{
+  /// The quantity of buttons per row on Kodi's standard keyboard
+  STD_KB_BUTTONS_PER_ROW = 20,
+  /// The quantity of rows on Kodi's standard keyboard
+  STD_KB_BUTTONS_MAX_ROWS = 4,
+  /// Keyboard layout type, this for initial standard
+  STD_KB_MODIFIER_KEY_NONE = 0x00,
+  /// Keyboard layout type, this for shift controled layout (uppercase)
+  STD_KB_MODIFIER_KEY_SHIFT = 0x01,
+  /// Keyboard layout type, this to show symbols
+  STD_KB_MODIFIER_KEY_SYMBOL = 0x02
+} StdKbButtons;
+//------------------------------------------------------------------------------
+
+/*
+ * For interface between add-on and kodi.
+ *
+ * This structure defines the addresses of functions stored inside Kodi which
+ * are then available for the add-on to call
+ *
+ * All function pointers there are used by the C++ interface functions below.
+ * You find the set of them on xbmc/addons/interfaces/General.cpp
+ *
+ * Note: For add-on development itself this is not needed
+ */
+typedef struct AddonKeyboardKeyTable
+{
+  char* keys[STD_KB_BUTTONS_MAX_ROWS][STD_KB_BUTTONS_PER_ROW];
+} AddonKeyboardKeyTable;
+typedef struct AddonToKodiFuncTable_kodi
+{
+  char* (*get_addon_info)(void* kodiBase, const char* id);
+  bool (*open_settings_dialog)(void* kodiBase);
+  char* (*unknown_to_utf8)(void* kodiBase, const char* source, bool* ret, bool failOnBadChar);
+  char* (*get_localized_string)(void* kodiBase, long label_id);
+  char* (*get_language)(void* kodiBase, int format, bool region);
+  bool (*queue_notification)(void* kodiBase, int type, const char* header, const char* message, const char* imageFile, unsigned int displayTime, bool withSound, unsigned int messageTime);
+  void (*get_md5)(void* kodiBase, const char* text, char* md5);
+  char* (*get_temp_path)(void* kodiBase);
+  char* (*get_region)(void* kodiBase, const char* id);
+  void (*get_free_mem)(void* kodiBase, long* free, long* total, bool as_bytes);
+  int  (*get_global_idle_time)(void* kodiBase);
+  bool (*is_addon_avilable)(void* kodiBase, const char* id, char** version, bool* enabled);
+  void (*kodi_version)(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion);
+  char* (*get_current_skin_id)(void* kodiBase);
+  bool (*get_keyboard_layout)(void* kodiBase, char** layout_name, int modifier_key, AddonKeyboardKeyTable* layout);
+  bool (*change_keyboard_layout)(void* kodiBase, char** layout_name);
+} AddonToKodiFuncTable_kodi;
+
+//==============================================================================
+/// \ingroup cpp_kodi_Defs
+/// @brief For kodi::QueueNotification() used message types
+///
+typedef enum QueueMsg
+{
+  /// Show info notification message
+  QUEUE_INFO,
+  /// Show warning notification message
+  QUEUE_WARNING,
+  /// Show error notification message
+  QUEUE_ERROR,
+  /// Show with own given image and parts if set on values
+  QUEUE_OWN_STYLE
+} QueueMsg;
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// \ingroup cpp_kodi_Defs
+/// @brief Format codes to get string from them.
+///
+/// Used on kodi::GetLanguage().
+///
+typedef enum LangFormats
+{
+  /// two letter code as defined in ISO 639-1
+  LANG_FMT_ISO_639_1,
+  /// three letter code as defined in ISO 639-2/T or ISO 639-2/B
+  LANG_FMT_ISO_639_2,
+  /// full language name in English
+  LANG_FMT_ENGLISH_NAME
+} LangFormats;
+//------------------------------------------------------------------------------
 
 //==============================================================================
 /// \ingroup cpp_kodi_Defs
@@ -34,10 +119,9 @@ typedef struct kodi_version_t
 } kodi_version_t;
 //------------------------------------------------------------------------------
 
-namespace kodi
-{
-
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Returns the value of an addon property as a string
 ///
@@ -63,11 +147,9 @@ namespace kodi
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetAddonInfo(const std::string& id)
+inline std::string GetAddonInfo(const std::string& id)
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
 
   std::string strReturn;
   char* strMsg = toKodi->kodi->get_addon_info(toKodi->kodiBase, id.c_str());
@@ -79,9 +161,12 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonInfo(const std::string& id)
   }
   return strReturn;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Opens this Add-Ons settings dialog.
 ///
@@ -98,15 +183,16 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonInfo(const std::string& id)
 /// ..
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN OpenSettings()
+inline bool OpenSettings()
 {
-  using namespace kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi->open_settings_dialog(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->open_settings_dialog(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Returns an addon's localized 'unicode string'.
 ///
@@ -133,25 +219,24 @@ inline bool ATTRIBUTE_HIDDEN OpenSettings()
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetLocalizedString(uint32_t labelId,
-                                                       const std::string& defaultStr = "")
+inline std::string GetLocalizedString(uint32_t labelId, const std::string& defaultStr = "")
 {
-  using namespace kodi::addon;
-
   std::string retString = defaultStr;
-  char* strMsg = CAddonBase::m_interface->toKodi->kodi->get_localized_string(
-      CAddonBase::m_interface->toKodi->kodiBase, labelId);
+  char* strMsg = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->get_localized_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, labelId);
   if (strMsg != nullptr)
   {
     if (std::strlen(strMsg))
       retString = strMsg;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, strMsg);
+    ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, strMsg);
   }
   return retString;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Translate a string with an unknown encoding to UTF8.
 ///
@@ -173,27 +258,25 @@ inline std::string ATTRIBUTE_HIDDEN GetLocalizedString(uint32_t labelId,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN UnknownToUTF8(const std::string& stringSrc,
-                                           std::string& utf8StringDst,
-                                           bool failOnBadChar = false)
+inline bool UnknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false)
 {
-  using namespace kodi::addon;
-
   bool ret = false;
-  char* retString = CAddonBase::m_interface->toKodi->kodi->unknown_to_utf8(
-      CAddonBase::m_interface->toKodi->kodiBase, stringSrc.c_str(), &ret, failOnBadChar);
+  char* retString = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->unknown_to_utf8(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase,
+                                                                                          stringSrc.c_str(), &ret, failOnBadChar);
   if (retString != nullptr)
   {
     if (ret)
       utf8StringDst = retString;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 retString);
+    ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, retString);
   }
   return ret;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Returns the active language as a string.
 ///
@@ -217,26 +300,24 @@ inline bool ATTRIBUTE_HIDDEN UnknownToUTF8(const std::string& stringSrc,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetLanguage(LangFormats format = LANG_FMT_ENGLISH_NAME,
-                                                bool region = false)
+inline std::string GetLanguage(LangFormats format = LANG_FMT_ENGLISH_NAME, bool region = false)
 {
-  using namespace kodi::addon;
-
   std::string language;
-  char* retString = CAddonBase::m_interface->toKodi->kodi->get_language(
-      CAddonBase::m_interface->toKodi->kodiBase, format, region);
+  char* retString = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->get_language(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, format, region);
   if (retString != nullptr)
   {
     if (std::strlen(retString))
       language = retString;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 retString);
+    ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, retString);
   }
   return language;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Writes the C string pointed by format in the GUI. If format includes
 /// format specifiers (subsequences beginning with %), the additional arguments
@@ -312,21 +393,22 @@ inline std::string ATTRIBUTE_HIDDEN GetLanguage(LangFormats format = LANG_FMT_EN
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN QueueFormattedNotification(QueueMsg type, const char* format, ...)
+inline void QueueFormattedNotification(QueueMsg type, const char* format, ... )
 {
-  using namespace kodi::addon;
-
   va_list args;
   char buffer[16384];
   va_start(args, format);
   vsprintf(buffer, format, args);
   va_end(args);
-  CAddonBase::m_interface->toKodi->kodi->queue_notification(
-      CAddonBase::m_interface->toKodi->kodiBase, type, "", buffer, "", 5000, false, 1000);
+  ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->queue_notification(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase,
+                                                                           type, "", buffer, "", 5000, false, 1000);
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Queue a notification in the GUI.
 ///
@@ -371,23 +453,21 @@ inline void ATTRIBUTE_HIDDEN QueueFormattedNotification(QueueMsg type, const cha
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN QueueNotification(QueueMsg type,
-                                               const std::string& header,
-                                               const std::string& message,
-                                               const std::string& imageFile = "",
-                                               unsigned int displayTime = 5000,
-                                               bool withSound = true,
-                                               unsigned int messageTime = 1000)
+inline void QueueNotification(QueueMsg type, const std::string& header,
+                              const std::string& message, const std::string& imageFile = "",
+                              unsigned int displayTime = 5000, bool withSound = true,
+                              unsigned int messageTime = 1000)
 {
-  using namespace kodi::addon;
-
-  CAddonBase::m_interface->toKodi->kodi->queue_notification(
-      CAddonBase::m_interface->toKodi->kodiBase, type, header.c_str(), message.c_str(),
-      imageFile.c_str(), displayTime, withSound, messageTime);
+  ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->queue_notification(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase,
+                                                                           type, header.c_str(), message.c_str(), imageFile.c_str(), displayTime,
+                                                                           withSound, messageTime);
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Get the MD5 digest of the given text
 ///
@@ -406,20 +486,20 @@ inline void ATTRIBUTE_HIDDEN QueueNotification(QueueMsg type,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetMD5(const std::string& text)
+inline std::string GetMD5(const std::string& text)
 {
-  using namespace kodi::addon;
-
-  char* md5ret = static_cast<char*>(malloc(40 * sizeof(char))); // md5 size normally 32 bytes
-  CAddonBase::m_interface->toKodi->kodi->get_md5(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 text.c_str(), md5ret);
+  char* md5ret = static_cast<char*>(malloc(40*sizeof(char))); // md5 size normally 32 bytes
+  ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->get_md5(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, text.c_str(), md5ret);
   std::string md5 = md5ret;
   free(md5ret);
   return md5;
 }
+} /* namespace kodi */
 //----------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief To get a temporary path for the addon
 ///
@@ -430,17 +510,15 @@ inline std::string ATTRIBUTE_HIDDEN GetMD5(const std::string& text)
 /// @param[in] append A string to append to returned temporary path
 /// @return Individual path for the addon
 ///
-inline std::string ATTRIBUTE_HIDDEN GetTempAddonPath(const std::string& append = "")
+inline std::string GetTempAddonPath(const std::string& append = "")
 {
-  using namespace kodi::addon;
-
-  char* str = CAddonBase::m_interface->toKodi->kodi->get_temp_path(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  char* str = ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->get_temp_path(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
   std::string ret = str;
-  CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, str);
+  ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
-    if (append.at(0) != '\\' && append.at(0) != '/')
+    if (append.at(0) != '\\' &&
+        append.at(0) != '/')
 #ifdef TARGET_WINDOWS
       ret.append("\\");
 #else
@@ -450,9 +528,12 @@ inline std::string ATTRIBUTE_HIDDEN GetTempAddonPath(const std::string& append =
   }
   return ret;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Returns your regions setting as a string for the specified id
 ///
@@ -475,11 +556,9 @@ inline std::string ATTRIBUTE_HIDDEN GetTempAddonPath(const std::string& append =
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetRegion(const std::string& id)
+inline std::string GetRegion(const std::string& id)
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
 
   std::string strReturn;
   char* strMsg = toKodi->kodi->get_region(toKodi->kodiBase, id.c_str());
@@ -491,9 +570,12 @@ inline std::string ATTRIBUTE_HIDDEN GetRegion(const std::string& id)
   }
   return strReturn;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Returns the amount of free memory in MByte (or as bytes) as an long
 /// integer
@@ -516,18 +598,19 @@ inline std::string ATTRIBUTE_HIDDEN GetRegion(const std::string& id)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN GetFreeMem(long& free, long& total, bool asBytes = false)
+inline void GetFreeMem(long& free, long& total, bool asBytes = false)
 {
-  using namespace kodi::addon;
-
   free = -1;
   total = -1;
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   toKodi->kodi->get_free_mem(toKodi->kodiBase, &free, &total, asBytes);
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Returns the elapsed idle time in seconds as an integer
 ///
@@ -544,16 +627,17 @@ inline void ATTRIBUTE_HIDDEN GetFreeMem(long& free, long& total, bool asBytes = 
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline int ATTRIBUTE_HIDDEN GetGlobalIdleTime()
+inline int GetGlobalIdleTime()
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   return toKodi->kodi->get_global_idle_time(toKodi->kodiBase);
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Get the currently used skin identification name from Kodi
 ///
@@ -574,11 +658,9 @@ inline int ATTRIBUTE_HIDDEN GetGlobalIdleTime()
 /// ..
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetCurrentSkinId()
+inline std::string GetCurrentSkinId()
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
 
   std::string strReturn;
   char* strMsg = toKodi->kodi->get_current_skin_id(toKodi->kodiBase);
@@ -590,7 +672,11 @@ inline std::string ATTRIBUTE_HIDDEN GetCurrentSkinId()
   }
   return strReturn;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
+
+namespace kodi
+{
 
 //==============================================================================
 /// @brief To check another addon is available and usable inside Kodi.
@@ -614,13 +700,9 @@ inline std::string ATTRIBUTE_HIDDEN GetCurrentSkinId()
 ///            ret ? version.c_str() : "not installed", enabled ? "yes" : "no");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
-                                              std::string& version,
-                                              bool& enabled)
+inline bool IsAddonAvailable(const std::string& id, std::string& version, bool& enabled)
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
 
   char* cVersion = nullptr;
   bool ret = toKodi->kodi->is_addon_avilable(toKodi->kodiBase, id.c_str(), &cVersion, &enabled);
@@ -633,7 +715,11 @@ inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
 }
 //------------------------------------------------------------------------------
 
+} /* namespace kodi */
+
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief Get current Kodi informations and versions, returned data from the following
 /// <b><tt>kodi_version_t version; kodi::KodiVersion(version);</tt></b>
@@ -672,22 +758,23 @@ inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN KodiVersion(kodi_version_t& version)
+inline void KodiVersion(kodi_version_t& version)
 {
-  using namespace kodi::addon;
-
   char* compile_name = nullptr;
   char* revision = nullptr;
   char* tag = nullptr;
   char* tag_revision = nullptr;
 
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
-  toKodi->kodi->kodi_version(toKodi->kodiBase, &compile_name, &version.major, &version.minor,
-                             &revision, &tag, &tag_revision);
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+  toKodi->kodi->kodi_version(toKodi->kodiBase, &compile_name, &version.major, &version.minor, &revision, &tag, &tag_revision);
   if (compile_name != nullptr)
   {
-    version.compile_name = compile_name;
-    toKodi->free_string(toKodi->kodiBase, compile_name);
+    version.compile_name  = compile_name;
+    toKodi->free_string
+    (
+      toKodi->kodiBase,
+      compile_name
+    );
   }
   if (revision != nullptr)
   {
@@ -705,9 +792,12 @@ inline void ATTRIBUTE_HIDDEN KodiVersion(kodi_version_t& version)
     toKodi->free_string(toKodi->kodiBase, tag_revision);
   }
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief To get keyboard layout characters
 ///
@@ -740,17 +830,12 @@ inline void ATTRIBUTE_HIDDEN KodiVersion(kodi_version_t& version)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
-                                               std::string& layout_name,
-                                               std::vector<std::vector<std::string>>& layout)
+inline bool GetKeyboardLayout(int modifierKey, std::string& layout_name, std::vector<std::vector<std::string>>& layout)
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   AddonKeyboardKeyTable c_layout;
   char* c_layout_name = nullptr;
-  bool ret =
-      toKodi->kodi->get_keyboard_layout(toKodi->kodiBase, &c_layout_name, modifierKey, &c_layout);
+  bool ret = toKodi->kodi->get_keyboard_layout(toKodi->kodiBase, &c_layout_name, modifierKey, &c_layout);
   if (ret)
   {
     if (c_layout_name)
@@ -776,9 +861,12 @@ inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
   }
   return ret;
 }
+} /* namespace kodi */
 //------------------------------------------------------------------------------
 
 //==============================================================================
+namespace kodi {
+///
 /// \ingroup cpp_kodi
 /// @brief To change keyboard layout characters
 ///
@@ -812,11 +900,9 @@ inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN ChangeKeyboardLayout(std::string& layout_name)
+inline bool ChangeKeyboardLayout(std::string& layout_name)
 {
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
   char* c_layout_name = nullptr;
   bool ret = toKodi->kodi->change_keyboard_layout(toKodi->kodiBase, &c_layout_name);
   if (c_layout_name)
@@ -827,8 +913,5 @@ inline bool ATTRIBUTE_HIDDEN ChangeKeyboardLayout(std::string& layout_name)
 
   return ret;
 }
-//------------------------------------------------------------------------------
-
 } /* namespace kodi */
-
-#endif /* __cplusplus */
+//------------------------------------------------------------------------------

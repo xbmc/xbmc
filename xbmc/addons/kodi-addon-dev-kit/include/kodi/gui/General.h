@@ -37,7 +37,7 @@ namespace gui
   /// \ingroup cpp_kodi_gui
   /// @brief Performs a graphical lock of rendering engine
   ///
-  inline void ATTRIBUTE_HIDDEN Lock()
+  inline void Lock()
   {
     using namespace ::kodi::addon;
     CAddonBase::m_interface->toKodi->kodi_gui->general->lock();
@@ -50,7 +50,7 @@ namespace gui
   /// \ingroup cpp_kodi_gui
   /// @brief Performs a graphical unlock of previous locked rendering engine
   ///
-  inline void ATTRIBUTE_HIDDEN Unlock()
+  inline void Unlock()
   {
     using namespace ::kodi::addon;
     CAddonBase::m_interface->toKodi->kodi_gui->general->unlock();
@@ -62,7 +62,7 @@ namespace gui
   /// \ingroup cpp_kodi_gui
   /// @brief Return the the current screen height with pixel
   ///
-  inline int ATTRIBUTE_HIDDEN GetScreenHeight()
+  inline int GetScreenHeight()
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_screen_height(CAddonBase::m_interface->toKodi->kodiBase);
@@ -74,7 +74,7 @@ namespace gui
   /// \ingroup cpp_kodi_gui
   /// @brief Return the the current screen width with pixel
   ///
-  inline int ATTRIBUTE_HIDDEN GetScreenWidth()
+  inline int GetScreenWidth()
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_screen_width(CAddonBase::m_interface->toKodi->kodiBase);
@@ -86,7 +86,7 @@ namespace gui
   /// \ingroup cpp_kodi_gui
   /// @brief Return the the current screen rendering resolution
   ///
-  inline int ATTRIBUTE_HIDDEN GetVideoResolution()
+  inline int GetVideoResolution()
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_video_resolution(CAddonBase::m_interface->toKodi->kodiBase);
@@ -110,7 +110,7 @@ namespace gui
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline int ATTRIBUTE_HIDDEN GetCurrentWindowDialogId()
+  inline int GetCurrentWindowDialogId()
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_current_window_dialog_id(CAddonBase::m_interface->toKodi->kodiBase);
@@ -134,7 +134,7 @@ namespace gui
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline int ATTRIBUTE_HIDDEN GetCurrentWindowId()
+  inline int GetCurrentWindowId()
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_current_window_id(CAddonBase::m_interface->toKodi->kodiBase);
