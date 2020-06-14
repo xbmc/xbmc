@@ -32,6 +32,11 @@ namespace ADDON
     CBinaryAddonManager(const CBinaryAddonManager&) = delete;
     ~CBinaryAddonManager();
 
+    bool ReInit()
+    {
+      DeInit();
+      return Init();
+    }
     bool Init();
     void DeInit();
 

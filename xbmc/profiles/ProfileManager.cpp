@@ -19,6 +19,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/Skin.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
@@ -374,6 +375,7 @@ void CProfileManager::FinalizeLoadProfile()
   PVR::CPVRManager &pvrManager = CServiceBroker::GetPVRManager();
   CNetworkBase &networkManager = CServiceBroker::GetNetwork();
   ADDON::CAddonMgr &addonManager = CServiceBroker::GetAddonMgr();
+  ADDON::CBinaryAddonManager& binAddonManager = CServiceBroker::GetBinaryAddonManager();
   CWeatherManager &weatherManager = CServiceBroker::GetWeatherManager();
   CFavouritesService &favouritesManager = CServiceBroker::GetFavouritesService();
   PLAYLIST::CPlayListPlayer &playlistManager = CServiceBroker::GetPlaylistPlayer();
@@ -390,6 +392,7 @@ void CProfileManager::FinalizeLoadProfile()
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
   addonManager.ReInit();
+  binAddonManager.ReInit();
 
   // let CApplication know that we are logging into a new profile
   g_application.SetLoggingIn(true);
