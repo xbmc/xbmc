@@ -78,12 +78,6 @@ bool CBinaryAddonManager::IsAddonInstalled(const std::string& addonId, const TYP
   return (m_installedAddons.find(addonId) != m_installedAddons.end());
 }
 
-bool CBinaryAddonManager::IsAddonEnabled(const std::string& addonId, const TYPE &type/* = ADDON_UNKNOWN*/)
-{
-  CSingleLock lock(m_critSection);
-  return (m_enabledAddons.find(addonId) != m_enabledAddons.end());
-}
-
 void CBinaryAddonManager::GetAddonInfos(BinaryAddonBaseList& addonInfos, bool enabledOnly, const TYPE &type) const
 {
   CSingleLock lock(m_critSection);
@@ -111,7 +105,7 @@ void CBinaryAddonManager::GetDisabledAddonInfos(BinaryAddonBaseList& addonInfos,
   {
     if (type == ADDON_UNKNOWN || info.second->HasType(type))
     {
-      if (!IsAddonEnabled(info.second->ID(), type))
+      if (CServiceBroker::GetAddonMgr().IsAddonDisabled(info.second->ID()))
         addonInfos.push_back(info.second);
     }
   }

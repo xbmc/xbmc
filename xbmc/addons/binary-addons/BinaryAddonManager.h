@@ -68,15 +68,6 @@ namespace ADDON
     bool IsAddonInstalled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
 
     /*!
-     * @brief Check whether an addon has been enabled.
-     *
-     * @param[in] addonId id of the addon
-     * @param[in] type Add-on type to check installed and enabled
-     * @return true if enabled
-     */
-    bool IsAddonEnabled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
-
-    /*!
      * @brief Get a list of add-on's with info's for the on system available
      * ones.
      *
