@@ -111,26 +111,6 @@ function(core_add_test_library name)
   endforeach()
 endfunction()
 
-# Add an addon callback library
-# Arguments:
-#   name name of the library to add
-# Implicit arguments:
-#   SOURCES the sources of the library
-#   HEADERS the headers of the library (only for IDE support)
-#   OTHERS  other library related files (only for IDE support)
-# On return:
-#   Library target is defined and added to LIBRARY_FILES
-function(core_add_addon_library name)
-  get_filename_component(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-  list(APPEND SOURCES lib${name}.cpp)
-  core_add_shared_library(${name} OUTPUT_DIRECTORY addons/${DIRECTORY})
-  set_target_properties(${name} PROPERTIES FOLDER addons)
-  target_include_directories(${name} PRIVATE
-                             ${CMAKE_CURRENT_SOURCE_DIR}
-                             ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
-                             ${CMAKE_SOURCE_DIR}/xbmc)
-endfunction()
-
 # Add an dl-loaded shared library
 # Arguments:
 #   name name of the library to add
