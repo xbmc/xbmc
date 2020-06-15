@@ -173,7 +173,7 @@ namespace XBMCAddon
       /// **Example (v19 and up):**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// whith xbmcvfs.File(file, 'w') as f:
+      /// with xbmcvfs.File(file, 'w') as f:
       ///   result = f.write(buffer)
       /// ..
       /// ~~~~~~~~~~~~~
