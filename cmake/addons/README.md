@@ -1,4 +1,4 @@
-![Kodi logo](https://raw.githubusercontent.com/xbmc/xbmc-forum/master/xbmc/images/logo-sbs-black.png)
+![Kodi logo](https://github.com/xbmc/xbmc/raw/master/docs/resources/banner_slim.png)
 # Kodi add-ons CMake based buildsystem
 This directory contains the cmake-based buildsystem for Kodi add-ons. It looks into the directory pointed to by the *ADDONS_DEFINITION_DIR* option (which defaults to the *addons* sub-directory) and parses all *.txt files recursively. Each add-on must have its own `<addon-id>.txt` file in a separate sub-directory that must follow one of the defined formats:
 
