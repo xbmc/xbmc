@@ -9,10 +9,10 @@
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
 #include "Application.h"
+#include "GUIPassword.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "addons/BinaryAddonCache.h"
-#include "GUIPassword.h"
+#include "addons/AddonManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -548,13 +548,8 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = true;
       return true;
     case SYSTEM_HAS_PVR_ADDON:
-    {
-      ADDON::VECADDONS pvrAddons;
-      ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-      addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
-      value = (pvrAddons.size() > 0);
+      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::ADDON_PVRDLL);
       return true;
-    }
     case SYSTEM_HAS_CMS:
 #if defined(HAS_GL) || defined(HAS_DX)
       value = true;
