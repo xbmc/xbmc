@@ -1593,6 +1593,8 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
     m_rulerLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("rulerlayout");
   }
+
+  UpdateLayout();
 }
 
 std::string CGUIEPGGridContainer::GetDescription() const
@@ -1715,7 +1717,6 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   {
     CSingleLock lock(m_critSection);
 
-    UpdateLayout();
     iRulerUnit = m_rulerUnit;
     iBlocksPerPage = m_blocksPerPage;
     fBlockSize = m_blockSize;
@@ -1793,6 +1794,8 @@ void CGUIEPGGridContainer::UpdateLayout()
       oldProgrammeLayout == m_programmeLayout && oldFocusedProgrammeLayout == m_focusedProgrammeLayout &&
       oldRulerLayout == m_rulerLayout && oldRulerDateLayout == m_rulerDateLayout)
     return; // nothing has changed, so don't update stuff
+
+  CSingleLock lock(m_critSection);
 
   m_channelHeight = m_channelLayout->Size(VERTICAL);
   m_channelWidth  = m_channelLayout->Size(HORIZONTAL);
