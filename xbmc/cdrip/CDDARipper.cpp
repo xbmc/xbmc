@@ -13,7 +13,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
+#include "addons/AddonManager.h"
 #include "filesystem/CDDADirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

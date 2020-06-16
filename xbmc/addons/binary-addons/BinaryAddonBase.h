@@ -55,6 +55,7 @@ namespace ADDON
 
     AddonDllPtr GetAddon(IAddonInstanceHandler* handler);
     void ReleaseAddon(IAddonInstanceHandler* handler);
+    size_t UsedInstanceCount() const;
 
     AddonDllPtr GetActiveAddon();
 
@@ -66,7 +67,7 @@ namespace ADDON
   private:
     AddonInfoPtr m_addonInfo;
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     AddonDllPtr m_activeAddon;
     std::unordered_set<IAddonInstanceHandler*> m_activeAddonHandlers;
   };

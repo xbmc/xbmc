@@ -156,6 +156,12 @@ void CBinaryAddonBase::ReleaseAddon(IAddonInstanceHandler* handler)
   }
 }
 
+size_t CBinaryAddonBase::UsedInstanceCount() const
+{
+  CSingleLock lock(m_critSection);
+  return m_activeAddonHandlers.size();
+}
+
 AddonDllPtr CBinaryAddonBase::GetActiveAddon()
 {
   CSingleLock lock(m_critSection);

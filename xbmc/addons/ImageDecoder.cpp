@@ -18,8 +18,8 @@ static const std::map<int, ImageFormat> KodiToAddonFormat = {
 namespace ADDON
 {
 
-CImageDecoder::CImageDecoder(BinaryAddonBasePtr addonBase)
-  : IAddonInstanceHandler(ADDON_INSTANCE_IMAGEDECODER, addonBase)
+CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo)
+  : IAddonInstanceHandler(ADDON_INSTANCE_IMAGEDECODER, addonInfo)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added

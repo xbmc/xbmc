@@ -8,7 +8,6 @@
 
 #include "AddonVideoCodec.h"
 
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
@@ -19,7 +18,7 @@
 using namespace kodi::addon;
 
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
-                                   ADDON::BinaryAddonBasePtr& addonInfo,
+                                   ADDON::AddonInfoPtr& addonInfo,
                                    KODI_HANDLE parentInstance)
   : CDVDVideoCodec(processInfo),
     IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance),

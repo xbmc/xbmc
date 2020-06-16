@@ -276,6 +276,20 @@ namespace ADDON
      */
     bool GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, TYPE type) const;
 
+    /*!
+     * @brief Get a list of disabled add-on's with info's for the on system
+     * available ones.
+     *
+     * @param[out] addonInfos list where finded addon information becomes stored
+     * @param[in] type        The requested type, with "ADDON_UNKNOWN"
+     *                        are all add-on types given back who match the case
+     *                        with value before.
+     *                        If a type id becomes added are only add-ons
+     *                        returned who match them. Default is for all types.
+     * @return true if the list contains entries
+     */
+    bool GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type);
+
     const AddonInfoPtr GetAddonInfo(const std::string& id, TYPE type = ADDON_UNKNOWN) const;
 
     /*!

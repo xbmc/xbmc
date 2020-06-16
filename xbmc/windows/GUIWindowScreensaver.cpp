@@ -73,7 +73,10 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
 
-      const ADDON::BinaryAddonBasePtr addonBase = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE), ADDON::ADDON_SCREENSAVER);
+      const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_SCREENSAVER_MODE);
+      const ADDON::AddonInfoPtr addonBase =
+          CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_SCREENSAVER);
       if (!addonBase)
         return false;
       m_addon = new ADDON::CScreenSaver(addonBase);

@@ -13,7 +13,6 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"

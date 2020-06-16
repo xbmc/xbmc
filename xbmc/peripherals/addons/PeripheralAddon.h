@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/binary-addons/AddonInstanceHandler.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Peripheral.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
 #include "input/joysticks/JoystickTypes.h"
@@ -42,7 +41,7 @@ typedef std::map<KODI::JOYSTICK::FeatureName, kodi::addon::JoystickFeature> Feat
 class CPeripheralAddon : public ADDON::IAddonInstanceHandler
 {
 public:
-  explicit CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo, CPeripherals& manager);
+  explicit CPeripheralAddon(const ADDON::AddonInfoPtr& addonInfo, CPeripherals& manager);
   ~CPeripheralAddon(void) override;
 
   /*!
@@ -97,12 +96,12 @@ public:
   void RegisterButtonMap(CPeripheral* device, KODI::JOYSTICK::IButtonMap* buttonMap);
   void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
 
-  static inline bool ProvidesJoysticks(const ADDON::BinaryAddonBasePtr& addonInfo)
+  static inline bool ProvidesJoysticks(const ADDON::AddonInfoPtr& addonInfo)
   {
     return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
   }
 
-  static inline bool ProvidesButtonMaps(const ADDON::BinaryAddonBasePtr& addonInfo)
+  static inline bool ProvidesButtonMaps(const ADDON::AddonInfoPtr& addonInfo)
   {
     return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)
         ->GetValue("@provides_buttonmaps")

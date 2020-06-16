@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/PeripheralAddon.h"
@@ -178,9 +177,8 @@ void CPeripheralBusAddon::EnableButtonMapping()
 
   if (!GetAddonWithButtonMap(dummy))
   {
-    BinaryAddonBaseList disabledAddons;
-    CServiceBroker::GetBinaryAddonManager().GetDisabledAddonInfos(disabledAddons,
-                                                                  ADDON_PERIPHERALDLL);
+    std::vector<AddonInfoPtr> disabledAddons;
+    CServiceBroker::GetAddonMgr().GetDisabledAddonInfos(disabledAddons, ADDON_PERIPHERALDLL);
     if (!disabledAddons.empty())
       PromptEnableAddons(disabledAddons);
   }
@@ -377,7 +375,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
   using namespace ADDON;
 
   auto GetPeripheralAddonID = [](const PeripheralAddonPtr& addon) { return addon->ID(); };
-  auto GetAddonID = [](const BinaryAddonBasePtr& addon) { return addon->ID(); };
+  auto GetAddonID = [](const AddonInfoPtr& addon) { return addon->ID(); };
 
   std::set<std::string> currentIds;
   std::set<std::string> newIds;
@@ -386,8 +384,8 @@ void CPeripheralBusAddon::UpdateAddons(void)
   std::set<std::string> removed;
 
   // Get new add-ons
-  BinaryAddonBaseList newAddons;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(newAddons, true, ADDON_PERIPHERALDLL);
+  std::vector<AddonInfoPtr> newAddons;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(newAddons, true, ADDON_PERIPHERALDLL);
   std::transform(newAddons.begin(), newAddons.end(), std::inserter(newIds, newIds.end()),
                  GetAddonID);
 
@@ -410,9 +408,9 @@ void CPeripheralBusAddon::UpdateAddons(void)
   {
     CLog::Log(LOGDEBUG, "Add-on bus: Registering add-on %s", addonId.c_str());
 
-    auto GetAddon = [&addonId](const BinaryAddonBasePtr& addon) { return addon->ID() == addonId; };
+    auto GetAddon = [&addonId](const AddonInfoPtr& addon) { return addon->ID() == addonId; };
 
-    BinaryAddonBaseList::iterator it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
+    auto it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
     if (it != newAddons.end())
     {
       PeripheralAddonPtr newAddon = std::make_shared<CPeripheralAddon>(*it, m_manager);
@@ -467,7 +465,7 @@ void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
   }
 }
 
-void CPeripheralBusAddon::PromptEnableAddons(const ADDON::BinaryAddonBaseList& disabledAddons)
+void CPeripheralBusAddon::PromptEnableAddons(const std::vector<ADDON::AddonInfoPtr>& disabledAddons)
 {
   using namespace ADDON;
   using namespace MESSAGING::HELPERS;
@@ -475,10 +473,10 @@ void CPeripheralBusAddon::PromptEnableAddons(const ADDON::BinaryAddonBaseList& d
   // True if the user confirms enabling the disabled peripheral add-on
   bool bAccepted = false;
 
-  auto itAddon = std::find_if(disabledAddons.begin(), disabledAddons.end(),
-                              [](const BinaryAddonBasePtr& addonInfo) {
-                                return CPeripheralAddon::ProvidesJoysticks(addonInfo);
-                              });
+  auto itAddon =
+      std::find_if(disabledAddons.begin(), disabledAddons.end(), [](const AddonInfoPtr& addonInfo) {
+        return CPeripheralAddon::ProvidesJoysticks(addonInfo);
+      });
 
   if (itAddon != disabledAddons.end())
   {

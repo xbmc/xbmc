@@ -78,6 +78,11 @@ namespace ADDON
      */
     const BinaryAddonBasePtr GetInstalledAddonInfo(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN) const;
 
+    BinaryAddonBasePtr GetAddonBase(const AddonInfoPtr& addonInfo,
+                                    IAddonInstanceHandler* handler,
+                                    AddonDllPtr& addon);
+    void ReleaseAddonBase(const BinaryAddonBasePtr& addonBase, IAddonInstanceHandler* handler);
+
     /*!
      * @brief Used from other addon manager to get active addon over a from him
      * created CAddonDll.
@@ -101,6 +106,7 @@ namespace ADDON
     typedef std::map<std::string, BinaryAddonBasePtr> BinaryAddonMgrBaseList;
     BinaryAddonMgrBaseList m_installedAddons;
     BinaryAddonMgrBaseList m_enabledAddons;
+    std::map<std::string, BinaryAddonBasePtr> m_runningAddons;
   };
 
 } /* namespace ADDON */

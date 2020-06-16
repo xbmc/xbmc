@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VFS.h"
 #include "filesystem/IDirectory.h"
@@ -55,12 +54,12 @@ namespace ADDON
       int label;             //!< String ID to use as label in dialog
 
       //! \brief The constructor reads the info from an add-on info structure.
-      ProtocolInfo(BinaryAddonBasePtr addonInfo);
+      ProtocolInfo(const AddonInfoPtr& addonInfo);
     };
 
     //! \brief Construct from add-on properties.
     //! \param addonInfo General addon properties
-    explicit CVFSEntry(BinaryAddonBasePtr addonInfo);
+    explicit CVFSEntry(const AddonInfoPtr& addonInfo);
     ~CVFSEntry() override;
 
     // Things that MUST be supplied by the child classes

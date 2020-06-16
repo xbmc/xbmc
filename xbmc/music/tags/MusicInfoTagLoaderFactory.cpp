@@ -16,7 +16,6 @@
 #include "ServiceBroker.h"
 #include "TagLoaderTagLib.h"
 #include "addons/AudioDecoder.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -44,8 +43,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   if (strExtension.empty())
     return NULL;
 
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+  std::vector<AddonInfoPtr> addonInfos;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
   for (const auto& addonInfo : addonInfos)
   {
     if (CAudioDecoder::HasTags(addonInfo))

@@ -14,7 +14,7 @@
 namespace ADDON
 {
 
-CAudioDecoder::CAudioDecoder(const BinaryAddonBasePtr& addonInfo)
+CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIODECODER, addonInfo)
 {
   m_CodecName = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@name").asString();

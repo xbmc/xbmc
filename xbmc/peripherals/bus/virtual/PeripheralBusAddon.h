@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/AddonManager.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
 
@@ -81,7 +80,7 @@ private:
   void OnEvent(const ADDON::AddonEvent& event);
   void UnRegisterAddon(const std::string& addonId);
 
-  void PromptEnableAddons(const ADDON::BinaryAddonBaseList& disabledAddons);
+  void PromptEnableAddons(const std::vector<ADDON::AddonInfoPtr>& disabledAddons);
 
   PeripheralAddonVector m_addons;
   PeripheralAddonVector m_failedAddons;

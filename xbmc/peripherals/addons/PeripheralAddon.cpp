@@ -47,8 +47,7 @@ using namespace XFILE;
   } while (0)
 #endif
 
-CPeripheralAddon::CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo,
-                                   CPeripherals& manager)
+CPeripheralAddon::CPeripheralAddon(const ADDON::AddonInfoPtr& addonInfo, CPeripherals& manager)
   : IAddonInstanceHandler(ADDON_INSTANCE_PERIPHERAL, addonInfo),
     m_manager(manager),
     m_bSupportsJoystickRumble(false),

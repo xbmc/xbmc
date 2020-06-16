@@ -17,7 +17,7 @@ namespace ADDON
 class CVisualization : public IAddonInstanceHandler
 {
 public:
-  CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, float y, float w, float h);
+  CVisualization(const AddonInfoPtr& addonInfo, float x, float y, float w, float h);
   ~CVisualization() override;
 
   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);

@@ -9,8 +9,6 @@
 #include "PVRClients.h"
 
 #include "ServiceBroker.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"
@@ -86,14 +84,14 @@ void CPVRClients::Continue()
 
 void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
 {
-  BinaryAddonBaseList addons;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addons, false, ADDON_PVRDLL);
+  std::vector<AddonInfoPtr> addons;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, false, ADDON_PVRDLL);
 
   if (addons.empty())
     return;
 
   bool bFoundChangedAddon = changedAddonId.empty();
-  std::vector<std::pair<BinaryAddonBasePtr, bool>> addonsWithStatus;
+  std::vector<std::pair<AddonInfoPtr, bool>> addonsWithStatus;
   for (const auto& addon : addons)
   {
     bool bEnabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
@@ -109,14 +107,14 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
   addons.clear();
 
   std::vector<std::pair<std::shared_ptr<CPVRClient>, int>> addonsToCreate;
-  std::vector<BinaryAddonBasePtr> addonsToReCreate;
-  std::vector<BinaryAddonBasePtr> addonsToDestroy;
+  std::vector<AddonInfoPtr> addonsToReCreate;
+  std::vector<AddonInfoPtr> addonsToDestroy;
 
   {
     CSingleLock lock(m_critSection);
     for (const auto& addonWithStatus : addonsWithStatus)
     {
-      BinaryAddonBasePtr addon = addonWithStatus.first;
+      AddonInfoPtr addon = addonWithStatus.first;
       bool bEnabled = addonWithStatus.second;
 
       if (bEnabled && (!IsKnownClient(addon->ID()) || !IsCreatedClient(addon->ID())))
