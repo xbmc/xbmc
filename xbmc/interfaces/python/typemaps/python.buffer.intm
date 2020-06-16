@@ -9,10 +9,11 @@
 %>
     if (PyUnicode_Check(${slarg}))
     {
-      const char* str = PyUnicode_AsUTF8(${slarg});
-      size_t size = (size_t)PyUnicode_GetLength(${slarg});
+      Py_ssize_t pysize;
+      const char* str = PyUnicode_AsUTF8AndSize(${slarg}, &pysize);
+      size_t size = static_cast<size_t>(pysize);
       ${api}.allocate(size);
-      ${api}.put(str,size);
+      ${api}.put(str, size);
       ${api}.flip(); // prepare the buffer for reading from
     }
     else if (PyByteArray_Check(${slarg}))
