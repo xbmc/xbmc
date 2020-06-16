@@ -141,14 +141,26 @@ void CAddonMgr::DeInit()
 
 bool CAddonMgr::HasAddons(const TYPE &type)
 {
-  VECADDONS addons;
-  return GetAddonsInternal(type, addons, true);
+  CSingleLock lock(m_critSection);
+
+  for (const auto& addonInfo : m_installedAddons)
+  {
+    if (addonInfo.second->HasType(type) && !IsAddonDisabled(addonInfo.second->ID()))
+      return true;
+  }
+  return false;
 }
 
 bool CAddonMgr::HasInstalledAddons(const TYPE &type)
 {
-  VECADDONS addons;
-  return GetAddonsInternal(type, addons, false);
+  CSingleLock lock(m_critSection);
+
+  for (const auto& addonInfo : m_installedAddons)
+  {
+    if (addonInfo.second->HasType(type))
+      return true;
+  }
+  return false;
 }
 
 void CAddonMgr::AddToUpdateableAddons(AddonPtr &pAddon)
