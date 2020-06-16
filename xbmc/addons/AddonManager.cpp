@@ -912,13 +912,16 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id)
   return added;
 }
 
-bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, TYPE type) const
+bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, TYPE type) const
 {
   CSingleLock lock(m_critSection);
 
   bool forUnknown = type == ADDON_UNKNOWN;
   for (auto& info : m_installedAddons)
   {
+    if (enabledOnly && m_disabled.find(info.first) != m_disabled.end())
+      continue;
+
     if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->HasType(type)))
       addonInfos.push_back(info.second);
   }

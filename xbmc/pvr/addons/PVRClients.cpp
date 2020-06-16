@@ -364,8 +364,8 @@ PVR_ERROR CPVRClients::GetCreatedClients(CPVRClientMap& clientsReady, std::vecto
 {
   clientsNotReady.clear();
 
-  BinaryAddonBaseList addons;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addons, true, ADDON::ADDON_PVRDLL);
+  std::vector<AddonInfoPtr> addons;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, true, ADDON::ADDON_PVRDLL);
 
   for (const auto& addon : addons)
   {

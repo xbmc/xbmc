@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
@@ -25,11 +24,9 @@ const std::vector<TYPE> ADDON_TYPES = {
   ADDON_AUDIODECODER
 };
 
-CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr &addonManager,
-                                               ADDON::CBinaryAddonManager &binaryAddonManager) :
-  m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()),
-  m_addonManager(addonManager),
-  m_binaryAddonManager(binaryAddonManager)
+CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
+  : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()),
+    m_addonManager(addonManager)
 {
   SetAddonExtensions();
 
@@ -125,8 +122,8 @@ void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
 {
   std::vector<std::string> extensions;
   std::vector<std::string> fileFolderExtensions;
-  BinaryAddonBaseList addonInfos;
-  m_binaryAddonManager.GetAddonInfos(addonInfos, true, type);
+  std::vector<AddonInfoPtr> addonInfos;
+  m_addonManager.GetAddonInfos(addonInfos, true, type);
   for (const auto& addonInfo : addonInfos)
   {
     std::string info = ADDON_VFS == type ? "@extensions" : "@extension";

@@ -68,8 +68,7 @@ bool CServiceManager::InitForTesting()
     return false;
   }
 
-  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
-                                                           *m_binaryAddonManager));
+  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr));
 
   init_level = 1;
   return true;
@@ -149,8 +148,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
-  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
-                                                           *m_binaryAddonManager));
+  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr));
 
   m_powerManager.reset(new CPowerManager());
   m_powerManager->Initialize();

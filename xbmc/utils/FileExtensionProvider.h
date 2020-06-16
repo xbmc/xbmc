@@ -15,14 +15,12 @@
 namespace ADDON
 {
   class CAddonMgr;
-  class CBinaryAddonManager;
 }
 
 class CFileExtensionProvider
 {
 public:
-  CFileExtensionProvider(ADDON::CAddonMgr &addonManager,
-                         ADDON::CBinaryAddonManager &binaryAddonManager);
+  CFileExtensionProvider(ADDON::CAddonMgr& addonManager);
   ~CFileExtensionProvider();
 
   /*!
@@ -71,7 +69,6 @@ private:
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr &m_addonManager;
-  ADDON::CBinaryAddonManager &m_binaryAddonManager;
 
   // File extension properties
   std::map<ADDON::TYPE, std::string> m_addonExtensions;
