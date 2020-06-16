@@ -23,7 +23,7 @@ class CInputStreamProvider
 public:
   CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo, KODI_HANDLE parentInstance);
 
-  void getAddonInstance(INSTANCE_TYPE instance_type,
+  void GetAddonInstance(INSTANCE_TYPE instance_type,
                         ADDON::AddonInfoPtr& addonInfo,
                         KODI_HANDLE& parentInstance) override;
 

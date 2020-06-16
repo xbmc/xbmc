@@ -25,7 +25,7 @@ CInputStreamProvider::CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo,
 {
 }
 
-void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type,
+void CInputStreamProvider::GetAddonInstance(INSTANCE_TYPE instance_type,
                                             ADDON::AddonInfoPtr& addonInfo,
                                             KODI_HANDLE& parentInstance)
 {

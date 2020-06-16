@@ -32,7 +32,7 @@ public:
     INSTANCE_INPUTSTREAM,
     INSTANCE_VIDEOCODEC
   };
-  virtual void getAddonInstance(INSTANCE_TYPE instance_type,
+  virtual void GetAddonInstance(INSTANCE_TYPE instance_type,
                                 ADDON::AddonInfoPtr& addonInfo,
                                 KODI_HANDLE& parentInstance) = 0;
 };
