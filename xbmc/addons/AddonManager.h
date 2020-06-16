@@ -121,11 +121,22 @@ namespace ADDON
     bool FindAddons();
 
     /*!
-     * Fills the the provided vector with the list of incompatible addons and returns if there's any.
+     * @brief Fills the the provided vector with the list of incompatible
+     * addons and returns if there's any.
      *
+     * @param[out] incompatible List of incompatible addons
      * @return true if there are incompatible addons
      */
-    bool GetIncompatibleAddons(VECADDONS& incompatible) const;
+    bool GetIncompatibleAddons(std::vector<AddonInfoPtr>& incompatible) const;
+
+    /*!
+     * @brief Disable addons in given list.
+     *
+     * @param[in] incompatible List of incompatible addons
+     * @return list of all addon **names** that were disabled
+     */
+    std::vector<std::string> DisableIncompatibleAddons(
+        const std::vector<AddonInfoPtr>& incompatible);
 
     /*!
      * Migrate all the addons (updates all addons that have an update pending and disables those
@@ -221,7 +232,19 @@ namespace ADDON
 
     bool ServicesHasStarted() const;
 
+    /*!
+     * @deprecated This addon function should no more used and becomes replaced
+     * in future with the other below by his callers.
+     */
     bool IsCompatible(const IAddon& addon) const;
+
+    /*!
+     * @brief Check given addon information is compatible with Kodi.
+     *
+     * @param[in] addonInfo Addon information to check
+     * @return true if compatible, false if not
+     */
+    bool IsCompatible(const AddonInfoPtr& addonInfo) const;
 
     /*! \brief Recursively get dependencies for an add-on
      */

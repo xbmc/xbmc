@@ -353,11 +353,11 @@ bool CAddonMgr::GetAddonsInternal(const TYPE& type, VECADDONS& addons, bool enab
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetIncompatibleAddons(VECADDONS& incompatible) const
+bool CAddonMgr::GetIncompatibleAddons(std::vector<AddonInfoPtr>& incompatible) const
 {
-  GetAddons(incompatible);
+  GetAddonInfos(incompatible, true, ADDON_UNKNOWN);
   incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
-                                    [this](const AddonPtr a) { return IsCompatible(*a); }),
+                                    [this](const AddonInfoPtr& a) { return IsCompatible(a); }),
                      incompatible.end());
   return !incompatible.empty();
 }
@@ -372,10 +372,16 @@ std::vector<std::string> CAddonMgr::MigrateAddons()
   InstallAddonUpdates(updates, true);
 
   // get addons that became incompatible and disable them
-  VECADDONS incompatible;
+  std::vector<AddonInfoPtr> incompatible;
   GetIncompatibleAddons(incompatible);
-  std::vector<std::string> changed;
 
+  return DisableIncompatibleAddons(incompatible);
+}
+
+std::vector<std::string> CAddonMgr::DisableIncompatibleAddons(
+    const std::vector<AddonInfoPtr>& incompatible)
+{
+  std::vector<std::string> changed;
   for (const auto& addon : incompatible)
   {
     CLog::Log(LOGINFO, "ADDON: {} version {} is incompatible", addon->ID(),
@@ -830,6 +836,26 @@ bool CAddonMgr::IsCompatible(const IAddon& addon) const
         AddonPtr addon;
         bool haveAddon = GetAddon(dependency.id, addon);
         if (!haveAddon || !addon->MeetsVersion(dependency.versionMin, dependency.version))
+          return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const
+{
+  for (const auto& dependency : addonInfo->GetDependencies())
+  {
+    if (!dependency.optional)
+    {
+      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
+      // not be missing anyway, unless addon was installed in an unsupported way.
+      if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
+          StringUtils::StartsWith(dependency.id, "kodi."))
+      {
+        AddonInfoPtr addonInfo = GetAddonInfo(dependency.id);
+        if (!addonInfo || !addonInfo->MeetsVersion(dependency.versionMin, dependency.version))
           return false;
       }
     }
