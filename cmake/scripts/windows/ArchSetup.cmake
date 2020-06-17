@@ -71,7 +71,7 @@ link_directories(${DEPENDENCIES_DIR}/lib)
 # Additional libraries
 list(APPEND DEPLIBS bcrypt.lib d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
                     PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib version.lib
-                    crypt32.lib)
+                    crypt32.lib Mfplat.lib Mfuuid.lib Strmiids.lib)
 
 # NODEFAULTLIB option
 set(_nodefaultlibs_RELEASE libcmt)
