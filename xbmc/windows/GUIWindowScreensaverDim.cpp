@@ -10,7 +10,7 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "addons/binary-addons/AddonDll.h"
+#include "addons/AddonManager.h"
 #include "guilib/GUITexture.h"
 #include "utils/Color.h"
 #include "windowing/GraphicContext.h"

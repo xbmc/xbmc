@@ -12,7 +12,6 @@
 #include "URL.h"
 #include "VideoPlayerCodec.h"
 #include "addons/AudioDecoder.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "utils/StringUtils.h"
 
 using namespace ADDON;
@@ -22,8 +21,8 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
   std::string fileType = strFileType;
   StringUtils::ToLower(fileType);
 
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+  std::vector<AddonInfoPtr> addonInfos;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
   for (const auto& addonInfo : addonInfos)
   {
     auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
@@ -50,8 +49,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
   StringUtils::ToLower(content);
   if (!content.empty())
   {
-    BinaryAddonBaseList addonInfos;
-    CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+    std::vector<AddonInfoPtr> addonInfos;
+    CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
     for (const auto& addonInfo : addonInfos)
     {
       auto types = StringUtils::Split(CAudioDecoder::GetMimetypes(addonInfo), "|");

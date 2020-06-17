@@ -323,36 +323,6 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   return true;
 }
 
-bool CAddonMgr::GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList)
-{
-  CSingleLock lock(m_critSection);
-
-  for (auto addon : m_installedAddons)
-  {
-    BINARY_ADDON_LIST_ENTRY binaryAddon;
-    if (GetInstalledBinaryAddon(addon.first, binaryAddon))
-      binaryAddonList.push_back(std::move(binaryAddon));
-  }
-
-  return !binaryAddonList.empty();
-}
-
-bool CAddonMgr::GetInstalledBinaryAddon(const std::string& addonId, BINARY_ADDON_LIST_ENTRY& binaryAddon)
-{
-  bool ret = false;
-
-  CSingleLock lock(m_critSection);
-
-  AddonInfoPtr addon = GetAddonInfo(addonId);
-  if (addon)
-  {
-    binaryAddon = BINARY_ADDON_LIST_ENTRY(!IsAddonDisabled(addonId), addon);
-    ret = true;
-  }
-
-  return ret;
-}
-
 bool CAddonMgr::GetAddonsInternal(const TYPE& type, VECADDONS& addons, bool enabledOnly) const
 {
   CSingleLock lock(m_critSection);
@@ -383,11 +353,11 @@ bool CAddonMgr::GetAddonsInternal(const TYPE& type, VECADDONS& addons, bool enab
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetIncompatibleAddons(VECADDONS& incompatible) const
+bool CAddonMgr::GetIncompatibleAddons(std::vector<AddonInfoPtr>& incompatible) const
 {
-  GetAddons(incompatible);
+  GetAddonInfos(incompatible, true, ADDON_UNKNOWN);
   incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
-                                    [this](const AddonPtr a) { return IsCompatible(*a); }),
+                                    [this](const AddonInfoPtr& a) { return IsCompatible(a); }),
                      incompatible.end());
   return !incompatible.empty();
 }
@@ -402,10 +372,16 @@ std::vector<std::string> CAddonMgr::MigrateAddons()
   InstallAddonUpdates(updates, true);
 
   // get addons that became incompatible and disable them
-  VECADDONS incompatible;
+  std::vector<AddonInfoPtr> incompatible;
   GetIncompatibleAddons(incompatible);
-  std::vector<std::string> changed;
 
+  return DisableIncompatibleAddons(incompatible);
+}
+
+std::vector<std::string> CAddonMgr::DisableIncompatibleAddons(
+    const std::vector<AddonInfoPtr>& incompatible)
+{
+  std::vector<std::string> changed;
   for (const auto& addon : incompatible)
   {
     CLog::Log(LOGINFO, "ADDON: {} version {} is incompatible", addon->ID(),
@@ -867,6 +843,26 @@ bool CAddonMgr::IsCompatible(const IAddon& addon) const
   return true;
 }
 
+bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const
+{
+  for (const auto& dependency : addonInfo->GetDependencies())
+  {
+    if (!dependency.optional)
+    {
+      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
+      // not be missing anyway, unless addon was installed in an unsupported way.
+      if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
+          StringUtils::StartsWith(dependency.id, "kodi."))
+      {
+        AddonInfoPtr addonInfo = GetAddonInfo(dependency.id);
+        if (!addonInfo || !addonInfo->MeetsVersion(dependency.versionMin, dependency.version))
+          return false;
+      }
+    }
+  }
+  return true;
+}
+
 std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id)
 {
   std::vector<DependencyInfo> added;
@@ -912,15 +908,35 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id)
   return added;
 }
 
-bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, TYPE type) const
+bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, TYPE type) const
 {
   CSingleLock lock(m_critSection);
 
   bool forUnknown = type == ADDON_UNKNOWN;
   for (auto& info : m_installedAddons)
   {
+    if (enabledOnly && m_disabled.find(info.first) != m_disabled.end())
+      continue;
+
     if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->HasType(type)))
       addonInfos.push_back(info.second);
+  }
+
+  return !addonInfos.empty();
+}
+
+bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type)
+{
+  CSingleLock lock(m_critSection);
+
+  bool forUnknown = type == ADDON_UNKNOWN;
+  for (const auto& info : m_installedAddons)
+  {
+    if (m_disabled.find(info.first) == m_disabled.end())
+      continue;
+
+    if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->HasType(type)))
+      addonInfos.emplace_back(info.second);
   }
 
   return !addonInfos.empty();

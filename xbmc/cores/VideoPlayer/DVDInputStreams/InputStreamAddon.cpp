@@ -8,8 +8,6 @@
 
 #include "InputStreamAddon.h"
 
-#include "addons/binary-addons/AddonDll.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
@@ -21,19 +19,19 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase,
+CInputStreamProvider::CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo,
                                            KODI_HANDLE parentInstance)
-  : m_addonBase(addonBase), m_parentInstance(parentInstance)
+  : m_addonInfo(addonInfo), m_parentInstance(parentInstance)
 {
 }
 
-void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type,
-                                            ADDON::BinaryAddonBasePtr& addonBase,
+void CInputStreamProvider::GetAddonInstance(INSTANCE_TYPE instance_type,
+                                            ADDON::AddonInfoPtr& addonInfo,
                                             KODI_HANDLE& parentInstance)
 {
   if (instance_type == ADDON::IAddonProvider::INSTANCE_VIDEOCODEC)
   {
-    addonBase = m_addonBase;
+    addonInfo = m_addonInfo;
     parentInstance = m_parentInstance;
   }
 }
@@ -43,16 +41,17 @@ void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type,
 using namespace ADDON;
 using namespace kodi::addon;
 
-CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase,
+CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
                                      IVideoPlayer* player,
                                      const CFileItem& fileitem,
                                      const std::string& instanceId)
-  : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonBase, nullptr, instanceId),
+  : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonInfo, nullptr, instanceId),
     CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem),
     m_player(player)
 {
-  std::string listitemprops = addonBase->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
-  std::string name(addonBase->ID());
+  std::string listitemprops =
+      addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
+  std::string name(addonInfo->ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
@@ -69,7 +68,7 @@ CInputStreamAddon::~CInputStreamAddon()
   Close();
 }
 
-bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem &fileitem)
+bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem& fileitem)
 {
   /// @todo Error for users to show deprecation, can be removed in Kodi 20
   CVariant oldAddonProp = fileitem.GetProperty("inputstreamaddon");
@@ -83,13 +82,13 @@ bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem 
   // check if a specific inputstream addon is requested
   CVariant addon = fileitem.GetProperty(STREAM_PROPERTY_INPUTSTREAM);
   if (!addon.isNull())
-    return (addon.asString() == addonBase->ID());
+    return (addon.asString() == addonInfo->ID());
 
   // check protocols
   std::string protocol = CURL(fileitem.GetDynPath()).GetProtocol();
   if (!protocol.empty())
   {
-    std::string protocols = addonBase->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
+    std::string protocols = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
     if (!protocols.empty())
     {
       std::vector<std::string> protocolsList = StringUtils::Tokenize(protocols, "|");
@@ -105,7 +104,7 @@ bool CInputStreamAddon::Supports(BinaryAddonBasePtr& addonBase, const CFileItem 
   std::string filetype = fileitem.GetURL().GetFileType();
   if (!filetype.empty())
   {
-    std::string extensions = addonBase->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
+    std::string extensions = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
     if (!extensions.empty())
     {
       std::vector<std::string> extensionsList = StringUtils::Tokenize(extensions, "|");
@@ -178,7 +177,8 @@ bool CInputStreamAddon::Open()
     m_caps = { 0 };
     m_struct.toAddon.get_capabilities(&m_struct, &m_caps);
 
-    m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
+    m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(
+        new CInputStreamProvider(GetAddonInfo(), m_struct.toAddon.addonInstance));
   }
   return ret;
 }
@@ -453,7 +453,8 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
   demuxStream->language = stream.m_language;
 
-  if (GetAddonBase()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >= AddonVersion("2.0.8"))
+  if (GetAddonInfo()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >=
+      AddonVersion("2.0.8"))
   {
     demuxStream->codec_fourcc = stream.m_codecFourCC;
   }

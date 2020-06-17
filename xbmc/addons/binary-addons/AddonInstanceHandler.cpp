@@ -8,7 +8,7 @@
 
 #include "AddonInstanceHandler.h"
 
-#include "BinaryAddonBase.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -17,25 +17,21 @@ namespace ADDON
 
 CCriticalSection IAddonInstanceHandler::m_cdSec;
 
-IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type, const BinaryAddonBasePtr& addonBase, KODI_HANDLE parentInstance/* = nullptr*/, const std::string& instanceID/* = ""*/)
-  : m_type(type),
-    m_parentInstance(parentInstance),
-    m_addonBase(addonBase)
+IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type,
+                                             const AddonInfoPtr& addonInfo,
+                                             KODI_HANDLE parentInstance /* = nullptr*/,
+                                             const std::string& instanceID /* = ""*/)
+  : m_type(type), m_parentInstance(parentInstance), m_addonInfo(addonInfo)
 {
   // if no special instance ID is given generate one from class pointer (is
   // faster as unique id and also safe enough for them).
   m_instanceId = !instanceID.empty() ? instanceID : StringUtils::Format("%p", static_cast<void*>(this));
-
-  m_addon = m_addonBase->GetAddon(this);
-  if (!m_addon)
-    CLog::Log(LOGFATAL, "IAddonInstanceHandler::%s: Tried to get add-on '%s' who not available!",
-                __FUNCTION__,
-                m_addonBase->ID().c_str());
+  m_addonBase = CServiceBroker::GetBinaryAddonManager().GetAddonBase(addonInfo, this, m_addon);
 }
 
 IAddonInstanceHandler::~IAddonInstanceHandler()
 {
-  m_addonBase->ReleaseAddon(this);
+  CServiceBroker::GetBinaryAddonManager().ReleaseAddonBase(m_addonBase, this);
 }
 
 std::string IAddonInstanceHandler::ID() const

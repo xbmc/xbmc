@@ -99,9 +99,9 @@ bool CAddonSystemSettings::IsActive(const IAddon& addon)
   return GetActive(addon.Type(), active) && active->ID() == addon.ID();
 }
 
-bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
+bool CAddonSystemSettings::UnsetActive(const AddonInfoPtr& addon)
 {
-  auto it = m_activeSettings.find(addon->Type());
+  auto it = m_activeSettings.find(addon->MainType());
   if (it == m_activeSettings.end())
     return true;
 

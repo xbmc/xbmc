@@ -30,31 +30,10 @@ namespace ADDON
     explicit CBinaryAddonBase(const AddonInfoPtr& addonInfo) : m_addonInfo(addonInfo) { }
 
     const std::string& ID() const;
-    const std::string& Path() const;
-
-    TYPE MainType() const;
-    const std::string& MainLibName() const;
-
-    bool HasType(TYPE type) const;
-    const std::vector<CAddonType>& Types() const;
-    const CAddonType* Type(TYPE type) const;
-
-    const AddonVersion& Version() const;
-    const AddonVersion& MinVersion() const;
-    const AddonVersion& DependencyVersion(const std::string& dependencyID) const;
-    const std::string& Name() const;
-    const std::string& Summary() const;
-    const std::string& Description() const;
-    const std::string& Author() const;
-    const std::string& ChangeLog() const;
-    const std::string& Icon() const;
-    const ArtMap& Art() const;
-    const std::string& Disclaimer() const;
-
-    bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const;
 
     AddonDllPtr GetAddon(IAddonInstanceHandler* handler);
     void ReleaseAddon(IAddonInstanceHandler* handler);
+    size_t UsedInstanceCount() const;
 
     AddonDllPtr GetActiveAddon();
 
@@ -66,7 +45,7 @@ namespace ADDON
   private:
     AddonInfoPtr m_addonInfo;
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     AddonDllPtr m_activeAddon;
     std::unordered_set<IAddonInstanceHandler*> m_activeAddonHandlers;
   };

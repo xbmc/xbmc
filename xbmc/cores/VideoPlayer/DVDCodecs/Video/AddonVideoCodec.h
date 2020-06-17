@@ -21,7 +21,7 @@ class CAddonVideoCodec
 {
 public:
   CAddonVideoCodec(CProcessInfo& processInfo,
-                   ADDON::BinaryAddonBasePtr& addonInfo,
+                   ADDON::AddonInfoPtr& addonInfo,
                    KODI_HANDLE parentInstance);
   ~CAddonVideoCodec() override;
 

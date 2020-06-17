@@ -16,8 +16,8 @@
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(BinaryAddonBasePtr addonBase)
- : IAddonInstanceHandler(ADDON_INSTANCE_SCREENSAVER, addonBase)
+CScreenSaver::CScreenSaver(const AddonInfoPtr& addonInfo)
+  : IAddonInstanceHandler(ADDON_INSTANCE_SCREENSAVER, addonInfo)
 {
   m_name = Name();
   m_presets = CSpecialProtocol::TranslatePath(Path());

@@ -22,16 +22,6 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::map<std::string, AddonInfoPtr> ADDON_INFO_LIST;
 
-  /*!
-   * @brief The value binaryAddonList use a tuple in following construct:
-   * | Number | Type        | Description
-   * |:------:|------------:|:------------------------------------------------
-   * | first  | boolean     | If true addon is enabled, otherwise disabled
-   * | second | CAddonInfo  | Information data of addon
-   */
-  typedef std::pair<bool, AddonInfoPtr> BINARY_ADDON_LIST_ENTRY;
-  typedef std::vector<BINARY_ADDON_LIST_ENTRY> BINARY_ADDON_LIST;
-
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
   /**
@@ -110,30 +100,6 @@ namespace ADDON
 
     bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
 
-    /*!
-     * @brief To get all installed binary addon on Kodi
-     *
-     * This function becomes used from ADDON::CBinaryAddonManager to get his
-     * related addons (whether enabled or disabled).
-     *
-     * @param[out] binaryAddonList The list where from here the binary addons
-     *                             becomes stored.
-     * @return                     If list is not empty becomes true returned
-     */
-    bool GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList);
-
-    /*!
-     * @brief To get requested installed binary addon on Kodi
-     *
-     * This function is used by ADDON::CBinaryAddonManager to obtain the add-on
-     * with the given id, regardless the add-on is disabled or enabled.
-     *
-     * @param[in] addonId          Id to get
-     * @param[out] binaryAddon     Addon info returned
-     * @return                     True, if the requested add-on was found, false otherwise
-     */
-    bool GetInstalledBinaryAddon(const std::string& addonId, BINARY_ADDON_LIST_ENTRY& binaryAddon);
-
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
 
@@ -155,11 +121,22 @@ namespace ADDON
     bool FindAddons();
 
     /*!
-     * Fills the the provided vector with the list of incompatible addons and returns if there's any.
+     * @brief Fills the the provided vector with the list of incompatible
+     * addons and returns if there's any.
      *
+     * @param[out] incompatible List of incompatible addons
      * @return true if there are incompatible addons
      */
-    bool GetIncompatibleAddons(VECADDONS& incompatible) const;
+    bool GetIncompatibleAddons(std::vector<AddonInfoPtr>& incompatible) const;
+
+    /*!
+     * @brief Disable addons in given list.
+     *
+     * @param[in] incompatible List of incompatible addons
+     * @return list of all addon **names** that were disabled
+     */
+    std::vector<std::string> DisableIncompatibleAddons(
+        const std::vector<AddonInfoPtr>& incompatible);
 
     /*!
      * Migrate all the addons (updates all addons that have an update pending and disables those
@@ -255,13 +232,53 @@ namespace ADDON
 
     bool ServicesHasStarted() const;
 
+    /*!
+     * @deprecated This addon function should no more used and becomes replaced
+     * in future with the other below by his callers.
+     */
     bool IsCompatible(const IAddon& addon) const;
+
+    /*!
+     * @brief Check given addon information is compatible with Kodi.
+     *
+     * @param[in] addonInfo Addon information to check
+     * @return true if compatible, false if not
+     */
+    bool IsCompatible(const AddonInfoPtr& addonInfo) const;
 
     /*! \brief Recursively get dependencies for an add-on
      */
     std::vector<DependencyInfo> GetDepsRecursive(const std::string& id);
 
-    bool GetAddonInfos(AddonInfos& addonInfos, TYPE type) const;
+    /*!
+     * @brief Get a list of add-on's with info's for the on system available
+     * ones.
+     *
+     * @param[out] addonInfos list where finded addon information becomes stored
+     * @param[in] enabledOnly If true are only enabled ones given back,
+     *                        if false all on system available. Default is true.
+     * @param[in] type The requested type, with "ADDON_UNKNOWN" are all add-on
+     *                 types given back who match the case with value before.
+     *                 If a type id becomes added are only add-ons returned who
+     *                 match them. Default is for all types.
+     * @return true if the list contains entries
+     */
+    bool GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, TYPE type) const;
+
+    /*!
+     * @brief Get a list of disabled add-on's with info's for the on system
+     * available ones.
+     *
+     * @param[out] addonInfos list where finded addon information becomes stored
+     * @param[in] type        The requested type, with "ADDON_UNKNOWN"
+     *                        are all add-on types given back who match the case
+     *                        with value before.
+     *                        If a type id becomes added are only add-ons
+     *                        returned who match them. Default is for all types.
+     * @return true if the list contains entries
+     */
+    bool GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type);
+
     const AddonInfoPtr GetAddonInfo(const std::string& id, TYPE type = ADDON_UNKNOWN) const;
 
     /*!

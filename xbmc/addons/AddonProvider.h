@@ -20,21 +20,21 @@
 
 namespace ADDON
 {
-  class CBinaryAddonBase;
-  typedef std::shared_ptr<CBinaryAddonBase> BinaryAddonBasePtr;
+class CAddonInfo;
+typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
 
-  class IAddonProvider
+class IAddonProvider
+{
+public:
+  virtual ~IAddonProvider() = default;
+  enum INSTANCE_TYPE
   {
-  public:
-    virtual ~IAddonProvider() = default;
-    enum INSTANCE_TYPE
-    {
-      INSTANCE_INPUTSTREAM,
-      INSTANCE_VIDEOCODEC
-    };
-    virtual void getAddonInstance(INSTANCE_TYPE instance_type,
-                                  ADDON::BinaryAddonBasePtr& addonBase,
-                                  KODI_HANDLE& parentInstance) = 0;
+    INSTANCE_INPUTSTREAM,
+    INSTANCE_VIDEOCODEC
   };
+  virtual void GetAddonInstance(INSTANCE_TYPE instance_type,
+                                ADDON::AddonInfoPtr& addonInfo,
+                                KODI_HANDLE& parentInstance) = 0;
+};
 
-  } //Namespace
+} // namespace ADDON

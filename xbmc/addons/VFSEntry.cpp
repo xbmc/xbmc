@@ -9,8 +9,6 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
 #include "addons/interfaces/Filesystem.h"
 #include "network/ZeroconfBrowser.h"
 #include "utils/StringUtils.h"
@@ -87,8 +85,8 @@ void CVFSAddonCache::Update()
 {
   std::vector<VFSEntryPtr> addonmap;
 
-  BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_VFS);
+  std::vector<AddonInfoPtr> addonInfos;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_VFS);
   for (const auto& addonInfo : addonInfos)
   {
     VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
@@ -137,7 +135,7 @@ class CVFSURLWrapper
     std::vector<std::string> m_strings;
 };
 
-CVFSEntry::ProtocolInfo::ProtocolInfo(BinaryAddonBasePtr addonInfo)
+CVFSEntry::ProtocolInfo::ProtocolInfo(const AddonInfoPtr& addonInfo)
   : supportPath(addonInfo->Type(ADDON_VFS)->GetValue("@supportPath").asBoolean()),
     supportUsername(addonInfo->Type(ADDON_VFS)->GetValue("@supportUsername").asBoolean()),
     supportPassword(addonInfo->Type(ADDON_VFS)->GetValue("@supportPassword").asBoolean()),
@@ -150,7 +148,7 @@ CVFSEntry::ProtocolInfo::ProtocolInfo(BinaryAddonBasePtr addonInfo)
 {
 }
 
-CVFSEntry::CVFSEntry(BinaryAddonBasePtr addonInfo)
+CVFSEntry::CVFSEntry(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_VFS, addonInfo),
     m_protocols(addonInfo->Type(ADDON_VFS)->GetValue("@protocols").asString()),
     m_extensions(addonInfo->Type(ADDON_VFS)->GetValue("@extensions").asString()),

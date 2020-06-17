@@ -21,14 +21,14 @@ class CInputStreamProvider
   : public ADDON::IAddonProvider
 {
 public:
-  CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, KODI_HANDLE parentInstance);
+  CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo, KODI_HANDLE parentInstance);
 
-  void getAddonInstance(INSTANCE_TYPE instance_type,
-                        ADDON::BinaryAddonBasePtr& addonBase,
+  void GetAddonInstance(INSTANCE_TYPE instance_type,
+                        ADDON::AddonInfoPtr& addonInfo,
                         KODI_HANDLE& parentInstance) override;
 
 private:
-  ADDON::BinaryAddonBasePtr m_addonBase;
+  ADDON::AddonInfoPtr m_addonInfo;
   KODI_HANDLE m_parentInstance;
 };
 
@@ -43,13 +43,13 @@ class CInputStreamAddon
   , public CDVDInputStream::IChapter
 {
 public:
-  CInputStreamAddon(ADDON::BinaryAddonBasePtr& addonBase,
+  CInputStreamAddon(const ADDON::AddonInfoPtr& addonInfo,
                     IVideoPlayer* player,
                     const CFileItem& fileitem,
                     const std::string& instanceId);
   ~CInputStreamAddon() override;
 
-  static bool Supports(ADDON::BinaryAddonBasePtr& addonBase, const CFileItem& fileitem);
+  static bool Supports(const ADDON::AddonInfoPtr& addonInfo, const CFileItem& fileitem);
 
   // CDVDInputStream
   bool Open() override;

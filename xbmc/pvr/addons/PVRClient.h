@@ -281,7 +281,7 @@ private:
 class CPVRClient : public ADDON::IAddonInstanceHandler
 {
 public:
-  explicit CPVRClient(ADDON::BinaryAddonBasePtr addonBase);
+  explicit CPVRClient(const ADDON::AddonInfoPtr& addonInfo);
   ~CPVRClient() override;
 
   void OnPreInstall() override;

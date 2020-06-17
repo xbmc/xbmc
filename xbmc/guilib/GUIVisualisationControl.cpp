@@ -363,7 +363,10 @@ bool CGUIVisualisationControl::GetPresetList(std::vector<std::string> &vecpreset
 
 bool CGUIVisualisationControl::InitVisualization()
 {
-  const ADDON::BinaryAddonBasePtr addonBase = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), ADDON::ADDON_VIZ);
+  const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_MUSICPLAYER_VISUALISATION);
+  const ADDON::AddonInfoPtr addonBase =
+      CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_VIZ);
   if (!addonBase)
     return false;
 

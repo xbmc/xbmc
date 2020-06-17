@@ -11,7 +11,6 @@
 #include "LockType.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
-#include "addons/binary-addons/BinaryAddonManager.h"
 #include "addons/Skin.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"
@@ -60,7 +59,7 @@ bool HasPeripherals(const std::string &condition, const std::string &value, Sett
 
 bool HasPeripheralLibraries(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return CServiceBroker::GetBinaryAddonManager().HasInstalledAddons(ADDON::ADDON_PERIPHERALDLL);
+  return CServiceBroker::GetAddonMgr().HasInstalledAddons(ADDON::ADDON_PERIPHERALDLL);
 }
 
 bool HasRumbleFeature(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)

@@ -17,7 +17,7 @@ namespace ADDON
 class CScreenSaver : public IAddonInstanceHandler
 {
 public:
-  explicit CScreenSaver(BinaryAddonBasePtr addonBase);
+  explicit CScreenSaver(const AddonInfoPtr& addonInfo);
   ~CScreenSaver() override;
 
   bool Start();

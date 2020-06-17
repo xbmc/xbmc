@@ -43,7 +43,7 @@ public:
    * Attempt to unset addon as active. Returns true if addon is no longer active,
    * false if it could not be unset (e.g. if the addon is the default)
    */
-  bool UnsetActive(const AddonPtr& addon);
+  bool UnsetActive(const AddonInfoPtr& addon);
 
 private:
   CAddonSystemSettings();

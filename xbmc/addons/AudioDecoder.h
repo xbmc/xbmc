@@ -8,7 +8,6 @@
 #pragma once
 
 #include "addons/binary-addons/AddonInstanceHandler.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "cores/paplayer/ICodec.h"
 #include "filesystem/MusicFileDirectory.h"
@@ -29,7 +28,7 @@ namespace ADDON
                         public XFILE::CMusicFileDirectory
   {
   public:
-    explicit CAudioDecoder(const BinaryAddonBasePtr& addonInfo);
+    explicit CAudioDecoder(const AddonInfoPtr& addonInfo);
     ~CAudioDecoder() override;
 
     // Things that MUST be supplied by the child classes
@@ -43,22 +42,22 @@ namespace ADDON
                       EmbeddedArt *art = nullptr) override;
     int GetTrackCount(const std::string& strPath) override;
 
-    static inline std::string GetExtensions(const BinaryAddonBasePtr& addonInfo)
+    static inline std::string GetExtensions(const AddonInfoPtr& addonInfo)
     {
       return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@extension").asString();
     }
 
-    static inline std::string GetMimetypes(const BinaryAddonBasePtr& addonInfo)
+    static inline std::string GetMimetypes(const AddonInfoPtr& addonInfo)
     {
       return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@mimetype").asString();
     }
 
-    static inline bool HasTags(const BinaryAddonBasePtr& addonInfo)
+    static inline bool HasTags(const AddonInfoPtr& addonInfo)
     {
       return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean();
     }
 
-    static inline bool HasTracks(const BinaryAddonBasePtr& addonInfo)
+    static inline bool HasTracks(const AddonInfoPtr& addonInfo)
     {
       return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tracks").asBoolean();
     }

@@ -10,7 +10,7 @@
 namespace ADDON
 {
 
-CAudioEncoder::CAudioEncoder(BinaryAddonBasePtr addonInfo)
+CAudioEncoder::CAudioEncoder(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIOENCODER, addonInfo)
 {
   m_struct = {{ 0 }};

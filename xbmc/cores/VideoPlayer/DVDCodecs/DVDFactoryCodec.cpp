@@ -49,9 +49,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
 
   if (hint.externalInterfaces)
   {
-    ADDON::BinaryAddonBasePtr addonInfo;
+    ADDON::AddonInfoPtr addonInfo;
     KODI_HANDLE parentInstance;
-    hint.externalInterfaces->getAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
+    hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
     if (addonInfo && parentInstance)
     {
       pCodec.reset(new CAddonVideoCodec(processInfo, addonInfo, parentInstance));

@@ -12,7 +12,6 @@
 #include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/VFSEntry.h"
-#include "addons/binary-addons/BinaryAddonBase.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"

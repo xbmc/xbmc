@@ -27,7 +27,7 @@ namespace ADDON
 {
 
 CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
-  : CAddon(addonInfo, addonBase->MainType()), m_binaryAddonBase(addonBase)
+  : CAddon(addonInfo, addonInfo->MainType()), m_binaryAddonBase(addonBase)
 {
 }
 
