@@ -219,7 +219,6 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
     intentFilter.addAction("android.intent.action.SCREEN_ON");
     intentFilter.addAction("android.intent.action.HEADSET_PLUG");
-    intentFilter.addAction("android.media.AUDIO_BECOMING_NOISY");
     // We currently use HDMI_AUDIO_PLUG for mode switch, don't use it on TV's (device_type = "0"
     if (m_hdmiSource)
       intentFilter.addAction("android.media.action.HDMI_AUDIO_PLUG");
@@ -1025,7 +1024,24 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   {
     bool newstate = m_headsetPlugged;
     if (action == "android.intent.action.HEADSET_PLUG")
+    {
       newstate = (intent.getIntExtra("state", 0) != 0);
+
+      // If unplugged headset and playing content then pause or stop playback
+      if (!newstate && (m_playback_state & PLAYBACK_STATE_PLAYING))
+      {
+        if (g_application.GetAppPlayer().CanPause())
+        {
+          CApplicationMessenger::GetInstance().PostMsg(
+              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+        }
+        else
+        {
+          CApplicationMessenger::GetInstance().PostMsg(
+              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        }
+      }
+    }
     else if (action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
       newstate = (intent.getIntExtra("android.bluetooth.profile.extra.STATE", 0) == 2 /* STATE_CONNECTED */);
 
@@ -1052,12 +1068,6 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   {
     if (m_playback_state & PLAYBACK_STATE_VIDEO)
       CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
-  }
-  else if (action == "android.media.AUDIO_BECOMING_NOISY")
-  {
-    if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_AUDIO))
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
