@@ -523,12 +523,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_vecItems->GetPath() == "?")
         m_vecItems->SetPath("");
-      std::string path, fileName;
       std::string dir = message.GetStringParam(0);
-      URIUtils::Split(dir, path, fileName);
-      URIUtils::RemoveExtension(fileName);
-      if (StringUtils::IsInteger(fileName))
-        dir = path;
       const std::string &ret = message.GetStringParam(1);
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
@@ -2174,6 +2169,21 @@ std::string CGUIMediaWindow::GetStartFolder(const std::string &dir)
   if (StringUtils::EqualsNoCase(dir, "$root") ||
       StringUtils::EqualsNoCase(dir, "root"))
     return "";
+
+  // Let plugins handle their own urls themselves
+  if (StringUtils::StartsWith(dir, "plugin://"))
+    return dir;
+
+//! @todo This ifdef block probably belongs somewhere else. Move it to a better place!
+#if defined(TARGET_ANDROID)
+  // Hack for Android items (numbered id's) on the leanback screen
+  std::string path;
+  std::string fileName;
+  URIUtils::Split(dir, path, fileName);
+  URIUtils::RemoveExtension(fileName);
+  if (StringUtils::IsInteger(fileName))
+    return path;
+#endif
 
   return dir;
 }
