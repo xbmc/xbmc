@@ -238,6 +238,7 @@ private:
   bool m_videosurfaceInUse;
   bool m_firstrun;
   bool m_exiting;
+  bool m_bResumePlayback = false;
   pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
   static CCriticalSection m_activityResultMutex;
