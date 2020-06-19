@@ -380,4 +380,12 @@ namespace MUSIC_UTILS
     return arttypes;
   }
 
-}
+  bool IsValidArtType(const std::string& potentialArtType)
+  {
+    // Check length and is ascii
+    return potentialArtType.length() <= 25 &&
+                 std::find_if_not(potentialArtType.begin(), potentialArtType.end(),
+                                  StringUtils::isasciialphanum) == potentialArtType.end();
+  }
+
+  } // namespace MUSIC_UTILS
