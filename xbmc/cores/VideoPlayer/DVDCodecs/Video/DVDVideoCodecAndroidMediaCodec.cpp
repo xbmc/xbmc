@@ -999,11 +999,6 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
   if (m_codec)
   {
-    // flush all outputbuffers inflight, they will
-    // become invalid on m_codec->flush and generate
-    // a spew of java exceptions if used
-    FlushInternal();
-
     // now we can flush the actual MediaCodec object
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state (%d)", m_state);
     m_codec->flush();
@@ -1127,6 +1122,9 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
     SignalEndOfStream();
     m_state = MEDIACODEC_STATE_WAIT_ENDOFSTREAM;
   }
+  else if (m_state == MEDIACODEC_STATE_FLUSHED)
+    return VC_EOF;
+
   return VC_NONE;
 }
 
