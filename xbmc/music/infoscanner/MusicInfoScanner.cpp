@@ -1555,7 +1555,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     {
       double bestRelevance = 0;
       double minRelevance = THRESHOLD;
-      if (scraper.GetAlbumCount() > 1) // score the matches
+      if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
       {
         //show dialog with all albums found
         if (pDialog)
@@ -1606,11 +1606,11 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
             items.Add(item);
           }
-          if (relevance > .99f) // we're so close, no reason to search further
+          if (!pDialog && relevance > .99f) // we're so close, no reason to search further
             break;
         }
 
-        if (pDialog && bestRelevance < THRESHOLD)
+        if (pDialog)
         {
           pDlg->Sort(false);
           pDlg->SetItems(items);
