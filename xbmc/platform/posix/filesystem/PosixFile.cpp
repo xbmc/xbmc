@@ -22,6 +22,10 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+
+#if defined(HAVE_STATX) // use statx if available to get file birth date
+#include <sys/sysmacros.h>
+#endif
 #include <unistd.h>
 
 using namespace XFILE;
@@ -331,7 +335,43 @@ int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
   if (filename.empty() || !buffer)
     return -1;
 
+// Use statx to get file creation date (btime) which isn't available with just stat. This fills the
+// buffer with the same data as the Windows implementation. Useful for the music library so that
+// tags can be updated without changing the date they were added to the library (as m/ctime does)
+
+#if defined(HAVE_STATX)
+  int dirfd = AT_FDCWD;
+  int flags = AT_STATX_SYNC_AS_STAT;
+  unsigned int mask = STATX_BASIC_STATS | STATX_BTIME;
+  struct statx stxbuf = {};
+  long ret = 0;
+  ret = statx(dirfd, filename.c_str(), flags, mask, &stxbuf);
+  if (ret == 0)
+  {
+    buffer->st_mtime = stxbuf.stx_mtime.tv_sec; // modification time
+    if (stxbuf.stx_btime.tv_sec != 0)
+      buffer->st_ctime = stxbuf.stx_btime.tv_sec; // birth (creation) time
+    else
+      buffer->st_ctime = stxbuf.stx_ctime.tv_sec; // change time (of metadata or file)
+    // fill everything else we might need (statx buffer is slightly different to stat buffer so
+    // can't just return the statx buffer) Note we might not need all this but lets fill it for
+    // completeness
+    buffer->st_atime = stxbuf.stx_atime.tv_sec;
+    buffer->st_size = stxbuf.stx_size;
+    buffer->st_blksize = stxbuf.stx_blksize;
+    buffer->st_blocks = stxbuf.stx_blocks;
+    buffer->st_ino = stxbuf.stx_ino;
+    buffer->st_nlink = stxbuf.stx_nlink;
+    buffer->st_uid = stxbuf.stx_uid;
+    buffer->st_gid = stxbuf.stx_gid;
+    buffer->st_mode = stxbuf.stx_mode;
+    buffer->st_rdev = makedev(stxbuf.stx_rdev_major, stxbuf.stx_rdev_minor);
+    buffer->st_dev = makedev(stxbuf.stx_dev_major, stxbuf.stx_dev_minor);
+  }
+  return ret;
+#else
   return stat64(filename.c_str(), buffer);
+#endif
 }
 
 int CPosixFile::Stat(struct __stat64* buffer)
