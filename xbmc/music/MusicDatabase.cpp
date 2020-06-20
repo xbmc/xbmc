@@ -370,9 +370,8 @@ void CMusicDatabase::CreateAnalytics()
     m_pDS->exec("CREATE TRIGGER tgrUpdateArtist BEFORE UPDATE ON artist FOR EACH ROW"
                 " SET NEW.dateModified = now()");
 
-    m_pDS->exec("CREATE TRIGGER tgrInsertGenre AFTER INSERT ON genre"
-                " BEGIN UPDATE versiontagscan SET genresupdated = now();" 
-                " END");
+    m_pDS->exec("CREATE TRIGGER tgrInsertGenre AFTER INSERT ON genre FOR EACH ROW"
+                " UPDATE versiontagscan SET genresupdated = now()");
   }
 
     // Triggers to maintain recent changes to album and song artist links in removed_link table
