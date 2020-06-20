@@ -135,7 +135,11 @@ public:
   void SetLastPlayed(const std::string& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
   void SetDateAdded(const std::string& strDateAdded);
-  void SetDateAdded(const CDateTime& strDateAdded);
+  void SetDateAdded(const CDateTime& dateAdded);
+  void SetDateUpdated(const std::string& strDateUpdated);
+  void SetDateUpdated(const CDateTime& dateUpdated);
+  void SetDateNew(const std::string& strDateNew);
+  void SetDateNew(const CDateTime& dateNew);
   void SetCompilation(bool compilation);
   void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
@@ -222,7 +226,9 @@ protected:
   std::string m_strReleaseDate; //ISO8601 date YYYY, YYYY-MM or YYYY-MM-DD
   std::string m_strOriginalDate; //ISO8601 date YYYY, YYYY-MM or YYYY-MM-DD
   CDateTime m_lastPlayed;
+  CDateTime m_dateNew;
   CDateTime m_dateAdded;
+  CDateTime m_dateUpdated;
   bool m_bCompilation;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits

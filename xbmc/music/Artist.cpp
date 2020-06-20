@@ -235,3 +235,13 @@ void CArtist::SetDateAdded(const std::string& strDateAdded)
   dateAdded.SetFromDBDateTime(strDateAdded);
 }
 
+void CArtist::SetDateUpdated(const std::string& strDateUpdated)
+{
+  dateUpdated.SetFromDBDateTime(strDateUpdated);
+}
+
+void CArtist::SetDateNew(const std::string& strDateNew)
+{
+  dateNew.SetFromDBDateTime(strDateNew);
+}
+

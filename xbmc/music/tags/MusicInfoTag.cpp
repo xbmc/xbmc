@@ -593,14 +593,34 @@ void CMusicInfoTag::SetLastPlayed(const CDateTime& lastplayed)
   m_lastPlayed = lastplayed;
 }
 
-void CMusicInfoTag::SetDateAdded(const std::string& dateAdded)
+void CMusicInfoTag::SetDateAdded(const std::string& strDateAdded)
 {
-  m_dateAdded.SetFromDBDateTime(dateAdded);
+  m_dateAdded.SetFromDBDateTime(strDateAdded);
 }
 
 void CMusicInfoTag::SetDateAdded(const CDateTime& dateAdded)
 {
   m_dateAdded = dateAdded;
+}
+
+void MUSIC_INFO::CMusicInfoTag::SetDateUpdated(const std::string& strDateUpdated)
+{
+  m_dateUpdated.SetFromDBDateTime(strDateUpdated);
+}
+
+void MUSIC_INFO::CMusicInfoTag::SetDateUpdated(const CDateTime& dateUpdated)
+{
+  m_dateUpdated = dateUpdated;
+}
+
+void MUSIC_INFO::CMusicInfoTag::SetDateNew(const std::string& strDateNew)
+{
+  m_dateNew.SetFromDBDateTime(strDateNew);
+}
+
+void MUSIC_INFO::CMusicInfoTag::SetDateNew(const CDateTime& dateNew)
+{
+  m_dateNew = dateNew;
 }
 
 void CMusicInfoTag::SetCompilation(bool compilation)
@@ -746,6 +766,8 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
   SetGenre(artist.genre);
   SetMood(StringUtils::Join(artist.moods, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
   SetDateAdded(artist.dateAdded);
+  SetDateUpdated(artist.dateUpdated);
+  SetDateNew(artist.dateNew);
   SetDatabaseId(artist.idArtist, MediaTypeArtist);
 
   SetLoaded();
@@ -782,6 +804,8 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetBoxset(album.bBoxedSet);
   SetAlbumReleaseType(album.releaseType);
   SetDateAdded(album.dateAdded);
+  SetDateUpdated(album.dateUpdated);
+  SetDateNew(album.dateNew);
   SetPlayCount(album.iTimesPlayed);
   SetDatabaseId(album.idAlbum, MediaTypeAlbum);
   SetLastPlayed(album.lastPlayed);
@@ -818,6 +842,8 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetPlayCount(song.iTimesPlayed);
   SetLastPlayed(song.lastPlayed);
   SetDateAdded(song.dateAdded);
+  SetDateUpdated(song.dateUpdated);
+  SetDateNew(song.dateNew);
   SetCoverArtInfo(song.embeddedArt.m_size, song.embeddedArt.m_mime);
   SetRating(song.rating);
   SetUserrating(song.userrating);
@@ -903,6 +929,9 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["playcount"] = m_iTimesPlayed;
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty;
+  value["datenew"] = m_dateNew.IsValid() ? m_dateNew.GetAsDBDateTime() : StringUtils::Empty;
+  value["datemodified"] =
+      m_dateUpdated.IsValid() ? m_dateUpdated.GetAsDBDateTime() : StringUtils::Empty;
   value["lyrics"] = m_strLyrics;
   value["albumid"] = m_iAlbumId;
   value["compilationartist"] = m_bCompilation;
@@ -1114,6 +1143,8 @@ void CMusicInfoTag::Clear()
   m_bLoaded = false;
   m_lastPlayed.Reset();
   m_dateAdded.Reset();
+  m_dateNew.Reset();
+  m_dateUpdated.Reset();
   m_bCompilation = false;
   m_bBoxset = false;
   m_strDiscSubtitle.clear();

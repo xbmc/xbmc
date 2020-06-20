@@ -176,6 +176,7 @@ void CMusicInfoScanner::Process()
           }
 
           m_musicDatabase.CleanupOrphanedItems();
+          m_musicDatabase.CheckArtistLinksChanged();
 
           if (m_handle)
             m_handle->SetTitle(g_localizeStrings.Get(331));
@@ -625,6 +626,8 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       MAPSONGS::iterator it = songsMap->find(items[i]->GetPath());
       if (it != songsMap->end())
       {
+        song.idSong = it->second.idSong; // Reuse ID
+        song.dateNew = it->second.dateNew; // Keep date originally created
         song.iTimesPlayed = it->second.iTimesPlayed;
         song.lastPlayed = it->second.lastPlayed;
         if (song.rating == 0)    song.rating = it->second.rating;

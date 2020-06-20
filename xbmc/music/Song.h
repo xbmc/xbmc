@@ -182,7 +182,9 @@ public:
   std::string strDiscSubtitle;
   int iTimesPlayed;
   CDateTime lastPlayed;
-  CDateTime dateAdded;
+  CDateTime dateAdded; // File creation or modification time, or when tags (re-)scanned
+  CDateTime dateUpdated; // Time db record Last modified
+  CDateTime dateNew;  // Time db record created
   int iStartOffset;
   int iEndOffset;
   bool bCompilation;

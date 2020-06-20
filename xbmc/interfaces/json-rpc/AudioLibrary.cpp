@@ -36,6 +36,25 @@ using namespace KODI::MESSAGING;
 JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CVariant properties = CVariant(CVariant::VariantTypeObject);
+  CMusicDatabase musicdatabase;
+  // Make db connection once if one or more properties needs db access
+  for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array();
+       it != parameterObject["properties"].end_array(); it++)
+  {
+    std::string propertyName = it->asString();
+    if (propertyName == "librarylastupdated" || propertyName == "librarylastcleaned" ||
+        propertyName == "artistlinksupdated" || propertyName == "songslastadded" ||
+        propertyName == "albumslastadded" || propertyName == "artistslastadded" ||
+        propertyName == "songsmodified" || propertyName == "albumsmodified" ||
+        propertyName == "artistsmodified")
+    {
+      if (!musicdatabase.Open())
+        return InternalError;
+      else
+        break;
+    }
+  }
+
   for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array(); it != parameterObject["properties"].end_array(); it++)
   {
     std::string propertyName = it->asString();
@@ -43,13 +62,25 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
     if (propertyName == "missingartistid")
       property = (int)BLANKARTIST_ID;
     else if (propertyName == "librarylastupdated")
-    {
-      CMusicDatabase musicdatabase;
-      if (!musicdatabase.Open())
-        return InternalError;
-
       property = musicdatabase.GetLibraryLastUpdated();
-    }
+    else if (propertyName == "librarylastcleaned")  
+      property = musicdatabase.GetLibraryLastCleaned();
+    else if (propertyName == "artistlinksupdated")
+      property = musicdatabase.GetArtistLinksUpdated();
+    else if (propertyName == "songslastadded")
+      property = musicdatabase.GetSongsLastAdded();
+    else if (propertyName == "albumslastadded")
+      property = musicdatabase.GetAlbumsLastAdded();
+    else if (propertyName == "artistslastadded")
+      property = musicdatabase.GetArtistsLastAdded();
+    else if (propertyName == "genreslastadded")
+      property = musicdatabase.GetGenresLastAdded();
+    else if (propertyName == "songsmodified")
+      property = musicdatabase.GetSongsLastModified();
+    else if (propertyName == "albumsmodified")
+      property = musicdatabase.GetAlbumsLastModified();
+    else if (propertyName == "artistsmodified")
+      property = musicdatabase.GetArtistsLastModified();
 
     properties[propertyName] = property;
   }
