@@ -617,16 +617,22 @@ CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
   else
     sAlbumName = sTitle;
 
-  std::string sYear = item.GetProperty("album.year").asString();
-  if (!sYear.empty())
-    sAlbumName = StringUtils::Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
-
   CScraperUrl url;
   url.AppendUrl(CScraperUrl::SUrlEntry(item.GetDynPath()));
 
   info = CMusicAlbumInfo(sTitle, sArtist, sAlbumName, url);
   if (item.HasProperty("relevance"))
     info.SetRelevance(item.GetProperty("relevance").asFloat());
+
+  if (item.HasProperty("album.releasestatus"))
+    info.GetAlbum().strReleaseStatus = item.GetProperty("album.releasestatus").asString();
+  if (item.HasProperty("album.type"))
+    info.GetAlbum().strType = item.GetProperty("album.type").asString();
+  if (item.HasProperty("album.year"))
+    info.GetAlbum().strReleaseDate = item.GetProperty("album.year").asString();
+  if (item.HasProperty("album.label"))
+    info.GetAlbum().strLabel = item.GetProperty("album.label").asString();
+  info.GetAlbum().art = item.GetArt();
 
   return info;
 }
