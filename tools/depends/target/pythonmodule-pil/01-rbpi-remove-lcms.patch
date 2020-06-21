@@ -1,0 +1,31 @@
+--- a/setup.py
++++ b/setup.py
+@@ -752,17 +752,17 @@
+                 )
+             )
+ 
+-        if feature.lcms:
+-            extra = []
+-            if sys.platform == "win32":
+-                extra.extend(["user32", "gdi32"])
+-            exts.append(
+-                Extension(
+-                    "PIL._imagingcms",
+-                    ["src/_imagingcms.c"],
+-                    libraries=[feature.lcms] + extra,
+-                )
+-            )
++#        if feature.lcms:
++#            extra = []
++#            if sys.platform == "win32":
++#                extra.extend(["user32", "gdi32"])
++#            exts.append(
++#                Extension(
++#                    "PIL._imagingcms",
++#                    ["src/_imagingcms.c"],
++#                    libraries=[feature.lcms] + extra,
++#                )
++#            )
+ 
+         if feature.webp:
+             libs = [feature.webp]
