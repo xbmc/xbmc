@@ -79,54 +79,64 @@
 		<!-- Title Fonts -->
 		<font>
 			<name>font_flag</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>18</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font20_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>20</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font25_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>25</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font30_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>30</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font32_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>32</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font36_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>36</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font45_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>45</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font52_title</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>52</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>font_MainMenu</name>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>60</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>WeatherTemp</name>
 			<aspect>0.85</aspect>
-			<filename>NotoSans-Bold.ttf</filename>
+			<filename>NotoSans-Regular.ttf</filename>
 			<size>120</size>
+			<style>bold</style>
 		</font>
 		<font>
 			<name>Mono26</name>
