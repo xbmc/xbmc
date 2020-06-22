@@ -1,8 +1,8 @@
 diff --git a/configure b/configure
-index 34c2adb4a4..160884d8f9 100755
+index 8569a60bf8..42f5a3ada4 100755
 --- a/configure
 +++ b/configure
-@@ -6358,6 +6358,8 @@ enabled openssl           && { check_pkg_config openssl openssl openssl/ssl.h OP
+@@ -6468,6 +6468,8 @@ enabled openssl           && { check_pkg_config openssl openssl openssl/ssl.h OP
                                 check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto ||
                                 check_lib openssl openssl/ssl.h SSL_library_init -lssl32 -leay32 ||
                                 check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto -lws2_32 -lgdi32 ||

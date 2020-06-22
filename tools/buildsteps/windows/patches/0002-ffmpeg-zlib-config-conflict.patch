@@ -1,7 +1,8 @@
-diff -ur ffmpeg/configure ffmpeg-patch/configure
---- ffmpeg/configure	2020-01-31 13:06:00.000000000 +0000
-+++ ffmpeg-patch/configure	2020-01-31 13:06:40.000000000 +0000
-@@ -7439,6 +7439,9 @@
+diff --git a/configure b/configure
+index 8569a60bf8..2091cea243 100755
+--- a/configure
++++ b/configure
+@@ -7553,6 +7553,9 @@ print_config CONFIG_ "$config_files" $CONFIG_LIST       \
                                       $CONFIG_EXTRA      \
                                       $ALL_COMPONENTS    \
  
