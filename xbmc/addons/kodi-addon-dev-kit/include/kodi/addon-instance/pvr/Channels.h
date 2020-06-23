@@ -37,12 +37,12 @@ namespace addon
 ///@{
 class PVRChannel : public CStructHdl<PVRChannel, PVR_CHANNEL>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRChannel() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL)); }
   PVRChannel(const PVRChannel& channel) : CStructHdl(channel) {}
-  PVRChannel(const PVR_CHANNEL* channel) : CStructHdl(channel) {}
-  PVRChannel(PVR_CHANNEL* channel) : CStructHdl(channel) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRChannel_Help Value Help
@@ -172,6 +172,10 @@ public:
   /// @brief To get with @ref SetOrder changed values.
   bool GetOrder() const { return m_cStructure->iOrder; }
   ///@}
+
+private:
+  PVRChannel(const PVR_CHANNEL* channel) : CStructHdl(channel) {}
+  PVRChannel(PVR_CHANNEL* channel) : CStructHdl(channel) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -230,12 +234,12 @@ private:
 ///@{
 class PVRSignalStatus : public CStructHdl<PVRSignalStatus, PVR_SIGNAL_STATUS>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRSignalStatus() = default;
   PVRSignalStatus(const PVRSignalStatus& type) : CStructHdl(type) {}
-  PVRSignalStatus(const PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
-  PVRSignalStatus(PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
   /*! \endcond */
 
 
@@ -345,6 +349,10 @@ public:
   /// @brief To get with @ref SetBER changed values.
   long GetUNC() const { return m_cStructure->iUNC; }
   ///@}
+
+private:
+  PVRSignalStatus(const PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
+  PVRSignalStatus(PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -366,6 +374,8 @@ public:
 ///@{
 class PVRDescrambleInfo : public CStructHdl<PVRDescrambleInfo, PVR_DESCRAMBLE_INFO>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRDescrambleInfo()
@@ -377,8 +387,6 @@ public:
     m_cStructure->iHops = PVR_DESCRAMBLE_INFO_NOT_AVAILABLE;
   }
   PVRDescrambleInfo(const PVRDescrambleInfo& type) : CStructHdl(type) {}
-  PVRDescrambleInfo(const PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
-  PVRDescrambleInfo(PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRDescrambleInfo_Help Value Help
@@ -496,6 +504,10 @@ public:
   /// @brief To get with @ref SetProtocol changed values.
   std::string GetProtocol() const { return m_cStructure->strProtocol; }
   ///@}
+
+private:
+  PVRDescrambleInfo(const PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
+  PVRDescrambleInfo(PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------

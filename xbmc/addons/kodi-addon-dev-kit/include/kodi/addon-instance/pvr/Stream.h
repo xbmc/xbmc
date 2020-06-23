@@ -37,6 +37,8 @@ namespace addon
 ///@{
 class PVRCodec : public CStructHdl<PVRCodec, PVR_CODEC>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRCodec()
@@ -45,9 +47,6 @@ public:
     m_cStructure->codec_id = PVR_INVALID_CODEC_ID;
   }
   PVRCodec(const PVRCodec& type) : CStructHdl(type) {}
-  PVRCodec(const PVR_CODEC& type) : CStructHdl(&type) {}
-  PVRCodec(const PVR_CODEC* type) : CStructHdl(type) {}
-  PVRCodec(PVR_CODEC* type) : CStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Stream_PVRCodec_Help Value Help
@@ -77,6 +76,11 @@ public:
   /// @brief To get with @ref SetCodecId() changed values.
   unsigned int GetCodecId() const { return m_cStructure->codec_id; }
   ///@}
+
+private:
+  PVRCodec(const PVR_CODEC& type) : CStructHdl(&type) {}
+  PVRCodec(const PVR_CODEC* type) : CStructHdl(type) {}
+  PVRCodec(PVR_CODEC* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -96,12 +100,12 @@ public:
 class PVRStreamProperties
   : public CStructHdl<PVRStreamProperties, PVR_STREAM_PROPERTIES::PVR_STREAM>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRStreamProperties() { memset(m_cStructure, 0, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM)); }
   PVRStreamProperties(const PVRStreamProperties& type) : CStructHdl(type) {}
-  PVRStreamProperties(const PVR_STREAM_PROPERTIES::PVR_STREAM* type) : CStructHdl(type) {}
-  PVRStreamProperties(PVR_STREAM_PROPERTIES::PVR_STREAM* type) : CStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Stream_PVRStreamProperties_Help Value Help
@@ -234,6 +238,10 @@ public:
   /// @brief To get with @ref SetBitsPerSample() changed values.
   int GetBitsPerSample() const { return m_cStructure->iBitsPerSample; }
   ///@}
+
+private:
+  PVRStreamProperties(const PVR_STREAM_PROPERTIES::PVR_STREAM* type) : CStructHdl(type) {}
+  PVRStreamProperties(PVR_STREAM_PROPERTIES::PVR_STREAM* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -252,12 +260,12 @@ public:
 ///@{
 class PVRStreamTimes : public CStructHdl<PVRStreamTimes, PVR_STREAM_TIMES>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRStreamTimes() { memset(m_cStructure, 0, sizeof(PVR_STREAM_TIMES)); }
   PVRStreamTimes(const PVRStreamTimes& type) : CStructHdl(type) {}
-  PVRStreamTimes(const PVR_STREAM_TIMES* type) : CStructHdl(type) {}
-  PVRStreamTimes(PVR_STREAM_TIMES* type) : CStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Stream_PVRStreamTimes_Help Value Help
@@ -308,6 +316,10 @@ public:
   /// @brief To get with @ref SetPTSEnd() changed values.
   int64_t GetPTSEnd() const { return m_cStructure->ptsEnd; }
   ///@}
+
+private:
+  PVRStreamTimes(const PVR_STREAM_TIMES* type) : CStructHdl(type) {}
+  PVRStreamTimes(PVR_STREAM_TIMES* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------

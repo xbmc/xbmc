@@ -36,12 +36,12 @@ namespace addon
 ///@{
 class PVRChannelGroup : public CStructHdl<PVRChannelGroup, PVR_CHANNEL_GROUP>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRChannelGroup() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL_GROUP)); }
   PVRChannelGroup(const PVRChannelGroup& channel) : CStructHdl(channel) {}
-  PVRChannelGroup(const PVR_CHANNEL_GROUP* channel) : CStructHdl(channel) {}
-  PVRChannelGroup(PVR_CHANNEL_GROUP* channel) : CStructHdl(channel) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroup_Help Value Help
@@ -84,6 +84,10 @@ public:
   unsigned int GetPosition() const { return m_cStructure->iPosition; }
 
   ///@}
+
+private:
+  PVRChannelGroup(const PVR_CHANNEL_GROUP* channel) : CStructHdl(channel) {}
+  PVRChannelGroup(PVR_CHANNEL_GROUP* channel) : CStructHdl(channel) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -143,12 +147,12 @@ private:
 ///@{
 class PVRChannelGroupMember : public CStructHdl<PVRChannelGroupMember, PVR_CHANNEL_GROUP_MEMBER>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRChannelGroupMember() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER)); }
   PVRChannelGroupMember(const PVRChannelGroupMember& channel) : CStructHdl(channel) {}
-  PVRChannelGroupMember(const PVR_CHANNEL_GROUP_MEMBER* channel) : CStructHdl(channel) {}
-  PVRChannelGroupMember(PVR_CHANNEL_GROUP_MEMBER* channel) : CStructHdl(channel) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroupMember_Help Value Help
@@ -215,6 +219,10 @@ public:
   bool GetOrder() const { return m_cStructure->iOrder; }
 
   ///@}
+
+private:
+  PVRChannelGroupMember(const PVR_CHANNEL_GROUP_MEMBER* channel) : CStructHdl(channel) {}
+  PVRChannelGroupMember(PVR_CHANNEL_GROUP_MEMBER* channel) : CStructHdl(channel) {}
 };
 ///@}
 //------------------------------------------------------------------------------

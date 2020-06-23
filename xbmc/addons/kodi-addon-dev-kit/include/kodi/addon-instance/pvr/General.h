@@ -33,11 +33,11 @@ namespace addon
 ///@{
 class PVRTypeIntValue : public CStructHdl<PVRTypeIntValue, PVR_ATTRIBUTE_INT_VALUE>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRTypeIntValue(const PVRTypeIntValue& data) : CStructHdl(data) {}
-  PVRTypeIntValue(const PVR_ATTRIBUTE_INT_VALUE* data) : CStructHdl(data) {}
-  PVRTypeIntValue(PVR_ATTRIBUTE_INT_VALUE* data) : CStructHdl(data) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help Value Help
@@ -84,8 +84,11 @@ public:
 
   /// @brief To get with the description text of the value.
   std::string GetDescription() const { return m_cStructure->strDescription; }
-
   ///@}
+
+private:
+  PVRTypeIntValue(const PVR_ATTRIBUTE_INT_VALUE* data) : CStructHdl(data) {}
+  PVRTypeIntValue(PVR_ATTRIBUTE_INT_VALUE* data) : CStructHdl(data) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -111,10 +114,11 @@ public:
 ///@{
 class PVRCapabilities
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   explicit PVRCapabilities() = delete;
-  PVRCapabilities(PVR_ADDON_CAPABILITIES* capabilities) : m_capabilities(capabilities) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_PVRCapabilities_Help Value Help
@@ -383,6 +387,8 @@ public:
   ///@}
 
 private:
+  PVRCapabilities(PVR_ADDON_CAPABILITIES* capabilities) : m_capabilities(capabilities) {}
+
   PVR_ADDON_CAPABILITIES* m_capabilities;
 };
 ///@}
@@ -437,11 +443,11 @@ private:
 ///@{
 class PVRStreamProperty : public CStructHdl<PVRStreamProperty, PVR_NAMED_VALUE>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRStreamProperty(const PVRStreamProperty& data) : CStructHdl(data) {}
-  PVRStreamProperty(const PVR_NAMED_VALUE* data) : CStructHdl(data) {}
-  PVRStreamProperty(PVR_NAMED_VALUE* data) : CStructHdl(data) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_General_Inputstream_PVRStreamProperty_Help Value Help
@@ -490,8 +496,11 @@ public:
 
   /// @brief To get with the used property value.
   std::string GetValue() const { return m_cStructure->strValue; }
-
   ///@}
+
+private:
+  PVRStreamProperty(const PVR_NAMED_VALUE* data) : CStructHdl(data) {}
+  PVRStreamProperty(PVR_NAMED_VALUE* data) : CStructHdl(data) {}
 };
 ///@}
 //------------------------------------------------------------------------------

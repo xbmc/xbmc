@@ -37,6 +37,8 @@ namespace addon
 ///@{
 class PVRTimer : public CStructHdl<PVRTimer, PVR_TIMER>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRTimer()
@@ -65,8 +67,6 @@ public:
     m_cStructure->iGenreSubType = PVR_TIMER_VALUE_NOT_AVAILABLE;
   }
   PVRTimer(const PVRTimer& data) : CStructHdl(data) {}
-  PVRTimer(const PVR_TIMER* data) : CStructHdl(data) {}
-  PVRTimer(PVR_TIMER* data) : CStructHdl(data) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimer_Help Value Help
@@ -465,6 +465,10 @@ public:
   /// @brief To get with @ref SetSeriesLink changed values.
   std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
   ///@}
+
+private:
+  PVRTimer(const PVR_TIMER* data) : CStructHdl(data) {}
+  PVRTimer(PVR_TIMER* data) : CStructHdl(data) {}
 };
 
 ///@}
@@ -524,6 +528,8 @@ private:
 ///@{
 class PVRTimerType : public CStructHdl<PVRTimerType, PVR_TIMER_TYPE>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRTimerType()
@@ -536,8 +542,6 @@ public:
     m_cStructure->iMaxRecordingsDefault = -1;
   }
   PVRTimerType(const PVRTimerType& type) : CStructHdl(type) {}
-  PVRTimerType(const PVR_TIMER_TYPE* type) : CStructHdl(type) {}
-  PVRTimerType(PVR_TIMER_TYPE* type) : CStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimerType_Help Value Help
@@ -877,6 +881,10 @@ public:
   /// @brief To get with @ref SetMaxRecordingsDefault changed values
   int GetMaxRecordingsDefault() const { return m_cStructure->iMaxRecordingsDefault; }
   ///@}
+
+private:
+  PVRTimerType(const PVR_TIMER_TYPE* type) : CStructHdl(type) {}
+  PVRTimerType(PVR_TIMER_TYPE* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------

@@ -37,6 +37,8 @@ namespace addon
 ///@{
 class PVRRecording : public CStructHdl<PVRRecording, PVR_RECORDING>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVRRecording()
@@ -59,8 +61,6 @@ public:
     m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
   }
   PVRRecording(const PVRRecording& recording) : CStructHdl(recording) {}
-  PVRRecording(const PVR_RECORDING* recording) : CStructHdl(recording) {}
-  PVRRecording(PVR_RECORDING* recording) : CStructHdl(recording) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Recording_PVRRecording_Help Value Help
@@ -466,6 +466,10 @@ public:
   /// @brief To get with @ref SetSizeInBytes changed values.
   int64_t GetSizeInBytes() const { return m_cStructure->sizeInBytes; }
   ///@}
+
+private:
+  PVRRecording(const PVR_RECORDING* recording) : CStructHdl(recording) {}
+  PVRRecording(PVR_RECORDING* recording) : CStructHdl(recording) {}
 };
 ///@}
 //------------------------------------------------------------------------------
