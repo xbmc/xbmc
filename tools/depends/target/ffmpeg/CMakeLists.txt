@@ -93,6 +93,10 @@ else()
   list(APPEND ffmpeg_conf --disable-libdav1d)
 endif()
 
+if(EXTRA_FLAGS)
+  list(APPEND ffmpeg_conf ${EXTRA_FLAGS})
+endif()
+
 message(STATUS "FFMPEG_CONF: ${ffmpeg_conf}")
 
 include(ExternalProject)
