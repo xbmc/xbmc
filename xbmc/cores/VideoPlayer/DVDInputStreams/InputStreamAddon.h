@@ -141,5 +141,20 @@ private:
    * @param pPacket The packet to free.
    */
   static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
+
+  /*!
+   * @brief Callback used by @ref GetStream to get the data
+   *
+   * Used as callback to prevent memleaks as the temporary stack memory on addon
+   * can be used to give data to Kodi.
+   *
+   * @param[in] handle Pointer to identify this class
+   * @param[in] streamId The related stream Identifier
+   * @param[in] stream "C" structure with stream information
+   * @return The created demux stream packet
+   */
+  static KODI_HANDLE cb_get_stream_transfer(KODI_HANDLE handle,
+                                            int streamId,
+                                            INPUTSTREAM_INFO* stream);
   //@}
 };

@@ -367,15 +367,28 @@ std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 {
   INPUTSTREAM_INFO stream{};
-  bool ret = m_struct.toAddon->get_stream(&m_struct, streamId, &stream);
+  KODI_HANDLE demuxStream = nullptr;
+  bool ret = m_struct.toAddon->get_stream(&m_struct, streamId, &stream, &demuxStream,
+                                          cb_get_stream_transfer);
   if (!ret || stream.m_streamType == INPUTSTREAM_TYPE_NONE)
     return nullptr;
 
-  std::string codecName(stream.m_codecName);
+  return static_cast<CDemuxStream*>(demuxStream);
+}
+
+KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
+                                                      int streamId,
+                                                      INPUTSTREAM_INFO* stream)
+{
+  CInputStreamAddon* thisClass = static_cast<CInputStreamAddon*>(handle);
+  if (!thisClass || !stream)
+    return nullptr;
+
+  std::string codecName(stream->m_codecName);
   AVCodec* codec = nullptr;
 
-  if (stream.m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
-      stream.m_streamType != INPUTSTREAM_TYPE_RDS)
+  if (stream->m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
+      stream->m_streamType != INPUTSTREAM_TYPE_RDS)
   {
     StringUtils::ToLower(codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
@@ -383,79 +396,79 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
       return nullptr;
   }
 
-  CDemuxStream *demuxStream;
+  CDemuxStream* demuxStream;
 
-  if (stream.m_streamType == INPUTSTREAM_TYPE_AUDIO)
+  if (stream->m_streamType == INPUTSTREAM_TYPE_AUDIO)
   {
     CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
 
-    audioStream->iChannels = stream.m_Channels;
-    audioStream->iSampleRate = stream.m_SampleRate;
-    audioStream->iBlockAlign = stream.m_BlockAlign;
-    audioStream->iBitRate = stream.m_BitRate;
-    audioStream->iBitsPerSample = stream.m_BitsPerSample;
+    audioStream->iChannels = stream->m_Channels;
+    audioStream->iSampleRate = stream->m_SampleRate;
+    audioStream->iBlockAlign = stream->m_BlockAlign;
+    audioStream->iBitRate = stream->m_BitRate;
+    audioStream->iBitsPerSample = stream->m_BitsPerSample;
     demuxStream = audioStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_TYPE_VIDEO)
+  else if (stream->m_streamType == INPUTSTREAM_TYPE_VIDEO)
   {
     CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
 
-    videoStream->iFpsScale = stream.m_FpsScale;
-    videoStream->iFpsRate = stream.m_FpsRate;
-    videoStream->iWidth = stream.m_Width;
-    videoStream->iHeight = stream.m_Height;
-    videoStream->fAspect = stream.m_Aspect;
-    videoStream->iBitRate = stream.m_BitRate;
-    videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
+    videoStream->iFpsScale = stream->m_FpsScale;
+    videoStream->iFpsRate = stream->m_FpsRate;
+    videoStream->iWidth = stream->m_Width;
+    videoStream->iHeight = stream->m_Height;
+    videoStream->fAspect = stream->m_Aspect;
+    videoStream->iBitRate = stream->m_BitRate;
+    videoStream->profile = ConvertVideoCodecProfile(stream->m_codecProfile);
 
     /*! Added on API version 2.0.8 */
     //@{
-    videoStream->colorSpace = static_cast<AVColorSpace>(stream.m_colorSpace);
-    videoStream->colorRange = static_cast<AVColorRange>(stream.m_colorRange);
+    videoStream->colorSpace = static_cast<AVColorSpace>(stream->m_colorSpace);
+    videoStream->colorRange = static_cast<AVColorRange>(stream->m_colorRange);
     //@}
 
     /*! Added on API version 2.0.9 */
     //@{
-    videoStream->colorPrimaries = static_cast<AVColorPrimaries>(stream.m_colorPrimaries);
+    videoStream->colorPrimaries = static_cast<AVColorPrimaries>(stream->m_colorPrimaries);
     videoStream->colorTransferCharacteristic =
-        static_cast<AVColorTransferCharacteristic>(stream.m_colorTransferCharacteristic);
+        static_cast<AVColorTransferCharacteristic>(stream->m_colorTransferCharacteristic);
 
-    if (stream.m_masteringMetadata)
+    if (stream->m_masteringMetadata)
     {
       videoStream->masteringMetaData =
           std::shared_ptr<AVMasteringDisplayMetadata>(new AVMasteringDisplayMetadata);
       videoStream->masteringMetaData->display_primaries[0][0] =
-          av_d2q(stream.m_masteringMetadata->primary_r_chromaticity_x, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->primary_r_chromaticity_x, INT_MAX);
       videoStream->masteringMetaData->display_primaries[0][1] =
-          av_d2q(stream.m_masteringMetadata->primary_r_chromaticity_y, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->primary_r_chromaticity_y, INT_MAX);
       videoStream->masteringMetaData->display_primaries[1][0] =
-          av_d2q(stream.m_masteringMetadata->primary_g_chromaticity_x, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->primary_g_chromaticity_x, INT_MAX);
       videoStream->masteringMetaData->display_primaries[1][1] =
-          av_d2q(stream.m_masteringMetadata->primary_g_chromaticity_y, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->primary_g_chromaticity_y, INT_MAX);
       videoStream->masteringMetaData->display_primaries[2][0] =
-          av_d2q(stream.m_masteringMetadata->primary_b_chromaticity_x, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->primary_b_chromaticity_x, INT_MAX);
       videoStream->masteringMetaData->display_primaries[2][1] =
-          av_d2q(stream.m_masteringMetadata->primary_b_chromaticity_y, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->primary_b_chromaticity_y, INT_MAX);
       videoStream->masteringMetaData->white_point[0] =
-          av_d2q(stream.m_masteringMetadata->white_point_chromaticity_x, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->white_point_chromaticity_x, INT_MAX);
       videoStream->masteringMetaData->white_point[1] =
-          av_d2q(stream.m_masteringMetadata->white_point_chromaticity_y, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->white_point_chromaticity_y, INT_MAX);
       videoStream->masteringMetaData->min_luminance =
-          av_d2q(stream.m_masteringMetadata->luminance_min, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->luminance_min, INT_MAX);
       videoStream->masteringMetaData->max_luminance =
-          av_d2q(stream.m_masteringMetadata->luminance_max, INT_MAX);
+          av_d2q(stream->m_masteringMetadata->luminance_max, INT_MAX);
       videoStream->masteringMetaData->has_luminance =
           videoStream->masteringMetaData->has_primaries = 1;
     }
 
-    if (stream.m_contentLightMetadata)
+    if (stream->m_contentLightMetadata)
     {
       videoStream->contentLightMetaData =
           std::shared_ptr<AVContentLightMetadata>(new AVContentLightMetadata);
       videoStream->contentLightMetaData->MaxCLL =
-          static_cast<unsigned>(stream.m_contentLightMetadata->max_cll);
+          static_cast<unsigned>(stream->m_contentLightMetadata->max_cll);
       videoStream->contentLightMetaData->MaxFALL =
-          static_cast<unsigned>(stream.m_contentLightMetadata->max_fall);
+          static_cast<unsigned>(stream->m_contentLightMetadata->max_fall);
     }
     //@}
 
@@ -466,19 +479,20 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 
     }
     */
+
     demuxStream = videoStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_TYPE_SUBTITLE)
+  else if (stream->m_streamType == INPUTSTREAM_TYPE_SUBTITLE)
   {
     CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
     demuxStream = subtitleStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_TYPE_TELETEXT)
+  else if (stream->m_streamType == INPUTSTREAM_TYPE_TELETEXT)
   {
     CDemuxStreamTeletext* teletextStream = new CDemuxStreamTeletext();
     demuxStream = teletextStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_TYPE_RDS)
+  else if (stream->m_streamType == INPUTSTREAM_TYPE_RDS)
   {
     CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
     demuxStream = rdsStream;
@@ -486,32 +500,32 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   else
     return nullptr;
 
-  demuxStream->name = stream.m_name;
+  demuxStream->name = stream->m_name;
   if (codec)
     demuxStream->codec = codec->id;
   else
     demuxStream->codec = AV_CODEC_ID_DVB_TELETEXT;
-  demuxStream->codecName = stream.m_codecInternalName;
+  demuxStream->codecName = stream->m_codecInternalName;
   demuxStream->uniqueId = streamId;
-  demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
-  demuxStream->language = stream.m_language;
+  demuxStream->flags = static_cast<StreamFlags>(stream->m_flags);
+  demuxStream->language = stream->m_language;
 
-  if (GetAddonInfo()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >=
+  if (thisClass->GetAddonInfo()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >=
       AddonVersion("2.0.8"))
   {
-    demuxStream->codec_fourcc = stream.m_codecFourCC;
+    demuxStream->codec_fourcc = stream->m_codecFourCC;
   }
 
-  if (stream.m_ExtraData && stream.m_ExtraSize)
+  if (stream->m_ExtraData && stream->m_ExtraSize)
   {
-    demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
-    demuxStream->ExtraSize = stream.m_ExtraSize;
-    for (unsigned int j = 0; j < stream.m_ExtraSize; ++j)
-      demuxStream->ExtraData[j] = stream.m_ExtraData[j];
+    demuxStream->ExtraData = new uint8_t[stream->m_ExtraSize];
+    demuxStream->ExtraSize = stream->m_ExtraSize;
+    for (unsigned int j = 0; j < stream->m_ExtraSize; ++j)
+      demuxStream->ExtraData[j] = stream->m_ExtraData[j];
   }
 
-  if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_KEY_SYSTEM_NONE &&
-      stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_KEY_SYSTEM_COUNT)
+  if (stream->m_cryptoInfo.m_CryptoKeySystem != CRYPTO_KEY_SYSTEM_NONE &&
+      stream->m_cryptoInfo.m_CryptoKeySystem < CRYPTO_KEY_SYSTEM_COUNT)
   {
     static const CryptoSessionSystem map[] = {
         CRYPTO_SESSION_SYSTEM_NONE,
@@ -520,10 +534,11 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
         CRYPTO_SESSION_SYSTEM_WISEPLAY,
     };
     demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
-      map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));
+        map[stream->m_cryptoInfo.m_CryptoKeySystem], stream->m_cryptoInfo.m_CryptoSessionIdSize,
+        stream->m_cryptoInfo.m_CryptoSessionId, stream->m_cryptoInfo.flags));
 
-    if ((stream.m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
-      demuxStream->externalInterfaces = m_subAddonProvider;
+    if ((stream->m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
+      demuxStream->externalInterfaces = thisClass->m_subAddonProvider;
   }
   return demuxStream;
 }
