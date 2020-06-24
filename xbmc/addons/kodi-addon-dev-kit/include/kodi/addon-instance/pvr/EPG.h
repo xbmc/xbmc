@@ -434,19 +434,19 @@ private:
 
   void SetData(const EPG_TAG* tag)
   {
-    m_title = tag->strTitle;
-    m_plotOutline = tag->strPlotOutline;
-    m_plot = tag->strPlot;
-    m_originalTitle = tag->strOriginalTitle;
-    m_cast = tag->strCast;
-    m_director = tag->strDirector;
-    m_writer = tag->strWriter;
-    m_IMDBNumber = tag->strIMDBNumber;
-    m_iconPath = tag->strIconPath;
-    m_genreDescription = tag->strGenreDescription;
-    m_episodeName = tag->strEpisodeName;
-    m_seriesLink = tag->strSeriesLink;
-    m_firstAired = tag->strFirstAired;
+    m_title = tag->strTitle == nullptr ? "" : tag->strTitle;
+    m_plotOutline = tag->strPlotOutline == nullptr ? "" : tag->strPlotOutline;
+    m_plot = tag->strPlot == nullptr ? "" : tag->strPlot;
+    m_originalTitle = tag->strOriginalTitle == nullptr ? "" : tag->strOriginalTitle;
+    m_cast = tag->strCast == nullptr ? "" : tag->strCast;
+    m_director = tag->strDirector == nullptr ? "" : tag->strDirector;
+    m_writer = tag->strWriter == nullptr ? "" : tag->strWriter;
+    m_IMDBNumber = tag->strIMDBNumber == nullptr ? "" : tag->strIMDBNumber;
+    m_iconPath = tag->strIconPath == nullptr ? "" : tag->strIconPath;
+    m_genreDescription = tag->strGenreDescription == nullptr ? "" : tag->strGenreDescription;
+    m_episodeName = tag->strEpisodeName == nullptr ? "" : tag->strEpisodeName;
+    m_seriesLink = tag->strSeriesLink == nullptr ? "" : tag->strSeriesLink;
+    m_firstAired = tag->strFirstAired == nullptr ? "" : tag->strFirstAired;
   }
 };
 ///@}
