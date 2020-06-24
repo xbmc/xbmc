@@ -44,6 +44,8 @@ namespace addon
 ///@{
 class PVRMenuhook : public CStructHdl<PVRMenuhook, PVR_MENUHOOK>
 {
+  friend class CInstancePVRClient;
+
 public:
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Menuhook_PVRMenuhook
   /// @brief Optional class constructor with value set.
@@ -75,8 +77,6 @@ public:
     m_cStructure->category = PVR_MENUHOOK_UNKNOWN;
   }
   PVRMenuhook(const PVRMenuhook& data) : CStructHdl(data) {}
-  PVRMenuhook(const PVR_MENUHOOK* data) : CStructHdl(data) {}
-  PVRMenuhook(PVR_MENUHOOK* data) : CStructHdl(data) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Menuhook_PVRMenuhook_Help Value Help
@@ -115,8 +115,11 @@ public:
 
   /// @brief To get with @ref SetCategory() changed values.
   PVR_MENUHOOK_CAT GetCategory() const { return m_cStructure->category; }
-
   ///@}
+
+private:
+  PVRMenuhook(const PVR_MENUHOOK* data) : CStructHdl(data) {}
+  PVRMenuhook(PVR_MENUHOOK* data) : CStructHdl(data) {}
 };
 ///@}
 //------------------------------------------------------------------------------

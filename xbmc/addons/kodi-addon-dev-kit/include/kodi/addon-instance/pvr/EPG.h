@@ -38,6 +38,8 @@ namespace addon
 ///@{
 class PVREPGTag : public CStructHdl<PVREPGTag, EPG_TAG>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVREPGTag()
@@ -63,8 +65,6 @@ public:
     m_seriesLink = epg.m_seriesLink;
     m_firstAired = epg.m_firstAired;
   }
-  PVREPGTag(const EPG_TAG* epg) : CStructHdl(epg) { SetData(epg); }
-  PVREPGTag(EPG_TAG* epg) : CStructHdl(epg) { SetData(epg); }
   /*! \endcond */
 
 
@@ -413,7 +413,9 @@ public:
   }
 
 private:
-  // prevent the use of them
+  PVREPGTag(const EPG_TAG* epg) : CStructHdl(epg) { SetData(epg); }
+  PVREPGTag(EPG_TAG* epg) : CStructHdl(epg) { SetData(epg); }
+
   const PVREPGTag& operator=(const PVREPGTag& right);
   const PVREPGTag& operator=(const EPG_TAG& right);
   operator EPG_TAG*();

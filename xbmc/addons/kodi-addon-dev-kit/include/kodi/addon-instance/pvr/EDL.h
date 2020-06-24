@@ -36,12 +36,12 @@ namespace addon
 ///@{
 class PVREDLEntry : public CStructHdl<PVREDLEntry, PVR_EDL_ENTRY>
 {
+  friend class CInstancePVRClient;
+
 public:
   /*! \cond PRIVATE */
   PVREDLEntry() { memset(m_cStructure, 0, sizeof(PVR_EDL_ENTRY)); }
   PVREDLEntry(const PVREDLEntry& type) : CStructHdl(type) {}
-  PVREDLEntry(const PVR_EDL_ENTRY* type) : CStructHdl(type) {}
-  PVREDLEntry(PVR_EDL_ENTRY* type) : CStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_EDLEntry_PVREDLEntry_Help Value Help
@@ -76,6 +76,10 @@ public:
   /// @brief To get with @ref SetType() changed values.
   PVR_EDL_TYPE GetType() const { return m_cStructure->type; }
   ///@}
+
+private:
+  PVREDLEntry(const PVR_EDL_ENTRY* type) : CStructHdl(type) {}
+  PVREDLEntry(PVR_EDL_ENTRY* type) : CStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------
