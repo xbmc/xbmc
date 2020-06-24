@@ -480,7 +480,7 @@ public:
      *         then, the add-on should call AllocateDemuxPacket(0) on the
      *         callback, and set the streamid to DMX_SPECIALID_STREAMCHANGE and
      *         return the value.
-     *         The add-on should return NULL if an error occured.
+     *         The add-on should return NULL if an error occurred.
      * @remarks Return NULL if this add-on won't provide this function.
      */
   virtual DemuxPacket* DemuxRead() { return nullptr; }

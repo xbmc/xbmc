@@ -427,7 +427,7 @@ void CAnimation::Animate(unsigned int time, bool startAnim)
       m_start = time;
     m_currentProcess = ANIM_PROCESS_REVERSE;
   }
-  // reset the queued state once we've rendered to ensure allocation has occured
+  // reset the queued state once we've rendered to ensure allocation has occurred
   m_queuedProcess = ANIM_PROCESS_NONE;
 
   // Update our animation process

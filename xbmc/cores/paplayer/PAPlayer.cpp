@@ -358,7 +358,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
       return false;
     }
 
-    /* yield our time so that the main PAP thread doesnt stall */
+    /* yield our time so that the main PAP thread doesn't stall */
     CThread::Sleep(1);
   }
 
@@ -503,7 +503,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
     if (!QueueData(si))
       break;
 
-    /* yield our time so that the main PAP thread doesnt stall */
+    /* yield our time so that the main PAP thread doesn't stall */
     CThread::Sleep(1);
   }
 

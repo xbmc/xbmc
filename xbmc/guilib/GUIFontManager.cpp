@@ -356,7 +356,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || pRootElement->ValueStr() != "fonts")
   {
-    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
+    CLog::Log(LOGERROR, "file %s doesn't start with <fonts>", strPath.c_str());
     return;
   }
   // Resolve includes in Font.xml
@@ -385,11 +385,11 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
   // no fontset was loaded, try the first
   if (!firstFont.empty())
   {
-    CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", fontSet.c_str());
+    CLog::Log(LOGWARNING, "file doesn't have <fontset> with name '%s', defaulting to first fontset", fontSet.c_str());
     LoadFonts(firstFont);
   }
   else
-    CLog::Log(LOGERROR, "file '%s' doesnt have a valid <fontset>", strPath.c_str());
+    CLog::Log(LOGERROR, "file '%s' doesn't have a valid <fontset>", strPath.c_str());
 }
 
 void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)

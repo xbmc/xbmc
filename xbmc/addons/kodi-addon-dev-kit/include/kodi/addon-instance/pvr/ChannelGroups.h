@@ -112,7 +112,7 @@ public:
 
   /// @brief To add and give content from addon to Kodi on related call.
   ///
-  /// @param[in] tag The to transfered data.
+  /// @param[in] tag The to transferred data.
   void Add(const kodi::addon::PVRChannelGroup& tag)
   {
     m_instance->toKodi->TransferChannelGroup(m_instance->toKodi->kodiInstance, m_handle, tag);
@@ -242,7 +242,7 @@ public:
 
   /// @brief To add and give content from addon to Kodi on related call.
   ///
-  /// @param[in] tag The to transfered data.
+  /// @param[in] tag The to transferred data.
   void Add(const kodi::addon::PVRChannelGroupMember& tag)
   {
     m_instance->toKodi->TransferChannelGroupMember(m_instance->toKodi->kodiInstance, m_handle, tag);

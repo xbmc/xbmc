@@ -138,7 +138,7 @@ namespace PythonBindings
     std::string msg;
     std::string type, value, traceback;
     if (!ParsePythonException(type, value, traceback))
-      UncheckedException::SetMessage("Strange: No Python exception occured");
+      UncheckedException::SetMessage("Strange: No Python exception occurred");
     else
       SetMessage(type, value, traceback);
   }

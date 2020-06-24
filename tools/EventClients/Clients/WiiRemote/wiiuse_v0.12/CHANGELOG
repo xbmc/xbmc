@@ -70,7 +70,7 @@ v0.10 -- 11 Feb 2008
 		- Renamed INFO/WARNING/DEBUG macros to WIIUSE_* (by noisehole)
 		- Updated Makefiles (by noisehole)
 		- Fixed incorrect roll/pitch when smoothing was enabled
-		- Fixed nunchuk and classic controller flooding events when significant changes occured
+		- Fixed nunchuk and classic controller flooding events when significant changes occurred
 		- Fixed bug where IR was not correct on roll if IR was enabled before handshake
 
 	Removed:
@@ -115,7 +115,7 @@ v0.7 -- 19 Oct 2007
 
 	Fixed:
 		- [Windows] Problem where a connection is made to a wiimote that does not exist.
-		- [Windows] Issue that occured while using multiple wiimotes.
+		- [Windows] Issue that occurred while using multiple wiimotes.
 
 ---------------------------
 v0.6 -- 16 Oct 2007

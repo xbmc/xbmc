@@ -706,7 +706,7 @@ void wiiuse_set_bluetooth_stack(struct wiimote_t** wm, int wiimotes, enum win_bt
  *	@param threshold	The decimal place that should be considered a significant change.
  *
  *	If threshold is 0.01, and any angle changes by 0.01 then a significant change
- *	has occured and the event callback will be invoked.  If threshold is 1 then
+ *	has occurred and the event callback will be invoked.  If threshold is 1 then
  *	the angle has to change by a full degree to generate an event.
  */
 void wiiuse_set_orient_threshold(struct wiimote_t* wm, float threshold) {

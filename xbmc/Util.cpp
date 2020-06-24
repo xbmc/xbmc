@@ -1219,7 +1219,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
         return i;
     }
 
-    // doesnt match a name, so try the source path
+    // doesn't match a name, so try the source path
     std::vector<std::string> vecPaths;
 
     // add any concatenated paths if they exist

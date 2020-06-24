@@ -74,7 +74,7 @@ static int state_changed(struct wiimote_t* wm);
  *	@param wm		An array of pointers to wiimote_t structures.
  *	@param wiimotes	The number of wiimote_t structures in the \a wm array.
  *
- *	@return Returns number of wiimotes that an event has occured on.
+ *	@return Returns number of wiimotes that an event has occurred on.
  *
  *	It is necessary to poll the wiimote devices for events
  *	that occur.  If an event occurs on a particular wiimote,
@@ -241,10 +241,10 @@ static void clear_dirty_reads(struct wiimote_t* wm) {
 
 
 /**
- *	@brief Analyze the event that occured on a wiimote.
+ *	@brief Analyze the event that occurred on a wiimote.
  *
  *	@param wm		An array of pointers to wiimote_t structures.
- *	@param event	The event that occured.
+ *	@param event	The event that occurred.
  *	@param msg		The message specified in the event packet.
  *
  *	Pass the event to the registered event callback.
@@ -530,7 +530,7 @@ static void event_status(struct wiimote_t* wm, byte* msg) {
 	int exp_changed = 0;
 
 	/*
-	 *	An event occured.
+	 *	An event occurred.
 	 *	This event can be overwritten by a more specific
 	 *	event type during a handshake or expansion removal.
 	 */
@@ -780,7 +780,7 @@ static void save_state(struct wiimote_t* wm) {
 /**
  *	@brief Determine if the current state differs significantly from the previous.
  *	@param wm	A pointer to a wiimote_t structure.
- *	@return	1 if a significant change occured, 0 if not.
+ *	@return	1 if a significant change occurred, 0 if not.
  */
 static int state_changed(struct wiimote_t* wm) {
 	#define STATE_CHANGED(a, b)		if (a != b)				return 1

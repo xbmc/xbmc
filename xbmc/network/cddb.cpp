@@ -495,7 +495,7 @@ void Xcddb::parseData(const char *buffer)
 
         std::map<std::string, std::string>::const_iterator it = keywords.find(strKeyword);
         if (it != keywords.end())
-          strValue = it->second + strValue; // keyword occured before, concatenate
+          strValue = it->second + strValue; // keyword occurred before, concatenate
         else
           keywordsOrder.push_back(strKeyword);
 

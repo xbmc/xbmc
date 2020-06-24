@@ -86,7 +86,7 @@ extern "C"
   enum VIDEOCODEC_RETVAL
   {
     VC_NONE = 0,        //< noop
-    VC_ERROR,           //< an error occured, no other messages will be returned
+    VC_ERROR,           //< an error occurred, no other messages will be returned
     VC_BUFFER,          //< the decoder needs more data
     VC_PICTURE,         //< the decoder got a picture
     VC_EOF,             //< the decoder signals EOF

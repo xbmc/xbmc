@@ -65,7 +65,7 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
   std::string strValue = pRootElement->Value();
   if (strValue != std::string("colors"))
   {
-    CLog::Log(LOGERROR, "color file doesnt start with <colors>");
+    CLog::Log(LOGERROR, "color file doesn't start with <colors>");
     return false;
   }
 

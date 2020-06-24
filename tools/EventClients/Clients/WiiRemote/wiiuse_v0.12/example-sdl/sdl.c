@@ -424,7 +424,7 @@ int WINAPI WinMain(HINSTANCE hInstance,	HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			for (; i < MAX_WIIMOTES; ++i) {
 				switch (wiimotes[i]->event) {
 					case WIIUSE_EVENT:
-						/* a generic event occured */
+						/* a generic event occurred */
 						handle_event(wiimotes[i]);
 						break;
 

@@ -55,7 +55,7 @@ public:
    PumpPowerEvents is called from Application Thread and the platform implementation may signal
    power related events back to xbmc through the callback.
 
-   return true if an event occured and false if not.
+   return true if an event occurred and false if not.
 
    \param callback the callback to signal to
    */

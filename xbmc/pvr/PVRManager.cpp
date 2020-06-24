@@ -542,7 +542,7 @@ void CPVRManager::Process()
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "An error occured while trying to execute the last PVR update job, trying to recover");
+      CLog::LogF(LOGERROR, "An error occurred while trying to execute the last PVR update job, trying to recover");
       bRestart = true;
     }
 

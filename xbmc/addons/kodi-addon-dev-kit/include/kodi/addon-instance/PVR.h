@@ -842,7 +842,7 @@ public:
   ///
   /// @param[in] radio True to get the radio channels, false to get the TV channels.
   /// @param[out] results The channels defined with @ref cpp_kodi_addon_pvr_Defs_Channel_PVRChannel
-  ///                     and available at the addon, them transfered with
+  ///                     and available at the addon, them transferred with
   ///                     @ref cpp_kodi_addon_pvr_Defs_Channel_PVRChannelsResultSet.
   /// @return @ref PVR_ERROR_NO_ERROR if the list has been fetched successfully.
   ///
@@ -1057,7 +1057,7 @@ public:
   ///                  TV channel groups.
   /// @param[out] results List of available groups on addon defined with
   ///                     @ref cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroup,
-  ///                     them transfered with
+  ///                     them transferred with
   ///                     @ref cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroupsResultSet.
   /// @return @ref PVR_ERROR_NO_ERROR if the list has been fetched successfully.
   ///
@@ -1107,7 +1107,7 @@ public:
   /// @param[in] group The group to get the members for.
   /// @param[out] results List of available group member channels defined with
   ///                     @ref cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroupMember,
-  ///                     them transfered with
+  ///                     them transferred with
   ///                     @ref PVRChannelGroupMembersResultSet.
   /// @return @ref PVR_ERROR_NO_ERROR if the list has been fetched successfully.
   ///
@@ -2319,7 +2319,7 @@ public:
   /// If the stream changed and Kodi's player needs to be reinitialised, then,
   /// the add-on should call @ref AllocateDemuxPacket(0) on the callback, and set
   /// the streamid to @ref DMX_SPECIALID_STREAMCHANGE and return the value.
-  /// The add-on should return `nullptr` if an error occured.
+  /// The add-on should return `nullptr` if an error occurred.
   ///
   /// @remarks Required, and only used if addon has its own demuxer.
   /// Return `nullptr` if this add-on won't provide this function.

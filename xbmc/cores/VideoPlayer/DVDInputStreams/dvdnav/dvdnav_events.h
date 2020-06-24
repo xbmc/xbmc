@@ -149,7 +149,7 @@ typedef struct {
  * they carry the start and end PTS values for the current VOBU.
  * (pci.vobu_s_ptm and pci.vobu_e_ptm) Whenever the start PTS of the
  * current NAV does not match the end PTS of the previous NAV, a PTS
- * discontinuity has occured.
+ * discontinuity has occurred.
  * NAV packets can also be used for time display, because they are
  * timestamped relatively to the current Cell.
  */

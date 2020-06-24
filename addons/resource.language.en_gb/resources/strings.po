@@ -9825,7 +9825,7 @@ msgctxt "#19110"
 msgid "Could not delete the timer. Check the log for more information about this message."
 msgstr ""
 
-#. message box text stating that a PVR backend error occured
+#. message box text stating that a PVR backend error occurred
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for more information about this message."

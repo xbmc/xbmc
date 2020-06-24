@@ -116,7 +116,7 @@ public:
   std::shared_ptr<CPVREpgInfoTag> GetNextStartingTag() const;
 
   /*!
-   * @brief Get the event that occured previously
+   * @brief Get the event that occurred previously
    * @return The tag or nullptr if no tag was found.
    */
   std::shared_ptr<CPVREpgInfoTag> GetLastEndedTag() const;

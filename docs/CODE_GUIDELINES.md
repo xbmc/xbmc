@@ -244,7 +244,7 @@ void Test();
 void Test(void);
 ```
 
-### 3.7. Exceptions to the Formating Rules For Beter Readability
+### 3.7. Exceptions to the Formatting Rules For Better Readability
 There are some special situations where vertical alignment and longer lines does greatly aid readability, for example the initialization of some table-like multiple row structures. In these **rare** cases exceptions can be made to the formatting rules on vertical alignment, and the defined line length can be exceeded. 
 
 The layout can be protected from being reformatted when `clang-format` is applied by adding `// clang-format off` and `// clang-format on` statements either side of the lines of code.

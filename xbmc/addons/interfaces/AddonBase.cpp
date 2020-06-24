@@ -211,7 +211,7 @@ bool Interface_Base::get_setting_bool(void* kodiBase, const char* id, bool* valu
 
   if (!addon->ReloadSettings())
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - could't get settings for add-on '{}'", __func__,
+    CLog::Log(LOGERROR, "Interface_Base::{} - couldn't get settings for add-on '{}'", __func__,
               addon->Name());
     return false;
   }
@@ -248,7 +248,7 @@ bool Interface_Base::get_setting_int(void* kodiBase, const char* id, int* value)
 
   if (!addon->ReloadSettings())
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - could't get settings for add-on '{}'", __func__,
+    CLog::Log(LOGERROR, "Interface_Base::{} - couldn't get settings for add-on '{}'", __func__,
               addon->Name());
     return false;
   }
@@ -288,7 +288,7 @@ bool Interface_Base::get_setting_float(void* kodiBase, const char* id, float* va
 
   if (!addon->ReloadSettings())
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - could't get settings for add-on '{}'", __func__,
+    CLog::Log(LOGERROR, "Interface_Base::{} - couldn't get settings for add-on '{}'", __func__,
               addon->Name());
     return false;
   }
@@ -325,7 +325,7 @@ bool Interface_Base::get_setting_string(void* kodiBase, const char* id, char** v
 
   if (!addon->ReloadSettings())
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - could't get settings for add-on '{}'", __func__,
+    CLog::Log(LOGERROR, "Interface_Base::{} - couldn't get settings for add-on '{}'", __func__,
               addon->Name());
     return false;
   }

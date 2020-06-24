@@ -155,7 +155,7 @@ def process_keys(remote, xbmc):
             return 2
         time.sleep(2)
 
-        # some other read exception occured, so raise it
+        # some other read exception occurred, so raise it
         raise e
 
     if datalen == 13:

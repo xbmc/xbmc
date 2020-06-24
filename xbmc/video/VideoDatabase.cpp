@@ -1483,7 +1483,7 @@ int CVideoDatabase::AddToTable(const std::string& table, const std::string& firs
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      // doesnt exists, add it
+      // doesn't exists, add it
       strSQL = PrepareSQL("insert into %s (%s, %s) values(NULL, '%s')", table.c_str(), firstField.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
       m_pDS->exec(strSQL);
       int id = (int)m_pDS->lastinsertid();
@@ -1543,7 +1543,7 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
       if (m_pDS->num_rows() == 0)
       {
         m_pDS->close();
-        // doesnt exists, add it
+        // doesn't exists, add it
         strSQL = PrepareSQL("INSERT INTO rating (media_id, media_type, rating_type, rating, votes) VALUES (%i, '%s', '%s', %f, %i)", mediaId, mediaType, i.first.c_str(), i.second.rating, i.second.votes);
         m_pDS->exec(strSQL);
         id = (int)m_pDS->lastinsertid();
@@ -1608,7 +1608,7 @@ int CVideoDatabase::AddUniqueIDs(int mediaId, const char *mediaType, const CVide
       if (m_pDS->num_rows() == 0)
       {
         m_pDS->close();
-        // doesnt exists, add it
+        // doesn't exists, add it
         strSQL = PrepareSQL("INSERT INTO uniqueid (media_id, media_type, value, type) VALUES (%i, '%s', '%s', '%s')", mediaId, mediaType, i.second.c_str(), i.first.c_str());
         m_pDS->exec(strSQL);
         id = (int)m_pDS->lastinsertid();
@@ -1696,7 +1696,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      // doesnt exists, add it
+      // doesn't exists, add it
       strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.substr(0,255).c_str(), thumbURLs.c_str());
       m_pDS->exec(strSQL);
       idActor = (int)m_pDS->lastinsertid();
@@ -1733,7 +1733,7 @@ void CVideoDatabase::AddLinkToActor(int mediaId, const char *mediaType, int acto
                                actorId, mediaId, mediaType, role.c_str());
 
   if (GetSingleValue(sql).empty())
-  { // doesnt exists, add it
+  { // doesn't exists, add it
     sql = PrepareSQL("INSERT INTO actor_link (actor_id, media_id, media_type, role, cast_order) VALUES(%i,%i,'%s','%s',%i)", actorId, mediaId, mediaType, role.c_str(), order);
     ExecuteQuery(sql);
   }
@@ -1745,7 +1745,7 @@ void CVideoDatabase::AddToLinkTable(int mediaId, const std::string& mediaType, c
   std::string sql = PrepareSQL("SELECT 1 FROM %s_link WHERE %s_id=%i AND media_id=%i AND media_type='%s'", table.c_str(), key, valueId, mediaId, mediaType.c_str());
 
   if (GetSingleValue(sql).empty())
-  { // doesnt exists, add it
+  { // doesn't exists, add it
     sql = PrepareSQL("INSERT INTO %s_link (%s_id,media_id,media_type) VALUES(%i,%i,'%s')", table.c_str(), key, valueId, mediaId, mediaType.c_str());
     ExecuteQuery(sql);
   }

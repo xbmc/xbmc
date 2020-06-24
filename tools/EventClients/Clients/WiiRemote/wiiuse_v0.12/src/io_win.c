@@ -195,7 +195,7 @@ int wiiuse_io_read(struct wiimote_t* wm) {
 			ResetEvent(wm->hid_overlap.hEvent);
 			return 0;
 		} else if (r == WAIT_FAILED) {
-			WIIUSE_WARNING("A wait error occured on reading from wiimote %i.", wm->unid);
+			WIIUSE_WARNING("A wait error occurred on reading from wiimote %i.", wm->unid);
 			return 0;
 		}
 

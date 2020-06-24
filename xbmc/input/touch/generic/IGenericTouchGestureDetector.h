@@ -66,7 +66,7 @@ public:
   virtual bool OnTouchMove(unsigned int index, const Pointer& pointer) { return false; }
   /*!
    * \brief An active touch pointer's values have been updated but no event has
-   *        occured.
+   *        occurred.
    *
    * \param index     Index of the given touch pointer
    * \param pointer   Touch pointer that has changed

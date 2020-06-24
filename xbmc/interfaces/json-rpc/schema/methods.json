@@ -694,7 +694,7 @@
   },
   "AudioLibrary.GetArtists": {
     "type": "method",
-    "description": "Retrieve all artists. For backward compatibility by default this implicity does not include those that only contribute other roles, however absolutely all artists can be returned using allroles=true",
+    "description": "Retrieve all artists. For backward compatibility by default this implicitly does not include those that only contribute other roles, however absolutely all artists can be returned using allroles=true",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
@@ -837,9 +837,9 @@
           { "$ref": "List.Filter.Songs" }
         ]
       },
-      { "name": "includesingles", "type": "boolean", "default": true, "description": "Only songs from albums are returned when false, but overidden when singlesonly parameter is true" },
+      { "name": "includesingles", "type": "boolean", "default": true, "description": "Only songs from albums are returned when false, but overridden when singlesonly parameter is true" },
       { "name": "allroles", "type": "boolean", "default":false, "description": "Whether or not to include all roles when filtering by artist, rather than default of excluding other contributors. When true it overrides any role filter value." },
-      { "name": "singlesonly", "type": "boolean", "default": false, "description": "Only singles are returned when true, and overides includesingles parameter" }
+      { "name": "singlesonly", "type": "boolean", "default": false, "description": "Only singles are returned when true, and overrides includesingles parameter" }
     ],
     "returns": {
       "type": "object",
