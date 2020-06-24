@@ -451,7 +451,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     if (PromptIfDependency(24075, 24091))
       return; //required. can't disable
 
-    CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID());
+    CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER);
   }
   else
     CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());

@@ -160,7 +160,8 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
         CLog::LogF(LOGERROR, "Failed to create add-on %s, status = %d", addon.first->Name().c_str(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
-          CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID());
+          CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID(),
+                                                     AddonDisabledReason::PERMANENT_FAILURE);
           CJobManager::GetInstance().AddJob(new CPVREventLogJob(true, true, addon.first->Name(), g_localizeStrings.Get(24070), addon.first->Icon()), nullptr);
         }
       }

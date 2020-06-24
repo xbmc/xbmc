@@ -656,7 +656,7 @@ bool CAddonInstallJob::DoWork()
   if (m_isAutoUpdate && m_addon->IsBroken())
   {
     CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: auto-disabling due to being marked as broken", m_addon->ID().c_str());
-    CServiceBroker::GetAddonMgr().DisableAddon(m_addon->ID());
+    CServiceBroker::GetAddonMgr().DisableAddon(m_addon->ID(), AddonDisabledReason::USER);
     CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
   }
 
