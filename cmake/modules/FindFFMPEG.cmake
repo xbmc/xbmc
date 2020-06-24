@@ -237,7 +237,8 @@ if(NOT FFMPEG_FOUND)
                      -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
                      -DENABLE_VAAPI=${ENABLE_VAAPI}
                      -DENABLE_VDPAU=${ENABLE_VDPAU}
-                     -DENABLE_DAV1D=${DAV1D_FOUND})
+                     -DENABLE_DAV1D=${DAV1D_FOUND}
+                     -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
 
   if(KODI_DEPENDSBUILD)
     set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
