@@ -203,7 +203,7 @@ public:
 
   /// @brief To add and give content from addon to Kodi on related call.
   ///
-  /// @param[in] tag The to transfered data.
+  /// @param[in] tag The to transferred data.
   void Add(const kodi::addon::PVRChannel& tag)
   {
     m_instance->toKodi->TransferChannelEntry(m_instance->toKodi->kodiInstance, m_handle, tag);

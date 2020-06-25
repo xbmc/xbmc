@@ -368,12 +368,12 @@ int main(int argc, char** argv) {
 			for (; i < MAX_WIIMOTES; ++i) {
 				switch (wiimotes[i]->event) {
 					case WIIUSE_EVENT:
-						/* a generic event occured */
+						/* a generic event occurred */
 						handle_event(wiimotes[i]);
 						break;
 
 					case WIIUSE_STATUS:
-						/* a status event occured */
+						/* a status event occurred */
 						handle_ctrl_status(wiimotes[i]);
 						break;
 

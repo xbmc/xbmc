@@ -134,7 +134,7 @@ namespace PVR
     std::shared_ptr<CPVREpgInfoTag> GetTagNext() const;
 
     /*!
-     * @brief Get the event that occured previously
+     * @brief Get the event that occurred previously
      * @return The previous event or NULL if it wasn't found.
      */
     std::shared_ptr<CPVREpgInfoTag> GetTagPrevious() const;

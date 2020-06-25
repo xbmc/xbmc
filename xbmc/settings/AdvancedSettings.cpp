@@ -799,7 +799,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)
   {
-    CLog::Log(LOGWARNING, "External player configuration has been removed from advancedsettings.xml.  It can now be configed in userdata/playercorefactory.xml");
+    CLog::Log(LOGWARNING, "External player configuration has been removed from advancedsettings.xml.  It can now be configured in userdata/playercorefactory.xml");
   }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)

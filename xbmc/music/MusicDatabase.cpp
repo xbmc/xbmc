@@ -1555,7 +1555,7 @@ int CMusicDatabase::AddGenre(std::string& strGenre)
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      // doesnt exists, add it
+      // doesn't exists, add it
       strSQL=PrepareSQL("INSERT INTO genre (idGenre, strGenre) values( NULL, '%s' )", strGenre.c_str());
       m_pDS->exec(strSQL);
 
@@ -2594,7 +2594,7 @@ int CMusicDatabase::AddPath(const std::string& strPath1)
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
-      // doesnt exists, add it
+      // doesn't exists, add it
       strSQL=PrepareSQL("insert into path (idPath, strPath) values( NULL, '%s' )", strPath.c_str());
       m_pDS->exec(strSQL);
 
@@ -4211,7 +4211,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
       else
       {
         pCdInfo->SetNoCDDBInfo();
-        // ..no, an error occured, display it to the user
+        // ..no, an error occurred, display it to the user
         std::string strErrorText = StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
         HELPERS::ShowOKDialogLines(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)}, CVariant{0});
       }
@@ -8208,7 +8208,7 @@ void CMusicDatabase::UpdateTables(int version)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "Migrating specific artist scraper settings has failed, settings not transfered");
+      CLog::Log(LOGERROR, "Migrating specific artist scraper settings has failed, settings not transferred");
     }
     try
     {
@@ -8219,7 +8219,7 @@ void CMusicDatabase::UpdateTables(int version)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "Migrating specific album scraper settings has failed, settings not transfered");
+      CLog::Log(LOGERROR, "Migrating specific album scraper settings has failed, settings not transferred");
     }
     try
     {
@@ -8234,7 +8234,7 @@ void CMusicDatabase::UpdateTables(int version)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "Migrating album and artist scraper settings has failed, settings not transfered");
+      CLog::Log(LOGERROR, "Migrating album and artist scraper settings has failed, settings not transferred");
     }
     m_pDS->exec("DROP TABLE content_temp");
 

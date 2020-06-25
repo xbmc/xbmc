@@ -52,7 +52,7 @@ public:
    * \param event    The actual touch event (abort, down, up, move)
    * \param x        The x coordinate (with sub-pixel) of the touch
    * \param y        The y coordinate (with sub-pixel) of the touch
-   * \param time     The time (in nanoseconds) when this touch occured
+   * \param time     The time (in nanoseconds) when this touch occurred
    * \param pointer  The number of the touch pointer which caused this event (default 0)
    * \param size     The size of the touch pointer (with sub-pixel) (default 0.0)
    *
@@ -76,7 +76,7 @@ public:
    * \param pointer  The number of the touch pointer which caused this event (default 0)
    * \param x        The x coordinate (with sub-pixel) of the touch
    * \param y        The y coordinate (with sub-pixel) of the touch
-   * \param time     The time (in nanoseconds) when this touch occured
+   * \param time     The time (in nanoseconds) when this touch occurred
    * \param size     The size of the touch pointer (with sub-pixel) (default 0.0)
    *
    * \return True if the pointer was updated otherwise false.

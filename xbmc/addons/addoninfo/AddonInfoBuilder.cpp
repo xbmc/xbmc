@@ -114,7 +114,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
 
   if (!StringUtils::EqualsNoCase(element->Value(), "addon"))
   {
-    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file from '{}' doesnt contain <addon>", __FUNCTION__, addonPath);
+    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file from '{}' doesn't contain <addon>", __FUNCTION__, addonPath);
     return false;
   }
 
@@ -135,7 +135,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   addon->m_author = cstring ? cstring : "";
   if (addon->m_id.empty() || addon->m_version.empty())
   {
-    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file '{}' doesnt contain required values on <addon ... > id='{}', version='{}'",
+    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file '{}' doesn't contain required values on <addon ... > id='{}', version='{}'",
               __FUNCTION__,
               addonPath,
               addon->m_id.empty() ? "missing" : addon->m_id,

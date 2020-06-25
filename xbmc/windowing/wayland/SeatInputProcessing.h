@@ -64,7 +64,7 @@ public:
    *
    * This request is sent in addition to \ref OnEnter for \ref InputType::POINTER.
    *
-   * \param seatGlobalName numeric Wayland global name of the seat the event occured on
+   * \param seatGlobalName numeric Wayland global name of the seat the event occurred on
    * \param pointer pointer instance that needs its cursor set
    * \param serial Wayland protocol message serial that must be sent back in set_cursor
    */

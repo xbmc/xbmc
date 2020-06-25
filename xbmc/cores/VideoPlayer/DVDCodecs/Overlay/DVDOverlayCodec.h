@@ -15,7 +15,7 @@
 #include "PlatformDefs.h"
 
 // VC_ messages, messages can be combined
-#define OC_ERROR    0x00000001  // an error occured, no other messages will be returned
+#define OC_ERROR    0x00000001  // an error occurred, no other messages will be returned
 #define OC_BUFFER   0x00000002  // the decoder needs more data
 #define OC_OVERLAY  0x00000004  // the decoder decoded an overlay, call Decode(NULL, 0) again to parse the rest of the data
 

@@ -1585,7 +1585,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
   fd_set fdexcep;
 
   // only attempt to fill buffer if transactions still running and buffer
-  // doesnt exceed required size already
+  // doesn't exceed required size already
   while (m_buffer.getMaxReadSize() < want && m_buffer.getMaxWriteSize() > 0 )
   {
     if (m_cancelled)

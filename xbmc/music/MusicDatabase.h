@@ -669,7 +669,7 @@ public:
   /*! \brief Check if music files need all tags rescanning regardless of file being unchanged
   because the tag processing has changed (which may happen without db version changes) since they
   where last scanned.
-  \return -1 if an error occured, 0 if no scan is needed, or the version number of tags if not the same as current.
+  \return -1 if an error occurred, 0 if no scan is needed, or the version number of tags if not the same as current.
   */
   virtual int GetMusicNeedsTagScan();
 

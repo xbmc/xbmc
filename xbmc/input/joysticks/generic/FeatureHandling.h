@@ -36,7 +36,7 @@ public:
   virtual ~CJoystickFeature() = default;
 
   /*!
-   * \brief A digital motion has occured
+   * \brief A digital motion has occurred
    *
    * \param source The source of the motion. Must be digital (button or hat)
    * \param bPressed True for press motion, false for release motion
@@ -46,7 +46,7 @@ public:
   virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) = 0;
 
   /*!
-   * \brief An analog motion has occured
+   * \brief An analog motion has occurred
    *
    * \param source The source of the motion. Must be a semiaxis
    * \param magnitude The magnitude of the press or motion in the interval [0.0, 1.0]
@@ -61,7 +61,7 @@ public:
   virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) = 0;
 
   /*!
-   * \brief Process the motions that have occured since the last invocation
+   * \brief Process the motions that have occurred since the last invocation
    *
    * This allows features with motion on multiple driver primitives to call
    * their handler once all driver primitives are accounted for.

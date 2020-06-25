@@ -942,7 +942,7 @@ void CAESinkALSA::HandleError(const char* name, int err)
       while((err = snd_pcm_resume(m_pcm)) == -EAGAIN)
         KODI::TIME::Sleep(1);
 
-      /* if the hardware doesnt support resume, prepare the stream */
+      /* if the hardware doesn't support resume, prepare the stream */
       if (err == -ENOSYS)
         if ((err = snd_pcm_prepare(m_pcm)) < 0)
           CLog::Log(LOGERROR, "CAESinkALSA::HandleError(%s) - snd_pcm_prepare returned %d (%s)", name, err, snd_strerror(err));
