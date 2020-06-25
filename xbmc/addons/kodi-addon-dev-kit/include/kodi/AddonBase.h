@@ -1241,7 +1241,7 @@ inline void* GetInterface(const std::string& name, const std::string& version)
  */
 #define ADDONCREATOR(AddonClass) \
   extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create( \
-      KODI_HANDLE addonInterface, const char* globalApiVersion, void* unused) \
+      KODI_HANDLE addonInterface, const char* /*globalApiVersion*/, void* /*unused*/) \
   { \
     kodi::addon::CAddonBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
     kodi::addon::CAddonBase::m_interface->addonBase = new AddonClass; \

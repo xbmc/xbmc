@@ -631,7 +631,7 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetPriorities(const std::vector<PVRTypeIntValue>& priorities, int prioritiesDefault = -1)
   {
-    m_cStructure->iPrioritiesSize = priorities.size();
+    m_cStructure->iPrioritiesSize = static_cast<unsigned int>(priorities.size());
     for (unsigned int i = 0;
          i < m_cStructure->iPrioritiesSize && i < sizeof(m_cStructure->priorities); ++i)
     {
@@ -683,7 +683,7 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetLifetimes(const std::vector<PVRTypeIntValue>& lifetimes, int lifetimesDefault = -1)
   {
-    m_cStructure->iLifetimesSize = lifetimes.size();
+    m_cStructure->iLifetimesSize = static_cast<unsigned int>(lifetimes.size());
     for (unsigned int i = 0;
          i < m_cStructure->iLifetimesSize && i < sizeof(m_cStructure->lifetimes); ++i)
     {
@@ -739,7 +739,8 @@ public:
       const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
       int preventDuplicateEpisodesDefault = -1)
   {
-    m_cStructure->iPreventDuplicateEpisodesSize = preventDuplicateEpisodes.size();
+    m_cStructure->iPreventDuplicateEpisodesSize =
+        static_cast<unsigned int>(preventDuplicateEpisodes.size());
     for (unsigned int i = 0; i < m_cStructure->iPreventDuplicateEpisodesSize &&
                              i < sizeof(m_cStructure->preventDuplicateEpisodes);
          ++i)
@@ -795,7 +796,7 @@ public:
   void SetRecordingGroups(const std::vector<PVRTypeIntValue>& recordingGroup,
                           int recordingGroupDefault = -1)
   {
-    m_cStructure->iRecordingGroupSize = recordingGroup.size();
+    m_cStructure->iRecordingGroupSize = static_cast<unsigned int>(recordingGroup.size());
     for (unsigned int i = 0;
          i < m_cStructure->iRecordingGroupSize && i < sizeof(m_cStructure->recordingGroup); ++i)
     {
@@ -846,7 +847,7 @@ public:
   void SetMaxRecordings(const std::vector<PVRTypeIntValue>& maxRecordings,
                         int maxRecordingsDefault = -1)
   {
-    m_cStructure->iMaxRecordingsSize = maxRecordings.size();
+    m_cStructure->iMaxRecordingsSize = static_cast<unsigned int>(maxRecordings.size());
     for (unsigned int i = 0;
          i < m_cStructure->iMaxRecordingsSize && i < sizeof(m_cStructure->maxRecordings); ++i)
     {
