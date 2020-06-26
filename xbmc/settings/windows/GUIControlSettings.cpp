@@ -21,6 +21,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISettingsSliderControl.h"
@@ -585,21 +586,97 @@ bool CGUIControlListSetting::OnClick()
   if (dialog == NULL)
     return false;
 
+  bool bValueAdded = false;
   CFileItemList options;
   std::shared_ptr<const CSettingControlList> control =
       std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
-  if (!GetItems(m_pSetting, options, false) || options.Size() <= 0 ||
-      (!control->CanMultiSelect() && options.Size() <= 1))
-    return false;
+  bool optionsValid = GetItems(m_pSetting, options, false);
+  std::shared_ptr<const CSettingString> setting =
+    std::static_pointer_cast<const CSettingString>(m_pSetting);
+  if (!setting->AllowNewOption())
+  {
+    // Do not show dialog if
+    // * there are no items to be chosen or
+    // * only one value can be chosen and there are less than two items available
+    if (!optionsValid || options.Size() <= 0 || (!control->CanMultiSelect() && options.Size() <= 1))
+      return false;
 
-  dialog->Reset();
-  dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
-  dialog->SetItems(options);
-  dialog->SetMultiSelection(control->CanMultiSelect());
-  dialog->Open();
+    dialog->Reset();
+    dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
+    dialog->SetItems(options);
+    dialog->SetMultiSelection(control->CanMultiSelect());
+    dialog->Open();
 
-  if (!dialog->IsConfirmed())
-    return false;
+    if (!dialog->IsConfirmed())
+      return false;
+  }
+  else
+  {
+    // Possible to add items, as well as select from any options given
+    // Add any current values that are not options as items in list
+    std::vector<CVariant> list =
+      CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(m_pSetting));
+    for (const auto& value : list)
+    {
+      bool found = std::any_of(options.begin(), options.end(), [&](const auto& p) {
+        return p->GetProperty("value").asString() == value.asString();
+      });
+      if (!found)
+      {
+        CFileItemPtr item(new CFileItem(value.asString()));
+        item->SetProperty("value", value.asString());
+        item->Select(true);
+        options.Add(item);
+      }
+    }
+
+    bool bRepeat = true;
+    while (bRepeat)
+    {
+      std::string strAddButton = Localize(control->GetAddButtonLabel());
+      if (strAddButton.empty())
+        strAddButton = Localize(15019); // "ADD"
+      dialog->Reset(); // Clears AddButtonPressed
+      dialog->SetHeading(CVariant{ Localize(m_pSetting->GetLabel()) });
+      dialog->SetItems(options);
+      dialog->SetMultiSelection(control->CanMultiSelect());
+      dialog->EnableButton2(setting->AllowNewOption(), strAddButton);
+
+      dialog->Open();
+
+      if (!dialog->IsConfirmed())
+        return false;
+
+      if (dialog->IsButton2Pressed())
+      {
+        // Get new list value
+        std::string strLabel;
+        bool bValidType = false;
+        while (!bValidType && CGUIKeyboardFactory::ShowAndGetInput(
+          strLabel, CVariant{ Localize(control->GetAddButtonLabel()) }, false))
+        {
+          // Validate new value is unique and truncate at any comma
+          StringUtils::Trim(strLabel);
+          strLabel = strLabel.substr(0, strLabel.find(','));
+          if (!strLabel.empty())
+          {
+            bValidType = !std::any_of(options.begin(), options.end(), [&](const auto& p) {
+              return p->GetProperty("value").asString() == strLabel;
+            });
+          }
+          if (bValidType)
+          { // Add new value to the list of options
+            CFileItemPtr pItem(new CFileItem(strLabel));
+            pItem->Select(true);
+            pItem->SetProperty("value", strLabel);
+            options.Add(pItem);
+            bValueAdded = true;
+          }
+        }
+      }
+      bRepeat = dialog->IsButton2Pressed();
+    }
+  }
 
   std::vector<CVariant> values;
   for (int i : dialog->GetSelectedItems())
@@ -636,7 +713,7 @@ bool CGUIControlListSetting::OnClick()
   }
 
   if (ret)
-    UpdateFromSetting(true);
+    UpdateFromSetting(!bValueAdded);
   else
     SetValid(false);
 
@@ -654,12 +731,21 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
   std::shared_ptr<const CSettingControlList> control =
       std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options, !updateDisplayOnly);
+  std::shared_ptr<const CSettingString> setting =
+    std::static_pointer_cast<const CSettingString>(m_pSetting);
   std::string label2;
   if (optionsValid && !control->HideValue())
   {
     SettingControlListValueFormatter formatter = control->GetFormatter();
     if (formatter)
       label2 = formatter(m_pSetting);
+
+    if (label2.empty() && setting->AllowNewOption())
+    {
+      const std::shared_ptr<const CSettingList> settingList =
+          std::static_pointer_cast<const CSettingList>(m_pSetting);
+      label2 = settingList->ToString();
+    }
 
     if (label2.empty())
     {
@@ -679,10 +765,10 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
 
   if (!updateDisplayOnly)
   {
-    // disable the control if
+    // Disable the control if no items can be added and
     // * there are no items to be chosen
     // * only one value can be chosen and there are less than two items available
-    if (!m_pButton->IsDisabled() &&
+    if (!m_pButton->IsDisabled() && !setting->AllowNewOption() &&
         (options.Size() <= 0 || (!control->CanMultiSelect() && options.Size() <= 1)))
       m_pButton->SetEnabled(false);
   }

@@ -37,6 +37,7 @@
 #define SETTING_XML_ELM_STEP "step"
 #define SETTING_XML_ELM_MAXIMUM "maximum"
 #define SETTING_XML_ELM_ALLOWEMPTY "allowempty"
+#define SETTING_XML_ELM_ALLOWNEWOPTION "allownewoption"
 #define SETTING_XML_ELM_DEPENDENCIES "dependencies"
 #define SETTING_XML_ELM_DEPENDENCY "dependency"
 #define SETTING_XML_ELM_UPDATES "updates"
