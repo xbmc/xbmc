@@ -226,6 +226,12 @@
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>186</label>
 			</control>
+			<control type="button" id="8">
+				<description>Add button</description>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+				<label></label>
+			</control>
 			<control type="button" id="7">
 				<description>Cancel button</description>
 				<width>200</width>
