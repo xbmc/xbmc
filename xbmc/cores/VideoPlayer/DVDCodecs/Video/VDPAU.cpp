@@ -51,6 +51,9 @@ CDecoder::Desc decoder_profiles[] = {
 #ifdef VDP_DECODER_PROFILE_HEVC_MAIN
 {"HEVC_MAIN", VDP_DECODER_PROFILE_HEVC_MAIN},
 #endif
+#ifdef VDP_DECODER_PROFILE_VP9_PROFILE_0
+{"VP9_PROFILE_0", VDP_DECODER_PROFILE_VP9_PROFILE_0},
+#endif
 };
 
 static struct SInterlaceMapping
@@ -851,6 +854,12 @@ void CDecoder::ReadFormatOf( AVCodecID codec
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
 #endif
+#ifdef VDP_DECODER_PROFILE_VP9_PROFILE_0
+    case AV_CODEC_ID_VP9:
+    vdp_decoder_profile = VDP_DECODER_PROFILE_VP9_PROFILE_0;
+    vdp_chroma_type = VDP_CHROMA_TYPE_420;
+    break;
+#endif
     case AV_CODEC_ID_WMV3:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
@@ -902,6 +911,13 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     // The DPB works quite differently in hevc and there isn't  a per-file max
     // reference number, so we force the maximum number (source: upstream ffmpeg)
     m_vdpauConfig.maxReferences = 16;
+  }
+  else if (avctx->codec_id == AV_CODEC_ID_VP9)
+  {
+    if (avctx->profile != FF_PROFILE_VP9_0)
+      return false;
+
+    m_vdpauConfig.maxReferences = 8;
   }
   else
     m_vdpauConfig.maxReferences = 2;
