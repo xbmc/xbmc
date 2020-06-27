@@ -80,6 +80,114 @@ private:
   InputstreamCapabilities(INPUTSTREAM_CAPABILITIES* stream) : CStructHdl(stream) {}
 };
 
+class ATTRIBUTE_HIDDEN InputstreamMasteringMetadata
+  : public CStructHdl<InputstreamMasteringMetadata, INPUTSTREAM_MASTERING_METADATA>
+{
+  friend class CInstanceInputStream;
+  friend class InputstreamInfo;
+
+public:
+  /*! \cond PRIVATE */
+  InputstreamMasteringMetadata() = default;
+  InputstreamMasteringMetadata(const InputstreamMasteringMetadata& stream) : CStructHdl(stream) {}
+  /*! \endcond */
+
+  bool operator==(const kodi::addon::InputstreamMasteringMetadata& right) const
+  {
+    if (memcmp(m_cStructure, right.m_cStructure, sizeof(INPUTSTREAM_MASTERING_METADATA)) == 0)
+      return true;
+    return false;
+  }
+
+  void SetPrimaryR_ChromaticityX(double value) { m_cStructure->primary_r_chromaticity_x = value; }
+
+  double GetPrimaryR_ChromaticityX() { return m_cStructure->primary_r_chromaticity_x; }
+
+  void SetPrimaryR_ChromaticityY(double value) { m_cStructure->primary_r_chromaticity_y = value; }
+
+  double GetPrimaryR_ChromaticityY() { return m_cStructure->primary_r_chromaticity_y; }
+
+  void SetPrimaryG_ChromaticityX(double value) { m_cStructure->primary_g_chromaticity_x = value; }
+
+  double GetPrimaryG_ChromaticityX() { return m_cStructure->primary_g_chromaticity_x; }
+
+  void SetPrimaryG_ChromaticityY(double value) { m_cStructure->primary_g_chromaticity_y = value; }
+
+  double GetPrimaryG_ChromaticityY() { return m_cStructure->primary_g_chromaticity_y; }
+
+  void SetPrimaryB_ChromaticityX(double value) { m_cStructure->primary_b_chromaticity_x = value; }
+
+  double GetPrimaryB_ChromaticityX() { return m_cStructure->primary_b_chromaticity_x; }
+
+  void SetPrimaryB_ChromaticityY(double value) { m_cStructure->primary_b_chromaticity_y = value; }
+
+  double GetPrimaryB_ChromaticityY() { return m_cStructure->primary_b_chromaticity_y; }
+
+  void SetWhitePoint_ChromaticityX(double value)
+  {
+    m_cStructure->white_point_chromaticity_x = value;
+  }
+
+  double GetWhitePoint_ChromaticityX() { return m_cStructure->white_point_chromaticity_x; }
+
+  void SetWhitePoint_ChromaticityY(double value)
+  {
+    m_cStructure->white_point_chromaticity_y = value;
+  }
+
+  double GetWhitePoint_ChromaticityY() { return m_cStructure->white_point_chromaticity_y; }
+
+  void SetLuminanceMax(double value) { m_cStructure->luminance_max = value; }
+
+  double GetLuminanceMax() { return m_cStructure->luminance_max; }
+
+  void SetLuminanceMin(double value) { m_cStructure->luminance_min = value; }
+
+  double GetLuminanceMin() { return m_cStructure->luminance_min; }
+
+private:
+  InputstreamMasteringMetadata(const INPUTSTREAM_MASTERING_METADATA* stream) : CStructHdl(stream) {}
+  InputstreamMasteringMetadata(INPUTSTREAM_MASTERING_METADATA* stream) : CStructHdl(stream) {}
+};
+
+class ATTRIBUTE_HIDDEN InputstreamContentlightMetadata
+  : public CStructHdl<InputstreamContentlightMetadata, INPUTSTREAM_CONTENTLIGHT_METADATA>
+{
+  friend class CInstanceInputStream;
+  friend class InputstreamInfo;
+
+public:
+  /*! \cond PRIVATE */
+  InputstreamContentlightMetadata() = default;
+  InputstreamContentlightMetadata(const InputstreamContentlightMetadata& stream)
+    : CStructHdl(stream)
+  {
+  }
+  /*! \endcond */
+
+  bool operator==(const kodi::addon::InputstreamContentlightMetadata& right) const
+  {
+    if (memcmp(m_cStructure, right.m_cStructure, sizeof(INPUTSTREAM_CONTENTLIGHT_METADATA)) == 0)
+      return true;
+    return false;
+  }
+
+  void SetMaxCll(uint64_t value) { m_cStructure->max_cll = value; }
+
+  uint64_t GetMaxCll() { return m_cStructure->max_cll; }
+
+  void SetMaxFall(uint64_t value) { m_cStructure->max_fall = value; }
+
+  uint64_t GetMaxFall() { return m_cStructure->max_fall; }
+
+private:
+  InputstreamContentlightMetadata(const INPUTSTREAM_CONTENTLIGHT_METADATA* stream)
+    : CStructHdl(stream)
+  {
+  }
+  InputstreamContentlightMetadata(INPUTSTREAM_CONTENTLIGHT_METADATA* stream) : CStructHdl(stream) {}
+};
+
 class ATTRIBUTE_HIDDEN InputstreamInfo : public CStructHdl<InputstreamInfo, INPUTSTREAM_INFO>
 {
   friend class CInstanceInputStream;
@@ -261,23 +369,27 @@ public:
     return m_cStructure->m_colorTransferCharacteristic;
   }
 
-  void SetMasteringMetadata(const INPUTSTREAM_MASTERING_METADATA& masteringMetadata)
+  void SetMasteringMetadata(const kodi::addon::InputstreamMasteringMetadata& masteringMetadata)
   {
     m_masteringMetadata = masteringMetadata;
-    m_cStructure->m_masteringMetadata = &m_masteringMetadata;
+    m_cStructure->m_masteringMetadata = m_masteringMetadata;
   }
 
-  const INPUTSTREAM_MASTERING_METADATA& GetMasteringMetadata() const { return m_masteringMetadata; }
+  const kodi::addon::InputstreamMasteringMetadata& GetMasteringMetadata() const
+  {
+    return m_masteringMetadata;
+  }
 
   void ClearMasteringMetadata() { m_cStructure->m_masteringMetadata = nullptr; }
 
-  void SetContentLightMetadata(const INPUTSTREAM_CONTENTLIGHT_METADATA& contentLightMetadata)
+  void SetContentLightMetadata(
+      const kodi::addon::InputstreamContentlightMetadata& contentLightMetadata)
   {
     m_contentLightMetadata = contentLightMetadata;
-    m_cStructure->m_contentLightMetadata = &m_contentLightMetadata;
+    m_cStructure->m_contentLightMetadata = m_contentLightMetadata;
   }
 
-  const INPUTSTREAM_CONTENTLIGHT_METADATA& GetContentLightMetadata() const
+  const kodi::addon::InputstreamContentlightMetadata& GetContentLightMetadata() const
   {
     return m_contentLightMetadata;
   }
@@ -296,13 +408,13 @@ private:
         m_extraData.emplace_back(m_cStructure->m_ExtraData[i]);
     }
     if (m_cStructure->m_masteringMetadata)
-      m_masteringMetadata = *m_cStructure->m_masteringMetadata;
+      m_masteringMetadata = m_cStructure->m_masteringMetadata;
     if (m_cStructure->m_contentLightMetadata)
-      m_contentLightMetadata = *m_cStructure->m_contentLightMetadata;
+      m_contentLightMetadata = m_cStructure->m_contentLightMetadata;
   }
   std::vector<uint8_t> m_extraData;
-  INPUTSTREAM_MASTERING_METADATA m_masteringMetadata;
-  INPUTSTREAM_CONTENTLIGHT_METADATA m_contentLightMetadata;
+  InputstreamMasteringMetadata m_masteringMetadata;
+  InputstreamContentlightMetadata m_contentLightMetadata;
 };
 
 class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
