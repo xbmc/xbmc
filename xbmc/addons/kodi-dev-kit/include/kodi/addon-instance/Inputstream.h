@@ -60,6 +60,26 @@ private:
   InputstreamProperty(INPUTSTREAM_PROPERTY* stream) : CStructHdl(stream) {}
 };
 
+class ATTRIBUTE_HIDDEN InputstreamCapabilities
+  : public CStructHdl<InputstreamCapabilities, INPUTSTREAM_CAPABILITIES>
+{
+  friend class CInstanceInputStream;
+
+public:
+  /*! \cond PRIVATE */
+  InputstreamCapabilities() = default;
+  InputstreamCapabilities(const InputstreamCapabilities& stream) : CStructHdl(stream) {}
+  /*! \endcond */
+
+  void SetMask(uint32_t mask) const { m_cStructure->m_mask = mask; }
+
+  uint32_t GetMask() const { return m_cStructure->m_mask; }
+
+private:
+  InputstreamCapabilities(const INPUTSTREAM_CAPABILITIES* stream) : CStructHdl(stream) {}
+  InputstreamCapabilities(INPUTSTREAM_CAPABILITIES* stream) : CStructHdl(stream) {}
+};
+
 class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
 {
 public:
@@ -96,7 +116,7 @@ public:
      * @param capabilities The add-on's capabilities.
      * @remarks
      */
-  virtual void GetCapabilities(INPUTSTREAM_CAPABILITIES& capabilities) = 0;
+  virtual void GetCapabilities(kodi::addon::InputstreamCapabilities& capabilities) = 0;
 
   /*!
      * Get IDs of available streams
@@ -397,8 +417,8 @@ private:
   inline static void ADDON_GetCapabilities(const AddonInstance_InputStream* instance,
                                            INPUTSTREAM_CAPABILITIES* capabilities)
   {
-    static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)
-        ->GetCapabilities(*capabilities);
+    InputstreamCapabilities caps(capabilities);
+    static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetCapabilities(caps);
   }
 
 
