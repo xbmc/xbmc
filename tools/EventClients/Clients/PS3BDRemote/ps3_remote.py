@@ -159,7 +159,7 @@ def process_keys(remote, xbmc):
         raise e
 
     if datalen == 13:
-        keycode = data.encode("hex")[10:12]
+        keycode = data.hex()[10:12]
         if keycode == "ff":
             xbmc.release_button()
             return done

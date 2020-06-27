@@ -199,7 +199,7 @@ if(ENABLE_EVENTCLIENTS)
           COMPONENT kodi-eventclients-common)
 
   # Install kodi-eventclients-common python files
-  file(WRITE ${CMAKE_BINARY_DIR}/packages/deb/defs.py ICON_PATH="usr/share/pixmaps/${APP_NAME_LC}/")
+  file(WRITE ${CMAKE_BINARY_DIR}/packages/deb/defs.py ICON_PATH="/usr/share/pixmaps/${APP_NAME_LC}/")
   install(PROGRAMS ${CMAKE_BINARY_DIR}/packages/deb/defs.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/__init__.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/PS3BDRemote/ps3_remote.py
