@@ -150,15 +150,27 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
     return InvalidParams;
 
   bool disabled = false;
+  AddonDisabledReason disabledReason;
   if (parameterObject["enabled"].isBoolean())
+  {
     disabled = !parameterObject["enabled"].asBoolean();
+    disabledReason =
+        static_cast<AddonDisabledReason>(parameterObject["disabledReason"].asInteger());
+  }
   // we need to toggle the current disabled state of the addon
   else if (parameterObject["enabled"].isString())
+  {
     disabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(id);
+    disabledReason =
+        static_cast<AddonDisabledReason>(parameterObject["disabledReason"].asInteger());
+  }
   else
+  {
     return InvalidParams;
+  }
 
-  bool success = disabled ? CServiceBroker::GetAddonMgr().DisableAddon(id) : CServiceBroker::GetAddonMgr().EnableAddon(id);
+  bool success = disabled ? CServiceBroker::GetAddonMgr().DisableAddon(id, disabledReason)
+                          : CServiceBroker::GetAddonMgr().EnableAddon(id);
   return success ? ACK : InvalidParams;
 }
 

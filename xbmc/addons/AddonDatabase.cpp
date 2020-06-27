@@ -131,7 +131,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 27;
+  return 28;
 }
 
 void CAddonDatabase::CreateTables()
@@ -165,8 +165,8 @@ void CAddonDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create installed table");
   m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
-      "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, "
-      "origin TEXT NOT NULL DEFAULT '') \n");
+              "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, "
+              "disabledReason INTEGER NOT NULL DEFAULT 0, origin TEXT NOT NULL DEFAULT '') \n");
 }
 
 void CAddonDatabase::CreateAnalytics()
@@ -217,6 +217,12 @@ void CAddonDatabase::UpdateTables(int version)
   if (version < 27)
   {
     m_pDS->exec("ALTER TABLE addons ADD news TEXT NOT NULL DEFAULT ''");
+  }
+  if (version < 28)
+  {
+    m_pDS->exec("ALTER TABLE installed ADD disabledReason INTEGER NOT NULL DEFAULT 0");
+    // On adding this field we will use user disabled as the default reason for any disabled addons
+    m_pDS->exec("UPDATE installed SET disabledReason=1 WHERE enabled=0");
   }
 }
 
@@ -862,7 +868,7 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
   return false;
 }
 
-bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = true */)
+bool CAddonDatabase::DisableAddon(const std::string& addonID, AddonDisabledReason disabledReason)
 {
   try
   {
@@ -871,7 +877,30 @@ bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = 
     if (!m_pDS)
       return false;
 
-    std::string sql = PrepareSQL("UPDATE installed SET enabled=%d WHERE addonID='%s'", disable ? 0 : 1, addonID.c_str());
+    const std::string sql =
+        PrepareSQL("UPDATE installed SET enabled=0, disabledReason=%d WHERE addonID='%s'",
+                   static_cast<int>(disabledReason), addonID.c_str());
+    m_pDS->exec(sql);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::EnableAddon(const std::string& addonID)
+{
+  try
+  {
+    if (!m_pDB)
+      return false;
+    if (!m_pDS)
+      return false;
+
+    const std::string sql = PrepareSQL(
+        "UPDATE installed SET enabled=1, disabledReason=0 WHERE addonID='%s'", addonID.c_str());
     m_pDS->exec(sql);
     return true;
   }
@@ -891,7 +920,7 @@ bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& r
                                    addonID.c_str(), reason.c_str()));
 }
 
-bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)
+bool CAddonDatabase::GetDisabled(std::map<std::string, AddonDisabledReason>& addons)
 {
   try
   {
@@ -900,11 +929,13 @@ bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)
     if (!m_pDS)
       return false;
 
-    std::string sql = PrepareSQL("SELECT addonID FROM installed WHERE enabled=0");
+    const std::string sql =
+        PrepareSQL("SELECT addonID, disabledReason FROM installed WHERE enabled=0");
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      addons.insert(m_pDS->fv(0).get_asString());
+      addons.insert({m_pDS->fv(0).get_asString(),
+                     static_cast<AddonDisabledReason>(m_pDS->fv(1).get_asInt())});
       m_pDS->next();
     }
     m_pDS->close();

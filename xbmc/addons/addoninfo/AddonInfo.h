@@ -26,6 +26,17 @@ class CAddonInfo;
 typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
 typedef std::vector<AddonInfoPtr> AddonInfos;
 
+enum class AddonDisabledReason
+{
+  /// @brief Special reason for returning all disabled addons.
+  ///
+  /// Only used as an actual value when an addon is enabled.
+  NONE = 0,
+  USER = 1,
+  INCOMPATIBLE = 2,
+  PERMANENT_FAILURE = 3
+};
+
 struct DependencyInfo
 {
   std::string id;

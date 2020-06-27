@@ -74,6 +74,7 @@ bool CDisableAddon::IsVisible(const CFileItem& item) const
 
 bool CDisableAddon::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetAddonMgr().DisableAddon(item->GetAddonInfo()->ID());
+  return CServiceBroker::GetAddonMgr().DisableAddon(item->GetAddonInfo()->ID(),
+                                                    AddonDisabledReason::USER);
 }
 }

@@ -29,8 +29,8 @@ public:
   /*! \brief Get an addon with a specific version and repository. */
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
 
-  /*! Get the addon IDs that has been set to disabled */
-  bool GetDisabled(std::set<std::string>& addons);
+  /*! Get the addon IDs that have been set to disabled */
+  bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason>& addons);
 
   /*! @deprecated: use FindByAddonId */
   bool GetAvailableVersions(const std::string& addonId,
@@ -73,13 +73,24 @@ public:
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
 
-  /*! \brief Disable an addon.
-   Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
-   \param addonID id of the addon to disable
-   \param disable whether to enable or disable.  Defaults to true (disable)
-   \return true on success, false on failure
-   \sa IsAddonDisabled, HasDisabledAddons */
-  bool DisableAddon(const std::string &addonID, bool disable = true);
+  /*!
+   * \brief Disable an addon.
+   * Sets a flag that this addon has been disabled.  If disabled, it is usually still available on
+   * disk.
+   * \param addonID id of the addon to disable
+   * \param disabledReason the reason why the addon is being disabled
+   * \return true on success, false on failure
+   * \sa IsAddonDisabled, HasDisabledAddons, EnableAddon
+   */
+  bool DisableAddon(const std::string& addonID, ADDON::AddonDisabledReason disabledReason);
+
+  /*! \brief Enable an addon.
+   * Enables an addon that has previously been disabled
+   * \param addonID id of the addon to enable
+   * \return true on success, false on failure
+   * \sa DisableAddon, IsAddonDisabled, HasDisabledAddons
+   */
+  bool EnableAddon(const std::string& addonID);
 
   /*! \brief Mark an addon as broken
    Sets a flag that this addon has been marked as broken in the repository.
