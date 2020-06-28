@@ -234,6 +234,15 @@ const std::string CSettings::SETTING_MUSICLIBRARY_USEARTISTSORTNAME = "musiclibr
 const std::string CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO = "musiclibrary.downloadinfo";
 const std::string CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER = "musiclibrary.artistsfolder";
 const std::string CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART = "musiclibrary.preferonlinealbumart";
+const std::string CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL = "musiclibrary.artworklevel";
+const std::string CSettings::SETTING_MUSICLIBRARY_USEALLLOCALART = "musiclibrary.usealllocalart";
+const std::string CSettings::SETTING_MUSICLIBRARY_USEALLREMOTEART = "musiclibrary.useallremoteart";
+const std::string CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST =
+    "musiclibrary.artistartwhitelist";
+const std::string CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST =
+    "musiclibrary.albumartwhitelist";
+const std::string CSettings::SETTING_MUSICLIBRARY_MUSICTHUMBS = "musiclibrary.musicthumbs";
+const std::string CSettings::SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED = "musiclibrary.artsettings";
 const std::string CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER = "musiclibrary.albumsscraper";
 const std::string CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER = "musiclibrary.artistsscraper";
 const std::string CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS = "musiclibrary.overridetags";

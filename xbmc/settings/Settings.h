@@ -202,6 +202,13 @@ public:
   static const std::string SETTING_MUSICLIBRARY_DOWNLOADINFO;
   static const std::string SETTING_MUSICLIBRARY_ARTISTSFOLDER;
   static const std::string SETTING_MUSICLIBRARY_PREFERONLINEALBUMART;
+  static const std::string SETTING_MUSICLIBRARY_ARTWORKLEVEL;
+  static const std::string SETTING_MUSICLIBRARY_USEALLLOCALART;
+  static const std::string SETTING_MUSICLIBRARY_USEALLREMOTEART;
+  static const std::string SETTING_MUSICLIBRARY_ARTISTART_WHITELIST;
+  static const std::string SETTING_MUSICLIBRARY_ALBUMART_WHITELIST;
+  static const std::string SETTING_MUSICLIBRARY_MUSICTHUMBS;
+  static const std::string SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED;
   static const std::string SETTING_MUSICLIBRARY_ALBUMSSCRAPER;
   static const std::string SETTING_MUSICLIBRARY_ARTISTSSCRAPER;
   static const std::string SETTING_MUSICLIBRARY_OVERRIDETAGS;
@@ -388,6 +395,11 @@ public:
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES = 0;
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES = 1;
   static const int VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE = 2;
+
+  // values for SETTING_MUSICLIBRARY_ARTWORKLEVEL
+  static const int MUSICLIBRARY_ARTWORK_LEVEL_ALL = 0;
+  static const int MUSICLIBRARY_ARTWORK_LEVEL_BASIC = 1;
+  static const int MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM = 2;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
