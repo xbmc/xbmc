@@ -802,8 +802,11 @@ void DetailsFromFileItem<CArtist>(const CFileItem &item, CArtist &artist)
   {
     std::stringstream prefix;
     prefix << "artist.album" << i + 1;
-    artist.discography.emplace_back(FromString(item, prefix.str() + ".title"),
-                                    FromString(item, prefix.str() + ".year"));
+    CDiscoAlbum discoAlbum;
+    discoAlbum.strAlbum = FromString(item, prefix.str() + ".title");
+    discoAlbum.strYear = FromString(item, prefix.str() + ".year");
+    discoAlbum.strReleaseGroupMBID = FromString(item, prefix.str() + ".musicbrainzreleasegroupid");
+    artist.discography.emplace_back(discoAlbum);
   }
 
   int nThumbs = item.GetProperty("artist.thumbs").asInteger32();
