@@ -327,6 +327,7 @@ public:
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = false);
   bool GetArtistExists(int idArtist);
   int GetLastArtist();
+  int GetArtistFromMBID(const std::string& strMusicBrainzArtistID, std::string& artistname);
   int  UpdateArtist(int idArtist,
                     const std::string& strArtist, const std::string& strSortName,
                     const std::string& strMusicBrainzArtistID, bool bScrapedMBID,

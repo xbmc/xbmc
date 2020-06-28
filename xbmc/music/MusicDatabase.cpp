@@ -1781,6 +1781,20 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
   if (idArtist < 0)
     return -1;
 
+  // Check another artist with this mbid not already exist (an alias for example)
+  bool useMBIDNull = strMusicBrainzArtistID.empty();
+  bool isScrapedMBID = bScrapedMBID;
+  std::string artistname;
+  int idArtistMbid = GetArtistFromMBID(strMusicBrainzArtistID, artistname);
+  if (idArtistMbid > 0)
+  {
+    CLog::Log(LOGDEBUG, "{0}: Updating {4} (Id: {5}) mbid {1} already assigned to {2} (Id: {3})",
+      __FUNCTION__, strMusicBrainzArtistID.c_str(), artistname.c_str(), idArtistMbid,
+      strArtist.c_str(), idArtist);
+    useMBIDNull = true;
+    isScrapedMBID = false;
+  }
+
   std::string strSQL;
   strSQL = PrepareSQL("UPDATE artist SET "
                       " strArtist = '%s', "
@@ -1799,7 +1813,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
                       strYearsActive.c_str(), strImage.c_str(), strFanart.c_str(),
                       CDateTime::GetUTCDateTime().GetAsDBDateTime().c_str(), bScrapedMBID);
-  if (strMusicBrainzArtistID.empty())
+  if (useMBIDNull)
     strSQL += PrepareSQL(", strMusicBrainzArtistID = NULL");
   else
     strSQL += PrepareSQL(", strMusicBrainzArtistID = '%s'", strMusicBrainzArtistID.c_str());
@@ -1820,6 +1834,16 @@ bool CMusicDatabase::UpdateArtistScrapedMBID(int idArtist, const std::string& st
 {
   if (strMusicBrainzArtistID.empty() || idArtist < 0)
     return false;
+
+  // Check artist with this mbid not already exist (an alias for example)
+  std::string artistname;
+  int idArtistMbid = GetArtistFromMBID(strMusicBrainzArtistID, artistname);
+  if (idArtistMbid > 0)
+  {
+    CLog::Log(LOGDEBUG, "{0}: Artist mbid {1} already assigned to {2} (Id: {3})", __FUNCTION__,
+              strMusicBrainzArtistID.c_str(), artistname.c_str(), idArtistMbid);
+    return false;
+  }
 
   // Set scraped artist Musicbrainz ID for a previously added artist with no MusicBrainz ID
   std::string strSQL;
@@ -1924,6 +1948,40 @@ int CMusicDatabase::GetLastArtist()
       return -1;
 
   return static_cast<int>(strtol(lastArtist.c_str(), NULL, 10));
+}
+
+int CMusicDatabase::GetArtistFromMBID(const std::string& strMusicBrainzArtistID,
+                                      std::string& artistname)
+{
+  if (strMusicBrainzArtistID.empty())
+    return -1;
+
+  std::string strSQL;
+  try
+  {
+    if (nullptr == m_pDB || nullptr == m_pDS2)
+      return -1;
+    // Match on MusicBrainz ID, definitively unique
+    strSQL =
+        PrepareSQL("SELECT idArtist, strArtist FROM artist WHERE strMusicBrainzArtistID = '%s'",
+                   strMusicBrainzArtistID.c_str());
+    if (!m_pDS2->query(strSQL))
+      return -1;
+    int idArtist = -1;
+    if (m_pDS2->num_rows() > 0)
+    {
+      idArtist = m_pDS2->fv("idArtist").get_asInt();
+      artistname = m_pDS2->fv("strArtist").get_asString();
+    }
+    m_pDS2->close();
+    return idArtist;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::{0} - failed to execute {1}", __FUNCTION__,
+              strSQL.c_str());
+  }
+  return -1;
 }
 
 bool CMusicDatabase::HasArtistBeenScraped(int idArtist)
