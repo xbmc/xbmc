@@ -1356,6 +1356,49 @@
 			<textureradiooffnofocus colordiffuse="grey">icons/back.png</textureradiooffnofocus>
 		</control>
 	</include>
+	<include name="TouchBackOSDButton">
+		<control type="radiobutton" id="799">
+			<left>-10</left>
+			<top>-10</top>
+			<width>120</width>
+			<height>120</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<onclick>Dialog.Close(all,true)</onclick>
+			<onclick>Action(FullScreen)</onclick>
+			<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+			<texturenofocus />
+			<radioposx>30</radioposx>
+			<radiowidth>60</radiowidth>
+			<radioheight>60</radioheight>
+			<textureradioonfocus>icons/back.png</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="grey">icons/back.png</textureradioonnofocus>
+			<textureradioofffocus>icons/back.png</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="grey">icons/back.png</textureradiooffnofocus>
+			<include>Animation_TopSlide</include>
+		</control>
+	</include>
+	<include name="TouchBackSlideshowButton">
+		<control type="radiobutton" id="13">
+			<left>-10</left>
+			<top>-10</top>
+			<width>120</width>
+			<height>120</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<onfocus>Action(Back)</onfocus>
+			<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+			<texturenofocus />
+			<radioposx>30</radioposx>
+			<radiowidth>60</radiowidth>
+			<radioheight>60</radioheight>
+			<textureradioonfocus>icons/back.png</textureradioonfocus>
+			<textureradioonnofocus colordiffuse="grey">icons/back.png</textureradioonnofocus>
+			<textureradioofffocus>icons/back.png</textureradioofffocus>
+			<textureradiooffnofocus colordiffuse="grey">icons/back.png</textureradiooffnofocus>
+			<visible>!Window.IsVisible(PictureInfo)</visible>
+		</control>
+	</include>
 	<include name="SettingsPanel">
 		<itemlayout height="260" width="400">
 			<control type="image">
