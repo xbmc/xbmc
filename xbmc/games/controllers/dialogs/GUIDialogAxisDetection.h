@@ -39,7 +39,7 @@ protected:
   void OnClose(bool bAccepted) override {}
 
 private:
-  void AddAxis(const std::string& deviceName, unsigned int axisIndex);
+  void AddAxis(const std::string& deviceLocation, unsigned int axisIndex);
 
   // Axis types
   using DeviceName = std::string;

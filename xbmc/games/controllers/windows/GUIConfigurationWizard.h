@@ -78,7 +78,7 @@ private:
   void InitializeState(void);
 
   bool IsMapping() const;
-  bool IsMapping(const std::string& deviceName) const;
+  bool IsMapping(const std::string& location) const;
 
   void InstallHooks(void);
   void RemoveHooks(void);
@@ -99,7 +99,7 @@ private:
   JOYSTICK::THROTTLE_DIRECTION m_throttleDirection;
   std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
   bool m_lateAxisDetected; // Set to true if an axis is detected during button mapping
-  std::string m_deviceName; // Name of device that we're mapping
+  std::string m_location; // Peripheral location of device that we're mapping
   bool m_bIsKeyboard = false; // True if we're mapping keyboard keys
   CCriticalSection m_stateMutex;
 

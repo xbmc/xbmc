@@ -62,21 +62,21 @@ bool CGUIDialogIgnoreInput::MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap
                                                  const JOYSTICK::CDriverPrimitive& primitive)
 {
   // Check if we have already started capturing primitives for a device
-  const bool bHasDevice = !m_deviceName.empty();
+  const bool bHasDevice = !m_location.empty();
 
   // If a primitive comes from a different device, ignore it
-  if (bHasDevice && m_deviceName != buttonMap->DeviceName())
+  if (bHasDevice && m_location != buttonMap->Location())
   {
-    CLog::Log(LOGDEBUG, "%s: ignoring input from device %s", buttonMap->ControllerID().c_str(),
-              buttonMap->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "{}: ignoring input from device {}", buttonMap->ControllerID(),
+              buttonMap->Location());
     return false;
   }
 
   if (!bHasDevice)
   {
-    CLog::Log(LOGDEBUG, "%s: capturing input for device %s", buttonMap->ControllerID().c_str(),
-              buttonMap->DeviceName().c_str());
-    m_deviceName = buttonMap->DeviceName();
+    CLog::Log(LOGDEBUG, "{}: capturing input for device {}", buttonMap->ControllerID(),
+              buttonMap->Location());
+    m_location = buttonMap->Location();
   }
 
   if (AddPrimitive(primitive))
@@ -96,10 +96,10 @@ void CGUIDialogIgnoreInput::OnClose(bool bAccepted)
     {
       // See documentation of IButtonMapCallback::ResetIgnoredPrimitives()
       // for why this call is needed
-      if (m_deviceName.empty())
+      if (m_location.empty())
         callback.second->ResetIgnoredPrimitives();
 
-      if (m_deviceName.empty() || m_deviceName == callback.first)
+      if (m_location.empty() || m_location == callback.first)
         callback.second->SaveButtonMap();
     }
     else
