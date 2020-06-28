@@ -54,7 +54,7 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_throttleDirection = JOYSTICK::THROTTLE_DIRECTION::NONE;
   m_history.clear();
   m_lateAxisDetected = false;
-  m_deviceName.clear();
+  m_location.clear();
 }
 
 void CGUIConfigurationWizard::Run(const std::string& strControllerId,
@@ -211,7 +211,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   bool bHandled = false;
 
   // Abort if another controller cancels the prompt
-  if (IsMapping() && !IsMapping(buttonMap->DeviceName()))
+  if (IsMapping() && !IsMapping(buttonMap->Location()))
   {
     //! @todo This only succeeds for game.controller.default; no actions are
     //        currently defined for other controllers
@@ -289,7 +289,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         else
         {
           CLog::Log(LOGDEBUG, "{}: mapping feature \"{}\" for device {}", m_strControllerId,
-                    feature.Name(), buttonMap->DeviceName());
+                    feature.Name(), buttonMap->Location());
 
           switch (feature.Type())
           {
@@ -344,9 +344,9 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
           m_inputEvent.Set();
 
-          if (m_deviceName.empty())
+          if (m_location.empty())
           {
-            m_deviceName = buttonMap->DeviceName();
+            m_location = buttonMap->Location();
             m_bIsKeyboard = (primitive.Type() == PRIMITIVE_TYPE::KEY);
           }
         }
@@ -449,12 +449,12 @@ bool CGUIConfigurationWizard::OnAction(unsigned int actionId)
 
 bool CGUIConfigurationWizard::IsMapping() const
 {
-  return !m_deviceName.empty();
+  return !m_location.empty();
 }
 
-bool CGUIConfigurationWizard::IsMapping(const std::string& deviceName) const
+bool CGUIConfigurationWizard::IsMapping(const std::string& location) const
 {
-  return m_deviceName == deviceName;
+  return m_location == location;
 }
 
 void CGUIConfigurationWizard::InstallHooks(void)
