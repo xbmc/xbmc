@@ -151,8 +151,9 @@ static bool IsDependencyType(TYPE type)
 
 static bool IsUserInstalled(const AddonPtr& addon)
 {
-  return std::find_if(dependencyTypes.begin(), dependencyTypes.end(),
-                      [&](TYPE type) { return addon->HasType(type); }) == dependencyTypes.end();
+  return std::find_if(dependencyTypes.begin(), dependencyTypes.end(), [&](TYPE type) {
+           return addon->MainType() == type;
+         }) == dependencyTypes.end();
 }
 
 static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
