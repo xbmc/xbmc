@@ -6,42 +6,45 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "network/EventServer.h"
-#include "network/Network.h"
-#include "threads/SystemClock.h"
 #include "Application.h"
-#include "AppParamParser.h"
+
 #include "AppInboundProtocol.h"
-#include "dialogs/GUIDialogBusy.h"
-#include "events/EventLog.h"
-#include "events/NotificationEvent.h"
-#include "interfaces/builtins/Builtins.h"
-#include "utils/JobManager.h"
-#include "utils/Variant.h"
-#include "LangInfo.h"
-#include "utils/Screenshot.h"
-#include "Util.h"
-#include "URL.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/TextureManager.h"
-#include "cores/IPlayer.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "PlayListPlayer.h"
+#include "AppParamParser.h"
 #include "Autorun.h"
-#include "video/Bookmark.h"
-#include "video/VideoLibraryQueue.h"
-#include "music/MusicLibraryQueue.h"
-#include "guilib/GUIControlProfiler.h"
-#include "utils/LangCodeExpander.h"
 #include "GUIInfoManager.h"
-#include "playlists/PlayListFactory.h"
-#include "guilib/GUIFontManager.h"
-#include "guilib/GUIColorManager.h"
-#include "guilib/StereoscopicsManager.h"
+#include "HDRStatus.h"
+#include "LangInfo.h"
+#include "PlayListPlayer.h"
+#include "URL.h"
+#include "Util.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/IPlayer.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
+#include "guilib/GUIColorManager.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIControlProfiler.h"
+#include "guilib/GUIFontManager.h"
+#include "guilib/StereoscopicsManager.h"
+#include "guilib/TextureManager.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "music/MusicLibraryQueue.h"
+#include "network/EventServer.h"
+#include "network/Network.h"
+#include "playlists/PlayListFactory.h"
+#include "threads/SystemClock.h"
+#include "utils/JobManager.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/Screenshot.h"
+#include "utils/Variant.h"
+#include "video/Bookmark.h"
+#include "video/VideoLibraryQueue.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -497,6 +500,12 @@ bool CApplication::Create(const CAppParamParser &params)
             (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator"
                                                                     : "restricted");
   CLog::Log(LOGINFO, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
+  HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
+  if (hdrStatus == HDR_STATUS::HDR_UNSUPPORTED)
+    CLog::Log(LOGINFO, "Display is not HDR capable or cannot be detected");
+  else
+    CLog::Log(LOGINFO, "Display HDR capable is detected and Windows HDR switch is %s",
+              (hdrStatus == HDR_STATUS::HDR_ON) ? "ON" : "OFF");
 #endif
 #if defined(TARGET_ANDROID)
   CLog::Log(
@@ -1654,6 +1663,25 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_TAKE_SCREENSHOT)
   {
     CScreenShot::TakeScreenshot();
+    return true;
+  }
+  // Display HDR : toggle HDR on/off
+  if (action.GetID() == ACTION_HDR_TOGGLE)
+  {
+    HDR_STATUS hdrStatus = CServiceBroker::GetWinSystem()->ToggleHDR();
+
+    if (hdrStatus == HDR_STATUS::HDR_OFF)
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::eMessageType::Info, "HDR is OFF",
+                                            "Display HDR is Off", TOAST_DISPLAY_TIME, true,
+                                            TOAST_DISPLAY_TIME);
+    }
+    else if (hdrStatus == HDR_STATUS::HDR_ON)
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::eMessageType::Info, "HDR is ON",
+                                            "Display HDR is On", TOAST_DISPLAY_TIME, true,
+                                            TOAST_DISPLAY_TIME);
+    }
     return true;
   }
   // built in functions : execute the built-in

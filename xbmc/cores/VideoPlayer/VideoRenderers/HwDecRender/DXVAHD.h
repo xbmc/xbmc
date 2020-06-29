@@ -49,7 +49,8 @@ public:
   void OnCreateDevice() override  {}
   void OnDestroyDevice(bool) override { CSingleLock lock(m_section); UnInit(); }
 
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer*, bool);
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(CRenderBuffer* view, bool supportHDR);
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(CRenderBuffer* view);
 
 protected:
   bool ReInit();

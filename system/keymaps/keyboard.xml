@@ -167,6 +167,7 @@
       <k mod="ctrl,shift">ReloadKeymaps</k>
       <d mod="ctrl,shift">ToggleDebug</d>
       <r mod="ctrl,shift">ToggleDirtyRegionVisualization</r>
+      <f11>HDRToggle</f11>
     </keyboard>
   </global>
   <LoginScreen>
