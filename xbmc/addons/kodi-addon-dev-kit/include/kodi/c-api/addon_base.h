@@ -190,6 +190,9 @@ extern "C"
     struct AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
     struct AddonToKodiFuncTable_kodi_gui* kodi_gui;
     struct AddonToKodiFuncTable_kodi_network* kodi_network;
+
+    // Move up by min version change about
+    bool (*is_setting_using_default)(void* kodiBase, const char* id);
   } AddonToKodiFuncTable_Addon;
 
   /*!

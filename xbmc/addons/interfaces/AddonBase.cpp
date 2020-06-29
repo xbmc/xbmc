@@ -50,6 +50,7 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
   addonInterface.toKodi->get_addon_path = get_addon_path;
   addonInterface.toKodi->get_base_user_path = get_base_user_path;
   addonInterface.toKodi->addon_log_msg = addon_log_msg;
+  addonInterface.toKodi->is_setting_using_default = is_setting_using_default;
   addonInterface.toKodi->get_setting_bool = get_setting_bool;
   addonInterface.toKodi->get_setting_int = get_setting_int;
   addonInterface.toKodi->get_setting_float = get_setting_float;
@@ -196,6 +197,35 @@ void Interface_Base::addon_log_msg(void* kodiBase, const int addonLogLevel, cons
   }
 
   CLog::Log(logLevel, "AddOnLog: {}: {}", addon->ID(), strMessage);
+}
+
+bool Interface_Base::is_setting_using_default(void* kodiBase, const char* id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || id == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__,
+              kodiBase, static_cast<const void*>(id));
+
+    return false;
+  }
+
+  if (!addon->ReloadSettings())
+  {
+    CLog::Log(LOGERROR, "Interface_Base::{} - couldn't get settings for add-on '{}'", __func__,
+              addon->Name());
+    return false;
+  }
+
+  auto setting = addon->GetSettings()->GetSetting(id);
+  if (setting == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Base::{} - can't find setting '{}' in '{}'", __func__, id,
+              addon->Name());
+    return false;
+  }
+
+  return setting->IsDefault();
 }
 
 bool Interface_Base::get_setting_bool(void* kodiBase, const char* id, bool* value)
