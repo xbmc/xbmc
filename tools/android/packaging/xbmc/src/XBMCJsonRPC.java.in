@@ -75,7 +75,7 @@ public class XBMCJsonRPC
                   "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
                   + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
                   + "\"limits\": { \"start\" : 0, \"end\": 10}, "
-                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\"], "
+                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"art\", \"year\", \"runtime\", \"file\", \"plot\"], "
                   + "\"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, "
                   + "\"id\": \"1\"}";
 
@@ -103,7 +103,7 @@ public class XBMCJsonRPC
                  "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetArtists\", \"params\": {\"filter\":{%s},\"limits\": { \"start\" : 0, \"end\": 10}, \"properties\" : [\"description\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"%s\"}";
 
   private String RETRIEVE_MOVIE_DETAILS =
-          "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovieDetails\", \"params\": { \"movieid\" : %s, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"year\", \"runtime\", \"file\", \"plot\", \"trailer\", \"rating\"] }, \"id\": \"%s\" }";
+          "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovieDetails\", \"params\": { \"movieid\" : %s, \"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\", \"art\", \"year\", \"runtime\", \"file\", \"plot\", \"trailer\", \"rating\"] }, \"id\": \"%s\" }";
 
   private String RETRIEVE_EPISODE_DETAILS =
           "{ \"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodeDetails\", \"params\": { \"episodeid\" : %s, \"properties\" : [\"title\", \"tvshowid\", \"showtitle\", \"season\", \"episode\", \"thumbnail\", \"fanart\", \"file\", \"plot\", \"rating\", \"runtime\", \"firstaired\"] }, \"id\": \"%s\" }";
@@ -581,13 +581,21 @@ public class XBMCJsonRPC
                     .setDescription(movie.get("tagline").getAsString())
                     .setIntent(buildPendingMovieIntent(ctx, movie));
 
-            if (movie.has("fanart") && !movie.get("fanart").getAsString().isEmpty())
-              notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
-                      getDownloadUrl(movie.get("fanart").getAsString())).toString());
-            if (movie.has("thumbnail") && !movie.get("thumbnail").getAsString().isEmpty())
+            if (movie.has("art"))
             {
-              Bitmap bitmap = getBitmap(ctx, movie.get("thumbnail").getAsString());
-              notificationBuilder.setBitmap(bitmap);
+              JsonObject art = movie.get("art").getAsJsonObject();
+
+              if (art.has("fanart") && !art.get("fanart").getAsString().isEmpty())
+              {
+                notificationBuilder.setBackground(XBMCFileContentProvider.buildUri(
+                        getDownloadUrl(art.get("fanart").getAsString())).toString());
+              }
+
+              if (art.has("poster") && !art.get("poster").getAsString().isEmpty())
+              {
+                Bitmap bitmap = getBitmap(ctx,art.get("poster").getAsString());
+                notificationBuilder.setBitmap(bitmap);
+              }
             }
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
@@ -804,11 +812,23 @@ public class XBMCJsonRPC
           med.setCardImageUrl(XBMCFileContentProvider.buildUri(url).toString());
       }
       med.setCardImageAspectRatio("2:3");
-      if (details.has("fanart") && !details.get("fanart").getAsString().isEmpty())
+      if (details.has("art"))
       {
-        String url = getDownloadUrl(details.get("fanart").getAsString());
-        if (url != null && !url.isEmpty())
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+        JsonObject art = details.get("art").getAsJsonObject();
+
+        if (art.has("fanart") && !art.get("fanart").getAsString().isEmpty())
+        {
+            String url = getDownloadUrl(art.get("fanart").getAsString());
+            if (url != null && !url.isEmpty())
+              med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+        }
+
+        if (art.has("poster") && !art.get("poster").getAsString().isEmpty())
+        {
+            String url = getDownloadUrl(art.get("poster").getAsString());
+            if (url != null && !url.isEmpty())
+              med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(url).toString());
+        }
       }
       med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
 
