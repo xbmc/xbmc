@@ -19,6 +19,7 @@
 			<include>Animation_BottomSlide</include>
 			<bottom>0</bottom>
 			<height>120</height>
+			<include>Animation_BottomSlide</include>
 			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>
 			<animation type="Visible" reversible="false">
 				<effect type="fade" start="0" end="100" time="300"/>
@@ -231,9 +232,20 @@
 		<control type="group">
 			<bottom>0</bottom>
 			<height>120</height>
-			<animation effect="fade" start="0" end="100" time="250">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="250">WindowClose</animation>
-			<include>Animation_BottomSlide</include>
+			<animation type="WindowOpen" condition="!Player.ShowInfo" reversible="False">
+				<effect type="fade" start="0" end="100" time="300"/>
+				<effect type="slide" start="0,200" end="0,0" time="300" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose" condition="!Player.ShowInfo" reversible="False">
+				<effect type="fade" start="100" end="0" time="300"/>
+				<effect type="slide" start="0,0" end="0,200" time="300" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowOpen" condition="Player.ShowInfo" reversible="False">
+				<effect type="fade" start="0" end="100" time="300"/>
+			</animation>
+			<animation type="WindowClose" condition="Player.ShowInfo" reversible="False">
+				<effect type="fade" start="100" end="0" time="300"/>
+			</animation>
 			<control type="button" id="87">
 				<include>HiddenObject</include>
 				<onup condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onup>
@@ -256,6 +268,8 @@
 				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
+				<onup>201</onup>
+				<ondown>200</ondown>
 				<visible>Player.SeekEnabled + !Control.HasFocus(87) + !MusicPlayer.Content(LiveTV)</visible>
 				<action>seek</action>
 			</control>
@@ -270,6 +284,8 @@
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
+				<onup>201</onup>
+				<ondown>200</ondown>
 				<visible>Player.SeekEnabled + Control.HasFocus(87) + !MusicPlayer.Content(LiveTV)</visible>
 				<action>seek</action>
 			</control>
@@ -284,6 +300,8 @@
 				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>PVR.TimeshiftProgressPlayPos</info>
+				<onup>201</onup>
+				<ondown>200</ondown>
 				<action>pvr.seek</action>
 				<visible>Player.SeekEnabled + !Control.HasFocus(87) + MusicPlayer.Content(LiveTV)</visible>
 			</control>
@@ -298,6 +316,8 @@
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>PVR.TimeshiftProgressPlayPos</info>
+				<onup>201</onup>
+				<ondown>200</ondown>
 				<action>pvr.seek</action>
 				<visible>Player.SeekEnabled + Control.HasFocus(87) + MusicPlayer.Content(LiveTV)</visible>
 			</control>
