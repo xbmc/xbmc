@@ -11,6 +11,8 @@
 			<texturenofocus />
 			<onright>StepForward</onright>
 			<onleft>StepBack</onleft>
+			<onup>ChapterOrBigStepForward</onup>
+			<ondown>ChapterOrBigStepBack</ondown>
 			<onclick>OSD</onclick>
 		</control>
 	</controls>
