@@ -668,6 +668,10 @@ void CFileItem::Serialize(CVariant& value) const
 
   if (m_gameInfoTag)
     (*m_gameInfoTag).Serialize(value["gameInfoTag"]);
+
+  if (!m_mapProperties.empty())
+    for (const auto& it : m_mapProperties)
+      value["customproperties"][it.first] = it.second;
 }
 
 void CFileItem::ToSortable(SortItem &sortable, Field field) const
