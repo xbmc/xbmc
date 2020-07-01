@@ -794,7 +794,7 @@ bool CApplication::Initialize()
 
     // Addon migration
     std::vector<AddonInfoPtr> incompatible;
-    if (CServiceBroker::GetAddonMgr().GetIncompatibleAddons(incompatible))
+    if (CServiceBroker::GetAddonMgr().GetIncompatibleEnabledAddonInfos(incompatible))
     {
       if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
       {
@@ -2331,7 +2331,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     }
   }
   break;
-    
+
   default:
     CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, msg);
     break;

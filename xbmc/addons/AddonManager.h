@@ -126,17 +126,17 @@ namespace ADDON
 
     /*!
      * @brief Fills the the provided vector with the list of incompatible
-     * addons and returns if there's any.
+     * enabled addons and returns if there's any.
      *
      * @param[out] incompatible List of incompatible addons
      * @return true if there are incompatible addons
      */
-    bool GetIncompatibleAddons(std::vector<AddonInfoPtr>& incompatible) const;
+    bool GetIncompatibleEnabledAddonInfos(std::vector<AddonInfoPtr>& incompatible) const;
 
     /*!
      * @brief Disable addons in given list.
      *
-     * @param[in] incompatible List of incompatible addons
+     * @param[in] incompatible List of incompatible addon infos
      * @return list of all addon **names** that were disabled
      */
     std::vector<std::string> DisableIncompatibleAddons(
@@ -291,7 +291,7 @@ namespace ADDON
      *                        returned who match them. Default is for all types.
      * @return true if the list contains entries
      */
-    bool GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type);
+    bool GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type) const;
 
     /*!
      * @brief Get a list of disabled add-on's with info's for the on system
@@ -311,7 +311,7 @@ namespace ADDON
      */
     bool GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos,
                                TYPE type,
-                               AddonDisabledReason disabledReason);
+                               AddonDisabledReason disabledReason) const;
 
     const AddonInfoPtr GetAddonInfo(const std::string& id, TYPE type = ADDON_UNKNOWN) const;
 
@@ -336,6 +336,17 @@ namespace ADDON
     bool EnableSingle(const std::string& id);
 
     void FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path);
+
+    /*!
+     * @brief Fills the the provided vector with the list of incompatible
+     * addons and returns if there's any.
+     *
+     * @param[out] incompatible List of incompatible addons
+     * @param[in] whether or not to include incompatible addons that are disabled
+     * @return true if there are incompatible addons
+     */
+    bool GetIncompatibleAddonInfos(std::vector<AddonInfoPtr>& incompatible,
+                                   bool includeDisabled) const;
 
     /*!
      * Get the list of of available updates

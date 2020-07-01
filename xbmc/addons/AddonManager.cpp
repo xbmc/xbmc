@@ -364,9 +364,17 @@ bool CAddonMgr::GetAddonsInternal(const TYPE& type,
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetIncompatibleAddons(std::vector<AddonInfoPtr>& incompatible) const
+bool CAddonMgr::GetIncompatibleEnabledAddonInfos(std::vector<AddonInfoPtr>& incompatible) const
+{
+  return GetIncompatibleAddonInfos(incompatible, false);
+}
+
+bool CAddonMgr::GetIncompatibleAddonInfos(std::vector<AddonInfoPtr>& incompatible,
+                                          bool includeDisabled) const
 {
   GetAddonInfos(incompatible, true, ADDON_UNKNOWN);
+  if (includeDisabled)
+    GetDisabledAddonInfos(incompatible, ADDON_UNKNOWN, AddonDisabledReason::INCOMPATIBLE);
   incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
                                     [this](const AddonInfoPtr& a) { return IsCompatible(a); }),
                      incompatible.end());
@@ -384,7 +392,7 @@ std::vector<std::string> CAddonMgr::MigrateAddons()
 
   // get addons that became incompatible and disable them
   std::vector<AddonInfoPtr> incompatible;
-  GetIncompatibleAddons(incompatible);
+  GetIncompatibleAddonInfos(incompatible, true);
 
   return DisableIncompatibleAddons(incompatible);
 }
@@ -944,14 +952,14 @@ bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, TYPE typ
   return !addonInfos.empty();
 }
 
-bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type)
+bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type) const
 {
   return GetDisabledAddonInfos(addonInfos, type, AddonDisabledReason::NONE);
 }
 
 bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos,
                                       TYPE type,
-                                      AddonDisabledReason disabledReason)
+                                      AddonDisabledReason disabledReason) const
 {
   CSingleLock lock(m_critSection);
 
