@@ -417,6 +417,37 @@ private:
   InputstreamContentlightMetadata m_contentLightMetadata;
 };
 
+class ATTRIBUTE_HIDDEN InputstreamTimes : public CStructHdl<InputstreamTimes, INPUTSTREAM_TIMES>
+{
+  friend class CInstanceInputStream;
+
+public:
+  /*! \cond PRIVATE */
+  InputstreamTimes() = default;
+  InputstreamTimes(const InputstreamTimes& stream) : CStructHdl(stream) {}
+  /*! \endcond */
+
+  void SetStartTime(time_t startTime) const { m_cStructure->startTime = startTime; }
+
+  time_t GetStartTime() const { return m_cStructure->startTime; }
+
+  void SetPtsStart(double ptsStart) const { m_cStructure->ptsStart = ptsStart; }
+
+  double GetPtsStart() const { return m_cStructure->ptsStart; }
+
+  void SetPtsBegin(double ptsBegin) const { m_cStructure->ptsBegin = ptsBegin; }
+
+  double GetPtsBegin() const { return m_cStructure->ptsBegin; }
+
+  void SetPtsEnd(double ptsEnd) const { m_cStructure->ptsEnd = ptsEnd; }
+
+  double GetPtsEnd() const { return m_cStructure->ptsEnd; }
+
+private:
+  InputstreamTimes(const INPUTSTREAM_TIMES* stream) : CStructHdl(stream) {}
+  InputstreamTimes(INPUTSTREAM_TIMES* stream) : CStructHdl(stream) {}
+};
+
 class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
 {
 public:
@@ -557,7 +588,7 @@ public:
     * Get current timing values in PTS scale
     * @remarks
     */
-  virtual bool GetTimes(INPUTSTREAM_TIMES& times) { return false; }
+  virtual bool GetTimes(kodi::addon::InputstreamTimes& times) { return false; }
 
   /*!
      * Positions inputstream to playing time given in ms
@@ -865,7 +896,8 @@ private:
   inline static bool ADDON_GetTimes(const AddonInstance_InputStream* instance,
                                     INPUTSTREAM_TIMES* times)
   {
-    return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetTimes(*times);
+    InputstreamTimes cppTimes(times);
+    return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetTimes(cppTimes);
   }
 
   // IPosTime
