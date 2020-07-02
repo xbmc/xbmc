@@ -25,6 +25,6 @@ public:
 private:
   HTTPRequestHandlerUtils() = delete;
 
-  static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
-  static int FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
+  static MHD_RESULT FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
+  static MHD_RESULT FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 };

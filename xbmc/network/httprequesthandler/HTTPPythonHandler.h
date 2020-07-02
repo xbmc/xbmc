@@ -25,7 +25,7 @@ public:
   bool CanBeCached() const override { return false; }
   bool GetLastModifiedDate(CDateTime &lastModified) const override;
 
-  int HandleRequest() override;
+  MHD_RESULT HandleRequest() override;
 
   HttpResponseRanges GetResponseData() const override { return m_responseRanges; }
 
