@@ -27,7 +27,7 @@ bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request) const
   return (request.pathUrl.compare("/jsonrpc") == 0);
 }
 
-int CHTTPJsonRpcHandler::HandleRequest()
+MHD_RESULT CHTTPJsonRpcHandler::HandleRequest()
 {
   CHTTPClient client(m_request.method);
   bool isRequest = false;

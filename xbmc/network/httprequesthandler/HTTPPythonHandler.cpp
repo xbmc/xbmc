@@ -114,7 +114,7 @@ bool CHTTPPythonHandler::CanHandleRequest(const HTTPRequest &request) const
   return true;
 }
 
-int CHTTPPythonHandler::HandleRequest()
+MHD_RESULT CHTTPPythonHandler::HandleRequest()
 {
   if (m_response.type == HTTPError || m_response.type == HTTPRedirect)
     return MHD_YES;

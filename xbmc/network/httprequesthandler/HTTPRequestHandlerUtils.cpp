@@ -62,7 +62,7 @@ bool HTTPRequestHandlerUtils::GetRequestedRanges(struct MHD_Connection *connecti
   return ranges.Parse(GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE), totalLength);
 }
 
-int HTTPRequestHandlerUtils::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value)
+MHD_RESULT HTTPRequestHandlerUtils::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value)
 {
   if (cls == nullptr || key == nullptr)
     return MHD_NO;
@@ -73,7 +73,7 @@ int HTTPRequestHandlerUtils::FillArgumentMap(void *cls, enum MHD_ValueKind kind,
   return MHD_YES;
 }
 
-int HTTPRequestHandlerUtils::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value)
+MHD_RESULT HTTPRequestHandlerUtils::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value)
 {
   if (cls == nullptr || key == nullptr)
     return MHD_NO;

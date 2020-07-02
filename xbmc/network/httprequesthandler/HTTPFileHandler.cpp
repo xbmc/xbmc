@@ -24,7 +24,7 @@ CHTTPFileHandler::CHTTPFileHandler(const HTTPRequest &request)
     m_lastModified()
 { }
 
-int CHTTPFileHandler::HandleRequest()
+MHD_RESULT CHTTPFileHandler::HandleRequest()
 {
   return !m_url.empty() ? MHD_YES : MHD_NO;
 }

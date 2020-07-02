@@ -105,7 +105,7 @@ bool CHTTPImageTransformationHandler::CanHandleRequest(const HTTPRequest &reques
           options.find(TRANSFORMATION_OPTION_HEIGHT) != options.end());
 }
 
-int CHTTPImageTransformationHandler::HandleRequest()
+MHD_RESULT CHTTPImageTransformationHandler::HandleRequest()
 {
   if (m_response.type == HTTPError)
     return MHD_YES;
