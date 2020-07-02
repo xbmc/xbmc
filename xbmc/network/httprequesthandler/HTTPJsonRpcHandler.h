@@ -24,7 +24,7 @@ public:
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPJsonRpcHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request) const override;
 
-  int HandleRequest() override;
+  MHD_RESULT HandleRequest() override;
 
   HttpResponseRanges GetResponseData() const override;
 
