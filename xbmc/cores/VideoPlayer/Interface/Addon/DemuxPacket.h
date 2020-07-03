@@ -43,7 +43,7 @@ extern "C"
     int dispTime = 0;
     bool recoveryPoint = false;
 
-    std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
+    struct DemuxCryptoInfo* cryptoInfo = nullptr;
   } DemuxPacket;
 
 #ifdef __cplusplus
