@@ -47,7 +47,7 @@
 			</RegExp>
 			<!--AMGID - Artist-->
 			<RegExp input="$$1" output="\2" dest="9">
-				<expression noclean="1">&gt;http://(www.)?allmusic.com/artist/([^&lt;]*)</expression>
+				<expression noclean="1">&gt;http.?://(www.)?allmusic.com/artist/([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;musicBrainzArtistID&gt;$$8&lt;/musicBrainzArtistID&gt;&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;artist.*?&lt;name&gt;([^&lt;]*)</expression>
@@ -56,7 +56,7 @@
 				<expression noclean="1">&lt;artist.*?&lt;sort-name&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;type&gt;\1&lt;/type&gt;" dest="5+">
-				<expression noclean="1">&lt;artist.*?\stype=&quot;([Person|Group|Orchestra|Choir|Character|Other])&quot;</expression>
+				<expression noclean="1">&lt;artist.*?\stype=&quot;(Person|Group|Orchestra|Choir|Character|Other)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;gender&gt;\1&lt;/gender&gt;" dest="5+">
 				<expression noclean="1">&lt;gender.*?&gt;([^&lt;]*)</expression>

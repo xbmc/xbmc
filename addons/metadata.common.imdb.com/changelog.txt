@@ -1,3 +1,6 @@
+[B]3.1.5[/B]
+- changed: switch to https
+
 [B]3.1.4[/B]
 - fixed: IMDb AKA Titles
 

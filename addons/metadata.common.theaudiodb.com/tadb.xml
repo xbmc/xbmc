@@ -680,7 +680,7 @@
 	</GetTADBAlbumThumbsByMBID>
 	<ParseTADBAlbumThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;thumb&quot; preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="2">
 				<expression repeat="yes">strAlbumThumb\d?&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />

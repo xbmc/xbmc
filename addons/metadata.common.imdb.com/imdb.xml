@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
 	<GetIMDBGenresById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBGenres&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBGenres&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBGenresById>
@@ -21,7 +21,7 @@
 	</ParseIMDBGenres>
 
 	<GetIMDBRatingById dest="5">	<!-- Compatibility function for Pre-Krypton versions-->
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBRating&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBRating&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBRatingById>
@@ -35,7 +35,7 @@
 	</ParseIMDBRating>
 
 	<GetIMDBRatingsById dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-main.html&quot; function=&quot;ParseIMDBRatings&quot;&gt;http://www.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-main.html&quot; function=&quot;ParseIMDBRatings&quot;&gt;https://www.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1">^(tt\d+)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="default=&quot;true&quot;" dest="3">
@@ -52,7 +52,7 @@
 	</ParseIMDBRatings>
 
 	<GetIMDBTOP250ById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBTOP250&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBTOP250&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBTOP250ById>
@@ -66,7 +66,7 @@
 	</ParseIMDBTOP250>
 
 	<GetIMDBStudioById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBStudio&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBStudio&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBStudioById>
@@ -80,7 +80,7 @@
 	</ParseIMDBStudio>
 
 	<GetIMDBCountryById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBCountry&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBCountry&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBCountryById>
@@ -97,7 +97,7 @@
 	</ParseIMDBCountry>
 
 	<GetMetaCriticRatingById dest="5">	<!-- Compatibility function for Pre-Krypton versions-->
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-criticreviews.html&quot; function=&quot;ParseMetaCriticRating&quot;&gt;http://www.imdb.com/title/$$1/criticreviews|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-criticreviews.html&quot; function=&quot;ParseMetaCriticRating&quot;&gt;https://www.imdb.com/title/$$1/criticreviews|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMetaCriticRatingById>
@@ -117,7 +117,7 @@
 	</ParseMetaCriticRating>
 
 	<GetMetaCriticRatingsById dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-criticreviews.html&quot; function=&quot;ParseMetaCriticRatings&quot;&gt;http://www.imdb.com/title/\1/criticreviews|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-criticreviews.html&quot; function=&quot;ParseMetaCriticRatings&quot;&gt;https://www.imdb.com/title/\1/criticreviews|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1">(tt\d+)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="default=&quot;true&quot;" dest="3">
@@ -143,7 +143,7 @@
 	</ParseMetaCriticRatings>
 
 	<GetIMDBPlotById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBPlot&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBPlot&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBPlotById>
@@ -157,7 +157,7 @@
 	</ParseIMDBPlot>
 
 	<GetIMDBTaglineById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBTagline&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBTagline&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBTaglineById>
@@ -171,7 +171,7 @@
 	</ParseIMDBTagline>
 
 	<GetIMDBOutlineById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBOutline&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBOutline&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBOutlineById>
@@ -191,7 +191,7 @@
 	</ParseIMDBOutline>
 
 	<GetIMDBOutlineToPlotById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBOutlineToPlot&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBOutlineToPlot&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBOutlineToPlotById>
@@ -211,7 +211,7 @@
 	</ParseIMDBOutlineToPlot>
 
 	<GetIMDBCastById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBCast&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBCast&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBCastById>
@@ -234,7 +234,7 @@
 	</ParseIMDBCast>
 
 	<GetIMDBDirectorsById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBDirectors&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBDirectors&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBDirectorsById>
@@ -251,7 +251,7 @@
 	</ParseIMDBDirectors>
 
 	<GetIMDBWritersById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBWriters&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBWriters&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBWritersById>
@@ -268,7 +268,7 @@
 	</ParseIMDBWriters>
 
 	<GetIMDBFullCastById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBFullCast&quot;&gt;http://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBFullCast&quot;&gt;https://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBFullCastById>
@@ -291,7 +291,7 @@
 	</ParseIMDBFullCast>
 
 	<GetIMDBFullDirectorsById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBFullDirectors&quot;&gt;http://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBFullDirectors&quot;&gt;https://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBFullDirectorsById>
@@ -308,7 +308,7 @@
 	</ParseIMDBFullDirectors>
 
 	<GetIMDBFullWritersById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBFullWriters&quot;&gt;http://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBFullWriters&quot;&gt;https://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBFullWritersById>
@@ -325,7 +325,7 @@
 	</ParseIMDBFullWriters>
 
 	<GetIMDBThumbsById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBThumbs&quot;&gt;http://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBThumbs&quot;&gt;https://www.imdb.com/title/$$1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBThumbsById>
@@ -339,7 +339,7 @@
 	</ParseIMDBThumbs>
 
 	<GetIMDBUSACert dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBUSACert&quot;&gt;http://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBUSACert&quot;&gt;https://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBUSACert>
@@ -356,11 +356,11 @@
 	</ParseIMDBUSACert>
 
 	<GetIMDBCountryCert dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBCountryCert&quot;&gt;http://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBCountryCert&quot;&gt;https://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 		<RegExp input="$INFO[imdbcertcountry]" output="$$2" dest="5">
-			<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBUSACert&quot;&gt;http://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-reference.html&quot; function=&quot;ParseIMDBUSACert&quot;&gt;https://www.imdb.com/title/$$1/reference|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="2">
 				<expression noclean="1"/>
 			</RegExp>
 			<expression>United States</expression>
@@ -373,7 +373,7 @@
 	</ParseIMDBCountryCert>
 
 	<GetIMDBAKATitlesById dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-releaseinfo.html&quot; function=&quot;ParseIMDBAKATitles&quot;&gt;http://www.imdb.com/title/$$1/releaseinfo|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-releaseinfo.html&quot; function=&quot;ParseIMDBAKATitles&quot;&gt;https://www.imdb.com/title/$$1/releaseinfo|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetIMDBAKATitlesById>

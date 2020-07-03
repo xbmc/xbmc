@@ -68,17 +68,17 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;born&gt;\1 \2&lt;/born&gt;" dest="2">
-				<expression trim="1,2">&lt;h4&gt;\s*Born\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+			<RegExp input="$$1" output="&lt;born&gt;\1 \3&lt;/born&gt;" dest="2">
+				<expression trim="1,2">&lt;h4&gt;\s.+Born.*?birthdate/[^&quot;]+&quot;&gt;([^&lt;]*)(.*?"/birthplace/[^&quot;]+&quot;&gt;([^&lt;]*))?</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;died&gt;\1 \2&lt;/died&gt;" dest="2+">
-				<expression trim="1,2">&lt;h4&gt;\s*Died\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+			<RegExp input="$$1" output="&lt;died&gt;\1 \3&lt;/died&gt;" dest="2+">
+				<expression trim="1,2">&lt;h4&gt;\s.+Died.*?deathdate/[^&quot;]+&quot;&gt;([^&lt;]*)(.*?&quot;/deathplace/[^&quot;]+&quot;&gt;([^&lt;]*))?</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="2">
-				<expression trim="1,2">&lt;h4&gt;\s*Formed\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+				<expression trim="1,2">&lt;h4&gt;\s.+Formed.*?birthdate/[^&quot;]+&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="2+">
-				<expression trim="1,2">&lt;h4&gt;\s*Disbanded\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+				<expression trim="1,2">&lt;h4&gt;\s.+Disbanded.*?deathdate/[^&quot;]+[^&quot;]+&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -362,7 +362,7 @@
 	</GetAMGAlbumThumbsByAMGID>
 	<ParseAMGAlbumThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb&gt;https://cdn-s3.allmusic.com/release-covers/500/\1&lt;/thumb&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;thumb aspect=&quot;thumb&quot;&gt;https://cdn-s3.allmusic.com/release-covers/500/\1&lt;/thumb&gt;" dest="2">
 				<expression noclean="1">&lt;img src=&quot;https://cdn-s3.allmusic.com/release-covers/500/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
