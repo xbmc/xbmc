@@ -52,12 +52,6 @@ const auto CATEGORY_GAME_PROVIDERS = "category.gameproviders";
 const auto CATEGORY_GAME_RESOURCES = "category.gameresources";
 const auto CATEGORY_GAME_SUPPORT_ADDONS = "category.gamesupport";
 
-const std::set<TYPE> dependencyTypes = {
-    ADDON_SCRAPER_LIBRARY,
-    ADDON_SCRIPT_LIBRARY,
-    ADDON_SCRIPT_MODULE,
-};
-
 const std::set<TYPE> infoProviderTypes = {
   ADDON_SCRAPER_ALBUMS,
   ADDON_SCRAPER_ARTISTS,
@@ -144,16 +138,9 @@ static bool IsGameAddon(const AddonPtr& addon)
          IsGameSupportAddon(addon);
 }
 
-static bool IsDependencyType(TYPE type)
-{
-  return dependencyTypes.find(type) != dependencyTypes.end();
-}
-
 static bool IsUserInstalled(const AddonPtr& addon)
 {
-  return std::find_if(dependencyTypes.begin(), dependencyTypes.end(), [&](TYPE type) {
-           return addon->MainType() == type;
-         }) == dependencyTypes.end();
+  return !CAddonType::IsDependencyType(addon->MainType());
 }
 
 static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
@@ -350,8 +337,9 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
      *   subtypes (audio, video, app or/and game) and not needed to show
      *   together in a Script or Plugin list
      */
-    if (!IsInfoProviderType(type) && !IsLookAndFeelType(type) && !IsDependencyType(type) &&
-        !IsGameType(type) && type != ADDON_SCRIPT && type != ADDON_PLUGIN)
+    if (!IsInfoProviderType(type) && !IsLookAndFeelType(type) &&
+        !CAddonType::IsDependencyType(type) && !IsGameType(type) && type != ADDON_SCRIPT &&
+        type != ADDON_PLUGIN)
       uncategorized.insert(static_cast<TYPE>(i));
   }
   GenerateTypeListing(path, uncategorized, addons, items);
