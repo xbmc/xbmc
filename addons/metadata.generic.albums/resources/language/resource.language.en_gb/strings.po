@@ -1,0 +1,85 @@
+# Kodi Media Center language file
+# Addon Name: Generic Album Scraper
+# Addon id: metadata.generic.albums
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Prefered language for album review"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Prefer genres from"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Prefer styles from"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Prefer moods from"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Prefer themes from"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Prefer rating from"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Use Discogs.com"
+msgstr ""
+
+msgctxt "#30102"
+msgid "As fallback only"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Always"
+msgstr ""
+
+msgctxt "#30201"
+msgid "If available, the album review will be downloaded in the selected language. It will fallback to english."
+msgstr ""
+
+msgctxt "#30202"
+msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgstr ""
+
+msgctxt "#30203"
+msgid "Try to get style info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgstr ""
+
+msgctxt "#30204"
+msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgstr ""
+
+msgctxt "#30205"
+msgid "Try to get theme info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgstr ""
+
+msgctxt "#30206"
+msgid "Try to get rating info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgstr ""
+
+msgctxt "#30301"
+msgid "Fallback: only use the discogs scraper if the album can't be found on MusicBrainz (faster, but could result in less complete results). Always: retrieve info from discogs.com for each album (slower, but results could be more complete)"
+msgstr ""
