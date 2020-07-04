@@ -75,7 +75,7 @@ namespace XBMCAddon
       if (!item.empty())
       {
         // set fullscreen or windowed
-        CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
+        CMediaSettings::GetInstance().SetMediaStartWindowed(windowed);
 
         const AddonClass::Ref<xbmcgui::ListItem> listitem(plistitem);
 
@@ -101,7 +101,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       // set fullscreen or windowed
-      CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
+      CMediaSettings::GetInstance().SetMediaStartWindowed(windowed);
 
       // play current file in playlist
       if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != iPlayList)
@@ -116,7 +116,7 @@ namespace XBMCAddon
       if (playlist != NULL)
       {
         // set fullscreen or windowed
-        CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
+        CMediaSettings::GetInstance().SetMediaStartWindowed(windowed);
 
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
