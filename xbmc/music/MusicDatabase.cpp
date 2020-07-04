@@ -1787,7 +1787,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
   bool isScrapedMBID = bScrapedMBID;
   std::string artistname;
   int idArtistMbid = GetArtistFromMBID(strMusicBrainzArtistID, artistname);
-  if (idArtistMbid > 0)
+  if (idArtistMbid > 0 && idArtistMbid != idArtist)
   {
     CLog::Log(LOGDEBUG, "{0}: Updating {4} (Id: {5}) mbid {1} already assigned to {2} (Id: {3})",
       __FUNCTION__, strMusicBrainzArtistID.c_str(), artistname.c_str(), idArtistMbid,
@@ -1836,10 +1836,10 @@ bool CMusicDatabase::UpdateArtistScrapedMBID(int idArtist, const std::string& st
   if (strMusicBrainzArtistID.empty() || idArtist < 0)
     return false;
 
-  // Check artist with this mbid not already exist (an alias for example)
+  // Check another artist with this mbid not already exist (an alias for example)
   std::string artistname;
   int idArtistMbid = GetArtistFromMBID(strMusicBrainzArtistID, artistname);
-  if (idArtistMbid > 0)
+  if (idArtistMbid > 0 && idArtistMbid != idArtist)
   {
     CLog::Log(LOGDEBUG, "{0}: Artist mbid {1} already assigned to {2} (Id: {3})", __FUNCTION__,
               strMusicBrainzArtistID.c_str(), artistname.c_str(), idArtistMbid);
