@@ -117,8 +117,6 @@ namespace ADDON
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();
 
-    static AddonPtr AddonFromProps(const AddonInfoPtr& addonInfo);
-
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise
      */
