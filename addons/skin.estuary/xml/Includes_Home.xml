@@ -751,8 +751,29 @@
 			<item>
 				<icon>resource://resource.images.weathericons.default/na.png</icon>
 				<onclick>noop</onclick>
-				<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched))</visible>
+				<visible>!Weather.IsFetched</visible>
 			</item>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="0" />
+			</include>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="1" />
+			</include>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="2" />
+			</include>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="3" />
+			</include>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="4" />
+			</include>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="5" />
+			</include>
+			<include content="WeatherDayItem">
+				<param name="item_index" value="6" />
+			</include>
 			<include content="WeatherDailyItem">
 				<param name="item_index" value="1" />
 			</include>
@@ -823,7 +844,22 @@
 			<property name="FanartCode">$INFO[Window(weather).Property(Daily.$PARAM[item_index].FanartCode)]</property>
 			<thumb>resource://resource.images.weathericons.default/$INFO[Window(weather).Property(Daily.$PARAM[item_index].OutlookIcon)]</thumb>
 			<onclick>noop</onclick>
-			<visible>!String.IsEmpty(Window(weather).Property(Daily.$PARAM[item_index].Outlook))</visible>
+			<visible>!String.IsEmpty(Window(weather).Property(Daily.IsFetched)) + !String.IsEmpty(Window(weather).Property(Daily.$PARAM[item_index].Outlook))</visible>
+		</item>
+	</include>
+	<include name="WeatherDayItem">
+		<item>
+			<label>$INFO[Window(weather).Property(Day$PARAM[item_index].Title)]</label>
+			<label2>[COLOR blue]$INFO[Window(weather).Property(Day$PARAM[item_index].LowTemp)]$INFO[System.TemperatureUnits][/COLOR] ∙ [COLOR red]$INFO[Window(weather).Property(Day$PARAM[item_index].HighTemp)]$INFO[System.TemperatureUnits][/COLOR]</label2>
+			<property name="LongDay"></property>
+			<property name="TempDay"></property>
+			<property name="Cloudiness"></property>
+			<property name="Outlook"></property>
+			<property name="ShortDate"></property>
+			<property name="FanartCode">$INFO[Window(weather).Property(Day$PARAM[item_index].FanartCode)]</property>
+			<thumb>$INFO[Window(weather).Property(Day$PARAM[item_index].OutlookIcon)]</thumb>
+			<onclick>noop</onclick>
+			<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched))!String.IsEmpty(Window(weather).Property(Day$PARAM[item_index].Outlook))</visible>
 		</item>
 	</include>
 	<include name="WeatherMapItem">
