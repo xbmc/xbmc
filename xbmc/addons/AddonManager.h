@@ -117,8 +117,6 @@ namespace ADDON
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();
 
-    static AddonPtr AddonFromProps(const AddonInfoPtr& addonInfo);
-
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise
      */
@@ -134,21 +132,21 @@ namespace ADDON
     bool GetIncompatibleEnabledAddonInfos(std::vector<AddonInfoPtr>& incompatible) const;
 
     /*!
-     * @brief Disable addons in given list.
-     *
-     * @param[in] incompatible List of incompatible addon infos
-     * @return list of all addon **names** that were disabled
-     */
-    std::vector<std::string> DisableIncompatibleAddons(
-        const std::vector<AddonInfoPtr>& incompatible);
-
-    /*!
      * Migrate all the addons (updates all addons that have an update pending and disables those
      * that got incompatible)
      *
-     * @return list of all addons that were modified.
+     * @return list of all addons (infos) that were modified.
      */
-    std::vector<std::string> MigrateAddons();
+    std::vector<AddonInfoPtr> MigrateAddons();
+
+    /*!
+     * @brief Try to disable addons in the given list.
+     *
+     * @param[in] incompatible List of incompatible addon infos
+     * @return list of all addon Infos that were disabled
+     */
+    std::vector<AddonInfoPtr> DisableIncompatibleAddons(
+        const std::vector<AddonInfoPtr>& incompatible);
 
     /*!
      * Install available addon updates, if any.

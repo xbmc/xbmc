@@ -97,6 +97,15 @@ public:
     return m_providedSubContent.size();
   }
 
+  /*!
+   * @brief Indicates whether a given type is a dependency type (e.g. addons which the main type is
+   * a script.module)
+   *
+   * @param[in] type the provided type
+   * @return true if type is one of the dependency types
+   */
+  static bool IsDependencyType(TYPE type);
+
 private:
   friend class CAddonInfoBuilder;
 

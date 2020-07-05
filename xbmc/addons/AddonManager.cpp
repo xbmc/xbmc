@@ -381,7 +381,7 @@ bool CAddonMgr::GetIncompatibleAddonInfos(std::vector<AddonInfoPtr>& incompatibl
   return !incompatible.empty();
 }
 
-std::vector<std::string> CAddonMgr::MigrateAddons()
+std::vector<AddonInfoPtr> CAddonMgr::MigrateAddons()
 {
   // install all addon updates
   std::lock_guard<std::mutex> lock(m_installAddonsMutex);
@@ -397,10 +397,10 @@ std::vector<std::string> CAddonMgr::MigrateAddons()
   return DisableIncompatibleAddons(incompatible);
 }
 
-std::vector<std::string> CAddonMgr::DisableIncompatibleAddons(
+std::vector<AddonInfoPtr> CAddonMgr::DisableIncompatibleAddons(
     const std::vector<AddonInfoPtr>& incompatible)
 {
-  std::vector<std::string> changed;
+  std::vector<AddonInfoPtr> changed;
   for (const auto& addon : incompatible)
   {
     CLog::Log(LOGINFO, "ADDON: {} version {} is incompatible", addon->ID(),
@@ -415,7 +415,8 @@ std::vector<std::string> CAddonMgr::DisableIncompatibleAddons(
     {
       CLog::Log(LOGWARNING, "ADDON: failed to disable {}", addon->ID());
     }
-    changed.push_back(addon->Name());
+
+    changed.emplace_back(addon);
   }
 
   return changed;

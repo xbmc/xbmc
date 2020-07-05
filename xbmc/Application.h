@@ -473,7 +473,8 @@ protected:
 
   ReplayGainSettings m_replayGainSettings;
   std::vector<IActionListener *> m_actionListeners;
-  std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
+  std::vector<ADDON::AddonInfoPtr>
+      m_incompatibleAddons; /*!< Result of addon migration (incompatible addon infos) */
 
 private:
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */

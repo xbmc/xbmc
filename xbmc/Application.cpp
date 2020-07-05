@@ -789,12 +789,11 @@ bool CApplication::Initialize()
 
     m_confirmSkinChange = false;
 
-    std::vector<std::string> incompatibleAddons;
+    std::vector<AddonInfoPtr> incompatibleAddons;
     event.Reset();
 
     // Addon migration
-    std::vector<AddonInfoPtr> incompatible;
-    if (CServiceBroker::GetAddonMgr().GetIncompatibleEnabledAddonInfos(incompatible))
+    if (CServiceBroker::GetAddonMgr().GetIncompatibleEnabledAddonInfos(incompatibleAddons))
     {
       if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
       {
@@ -824,7 +823,7 @@ bool CApplication::Initialize()
       {
         // If no update is active disable all incompatible addons during start
         m_incompatibleAddons =
-            CServiceBroker::GetAddonMgr().DisableIncompatibleAddons(incompatible);
+            CServiceBroker::GetAddonMgr().DisableIncompatibleAddons(incompatibleAddons);
       }
     }
 
@@ -3822,7 +3821,16 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
         if (!m_incompatibleAddons.empty())
         {
-          auto addonList = StringUtils::Join(m_incompatibleAddons, ", ");
+          // filter addons that are not dependencies
+          std::vector<std::string> disabledAddonNames;
+          for (const auto& addoninfo : m_incompatibleAddons)
+          {
+            if (!CAddonType::IsDependencyType(addoninfo->MainType()))
+              disabledAddonNames.emplace_back(addoninfo->Name());
+          }
+
+          // migration (incompatible addons) dialog
+          auto addonList = StringUtils::Join(disabledAddonNames, ", ");
           auto msg = StringUtils::Format(g_localizeStrings.Get(24149).c_str(), addonList.c_str());
           HELPERS::ShowOKDialogText(CVariant{24148}, CVariant{std::move(msg)});
           m_incompatibleAddons.clear();
