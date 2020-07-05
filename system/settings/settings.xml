@@ -2941,6 +2941,20 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="addons.updatemode" type="integer" parent="addons.unknownsources" label="36422" help="36423">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36437">0</option> <!-- OFFICIAL_ONLY -->
+              <option label="36438">1</option> <!-- ANY_REPOSITORY -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="addons.unknownsources" operator="is">true</dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
       </group>
     </category>
     <category id="logging" label="14092" help="36391">

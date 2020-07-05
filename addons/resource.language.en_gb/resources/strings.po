@@ -20024,7 +20024,16 @@ msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
 msgstr ""
 
-#empty strings from id 36422 to 36423
+#: system/settings/settings.xml
+msgctxt "#36422"
+msgid "Update official add-ons from"
+msgstr ""
+
+#. Description of setting with label #36422 "Update official add-ons from"
+#: system/settings/settings.xml
+msgctxt "#36423"
+msgid "By default, add-ons from official repositories will be prevented from being auto-updated from private repositories. For cases such as updating from an add-ons beta repository this option can be switched to [Any repositories] (bear in mind this is a less secure option and enabling it could cause incompatibility and crashes)."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
@@ -20099,7 +20108,19 @@ msgctxt "#36436"
 msgid "Select OS keyboard layout."
 msgstr ""
 
-#empty strings from id 36437 to 36441
+#. Option for setting "System -> Add-ons -> Update official add-ons from"
+#: system/settings/settings.xml
+msgctxt "#36437"
+msgid "Official repositories only (default)"
+msgstr ""
+
+#. Option for setting "System -> Add-ons -> Update official add-ons from"
+#: system/settings/settings.xml
+msgctxt "#36438"
+msgid "Any repositories"
+msgstr ""
+
+#empty strings from id 36439 to 36441
 
 #. Description of setting "System -> Audio output -> Volume control steps" with label #1302
 #: system/settings/settings.xml

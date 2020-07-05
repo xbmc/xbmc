@@ -121,4 +121,11 @@ int CAddonSystemSettings::GetAddonAutoUpdateMode() const
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_ADDONS_AUTOUPDATES);
 }
+
+AddonRepoUpdateMode CAddonSystemSettings::GetAddonRepoUpdateMode() const
+{
+  const int updateMode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_ADDONS_UPDATEMODE);
+  return static_cast<AddonRepoUpdateMode>(updateMode);
+}
 }

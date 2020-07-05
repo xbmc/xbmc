@@ -222,15 +222,26 @@ VECADDONS CAddonMgr::GetAvailableUpdates() const
   std::map<std::string, AddonPtr> latestPrivateVersions;
   std::map<std::string, AddonPtr> latestOfficialVersions;
 
+  const AddonRepoUpdateMode updateMode =
+      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
+  CLog::Log(LOGDEBUG, "ADDONS: repo update mode set to : {}", static_cast<int>(updateMode));
+
   for (const auto& addon : all_addons)
   {
-    if (IsFromOfficialRepo(addon, true))
+    if (updateMode == AddonRepoUpdateMode::OFFICIAL_ONLY)
+    {
+      if (IsFromOfficialRepo(addon, true))
+      {
+        AddAddonIfLatest(addon, latestOfficialVersions);
+      }
+      else
+      {
+        AddAddonIfLatest(addon, latestPrivateVersions);
+      }
+    }
+    else if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
     {
       AddAddonIfLatest(addon, latestOfficialVersions);
-    }
-    else
-    {
-      AddAddonIfLatest(addon, latestPrivateVersions);
     }
   }
 
