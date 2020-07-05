@@ -69,7 +69,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
 
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
   if ! [ -z "${CODE_SIGN_IDENTITY}" ]; then
-    if egrep -q --max-count=1 -e '^iPhone (Developer|Distribution): ' -e '^Apple (Development|Distribution): ' <<<"${CODE_SIGN_IDENTITY}"; then
+    if egrep -q --max-count=1 -e '^iPhone (Developer|Distribution): ' -e '^Apple (Development|Distribution): ' -e '^[[:xdigit:]]+$' <<<"${CODE_SIGN_IDENTITY}"; then
       echo "Doing a full bundle sign using genuine identity ${CODE_SIGN_IDENTITY}"
       for binext in $LIST_BINARY_EXTENSIONS
       do
