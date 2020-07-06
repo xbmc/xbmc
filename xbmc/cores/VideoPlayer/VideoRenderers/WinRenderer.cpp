@@ -210,8 +210,9 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
   DX::Windowing()->SetAlphaBlendEnable(alpha < 255);
 
   ManageRenderArea();
-  m_renderer->Render(index, index2, DX::Windowing()->GetBackBuffer(), 
-                     m_sourceRect, m_destRect, GetScreenRect(), flags);
+  m_renderer->Render(index, index2, DX::Windowing()->GetBackBuffer(), m_sourceRect, m_destRect,
+                     GetScreenRect(), flags);
+  DX::Windowing()->SetAlphaBlendEnable(true);
 }
 
 bool CWinRenderer::RenderCapture(CRenderCapture* capture)
