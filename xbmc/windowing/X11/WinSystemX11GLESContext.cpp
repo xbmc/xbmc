@@ -259,6 +259,8 @@ XVisualInfo* CWinSystemX11GLESContext::GetVisual()
   }
 
   XVisualInfo x11_visual_info_template;
+  memset(&x11_visual_info_template, 0, sizeof(XVisualInfo));
+
   if (!eglGetConfigAttrib(eglDisplay, eglConfig,
     EGL_NATIVE_VISUAL_ID, reinterpret_cast<EGLint*>(&x11_visual_info_template.visualid)))
   {
