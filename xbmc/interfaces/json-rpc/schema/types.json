@@ -397,6 +397,10 @@
       "label": { "type": "string", "required": true }
     }
   },
+  "Item.CustomProperties": {
+    "type": "object",
+    "additionalProperties": { "$ref": "Global.String.NotEmpty" }
+  },
   "Media.Details.Base": {
     "extends": "Item.Details.Base",
     "properties": {
@@ -1527,7 +1531,8 @@
       "bitrate": { "type": "integer" },
       "samplerate": { "type": "integer" },
       "channels": { "type": "integer"},
-      "albumstatus": { "type": "string" }
+      "albumstatus": { "type": "string" },
+      "customproperties": { "$ref": "Item.CustomProperties" }
     }
   },
   "List.Fields.All": {
@@ -1550,7 +1555,7 @@
                 "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "userrating", "votes", "sortartist", "musicbrainzreleasegroupid", "mediapath", "dynpath",
                 "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
-                "bitrate", "samplerate", "channels", "albumstatus", "datemodified", "datenew"]
+                "bitrate", "samplerate", "channels", "albumstatus", "datemodified", "datenew", "customproperties"]
     }
   },
   "List.Item.All": {
@@ -1582,7 +1587,7 @@
                 "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype",
                 "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid",
                 "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
-                "bitrate", "samplerate", "channels", "datemodified", "datenew"]
+                "bitrate", "samplerate", "channels", "datemodified", "datenew", "customproperties"]
     }
   },
   "List.Item.File": {
