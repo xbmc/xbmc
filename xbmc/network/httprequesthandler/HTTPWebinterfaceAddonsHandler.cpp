@@ -19,7 +19,7 @@ bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request
   return (request.pathUrl.compare("/addons") == 0 || request.pathUrl.compare("/addons/") == 0);
 }
 
-int CHTTPWebinterfaceAddonsHandler::HandleRequest()
+MHD_RESULT CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
   ADDON::VECADDONS addons;
