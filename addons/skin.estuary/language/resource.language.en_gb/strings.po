@@ -254,14 +254,7 @@ msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty string with id 31049
-
-#: /xml/Variables.xml
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr ""
-
-#empty string with id 31051
+#empty strings with id 31049 to 31051
 
 #: /xml/Includes.xml
 msgctxt "#31052"
@@ -275,10 +268,13 @@ msgstr ""
 
 #: /xml/Variables.xml
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr ""
 
-#empty string with id 31055
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 #: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"

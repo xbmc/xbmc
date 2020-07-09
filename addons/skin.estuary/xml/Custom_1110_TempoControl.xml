@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window id="1110" type="dialog">
+	<defaultcontrol>11</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<control type="group">
+			<top>20</top>
+			<centerleft>50%</centerleft>
+			<width>840</width>
+			<control type="image">
+				<left>-20</left>
+				<top>-30</top>
+				<width>840</width>
+				<height>100</height>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+			</control>
+			<control type="label">
+				<description>Dialog header</description>
+				<left>40</left>
+				<top>10</top>
+				<width>550</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<font>font14</font>
+				<label>$LOCALIZE[31142]</label>
+			</control>
+			<control type="label">
+				<left>120</left>
+				<top>10</top>
+				<width>550</width>
+				<height>20</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font14</font>
+				<label>$INFO[Player.playspeed]</label>
+			</control>
+			<control type="button" id="11">
+				<left>690</left>
+				<top>10</top>
+				<width>28</width>
+				<height>20</height>
+				<onleft>12</onleft>
+				<onright>12</onright>
+				<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
+				<texturenofocus>overlays/arrowdown.png</texturenofocus>
+				<onclick>PlayerControl(TempoDown)</onclick>
+			</control>
+			<control type="button" id="12">
+				<left>730</left>
+				<top>10</top>
+				<width>28</width>
+				<height>20</height>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<texturefocus flipy="true" colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
+				<texturenofocus flipy="true">overlays/arrowdown.png</texturenofocus>
+				<onclick>PlayerControl(TempoUp)</onclick>
+			</control>
+		</control>
+	</controls>
+</window>

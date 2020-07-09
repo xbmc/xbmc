@@ -692,7 +692,7 @@
 			<animation effect="fade" time="300">VisibleChange</animation>
 			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<texture colordiffuse="C2FFFFFF">colors/black.png</texture>
+			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
 			<visible>$PARAM[darken_bg]</visible>
 		</control>
 		<control type="button">
