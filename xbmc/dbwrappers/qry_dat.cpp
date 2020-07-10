@@ -533,7 +533,7 @@ double field_value::get_asDouble() const {
 int64_t field_value::get_asInt64() const {
     switch (field_type) {
     case ft_String: {
-      return std::stoll(str_value);
+      return std::atoll(str_value.c_str());
     }
     case ft_Boolean:{
       return (int64_t)bool_value;
