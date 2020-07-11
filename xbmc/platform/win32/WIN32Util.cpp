@@ -1497,17 +1497,12 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
     if (CServiceBroker::IsServiceManagerUp())
       CLog::LogF(LOGDEBUG, "Display is not HDR capable or cannot be detected");
   }
-  else if (advancedColorSupported && !advancedColorEnabled)
+  else
   {
-    status = HDR_STATUS::HDR_OFF;
+    status = advancedColorEnabled ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF;
     if (CServiceBroker::IsServiceManagerUp())
-      CLog::LogF(LOGDEBUG, "Display HDR capable and current HDR status is OFF");
-  }
-  else if (advancedColorSupported && advancedColorEnabled)
-  {
-    status = HDR_STATUS::HDR_ON;
-    if (CServiceBroker::IsServiceManagerUp())
-      CLog::LogF(LOGDEBUG, "Display HDR capable and current HDR status is ON");
+      CLog::LogF(LOGDEBUG, "Display HDR capable and current HDR status is {}",
+                 advancedColorEnabled ? "ON" : "OFF");
   }
 
   return status;

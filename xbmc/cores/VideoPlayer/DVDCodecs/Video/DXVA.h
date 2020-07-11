@@ -69,6 +69,7 @@ protected:
   HANDLE handle = INVALID_HANDLE_VALUE;
   Microsoft::WRL::ComPtr<ID3D11Resource> m_sharedRes;
 };
+
 class CVideoBufferCopy : public CVideoBufferShared
 {
   template<typename TBuffer>
@@ -83,6 +84,8 @@ protected:
       : CVideoBufferShared(id) {}
 
   Microsoft::WRL::ComPtr<ID3D11Resource> m_copyRes;
+  Microsoft::WRL::ComPtr<ID3D11Resource> m_pResource;
+  Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pDeviceContext;
 };
 
 class CContext
@@ -96,7 +99,7 @@ public:
   static shared_ptr EnsureContext(CDecoder* decoder);
   bool GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DESC& format, D3D11_VIDEO_DECODER_CONFIG& config) const;
   bool CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t count, uint32_t alignment,
-                      ID3D11VideoDecoderOutputView** surfaces, HANDLE* pHandle) const;
+                      ID3D11VideoDecoderOutputView** surfaces, HANDLE* pHandle, bool trueShared) const;
   bool CreateDecoder(const D3D11_VIDEO_DECODER_DESC& format, const D3D11_VIDEO_DECODER_CONFIG& config,
                      ID3D11VideoDecoder** decoder, ID3D11VideoContext** context);
   void Release(CDecoder* decoder);
