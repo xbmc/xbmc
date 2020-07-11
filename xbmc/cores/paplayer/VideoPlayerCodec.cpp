@@ -66,13 +66,11 @@ void  VideoPlayerCodec::SetPassthroughStreamType(CAEStreamInfo::DataType streamT
 
 bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 {
-  const std::string &strFile = file.GetPath();
-
   // take precaution if Init()ialized earlier
   if (m_bInited)
   {
     // keep things as is if Init() was done with known strFile
-    if (m_strFileName == strFile)
+    if (m_strFileName == file.GetDynPath())
       return true;
 
     // got differing filename, so cleanup before starting over
@@ -81,19 +79,13 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
   m_nDecodedLen = 0;
 
-  std::string strFileToOpen = strFile;
-
-  CURL urlFile(strFile);
-  if (urlFile.IsProtocol("shout") )
-    strFileToOpen.replace(0, 8, "http://");
-
   CFileItem fileitem(file);
   fileitem.SetMimeType(m_strContentType);
   fileitem.SetMimeTypeForInternetFile();
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
   if (!m_pInputStream)
   {
-    CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, strFileToOpen.c_str());
+    CLog::Log(LOGERROR, "{}: Error creating input stream for {}", __FUNCTION__, file.GetDynPath());
     return false;
   }
 
@@ -101,7 +93,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   //! convey CFileItem::ContentLookup() into Open()
   if (!m_pInputStream->Open())
   {
-    CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());
+    CLog::Log(LOGERROR, "{}: Error opening file {}", __FUNCTION__, file.GetDynPath());
     if (m_pInputStream.use_count() > 1)
       throw std::runtime_error("m_pInputStream reference count is greater than 1");
     m_pInputStream.reset();
@@ -186,7 +178,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
            m_strContentType == "audio/ape")
     strFallbackFileExtension = "ape";
   CTagLoaderTagLib tagLoaderTagLib;
-  tagLoaderTagLib.Load(strFile, m_tag, strFallbackFileExtension);
+  tagLoaderTagLib.Load(file.GetDynPath(), m_tag, strFallbackFileExtension);
 
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
@@ -280,7 +272,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     m_bitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   }
 
-  m_strFileName = strFile;
+  m_strFileName = file.GetDynPath();
   m_bInited = true;
 
   return true;
