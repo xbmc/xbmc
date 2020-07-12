@@ -65,6 +65,8 @@ java -Djava.awt.headless=true -jar slave.jar -jar-cache /Users/Shared/jenkins/ca
     <true/>
     <key>RunAtLoad</key>
     <true/>
+    <key>SessionCreate</key>
+    <true/>
     <key>UserName</key>
     <string>jenkins</string>
     <key>WorkingDirectory</key>
