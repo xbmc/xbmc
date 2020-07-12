@@ -868,6 +868,14 @@
 			<visible>Weather.IsFetched + !String.IsEmpty(Window(weather).Property(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
+			<control type="button" id="700$PARAM[item_id]0">
+				<left>50</left>
+				<top>100</top>
+				<width>1820</width>
+				<height>920</height>
+				<onup>$PARAM[onup_id]</onup>
+				<ondown>$PARAM[ondown_id]</ondown>
+			</control>
 			<control type="image" id="700$PARAM[item_id]1">
 				<left>50</left>
 				<top>100</top>
@@ -895,6 +903,13 @@
 				<colordiffuse>B0FFFFFF</colordiffuse>
 			</control>
 			<control type="image" id="700$PARAM[item_id]4">
+				<left>1000</left>
+				<top>858</top>
+				<width>340</width>
+				<height>100</height>
+				<texture border="21">buttons/button-nofo.png</texture>
+			</control>
+			<control type="image" id="700$PARAM[item_id]5">
 				<left>1340</left>
 				<top>880</top>
 				<width>350</width>
@@ -902,20 +917,15 @@
 				<texture>$INFO[Window(weather).Property(Map.$PARAM[item_id].Legend)]</texture>
 			</control>
 		</control>
-		<control type="button" id="700$PARAM[item_id]0">
+		<control type="label" id="700$PARAM[item_id]9">
 			<left>1000</left>
 			<top>0</top>
 			<width>340</width>
 			<height>100</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<textoffsetx>40</textoffsetx>
-			<textoffsety>0</textoffsety>
-			<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
-			<animation effect="slide" end="0,-90" time="0" condition="true">Conditional</animation>
-			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+			<animation effect="slide" end="0,-92" time="0" condition="true">Conditional</animation>
 			<font>font30_title</font>
-			<onclick>noop</onclick>
 			<label>$INFO[Window(weather).Property(Map.$PARAM[item_id].Heading)]</label>
 			<visible>Weather.IsFetched + !String.IsEmpty(Window(weather).Property(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
 		</control>
