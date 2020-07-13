@@ -18,24 +18,27 @@
 			</control>
 			<control type="group">
 				<animation effect="slide" end="90,0" time="0" condition="Skin.HasSetting(touchmode)">conditional</animation>
-				<control type="image">
-					<left>15</left>
+				<control type="grouplist">
+					<visible>!String.IsEmpty(Player.Art(tvshow.clearlogo)) | !String.IsEmpty(Player.Art(clearlogo))</visible>
 					<top>10</top>
-					<width>300</width>
-					<height>140</height>
-					<texture>$VAR[PlayerClearLogoVar]</texture>
-					<aspectratio aligny="center" align="center">keep</aspectratio>
-				</control>
-				<control type="textbox">
-					<label>$VAR[NowPlayingBreadcrumbsVar]</label>
-					<font>font45</font>
-					<shadowcolor>text_shadow</shadowcolor>
-					<top>0</top>
-					<height>150</height>
-					<left>330</left>
+					<left>20</left>
 					<right>400</right>
-					<aligny>center</aligny>
-					<visible>!String.IsEmpty(Player.Art(tvshow.clearlogo))</visible>
+					<height>100</height>
+					<itemgap>10</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="image">
+						<width>300</width>
+						<texture>$VAR[PlayerClearLogoVar]</texture>
+						<aspectratio aligny="center" align="center">keep</aspectratio>
+					</control>
+					<control type="label">
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<label>$VAR[OSDSubLabelVar]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+						<scroll>true</scroll>
+					</control>
 				</control>
 				<control type="group">
 					<visible>!Window.IsActive(pvrosdchannels) + !Window.IsActive(pvrchannelguide)</visible>
@@ -50,16 +53,12 @@
 						<shadowcolor>text_shadow</shadowcolor>
 						<top>7</top>
 						<height>50</height>
-						<left>0</left>
-						<right>0</right>
 					</control>
 					<control type="label">
 						<top>60</top>
 						<label>$VAR[OSDSubLabelVar]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 						<height>60</height>
-						<left>0</left>
-						<right>0</right>
 					</control>
 				</control>
 			</control>
