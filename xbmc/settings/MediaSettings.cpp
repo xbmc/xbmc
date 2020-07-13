@@ -51,7 +51,7 @@ CMediaSettings::CMediaSettings()
   m_videoPlaylistRepeat = false;
   m_videoPlaylistShuffle = false;
 
-  m_videoStartWindowed = false;
+  m_mediaStartWindowed = false;
   m_additionalSubtitleDirectoryChecked = 0;
 
   m_musicNeedsUpdate = 0;

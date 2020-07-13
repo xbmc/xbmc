@@ -403,7 +403,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     if (StringUtils::EqualsNoCase(params[i], "isdir"))
       item.m_bIsFolder = true;
     else if (params[i] == "1") // set fullscreen or windowed
-      CMediaSettings::GetInstance().SetVideoStartWindowed(true);
+      CMediaSettings::GetInstance().SetMediaStartWindowed(true);
     else if (StringUtils::EqualsNoCase(params[i], "resume"))
     {
       // force the item to resume (if applicable) (see CApplication::PlayMedia)
@@ -586,12 +586,12 @@ static int Seek(const std::vector<std::string>& params)
 ///     ,
 ///     Plays the media. This can be a playlist\, music\, or video file\, directory\,
 ///     plugin or an Url. The optional parameter "\,isdir" can be used for playing
-///     a directory. "\,1" will start a video in a preview window\, instead of
-///     fullscreen. If media is a playlist\, you can use playoffset=xx where xx is
+///     a directory. "\,1" will start the media without switching to fullscreen.
+///     If media is a playlist\, you can use playoffset=xx where xx is
 ///     the position to start playback from.
 ///     @param[in] media                 URL to media to play (optional).
 ///     @param[in] isdir                 Set "isdir" if media is a directory (optional).
-///     @param[in] fullscreen            Set "1" to start playback in fullscreen (optional).
+///     @param[in] windowed              Set "1" to start playback without switching to fullscreen (optional).
 ///     @param[in] resume                Set "resume" to force resuming (optional).
 ///     @param[in] noresume              Set "noresume" to force not resuming (optional).
 ///     @param[in] playeroffset          Set "playoffset=<offset>" to start playback from a given position in a playlist (optional).

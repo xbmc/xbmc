@@ -2975,31 +2975,36 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() &&
         CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_MUSICFILES_SELECTACTION);
+        CSettings::SETTING_MUSICFILES_SELECTACTION) &&
+        !CMediaSettings::GetInstance().DoesMediaStartWindowed();
   }
   else if (item.IsVideo() && playlist == PLAYLIST_VIDEO &&
       CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
+    options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart &&
+        !CMediaSettings::GetInstance().DoesMediaStartWindowed();
   }
   else if(m_stackHelper.IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
     if(m_stackHelper.GetCurrentPartNumber() == 0 || m_stackHelper.GetRegisteredStack(item)->m_lStartOffset != 0)
-      options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
+      options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->
+          m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesMediaStartWindowed();
     else
       options.fullscreen = false;
   }
   else
-    options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
+    options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->
+        m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesMediaStartWindowed();
 
   // stereo streams may have lower quality, i.e. 32bit vs 16 bit
   options.preferStereo = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoPreferStereoStream &&
                          CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount();
 
   // reset VideoStartWindowed as it's a temp setting
-  CMediaSettings::GetInstance().SetVideoStartWindowed(false);
+  CMediaSettings::GetInstance().SetMediaStartWindowed(false);
 
   {
     // for playing a new item, previous playing item's callback may already

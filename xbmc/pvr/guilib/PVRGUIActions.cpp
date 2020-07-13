@@ -1247,7 +1247,7 @@ namespace PVR
 
   void CPVRGUIActions::CheckAndSwitchToFullscreen(bool bFullscreen) const
   {
-    CMediaSettings::GetInstance().SetVideoStartWindowed(!bFullscreen);
+    CMediaSettings::GetInstance().SetMediaStartWindowed(!bFullscreen);
 
     if (bFullscreen)
     {
