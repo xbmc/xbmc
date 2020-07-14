@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="18.x-2.4.6"
+  version="19.x-2.4.7"
   name="Kodi web interface - Chorus2"
   provider-name="jez500, Team Kodi">
   <requires>
@@ -9,10 +9,9 @@
   </requires>
   <extension point="xbmc.webinterface"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Default web interface</summary>
-    <description lang="en">Browse and interact with your Music, Movies, TV Shows and more via a web browser. Stream music and videos to your browser. Edit and manage your Kodi media library.</description>
+    <summary lang="en_GB">Default web interface</summary>
+    <description lang="en_GB">Browse and interact with your Music, Movies, TV Shows and more via a web browser. Stream music and videos on your browser. Edit and manage your Kodi media library.</description>
     <platform>all</platform>
-    <language>en</language>
     <source>https://github.com/xbmc/chorus2</source>
     <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
     <assets>
