@@ -86,7 +86,7 @@ static MHD_Response* create_response(size_t size, const void* data, int free, in
   return MHD_create_response_from_buffer(size, const_cast<void*>(data), mode);
 }
 
-int CWebServer::AskForAuthentication(const HTTPRequest& request) const
+MHD_RESULT CWebServer::AskForAuthentication(const HTTPRequest& request) const
 {
   struct MHD_Response *response = create_response(0, nullptr, MHD_NO, MHD_NO);
   if (!response)
@@ -95,7 +95,7 @@ int CWebServer::AskForAuthentication(const HTTPRequest& request) const
     return MHD_NO;
   }
 
-  int ret = AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
+  MHD_RESULT ret = AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     CLog::Log(LOGERROR, "CWebServer[%hu]: unable to prepare HTTP Unauthorized response", m_port);
@@ -105,7 +105,10 @@ int CWebServer::AskForAuthentication(const HTTPRequest& request) const
 
   LogResponse(request, MHD_HTTP_UNAUTHORIZED);
 
-  ret = MHD_queue_basic_auth_fail_response(request.connection, "XBMC", response);
+  // This MHD_RESULT cast is only necessary for libmicrohttpd 0.9.71
+  // The return type of MHD_queue_basic_auth_fail_response was fixed for future versions
+  // See https://git.gnunet.org/libmicrohttpd.git/commit/?id=860b42e9180da4dcd7e8690a3fcdb4e37e5772c5
+  ret = static_cast<MHD_RESULT>(MHD_queue_basic_auth_fail_response(request.connection, "XBMC", response));
   MHD_destroy_response(response);
 
   return ret;
@@ -135,7 +138,7 @@ bool CWebServer::IsAuthenticated(const HTTPRequest& request) const
   return authenticated;
 }
 
-int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
+MHD_RESULT CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       const char *url, const char *method,
                       const char *version, const char *upload_data,
                       size_t *upload_data_size, void **con_cls)
@@ -163,7 +166,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   return webServer->HandlePartialRequest(connection, connectionHandler, request, upload_data, upload_data_size, con_cls);
 }
 
-int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, ConnectionHandler* connectionHandler, const HTTPRequest& request, const char *upload_data, size_t *upload_data_size, void **con_cls)
+MHD_RESULT CWebServer::HandlePartialRequest(struct MHD_Connection *connection, ConnectionHandler* connectionHandler, const HTTPRequest& request, const char *upload_data, size_t *upload_data_size, void **con_cls)
 {
   std::unique_ptr<ConnectionHandler> conHandler(connectionHandler);
 
@@ -276,7 +279,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   return SendErrorResponse(request, MHD_HTTP_NOT_FOUND, request.method);
 }
 
-int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+MHD_RESULT CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
                                 const char *filename, const char *content_type,
                                 const char *transfer_encoding, const char *data, uint64_t off,
                                 size_t size)
@@ -294,13 +297,13 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
   return MHD_YES;
 }
 
-int CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handler)
+MHD_RESULT CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handler)
 {
   if (handler == nullptr)
     return MHD_NO;
 
   HTTPRequest request = handler->GetRequest();
-  int ret = handler->HandleRequest();
+  MHD_RESULT ret = handler->HandleRequest();
   if (ret == MHD_NO)
   {
     CLog::Log(LOGERROR, "CWebServer[%hu]: failed to handle HTTP request for %s", m_port, request.pathUrl.c_str());
@@ -348,7 +351,7 @@ int CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handle
   return FinalizeRequest(handler, responseDetails.status, response);
 }
 
-int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& handler, int responseStatus, struct MHD_Response *response)
+MHD_RESULT CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& handler, int responseStatus, struct MHD_Response *response)
 {
   if (handler == nullptr || response == nullptr)
     return MHD_NO;
@@ -562,7 +565,7 @@ void CWebServer::FinalizePostDataProcessing(ConnectionHandler *connectionHandler
   MHD_destroy_post_processor(connectionHandler->postprocessor);
 }
 
-int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
+MHD_RESULT CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
 {
   if (handler == nullptr)
     return MHD_NO;
@@ -620,7 +623,7 @@ int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestH
   return CreateRangedMemoryDownloadResponse(handler, response);
 }
 
-int CWebServer::CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
+MHD_RESULT CWebServer::CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
 {
   if (handler == nullptr)
     return MHD_NO;
@@ -700,7 +703,7 @@ int CWebServer::CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRe
   return CreateMemoryDownloadResponse(request.connection, result.c_str(), result.size(), false, true, response);
 }
 
-int CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response) const
+MHD_RESULT CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response) const
 {
   response = create_response(0, nullptr, MHD_NO, MHD_NO);
   if (response == nullptr)
@@ -713,7 +716,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::str
   return MHD_YES;
 }
 
-int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
+MHD_RESULT CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const
 {
   if (handler == nullptr)
     return MHD_NO;
@@ -850,7 +853,7 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
   return MHD_YES;
 }
 
-int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response) const
+MHD_RESULT CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response) const
 {
   size_t payloadSize = 0;
   const void *payload = nullptr;
@@ -881,7 +884,7 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
   return MHD_YES;
 }
 
-int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response) const
+MHD_RESULT CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response) const
 {
   response = create_response(size, const_cast<void*>(data), free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
   if (response == nullptr)
@@ -893,20 +896,20 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
   return MHD_YES;
 }
 
-int CWebServer::SendResponse(const HTTPRequest& request, int responseStatus, MHD_Response *response) const
+MHD_RESULT CWebServer::SendResponse(const HTTPRequest& request, int responseStatus, MHD_Response *response) const
 {
   LogResponse(request, responseStatus);
 
-  int ret = MHD_queue_response(request.connection, responseStatus, response);
+  MHD_RESULT ret = MHD_queue_response(request.connection, responseStatus, response);
   MHD_destroy_response(response);
 
   return ret;
 }
 
-int CWebServer::SendErrorResponse(const HTTPRequest& request, int errorType, HTTPMethod method) const
+MHD_RESULT CWebServer::SendErrorResponse(const HTTPRequest& request, int errorType, HTTPMethod method) const
 {
   struct MHD_Response *response = nullptr;
-  int ret = CreateErrorResponse(request.connection, errorType, method, response);
+  MHD_RESULT ret = CreateErrorResponse(request.connection, errorType, method, response);
   if (ret == MHD_NO)
     return MHD_NO;
 
@@ -1296,10 +1299,10 @@ std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
   return CMime::GetMimeType(ext);
 }
 
-int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const
+MHD_RESULT CWebServer::AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const
 {
   if (response == nullptr || name.empty())
-    return 0;
+    return MHD_NO;
 
   CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer[%hu] [OUT] %s: %s", m_port, name.c_str(), value.c_str());
 

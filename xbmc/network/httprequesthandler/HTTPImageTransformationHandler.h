@@ -23,7 +23,7 @@ public:
   IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPImageTransformationHandler(request); }
   bool CanHandleRequest(const HTTPRequest &request)const  override;
 
-  int HandleRequest() override;
+  MHD_RESULT HandleRequest() override;
 
   bool CanHandleRanges() const override { return true; }
   bool CanBeCached() const override { return true; }
