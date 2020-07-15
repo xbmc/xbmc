@@ -419,21 +419,23 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     @param[in] loop                  Send "loop" to loop the alarm.
 ///   }
 ///   \table_row2_l{
-///     <b>`ActivateWindow(window[\,dir])`</b>
+///     <b>`ActivateWindow(window[\,dir\, return])`</b>
 ///     ,
 ///     Opens the given window. The parameter window can either be the window's id\,
-///     or in the case of a standard window\, the window's name. See here for a list
-///     of window names\, and their respective ids. If\, furthermore\, the window is
+///     or in the case of a standard window\, the window's name. See \ref window_ids "here" for a list
+///     of window names\, and their respective ids.
+///     If\, furthermore\, the window is
 ///     Music\, Video\, Pictures\, or Program files\, then the optional dir parameter
 ///     specifies which folder Kodi should default to once the window is opened.
 ///     This must be a source as specified in sources.xml\, or a subfolder of a
-///     valid source. For some windows (MusicLibrary and VideoLibrary)\, the return
-///     parameter may be specified\, which indicates that Kodi should use this
+///     valid source. For some windows (MusicLibrary and VideoLibrary)\, a third
+///     parameter (return) may be specified\, which indicates that Kodi should use this
 ///     folder as the "root" of the level\, and thus the "parent directory" action
 ///     from within this folder will return the user to where they were prior to
 ///     the window activating.
 ///     @param[in] window                The window name.
 ///     @param[in] dir                   Window starting folder (optional).
+///     @param[in] return                if dir should be used as the rootfolder of the level
 ///   }
 ///   \table_row2_l{
 ///     <b>`ActivateWindowAndFocus(id1\, id2\,item1\, id3\,item2)`</b>
