@@ -290,6 +290,7 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
   ManageTextures();
   ManageRenderArea();
   Render(flags, DX::Windowing()->GetBackBuffer());
+  DX::Windowing()->SetAlphaBlendEnable(true);
 }
 
 void CWinRenderer::PreInit()
