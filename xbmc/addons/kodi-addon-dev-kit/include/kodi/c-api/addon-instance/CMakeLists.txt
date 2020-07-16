@@ -1,4 +1,5 @@
-set(HEADERS image_decoder.h
+set(HEADERS audio_encoder.h
+            image_decoder.h
             pvr.h)
 
 if(NOT ENABLE_STATIC_LIBS)
