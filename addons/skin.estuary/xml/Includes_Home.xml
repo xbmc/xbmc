@@ -859,7 +859,7 @@
 			<property name="FanartCode">$INFO[Window(weather).Property(Day$PARAM[item_index].FanartCode)]</property>
 			<thumb>$INFO[Window(weather).Property(Day$PARAM[item_index].OutlookIcon)]</thumb>
 			<onclick>noop</onclick>
-			<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched))!String.IsEmpty(Window(weather).Property(Day$PARAM[item_index].Outlook))</visible>
+			<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched)) + !String.IsEmpty(Window(weather).Property(Day$PARAM[item_index].Outlook))</visible>
 		</item>
 	</include>
 	<include name="WeatherMapItem">
