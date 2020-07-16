@@ -33,19 +33,10 @@ bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->start)
     return false;
 
-  return m_struct.toAddon->start(&m_struct,
-                                 m_iInChannels,
-                                 m_iInSampleRate,
-                                 m_iInBitsPerSample,
-                                 m_strTitle.c_str(),
-                                 m_strArtist.c_str(),
-                                 m_strAlbumArtist.c_str(),
-                                 m_strAlbum.c_str(),
-                                 m_strYear.c_str(),
-                                 m_strTrack.c_str(),
-                                 m_strGenre.c_str(),
-                                 m_strComment.c_str(),
-                                 m_iTrackLength);
+  return m_struct.toAddon->start(&m_struct, m_iInChannels, m_iInSampleRate, m_iInBitsPerSample,
+                                 m_strTitle.c_str(), m_strArtist.c_str(), m_strAlbumArtist.c_str(),
+                                 m_strAlbum.c_str(), m_strYear.c_str(), m_strTrack.c_str(),
+                                 m_strGenre.c_str(), m_strComment.c_str(), m_iTrackLength);
 }
 
 int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)

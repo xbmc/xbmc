@@ -10,8 +10,6 @@
 
 #include "../AddonBase.h"
 
-namespace kodi { namespace addon { class CInstanceAudioEncoder; }}
-
 extern "C"
 {
 
@@ -22,15 +20,15 @@ extern "C"
 
   typedef struct AddonToKodiFuncTable_AudioEncoder
   {
-    void* kodiInstance;
-    int (*write) (void* kodiInstance, const uint8_t* data, int len);
-    int64_t (*seek)(void* kodiInstance, int64_t pos, int whence);
+    KODI_HANDLE kodiInstance;
+    int (*write)(KODI_HANDLE kodiInstance, const uint8_t* data, int len);
+    int64_t (*seek)(KODI_HANDLE kodiInstance, int64_t pos, int whence);
   } AddonToKodiFuncTable_AudioEncoder;
 
   struct AddonInstance_AudioEncoder;
   typedef struct KodiToAddonFuncTable_AudioEncoder
   {
-    kodi::addon::CInstanceAudioEncoder* addonInstance;
+    KODI_HANDLE addonInstance;
     bool (__cdecl* start) (const AddonInstance_AudioEncoder* instance, int in_channels, int in_rate, int in_bits,
                            const char* title, const char* artist,
                            const char* albumartist, const char* album,
@@ -187,28 +185,20 @@ namespace addon
                                    const char* genre, const char* comment,
                                    int trackLength)
     {
-      return instance->toAddon->addonInstance->Start(inChannels,
-                                                    inRate,
-                                                    inBits,
-                                                    title,
-                                                    artist,
-                                                    albumartist,
-                                                    album,
-                                                    year,
-                                                    track,
-                                                    genre,
-                                                    comment,
-                                                    trackLength);
+      return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)
+          ->Start(inChannels, inRate, inBits, title, artist, albumartist, album, year, track, genre,
+                  comment, trackLength);
     }
 
     inline static int ADDON_Encode(const AddonInstance_AudioEncoder* instance, int numBytesRead, const uint8_t* pbtStream)
     {
-      return instance->toAddon->addonInstance->Encode(numBytesRead, pbtStream);
+      return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)
+          ->Encode(numBytesRead, pbtStream);
     }
 
     inline static bool ADDON_Finish(const AddonInstance_AudioEncoder* instance)
     {
-      return instance->toAddon->addonInstance->Finish();
+      return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)->Finish();
     }
 
     AddonInstance_AudioEncoder* m_instanceData;
