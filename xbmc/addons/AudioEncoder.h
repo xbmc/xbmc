@@ -17,6 +17,7 @@ namespace ADDON
   {
   public:
     explicit CAudioEncoder(const AddonInfoPtr& addonInfo);
+    ~CAudioEncoder() override;
 
     // Child functions related to IEncoder
     bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) override;
