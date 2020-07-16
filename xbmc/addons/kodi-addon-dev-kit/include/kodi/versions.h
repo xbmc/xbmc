@@ -82,10 +82,11 @@
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "addon-instance/AudioDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "2.0.2"
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "2.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "2.1.0"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "2.1.0"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_XML_ID    "kodi.binary.instance.audioencoder"
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "addon-instance/AudioEncoder.h"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "c-api/addon-instance/audio_encoder.h" \
+                                                      "addon-instance/AudioEncoder.h"
 
 #define ADDON_INSTANCE_VERSION_GAME                   "2.0.2"
 #define ADDON_INSTANCE_VERSION_GAME_MIN               "2.0.1"
