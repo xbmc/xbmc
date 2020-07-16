@@ -71,7 +71,7 @@ PenaltyBreakString: 1000
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60000
 PointerAlignment: Left
-ReflowComments:  true
+ReflowComments:  false
 SortIncludes:    true
 SpaceAfterCStyleCast: false
 SpaceAfterTemplateKeyword: false
