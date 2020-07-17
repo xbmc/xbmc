@@ -179,6 +179,26 @@ static int PlayerControl(const std::vector<std::string>& params)
       g_application.GetAppPlayer().SetTempo(playTempo);
     }
   }
+  else if (StringUtils::StartsWithNoCase(params[0], "tempo"))
+  {
+    if (params[0].size() == 5)
+      CLog::Log(LOGERROR, "PlayerControl(tempo(n)) called with no argument");
+    else if (params[0].size() < 8) // arg must be at least "(N)"
+      CLog::Log(LOGERROR, "PlayerControl(tempo(n)) called with invalid argument: \"%s\"",
+                params[0].substr(6).c_str());
+    else
+    {
+      CApplicationPlayer& player = g_application.GetAppPlayer();
+      if (player.SupportsTempo() && player.IsPlaying() && !player.IsPaused())
+      {
+        std::string strTempo = params[0].substr(6);
+        StringUtils::TrimRight(strTempo, ")");
+        float playTempo = strtof(strTempo.c_str(), nullptr);
+
+        player.SetTempo(playTempo);
+      }
+    }
+  }
   else if (paramlow == "next")
   {
     g_application.OnAction(CAction(ACTION_NEXT_ITEM));
@@ -538,6 +558,7 @@ static int Seek(const std::vector<std::string>& params)
 ///     | Previous                | Previous chapter or movie in playlists | Previous track              |             |
 ///     | TempoUp                 | Increases playback speed               | none                        | Kodi v18    |
 ///     | TempoDown               | Decreases playback speed               | none                        | Kodi v18    |
+///     | Tempo(n)                | Sets playback speed to given value     | none                        | Kodi v19    |
 ///     | BigSkipForward          | Big Skip Forward                       | Big Skip Forward            | Kodi v15    |
 ///     | BigSkipBackward         | Big Skip Backward                      | Big Skip Backward           | Kodi v15    |
 ///     | SmallSkipForward        | Small Skip Forward                     | Small Skip Forward          | Kodi v15    |
