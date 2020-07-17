@@ -329,6 +329,8 @@ namespace ADDON
      */
     bool IsFromOfficialRepo(const AddonPtr& addon) const;
 
+    AddonOriginType GetAddonOriginType(const AddonPtr& addon) const;
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 

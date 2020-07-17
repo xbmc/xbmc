@@ -4389,6 +4389,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsBinary `ListItem.Property(Addon.IsBinary)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.OriginType)`</b>,
+///                  \anchor ListItem_Property_AddonOriginType
+///                  _string_,
+///     @return A string representing the origin type. One of system\, repository or manual.
+///     <p><hr>
+///     @skinning_v19 **[New String Value]** \link ListItem_Property_AddonOriginType `ListItem.Property(Addon.OriginType)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Label`</b>,
 ///                  \anchor ListItem_Label
 ///                  _string_,

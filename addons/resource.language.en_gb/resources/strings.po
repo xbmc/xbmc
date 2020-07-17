@@ -15853,7 +15853,29 @@ msgctxt "#25013"
 msgid "Auto-skip on"
 msgstr ""
 
-#empty strings from id 25014 to 29800
+#. Used for skins to tell addon origin type
+#. xbmc/filesystem/AddonsDirectory.cpp
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
+msgctxt "#25014"
+msgid "system"
+msgstr ""
+
+#. Used for skins to tell addon origin type
+#. xbmc/filesystem/AddonsDirectory.cpp
+#: addons/skin.estuary/xml/AddonBrowser.xml
+msgctxt "#25015"
+msgid "repository"
+msgstr ""
+
+#. Used for skins to tell addon origin type
+#. xbmc/filesystem/AddonsDirectory.cpp
+#: addons/skin.estuary/xml/AddonBrowser.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
+msgctxt "#25016"
+msgid "manual"
+msgstr ""
+
+#empty strings from id 25017 to 29800
 
 #: unused
 msgctxt "#29801"

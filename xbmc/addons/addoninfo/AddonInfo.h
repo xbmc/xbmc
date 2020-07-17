@@ -37,6 +37,16 @@ enum class AddonDisabledReason
   PERMANENT_FAILURE = 3
 };
 
+enum class AddonOriginType
+{
+  /// @brief The type of the origin of an addon.
+  ///
+  /// Represents where an addon was installed from.
+  SYSTEM = 0, /// The addon is a system addon
+  REPOSITORY = 1, /// The addon origin is a repository
+  MANUAL = 2 /// The addon origin is a zip file, package or development build
+};
+
 struct DependencyInfo
 {
   std::string id;

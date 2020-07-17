@@ -1088,6 +1088,16 @@ bool CAddonMgr::IsFromOfficialRepo(const AddonPtr& addon, bool bCheckAddonPath) 
          std::any_of(m_officialAddonRepos.begin(), m_officialAddonRepos.end(), comparator);
 }
 
+AddonOriginType CAddonMgr::GetAddonOriginType(const AddonPtr& addon) const
+{
+  if (addon->Origin() == ORIGIN_SYSTEM)
+    return AddonOriginType::SYSTEM;
+  else if (!addon->Origin().empty())
+    return AddonOriginType::REPOSITORY;
+  else
+    return AddonOriginType::MANUAL;
+}
+
 void CAddonMgr::AddAddonIfLatest(const AddonPtr& addonToAdd,
                                  std::map<std::string, AddonPtr>& map) const
 {
