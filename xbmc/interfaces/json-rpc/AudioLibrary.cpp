@@ -327,9 +327,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const std::string &method, ITransp
   if (!musicdatabase.GetAlbum(albumID, album, false))
     return InvalidParams;
 
-  std::string path;
-  if (!musicdatabase.GetAlbumPath(albumID, path))
-    return InternalError;
+  std::string path = StringUtils::Format("musicdb://albums/%li/", albumID);
 
   CFileItemPtr albumItem;
   FillAlbumItem(album, path, albumItem);
