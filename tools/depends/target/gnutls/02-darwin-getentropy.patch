@@ -1,7 +1,6 @@
-diff -Naur a/configure.ac b/configure.ac
---- a/configure.ac	2019-12-02 08:32:16.000000000 -0800
-+++ b/configure.ac	2020-01-31 10:25:36.473631501 -0800
-@@ -278,6 +278,7 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -299,6 +299,7 @@
  
  AM_CONDITIONAL(HAVE_KERN_ARND, test "$rnd_variant" = "kern_arnd")
  
@@ -9,7 +8,7 @@ diff -Naur a/configure.ac b/configure.ac
  AC_MSG_CHECKING([for getentropy])
  AC_LINK_IFELSE([AC_LANG_PROGRAM([
  	   #include <unistd.h>
-@@ -294,6 +295,7 @@
+@@ -315,6 +316,7 @@
  		   AC_DEFINE([HAVE_GETENTROPY], 1, [Enable the OpenBSD getentropy function])
  		   rnd_variant=getentropy],
  		  [AC_MSG_RESULT(no)])
