@@ -21,6 +21,12 @@ const int AUTO_UPDATES_ON = 0;
 const int AUTO_UPDATES_NOTIFY = 1;
 const int AUTO_UPDATES_NEVER = 2;
 
+enum class AddonRepoUpdateMode
+{
+  OFFICIAL_ONLY = 0,
+  ANY_REPOSITORY = 1
+};
+
 class CAddonSystemSettings : public ISettingCallback
 {
 public:
@@ -38,6 +44,14 @@ public:
    * @return the autoupdate mode value
   */
   int GetAddonAutoUpdateMode() const;
+
+
+  /*!
+   * Gets Kodi preferred addon repository update mode
+   *
+   * @return the preferred mode value
+   */
+  AddonRepoUpdateMode GetAddonRepoUpdateMode() const;
 
   /*!
    * Attempt to unset addon as active. Returns true if addon is no longer active,

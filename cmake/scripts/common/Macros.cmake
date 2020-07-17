@@ -626,6 +626,9 @@ endfunction()
 #   APP_VERSION_TAG_LC - lowercased app version tag
 #   APP_VERSION - the app version (${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG})
 #   APP_ADDON_API - the addon API version in the form of 16.9.702
+#   ADDON_REPOS - official addon repositories and their origin path delimited by pipe
+#                 - e.g. repository.xbmc.org|https://mirrors.kodi.tv -
+#                 (multiple repo/path-sets are delimited by comma)
 #   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
 #   JSONRPC_VERSION - the json api version in the form of 8.3.0
 #
@@ -646,6 +649,7 @@ macro(core_find_versions)
   string(REGEX REPLACE "([^ ;]*) ([^;]*)" "\\1;\\2" version_list "${version_list};${json_version}")
   set(version_props
     ADDON_API
+    ADDON_REPOS
     APP_NAME
     APP_PACKAGE
     COMPANY_NAME
@@ -676,6 +680,7 @@ macro(core_find_versions)
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
+  set(ADDON_REPOS ${APP_ADDON_REPOS})
   set(JSONRPC_VERSION ${APP_JSONRPC_VERSION})
 
   # Set defines used in addon.xml.in and read from versions.h to set add-on

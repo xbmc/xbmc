@@ -787,10 +787,12 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
     bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
+    bool fromOfficialRepo = CServiceBroker::GetAddonMgr().IsFromOfficialRepo(addon);
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
+    pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
 
     if (installed)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));

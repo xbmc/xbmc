@@ -608,11 +608,12 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
     }
 
     {
-      std::string sql = PrepareSQL(
-          " SELECT * FROM addons"
-          " JOIN addonlinkrepo ON addons.id=addonlinkrepo.idAddon"
-          " WHERE addonlinkrepo.idRepo IN (%s)"
-          " ORDER BY addons.addonID", StringUtils::Join(repoIds, ",").c_str());
+      std::string sql = PrepareSQL(" SELECT addons.*, repo.addonID AS repoID FROM addons"
+                                   " JOIN addonlinkrepo ON addons.id=addonlinkrepo.idAddon"
+                                   " JOIN repo ON repo.id=addonlinkrepo.idRepo"
+                                   " WHERE addonlinkrepo.idRepo IN (%s)"
+                                   " ORDER BY repo.addonID, addons.addonID",
+                                   StringUtils::Join(repoIds, ",").c_str());
 
       auto start = XbmcThreads::SystemClockMillis();
       m_pDS->query(sql);
@@ -626,28 +627,19 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       std::string addonId = m_pDS->fv("addonID").get_asString();
       AddonVersion version(m_pDS->fv("version").get_asString());
 
-      if (!result.empty() && result.back()->ID() == addonId && result.back()->Version() >= version)
-      {
-        // We already have a version of this addon in our list which is newer.
-        m_pDS->next();
-        continue;
-      }
-
       CAddonInfoBuilder::CFromDB builder;
       builder.SetId(addonId);
       builder.SetVersion(version);
       builder.SetName(m_pDS->fv("name").get_asString());
       builder.SetSummary(m_pDS->fv("summary").get_asString());
       builder.SetDescription(m_pDS->fv("description").get_asString());
+      builder.SetOrigin(m_pDS->fv("repoID").get_asString());
       DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
 
       auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
       if (addon)
       {
-        if (!result.empty() && result.back()->ID() == addonId)
-          result.back() = std::move(addon);
-        else
-          result.push_back(std::move(addon));
+        result.emplace_back(addon);
       }
       else
         CLog::Log(LOGWARNING, "CAddonDatabase: failed to build %s", addonId.c_str());
