@@ -144,3 +144,5 @@ if(NOT MSVC)
   add_options(ALL_LANGUAGES DEBUG "-g" "-D_DEBUG")
 endif()
 
+# set for compile info to help detect binary addons
+set(APP_SHARED_LIBRARY_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")

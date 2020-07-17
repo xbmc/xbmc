@@ -84,6 +84,7 @@ public:
   std::string ID() const override{ return m_addonInfo->ID(); }
   std::string Name() const override { return m_addonInfo->Name(); }
   bool IsInUse() const override{ return false; };
+  bool IsBinary() const override { return m_addonInfo->IsBinary(); };
   AddonVersion Version() const override { return m_addonInfo->Version(); }
   AddonVersion MinVersion() const override { return m_addonInfo->MinVersion(); }
   std::string Summary() const override { return m_addonInfo->Summary(); }

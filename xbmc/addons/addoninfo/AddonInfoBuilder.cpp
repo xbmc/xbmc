@@ -8,6 +8,7 @@
 
 #include "AddonInfoBuilder.h"
 
+#include "CompileInfo.h"
 #include "LangInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
@@ -22,6 +23,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <regex>
 
 namespace
 {
@@ -405,7 +407,19 @@ bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType, AddonInfoPtr info, 
     if (library == nullptr)
       library = GetPlatformLibraryName(child);
     if (library != nullptr)
+    {
       addonType.m_libname = library;
+      // linux is different an has the version number after the suffix
+      static const std::regex libRegex("^.*" +
+                                       CCompileInfo::CCompileInfo::GetSharedLibrarySuffix() +
+                                       "\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*$");
+      if (std::regex_match(library, libRegex))
+      {
+        info->SetBinary(true);
+        CLog::Log(LOGDEBUG, "CAddonInfoBuilder::{}: Binary addon found: {}", __FUNCTION__,
+                  info->ID());
+      }
+    }
 
     if (!ParseXMLExtension(addonType, child))
     {

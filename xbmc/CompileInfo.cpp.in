@@ -60,6 +60,11 @@ std::string CCompileInfo::GetOfficialAddonRepos()
   return "@APP_ADDON_REPOS@";
 }
 
+std::string CCompileInfo::GetSharedLibrarySuffix()
+{
+  return "@APP_SHARED_LIBRARY_SUFFIX@";
+}
+
 const char* CCompileInfo::GetCopyrightYears()
 {
   return "@APP_COPYRIGHT_YEARS@";

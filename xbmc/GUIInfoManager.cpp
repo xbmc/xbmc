@@ -4381,6 +4381,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsFromOfficialRepo `ListItem.Property(Addon.IsFromOfficialRepo)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.IsBinary)`</b>,
+///                  \anchor ListItem_Property_AddonIsBinary
+///                  _boolean_,
+///     @return **True** if this add-on is a binary addon.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsBinary `ListItem.Property(Addon.IsBinary)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Label`</b>,
 ///                  \anchor ListItem_Label
 ///                  _string_,

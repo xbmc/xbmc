@@ -793,6 +793,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
     pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
+    pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
 
     if (installed)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));
