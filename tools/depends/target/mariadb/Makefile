@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-android.patch
+DEPS= ../../Makefile.include Makefile 01-android.patch 02-symbol_rename-gnutls_clash.patch
 
 LIBNAME=mariadb
 VERSION=3.0.3
@@ -16,6 +16,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-android.patch
+	cd $(PLATFORM); patch -p1 -i ../02-symbol_rename-gnutls_clash.patch
 	sed -ie 's| "DYNAMIC" | "STATIC" |' $(PLATFORM)/cmake/plugins.cmake
 	cd $(PLATFORM)/build; $(CMAKE) -DAUTH_GSSAPI=OFF -DWITH_UNITTEST:BOOL=OFF -DWITH_EXTERNAL_ZLIB:BOOL=ON -DWITH_CURL:BOOL=OFF ..
 
