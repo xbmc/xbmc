@@ -1,11 +1,11 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -512,6 +512,9 @@
+@@ -547,6 +547,9 @@
  
  
  AC_LIB_HAVE_LINKFLAGS(dl,, [#include <dlfcn.h>], [dladdr (0, 0);])
 +if test "x$HAVE_LIBDL" = "xyes"; then
-+      AC_SUBST([LIBDL], [-ldl])
++  AC_SUBST([LIBDL], [-ldl])
 +fi
  
  AC_ARG_ENABLE(fips140-mode,
@@ -16,7 +16,7 @@
  URL: https://www.gnutls.org/
  Version: @VERSION@
  Libs: -L${libdir} -lgnutls
--Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBIDN2_LIBS@ @LIBATOMIC_LIBS@
-+Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBIDN2_LIBS@ @LIBATOMIC_LIBS@ @LIBDL@
+-Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBATOMIC_LIBS@ @LIB_CRYPT32@ @LIBNCRYPT@ @LIBBCRYPT@
++Libs.private: @LIBINTL@ @LIBSOCKET@ @INET_PTON_LIB@ @LIBPTHREAD@ @LIB_SELECT@ @TSS_LIBS@ @GMP_LIBS@ @LIBUNISTRING@ @LIBATOMIC_LIBS@ @LIB_CRYPT32@ @LIBNCRYPT@ @LIBBCRYPT@ @LIBDL@
  @GNUTLS_REQUIRES_PRIVATE@
  Cflags: -I${includedir}

@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile 01-disable_testsuite.patch
 
 # lib name, version
 LIBNAME=nettle
-VERSION=3.5.1
+VERSION=3.6
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
