@@ -1813,7 +1813,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       strMoods.c_str(), strStyles.c_str(), strInstruments.c_str(),
                       strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
                       strYearsActive.c_str(), strImage.c_str(), strFanart.c_str(),
-                      CDateTime::GetUTCDateTime().GetAsDBDateTime().c_str(), bScrapedMBID);
+                      CDateTime::GetUTCDateTime().GetAsDBDateTime().c_str(), isScrapedMBID);
   if (useMBIDNull)
     strSQL += PrepareSQL(", strMusicBrainzArtistID = NULL");
   else
