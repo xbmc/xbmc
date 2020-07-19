@@ -8,17 +8,19 @@
 
 #pragma once
 
-#include "DirectXHelper.h"
-#include "HDRStatus.h"
-#include "guilib/D3DResource.h"
-
+#include <wrl.h>
+#include <wrl/client.h>
+#include <concrt.h>
+#if defined(TARGET_WINDOWS_STORE)
+#include <dxgi1_3.h>
+#else
+#include <dxgi1_2.h>
+#endif
 #include <functional>
 #include <memory>
 
-#include <concrt.h>
-#include <dxgi1_5.h>
-#include <wrl.h>
-#include <wrl/client.h>
+#include "DirectXHelper.h"
+#include "guilib/D3DResource.h"
 
 struct RESOLUTION_INFO;
 
@@ -77,12 +79,6 @@ namespace DX
     void ResizeBuffers();
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
-
-    // HDR display support
-    HDR_STATUS ToggleHDR();
-    void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
-    void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
-    bool IsHDROutput() const { return m_IsHDROutput; }
 
     // DX resources registration
     void Register(ID3DResource *resource);
@@ -162,9 +158,7 @@ namespace DX
     Concurrency::critical_section m_criticalSection;
     Concurrency::critical_section m_resourceSection;
     std::vector<ID3DResource*> m_resources;
-
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
-    bool m_IsHDROutput;
   };
 }

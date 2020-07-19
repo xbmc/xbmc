@@ -61,7 +61,6 @@ set(HEADERS AppParamParser.h
             GUILargeTextureManager.h
             GUIPassword.h
             GUIUserMessages.h
-            HDRStatus.h
             IFileItemListModifier.h
             IProgressCallback.h
             InfoScanner.h

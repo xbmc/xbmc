@@ -13,6 +13,7 @@
 #include "VideoRenderers/windows/RendererBase.h"
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
 #include "filesystem/File.h"
+#include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
@@ -227,7 +228,7 @@ bool COutputShader::Create(bool useLUT, bool useDithering, int ditherDepth, bool
 {
   m_useLut = useLUT;
   m_ditherDepth = ditherDepth;
-  m_toneMapping = toneMapping && !DX::Windowing()->IsHDROutput();
+  m_toneMapping = toneMapping;
 
   CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
 

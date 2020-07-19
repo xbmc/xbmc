@@ -7,16 +7,14 @@
  */
 #pragma once
 
+#include "cores/VideoSettings.h"
+#include "guilib/D3DResource.h"
 #include "VideoRenderers/ColorManager.h"
 #include "VideoRenderers/RenderInfo.h"
 #include "VideoRenderers/VideoShaders/WinVideoFilter.h"
-#include "cores/VideoSettings.h"
-#include "guilib/D3DResource.h"
-
-#include <vector>
 
 #include <d3d11.h>
-#include <dxgi1_5.h>
+#include <vector>
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
 }
@@ -42,14 +40,6 @@ enum RenderMethod
   RENDER_DXVA = 0x01,
   RENDER_PS = 0x02,
   RENDER_SW = 0x03,
-};
-
-enum class HDR_TYPE : uint32_t
-{
-  HDR_NONE_SDR = 0x00,
-  HDR_HDR10 = 0x01,
-  HDR_HLG = 0x02,
-  HDR_REC2020 = 0x03
 };
 
 class CRenderBuffer
@@ -131,7 +121,6 @@ public:
   static DXGI_FORMAT GetDXGIFormat(const VideoPicture &picture);
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);
   static AVPixelFormat GetAVFormat(DXGI_FORMAT dxgi_format);
-  static DXGI_HDR_METADATA_HDR10 GetDXGIHDR10MetaData(CRenderBuffer* rb);
 
 protected:
   explicit CRendererBase(CVideoSettings& videoSettings);
@@ -141,8 +130,6 @@ protected:
   void ReorderDrawPoints(const CRect& destRect, CPoint(&rotatedPoints)[4]) const;
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
-
-  void ProcessHDR(CRenderBuffer* rb);
 
   virtual void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint (&destPoints)[4], uint32_t flags) = 0;
   virtual void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& sourceRect, const CPoint(&destPoints)[4]);
@@ -158,7 +145,7 @@ protected:
   bool m_useDithering = false;
   bool m_cmsOn = false;
   bool m_clutLoaded = false;
-
+  
   int m_iBufferIndex = 0;
   int m_iNumBuffers = 0;
   int m_iBuffersRequired = 0;
@@ -180,9 +167,4 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLUTView;
   CVideoSettings& m_videoSettings;
   std::map<int, CRenderBuffer*> m_renderBuffers;
-
-  DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
-  HDR_TYPE m_HdrType = HDR_TYPE::HDR_NONE_SDR;
-  int m_iCntMetaData = 0;
-  bool m_AutoSwitchHDR = false;
 };

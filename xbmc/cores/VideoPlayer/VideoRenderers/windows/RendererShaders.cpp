@@ -132,14 +132,7 @@ void CRendererShaders::UpdateVideoFilters()
   if (!m_colorShader)
   {
     m_colorShader = std::make_unique<CYUV2RGBShader>();
-
-    AVColorPrimaries dstPrimaries = AVCOL_PRI_BT709;
-
-    if (DX::Windowing()->IsHDROutput() &&
-        (m_srcPrimaries == AVCOL_PRI_BT709 || m_srcPrimaries == AVCOL_PRI_BT2020))
-      dstPrimaries = m_srcPrimaries;
-
-    if (!m_colorShader->Create(m_format, dstPrimaries, m_srcPrimaries))
+    if (!m_colorShader->Create(m_format, AVCOL_PRI_BT709, m_srcPrimaries))
     {
       // we are in a big trouble
       CLog::LogF(LOGERROR, "unable to create YUV->RGB shader, rendering is not possible");
