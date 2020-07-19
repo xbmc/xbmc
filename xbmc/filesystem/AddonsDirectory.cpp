@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
@@ -787,7 +788,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
     bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
-    bool fromOfficialRepo = CServiceBroker::GetAddonMgr().IsFromOfficialRepo(addon);
+    bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon);
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
