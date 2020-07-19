@@ -556,7 +556,7 @@ extern "C"
   ///@{
 
   //============================================================================
-  /// @brief **Game reguin definition**
+  /// @brief **Game region definition**
   ///
   /// Returned from game_get_region()
   typedef enum GAME_REGION
