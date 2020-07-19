@@ -620,9 +620,28 @@ void CGUIDialogVideoInfo::Play(bool resume)
 {
   if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
   {
-    std::string strPath = StringUtils::Format("videodb://tvshows/titles/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
-    Close();
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    std::string strPath;
+    if (m_movieItem->IsPlugin())
+    {
+      strPath = m_movieItem->GetPath();
+      Close();
+      if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV)
+      {
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->
+                            GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+        message.SetStringParam(strPath);
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
+      }
+      else
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    }
+    else
+    {
+      strPath = StringUtils::Format("videodb://tvshows/titles/%i/",
+                                    m_movieItem->GetVideoInfoTag()->m_iDbId);
+      Close();
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    }
     return;
   }
 
