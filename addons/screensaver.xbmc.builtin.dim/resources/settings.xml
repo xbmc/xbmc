@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<settings>
-  <setting label="30000" type="slider" id="level" range="0,1,100" option="percent" default="20"/>
+<settings version="1">
+  <section id="screensaver.xbmc.builtin.dim">
+    <category id="preferences" label="30002">
+      <group id="1">
+        <setting id="level" type="integer" label="30000" help="30001">
+          <level>0</level>
+          <default>20</default>
+          <control type="slider" format="percentage" range="0,100" />
+        </setting>
+     </group>
+    </category>
+  </section>
 </settings>

@@ -16,6 +16,20 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
+#: resources/settings.xml
 msgctxt "#30000"
-msgid "Dim level"
+msgid "Brightness level"
+msgstr ""
+
+#. Setting help text
+#: resources/settings.xml
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr ""
+
+#. Setting category name
+#: resources/settings.xml
+msgctxt "#30002"
+msgid "Preferences"
 msgstr ""
