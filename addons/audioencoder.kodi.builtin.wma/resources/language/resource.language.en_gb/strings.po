@@ -1,6 +1,6 @@
 # Kodi Media Center language file
-# Addon Name: SNES Controller
-# Addon id: game.controller.snes
+# Addon Name: WMA encoder
+# Addon id: audioencoder.kodi.builtin.wma
 # Addon Provider: Team Kodi
 msgid ""
 msgstr ""
@@ -17,53 +17,5 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "Super Nintendo"
-msgstr ""
-
-msgctxt "#30001"
-msgid "A"
-msgstr ""
-
-msgctxt "#30002"
-msgid "B"
-msgstr ""
-
-msgctxt "#30003"
-msgid "X"
-msgstr ""
-
-msgctxt "#30004"
-msgid "Y"
-msgstr ""
-
-msgctxt "#30005"
-msgid "Start"
-msgstr ""
-
-msgctxt "#30006"
-msgid "Select"
-msgstr ""
-
-msgctxt "#30007"
-msgid "Up"
-msgstr ""
-
-msgctxt "#30008"
-msgid "Right"
-msgstr ""
-
-msgctxt "#30009"
-msgid "Down"
-msgstr ""
-
-msgctxt "#30010"
-msgid "Left"
-msgstr ""
-
-msgctxt "#30011"
-msgid "Left Bumper"
-msgstr ""
-
-msgctxt "#30012"
-msgid "Right Bumper"
+msgid "Bitrate"
 msgstr ""
