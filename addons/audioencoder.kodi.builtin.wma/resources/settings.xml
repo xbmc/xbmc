@@ -1,3 +1,21 @@
-<settings>
-  <setting id="bitrate" label="30000" type="enum" values="128|160|192|224|256|288|320" default="2"/>
+<?xml version="1.0" encoding="utf-8"?>
+<settings version="1">
+  <section id="audioencoder.kodi.builtin.wma">
+    <category id="main" label="128">
+      <group id="1">
+        <setting id="bitrate" type="integer" label="30000" help="30001">
+          <level>0</level>
+          <default>192</default>
+          <constraints>
+            <minimum>128</minimum>
+            <step>32</step>
+            <maximum>320</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>30002</formatlabel>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
