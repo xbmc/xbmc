@@ -16,6 +16,20 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Bitrate to use on for compression
+#: resources/settings.xml
 msgctxt "#30000"
 msgid "Bitrate"
+msgstr ""
+
+#. Description of setting with label #30000 "Bitrate"
+#: resources/settings.xml
+msgctxt "#30001"
+msgid "Select which bitrate to use for the AAC audio encoder for audio compression."
+msgstr ""
+
+#. Value format for with bitrate edited field
+#: resources/settings.xml
+msgctxt "#30002"
+msgid "{0:d} kbps"
 msgstr ""
