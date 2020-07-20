@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="audioencoder.kodi.builtin.aac"
-  version="1.0.1"
+  version="1.0.2"
   name="AAC encoder"
   provider-name="spiff">
   <extension
