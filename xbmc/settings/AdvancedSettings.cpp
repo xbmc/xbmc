@@ -173,7 +173,7 @@ void CAdvancedSettings::Initialize()
 
   m_songInfoDuration = 10;
 
-  m_cddbAddress = "freedb.freedb.org";
+  m_cddbAddress = "gnudb.gnudb.org";
   m_addSourceOnTop = false;
 
   m_handleMounting = g_application.IsStandAlone();
