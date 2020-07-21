@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile Makefile.patch
 
 # lib name, version
 LIBNAME=bzip2
-VERSION=1.0.6
+VERSION=1.0.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
