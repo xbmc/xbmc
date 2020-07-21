@@ -26,7 +26,8 @@ class CInstanceVFS;
 /// This used to handle opened files of addon with related memory pointer about
 /// class or structure and to have on further file control functions available.
 ///
-/// See @ref cpp_kodi_addon_vfs_filecontrol for used places.
+/// See @ref cpp_kodi_addon_vfs_filecontrol "file editing functions" for used
+/// places.
 ///
 ///@{
 using VFSFileHandle = VFS_FILE_HANDLE;
@@ -384,14 +385,14 @@ private:
 /// };
 ///
 /// CMyVFS::CMyVFS(KODI_HANDLE instance, const std::string& kodiVersion)
-///   : CInstanceVFS(instance, kodiVersion)
+///   : kodi::addon::CInstanceVFS(instance, kodiVersion)
 /// {
 ///   ...
 /// }
 ///
 /// ...
 ///
-/// /*----------------------------------------------------------------------*/
+/// //----------------------------------------------------------------------
 ///
 /// class CMyAddon : public kodi::addon::CAddonBase
 /// {
@@ -431,12 +432,11 @@ private:
 /// The destruction of the example class `CMyVFS` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 class ATTRIBUTE_HIDDEN CInstanceVFS : public IAddonInstance
 {
 public:
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs
   /// @brief VFS class constructor used to support multiple instance
   /// types
@@ -462,18 +462,16 @@ public:
 
     SetAddonStruct(instance);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs
   /// @brief Destructor
   ///
   ~CInstanceVFS() override = default;
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @defgroup cpp_kodi_addon_vfs_general 1. General access functions
   /// @ingroup cpp_kodi_addon_vfs
   /// @brief **General access functions**
@@ -482,8 +480,7 @@ public:
   /// locations and file system queries.
   ///
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @defgroup cpp_kodi_addon_vfs_filecontrol 2. File editing functions
   /// @ingroup cpp_kodi_addon_vfs
   /// @brief **File editing functions.**
@@ -493,17 +490,22 @@ public:
   ///
 
   //@{
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Open a file for input
   ///
   /// @param[in] url The URL of the file
   /// @return Context for the opened file
-  virtual kodi::addon::VFSFileHandle Open(const kodi::addon::VFSUrl& url) { return nullptr; }
-
-  //==========================================================================
   ///
+  ///
+  /// ----------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_vfs_Defs_VFSUrl_Help
+  ///
+  virtual kodi::addon::VFSFileHandle Open(const kodi::addon::VFSUrl& url) { return nullptr; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Open a file for output
   ///
@@ -515,10 +517,9 @@ public:
   {
     return nullptr;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Close a file
   ///
@@ -526,10 +527,9 @@ public:
   /// @return True on success, false on failure
   ///
   virtual bool Close(kodi::addon::VFSFileHandle context) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Read from a file
   ///
@@ -542,10 +542,9 @@ public:
   {
     return -1;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Write to a file
   ///
@@ -558,26 +557,29 @@ public:
   {
     return -1;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Seek in a file
   ///
   /// @param[in] context The context of the file
   /// @param[in] position The position to seek to
-  /// @param[in] whence Position in file 'position' is relative to (SEEK_CUR, SEEK_SET, SEEK_END)
+  /// @param[in] whence Position in file 'position' is relative to (SEEK_CUR, SEEK_SET, SEEK_END):
+  /// |   Value  | int | Description                                         |
+  /// |:--------:|:---:|:----------------------------------------------------|
+  /// | SEEK_SET |  0  | position is relative to the beginning of the file. This is probably what you had in mind anyway, and is the most commonly used value for whence.
+  /// | SEEK_CUR |  1  | position is relative to the current file pointer position. So, in effect, you can say, "Move to my current position plus 30 bytes," or, "move to my current position minus 20 bytes."
+  /// | SEEK_END |  2  | position is relative to the end of the file. Just like SEEK_SET except from the other end of the file. Be sure to use negative values for offset if you want to back up from the end of the file, instead of going past the end into oblivion.
   /// @return Offset in file after seek
   ///
   virtual int64_t Seek(kodi::addon::VFSFileHandle context, int64_t position, int whence)
   {
     return -1;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Truncate a file
   ///
@@ -586,10 +588,9 @@ public:
   /// @return 0 on success, -1 on error
   ///
   virtual int Truncate(kodi::addon::VFSFileHandle context, int64_t size) { return -1; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Get total size of a file
   ///
@@ -597,10 +598,9 @@ public:
   /// @return Total file size
   ///
   virtual int64_t GetLength(kodi::addon::VFSFileHandle context) { return 0; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Get current position in a file
   ///
@@ -608,10 +608,9 @@ public:
   /// @return Current position
   ///
   virtual int64_t GetPosition(kodi::addon::VFSFileHandle context) { return 0; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Get chunk size of a file
   ///
@@ -619,18 +618,18 @@ public:
   /// @return Chunk size
   ///
   virtual int GetChunkSize(kodi::addon::VFSFileHandle context) { return 1; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief To check seek possible on current stream by file.
   ///
   /// @return true if seek possible, false if not
   ///
   virtual bool IoControlGetSeekPossible(kodi::addon::VFSFileHandle context) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief To check a running stream on file for state of his cache.
   ///
@@ -645,9 +644,9 @@ public:
   {
     return false;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Unsigned int with speed limit for caching in bytes per second.
   ///
@@ -658,9 +657,9 @@ public:
   {
     return false;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
   /// @brief Enable/disable retry within the protocol handler (if supported).
   ///
@@ -668,12 +667,11 @@ public:
   /// @return true if successfull done, false otherwise
   ///
   virtual bool IoControlSetRetry(kodi::addon::VFSFileHandle context, bool retry) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   //@}
 
   //@{
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Stat a file
   ///
@@ -681,11 +679,15 @@ public:
   /// @param[in] buffer The buffer to store results in
   /// @return -1 on error, 0 otherwise
   ///
-  virtual int Stat(const kodi::addon::VFSUrl& url, kodi::vfs::FileStatus& buffer) { return 0; }
-  //--------------------------------------------------------------------------
-
-  //==========================================================================
   ///
+  /// ----------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_vfs_Defs_VFSUrl_Help
+  ///
+  virtual int Stat(const kodi::addon::VFSUrl& url, kodi::vfs::FileStatus& buffer) { return 0; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Check for file existence
   ///
@@ -693,26 +695,23 @@ public:
   /// @return True if file exists, false otherwise
   ///
   virtual bool Exists(const kodi::addon::VFSUrl& url) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Clear out any idle connections
   ///
   virtual void ClearOutIdle() {}
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Disconnect all connections
   ///
   virtual void DisconnectAll() {}
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Delete a file
   ///
@@ -720,10 +719,9 @@ public:
   /// @return True if deletion was successful, false otherwise
   ///
   virtual bool Delete(const kodi::addon::VFSUrl& url) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Rename a file
   ///
@@ -735,10 +733,9 @@ public:
   {
     return false;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Check for directory existence
   ///
@@ -746,10 +743,9 @@ public:
   /// @return True if directory exists, false otherwise
   ///
   virtual bool DirectoryExists(const kodi::addon::VFSUrl& url) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Remove a directory
   ///
@@ -757,10 +753,9 @@ public:
   /// @return True if removal was successful, false otherwise
   ///
   virtual bool RemoveDirectory(const kodi::addon::VFSUrl& url) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Create a directory
   ///
@@ -768,11 +763,10 @@ public:
   /// @return True if creation was successful, false otherwise
   ///
   virtual bool CreateDirectory(const kodi::addon::VFSUrl& url) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// @defgroup cpp_kodi_addon_vfs_general_cb_GetDirectory **Callbacks GetDirectory()**
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_vfs_general_cb_GetDirectory Callbacks GetDirectory()
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Callback functions on GetDirectory()
   ///
@@ -863,10 +857,9 @@ public:
   private:
     const VFSGetDirectoryCallbacks* m_cb;
   };
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief List a directory
   ///
@@ -896,10 +889,9 @@ public:
   {
     return false;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_general
   /// @brief Check if file should be presented as a directory (multiple streams)
   ///
@@ -916,7 +908,7 @@ public:
   {
     return false;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   //@}
 
 private:
