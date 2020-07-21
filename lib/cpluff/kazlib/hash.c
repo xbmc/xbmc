@@ -60,6 +60,7 @@ static const char rcsid[] = "$Id: hash.c,v 1.36.2.11 2000/11/13 01:36:45 kaz Exp
 
 #define table hash_table
 #define chain hash_chain
+#define hash_lookup cpluff_hash_lookup
 
 static hnode_t *hnode_alloc(void *context);
 static void hnode_free(hnode_t *node, void *context);
@@ -559,7 +560,7 @@ CP_HIDDEN void hash_insert(hash_t *hash, hnode_t *node, const void *key)
  *    entry.
  */
 
-CP_HIDDEN hnode_t *hash_lookup(hash_t *hash, const void *key)
+CP_HIDDEN hnode_t *cpluff_hash_lookup(hash_t *hash, const void *key)
 {
     hash_val_t hkey, chain;
     hnode_t *nptr;

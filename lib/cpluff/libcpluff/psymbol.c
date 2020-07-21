@@ -41,6 +41,7 @@
 #include <windows.h>
 #endif
 
+#define hash_lookup cpluff_hash_lookup
 
 /* ------------------------------------------------------------------------
  * Data structures

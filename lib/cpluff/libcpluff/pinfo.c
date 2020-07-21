@@ -38,6 +38,7 @@
 #include "util.h"
 #include "internal.h"
 
+#define hash_lookup cpluff_hash_lookup
 
 /* ------------------------------------------------------------------------
  * Data types

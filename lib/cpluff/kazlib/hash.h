@@ -206,7 +206,7 @@ CP_HIDDEN extern void hash_free(hash_t *);
 CP_HIDDEN extern hash_t *hash_init(hash_t *, hashcount_t, hash_comp_t,
 	hash_fun_t, hnode_t **, hashcount_t);
 CP_HIDDEN extern void hash_insert(hash_t *, hnode_t *, const void *);
-CP_HIDDEN extern hnode_t *hash_lookup(hash_t *, const void *);
+CP_HIDDEN extern hnode_t *cpluff_hash_lookup(hash_t *, const void *);
 CP_HIDDEN extern hnode_t *hash_delete(hash_t *, hnode_t *);
 CP_HIDDEN extern int hash_alloc_insert(hash_t *, const void *, void *);
 CP_HIDDEN extern void hash_delete_free(hash_t *, hnode_t *);
