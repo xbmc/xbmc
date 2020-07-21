@@ -10,6 +10,8 @@
 #include "../AddonBase.h"
 #include "../Filesystem.h"
 
+#define VFS_FILE_HANDLE void*
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -32,10 +34,17 @@ extern "C"
 
   typedef struct VFSGetDirectoryCallbacks /* internal */
   {
-    bool (__cdecl* get_keyboard_input)(void* ctx, const char* heading, char** input, bool hidden_input);
-    void (__cdecl* set_error_dialog)(void* ctx, const char* heading, const char* line1, const char* line2, const char* line3);
-    void (__cdecl* require_authentication)(void* ctx, const char* url);
-    void* ctx;
+    bool(__cdecl* get_keyboard_input)(KODI_HANDLE ctx,
+                                      const char* heading,
+                                      char** input,
+                                      bool hidden_input);
+    void(__cdecl* set_error_dialog)(KODI_HANDLE ctx,
+                                    const char* heading,
+                                    const char* line1,
+                                    const char* line2,
+                                    const char* line3);
+    void(__cdecl* require_authentication)(KODI_HANDLE ctx, const char* url);
+    KODI_HANDLE ctx;
   } VFSGetDirectoryCallbacks;
 
   typedef struct AddonProps_VFSEntry /* internal */
@@ -53,43 +62,46 @@ extern "C"
   {
     KODI_HANDLE addonInstance;
 
-    void*(__cdecl* open)(const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url);
-    void*(__cdecl* open_for_write)(const struct AddonInstance_VFSEntry* instance,
-                                   const struct VFSURL* url,
-                                   bool overwrite);
+    VFS_FILE_HANDLE(__cdecl* open)
+    (const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url);
+    VFS_FILE_HANDLE(__cdecl* open_for_write)
+    (const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url, bool overwrite);
     ssize_t(__cdecl* read)(const struct AddonInstance_VFSEntry* instance,
-                           void* context,
-                           void* buffer,
+                           VFS_FILE_HANDLE context,
+                           uint8_t* buffer,
                            size_t buf_size);
     ssize_t(__cdecl* write)(const struct AddonInstance_VFSEntry* instance,
-                            void* context,
-                            const void* buffer,
+                            VFS_FILE_HANDLE context,
+                            const uint8_t* buffer,
                             size_t buf_size);
     int64_t(__cdecl* seek)(const struct AddonInstance_VFSEntry* instance,
-                           void* context,
+                           VFS_FILE_HANDLE context,
                            int64_t position,
                            int whence);
     int(__cdecl* truncate)(const struct AddonInstance_VFSEntry* instance,
-                           void* context,
+                           VFS_FILE_HANDLE context,
                            int64_t size);
-    int64_t(__cdecl* get_length)(const struct AddonInstance_VFSEntry* instance, void* context);
-    int64_t(__cdecl* get_position)(const struct AddonInstance_VFSEntry* instance, void* context);
-    int(__cdecl* get_chunk_size)(const struct AddonInstance_VFSEntry* instance, void* context);
+    int64_t(__cdecl* get_length)(const struct AddonInstance_VFSEntry* instance,
+                                 VFS_FILE_HANDLE context);
+    int64_t(__cdecl* get_position)(const struct AddonInstance_VFSEntry* instance,
+                                   VFS_FILE_HANDLE context);
+    int(__cdecl* get_chunk_size)(const struct AddonInstance_VFSEntry* instance,
+                                 VFS_FILE_HANDLE context);
     bool(__cdecl* io_control_get_seek_possible)(const struct AddonInstance_VFSEntry* instance,
-                                                void* context);
+                                                VFS_FILE_HANDLE context);
     bool(__cdecl* io_control_get_cache_status)(const struct AddonInstance_VFSEntry* instance,
-                                               void* context,
+                                               VFS_FILE_HANDLE context,
                                                VFS_CACHE_STATUS_DATA* status);
     bool(__cdecl* io_control_set_cache_rate)(const struct AddonInstance_VFSEntry* instance,
-                                             void* context,
+                                             VFS_FILE_HANDLE context,
                                              unsigned int rate);
     bool(__cdecl* io_control_set_retry)(const struct AddonInstance_VFSEntry* instance,
-                                        void* context,
+                                        VFS_FILE_HANDLE context,
                                         bool retry);
     int(__cdecl* stat)(const struct AddonInstance_VFSEntry* instance,
                        const struct VFSURL* url,
                        struct STAT_STRUCTURE* buffer);
-    bool(__cdecl* close)(const struct AddonInstance_VFSEntry* instance, void* context);
+    bool(__cdecl* close)(const struct AddonInstance_VFSEntry* instance, VFS_FILE_HANDLE context);
     bool(__cdecl* exists)(const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url);
     void(__cdecl* clear_out_idle)(const struct AddonInstance_VFSEntry* instance);
     void(__cdecl* disconnect_all)(const struct AddonInstance_VFSEntry* instance);
@@ -135,6 +147,19 @@ namespace addon
 {
 
 class CInstanceVFS;
+
+//==============================================================================
+/// @ingroup cpp_kodi_addon_vfs_Defs
+/// @brief **VFS add-on file handle**\n
+/// This used to handle opened files of addon with related memory pointer about
+/// class or structure and to have on further file control functions available.
+///
+/// See @ref cpp_kodi_addon_vfs_filecontrol for used places.
+///
+///@{
+using VFSFileHandle = VFS_FILE_HANDLE;
+///@}
+//------------------------------------------------------------------------------
 
 //==============================================================================
 /// @defgroup cpp_kodi_addon_vfs_Defs_VFSUrl class VFSUrl
@@ -603,7 +628,7 @@ public:
   ///
   /// @param[in] url The URL of the file
   /// @return Context for the opened file
-  virtual void* Open(const kodi::addon::VFSUrl& url) { return nullptr; }
+  virtual kodi::addon::VFSFileHandle Open(const kodi::addon::VFSUrl& url) { return nullptr; }
 
   //==========================================================================
   ///
@@ -614,7 +639,10 @@ public:
   /// @param[in] overWrite Whether or not to overwrite an existing file
   /// @return Context for the opened file
   ///
-  virtual void* OpenForWrite(const kodi::addon::VFSUrl& url, bool overWrite) { return nullptr; }
+  virtual kodi::addon::VFSFileHandle OpenForWrite(const kodi::addon::VFSUrl& url, bool overWrite)
+  {
+    return nullptr;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -625,7 +653,7 @@ public:
   /// @param[in] context The context of the file
   /// @return True on success, false on failure
   ///
-  virtual bool Close(void* context) { return false; }
+  virtual bool Close(kodi::addon::VFSFileHandle context) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -638,7 +666,10 @@ public:
   /// @param[in] uiBufSize Number of bytes to read
   /// @return Number of bytes read
   ///
-  virtual ssize_t Read(void* context, void* buffer, size_t uiBufSize) { return -1; }
+  virtual ssize_t Read(kodi::addon::VFSFileHandle context, uint8_t* buffer, size_t uiBufSize)
+  {
+    return -1;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -651,7 +682,10 @@ public:
   /// @param[in] uiBufSize Number of bytes to write
   /// @return Number of bytes written
   ///
-  virtual ssize_t Write(void* context, const void* buffer, size_t uiBufSize) { return -1; }
+  virtual ssize_t Write(kodi::addon::VFSFileHandle context, const uint8_t* buffer, size_t uiBufSize)
+  {
+    return -1;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -664,7 +698,10 @@ public:
   /// @param[in] whence Position in file 'position' is relative to (SEEK_CUR, SEEK_SET, SEEK_END)
   /// @return Offset in file after seek
   ///
-  virtual int64_t Seek(void* context, int64_t position, int whence) { return -1; }
+  virtual int64_t Seek(kodi::addon::VFSFileHandle context, int64_t position, int whence)
+  {
+    return -1;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -676,7 +713,7 @@ public:
   /// @param[in] size The size to truncate the file to
   /// @return 0 on success, -1 on error
   ///
-  virtual int Truncate(void* context, int64_t size) { return -1; }
+  virtual int Truncate(kodi::addon::VFSFileHandle context, int64_t size) { return -1; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -687,7 +724,7 @@ public:
   /// @param[in] context The context of the file
   /// @return Total file size
   ///
-  virtual int64_t GetLength(void* context) { return 0; }
+  virtual int64_t GetLength(kodi::addon::VFSFileHandle context) { return 0; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -698,7 +735,7 @@ public:
   /// @param[in] context The context of the file
   /// @return Current position
   ///
-  virtual int64_t GetPosition(void* context) { return 0; }
+  virtual int64_t GetPosition(kodi::addon::VFSFileHandle context) { return 0; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -709,7 +746,7 @@ public:
   /// @param[in] context The context of the file
   /// @return Chunk size
   ///
-  virtual int GetChunkSize(void* context) { return 1; }
+  virtual int GetChunkSize(kodi::addon::VFSFileHandle context) { return 1; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -718,7 +755,7 @@ public:
   ///
   /// @return true if seek possible, false if not
   ///
-  virtual bool IoControlGetSeekPossible(void* context) { return false; }
+  virtual bool IoControlGetSeekPossible(kodi::addon::VFSFileHandle context) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -731,7 +768,8 @@ public:
   ///
   /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
   ///
-  virtual bool IoControlGetCacheStatus(void* context, kodi::vfs::CacheStatus& status)
+  virtual bool IoControlGetCacheStatus(kodi::addon::VFSFileHandle context,
+                                       kodi::vfs::CacheStatus& status)
   {
     return false;
   }
@@ -744,7 +782,10 @@ public:
   /// @param[in] rate Cache rate size to use
   /// @return true if successfull done, false otherwise
   ///
-  virtual bool IoControlSetCacheRate(void* context, unsigned int rate) { return false; }
+  virtual bool IoControlSetCacheRate(kodi::addon::VFSFileHandle context, unsigned int rate)
+  {
+    return false;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -754,7 +795,7 @@ public:
   /// @param[in] retry To set the retry, true for use, false for not
   /// @return true if successfull done, false otherwise
   ///
-  virtual bool IoControlSetRetry(void* context, bool retry) { return false; }
+  virtual bool IoControlSetRetry(kodi::addon::VFSFileHandle context, bool retry) { return false; }
   //--------------------------------------------------------------------------
   //@}
 
@@ -1043,22 +1084,23 @@ private:
     m_instanceData->toAddon->contains_files = ADDON_ContainsFiles;
   }
 
-  inline static void* ADDON_Open(const AddonInstance_VFSEntry* instance, const VFSURL* url)
+  inline static VFS_FILE_HANDLE ADDON_Open(const AddonInstance_VFSEntry* instance,
+                                           const VFSURL* url)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Open(url);
   }
 
-  inline static void* ADDON_OpenForWrite(const AddonInstance_VFSEntry* instance,
-                                         const VFSURL* url,
-                                         bool overWrite)
+  inline static VFS_FILE_HANDLE ADDON_OpenForWrite(const AddonInstance_VFSEntry* instance,
+                                                   const VFSURL* url,
+                                                   bool overWrite)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
         ->OpenForWrite(url, overWrite);
   }
 
   inline static ssize_t ADDON_Read(const AddonInstance_VFSEntry* instance,
-                                   void* context,
-                                   void* buffer,
+                                   VFS_FILE_HANDLE context,
+                                   uint8_t* buffer,
                                    size_t uiBufSize)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
@@ -1066,8 +1108,8 @@ private:
   }
 
   inline static ssize_t ADDON_Write(const AddonInstance_VFSEntry* instance,
-                                    void* context,
-                                    const void* buffer,
+                                    VFS_FILE_HANDLE context,
+                                    const uint8_t* buffer,
                                     size_t uiBufSize)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
@@ -1075,7 +1117,7 @@ private:
   }
 
   inline static int64_t ADDON_Seek(const AddonInstance_VFSEntry* instance,
-                                   void* context,
+                                   VFS_FILE_HANDLE context,
                                    int64_t position,
                                    int whence)
   {
@@ -1084,36 +1126,39 @@ private:
   }
 
   inline static int ADDON_Truncate(const AddonInstance_VFSEntry* instance,
-                                   void* context,
+                                   VFS_FILE_HANDLE context,
                                    int64_t size)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Truncate(context, size);
   }
 
-  inline static int64_t ADDON_GetLength(const AddonInstance_VFSEntry* instance, void* context)
+  inline static int64_t ADDON_GetLength(const AddonInstance_VFSEntry* instance,
+                                        VFS_FILE_HANDLE context)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->GetLength(context);
   }
 
-  inline static int64_t ADDON_GetPosition(const AddonInstance_VFSEntry* instance, void* context)
+  inline static int64_t ADDON_GetPosition(const AddonInstance_VFSEntry* instance,
+                                          VFS_FILE_HANDLE context)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->GetPosition(context);
   }
 
-  inline static int ADDON_GetChunkSize(const AddonInstance_VFSEntry* instance, void* context)
+  inline static int ADDON_GetChunkSize(const AddonInstance_VFSEntry* instance,
+                                       VFS_FILE_HANDLE context)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->GetChunkSize(context);
   }
 
   inline static bool ADDON_IoControlGetSeekPossible(const AddonInstance_VFSEntry* instance,
-                                                    void* context)
+                                                    VFS_FILE_HANDLE context)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
         ->IoControlGetSeekPossible(context);
   }
 
   inline static bool ADDON_IoControlGetCacheStatus(const struct AddonInstance_VFSEntry* instance,
-                                                   void* context,
+                                                   VFS_FILE_HANDLE context,
                                                    VFS_CACHE_STATUS_DATA* status)
   {
     kodi::vfs::CacheStatus cppStatus(status);
@@ -1122,7 +1167,7 @@ private:
   }
 
   inline static bool ADDON_IoControlSetCacheRate(const struct AddonInstance_VFSEntry* instance,
-                                                 void* context,
+                                                 VFS_FILE_HANDLE context,
                                                  unsigned int rate)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
@@ -1130,7 +1175,7 @@ private:
   }
 
   inline static bool ADDON_IoControlSetRetry(const struct AddonInstance_VFSEntry* instance,
-                                             void* context,
+                                             VFS_FILE_HANDLE context,
                                              bool retry)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
@@ -1145,7 +1190,7 @@ private:
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Stat(url, cppBuffer);
   }
 
-  inline static bool ADDON_Close(const AddonInstance_VFSEntry* instance, void* context)
+  inline static bool ADDON_Close(const AddonInstance_VFSEntry* instance, VFS_FILE_HANDLE context)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Close(context);
   }

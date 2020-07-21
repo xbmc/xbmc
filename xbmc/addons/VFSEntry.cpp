@@ -311,7 +311,7 @@ ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
   if (!m_struct.toAddon->read)
     return 0;
 
-  return m_struct.toAddon->read(&m_struct, ctx, lpBuf, uiBufSize);
+  return m_struct.toAddon->read(&m_struct, ctx, static_cast<uint8_t*>(lpBuf), uiBufSize);
 }
 
 ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize)
@@ -319,7 +319,7 @@ ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize)
   if (!m_struct.toAddon->write)
     return 0;
 
-  return m_struct.toAddon->write(&m_struct, ctx, lpBuf, uiBufSize);
+  return m_struct.toAddon->write(&m_struct, ctx, static_cast<const uint8_t*>(lpBuf), uiBufSize);
 }
 
 int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence)
