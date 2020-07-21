@@ -15,78 +15,20 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_vfs_Defs
-  /// @brief **VFS add-on URL data**\n
-  /// This class is used to inform the addon of the desired wanted connection.
-  ///
-  /// Used on mostly all addon functions to identify related target.
-  ///
   struct VFSURL
   {
-    /// @brief Desired URL of the file system to be edited
-    ///
-    /// This includes all available parts of the access and is structured as
-    /// follows:
-    /// - <b>`<PROTOCOL>`://`<USERNAME>`:`<PASSWORD>``@``<HOSTNAME>`:`<PORT>`/`<FILENAME>`?`<OPTIONS>`</b>
     const char* url;
-
-    /// @brief The associated domain name, which is optional and not available
-    /// in all cases.
     const char* domain;
-
-    /// @brief This includes the network address (e.g. `192.168.0.123`) or if
-    /// the addon refers to file packages the path to it
-    /// (e.g. `/home/by_me/MyPacket.rar`).
     const char* hostname;
-
-    /// @brief With this variable the desired path to a folder or file within
-    /// the hostname is given (e.g. `storage/videos/00001.ts`).
     const char* filename;
-
-    /// @brief [Networking port](https://en.wikipedia.org/wiki/Port_(computer_networking))
-    /// to use for protocol.
     unsigned int port;
-
-    /// @brief Special options on opened URL, this can e.g. on RAR packages
-    /// <b>`?flags=8&nextvalue=123`</b> to inform about to not cache a read.
-    ///
-    /// Available options from Kodi:
-    /// | Value:    | Description:
-    /// |-----------|-------------------
-    /// | flags=8   | Used on RAR packages so that no data is cached from the requested source.
-    /// | cache=no  | Used on ZIP packages so that no data from the requested source is stored in the cache. However, this is currently not available from addons!
-    ///
-    /// In addition, other addons can use the URLs given by them to give options
-    /// that fit the respective VFS addon and allow special operations.
-    ///
-    /// @note This procedure is not yet standardized and is currently not
-    /// exactly available which are handed over.
     const char* options;
-
-    /// @brief Desired username.
     const char* username;
-
-    /// @brief Desired password.
     const char* password;
-
-    /// @brief The complete URL is passed on here, but the user name and
-    /// password are not shown and only appear to there as `USERNAME:PASSWORD`.
-    ///
-    /// As example <b>`sftp://USERNAME:PASSWORD@192.168.178.123/storage/videos/00001.ts`</b>.
     const char* redacted;
-
-    /// @brief The name which is taken as the basis by source and would be first
-    /// in folder view.
-    ///
-    /// As example on <b>`sftp://dudu:isprivate@192.168.178.123/storage/videos/00001.ts`</b>
-    /// becomes then <b>`storage`</b> used here.
     const char* sharename;
-
-    /// @brief Protocol name used on this stream, e.g. <b>`sftp`</b>.
     const char* protocol;
   };
-  //----------------------------------------------------------------------------
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_vfs_Defs
@@ -252,6 +194,123 @@ namespace kodi
 {
 namespace addon
 {
+
+class CInstanceVFS;
+
+//==============================================================================
+/// @defgroup cpp_kodi_addon_vfs_Defs_VFSUrl class VFSUrl
+/// @ingroup cpp_kodi_addon_vfs_Defs
+/// @brief **VFS add-on URL data**\n
+/// This class is used to inform the addon of the desired wanted connection.
+///
+/// Used on mostly all addon functions to identify related target.
+///
+/// ----------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_addon_vfs_Defs_VFSUrl_Help
+///
+///@{
+class ATTRIBUTE_HIDDEN VFSUrl : public CStructHdl<VFSUrl, VFSURL>
+{
+  /*! \cond PRIVATE */
+  friend class CInstanceVFS;
+  /*! \endcond */
+
+public:
+  /// @defgroup cpp_kodi_addon_vfs_Defs_VFSUrl_Help Value Help
+  /// @ingroup cpp_kodi_addon_vfs_Defs_VFSUrl
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_addon_vfs_Defs_VFSUrl :</b>
+  /// | Name | Type | Get call
+  /// |------|------|----------
+  /// | **URL** | `std::string` | @ref VFSUrl::GetURL "GetURL"
+  /// | **Domain name** | `std::string` | @ref VFSUrl::GetDomain "GetDomain"
+  /// | **Hostname** | `std::string` | @ref VFSUrl::GetHostname "GetHostname"
+  /// | **Filename** | `std::string` | @ref VFSUrl::GetFilename "GetFilename"
+  /// | **Network port** | `unsigned int` | @ref VFSUrl::GetPort "GetPort"
+  /// | **Special options** | `std::string` | @ref VFSUrl::GetOptions "GetOptions"
+  /// | **Username** | `std::string` | @ref VFSUrl::GetUsername "GetUsername"
+  /// | **Password** | `std::string` | @ref VFSUrl::GetPassword "GetPassword"
+  /// | **Get URL with user and password hidden** | `std::string` | @ref VFSUrl::GetRedacted "GetRedacted"
+  /// | **Sharename** | `std::string` | @ref VFSUrl::GetSharename "GetSharename"
+  /// | **Network protocol** | `std::string` | @ref VFSUrl::GetProtocol "GetProtocol"
+  ///
+
+  /// @addtogroup cpp_kodi_addon_vfs_Defs_VFSUrl
+  ///@{
+
+  /// @brief Desired URL of the file system to be edited
+  ///
+  /// This includes all available parts of the access and is structured as
+  /// follows:
+  /// - <b>`<PROTOCOL>`://`<USERNAME>`:`<PASSWORD>``@``<HOSTNAME>`:`<PORT>`/`<FILENAME>`?`<OPTIONS>`</b>
+  std::string GetURL() const { return m_cStructure->url; }
+
+  /// @brief The associated domain name, which is optional and not available
+  /// in all cases.
+  std::string GetDomain() const { return m_cStructure->domain; }
+
+  /// @brief This includes the network address (e.g. `192.168.0.123`) or if
+  /// the addon refers to file packages the path to it
+  /// (e.g. `/home/by_me/MyPacket.rar`).
+  std::string GetHostname() const { return m_cStructure->hostname; }
+
+  /// @brief With this variable the desired path to a folder or file within
+  /// the hostname is given (e.g. `storage/videos/00001.ts`).
+  std::string GetFilename() const { return m_cStructure->filename; }
+
+  /// @brief [Networking port](https://en.wikipedia.org/wiki/Port_(computer_networking))
+  /// to use for protocol.
+  unsigned int GetPort() const { return m_cStructure->port; }
+
+  /// @brief Special options on opened URL, this can e.g. on RAR packages
+  /// <b>`?flags=8&nextvalue=123`</b> to inform about to not cache a read.
+  ///
+  /// Available options from Kodi:
+  /// | Value:    | Description:
+  /// |-----------|-------------------
+  /// | flags=8   | Used on RAR packages so that no data is cached from the requested source.
+  /// | cache=no  | Used on ZIP packages so that no data from the requested source is stored in the cache. However, this is currently not available from addons!
+  ///
+  /// In addition, other addons can use the URLs given by them to give options
+  /// that fit the respective VFS addon and allow special operations.
+  ///
+  /// @note This procedure is not yet standardized and is currently not
+  /// exactly available which are handed over.
+  std::string GetOptions() const { return m_cStructure->options; }
+
+  /// @brief Desired username.
+  std::string GetUsername() const { return m_cStructure->username; }
+
+  /// @brief Desired password.
+  std::string GetPassword() const { return m_cStructure->password; }
+
+  /// @brief The complete URL is passed on here, but the user name and
+  /// password are not shown and only appear to there as `USERNAME:PASSWORD`.
+  ///
+  /// As example <b>`sftp://USERNAME:PASSWORD@192.168.178.123/storage/videos/00001.ts`</b>.
+  std::string GetRedacted() const { return m_cStructure->redacted; }
+
+  /// @brief The name which is taken as the basis by source and would be first
+  /// in folder view.
+  ///
+  /// As example on <b>`sftp://dudu:isprivate@192.168.178.123/storage/videos/00001.ts`</b>
+  /// becomes then <b>`storage`</b> used here.
+  std::string GetSharename() const { return m_cStructure->sharename; }
+
+  /// @brief Protocol name used on this stream, e.g. <b>`sftp`</b>.
+  std::string GetProtocol() const { return m_cStructure->protocol; }
+
+  ///@}
+
+private:
+  VFSUrl() = delete;
+  VFSUrl(const VFSUrl& channel) = delete;
+  VFSUrl(const VFSURL* channel) : CStructHdl(channel) {}
+  VFSUrl(VFSURL* channel) : CStructHdl(channel) {}
+};
+///@}
+//------------------------------------------------------------------------------
 
 //##############################################################################
 /// @defgroup cpp_kodi_addon_vfs_Defs Definitions, structures and enumerators
@@ -604,7 +663,7 @@ public:
   ///
   /// @param[in] url The URL of the file
   /// @return Context for the opened file
-  virtual void* Open(const VFSURL& url) { return nullptr; }
+  virtual void* Open(const kodi::addon::VFSUrl& url) { return nullptr; }
 
   //==========================================================================
   ///
@@ -615,7 +674,7 @@ public:
   /// @param[in] overWrite Whether or not to overwrite an existing file
   /// @return Context for the opened file
   ///
-  virtual void* OpenForWrite(const VFSURL& url, bool overWrite) { return nullptr; }
+  virtual void* OpenForWrite(const kodi::addon::VFSUrl& url, bool overWrite) { return nullptr; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -737,7 +796,7 @@ public:
   /// @param[in] buffer The buffer to store results in
   /// @return -1 on error, 0 otherwise
   ///
-  virtual int Stat(const VFSURL& url, kodi::vfs::FileStatus& buffer) { return 0; }
+  virtual int Stat(const kodi::addon::VFSUrl& url, kodi::vfs::FileStatus& buffer) { return 0; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -748,7 +807,7 @@ public:
   /// @param[in] url The URL of the file
   /// @return True if file exists, false otherwise
   ///
-  virtual bool Exists(const VFSURL& url) { return false; }
+  virtual bool Exists(const kodi::addon::VFSUrl& url) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -775,7 +834,7 @@ public:
   /// @param[in] url The URL of the file
   /// @return True if deletion was successful, false otherwise
   ///
-  virtual bool Delete(const VFSURL& url) { return false; }
+  virtual bool Delete(const kodi::addon::VFSUrl& url) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -787,7 +846,10 @@ public:
   /// @param[in] url2 The URL of the destination file
   /// @return True if deletion was successful, false otherwise
   ///
-  virtual bool Rename(const VFSURL& url, const VFSURL& url2) { return false; }
+  virtual bool Rename(const kodi::addon::VFSUrl& url, const kodi::addon::VFSUrl& url2)
+  {
+    return false;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -798,7 +860,7 @@ public:
   /// @param[in] url The URL of the file
   /// @return True if directory exists, false otherwise
   ///
-  virtual bool DirectoryExists(const VFSURL& url) { return false; }
+  virtual bool DirectoryExists(const kodi::addon::VFSUrl& url) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -809,7 +871,7 @@ public:
   /// @param[in] url The URL of the directory
   /// @return True if removal was successful, false otherwise
   ///
-  virtual bool RemoveDirectory(const VFSURL& url) { return false; }
+  virtual bool RemoveDirectory(const kodi::addon::VFSUrl& url) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -820,7 +882,7 @@ public:
   /// @param[in] url The URL of the file
   /// @return True if creation was successful, false otherwise
   ///
-  virtual bool CreateDirectory(const VFSURL& url) { return false; }
+  virtual bool CreateDirectory(const kodi::addon::VFSUrl& url) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -842,7 +904,9 @@ public:
   ///
   /// ...
   ///
-  /// bool CMyVFS::GetDirectory(const VFSURL& url, std::vector<kodi::vfs::CDirEntry>& items, CVFSCallbacks callbacks)
+  /// bool CMyVFS::GetDirectory(const kodi::addon::VFSUrl& url,
+  ///                           std::vector<kodi::vfs::CDirEntry>& items,
+  ///                           CVFSCallbacks callbacks)
   /// {
   ///   std::string neededString;
   ///   callbacks.GetKeyboardInput("Test", neededString, true);
@@ -941,7 +1005,7 @@ public:
   /// | CVFSCallbacks::SetErrorDialog | @copybrief CVFSCallbacks::SetErrorDialog @copydetails CVFSCallbacks::SetErrorDialog
   /// | CVFSCallbacks::RequireAuthentication | @copybrief CVFSCallbacks::RequireAuthentication @copydetails CVFSCallbacks::RequireAuthentication
   ///
-  virtual bool GetDirectory(const VFSURL& url,
+  virtual bool GetDirectory(const kodi::addon::VFSUrl& url,
                             std::vector<kodi::vfs::CDirEntry>& entries,
                             CVFSCallbacks callbacks)
   {
@@ -961,7 +1025,7 @@ public:
   /// @param[out] rootPath Path to root directory if multiple entries
   /// @return Context for the directory listing
   ///
-  virtual bool ContainsFiles(const VFSURL& url,
+  virtual bool ContainsFiles(const kodi::addon::VFSUrl& url,
                              std::vector<kodi::vfs::CDirEntry>& entries,
                              std::string& rootPath)
   {
@@ -1006,7 +1070,7 @@ private:
 
   inline static void* ADDON_Open(const AddonInstance_VFSEntry* instance, const VFSURL* url)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Open(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Open(url);
   }
 
   inline static void* ADDON_OpenForWrite(const AddonInstance_VFSEntry* instance,
@@ -1014,7 +1078,7 @@ private:
                                          bool overWrite)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
-        ->OpenForWrite(*url, overWrite);
+        ->OpenForWrite(url, overWrite);
   }
 
   inline static ssize_t ADDON_Read(const AddonInstance_VFSEntry* instance,
@@ -1080,7 +1144,7 @@ private:
                                struct STAT_STRUCTURE* buffer)
   {
     kodi::vfs::FileStatus cppBuffer(buffer);
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Stat(*url, cppBuffer);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Stat(url, cppBuffer);
   }
 
   inline static bool ADDON_Close(const AddonInstance_VFSEntry* instance, void* context)
@@ -1090,7 +1154,7 @@ private:
 
   inline static bool ADDON_Exists(const AddonInstance_VFSEntry* instance, const VFSURL* url)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Exists(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Exists(url);
   }
 
   inline static void ADDON_ClearOutIdle(const AddonInstance_VFSEntry* instance)
@@ -1105,32 +1169,32 @@ private:
 
   inline static bool ADDON_Delete(const AddonInstance_VFSEntry* instance, const VFSURL* url)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Delete(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Delete(url);
   }
 
   inline static bool ADDON_Rename(const AddonInstance_VFSEntry* instance,
                                   const VFSURL* url,
                                   const VFSURL* url2)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Rename(*url, *url2);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Rename(url, url2);
   }
 
   inline static bool ADDON_DirectoryExists(const AddonInstance_VFSEntry* instance,
                                            const VFSURL* url)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->DirectoryExists(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->DirectoryExists(url);
   }
 
   inline static bool ADDON_RemoveDirectory(const AddonInstance_VFSEntry* instance,
                                            const VFSURL* url)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->RemoveDirectory(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->RemoveDirectory(url);
   }
 
   inline static bool ADDON_CreateDirectory(const AddonInstance_VFSEntry* instance,
                                            const VFSURL* url)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->CreateDirectory(*url);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->CreateDirectory(url);
   }
 
   inline static bool ADDON_GetDirectory(const AddonInstance_VFSEntry* instance,
@@ -1141,7 +1205,7 @@ private:
   {
     std::vector<kodi::vfs::CDirEntry> addonEntries;
     bool ret = static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
-                   ->GetDirectory(*url, addonEntries, CVFSCallbacks(callbacks));
+                   ->GetDirectory(url, addonEntries, CVFSCallbacks(callbacks));
     if (ret)
     {
       VFSDirEntry* entries =
@@ -1208,7 +1272,7 @@ private:
     std::string cppRootPath;
     std::vector<kodi::vfs::CDirEntry> addonEntries;
     bool ret = static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
-                   ->ContainsFiles(*url, addonEntries, cppRootPath);
+                   ->ContainsFiles(url, addonEntries, cppRootPath);
     if (ret)
     {
       strncpy(rootpath, cppRootPath.c_str(), ADDON_STANDARD_STRING_LENGTH);
