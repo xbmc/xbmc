@@ -18,7 +18,7 @@
 	<ParseTMDBCertifications dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="15">
-				<expression fixchars="1">certification&quot;:&quot;([^&quot;]*)&quot;,&quot;[^&quot;]*&quot;:&quot;$$16&quot;(.*?),&quot;</expression>
+				<expression fixchars="1">certification&quot;:&quot;([^&quot;]+)&quot;,&quot;[^&quot;]*&quot;:&quot;$$16&quot;(.*?),&quot;</expression>
 			</RegExp>
 			<RegExp input="$$15" output="&lt;mpaa&gt;$$17 \1&lt;/mpaa&gt;" dest="2">
 				<expression>(.+)</expression>
@@ -444,10 +444,10 @@
 				<expression noclean="1">&quot;id&quot;:([0-9]*),</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression clear="yes" noclean="1">&quot;youtube&quot;:\[\{([^\}]*)</expression>
+				<expression clear="yes" noclean="1">&quot;youtube&quot;:\[\{(.*?)\}\]</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;trailer&gt;plugin://plugin.video.youtube/?action=play_video&amp;amp;videoid=\1&lt;/trailer&gt;" dest="9">
-				<expression noclean="1">&quot;source&quot;:&quot;([^&quot;]*)</expression>
+				<expression noclean="1">&quot;source&quot;:&quot;([^&quot;]*)&quot;,&quot;type&quot;:&quot;Trailer&quot;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBEnTrailer&quot; cache=&quot;tmdb-trailer-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8/trailers?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=en&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
@@ -464,10 +464,10 @@
 				<expression noclean="1">&quot;id&quot;:([0-9]*),</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression clear="yes" noclean="1">&quot;youtube&quot;:\[\{([^\}]*)</expression>
+				<expression clear="yes" noclean="1">&quot;youtube&quot;:\[\{(.*?)\}\]</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;trailer&gt;plugin://plugin.video.youtube/?action=play_video&amp;amp;videoid=\1&lt;/trailer&gt;" dest="9">
-				<expression noclean="1">&quot;source&quot;:&quot;([^&quot;]*)</expression>
+				<expression noclean="1">&quot;source&quot;:&quot;([^&quot;]*)&quot;,&quot;type&quot;:&quot;Trailer&quot;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBAllTrailer&quot; cache=&quot;tmdb-trailer-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8/trailers?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
@@ -510,11 +510,46 @@
 				<expression clear="yes" noclean="1">&quot;backdrops&quot;:\[\{([^\]]*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;thumb preview=&quot;$$20w780\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="2">
-				<expression clear="yes" repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
+				<expression clear="yes" repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)&quot;,&quot;height&quot;:[^&quot;]*&quot;[^&quot;]*&quot;:(&quot;xx&quot;|null)</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseTMDBFanart>
+
+	<GetTMDBLandscapeByIdChain clearbuffers="no" dest="4"> <!-- Expected chaining format= tmdb_id::language-->
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\2" dest="11">
+				<expression>(.+)::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="13">
+				<expression>(.+)::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBLandscape&quot; cache=&quot;tmdb-images-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/images?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$11&amp;amp;include_image_language=$$11,en,null&lt;/url&gt;" dest="5+">
+				<expression>(.+)::(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetTMDBLandscapeByIdChain>
+	<ParseTMDBLandscape clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression clear="yes" noclean="1">&quot;backdrops&quot;:\[\{([^\]]*)</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;$$20w780\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="9">
+				<expression clear="yes" repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)&quot;,&quot;height&quot;:[^&quot;]*&quot;[^&quot;]*&quot;:&quot;$$11</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;$$20w780\1&quot;&gt;$$20original\1&lt;/thumb&gt;" dest="9+">
+				<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)&quot;,&quot;height&quot;:[^&quot;]*&quot;[^&quot;]*&quot;:&quot;en</expression>
+			</RegExp>
+			<RegExp input="$$9" output="$$9" dest="2">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTMDBLandscape>
 
 	<GetTMDBThumbsByIdChain clearbuffers="no" dest="4"> <!-- Expected chaining format= tmdb_id::language-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">

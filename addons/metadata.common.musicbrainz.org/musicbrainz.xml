@@ -10,7 +10,7 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\5&lt;/year&gt;&lt;title&gt;\3&lt;/title&gt;&lt;label&gt;\1\2&lt;/label&gt;&lt;/album&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\5&lt;/year&gt;&lt;title&gt;\3&lt;/title&gt;&lt;musicbrainzreleasegroupid&gt;\1&lt;/musicbrainzreleasegroupid&gt;&lt;/album&gt;" dest="2">
 				<expression repeat="yes" clear="yes" noclean="1,2,3">(?:\stype-id=&quot;[^&quot;]*&quot;)?(?:\sid=&quot;([^&quot;]*)&quot;)?\stype=&quot;Album&quot;(?:\stype-id=&quot;[^&quot;]*&quot;)?(?:\sid=&quot;([^&quot;]*)&quot;)?&gt;&lt;title&gt;([^&lt;]*)&lt;/title&gt;&lt;first-release-date(\s/)?&gt;(\d{4})?</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -31,16 +31,16 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="11">
-			<expression>&lt;artist type=&quot;Person&quot;.*?&lt;life-span&gt;&lt;begin&gt;([^&lt;]*)</expression>
+			<expression>&lt;artist\sid[^>]*type=&quot;Person&quot;.*?&lt;life-span&gt;\s*&lt;begin&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;died&gt;\1&lt;/died&gt;" dest="11+">
-			<expression>&lt;artist type=&quot;Person&quot;.*?&lt;life-span&gt;&lt;begin&gt;[^&lt;]*&lt;/begin&gt;&lt;end&gt;([^&lt;]*)</expression>
+			<expression>&lt;artist\sid[^>]*type=&quot;Person&quot;.*?&lt;life-span&gt;&lt;begin&gt;[^&lt;]*&lt;/begin&gt;&lt;end&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="11">
-			<expression>&lt;artist type=&quot;Group&quot;.*?&lt;life-span&gt;&lt;begin&gt;([^&lt;]*)</expression>
+			<expression>&lt;artist\sid[^>]*type=&quot;Group&quot;.*?&lt;life-span&gt;&lt;begin&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="11+">
-			<expression>&lt;artist type=&quot;Group&quot;.*?&lt;life-span&gt;&lt;begin&gt;[^&lt;]*&lt;/begin&gt;&lt;end&gt;([^&lt;]*)</expression>
+			<expression>&lt;artist\sid[^>]*type=&quot;Group&quot;.*?&lt;life-span&gt;&lt;begin&gt;[^&lt;]*&lt;/begin&gt;&lt;end&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
 				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistLifeSpanByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
@@ -128,7 +128,7 @@
 	<ParseMBAlbumArtists dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;albumArtistCredits&gt;&lt;joinphrase&gt;\1&lt;/joinphrase&gt;&lt;musicBrainzArtistID&gt;\2&lt;/musicBrainzArtistID&gt;&lt;artist&gt;\3&lt;/artist&gt;&lt;/albumArtistCredits&gt;" dest="2">
-				<expression repeat="yes" noclean="1">(?:joinphrase=&quot;([^&quot;]*)&quot;&gt;)?&lt;artist\sid=&quot;([^&quot;]*)&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" noclean="1">(?:joinphrase=&quot;([^&quot;]*)&quot;&gt;)?&lt;artist\sid=&quot;([^&quot;]*)&quot;.*?&lt;name&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
@@ -142,7 +142,7 @@
 	<ParseMBAlbumArtist dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="2">
-				<expression noclean="1">&lt;artist id=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;</expression>
+				<expression noclean="1">&lt;artist id=&quot;[^&quot;]*&quot;.*?&lt;name&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
@@ -170,7 +170,7 @@
 	<ParseMBAlbumLabel dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;label&gt;\1&lt;/label&gt;" dest="2">
-				<expression noclean="1">&lt;label id=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)</expression>
+				<expression noclean="1">&lt;label id=&quot;[^&quot;]*&quot;.*?&lt;name&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
