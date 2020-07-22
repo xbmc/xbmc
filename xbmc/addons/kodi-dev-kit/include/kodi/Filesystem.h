@@ -818,6 +818,7 @@ inline bool ATTRIBUTE_HIDDEN DirectoryExists(const std::string& path)
 /// directory whose name is given by path.
 ///
 /// @param[in] path Path to the directory.
+/// @param[in] recursive [opt] Remove directory recursive (default is false)
 /// @return Upon successful completion, the function RemoveDirectory() shall
 ///         return true. Otherwise, false shall be returned, and errno set
 ///         to indicate the error. If false is returned, the named directory
@@ -834,12 +835,16 @@ inline bool ATTRIBUTE_HIDDEN DirectoryExists(const std::string& path)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN RemoveDirectory(const std::string& path)
+inline bool ATTRIBUTE_HIDDEN RemoveDirectory(const std::string& path, bool recursive = false)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->remove_directory(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  if (!recursive)
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->remove_directory(
+        CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  else
+    return CAddonBase::m_interface->toKodi->kodi_filesystem->remove_directory_recursive(
+        CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 

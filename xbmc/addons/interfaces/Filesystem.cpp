@@ -66,6 +66,7 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->create_directory = create_directory;
   addonInterface->toKodi->kodi_filesystem->directory_exists = directory_exists;
   addonInterface->toKodi->kodi_filesystem->remove_directory = remove_directory;
+  addonInterface->toKodi->kodi_filesystem->remove_directory_recursive = remove_directory_recursive;
   addonInterface->toKodi->kodi_filesystem->get_directory = get_directory;
   addonInterface->toKodi->kodi_filesystem->free_directory = free_directory;
 
@@ -211,6 +212,19 @@ bool Interface_Filesystem::remove_directory(void* kodiBase, const char* path)
     CFile::Delete(fileItems.Get(i)->GetPath());
 
   return CDirectory::Remove(path);
+}
+
+bool Interface_Filesystem::remove_directory_recursive(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return CDirectory::RemoveRecursive(path);
 }
 
 static void CFileItemListToVFSDirEntries(VFSDirEntry* entries, const CFileItemList& items)

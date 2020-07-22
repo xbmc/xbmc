@@ -310,6 +310,7 @@ extern "C"
 
     bool (*get_disk_space)(
         void* kodiBase, const char* path, uint64_t* capacity, uint64_t* free, uint64_t* available);
+    bool (*remove_directory_recursive)(void* kodiBase, const char* path);
   } AddonToKodiFuncTable_kodi_filesystem;
 
   //}}}

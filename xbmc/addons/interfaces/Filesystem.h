@@ -41,6 +41,7 @@ struct Interface_Filesystem
   static bool create_directory(void* kodiBase, const char* path);
   static bool directory_exists(void* kodiBase, const char* path);
   static bool remove_directory(void* kodiBase, const char* path);
+  static bool remove_directory_recursive(void* kodiBase, const char* path);
   static bool get_directory(void* kodiBase,
                             const char* path,
                             const char* mask,
