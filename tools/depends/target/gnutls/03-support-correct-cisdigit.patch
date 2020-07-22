@@ -1,0 +1,10 @@
+--- a/gl/c-ctype.h
++++ b/gl/c-ctype.h
+@@ -229,6 +229,7 @@
+     }
+ }
+
++__attribute__((always_inline))
+ C_CTYPE_INLINE bool
+ c_isdigit (int c)
+ {

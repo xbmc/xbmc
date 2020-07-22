@@ -1,0 +1,13 @@
+--- a/include/ma_hash.h
++++ b/include/ma_hash.h
+@@ -33,6 +33,10 @@
+   /* flags for hash_init */
+ #define HASH_CASE_INSENSITIVE	1
+
++#define hash_free libmariadb_hash_free
++#define hash_insert libmariadb_hash_insert
++#define hash_delete libmariadb_hash_delete
++
+ typedef struct st_hash_info {
+   uint next;					/* index to next key */
+   uchar *data;					/* data for current entry */

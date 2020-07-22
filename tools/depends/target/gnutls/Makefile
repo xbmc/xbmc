@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile size-max.patch add-dl-as-private-lib.patch
+DEPS= ../../Makefile.include Makefile size-max.patch add-dl-as-private-lib.patch 03-support-correct-cisdigit.patch
 
 # lib name, version
 LIBNAME=gnutls
-VERSION=3.6.11.1
+VERSION=3.6.14
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -28,6 +28,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../size-max.patch
 	cd $(PLATFORM); patch -p1 -i ../add-dl-as-private-lib.patch
+	cd $(PLATFORM); patch -p1 -i ../03-support-correct-cisdigit.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
