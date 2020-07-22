@@ -1945,6 +1945,14 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     std::string strPathInRar = item->GetPath();
     std::string strExt = URIUtils::GetExtension(strPathInRar);
 
+    // Check another archive in archive
+    if (strExt == ".zip" || strExt == ".rar")
+    {
+      nItemsAdded +=
+          ScanArchiveForAssociatedItems(strPathInRar, videoNameNoExt, item_exts, associatedFiles);
+      continue;
+    }
+
     // check that the found filename matches the movie filename
     size_t fnl = videoNameNoExt.size();
     // NOTE: We don't know if videoNameNoExt is URL-encoded, so try both
