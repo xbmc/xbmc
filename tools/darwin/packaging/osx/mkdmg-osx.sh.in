@@ -2,7 +2,7 @@
 
 # usage: ./mkdmg-osx.sh release/debug (case insensitive)
 # Allows us to run mkdmg-osx.sh from anywhere in the three, rather than the tools/darwin/packaging/osx folder only
-SWITCH=`echo $1 | tr [A-Z] [a-z]`
+SWITCH="$1"
 DIRNAME=`dirname $0`
 
 if [ ${SWITCH:-""} = "debug" ]; then
@@ -22,6 +22,16 @@ if [ ! -d $APP ]; then
 fi
 ARCHITECTURE=`file $APP/Contents/MacOS/@APP_NAME@ | awk '{print $NF}'`
 
+# codesign .app
+if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
+  # execute codesign script
+  "$DIRNAME/Codesign.command"
+  # sign helper tool
+  codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" --options runtime --timestamp --entitlements Kodi.entitlements "$APP/Contents/Resources/Kodi/tools/darwin/runtime/XBMCHelper"
+  # perform top-level signing (Xcode does it automatically when signing settings are configured)
+  codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" --options runtime --timestamp --entitlements Kodi.entitlements "$APP"
+fi
+
 PACKAGE=org.xbmc.@APP_NAME_LC@-osx
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
@@ -34,7 +44,8 @@ fi
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-intel-${ARCHITECTURE}
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
-rm -rf $DIRNAME/$ARCHIVE.dmg
+dmgPath="$DIRNAME/$ARCHIVE.dmg"
+rm -rf "$dmgPath"
 
 if [ -e "/Volumes/@APP_NAME_LC@" ]; then
   umount /Volumes/@APP_NAME_LC@
@@ -50,3 +61,9 @@ fi
 $DIRNAME/dmgmaker.pl $APP $ARCHIVE
 
 echo "done"
+
+# codesign and notarize dmg
+if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
+  codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" "$dmgPath"
+  ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist"
+fi

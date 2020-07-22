@@ -9,14 +9,20 @@ GEN_ENTITLEMENTS="$NATIVEPREFIX/bin/gen_entitlements.py"
 IOS11_ENTITLEMENTS="$XBMC_DEPENDS/share/ios11_entitlements.xml"
 LDID="$NATIVEPREFIX/bin/ldid"
 
-if [ ! -f ${GEN_ENTITLEMENTS} ]; then
+if [ "${PLATFORM_NAME}" == "macosx" ]; then
+  MACOS=1
+fi
+
+if [[ ! "$MACOS" && ! -f ${GEN_ENTITLEMENTS} ]]; then
   echo "error: $GEN_ENTITLEMENTS not found. Codesign won't work."
   exit -1
 fi
 
-if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]; then
-  if [ -f "/Users/Shared/buildslave/keychain_unlock.sh" ]; then
-    /Users/Shared/buildslave/keychain_unlock.sh
+if [[ "$MACOS" || "${PLATFORM_NAME}" == "iphoneos" || "${PLATFORM_NAME}" == "appletvos" ]]; then
+  if [ "$MACOS" ]; then
+    CONTENTS_PATH="${CODESIGNING_FOLDER_PATH}/Contents"
+  else
+    CONTENTS_PATH="${CODESIGNING_FOLDER_PATH}"
   fi
 
   # todo: is this required anymore?
@@ -28,7 +34,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
       ${LDID} -S${IOS11_ENTITLEMENTS} ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}
     
       #repackage python eggs
-      EGGS=`find ${CODESIGNING_FOLDER_PATH} -name "*.egg" -type f`
+      EGGS=$(find "${CONTENTS_PATH}" -name "*.egg" -type f)
         for i in $EGGS; do
           echo $i
           mkdir del
@@ -42,11 +48,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
   fi
 
   # pull the CFBundleIdentifier out of the built xxx.app
-  BUNDLEID=`mdls -raw -name kMDItemCFBundleIdentifier ${CODESIGNING_FOLDER_PATH}`
-  if [ "${BUNDLEID}" == "(null)" ] ; then
-    BUNDLEID=`/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' ${CODESIGNING_FOLDER_PATH}/Info.plist`
-  fi
-
+  BUNDLEID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "${CONTENTS_PATH}/Info.plist")
   echo "CFBundleIdentifier is ${BUNDLEID}"
 
   # Prefer the expanded name, if available.
@@ -57,25 +59,27 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
   fi
   echo "${CODE_SIGN_IDENTITY_FOR_ITEMS}"
 
-  ${GEN_ENTITLEMENTS} "${BUNDLEID}" "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}.xcent";
+  if [ ! "$MACOS" ]; then
+    ${GEN_ENTITLEMENTS} "${BUNDLEID}" "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}.xcent"
+  fi
 
   # delete existing codesigning
-  if [ -d "${CODESIGNING_FOLDER_PATH}/_CodeSignature" ]; then
-    rm -r ${CODESIGNING_FOLDER_PATH}/_CodeSignature
+  if [ -d "${CONTENTS_PATH}/_CodeSignature" ]; then
+    rm -r "${CONTENTS_PATH}/_CodeSignature"
   fi
-  if [ -f "${CODESIGNING_FOLDER_PATH}/embedded.mobileprovision" ]; then
-    rm -f ${CODESIGNING_FOLDER_PATH}/embedded.mobileprovision
+  if [[ ! "$MACOS" && -f "${CONTENTS_PATH}/embedded.mobileprovision" ]]; then
+    rm -f "${CONTENTS_PATH}/embedded.mobileprovision"
   fi
 
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
-  if ! [ -z "${CODE_SIGN_IDENTITY}" ]; then
-    if echo ${CODE_SIGN_IDENTITY} | grep -cim1 "iPhone Developer" &>/dev/null || echo ${CODE_SIGN_IDENTITY} | grep -cim1 "Apple Development" &>/dev/null; then
-      echo "Doing a full bundle sign using genuine identity ${CODE_SIGN_IDENTITY}"
+  if ! [ -z "${CODE_SIGN_IDENTITY_FOR_ITEMS}" ]; then
+    if egrep -q --max-count=1 -e '^iPhone (Developer|Distribution): ' -e '^Apple (Development|Distribution): ' -e '^[[:xdigit:]]+$' -e '^Developer ID Application: ' <<<"${CODE_SIGN_IDENTITY_FOR_ITEMS}"; then
+      echo "Doing a full bundle sign using genuine identity ${CODE_SIGN_IDENTITY_FOR_ITEMS}"
       for binext in $LIST_BINARY_EXTENSIONS
       do
         echo "Signing binary: $binext"
         # check if at least 1 file with the extension exists to sign, otherwise do nothing
-        FINDOUTPUT=`find ${CODESIGNING_FOLDER_PATH} -name "*.$binext" -type f`
+        FINDOUTPUT=$(find "${CONTENTS_PATH}" -name "*.$binext" -type f)
         if [ `echo $FINDOUTPUT | wc -l` != 0 ]; then
           for singlefile in $FINDOUTPUT; do
             codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${BUNDLEID}" "${singlefile}"
@@ -84,17 +88,17 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
       done
       echo "In case your app crashes with SIG_SIGN check the variable LIST_BINARY_EXTENSIONS in tools/darwin/Support/Codesign.command"
 
-      for FRAMEWORK_PATH in `find ${CODESIGNING_FOLDER_PATH} -name "*.framework" -type d`
+      for FRAMEWORK_PATH in $(find "${CONTENTS_PATH}" -name "*.framework" -type d)
       do
         DYLIB_BASENAME=$(basename "${FRAMEWORK_PATH%.framework}")
         echo "Signing Framework: ${DYLIB_BASENAME}.framework"
         FRAMEWORKBUNDLEID="${BUNDLEID}.framework.${DYLIB_BASENAME}"
-        codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" ${FRAMEWORK_PATH}/${DYLIB_BASENAME}
-        codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" ${FRAMEWORK_PATH}
+        codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" "${FRAMEWORK_PATH}/${DYLIB_BASENAME}"
+        codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" "${FRAMEWORK_PATH}"
       done
 
       #repackage python eggs
-      EGGS=`find ${CODESIGNING_FOLDER_PATH} -name "*.egg" -type f`
+      EGGS=$(find "${CONTENTS_PATH}" -name "*.egg" -type f)
       echo "Signing Eggs"
       for i in $EGGS; do
         echo $i
