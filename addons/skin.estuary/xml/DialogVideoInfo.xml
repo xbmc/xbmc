@@ -491,7 +491,7 @@
 								<aligny>center</aligny>
 								<font>font23_narrow</font>
 								<label>$INFO[ListItem.Label]</label>
-								<visible>String.IsEmpty(ListItem.Art(poster)</visible>
+								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="image">
 								<left>27</left>
