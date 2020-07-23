@@ -106,6 +106,10 @@ protected:
   IVideoPlayer* m_player;
 
 private:
+  void DetectDisplayResolution();
+  unsigned int videoWidth_ = 0;
+  unsigned int videoHeight_ = 0;
+
   std::vector<std::string> m_fileItemProps;
   INPUTSTREAM_CAPABILITIES m_caps;
 
@@ -143,3 +147,4 @@ private:
   static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
   //@}
 };
+

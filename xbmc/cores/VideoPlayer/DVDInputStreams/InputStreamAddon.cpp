@@ -165,12 +165,8 @@ bool CInputStreamAddon::Open()
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
-  unsigned int videoWidth = 1280;
-  unsigned int videoHeight = 720;
-  if (m_player)
-    m_player->GetVideoResolution(videoWidth, videoHeight);
-  SetVideoResolution(videoWidth, videoHeight);
-
+  DetectDisplayResolution();
+  
   bool ret = m_struct.toAddon.open(&m_struct, &props);
   if (ret)
   {
@@ -182,7 +178,21 @@ bool CInputStreamAddon::Open()
   }
   return ret;
 }
-
+void CInputStreamAddon::DetectDisplayResolution()
+{
+  unsigned int videoWidth = 1280;
+  unsigned int videoHeight = 720;
+  if (m_player)
+    m_player->GetVideoResolution(videoWidth, videoHeight);
+  if(videoWidth_!=videoWidth || videoHeight_!=videoHeight)
+    {
+    SetVideoResolution(videoWidth, videoHeight);
+    CLog::Log(LOGINFO,"Display Resolution Change Detected, Previous: (%u x %u), Current: (%u x %u)",
+                                                            videoWidth_,videoHeight_,videoWidth,videoHeight);
+      videoWidth_=videoWidth;
+      videoHeight_=videoHeight; 
+    }
+}
 void CInputStreamAddon::Close()
 {
   if (m_struct.toAddon.close)
@@ -266,6 +276,8 @@ int CInputStreamAddon::GetTime()
 // ITime
 CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
 {
+    DetectDisplayResolution();
+
   if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_ITIME) == 0)
     return nullptr;
 
@@ -663,3 +675,4 @@ void CInputStreamAddon::cb_free_demux_packet(void* kodiInstance, DemuxPacket* pa
 }
 
 //@}
+
