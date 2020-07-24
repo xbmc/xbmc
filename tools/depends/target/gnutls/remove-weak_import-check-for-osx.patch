@@ -1,6 +1,6 @@
---- a/configure.ac	2020-01-25 08:26:59.223068640 -0800
-+++ b/configure.ac	2020-01-25 08:26:38.846233553 -0800
-@@ -122,14 +122,6 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -141,14 +141,6 @@
    ;;
    *darwin*)
      have_macosx=yes
@@ -10,7 +10,7 @@
 -    dnl intended minimum runtime version.
 -    LDFLAGS="$LDFLAGS -Wl,-no_weak_imports"
 -    AC_MSG_CHECKING([whether the linker supports -Wl,-no_weak_imports])
--    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+-    AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <sys/select.h>], [fd_set rfds; FD_ZERO(&rfds); FD_SET(0, &rfds);])],
 -      [AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no); LDFLAGS="$save_LDFLAGS"])
    ;;
    *solaris*)
