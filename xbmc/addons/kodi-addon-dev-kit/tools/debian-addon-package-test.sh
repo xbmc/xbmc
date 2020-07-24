@@ -60,7 +60,7 @@ function getVersion {
   if [ -d ${BASE_DIR}/.git ]; then
     getGitRev
   fi
-  PACKAGEVERSION=$(cat ${BASE_DIR}/$REPO_DIR/addon.xml.in | sed -n '/version/ s/.*version=\"\([0-9]\+\.[0-9]\+\.[0-9]\+\)\".*/\1/p')
+  PACKAGEVERSION=$(cat ${BASE_DIR}/$REPO_DIR/addon.xml.in | sed -n '/version/ s/.*version=\"\([0-9]\+\.[0-9]\+\.[0-9]\+\)\".*/\1/p' | awk 'NR == 1')
   VERSION_MAIN=$(echo $PACKAGEVERSION | awk -F. '{print $1}')
   VERSION_MINOR=$(echo $PACKAGEVERSION | awk -F. '{print $2}')
   VERSION_REVISON=$(echo $PACKAGEVERSION | awk -F. '{print $3}')
