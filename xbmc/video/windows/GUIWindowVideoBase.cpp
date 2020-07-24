@@ -221,6 +221,17 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
       CFileItemList items;
       CDirectory::GetDirectory(item.GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                DIR_FLAG_DEFAULTS);
+
+      // Check for cases 1_dir/1_dir/.../file (e.g. by packages where have a extra folder)
+      while (items.Size() == 1 && items[0]->m_bIsFolder)
+      {
+        const std::string path = items[0]->GetPath();
+        items.Clear();
+        CDirectory::GetDirectory(path, items,
+                                 CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                                 DIR_FLAG_DEFAULTS);
+      }
+
       items.Stack();
 
       // check for media files
