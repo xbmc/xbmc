@@ -3266,9 +3266,12 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     URIUtils::GetParentPath(name2,strMovieName);
     if (URIUtils::IsInArchive(m_strPath))
     {
-      std::string strArchivePath;
-      URIUtils::GetParentPath(strMovieName, strArchivePath);
-      strMovieName = strArchivePath;
+      // Try to get archive itself, if empty take path before
+      name2 = CURL(m_strPath).GetHostName();
+      if (name2.empty())
+        name2 = strMovieName;
+
+      URIUtils::GetParentPath(name2, strMovieName);
     }
   }
 
