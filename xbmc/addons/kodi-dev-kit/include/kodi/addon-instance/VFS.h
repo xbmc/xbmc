@@ -30,74 +30,6 @@ extern "C"
     const char* protocol;
   };
 
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_vfs_Defs
-  /// @brief <b>In/out value which is queried at @ref kodi::addon::CInstanceVFS::IoControl.</b>\n
-  /// This declares the requested value on the addon, this gets or has to
-  /// transfer data depending on the value.
-  enum VFS_IOCTRL
-  {
-    /// @brief For cases where not supported control becomes asked.
-    ///
-    /// @note Should normally not given to addon.
-    VFS_IOCTRL_INVALID = 0,
-
-    /// @brief @ref VFS_IOCTRL_NATIVE_DATA structure, containing what should be
-    /// passed to native ioctrl.
-    VFS_IOCTRL_NATIVE = 1,
-
-    /// @brief To check seek is possible.
-    ///
-    //// Return 0 if known not to work, 1 if it should work on related calls.
-    VFS_IOCTRL_SEEK_POSSIBLE = 2,
-
-    /// @brief @ref VFS_IOCTRL_CACHE_STATUS_DATA structure structure on related call
-    VFS_IOCTRL_CACHE_STATUS = 3,
-
-    /// @brief Unsigned int with speed limit for caching in bytes per second
-    VFS_IOCTRL_CACHE_SETRATE = 4,
-
-    /// @brief Enable/disable retry within the protocol handler (if supported)
-    VFS_IOCTRL_SET_RETRY = 16,
-  };
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_vfs_Defs
-  /// @brief <b>Structure used in @ref kodi::addon::CInstanceVFS::IoControl
-  /// if question value for @ref VFS_IOCTRL_NATIVE is set</b>\n
-  /// With this structure, data is transmitted to the Kodi addon.
-  ///
-  /// This corresponds to POSIX systems with regard to [ioctl](https://en.wikipedia.org/wiki/Ioctl)
-  /// data (emulated with Windows).
-  struct VFS_IOCTRL_NATIVE_DATA
-  {
-    unsigned long int request;
-    void* param;
-  };
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_vfs_Defs
-  /// @brief <b>Structure used in @ref kodi::addon::CInstanceVFS::IoControl
-  /// if question value for @ref VFS_IOCTRL_CACHE_STATUS is set</b>\n
-  /// This data is filled by the addon and returned to Kodi
-  struct VFS_IOCTRL_CACHE_STATUS_DATA
-  {
-    /// @brief Number of bytes cached forward of current position.
-    uint64_t forward;
-
-    /// @brief Maximum number of bytes per second cache is allowed to fill.
-    unsigned int maxrate;
-
-    /// @brief Average read rate from source file since last position change.
-    unsigned int currate;
-
-    /// @brief Cache low speed condition detected?
-    bool lowspeed;
-  };
-  //----------------------------------------------------------------------------
-
   typedef struct VFSGetDirectoryCallbacks /* internal */
   {
     bool (__cdecl* get_keyboard_input)(void* ctx, const char* heading, char** input, bool hidden_input);
@@ -143,10 +75,17 @@ extern "C"
     int64_t(__cdecl* get_length)(const struct AddonInstance_VFSEntry* instance, void* context);
     int64_t(__cdecl* get_position)(const struct AddonInstance_VFSEntry* instance, void* context);
     int(__cdecl* get_chunk_size)(const struct AddonInstance_VFSEntry* instance, void* context);
-    int(__cdecl* io_control)(const struct AddonInstance_VFSEntry* instance,
-                             void* context,
-                             enum VFS_IOCTRL request,
-                             void* param);
+    bool(__cdecl* io_control_get_seek_possible)(const struct AddonInstance_VFSEntry* instance,
+                                                void* context);
+    bool(__cdecl* io_control_get_cache_status)(const struct AddonInstance_VFSEntry* instance,
+                                               void* context,
+                                               VFS_CACHE_STATUS_DATA* status);
+    bool(__cdecl* io_control_set_cache_rate)(const struct AddonInstance_VFSEntry* instance,
+                                             void* context,
+                                             unsigned int rate);
+    bool(__cdecl* io_control_set_retry)(const struct AddonInstance_VFSEntry* instance,
+                                        void* context,
+                                        bool retry);
     int(__cdecl* stat)(const struct AddonInstance_VFSEntry* instance,
                        const struct VFSURL* url,
                        struct STAT_STRUCTURE* buffer);
@@ -243,7 +182,8 @@ public:
   ///
   /// This includes all available parts of the access and is structured as
   /// follows:
-  /// - <b>`<PROTOCOL>`://`<USERNAME>`:`<PASSWORD>``@``<HOSTNAME>`:`<PORT>`/`<FILENAME>`?`<OPTIONS>`</b>
+  /// -
+  /// <b>`<PROTOCOL>`://`<USERNAME>`:`<PASSWORD>``@``<HOSTNAME>`:`<PORT>`/`<FILENAME>`?`<OPTIONS>`</b>
   std::string GetURL() const { return m_cStructure->url; }
 
   /// @brief The associated domain name, which is optional and not available
@@ -773,16 +713,48 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_addon_vfs_filecontrol
-  /// @brief Perform an IO-control on the file
+  /// @brief To check seek possible on current stream by file.
   ///
-  /// @param[in] context The context of the file
-  /// @param[in] request The requested IO-control
-  /// @param[in] param Parameter attached to the IO-control
-  /// @return -1 on error, >= 0 on success
+  /// @return true if seek possible, false if not
   ///
-  virtual int IoControl(void* context, VFS_IOCTRL request, void* param) { return -1; }
+  virtual bool IoControlGetSeekPossible(void* context) { return false; }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_vfs_filecontrol
+  /// @brief To check a running stream on file for state of his cache.
+  ///
+  /// @param[in] status Information about current cache status
+  /// @return true if successfull done, false otherwise
+  ///
+  ///
+  /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
+  ///
+  virtual bool IoControlGetCacheStatus(void* context, kodi::vfs::CacheStatus& status)
+  {
+    return false;
+  }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_vfs_filecontrol
+  /// @brief Unsigned int with speed limit for caching in bytes per second.
+  ///
+  /// @param[in] rate Cache rate size to use
+  /// @return true if successfull done, false otherwise
+  ///
+  virtual bool IoControlSetCacheRate(void* context, unsigned int rate) { return false; }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_vfs_filecontrol
+  /// @brief Enable/disable retry within the protocol handler (if supported).
+  ///
+  /// @param[in] retry To set the retry, true for use, false for not
+  /// @return true if successfull done, false otherwise
+  ///
+  virtual bool IoControlSetRetry(void* context, bool retry) { return false; }
   //--------------------------------------------------------------------------
   //@}
 
@@ -1052,7 +1024,10 @@ private:
     m_instanceData->toAddon->get_length = ADDON_GetLength;
     m_instanceData->toAddon->get_position = ADDON_GetPosition;
     m_instanceData->toAddon->get_chunk_size = ADDON_GetChunkSize;
-    m_instanceData->toAddon->io_control = ADDON_IoControl;
+    m_instanceData->toAddon->io_control_get_seek_possible = ADDON_IoControlGetSeekPossible;
+    m_instanceData->toAddon->io_control_get_cache_status = ADDON_IoControlGetCacheStatus;
+    m_instanceData->toAddon->io_control_set_cache_rate = ADDON_IoControlSetCacheRate;
+    m_instanceData->toAddon->io_control_set_retry = ADDON_IoControlSetRetry;
     m_instanceData->toAddon->stat = ADDON_Stat;
     m_instanceData->toAddon->close = ADDON_Close;
     m_instanceData->toAddon->exists = ADDON_Exists;
@@ -1130,13 +1105,36 @@ private:
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->GetChunkSize(context);
   }
 
-  inline static int ADDON_IoControl(const AddonInstance_VFSEntry* instance,
-                                    void* context,
-                                    enum VFS_IOCTRL request,
-                                    void* param)
+  inline static bool ADDON_IoControlGetSeekPossible(const AddonInstance_VFSEntry* instance,
+                                                    void* context)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
-        ->IoControl(context, request, param);
+        ->IoControlGetSeekPossible(context);
+  }
+
+  inline static bool ADDON_IoControlGetCacheStatus(const struct AddonInstance_VFSEntry* instance,
+                                                   void* context,
+                                                   VFS_CACHE_STATUS_DATA* status)
+  {
+    kodi::vfs::CacheStatus cppStatus(status);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
+        ->IoControlGetCacheStatus(context, cppStatus);
+  }
+
+  inline static bool ADDON_IoControlSetCacheRate(const struct AddonInstance_VFSEntry* instance,
+                                                 void* context,
+                                                 unsigned int rate)
+  {
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
+        ->IoControlSetCacheRate(context, rate);
+  }
+
+  inline static bool ADDON_IoControlSetRetry(const struct AddonInstance_VFSEntry* instance,
+                                             void* context,
+                                             bool retry)
+  {
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
+        ->IoControlSetRetry(context, retry);
   }
 
   inline static int ADDON_Stat(const AddonInstance_VFSEntry* instance,
