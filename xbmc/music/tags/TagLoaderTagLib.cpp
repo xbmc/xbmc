@@ -1175,10 +1175,6 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, EmbeddedArt *art /* = NULL */)
 {
-  // Dont try to read the tags for streams & shoutcast
-  if (URIUtils::IsInternetStream(strFileName))
-    return false;
-
   std::string strExtension = URIUtils::GetExtension(strFileName);
   StringUtils::TrimLeft(strExtension, ".");
 
@@ -1195,6 +1191,14 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   {
     CLog::Log(LOGERROR, "could not create TagLib VFS stream for: %s", strFileName.c_str());
     return false;
+  }
+
+  long file_length = stream->length();
+
+  if (file_length == 0) // a stream returns zero as the length
+  {
+    delete stream; // scrap this instance
+    return false; // and quit without attempting to read non-existent tags
   }
 
   TagLib::File*              file = nullptr;
