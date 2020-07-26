@@ -144,7 +144,7 @@ void CWinSystemWin32DX::OnMove(int x, int y)
 bool CWinSystemWin32DX::DPIChanged(WORD dpi, RECT windowRect) const
 {
   // on Win10 FCU the OS keeps window size exactly the same size as it was
-  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10_FCU))
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10_1709))
     return true;
 
   m_deviceResources->SetDpi(dpi);
