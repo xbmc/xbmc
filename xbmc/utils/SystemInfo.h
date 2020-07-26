@@ -74,7 +74,12 @@ public:
     WindowsVersionWin8,         // Windows 8, Windows Server 2012
     WindowsVersionWin8_1,       // Windows 8.1
     WindowsVersionWin10,        // Windows 10
-    WindowsVersionWin10_FCU,    // Windows 10 Fall Creators Update
+    WindowsVersionWin10_1709,   // Windows 10 1709 (FCU)
+    WindowsVersionWin10_1803,   // Windows 10 1803
+    WindowsVersionWin10_1809,   // Windows 10 1809
+    WindowsVersionWin10_1903,   // Windows 10 1903
+    WindowsVersionWin10_1909,   // Windows 10 1909
+    WindowsVersionWin10_2004,   // Windows 10 2004
     /* Insert new Windows versions here, when they'll be known */
     WindowsVersionFuture = 100  // Future Windows version, not known to code
   };

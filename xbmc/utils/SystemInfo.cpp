@@ -652,11 +652,25 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append("Server 2012 R2");
       break;
     case WindowsVersionWin10:
-    case WindowsVersionWin10_FCU:
-      if (osvi.wProductType == VER_NT_WORKSTATION)
-        osNameVer.append("10");
-      else
-        osNameVer.append("Unknown future server version");
+      osNameVer.append("10");
+      break;
+    case WindowsVersionWin10_1709:
+      osNameVer.append("10 1709");
+      break;
+    case WindowsVersionWin10_1803:
+      osNameVer.append("10 1803");
+      break;
+    case WindowsVersionWin10_1809:
+      osNameVer.append("10 1809");
+      break;
+    case WindowsVersionWin10_1903:
+      osNameVer.append("10 1903");
+      break;
+    case WindowsVersionWin10_1909:
+      osNameVer.append("10 1909");
+      break;
+    case WindowsVersionWin10_2004:
+      osNameVer.append("10 2004");
       break;
     case WindowsVersionFuture:
       osNameVer.append("Unknown future version");
@@ -818,8 +832,18 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin8_1;
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber < 16299)
         m_WinVer = WindowsVersionWin10;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 16299)
-        m_WinVer = WindowsVersionWin10_FCU;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 16299)
+        m_WinVer = WindowsVersionWin10_1709;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 17134)
+        m_WinVer = WindowsVersionWin10_1803;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 17763)
+        m_WinVer = WindowsVersionWin10_1809;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 18362)
+        m_WinVer = WindowsVersionWin10_1903;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 18363)
+        m_WinVer = WindowsVersionWin10_1909;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 19041)
+        m_WinVer = WindowsVersionWin10_2004;
       /* Insert checks for new Windows versions here */
       else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 10)
         m_WinVer = WindowsVersionFuture;
