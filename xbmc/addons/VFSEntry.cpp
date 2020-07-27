@@ -14,6 +14,30 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#if defined(TARGET_WINDOWS)
+#ifndef S_IFLNK
+#define S_IFLNK 0120000
+#endif
+#ifndef S_IFBLK
+#define S_IFBLK 0
+#endif
+#ifndef S_IFSOCK
+#define S_IFSOCK 0
+#endif
+#ifndef S_IFREG
+#define S_IFREG _S_IFREG
+#endif
+#ifndef S_IFCHR
+#define S_IFCHR _S_IFCHR
+#endif
+#ifndef S_IFDIR
+#define S_IFDIR _S_IFDIR
+#endif
+#ifndef S_IFIFO
+#define S_IFIFO _S_IFIFO
+#endif
+#endif
+
 namespace ADDON
 {
 
@@ -249,11 +273,37 @@ bool CVFSEntry::Exists(const CURL& url)
 
 int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
 {
+  int ret = -1;
   if (!m_struct.toAddon->stat)
-    return -1;
+    return ret;
 
   CVFSURLWrapper url2(url);
-  return m_struct.toAddon->stat(&m_struct, &url2.url, buffer);
+  STAT_STRUCTURE statBuffer = {};
+  ret = m_struct.toAddon->stat(&m_struct, &url2.url, &statBuffer);
+
+  buffer->st_dev = statBuffer.deviceId;
+  buffer->st_ino = statBuffer.fileSerialNumber;
+  buffer->st_size = statBuffer.size;
+  buffer->st_atime = statBuffer.accessTime;
+  buffer->st_mtime = statBuffer.modificationTime;
+  buffer->st_ctime = statBuffer.statusTime;
+  buffer->st_mode = 0;
+  if (statBuffer.isDirectory)
+    buffer->st_mode |= S_IFDIR;
+  if (statBuffer.isSymLink)
+    buffer->st_mode |= S_IFLNK;
+  if (statBuffer.isBlock)
+    buffer->st_mode |= S_IFBLK;
+  if (statBuffer.isCharacter)
+    buffer->st_mode |= S_IFCHR;
+  if (statBuffer.isFifo)
+    buffer->st_mode |= S_IFIFO;
+  if (statBuffer.isRegular)
+    buffer->st_mode |= S_IFREG;
+  if (statBuffer.isSocket)
+    buffer->st_mode |= S_IFSOCK;
+
+  return ret;
 }
 
 ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)

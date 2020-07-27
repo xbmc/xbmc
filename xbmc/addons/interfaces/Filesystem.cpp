@@ -23,11 +23,31 @@
 
 #include <vector>
 
-#ifndef S_ISDIR
-#define S_ISDIR(mode) ((((mode)) & 0170000) == (0040000))
+#if defined(TARGET_WINDOWS)
+#ifndef S_IFLNK
+#define S_IFLNK 0120000
+#endif
+#ifndef S_ISBLK
+#define S_ISBLK(m) (0)
+#endif
+#ifndef S_ISSOCK
+#define S_ISSOCK(m) (0)
 #endif
 #ifndef S_ISLNK
-#define S_ISLNK(mode) ((((mode)) & 0170000) == (0120000))
+#define S_ISLNK(m) ((m & S_IFLNK) != 0)
+#endif
+#ifndef S_ISCHR
+#define S_ISCHR(m) ((m & _S_IFCHR) != 0)
+#endif
+#ifndef S_ISDIR
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#endif
+#ifndef S_ISFIFO
+#define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
+#endif
+#ifndef S_ISREG
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
 #endif
 
 using namespace kodi; // addon-dev-kit namespace
@@ -297,12 +317,18 @@ bool Interface_Filesystem::stat_file(void* kodiBase,
     return false;
 
   buffer->deviceId = statBuffer.st_dev;
+  buffer->fileSerialNumber = statBuffer.st_ino;
   buffer->size = statBuffer.st_size;
   buffer->accessTime = statBuffer.st_atime;
   buffer->modificationTime = statBuffer.st_mtime;
   buffer->statusTime = statBuffer.st_ctime;
   buffer->isDirectory = S_ISDIR(statBuffer.st_mode);
   buffer->isSymLink = S_ISLNK(statBuffer.st_mode);
+  buffer->isBlock = S_ISBLK(statBuffer.st_mode);
+  buffer->isCharacter = S_ISCHR(statBuffer.st_mode);
+  buffer->isFifo = S_ISFIFO(statBuffer.st_mode);
+  buffer->isRegular = S_ISREG(statBuffer.st_mode);
+  buffer->isSocket = S_ISSOCK(statBuffer.st_mode);
 
   return true;
 }

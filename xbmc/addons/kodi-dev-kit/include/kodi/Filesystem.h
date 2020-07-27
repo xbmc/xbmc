@@ -110,12 +110,18 @@ public:
   /// | Name | Type | Set call | Get call
   /// |------|------|----------|----------
   /// | **ID of device containing file** | `uint32_t` | @ref FileStatus::SetDeviceId "SetDeviceId" | @ref FileStatus::GetDeviceId "GetDeviceId"
+  /// | **Represent file serial numbers** | `uint64_t` | @ref FileStatus::SetFileSerialNumber "SetFileSerialNumber" | @ref FileStatus::GetFileSerialNumber "GetFileSerialNumber"
   /// | **Total size, in bytes** | `uint64_t` | @ref FileStatus::SetSize "SetSize" | @ref FileStatus::GetSize "GetSize"
   /// | **Time of last access** | `time_t` | @ref FileStatus::SetAccessTime "SetAccessTime" | @ref FileStatus::GetAccessTime "GetAccessTime"
   /// | **Time of last modification** | `time_t` | @ref FileStatus::SetModificationTime "SetModificationTime" | @ref FileStatus::GetModificationTime "GetModificationTime"
   /// | **Time of last status change** | `time_t` | @ref FileStatus::SetStatusTime "SetStatusTime" | @ref FileStatus::GetStatusTime "GetStatusTime"
   /// | **Stat url is a directory** | `bool` | @ref FileStatus::SetIsDirectory "SetIsDirectory" | @ref FileStatus::GetIsDirectory "GetIsDirectory"
   /// | **Stat url as a symbolic link** | `bool` | @ref FileStatus::SetIsSymLink "SetIsSymLink" | @ref FileStatus::GetIsSymLink "GetIsSymLink"
+  /// | **Stat url as a block special** | `bool` | @ref FileStatus::SetIsBlock "SetIsBlock" | @ref FileStatus::GetIsBlock "GetIsBlock"
+  /// | **Stat url as a character special** | `bool` | @ref FileStatus::SetIsCharacter "SetIsCharacter" | @ref FileStatus::GetIsCharacter "GetIsCharacter"
+  /// | **Stat url as a FIFO special** | `bool` | @ref FileStatus::SetIsFifo "SetIsFifo" | @ref FileStatus::GetIsFifo "GetIsFifo"
+  /// | **Stat url as a regular** | `bool` | @ref FileStatus::SetIsRegular "SetIsRegular" | @ref FileStatus::GetIsRegular "GetIsRegular"
+  /// | **Stat url as a socket** | `bool` | @ref FileStatus::SetIsSocket "SetIsSocket" | @ref FileStatus::GetIsSocket "GetIsSocket"
   ///
 
   /// @addtogroup cpp_kodi_vfs_Defs_FileStatus
@@ -127,6 +133,12 @@ public:
 
   /// @brief Get ID of device containing file.
   uint32_t GetDeviceId() const { return m_cStructure->deviceId; }
+
+  /// @brief Set the file serial number, which distinguishes this file from all other files on the same device.
+  void SetFileSerialNumber(uint64_t fileSerialNumber) { m_cStructure->fileSerialNumber = fileSerialNumber; }
+
+  /// @brief Get the file serial number, which distinguishes this file from all other files on the same device.
+  uint64_t GetFileSerialNumber() const { return m_cStructure->fileSerialNumber; }
 
   /// @brief Set total size, in bytes.
   void SetSize(uint64_t size) { m_cStructure->size = size; }
@@ -167,6 +179,35 @@ public:
   /// @brief Get stat url is a symbolic link.
   bool GetIsSymLink() const { return m_cStructure->isSymLink; }
 
+  /// @brief Set stat url as a block special.
+  void SetIsBlock(bool isBlock) { m_cStructure->isBlock = isBlock; }
+
+  /// @brief Get stat url is a block special.
+  bool GetIsBlock() const { return m_cStructure->isBlock; }
+
+  /// @brief Set stat url as a character special.
+  void SetIsCharacter(bool isCharacter) { m_cStructure->isCharacter = isCharacter; }
+
+  /// @brief Get stat url is a character special.
+  bool GetIsCharacter() const { return m_cStructure->isCharacter; }
+
+  /// @brief Set stat url as a FIFO special.
+  void SetIsFifo(bool isFifo) { m_cStructure->isFifo = isFifo; }
+
+  /// @brief Get stat url is a FIFO special.
+  bool GetIsFifo() const { return m_cStructure->isFifo; }
+
+  /// @brief Set stat url as a regular.
+  void SetIsRegular(bool isRegular) { m_cStructure->isRegular = isRegular; }
+
+  /// @brief Get stat url is a regular.
+  bool GetIsRegular() const { return m_cStructure->isRegular; }
+
+  /// @brief Set stat url is a socket.
+  void SetIsSocket(bool isSocket) { m_cStructure->isSocket = isSocket; }
+
+  /// @brief Get stat url is a regular.
+  bool GetIsSocket() const { return m_cStructure->isSocket; }
   //@}
 };
 //@}

@@ -10,17 +10,6 @@
 #include "../AddonBase.h"
 #include "../Filesystem.h"
 
-#if !defined(_WIN32)
-#include <sys/stat.h>
-#if !defined(__stat64)
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-#define __stat64 stat
-#else
-#define __stat64 stat64
-#endif
-#endif
-#endif
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -218,7 +207,7 @@ extern "C"
                              void* param);
     int(__cdecl* stat)(const struct AddonInstance_VFSEntry* instance,
                        const struct VFSURL* url,
-                       struct __stat64* buffer);
+                       struct STAT_STRUCTURE* buffer);
     bool(__cdecl* close)(const struct AddonInstance_VFSEntry* instance, void* context);
     bool(__cdecl* exists)(const struct AddonInstance_VFSEntry* instance, const struct VFSURL* url);
     void(__cdecl* clear_out_idle)(const struct AddonInstance_VFSEntry* instance);
@@ -748,7 +737,7 @@ public:
   /// @param[in] buffer The buffer to store results in
   /// @return -1 on error, 0 otherwise
   ///
-  virtual int Stat(const VFSURL& url, struct __stat64* buffer) { return 0; }
+  virtual int Stat(const VFSURL& url, kodi::vfs::FileStatus& buffer) { return 0; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -1088,9 +1077,10 @@ private:
 
   inline static int ADDON_Stat(const AddonInstance_VFSEntry* instance,
                                const VFSURL* url,
-                               struct __stat64* buffer)
+                               struct STAT_STRUCTURE* buffer)
   {
-    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Stat(*url, buffer);
+    kodi::vfs::FileStatus cppBuffer(buffer);
+    return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)->Stat(*url, cppBuffer);
   }
 
   inline static bool ADDON_Close(const AddonInstance_VFSEntry* instance, void* context)
