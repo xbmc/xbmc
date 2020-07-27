@@ -382,6 +382,8 @@ _ctypes _ctypes/callbacks.c  _ctypes/callproc.c  _ctypes/cfield.c  _ctypes/_ctyp
 
 _queue _queuemodule.c
 
+_bz2 _bz2module.c -I$(prefix)/include -L$(prefix)/lib -lbz2
+
 # Uncommenting the following line tells makesetup that all following modules
 # are not built (see above for more detail).
 #

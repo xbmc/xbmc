@@ -89,7 +89,7 @@ fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 curl: openssl nghttp2
 libass: fontconfig fribidi libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
-python3: expat gettext libxml2 sqlite3 openssl libffi
+python3: expat gettext libxml2 sqlite3 openssl libffi bzip2
 libcdio: $(ICONV)
 libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
