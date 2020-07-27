@@ -8,7 +8,8 @@ IF ERRORLEVEL 1 (
   EXIT /B 1
 )
 
-SET cmakeGenerator=Visual Studio %vsver% Win64
+SET cmakeGenerator=Visual Studio %vsver%
+SET cmakeArch=x64
 SET TARGET_ARCHITECTURE=x64
 SET TARGET_PLATFORM=%TARGET_ARCHITECTURE%-uwp
 SET cmakeProps=-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=%UCRTVersion%
