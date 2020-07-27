@@ -45,6 +45,8 @@ CMakeSettings.json
 
 # Windows specific generated files
 *.appx
+*.appxsym
+*.msix
 *.cer
 *.exp
 *.ilk
