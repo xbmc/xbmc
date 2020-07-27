@@ -198,30 +198,42 @@ cd kodi-build
 
 Configure build for 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 15 Win64" -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 15 2017" -A x64 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for 32bit:
 ```
-cmake -G "Visual Studio 15" -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 15 2017" -A Win32 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 15 Win64" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 15 2017" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 15" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 15 2017" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP ARM 32bit:
 ```
-cmake -G "Visual Studio 15 ARM" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 15 2017" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
-**WARNING:** `-T host=x64` requires CMake version >= 3.8. If your version is older, drop `-T host=x64` from the command.
+**Visual Studio 2019:**
+
+Replace:
+```
+-G "Visual Studio 15 2017"
+```
+
+With:
+```
+-G "Visual Studio 16 2019"
+```
+
+**WARNING:** Is required CMake version >= 3.8.
 
 Build Kodi:
 Build a `Debug` binary:

@@ -47,7 +47,9 @@ SET vswhere="%builddeps%\%toolsdir%\tools\vswhere\vswhere.exe"
 FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property installationPath`) do (
   IF EXIST "%%i\VC\Auxiliary\Build\vcvarsall.bat" (
     SET vcvars="%%i\VC\Auxiliary\Build\vcvarsall.bat"
-    SET vsver=15
+    SET vsver=15 2017
+    ECHO %%i | findstr "2019" >NUL 2>NUL
+    IF NOT ERRORLEVEL 1 SET vsver=16 2019
   )
 )
 
@@ -57,7 +59,7 @@ IF %vcvars%==no (
     IF NOT ERRORLEVEL 1 (
       IF EXIST "%%i\VC\vcvarsall.bat" (
         SET vcvars="%%i\VC\vcvarsall.bat"
-        SET vsver=14
+        SET vsver=14 2015
       )
     )
   )
