@@ -16,14 +16,6 @@
 #endif
 #include <stdint.h>
 
-namespace kodi
-{
-namespace addon
-{
-  class CInstanceAudioDecoder;
-} /* namespace addon */
-} /* namespace kodi */
-
 extern "C"
 {
 
@@ -34,13 +26,13 @@ typedef struct AddonProps_AudioDecoder
 
 typedef struct AddonToKodiFuncTable_AudioDecoder
 {
-  void* kodiInstance;
+  KODI_HANDLE kodiInstance;
 } AddonToKodiFuncTable_AudioDecoder;
 
 struct AddonInstance_AudioDecoder;
 typedef struct KodiToAddonFuncTable_AudioDecoder
 {
-  kodi::addon::CInstanceAudioDecoder* addonInstance;
+  KODI_HANDLE addonInstance;
   bool (__cdecl* init)(const AddonInstance_AudioDecoder* instance,
                        const char* file, unsigned int filecache,
                        int* channels, int* samplerate,
@@ -311,16 +303,17 @@ private:
                                 int* bitrate, AEDataFormat* format,
                                 const AEChannel** info)
   {
-    instance->toAddon->addonInstance->m_channelList.clear();
-    bool ret = instance->toAddon->addonInstance->Init(file, filecache, *channels,
-                                                          *samplerate, *bitspersample,
-                                                          *totaltime, *bitrate, *format,
-                                                          instance->toAddon->addonInstance->m_channelList);
-    if (!instance->toAddon->addonInstance->m_channelList.empty())
+    CInstanceAudioDecoder* thisClass =
+        static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance);
+
+    thisClass->m_channelList.clear();
+    bool ret = thisClass->Init(file, filecache, *channels, *samplerate, *bitspersample, *totaltime,
+                               *bitrate, *format, thisClass->m_channelList);
+    if (!thisClass->m_channelList.empty())
     {
-      if (instance->toAddon->addonInstance->m_channelList.back() != AE_CH_NULL)
-        instance->toAddon->addonInstance->m_channelList.push_back(AE_CH_NULL);
-      *info = instance->toAddon->addonInstance->m_channelList.data();
+      if (thisClass->m_channelList.back() != AE_CH_NULL)
+        thisClass->m_channelList.push_back(AE_CH_NULL);
+      *info = thisClass->m_channelList.data();
     }
     else
       *info = nullptr;
@@ -329,19 +322,21 @@ private:
 
   inline static int ADDON_ReadPCM(const AddonInstance_AudioDecoder* instance, uint8_t* buffer, int size, int* actualsize)
   {
-    return instance->toAddon->addonInstance->ReadPCM(buffer, size, *actualsize);
+    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)
+        ->ReadPCM(buffer, size, *actualsize);
   }
 
   inline static int64_t ADDON_Seek(const AddonInstance_AudioDecoder* instance, int64_t time)
   {
-    return instance->toAddon->addonInstance->Seek(time);
+    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)->Seek(time);
   }
 
   inline static bool ADDON_ReadTag(const AddonInstance_AudioDecoder* instance, const char* file, char* title, char* artist, int* length)
   {
     std::string intTitle;
     std::string intArtist;
-    bool ret = instance->toAddon->addonInstance->ReadTag(file, intTitle, intArtist, *length);
+    bool ret = static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)
+                   ->ReadTag(file, intTitle, intArtist, *length);
     if (ret)
     {
       strncpy(title, intTitle.c_str(), ADDON_STANDARD_STRING_LENGTH_SMALL-1);
@@ -352,7 +347,7 @@ private:
 
   inline static int ADDON_TrackCount(const AddonInstance_AudioDecoder* instance, const char* file)
   {
-    return instance->toAddon->addonInstance->TrackCount(file);
+    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)->TrackCount(file);
   }
 
   std::vector<AEChannel> m_channelList;
