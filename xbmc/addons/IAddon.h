@@ -39,6 +39,7 @@ namespace ADDON
     virtual std::string ID() const =0;
     virtual std::string Name() const =0;
     virtual bool IsInUse() const =0;
+    virtual bool IsBinary() const = 0;
     virtual AddonVersion Version() const =0;
     virtual AddonVersion MinVersion() const =0;
     virtual std::string Summary() const =0;

@@ -225,6 +225,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DAPP_SCMID=${APP_SCMID}
                                             -DAPP_COPYRIGHT_YEARS=${APP_COPYRIGHT_YEARS}
                                             -DAPP_BUILD_DATE=${APP_BUILD_DATE}
+                                            -DAPP_SHARED_LIBRARY_SUFFIX="${APP_SHARED_LIBRARY_SUFFIX}"
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt

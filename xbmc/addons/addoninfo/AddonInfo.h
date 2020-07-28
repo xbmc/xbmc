@@ -37,6 +37,16 @@ enum class AddonDisabledReason
   PERMANENT_FAILURE = 3
 };
 
+enum class AddonOriginType
+{
+  /// @brief The type of the origin of an addon.
+  ///
+  /// Represents where an addon was installed from.
+  SYSTEM = 0, /// The addon is a system addon
+  REPOSITORY = 1, /// The addon origin is a repository
+  MANUAL = 2 /// The addon origin is a zip file, package or development build
+};
+
 struct DependencyInfo
 {
   std::string id;
@@ -74,6 +84,7 @@ public:
   CAddonInfo(std::string id, TYPE type);
 
   void SetMainType(TYPE type) { m_mainType = type; }
+  void SetBinary(bool isBinary) { m_isBinary = isBinary; }
   void SetLibName(const std::string& libname) { m_libname = libname; }
   void SetPath(const std::string& path) { m_path = path; }
   void AddExtraInfo(const std::string& idName, const std::string& value) { m_extrainfo[idName] = value; }
@@ -133,6 +144,7 @@ public:
 
   const AddonVersion& Version() const { return m_version; }
   const AddonVersion& MinVersion() const { return m_minversion; }
+  bool IsBinary() const { return m_isBinary; }
   const AddonVersion& DependencyMinVersion(const std::string& dependencyID) const;
   const AddonVersion& DependencyVersion(const std::string& dependencyID) const;
   const std::string& Name() const { return m_name; }
@@ -181,6 +193,7 @@ private:
 
   AddonVersion m_version;
   AddonVersion m_minversion;
+  bool m_isBinary;
   std::string m_name;
   std::string m_license;
   std::unordered_map<std::string, std::string> m_summary;
