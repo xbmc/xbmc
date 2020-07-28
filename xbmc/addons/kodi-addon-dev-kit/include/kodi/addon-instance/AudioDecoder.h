@@ -18,6 +18,43 @@ namespace kodi
 namespace addon
 {
 
+class CInstanceAudioDecoder;
+
+class AudioDecoderInfoTag : public CStructHdl<AudioDecoderInfoTag, AUDIO_DECODER_INFO_TAG>
+{
+  /*! \cond PRIVATE */
+  friend class CInstanceAudioDecoder;
+  /*! \endcond */
+
+public:
+  /*! \cond PRIVATE */
+  AudioDecoderInfoTag() { memset(m_cStructure, 0, sizeof(AUDIO_DECODER_INFO_TAG)); }
+  AudioDecoderInfoTag(const AudioDecoderInfoTag& tag) : CStructHdl(tag) {}
+  /*! \endcond */
+
+  void SetTitle(const std::string& title)
+  {
+    strncpy(m_cStructure->title, title.c_str(), sizeof(m_cStructure->title) - 1);
+  }
+
+  std::string GetTitle() const { return m_cStructure->title; }
+
+  void SetArtist(const std::string& artist)
+  {
+    strncpy(m_cStructure->artist, artist.c_str(), sizeof(m_cStructure->artist) - 1);
+  }
+
+  std::string GetArtist() const { return m_cStructure->artist; }
+
+  void SetLength(int length) { m_cStructure->length = length; }
+
+  int GetLength() const { return m_cStructure->length; }
+
+private:
+  AudioDecoderInfoTag(const AUDIO_DECODER_INFO_TAG* tag) : CStructHdl(tag) {}
+  AudioDecoderInfoTag(AUDIO_DECODER_INFO_TAG* tag) : CStructHdl(tag) {}
+};
+
 //==============================================================================
 ///
 /// \addtogroup cpp_kodi_addon_audiodecoder
@@ -224,12 +261,13 @@ public:
   /// @brief Read tag of a file
   ///
   /// @param[in] file                 File to read tag for
-  /// @param[out] title               Title of file
-  /// @param[out] artist              Artist of file
-  /// @param[out] length              Length of file
+  /// @param[out] tag                 Information tag about
   /// @return                         True on success, false on failure
   ///
-  virtual bool ReadTag(const std::string& file, std::string& title, std::string& artist, int& length) { return false; }
+  virtual bool ReadTag(const std::string& file, kodi::addon::AudioDecoderInfoTag& tag)
+  {
+    return false;
+  }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -297,18 +335,13 @@ private:
     return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)->Seek(time);
   }
 
-  inline static bool ADDON_ReadTag(const AddonInstance_AudioDecoder* instance, const char* file, char* title, char* artist, int* length)
+  inline static bool ADDON_ReadTag(const AddonInstance_AudioDecoder* instance,
+                                   const char* file,
+                                   struct AUDIO_DECODER_INFO_TAG* tag)
   {
-    std::string intTitle;
-    std::string intArtist;
-    bool ret = static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)
-                   ->ReadTag(file, intTitle, intArtist, *length);
-    if (ret)
-    {
-      strncpy(title, intTitle.c_str(), ADDON_STANDARD_STRING_LENGTH_SMALL-1);
-      strncpy(artist, intArtist.c_str(), ADDON_STANDARD_STRING_LENGTH_SMALL-1);
-    }
-    return ret;
+    kodi::addon::AudioDecoderInfoTag cppTag(tag);
+    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)
+        ->ReadTag(file, cppTag);
   }
 
   inline static int ADDON_TrackCount(const AddonInstance_AudioDecoder* instance, const char* file)

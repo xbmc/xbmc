@@ -116,14 +116,12 @@ bool CAudioDecoder::Load(const std::string& fileName,
   if (!m_struct.toAddon->read_tag)
     return false;
 
-  char title[256] = {0};
-  char artist[256] = {0};
-  int length;
-  if (m_struct.toAddon->read_tag(&m_struct, fileName.c_str(), title, artist, &length))
+  AUDIO_DECODER_INFO_TAG cTag;
+  if (m_struct.toAddon->read_tag(&m_struct, fileName.c_str(), &cTag))
   {
-    tag.SetTitle(title);
-    tag.SetArtist(artist);
-    tag.SetDuration(length);
+    tag.SetTitle(cTag.title);
+    tag.SetArtist(cTag.artist);
+    tag.SetDuration(cTag.length);
     return true;
   }
 

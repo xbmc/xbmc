@@ -16,6 +16,13 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  struct AUDIO_DECODER_INFO_TAG
+  {
+    char title[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char artist[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    int length;
+  };
+
   typedef struct AddonProps_AudioDecoder
   {
     int dummy;
@@ -47,9 +54,7 @@ extern "C"
     int64_t(__cdecl* seek)(const struct AddonInstance_AudioDecoder* instance, int64_t time);
     bool(__cdecl* read_tag)(const struct AddonInstance_AudioDecoder* instance,
                             const char* file,
-                            char* title,
-                            char* artist,
-                            int* length);
+                            struct AUDIO_DECODER_INFO_TAG* tag);
     int(__cdecl* track_count)(const struct AddonInstance_AudioDecoder* instance, const char* file);
   } KodiToAddonFuncTable_AudioDecoder;
 
