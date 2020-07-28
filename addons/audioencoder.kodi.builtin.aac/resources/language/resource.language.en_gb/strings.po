@@ -1,6 +1,6 @@
 # Kodi Media Center language file
-# Addon Name: Dim
-# Addon id: screensaver.xbmc.builtin.dim
+# Addon Name: AAC Audio Encoder
+# Addon id: audioencoder.kodi.builtin.aac
 # Addon Provider: Team Kodi
 msgid ""
 msgstr ""
@@ -16,20 +16,20 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
+#. Bitrate to use on for compression
 #: resources/settings.xml
 msgctxt "#30000"
-msgid "Brightness level"
+msgid "Bitrate"
 msgstr ""
 
-#. Setting help text
+#. Description of setting with label #30000 "Bitrate"
 #: resources/settings.xml
 msgctxt "#30001"
-msgid "Level in percent of how strongly the screen remains illuminated."
+msgid "Select which bitrate to use for the AAC audio encoder for audio compression."
 msgstr ""
 
-#. Setting category name
+#. Value format for with bitrate edited field
 #: resources/settings.xml
 msgctxt "#30002"
-msgid "Preferences"
+msgid "{0:d} kbps"
 msgstr ""

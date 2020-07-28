@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="audioencoder.kodi.builtin.aac"
-  version="1.0.1"
+  version="1.0.2"
   name="AAC encoder"
   provider-name="spiff">
   <extension
@@ -9,8 +9,8 @@
     extension=".m4a"
     library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">AAC Audio Encoder</summary>
-    <description lang="en">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
+    <summary lang="en_GB">AAC Audio Encoder</summary>
+    <description lang="en_GB">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <platform>all</platform>
     <assets>
       <icon>icon.png</icon>
