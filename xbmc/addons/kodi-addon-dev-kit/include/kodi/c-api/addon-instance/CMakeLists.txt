@@ -1,4 +1,5 @@
-set(HEADERS audio_encoder.h
+set(HEADERS audio_decoder.h
+            audio_encoder.h
             image_decoder.h
             pvr.h)
 
