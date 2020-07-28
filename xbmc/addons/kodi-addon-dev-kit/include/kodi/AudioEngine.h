@@ -98,7 +98,7 @@ namespace audioengine
 /// With the help of this format information, Kodi adjusts its processing
 /// accordingly.
 ///
-//@{
+///@{
 class ATTRIBUTE_HIDDEN AudioEngineFormat
   : public addon::CStructHdl<AudioEngineFormat, AUDIO_ENGINE_FORMAT>
 {
@@ -139,7 +139,7 @@ public:
 
   /// @addtogroup cpp_kodi_audioengine_Defs_AudioEngineFormat
   /// @copydetails cpp_kodi_audioengine_Defs_AudioEngineFormat_Help
-  //@{
+  ///@{
 
   /// @brief The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
   void SetDataFormat(enum AudioEngineDataFormat format) { m_cStructure->m_dataFormat = format; }
@@ -228,8 +228,9 @@ public:
 
     return true;
   }
+  ///@}
 };
-//@}
+///@}
 //----------------------------------------------------------------------------
 
 //}}}
