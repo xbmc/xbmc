@@ -46,9 +46,92 @@ public:
 
   std::string GetArtist() const { return m_cStructure->artist; }
 
-  void SetLength(int length) { m_cStructure->length = length; }
+  void SetAlbum(const std::string& album)
+  {
+    strncpy(m_cStructure->album, album.c_str(), sizeof(m_cStructure->album) - 1);
+  }
 
-  int GetLength() const { return m_cStructure->length; }
+  std::string GetAlbum() const { return m_cStructure->album; }
+
+  void SetAlbumArtist(const std::string& albumArtist)
+  {
+    strncpy(m_cStructure->album_artist, albumArtist.c_str(),
+            sizeof(m_cStructure->album_artist) - 1);
+  }
+
+  std::string GetAlbumArtist() const { return m_cStructure->album_artist; }
+
+  void SetMediaType(const std::string& mediaType)
+  {
+    strncpy(m_cStructure->media_type, mediaType.c_str(), sizeof(m_cStructure->media_type) - 1);
+  }
+
+  std::string GetMediaType() const { return m_cStructure->media_type; }
+
+  void SetGenre(const std::string& genre)
+  {
+    strncpy(m_cStructure->genre, genre.c_str(), sizeof(m_cStructure->genre) - 1);
+  }
+
+  std::string GetGenre() const { return m_cStructure->genre; }
+
+  void SetDuration(int duration) { m_cStructure->duration = duration; }
+
+  int GetDuration() const { return m_cStructure->duration; }
+
+  void SetTrack(int track) { m_cStructure->track = track; }
+
+  int GetTrack() const { return m_cStructure->track; }
+
+  void SetDisc(int disc) { m_cStructure->disc = disc; }
+
+  int GetDisc() const { return m_cStructure->disc; }
+
+  void SetDiscSubtitle(const std::string& discSubtitle)
+  {
+    strncpy(m_cStructure->disc_subtitle, discSubtitle.c_str(),
+            sizeof(m_cStructure->disc_subtitle) - 1);
+  }
+
+  std::string GetDiscSubtitle() const { return m_cStructure->disc_subtitle; }
+
+  void SetDiscTotal(int discTotal) { m_cStructure->disc_total = discTotal; }
+
+  int GetDiscTotal() const { return m_cStructure->disc_total; }
+
+  void SetReleaseDate(const std::string& releaseDate)
+  {
+    strncpy(m_cStructure->release_date, releaseDate.c_str(),
+            sizeof(m_cStructure->release_date) - 1);
+  }
+
+  std::string GetReleaseDate() const { return m_cStructure->release_date; }
+
+  void SetLyrics(const std::string& lyrics)
+  {
+    strncpy(m_cStructure->lyrics, lyrics.c_str(), sizeof(m_cStructure->lyrics) - 1);
+  }
+
+  std::string GetLyrics() const { return m_cStructure->lyrics; }
+
+  void SetSamplerate(int samplerate) { m_cStructure->samplerate = samplerate; }
+
+  int GetSamplerate() const { return m_cStructure->samplerate; }
+
+  void SetChannels(int channels) { m_cStructure->channels = channels; }
+
+  int GetChannels() const { return m_cStructure->channels; }
+
+  void SetBitrate(int bitrate) { m_cStructure->bitrate = bitrate; }
+
+  int GetBitrate() const { return m_cStructure->bitrate; }
+
+  void SetComment(const std::string& comment)
+  {
+    strncpy(m_cStructure->comment, comment.c_str(), sizeof(m_cStructure->comment) - 1);
+  }
+
+  std::string GetComment() const { return m_cStructure->comment; }
 
 private:
   AudioDecoderInfoTag(const AUDIO_DECODER_INFO_TAG* tag) : CStructHdl(tag) {}

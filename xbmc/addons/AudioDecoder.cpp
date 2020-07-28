@@ -116,16 +116,32 @@ bool CAudioDecoder::Load(const std::string& fileName,
   if (!m_struct.toAddon->read_tag)
     return false;
 
-  AUDIO_DECODER_INFO_TAG cTag;
-  if (m_struct.toAddon->read_tag(&m_struct, fileName.c_str(), &cTag))
+  AUDIO_DECODER_INFO_TAG* cTag = new AUDIO_DECODER_INFO_TAG(); // allocate by his size
+  bool ret = m_struct.toAddon->read_tag(&m_struct, fileName.c_str(), cTag);
+  if (ret)
   {
-    tag.SetTitle(cTag.title);
-    tag.SetArtist(cTag.artist);
-    tag.SetDuration(cTag.length);
-    return true;
+    tag.SetTitle(cTag->title);
+    tag.SetArtist(cTag->artist);
+    tag.SetAlbum(cTag->album);
+    tag.SetAlbumArtist(cTag->album_artist);
+    tag.SetType(cTag->media_type);
+    tag.SetGenre(cTag->genre);
+    tag.SetDuration(cTag->duration);
+    tag.SetTrackNumber(cTag->track);
+    tag.SetDiscNumber(cTag->disc);
+    tag.SetDiscSubtitle(cTag->disc_subtitle);
+    tag.SetTotalDiscs(cTag->disc_total);
+    tag.SetReleaseDate(cTag->release_date);
+    tag.SetLyrics(cTag->lyrics);
+    tag.SetSampleRate(cTag->samplerate);
+    tag.SetNoOfChannels(cTag->channels);
+    tag.SetBitRate(cTag->bitrate);
+    tag.SetComment(cTag->comment);
   }
 
-  return false;
+  delete cTag;
+
+  return ret;
 }
 
 int CAudioDecoder::GetTrackCount(const std::string& strPath)

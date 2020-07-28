@@ -11,16 +11,33 @@
 #include "../addon_base.h"
 #include "../audio_engine.h"
 
+#define AUDIO_DECODER_LYRICS_SIZE 65535
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
+  // WARNING About size use malloc/new!
   struct AUDIO_DECODER_INFO_TAG
   {
     char title[ADDON_STANDARD_STRING_LENGTH_SMALL];
     char artist[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    int length;
+    char album[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char album_artist[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char media_type[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char genre[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    int duration;
+    int track;
+    int disc;
+    char disc_subtitle[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    int disc_total;
+    char release_date[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char lyrics[AUDIO_DECODER_LYRICS_SIZE];
+    int samplerate;
+    int channels;
+    int bitrate;
+    char comment[ADDON_STANDARD_STRING_LENGTH];
   };
 
   typedef struct AddonProps_AudioDecoder
