@@ -77,6 +77,7 @@
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "URL.h"
 #include "utils/LangCodeExpander.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
@@ -2311,7 +2312,20 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), common_sub_dirs, items);
 
   std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
-  ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
+
+  CVideoDatabase database;
+  database.Open();
+  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(videoPath);
+
+  if (useAllExternalAudio)
+  {
+    for (const auto& audioItem : items.GetList())
+    {
+      vecAudio.push_back(audioItem.get()->GetPath());
+    }
+  }
+  else
+    ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
 }
 
 bool CUtil::CanBindPrivileged()

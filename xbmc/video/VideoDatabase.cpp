@@ -122,7 +122,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE writer_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
 
   CLog::Log(LOGINFO, "create path table");
-  m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text, idParentPath integer)");
+  m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, allAudio bool, dateAdded text, idParentPath integer)");
 
   CLog::Log(LOGINFO, "create files table");
   m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, dateAdded text)");
@@ -5038,16 +5038,19 @@ void CVideoDatabase::SetScraperForPath(const std::string& filePath, const Scrape
     std::string strSQL;
     if (settings.exclude)
     { //NB See note in ::GetScraperForPath about strContent=='none'
-      strSQL=PrepareSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 , exclude=1 where idPath=%i", idPath);
+      strSQL=PrepareSQL("UPDATE path SET strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0, exclude=1, allAudio=%i WHERE idPath=%i",
+        settings.all_ext_audio, idPath);
     }
     else if(!scraper)
     { // catch clearing content, but not excluding
-      strSQL=PrepareSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0, exclude=0 where idPath=%i", idPath);
+      strSQL=PrepareSQL("UPDATE path SET strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0, exclude=0, allAudio=%i WHERE idPath=%i",
+        settings.all_ext_audio, idPath);
     }
     else
     {
       std::string content = TranslateContent(scraper->Content());
-      strSQL=PrepareSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetPathSettings().c_str(),settings.noupdate, idPath);
+      strSQL=PrepareSQL("UPDATE path SET strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0, allAudio=%i WHERE idPath=%i",
+        content.c_str(), scraper->ID().c_str(), settings.recurse, settings.parent_name, scraper->GetPathSettings().c_str(), settings.noupdate, settings.all_ext_audio, idPath);
     }
     m_pDS->exec(strSQL);
   }
@@ -5668,11 +5671,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 119)
+    m_pDS->exec("ALTER TABLE path ADD allAudio bool");
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 118;
+  return 119;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -7800,7 +7806,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
 
     if (idPath > -1)
     {
-      std::string strSQL=PrepareSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate,path.exclude from path where path.idPath=%i",idPath);
+      std::string strSQL=PrepareSQL("SELECT path.strContent, path.strScraper, path.scanRecursive, path.useFolderNames, path.strSettings, path.noUpdate, path.exclude, path.allAudio FROM path WHERE idPath=%i", idPath);
       m_pDS->query( strSQL );
     }
 
@@ -7808,6 +7814,8 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
     CONTENT_TYPE content = CONTENT_NONE;
     if (!m_pDS->eof())
     { // path is stored in db
+
+      settings.all_ext_audio = m_pDS->fv("path.allAudio").get_asBool();
 
       if (m_pDS->fv("path.exclude").get_asBool())
       {
@@ -7849,13 +7857,13 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
       {
         iFound++;
 
-        std::string strSQL=PrepareSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate, path.exclude from path where strPath='%s'",strParent.c_str());
+        std::string strSQL=PrepareSQL("SELECT path.strContent, path.strScraper, path.scanRecursive, path.useFolderNames, path.strSettings, path.noUpdate, path.exclude, path.allAudio FROM path WHERE strPath='%s'", strParent.c_str());
         m_pDS->query(strSQL);
 
         CONTENT_TYPE content = CONTENT_NONE;
         if (!m_pDS->eof())
         {
-
+          settings.all_ext_audio = m_pDS->fv("path.allAudio").get_asBool();
           std::string strcontent = m_pDS->fv("path.strContent").get_asString();
           StringUtils::ToLower(strcontent);
           if (m_pDS->fv("path.exclude").get_asBool())
@@ -7924,6 +7932,17 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return ScraperPtr();
+}
+
+bool CVideoDatabase::GetUseAllExternalAudioForVideo(const std::string& videoPath) {
+  // Find longest configured source path for given video path
+  std::string strSQL=PrepareSQL("SELECT allAudio FROM path WHERE allAudio IS NOT NULL AND instr('%s', strPath) = 1 ORDER BY length(strPath) DESC LIMIT 1", videoPath.c_str());
+  m_pDS->query(strSQL);
+
+  if (!m_pDS->eof())
+    return m_pDS->fv("allAudio").get_asBool();
+
+  return false;
 }
 
 std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
