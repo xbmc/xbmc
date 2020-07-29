@@ -57,19 +57,41 @@ public:
   /*! Get addons across all repositories */
   bool GetRepositoryContent(ADDON::VECADDONS& addons) const;
 
-  /*!
-   \brief Set repo last checked date, and create the repo if needed
-   \param id id of the repository
-   \returns id of the repository, or -1 on error.
-   */
-  int SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
+  struct RepoUpdateData
+  {
+    /*! \brief last time the repo was checked, or invalid CDateTime if never checked */
+    CDateTime lastCheckedAt;
+    /*! \brief last version of the repo add-on that was checked, or empty if never checked */
+    ADDON::AddonVersion lastCheckedVersion{""};
+    /*! \brief next time the repo should be checked, or invalid CDateTime if unknown */
+    CDateTime nextCheckAt;
+
+    RepoUpdateData() = default;
+
+    RepoUpdateData(CDateTime lastCheckedAt,
+                   ADDON::AddonVersion lastCheckedVersion,
+                   CDateTime nextCheckAt)
+      : lastCheckedAt{lastCheckedAt},
+        lastCheckedVersion{lastCheckedVersion},
+        nextCheckAt{nextCheckAt}
+    {
+    }
+  };
 
   /*!
-   \brief Retrieve the time a repository was last checked and the version it was for
-   \param id id of the repo
-   \return last time the repo was checked, or invalid CDateTime if never checked
+   \brief Set data concerning repository update (last/next date etc.), and create the repo if needed
+   \param id add-on id of the repository
+   \param updateData update data to set
+   \returns id of the repository, or -1 on error.
    */
-  std::pair<CDateTime, ADDON::AddonVersion> LastChecked(const std::string& id);
+  int SetRepoUpdateData(const std::string& id, const RepoUpdateData& updateData);
+
+  /*!
+   \brief Retrieve repository update data (last/next date etc.)
+   \param id add-on id of the repo
+   \return update data of the repository
+   */
+  RepoUpdateData GetRepoUpdateData(const std::string& id);
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
 
@@ -146,5 +168,7 @@ protected:
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
   void DeleteRepository(const std::string& id);
+  void DeleteRepositoryContents(const std::string& id);
+  int GetRepositoryId(const std::string& addonId);
 };
 

@@ -188,22 +188,39 @@ CDateTime CRepositoryUpdater::LastUpdated() const
   CAddonDatabase db;
   db.Open();
   std::vector<CDateTime> updateTimes;
-  std::transform(repos.begin(), repos.end(), std::back_inserter(updateTimes),
-    [&](const AddonPtr& repo)
-    {
-      auto lastCheck = db.LastChecked(repo->ID());
-      if (lastCheck.first.IsValid() && lastCheck.second == repo->Version())
-        return lastCheck.first;
-      return CDateTime();
-    });
+  std::transform(
+      repos.begin(), repos.end(), std::back_inserter(updateTimes), [&](const AddonPtr& repo) {
+        const auto updateData = db.GetRepoUpdateData(repo->ID());
+        if (updateData.lastCheckedAt.IsValid() && updateData.lastCheckedVersion == repo->Version())
+          return updateData.lastCheckedAt;
+        return CDateTime();
+      });
 
   return *std::min_element(updateTimes.begin(), updateTimes.end());
 }
 
+CDateTime CRepositoryUpdater::ClosestNextCheck() const
+{
+  VECADDONS repos;
+  if (!m_addonMgr.GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
+    return CDateTime();
+
+  CAddonDatabase db;
+  db.Open();
+  std::vector<CDateTime> nextCheckTimes;
+  std::transform(
+      repos.begin(), repos.end(), std::back_inserter(nextCheckTimes), [&](const AddonPtr& repo) {
+        const auto updateData = db.GetRepoUpdateData(repo->ID());
+        if (updateData.nextCheckAt.IsValid() && updateData.lastCheckedVersion == repo->Version())
+          return updateData.nextCheckAt;
+        return CDateTime();
+      });
+
+  return *std::min_element(nextCheckTimes.begin(), nextCheckTimes.end());
+}
+
 void CRepositoryUpdater::ScheduleUpdate()
 {
-  const CDateTimeSpan interval(0, 24, 0, 0);
-
   CSingleLock lock(m_criticalSection);
   m_timer.Stop(true);
 
@@ -213,12 +230,15 @@ void CRepositoryUpdater::ScheduleUpdate()
   if (!m_addonMgr.HasAddons(ADDON_REPOSITORY))
     return;
 
-  auto prev = LastUpdated();
-  auto next = std::max(CDateTime::GetCurrentDateTime(), prev + interval);
-  int delta = std::max(1, (next - CDateTime::GetCurrentDateTime()).GetSecondsTotal() * 1000);
-
-  CLog::Log(LOGDEBUG,"CRepositoryUpdater: previous update at %s, next at %s",
-      prev.GetAsLocalizedDateTime().c_str(), next.GetAsLocalizedDateTime().c_str());
+  int delta{1};
+  const auto nextCheck = ClosestNextCheck();
+  if (nextCheck.IsValid())
+  {
+    // Repos were already checked once and we know when to check next
+    delta = std::max(1, (nextCheck - CDateTime::GetCurrentDateTime()).GetSecondsTotal() * 1000);
+    CLog::Log(LOGDEBUG, "CRepositoryUpdater: closest next update check at {} (in {} s)",
+              nextCheck.GetAsLocalizedDateTime(), delta / 1000);
+  }
 
   if (!m_timer.Start(delta))
     CLog::Log(LOGERROR,"CRepositoryUpdater: failed to start timer");
