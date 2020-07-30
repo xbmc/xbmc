@@ -26,13 +26,17 @@ namespace VIDEO
 
   typedef struct SScanSettings
   {
-    SScanSettings() { parent_name = parent_name_root = noupdate = exclude = all_ext_audio = false; recurse = 1;}
+    SScanSettings()
+    {
+      parent_name = parent_name_root = noupdate = exclude = all_ext_audio = false;
+      recurse = 1;
+    }
     bool parent_name;       /* use the parent dirname as name of lookup */
     bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
     int  recurse;           /* recurse into sub folders (indicate levels) */
     bool noupdate;          /* exclude from update library function */
     bool exclude;           /* exclude this path from scraping */
-    bool all_ext_audio;     /* treat all audio files in video directory as external tracks */
+    bool all_ext_audio; /* treat all audio files in video directory as external tracks */
   } SScanSettings;
 
   class CVideoInfoScanner : public CInfoScanner

@@ -39,7 +39,7 @@
 #define SETTING_CONTAINS_SINGLE_ITEM  "containssingleitem"
 #define SETTING_EXCLUDE               "exclude"
 #define SETTING_NO_UPDATING           "noupdating"
-#define SETTING_ALL_EXTERNAL_AUDIO    "allexternalaudio"
+#define SETTING_ALL_EXTERNAL_AUDIO "allexternalaudio"
 
 using namespace ADDON;
 
@@ -66,7 +66,7 @@ void CGUIDialogContentSettings::SetScanSettings(const VIDEO::SScanSettings &scan
   m_exclude             = scanSettings.exclude;
   m_containsSingleItem  = scanSettings.parent_name_root;
   m_noUpdating          = scanSettings.noupdate;
-  m_allExternalAudio    = scanSettings.all_ext_audio;
+  m_allExternalAudio = scanSettings.all_ext_audio;
 }
 
 bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content /* = CONTENT_NONE */)
@@ -340,7 +340,8 @@ void CGUIDialogContentSettings::InitializeSettings()
     {
       AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20379, SettingLevel::Basic, m_containsSingleItem, false, m_showScanSettings);
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, SettingLevel::Basic, m_noUpdating, false, m_showScanSettings);
-      AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic, m_allExternalAudio, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic,
+                m_allExternalAudio, false, m_showScanSettings);
       break;
     }
 
@@ -351,7 +352,8 @@ void CGUIDialogContentSettings::InitializeSettings()
       std::shared_ptr<CSettingBool> settingScanRecursive = AddToggle(groupDetails, SETTING_SCAN_RECURSIVE, 20346, SettingLevel::Basic, m_scanRecursive, false, m_showScanSettings);
       std::shared_ptr<CSettingBool> settingContainsSingleItem = AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20383, SettingLevel::Basic, m_containsSingleItem, false, m_showScanSettings);
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, SettingLevel::Basic, m_noUpdating, false, m_showScanSettings);
-      AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic, m_allExternalAudio, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic,
+                m_allExternalAudio, false, m_showScanSettings);
 
       // define an enable dependency with (m_useDirectoryNames && !m_containsSingleItem) || !m_useDirectoryNames
       CSettingDependency dependencyScanRecursive(SettingDependencyType::Enable, GetSettingsManager());
@@ -384,7 +386,8 @@ void CGUIDialogContentSettings::InitializeSettings()
     case CONTENT_NONE:
     default:
       AddToggle(groupDetails, SETTING_EXCLUDE, 20380, SettingLevel::Basic, m_exclude, false, !m_showScanSettings);
-      AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic, m_allExternalAudio, false, !m_showScanSettings);
+      AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic,
+                m_allExternalAudio, false, !m_showScanSettings);
       break;
   }
 }
