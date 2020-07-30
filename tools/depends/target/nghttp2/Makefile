@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=nghttp2
-VERSION=1.35.1
+VERSION=1.41.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
 
 # configuration settings

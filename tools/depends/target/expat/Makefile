@@ -3,12 +3,12 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=expat
-VERSION=2.2.7
+VERSION=2.2.9
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; ./configure --prefix=$(PREFIX) --disable-shared
+CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; ./configure --prefix=$(PREFIX) --disable-shared --without-examples --without-tests --without-docbook
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 

@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile 01-disable-executables.patch 02-fix-gas-pr
 
 # lib name, version
 LIBNAME=libjpeg-turbo
-VERSION=2.0.4
+VERSION=2.0.5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 

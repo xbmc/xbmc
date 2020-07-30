@@ -3,13 +3,12 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libxml2
-VERSION=2.9.4
+VERSION=2.9.10
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --without-python --without-iconv --disable-shared
+CONFIGURE=./configure --prefix=$(PREFIX) --without-python --without-iconv --disable-shared
 
 LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
 
@@ -21,8 +20,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	sed -ie 's|runtest$(EXEEXT)||' "$(PLATFORM)/Makefile.in"
-	sed -ie 's|testrecurse$(EXEEXT)||' "$(PLATFORM)/Makefile.in"
+	cd $(PLATFORM); ./autogen.sh
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
