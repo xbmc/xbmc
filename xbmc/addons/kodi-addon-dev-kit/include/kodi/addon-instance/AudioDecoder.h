@@ -9,11 +9,8 @@
 #pragma once
 
 #include "../AddonBase.h"
-#ifdef BUILD_KODI_ADDON
-#include "../AEChannelData.h"
-#else
-#include "cores/AudioEngine/Utils/AEChannelData.h"
-#endif
+#include "../AudioEngine.h"
+
 #include <stdint.h>
 
 extern "C"
@@ -33,12 +30,16 @@ struct AddonInstance_AudioDecoder;
 typedef struct KodiToAddonFuncTable_AudioDecoder
 {
   KODI_HANDLE addonInstance;
-  bool (__cdecl* init)(const AddonInstance_AudioDecoder* instance,
-                       const char* file, unsigned int filecache,
-                       int* channels, int* samplerate,
-                       int* bitspersample, int64_t* totaltime,
-                       int* bitrate, AEDataFormat* format,
-                       const AEChannel** info);
+  bool(__cdecl* init)(const AddonInstance_AudioDecoder* instance,
+                      const char* file,
+                      unsigned int filecache,
+                      int* channels,
+                      int* samplerate,
+                      int* bitspersample,
+                      int64_t* totaltime,
+                      int* bitrate,
+                      enum AudioEngineDataFormat* format,
+                      const enum AudioEngineChannel** info);
   int  (__cdecl* read_pcm)(const AddonInstance_AudioDecoder* instance, uint8_t* buffer, int size, int* actualsize);
   int64_t  (__cdecl* seek)(const AddonInstance_AudioDecoder* instance, int64_t time);
   bool (__cdecl* read_tag)(const AddonInstance_AudioDecoder* instance,
@@ -224,11 +225,15 @@ public:
   /// @return                         true if successfully done, otherwise
   ///                                 false
   ///
-  virtual bool Init(const std::string& filename, unsigned int filecache,
-                    int& channels, int& samplerate,
-                    int& bitspersample, int64_t& totaltime,
-                    int& bitrate, AEDataFormat& format,
-                    std::vector<AEChannel>& channellist) = 0;
+  virtual bool Init(const std::string& filename,
+                    unsigned int filecache,
+                    int& channels,
+                    int& samplerate,
+                    int& bitspersample,
+                    int64_t& totaltime,
+                    int& bitrate,
+                    AudioEngineDataFormat& format,
+                    std::vector<AudioEngineChannel>& channellist) = 0;
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -297,11 +302,16 @@ private:
     m_instanceData->toAddon->track_count = ADDON_TrackCount;
   }
 
-  inline static bool ADDON_Init(const AddonInstance_AudioDecoder* instance, const char* file, unsigned int filecache,
-                                int* channels, int* samplerate,
-                                int* bitspersample, int64_t* totaltime,
-                                int* bitrate, AEDataFormat* format,
-                                const AEChannel** info)
+  inline static bool ADDON_Init(const AddonInstance_AudioDecoder* instance,
+                                const char* file,
+                                unsigned int filecache,
+                                int* channels,
+                                int* samplerate,
+                                int* bitspersample,
+                                int64_t* totaltime,
+                                int* bitrate,
+                                AudioEngineDataFormat* format,
+                                const AudioEngineChannel** info)
   {
     CInstanceAudioDecoder* thisClass =
         static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance);
@@ -311,8 +321,8 @@ private:
                                *bitrate, *format, thisClass->m_channelList);
     if (!thisClass->m_channelList.empty())
     {
-      if (thisClass->m_channelList.back() != AE_CH_NULL)
-        thisClass->m_channelList.push_back(AE_CH_NULL);
+      if (thisClass->m_channelList.back() != AUDIOENGINE_CH_NULL)
+        thisClass->m_channelList.push_back(AUDIOENGINE_CH_NULL);
       *info = thisClass->m_channelList.data();
     }
     else
@@ -350,7 +360,7 @@ private:
     return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)->TrackCount(file);
   }
 
-  std::vector<AEChannel> m_channelList;
+  std::vector<AudioEngineChannel> m_channelList;
   AddonInstance_AudioDecoder* m_instanceData;
 };
 

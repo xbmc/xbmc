@@ -7,6 +7,7 @@
 
 #include "AudioDecoder.h"
 
+#include "addons/interfaces/AudioEngine.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
@@ -54,14 +55,26 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 
   int channels;
   int sampleRate;
+  AudioEngineDataFormat addonFormat = AUDIOENGINE_FMT_INVALID;
 
   bool ret = m_struct.toAddon->init(&m_struct, file.GetDynPath().c_str(), filecache, &channels,
                                     &sampleRate, &m_bitsPerSample, &m_TotalTime, &m_bitRate,
-                                    &m_format.m_dataFormat, &m_channel);
+                                    &addonFormat, &m_channel);
 
+  m_format.m_dataFormat = Interface_AudioEngine::TranslateAEFormatToKodi(addonFormat);
   m_format.m_sampleRate = sampleRate;
   if (m_channel)
-    m_format.m_channelLayout = CAEChannelInfo(m_channel);
+  {
+    CAEChannelInfo layout;
+    for (unsigned int ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+    {
+      if (m_channel[ch] == AUDIOENGINE_CH_NULL)
+        break;
+      layout += Interface_AudioEngine::TranslateAEChannelToKodi(m_channel[ch]);
+    }
+
+    m_format.m_channelLayout = layout;
+  }
   else
     m_format.m_channelLayout = CAEUtil::GuessChLayout(channels);
 
