@@ -1,38 +1,30 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -379,10 +379,12 @@
+@@ -379,6 +379,9 @@
  	*-*-cygwin*)
  		ac_sys_system=Cygwin
  		;;
 +	*-*-darwin*)
 +		ac_sys_system=Darwin
 +		;;
- 	*)
- 		# for now, limit cross builds to known configurations
- 		MACHDEP="unknown"
--		AC_MSG_ERROR([cross build not supported for $host])
- 	esac
- 	ac_sys_release=
-     else
-@@ -423,10 +425,11 @@
+ 	*-*-vxworks*)
+ 	    ac_sys_system=VxWorks
+ 	    ;;
+@@ -428,6 +431,8 @@
  	*-*-cygwin*)
  		_host_cpu=
  		;;
 +	*-*-darwin*)
 +		;;
- 	*)
- 		# for now, limit cross builds to known configurations
- 		MACHDEP="unknown"
--		AC_MSG_ERROR([cross build not supported for $host])
- 	esac
- 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
- fi
-@@ -492,6 +492,8 @@
+ 	*-*-vxworks*)
+ 		_host_cpu=$host_cpu
+ 		;;
+@@ -500,6 +505,8 @@
      define_xopen_source=no;;
    Darwin/@<:@[12]@:>@@<:@0-9@:>@.*)
      define_xopen_source=no;;
 +  Darwin/*)
-+    define_xopen_source=no;;  
++    define_xopen_source=no;;
    # On AIX 4 and 5.1, mbstate_t is defined only when _XOPEN_SOURCE == 500 but
    # used in wcsnrtombs() and mbsnrtowcs() even if _XOPEN_SOURCE is not defined
    # or has another value. By not (re)defining it, the defaults come in place.

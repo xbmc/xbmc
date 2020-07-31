@@ -19,7 +19,6 @@
 #include <vector>
 
 typedef struct _object PyObject;
-struct _ts;
 
 class CPythonInvoker : public ILanguageInvoker
 {
@@ -65,7 +64,7 @@ private:
   FILE* PyFile_AsFileWithMode(PyObject* py_file, const char* mode);
 
   std::string m_pythonPath;
-  _ts* m_threadState;
+  PyThreadState* m_threadState;
   bool m_stop;
   CEvent m_stoppedEvent;
 

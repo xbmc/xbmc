@@ -1,6 +1,6 @@
 --- a/Lib/os.py
 +++ b/Lib/os.py
-@@ -602,6 +602,7 @@
+@@ -599,6 +599,7 @@
          fullname = path.join(dir, file)
          try:
              exec_func(fullname, *argrest)
@@ -10,7 +10,7 @@
          except OSError as e:
 --- a/Lib/platform.py
 +++ b/Lib/platform.py
-@@ -781,7 +781,7 @@
+@@ -604,7 +604,7 @@
  
      """ Interface to the system's uname command.
      """
@@ -18,8 +18,8 @@
 +    if sys.platform in ('dos', 'win32', 'win16', 'darwin'):
          # XXX Others too ?
          return default
-     try:
-@@ -804,7 +804,7 @@
+ 
+@@ -626,7 +626,7 @@
          default in case the command should fail.
  
      """
@@ -27,10 +27,10 @@
 +    if sys.platform in ('dos', 'win32', 'win16', 'darwin'):
          # XXX Others too ?
          return default
-     target = _follow_symlinks(target)
+ 
 --- a/Lib/subprocess.py
 +++ b/Lib/subprocess.py
-@@ -851,6 +851,7 @@
+@@ -936,6 +936,7 @@
          if not self._child_created:
              # We didn't get to successfully create a child process.
              return
@@ -38,7 +38,7 @@
          if self.returncode is None:
              # Not reading subprocess exit status creates a zombie process which
              # is only destroyed at the parent python process exit
-@@ -1394,6 +1395,7 @@
+@@ -1566,6 +1566,7 @@
              else:
                  args = list(args)
  
@@ -46,7 +46,7 @@
              if shell:
                  # On Android the default shell is at '/system/bin/sh'.
                  unix_shell = ('/system/bin/sh' if
-@@ -1452,6 +1454,7 @@
+@@ -1643,6 +1643,7 @@
                              errpipe_read, errpipe_write,
                              restore_signals, start_new_session, preexec_fn)
                      self._child_created = True
@@ -54,7 +54,7 @@
                  finally:
                      # be sure the FD is closed no matter what
                      os.close(errpipe_write)
-@@ -1480,6 +1483,7 @@
+@@ -1662,6 +1662,7 @@
              finally:
                  # be sure the FD is closed no matter what
                  os.close(errpipe_read)
@@ -64,7 +64,7 @@
                  try:
 --- a/Lib/urllib/request.py
 +++ b/Lib/urllib/request.py
-@@ -2580,11 +2580,9 @@
+@@ -2616,11 +2616,9 @@
  
  
  if sys.platform == 'darwin':
@@ -77,7 +77,7 @@
  
      def getproxies_macosx_sysconf():
          """Return a dictionary of scheme -> proxy server URL mappings.
-@@ -2592,7 +2590,7 @@
+@@ -2628,7 +2628,7 @@
          This function uses the MacOSX framework SystemConfiguration
          to fetch the proxy information.
          """
@@ -86,7 +86,7 @@
  
  
  
-@@ -2605,9 +2603,9 @@
+@@ -2641,9 +2641,9 @@
          """
          proxies = getproxies_environment()
          if proxies:
@@ -187,7 +187,7 @@
      /* Report the posix error to our parent process. */
      /* We ignore all write() return values as the total size of our writes is
         less than PIPEBUF and we cannot do anything about an error anyways.
-@@ -683,7 +702,8 @@
+@@ -690,7 +709,8 @@
          need_after_fork = 1;
      }
  
@@ -199,7 +199,7 @@
          /*
 --- a/Modules/getpath.c
 +++ b/Modules/getpath.c
-@@ -593,8 +593,10 @@
+@@ -806,8 +806,10 @@
        * will fail if a relative path was used. but in that case,
        * absolutize() should help us out below
        */
@@ -214,7 +214,7 @@
          wchar_t *path = Py_DecodeLocale(execpath, &len);
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -197,6 +197,19 @@
+@@ -216,6 +216,22 @@
  #endif  /* _MSC_VER */
  #endif  /* ! __WATCOMC__ || __QNX__ */
  
@@ -223,6 +223,8 @@
 +#  undef HAVE_FORK1
 +#  undef HAVE_FORKPTY
 +#  undef HAVE_GETGROUPS
++#  undef HAVE_POSIX_SPAWN
++#  undef HAVE_POSIX_SPAWNP
 +#  undef HAVE_SCHED_H
 +#  undef HAVE_SENDFILE
 +#  undef HAVE_SETPRIORITY
@@ -231,10 +233,11 @@
 +#  undef HAVE_WAIT
 +#  undef HAVE_WAIT3
 +#  undef HAVE_WAIT4
++#  undef HAVE_WAITPID
  
  /*[clinic input]
  # one of the few times we lie about this name!
-@@ -475,6 +488,10 @@
+@@ -488,6 +504,10 @@
  }
  #endif
  
@@ -245,7 +248,7 @@
  /* Legacy wrapper */
  void
  PyOS_AfterFork(void)
-@@ -5040,6 +5057,8 @@
+@@ -5239,6 +5259,8 @@
  #endif
      _Py_END_SUPPRESS_IPH
  
@@ -254,7 +257,7 @@
      /* If we get here it's definitely an error */
  
      free_string_array(argvlist, argc);
-@@ -5116,6 +5135,12 @@
+@@ -5319,6 +5341,12 @@
  #endif
      _Py_END_SUPPRESS_IPH
  
@@ -267,18 +270,18 @@
      /* If we get here it's definitely an error */
  
      posix_path_error(path);
-@@ -5416,7 +5441,7 @@
-     pid_t pid;
- 
+@@ -6135,7 +6163,7 @@
+         return NULL;
+     }
      PyOS_BeforeFork();
 -    pid = fork1();
 +    pid = -1;
      if (pid == 0) {
          /* child: this clobbers and resets the import lock. */
          PyOS_AfterFork_Child();
-@@ -5447,7 +5472,7 @@
-     pid_t pid;
- 
+@@ -6173,7 +6201,7 @@
+         return NULL;
+     }
      PyOS_BeforeFork();
 -    pid = fork();
 +    pid = -1;

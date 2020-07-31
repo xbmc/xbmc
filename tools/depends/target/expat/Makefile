@@ -8,7 +8,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; ./configure --prefix=$(PREFIX) --disable-shared --without-examples --without-tests --without-docbook
+CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; CFLAGS="-D_INTERNAL_trim_to_complete_utf8_characters=expat_INTERNAL_trim_to_complete_utf8_characters" ./configure --prefix=$(PREFIX) --disable-shared --without-examples --without-tests --without-docbook
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
