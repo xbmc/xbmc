@@ -3,16 +3,16 @@ DEPS= ../../Makefile.include Makefile 01-disable-tools-tests.patch
 
 # lib name, version
 LIBNAME=libplist
-VERSION=2.0.0
+VERSION=2.2.0
 SOURCE=$(LIBNAME)-$(VERSION)
 FILENAME=v$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
-LIBDYLIB=$(PLATFORM)/src/.libs/libplist++.a
+LIBDYLIB=$(PLATFORM)/src/.libs/libplist++-2.0.a
 CFLAGS+=-fvisibility=default
 all: .installed-$(PLATFORM)
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; CFLAGS="-Dlist_add=plist_list_add" ./configure --prefix=$(PREFIX) --disable-shared --without-cython
+CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; ./configure --prefix=$(PREFIX) --disable-shared --without-cython
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
