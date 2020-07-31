@@ -77,13 +77,15 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
+  HMODULE hDbgHelpDll = nullptr;
+
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
     goto cleanup;
   }
 
   // Load the DBGHELP DLL
-  HMODULE hDbgHelpDll = ::LoadLibrary(L"DBGHELP.DLL");
+  hDbgHelpDll = ::LoadLibrary(L"DBGHELP.DLL");
   if (!hDbgHelpDll)
   {
     goto cleanup;
