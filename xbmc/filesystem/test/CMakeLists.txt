@@ -1,9 +1,12 @@
 set(SOURCES TestDirectory.cpp
             TestFile.cpp
             TestFileFactory.cpp
-            TestHTTPDirectory.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
+
+if(MICROHTTPD_FOUND)
+  list(APPEND SOURCES TestHTTPDirectory.cpp)
+endif()
 
 if(NFS_FOUND)
   list(APPEND SOURCES TestNfsFile.cpp)
