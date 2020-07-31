@@ -11,6 +11,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
+#include "utils/log.h"
 
 namespace ADDON
 {
@@ -53,30 +54,40 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   CTagLoaderTagLib tag;
   tag.Load(file.GetDynPath(), XFILE::CMusicFileDirectory::m_tag, NULL);
 
-  int channels;
-  int sampleRate;
+  int channels = -1;
+  int sampleRate = -1;
   AudioEngineDataFormat addonFormat = AUDIOENGINE_FMT_INVALID;
 
   bool ret = m_struct.toAddon->init(&m_struct, file.GetDynPath().c_str(), filecache, &channels,
                                     &sampleRate, &m_bitsPerSample, &m_TotalTime, &m_bitRate,
                                     &addonFormat, &m_channel);
-
-  m_format.m_dataFormat = Interface_AudioEngine::TranslateAEFormatToKodi(addonFormat);
-  m_format.m_sampleRate = sampleRate;
-  if (m_channel)
+  if (ret)
   {
-    CAEChannelInfo layout;
-    for (unsigned int ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+    if (channels <= 0 || sampleRate <= 0 || addonFormat == AUDIOENGINE_FMT_INVALID)
     {
-      if (m_channel[ch] == AUDIOENGINE_CH_NULL)
-        break;
-      layout += Interface_AudioEngine::TranslateAEChannelToKodi(m_channel[ch]);
+      CLog::Log(LOGERROR,
+                "CAudioDecoder::{} - Addon '{}' returned true without set of needed values",
+                __func__, ID());
+      return false;
     }
 
-    m_format.m_channelLayout = layout;
+    m_format.m_dataFormat = Interface_AudioEngine::TranslateAEFormatToKodi(addonFormat);
+    m_format.m_sampleRate = sampleRate;
+    if (m_channel)
+    {
+      CAEChannelInfo layout;
+      for (unsigned int ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+      {
+        if (m_channel[ch] == AUDIOENGINE_CH_NULL)
+          break;
+        layout += Interface_AudioEngine::TranslateAEChannelToKodi(m_channel[ch]);
+      }
+
+      m_format.m_channelLayout = layout;
+    }
+    else
+      m_format.m_channelLayout = CAEUtil::GuessChLayout(channels);
   }
-  else
-    m_format.m_channelLayout = CAEUtil::GuessChLayout(channels);
 
   return ret;
 }
