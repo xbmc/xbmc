@@ -116,8 +116,8 @@ bool CAudioDecoder::Load(const std::string& fileName,
   if (!m_struct.toAddon->read_tag)
     return false;
 
-  char title[256] = { 0 };
-  char artist[256] = { 0 };
+  char title[256] = {0};
+  char artist[256] = {0};
   int length;
   if (m_struct.toAddon->read_tag(&m_struct, fileName.c_str(), title, artist, &length))
   {
@@ -152,5 +152,4 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
   return result;
 }
 
-
-} /*namespace ADDON*/
+} /* namespace ADDON */
