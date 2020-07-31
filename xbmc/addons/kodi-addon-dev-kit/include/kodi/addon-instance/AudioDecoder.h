@@ -57,9 +57,9 @@ typedef struct KodiToAddonFuncTable_AudioDecoder
 
 typedef struct AddonInstance_AudioDecoder
 {
-  AddonProps_AudioDecoder props;
-  AddonToKodiFuncTable_AudioDecoder toKodi;
-  KodiToAddonFuncTable_AudioDecoder toAddon;
+  struct AddonProps_AudioDecoder* props;
+  struct AddonToKodiFuncTable_AudioDecoder* toKodi;
+  struct KodiToAddonFuncTable_AudioDecoder* toAddon;
 } AddonInstance_AudioDecoder;
 
 } /* extern "C" */
@@ -297,12 +297,12 @@ private:
 
     m_instanceData = static_cast<AddonInstance_AudioDecoder*>(instance);
 
-    m_instanceData->toAddon.addonInstance = this;
-    m_instanceData->toAddon.init = ADDON_Init;
-    m_instanceData->toAddon.read_pcm = ADDON_ReadPCM;
-    m_instanceData->toAddon.seek = ADDON_Seek;
-    m_instanceData->toAddon.read_tag = ADDON_ReadTag;
-    m_instanceData->toAddon.track_count = ADDON_TrackCount;
+    m_instanceData->toAddon->addonInstance = this;
+    m_instanceData->toAddon->init = ADDON_Init;
+    m_instanceData->toAddon->read_pcm = ADDON_ReadPCM;
+    m_instanceData->toAddon->seek = ADDON_Seek;
+    m_instanceData->toAddon->read_tag = ADDON_ReadTag;
+    m_instanceData->toAddon->track_count = ADDON_TrackCount;
   }
 
   inline static bool ADDON_Init(const AddonInstance_AudioDecoder* instance, const char* file, unsigned int filecache,
@@ -311,16 +311,16 @@ private:
                                 int* bitrate, AEDataFormat* format,
                                 const AEChannel** info)
   {
-    instance->toAddon.addonInstance->m_channelList.clear();
-    bool ret = instance->toAddon.addonInstance->Init(file, filecache, *channels,
+    instance->toAddon->addonInstance->m_channelList.clear();
+    bool ret = instance->toAddon->addonInstance->Init(file, filecache, *channels,
                                                           *samplerate, *bitspersample,
                                                           *totaltime, *bitrate, *format,
-                                                          instance->toAddon.addonInstance->m_channelList);
-    if (!instance->toAddon.addonInstance->m_channelList.empty())
+                                                          instance->toAddon->addonInstance->m_channelList);
+    if (!instance->toAddon->addonInstance->m_channelList.empty())
     {
-      if (instance->toAddon.addonInstance->m_channelList.back() != AE_CH_NULL)
-        instance->toAddon.addonInstance->m_channelList.push_back(AE_CH_NULL);
-      *info = instance->toAddon.addonInstance->m_channelList.data();
+      if (instance->toAddon->addonInstance->m_channelList.back() != AE_CH_NULL)
+        instance->toAddon->addonInstance->m_channelList.push_back(AE_CH_NULL);
+      *info = instance->toAddon->addonInstance->m_channelList.data();
     }
     else
       *info = nullptr;
@@ -329,19 +329,19 @@ private:
 
   inline static int ADDON_ReadPCM(const AddonInstance_AudioDecoder* instance, uint8_t* buffer, int size, int* actualsize)
   {
-    return instance->toAddon.addonInstance->ReadPCM(buffer, size, *actualsize);
+    return instance->toAddon->addonInstance->ReadPCM(buffer, size, *actualsize);
   }
 
   inline static int64_t ADDON_Seek(const AddonInstance_AudioDecoder* instance, int64_t time)
   {
-    return instance->toAddon.addonInstance->Seek(time);
+    return instance->toAddon->addonInstance->Seek(time);
   }
 
   inline static bool ADDON_ReadTag(const AddonInstance_AudioDecoder* instance, const char* file, char* title, char* artist, int* length)
   {
     std::string intTitle;
     std::string intArtist;
-    bool ret = instance->toAddon.addonInstance->ReadTag(file, intTitle, intArtist, *length);
+    bool ret = instance->toAddon->addonInstance->ReadTag(file, intTitle, intArtist, *length);
     if (ret)
     {
       strncpy(title, intTitle.c_str(), ADDON_STANDARD_STRING_LENGTH_SMALL-1);
@@ -352,7 +352,7 @@ private:
 
   inline static int ADDON_TrackCount(const AddonInstance_AudioDecoder* instance, const char* file)
   {
-    return instance->toAddon.addonInstance->TrackCount(file);
+    return instance->toAddon->addonInstance->TrackCount(file);
   }
 
   std::vector<AEChannel> m_channelList;
