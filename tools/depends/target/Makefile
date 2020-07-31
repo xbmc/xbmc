@@ -117,6 +117,7 @@ libevdev: libudev
 samba-gplv3: gnutls
 taglib: $(ZLIB)
 dav1d: meson-cross-file
+fribidi: meson-cross-file
 libspdlog: libfmt
 
 .installed-$(PLATFORM): $(DEPENDS)
