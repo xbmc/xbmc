@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile apple.patch crosscompile.patch android.pat
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.7.4
+VERSION=3.7.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 BASE_URL=https://www.python.org/ftp/python/$(VERSION)

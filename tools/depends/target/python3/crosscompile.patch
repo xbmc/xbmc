@@ -17,7 +17,7 @@
  POBJS=		\
  		Parser/acceler.o \
  		Parser/grammar1.o \
-@@ -622,7 +621,7 @@
+@@ -623,7 +623,7 @@
  		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
  	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
  		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
@@ -26,7 +26,7 @@
  
  
  # Build static library
-@@ -1526,11 +1525,13 @@
+@@ -1535,11 +1535,13 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
