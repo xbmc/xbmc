@@ -586,6 +586,7 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     // HDR 60 fps needs 6 buffers to avoid frame drops but it's good for all
     swapChainDesc.BufferCount = 6;
+    // FLIP_DISCARD improves performance (needed in some systems for 4K HDR 60 fps)
     swapChainDesc.SwapEffect = (m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_12_0)
                                    ? DXGI_SWAP_EFFECT_FLIP_DISCARD
                                    : DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
@@ -640,9 +641,11 @@ void DX::DeviceResources::ResizeBuffers()
     m_IsHDROutput = (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) && isHdrEnabled;
 
     const int bits = (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? 10 : 8;
+    std::string flip =
+        (swapChainDesc.SwapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD) ? "discard" : "sequential";
 
-    CLog::LogF(LOGINFO, "{} bit swapchain is used with {} buffers and {} output", bits,
-               swapChainDesc.BufferCount, m_IsHDROutput ? "HDR" : "SDR");
+    CLog::LogF(LOGINFO, "{} bit swapchain is used with {} flip {} buffers and {} output", bits,
+               swapChainDesc.BufferCount, flip, m_IsHDROutput ? "HDR" : "SDR");
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
     m_stereoEnabled = bHWStereoEnabled;
