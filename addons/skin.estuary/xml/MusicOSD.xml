@@ -34,19 +34,26 @@
 				<top>30</top>
 				<width>100%</width>
 				<height>135</height>
-				<itemgap>20</itemgap>
+				<itemgap>10</itemgap>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
 				<onup>87</onup>
 				<ondown>noop</ondown>
-				<onleft>5000</onleft>
-				<onright>62040</onright>
+				<onleft>70048</onleft>
+				<onright>70040</onright>
 				<control type="radiobutton" id="600">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 					</include>
 					<onclick>PlayerControl(Previous)</onclick>
 					<visible>MusicPlayer.HasPrevious | Player.SeekEnabled</visible>
+				</control>
+				<control type="radiobutton" id="601">
+					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
+					</include>
+					<onclick>PlayerControl(Rewind)</onclick>
+					<visible>Player.SeekEnabled</visible>
 				</control>
 				<control type="radiobutton" id="602">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/play.png</textureradioonfocus>
@@ -73,14 +80,21 @@
 					</include>
 					<onclick>PlayerControl(Stop)</onclick>
 				</control>
-				<control type="radiobutton" id="605">
+				<control type="radiobutton" id="606">
+					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
+					</include>
+					<onclick>PlayerControl(Forward)</onclick>
+					<visible>Player.SeekEnabled</visible>
+				</control>
+				<control type="radiobutton" id="607">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 					</include>
 					<onclick>PlayerControl(Next)</onclick>
 					<visible>MusicPlayer.HasNext | [MusicPlayer.Content(LiveTV) + Player.SeekEnabled]</visible>
 				</control>
-				<control type="radiobutton" id="606">
+				<control type="radiobutton" id="608">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
 					<textureradioonnofocus>osd/fullscreen/buttons/record-white.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/record.png</textureradioofffocus>
@@ -107,21 +121,14 @@
 				<width>1850</width>
 				<height>135</height>
 				<align>right</align>
-				<itemgap>20</itemgap>
+				<itemgap>10</itemgap>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
 				<onup>87</onup>
 				<ondown>noop</ondown>
-				<onleft>606</onleft>
+				<onleft>608</onleft>
 				<onright>600</onright>
-				<control type="radiobutton" id="62040">
-					<include content="OSDButton">
-						<param name="texture" value="osd/fullscreen/buttons/information.png"/>
-					</include>
-					<onclick>Info</onclick>
-					<visible>MusicPlayer.Content(LiveTV)</visible>
-				</control>
-				<control type="radiobutton" id="62041">
+				<control type="radiobutton" id="70040">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/channels.png"/>
 					</include>
@@ -129,7 +136,7 @@
 					<onclick>ActivateWindow(PVROSDChannels)</onclick>
 					<visible>MusicPlayer.Content(LiveTV)</visible>
 				</control>
-				<control type="radiobutton" id="62042">
+				<control type="radiobutton" id="70041">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
 					</include>
@@ -137,7 +144,7 @@
 					<onclick>ActivateWindow(PVRChannelGuide)</onclick>
 					<visible>MusicPlayer.Content(LiveTV) + VideoPlayer.HasEPG</visible>
 				</control>
-				<control type="radiobutton" id="62043">
+				<control type="radiobutton" id="70050">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/rds.png"/>
 					</include>
@@ -145,7 +152,15 @@
 					<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
 					<visible>MusicPlayer.Content(LiveTV) + RDS.HasRadiotext</visible>
 				</control>
-				<control type="radiobutton" id="620">
+				<control type="radiobutton" id="70051">
+					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/playlist.png"/>
+					</include>
+					<onclick>Dialog.Close(all, true)</onclick>
+					<onclick>ActivateWindow(musicplaylist)</onclick>
+					<visible>Integer.IsGreater(Playlist.Length(music),0)</visible>
+				</control>
+				<control type="radiobutton" id="70052">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/rating.png"/>
 					</include>
@@ -155,7 +170,7 @@
 					<width>76</width>
 					<height>76</height>
 					<visible>![MusicPlayer.Content(LiveTV) | MusicPartyMode.Enabled]</visible>
-					<control type="button" id="704">
+					<control type="button" id="70053">
 						<left>0</left>
 						<top>0</top>
 						<width>74</width>
@@ -164,8 +179,8 @@
 						<font></font>
 						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 						<texturenofocus />
-						<onleft>620</onleft>
-						<onright>607</onright>
+						<onleft>70052</onleft>
+						<onright>70054</onright>
 						<onup>87</onup>
 						<ondown>noop</ondown>
 						<onclick>PlayerControl(Repeat)</onclick>
@@ -179,7 +194,7 @@
 						<texture colordiffuse="white">$VAR[PlayerControlsRepeatImageVar]</texture>
 					</control>
 				</control>
-				<control type="radiobutton" id="607">
+				<control type="radiobutton" id="70054">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/random-on.png</textureradioonfocus>
 					<textureradioonnofocus>osd/fullscreen/buttons/random-on.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/random-off.png</textureradioofffocus>
@@ -200,7 +215,7 @@
 					<visible>![MusicPlayer.Content(LiveTV) | MusicPartyMode.Enabled]</visible>
 					<onclick>PlayerControl(Random)</onclick>
 				</control>
-				<control type="radiobutton" id="703">
+				<control type="radiobutton" id="70055">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 					</include>
@@ -210,7 +225,7 @@
 					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">Close</onclick>
 					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 				</control>
-				<control type="radiobutton" id="5000">
+				<control type="radiobutton" id="70048">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 					</include>
@@ -225,8 +240,8 @@
 				<align>right</align>
 				<width>1000</width>
 				<height>50</height>
-				<label>$VAR[MusicOSDHelpTextVar]</label>
-				<visible>!Player.ShowInfo</visible>
+				<label>$VAR[OSDHelpTextVar]</label>
+				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
 		<control type="group">
@@ -248,14 +263,10 @@
 			</animation>
 			<control type="button" id="87">
 				<include>HiddenObject</include>
-				<onup condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onup>
-				<onup>201</onup>
-				<ondown condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</ondown>
+				<onup>200</onup>
 				<ondown>200</ondown>
-				<onright condition="!Player.Forwarding32x">PlayerControl(Forward)</onright>
-				<onleft condition="!Player.Rewinding32x">PlayerControl(Rewind)</onleft>
-				<visible>Player.SeekEnabled</visible>
-				<onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
+				<onleft>StepBack</onleft>
+				<onright>StepForward</onright>
 			</control>
 			<control type="slider">
 				<left>0</left>

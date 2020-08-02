@@ -73,6 +73,14 @@
 						<onclick>PlayerResolutionSelect</onclick>
 						<visible>Player.HasResolutions</visible>
 					</control>
+					<control type="button" id="7">
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[31142]</label>
+						<onclick>Dialog.Close(1101)</onclick>
+						<onclick>ActivateWindow(1110)</onclick>
+						<visible>Player.TempoEnabled</visible>
+					</control>
 				</control>
 				<control type="grouplist" id="13100">
 					<visible>String.IsEqual(window(home).Property(settingslist_content),3d)</visible>

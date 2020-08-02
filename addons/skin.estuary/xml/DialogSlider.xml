@@ -5,7 +5,7 @@
 	<depth>DepthOSD+</depth>
 	<controls>
 		<control type="group">
-			<top>100</top>
+			<top>20</top>
 			<centerleft>50%</centerleft>
 			<width>840</width>
 			<control type="image">
