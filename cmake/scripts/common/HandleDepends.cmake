@@ -185,7 +185,7 @@ function(add_addon_depends addon searchpath)
         set(EXTERNALPROJECT_SETUP PREFIX ${BUILD_DIR}/${id}
                                   CMAKE_ARGS ${extraflags} ${BUILD_ARGS}
                                   PATCH_COMMAND ${PATCH_COMMAND}
-                                  "${INSTALL_COMMAND}")
+                                  ${INSTALL_COMMAND})
 
         if(CMAKE_VERSION VERSION_GREATER 3.5.9)
           list(APPEND EXTERNALPROJECT_SETUP GIT_SHALLOW 1)
@@ -201,7 +201,7 @@ function(add_addon_depends addon searchpath)
             externalproject_add(${id}
                                 GIT_REPOSITORY ${url}
                                 GIT_TAG ${revision}
-                                "${EXTERNALPROJECT_SETUP}")
+                                ${EXTERNALPROJECT_SETUP})
 
             # For patchfiles to work, disable (users globally set) autocrlf=true
             if(CMAKE_MINIMUM_REQUIRED_VERSION VERSION_GREATER 3.7)
@@ -249,12 +249,12 @@ function(add_addon_depends addon searchpath)
                                 "${URL_HASH_COMMAND}"
                                 DOWNLOAD_DIR ${DOWNLOAD_DIR}
                                 CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
-                                "${EXTERNALPROJECT_SETUP}")
+                                ${EXTERNALPROJECT_SETUP})
           endif()
         else()
           externalproject_add(${id}
                               SOURCE_DIR ${dir}
-                              "${EXTERNALPROJECT_SETUP}")
+                              ${EXTERNALPROJECT_SETUP})
         endif()
 
         if(deps)
