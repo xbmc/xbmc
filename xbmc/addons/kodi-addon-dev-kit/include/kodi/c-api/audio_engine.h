@@ -35,7 +35,7 @@ extern "C"
   /// m_audioengine = new kodi::audioengine::CAEStream(format, AUDIO_STREAM_FORCE_RESAMPLE | AUDIO_STREAM_AUTOSTART);
   /// ~~~~~~~~~~~~~
   ///
-  //@{
+  ///@{
   typedef enum AudioEngineStreamOptions
   {
     /// force resample even if rates match
@@ -45,7 +45,7 @@ extern "C"
     /// autostart the stream when enough data is buffered
     AUDIO_STREAM_AUTOSTART = 1 << 2,
   } AudioEngineStreamOptions;
-  //@}
+  ///@}
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -63,7 +63,7 @@ extern "C"
   /// format.SetChannelLayout(std::vector<AudioEngineChannel>(AUDIOENGINE_CH_FL, AUDIOENGINE_CH_FR));
   /// ~~~~~~~~~~~~~
   ///
-  //@{
+  ///@{
   enum AudioEngineChannel
   {
     /// Used inside to indicate the end of a list and not for addon use directly.
@@ -113,7 +113,7 @@ extern "C"
     /// Maximum possible value, to use e.g. as size inside list
     AUDIOENGINE_CH_MAX
   };
-  //@}
+  ///@}
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -141,7 +141,7 @@ extern "C"
   /// format.SetDataFormat(AUDIOENGINE_FMT_FLOATP);
   /// ~~~~~~~~~~~~~
   ///
-  //@{
+  ///@{
   enum AudioEngineDataFormat
   {
     /// To define format as invalid
@@ -217,7 +217,7 @@ extern "C"
     /// Amount of sample formats.
     AUDIOENGINE_FMT_MAX
   };
-  //@}
+  ///@}
   //----------------------------------------------------------------------------
 
   /*!

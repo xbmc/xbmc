@@ -77,10 +77,11 @@
 #define ADDON_GLOBAL_VERSION_TOOLS_XML_ID             "kodi.binary.global.tools"
 #define ADDON_GLOBAL_VERSION_TOOLS_DEPENDS            "tools/DllHelper.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIODECODER           "2.0.2"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "2.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER           "3.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "3.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "addon-instance/AudioDecoder.h"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "c-api/addon-instance/audio_decoder.h" \
+                                                      "addon-instance/AudioDecoder.h"
 
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "2.1.0"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "2.1.0"
