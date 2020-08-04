@@ -87,6 +87,16 @@ public:
   bool DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
                           std::shared_ptr<IAddon>& update) const;
 
+  /*!
+   * \brief Retrieves the latest version of an addon from all installed repositories
+   *        follows addon origin restriction rules
+   * \param addonId addon id we're looking the latest version for
+   * \param[out] result pointer to the found addon
+   * \return true if a version was found, false otherwise
+   */
+  bool GetLatestAddonVersionFromAllRepos(const std::string& addonId,
+                                         std::shared_ptr<IAddon>& result) const;
+
 private:
   /*!
    * \brief Looks up an addon in a given repository map and
@@ -127,6 +137,17 @@ private:
       const std::string& repoId,
       const std::shared_ptr<IAddon>& addonToAdd,
       std::map<std::string, std::map<std::string, std::shared_ptr<IAddon>>>& map) const;
+
+  /*!
+   * \brief Looks up an addon entry in a specific map
+   * \param addonId addon we want to retrieve
+   * \param map the map we're looking into for the wanted addon
+   * \param[out] result pointer to the found addon, only use when function returns true
+   * \return true if the addon was found in the map, false otherwise
+   */
+  bool GetLatestVersionByMap(const std::string& addonId,
+                             const std::map<std::string, std::shared_ptr<IAddon>>& map,
+                             std::shared_ptr<IAddon>& result) const;
 
   const CAddonMgr& m_addonMgr;
 

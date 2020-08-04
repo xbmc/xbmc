@@ -64,7 +64,7 @@ namespace ADDON
 
     /*! \brief Retrieve a specific addon (of a specific type)
      \param id the id of the addon to retrieve.
-     \param addon [out] the retrieved addon pointer - only use if the function returns true.
+     \param addon[out] the retrieved addon pointer - only use if the function returns true.
      \param type type of addon to retrieve - defaults to any type.
      \param enabledOnly whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
@@ -104,7 +104,18 @@ namespace ADDON
 
     bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
 
-    /*! Get the installable addon with the highest version. */
+    /*! \brief Get the installable addon depending on install rules
+     *         or fall back to highest version.
+     * \note This function gets called in different contexts. If it's
+     *       called for checking possible updates for already installed addons
+     *       our update restriction rules apply.
+     *       If it's called to (for example) populate an addon-select-dialog
+     *       the addon is not installed yet, and we have to fall back to the
+     *       highest version.
+     * \param addonId addon to check for update or installation
+     * \param addon[out] the retrieved addon pointer - only use if the function returns true.
+     * \return true if an addon matching the id is available.
+     */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
 
     void AddToUpdateableAddons(AddonPtr &pAddon);

@@ -190,19 +190,27 @@ bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
 
   update.reset();
 
-  if (ORIGIN_SYSTEM == addon->Origin())
+  const AddonRepoUpdateMode updateMode =
+      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
+
+  bool hasOfficialUpdate = FindAddonAndCheckForUpdate(addon, m_latestOfficialVersions, update);
+
+  if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
   {
-    if (!FindAddonAndCheckForUpdate(addon, m_latestOfficialVersions, update))
-      return false;
-  }
-  else
-  {
-    // if the addon is not found in an official repo...
-    if (!FindAddonAndCheckForUpdate(addon, m_latestOfficialVersions, update))
+    // If we didn't find an official update
+    if (IsFromOfficialRepo(addon, true)) // is an official addon
     {
-      // ...we move on and check the private/3rd party repo(s)
-      if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
-        return false;
+      if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
+        if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
+          return false;
+    }
+    else
+    {
+      // ...we check for updates in the origin repo only
+      const auto& repoEntry = m_latestVersionsByRepo.find(addon->Origin());
+      if (repoEntry != m_latestVersionsByRepo.end())
+        if (!FindAddonAndCheckForUpdate(addon, repoEntry->second, update))
+          return false;
     }
   }
 
@@ -239,4 +247,49 @@ bool CAddonRepos::FindAddonAndCheckForUpdate(
   }
 
   return false;
+}
+
+bool CAddonRepos::GetLatestVersionByMap(const std::string& addonId,
+                                        const std::map<std::string, std::shared_ptr<IAddon>>& map,
+                                        std::shared_ptr<IAddon>& result) const
+{
+  const auto& remote = map.find(addonId);
+  if (remote != map.end()) // is addon in the desired map?
+  {
+    result = remote->second;
+    return true;
+  }
+
+  return false;
+}
+
+bool CAddonRepos::GetLatestAddonVersionFromAllRepos(const std::string& addonId,
+                                                    std::shared_ptr<IAddon>& result) const
+{
+  const AddonRepoUpdateMode updateMode =
+      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
+
+  bool hasOfficialVersion = GetLatestVersionByMap(addonId, m_latestOfficialVersions, result);
+
+  if (hasOfficialVersion)
+  {
+    if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
+    {
+      std::shared_ptr<IAddon> thirdPartyAddon;
+
+      // only use this version if it's higher than the official one
+      if (GetLatestVersionByMap(addonId, m_latestPrivateVersions, thirdPartyAddon))
+      {
+        if (thirdPartyAddon->Version() > result->Version())
+          result = thirdPartyAddon;
+      }
+    }
+  }
+  else
+  {
+    if (!GetLatestVersionByMap(addonId, m_latestPrivateVersions, result))
+      return false;
+  }
+
+  return true;
 }

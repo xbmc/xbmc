@@ -310,16 +310,29 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
 
 bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result)
 {
-  VECADDONS versions;
+  CSingleLock lock(m_critSection);
+
+  CAddonRepos addonRepos(*this);
+  addonRepos.LoadAddonsFromDatabase(m_database, addonId);
+
+  AddonPtr addonToUpdate;
+
+  // check for an update if addon is installed already
+
+  if (GetAddon(addonId, addonToUpdate, ADDON_UNKNOWN, false))
   {
-    CSingleLock lock(m_critSection);
-    if (!m_database.FindByAddonId(addonId, versions) || versions.empty())
-      return false;
+    return addonRepos.DoAddonUpdateCheck(addonToUpdate, result);
   }
 
-  result = *std::max_element(versions.begin(), versions.end(),
-      [](const AddonPtr& a, const AddonPtr& b) { return a->Version() < b->Version(); });
-  return true;
+  // get the latest version from all repos if the
+  // addon is not installed yet (e.g. for addon select dialog)
+
+  CLog::Log(
+      LOGDEBUG,
+      "CAddonMgr::{}: addon {} is not installed. falling back to get latest version from ALL repos",
+      __FUNCTION__, addonId);
+
+  return addonRepos.GetLatestAddonVersionFromAllRepos(addonId, result);
 }
 
 bool CAddonMgr::GetAddonsInternal(const TYPE& type,
