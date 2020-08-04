@@ -207,12 +207,19 @@ private:
 ///@}
 //------------------------------------------------------------------------------
 
-//============================================================================
+//==============================================================================
+/// @defgroup cpp_kodi_addon_visualization_Defs Definitions, structures and enumerators
+/// @ingroup cpp_kodi_addon_visualization
+/// @brief **Visualization add-on instance definition values**\n
+/// All visualization functions associated data structures.
 ///
-/// \addtogroup cpp_kodi_addon_visualization
+/// Used to exchange the available options between Kodi and addon.
+///
+
+//==============================================================================
+/// @addtogroup cpp_kodi_addon_visualization
 /// @brief \cpp_class{ kodi::addon::CInstanceVisualization }
-/// **Visualization add-on instance**
-///
+/// **Visualization add-on instance**\n
 /// [Music visualization](https://en.wikipedia.org/wiki/Music_visualization),
 /// or music visualisation, is a feature in Kodi that generates animated
 /// imagery based on a piece of music. The imagery is usually generated and
@@ -223,18 +230,45 @@ private:
 /// of composited effects. The changes in the music's loudness and frequency
 /// spectrum are among the properties used as input to the visualization.
 ///
-/// Include the header \ref Visualization.h "#include <kodi/addon-instance/Visualization.h>"
+/// Include the header @ref Visualization.h "#include <kodi/addon-instance/Visualization.h>"
 /// to use this class.
 ///
 /// This interface allows the creation of visualizations for Kodi, based upon
 /// **DirectX** or/and **OpenGL** rendering with `C++` code.
 ///
-/// Additionally, there are several \ref cpp_kodi_addon_visualization_CB "other functions"
+/// Additionally, there are several @ref cpp_kodi_addon_visualization_CB "other functions"
 /// available in which the child class can ask about the current hardware,
 /// including the device, display and several other parts.
 ///
-/// --------------------------------------------------------------------------
+/// ----------------------------------------------------------------------------
 ///
+/// **Here's an example on addon.xml:**
+/// ~~~~~~~~~~~~~{.xml}
+/// <?xml version="1.0" encoding="UTF-8"?>
+/// <addon
+///   id="visualization.myspecialnamefor"
+///   version="1.0.0"
+///   name="My special visualization addon"
+///   provider-name="Your Name">
+///   <requires>@ADDON_DEPENDS@</requires>
+///   <extension
+///     point="xbmc.player.musicviz"
+///     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+///   <extension point="xbmc.addon.metadata">
+///     <summary lang="en_GB">My visualization addon addon</summary>
+///     <description lang="en_GB">My visualization addon description</description>
+///     <platform>@PLATFORM@</platform>
+///   </extension>
+/// </addon>
+/// ~~~~~~~~~~~~~
+///
+/// Description to visualization related addon.xml values:
+/// | Name                          | Description
+/// |:------------------------------|----------------------------------------
+/// | <b>`point`</b>                | Addon type specification<br>At all addon types and for this kind always <b>"xbmc.player.musicviz"</b>.
+/// | <b>`library_@PLATFORM@`</b>   | Sets the used library name, which is automatically set by cmake at addon build.
+///
+/// --------------------------------------------------------------------------
 ///
 /// **Here is an example of the minimum required code to start a visualization:**
 /// ~~~~~~~~~~~~~{.cpp}
@@ -285,18 +319,18 @@ private:
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/addon-instance/Visualization.h>
 ///
-/// class CMyVisualization : public ::kodi::addon::CInstanceVisualization
+/// class CMyVisualization : public kodi::addon::CInstanceVisualization
 /// {
 /// public:
-///   CMyVisualization(KODI_HANDLE instance);
+///   CMyVisualization(KODI_HANDLE instance, const std::string& version);
 ///
 ///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
 ///   void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength) override;
 ///   void Render() override;
 /// };
 ///
-/// CMyVisualization::CMyVisualization(KODI_HANDLE instance)
-///   : CInstanceVisualization(instance)
+/// CMyVisualization::CMyVisualization(KODI_HANDLE instance, const std::string& version)
+///   : kodi::addon::CInstanceAudioDecoder(instance, version)
 /// {
 ///   ...
 /// }
@@ -318,29 +352,31 @@ private:
 /// }
 ///
 ///
-/// /*----------------------------------------------------------------------*/
+/// //----------------------------------------------------------------------
 ///
-/// class CMyAddon : public ::kodi::addon::CAddonBase
+/// class CMyAddon : public kodi::addon::CAddonBase
 /// {
 /// public:
 ///   CMyAddon() { }
 ///   ADDON_STATUS CreateInstance(int instanceType,
-///                               std::string instanceID,
+///                               const std::string& instanceID,
 ///                               KODI_HANDLE instance,
+///                               const std::string& version,
 ///                               KODI_HANDLE& addonInstance) override;
 /// };
 ///
-/// /* If you use only one instance in your add-on, can be instanceType and
-///  * instanceID ignored */
+/// // If you use only one instance in your add-on, can be instanceType and
+/// // instanceID ignored
 /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       std::string instanceID,
+///                                       const std::string& instanceID,
 ///                                       KODI_HANDLE instance,
+///                                       const std::string& version,
 ///                                       KODI_HANDLE& addonInstance)
 /// {
 ///   if (instanceType == ADDON_INSTANCE_VISUALIZATION)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my Visualization");
-///     addonInstance = new CMyVisualization(instance);
+///     kodi::Log(ADDON_LOG_NOTICE, "Creating my visualization");
+///     addonInstance = new CMyVisualization(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -356,11 +392,10 @@ private:
 /// The destruction of the example class `CMyVisualization` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-//----------------------------------------------------------------------------
 class ATTRIBUTE_HIDDEN CInstanceVisualization : public IAddonInstance
 {
 public:
-  //==========================================================================
+  //============================================================================
   ///
   /// @ingroup cpp_kodi_addon_visualization
   /// @brief Visualization class constructor
@@ -377,21 +412,48 @@ public:
     SetAddonStruct(CAddonBase::m_interface->firstKodiInstance);
     CAddonBase::m_interface->globalSingleInstance = this;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @ingroup cpp_kodi_addon_visualization
   /// @brief Visualization class constructor used to support multiple instance
-  /// types
+  /// types.
   ///
-  /// @param[in] instance               The instance value given to
-  ///                                   <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
+  /// @param[in] instance The instance value given to
+  ///                     <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
   /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
   ///                        allow compatibility to older Kodi versions.
-  ///                        @note Recommended to set.
   ///
-  /// @warning Only use `instance` from the CreateInstance call
+  /// @note Recommended to set <b>`kodiVersion`</b>.
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// **Here's example about the use of this:**
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// class CMyVisualization : public kodi::addon::CInstanceAudioDecoder
+  /// {
+  /// public:
+  ///   CMyVisualization(KODI_HANDLE instance, const std::string& kodiVersion)
+  ///     : kodi::addon::CInstanceAudioDecoder(instance, kodiVersion)
+  ///   {
+  ///      ...
+  ///   }
+  ///
+  ///   ...
+  /// };
+  ///
+  /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
+  ///                                       const std::string& instanceID,
+  ///                                       KODI_HANDLE instance,
+  ///                                       const std::string& version,
+  ///                                       KODI_HANDLE& addonInstance)
+  /// {
+  ///   kodi::Log(ADDON_LOG_NOTICE, "Creating my visualization");
+  ///   addonInstance = new CMyVisualization(instance, version);
+  ///   return ADDON_STATUS_OK;
+  /// }
+  /// ~~~~~~~~~~~~~
   ///
   explicit CInstanceVisualization(KODI_HANDLE instance, const std::string& kodiVersion = "")
     : IAddonInstance(ADDON_INSTANCE_VISUALIZATION,
@@ -404,52 +466,48 @@ public:
 
     SetAddonStruct(instance);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Destructor
+  /// @brief Destructor.
   ///
   ~CInstanceVisualization() override = default;
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Used to notify the visualization that a new song has been started
+  /// @brief Used to notify the visualization that a new song has been started.
   ///
-  /// @param[in] channels             Number of channels in the stream
-  /// @param[in] samplesPerSec        Samples per second of stream
-  /// @param[in] bitsPerSample        Number of bits in one sample
-  /// @param[in] songName             The name of the currently-playing song
-  /// @return                         true if start successful done
+  /// @param[in] channels Number of channels in the stream
+  /// @param[in] samplesPerSec Samples per second of stream
+  /// @param[in] bitsPerSample Number of bits in one sample
+  /// @param[in] songName The name of the currently-playing song
+  /// @return true if start successful done
   ///
   virtual bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName)
   {
     return true;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
   /// @brief Used to inform the visualization that the rendering control was
-  /// stopped
+  /// stopped.
   ///
   virtual void Stop() {}
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Pass audio data to the visualization
+  /// @brief Pass audio data to the visualization.
   ///
-  /// @param[in] audioData            The raw audio data
-  /// @param[in] audioDataLength      Length of the audioData array
-  /// @param[in] freqData             The [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform)
-  ///                                 of the audio data
-  /// @param[in] freqDataLength       Length of frequency data array
+  /// @param[in] audioData The raw audio data
+  /// @param[in] audioDataLength Length of the audioData array
+  /// @param[in] freqData The [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform)
+  ///                     of the audio data
+  /// @param[in] freqDataLength Length of frequency data array
   ///
   /// Values **freqData** and **freqDataLength** are used if GetInfo() returns
   /// true for the `wantsFreq` parameter. Otherwise, **freqData** is set to
@@ -461,38 +519,34 @@ public:
                          int freqDataLength)
   {
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
   /// @brief Used to inform Kodi that the rendered region is dirty and need an
-  /// update
+  /// update.
   ///
   /// @return True if dirty
   ///
   virtual bool IsDirty() { return true; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Used to indicate when the add-on should render
+  /// @brief Used to indicate when the add-on should render.
   ///
   virtual void Render() {}
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Used to get the number of buffers from the current visualization
+  /// @brief Used to get the number of buffers from the current visualization.
   ///
-  /// @param[out] wantsFreq           Indicates whether the add-on wants FFT
-  ///                                 data. If set to true, the **freqData**
-  ///                                 and **freqDataLength** parameters of
-  ///                                 AudioData() are used
-  /// @param[out] syncDelay           The number of buffers to delay before
-  ///                                 calling AudioData()
+  /// @param[out] wantsFreq Indicates whether the add-on wants FFT data. If set
+  ///                       to true, the **freqData** and **freqDataLength**
+  ///                       parameters of @ref AudioData() are used
+  /// @param[out] syncDelay The number of buffers to delay before calling
+  ///                       @ref AudioData()
   ///
   /// @note If this function is not implemented, it will default to
   /// `wantsFreq` = false and `syncDelay` = 0.
@@ -502,133 +556,160 @@ public:
     wantsFreq = false;
     syncDelay = 0;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Used to get a list of visualization presets the user can select
+  /// @brief Used to get a list of visualization presets the user can select.
   /// from
   ///
-  /// @param[out] presets             The vector list containing the names of
-  ///                                 presets that the user can select
-  /// @return                         Return true if successful, or false if
-  ///                                 there are no presets to choose from
+  /// @param[out] presets The vector list containing the names of presets that
+  ///                     the user can select
+  /// @return Return true if successful, or false if there are no presets to
+  /// choose from
   ///
   virtual bool GetPresets(std::vector<std::string>& presets) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Get the index of the current preset
+  /// @brief Get the index of the current preset.
   ///
-  /// @return                         Index number of the current preset
+  /// @return Index number of the current preset
   ///
   virtual int GetActivePreset() { return -1; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Check if the add-on is locked to the current preset
+  /// @brief Check if the add-on is locked to the current preset.
   ///
-  /// @return                         True if locked to the current preset
+  /// @return True if locked to the current preset
   ///
   virtual bool IsLocked() { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Load the previous visualization preset
+  /// @brief Load the previous visualization preset.
   ///
-  /// @return                 Return true if the previous preset was loaded
+  /// @return Return true if the previous preset was loaded
+  ///
   virtual bool PrevPreset() { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Load the next visualization preset
+  /// @brief Load the next visualization preset.
   ///
-  /// @return                 Return true if the next preset was loaded
+  /// @return Return true if the next preset was loaded
+  ///
   virtual bool NextPreset() { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Load a visualization preset
+  /// @brief Load a visualization preset.
   ///
   /// This function is called after a new preset is selected.
   ///
-  /// @param[in] select       Preset index to use
-  /// @return                 Return true if the preset is loaded
+  /// @param[in] select Preset index to use
+  /// @return Return true if the preset is loaded
+  ///
   virtual bool LoadPreset(int select) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Switch to a new random preset
+  /// @brief Switch to a new random preset.
   ///
-  /// @return                 Return true if a random preset was loaded
+  /// @return Return true if a random preset was loaded
+  ///
   virtual bool RandomPreset() { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Lock the current visualization preset, preventing it from changing
+  /// @brief Lock the current visualization preset, preventing it from changing.
   ///
-  /// @param[in] lockUnlock   If set to true, the preset should be locked
-  /// @return                 Return true if the current preset is locked
+  /// @param[in] lockUnlock If set to true, the preset should be locked
+  /// @return Return true if the current preset is locked
+  ///
   virtual bool LockPreset(bool lockUnlock) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Used to increase/decrease the visualization preset rating
+  /// @brief Used to increase/decrease the visualization preset rating.
   ///
-  /// @param[in] plusMinus    If set to true the rating is increased, otherwise
-  ///                         decreased
-  /// @return                 Return true if the rating is modified
+  /// @param[in] plusMinus If set to true the rating is increased, otherwise
+  ///                      decreased
+  /// @return Return true if the rating is modified
+  ///
   virtual bool RatePreset(bool plusMinus) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Inform the visualization of the current album art image
+  /// @brief Inform the visualization of the current album art image.
   ///
-  /// @param[in] albumart     Path to the current album art image
-  /// @return                 Return true if the image is used
+  /// @param[in] albumart Path to the current album art image
+  /// @return Return true if the image is used
+  ///
   virtual bool UpdateAlbumart(std::string albumart) { return false; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization
-  /// @brief Inform the visualization of the current track's tag information
+  /// @brief Inform the visualization of the current track's tag information.
   ///
-  /// @param[in] track        Visualization track information structure
-  /// @return                 Return true if the track information is used
+  /// @param[in] track Visualization track information structure
+  /// @return Return true if the track information is used
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_visualization_Defs_VisualizationTrack_Help
+  ///
+  ///-------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.cpp}
+  ///
+  /// #include <kodi/addon-instance/Visualization.h>
+  ///
+  /// class CMyVisualization : public kodi::addon::CInstanceVisualization
+  /// {
+  /// public:
+  ///   CMyVisualization(KODI_HANDLE instance, const std::string& version);
+  ///
+  ///   ...
+  ///
+  /// private:
+  ///   kodi::addon::VisualizationTrack m_runningTrack;
+  /// };
+  ///
+  /// bool CMyVisualization::UpdateTrack(const kodi::addon::VisualizationTrack& track)
+  /// {
+  ///   m_runningTrack = track;
+  ///   return true;
+  /// }
+  ///
+  /// ~~~~~~~~~~~~~
+  ///
   virtual bool UpdateTrack(const kodi::addon::VisualizationTrack& track) { return false; }
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_visualization_CB Information functions
+  /// @ingroup cpp_kodi_addon_visualization
+  /// @brief **To get info about the device, display and several other parts**\n
+  /// These are functions to query any values or to transfer them to Kodi.
   ///
-  /// \defgroup cpp_kodi_addon_visualization_CB Information functions
-  /// \ingroup cpp_kodi_addon_visualization
-  /// @brief **To get info about the device, display and several other parts**
-  ///
-  //@{
+  ///@{
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief To transfer available presets on addon
+  /// @brief To transfer available presets on addon.
   ///
   /// Used if @ref GetPresets not possible to use, e.g. where available presets
   /// are only known during @ref Start call.
@@ -643,18 +724,16 @@ public:
     for (auto it : presets)
       m_instanceData->toKodi->transfer_preset(m_instanceData->toKodi->kodiInstance, it.c_str());
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Device that represents the display adapter
+  /// @brief Device that represents the display adapter.
   ///
-  /// @return A pointer to the used device
+  /// @return A pointer to the used device with @ref cpp_kodi_Defs_HardwareContext "HardwareContext"
   ///
   /// @note This is only available on **DirectX**, It us unused (`nullptr`) on
   /// **OpenGL**
-  ///
   ///
   ///-------------------------------------------------------------------------
   ///
@@ -669,50 +748,45 @@ public:
   /// ~~~~~~~~~~~~~
   ///
   inline kodi::HardwareContext Device() { return m_instanceData->props->device; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Returns the X position of the rendering window
+  /// @brief Returns the X position of the rendering window.
   ///
   /// @return The X position, in pixels
   ///
   inline int X() { return m_instanceData->props->x; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Returns the Y position of the rendering window
+  /// @brief Returns the Y position of the rendering window.
   ///
   /// @return The Y position, in pixels
   ///
   inline int Y() { return m_instanceData->props->y; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Returns the width of the rendering window
+  /// @brief Returns the width of the rendering window.
   ///
   /// @return The width, in pixels
   ///
   inline int Width() { return m_instanceData->props->width; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Returns the height of the rendering window
+  /// @brief Returns the height of the rendering window.
   ///
   /// @return The height, in pixels
   ///
   inline int Height() { return m_instanceData->props->height; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
   /// @brief Pixel aspect ratio (often abbreviated PAR) is a ratio that
   /// describes how the width of a pixel compares to the height of that pixel.
@@ -720,32 +794,29 @@ public:
   /// @return The pixel aspect ratio used by the display
   ///
   inline float PixelRatio() { return m_instanceData->props->pixelRatio; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Used to get the name of the add-on defined in `addon.xml`
+  /// @brief Used to get the name of the add-on defined in `addon.xml`.
   ///
   /// @return The add-on name
   ///
   inline std::string Name() { return m_instanceData->props->name; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Used to get the full path where the add-on is installed
+  /// @brief Used to get the full path where the add-on is installed.
   ///
   /// @return The add-on installation path
   ///
   inline std::string Presets() { return m_instanceData->props->presets; }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
+  //============================================================================
   /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Used to get the full path to the add-on's user profile
+  /// @brief Used to get the full path to the add-on's user profile.
   ///
   /// @note The trailing folder (consisting of the add-on's ID) is not created
   /// by default. If it is needed, you must call kodi::vfs::CreateDirectory()
@@ -754,8 +825,9 @@ public:
   /// @return Path to the user profile
   ///
   inline std::string Profile() { return m_instanceData->props->profile; }
-  //--------------------------------------------------------------------------
-  //@}
+  //----------------------------------------------------------------------------
+
+  ///@}
 
 private:
   void SetAddonStruct(KODI_HANDLE instance)

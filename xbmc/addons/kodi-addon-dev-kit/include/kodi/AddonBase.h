@@ -33,7 +33,8 @@ struct IRenderHelper;
 } // namespace gui
 
 //==============================================================================
-/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @ingroup cpp_kodi_Defs
+/// @defgroup cpp_kodi_Defs_HardwareContext using HardwareContext
 /// @brief **Hardware specific device context**\n
 /// This defines an independent value which is used for hardware and OS specific
 /// values.
