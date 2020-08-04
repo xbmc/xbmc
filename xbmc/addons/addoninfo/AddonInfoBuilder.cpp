@@ -409,15 +409,24 @@ bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType, AddonInfoPtr info, 
     if (library != nullptr)
     {
       addonType.m_libname = library;
-      // linux is different an has the version number after the suffix
-      static const std::regex libRegex("^.*" +
-                                       CCompileInfo::CCompileInfo::GetSharedLibrarySuffix() +
-                                       "\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*$");
-      if (std::regex_match(library, libRegex))
+
+      try
       {
-        info->SetBinary(true);
-        CLog::Log(LOGDEBUG, "CAddonInfoBuilder::{}: Binary addon found: {}", __FUNCTION__,
-                  info->ID());
+        // linux is different and has the version number after the suffix
+        static const std::regex libRegex("^.*" +
+                                        CCompileInfo::CCompileInfo::GetSharedLibrarySuffix() +
+                                        "\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*$");
+        if (std::regex_match(library, libRegex))
+        {
+          info->SetBinary(true);
+          CLog::Log(LOGDEBUG, "CAddonInfoBuilder::{}: Binary addon found: {}", __func__,
+                    info->ID());
+        }
+      }
+      catch (const std::regex_error& e)
+      {
+        CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: Regex error caught: {}", __func__,
+                  e.what());
       }
     }
 

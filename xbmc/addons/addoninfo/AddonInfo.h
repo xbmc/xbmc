@@ -193,7 +193,7 @@ private:
 
   AddonVersion m_version;
   AddonVersion m_minversion;
-  bool m_isBinary;
+  bool m_isBinary = false;
   std::string m_name;
   std::string m_license;
   std::unordered_map<std::string, std::string> m_summary;
