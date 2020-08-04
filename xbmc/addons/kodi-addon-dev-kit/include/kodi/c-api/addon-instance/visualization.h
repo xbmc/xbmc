@@ -48,7 +48,7 @@ extern "C"
 
   typedef struct AddonProps_Visualization
   {
-    void* device;
+    ADDON_HARDWARE_CONTEXT device;
     int x;
     int y;
     int width;

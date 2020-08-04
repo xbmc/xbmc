@@ -34,6 +34,33 @@ struct IRenderHelper;
 
 //==============================================================================
 /// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @brief **Hardware specific device context**\n
+/// This defines an independent value which is used for hardware and OS specific
+/// values.
+///
+/// This is basically a simple pointer which has to be changed to the desired
+/// format at the corresponding places using <b>`static_cast<...>(...)`</b>.
+///
+///
+///-------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <d3d11_1.h>
+/// ..
+/// // Note: Device() there is used inside addon child class about
+/// // kodi::addon::CInstanceVisualization
+/// ID3D11DeviceContext1* context = static_cast<ID3D11DeviceContext1*>(kodi::addon::CInstanceVisualization::Device());
+/// ..
+/// ~~~~~~~~~~~~~
+///
+///@{
+using HardwareContext = ADDON_HARDWARE_CONTEXT;
+///@}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_addon_addonbase_Defs
 /// @defgroup cpp_kodi_addon_addonbase_Defs_CSettingValue class CSettingValue
 /// @brief Inside addon main instance used helper class to give settings value.
 ///

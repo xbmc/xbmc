@@ -655,7 +655,20 @@ public:
   /// @note This is only available on **DirectX**, It us unused (`nullptr`) on
   /// **OpenGL**
   ///
-  inline void* Device() { return m_instanceData->props->device; }
+  ///
+  ///-------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <d3d11_1.h>
+  /// ..
+  /// // Note: Device() there is used inside addon child class about
+  /// // kodi::addon::CInstanceVisualization
+  /// ID3D11DeviceContext1* context = static_cast<ID3D11DeviceContext1*>(kodi::addon::CInstanceVisualization::Device());
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  inline kodi::HardwareContext Device() { return m_instanceData->props->device; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
