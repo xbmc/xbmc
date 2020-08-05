@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDON_BASE_H
+#define C_API_ADDON_BASE_H
+
 #include "stdbool.h"
 #include "stdint.h"
 
@@ -250,3 +253,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDON_BASE_H */

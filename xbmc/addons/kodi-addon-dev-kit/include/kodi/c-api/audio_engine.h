@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_AUDIO_ENGINE_H
+#define C_API_AUDIO_ENGINE_H
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -307,3 +310,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* !C_API_AUDIO_ENGINE_H */

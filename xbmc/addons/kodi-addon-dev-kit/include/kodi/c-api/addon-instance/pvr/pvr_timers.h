@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_PVR_TIMERS_H
+#define C_API_ADDONINSTANCE_PVR_TIMERS_H
+
 #include "pvr_defines.h"
 
 #include <stdbool.h>
@@ -405,3 +408,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_PVR_TIMERS_H */

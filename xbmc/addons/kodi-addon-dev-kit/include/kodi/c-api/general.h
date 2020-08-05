@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_GENERAL_H
+#define C_API_GENERAL_H
+
 #include <stdbool.h>
 
 #ifdef __cplusplus
@@ -123,3 +126,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_GENERAL_H */

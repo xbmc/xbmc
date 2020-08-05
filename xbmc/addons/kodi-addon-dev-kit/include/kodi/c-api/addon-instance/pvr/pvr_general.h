@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_PVR_GENERAL_H
+#define C_API_ADDONINSTANCE_PVR_GENERAL_H
+
 #include "pvr_defines.h"
 
 #ifdef BUILD_KODI_ADDON
@@ -288,3 +291,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_PVR_GENERAL_H */

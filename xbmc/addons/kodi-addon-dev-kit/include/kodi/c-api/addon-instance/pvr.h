@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_PVR_H
+#define C_API_ADDONINSTANCE_PVR_H
+
 #include "../../AddonBase.h"
 #include "pvr/pvr_channel_groups.h"
 #include "pvr/pvr_channels.h"
@@ -325,3 +328,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_PVR_H */

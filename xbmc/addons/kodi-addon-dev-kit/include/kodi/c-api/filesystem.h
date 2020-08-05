@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_FILESYSTEM_H
+#define C_API_FILESYSTEM_H
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
@@ -301,3 +304,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_FILESYSTEM_H */
