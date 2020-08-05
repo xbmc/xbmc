@@ -33,7 +33,11 @@ public:
   int GetSelectedItem() const;
   const std::vector<int>& GetSelectedItems() const;
   void EnableButton(bool enable, int label);
+  void EnableButton(bool enable, const std::string& label);
+  void EnableButton2(bool enable, int label);
+  void EnableButton2(bool enable, const std::string& label);
   bool IsButtonPressed();
+  bool IsButton2Pressed();
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
   void SetSelected(const std::string &strSelectedLabel);
@@ -55,8 +59,11 @@ protected:
 
 private:
   bool m_bButtonEnabled;
+  bool m_bButton2Enabled;
   bool m_bButtonPressed;
-  int m_buttonLabel;
+  bool m_bButton2Pressed;
+  std::string m_buttonLabel;
+  std::string m_button2Label;
   CFileItemPtr m_selectedItem;
   bool m_useDetails;
   bool m_multiSelection;
