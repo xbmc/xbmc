@@ -16,6 +16,8 @@
 #include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #endif
 
+#include <stdbool.h>
+
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 // "C" Definitions group 1 - General PVR
 #ifdef __cplusplus

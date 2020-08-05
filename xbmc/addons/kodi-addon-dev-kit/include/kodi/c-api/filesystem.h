@@ -27,6 +27,10 @@ typedef intptr_t ssize_t;
 #endif // DeleteFile
 #endif // _WIN32
 
+#ifdef TARGET_POSIX // Linux, Mac, FreeBSD
+#include <sys/types.h>
+#endif // TARGET_POSIX
+
 #ifdef __cplusplus
 extern "C"
 {
