@@ -1066,6 +1066,13 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
   if (albums.size() == 1)
   {
     CFileItem album(path, true);
+    /* If we are scanning a directory served over http(s) the root directory for an album will set
+     * IsInternetStream to true which prevents scanning it for art.  As we can't reach this point
+     * without having read some tags (and tags are not read from streams) we can safely check for
+     * that case and set the IsHTTPDirectory property to enable scanning for art.
+     */
+    if (StringUtils::StartsWithNoCase(path, "http") && StringUtils::EndsWith(path, "/"))
+      album.SetProperty("IsHTTPDirectory", true);
     albumArt = album.GetUserMusicThumb(true);
     if (!albumArt.empty())
       albums[0].art["thumb"] = albumArt;
