@@ -15,6 +15,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonRepos.h"
 #include "addons/Repository.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "events/AddonManagementEvent.h"
@@ -192,6 +193,12 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   return DoInstall(addon, repo, background, modal);
 }
 
+bool CAddonInstaller::InstallOrUpdate(const ADDON::AddonPtr& addon,
+                                      const ADDON::RepositoryPtr& repo)
+{
+  return DoInstall(addon, repo, false, false);
+}
+
 void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& version, const std::string& repoId)
 {
   CLog::Log(LOGDEBUG, "CAddonInstaller: installing '%s' version '%s' from repository '%s'",
@@ -313,8 +320,10 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     const AddonVersion& version = it.version;
     bool optional = it.optional;
     AddonPtr dep;
-    bool haveAddon = CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, false);
-    if ((haveAddon && !dep->MeetsVersion(versionMin, version)) || (!haveAddon && !optional))
+    bool haveInstalledAddon =
+        CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, false);
+    if ((haveInstalledAddon && !dep->MeetsVersion(versionMin, version)) ||
+        (!haveInstalledAddon && !optional))
     {
       // we have it but our version isn't good enough, or we don't have it and we need it
       if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(versionMin, version))
@@ -720,6 +729,16 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   if (ShouldCancel(0, totalSteps))
     return false;
 
+  const auto& addonMgr = CServiceBroker::GetAddonMgr();
+  CAddonRepos addonRepos(addonMgr);
+  CAddonDatabase database;
+
+  if (database.Open())
+  {
+    addonRepos.LoadAddonsFromDatabase(database);
+    database.Close();
+  }
+
   // The first thing we do is install dependencies
   for (auto it = deps.begin(); it != deps.end(); ++it)
   {
@@ -730,9 +749,9 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       const AddonVersion& version = it->version;
       bool optional = it->optional;
       AddonPtr dependency;
-      bool haveAddon = CServiceBroker::GetAddonMgr().GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
-      if ((haveAddon && !dependency->MeetsVersion(versionMin, version)) ||
-          (!haveAddon && !optional))
+      bool haveInstalledAddon = addonMgr.GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
+      if ((haveInstalledAddon && !dependency->MeetsVersion(versionMin, version)) ||
+          (!haveInstalledAddon && !optional))
       {
         // we have it but our version isn't good enough, or we don't have it and we need it
 
@@ -752,35 +771,43 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           }
         }
         // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-        else if (IsModal())
+        else
         {
           RepositoryPtr repoForDep;
-          AddonPtr addon;
-          if (!CAddonInstallJob::GetAddon(addonID, repoForDep, addon))
+          AddonPtr dependencyToInstall;
+
+          if (!addonRepos.FindDependency(addonID, m_addon, dependencyToInstall, repoForDep))
           {
-            CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to find dependency %s", m_addon->ID().c_str(), addonID.c_str());
+            CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to find dependency {}", m_addon->ID(),
+                      addonID);
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
 
-          CAddonInstallJob dependencyJob(addon, repoForDep, false);
-
-          // pass our progress indicators to the temporary job and don't allow it to
-          // show progress or information updates (no progress, title or text changes)
-          dependencyJob.SetProgressIndicators(GetProgressBar(), GetProgressDialog(), false, false);
-
-          if (!dependencyJob.DoModal())
+          if (IsModal())
           {
-            CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
+            CAddonInstallJob dependencyJob(dependencyToInstall, repoForDep, false);
+
+            // pass our progress indicators to the temporary job and don't allow it to
+            // show progress or information updates (no progress, title or text changes)
+            dependencyJob.SetProgressIndicators(GetProgressBar(), GetProgressDialog(), false,
+                                                false);
+
+            if (!dependencyJob.DoModal())
+            {
+              CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
+                        m_addon->ID(), addonID);
+              ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+              return false;
+            }
+          }
+          else if (!CAddonInstaller::GetInstance().InstallOrUpdate(dependencyToInstall, repoForDep))
+          {
+            CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
+                      m_addon->ID(), dependencyToInstall->ID());
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
-        }
-        else if (!CAddonInstaller::GetInstance().InstallOrUpdate(addonID, false))
-        {
-          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
-          ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
-          return false;
         }
       }
     }

@@ -48,6 +48,14 @@ public:
    */
   bool InstallOrUpdate(const std::string &addonID, bool background = true, bool modal = false);
 
+  /*! \brief Install an addon from a specific repository
+   \param addon the addon to install
+   \param repo the repository to install the addon from
+   \return true on successful install, false on failure.
+   \sa DoInstall
+   */
+  bool InstallOrUpdate(const ADDON::AddonPtr& addon, const ADDON::RepositoryPtr& repo);
+
   /*! \brief Installs a vector of addons
    \param addons the list of addons to install
    \param wait if the method should wait for all the DoInstall jobs to finish or if it should return right away

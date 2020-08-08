@@ -13,6 +13,7 @@
 #include "AddonManager.h"
 #include "AddonSystemSettings.h"
 #include "CompileInfo.h"
+#include "Repository.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -292,4 +293,66 @@ bool CAddonRepos::GetLatestAddonVersionFromAllRepos(const std::string& addonId,
   }
 
   return true;
+}
+
+bool CAddonRepos::FindDependency(const std::string& dependsId,
+                                 const std::shared_ptr<IAddon>& parent,
+                                 std::shared_ptr<IAddon>& dependencyToInstall,
+                                 std::shared_ptr<CRepository>& repoForDep) const
+{
+  const AddonRepoUpdateMode updateMode =
+      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
+
+  bool dependencyHasOfficialVersion =
+      GetLatestVersionByMap(dependsId, m_latestOfficialVersions, dependencyToInstall);
+
+  if (dependencyHasOfficialVersion)
+  {
+    if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
+    {
+      std::shared_ptr<IAddon> thirdPartyDependency;
+
+      // only use this version if it's higher than the official one
+      if (GetLatestVersionByMap(dependsId, m_latestPrivateVersions, thirdPartyDependency))
+      {
+        if (thirdPartyDependency->Version() > dependencyToInstall->Version())
+          dependencyToInstall = thirdPartyDependency;
+      }
+    }
+  }
+  else
+  {
+    // If we didn't find an official version of this dependency
+    // ...we check in the origin repo of the parent
+    if (!FindDependencyByParentRepo(dependsId, parent, dependencyToInstall))
+      return false;
+  }
+
+  // we got the dependency, so now get a repository-pointer to return
+
+  std::shared_ptr<IAddon> tmp;
+  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, ADDON_REPOSITORY))
+    return false;
+
+  repoForDep = std::static_pointer_cast<CRepository>(tmp);
+
+  CLog::Log(LOGDEBUG,
+            "ADDONS: found dependency [{}] for install/update from repo [{}]. dependee is [{}]",
+            dependencyToInstall->ID(), repoForDep->ID(), parent->ID());
+
+  return true;
+}
+
+bool CAddonRepos::FindDependencyByParentRepo(const std::string& dependsId,
+                                             const std::shared_ptr<IAddon>& parent,
+                                             std::shared_ptr<IAddon>& dependencyToInstall) const
+{
+  const auto& repoEntry = m_latestVersionsByRepo.find(parent->Origin());
+  if (repoEntry != m_latestVersionsByRepo.end())
+  {
+    if (GetLatestVersionByMap(dependsId, repoEntry->second, dependencyToInstall))
+      return true;
+  }
+
+  return false;
 }
