@@ -1353,6 +1353,8 @@ void CSettingString::MergeDetails(const CSetting& other)
     m_value = stringSetting.m_value;
   if (m_allowEmpty == false && stringSetting.m_allowEmpty == true)
     m_allowEmpty = stringSetting.m_allowEmpty;
+  if (m_allowNewOption == false && stringSetting.m_allowNewOption == true)
+    m_allowNewOption = stringSetting.m_allowNewOption;
   if (m_translatableOptions.empty() && !stringSetting.m_translatableOptions.empty())
     m_translatableOptions = stringSetting.m_translatableOptions;
   if (m_options.empty() && !stringSetting.m_options.empty())
@@ -1382,6 +1384,9 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
   {
     // get allowempty (needs to be parsed before parsing the default value)
     XMLUtils::GetBoolean(constraints, SETTING_XML_ELM_ALLOWEMPTY, m_allowEmpty);
+
+    // Values other than those in options contraints allowed to be added
+    XMLUtils::GetBoolean(constraints, SETTING_XML_ELM_ALLOWNEWOPTION, m_allowNewOption);
 
     // get the entries
     auto options = constraints->FirstChildElement(SETTING_XML_ELM_OPTIONS);
@@ -1452,7 +1457,7 @@ bool CSettingString::CheckValidity(const std::string &value) const
     if (!CheckSettingOptionsValidity(value, m_translatableOptions))
       return false;
   }
-  else if (!m_options.empty())
+  else if (!m_options.empty() && !m_allowNewOption)
   {
     if (!CheckSettingOptionsValidity(value, m_options))
       return false;
@@ -1569,6 +1574,7 @@ void CSettingString::copy(const CSettingString &setting)
   m_value = setting.m_value;
   m_default = setting.m_default;
   m_allowEmpty = setting.m_allowEmpty;
+  m_allowNewOption = setting.m_allowNewOption;
   m_translatableOptions = setting.m_translatableOptions;
   m_options = setting.m_options;
   m_optionsFillerName = setting.m_optionsFillerName;

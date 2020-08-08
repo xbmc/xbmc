@@ -402,6 +402,8 @@ public:
 
   virtual bool AllowEmpty() const { return m_allowEmpty; }
   void SetAllowEmpty(bool allowEmpty) { m_allowEmpty = allowEmpty; }
+  bool AllowNewOption() const { return m_allowNewOption; }
+  void SetAllowNewOption(bool allowNewOption) { m_allowNewOption = allowNewOption; }
 
   SettingOptionsType GetOptionsType() const;
   const TranslatableStringSettingOptions& GetTranslatableOptions() const { return m_translatableOptions; }
@@ -430,6 +432,7 @@ protected:
   std::string m_value;
   std::string m_default;
   bool m_allowEmpty = false;
+  bool m_allowNewOption = false;
   TranslatableStringSettingOptions m_translatableOptions;
   StringSettingOptions m_options;
   std::string m_optionsFillerName;

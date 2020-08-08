@@ -563,6 +563,7 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
   obj["default"] = setting->GetDefault();
 
   obj["allowempty"] = setting->AllowEmpty();
+  obj["allownewoption"] = setting->AllowNewOption();
 
   switch (setting->GetOptionsType())
   {
