@@ -238,6 +238,8 @@
 	<variable name="OSDHelpTextVar">
 		<value condition="Control.HasFocus(87) + !Player.Paused">$LOCALIZE[31054]</value>
 		<value condition="Control.HasFocus(87) + [Player.Paused + Window.IsVisible(videoosd)]">$LOCALIZE[31055]</value>
+		<value condition="Control.HasFocus(608)+ PVR.IsRecordingPlayingChannel">$LOCALIZE[19059]</value>
+		<value condition="Control.HasFocus(608)">$LOCALIZE[264]</value>
 		<value condition="Control.HasFocus(70040)">$LOCALIZE[19019]</value>
 		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
 		<value condition="Control.HasFocus(70042)">$LOCALIZE[31065]</value>
@@ -426,6 +428,10 @@
 		<value condition="Control.HasFocus(103)">$LOCALIZE[19040]</value>
 		<value condition="Control.HasFocus(104)">$LOCALIZE[19138]</value>
 		<value condition="Control.HasFocus(105)">$LOCALIZE[137]</value>
+	</variable>
+	<variable name="PlayerControlsPlayImageVar">
+		<value condition="Player.Playing">osd/fullscreen/buttons/pause.png</value>
+		<value>osd/fullscreen/buttons/play.png</value>
 	</variable>
 	<variable name="PlayerControlsRepeatImageVar">
 		<value condition="Playlist.IsRepeatOne">osd/fullscreen/buttons/repeat-one.png</value>
