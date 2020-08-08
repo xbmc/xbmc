@@ -1651,10 +1651,15 @@ std::string CGUIEPGGridContainer::GetDescription() const
 {
   CSingleLock lock(m_critSection);
 
-  const std::shared_ptr<CFileItem> item =
-      m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
-  if (item)
-    return item->GetLabel();
+  const int channelIndex = m_channelCursor + m_channelOffset;
+  const int blockIndex = m_blockCursor + m_blockOffset;
+
+  if (channelIndex < m_gridModel->ChannelItemsSize() && blockIndex < m_gridModel->GridItemsSize())
+  {
+    const std::shared_ptr<CFileItem> item = m_gridModel->GetGridItem(channelIndex, blockIndex);
+    if (item)
+      return item->GetLabel();
+  }
 
   return {};
 }
