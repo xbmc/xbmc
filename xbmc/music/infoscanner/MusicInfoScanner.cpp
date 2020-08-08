@@ -340,8 +340,9 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
       CDirectoryNode::GetDatabaseInfo(strDirectory, params);
       if (params.GetAlbumId() != -1)
       {
-        //Add single album as item to scan
+        //Add single album (id and path) as item to scan
         CFileItemPtr item(new CFileItem(strDirectory, false));
+        item->GetMusicInfoTag()->SetDatabaseId(params.GetAlbumId(), MediaTypeAlbum);
         items.Add(item);
       }
       else
@@ -401,8 +402,9 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
       CDirectoryNode::GetDatabaseInfo(strDirectory, params);
       if (params.GetArtistId() != -1)
       {
-        //Add single artist as item to scan
+        //Add single artist (id and path) as item to scan
         CFileItemPtr item(new CFileItem(strDirectory, false));
+        item->GetMusicInfoTag()->SetDatabaseId(params.GetAlbumId(), MediaTypeArtist);
         items.Add(item);
       }
       else
