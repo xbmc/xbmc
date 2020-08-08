@@ -181,18 +181,8 @@ namespace MUSIC_UTILS
     CJobManager::GetInstance().AddJob(job, NULL);
   }
 
-  // Add art types required in Kodi
-  void AddHardCodedArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag)
-  {
-    artTypes.emplace_back("thumb");
-    if (tag.GetType() == MediaTypeArtist)
-    {
-      artTypes.emplace_back("fanart");
-    }
-  }
-
-  // Add art types configured by the user
-  void AddExtendedArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag)
+  // Add art types required in Kodi and configured by the user
+  void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag)
   {
     for (const auto& artType : GetArtTypesToScan(tag.GetType()))
     {
@@ -253,8 +243,7 @@ namespace MUSIC_UTILS
 
     std::vector<std::string> artTypes;
 
-    AddHardCodedArtTypes(artTypes, tag);
-    AddExtendedArtTypes(artTypes, tag);
+    AddHardCodedAndExtendedArtTypes(artTypes, tag);
     AddCurrentArtTypes(artTypes, tag, db);
     AddMediaTypeArtTypes(artTypes, tag, db);
     AddAvailableArtTypes(artTypes, tag, db);
