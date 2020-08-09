@@ -24,53 +24,72 @@ class CPictureInfoTag : public IArchivable, public ISerializable, public ISortab
   // Mimic structs from libexif.h but with C++ types instead of arrays
   struct ExifInfo
   {
+    ExifInfo() = default;
+    ExifInfo(const ExifInfo&) = default;
+    ExifInfo(ExifInfo&&) = default;
+    ExifInfo(const ExifInfo_t& other);
+
+    ExifInfo& operator=(const ExifInfo&) = default;
+    ExifInfo& operator=(ExifInfo&&) = default;
+
     std::string CameraMake;
     std::string CameraModel;
     std::string DateTime;
-    int Height;
-    int Width;
-    int Orientation;
-    int IsColor;
-    int Process;
-    int FlashUsed;
-    float FocalLength;
-    float ExposureTime;
-    float ApertureFNumber;
-    float Distance;
-    float CCDWidth;
-    float ExposureBias;
-    float DigitalZoomRatio;
-    int FocalLength35mmEquiv;
-    int Whitebalance;
-    int MeteringMode;
-    int ExposureProgram;
-    int ExposureMode;
-    int ISOequivalent;
-    int LightSource;
-    int CommentsCharset;
-    int XPCommentsCharset;
+    int Height{};
+    int Width{};
+    int Orientation{};
+    int IsColor{};
+    int Process{};
+    int FlashUsed{};
+    float FocalLength{};
+    float ExposureTime{};
+    float ApertureFNumber{};
+    float Distance{};
+    float CCDWidth{};
+    float ExposureBias{};
+    float DigitalZoomRatio{};
+    int FocalLength35mmEquiv{};
+    int Whitebalance{};
+    int MeteringMode{};
+    int ExposureProgram{};
+    int ExposureMode{};
+    int ISOequivalent{};
+    int LightSource{};
+    int CommentsCharset{};
+    int XPCommentsCharset{};
     std::string Comments;
     std::string FileComment;
     std::string XPComment;
     std::string Description;
 
-    unsigned ThumbnailOffset;
-    unsigned ThumbnailSize;
-    unsigned LargestExifOffset;
+    unsigned ThumbnailOffset{};
+    unsigned ThumbnailSize{};
+    unsigned LargestExifOffset{};
 
-    char ThumbnailAtEnd;
-    int ThumbnailSizeOffset;
+    char ThumbnailAtEnd{};
+    int ThumbnailSizeOffset{};
 
     std::vector<int> DateTimeOffsets;
 
-    int GpsInfoPresent;
+    int GpsInfoPresent{};
     std::string GpsLat;
     std::string GpsLong;
     std::string GpsAlt;
+
+  private:
+    static std::string Convert(int charset, const char* data);
   };
 
   struct IPTCInfo
   {
+    IPTCInfo() = default;
+    IPTCInfo(const IPTCInfo&) = default;
+    IPTCInfo(IPTCInfo&&) = default;
+    IPTCInfo(const IPTCInfo_t& other);
+
+    IPTCInfo& operator=(const IPTCInfo&) = default;
+    IPTCInfo& operator=(IPTCInfo&&) = default;
+
     std::string RecordVersion;
     std::string SupplementalCategories;
     std::string Keywords;

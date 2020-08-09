@@ -17,6 +17,99 @@
 #include <algorithm>
 #include <vector>
 
+CPictureInfoTag::ExifInfo::ExifInfo(const ExifInfo_t& other)
+  : CameraMake(other.CameraMake),
+    CameraModel(other.CameraModel),
+    DateTime(other.DateTime),
+    Height(other.Height),
+    Width(other.Width),
+    Orientation(other.Orientation),
+    IsColor(other.IsColor),
+    Process(other.Process),
+    FlashUsed(other.FlashUsed),
+    FocalLength(other.FocalLength),
+    ExposureTime(other.ExposureTime),
+    ApertureFNumber(other.ApertureFNumber),
+    Distance(other.Distance),
+    CCDWidth(other.CCDWidth),
+    ExposureBias(other.ExposureBias),
+    DigitalZoomRatio(other.DigitalZoomRatio),
+    FocalLength35mmEquiv(other.FocalLength35mmEquiv),
+    Whitebalance(other.Whitebalance),
+    MeteringMode(other.MeteringMode),
+    ExposureProgram(other.ExposureProgram),
+    ExposureMode(other.ExposureMode),
+    ISOequivalent(other.ISOequivalent),
+    LightSource(other.LightSource),
+    CommentsCharset(EXIF_COMMENT_CHARSET_CONVERTED),
+    XPCommentsCharset(EXIF_COMMENT_CHARSET_CONVERTED),
+    Comments(Convert(other.CommentsCharset, other.Comments)),
+    FileComment(Convert(EXIF_COMMENT_CHARSET_UNKNOWN, other.FileComment)),
+    XPComment(Convert(other.XPCommentsCharset, other.XPComment)),
+    Description(other.Description),
+    ThumbnailOffset(other.ThumbnailOffset),
+    ThumbnailSize(other.ThumbnailSize),
+    LargestExifOffset(other.LargestExifOffset),
+    ThumbnailAtEnd(other.ThumbnailAtEnd),
+    ThumbnailSizeOffset(other.ThumbnailSizeOffset),
+    DateTimeOffsets(other.DateTimeOffsets, other.DateTimeOffsets + other.numDateTimeTags),
+    GpsInfoPresent(other.GpsInfoPresent),
+    GpsLat(other.GpsLat),
+    GpsLong(other.GpsLong),
+    GpsAlt(other.GpsAlt)
+{
+}
+
+std::string CPictureInfoTag::ExifInfo::Convert(int charset, const char* data)
+{
+  std::string value;
+
+  // The charset used for the UserComment is stored in CommentsCharset:
+  // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
+  if (charset == EXIF_COMMENT_CHARSET_UNICODE)
+  {
+    g_charsetConverter.ucs2ToUTF8(std::u16string(reinterpret_cast<const char16_t*>(data)), value);
+  }
+  else
+  {
+    // Ascii doesn't need to be converted (EXIF_COMMENT_CHARSET_ASCII)
+    // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
+    // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
+    g_charsetConverter.unknownToUTF8(data, value);
+  }
+
+  return value;
+}
+
+CPictureInfoTag::IPTCInfo::IPTCInfo(const IPTCInfo_t& other)
+  : RecordVersion(other.RecordVersion),
+    SupplementalCategories(other.SupplementalCategories),
+    Keywords(other.Keywords),
+    Caption(other.Caption),
+    Author(other.Author),
+    Headline(other.Headline),
+    SpecialInstructions(other.SpecialInstructions),
+    Category(other.Category),
+    Byline(other.Byline),
+    BylineTitle(other.BylineTitle),
+    Credit(other.Credit),
+    Source(other.Source),
+    CopyrightNotice(other.CopyrightNotice),
+    ObjectName(other.ObjectName),
+    City(other.City),
+    State(other.State),
+    Country(other.Country),
+    TransmissionReference(other.TransmissionReference),
+    Date(other.Date),
+    Urgency(other.Urgency),
+    ReferenceService(other.ReferenceService),
+    CountryCode(other.CountryCode),
+    TimeCreated(other.TimeCreated),
+    SubLocation(other.SubLocation),
+    ImageType(other.ImageType)
+{
+}
+
 void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
