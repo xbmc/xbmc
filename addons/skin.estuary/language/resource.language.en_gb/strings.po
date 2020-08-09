@@ -683,7 +683,7 @@ msgstr ""
 
 #: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
-msgid "Repository"
+msgid "Origin"
 msgstr ""
 
 #: /xml/Home.xml
