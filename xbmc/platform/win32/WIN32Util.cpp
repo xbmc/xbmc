@@ -312,6 +312,20 @@ int CWIN32Util::GetDesktopColorDepth()
 #endif
 }
 
+size_t CWIN32Util::GetSystemMemorySize()
+{
+#ifdef TARGET_WINDOWS_STORE
+  MEMORYSTATUSEX statex = {};
+  statex.dwLength = sizeof(statex);
+  GlobalMemoryStatusEx(&statex);
+  return static_cast<size_t>(statex.ullTotalPhys / KB);
+#else
+  ULONGLONG ramSize = 0;
+  GetPhysicallyInstalledSystemMemory(&ramSize);
+  return static_cast<size_t>(ramSize);
+#endif
+}
+
 #ifdef TARGET_WINDOWS_DESKTOP
 std::string CWIN32Util::GetSpecialFolder(int csidl)
 {
@@ -957,7 +971,7 @@ extern "C" {
       const char * const *n2, int c)
   {
     int i;
-    unsigned int len;
+    size_t len;
 
     /* check full name - then abbreviated ones */
     for (; n1 != NULL; n1 = n2, n2 = NULL) {

@@ -495,6 +495,8 @@ bool CApplication::Create(const CAppParamParser &params)
 
     //! @todo - move to CPlatformXXX ???
 #if defined(TARGET_WINDOWS)
+  CLog::Log(LOGINFO, "System has {:.1f} GB of RAM installed",
+            CWIN32Util::GetSystemMemorySize() / static_cast<double>(MB));
   CLog::Log(LOGINFO, "%s", CWIN32Util::GetResInfoString().c_str());
   CLog::Log(LOGINFO, "Running with %s rights",
             (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator"
