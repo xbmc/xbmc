@@ -15,11 +15,89 @@
 #include "utils/ISortable.h"
 
 #include <string>
+#include <vector>
 
 class CVariant;
 
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
 {
+  // Mimic structs from libexif.h but with C++ types instead of arrays
+  struct ExifInfo
+  {
+    std::string CameraMake;
+    std::string CameraModel;
+    std::string DateTime;
+    int Height;
+    int Width;
+    int Orientation;
+    int IsColor;
+    int Process;
+    int FlashUsed;
+    float FocalLength;
+    float ExposureTime;
+    float ApertureFNumber;
+    float Distance;
+    float CCDWidth;
+    float ExposureBias;
+    float DigitalZoomRatio;
+    int FocalLength35mmEquiv;
+    int Whitebalance;
+    int MeteringMode;
+    int ExposureProgram;
+    int ExposureMode;
+    int ISOequivalent;
+    int LightSource;
+    int CommentsCharset;
+    int XPCommentsCharset;
+    std::string Comments;
+    std::string FileComment;
+    std::string XPComment;
+    std::string Description;
+
+    unsigned ThumbnailOffset;
+    unsigned ThumbnailSize;
+    unsigned LargestExifOffset;
+
+    char ThumbnailAtEnd;
+    int ThumbnailSizeOffset;
+
+    std::vector<int> DateTimeOffsets;
+
+    int GpsInfoPresent;
+    std::string GpsLat;
+    std::string GpsLong;
+    std::string GpsAlt;
+  };
+
+  struct IPTCInfo
+  {
+    std::string RecordVersion;
+    std::string SupplementalCategories;
+    std::string Keywords;
+    std::string Caption;
+    std::string Author;
+    std::string Headline;
+    std::string SpecialInstructions;
+    std::string Category;
+    std::string Byline;
+    std::string BylineTitle;
+    std::string Credit;
+    std::string Source;
+    std::string CopyrightNotice;
+    std::string ObjectName;
+    std::string City;
+    std::string State;
+    std::string Country;
+    std::string TransmissionReference;
+    std::string Date;
+    std::string Urgency;
+    std::string ReferenceService;
+    std::string CountryCode;
+    std::string TimeCreated;
+    std::string SubLocation;
+    std::string ImageType;
+  };
+
 public:
   CPictureInfoTag() { Reset(); };
   virtual ~CPictureInfoTag() = default;
