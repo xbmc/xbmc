@@ -140,10 +140,9 @@ public:
   const CDateTime& GetDateTimeTaken() const;
 private:
   static int TranslateString(const std::string &info);
-  void GetStringFromArchive(CArchive &ar, char *string, size_t length);
 
-  ExifInfo_t m_exifInfo;
-  IPTCInfo_t m_iptcInfo;
+  ExifInfo m_exifInfo;
+  IPTCInfo m_iptcInfo;
   bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
   bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
   CDateTime  m_dateTimeTaken;
