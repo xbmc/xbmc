@@ -15853,7 +15853,13 @@ msgctxt "#25013"
 msgid "Auto-skip on"
 msgstr ""
 
-#empty strings from id 25014 to 29800
+#. Used to tell addon origin type
+#. xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
+msgctxt "#25014"
+msgid "Manual"
+msgstr ""
+
+#empty strings from id 25015 to 29800
 
 #: unused
 msgctxt "#29801"

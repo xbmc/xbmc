@@ -91,7 +91,12 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
           value = origin->Name();
           return true;
         }
-        value = g_localizeStrings.Get(13205);
+        else if (!item->GetAddonInfo()->Origin().empty())
+        {
+          value = item->GetAddonInfo()->Origin();
+          return true;
+        }
+        value = g_localizeStrings.Get(25014);
         return true;
       }
       case LISTITEM_ADDON_SIZE:
