@@ -1518,7 +1518,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
     std::string mainDVD;
     for (int i = 0; i < m_vecItems->Size(); i++)
     {
-      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetPath());
+      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetDynPath());
       if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO"))
       {
         mainDVD = path;
@@ -1534,7 +1534,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
+      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetDynPath()) == mainDVD)))
         CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
 
       if (item->IsSamePath(nItem.get()))
