@@ -166,7 +166,7 @@ void CAddonDatabase::CreateTables()
   CLog::Log(LOGINFO, "create installed table");
   m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
               "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, "
-              "disabledReason INTEGER NOT NULL DEFAULT 0, origin TEXT NOT NULL DEFAULT '') \n");
+              "origin TEXT NOT NULL DEFAULT '', disabledReason INTEGER NOT NULL DEFAULT 0) \n");
 }
 
 void CAddonDatabase::CreateAnalytics()
