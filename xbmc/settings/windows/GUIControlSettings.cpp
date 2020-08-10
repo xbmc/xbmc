@@ -586,14 +586,24 @@ bool CGUIControlListSetting::OnClick()
   if (dialog == NULL)
     return false;
 
-  bool bValueAdded = false;
   CFileItemList options;
   std::shared_ptr<const CSettingControlList> control =
       std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options, false);
-  std::shared_ptr<const CSettingString> setting =
-    std::static_pointer_cast<const CSettingString>(m_pSetting);
-  if (!setting->AllowNewOption())
+
+  bool bValueAdded = false;
+  bool bAllowNewOption = false;
+  if (m_pSetting->GetType() == SettingType::List)
+  {
+    std::shared_ptr<const CSettingList> settingList =
+      std::static_pointer_cast<const CSettingList>(m_pSetting);
+    if (settingList->GetElementType() == SettingType::String)
+    {
+      bAllowNewOption = std::static_pointer_cast<const CSettingString>(settingList->GetDefinition())
+        ->AllowNewOption();
+    }
+  }
+  if (!bAllowNewOption)
   {
     // Do not show dialog if
     // * there are no items to be chosen or
@@ -640,7 +650,7 @@ bool CGUIControlListSetting::OnClick()
       dialog->SetHeading(CVariant{ Localize(m_pSetting->GetLabel()) });
       dialog->SetItems(options);
       dialog->SetMultiSelection(control->CanMultiSelect());
-      dialog->EnableButton2(setting->AllowNewOption(), strAddButton);
+      dialog->EnableButton2(bAllowNewOption, strAddButton);
 
       dialog->Open();
 
@@ -731,8 +741,19 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
   std::shared_ptr<const CSettingControlList> control =
       std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options, !updateDisplayOnly);
-  std::shared_ptr<const CSettingString> setting =
-    std::static_pointer_cast<const CSettingString>(m_pSetting);
+
+  bool bAllowNewOption = false;
+  if (m_pSetting->GetType() == SettingType::List)
+  {
+    std::shared_ptr<const CSettingList> settingList =
+        std::static_pointer_cast<const CSettingList>(m_pSetting);
+    if (settingList->GetElementType() == SettingType::String)
+    {
+      bAllowNewOption = std::static_pointer_cast<const CSettingString>(settingList->GetDefinition())
+                            ->AllowNewOption();
+    }
+  }
+
   std::string label2;
   if (optionsValid && !control->HideValue())
   {
@@ -740,7 +761,7 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
     if (formatter)
       label2 = formatter(m_pSetting);
 
-    if (label2.empty() && setting->AllowNewOption())
+    if (label2.empty() && bAllowNewOption)
     {
       const std::shared_ptr<const CSettingList> settingList =
           std::static_pointer_cast<const CSettingList>(m_pSetting);
@@ -768,7 +789,7 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
     // Disable the control if no items can be added and
     // * there are no items to be chosen
     // * only one value can be chosen and there are less than two items available
-    if (!m_pButton->IsDisabled() && !setting->AllowNewOption() &&
+    if (!m_pButton->IsDisabled() && !bAllowNewOption &&
         (options.Size() <= 0 || (!control->CanMultiSelect() && options.Size() <= 1)))
       m_pButton->SetEnabled(false);
   }
