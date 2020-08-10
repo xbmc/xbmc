@@ -402,7 +402,7 @@ public:
 
   virtual bool AllowEmpty() const { return m_allowEmpty; }
   void SetAllowEmpty(bool allowEmpty) { m_allowEmpty = allowEmpty; }
-  bool AllowNewOption() const { return m_allowNewOption; }
+  virtual bool AllowNewOption() const { return m_allowNewOption; }
   void SetAllowNewOption(bool allowNewOption) { m_allowNewOption = allowNewOption; }
 
   SettingOptionsType GetOptionsType() const;
