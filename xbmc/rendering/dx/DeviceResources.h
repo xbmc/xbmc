@@ -106,7 +106,7 @@ namespace DX
     void SetWindow(const winrt::Windows::UI::Core::CoreWindow& window);
     void SetWindowPos(winrt::Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
-    bool DoesTextureSharingWork();
+    bool IsNV12SharedTexturesSupported() const { return m_NV12SharedTexturesSupport; }
 
   private:
     class CBackBuffer : public CD3DTexture
@@ -126,6 +126,7 @@ namespace DX
     void OnDeviceRestored();
     void HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc);
     bool CreateFactory();
+    void CheckNV12SharedTexturesSupport();
 
     HWND m_window{ nullptr };
 #if defined(TARGET_WINDOWS_STORE)
@@ -166,5 +167,6 @@ namespace DX
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
     bool m_IsHDROutput;
+    bool m_NV12SharedTexturesSupport{false};
   };
 }

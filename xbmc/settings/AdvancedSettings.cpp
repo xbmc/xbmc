@@ -411,9 +411,6 @@ void CAdvancedSettings::Initialize()
   m_stereoscopicregex_sbs = "[-. _]h?sbs[-. _]";
   m_stereoscopicregex_tab = "[-. _]h?tab[-. _]";
 
-  m_allowUseSeparateDeviceForDecoding = false;
-  m_disableDXVAdiscreteDecoding = false;
-
   m_videoAssFixedWorks = false;
 
   m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
@@ -695,9 +692,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
 
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
-
-    XMLUtils::GetBoolean(pElement, "allowdiscretedecoder", m_allowUseSeparateDeviceForDecoding);
-    XMLUtils::GetBoolean(pElement, "disableDXVAdiscretedecoder", m_disableDXVAdiscreteDecoding);
 
     //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
     XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);

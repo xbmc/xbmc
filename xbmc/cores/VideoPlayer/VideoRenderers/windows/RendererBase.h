@@ -15,7 +15,7 @@
 
 #include <vector>
 
-#include <d3d11.h>
+#include <d3d11_4.h>
 #include <dxgi1_5.h>
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>

@@ -13,7 +13,7 @@
 
 #include "platform/win32/CharsetConverter.h"
 
-#include <d3d11_1.h>
+#include <d3d11_4.h>
 #include <ppltasks.h> // For create_task
 
 namespace DX
@@ -84,6 +84,14 @@ namespace DX
     DXGetErrorDescriptionW(hr, buff, 2048);
 
     return FromW(StringUtils::Format(L"%X - %s (%s)", hr, DXGetErrorStringW(hr), buff));
+  }
+
+  inline std::string GetFeatureLevelDescription(D3D_FEATURE_LEVEL featureLevel)
+  {
+    uint32_t fl_major = (featureLevel & 0xF000u) >> 12;
+    uint32_t fl_minor = (featureLevel & 0x0F00u) >> 8;
+
+    return StringUtils::Format("D3D_FEATURE_LEVEL_{}_{}", fl_major, fl_minor);
   }
 
   template <typename T> struct SizeGen
