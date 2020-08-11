@@ -23,6 +23,9 @@ namespace XFILE
       bool ContainsFiles(const CURL& url) override;
       bool AllowAll() const override { return true; }
     protected:
+      virtual bool Load(const std::string& strFileName,
+                        MUSIC_INFO::CMusicInfoTag& tag,
+                        EmbeddedArt* art = nullptr) { return false; }
       virtual int GetTrackCount(const std::string& strPath) = 0;
       std::string m_strExt;
       MUSIC_INFO::CMusicInfoTag m_tag;
