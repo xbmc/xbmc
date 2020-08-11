@@ -51,7 +51,12 @@ bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     else if (m_tag.Loaded())
       *pItem->GetMusicInfoTag() = m_tag;
 
-    pItem->GetMusicInfoTag()->SetTrackNumber(i+1);
+    /*
+     * Check track number not set and take stream entry number about.
+     * NOTE: Audio decoder addons can also give a own track number.
+     */
+    if (pItem->GetMusicInfoTag()->GetTrackNumber() == 0)
+      pItem->GetMusicInfoTag()->SetTrackNumber(i+1);
     items.Add(pItem);
   }
 
