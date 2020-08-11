@@ -166,7 +166,7 @@ void CAddonDatabase::CreateTables()
   CLog::Log(LOGINFO, "create installed table");
   m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
               "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, "
-              "disabledReason INTEGER NOT NULL DEFAULT 0, origin TEXT NOT NULL DEFAULT '') \n");
+              "origin TEXT NOT NULL DEFAULT '', disabledReason INTEGER NOT NULL DEFAULT 0) \n");
 }
 
 void CAddonDatabase::CreateAnalytics()
@@ -1066,14 +1066,16 @@ void CAddonDatabase::GetInstallData(const AddonInfoPtr& addon)
     if (!m_pDS)
       return;
 
-    m_pDS->query(PrepareSQL("SELECT * FROM installed WHERE addonID='%s'", addon->ID().c_str()));
+    m_pDS->query(PrepareSQL("SELECT addonID, installDate, lastUpdated, lastUsed, "
+                            "origin FROM installed WHERE addonID='%s'",
+                            addon->ID().c_str()));
     if (!m_pDS->eof())
     {
-      CAddonInfoBuilder::SetInstallData(addon,
-                                        CDateTime::FromDBDateTime(m_pDS->fv(3).get_asString()),
-                                        CDateTime::FromDBDateTime(m_pDS->fv(4).get_asString()),
-                                        CDateTime::FromDBDateTime(m_pDS->fv(5).get_asString()),
-                                        m_pDS->fv(6).get_asString());
+      CAddonInfoBuilder::SetInstallData(
+          addon, CDateTime::FromDBDateTime(m_pDS->fv("installDate").get_asString()),
+          CDateTime::FromDBDateTime(m_pDS->fv("lastUpdated").get_asString()),
+          CDateTime::FromDBDateTime(m_pDS->fv("lastUsed").get_asString()),
+          m_pDS->fv("origin").get_asString());
     }
     m_pDS->close();
   }
