@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_AUDIO_DECODER_H
+#define C_API_ADDONINSTANCE_AUDIO_DECODER_H
+
 #include "../addon_base.h"
 #include "../audio_engine.h"
 
@@ -85,3 +88,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_AUDIO_DECODER_H */

@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_PVR_GENERAL_H
+#define C_API_ADDONINSTANCE_PVR_GENERAL_H
+
 #include "pvr_defines.h"
 
 #ifdef BUILD_KODI_ADDON
@@ -15,6 +18,8 @@
 #else
 #include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #endif
+
+#include <stdbool.h>
 
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 // "C" Definitions group 1 - General PVR
@@ -286,3 +291,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_PVR_GENERAL_H */

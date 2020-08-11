@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_FILESYSTEM_H
+#define C_API_FILESYSTEM_H
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
@@ -26,6 +29,10 @@ typedef intptr_t ssize_t;
 #undef DeleteFile
 #endif // DeleteFile
 #endif // _WIN32
+
+#ifdef TARGET_POSIX // Linux, Mac, FreeBSD
+#include <sys/types.h>
+#endif // TARGET_POSIX
 
 #ifdef __cplusplus
 extern "C"
@@ -297,3 +304,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_FILESYSTEM_H */

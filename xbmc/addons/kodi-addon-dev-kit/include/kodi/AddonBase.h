@@ -12,11 +12,14 @@
 #include "versions.h"
 
 #include <assert.h> /* assert */
+#include <stdarg.h> /* va_list, va_start, va_arg, va_end */
+
+#ifdef __cplusplus
+
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <memory>
-#include <stdarg.h> /* va_list, va_start, va_arg, va_end */
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -1286,3 +1289,5 @@ inline void* GetInterface(const std::string& name, const std::string& version)
     return kodi::addon::GetTypeMinVersion(type); \
   } \
   AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr;
+
+#endif /* __cplusplus */
