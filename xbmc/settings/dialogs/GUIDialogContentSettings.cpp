@@ -66,7 +66,7 @@ void CGUIDialogContentSettings::SetScanSettings(const VIDEO::SScanSettings &scan
   m_exclude             = scanSettings.exclude;
   m_containsSingleItem  = scanSettings.parent_name_root;
   m_noUpdating          = scanSettings.noupdate;
-  m_allExternalAudio = scanSettings.all_ext_audio;
+  m_allExternalAudio = scanSettings.m_allExtAudio;
 }
 
 bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content /* = CONTENT_NONE */)
@@ -99,7 +99,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     scraper = dialog->GetScraper();
     content = dialog->GetContent();
 
-    settings.all_ext_audio = dialog->GetUseAllExternalAudio();
+    settings.m_allExtAudio = dialog->GetUseAllExternalAudio();
 
     if (scraper == NULL || content == CONTENT_NONE)
       settings.exclude = dialog->GetExclude();

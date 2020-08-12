@@ -28,7 +28,11 @@ namespace VIDEO
   {
     SScanSettings()
     {
-      parent_name = parent_name_root = noupdate = exclude = all_ext_audio = false;
+      parent_name = false;
+      parent_name_root = false;
+      noupdate = false;
+      exclude = false;
+      m_allExtAudio = false;
       recurse = 1;
     }
     bool parent_name;       /* use the parent dirname as name of lookup */
@@ -36,7 +40,7 @@ namespace VIDEO
     int  recurse;           /* recurse into sub folders (indicate levels) */
     bool noupdate;          /* exclude from update library function */
     bool exclude;           /* exclude this path from scraping */
-    bool all_ext_audio; /* treat all audio files in video directory as external tracks */
+    bool m_allExtAudio; /* treat all audio files in video directory as external tracks */
   } SScanSettings;
 
   class CVideoInfoScanner : public CInfoScanner
