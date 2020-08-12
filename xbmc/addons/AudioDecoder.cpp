@@ -50,7 +50,9 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   if (!m_struct.toAddon->init)
     return false;
 
-  // for replaygain
+  /// for replaygain
+  /// @todo About audio decoder in most cases Kodi's one not work, add fallback
+  /// to use addon if this fails. Need API change about addons music info tag!
   CTagLoaderTagLib tag;
   tag.Load(file.GetDynPath(), XFILE::CMusicFileDirectory::m_tag, NULL);
 
