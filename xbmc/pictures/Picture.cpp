@@ -169,7 +169,8 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
     return false;
   }
 
-  if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), scalingAlgorithm))
+  if (!ScaleImage(pixels, width, height, pitch, AV_PIX_FMT_BGRA, buffer, dest_width, dest_height,
+                  dest_width * sizeof(uint32_t), AV_PIX_FMT_BGRA, scalingAlgorithm))
   {
     delete[] buffer;
     result = NULL;
@@ -241,9 +242,8 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
     uint32_t *buffer = new uint32_t[dest_width * dest_height];
     if (buffer)
     {
-      if (ScaleImage(pixels, width, height, pitch,
-                     (uint8_t *)buffer, dest_width, dest_height, dest_width * 4,
-                     scalingAlgorithm))
+      if (ScaleImage(pixels, width, height, pitch, AV_PIX_FMT_BGRA, (uint8_t*)buffer, dest_width,
+                     dest_height, dest_width * 4, AV_PIX_FMT_BGRA, scalingAlgorithm))
       {
         if (!orientation || OrientateImage(buffer, dest_width, dest_height, orientation))
         {
@@ -295,8 +295,9 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
 
       // scale appropriately
       uint32_t *scaled = new uint32_t[width * height];
-      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
-                     (uint8_t *)scaled, width, height, width * 4))
+      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(),
+                     texture->GetPitch(), AV_PIX_FMT_BGRA, (uint8_t*)scaled, width, height,
+                     width * 4, AV_PIX_FMT_BGRA))
       {
         if (!texture->GetOrientation() || OrientateImage(scaled, width, height, texture->GetOrientation()))
         {
@@ -334,13 +335,22 @@ void CPicture::GetScale(unsigned int width, unsigned int height, unsigned int &o
     out_height = (unsigned int)(out_width / aspect + 0.5f);
 }
 
-bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
-                          uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch,
-                          CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
+bool CPicture::ScaleImage(uint8_t* in_pixels,
+                          unsigned int in_width,
+                          unsigned int in_height,
+                          unsigned int in_pitch,
+                          AVPixelFormat in_format,
+                          uint8_t* out_pixels,
+                          unsigned int out_width,
+                          unsigned int out_height,
+                          unsigned int out_pitch,
+                          AVPixelFormat out_format,
+                          CPictureScalingAlgorithm::Algorithm
+                              scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
-  struct SwsContext *context = sws_getContext(in_width, in_height, AV_PIX_FMT_BGRA,
-                                                         out_width, out_height, AV_PIX_FMT_BGRA,
-                                                         CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm), NULL, NULL, NULL);
+  struct SwsContext* context =
+      sws_getContext(in_width, in_height, in_format, out_width, out_height, out_format,
+                     CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm), NULL, NULL, NULL);
 
   uint8_t *src[] = { in_pixels, 0, 0, 0 };
   int     srcStride[] = { (int)in_pitch, 0, 0, 0 };

@@ -14,6 +14,11 @@
 #include <string>
 #include <vector>
 
+extern "C"
+{
+#include <libavutil/pixfmt.h>
+}
+
 class CTexture;
 
 class CPicture
@@ -57,11 +62,21 @@ public:
     uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
     CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
 
-private:
   static void GetScale(unsigned int width, unsigned int height, unsigned int &out_width, unsigned int &out_height);
-  static bool ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
-                         uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch,
-                         CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
+  static bool ScaleImage(
+      uint8_t* in_pixels,
+      unsigned int in_width,
+      unsigned int in_height,
+      unsigned int in_pitch,
+      AVPixelFormat in_format,
+      uint8_t* out_pixels,
+      unsigned int out_width,
+      unsigned int out_height,
+      unsigned int out_pitch,
+      AVPixelFormat out_format,
+      CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
+
+private:
   static bool OrientateImage(uint32_t *&pixels, unsigned int &width, unsigned int &height, int orientation);
 
   static bool FlipHorizontal(uint32_t*& pixels,
