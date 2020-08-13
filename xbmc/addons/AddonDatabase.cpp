@@ -131,7 +131,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 28;
+  return 29;
 }
 
 void CAddonDatabase::CreateTables()
@@ -154,9 +154,6 @@ void CAddonDatabase::CreateTables()
   CLog::Log(LOGINFO, "create addonlinkrepo table");
   m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
 
-  CLog::Log(LOGINFO, "create broken table");
-  m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
-
   CLog::Log(LOGINFO, "create blacklist table");
   m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text)\n");
 
@@ -175,7 +172,6 @@ void CAddonDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxAddons ON addons(addonID)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
   m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
   m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
 }
@@ -223,6 +219,10 @@ void CAddonDatabase::UpdateTables(int version)
     m_pDS->exec("ALTER TABLE installed ADD disabledReason INTEGER NOT NULL DEFAULT 0");
     // On adding this field we will use user disabled as the default reason for any disabled addons
     m_pDS->exec("UPDATE installed SET disabledReason=1 WHERE enabled=0");
+  }
+  if (version < 29)
+  {
+    m_pDS->exec("DROP TABLE broken");
   }
 }
 
@@ -903,15 +903,6 @@ bool CAddonDatabase::EnableAddon(const std::string& addonID)
   return false;
 }
 
-bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& reason)
-{
-  if (reason.empty())
-    return ExecuteQuery(PrepareSQL("DELETE FROM broken WHERE addonID='%s'", addonID.c_str()));
-  else
-    return ExecuteQuery(PrepareSQL("REPLACE INTO broken(addonID, reason) VALUES('%s', '%s')",
-                                   addonID.c_str(), reason.c_str()));
-}
-
 bool CAddonDatabase::GetDisabled(std::map<std::string, AddonDisabledReason>& addons)
 {
   try
@@ -964,11 +955,6 @@ bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
-}
-
-bool CAddonDatabase::IsAddonBroken(const std::string &addonID)
-{
-  return !GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str())).empty();
 }
 
 bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
