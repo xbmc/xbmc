@@ -92,19 +92,6 @@ public:
    */
   bool EnableAddon(const std::string& addonID);
 
-  /*! \brief Mark an addon as broken
-   Sets a flag that this addon has been marked as broken in the repository.
-   \param addonID id of the addon to mark as broken
-   \param reason why it is broken - if non empty we take it as broken.  Defaults to empty
-   \return true on success, false on failure
-   \sa IsAddonBroken */
-  bool BreakAddon(const std::string &addonID, const std::string& reason="");
-
-  /*! \brief Check whether an addon has been marked as broken via BreakAddon.
-   \param addonID id of the addon to check
-   \sa BreakAddon */
-  bool IsAddonBroken(const std::string &addonID);
-
   bool BlacklistAddon(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID);
   bool GetBlacklisted(std::set<std::string>& addons);
