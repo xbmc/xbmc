@@ -115,7 +115,7 @@
 						<label>LibreELEC</label>
 						<onclick>RunAddon(service.libreelec.settings)</onclick>
 						<icon>icons/settings/libreelec.png</icon>
-						<visible>System.HasAddon(service.libreelec.settings)</visible>
+						<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
 					</item>
 				</content>
 			</control>

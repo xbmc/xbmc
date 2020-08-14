@@ -157,9 +157,9 @@
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
-						<param name="onclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
 						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
-						<param name="altclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
 						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
@@ -167,9 +167,9 @@
 						<param name="control_id" value="148" />
 						<param name="label" value="$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Writer,$LOCALIZE[20417]: ]" />
-						<param name="onclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
 						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
-						<param name="altclick_condition" value="System.hasAddon(script.embuary.info)" />
+						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
 						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Writer)" />
 					</include>
@@ -292,8 +292,9 @@
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
-					<onup condition="System.hasAddon(script.embuary.info) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.embuary.info,call=person,query='$ESCINFO[Container(50).ListItem.Label]')</onup>
-					<onup condition="!System.hasAddon(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.embuary.info)</onup>
+					<onup condition="System.AddonIsEnabled(script.embuary.info) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.embuary.info,call=person,query='$ESCINFO[Container(50).ListItem.Label]')</onup>
+					<onup condition="System.HasAddon(script.embuary.info) + !System.AddonIsEnabled(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">EnableAddon(script.embuary.info)</onup>
+					<onup condition="!System.HasAddon(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.embuary.info)</onup>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<ondown>140</ondown>
@@ -536,7 +537,7 @@
 						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
 						<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
 						<param name="label" value="$LOCALIZE[31003]" />
-						<param name="visible" value="System.HasAddon(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
+						<param name="visible" value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
 					<control type="group" id="400">
 						<width>264</width>
@@ -584,7 +585,7 @@
 						<param name="onclick_2" value="RunScript(script.embuary.info,call=tv,dbid=$INFO[ListItem.DBID])" />
 						<param name="onclick_3_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)" />
 						<param name="onclick_3" value="RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])" />
-						<param name="visible" value="System.hasAddon(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]" />
+						<param name="visible" value="System.AddonIsEnabled(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="102" />

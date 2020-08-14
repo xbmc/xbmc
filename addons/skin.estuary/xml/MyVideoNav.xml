@@ -150,7 +150,8 @@
 					<control type="button" id="622">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[31117]</label>
-						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
+						<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
+						<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
 						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 						<visible>Container.Content() + String.IsEmpty(Container.PluginName)</visible>
 					</control>
@@ -158,7 +159,7 @@
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[31009]</label>
 						<onclick>InstallAddon(resource.images.studios.white)</onclick>
-						<visible>Container.Content(studios) + !System.HasAddon(resource.images.studios.white)</visible>
+						<visible>Container.Content(studios) + !System.AddonIsEnabled(resource.images.studios.white)</visible>
 					</control>
 					<control type="button" id="624">
 						<include>MediaMenuItemsCommon</include>

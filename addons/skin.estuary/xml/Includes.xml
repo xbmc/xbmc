@@ -293,7 +293,7 @@
 				<usecontrolcoords>true</usecontrolcoords>
 				<control type="group">
 					<width>150</width>
-					<visible>System.HasAddon(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
+					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.Studio,resource://resource.images.studios.white/,.png]" />
 					</include>

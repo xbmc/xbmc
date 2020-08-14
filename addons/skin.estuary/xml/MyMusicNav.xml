@@ -71,7 +71,8 @@
 					<control type="button" id="622">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[31117]</label>
-						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
+						<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
+						<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
 						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 						<visible>String.IsEmpty(Container.FolderPath) + String.IsEmpty(Container.PluginName)</visible>
 					</control>
