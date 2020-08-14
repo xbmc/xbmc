@@ -432,7 +432,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_PREMIERED:
         if (recording->FirstAired().IsValid())
         {
-          strValue = recording->FirstAired().GetAsLocalizedDate(true);
+          strValue = recording->FirstAired().GetAsLocalizedDate();
           return true;
         }
         else if (recording->HasYear())
@@ -634,7 +634,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_PREMIERED:
         if (epgTag->FirstAired().IsValid())
         {
-          strValue = epgTag->FirstAired().GetAsLocalizedDate(true);
+          strValue = epgTag->FirstAired().GetAsLocalizedDate();
           return true;
         }
         else if (epgTag->Year() > 0)
