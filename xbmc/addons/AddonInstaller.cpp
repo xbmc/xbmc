@@ -640,13 +640,9 @@ bool CAddonInstallJob::DoWork()
 
   ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal());
 
-  {
-    CAddonDatabase database;
-    database.Open();
-    database.SetOrigin(m_addon->ID(), m_repo ? m_repo->ID() : "");
-    if (m_isUpdate)
-      database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
-  }
+  // Write origin to database via addon manager, where this information is up-to-date.
+  // Needed to set origin correctly for new installed addons.
+  CServiceBroker::GetAddonMgr().SetAddonOrigin(m_addon->ID(), m_repo ? m_repo->ID() : "", m_isUpdate);
 
   bool notify = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
         || !m_isAutoUpdate) && !IsModal();

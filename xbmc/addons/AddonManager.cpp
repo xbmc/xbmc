@@ -1134,4 +1134,26 @@ bool CAddonMgr::FindAddonAndCheckForUpdate(const AddonPtr& addonToCheck,
   return false;
 }
 
+/*!
+ * @brief Addon update and install management.
+ */
+/*@{{{*/
+
+bool CAddonMgr::SetAddonOrigin(const std::string& addonId, const std::string& repoAddonId, bool isUpdate)
+{
+  CSingleLock lock(m_critSection);
+
+  m_database.SetOrigin(addonId, repoAddonId);
+  if (isUpdate)
+    m_database.SetLastUpdated(addonId, CDateTime::GetCurrentDateTime());
+
+  // If available in manager update
+  const AddonInfoPtr info = GetAddonInfo(addonId);
+  if (info)
+    m_database.GetInstallData(info);
+  return true;
+}
+
+/*@}}}*/
+
 } /* namespace ADDON */

@@ -331,6 +331,38 @@ namespace ADDON
 
     AddonOriginType GetAddonOriginType(const AddonPtr& addon) const;
 
+    /*!
+     * @brief Addon update and install management.
+     *
+     * Parts inside here are used for changes about addon system.
+     *
+     * @warning This should be never used from other places outside of addon
+     * system directory.
+     *
+     * Currently listed call sources:
+     * - @ref CAddonInstallJob::DoWork
+     */
+    /*@{{{*/
+
+    /*!
+     * @brief Update addon origin data.
+     *
+     * This becomes called from @ref CAddonInstallJob to set the source repo and
+     * if update, to set also the date.
+     *
+     * @note This must be called after the addon manager has inserted a new addon
+     * with @ref FindAddons() into database.
+     *
+     * @param[in] addonId Identifier of addon
+     * @param[in] repoAddonId Identifier of related repository addon
+     * @param[in] isUpdate If call becomes done on already installed addon and
+     *                     update only.
+     * @return True if successfully done, otherwise false
+     */
+    bool SetAddonOrigin(const std::string& addonId, const std::string& repoAddonId, bool isUpdate);
+
+    /*@}}}*/
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 
