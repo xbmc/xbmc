@@ -610,8 +610,18 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
   if (!IsAddonInstalled(addonId))
     return true;
 
+  AddonPtr localAddon;
+  // can't unload an binary addon that is in use
+  if (GetAddon(addonId, localAddon, ADDON_UNKNOWN, false) && localAddon->IsBinary() &&
+      localAddon->IsInUse())
+  {
+    CLog::Log(LOGERROR, "CAddonMgr::{}: could not unload binary add-on {}, as is in use", __func__,
+              addonId);
+    return false;
+  }
+
   m_installedAddons.erase(addonId);
-  CLog::Log(LOGDEBUG, "CAddonMgr: %s unloaded", addonId.c_str());
+  CLog::Log(LOGDEBUG, "CAddonMgr::{}: {} unloaded", __func__, addonId);
 
   lock.Leave();
   AddonEvents::Unload event(addonId);

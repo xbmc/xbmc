@@ -34,7 +34,10 @@ void CVFSAddonCache::Init()
   for (const auto& addonInfo : addonInfos)
   {
     VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+    vfs->Addon()->RegisterInformer(this);
+
     m_addonsInstances.emplace_back(vfs);
+
     if (!vfs->GetZeroconfType().empty())
       CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
   }
@@ -93,6 +96,17 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
   }
 }
 
+bool CVFSAddonCache::IsInUse(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+
+  const auto& itAddon = std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
+                                     [&id](const VFSEntryPtr& addon) { return addon->ID() == id; });
+  if (itAddon != m_addonsInstances.end() && (*itAddon).use_count() > 1)
+    return true;
+  return false;
+}
+
 void CVFSAddonCache::Update(const std::string& id)
 {
   std::vector<VFSEntryPtr> addonmap;
@@ -107,6 +121,7 @@ void CVFSAddonCache::Update(const std::string& id)
 
     if (itAddon != m_addonsInstances.end())
     {
+      (*itAddon)->Addon()->RegisterInformer(nullptr);
       m_addonsInstances.erase(itAddon);
     }
   }
