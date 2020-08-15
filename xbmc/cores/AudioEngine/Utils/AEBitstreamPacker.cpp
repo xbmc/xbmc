@@ -166,13 +166,13 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
 
   int maxSize = TRUEHD_FRAME_OFFSET;
   if (m_trueHDPos == 0)
-    maxSize -= sizeof(mat_start_code) + BURST_HEADER_SIZE;
+    maxSize -= static_cast<int>(sizeof(mat_start_code)) + BURST_HEADER_SIZE;
   else if (m_trueHDPos == 11)
     maxSize -= -MAT_MIDDLE_CODE_OFFSET;
   else if (m_trueHDPos == 12)
-    maxSize -= sizeof(mat_middle_code) + MAT_MIDDLE_CODE_OFFSET;
+    maxSize -= static_cast<int>(sizeof(mat_middle_code)) + MAT_MIDDLE_CODE_OFFSET;
   else if (m_trueHDPos == 23)
-    maxSize -= sizeof(mat_end_code) + (24 * TRUEHD_FRAME_OFFSET - MAT_FRAME_SIZE);
+    maxSize -= static_cast<int>(sizeof(mat_end_code)) + (24 * TRUEHD_FRAME_OFFSET - MAT_FRAME_SIZE);
 
   if (size > maxSize)
   {

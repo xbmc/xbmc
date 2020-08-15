@@ -124,7 +124,7 @@ CCPUInfoWin32::CCPUInfoWin32()
   else
     m_cpuQueryLoad = nullptr;
 
-  int CPUInfo[4]; // receives EAX, EBX, ECD and EDX in that order
+  int CPUInfo[4] = {}; // receives EAX, EBX, ECD and EDX in that order
 
   __cpuid(CPUInfo, 0);
   int MaxStdInfoType = CPUInfo[0];
@@ -227,7 +227,7 @@ int CCPUInfoWin32::GetUsedPercentage()
     {
       PDH_RAW_COUNTER cnt;
       DWORD cntType;
-      PDH_HCOUNTER coreCounter;
+      PDH_HCOUNTER coreCounter = nullptr;
       if (i < m_coreCounters.size())
         coreCounter = m_coreCounters[i];
       if (coreCounter && PdhGetRawCounterValue(coreCounter, &cntType, &cnt) == ERROR_SUCCESS &&
