@@ -19,7 +19,7 @@ namespace ADDON
   class CVFSEntry;
   typedef std::shared_ptr<CVFSEntry> VFSEntryPtr;
 
-  class CVFSAddonCache
+  class CVFSAddonCache : public CAddonDllInformer
   {
   public:
     virtual ~CVFSAddonCache();
@@ -29,8 +29,9 @@ namespace ADDON
     VFSEntryPtr GetAddonInstance(const std::string& strId);
 
   protected:
-    void Update();
+    void Update(const std::string& id);
     void OnEvent(const AddonEvent& event);
+    bool IsInUse(const std::string& id) override;
 
     CCriticalSection m_critSection;
     std::vector<VFSEntryPtr> m_addonsInstances;

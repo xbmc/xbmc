@@ -30,6 +30,18 @@ namespace ADDON
  */
 using ADDON_INSTANCE_HANDLER = const void*;
 
+/*!
+ * @brief Information class for use on addon type managers.
+ *
+ * This to query via @ref CAddonDll the manager so that work can be performed.
+ * If there are multiple instances it be harder to be informed about any changes.
+ */
+class CAddonDllInformer
+{
+public:
+  virtual bool IsInUse(const std::string& id) = 0;
+};
+
 class CAddonDll : public CAddon
 {
 public:
@@ -96,6 +108,8 @@ public:
    */
   void DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass);
 
+  bool IsInUse() const override;
+  void RegisterInformer(CAddonDllInformer* informer);
   AddonPtr GetRunningInstance() const override;
 
   void OnPreInstall() override;
@@ -141,6 +155,7 @@ private:
   bool m_initialized = false;
   bool LoadDll();
   std::map<ADDON_INSTANCE_HANDLER, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
+  CAddonDllInformer* m_informer = nullptr;
 
   virtual ADDON_STATUS TransferSettings();
 

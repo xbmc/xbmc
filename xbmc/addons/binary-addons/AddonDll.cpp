@@ -267,6 +267,18 @@ void CAddonDll::DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass)
     Destroy();
 }
 
+bool CAddonDll::IsInUse() const
+{
+  if (m_informer)
+    return m_informer->IsInUse(ID());
+  return false;
+}
+
+void CAddonDll::RegisterInformer(CAddonDllInformer* informer)
+{
+  m_informer = informer;
+}
+
 AddonPtr CAddonDll::GetRunningInstance() const
 {
   if (CServiceBroker::IsBinaryAddonCacheUp())

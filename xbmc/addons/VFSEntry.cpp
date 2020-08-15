@@ -25,7 +25,22 @@ CVFSAddonCache::~CVFSAddonCache()
 void CVFSAddonCache::Init()
 {
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CVFSAddonCache::OnEvent);
-  Update();
+
+  // Load all available VFS addons during Kodi start
+  std::vector<AddonInfoPtr> addonInfos;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_VFS);
+
+  CSingleLock lock(m_critSection);
+  for (const auto& addonInfo : addonInfos)
+  {
+    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+    vfs->Addon()->RegisterInformer(this);
+
+    m_addonsInstances.emplace_back(vfs);
+
+    if (!vfs->GetZeroconfType().empty())
+      CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
+  }
 }
 
 void CVFSAddonCache::Deinit()
@@ -73,31 +88,55 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
     if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_VFS))
-      Update();
+      Update(event.id);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
   {
-    Update();
+    Update(event.id);
   }
 }
 
-void CVFSAddonCache::Update()
+bool CVFSAddonCache::IsInUse(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+
+  const auto& itAddon = std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
+                                     [&id](const VFSEntryPtr& addon) { return addon->ID() == id; });
+  if (itAddon != m_addonsInstances.end() && (*itAddon).use_count() > 1)
+    return true;
+  return false;
+}
+
+void CVFSAddonCache::Update(const std::string& id)
 {
   std::vector<VFSEntryPtr> addonmap;
 
-  std::vector<AddonInfoPtr> addonInfos;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_VFS);
-  for (const auto& addonInfo : addonInfos)
-  {
-    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
-    addonmap.push_back(vfs);
-    if (!vfs->GetZeroconfType().empty())
-      CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
-  }
-
+  // Stop used instance if present, otherwise the new becomes created on already created addon base one.
   {
     CSingleLock lock(m_critSection);
-    m_addonsInstances = std::move(addonmap);
+
+    const auto& itAddon =
+        std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
+                     [&id](const VFSEntryPtr& addon) { return addon->ID() == id; });
+
+    if (itAddon != m_addonsInstances.end())
+    {
+      (*itAddon)->Addon()->RegisterInformer(nullptr);
+      m_addonsInstances.erase(itAddon);
+    }
+  }
+
+  // Create and init the new VFS addon instance
+  AddonInfoPtr addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(id, ADDON_VFS);
+  if (addonInfo && !CServiceBroker::GetAddonMgr().IsAddonDisabled(id))
+  {
+    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+
+    if (!vfs->GetZeroconfType().empty())
+      CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
+
+    CSingleLock lock(m_critSection);
+    m_addonsInstances.emplace_back(vfs);
   }
 }
 
