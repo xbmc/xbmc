@@ -32,6 +32,7 @@ public:
   static bool XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit=false);
   static std::string GetResInfoString();
   static int GetDesktopColorDepth();
+  static size_t GetSystemMemorySize();
 
   static std::string GetSystemPath();
   static std::string GetProfilePath();
