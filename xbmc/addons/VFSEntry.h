@@ -29,7 +29,7 @@ namespace ADDON
     VFSEntryPtr GetAddonInstance(const std::string& strId);
 
   protected:
-    void Update();
+    void Update(const std::string& id);
     void OnEvent(const AddonEvent& event);
 
     CCriticalSection m_critSection;
