@@ -788,29 +788,12 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
     bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
     bool fromOfficialRepo = CServiceBroker::GetAddonMgr().IsFromOfficialRepo(addon);
-    AddonOriginType addonOriginType = CServiceBroker::GetAddonMgr().GetAddonOriginType(addon);
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
     pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
     pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
-
-    std::string addonOriginTypeProperty;
-    switch (addonOriginType)
-    {
-      case AddonOriginType::SYSTEM:
-        addonOriginTypeProperty = g_localizeStrings.Get(25014); // system
-        break;
-      case AddonOriginType::REPOSITORY:
-        addonOriginTypeProperty = g_localizeStrings.Get(25015); // repository
-        break;
-      case AddonOriginType::MANUAL:
-      default:
-        addonOriginTypeProperty = g_localizeStrings.Get(25016); // manual
-        break;
-    }
-    pItem->SetProperty("Addon.OriginType", addonOriginTypeProperty);
 
     if (installed)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));
