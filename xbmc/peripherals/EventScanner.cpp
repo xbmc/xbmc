@@ -26,7 +26,7 @@ using namespace XbmcThreads;
 #define WATCHDOG_TIMEOUT_MS 80
 
 CEventScanner::CEventScanner(IEventScannerCallback& callback)
-  : CThread("PeripEventScanner"), m_callback(callback)
+  : CThread("PeripEventScan"), m_callback(callback)
 {
 }
 
