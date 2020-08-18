@@ -77,6 +77,11 @@ namespace XFILE
       if (entryFileName == filePath)
         continue;
 
+      // Disregard Apple Resource Fork data
+      std::size_t found = entryPath.find("__MACOSX");
+      if (found != std::string::npos)
+        continue;
+
       std::vector<std::string> pathTokens;
       StringUtils::Tokenize(entryFileName, pathTokens, "/");
 
