@@ -33,6 +33,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -744,6 +745,14 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
     return ShowIMDB(item, nullptr, true);
 
   ADDON::ScraperPtr scraper;
+
+  // Match visibility test of CMusicInfo::IsVisible
+  if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+      (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
+  {
+    CGUIDialogMusicInfo::ShowFor(item.get());
+    return true;
+  }
   if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
     std::string strDir;

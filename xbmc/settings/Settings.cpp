@@ -127,6 +127,7 @@ const std::string CSettings::SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST =
     "videolibrary.musicvideoartwhitelist";
 const std::string CSettings::SETTING_VIDEOLIBRARY_ARTSETTINGS_UPDATED =
     "videolibrary.artsettingsupdated";
+const std::string CSettings::SETTING_VIDEOLIBRARY_SHOWPERFORMERS = "videolibrary.musicvideosallperformers";
 const std::string CSettings::SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
 const std::string CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
 const std::string CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";

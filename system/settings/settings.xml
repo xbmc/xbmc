@@ -999,6 +999,11 @@
             <heading>657</heading>
           </control>
         </setting>
+        <setting id="videolibrary.musicvideosallperformers" type="boolean" label="20472" help="36308">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+         </setting>
       </group>
       <group id="4" label="39123">
         <!-- Hidden setting indicating video art settings have been migrated from old advancedsettings.xml format-->

@@ -42,6 +42,7 @@
 #include "utils/ProgressJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -76,7 +77,8 @@ public:
 
     CMusicDatabase database;
     database.Open();
-    // May only have partially populated item, so fetch all artist or album data from db
+
+    // May only have partially populated music item, so fetch all artist or album data from db
     if (tag.GetType() == MediaTypeArtist)
     {
       int artistId = tag.GetDatabaseId();
@@ -989,7 +991,10 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
     return;
   }
 
+  CFileItem musicitem("musicdb://", true);
+
   // We have a folder album/artist info dialog only shown for db items
+  // or for music video with artist/album in music library
   if (pItem->IsMusicDb())
   {
     if (!pItem->HasMusicInfoTag() || pItem->GetMusicInfoTag()->GetDatabaseId() < 1)
@@ -1004,11 +1009,30 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
       else
         return; // nothing to do
     }
-    CGUIDialogMusicInfo *pDlgMusicInfo = CServiceBroker::GetGUI()->GetWindowManager().
+    musicitem.SetFromMusicInfoTag(*pItem->GetMusicInfoTag());
+  }
+  else if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() &&
+           !pItem->GetVideoInfoTag()->m_artist.empty())
+  {
+    // Music video artist or album
+    musicitem.GetMusicInfoTag()->SetArtist(pItem->GetVideoInfoTag()->m_artist);
+    if (!pItem->GetVideoInfoTag()->m_strAlbum.empty())
+    {
+      musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger(), MediaTypeAlbum);
+      musicitem.GetMusicInfoTag()->SetAlbum(pItem->GetVideoInfoTag()->m_strAlbum);
+    }
+    else
+      musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger(),
+                                                 MediaTypeArtist);
+  }
+  else
+    return; // nothing to do
+
+  CGUIDialogMusicInfo *pDlgMusicInfo = CServiceBroker::GetGUI()->GetWindowManager().
 	  GetWindow<CGUIDialogMusicInfo>(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgMusicInfo)
     {
-      if (pDlgMusicInfo->SetItem(pItem))
+      if (pDlgMusicInfo->SetItem(&musicitem))
       {
         pDlgMusicInfo->Open();
         if (pItem->GetMusicInfoTag()->GetType() == MediaTypeAlbum &&
@@ -1020,5 +1044,5 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
         }
       }
     }
-  }
+
 }

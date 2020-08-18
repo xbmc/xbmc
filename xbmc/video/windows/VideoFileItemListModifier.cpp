@@ -99,7 +99,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   }
   break;
   case NODE_TYPE_MUSICVIDEOS_ALBUM:
-    pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
+    pItem.reset(new CFileItem("* " + g_localizeStrings.Get(16100)));  // "* All Videos"
     videoUrl.AppendPath("-1/");
     pItem->SetPath(videoUrl.ToString());
     break;

@@ -13580,7 +13580,12 @@ msgctxt "#20471"
 msgid "Show empty TV shows"
 msgstr ""
 
-#empty strings from id 20472 to 21329
+#: system/settings/settings.xml
+msgctxt "#20472"
+msgid "Show all performers for music videos"
+msgstr ""
+
+#empty strings from id 20473 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
@@ -19412,7 +19417,11 @@ msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
 msgstr ""
 
-#empty string with id 36308
+#. Description of setting with label #20472 "Show all performers for music videos"
+#: system/settings/settings.xml
+msgctxt "#36308"
+msgid "When enabled, shows all performers in the artist list for music videos, not just the main artist"
+msgstr ""
 
 #. Description of setting with label #22022 "Show video files in listings"
 #: system/settings/settings.xml
@@ -20169,7 +20178,13 @@ msgctxt "#36438"
 msgid "Any repositories"
 msgstr ""
 
-#empty strings from id 36439 to 36441
+#. Description of settings with label #20473 "Name for a container to hold music videos not associated with an album"
+#: system/settings/settings.xml
+msgctxt "#36439"
+msgid "The category name to use for music videos not associated with an album"
+msgstr ""
+
+#empty strings from id 36440 to 36441
 
 #. Description of setting "System -> Audio output -> Volume control steps" with label #1302
 #: system/settings/settings.xml
