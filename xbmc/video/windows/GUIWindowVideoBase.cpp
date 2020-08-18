@@ -373,7 +373,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   if (bHasInfo)
   {
     if (!info || info->Content() == CONTENT_NONE) // disable refresh button
-      movieDetails.SetUniqueID("xx"+movieDetails.GetUniqueID());
+      item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID());
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item.get());
     pDlgInfo->Open();
@@ -1400,74 +1400,6 @@ bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 bool CGUIWindowVideoBase::CanContainFilter(const std::string &strDirectory) const
 {
   return URIUtils::IsProtocol(strDirectory, "videodb://");
-}
-
-void CGUIWindowVideoBase::AddToDatabase(int iItem)
-{
-  if (iItem < 0 || iItem >= m_vecItems->Size())
-    return;
-
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-  if (pItem->IsParentFolder() || pItem->m_bIsFolder)
-    return;
-
-  CVideoInfoTag movie;
-  movie.Reset();
-
-  // prompt for data
-  // enter a new title
-  std::string strTitle = pItem->GetLabel();
-  if (!CGUIKeyboardFactory::ShowAndGetInput(strTitle, CVariant{g_localizeStrings.Get(528)}, false)) // Enter Title
-    return;
-
-  // pick genre
-  CGUIDialogSelect* pSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-  if (!pSelect)
-    return;
-
-  pSelect->SetHeading(CVariant{530}); // Select Genre
-  pSelect->Reset();
-  CFileItemList items;
-  if (!CDirectory::GetDirectory("videodb://movies/genres/", items, "", DIR_FLAG_DEFAULTS))
-    return;
-  pSelect->SetItems(items);
-  pSelect->EnableButton(true, 531); // New Genre
-  pSelect->Open();
-  std::string strGenre;
-  int iSelected = pSelect->GetSelectedItem();
-  if (iSelected >= 0)
-    strGenre = items[iSelected]->GetLabel();
-  else if (!pSelect->IsButtonPressed())
-    return;
-
-  // enter new genre string
-  if (strGenre.empty())
-  {
-    strGenre = g_localizeStrings.Get(532); // Manual Addition
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strGenre, CVariant{g_localizeStrings.Get(533)}, false)) // Enter Genre
-      return; // user backed out
-    if (strGenre.empty())
-      return; // no genre string
-  }
-
-  // set movie info
-  movie.m_strTitle = strTitle;
-  movie.m_genre = StringUtils::Split(strGenre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
-
-  // everything is ok, so add to database
-  m_database.Open();
-  int idMovie = m_database.AddMovie(pItem->GetPath());
-  movie.SetUniqueID(StringUtils::Format("xx%08i", idMovie));
-  m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
-  m_database.Close();
-
-  // done...
-  HELPERS::ShowOKDialogLines(CVariant{20177}, CVariant{movie.m_strTitle},
-                                CVariant{StringUtils::Join(movie.m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator)},
-                                CVariant{movie.GetUniqueID()});
-
-  // library view cache needs to be cleared
-  CUtil::DeleteVideoDatabaseDirectoryCache();
 }
 
 /// \brief Search the current directory for a string got from the virtual keyboard

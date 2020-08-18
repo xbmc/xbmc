@@ -249,14 +249,22 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID(), "xx"));
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID().c_str() + 2, "plugin"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
+      (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
+      !StringUtils::StartsWithNoCase(m_movieItem->GetProperty("xxuniqueid").c_str(), "xx"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
+      (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
+      !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
+      GetUniqueID().c_str(), "plugin"));
   // Disable video user rating button for plugins and sets as they don't have tables to save this
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection);
 
   VIDEODB_CONTENT_TYPE type = static_cast<VIDEODB_CONTENT_TYPE>(m_movieItem->GetVideoContentType());
   if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID().c_str() + 2, "plugin"));
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (profileManager->
+        GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
+        !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
+        GetUniqueID().c_str(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
