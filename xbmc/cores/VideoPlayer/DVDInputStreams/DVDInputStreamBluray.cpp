@@ -132,7 +132,7 @@ bool CDVDInputStreamBluray::Open()
   if(m_player == nullptr)
     return false;
 
-  std::string strPath(m_item.GetPath());
+  std::string strPath(m_item.GetDynPath());
   std::string filename;
   std::string root;
 
