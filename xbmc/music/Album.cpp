@@ -501,6 +501,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"label",strLabel);
+  XMLUtils::GetInt(album, "duration", iAlbumDuration);
   XMLUtils::GetString(album,"type",strType);
   XMLUtils::GetString(album, "releasestatus", strReleaseStatus);
 
@@ -631,6 +632,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   XMLUtils::SetString(album, "releasedate", strReleaseDate);
   XMLUtils::SetString(album, "originalreleasedate", strOrigReleaseDate);
   XMLUtils::SetString(album,       "label", strLabel);
+  XMLUtils::SetInt(album, "duration", iAlbumDuration);
   if (thumbURL.HasData())
   {
     CXBMCTinyXML doc;

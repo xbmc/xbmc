@@ -524,7 +524,8 @@
                 "compilation", "releasetype", "dateadded",
                 "sortartist", "musicbrainzreleasegroupid", "songgenres", "art",
                 "lastplayed", "sourceid","isboxset", "totaldiscs",
-                "releasedate", "originaldate", "albumstatus", "datemodified", "datenew"]
+                "releasedate", "originaldate", "albumstatus", "datemodified", "datenew",
+                "albumduration"]
     }
   },
   "Audio.Fields.Song": {
@@ -653,7 +654,8 @@
       "sourceid": { "$ref": "Array.Integer" }, 
       "isboxset" : { "type": "boolean" },
       "totaldiscs": { "type": "integer" },
-      "albumstatus": { "type": "string" }
+      "albumstatus": { "type": "string" },
+      "albumduration": { "type": "integer" }
     }
   },
   "Audio.Details.Song": {
@@ -1555,7 +1557,8 @@
                 "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "userrating", "votes", "sortartist", "musicbrainzreleasegroupid", "mediapath", "dynpath",
                 "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
-                "bitrate", "samplerate", "channels", "albumstatus", "datemodified", "datenew", "customproperties"]
+                "bitrate", "samplerate", "channels", "albumstatus", "datemodified", "datenew", "customproperties",
+                "albumduration"]
     }
   },
   "List.Item.All": {
@@ -1587,7 +1590,8 @@
                 "episodeguide", "uniqueid", "dateadded", "size", "lastmodified", "mimetype",
                 "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid",
                 "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
-                "bitrate", "samplerate", "channels", "datemodified", "datenew", "customproperties"]
+                "bitrate", "samplerate", "channels", "datemodified", "datenew", "customproperties",
+                "albumduration"]
     }
   },
   "List.Item.File": {

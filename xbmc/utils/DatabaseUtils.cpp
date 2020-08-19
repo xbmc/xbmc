@@ -79,6 +79,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       return "albumview.iDiscTotal";
     else if (field == FieldAlbumStatus)
         return "albumview.strReleaseStatus";
+    else if (field == FieldAlbumDuration)
+      return "albumview.iAlbumDuration";
   }
   else if (mediaType == MediaTypeSong)
   {
@@ -547,6 +549,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
       return CMusicDatabase::album_strOrigReleaseDate;
     else if (field == FieldAlbumStatus)
       return CMusicDatabase::album_strReleaseStatus;
+    else if (field == FieldAlbumDuration)
+      return CMusicDatabase::album_iAlbumDuration;
   }
   else if (mediaType == MediaTypeSong)
   {

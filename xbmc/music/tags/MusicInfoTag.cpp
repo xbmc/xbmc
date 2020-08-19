@@ -810,6 +810,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetDatabaseId(album.idAlbum, MediaTypeAlbum);
   SetLastPlayed(album.lastPlayed);
   SetTotalDiscs(album.iTotalDiscs);
+  SetDuration(album.iAlbumDuration);
 
   SetLoaded();
 }

@@ -830,6 +830,7 @@ private:
     song_iBitRate,
     song_iSampleRate,
     song_iChannels,
+    song_iAlbumDuration,
     song_dateAdded,
     song_dateNew,
     song_dateModified,
@@ -871,6 +872,7 @@ private:
     album_strReleaseType,
     album_iTotalDiscs,
     album_dtLastPlayed,
+    album_iAlbumDuration,
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
 

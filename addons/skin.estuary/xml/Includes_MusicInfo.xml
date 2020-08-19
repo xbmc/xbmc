@@ -94,6 +94,11 @@
 			<visible>!String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.ReleaseDate) + String.IsEmpty(ListItem.OriginalDate)</visible>
 		</item>
 		<item>
+			<label>$LOCALIZE[180]:</label>
+			<label2>$INFO[ListItem.Property(album_duration)]</label2>
+			<visible>!String.IsEmpty(ListItem.Property(Album_Duration))</visible>
+		</item>
+		<item>
 			<label>$LOCALIZE[515]:</label>
 			<label2>$INFO[ListItem.Genre]</label2>
 			<visible>!String.IsEmpty(ListItem.Genre)</visible>
