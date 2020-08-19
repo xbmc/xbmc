@@ -439,7 +439,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     case XBMC_BUTTON:
     {
       CKey key(newEvent.keybutton.button, newEvent.keybutton.holdtime);
-      OnKey(key);
+      HandleKey(key);
       break;
     }
   } // switch
