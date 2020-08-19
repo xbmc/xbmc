@@ -2679,6 +2679,9 @@ void CApplication::Stop(int exitCode)
     // Stop services before unloading Python
     CServiceBroker::GetServiceAddons().Stop();
 
+    // Stop any other python scripts that may be looping waiting for monitor.abortRequested()
+    CScriptInvocationManager::GetInstance().StopRunningScripts();
+
     // unregister action listeners
     UnregisterActionListener(&m_appPlayer.GetSeekHandler());
     UnregisterActionListener(&CPlayerController::GetInstance());
