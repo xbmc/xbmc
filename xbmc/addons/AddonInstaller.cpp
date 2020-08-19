@@ -651,7 +651,18 @@ bool CAddonInstallJob::DoWork()
 
   // Write origin to database via addon manager, where this information is up-to-date.
   // Needed to set origin correctly for new installed addons.
-  CServiceBroker::GetAddonMgr().SetAddonOrigin(m_addon->ID(), m_repo ? m_repo->ID() : "", m_isUpdate);
+
+  std::string origin;
+  if (m_repo) // if we have an origin use it
+  {
+    origin = m_repo->ID();
+  }
+  else if (m_addon->HasType(ADDON_REPOSITORY))
+  {
+    origin = m_addon->ID(); // set origin to addon-id which is the repo itself
+  }
+
+  CServiceBroker::GetAddonMgr().SetAddonOrigin(m_addon->ID(), origin, m_isUpdate);
 
   bool notify = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
         || !m_isAutoUpdate) && !IsModal();

@@ -131,7 +131,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 30;
+  return 31;
 }
 
 void CAddonDatabase::CreateTables()
@@ -227,6 +227,11 @@ void CAddonDatabase::UpdateTables(int version)
   if (version < 30)
   {
     m_pDS->exec("ALTER TABLE repo ADD nextcheck TEXT");
+  }
+  if (version < 31)
+  {
+    m_pDS->exec("UPDATE installed SET origin = addonID WHERE (origin='') AND "
+                "EXISTS (SELECT * FROM repo WHERE repo.addonID = installed.addonID)");
   }
 }
 
