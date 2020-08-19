@@ -249,9 +249,13 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
-      (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
-      !StringUtils::StartsWithNoCase(m_movieItem->GetProperty("xxuniqueid").c_str(), "xx"));
+  const std::string uniqueId = m_movieItem->GetProperty("xxuniqueid").asString();
+  if (uniqueId.empty() || !StringUtils::StartsWithNoCase(uniqueId.c_str(), "xx"))
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
+        (profileManager->GetCurrentProfile().canWriteDatabases() ||
+        g_passwordManager.bMasterUser));
+  else
+    CONTROL_DISABLE(CONTROL_BTN_REFRESH);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
       (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
       !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
