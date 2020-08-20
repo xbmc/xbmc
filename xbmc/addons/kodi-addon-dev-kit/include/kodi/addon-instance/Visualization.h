@@ -25,61 +25,28 @@ struct VIS_INFO /* internal */
   int iSyncDelay;
 };
 
-//============================================================================
-/// \defgroup cpp_kodi_addon_visualization_VisTrack class VisTrack
-/// \ingroup cpp_kodi_addon_visualization
-/// @brief **Visualization track information structure**
-///
-/// Called from kodi::addon::CInstanceVisualization::UpdateTrack() with the
-/// information of the currently-playing song.
-///
-//@{
 struct VIS_TRACK
 {
-  /// @brief Title of the current song.
   const char *title;
-
-  /// @brief Artist names, as a single string
   const char *artist;
-
-  /// @brief Album that the current song is from.
   const char *album;
-
-  /// @brief Album artist names, as a single string
   const char *albumArtist;
-
-  /// @brief The genre name from the music tag, if present.
   const char *genre;
-
-  /// @brief Comment of the current song stored in the ID tag info.
   const char *comment;
-
-  /// @brief Lyrics of the current song, if available.
   const char *lyrics;
 
   const char *reserved1;
   const char *reserved2;
 
-  /// @brief Track number of the current song.
   int trackNumber;
-
-  /// @brief Disc number of the current song stored in the ID tag info.
   int discNumber;
-
-  /// @brief Duration of the current song, in seconds.
   int duration;
-
-  /// @brief Year that the current song was released.
   int year;
-
-  /// @brief The user-defined rating of the current song.
   int rating;
 
   int reserved3;
   int reserved4;
 };
-//@}
-//----------------------------------------------------------------------------
 
 typedef struct AddonProps_Visualization /* internal */
 {
@@ -150,6 +117,195 @@ namespace kodi
 {
 namespace addon
 {
+
+
+//==============================================================================
+/// @defgroup cpp_kodi_addon_visualization_Defs_VisualizationTrack class VisualizationTrack
+/// @ingroup cpp_kodi_addon_visualization_Defs
+/// @brief **Info tag data structure**\n
+/// Representation of available information of processed audio file.
+///
+/// This is used to store all the necessary data of audio stream and to have on
+/// e.g. GUI for information.
+///
+/// Called from @ref kodi::addon::CInstanceVisualization::UpdateTrack() with the
+/// information of the currently-playing song.
+///
+/// ----------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_addon_visualization_Defs_VisualizationTrack_Help
+///
+///@{
+class VisualizationTrack
+{
+  /*! \cond PRIVATE */
+  friend class CInstanceVisualization;
+  /*! \endcond */
+
+public:
+  /*! \cond PRIVATE */
+  VisualizationTrack() = default;
+  VisualizationTrack(const VisualizationTrack& tag)
+  {
+    *this = tag;
+  }
+
+  VisualizationTrack& operator=(const VisualizationTrack& right)
+  {
+    if (&right == this)
+      return *this;
+
+    m_title = right.m_title;
+    m_artist = right.m_artist;
+    m_album = right.m_album;
+    m_albumArtist = right.m_albumArtist;
+    m_genre = right.m_genre;
+    m_comment = right.m_comment;
+    m_lyrics = right.m_lyrics;
+
+    m_trackNumber = right.m_trackNumber;
+    m_discNumber = right.m_discNumber;
+    m_duration = right.m_duration;
+    m_year = right.m_year;
+    m_rating = right.m_rating;
+    return *this;
+  }
+  /*! \endcond */
+
+  /// @defgroup cpp_kodi_addon_visualization_Defs_VisualizationTrack_Help Value Help
+  /// @ingroup cpp_kodi_addon_visualization_Defs_VisualizationTrack
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_addon_visualization_Defs_VisualizationTrack :</b>
+  /// | Name | Type | Set call | Get call
+  /// |------|------|----------|----------
+  /// | **Title of the current song.** | `std::string` | @ref VisualizationTrack::SetTitle "SetTitle" | @ref VisualizationTrack::GetTitle "GetTitle"
+  /// | **Artist names, as a single string** | `std::string` | @ref VisualizationTrack::SetArtist "SetArtist" | @ref VisualizationTrack::GetArtist "GetArtist"
+  /// | **Album that the current song is from.** | `std::string` | @ref VisualizationTrack::SetAlbum "SetAlbum" | @ref VisualizationTrack::GetAlbum "GetAlbum"
+  /// | **Album artist names, as a single string** | `std::string` | @ref VisualizationTrack::SetAlbumArtist "SetAlbumArtist" | @ref VisualizationTrack::GetAlbumArtist "GetAlbumArtist"
+  /// | **The genre name from the music tag, if present** | `std::string` | @ref VisualizationTrack::SetGenre "SetGenre" | @ref VisualizationTrack::GetGenre "GetGenre"
+  /// | **Duration of the current song, in seconds** | `int` | @ref VisualizationTrack::SetDuration "SetDuration" | @ref VisualizationTrack::GetDuration "GetDuration"
+  /// | **Track number of the current song** | `int` | @ref VisualizationTrack::SetTrack "SetTrack" | @ref VisualizationTrack::GetTrack "GetTrack"
+  /// | **Disc number of the current song stored in the ID tag info** | `int` | @ref VisualizationTrack::SetDisc "SetDisc" | @ref VisualizationTrack::GetDisc "GetDisc"
+  /// | **Year that the current song was released** | `int` | @ref VisualizationTrack::SetYear "SetYear" | @ref VisualizationTrack::GetYear "GetYear"
+  /// | **Lyrics of the current song, if available** | `std::string` | @ref VisualizationTrack::SetLyrics "SetLyrics" | @ref VisualizationTrack::GetLyrics "GetLyrics"
+  /// | **The user-defined rating of the current song** | `int` | @ref VisualizationTrack::SetRating "SetRating" | @ref VisualizationTrack::GetRating "GetRating"
+  /// | **Comment of the current song stored in the ID tag info** | `std::string` | @ref VisualizationTrack::SetComment "SetComment" | @ref VisualizationTrack::GetComment "GetComment"
+  ///
+
+  /// @addtogroup cpp_kodi_addon_visualization_Defs_VisualizationTrack
+  ///@{
+
+  /// @brief Set title of the current song.
+  void SetTitle(const std::string& title) { m_title = title; }
+
+  /// @brief Get title of the current song.
+  const std::string& GetTitle() const { return m_title; }
+
+  /// @brief Set artist names, as a single string-
+  void SetArtist(const std::string& artist) { m_artist = artist; }
+
+  /// @brief Get artist names, as a single string-
+  const std::string& GetArtist() const { return m_artist; }
+
+  /// @brief Set Album that the current song is from.
+  void SetAlbum(const std::string& album) { m_album = album; }
+
+  /// @brief Get Album that the current song is from.
+  const std::string& GetAlbum() const { return m_album; }
+
+  /// @brief Set album artist names, as a single stringalbum artist name
+  void SetAlbumArtist(const std::string& albumArtist) { m_albumArtist = albumArtist; }
+
+  /// @brief Get album artist names, as a single string-
+  const std::string& GetAlbumArtist() const { return m_albumArtist; }
+
+  /// @brief Set genre name from music as string if present.
+  void SetGenre(const std::string& genre) { m_genre = genre; }
+
+  /// @brief Get genre name from music as string if present.
+  const std::string& GetGenre() const { return m_genre; }
+
+  /// @brief Set the duration of music as integer from info.
+  void SetDuration(int duration) { m_duration = duration; }
+
+  /// @brief Get the duration of music as integer from info.
+  int GetDuration() const { return m_duration; }
+
+  /// @brief Set track number (if present) from music info as integer.
+  void SetTrack(int trackNumber) { m_trackNumber = trackNumber; }
+
+  /// @brief Get track number (if present).
+  int GetTrack() const { return m_trackNumber; }
+
+  /// @brief Set disk number (if present) from music info as integer.
+  void SetDisc(int discNumber) { m_discNumber = discNumber; }
+
+  /// @brief Get disk number (if present)
+  int GetDisc() const { return m_discNumber; }
+
+  /// @brief Set year that the current song was released.
+  void SetYear(int year) { m_year = year; }
+
+  /// @brief Get year that the current song was released.
+  int GetYear() const { return m_year; }
+
+  /// @brief Set string from lyrics.
+  void SetLyrics(const std::string& lyrics) { m_lyrics = lyrics; }
+
+  /// @brief Get string from lyrics.
+  const std::string& GetLyrics() const { return m_lyrics; }
+
+  /// @brief Set the user-defined rating of the current song.
+  void SetRating(int rating) { m_rating = rating; }
+
+  /// @brief Get the user-defined rating of the current song.
+  int GetRating() const { return m_rating; }
+
+  /// @brief Set additional information comment (if present).
+  void SetComment(const std::string& comment) { m_comment = comment; }
+
+  /// @brief Get additional information comment (if present).
+  const std::string& GetComment() const { return m_comment; }
+
+  ///@}
+
+private:
+  VisualizationTrack(const VIS_TRACK* tag)
+  {
+    if (!tag)
+      return;
+
+    m_title = tag->title ? tag->title : "";
+    m_artist = tag->artist ? tag->artist : "";
+    m_album = tag->album ? tag->album : "";
+    m_albumArtist = tag->albumArtist ? tag->albumArtist : "";
+    m_genre = tag->genre ? tag->genre : "";
+    m_comment = tag->comment ? tag->comment : "";
+    m_lyrics = tag->lyrics ? tag->lyrics : "";
+
+    m_trackNumber = tag->trackNumber;
+    m_discNumber = tag->discNumber;
+    m_duration = tag->duration;
+    m_year = tag->year;
+    m_rating = tag->rating;
+  }
+
+  std::string m_title;
+  std::string m_artist;
+  std::string m_album;
+  std::string m_albumArtist;
+  std::string m_genre;
+  std::string m_comment;
+  std::string m_lyrics;
+
+  int m_trackNumber = 0;
+  int m_discNumber = 0;
+  int m_duration = 0;
+  int m_year = 0;
+  int m_rating = 0;
+};
+///@}
+//------------------------------------------------------------------------------
 
   //============================================================================
   ///
@@ -546,7 +702,7 @@ namespace addon
     ///
     /// @param[in] track        Visualization track information structure
     /// @return                 Return true if the track information is used
-    virtual bool UpdateTrack(const VIS_TRACK& track) { return false; }
+    virtual bool UpdateTrack(const kodi::addon::VisualizationTrack& track) { return false; }
 
     //==========================================================================
     ///
@@ -818,7 +974,7 @@ namespace addon
                                          const VIS_TRACK* track)
     {
       return static_cast<CInstanceVisualization*>(addon->toAddon->addonInstance)
-          ->UpdateTrack(*track);
+          ->UpdateTrack(track);
     }
 
     std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
