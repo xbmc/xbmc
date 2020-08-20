@@ -196,22 +196,26 @@ bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
 
   bool hasOfficialUpdate = FindAddonAndCheckForUpdate(addon, m_latestOfficialVersions, update);
 
-  if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
+  // addons with an empty origin have at least been checked against official repositories
+  if (!addon->Origin().empty())
   {
-    // If we didn't find an official update
-    if (IsFromOfficialRepo(addon, true)) // is an official addon
+    if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
     {
-      if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
-        if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
-          return false;
-    }
-    else
-    {
-      // ...we check for updates in the origin repo only
-      const auto& repoEntry = m_latestVersionsByRepo.find(addon->Origin());
-      if (repoEntry != m_latestVersionsByRepo.end())
-        if (!FindAddonAndCheckForUpdate(addon, repoEntry->second, update))
-          return false;
+      // If we didn't find an official update
+      if (IsFromOfficialRepo(addon, true)) // is an official addon
+      {
+        if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
+          if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
+            return false;
+      }
+      else
+      {
+        // ...we check for updates in the origin repo only
+        const auto& repoEntry = m_latestVersionsByRepo.find(addon->Origin());
+        if (repoEntry != m_latestVersionsByRepo.end())
+          if (!FindAddonAndCheckForUpdate(addon, repoEntry->second, update))
+            return false;
+      }
     }
   }
 
