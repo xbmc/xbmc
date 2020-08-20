@@ -283,10 +283,13 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons)
 bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
 {
   CSingleLock lock(m_critSection);
+  CAddonRepos addonRepos(*this);
+
+  if (!addonRepos.LoadAddonsFromDatabase(m_database))
+    return false;
 
   // get all addons
-  if (!m_database.GetRepositoryContent(addons))
-    return false;
+  addonRepos.GetLatestAddonVersions(addons);
 
   // go through all addons and remove all that are already installed
 

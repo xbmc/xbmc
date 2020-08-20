@@ -42,15 +42,27 @@ public:
   /*!
    * \brief Load the map of all available addon versions in any installed repository
    * \param database reference to the database to load addons from
+   * \return true on success, false otherwise
    */
-  void LoadAddonsFromDatabase(const CAddonDatabase& database);
+  bool LoadAddonsFromDatabase(const CAddonDatabase& database);
 
   /*!
    * \brief Load the map of all available versions of an addonId in any installed repository
    * \param database reference to the database to load addons from
    * \param addonId the addon id we want to retrieve versions for
+   * \return true on success, false otherwise
    */
-  void LoadAddonsFromDatabase(const CAddonDatabase& database, const std::string& addonId);
+  bool LoadAddonsFromDatabase(const CAddonDatabase& database, const std::string& addonId);
+
+  /*!
+   * \brief Load the map of all available versions in one installed repository
+   * \param database reference to the database to load addons from
+   * \param repoAddon pointer to the repo we want to retrieve versions from
+   *        note this is of type AddonPtr, not RepositoryPtr
+   * \return true on success, false otherwise
+   */
+  bool LoadAddonsFromDatabase(const CAddonDatabase& database,
+                              const std::shared_ptr<IAddon>& repoAddon);
 
   /*!
    * \brief Build the list of addons to be updated depending on defined rules
@@ -92,11 +104,19 @@ public:
    * \brief Retrieves the latest version of an addon from all installed repositories
    *        follows addon origin restriction rules
    * \param addonId addon id we're looking the latest version for
-   * \param[out] result pointer to the found addon
+   * \param[out] addon pointer to the found addon
    * \return true if a version was found, false otherwise
    */
   bool GetLatestAddonVersionFromAllRepos(const std::string& addonId,
-                                         std::shared_ptr<IAddon>& result) const;
+                                         std::shared_ptr<IAddon>& addon) const;
+
+  /*!
+   * \brief Retrieves the latest official versions of addons to vector.
+   *        Private versions are added obeying the set updateMode.
+   *        (either OFFICIAL_ONLY or ANY_REPOSITORY)
+   * \param[out] addonList retrieved addon list in a vector
+   */
+  void GetLatestAddonVersions(std::vector<std::shared_ptr<IAddon>>& addonList) const;
 
   /*!
    * \brief Find a dependency to install during an addon install or update
@@ -127,6 +147,15 @@ public:
                                   std::shared_ptr<IAddon>& dependencyToInstall) const;
 
 private:
+  /*!
+   * \brief Load the map of addons
+   * \note this function should only by called from publicly exposed wrappers
+   * \return true on success, false otherwise
+   */
+  bool LoadAddonsFromDatabase(const CAddonDatabase& database,
+                              const std::string& addonId,
+                              const std::shared_ptr<IAddon>& repoAddon);
+
   /*!
    * \brief Looks up an addon in a given repository map and
    *        checks if an update is available
@@ -171,12 +200,12 @@ private:
    * \brief Looks up an addon entry in a specific map
    * \param addonId addon we want to retrieve
    * \param map the map we're looking into for the wanted addon
-   * \param[out] result pointer to the found addon, only use when function returns true
+   * \param[out] addon pointer to the found addon, only use when function returns true
    * \return true if the addon was found in the map, false otherwise
    */
   bool GetLatestVersionByMap(const std::string& addonId,
                              const std::map<std::string, std::shared_ptr<IAddon>>& map,
-                             std::shared_ptr<IAddon>& result) const;
+                             std::shared_ptr<IAddon>& addon) const;
 
   const CAddonMgr& m_addonMgr;
 

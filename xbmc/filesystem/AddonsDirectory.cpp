@@ -521,41 +521,50 @@ static void RunningAddons(const CURL& path, CFileItemList &items)
 
 static bool Browse(const CURL& path, CFileItemList &items)
 {
-  const std::string repo = path.GetHostName();
+  const std::string repoId = path.GetHostName();
 
   VECADDONS addons;
   items.SetPath(path.Get());
-  if (repo == "all")
+  if (repoId == "all")
   {
+    const auto& addonMgr = CServiceBroker::GetAddonMgr();
+    CAddonRepos addonRepos(addonMgr);
     CAddonDatabase database;
-    if (!database.Open() || !database.GetRepositoryContent(addons))
+
+    if (!database.Open() || !addonRepos.LoadAddonsFromDatabase(database))
+    {
       return false;
+    }
+    database.Close();
+
+    // get all addons
+    addonRepos.GetLatestAddonVersions(addons);
+
     items.SetProperty("reponame", g_localizeStrings.Get(24087));
     items.SetLabel(g_localizeStrings.Get(24087));
   }
   else
   {
-    AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(repo, addon, ADDON_REPOSITORY))
+    AddonPtr repoAddon;
+    const auto& addonMgr = CServiceBroker::GetAddonMgr();
+
+    if (!addonMgr.GetAddon(repoId, repoAddon, ADDON_REPOSITORY))
       return false;
 
+    CAddonRepos addonRepos(addonMgr);
     CAddonDatabase database;
-    database.Open();
-    if (!database.GetRepositoryContent(addon->ID(), addons))
+
+    if (!database.Open() || !addonRepos.LoadAddonsFromDatabase(database, repoAddon))
     {
-      //Repo content is invalid. Ask for update and wait.
-      CServiceBroker::GetRepositoryUpdater().CheckForUpdates(std::static_pointer_cast<CRepository>(addon));
-      CServiceBroker::GetRepositoryUpdater().Await();
-
-      if (!database.GetRepositoryContent(addon->ID(), addons))
-      {
-        HELPERS::ShowOKDialogText(CVariant{addon->Name()}, CVariant{24991});
-        return false;
-      }
+      return false;
     }
+    database.Close();
 
-    items.SetProperty("reponame", addon->Name());
-    items.SetLabel(addon->Name());
+    // get all addons from the single repository
+    addonRepos.GetLatestAddonVersions(addons);
+
+    items.SetProperty("reponame", repoAddon->Name());
+    items.SetLabel(repoAddon->Name());
   }
 
   const std::string category = path.GetFileName();
