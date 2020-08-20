@@ -351,6 +351,9 @@ bool CContext::CreateContext()
     m_atiWorkaround = true;
   }
 
+  // Sets high priority process for smooth playback in all circumstances
+  SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+
   return true;
 }
 
@@ -359,6 +362,9 @@ void CContext::DestroyContext()
   delete[] m_input_list;
   m_pD3D11Device = nullptr;
   m_pD3D11Context = nullptr;
+
+  // Restores normal priority process
+  SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 }
 
 void CContext::QueryCaps()
@@ -1161,8 +1167,13 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   m_refs = 2 + m_shared; // 1 decode + 1 safety + display
   m_surface_alignment = 16;
 
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  DXGI_ADAPTER_DESC ad = {};
+  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+
+  size_t videoMem = ad.SharedSystemMemory + ad.DedicatedVideoMemory + ad.DedicatedSystemMemory;
+  CLog::LogF(LOGINFO, "Total video memory available is {} MB (dedicated = {} MB, shared = {} MB)",
+             videoMem / MB, (ad.DedicatedVideoMemory + ad.DedicatedSystemMemory) / MB,
+             ad.SharedSystemMemory / MB);
 
   switch (avctx->codec_id)
   {
@@ -1201,6 +1212,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   if (avctx->active_thread_type & FF_THREAD_FRAME)
     m_refs += avctx->thread_count;
 
+  // Check if available video memory is sufficient for 4K decoding (is need ~3000 MB)
+  if (avctx->width >= 3840 && m_refs > 16 && videoMem < (3000ull * MB))
+  {
+    CLog::LogF(LOGWARNING,
+               "Current available video memory ({} MB) is insufficient 4K video decoding (DXVA2) "
+               "using {} surfaces. Fallback to SW decode.", videoMem / MB, m_refs);
+    return false;
+  }
+
   /* On the Xbox 1/S with limited memory we have to
      limit refs to avoid crashing device completely */
   if (HasXbox4kHevcMain10Bug(avctx) && m_refs > 16)
@@ -1233,7 +1253,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     CLog::LogFunction(LOGWARNING, "DXVA", "used Intel ClearVideo decoder, but no support workaround for it in libavcodec.");
 #endif
   }
-  else if (AIdentifier.VendorId == PCIV_ATI && IsL41LimitedATI())
+  else if (ad.VendorId == PCIV_ATI && IsL41LimitedATI())
   {
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
     m_avD3D11Context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;
