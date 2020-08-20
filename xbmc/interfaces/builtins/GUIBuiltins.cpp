@@ -85,6 +85,10 @@ static int ActivateWindow(const std::vector<std::string>& params2)
         bIsSameStartFolder = static_cast<CGUIMediaWindow*>(activeWindow)->IsSameStartFolder(params[0]);
     }
 
+    // let the window know it is being replaced
+    if (Replace)
+      params.emplace_back("replace");
+
     // activate window only if window and path differ from the current active window
     if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() || !bIsSameStartFolder)
     {
