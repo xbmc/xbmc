@@ -64,7 +64,7 @@ namespace ADDON
 
     /*! \brief Retrieve a specific addon (of a specific type)
      \param id the id of the addon to retrieve.
-     \param addon [out] the retrieved addon pointer - only use if the function returns true.
+     \param addon[out] the retrieved addon pointer - only use if the function returns true.
      \param type type of addon to retrieve - defaults to any type.
      \param enabledOnly whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
@@ -104,7 +104,18 @@ namespace ADDON
 
     bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
 
-    /*! Get the installable addon with the highest version. */
+    /*! \brief Get the installable addon depending on install rules
+     *         or fall back to highest version.
+     * \note This function gets called in different contexts. If it's
+     *       called for checking possible updates for already installed addons
+     *       our update restriction rules apply.
+     *       If it's called to (for example) populate an addon-select-dialog
+     *       the addon is not installed yet, and we have to fall back to the
+     *       highest version.
+     * \param addonId addon to check for update or installation
+     * \param addon[out] the retrieved addon pointer - only use if the function returns true.
+     * \return true if an addon matching the id is available.
+     */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
@@ -322,14 +333,15 @@ namespace ADDON
      */
     const std::string& GetTempAddonBasePath() { return m_tempAddonBasePath; }
 
-    /*!
-     * Checks if the origin-repository of a given addon is defined as official repo
-     * but does not check the origin path (e.g. https://mirrors.kodi.tv ...)
-     * \param addon pointer to addon to be checked
-     */
-    bool IsFromOfficialRepo(const AddonPtr& addon) const;
-
     AddonOriginType GetAddonOriginType(const AddonPtr& addon) const;
+
+    /*!
+     * \brief Check whether an addon has been disabled with a special reason.
+     * \param ID id of the addon
+     * \param disabledReason reason we want to check for (NONE, USER, INCOMPATIBLE, PERMANENT_FAILURE)
+     * \return true or false 
+     */
+    bool IsAddonDisabledWithReason(const std::string& ID, AddonDisabledReason disabledReason) const;
 
     /*!
      * @brief Addon update and install management.
@@ -407,34 +419,6 @@ namespace ADDON
      */
     void InstallAddonUpdates(VECADDONS& updates, bool wait) const;
 
-    /*!
-     * Adds an addon to a repository map
-     * \param addonToAdd the addon that should be added to the map
-     * \param map the desired target map (e.g. official, private...)
-     */
-    void AddAddonIfLatest(const AddonPtr& addonToAdd, std::map<std::string, AddonPtr>& map) const;
-
-    /*!
-     * Looks up an addon in a given repository map and then
-     * queues the update if a newer version is available
-     * \param addonToCheck the addon we want to find and version-check
-     * \param map the repository-map we want to check against
-     * \param vecAddons the target vector, into which queued addons will be emplaced
-     * \return true if the addon was found in the desired map
-     * \return false if the addon does NOT exist in the map
-     */
-    bool FindAddonAndCheckForUpdate(const AddonPtr& addonToCheck,
-                                    const std::map<std::string, AddonPtr>& map,
-                                    VECADDONS& vecAddons) const;
-
-    /*!
-     * Checks if the origin-repository of a given addon is defined as official repo
-     * and verify if the origin-path is also defined and matching
-     * \param addon pointer to addon to be checked
-     * \param bCheckAddonPath also check origin path
-     */
-    bool IsFromOfficialRepo(const AddonPtr& addon, bool bCheckAddonPath) const;
-
     // This guards the addon installation process to make sure
     // addon updates are not installed concurrently
     // while the migration is running. Addon updates can be triggered
@@ -451,7 +435,6 @@ namespace ADDON
     CBlockingEventSource<AddonEvent> m_unloadEvents;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
-    std::vector<std::string> m_officialAddonRepos;
     ADDON_INFO_LIST m_installedAddons;
 
     // Temporary path given to add-ons, whose content is deleted when Kodi is stopped

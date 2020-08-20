@@ -374,7 +374,7 @@ std::pair<AddonVersion, std::string> CAddonDatabase::GetAddonVersion(const std::
   return std::make_pair(AddonVersion(), "");
 }
 
-bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS& result)
+bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS& result) const
 {
   try
   {

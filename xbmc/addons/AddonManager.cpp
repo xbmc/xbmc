@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "events/AddonManagementEvent.h"
@@ -112,8 +113,6 @@ bool CAddonMgr::Init()
     CLog::Log(LOGERROR, "ADDONS: Failed to read manifest");
     return false;
   }
-
-  m_officialAddonRepos = StringUtils::Split(CCompileInfo::GetOfficialAddonRepos(), ',');
 
   if (!m_database.Open())
     CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
@@ -217,58 +216,13 @@ VECADDONS CAddonMgr::GetAvailableUpdates() const
 
   VECADDONS updates;
   VECADDONS installed;
-  VECADDONS all_addons;
-  m_database.GetRepositoryContent(all_addons);
-  std::map<std::string, AddonPtr> latestPrivateVersions;
-  std::map<std::string, AddonPtr> latestOfficialVersions;
+  CAddonRepos addonRepos(*this);
 
-  const AddonRepoUpdateMode updateMode =
-      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
-  CLog::Log(LOGDEBUG, "ADDONS: repo update mode set to : {}", static_cast<int>(updateMode));
-
-  for (const auto& addon : all_addons)
-  {
-    if (updateMode == AddonRepoUpdateMode::OFFICIAL_ONLY)
-    {
-      if (IsFromOfficialRepo(addon, true))
-      {
-        AddAddonIfLatest(addon, latestOfficialVersions);
-      }
-      else
-      {
-        AddAddonIfLatest(addon, latestPrivateVersions);
-      }
-    }
-    else if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
-    {
-      AddAddonIfLatest(addon, latestOfficialVersions);
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "ADDONS: official versions count : {}", latestOfficialVersions.size());
-  CLog::Log(LOGDEBUG, "ADDONS: private versions count : {}", latestPrivateVersions.size());
+  addonRepos.LoadAddonsFromDatabase(m_database);
 
   GetAddonsForUpdate(installed);
 
-  for (const auto& addon : installed)
-  {
-    CLog::Log(LOGDEBUG, "ADDONS: update check: addonID = {} / Origin = {}", addon->ID(),
-              addon->Origin());
-
-    if (ORIGIN_SYSTEM == addon->Origin())
-    {
-      FindAddonAndCheckForUpdate(addon, latestOfficialVersions, updates);
-    }
-    else
-    {
-      // if the addon is not found in an official repo...
-      if (!FindAddonAndCheckForUpdate(addon, latestOfficialVersions, updates))
-      {
-        // ...we move on and check the private/3rd party repo(s)
-        FindAddonAndCheckForUpdate(addon, latestPrivateVersions, updates);
-      }
-    }
-  }
+  addonRepos.BuildUpdateList(installed, updates);
 
   CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdates took %i ms", XbmcThreads::SystemClockMillis() - start);
   return updates;
@@ -356,16 +310,29 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
 
 bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result)
 {
-  VECADDONS versions;
+  CSingleLock lock(m_critSection);
+
+  CAddonRepos addonRepos(*this);
+  addonRepos.LoadAddonsFromDatabase(m_database, addonId);
+
+  AddonPtr addonToUpdate;
+
+  // check for an update if addon is installed already
+
+  if (GetAddon(addonId, addonToUpdate, ADDON_UNKNOWN, false))
   {
-    CSingleLock lock(m_critSection);
-    if (!m_database.FindByAddonId(addonId, versions) || versions.empty())
-      return false;
+    return addonRepos.DoAddonUpdateCheck(addonToUpdate, result);
   }
 
-  result = *std::max_element(versions.begin(), versions.end(),
-      [](const AddonPtr& a, const AddonPtr& b) { return a->Version() < b->Version(); });
-  return true;
+  // get the latest version from all repos if the
+  // addon is not installed yet (e.g. for addon select dialog)
+
+  CLog::Log(
+      LOGDEBUG,
+      "CAddonMgr::{}: addon {} is not installed. falling back to get latest version from ALL repos",
+      __FUNCTION__, addonId);
+
+  return addonRepos.GetLatestAddonVersionFromAllRepos(addonId, result);
 }
 
 bool CAddonMgr::GetAddonsInternal(const TYPE& type,
@@ -1075,29 +1042,6 @@ void CAddonMgr::FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path)
   }
 }
 
-bool CAddonMgr::IsFromOfficialRepo(const AddonPtr& addon) const
-{
-  return IsFromOfficialRepo(addon, false);
-}
-
-bool CAddonMgr::IsFromOfficialRepo(const AddonPtr& addon, bool bCheckAddonPath) const
-{
-  auto comparator = [&](const std::string& officialRepo) {
-    const std::vector<std::string> officialRepoProps = StringUtils::Split(officialRepo, '|');
-
-    if (bCheckAddonPath)
-    {
-      return (addon->Origin() == officialRepoProps.front() &&
-              StringUtils::StartsWithNoCase(addon->Path(), officialRepoProps.back()));
-    }
-
-    return addon->Origin() == officialRepoProps.front();
-  };
-
-  return addon->Origin() == ORIGIN_SYSTEM ||
-         std::any_of(m_officialAddonRepos.begin(), m_officialAddonRepos.end(), comparator);
-}
-
 AddonOriginType CAddonMgr::GetAddonOriginType(const AddonPtr& addon) const
 {
   if (addon->Origin() == ORIGIN_SYSTEM)
@@ -1108,30 +1052,12 @@ AddonOriginType CAddonMgr::GetAddonOriginType(const AddonPtr& addon) const
     return AddonOriginType::MANUAL;
 }
 
-void CAddonMgr::AddAddonIfLatest(const AddonPtr& addonToAdd,
-                                 std::map<std::string, AddonPtr>& map) const
+bool CAddonMgr::IsAddonDisabledWithReason(const std::string& ID,
+                                          AddonDisabledReason disabledReason) const
 {
-  const auto& latestKnown = map.find(addonToAdd->ID());
-  if (latestKnown == map.end() || addonToAdd->Version() > latestKnown->second->Version())
-    map[addonToAdd->ID()] = addonToAdd;
-}
-
-bool CAddonMgr::FindAddonAndCheckForUpdate(const AddonPtr& addonToCheck,
-                                           const std::map<std::string, AddonPtr>& map,
-                                           VECADDONS& vecAddons) const
-{
-  const auto& remote = map.find(addonToCheck->ID());
-  if (remote != map.end()) // is addon in the desired map?
-  {
-    if (remote->second->Version() > addonToCheck->Version())
-    {
-      // queue addon update
-      vecAddons.emplace_back(remote->second);
-    }
-    return true;
-  }
-
-  return false;
+  CSingleLock lock(m_critSection);
+  const auto& disabledAddon = m_disabled.find(ID);
+  return disabledAddon != m_disabled.end() && disabledAddon->second == disabledReason;
 }
 
 /*!
