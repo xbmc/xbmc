@@ -29,7 +29,7 @@ ifeq ($(OS),darwin_embedded)
     DEPENDS += boblight
     EXCLUDED_DEPENDS += libshairplay libplist
   endif
-  DEPENDS += iosentitlements
+  DEPENDS += darwin-embedded-entitlements
 endif
 
 ifeq ($(OS),osx)

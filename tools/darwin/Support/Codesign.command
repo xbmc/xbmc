@@ -6,7 +6,7 @@ set -x
 LIST_BINARY_EXTENSIONS="dylib so 0 vis pvr app"
 
 GEN_ENTITLEMENTS="$NATIVEPREFIX/bin/gen_entitlements.py"
-IOS11_ENTITLEMENTS="$XBMC_DEPENDS/share/ios11_entitlements.xml"
+DARWIN_EMBEDDED_ENTITLEMENTS="$XBMC_DEPENDS/share/darwin_embedded_entitlements.xml"
 LDID="$NATIVEPREFIX/bin/ldid"
 
 if [ "${PLATFORM_NAME}" == "macosx" ]; then
@@ -25,25 +25,24 @@ if [[ "$MACOS" || "${PLATFORM_NAME}" == "iphoneos" || "${PLATFORM_NAME}" == "app
     CONTENTS_PATH="${CODESIGNING_FOLDER_PATH}"
   fi
 
-  # todo: is this required anymore?
-  if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
-    #do fake sign - needed for jailbroken ios5.1 devices for some reason
-    if [ -f ${LDID} ]; then
-      find ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/ -name "*.dylib" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
-      find ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/ -name "*.so" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
-      ${LDID} -S${IOS11_ENTITLEMENTS} ${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}
+  # do fake sign - needed for iOS >=5.1 and tvOS >=10.2 jailbroken devices
+  # see http://www.saurik.com/id/8
+  if [[ "${PLATFORM_NAME}" == "iphoneos" || "${PLATFORM_NAME}" == "appletvos" ]]; then
+    if [ -f "${LDID}" ]; then
+      find "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/" -iname "*.dylib" -or -iname "*.so" | xargs "${LDID}" -S"${DARWIN_EMBEDDED_ENTITLEMENTS}"
+      "${LDID}" "-S${DARWIN_EMBEDDED_ENTITLEMENTS}" "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}"
     
-      #repackage python eggs
-      EGGS=$(find "${CONTENTS_PATH}" -name "*.egg" -type f)
-        for i in $EGGS; do
-          echo $i
-          mkdir del
-          unzip -q $i -d del
-          find ./del/ -name "*.so" -type f | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
-          rm $i
-          cd del && zip -qr $i ./* &&  cd ..
-          rm -r ./del/
-        done
+      # repackage python eggs
+      EGGS=$(find "${CONTENTS_PATH}" -iname "*.egg" -type f)
+      for i in "$EGGS"; do
+        echo "$i"
+        mkdir del
+        unzip -q "$i" -d del
+        find ./del/ -iname "*.so" -type f | xargs "${LDID}" -S"${DARWIN_EMBEDDED_ENTITLEMENTS}"
+        rm "$i"
+        cd del && zip -qr "$i" ./* && cd ..
+        rm -r ./del/
+      done
     fi
   fi
 
