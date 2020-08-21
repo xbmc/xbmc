@@ -118,7 +118,7 @@ echo Packaging $PACKAGE
 export COPYFILE_DISABLE=true
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
 #
-dpkg-deb -bZ lzma --no-uniform-compression --root-owner-group $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
+dpkg-deb -bZ xz --no-uniform-compression --root-owner-group $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
 dpkg-deb --info $DIRNAME/$ARCHIVE
 dpkg-deb --contents $DIRNAME/$ARCHIVE
 
