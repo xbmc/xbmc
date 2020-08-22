@@ -28,7 +28,7 @@
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "URL.h"
-#include "addons/GUIDialogAddonInfo.h"
+#include "addons/gui/GUIDialogAddonInfo.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogProgress.h"

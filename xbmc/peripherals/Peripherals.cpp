@@ -11,7 +11,7 @@
 #include "EventScanner.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
-#include "addons/GUIWindowAddonBrowser.h"
+#include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"

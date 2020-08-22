@@ -11,7 +11,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/GUIWindowAddonBrowser.h"
+#include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogKaiToast.h"

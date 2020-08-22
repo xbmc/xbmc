@@ -8,30 +8,30 @@
 
 #include "AddonBuiltins.h"
 
-#include <memory>
-
+#include "Application.h"
+#include "FileItem.h"
 #include "GUIPassword.h"
-#include "addons/AddonManager.h"
+#include "GUIUserMessages.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
-#include "addons/GUIWindowAddonBrowser.h"
 #include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
-#include "FileItem.h"
+#include "addons/gui/GUIWindowAddonBrowser.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "filesystem/PluginDirectory.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "Application.h"
-#include "PlayListPlayer.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+
+#include <memory>
 
 #if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"

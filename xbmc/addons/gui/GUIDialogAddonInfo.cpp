@@ -8,11 +8,11 @@
 
 #include "GUIDialogAddonInfo.h"
 
-#include "AddonDatabase.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
