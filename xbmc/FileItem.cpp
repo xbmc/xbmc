@@ -3220,19 +3220,17 @@ std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) 
   return "";
 }
 
-std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) const
+std::string CFileItem::GetLocalArtBaseFilename() const
 {
-  // no retrieving of empty art files from folders
-  if (useFolder && artFile.empty())
-    return "";
+  bool useFolder = false;
+  return GetLocalArtBaseFilename(useFolder);
+}
 
+std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
+{
   std::string strFile = m_strPath;
   if (IsStack())
   {
-/*    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
-    std::string localArt = item.GetLocalArt(artFile);
-    return localArt;
-    */
     std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
@@ -3257,6 +3255,16 @@ std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) c
   else if (useFolder && !(m_bIsFolder && !IsFileFolder()))
     strFile = URIUtils::GetDirectory(strFile);
 
+  return strFile;
+}
+
+std::string CFileItem::GetLocalArt(const std::string& artFile, bool useFolder) const
+{
+  // no retrieving of empty art files from folders
+  if (useFolder && artFile.empty())
+    return "";
+
+  std::string strFile = GetLocalArtBaseFilename(useFolder);
   if (strFile.empty()) // empty filepath -> nothing to find
     return "";
 

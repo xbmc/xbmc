@@ -1440,4 +1440,44 @@ void CAdvancedSettings::MigrateOldArtSettings()
     // Flag migration of settings so not done again
     settings->SetBool(CSettings::SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED, true);
   }
+
+  if (!settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_ARTSETTINGS_UPDATED))
+  {
+    CLog::Log(LOGINFO, "Migrating old video library artwork settings to new GUI settings");
+    // Convert numeric art type variants into simple art type family entry
+    // e.g. {"banner", "fanart1", "fanart2", "fanart3"... } into { "banner", "fanart"}
+    if (!m_videoEpisodeExtraArt.empty())
+    {
+      std::vector<CVariant> whitelist;
+      ConvertToWhitelist(m_videoEpisodeExtraArt, whitelist);
+      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_EPISODEART_WHITELIST, whitelist);
+    }
+    if (!m_videoTvShowExtraArt.empty())
+    {
+      std::vector<CVariant> whitelist;
+      ConvertToWhitelist(m_videoTvShowExtraArt, whitelist);
+      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST, whitelist);
+    }
+    if (!m_videoMovieExtraArt.empty())
+    {
+      std::vector<CVariant> whitelist;
+      ConvertToWhitelist(m_videoMovieExtraArt, whitelist);
+      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST, whitelist);
+    }
+    if (!m_videoMusicVideoExtraArt.empty())
+    {
+      std::vector<CVariant> whitelist;
+      ConvertToWhitelist(m_videoMusicVideoExtraArt, whitelist);
+      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST, whitelist);
+    }
+
+    // Whitelists configured, set artwork level to custom
+    if (!m_videoEpisodeExtraArt.empty() || !m_videoTvShowExtraArt.empty()
+        || !m_videoMovieExtraArt.empty() || !m_videoMusicVideoExtraArt.empty())
+      settings->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+        CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM);
+
+    // Flag migration of settings so not done again
+    settings->SetBool(CSettings::SETTING_VIDEOLIBRARY_ARTSETTINGS_UPDATED, true);
+  }
 }
