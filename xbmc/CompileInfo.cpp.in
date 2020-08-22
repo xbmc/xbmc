@@ -7,11 +7,12 @@
  */
 
 #include "CompileInfo.h"
+#include "addons/AddonRepoInfo.h"
+#include "utils/StringUtils.h"
 
 #include <algorithm>
 #include <cstddef>
 #include <string>
-
 
 int CCompileInfo::GetMajor()
 {
@@ -55,11 +56,6 @@ const char* CCompileInfo::GetSCMID()
   return "@APP_SCMID@";
 }
 
-std::string CCompileInfo::GetOfficialAddonRepos()
-{
-  return "@APP_ADDON_REPOS@";
-}
-
 std::string CCompileInfo::GetSharedLibrarySuffix()
 {
   return "@APP_SHARED_LIBRARY_SUFFIX@";
@@ -84,4 +80,23 @@ std::string CCompileInfo::GetBuildDate()
 const char*  CCompileInfo::GetVersionCode()
 {
   return "@APP_VERSION_CODE@";
+}
+
+std::vector<ADDON::RepoInfo> CCompileInfo::LoadOfficialRepoInfos()
+{
+  const std::vector<std::string> officialAddonRepos =
+      StringUtils::Split("@APP_ADDON_REPOS@", ',');
+
+  std::vector<ADDON::RepoInfo> officialRepoInfos;
+  ADDON::RepoInfo newRepoInfo;
+
+  for (const auto& addonRepo : officialAddonRepos)
+  {
+    const std::vector<std::string> tmpRepoInfo = StringUtils::Split(addonRepo, '|');
+    newRepoInfo.m_repoId = tmpRepoInfo.front();
+    newRepoInfo.m_origin = tmpRepoInfo.back();
+    officialRepoInfos.emplace_back(newRepoInfo);
+  }
+
+  return officialRepoInfos;
 }

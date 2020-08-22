@@ -33,6 +33,7 @@ set(SOURCES Addon.cpp
 set(HEADERS Addon.h
             AddonBuilder.h
             AddonEvents.h
+            AddonRepoInfo.h
             BinaryAddonCache.h
             AddonDatabase.h
             AddonInstaller.h

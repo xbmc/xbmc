@@ -11,6 +11,7 @@
 #include "Addon.h"
 #include "AddonDatabase.h"
 #include "AddonManager.h"
+#include "AddonRepoInfo.h"
 #include "AddonSystemSettings.h"
 #include "CompileInfo.h"
 #include "Repository.h"
@@ -24,31 +25,7 @@
 
 using namespace ADDON;
 
-namespace ADDON
-{
-
-std::vector<RepoInfo> LoadOfficialRepoInfos()
-{
-  const std::vector<std::string> officialAddonRepos =
-      StringUtils::Split(CCompileInfo::GetOfficialAddonRepos(), ',');
-
-  std::vector<RepoInfo> officialRepoInfos;
-  RepoInfo newRepoInfo;
-
-  for (const auto& addonRepo : officialAddonRepos)
-  {
-    const std::vector<std::string> tmpRepoInfo = StringUtils::Split(addonRepo, '|');
-    newRepoInfo.m_repoId = tmpRepoInfo.front();
-    newRepoInfo.m_origin = tmpRepoInfo.back();
-    officialRepoInfos.emplace_back(newRepoInfo);
-  }
-
-  return officialRepoInfos;
-}
-
-static std::vector<RepoInfo> officialRepoInfos = LoadOfficialRepoInfos();
-
-} // namespace ADDON
+static std::vector<RepoInfo> officialRepoInfos = CCompileInfo::LoadOfficialRepoInfos();
 
 /**********************************************************
  * CAddonRepos

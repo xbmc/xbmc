@@ -235,7 +235,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
 list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
-target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")
+target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES} ${ARCH_DEFINES}")
 
 # RC File
 if(WIN32)

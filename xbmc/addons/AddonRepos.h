@@ -8,21 +8,15 @@
 
 #pragma once
 
-#include "AddonDatabase.h"
-
 #include <map>
+#include <memory>
+#include <string>
 #include <vector>
+
+class CAddonDatabase;
 
 namespace ADDON
 {
-/**
- * Struct - RepoInfo
- */
-struct RepoInfo
-{
-  std::string m_repoId;
-  std::string m_origin;
-};
 
 class CAddonMgr;
 class CRepository;
@@ -37,7 +31,7 @@ class IAddon;
 class CAddonRepos
 {
 public:
-  CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){}; // ctor
+  CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){};
 
   /*!
    * \brief Load the map of all available addon versions in any installed repository
