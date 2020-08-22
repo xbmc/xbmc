@@ -9,7 +9,7 @@
 #pragma once
 
 #include "addons/binary-addons/AddonInstanceHandler.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Screensaver.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/Screensaver.h"
 
 namespace ADDON
 {

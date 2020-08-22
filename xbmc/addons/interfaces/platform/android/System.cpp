@@ -10,7 +10,7 @@
 
 #include "CompileInfo.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/platform/android/System.h"
+#include "addons/kodi-dev-kit/include/kodi/platform/android/System.h"
 
 #include "platform/android/activity/XBMCApp.h"
 

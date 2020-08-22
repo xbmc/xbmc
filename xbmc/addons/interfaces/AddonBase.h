@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/AddonBase.h"
+#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 
 extern "C"
 {
@@ -25,7 +25,7 @@ class CAddonDll;
  * To hold general functions not related to a instance type and usable for
  * every add-on type.
  *
- * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/General.h"
+ * Related add-on header is "./xbmc/addons/kodi-dev-kit/include/kodi/General.h"
  */
 struct Interface_Base
 {

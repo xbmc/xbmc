@@ -686,7 +686,7 @@ macro(core_find_versions)
   # Set defines used in addon.xml.in and read from versions.h to set add-on
   # version parts automatically
   # This part is nearly identical to "AddonHelpers.cmake", except location of versions.h
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h BIN_ADDON_PARTS)
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-dev-kit/include/kodi/versions.h BIN_ADDON_PARTS)
   foreach(loop_var ${BIN_ADDON_PARTS})
     string(FIND "${loop_var}" "#define ADDON_" matchres)
     if("${matchres}" EQUAL 0)
@@ -753,5 +753,5 @@ macro(find_addon_xml_in_files)
   endforeach()
 
   # Append also versions.h to depends
-  list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h")
+  list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/xbmc/addons/kodi-dev-kit/include/kodi/versions.h")
 endmacro()

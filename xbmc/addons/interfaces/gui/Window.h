@@ -27,7 +27,7 @@ namespace ADDON
    * To hold functions not related to a instance type and usable for
    * every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/Window.h"
+   * Related add-on header is "./xbmc/addons/kodi-dev-kit/include/kodi/gui/Window.h"
    */
   struct Interface_GUIWindow
   {

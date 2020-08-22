@@ -9,7 +9,7 @@
 #include "AudioEngine.h"
 
 #include "ServiceBroker.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/AddonBase.h"
+#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEStreamData.h"

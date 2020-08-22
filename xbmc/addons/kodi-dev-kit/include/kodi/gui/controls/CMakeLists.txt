@@ -12,5 +12,5 @@ set(HEADERS Button.h
             TextBox.h)
 
 if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-addon-dev-kit_include_kodi_gui_controls)
+  core_add_library(addons_kodi-dev-kit_include_kodi_gui_controls)
 endif()

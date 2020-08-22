@@ -9,7 +9,7 @@
 #include "Button.h"
 
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Button.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/controls/Button.h"
 #include "guilib/GUIButtonControl.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

@@ -10,7 +10,7 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/interfaces/gui/General.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Rendering.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/controls/Rendering.h"
 #include "guilib/GUIRenderingControl.h"
 #include "utils/log.h"
 

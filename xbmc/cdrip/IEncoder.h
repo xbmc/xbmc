@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/AudioEncoder.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioEncoder.h"
 
 #include <stdint.h>
 #include <string>

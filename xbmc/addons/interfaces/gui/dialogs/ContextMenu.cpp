@@ -10,7 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/ContextMenu.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/dialogs/ContextMenu.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

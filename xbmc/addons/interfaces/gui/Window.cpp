@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/Window.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/Window.h"
 
 #include "Application.h"
 #include "FileItem.h"

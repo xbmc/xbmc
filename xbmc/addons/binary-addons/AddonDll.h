@@ -163,7 +163,7 @@ private:
    * This structure, which is fixed to the addon headers, makes use of the at
    * least supposed parts for the interface.
    * This structure is defined in:
-   * /xbmc/addons/kodi-addon-dev-kit/include/kodi/AddonBase.h
+   * /xbmc/addons/kodi-dev-kit/include/kodi/AddonBase.h
    */
   AddonGlobalInterface m_interface = {0};
 };

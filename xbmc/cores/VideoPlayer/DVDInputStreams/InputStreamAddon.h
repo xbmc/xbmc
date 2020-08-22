@@ -12,7 +12,7 @@
 #include "IVideoPlayer.h"
 #include "addons/AddonProvider.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Inputstream.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/Inputstream.h"
 
 #include <memory>
 #include <vector>

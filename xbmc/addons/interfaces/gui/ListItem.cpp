@@ -11,7 +11,7 @@
 #include "FileItem.h"
 #include "General.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/ListItem.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/ListItem.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

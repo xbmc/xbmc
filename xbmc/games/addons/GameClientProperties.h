@@ -9,7 +9,7 @@
 #pragma once
 
 #include "addons/Addon.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Game.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/GameTypes.h"
 
 #include <string>
