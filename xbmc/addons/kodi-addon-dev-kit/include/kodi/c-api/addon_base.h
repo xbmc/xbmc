@@ -56,6 +56,9 @@
 #define ATTRIBUTE_FORCEINLINE inline
 #endif
 
+// Hardware specific device context interface
+#define ADDON_HARDWARE_CONTEXT void*
+
 /*
  * To have a on add-on and kodi itself handled string always on known size!
  */

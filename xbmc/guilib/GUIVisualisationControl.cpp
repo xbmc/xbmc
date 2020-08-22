@@ -119,22 +119,22 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
     switch (action.GetID())
     {
     case ACTION_VIS_PRESET_NEXT:
-      m_instance->OnAction(VIS_ACTION_NEXT_PRESET, nullptr);
+      m_instance->NextPreset();
       break;
     case ACTION_VIS_PRESET_PREV:
-      m_instance->OnAction(VIS_ACTION_PREV_PRESET, nullptr);
+      m_instance->PrevPreset();
       break;
     case ACTION_VIS_PRESET_RANDOM:
-      m_instance->OnAction(VIS_ACTION_RANDOM_PRESET, nullptr);
+      m_instance->RandomPreset();
       break;
     case ACTION_VIS_RATE_PRESET_PLUS:
-      m_instance->OnAction(VIS_ACTION_RATE_PRESET_PLUS, nullptr);
+      m_instance->RatePreset(true);
       break;
     case ACTION_VIS_RATE_PRESET_MINUS:
-      m_instance->OnAction(VIS_ACTION_RATE_PRESET_MINUS, nullptr);
+      m_instance->RatePreset(false);
       break;
     case ACTION_VIS_PRESET_LOCK:
-      m_instance->OnAction(VIS_ACTION_LOCK_PRESET, nullptr);
+      m_instance->LockPreset();
       break;
     default:
       break;
@@ -288,7 +288,7 @@ void CGUIVisualisationControl::UpdateTrack()
   else
     CLog::Log(LOGDEBUG, "Updating visualization albumart: %s", m_albumThumb.c_str());
 
-  m_instance->OnAction(VIS_ACTION_UPDATE_ALBUMART, (const void*)(m_albumThumb.c_str()));
+  m_instance->UpdateAlbumart(m_albumThumb.c_str());
 
   const MUSIC_INFO::CMusicInfoTag* tag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
   if (!tag)
@@ -298,7 +298,7 @@ void CGUIVisualisationControl::UpdateTrack()
   std::string albumArtist(tag->GetAlbumArtistString());
   std::string genre(StringUtils::Join(tag->GetGenre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
 
-  VisTrack track = {0};
+  VIS_TRACK track = {0};
   track.title       = tag->GetTitle().c_str();
   track.artist      = artist.c_str();
   track.album       = tag->GetAlbum().c_str();
@@ -312,7 +312,7 @@ void CGUIVisualisationControl::UpdateTrack()
   track.year        = tag->GetYear();
   track.rating      = tag->GetUserrating();
 
-  m_instance->OnAction(VIS_ACTION_UPDATE_TRACK, &track);
+  m_instance->UpdateTrack(&track);
 }
 
 bool CGUIVisualisationControl::IsLocked()
@@ -342,7 +342,7 @@ int CGUIVisualisationControl::GetActivePreset()
 void CGUIVisualisationControl::SetPreset(int idx)
 {
   if (m_instance && m_alreadyStarted)
-    m_instance->OnAction(VIS_ACTION_LOAD_PRESET, static_cast<void*>(&idx));
+    m_instance->LoadPreset(idx);
 }
 
 std::string CGUIVisualisationControl::GetActivePresetName()

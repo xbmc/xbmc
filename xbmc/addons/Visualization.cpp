@@ -102,10 +102,59 @@ void CVisualization::GetInfo(VIS_INFO *info)
     m_struct.toAddon->get_info(&m_struct, info);
 }
 
-bool CVisualization::OnAction(VIS_ACTION action, const void *param)
+bool CVisualization::NextPreset()
 {
-  if (m_struct.toAddon->on_action)
-    return m_struct.toAddon->on_action(&m_struct, action, param);
+  if (m_struct.toAddon->next_preset)
+    return m_struct.toAddon->next_preset(&m_struct);
+  return false;
+}
+
+bool CVisualization::PrevPreset()
+{
+  if (m_struct.toAddon->prev_preset)
+    return m_struct.toAddon->prev_preset(&m_struct);
+  return false;
+}
+
+bool CVisualization::LoadPreset(int select)
+{
+  if (m_struct.toAddon->load_preset)
+    return m_struct.toAddon->load_preset(&m_struct, select);
+  return false;
+}
+
+bool CVisualization::RandomPreset()
+{
+  if (m_struct.toAddon->random_preset)
+    return m_struct.toAddon->random_preset(&m_struct);
+  return false;
+}
+
+bool CVisualization::LockPreset()
+{
+  if (m_struct.toAddon->lock_preset)
+    return m_struct.toAddon->lock_preset(&m_struct);
+  return false;
+}
+
+bool CVisualization::RatePreset(bool plus_minus)
+{
+  if (m_struct.toAddon->rate_preset)
+    return m_struct.toAddon->rate_preset(&m_struct, plus_minus);
+  return false;
+}
+
+bool CVisualization::UpdateAlbumart(const char* albumart)
+{
+  if (m_struct.toAddon->update_albumart)
+    return m_struct.toAddon->update_albumart(&m_struct, albumart);
+  return false;
+}
+
+bool CVisualization::UpdateTrack(const VIS_TRACK* track)
+{
+  if (m_struct.toAddon->update_track)
+    return m_struct.toAddon->update_track(&m_struct, track);
   return false;
 }
 

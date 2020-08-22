@@ -145,10 +145,11 @@
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
 #define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "addon-instance/VFS.h"
 
-#define ADDON_INSTANCE_VERSION_VISUALIZATION          "2.0.4"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "2.0.3"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "3.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "3.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h" \
+                                                      "c-api/addon-instance/visualization.h"
 
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC             "1.0.3"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "1.0.2"
