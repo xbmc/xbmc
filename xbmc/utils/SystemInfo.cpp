@@ -104,6 +104,27 @@ static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
   ZeroMemory(&osVerInfo, sizeof(osVerInfo));
   return false;
 }
+
+static bool appendWindows10NameVersion(std::string& osNameVer)
+{
+  wchar_t versionW[32] = {};
+  DWORD len = sizeof(versionW);
+  bool obtained = false;
+  if (ERROR_SUCCESS == RegGetValueW(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, L"DisplayVersion",
+                                    RRF_RT_REG_SZ, nullptr, &versionW, &len))
+  {
+    obtained = true;
+  }
+  else if (ERROR_SUCCESS == RegGetValueW(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, L"ReleaseId",
+                                         RRF_RT_REG_SZ, nullptr, &versionW, &len))
+  {
+    obtained = true;
+  }
+  if (obtained)
+    osNameVer.append(StringUtils::Format(" {}", KODI::PLATFORM::WINDOWS::FromW(versionW)));
+
+  return obtained;
+}
 #endif // TARGET_WINDOWS_DESKTOP
 
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
@@ -516,8 +537,7 @@ std::string CSysInfo::GetKernelVersionFull(void)
     kernelVersionFull = StringUtils::Format("%d.%d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion,
                                             osvi.dwBuildNumber);
   // get UBR (updates build revision)
-  if (ERROR_SUCCESS == RegGetValueW(HKEY_LOCAL_MACHINE,
-                                    L"Software\\Microsoft\\Windows NT\\CurrentVersion", L"UBR",
+  if (ERROR_SUCCESS == RegGetValueW(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, L"UBR",
                                     RRF_RT_REG_DWORD, nullptr, &dwBuildRevision, &len))
   {
     kernelVersionFull += StringUtils::Format(".%d", dwBuildRevision);
@@ -667,25 +687,15 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append("Server 2012 R2");
       break;
     case WindowsVersionWin10:
-      osNameVer.append("10");
-      break;
     case WindowsVersionWin10_1709:
-      osNameVer.append("10 1709");
-      break;
     case WindowsVersionWin10_1803:
-      osNameVer.append("10 1803");
-      break;
     case WindowsVersionWin10_1809:
-      osNameVer.append("10 1809");
-      break;
     case WindowsVersionWin10_1903:
-      osNameVer.append("10 1903");
-      break;
     case WindowsVersionWin10_1909:
-      osNameVer.append("10 1909");
-      break;
     case WindowsVersionWin10_2004:
-      osNameVer.append("10 2004");
+    case WindowsVersionWin10_Future:
+      osNameVer.append("10");
+      appendWindows10NameVersion(osNameVer);
       break;
     case WindowsVersionFuture:
       osNameVer.append("Unknown future version");
@@ -857,8 +867,10 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin10_1903;
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 18363)
         m_WinVer = WindowsVersionWin10_1909;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 19041)
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 19041)
         m_WinVer = WindowsVersionWin10_2004;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber > 19041)
+        m_WinVer = WindowsVersionWin10_Future;
       /* Insert checks for new Windows versions here */
       else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 10)
         m_WinVer = WindowsVersionFuture;
