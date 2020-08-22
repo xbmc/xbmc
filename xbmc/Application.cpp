@@ -124,13 +124,13 @@
 #include "video/PlayerController.h"
 
 // Dialog includes
-#include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogSubMenu.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogButtonMenu.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
+#include "dialogs/GUIDialogSubMenu.h"
 #include "dialogs/GUIDialogVolumeBar.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
+#include "video/dialogs/GUIDialogVideoBookmarks.h"
 
 // PVR related include Files
 #include "pvr/PVRManager.h"

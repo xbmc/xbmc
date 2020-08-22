@@ -12,7 +12,7 @@
 #include "Repository.h"
 #include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
-#include "settings/GUIDialogAddonSettings.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 
 
 namespace CONTEXTMENU

@@ -69,7 +69,7 @@
 #include "video/dialogs/GUIDialogCMSSettings.h"
 #endif
 #include "addons/gui/GUIDialogAddonInfo.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogBusyNoCancel.h"
 #include "dialogs/GUIDialogButtonMenu.h"
