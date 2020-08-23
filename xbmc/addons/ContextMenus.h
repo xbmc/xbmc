@@ -10,7 +10,7 @@
 
 #include "ContextMenuItem.h"
 #include "FileItem.h"
-#include "GUIDialogAddonInfo.h"
+#include "addons/gui/GUIDialogAddonInfo.h"
 
 namespace CONTEXTMENU
 {

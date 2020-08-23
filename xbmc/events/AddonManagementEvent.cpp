@@ -8,7 +8,7 @@
 
 #include "AddonManagementEvent.h"
 
-#include "addons/GUIDialogAddonInfo.h"
+#include "addons/gui/GUIDialogAddonInfo.h"
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"

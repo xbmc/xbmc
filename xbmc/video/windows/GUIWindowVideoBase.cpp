@@ -18,7 +18,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "Util.h"
-#include "addons/GUIDialogAddonInfo.h"
+#include "addons/gui/GUIDialogAddonInfo.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"

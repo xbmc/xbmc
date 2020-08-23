@@ -8,7 +8,6 @@
 
 #include "GUIWindowAddonBrowser.h"
 
-#include "AddonSystemSettings.h"
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "GUIDialogAddonInfo.h"
@@ -18,6 +17,7 @@
 #include "URL.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"

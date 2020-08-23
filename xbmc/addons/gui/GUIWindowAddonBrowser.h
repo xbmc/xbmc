@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "Addon.h"
-#include "AddonEvents.h"
-#include "RepositoryUpdater.h"
 #include "ThumbLoader.h"
+#include "addons/Addon.h"
+#include "addons/AddonEvents.h"
+#include "addons/RepositoryUpdater.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <string>

@@ -10,8 +10,8 @@
 
 #include "GUIUserMessages.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/AddonSettings.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

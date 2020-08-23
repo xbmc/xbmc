@@ -8,15 +8,15 @@
 
 #include "GUIDialogAddonInfo.h"
 
-#include "AddonDatabase.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"

@@ -10,7 +10,7 @@
 
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
-#include "addons/settings/GUIDialogAddonSettings.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "guilib/LocalizeStrings.h"
 
 #include <map>

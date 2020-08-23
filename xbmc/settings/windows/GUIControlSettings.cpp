@@ -12,7 +12,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
-#include "addons/GUIWindowAddonBrowser.h"
+#include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
