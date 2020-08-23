@@ -2416,6 +2416,42 @@
         </setting>
       </group>
     </category>
+    <category id="gamesachievements" label="15312">
+      <group id="1" label="15313">
+        <setting id="gamesachievements.username" type="string" label="1048" help="35262">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string"/>
+        </setting>
+        <setting id="gamesachievements.password" type="string" label="733" help="35263">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <hidden>true</hidden>
+          </control>
+        </setting>
+        <setting id="gamesachievements.token" type="string">
+          <visible>false</visible>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string"/>
+        </setting>
+        <setting id="gamesachievements.loggedin" type="boolean" label="35268" help="35269">
+          <visible>true</visible>
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="system" label="13000" help="36349">
     <category id="display" label="14220" help="36603">
