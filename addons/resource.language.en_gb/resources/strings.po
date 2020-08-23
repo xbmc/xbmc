@@ -15745,15 +15745,26 @@ msgctxt "#24168"
 msgid "Deprecated: {0:s}"
 msgstr ""
 
-#empty string with id 24169
+#. Lifecycle state name, for normal addons (no special). Used also on skin to compare and identify related state.
+#: xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
+msgctxt "#24169"
+msgid "Normal"
+msgstr ""
 
-#. To declare addon as deprecated
+#. Lifecycle state name, for deprecated addons. Used also on skin to compare and identify related state.
 #: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
 msgctxt "#24170"
 msgid "Deprecated"
 msgstr ""
 
-#empty strings from id 24171 to 24990
+#. Lifecycle state name, for broken and not usable addons. Used also on skin to compare and identify related state.
+#: xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
+msgctxt "#24171"
+msgid "Broken"
+msgstr ""
+
+#empty strings from id 24172 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp

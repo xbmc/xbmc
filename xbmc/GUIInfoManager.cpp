@@ -6070,11 +6070,35 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  \anchor ListItem_AddonBroken
 ///                  _string_,
 ///     @return A message when the addon is marked as broken in the repo.
+///     @deprecated but still available\, use \ref ListItem_AddonLifecycleDesc "ListItem.AddonLifecycleDesc"
+///     instead
 ///     <p><hr>
 ///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonBroken `ListItem.AddonBroken`\endlink
 ///     replaces `ListItem.Property(Addon.Broken)`.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.AddonLifecycleType`</b>,
+///                  \anchor ListItem_AddonLifecycleType
+///                  _string_,
+///     @return String name when the addon is marked as special condition in the repo.
+///       - <b>Label: 24169 (Normal)</b> - Used if an add-on has no special lifecycle state which is the default state
+///       - <b>Label: 24170 (Deprecated)</b> - The add-on should be marked as deprecated but is still usable
+///       - <b>Label: 24171 (Broken)</b> - The add-on should marked as broken in the repository
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_AddonLifecycleType `ListItem.AddonLifecycleType`\endlink
+///     replaces `ListItem.AddonBroken`.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.AddonLifecycleDesc`</b>,
+///                  \anchor ListItem_AddonLifecycleDesc
+///                  _string_,
+///     @return From addon defined message text when it is marked as special condition inside repository.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_AddonLifecycleDesc `ListItem.AddonLifecycleDesc``\endlink
+///     replaces `ListItem.AddonBroken`.
+///     <p>
+///   }
+
 ///   \table_row3{   <b>`ListItem.AddonType`</b>,
 ///                  \anchor ListItem_AddonType
 ///                  _string_,
@@ -6670,6 +6694,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "addondisclaimer",  LISTITEM_ADDON_DISCLAIMER },
                                   { "addonnews",        LISTITEM_ADDON_NEWS },
                                   { "addonbroken",      LISTITEM_ADDON_BROKEN },
+                                  { "addonlifecycletype", LISTITEM_ADDON_LIFECYCLE_TYPE },
+                                  { "addonlifecycledesc", LISTITEM_ADDON_LIFECYCLE_DESC },
                                   { "addontype",        LISTITEM_ADDON_TYPE },
                                   { "addoninstalldate", LISTITEM_ADDON_INSTALL_DATE },
                                   { "addonlastupdated", LISTITEM_ADDON_LAST_UPDATED },
