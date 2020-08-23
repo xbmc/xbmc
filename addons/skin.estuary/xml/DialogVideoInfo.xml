@@ -183,7 +183,7 @@
 						<param name="control_id" value="150" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[515]: [/COLOR]$INFO[ListItem.Genre]" />
 						<param name="altlabel" value="$LOCALIZE[515]: $INFO[ListItem.Genre]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Genre)" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Genre) + [String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,movie)]" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="152" />
@@ -602,6 +602,14 @@
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogButton">
+						<param name="id" value="999" />
+						<param name="icon" value="DefaultMusicAlbums.png" />
+						<param name="onclick_1" value="Dialog.Close(all,true)" />
+						<param name="onclick_2" value="ActivateWindow(Music,musicdb://albums/?artist=$INFO[ListItem.Artist]&amp;albumartistonly=true&amp;compilation=false)" />
+						<param name="label" value="$LOCALIZE[132]" />
+						<param name="visible" value="String.IsEqual(ListItem.DBType,musicvideo)" />
+					</include>
+					<include content="InfoDialogButton">
 						<param name="id" value="443" />
 						<param name="icon" value="icons/infodialogs/set.png" />
 						<param name="label" value="$LOCALIZE[20457]" />
@@ -614,22 +622,11 @@
 						<param name="icon" value="icons/infodialogs/choose_image.png" />
 						<param name="label" value="$LOCALIZE[13511]" />
 					</include>
-<!--
 					<include content="InfoDialogButton">
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/update.png" />
 						<param name="label" value="$LOCALIZE[184]" />
 						<param name="visible" value="Control.IsEnabled(6)" />
-					</include>
--->
-					<!-- GARY Addition -->
-					<include content="InfoDialogButton">
-						<param name="id" value="6" />
-						<param name="icon" value="DefaultMusicArtists.png" />
-						<param name="onclick_1" value="Dialog.Close(all,true)" />
-						<param name="onclick_2" value="ActivateWindow(Music,musicdb://artists/?artist=$INFO[ListItem.Artist]" />
-					  <param name="label" value="Go to artist" />
-					  <param name="visible" value="true" />
 					</include>
 				</control>
 				<include content="LeftRightArrows">
