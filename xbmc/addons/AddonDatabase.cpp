@@ -31,7 +31,8 @@ static std::string SerializeMetadata(const IAddon& addon)
   CVariant variant;
   variant["author"] = addon.Author();
   variant["disclaimer"] = addon.Disclaimer();
-  variant["broken"] = addon.Broken();
+  variant["lifecycletype"] = static_cast<unsigned int>(addon.LifecycleState());
+  variant["lifecycledesc"] = addon.LifecycleStateDescription();
   variant["size"] = addon.PackageSize();
 
   variant["path"] = addon.Path();
@@ -81,7 +82,12 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
 
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());
-  builder.SetBroken(variant["broken"].asString());
+  if (variant.isMember("broken")) // Fallback of old
+    builder.SetLifecycleState(AddonLifecycleState::BROKEN, variant["broken"].asString());
+  else
+    builder.SetLifecycleState(
+        static_cast<AddonLifecycleState>(variant["lifecycletype"].asUnsignedInteger()),
+        variant["lifecycledesc"].asString());
   builder.SetPackageSize(variant["size"].asUnsignedInteger());
 
   builder.SetPath(variant["path"].asString());

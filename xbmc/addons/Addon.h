@@ -98,7 +98,11 @@ public:
   ArtMap Art() const override { return m_addonInfo->Art(); }
   std::vector<std::string> Screenshots() const override { return m_addonInfo->Screenshots(); };
   std::string Disclaimer() const override { return m_addonInfo->Disclaimer(); }
-  std::string Broken() const override { return m_addonInfo->Broken(); }
+  AddonLifecycleState LifecycleState() const override { return m_addonInfo->LifecycleState(); }
+  std::string LifecycleStateDescription() const override
+  {
+    return m_addonInfo->LifecycleStateDescription();
+  }
   CDateTime InstallDate() const override { return m_addonInfo->InstallDate(); }
   CDateTime LastUpdated() const override { return m_addonInfo->LastUpdated(); }
   CDateTime LastUsed() const override { return m_addonInfo->LastUsed(); }

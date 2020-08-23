@@ -44,7 +44,11 @@ public:
     void SetArt(std::map<std::string, std::string> art) { m_addonInfo->m_art = std::move(art); }
     void SetScreenshots(std::vector<std::string> screenshots) { m_addonInfo->m_screenshots = std::move(screenshots); }
     void SetChangelog(std::string changelog) { m_addonInfo->m_changelog.insert(std::pair<std::string, std::string>("unk", std::move(changelog))); }
-    void SetBroken(std::string broken) { m_addonInfo->m_broken = std::move(broken); }
+    void SetLifecycleState(AddonLifecycleState state, std::string description)
+    {
+      m_addonInfo->m_lifecycleState = state;
+      m_addonInfo->m_lifecycleStateDescription.emplace("unk", std::move(description));
+    }
     void SetPath(std::string path) { m_addonInfo->m_path = std::move(path); }
     void SetLibName(std::string libname) { m_addonInfo->m_libname = std::move(libname); }
     void SetVersion(AddonVersion version) { m_addonInfo->m_version = std::move(version); }

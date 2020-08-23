@@ -56,8 +56,13 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         value = addonInfo->ChangeLog();
         return true;
       case LISTITEM_ADDON_BROKEN:
-        value = addonInfo->Broken();
+      {
+        if (addonInfo->LifecycleState() == ADDON::AddonLifecycleState::BROKEN)
+          value = addonInfo->LifecycleStateDescription();
+        else
+          value = "";
         return true;
+      }
       case LISTITEM_ADDON_TYPE:
         value = ADDON::CAddonInfo::TranslateType(addonInfo->Type(), true);
         return true;

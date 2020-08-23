@@ -317,10 +317,32 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       if (element && element->GetText() != nullptr)
         addon->m_forum = element->GetText();
 
-      /* Parse addon.xml "<broken">...</broken>" */
+      /* Parse addon.xml "<broken">...</broken>"
+       * NOTE: Replaced with <lifecyclestate>, available for backward compatibility */
       element = child->FirstChildElement("broken");
       if (element && element->GetText() != nullptr)
-        addon->m_broken = element->GetText();
+      {
+        addon->m_lifecycleState = AddonLifecycleState::BROKEN;
+        addon->m_lifecycleStateDescription.emplace("en_gb", element->GetText());
+      }
+
+      /* Parse addon.xml "<lifecyclestate">...</lifecyclestate>" */
+      element = child->FirstChildElement("lifecyclestate");
+      if (element && element->GetText() != nullptr)
+      {
+        const char* lang = element->Attribute("type");
+        if (lang)
+        {
+          if (strcmp(lang, "broken") == 0)
+            addon->m_lifecycleState = AddonLifecycleState::BROKEN;
+          else if (strcmp(lang, "deprecated") == 0)
+            addon->m_lifecycleState = AddonLifecycleState::DEPRECATED;
+          else
+            addon->m_lifecycleState = AddonLifecycleState::NORMAL;
+
+          GetTextList(child, "lifecyclestate", addon->m_lifecycleStateDescription);
+        }
+      }
 
       /* Parse addon.xml "<language">...</language>" */
       element = child->FirstChildElement("language");
