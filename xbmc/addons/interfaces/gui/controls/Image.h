@@ -24,7 +24,7 @@ namespace ADDON
    * To hold general gui functions and initialize also all other gui related types not
    * related to a instance type and usable for every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/controls/Image.h"
+   * Related add-on header is "./xbmc/addons/kodi-dev-kit/include/kodi/gui/controls/Image.h"
    */
   struct Interface_GUIControlImage
   {

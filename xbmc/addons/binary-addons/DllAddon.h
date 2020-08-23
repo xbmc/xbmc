@@ -9,7 +9,7 @@
 #pragma once
 
 #include "DynamicDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/AddonBase.h"
+#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 
 class DllAddonInterface
 {

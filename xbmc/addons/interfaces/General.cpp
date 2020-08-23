@@ -14,7 +14,7 @@
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/General.h"
+#include "addons/kodi-dev-kit/include/kodi/General.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"

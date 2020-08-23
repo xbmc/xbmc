@@ -10,7 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Numeric.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/dialogs/Numeric.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "utils/log.h"
 

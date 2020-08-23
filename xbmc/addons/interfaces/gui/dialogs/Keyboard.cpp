@@ -9,7 +9,7 @@
 #include "Keyboard.h"
 
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Keyboard.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/dialogs/Keyboard.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

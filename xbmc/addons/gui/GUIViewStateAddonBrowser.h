@@ -19,4 +19,3 @@ protected:
   void SaveViewState() override;
   std::string GetExtensions() override;
 };
-

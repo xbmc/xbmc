@@ -21,7 +21,7 @@ namespace ADDON
  * To hold network functions not related to a instance type and usable for
  * every add-on type.
  *
- * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/Network.h"
+ * Related add-on header is "./xbmc/addons/kodi-dev-kit/include/kodi/Network.h"
  */
 struct Interface_Network
 {

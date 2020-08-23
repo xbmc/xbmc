@@ -22,7 +22,7 @@ namespace ADDON
    * To hold functions not related to a instance type and usable for
    * every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/OK.h"
+   * Related add-on header is "./xbmc/addons/kodi-dev-kit/include/kodi/gui/dialogs/OK.h"
    */
   struct Interface_GUIDialogOK
   {

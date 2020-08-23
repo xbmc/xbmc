@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/AudioEngine.h"
+#include "addons/kodi-dev-kit/include/kodi/AudioEngine.h"
 #include "cores/AudioEngine/Utils/AEChannelData.h"
 
 extern "C"

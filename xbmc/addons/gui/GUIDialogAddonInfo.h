@@ -21,7 +21,7 @@ public:
   CGUIDialogAddonInfo(void);
   ~CGUIDialogAddonInfo(void) override;
   bool OnMessage(CGUIMessage& message) override;
-  bool OnAction(const CAction &action) override;
+  bool OnAction(const CAction& action) override;
 
   CFileItemPtr GetCurrentListItem(int offset = 0) override { return m_item; }
   bool HasListItems() const override { return true; }
@@ -31,11 +31,13 @@ public:
 private:
   void OnInitWindow() override;
 
-  /*! \brief Set the item to display addon info on.
-   \param item to display
-   \return true if we can display information, false otherwise
+  /*!
+   * @brief Set the item to display addon info on.
+   *
+   * @param[in] item to display
+   * @return true if we can display information, false otherwise
    */
-  bool SetItem(const CFileItemPtr &item);
+  bool SetItem(const CFileItemPtr& item);
   void UpdateControls();
 
   void OnUpdate();
@@ -47,28 +49,37 @@ private:
   void OnToggleAutoUpdates();
   int AskForVersion(std::vector<std::pair<ADDON::AddonVersion, std::string>>& versions);
 
-  /*! Returns true if current addon can be opened (i.e is a plugin)*/
+  /*!
+   * @brief Returns true if current addon can be opened (i.e is a plugin)
+   */
   bool CanOpen() const;
 
-  /*! Returns true if current addon can be run (i.e is a script)*/
+  /*!
+   * @brief Returns true if current addon can be run (i.e is a script)
+   */
   bool CanRun() const;
 
   /*!
-   * Returns true if current addon is of a type that can only have one active
-   * in use at a time and can be changed (e.g skins)*/
+   * @brief Returns true if current addon is of a type that can only have one active
+   * in use at a time and can be changed (e.g skins)
+   */
   bool CanUse() const;
 
-  /*! \brief check if the add-on is a dependency of others, and if so prompt the user.
-   \param heading the label for the heading of the prompt dialog
-   \param line2 the action that could not be completed.
-   \return true if prompted, false otherwise.
+  /*!
+   * @brief check if the add-on is a dependency of others, and if so prompt the user.
+   *
+   * @param[in] heading the label for the heading of the prompt dialog
+   * @param[in] line2 the action that could not be completed.
+   * @return true if prompted, false otherwise.
    */
   bool PromptIfDependency(int heading, int line2);
 
-  /*! \brief Show a dialog with the addon's dependencies.
-   *  \param deps List of dependencies
-   *  \param reactivate If true, reactivate info dialog when done
-   *  \return True if okay was selected, false otherwise
+  /*!
+   * @brief Show a dialog with the addon's dependencies.
+   *
+   * @param[in] deps List of dependencies
+   * @param[in] reactivate If true, reactivate info dialog when done
+   * @return True if okay was selected, false otherwise
    */
   bool ShowDependencyList(const std::vector<ADDON::DependencyInfo>& deps, bool reactivate);
 
@@ -76,4 +87,3 @@ private:
   ADDON::AddonPtr m_localAddon;
   bool m_addonEnabled = false;
 };
-

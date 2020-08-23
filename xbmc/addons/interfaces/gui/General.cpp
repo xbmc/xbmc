@@ -12,7 +12,7 @@
 #include "ServiceBroker.h"
 #include "Window.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
+#include "addons/kodi-dev-kit/include/kodi/gui/General.h"
 #include "controls/Button.h"
 #include "controls/Edit.h"
 #include "controls/FadeLabel.h"

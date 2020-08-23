@@ -12,5 +12,5 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-addon-dev-kit_include_kodi)
+  core_add_library(addons_kodi-dev-kit_include_kodi)
 endif()

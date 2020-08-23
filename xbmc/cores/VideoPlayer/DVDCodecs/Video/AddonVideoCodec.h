@@ -11,7 +11,7 @@
 #include "DVDVideoCodec.h"
 #include "addons/AddonProvider.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VideoCodec.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 
 class BufferPool;
 
