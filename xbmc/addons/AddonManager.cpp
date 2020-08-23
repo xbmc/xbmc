@@ -108,7 +108,7 @@ bool CAddonMgr::Init()
 {
   CSingleLock lock(m_critSection);
 
-  if (!LoadManifest(m_systemAddons, m_optionalAddons))
+  if (!LoadManifest(m_systemAddons, m_optionalSystemAddons))
   {
     CLog::Log(LOGERROR, "ADDONS: Failed to read manifest");
     return false;
@@ -551,7 +551,7 @@ bool CAddonMgr::FindAddons()
   CSingleLock lock(m_critSection);
 
   // Sync with db
-  m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
+  m_database.SyncInstalled(installed, m_systemAddons, m_optionalSystemAddons);
   for (const auto& addon : installedAddons)
   {
     m_database.GetInstallData(addon.second);

@@ -294,6 +294,13 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
           ORIGIN_SYSTEM, id.c_str()));
     }
 
+    for (const auto& id : optional)
+    {
+      // Set origin for optional system addons that do not have one yet too.
+      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s' AND origin=''",
+                             ORIGIN_SYSTEM, id.c_str()));
+    }
+
     CommitTransaction();
   }
   catch (...)
