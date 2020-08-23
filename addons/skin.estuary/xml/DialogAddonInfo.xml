@@ -213,7 +213,7 @@
 					<texture fallback="DefaultAddon.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 				</control>
 				<control type="group">
-					<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
 					<control type="image">
 						<left>14</left>
 						<top>24</top>
@@ -228,7 +228,7 @@
 						<height>500</height>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$LOCALIZE[24096]</label>
+						<label>$VAR[AddonLifecycleType]</label>
 						<font>font36_title</font>
 					</control>
 				</control>

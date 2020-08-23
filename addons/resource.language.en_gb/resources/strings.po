@@ -15112,7 +15112,12 @@ msgctxt "#24048"
 msgid "VideoPlayer InputStream"
 msgstr ""
 
-#empty string with id 24049
+#. To show addon as deprecated over icon
+#: addons/skin.estuary/xml/AddonBrowser.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
+msgctxt "#24049"
+msgid "Add-on has been marked deprecated in repository."
+msgstr ""
 
 #: unknown
 msgctxt "#24050"
@@ -15355,6 +15360,8 @@ msgctxt "#24095"
 msgid "Local package cache"
 msgstr ""
 
+#. To show addon as broken over icon
+#: addons/skin.estuary/xml/AddonBrowser.xml
 #: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#24096"
 msgid "Add-on has been marked broken in repository."
@@ -15746,12 +15753,18 @@ msgid "Deprecated: {0:s}"
 msgstr ""
 
 #. Lifecycle state name, for normal addons (no special). Used also on skin to compare and identify related state.
+#: addons/skin.estuary/xml/AddonBrowser.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
 msgctxt "#24169"
 msgid "Normal"
 msgstr ""
 
 #. Lifecycle state name, for deprecated addons. Used also on skin to compare and identify related state.
+#: addons/skin.estuary/xml/AddonBrowser.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
 msgctxt "#24170"
@@ -15759,12 +15772,17 @@ msgid "Deprecated"
 msgstr ""
 
 #. Lifecycle state name, for broken and not usable addons. Used also on skin to compare and identify related state.
+#: addons/skin.estuary/xml/AddonBrowser.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/guilib/guiinfo/AddonsGUIInfo.cpp
 msgctxt "#24171"
 msgid "Broken"
 msgstr ""
 
-#empty strings from id 24172 to 24990
+#24171-24179 reserved for future use of lifecycle state name (to have continuous chain of GUI)
+
+#empty strings from id 24180 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
