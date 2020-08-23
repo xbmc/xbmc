@@ -15745,7 +15745,15 @@ msgctxt "#24168"
 msgid "Deprecated: {0:s}"
 msgstr ""
 
-#empty strings from id 24169 to 24990
+#empty string with id 24169
+
+#. To declare addon as deprecated
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24170"
+msgid "Deprecated"
+msgstr ""
+
+#empty strings from id 24171 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
