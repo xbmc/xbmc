@@ -18,12 +18,14 @@ namespace KODI
 namespace GAME
 {
 class CGameClient;
+class CGameClientCheevos;
 class CGameClientInput;
 class CGameClientProperties;
 class CGameClientStreams;
 
 struct GameClientSubsystems
 {
+  std::unique_ptr<CGameClientCheevos> Cheevos;
   std::unique_ptr<CGameClientInput> Input;
   std::unique_ptr<CGameClientProperties> AddonProperties;
   std::unique_ptr<CGameClientStreams> Streams;
@@ -64,6 +66,7 @@ public:
 
 protected:
   // Subsystems
+  CGameClientCheevos& Cheevos() const;
   CGameClientInput& Input() const;
   CGameClientProperties& AddonProperties() const;
   CGameClientStreams& Streams() const;
