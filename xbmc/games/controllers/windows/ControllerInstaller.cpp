@@ -107,7 +107,7 @@ void CControllerInstaller::Process()
         100 * (installedCount + 1) / static_cast<unsigned int>(installableAddons.size());
     pProgressDialog->SetPercentage(percentage);
 
-    if (!CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), false, false))
+    if (!ADDON::CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), false, false))
     {
       CLog::Log(LOGERROR, "Controller installer: Failed to install %s", addon->ID().c_str());
       // "Error"

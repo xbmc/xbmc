@@ -13,11 +13,10 @@
 #include <string>
 #include <vector>
 
-class CAddonDatabase;
-
 namespace ADDON
 {
 
+class CAddonDatabase;
 class CAddonMgr;
 class CRepository;
 class IAddon;

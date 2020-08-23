@@ -26,7 +26,7 @@ CDatabaseManager::CDatabaseManager() :
   m_bIsUpgrading(false)
 {
   // Initialize the addon database (must be before the addon manager is init'd)
-  CAddonDatabase db;
+  ADDON::CAddonDatabase db;
   UpdateDatabase(db);
 }
 
@@ -44,7 +44,10 @@ void CDatabaseManager::Initialize()
 
   // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
   //       before CVideoDatabase.
-  { CAddonDatabase db; UpdateDatabase(db); }
+  {
+    ADDON::CAddonDatabase db;
+    UpdateDatabase(db);
+  }
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseMusic); }

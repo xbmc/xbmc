@@ -16,6 +16,9 @@
 #include <string>
 #include <vector>
 
+namespace ADDON
+{
+
 class CAddonDatabase : public CDatabase
 {
 public:
@@ -172,3 +175,4 @@ protected:
   int GetRepositoryId(const std::string& addonId);
 };
 
+}; // namespace ADDON

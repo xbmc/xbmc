@@ -67,7 +67,7 @@ void CRssManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
     ADDON::AddonPtr addon;
     if (!CServiceBroker::GetAddonMgr().GetAddon("script.rss.editor", addon))
     {
-      if (!CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon))
+      if (!ADDON::CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon))
         return;
     }
     CBuiltins::GetInstance().Execute("RunScript(script.rss.editor)");
