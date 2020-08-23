@@ -141,11 +141,13 @@ void CPVREpgContainer::Clear()
   if (bThreadRunning)
     Stop();
 
+  std::vector<std::shared_ptr<CPVREpg>> epgs;
   {
     CSingleLock lock(m_critSection);
+
     /* clear all epg tables and remove pointers to epg tables on channels */
     for (const auto& epgEntry : m_epgIdToEpgMap)
-      epgEntry.second->Events().Unsubscribe(this);
+      epgs.emplace_back(epgEntry.second);
 
     m_epgIdToEpgMap.clear();
     m_channelUidToEpgMap.clear();
@@ -155,6 +157,9 @@ void CPVREpgContainer::Clear()
     m_iNextEpgId = 0;
     m_bUpdateNotificationPending = false;
   }
+
+  for (const auto& epg : epgs)
+    epg->Events().Unsubscribe(this);
 
   m_events.Publish(PVREvent::EpgContainer);
 
@@ -601,24 +606,28 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
   if (!epg || epg->EpgID() < 0)
     return false;
 
-  CSingleLock lock(m_critSection);
+  std::shared_ptr<CPVREpg> epgToDelete;
+  {
+    CSingleLock lock(m_critSection);
 
-  const auto& epgEntry = m_epgIdToEpgMap.find(epg->EpgID());
-  if (epgEntry == m_epgIdToEpgMap.end())
-    return false;
+    const auto& epgEntry = m_epgIdToEpgMap.find(epg->EpgID());
+    if (epgEntry == m_epgIdToEpgMap.end())
+      return false;
 
-  const auto& epgEntry1 = m_channelUidToEpgMap.find(std::make_pair(epg->GetChannelData()->ClientId(),
-                                                                   epg->GetChannelData()->UniqueClientChannelId()));
-  if (epgEntry1 != m_channelUidToEpgMap.end())
-    m_channelUidToEpgMap.erase(epgEntry1);
+    const auto& epgEntry1 = m_channelUidToEpgMap.find(std::make_pair(
+        epg->GetChannelData()->ClientId(), epg->GetChannelData()->UniqueClientChannelId()));
+    if (epgEntry1 != m_channelUidToEpgMap.end())
+      m_channelUidToEpgMap.erase(epgEntry1);
 
-  CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table %s (%d)", epg->Name().c_str(), epg->EpgID());
+    CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table %s (%d)", epg->Name().c_str(), epg->EpgID());
 
-  epgEntry->second->Delete(GetEpgDatabase());
+    epgEntry->second->Delete(GetEpgDatabase());
 
-  epgEntry->second->Events().Unsubscribe(this);
-  m_epgIdToEpgMap.erase(epgEntry);
+    epgToDelete = epgEntry->second;
+    m_epgIdToEpgMap.erase(epgEntry);
+  }
 
+  epgToDelete->Events().Unsubscribe(this);
   return true;
 }
 
