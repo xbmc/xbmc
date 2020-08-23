@@ -25,15 +25,16 @@
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
 
-#define CONTROL_BTN_LEVELS               20
+#define CONTROL_BTN_LEVELS 20
 
 using namespace KODI::MESSAGING;
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
   : CGUIDialogSettingsManagerBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
-{ }
+{
+}
 
-bool CGUIDialogAddonSettings::OnMessage(CGUIMessage &message)
+bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
@@ -75,7 +76,8 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
     case ACTION_SETTINGS_LEVEL_CHANGE:
     {
       // Test if we can access the new level
-      if (!g_passwordManager.CheckSettingLevelLock(CViewStateSettings::GetInstance().GetNextSettingLevel(), true))
+      if (!g_passwordManager.CheckSettingLevelLock(
+              CViewStateSettings::GetInstance().GetNextSettingLevel(), true))
         return false;
 
       CViewStateSettings::GetInstance().CycleSettingLevel();
@@ -86,7 +88,9 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
       if (m_iCategory >= 0 && m_iCategory < static_cast<int>(m_categories.size()))
         oldCategory = m_categories[m_iCategory]->GetId();
 
-      SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + static_cast<int>(CViewStateSettings::GetInstance().GetSettingLevel()));
+      SET_CONTROL_LABEL(CONTROL_BTN_LEVELS,
+                        10036 +
+                            static_cast<int>(CViewStateSettings::GetInstance().GetSettingLevel()));
       // only re-create the categories, the settings will be created later
       SetupControls(false);
 
@@ -115,7 +119,8 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
   return CGUIDialogSettingsManagerBase::OnAction(action);
 }
 
-bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr &addon, bool saveToDisk /* = true */)
+bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
+                                           bool saveToDisk /* = true */)
 {
   if (addon == nullptr)
     return false;
@@ -126,12 +131,14 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr &addon, bool sa
   if (!addon->HasSettings())
   {
     // addon does not support settings, inform user
-    HELPERS::ShowOKDialogText(CVariant{ 24000 }, CVariant{ 24030 });
+    HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{24030});
     return false;
   }
 
   // Create the dialog
-  CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(
+          WINDOW_DIALOG_ADDON_SETTINGS);
   if (dialog == nullptr)
     return false;
 
@@ -154,7 +161,9 @@ void CGUIDialogAddonSettings::SaveAndClose()
     return;
 
   // get the dialog
-  CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(
+          WINDOW_DIALOG_ADDON_SETTINGS);
   if (dialog == nullptr || !dialog->IsActive())
     return;
 
@@ -189,13 +198,15 @@ void CGUIDialogAddonSettings::SetupView()
   SetProperty("Addon.ID", m_addon->ID());
 
   // set heading
-  SetHeading(StringUtils::Format("$LOCALIZE[10004] - %s", m_addon->Name().c_str())); // "Settings - AddonName"
+  SetHeading(StringUtils::Format("$LOCALIZE[10004] - %s",
+                                 m_addon->Name().c_str())); // "Settings - AddonName"
 
   // set control labels
   SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
   SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222);
   SET_CONTROL_LABEL(CONTROL_SETTINGS_CUSTOM_BUTTON, 409);
-  SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + static_cast<int>(CViewStateSettings::GetInstance().GetSettingLevel()));
+  SET_CONTROL_LABEL(CONTROL_BTN_LEVELS,
+                    10036 + static_cast<int>(CViewStateSettings::GetInstance().GetSettingLevel()));
 }
 
 std::string CGUIDialogAddonSettings::GetLocalizedString(uint32_t labelId) const

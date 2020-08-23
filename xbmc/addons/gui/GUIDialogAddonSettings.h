@@ -18,10 +18,10 @@ public:
   ~CGUIDialogAddonSettings() override = default;
 
   // specializations of CGUIControl
-  bool OnMessage(CGUIMessage &message) override;
+  bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction& action) override;
 
-  static bool ShowForAddon(const ADDON::AddonPtr &addon, bool saveToDisk = true);
+  static bool ShowForAddon(const ADDON::AddonPtr& addon, bool saveToDisk = true);
   static void SaveAndClose();
 
   std::string GetCurrentAddonID() const;
@@ -36,7 +36,7 @@ protected:
 
   // implementation of CGUIDialogSettingsManagerBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override { }
+  void Save() override {}
   CSettingsManager* GetSettingsManager() const override;
 
   // implementation of ISettingCallback
