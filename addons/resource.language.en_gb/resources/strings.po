@@ -8710,7 +8710,17 @@ msgctxt "#15311"
 msgid "Path:"
 msgstr ""
 
-#empty strings from id 15312 to 15999
+#. Game settings category name
+#: system/settings/settings.xml
+msgctxt "#15312"
+msgid "Achievements"
+msgstr ""
+
+#. Group label for Achievements category in game settings
+#: system/settings/settings.xml
+msgctxt "#15313"
+msgid "Login to RetroAchievements"
+msgstr ""
 
 #. Label for button in the in-game savestate manager
 #: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
@@ -18366,7 +18376,63 @@ msgctxt "#35261"
 msgid "New game"
 msgstr ""
 
-#empty strings from id 35262 to 35504
+#. Help text for RetroAchievements username input setting
+#: system/settings/settings.xml
+msgctxt "#35262"
+msgid "Enter your RetroAchievements account username"
+msgstr ""
+
+#. Help text for RetroAchievements password input setting
+#: system/settings/settings.xml
+msgctxt "#35263"
+msgid "Enter your RetroAchievements account password"
+msgstr ""
+
+#. Label for notification events regarding RetroAchievements login
+#: xbmc/games/GameSettings.cpp
+msgctxt "#35264"
+msgid "RetroAchievements"
+msgstr ""
+
+#. Description for notification event regarding unsuccessful RetroAchievements login
+#: xbmc/games/GameSettings.cpp
+msgctxt "#35265"
+msgid "Incorrect User/Password!"
+msgstr ""
+
+#. Description for notification event regarding unsuccessful RetroAchievements login
+#: xbmc/games/GameSettings.cpp
+msgctxt "#35266"
+msgid "Failed to contact server"
+msgstr ""
+
+#. Description for notification event regarding unsuccessful RetroAchievements login
+#: xbmc/games/GameSettings.cpp
+msgctxt "#35267"
+msgid "Invalid response from server"
+msgstr ""
+
+#. Setting to show if the user is logged in to RetroAchievements
+#. Settings -> Games -> Achievements -> Logged in
+#: system/settings/settings.xml
+msgctxt "#35268"
+msgid "Logged in"
+msgstr ""
+
+#. Help text for the setting that shows if the user is logged in to RetroAchievements
+#. Settings -> Games -> Achievements -> Logged in
+#: system/settings/settings.xml
+msgctxt "#35269"
+msgid "Toggle this setting to log in or out of RetroAchievemts."
+msgstr ""
+
+#. Description for notification event regarding unsuccessful RetroAchievements login
+#: xbmc/games/GameSettings.cpp
+msgctxt "#35270"
+msgid "Your account is not verified. Please check your email to complete your sign up."
+msgstr ""
+
+#empty strings from id 35271 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

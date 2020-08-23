@@ -11,6 +11,8 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Observer.h"
 
+#include <string>
+
 class CSetting;
 class CSettings;
 
@@ -33,11 +35,18 @@ public:
   bool AutosaveEnabled();
   bool RewindEnabled();
   unsigned int MaxRewindTimeSec();
+  std::string GetRAUsername() const;
+  std::string GetRAToken() const;
 
   // Inherited from ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
+  std::string LoginToRA(const std::string& username,
+                        const std::string& password,
+                        std::string token) const;
+  bool IsAccountVerified(const std::string& username, const std::string& token) const;
+
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;
 };
