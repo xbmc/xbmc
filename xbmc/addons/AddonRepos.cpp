@@ -393,6 +393,15 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
             "ADDONS: found dependency [{}] for install/update from repo [{}]. dependee is [{}]",
             dependencyToInstall->ID(), repoForDep->ID(), parent->ID());
 
+  if (dependencyToInstall->HasType(ADDON_REPOSITORY))
+  {
+    CLog::Log(LOGDEBUG,
+              "ADDONS: dependency with id [{}] has type ADDON_REPOSITORY and will not install!",
+              dependencyToInstall->ID());
+
+    return false;
+  }
+
   return true;
 }
 
