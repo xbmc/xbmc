@@ -24,6 +24,8 @@
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "dialogs/GUIDialogKeyboardTouch.h"
+
+#include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
 #endif
 
 using namespace KODI::MESSAGING;
@@ -88,7 +90,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
   useKodiKeyboard = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_INPUT_APPLEUSEKODIKEYBOARD);
 #else
-  useKodiKeyboard = false;
+  useKodiKeyboard = CDarwinEmbedKeyboard::hasExternalKeyboard();
 #endif // defined(TARGET_DARWIN_TVOS)
 #endif
 

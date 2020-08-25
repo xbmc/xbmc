@@ -26,6 +26,8 @@ public:
   void invalidateCallback();
   bool SetTextToKeyboard(const std::string& text, bool closeKeyboard = false) override;
 
+  static bool hasExternalKeyboard();
+
 private:
   char_callback_t m_pCharCallback = nullptr;
   bool m_canceled = false;
