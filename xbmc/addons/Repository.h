@@ -43,7 +43,10 @@ namespace ADDON
       STATUS_ERROR
     };
 
-    FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) const;
+    FetchStatus FetchIfChanged(const std::string& oldChecksum,
+                               std::string& checksum,
+                               VECADDONS& addons,
+                               int& recheckAfter) const;
 
     struct ResolveResult
     {
@@ -53,7 +56,9 @@ namespace ADDON
     ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
 
   private:
-    static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
+    static bool FetchChecksum(const std::string& url,
+                              std::string& checksum,
+                              int& recheckAfter) noexcept;
     static bool FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept;
 
     static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);

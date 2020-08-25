@@ -28,6 +28,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <iterator>
 #include <tuple>
 #include <utility>
@@ -79,8 +80,9 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
 
   if (hash.Empty())
   {
+    int tmp;
     // Expected hash, but none found -> fall back to old method
-    if (!FetchChecksum(path + "." + hashTypeStr, hash.value) || hash.Empty())
+    if (!FetchChecksum(path + "." + hashTypeStr, hash.value, tmp) || hash.Empty())
     {
       CLog::Log(LOGERROR, "Failed to find hash for {} from HTTP header and in separate file", path);
       return {};
@@ -131,7 +133,9 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
   }
 }
 
-bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) noexcept
+bool CRepository::FetchChecksum(const std::string& url,
+                                std::string& checksum,
+                                int& recheckAfter) noexcept
 {
   CFile file;
   if (!file.Open(url))
@@ -152,6 +156,29 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   {
     checksum = checksum.substr(0, pos);
   }
+
+  // Determine update interval from (potential) HTTP response
+  // Default: 24 h
+  recheckAfter = 24 * 60 * 60;
+  // This special header is set by the Kodi mirror redirector to control client update frequency
+  // depending on the load on the mirrors
+  const std::string recheckAfterHeader{
+      file.GetProperty(FILE_PROPERTY_RESPONSE_HEADER, "X-Kodi-Recheck-After")};
+  if (!recheckAfterHeader.empty())
+  {
+    try
+    {
+      // Limit value range to sensible values (1 hour to 1 week)
+      recheckAfter =
+          std::max(std::min(std::stoi(recheckAfterHeader), 24 * 7 * 60 * 60), 1 * 60 * 60);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGWARNING, "Could not parse X-Kodi-Recheck-After header value '{}' from {}",
+                recheckAfterHeader, url);
+    }
+  }
+
   return true;
 }
 
@@ -193,27 +220,42 @@ bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VEC
 }
 
 CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
-    std::string& checksum, VECADDONS& addons) const
+                                                     std::string& checksum,
+                                                     VECADDONS& addons,
+                                                     int& recheckAfter) const
 {
   checksum = "";
   std::vector<std::tuple<DirInfo const&, std::string>> dirChecksums;
+  std::vector<int> recheckAfterTimes;
+
   for (const auto& dir : m_dirs)
   {
     if (!dir.checksum.empty())
     {
       std::string part;
-      if (!FetchChecksum(dir.checksum, part))
+      int recheckAfterThisDir;
+      if (!FetchChecksum(dir.checksum, part, recheckAfterThisDir))
       {
         CLog::Log(LOGERROR, "CRepository: failed read '%s'", dir.checksum.c_str());
         return STATUS_ERROR;
       }
       dirChecksums.emplace_back(dir, part);
+      recheckAfterTimes.push_back(recheckAfterThisDir);
       checksum += part;
     }
   }
 
-  if (oldChecksum == checksum && !oldChecksum.empty())
-    return STATUS_NOT_MODIFIED;
+  // Default interval: 24 h
+  recheckAfter = 24 * 60 * 60;
+  if (dirChecksums.size() == m_dirs.size() && !dirChecksums.empty())
+  {
+    // Use smallest update interval out of all received (individual intervals per directory are
+    // not possible)
+    recheckAfter = *std::min_element(recheckAfterTimes.begin(), recheckAfterTimes.end());
+    // If all directories have checksums and they match the last one, nothing has changed
+    if (dirChecksums.size() == m_dirs.size() && oldChecksum == checksum)
+      return STATUS_NOT_MODIFIED;
+  }
 
   for (const auto& dirTuple : dirChecksums)
   {
@@ -274,16 +316,19 @@ bool CRepositoryUpdateJob::DoWork()
   if (database.GetRepoChecksum(m_repo->ID(), oldChecksum) == -1)
     oldChecksum = "";
 
-  std::pair<CDateTime, ADDON::AddonVersion> lastCheck = database.LastChecked(m_repo->ID());
-  if (lastCheck.second != m_repo->Version())
+  const CAddonDatabase::RepoUpdateData updateData{database.GetRepoUpdateData(m_repo->ID())};
+  if (updateData.lastCheckedVersion != m_repo->Version())
     oldChecksum = "";
 
   std::string newChecksum;
   VECADDONS addons;
-  auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons);
+  int recheckAfter;
+  auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons, recheckAfter);
 
-  database.SetLastChecked(m_repo->ID(), m_repo->Version(),
-      CDateTime::GetCurrentDateTime().GetAsDBDateTime());
+  database.SetRepoUpdateData(
+      m_repo->ID(), CAddonDatabase::RepoUpdateData(
+                        CDateTime::GetCurrentDateTime(), m_repo->Version(),
+                        CDateTime::GetCurrentDateTime() + CDateTimeSpan(0, 0, 0, recheckAfter)));
 
   MarkFinished();
 

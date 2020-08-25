@@ -131,7 +131,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 29;
+  return 30;
 }
 
 void CAddonDatabase::CreateTables()
@@ -149,7 +149,7 @@ void CAddonDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create repo table");
   m_pDS->exec("CREATE TABLE repo (id integer primary key, addonID text,"
-              "checksum text, lastcheck text, version text)\n");
+              "checksum text, lastcheck text, version text, nextcheck TEXT)\n");
 
   CLog::Log(LOGINFO, "create addonlinkrepo table");
   m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
@@ -223,6 +223,10 @@ void CAddonDatabase::UpdateTables(int version)
   if (version < 29)
   {
     m_pDS->exec("DROP TABLE broken");
+  }
+  if (version < 30)
+  {
+    m_pDS->exec("ALTER TABLE repo ADD nextcheck TEXT");
   }
 }
 
@@ -667,13 +671,31 @@ void CAddonDatabase::DeleteRepository(const std::string& id)
     if (!m_pDS)
       return;
 
-    m_pDS->query(PrepareSQL("SELECT id FROM repo WHERE addonID='%s'", id.c_str()));
-    if (m_pDS->eof())
+    int idRepo = GetRepositoryId(id);
+    if (idRepo < 0)
       return;
 
-    int idRepo = m_pDS->fv("id").get_asInt();
-
     m_pDS->exec(PrepareSQL("DELETE FROM repo WHERE id=%i", idRepo));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id);
+  }
+}
+
+void CAddonDatabase::DeleteRepositoryContents(const std::string& id)
+{
+  try
+  {
+    if (!m_pDB)
+      return;
+    if (!m_pDS)
+      return;
+
+    int idRepo = GetRepositoryId(id);
+    if (idRepo < 0)
+      return;
+
     m_pDS->exec(PrepareSQL("DELETE FROM addons WHERE id IN (SELECT idAddon FROM addonlinkrepo WHERE idRepo=%i)", idRepo));
     m_pDS->exec(PrepareSQL("DELETE FROM addonlinkrepo WHERE idRepo=%i", idRepo));
   }
@@ -681,6 +703,20 @@ void CAddonDatabase::DeleteRepository(const std::string& id)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
+}
+
+int CAddonDatabase::GetRepositoryId(const std::string& addonId)
+{
+  if (!m_pDB)
+    return -1;
+  if (!m_pDS)
+    return -1;
+
+  m_pDS->query(PrepareSQL("SELECT id FROM repo WHERE addonID='%s'", addonId.c_str()));
+  if (m_pDS->eof())
+    return -1;
+
+  return m_pDS->fv("id").get_asInt();
 }
 
 bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, const AddonVersion& version,
@@ -693,15 +729,16 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
     if (!m_pDS)
       return false;
 
-    DeleteRepository(repository);
-
-    int idRepo = SetLastChecked(repository, version, CDateTime::GetCurrentDateTime().GetAsDBDateTime());
+    DeleteRepositoryContents(repository);
+    int idRepo = GetRepositoryId(repository);
     if (idRepo < 0)
       return false;
+
     assert(idRepo > 0);
 
     m_pDB->start_transaction();
-    m_pDS->exec(PrepareSQL("UPDATE repo SET checksum='%s' WHERE id='%d'", checksum.c_str(), idRepo));
+    m_pDS->exec(
+        PrepareSQL("UPDATE repo SET checksum='%s' WHERE id='%i'", checksum.c_str(), idRepo));
     for (const auto& addon : addons)
     {
       m_pDS->exec(PrepareSQL(
@@ -762,10 +799,9 @@ int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum
   return -1;
 }
 
-std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std::string& id)
+CAddonDatabase::RepoUpdateData CAddonDatabase::GetRepoUpdateData(const std::string& id)
 {
-  CDateTime date;
-  AddonVersion version;
+  RepoUpdateData result{};
   try
   {
     if (m_pDB && m_pDS)
@@ -774,8 +810,9 @@ std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std:
       m_pDS->query(strSQL);
       if (!m_pDS->eof())
       {
-        date.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
-        version = AddonVersion(m_pDS->fv("version").get_asString());
+        result.lastCheckedAt.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
+        result.lastCheckedVersion = AddonVersion(m_pDS->fv("version").get_asString());
+        result.nextCheckAt.SetFromDBDateTime(m_pDS->fv("nextcheck").get_asString());
       }
     }
   }
@@ -783,11 +820,10 @@ std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std:
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
-  return std::make_pair(date, version);
+  return result;
 }
 
-int CAddonDatabase::SetLastChecked(const std::string& id,
-    const ADDON::AddonVersion& version, const std::string& time)
+int CAddonDatabase::SetRepoUpdateData(const std::string& id, const RepoUpdateData& updateData)
 {
   try
   {
@@ -802,16 +838,22 @@ int CAddonDatabase::SetLastChecked(const std::string& id,
 
     if (m_pDS->eof())
     {
-      sql = PrepareSQL("INSERT INTO repo (id, addonID, lastcheck, version) "
-          "VALUES (NULL, '%s', '%s', '%s')", id.c_str(), time.c_str(), version.asString().c_str());
+      sql = PrepareSQL("INSERT INTO repo (id, addonID, lastcheck, version, nextcheck) "
+                       "VALUES (NULL, '%s', '%s', '%s', '%s')",
+                       id.c_str(), updateData.lastCheckedAt.GetAsDBDateTime().c_str(),
+                       updateData.lastCheckedVersion.asString().c_str(),
+                       updateData.nextCheckAt.GetAsDBDateTime().c_str());
       m_pDS->exec(sql);
       retId = static_cast<int>(m_pDS->lastinsertid());
     }
     else
     {
       retId = m_pDS->fv("id").get_asInt();
-      sql = PrepareSQL("UPDATE repo SET lastcheck='%s', version='%s' WHERE addonID='%s'",
-          time.c_str(), version.asString().c_str(), id.c_str());
+      sql = PrepareSQL(
+          "UPDATE repo SET lastcheck='%s', version='%s', nextcheck='%s' WHERE addonID='%s'",
+          updateData.lastCheckedAt.GetAsDBDateTime().c_str(),
+          updateData.lastCheckedVersion.asString().c_str(),
+          updateData.nextCheckAt.GetAsDBDateTime().c_str(), id.c_str());
       m_pDS->exec(sql);
     }
 

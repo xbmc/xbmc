@@ -37,10 +37,12 @@ protected:
 
     VECADDONS addons;
     CreateAddon(addons, "foo.bar", "1.0.0");
+    database.SetRepoUpdateData("repository.a", {});
     database.UpdateRepositoryContent("repository.a", AddonVersion("1.0.0"), "test", addons);
 
     addons.clear();
     CreateAddon(addons, "foo.baz", "1.1.0");
+    database.SetRepoUpdateData("repository.b", {});
     database.UpdateRepositoryContent("repository.b", AddonVersion("1.0.0"), "test", addons);
   }
 

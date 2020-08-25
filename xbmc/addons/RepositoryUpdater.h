@@ -75,6 +75,8 @@ private:
 
   void OnEvent(const ADDON::AddonEvent& event);
 
+  CDateTime ClosestNextCheck() const;
+
   CCriticalSection m_criticalSection;
   CTimer m_timer;
   CEvent m_doneEvent;
