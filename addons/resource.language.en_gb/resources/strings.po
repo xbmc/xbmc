@@ -15336,7 +15336,11 @@ msgctxt "#24087"
 msgid "All repositories"
 msgstr ""
 
-#empty string with id 24088
+#. Used as a text in the progress dialog when install of a repo fails
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24088"
+msgid "Failed to install repository"
+msgstr ""
 
 msgctxt "#24089"
 msgid "Add-on restarts"
