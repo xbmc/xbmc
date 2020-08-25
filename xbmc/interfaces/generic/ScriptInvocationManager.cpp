@@ -359,6 +359,15 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
   return invokerThread->Stop(wait);
 }
 
+void CScriptInvocationManager::StopRunningScripts(bool wait /* = false */)
+{
+  for (auto& it : m_scripts)
+  {
+    if (!it.second.done)
+      Stop(it.second.script, wait);
+  }
+}
+
 bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* = false */)
 {
   if (scriptPath.empty())

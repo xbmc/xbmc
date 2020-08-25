@@ -115,6 +115,12 @@ public:
   bool Stop(int scriptId, bool wait = false);
   bool Stop(const std::string &scriptPath, bool wait = false);
 
+  /*!
+   *\brief Stop all running scripts
+   *\param wait if kodi should wait for each script to finish (default false)
+  */
+  void StopRunningScripts(bool wait = false);
+
   bool IsRunning(int scriptId) const;
   bool IsRunning(const std::string& scriptPath) const;
 
