@@ -147,7 +147,10 @@ void CMusicInfoScanner::Process()
           if (m_albumsAdded.size() > 0)
           {
             // Set local art for added album disc sets and primary album artists
-            RetrieveLocalArt();
+            if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                    CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL) !=
+                CSettings::MUSICLIBRARY_ARTWORK_LEVEL_NONE)
+              RetrieveLocalArt();
 
             if (m_flags & SCAN_ONLINE)
               // Download additional album and artist information for the recently added albums.
@@ -1321,8 +1324,11 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
   // Check album art.
   // Fill any gaps with local art files or use first available from scraped URL list (when it has
   // been successfuly scraped) as controlled by whitelist. Do this even when no info added
-  // (cancelled, not found or error), there may be new local art files.  
-  if (AddAlbumArtwork(album))
+  // (cancelled, not found or error), there may be new local art files.
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL) !=
+          CSettings::MUSICLIBRARY_ARTWORK_LEVEL_NONE &&
+      AddAlbumArtwork(album))
     albumDownloadStatus = INFO_ADDED; // Local art added
 
   return albumDownloadStatus;
@@ -1378,6 +1384,11 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
     m_musicDatabase.UpdateArtist(artist);
     artistInfo.SetLoaded();
   }
+
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL) ==
+      CSettings::MUSICLIBRARY_ARTWORK_LEVEL_NONE)
+    return artistDownloadStatus;
 
   // Check artist art.
   // Fill any gaps with local art files, or use first available from scraped

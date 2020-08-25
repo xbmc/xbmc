@@ -21673,7 +21673,7 @@ msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#38307"
-msgid "Include art work such as thumbnails and fanart"
+msgid "Include artwork such as thumbnails and fanart"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
@@ -22228,20 +22228,23 @@ msgstr ""
 #. Description of setting with label #39137 "Artwork level"
 #: system/settings/settings.xml
 msgctxt "#39138"
-msgid "The amount of artwork automatically selected - [Maximum] all local images and remote art [Minimum] save space on limited devices when using a simple skin [User Configuration] customized for detailed control"
+msgid "The amount of artwork automatically selected - [Maximum] all local images and remote art; [Basic] save space on limited devices or when using a simple skin; [Custom] configured by user for detailed control; [None] no art"
 msgstr ""
 
+#. Value of setting with label #39137 "Artwork level"
 #: system/settings/settings.xml
 msgctxt "#39140"
 msgid "Maximum"
 msgstr ""
 
+#. Value of setting with label #39137 "Artwork level"
 #: system/settings/settings.xml
 msgctxt "#39141"
-msgid "Minimum"
+msgid "Basic"
 msgstr ""
 
+#. Value of setting with label #39137 "Artwork level"
 #: system/settings/settings.xml
 msgctxt "#39142"
-msgid "User Configuration"
+msgid "Custom"
 msgstr ""

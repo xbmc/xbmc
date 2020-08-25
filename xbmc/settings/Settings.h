@@ -400,6 +400,7 @@ public:
   static const int MUSICLIBRARY_ARTWORK_LEVEL_ALL = 0;
   static const int MUSICLIBRARY_ARTWORK_LEVEL_BASIC = 1;
   static const int MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM = 2;
+  static const int MUSICLIBRARY_ARTWORK_LEVEL_NONE = 3;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.

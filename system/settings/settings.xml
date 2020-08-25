@@ -1072,11 +1072,6 @@
         </setting>
       </group>
       <group id="3" label="39123">
-        <setting id="musiclibrary.preferonlinealbumart" type="boolean" label="20224" help="20225">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <!-- Hidden setting indicating music art settings have been migrated from old advancedsettings.xml format-->
         <setting id="musiclibrary.artsettings" type="boolean" label="0" help="">
           <level>4</level>
@@ -1091,6 +1086,7 @@
               <option label="39140">0</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_ALL -->
               <option label="39141">1</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_BASIC -->
               <option label="39142">2</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM -->
+              <option label="231">3</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_NONE -->
             </options>
           </constraints>
           <control type="list" format="string" />
@@ -1182,9 +1178,20 @@
             <allowempty>true</allowempty>
             <allownewoption>true</allownewoption>
           </constraints>
+		  <dependencies>
+            <dependency type="enable" setting="musiclibrary.artworklevel" operator="!is">3</dependency>
+          </dependencies>
           <control type="list" format="string">
             <multiselect>true</multiselect>
           </control>
+        </setting>
+        <setting id="musiclibrary.preferonlinealbumart" type="boolean" label="20224" help="20225">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+		  <dependencies>
+            <dependency type="enable" setting="musiclibrary.artworklevel" operator="!is">3</dependency>
+          </dependencies>		  
         </setting>
       </group>
       <group id="4" label="128">
