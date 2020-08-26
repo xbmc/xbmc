@@ -332,26 +332,18 @@ void CGUIDialogAddonInfo::OnInstall()
   if (m_localAddon || !m_item->HasAddonInfo())
     return;
 
-  std::string addonId = m_item->GetAddonInfo()->ID();
-  std::vector<std::pair<AddonVersion, std::string>> versions;
+  const auto& itemAddonInfo = m_item->GetAddonInfo();
 
-  CAddonDatabase database;
-  if (!database.Open() || !database.GetAvailableVersions(addonId, versions) || versions.empty())
-  {
-    CLog::Log(LOGERROR, "ADDON: no available versions of %s", addonId.c_str());
+  const std::string& addonId = itemAddonInfo->ID();
+  const std::string& origin = itemAddonInfo->Origin();
+  const AddonVersion& version = itemAddonInfo->Version();
+
+  Close();
+  const auto& deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(addonId);
+  if (!deps.empty() && !ShowDependencyList(deps, false))
     return;
-  }
 
-  int i = versions.size() == 1 ? 0 : AskForVersion(versions);
-  if (i != -1)
-  {
-    Close();
-    auto deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID());
-    if (!deps.empty() && !ShowDependencyList(deps, false))
-      return;
-
-    CAddonInstaller::GetInstance().Install(addonId, versions[i].first, versions[i].second);
-  }
+  CAddonInstaller::GetInstance().Install(addonId, version, origin);
 }
 
 void CGUIDialogAddonInfo::OnSelect()
