@@ -181,15 +181,29 @@ void CAddonRepos::AddAddonIfLatest(
 void CAddonRepos::BuildUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
                                   std::vector<std::shared_ptr<IAddon>>& updates) const
 {
+  BuildUpdateOrOutdatedList(installed, updates, false);
+}
+
+void CAddonRepos::BuildOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                                    std::vector<std::shared_ptr<IAddon>>& outdated) const
+{
+  BuildUpdateOrOutdatedList(installed, outdated, true);
+}
+
+void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                                            std::vector<std::shared_ptr<IAddon>>& result,
+                                            bool returnOutdatedAddons) const
+{
   std::shared_ptr<IAddon> update;
 
-  CLog::Log(LOGDEBUG, "ADDONS: *** building update list (installed add-ons) ***");
+  CLog::Log(LOGDEBUG, "CAddonRepos::{}: Building {} list from installed add-ons", __func__,
+            returnOutdatedAddons ? "outdated" : "update");
 
   for (const auto& addon : installed)
   {
     if (DoAddonUpdateCheck(addon, update))
     {
-      updates.emplace_back(update);
+      result.emplace_back(returnOutdatedAddons ? addon : update);
     }
   }
 }
@@ -344,6 +358,49 @@ void CAddonRepos::GetLatestAddonVersions(std::vector<std::shared_ptr<IAddon>>& a
          privateVersion.second->Version() > officialVersion->second->Version()))
     {
       addonList.emplace_back(privateVersion.second);
+    }
+  }
+}
+
+void CAddonRepos::GetLatestAddonVersionsFromAllRepos(
+    std::vector<std::shared_ptr<IAddon>>& addonList) const
+{
+  const AddonRepoUpdateMode updateMode =
+      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
+
+  addonList.clear();
+
+  // first we insert all official addon versions into the resulting vector
+
+  std::transform(m_latestOfficialVersions.begin(), m_latestOfficialVersions.end(),
+                 back_inserter(addonList),
+                 [](const std::pair<std::string, std::shared_ptr<IAddon>>& officialVersion) {
+                   return officialVersion.second;
+                 });
+
+  // then we insert latest version per addon and repository if they don't exist in the official map
+  // or installation from ANY_REPOSITORY is allowed and the private version is higher
+
+  for (const auto& repo : m_latestVersionsByRepo)
+  {
+    // content of official repos is stored in m_latestVersionsByRepo too
+    // so we need to filter them out
+
+    if (std::none_of(officialRepoInfos.begin(), officialRepoInfos.end(),
+                     [&](const ADDON::RepoInfo& officialRepo) {
+                       return repo.first == officialRepo.m_repoId;
+                     }))
+    {
+      for (const auto& latestAddon : repo.second)
+      {
+        const auto& officialVersion = m_latestOfficialVersions.find(latestAddon.first);
+        if (officialVersion == m_latestOfficialVersions.end() ||
+            (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY &&
+             latestAddon.second->Version() > officialVersion->second->Version()))
+        {
+          addonList.emplace_back(latestAddon.second);
+        }
+      }
     }
   }
 }

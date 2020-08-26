@@ -86,4 +86,10 @@ private:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
   bool m_addonEnabled = false;
+
+  /*!< a switch to force @ref OnUninstall() to proceed without user interaction.
+   *   useful for cases like where another repo’s version of an addon must
+   *   be removed before installing a new version.
+   */
+  bool m_silentUninstall = false;
 };

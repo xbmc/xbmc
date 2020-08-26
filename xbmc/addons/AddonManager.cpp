@@ -209,23 +209,42 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
   return false;
 }
 
-VECADDONS CAddonMgr::GetAvailableUpdates() const
+std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdates() const
+{
+  return GetAvailableUpdatesOrOutdatedAddons(false);
+}
+
+std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetOutdatedAddons() const
+{
+  return GetAvailableUpdatesOrOutdatedAddons(true);
+}
+
+std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAddons(
+    bool returnOutdatedAddons) const
 {
   CSingleLock lock(m_critSection);
   auto start = XbmcThreads::SystemClockMillis();
 
-  VECADDONS updates;
-  VECADDONS installed;
+  std::vector<std::shared_ptr<IAddon>> result;
+  std::vector<std::shared_ptr<IAddon>> installed;
   CAddonRepos addonRepos(*this);
 
   addonRepos.LoadAddonsFromDatabase(m_database);
 
   GetAddonsForUpdate(installed);
 
-  addonRepos.BuildUpdateList(installed, updates);
+  if (returnOutdatedAddons)
+  {
+    addonRepos.BuildOutdatedList(installed, result);
+  }
+  else
+  {
+    addonRepos.BuildUpdateList(installed, result);
+  }
 
-  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdates took %i ms", XbmcThreads::SystemClockMillis() - start);
-  return updates;
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesOrOutdatedAddons took %i ms",
+            XbmcThreads::SystemClockMillis() - start);
+  return result;
 }
 
 bool CAddonMgr::HasAvailableUpdates()
@@ -812,6 +831,15 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID)
 {
   AddonPtr tmp;
   return GetAddon(ID, tmp, ADDON_UNKNOWN, false);
+}
+
+bool CAddonMgr::IsAddonInstalled(const std::string& ID,
+                                 const std::string& origin,
+                                 const AddonVersion& version)
+{
+  AddonPtr tmp;
+  return (GetAddon(ID, tmp, ADDON_UNKNOWN, false) && tmp && tmp->Origin() == origin &&
+          tmp->Version() == version);
 }
 
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)

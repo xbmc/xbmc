@@ -67,6 +67,16 @@ public:
                        std::vector<std::shared_ptr<IAddon>>& updates) const;
 
   /*!
+   * \brief Build the list of addons that are outdated and have an update
+   *        available depending on defined rules
+   * \param installed vector of all addons installed on the system that are
+   *        checked for an update
+   * \param[out] outdated list of addon versions that have an update available
+   */
+  void BuildOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                         std::vector<std::shared_ptr<IAddon>>& outdated) const;
+
+  /*!
    * \brief Checks if the origin-repository of a given addon is defined as official repo
    *        but does not check the origin path (e.g. https://mirrors.kodi.tv ...)
    * \param addon pointer to addon to be checked
@@ -105,11 +115,19 @@ public:
 
   /*!
    * \brief Retrieves the latest official versions of addons to vector.
-   *        Private versions are added obeying the set updateMode.
+   *        Private versions are added obeying updateMode.
    *        (either OFFICIAL_ONLY or ANY_REPOSITORY)
    * \param[out] addonList retrieved addon list in a vector
    */
   void GetLatestAddonVersions(std::vector<std::shared_ptr<IAddon>>& addonList) const;
+
+  /*!
+   * \brief Retrieves the latest official versions of addons to vector.
+   *        Private versions (latest per repository) are added obeying updateMode.
+   *        (either OFFICIAL_ONLY or ANY_REPOSITORY)
+   * \param[out] addonList retrieved addon list in a vector
+   */
+  void GetLatestAddonVersionsFromAllRepos(std::vector<std::shared_ptr<IAddon>>& addonList) const;
 
   /*!
    * \brief Find a dependency to install during an addon install or update
@@ -140,6 +158,14 @@ public:
                                   std::shared_ptr<IAddon>& dependencyToInstall) const;
 
 private:
+  /*!
+   * \brief Executor for BuildUpdateList() and BuildOutdatedList()
+   * \sa BuildUpdateList() BuildOutdatedList()
+   */
+  void BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                                 std::vector<std::shared_ptr<IAddon>>& result,
+                                 bool returnOutdatedAddons) const;
+
   /*!
    * \brief Load the map of addons
    * \note this function should only by called from publicly exposed wrappers
