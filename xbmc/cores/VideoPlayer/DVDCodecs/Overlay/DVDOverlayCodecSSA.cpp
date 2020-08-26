@@ -119,10 +119,9 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
   if(m_pOverlay)
   {
     /* there will only ever be one active, so we
-     * must always make sure any new one overlap
-     * include the full duration of the old one */
-    if(m_pOverlay->iPTSStopTime > pts + duration)
-      duration = m_pOverlay->iPTSStopTime - pts;
+     * must always make sure any new one doesn't overlap
+     * with the previous one */
+    m_pOverlay->iPTSStopTime = pts;
     SAFE_RELEASE(m_pOverlay);
   }
 
