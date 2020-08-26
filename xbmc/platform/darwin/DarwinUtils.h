@@ -24,8 +24,6 @@ public:
   static const char* GetVersionString();
   static std::string GetFrameworkPath(bool forPython);
   static int         GetExecutablePath(char* path, size_t *pathsize);
-  static const char *GetAppRootFolder(void);
-  static bool        IsIosSandboxed(void);
   static void        SetScheduling(bool realtime);
   static bool        CFStringRefToString(CFStringRef source, std::string& destination);
   static bool        CFStringRefToUTF8String(CFStringRef source, std::string& destination);

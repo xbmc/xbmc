@@ -8,6 +8,8 @@
 
 #import "tvosShared.h"
 
+#include "platform/darwin/ios-common/DarwinEmbedUtils.h"
+
 @implementation tvosShared
 
 + (NSString*)getSharedID
@@ -18,34 +20,20 @@
 + (NSURL*)getSharedURL
 {
   NSString* sharedID = [self getSharedID];
-  if ([self isJailbroken])
-    return [[NSURL fileURLWithPath:@"/var/mobile/Library/Caches"]
-        URLByAppendingPathComponent:sharedID];
-  else
+  if (CDarwinEmbedUtils::IsIosSandboxed())
   {
     NSFileManager* fileManager = [NSFileManager defaultManager];
     NSURL* sharedUrl = [fileManager containerURLForSecurityApplicationGroupIdentifier:sharedID];
+    // e.g. /private/var/mobile/Containers/Shared/AppGroup/32B9DA1F-3B1F-4DBC-8326-ABB08BF16EC9/
     sharedUrl = [sharedUrl URLByAppendingPathComponent:@"Library" isDirectory:YES];
     sharedUrl = [sharedUrl URLByAppendingPathComponent:@"Caches" isDirectory:YES];
     return sharedUrl;
   }
-}
-
-+ (BOOL)IsTVOSSandboxed
-{
-  // @todo merge with CDarwinUtils::IsIosSandboxed
-  static BOOL ret;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    // we re NOT sandboxed if we are installed in /var/mobile/Applications with greeng0blin jailbreak
-    ret = ![[self mainAppBundle].bundlePath containsString:@"/var/mobile/Applications/"];
-  });
-  return ret;
-}
-
-+ (BOOL)isJailbroken
-{
-  return ![self IsTVOSSandboxed];
+  else
+  {
+    return [[NSURL fileURLWithPath:@"/var/mobile/Library/Caches"]
+        URLByAppendingPathComponent:sharedID];
+  }
 }
 
 + (NSBundle*)mainAppBundle

@@ -11,12 +11,19 @@
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
+typedef enum
+{
+  MOVIES = 0,
+  TV_SHOWS = 1
+} TVOSTopShelfItemsCategory;
+
+
 class CTVOSTopShelf
 {
 public:
   static CTVOSTopShelf& GetInstance();
   void RunTopShelf();
-  void SetTopShelfItems(CFileItemList& movies, CFileItemList& tv);
+  void SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCategory category);
   void HandleTopShelfUrl(const std::string& url, const bool run);
 
 private:
