@@ -29,6 +29,15 @@ public:
   void Add(CDVDOverlay* pSubtitle);
   void Sort();
 
+  /*!
+   * \brief Makes the overlay collection sequential by ensuring only one overlay exists at a given time.
+   * This is done by modifying individual overlay's start and stop pts or by removing any overlapping overlays if another
+   * one exists on the same time frame.
+   * It is useful for cases such as ASS subs in which libass renders all existing overlays provided the player pts, In such cases,
+   * as long as the library is informed that an overlay exists on a specific time frame, all images will  be rendered at a single pass.
+  */
+  void MakeSequential();
+
   CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
 
   void Reset();

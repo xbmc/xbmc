@@ -64,6 +64,41 @@ void CDVDSubtitleLineCollection::Sort()
   }
 }
 
+void CDVDSubtitleLineCollection::MakeSequential()
+{
+  if (!m_pHead || !m_pHead->pNext)
+    return;
+
+  ListElement* p1 = m_pHead;
+  ListElement* p2 = m_pHead;
+
+  while (p1->pNext != nullptr)
+  {
+    p2 = p1->pNext;
+
+    if (p2->pOverlay->replace)
+    {
+      // remove overlay if it overlaps with the previous one
+      if (p2->pOverlay->iPTSStartTime > p1->pOverlay->iPTSStartTime &&
+          p2->pOverlay->iPTSStopTime < p1->pOverlay->iPTSStopTime)
+      {
+        if (p2->pNext)
+        {
+          p1->pNext = p2->pNext;
+          delete p2;
+          continue;
+        }
+      }
+      // set previous subtitle stop time to the new one start time
+      else if (p2->pOverlay->iPTSStartTime < p1->pOverlay->iPTSStopTime)
+        p1->pOverlay->iPTSStopTime = p2->pOverlay->iPTSStartTime;
+    }
+
+    // move to next subtitle on the list
+    p1 = p2;
+  }
+}
+
 CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 {
   CDVDOverlay* pOverlay = NULL;

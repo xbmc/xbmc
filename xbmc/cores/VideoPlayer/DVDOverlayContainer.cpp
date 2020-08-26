@@ -23,26 +23,6 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
   pOverlay->Acquire();
 
   CSingleLock lock(*this);
-
-  // markup any non ending overlays, to finish
-  // when this new one starts, there can be
-  // multiple overlays queued at same start
-  // point so only stop them when we get a
-  // new startpoint
-  for(int i = m_overlays.size();i>0;)
-  {
-    i--;
-    if(m_overlays[i]->iPTSStopTime)
-    {
-      if(!m_overlays[i]->replace)
-        break;
-      if(m_overlays[i]->iPTSStopTime <= pOverlay->iPTSStartTime)
-        break;
-    }
-    if(m_overlays[i]->iPTSStartTime != pOverlay->iPTSStartTime)
-      m_overlays[i]->iPTSStopTime = pOverlay->iPTSStartTime;
-  }
-
   m_overlays.push_back(pOverlay);
 
 }
