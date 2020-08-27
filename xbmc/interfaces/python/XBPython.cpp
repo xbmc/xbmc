@@ -564,8 +564,8 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // check if we are running as real xbmc.app or just binary
     if (!CUtil::GetFrameworksPath(true).empty())
     {
-      // using external python, it's build looking for xxx/lib/python3.7
-      // so point it to frameworks which is where python3.7 is located
+      // using external python, it's build looking for xxx/lib/python3.8
+      // so point it to frameworks which is where python3.8 is located
       setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());

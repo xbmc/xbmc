@@ -10,17 +10,6 @@
 #include <Python.h>
 #include <iterator>
 
-// This is a workaround to compile Kodi against python 3.8
-//! @todo implement a compliant way to get access to the chain of thread states
-#if PY_VERSION_HEX >= 0x03080000
-# define Py_BUILD_CORE
-# undef HAVE_STD_ATOMIC
-/* for access to the fields of PyInterpreterState */
-#  include <internal/pycore_pystate.h>
-# undef Py_BUILD_CORE
-# define HAVE_STD_ATOMIC
-#endif
-
 #include "Application.h"
 #include "PythonInvoker.h"
 #include "ServiceBroker.h"
@@ -406,9 +395,9 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     // make sure all sub threads have finished
     for (PyThreadState* old = nullptr; m_threadState != nullptr;)
     {
-      PyThreadState* s = m_threadState->interp->tstate_head;
+      PyThreadState* s = PyInterpreterState_ThreadHead(m_threadState->interp);
       for (; s && s == m_threadState;)
-        s = s->next;
+        s = PyThreadState_Next(s);
 
       if (!s)
         break;
@@ -536,12 +525,15 @@ bool CPythonInvoker::stop(bool abort)
         PyEval_RestoreThread((PyThreadState*)m_threadState);
       }
 
-      for (PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
+
+      PyThreadState* state = PyInterpreterState_ThreadHead(m_threadState->interp);
+      while (state)
       {
         // Raise a SystemExit exception in python threads
         Py_XDECREF(state->async_exc);
         state->async_exc = PyExc_SystemExit;
         Py_XINCREF(state->async_exc);
+        state = PyThreadState_Next(state);
       }
 
       // If a dialog entered its doModal(), we need to wake it to see the exception

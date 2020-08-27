@@ -1360,7 +1360,7 @@ void CXBMCApp::SetupEnv()
   else
     setenv("HOME", getenv("KODI_TEMP"), 0);
 
-  std::string pythonPath = cacheDir + "/apk/assets/python3.7";
+  std::string pythonPath = cacheDir + "/apk/assets/python3.8";
   setenv("PYTHONHOME", pythonPath.c_str(), 1);
   setenv("PYTHONPATH", "", 1);
   setenv("PYTHONOPTIMIZE","", 1);

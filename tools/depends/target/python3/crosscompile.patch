@@ -1,51 +1,6 @@
---- a/Makefile.pre.in
-+++ b/Makefile.pre.in
-@@ -38,7 +38,6 @@
- MAINCC=		@MAINCC@
- LINKCC=		@LINKCC@
- AR=		@AR@
--READELF=	@READELF@
- SOABI=		@SOABI@
- LDVERSION=	@LDVERSION@
- GITVERSION=	@GITVERSION@
-@@ -295,7 +294,7 @@
- ##########################################################################
- # Parser
- PGEN=		Parser/pgen$(EXE)
--
-+PGEN_FOR_BUILD=$(NATIVE_PGEN)
- POBJS=		\
- 		Parser/acceler.o \
- 		Parser/grammar1.o \
-@@ -623,7 +623,7 @@
- 		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
- 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
- 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
--		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
-+		PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
- 
- 
- # Build static library
-@@ -1535,11 +1535,13 @@
- # Install the dynamically loadable modules
- # This goes into $(exec_prefix)
- sharedinstall: sharedmods
-+	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
- 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
-+	   	--skip-build \
- 	   	--prefix=$(prefix) \
--		--install-scripts=$(BINDIR) \
--		--install-platlib=$(DESTSHARED) \
--		--root=$(DESTDIR)/
-+		--install-scripts=$(DESTDIR)$(BINDIR) \
-+		--install-platlib=$(DESTDIR)$(DESTSHARED) \
-+		--root=/
- 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py
- 	-rm -r $(DESTDIR)$(DESTSHARED)/__pycache__
- 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1200,15 +1200,6 @@
+@@ -1184,15 +1184,6 @@
          ARFLAGS="rcs"
  fi
  
@@ -61,32 +16,65 @@
  
  
  case $MACHDEP in
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -38,7 +38,6 @@
+ MAINCC=		@MAINCC@
+ LINKCC=		@LINKCC@
+ AR=		@AR@
+-READELF=	@READELF@
+ SOABI=		@SOABI@
+ LDVERSION=	@LDVERSION@
+ LIBPYTHON=	@LIBPYTHON@
+@@ -608,7 +607,7 @@
+ 		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
+ 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
+-		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
++		PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
+ 
+ 
+ # Build static library
+@@ -1600,10 +1599,11 @@
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
++ 	    --skip-build \
+ 	   	--prefix=$(prefix) \
+-		--install-scripts=$(BINDIR) \
+-		--install-platlib=$(DESTSHARED) \
+-		--root=$(DESTDIR)/
++		--install-scripts=$(DESTDIR)$(BINDIR) \
++		--install-platlib=$(DESTDIR)$(DESTSHARED) \
++		--root=/
+ 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py
+ 	-rm -r $(DESTDIR)$(DESTSHARED)/__pycache__
+ 
 --- a/setup.py
 +++ b/setup.py
-@@ -16,7 +16,7 @@
- from distutils.command.build_scripts import build_scripts
- from distutils.spawn import find_executable
+@@ -21,7 +21,7 @@
  
--cross_compiling = "_PYTHON_HOST_PLATFORM" in os.environ
-+cross_compiling = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
  
- # Set common compiler and linker flags derived from the Makefile,
- # reserved for building the interpreter and the stdlib modules.
-@@ -268,6 +268,7 @@
+ # Compile extensions used to test Python?
+-TEST_EXTENSIONS = True
++TEST_EXTENSIONS = False
+ 
+ # This global variable is used to hold the list of modules to be disabled.
+ DISABLED_MODULE_LIST = []
+@@ -38,7 +38,7 @@
+     return sys.platform
+ 
+ 
+-CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ)
++CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
+ HOST_PLATFORM = get_platform()
+ MS_WINDOWS = (HOST_PLATFORM == 'win32')
+ CYGWIN = (HOST_PLATFORM == 'cygwin')
+@@ -310,6 +310,7 @@
+         self.extensions.append(ext)
  
      def build_extensions(self):
- 
 +        return
-         # Detect which modules should be compiled
-         missing = self.detect_modules()
- 
-@@ -477,6 +478,9 @@
- 
-         # Don't try to load extensions for cross builds
-         if cross_compiling:
-+            self.announce(
-+                'WARNING: skipping import check for cross-compiled: "%s"' %
-+                ext.name)
-             return
- 
-         loader = importlib.machinery.ExtensionFileLoader(ext.name, ext_filename)
+         self.srcdir = sysconfig.get_config_var('srcdir')
+         if not self.srcdir:
+             # Maybe running on Windows but not using CYGWIN?
