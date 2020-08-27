@@ -66,12 +66,18 @@ bool CShoutcastFile::Open(const CURL& url)
   bool result = m_file.Open(url2);
   if (result)
   {
-    m_tag.SetTitle(m_file.GetHttpHeader().GetValue("icy-name"));
-    if (m_tag.GetTitle().empty())
-      m_tag.SetTitle(m_file.GetHttpHeader().GetValue("ice-name")); // icecast
+    std::string icyTitle;
+    icyTitle = m_file.GetHttpHeader().GetValue("icy-name");
+    if (icyTitle.empty())
+      icyTitle = m_file.GetHttpHeader().GetValue("ice-name"); // icecast
     m_tag.SetGenre(m_file.GetHttpHeader().GetValue("icy-genre"));
     if (m_tag.GetGenre().empty())
       m_tag.SetGenre(m_file.GetHttpHeader().GetValue("ice-genre")); // icecast
+    // Handle no title or badly set up servers where the default icy-name header hasn't been changed
+    if (icyTitle.empty() || (icyTitle == "This is my server name"))
+      icyTitle = "shoutcast"; // Dummy value used by CMusicGUIInfo.cpp to indicate no station name
+                              // set from headers
+    m_tag.SetStationName(icyTitle);
     m_tag.SetLoaded(true);
   }
   m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
@@ -80,7 +86,6 @@ bool CShoutcastFile::Open(const CURL& url)
     m_metaint = -1;
   m_buffer = new char[16*255];
   m_tagPos = 1;
-  m_tagChange.Set();
 
   return result;
 }
@@ -152,14 +157,82 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   g_charsetConverter.wToUTF8(wConverted, strBuffer);
 
   CRegExp reTitle(true);
+  CRegExp otherData(true);
   reTitle.RegComp("StreamTitle=\'(.*?)\';");
+  otherData.RegComp("StreamUrl=\'(.*?)\';");
 
+  /* Example of data contained in the metadata buffer (v1 streams only contain the StreamTitle)
+     StreamTitle='Tuesday's Gone - Lynyrd Skynyrd';
+     StreamUrl='https://listenapi.planetradio.co.uk/api9/eventdata/58431417';
+  */
+
+  if (otherData.RegFind(strBuffer.c_str()) != -1)
+  {
+    std::string getOtherData(otherData.GetMatch(1));
+    if (!getOtherData.empty())
+      haveExtraData = true;
+  }
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
   {
     std::string newtitle(reTitle.GetMatch(1));
     CSingleLock lock(m_tagSection);
-    result = (m_tag.GetTitle() != newtitle);
-    m_tag.SetTitle(newtitle);
+    result = (oldTitle != newtitle);
+
+    if (result && !haveExtraData)
+      m_tag.SetTitle(newtitle);
+    oldTitle = newtitle;
+
+    if (result && haveExtraData) // track has changed and extra metadata might be available
+    {
+      std::string serverUrl(otherData.GetMatch(1));
+      // if the url ends with -1 then there is no extra data to fetch
+      if ((serverUrl.find("http") != std::string::npos) &&
+          (serverUrl.find("eventdata/-1") == std::string::npos))
+      {
+        XFILE::CCurlFile http;
+        std::string extData;
+        CURL dataUrl(serverUrl);
+        http.Get(dataUrl.Get(), extData);
+
+      /* Example of data returned from the server
+         {"eventId":58431417,"eventStart":"2020-09-15 10:03:23","eventFinish":"2020-09-15 10:10:43","eventDuration":438,"eventType":"Song","eventSongTitle":"Tuesday's Gone",
+         "eventSongArtist":"Lynyrd Skynyrd",
+         "eventImageUrl":"https://assets.planetradio.co.uk/artist/1-1/320x320/753.jpg?ver=1465083598",
+         "eventImageUrlSmall":"https://assets.planetradio.co.uk/artist/1-1/160x160/753.jpg?ver=1465083598",
+         "eventAppleMusicUrl":"https://geo.itunes.apple.com/dk/album/287661543?i=287661795"}
+      */
+
+        std::size_t titleStart = extData.find("\"eventSongTitle\":");
+        std::size_t artistStart = extData.find("\"eventSongArtist\":");
+        std::size_t imageStart = extData.find("\"eventImageUrl\":");
+        std::size_t imageEnd = extData.find("ImageUrlSmall");
+        // ensure we found some valid data
+        if (artistStart != std::string::npos && titleStart != std::string::npos)
+        {
+          titleStart += 18;
+          artistStart += 19;
+          int getArtist = imageStart - artistStart - 2;
+          int getTitle = artistStart - titleStart - 21;
+          int getCover = imageEnd - imageStart - 25;
+
+          std::string artistInfo = extData.substr(artistStart, getArtist);
+          std::string trackData = extData.substr(titleStart, getTitle);
+          std::string coverUrl = extData.substr(imageStart + 17, getCover);
+
+          m_tag.SetArtist(artistInfo);
+          m_tag.SetTitle(trackData);
+          m_tag.SetShoutcastCover(coverUrl);
+        }
+      }
+      else
+      { // blank the tags and cover if adverts etc playing or no info available
+        m_tag.SetArtist("");
+        m_tag.SetTitle("");
+        m_tag.SetShoutcastCover("");
+      }
+    }
+    if (result)
+      m_tagChange.Set();
   }
 
   return result;

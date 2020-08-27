@@ -2609,6 +2609,14 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_TotalDiscs `MusicPlayer.TotalDiscs`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.Station`</b>,
+///                  \anchor MusicPlayer_Station
+///                  _string_,
+///     @return The name of the radio station currently playing (if available).
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_Station `MusicPlayer.Station`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -2654,7 +2662,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "originaldate",     MUSICPLAYER_ORIGINALDATE },
                                   { "bpm",              MUSICPLAYER_BPM },
                                   { "ismultidisc",      MUSICPLAYER_ISMULTIDISC },
-                                  { "totaldiscs",       MUSICPLAYER_TOTALDISCS }
+                                  { "totaldiscs",       MUSICPLAYER_TOTALDISCS },
+                                  { "station",          MUSICPLAYER_STATIONNAME }
 };
 
 /// \page modules__infolabels_boolean_conditions

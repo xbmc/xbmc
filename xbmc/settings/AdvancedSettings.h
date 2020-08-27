@@ -228,6 +228,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_bFTPThumbs;
 
+    bool m_bShowShoutcastArt;
     std::string m_musicThumbs;
     std::string m_fanartImages;
     std::vector<std::string> m_musicArtistExtraArt;

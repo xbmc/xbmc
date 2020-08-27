@@ -48,6 +48,10 @@ protected:
   int m_discarded; // data used for tags
   int m_currint;
   char* m_buffer; // buffer used for tags
+  bool haveExtraData = false;
+  // use a dummy value here so that streams that supply no data will still have the station name
+  // set correctly.
+  std::string oldTitle = "dummy data";
   MUSIC_INFO::CMusicInfoTag m_tag;
 
   CFileCache* m_cacheReader;

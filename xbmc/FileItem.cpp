@@ -1691,6 +1691,15 @@ void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
 
   *GetMusicInfoTag() = music;
   FillInDefaultIcon();
+  if (!music.GetStationName().empty())
+  {
+    if (!music.GetShoutcastCover().empty() &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bShowShoutcastArt)
+      SetArt("thumb", music.GetShoutcastCover());
+    // fall back to station logo if available during adverts etc or if AS setting is false
+    else if (!GetArt("icon").empty())
+      SetArt("thumb", GetArt("icon"));
+  }
   FillInMimeType(false);
 }
 

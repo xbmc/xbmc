@@ -265,6 +265,8 @@ void CAdvancedSettings::Initialize()
 
   m_bFTPThumbs = false;
 
+  m_bShowShoutcastArt = true;
+
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
   m_musicArtistExtraArt = { };
@@ -1037,6 +1039,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
     GetCustomExtensions(pThumbs,m_musicThumbs);
+
+  // show art for shoutcast v2 streams (set to false for devices with limited storage)
+  XMLUtils::GetBoolean(pRootElement, "showshoutcastart", m_bShowShoutcastArt);
 
   // movie fanarts
   TiXmlElement* pFanart = pRootElement->FirstChildElement("fanart");
