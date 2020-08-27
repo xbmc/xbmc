@@ -2241,7 +2241,8 @@ bool CActiveAE::RunStages()
                 break;
               else
               {
-                unsigned int samples = static_cast<unsigned int>(buf->pkt->nb_samples);
+                unsigned int samples = static_cast<unsigned int>(buf->pkt->nb_samples) *
+                                       buf->pkt->config.channels / buf->pkt->planes;
                 for (auto& it : m_audioCallback)
                   it->OnAudioData((float*)(buf->pkt->data[0]), samples);
                 buf->Return();
