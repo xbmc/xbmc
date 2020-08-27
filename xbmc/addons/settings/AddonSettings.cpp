@@ -217,8 +217,6 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
   if (!m_initialized)
     return false;
 
-  m_logger->debug("loading setting values");
-
   // figure out the version of the setting definitions
   uint32_t version = 0;
   if (!ParseSettingVersion(doc, version))
@@ -296,9 +294,6 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
     SettingPtr newSetting = GetSetting(setting.first);
     if (newSetting == nullptr)
     {
-      m_logger->debug("failed to find definition for setting {}. Creating a setting on-the-fly...",
-                      setting.first);
-
       // create a hidden/internal string setting on-the-fly
       newSetting = AddSettingWithoutDefinition<CSettingString>(*this, setting.first, setting.second,
                                                                m_logger);
@@ -408,8 +403,6 @@ void CAddonSettings::InitializeConditions()
 
 bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML& doc)
 {
-  m_logger->debug("loading setting definitions");
-
   // figure out the version of the setting definitions
   uint32_t version = 0;
   if (!ParseSettingVersion(doc, version))
