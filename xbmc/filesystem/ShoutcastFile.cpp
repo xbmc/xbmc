@@ -37,6 +37,7 @@ CShoutcastFile::CShoutcastFile() :
   m_cacheReader = NULL;
   m_tagPos = 0;
   m_metaint = 0;
+  m_titleFromHeader = false;
 }
 
 CShoutcastFile::~CShoutcastFile()
@@ -74,6 +75,8 @@ bool CShoutcastFile::Open(const CURL& url)
       m_tag.SetGenre(m_file.GetHttpHeader().GetValue("ice-genre")); // icecast
     m_tag.SetLoaded(true);
   }
+  if (!m_tag.GetTitle().empty())
+    m_titleFromHeader = true;
   m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
   m_metaint = atoi(m_file.GetHttpHeader().GetValue("icy-metaint").c_str());
   if (!m_metaint)
@@ -158,8 +161,14 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   {
     std::string newtitle(reTitle.GetMatch(1));
     CSingleLock lock(m_tagSection);
-    result = (m_tag.GetTitle() != newtitle);
-    m_tag.SetTitle(newtitle);
+    if (m_titleFromHeader)
+      result = (m_tag.GetArtistString() != newtitle);
+    else
+      result = (m_tag.GetTitle() != newtitle);
+    if (!m_titleFromHeader)
+      m_tag.SetTitle(newtitle);
+    else
+      m_tag.SetArtist(newtitle);
   }
 
   return result;
