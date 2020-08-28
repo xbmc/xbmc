@@ -131,7 +131,7 @@ namespace addon
 /// {
 ///   if (instanceType == ADDON_INSTANCE_AUDIOENCODER)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my audio encoder instance");
+///     kodi::Log(ADDON_LOG_INFO, "Creating my audio encoder instance");
 ///     addonInstance = new CMyAudioEncoder(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
@@ -185,7 +185,7 @@ public:
   ///                                       const std::string& version,
   ///                                       KODI_HANDLE& addonInstance)
   /// {
-  ///   kodi::Log(ADDON_LOG_NOTICE, "Creating my audio encoder instance");
+  ///   kodi::Log(ADDON_LOG_INFO, "Creating my audio encoder instance");
   ///   addonInstance = new CMyAudioEncoder(instance, version);
   ///   return ADDON_STATUS_OK;
   /// }

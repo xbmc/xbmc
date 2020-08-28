@@ -210,7 +210,7 @@ extern "C"
   /// {
   ///   if (instanceType == ADDON_INSTANCE_INPUTSTREAM)
   ///   {
-  ///     kodi::Log(ADDON_LOG_NOTICE, "Creating my special inputstream");
+  ///     kodi::Log(ADDON_LOG_INFO, "Creating my special inputstream");
   ///     if (instanceID == "my_special_id_1")
   ///       addonInstance = new CMyPVRClientInstance_Type1(instance, version);
   ///     else if (instanceID == "my_special_id_2")

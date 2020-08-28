@@ -359,7 +359,7 @@ private:
 /// {
 ///   if (instanceType == ADDON_INSTANCE_AUDIODECODER)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my audio decoder");
+///     kodi::Log(ADDON_LOG_INFO, "Creating my audio decoder");
 ///     addonInstance = new CMyAudioDecoder(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
@@ -414,7 +414,7 @@ public:
   ///                                       const std::string& version,
   ///                                       KODI_HANDLE& addonInstance)
   /// {
-  ///   kodi::Log(ADDON_LOG_NOTICE, "Creating my audio decoder");
+  ///   kodi::Log(ADDON_LOG_INFO, "Creating my audio decoder");
   ///   addonInstance = new CMyAudioDecoder(instance, version);
   ///   return ADDON_STATUS_OK;
   /// }

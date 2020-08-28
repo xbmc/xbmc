@@ -422,13 +422,13 @@ public:
   /// {
   ///   if (instanceType == ADDON_INSTANCE_SCREENSAVER)
   ///   {
-  ///     kodi::Log(ADDON_LOG_NOTICE, "Creating my Screensaver");
+  ///     kodi::Log(ADDON_LOG_INFO, "Creating my Screensaver");
   ///     addonInstance = new CMyScreensaver(instance);
   ///     return ADDON_STATUS_OK;
   ///   }
   ///   else if (instanceType == ADDON_INSTANCE_VISUALIZATION)
   ///   {
-  ///     kodi::Log(ADDON_LOG_NOTICE, "Creating my Visualization");
+  ///     kodi::Log(ADDON_LOG_INFO, "Creating my Visualization");
   ///     addonInstance = new CMyVisualization(instance);
   ///     return ADDON_STATUS_OK;
   ///   }
