@@ -64,9 +64,9 @@ typedef struct KodiToAddonFuncTable_Screensaver
  */
 typedef struct AddonInstance_Screensaver
 {
-  AddonProps_Screensaver props;
-  AddonToKodiFuncTable_Screensaver toKodi;
-  KodiToAddonFuncTable_Screensaver toAddon;
+  AddonProps_Screensaver* props;
+  AddonToKodiFuncTable_Screensaver* toKodi;
+  KodiToAddonFuncTable_Screensaver* toAddon;
 } AddonInstance_Screensaver;
 
 } /* extern "C" */
@@ -318,7 +318,7 @@ namespace addon
     /// @note This is only available on **DirectX**, It us unused (`nullptr`) on
     /// **OpenGL**
     ///
-    inline void* Device() { return m_instanceData->props.device; }
+    inline void* Device() { return m_instanceData->props->device; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -328,7 +328,7 @@ namespace addon
     ///
     /// @return The X position, in pixels
     ///
-    inline int X() { return m_instanceData->props.x; }
+    inline int X() { return m_instanceData->props->x; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -338,7 +338,7 @@ namespace addon
     ///
     /// @return The Y position, in pixels
     ///
-    inline int Y() { return m_instanceData->props.y; }
+    inline int Y() { return m_instanceData->props->y; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -348,7 +348,7 @@ namespace addon
     ///
     /// @return The width, in pixels
     ///
-    inline int Width() { return m_instanceData->props.width; }
+    inline int Width() { return m_instanceData->props->width; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -358,7 +358,7 @@ namespace addon
     ///
     /// @return The height, in pixels
     ///
-    inline int Height() { return m_instanceData->props.height; }
+    inline int Height() { return m_instanceData->props->height; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -369,7 +369,7 @@ namespace addon
     ///
     /// @return The pixel aspect ratio used by the display
     ///
-    inline float PixelRatio() { return m_instanceData->props.pixelRatio; }
+    inline float PixelRatio() { return m_instanceData->props->pixelRatio; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -379,7 +379,7 @@ namespace addon
     ///
     /// @return The add-on name
     ///
-    inline std::string Name() { return m_instanceData->props.name; }
+    inline std::string Name() { return m_instanceData->props->name; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -389,7 +389,7 @@ namespace addon
     ///
     /// @return The add-on installation path
     ///
-    inline std::string Presets() { return m_instanceData->props.presets; }
+    inline std::string Presets() { return m_instanceData->props->presets; }
     //--------------------------------------------------------------------------
 
     //==========================================================================
@@ -403,7 +403,7 @@ namespace addon
     ///
     /// @return Path to the user profile
     ///
-    inline std::string Profile() { return m_instanceData->props.profile; }
+    inline std::string Profile() { return m_instanceData->props->profile; }
     //--------------------------------------------------------------------------
     //@}
 
@@ -414,16 +414,16 @@ namespace addon
         throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation with empty addon structure not allowed, table must be given from Kodi!");
 
       m_instanceData = static_cast<AddonInstance_Screensaver*>(instance);
-      m_instanceData->toAddon.addonInstance = this;
-      m_instanceData->toAddon.Start = ADDON_Start;
-      m_instanceData->toAddon.Stop = ADDON_Stop;
-      m_instanceData->toAddon.Render = ADDON_Render;
+      m_instanceData->toAddon->addonInstance = this;
+      m_instanceData->toAddon->Start = ADDON_Start;
+      m_instanceData->toAddon->Stop = ADDON_Stop;
+      m_instanceData->toAddon->Render = ADDON_Render;
     }
 
     inline static bool ADDON_Start(AddonInstance_Screensaver* instance)
     {
       CInstanceScreensaver* thisClass =
-          static_cast<CInstanceScreensaver*>(instance->toAddon.addonInstance);
+          static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
       thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
       return thisClass->Start();
     }
@@ -431,7 +431,7 @@ namespace addon
     inline static void ADDON_Stop(AddonInstance_Screensaver* instance)
     {
       CInstanceScreensaver* thisClass =
-          static_cast<CInstanceScreensaver*>(instance->toAddon.addonInstance);
+          static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
       thisClass->Stop();
       thisClass->m_renderHelper = nullptr;
     }
@@ -439,7 +439,7 @@ namespace addon
     inline static void ADDON_Render(AddonInstance_Screensaver* instance)
     {
       CInstanceScreensaver* thisClass =
-          static_cast<CInstanceScreensaver*>(instance->toAddon.addonInstance);
+          static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
 
       if (!thisClass->m_renderHelper)
         return;
