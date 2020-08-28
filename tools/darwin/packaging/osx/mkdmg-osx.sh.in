@@ -11,6 +11,7 @@ if [ ${SWITCH:-""} = "debug" ]; then
 elif [ ${SWITCH:-""} = "release" ]; then
   echo "Packaging Release target for OSX"
   APP="$DIRNAME/../../../../build/Release/@APP_NAME@.app"
+  isReleaseBuild=1
 else
   echo "You need to specify the build target"
   exit 1
@@ -65,5 +66,8 @@ echo "done"
 # codesign and notarize dmg
 if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
   codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" "$dmgPath"
-  ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist"
+  if ! ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist" && [[ $isReleaseBuild == 1 ]]; then
+    exit 1
+  fi
 fi
+exit 0
