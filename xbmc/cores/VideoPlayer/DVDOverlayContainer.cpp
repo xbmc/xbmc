@@ -18,7 +18,7 @@ CDVDOverlayContainer::~CDVDOverlayContainer()
   Clear();
 }
 
-void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
+void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(CDVDOverlay* pOverlay)
 {
   pOverlay->Acquire();
 
