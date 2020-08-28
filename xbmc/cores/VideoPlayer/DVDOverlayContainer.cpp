@@ -18,11 +18,13 @@ CDVDOverlayContainer::~CDVDOverlayContainer()
   Clear();
 }
 
-void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
+void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(CDVDOverlay* pOverlay)
 {
   pOverlay->Acquire();
 
   CSingleLock lock(*this);
+
+  bool addToOverlays = true;
 
   // markup any non ending overlays, to finish
   // when this new one starts, there can be
@@ -39,12 +41,24 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
       if(m_overlays[i]->iPTSStopTime <= pOverlay->iPTSStartTime)
         break;
     }
-    if(m_overlays[i]->iPTSStartTime != pOverlay->iPTSStartTime)
+
+    // ASS type overlays that completely overlap any previously added one shouldn't be enqueued.
+    // The timeframe is already contained within the previous overlay.
+    if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SSA) &&
+        pOverlay->iPTSStartTime >= m_overlays[i]->iPTSStartTime &&
+        pOverlay->iPTSStopTime <= m_overlays[i]->iPTSStopTime)
+    {
+      pOverlay->Release();
+      addToOverlays = false;
+      break;
+    }
+
+    else if (m_overlays[i]->iPTSStartTime != pOverlay->iPTSStartTime)
       m_overlays[i]->iPTSStopTime = pOverlay->iPTSStartTime;
   }
 
-  m_overlays.push_back(pOverlay);
-
+  if (addToOverlays)
+    m_overlays.push_back(pOverlay);
 }
 
 VecOverlays* CDVDOverlayContainer::GetOverlays()

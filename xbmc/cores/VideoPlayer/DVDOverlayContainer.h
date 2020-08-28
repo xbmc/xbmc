@@ -22,7 +22,19 @@ public:
   CDVDOverlayContainer();
   virtual ~CDVDOverlayContainer();
 
-  void Add(CDVDOverlay* pPicture); // add a overlay to the fifo
+  /*!
+  * \brief Adds an overlay into the container by processing the existing overlay collection first
+  *
+  * \details Processes the overlay collection whenever a new overlay is added. Usefull to change
+  * the overlay's PTS values of previously added overlays if the collection itself is sequential. This
+  * is, for example, the case of ASS subtitles in which a single call to ass_render_frame generates all
+  * the subtitle images on a single call even if two subtitles exist at the same time frame. Other cases
+  * might exist where an overlay shouldn't be added to the collection if completely contained in another
+  * overlay.
+  *
+  * \param pPicture pointer to the overlay to be evaluated and possibly added to the collection
+  */
+  void ProcessAndAddOverlayIfValid(CDVDOverlay* pPicture);
 
   VecOverlays* GetOverlays(); // get the first overlay in this fifo
   bool ContainsOverlayType(DVDOverlayType type);
