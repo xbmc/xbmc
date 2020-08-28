@@ -131,7 +131,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 30;
+  return 31;
 }
 
 void CAddonDatabase::CreateTables()
@@ -228,6 +228,11 @@ void CAddonDatabase::UpdateTables(int version)
   {
     m_pDS->exec("ALTER TABLE repo ADD nextcheck TEXT");
   }
+  if (version < 31)
+  {
+    m_pDS->exec("UPDATE installed SET origin = addonID WHERE (origin='') AND "
+                "EXISTS (SELECT * FROM repo WHERE repo.addonID = installed.addonID)");
+  }
 }
 
 void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
@@ -287,6 +292,13 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
       // Set origin *only* for addons that do not have one yet as it may have been changed by an update.
       m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s' AND origin=''",
           ORIGIN_SYSTEM, id.c_str()));
+    }
+
+    for (const auto& id : optional)
+    {
+      // Set origin for optional system addons that do not have one yet too.
+      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s' AND origin=''",
+                             ORIGIN_SYSTEM, id.c_str()));
     }
 
     CommitTransaction();

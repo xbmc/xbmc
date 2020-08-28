@@ -434,7 +434,7 @@ namespace ADDON
     CEventSource<AddonEvent> m_events;
     CBlockingEventSource<AddonEvent> m_unloadEvents;
     std::set<std::string> m_systemAddons;
-    std::set<std::string> m_optionalAddons;
+    std::set<std::string> m_optionalSystemAddons;
     ADDON_INFO_LIST m_installedAddons;
 
     // Temporary path given to add-ons, whose content is deleted when Kodi is stopped

@@ -18,6 +18,9 @@
 #include <utility>
 #include <vector>
 
+namespace ADDON
+{
+
 class CAddonDatabase;
 
 class CAddonInstaller : public IJobCallback
@@ -208,3 +211,5 @@ private:
   ADDON::AddonPtr m_addon;
   bool m_removeData;
 };
+
+}; // namespace ADDON

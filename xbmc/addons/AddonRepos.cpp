@@ -11,9 +11,13 @@
 #include "Addon.h"
 #include "AddonDatabase.h"
 #include "AddonManager.h"
+#include "AddonRepoInfo.h"
 #include "AddonSystemSettings.h"
 #include "CompileInfo.h"
 #include "Repository.h"
+#include "RepositoryUpdater.h"
+#include "ServiceBroker.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -21,31 +25,7 @@
 
 using namespace ADDON;
 
-namespace ADDON
-{
-
-std::vector<RepoInfo> LoadOfficialRepoInfos()
-{
-  const std::vector<std::string> officialAddonRepos =
-      StringUtils::Split(CCompileInfo::GetOfficialAddonRepos(), ',');
-
-  std::vector<RepoInfo> officialRepoInfos;
-  RepoInfo newRepoInfo;
-
-  for (const auto& addonRepo : officialAddonRepos)
-  {
-    const std::vector<std::string> tmpRepoInfo = StringUtils::Split(addonRepo, '|');
-    newRepoInfo.m_repoId = tmpRepoInfo.front();
-    newRepoInfo.m_origin = tmpRepoInfo.back();
-    officialRepoInfos.emplace_back(newRepoInfo);
-  }
-
-  return officialRepoInfos;
-}
-
-static std::vector<RepoInfo> officialRepoInfos = LoadOfficialRepoInfos();
-
-} // namespace ADDON
+static std::vector<RepoInfo> officialRepoInfos = CCompileInfo::LoadOfficialRepoInfos();
 
 /**********************************************************
  * CAddonRepos
@@ -73,16 +53,45 @@ bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon, bool 
          std::any_of(officialRepoInfos.begin(), officialRepoInfos.end(), comparator);
 }
 
-void CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database)
+bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database)
 {
-  LoadAddonsFromDatabase(database, "");
+  return LoadAddonsFromDatabase(database, "", nullptr);
 }
 
-void CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database, const std::string& addonId)
+bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database, const std::string& addonId)
+{
+  return LoadAddonsFromDatabase(database, addonId, nullptr);
+}
+
+bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database,
+                                         const std::shared_ptr<IAddon>& repoAddon)
+{
+  return LoadAddonsFromDatabase(database, "", repoAddon);
+}
+
+bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database,
+                                         const std::string& addonId,
+                                         const std::shared_ptr<IAddon>& repoAddon)
 {
   m_allAddons.clear();
 
-  if (addonId.empty())
+  if (repoAddon)
+  {
+    if (!database.GetRepositoryContent(repoAddon->ID(), m_allAddons))
+    {
+      // Repo content is invalid. Ask for update and wait.
+      CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
+          std::static_pointer_cast<CRepository>(repoAddon));
+      CServiceBroker::GetRepositoryUpdater().Await();
+
+      if (!database.GetRepositoryContent(repoAddon->ID(), m_allAddons))
+      {
+        KODI::MESSAGING::HELPERS::ShowOKDialogText(CVariant{repoAddon->Name()}, CVariant{24991});
+        return false;
+      }
+    }
+  }
+  else if (addonId.empty())
   {
     // load full repository content
     database.GetRepositoryContent(m_allAddons);
@@ -106,6 +115,8 @@ void CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database, const s
     CLog::Log(LOGDEBUG, "ADDONS: repo: {} - {} addon(s) loaded", map.first, map.second.size());
 
   SetupLatestVersionMaps();
+
+  return true;
 }
 
 void CAddonRepos::SetupLatestVersionMaps()
@@ -196,22 +207,34 @@ bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
 
   bool hasOfficialUpdate = FindAddonAndCheckForUpdate(addon, m_latestOfficialVersions, update);
 
-  if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
+  // addons with an empty origin have at least been checked against official repositories
+  if (!addon->Origin().empty())
   {
-    // If we didn't find an official update
-    if (IsFromOfficialRepo(addon, true)) // is an official addon
+    if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
     {
-      if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
-        if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
-          return false;
-    }
-    else
-    {
-      // ...we check for updates in the origin repo only
-      const auto& repoEntry = m_latestVersionsByRepo.find(addon->Origin());
-      if (repoEntry != m_latestVersionsByRepo.end())
-        if (!FindAddonAndCheckForUpdate(addon, repoEntry->second, update))
-          return false;
+      // If we didn't find an official update
+      if (IsFromOfficialRepo(addon, true)) // is an official addon
+      {
+        if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
+        {
+          if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
+          {
+            return false;
+          }
+        }
+      }
+      else
+      {
+        // ...we check for updates in the origin repo only
+        const auto& repoEntry = m_latestVersionsByRepo.find(addon->Origin());
+        if (repoEntry != m_latestVersionsByRepo.end())
+        {
+          if (!FindAddonAndCheckForUpdate(addon, repoEntry->second, update))
+          {
+            return false;
+          }
+        }
+      }
     }
   }
 
@@ -252,12 +275,12 @@ bool CAddonRepos::FindAddonAndCheckForUpdate(
 
 bool CAddonRepos::GetLatestVersionByMap(const std::string& addonId,
                                         const std::map<std::string, std::shared_ptr<IAddon>>& map,
-                                        std::shared_ptr<IAddon>& result) const
+                                        std::shared_ptr<IAddon>& addon) const
 {
   const auto& remote = map.find(addonId);
   if (remote != map.end()) // is addon in the desired map?
   {
-    result = remote->second;
+    addon = remote->second;
     return true;
   }
 
@@ -265,12 +288,12 @@ bool CAddonRepos::GetLatestVersionByMap(const std::string& addonId,
 }
 
 bool CAddonRepos::GetLatestAddonVersionFromAllRepos(const std::string& addonId,
-                                                    std::shared_ptr<IAddon>& result) const
+                                                    std::shared_ptr<IAddon>& addon) const
 {
   const AddonRepoUpdateMode updateMode =
       CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
 
-  bool hasOfficialVersion = GetLatestVersionByMap(addonId, m_latestOfficialVersions, result);
+  bool hasOfficialVersion = GetLatestVersionByMap(addonId, m_latestOfficialVersions, addon);
 
   if (hasOfficialVersion)
   {
@@ -281,18 +304,48 @@ bool CAddonRepos::GetLatestAddonVersionFromAllRepos(const std::string& addonId,
       // only use this version if it's higher than the official one
       if (GetLatestVersionByMap(addonId, m_latestPrivateVersions, thirdPartyAddon))
       {
-        if (thirdPartyAddon->Version() > result->Version())
-          result = thirdPartyAddon;
+        if (thirdPartyAddon->Version() > addon->Version())
+          addon = thirdPartyAddon;
       }
     }
   }
   else
   {
-    if (!GetLatestVersionByMap(addonId, m_latestPrivateVersions, result))
+    if (!GetLatestVersionByMap(addonId, m_latestPrivateVersions, addon))
       return false;
   }
 
   return true;
+}
+
+void CAddonRepos::GetLatestAddonVersions(std::vector<std::shared_ptr<IAddon>>& addonList) const
+{
+  const AddonRepoUpdateMode updateMode =
+      CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode();
+
+  addonList.clear();
+
+  // first we insert all official addon versions into the resulting vector
+
+  std::transform(m_latestOfficialVersions.begin(), m_latestOfficialVersions.end(),
+                 back_inserter(addonList),
+                 [](const std::pair<std::string, std::shared_ptr<IAddon>>& officialVersion) {
+                   return officialVersion.second;
+                 });
+
+  // then we insert private addon versions if they don't exist in the official map
+  // or installation from ANY_REPOSITORY is allowed and the private version is higher
+
+  for (const auto& privateVersion : m_latestPrivateVersions)
+  {
+    const auto& officialVersion = m_latestOfficialVersions.find(privateVersion.first);
+    if (officialVersion == m_latestOfficialVersions.end() ||
+        (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY &&
+         privateVersion.second->Version() > officialVersion->second->Version()))
+    {
+      addonList.emplace_back(privateVersion.second);
+    }
+  }
 }
 
 bool CAddonRepos::FindDependency(const std::string& dependsId,
