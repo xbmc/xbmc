@@ -11,8 +11,6 @@
 #include "../AddonBase.h"
 #include "../gui/renderHelper.h"
 
-namespace kodi { namespace addon { class CInstanceScreensaver; }}
-
 extern "C"
 {
 
@@ -53,7 +51,7 @@ typedef struct AddonToKodiFuncTable_Screensaver
  */
 typedef struct KodiToAddonFuncTable_Screensaver
 {
-  kodi::addon::CInstanceScreensaver* addonInstance;
+  KODI_HANDLE addonInstance;
   bool (__cdecl* Start) (AddonInstance_Screensaver* instance);
   void (__cdecl* Stop) (AddonInstance_Screensaver* instance);
   void (__cdecl* Render) (AddonInstance_Screensaver* instance);
@@ -424,23 +422,30 @@ namespace addon
 
     inline static bool ADDON_Start(AddonInstance_Screensaver* instance)
     {
-      instance->toAddon.addonInstance->m_renderHelper = kodi::gui::GetRenderHelper();
-      return instance->toAddon.addonInstance->Start();
+      CInstanceScreensaver* thisClass =
+          static_cast<CInstanceScreensaver*>(instance->toAddon.addonInstance);
+      thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
+      return thisClass->Start();
     }
 
     inline static void ADDON_Stop(AddonInstance_Screensaver* instance)
     {
-      instance->toAddon.addonInstance->Stop();
-      instance->toAddon.addonInstance->m_renderHelper = nullptr;
+      CInstanceScreensaver* thisClass =
+          static_cast<CInstanceScreensaver*>(instance->toAddon.addonInstance);
+      thisClass->Stop();
+      thisClass->m_renderHelper = nullptr;
     }
 
     inline static void ADDON_Render(AddonInstance_Screensaver* instance)
     {
-      if (!instance->toAddon.addonInstance->m_renderHelper)
+      CInstanceScreensaver* thisClass =
+          static_cast<CInstanceScreensaver*>(instance->toAddon.addonInstance);
+
+      if (!thisClass->m_renderHelper)
         return;
-      instance->toAddon.addonInstance->m_renderHelper->Begin();
-      instance->toAddon.addonInstance->Render();
-      instance->toAddon.addonInstance->m_renderHelper->End();
+      thisClass->m_renderHelper->Begin();
+      thisClass->Render();
+      thisClass->m_renderHelper->End();
     }
 
     /*
