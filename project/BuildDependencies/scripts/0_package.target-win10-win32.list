@@ -32,9 +32,9 @@ mariadb-connector-c-3.1.6-win10-win32-v141-20200105.7z
 miniwdk-10.0.17763-20200106.7z
 openssl-1.1.1d-win10-win32-v141-20200105.7z
 pcre-8.43-win10-win32-v141-20200105.7z
-pillow-6.2.1-win10-win32-v141-20200105.7z
-pycryptodome-3.9.4-win10-win32-v141-20200110.7z
-python-3.7.5-win10-win32-v141-20200105.7z
+pillow-6.2.1-win10-win32-v142-20200803.7z
+pycryptodome-3.9.4-win10-win32-v142-20200803.7z
+python-3.8.5-win10-win32-v142-20200803.7z
 rapidjson-1.1.0-20200105.7z
 spdlog-1.5.0-win10-win32-v141-20200320-2.7z
 sqlite-3300100-win10-win32-v141-20200105.7z
