@@ -170,6 +170,35 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmcvfs
+    /// @brief \python_func{ xbmcvfs.translatePath(path)  }
+    /// Returns the translated path.
+    ///
+    /// @param path string - Path to format
+    /// @return Translated path
+    ///
+    /// @note Only useful if you are coding for both Linux and Windows.
+    ///       e.g. Converts 'special://home' -> '/home/[username]/.kodi'
+    ///       on Linux.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v19 New function added (replaces old **xbmc.translatePath**)
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// fpath = xbmcvfs.translatePath('special://home')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    translatePath(...);
+#else
+    String translatePath(const String& path);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.validatePath(path) }
     /// Returns the validated path.
     ///

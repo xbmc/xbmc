@@ -625,6 +625,7 @@ namespace XBMCAddon
     ///
     ///
     /// ------------------------------------------------------------------------
+    /// @python_v19 Deprecated **xbmc.translatePath**. Moved to **xbmcvfs.translatePath**
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}

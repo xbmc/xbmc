@@ -13,6 +13,7 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
@@ -55,6 +56,13 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       return CUtil::MakeLegalPath(filename);
+    }
+
+    // translate path
+    String translatePath(const String& path)
+    {
+      XBMC_TRACE;
+      return CSpecialProtocol::TranslatePath(path);
     }
 
     // validate path
