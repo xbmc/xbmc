@@ -1382,6 +1382,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         vizFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
         vizFormat.m_dataFormat = AE_FMT_FLOAT;
         vizFormat.m_sampleRate = 44100;
+        vizFormat.m_frames =
+            m_internalFormat.m_frames *
+            (static_cast<float>(vizFormat.m_sampleRate) / m_internalFormat.m_sampleRate);
 
         // input buffers
         m_vizBuffersInput = new CActiveAEBufferPool(m_internalFormat);
@@ -2238,7 +2241,8 @@ bool CActiveAE::RunStages()
                 break;
               else
               {
-                unsigned int samples = static_cast<unsigned int>(buf->pkt->nb_samples);
+                unsigned int samples = static_cast<unsigned int>(buf->pkt->nb_samples) *
+                                       buf->pkt->config.channels / buf->pkt->planes;
                 for (auto& it : m_audioCallback)
                   it->OnAudioData((float*)(buf->pkt->data[0]), samples);
                 buf->Return();

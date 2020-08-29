@@ -310,7 +310,8 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
         }
 
         // pts of last sample we added to the buffer
-        m_lastSamplePts += (in->pkt->nb_samples-in->pkt_start_offset) * 1000 / m_format.m_sampleRate;
+        m_lastSamplePts +=
+            (in->pkt->nb_samples - in->pkt_start_offset) * 1000 / in->pkt->config.sample_rate;
       }
 
       // calculate pts for last sample in m_procSample
