@@ -24,7 +24,7 @@ extern "C"
    */
   typedef struct AddonProps_Screensaver
   {
-    void* device;
+    ADDON_HARDWARE_CONTEXT device;
     int x;
     int y;
     int width;

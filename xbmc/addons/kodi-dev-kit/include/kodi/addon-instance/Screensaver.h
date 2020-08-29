@@ -262,7 +262,7 @@ public:
   /// @note This is only available on **DirectX**, It us unused (`nullptr`) on
   /// **OpenGL**
   ///
-  inline void* Device() { return m_instanceData->props->device; }
+  inline kodi::HardwareContext Device() { return m_instanceData->props->device; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
