@@ -135,10 +135,11 @@
                                                       "addon-instance/pvr/Stream.h" \
                                                       "addon-instance/pvr/Timers.h"
 
-#define ADDON_INSTANCE_VERSION_SCREENSAVER            "2.0.2"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "2.0.1"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER            "2.1.0"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "2.1.0"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "addon-instance/Screensaver.h"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "c-api/addon-instance/screensaver.h" \
+                                                      "addon-instance/Screensaver.h"
 
 #define ADDON_INSTANCE_VERSION_VFS                    "2.3.2"
 #define ADDON_INSTANCE_VERSION_VFS_MIN                "2.3.1"
