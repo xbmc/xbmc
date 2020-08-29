@@ -179,7 +179,7 @@ bool CLog::IsLogLevelLogged(int loglevel)
   if (m_logLevel <= LOG_LEVEL_NONE)
     return false;
 
-  return (loglevel & LOGMASK) >= LOGNOTICE;
+  return (loglevel & LOGMASK) >= LOGINFO;
 }
 
 bool CLog::CanLogComponent(uint32_t component) const
@@ -245,13 +245,11 @@ spdlog::level::level_enum CLog::MapLogLevel(int level)
     case LOGDEBUG:
       return spdlog::level::debug;
     case LOGINFO:
-    case LOGNOTICE:
       return spdlog::level::info;
     case LOGWARNING:
       return spdlog::level::warn;
     case LOGERROR:
       return spdlog::level::err;
-    case LOGSEVERE:
     case LOGFATAL:
       return spdlog::level::critical;
     case LOGNONE:

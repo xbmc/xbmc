@@ -43,10 +43,8 @@ TEST_F(Testlog, Log)
 
   CLog::Log(LOGDEBUG, "debug log message");
   CLog::Log(LOGINFO, "info log message");
-  CLog::Log(LOGNOTICE, "notice log message");
   CLog::Log(LOGWARNING, "warning log message");
   CLog::Log(LOGERROR, "error log message");
-  CLog::Log(LOGSEVERE, "severe log message");
   CLog::Log(LOGFATAL, "fatal log message");
   CLog::Log(LOGNONE, "none type log message");
   CServiceBroker::GetLogging().Uninitialize();
@@ -66,13 +64,9 @@ TEST_F(Testlog, Log)
   EXPECT_GE(regex.RegFind(logstring), 0);
   EXPECT_TRUE(regex.RegComp(".*INFO <general>: info log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*INFO <general>: notice log message.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
   EXPECT_TRUE(regex.RegComp(".*WARNING <general>: warning log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
   EXPECT_TRUE(regex.RegComp(".*ERROR <general>: error log message.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*FATAL <general>: severe log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
   EXPECT_TRUE(regex.RegComp(".*FATAL <general>: fatal log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
