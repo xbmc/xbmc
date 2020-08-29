@@ -15,7 +15,7 @@ NATIVE= m4 gettext heimdal autoconf automake \
 
 
 ifeq ($(OS),darwin_embedded)
-  NATIVE += dpkg xz tar gen_entitlements ldid
+  NATIVE += dpkg xz tar ldid
 endif
 
 ifeq ($(TARGET_PLATFORM),wayland)

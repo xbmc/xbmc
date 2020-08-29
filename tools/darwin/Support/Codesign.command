@@ -5,17 +5,11 @@ set -x
 #this is the list of binaries we have to sign for being able to run un-jailbroken
 LIST_BINARY_EXTENSIONS="dylib so app"
 
-GEN_ENTITLEMENTS="$NATIVEPREFIX/bin/gen_entitlements.py"
 DARWIN_EMBEDDED_ENTITLEMENTS="$XBMC_DEPENDS/share/darwin_embedded_entitlements.xml"
 LDID="$NATIVEPREFIX/bin/ldid"
 
 if [ "${PLATFORM_NAME}" == "macosx" ]; then
   MACOS=1
-fi
-
-if [[ ! "$MACOS" && ! -f ${GEN_ENTITLEMENTS} ]]; then
-  echo "error: $GEN_ENTITLEMENTS not found. Codesign won't work."
-  exit -1
 fi
 
 if [ "$MACOS" ]; then
@@ -43,7 +37,6 @@ fi
 echo "${CODE_SIGN_IDENTITY_FOR_ITEMS}"
 
 if [ ! "$MACOS" ]; then
-  ${GEN_ENTITLEMENTS} "${BUNDLEID}" "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}.xcent"
   if [ -f "${CONTENTS_PATH}/embedded.mobileprovision" ]; then
     rm -f "${CONTENTS_PATH}/embedded.mobileprovision"
   fi
