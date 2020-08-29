@@ -1089,7 +1089,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
   }
   if (m_sinkSupportsMultiChannelFloat)
   {
-    CLog::Log(LOGNOTICE, "Multi channel Float is supported");
+    CLog::Log(LOGINFO, "Multi channel Float is supported");
   }
 
   int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
