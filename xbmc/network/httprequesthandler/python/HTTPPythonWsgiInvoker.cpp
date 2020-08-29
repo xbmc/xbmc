@@ -27,7 +27,7 @@
   "" \
   "import " MODULE "\n" \
   "class xbmcout:\n" \
-  "  def __init__(self, loglevel=" MODULE ".LOGNOTICE):\n" \
+  "  def __init__(self, loglevel=" MODULE ".LOGINFO):\n" \
   "    self.ll=loglevel\n" \
   "  def write(self, data):\n" \
   "    " MODULE ".log(data,self.ll)\n" \
@@ -54,7 +54,7 @@
   ""
 
 #define RUNSCRIPT_POSTSCRIPT \
-        MODULE ".log('-->HTTP Python WSGI Interpreter Initialized<--', " MODULE ".LOGNOTICE)\n" \
+        MODULE ".log('-->HTTP Python WSGI Interpreter Initialized<--', " MODULE ".LOGINFO)\n" \
         ""
 
 #if defined(TARGET_ANDROID)

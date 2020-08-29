@@ -543,10 +543,8 @@ namespace XBMCAddon
     int getTRAY_CLOSED_MEDIA_PRESENT() { return TRAY_CLOSED_MEDIA_PRESENT; }
     int getLOGDEBUG() { return LOGDEBUG; }
     int getLOGINFO() { return LOGINFO; }
-    int getLOGNOTICE() { return LOGNOTICE; }
     int getLOGWARNING() { return LOGWARNING; }
     int getLOGERROR() { return LOGERROR; }
-    int getLOGSEVERE() { return LOGSEVERE; }
     int getLOGFATAL() { return LOGFATAL; }
     int getLOGNONE() { return LOGNONE; }
 
