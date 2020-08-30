@@ -31,14 +31,14 @@
 			</control>
 			<control type="image">
 				<left>470</left>
-				<top>160</top>
+				<top>130</top>
 				<right>0</right>
 				<height>2</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="image">
 				<left>470</left>
-				<bottom>135</bottom>
+				<bottom>140</bottom>
 				<right>0</right>
 				<height>2</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
@@ -89,9 +89,9 @@
 			<control type="grouplist" id="3">
 				<description>button area</description>
 				<left>0</left>
-				<top>160</top>
+				<top>130</top>
 				<width>470</width>
-				<height>720</height>
+				<height>810</height>
 				<usecontrolcoords>true</usecontrolcoords>
 				<onleft>5</onleft>
 				<onright>5</onright>
@@ -112,7 +112,7 @@
 			<control type="radiobutton" id="20">
 				<width>470</width>
 				<left>0</left>
-				<bottom>110</bottom>
+				<bottom>50</bottom>
 				<height>90</height>
 				<aligny>center</aligny>
 				<onclick>SettingsLevelChange</onclick>
@@ -136,7 +136,7 @@
 		</control>
 		<control type="group">
 			<right>0</right>
-			<top>163</top>
+			<top>133</top>
 			<bottom>137</bottom>
 			<width>60</width>
 			<control type="scrollbar" id="60">
