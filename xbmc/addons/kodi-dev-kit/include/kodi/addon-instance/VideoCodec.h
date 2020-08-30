@@ -80,7 +80,7 @@ extern "C"
 
     int64_t pts;
 
-    KODI_HANDLE buffer; //< will be passed in release_frame_buffer
+    KODI_HANDLE videoBufferHandle; //< will be passed in release_frame_buffer
   };
 
   enum VIDEOCODEC_RETVAL
