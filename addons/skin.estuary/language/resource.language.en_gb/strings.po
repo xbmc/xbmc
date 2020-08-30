@@ -614,7 +614,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr ""
 
-#empty string with id 31135
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
 
 #: /xml/DialogAddonInfo.xml
 msgctxt "#31136"

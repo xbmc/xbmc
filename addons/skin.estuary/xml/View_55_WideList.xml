@@ -275,11 +275,19 @@
 			<control type="label">
 				<left>75</left>
 				<height>80</height>
-				<right>40</right>
+				<right>90</right>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font27</font>
 				<label>$VAR[AddonsLabel2Var]</label>
+			</control>
+			<control type="image">
+				<right>40</right>
+				<top>25</top>
+				<width>32</width>
+				<height>32</height>
+				<texture>$VAR[AddonsOriginVar]</texture>
+				<visible>!ListItem.IsFolder</visible>
 			</control>
 		</focusedlayout>
 		<itemlayout height="80" condition="Container.Content(addons)">
@@ -301,13 +309,21 @@
 			<control type="label">
 				<left>75</left>
 				<height>80</height>
-				<right>40</right>
+				<right>90</right>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font27</font>
 				<label>$VAR[AddonsLabel2Var]</label>
 				<textcolor>grey</textcolor>
 				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="image">
+				<right>40</right>
+				<top>25</top>
+				<width>32</width>
+				<height>32</height>
+				<texture>$VAR[AddonsOriginVar]</texture>
+				<visible>!ListItem.IsFolder</visible>
 			</control>
 		</itemlayout>
 	</include>
