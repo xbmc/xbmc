@@ -21,7 +21,7 @@
 			<left>470</left>
 			<include>OpenClose_Right</include>
 			<control type="grouplist" id="700">
-				<top>160</top>
+				<top>133</top>
 				<left>0</left>
 				<right>0</right>
 				<bottom>140</bottom>
@@ -75,7 +75,7 @@
 				</control>
 			</control>
 			<control type="grouplist" id="600">
-				<top>160</top>
+				<top>133</top>
 				<left>0</left>
 				<right>0</right>
 				<bottom>140</bottom>
@@ -131,7 +131,7 @@
 				</control>
 			</control>
 			<control type="grouplist" id="610">
-				<top>160</top>
+				<top>133</top>
 				<left>0</left>
 				<right>0</right>
 				<bottom>140</bottom>
@@ -248,7 +248,7 @@
 			<control type="image">
 				<description>Dialog Header image</description>
 				<left>0</left>
-				<top>160</top>
+				<top>130</top>
 				<right>0</right>
 				<height>3</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
@@ -272,34 +272,34 @@
 			<control type="list" id="9000">
 				<description>button area</description>
 				<left>0</left>
-				<top>160</top>
+				<top>130</top>
 				<width>470</width>
 				<height>700</height>
 				<onleft>10000</onleft>
 				<onright>10000</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<itemlayout height="90" width="470">
+				<itemlayout height="85" width="470">
 					<control type="label">
 						<textoffsetx>30</textoffsetx>
 						<width>470</width>
-						<height>90</height>
+						<height>85</height>
 						<label>$INFO[ListItem.Label]</label>
 						<font>font37</font>
 						<aligny>center</aligny>
 					</control>
 				</itemlayout>
-				<focusedlayout height="90" width="470">
+				<focusedlayout height="85" width="470">
 					<control type="image">
 						<width>470</width>
-						<height>90</height>
+						<height>85</height>
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<animation effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)">Conditional</animation>
 					</control>
 					<control type="label">
 						<textoffsetx>30</textoffsetx>
 						<width>470</width>
-						<height>90</height>
+						<height>85</height>
 						<font>font37</font>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
@@ -323,7 +323,7 @@
 		</control>
 		<control type="group">
 			<right>0</right>
-			<top>163</top>
+			<top>133</top>
 			<bottom>137</bottom>
 			<width>60</width>
 			<control type="scrollbar" id="60">
