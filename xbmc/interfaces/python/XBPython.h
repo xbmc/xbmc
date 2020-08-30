@@ -105,13 +105,11 @@ private:
   void*             m_mainThreadState;
   bool              m_bInitialized;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
-  unsigned int      m_endtime;
 
   //Vector with list of threads used for running scripts
   PyList              m_vecPyList;
   PlayerCallbackList  m_vecPlayerCallbackList;
   MonitorCallbackList m_vecMonitorCallbackList;
-  LibraryLoader*      m_pDll;
 
   // any global events that scripts should be using
   CEvent m_globalEvent;

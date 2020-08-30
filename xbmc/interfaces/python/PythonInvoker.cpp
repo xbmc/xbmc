@@ -174,11 +174,8 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   {
     if (!m_threadState)
     {
-      // TODO: Re-write everything.
-      // this is a TOTAL hack. We need the GIL but we need to borrow a PyThreadState in order to get it
-      // as of Python 3.2 since PyEval_AcquireLock is deprecated
-      extern PyThreadState* savestate;
-      PyEval_RestoreThread(savestate);
+      PyThreadState* ts = PyThreadState_New(PyInterpreterState_Main());
+      PyEval_RestoreThread(ts);
       l_threadState = Py_NewInterpreter();
       PyEval_ReleaseThread(l_threadState);
       if (l_threadState == NULL)
@@ -588,7 +585,8 @@ void CPythonInvoker::onExecutionDone()
     // unregister the language hook
     m_languageHook->UnregisterMe();
 
-    PyEval_ReleaseLock();
+    PyThreadState_Swap(PyInterpreterState_ThreadHead(PyInterpreterState_Main()));
+    PyEval_SaveThread();
 
     // set stopped event - this allows ::stop to run and kill remaining threads
     // this event has to be fired without holding m_critical
@@ -605,8 +603,7 @@ void CPythonInvoker::onExecutionDone()
 
 void CPythonInvoker::onExecutionFailed()
 {
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
+  PyEval_SaveThread();
 
   setState(InvokerStateFailed);
   CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): abnormally terminating python thread", GetId(), m_sourceFile.c_str());

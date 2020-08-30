@@ -26,7 +26,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
-#include "threads/SystemClock.h"
 #include "interfaces/AnnouncementManager.h"
 
 #include "interfaces/legacy/Monitor.h"
@@ -35,15 +34,11 @@
 #include "interfaces/python/PythonInvoker.h"
 #include "ServiceBroker.h"
 
-PyThreadState* savestate;
-
 XBPython::XBPython()
 {
   m_bInitialized      = false;
   m_mainThreadState   = NULL;
   m_iDllScriptCounter = 0;
-  m_endtime           = 0;
-  m_pDll              = NULL;
   m_vecPlayerCallbackList.clear();
   m_vecMonitorCallbackList.clear();
 
@@ -452,44 +447,6 @@ void XBPython::UnloadExtensionLibs()
   m_extensions.clear();
 }
 
-// Always called with the lock held on m_critSection
-void XBPython::Finalize()
-{
-  XBMC_TRACE;
-  if (m_bInitialized)
-  {
-    CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
-
-    // set the m_bInitialized flag before releasing the lock. This will prevent
-    // Other methods that rely on this flag from an incorrect interpretation.
-    m_bInitialized    = false;
-    PyThreadState* curTs = (PyThreadState*)m_mainThreadState;
-    m_mainThreadState = NULL; // clear the main thread state before releasing the lock
-    {
-      CSingleExit exit(m_critSection);
-      PyEval_AcquireThread(curTs);
-
-      Py_Finalize();
-      PyEval_ReleaseLock();
-    }
-
-#if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS))
-    UnloadExtensionLibs();
-#endif
-
-    // first free all dlls loaded by python, after that unload python (this is done by UnloadPythonDlls
-#if !(defined(TARGET_DARWIN) || defined(TARGET_WINDOWS))
-    DllLoaderContainer::UnloadPythonDlls();
-#endif
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
-    // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
-    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python36.dll"
-    // The implementation for osx can never unload the python dylib.
-    DllLoaderContainer::ReleaseModule(m_pDll);
-#endif
-  }
-}
-
 void XBPython::Uninitialize()
 {
   // don't handle any more announcements as most scripts are probably already
@@ -504,7 +461,7 @@ void XBPython::Uninitialize()
   lock.Leave(); //unlock here because the python thread might lock when it exits
 
   // cleanup threads that are still running
-  tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls OnScriptFinalized
+  tmpvec.clear();
 }
 
 void XBPython::Process()
@@ -527,13 +484,7 @@ void XBPython::Process()
     lock.Leave();
 
     //delete scripts which are done
-    tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls OnScriptFinalized
-
-    CSingleLock l2(m_critSection);
-    if(m_iDllScriptCounter == 0 && (XbmcThreads::SystemClockMillis() - m_endtime) > 10000 )
-    {
-      Finalize();
-    }
+    tmpvec.clear();
   }
 }
 
@@ -557,10 +508,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // at http://docs.python.org/using/cmdline.html#environment-variables
 
 #if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
-    /* PYTHONOPTIMIZE is set off intentionally when using external Python.
-    Reason for this is because we cannot be sure what version of Python
-    was used to compile the various Python object files (i.e. .pyo,
-    .pyc, etc.). */
     // check if we are running as real xbmc.app or just binary
     if (!CUtil::GetFrameworksPath(true).empty())
     {
@@ -591,20 +538,25 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 
     Py_Initialize();
 
-    // If this is not the first time we initialize Python, the interpreter
-    // lock already exists and we need to lock it as PyEval_InitThreads
-    // would not do that in that case.
-    if (PyEval_ThreadsInitialized() && !PyGILState_Check())
+#if PY_VERSION_HEX < 0x03070000
+    // Python >= 3.7 Py_Initialize implicitly calls PyEval_InitThreads
+    // Python < 3.7 we have to manually call initthreads. 
+    // PyEval_InitThreads is a no-op on subsequent calls, No need to wrap in
+    // PyEval_ThreadsInitialized() check
+    PyEval_InitThreads();
+#endif
+
+    // Acquire GIL if thread doesn't currently hold.
+    if (!PyGILState_Check())
       PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
-    else
-      PyEval_InitThreads();
+
     const wchar_t* python_argv[1] = {L""};
     //! @bug libpython isn't const correct
     PySys_SetArgv(1, const_cast<wchar_t**>(python_argv));
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    savestate = PyEval_SaveThread();
+    PyEval_SaveThread();
 
     m_bInitialized = true;
   }
@@ -674,7 +626,6 @@ void XBPython::OnScriptFinalized(ILanguageInvoker *invoker)
     m_iDllScriptCounter--;
   else
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
-  m_endtime = XbmcThreads::SystemClockMillis();
 }
 
 ILanguageInvoker* XBPython::CreateInvoker()
