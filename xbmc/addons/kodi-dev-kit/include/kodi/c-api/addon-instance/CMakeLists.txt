@@ -2,6 +2,7 @@ set(HEADERS audio_decoder.h
             audio_encoder.h
             image_decoder.h
             pvr.h
+            screensaver.h
             visualization.h)
 
 if(NOT ENABLE_STATIC_LIBS)
