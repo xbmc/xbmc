@@ -22,7 +22,7 @@
 #include "aojsonrpc.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "filesystem/File.h"
-#include "filesystem/SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h" //! @todo remove me when dropping translatePath from this file
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -380,6 +380,8 @@ namespace XBMCAddon
     String translatePath(const String& path)
     {
       XBMC_TRACE;
+      CLog::Log(LOGWARNING, "xbmc.translatePath is deprecated and might be removed in future kodi "
+                            "versions. Please use xbmcvfs.translatePath instead.");
       return CSpecialProtocol::TranslatePath(path);
     }
 
