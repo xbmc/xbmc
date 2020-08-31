@@ -354,7 +354,7 @@ std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
   std::vector<CDemuxStream*> streams;
 
   INPUTSTREAM_IDS streamIDs = m_struct.toAddon->get_stream_ids(&m_struct);
-  if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
+  if (streamIDs.m_streamCount > INPUTSTREAM_MAX_STREAM_COUNT)
     return streams;
 
   for (unsigned int i = 0; i < streamIDs.m_streamCount; ++i)
