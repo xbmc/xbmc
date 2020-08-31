@@ -117,9 +117,37 @@ public:
    */
   bool EnableAddon(const std::string& addonID);
 
-  bool BlacklistAddon(const std::string& addonID);
-  bool RemoveAddonFromBlacklist(const std::string& addonID);
-  bool GetBlacklisted(std::set<std::string>& addons);
+  /*!
+   * \brief Write dataset with addon-id and rule to the db
+   * \param addonID the addonID
+   * \param updateRule the rule value to be written
+   * \return true on success, false otherwise
+   */
+  bool AddUpdateRuleForAddon(const std::string& addonID, ADDON::AddonUpdateRule updateRule);
+
+  /*!
+   * \brief Remove all rule datasets for an addon-id from the db
+   * \param addonID the addonID
+   * \return true on success, false otherwise
+   */
+  bool RemoveAllUpdateRulesForAddon(const std::string& addonID);
+
+  /*!
+   * \brief Remove a single rule dataset for an addon-id from the db
+   * \note specifying AddonUpdateRule::ANY will remove all rules.
+   *       use @ref RemoveAllUpdateRulesForAddon() instead
+   * \param addonID the addonID
+   * \param updateRule the rule to remove
+   * \return true on success, false otherwise
+   */
+  bool RemoveUpdateRuleForAddon(const std::string& addonID, AddonUpdateRule updateRule);
+
+  /*!
+   * \brief Retrieve all rule datasets from db and store them into map
+   * \param rulesMap target map
+   * \return true on success, false otherwise
+   */
+  bool GetAddonUpdateRules(std::map<std::string, std::vector<AddonUpdateRule>>& rulesMap) const;
 
   /*! \brief Store an addon's package filename and that file's hash for future verification
       \param  addonID         id of the addon we're adding a package for

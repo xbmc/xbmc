@@ -47,6 +47,14 @@ enum class AddonOriginType
   MANUAL = 2 /// The addon origin is a zip file, package or development build
 };
 
+//! @brief Reasons why an addon is not updateable
+enum class AddonUpdateRule
+{
+  ANY = 0, //!< used internally, not to be explicitly set
+  USER_DISABLED_AUTO_UPDATE = 1, //!< automatic updates disabled via AddonInfo dialog
+  PIN_OLD_VERSION = 2 //!< user downgraded to an older version
+};
+
 struct DependencyInfo
 {
   std::string id;

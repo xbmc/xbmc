@@ -131,7 +131,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 31;
+  return 32;
 }
 
 void CAddonDatabase::CreateTables()
@@ -154,8 +154,9 @@ void CAddonDatabase::CreateTables()
   CLog::Log(LOGINFO, "create addonlinkrepo table");
   m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
 
-  CLog::Log(LOGINFO, "create blacklist table");
-  m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text)\n");
+  CLog::Log(LOGINFO, "create update_rules table");
+  m_pDS->exec(
+      "CREATE TABLE update_rules (id integer primary key, addonID TEXT, updateRule INTEGER)\n");
 
   CLog::Log(LOGINFO, "create package table");
   m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
@@ -172,7 +173,7 @@ void CAddonDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxAddons ON addons(addonID)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
-  m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+  m_pDS->exec("CREATE UNIQUE INDEX idxUpdate_rules ON update_rules(addonID, updateRule)");
   m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
 }
 
@@ -233,6 +234,15 @@ void CAddonDatabase::UpdateTables(int version)
     m_pDS->exec("UPDATE installed SET origin = addonID WHERE (origin='') AND "
                 "EXISTS (SELECT * FROM repo WHERE repo.addonID = installed.addonID)");
   }
+  if (version < 32)
+  {
+    m_pDS->exec(
+        "CREATE TABLE update_rules (id integer primary key, addonID text, updateRule INTEGER)");
+    m_pDS->exec("INSERT INTO update_rules (addonID, updateRule) SELECT addonID, 1 updateRule FROM "
+                "blacklist");
+    m_pDS->exec("DROP INDEX IF EXISTS idxBlack");
+    m_pDS->exec("DROP TABLE blacklist");
+  }
 }
 
 void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
@@ -282,7 +292,7 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     for (const auto& id : removed)
     {
       m_pDS->exec(PrepareSQL("DELETE FROM installed WHERE addonID='%s'", id.c_str()));
-      RemoveAddonFromBlacklist(id);
+      RemoveAllUpdateRulesForAddon(id);
       DeleteRepository(id);
     }
 
@@ -985,7 +995,8 @@ bool CAddonDatabase::GetDisabled(std::map<std::string, AddonDisabledReason>& add
   return false;
 }
 
-bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
+bool CAddonDatabase::GetAddonUpdateRules(
+    std::map<std::string, std::vector<AddonUpdateRule>>& rulesMap) const
 {
   try
   {
@@ -994,11 +1005,12 @@ bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
     if (!m_pDS)
       return false;
 
-    std::string sql = PrepareSQL("SELECT addonID FROM blacklist");
+    std::string sql = PrepareSQL("SELECT * FROM update_rules");
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      addons.insert(m_pDS->fv("addonID").get_asString());
+      rulesMap[m_pDS->fv("addonID").get_asString()].emplace_back(
+          static_cast<AddonUpdateRule>(m_pDS->fv("updateRule").get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
@@ -1011,7 +1023,7 @@ bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
   return false;
 }
 
-bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
+bool CAddonDatabase::AddUpdateRuleForAddon(const std::string& addonID, AddonUpdateRule updateRule)
 {
   try
   {
@@ -1020,7 +1032,9 @@ bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
     if (!m_pDS)
       return false;
 
-    std::string sql = PrepareSQL("INSERT INTO blacklist(id, addonID) VALUES(NULL, '%s')", addonID.c_str());
+    std::string sql =
+        PrepareSQL("INSERT INTO update_rules(id, addonID, updateRule) VALUES(NULL, '%s', %d)",
+                   addonID.c_str(), static_cast<int>(updateRule));
     m_pDS->exec(sql);
     return true;
   }
@@ -1031,7 +1045,13 @@ bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
   return false;
 }
 
-bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID)
+bool CAddonDatabase::RemoveAllUpdateRulesForAddon(const std::string& addonID)
+{
+  return RemoveUpdateRuleForAddon(addonID, AddonUpdateRule::ANY);
+}
+
+bool CAddonDatabase::RemoveUpdateRuleForAddon(const std::string& addonID,
+                                              AddonUpdateRule updateRule)
 {
   try
   {
@@ -1040,7 +1060,13 @@ bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID)
     if (!m_pDS)
       return false;
 
-    std::string sql = PrepareSQL("DELETE FROM blacklist WHERE addonID='%s'", addonID.c_str());
+    std::string sql = PrepareSQL("DELETE FROM update_rules WHERE addonID='%s'", addonID.c_str());
+
+    if (updateRule != AddonUpdateRule::ANY)
+    {
+      sql += PrepareSQL(" AND updateRule = %d", static_cast<int>(updateRule));
+    }
+
     m_pDS->exec(sql);
     return true;
   }
@@ -1079,7 +1105,7 @@ bool CAddonDatabase::RemovePackage(const std::string& packageFileName)
 
 void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
 {
-  RemoveAddonFromBlacklist(addonId);
+  RemoveAllUpdateRulesForAddon(addonId);
   DeleteRepository(addonId);
 
   //! @todo should be done before uninstall to avoid any race conditions

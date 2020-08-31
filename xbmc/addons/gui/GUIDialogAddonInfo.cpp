@@ -192,7 +192,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE,
                        isInstalled && autoUpdatesOn &&
-                           !CServiceBroker::GetAddonMgr().IsBlacklisted(m_localAddon->ID()));
+                           CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
   CONTROL_ENABLE_ON_CONDITION(
@@ -301,9 +301,20 @@ void CGUIDialogAddonInfo::OnUpdate()
     if (i != -1)
     {
       Close();
-      //turn auto updating off if downgrading
+      // turn auto updating off if downgrading
+
       if (m_localAddon->Version() > versions[i].first)
-        CServiceBroker::GetAddonMgr().AddToUpdateBlacklist(m_localAddon->ID());
+        CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
+                                                          AddonUpdateRule::PIN_OLD_VERSION);
+
+      // turn auto updating on if upgrading or changing origin
+      // (but not when changing to local cache)
+
+      if ((m_localAddon->Version() < versions[i].first &&
+           m_localAddon->Origin() == versions[i].second) ||
+          (m_localAddon->Origin() != versions[i].second && versions[i].second != LOCAL_CACHE))
+        CServiceBroker::GetAddonMgr().RemoveUpdateRuleFromList(m_localAddon->ID(),
+                                                               AddonUpdateRule::PIN_OLD_VERSION);
 
       if (versions[i].second == LOCAL_CACHE)
         CAddonInstaller::GetInstance().InstallFromZip(
@@ -323,9 +334,10 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
   {
     bool selected = msg.GetParam1() == 1;
     if (selected)
-      CServiceBroker::GetAddonMgr().RemoveFromUpdateBlacklist(m_localAddon->ID());
+      CServiceBroker::GetAddonMgr().RemoveAllUpdateRulesFromList(m_localAddon->ID());
     else
-      CServiceBroker::GetAddonMgr().AddToUpdateBlacklist(m_localAddon->ID());
+      CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
+                                                        AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
   }
 }
 
