@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include "../../AddonBase.h"
 #include "../../c-api/addon-instance/peripheral.h"
 
 #ifdef __cplusplus
 
 #include <array> // Requires c++11
 #include <cstring>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -35,6 +37,9 @@ namespace kodi
 {
 namespace addon
 {
+
+class CInstancePeripheral;
+
 /*!
  * Utility class to manipulate arrays of peripheral types.
  */
@@ -76,6 +81,24 @@ public:
     }
   }
 
+  static void ToStructs(const std::vector<std::shared_ptr<THE_CLASS>>& vecObjects,
+                        THE_STRUCT** pStructs)
+  {
+    if (!pStructs)
+      return;
+
+    if (vecObjects.empty())
+    {
+      *pStructs = NULL;
+    }
+    else
+    {
+      *pStructs = new THE_STRUCT[vecObjects.size()];
+      for (unsigned int i = 0; i < vecObjects.size(); i++)
+        vecObjects.at(i)->ToStruct((*pStructs)[i]);
+    }
+  }
+
   static void FreeStructs(unsigned int structCount, THE_STRUCT* structs)
   {
     if (structs)
@@ -85,6 +108,55 @@ public:
     }
     PERIPHERAL_SAFE_DELETE_ARRAY(structs);
   }
+};
+
+class PeripheralCapabilities : public CStructHdl<PeripheralCapabilities, PERIPHERAL_CAPABILITIES>
+{
+  /*! \cond PRIVATE */
+  friend class CInstancePeripheral;
+  /*! \endcond */
+
+
+public:
+  /*! \cond PRIVATE */
+  PeripheralCapabilities()
+  {
+    m_cStructure->provides_joysticks = false;
+    m_cStructure->provides_joystick_rumble = false;
+    m_cStructure->provides_joystick_power_off = false;
+    m_cStructure->provides_buttonmaps = false;
+  }
+
+  PeripheralCapabilities(const PeripheralCapabilities& data) : CStructHdl(data) {}
+  /*! \endcond */
+
+  void SetProvidesJoysticks(bool providesJoysticks)
+  {
+    m_cStructure->provides_joysticks = providesJoysticks;
+  }
+  bool GetProvidesJoysticks() const { return m_cStructure->provides_joysticks; }
+
+  void SetProvidesJoystickRumble(bool providesJoystickRumble)
+  {
+    m_cStructure->provides_joystick_rumble = providesJoystickRumble;
+  }
+  bool GetProvidesJoystickRumble() const { return m_cStructure->provides_joystick_rumble; }
+
+  void SetProvidesJoystickPowerOff(bool providesJoystickPowerOff)
+  {
+    m_cStructure->provides_joystick_power_off = providesJoystickPowerOff;
+  }
+  bool GetProvidesJoystickPowerOff() const { return m_cStructure->provides_joystick_power_off; }
+
+  void SetProvidesButtonmaps(bool providesButtonmaps)
+  {
+    m_cStructure->provides_buttonmaps = providesButtonmaps;
+  }
+  bool GetProvidesButtonmaps() const { return m_cStructure->provides_buttonmaps; }
+
+private:
+  PeripheralCapabilities(const PERIPHERAL_CAPABILITIES* data) : CStructHdl(data) {}
+  PeripheralCapabilities(PERIPHERAL_CAPABILITIES* data) : CStructHdl(data) {}
 };
 
 /*!
