@@ -28,6 +28,11 @@
 //Increment this level always if you add features which can lead to compile failures in the addon
 #define INPUTSTREAM_VERSION_LEVEL 2
 
+#define INPUTSTREAM_MAX_STREAM_COUNT 256
+#define INPUTSTREAM_MAX_STRING_NAME_SIZE 256
+#define INPUTSTREAM_MAX_STRING_CODEC_SIZE 32
+#define INPUTSTREAM_MAX_STRING_LANGUAGE_SIZE 64
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -90,9 +95,8 @@ extern "C"
    */
   struct INPUTSTREAM_IDS
   {
-    static const unsigned int MAX_STREAM_COUNT = 256;
     unsigned int m_streamCount;
-    unsigned int m_streamIds[MAX_STREAM_COUNT];
+    unsigned int m_streamIds[INPUTSTREAM_MAX_STREAM_COUNT];
   };
 
   /*!
@@ -238,45 +242,90 @@ extern "C"
 
     uint32_t m_flags;
 
-    char m_name[256]; /*!< @brief (optinal) name of the stream, \0 for default handling */
-    char m_codecName[32]; /*!< @brief (required) name of codec according to ffmpeg */
-    char m_codecInternalName
-        [32]; /*!< @brief (optional) internal name of codec (selectionstream info) */
-    STREAMCODEC_PROFILE m_codecProfile; /*!< @brief (optional) the profile of the codec */
-    unsigned int m_pID; /*!< @brief (required) physical index */
+    //! @brief (optional) name of the stream, \0 for default handling
+    char m_name[INPUTSTREAM_MAX_STRING_NAME_SIZE];
+
+    //! @brief (required) name of codec according to ffmpeg
+    char m_codecName[INPUTSTREAM_MAX_STRING_CODEC_SIZE];
+
+    //! @brief (optional) internal name of codec (selectionstream info)
+    char m_codecInternalName[INPUTSTREAM_MAX_STRING_CODEC_SIZE];
+
+    //! @brief (optional) the profile of the codec
+    STREAMCODEC_PROFILE m_codecProfile;
+
+    //! @brief (required) physical index
+    unsigned int m_pID;
 
     const uint8_t* m_ExtraData;
     unsigned int m_ExtraSize;
 
-    char m_language[64]; /*!< @brief RFC 5646 language code (empty string if undefined) */
+    //! @brief RFC 5646 language code (empty string if undefined)
+    char m_language[INPUTSTREAM_MAX_STRING_LANGUAGE_SIZE];
 
-    unsigned int
-        m_FpsScale; /*!< @brief Scale of 1000 and a rate of 29970 will result in 29.97 fps */
+    //! Video stream related data
+    //@{
+
+    //! @brief Scale of 1000 and a rate of 29970 will result in 29.97 fps
+    unsigned int m_FpsScale;
+
     unsigned int m_FpsRate;
-    unsigned int m_Height; /*!< @brief height of the stream reported by the demuxer */
-    unsigned int m_Width; /*!< @brief width of the stream reported by the demuxer */
-    float m_Aspect; /*!< @brief display aspect of stream */
 
+    //! @brief height of the stream reported by the demuxer
+    unsigned int m_Height;
 
-    unsigned int m_Channels; /*!< @brief (required) amount of channels */
-    unsigned int m_SampleRate; /*!< @brief (required) sample rate */
-    unsigned int m_BitRate; /*!< @brief (required) bit rate */
-    unsigned int m_BitsPerSample; /*!< @brief (required) bits per sample */
+    //! @brief width of the stream reported by the demuxer
+    unsigned int m_Width;
+
+    //! @brief display aspect of stream
+    float m_Aspect;
+
+    //@}
+
+    //! Audio stream related data
+    //@{
+
+    //! @brief (required) amount of channels
+    unsigned int m_Channels;
+
+    //! @brief (required) sample rate
+    unsigned int m_SampleRate;
+
+    //! @brief (required) bit rate
+    unsigned int m_BitRate;
+
+    //! @brief (required) bits per sample
+    unsigned int m_BitsPerSample;
+
     unsigned int m_BlockAlign;
+
+    //@}
 
     CRYPTO_INFO m_cryptoInfo;
 
     // new in API version 2.0.8
-    unsigned int m_codecFourCC; /*!< @brief Codec If available, the fourcc code codec */
-    COLORSPACE m_colorSpace; /*!< @brief definition of colorspace */
-    COLORRANGE m_colorRange; /*!< @brief color range if available */
+    //@{
+    //! @brief Codec If available, the fourcc code codec
+    unsigned int m_codecFourCC;
+
+    //! @brief definition of colorspace
+    COLORSPACE m_colorSpace;
+
+    //! @brief color range if available
+    COLORRANGE m_colorRange;
+    //@}
 
     //new in API 2.0.9 / INPUTSTREAM_VERSION_LEVEL 1
+    //@{
     COLORPRIMARIES m_colorPrimaries;
     COLORTRC m_colorTransferCharacteristic;
-    INPUTSTREAM_MASTERING_METADATA* m_masteringMetadata; /*!< @brief mastering static Metadata */
-    INPUTSTREAM_CONTENTLIGHT_METADATA*
-        m_contentLightMetadata; /*!< @brief content light static Metadata */
+    //@}
+
+    //! @brief mastering static Metadata
+    INPUTSTREAM_MASTERING_METADATA* m_masteringMetadata;
+
+    //! @brief content light static Metadata
+    INPUTSTREAM_CONTENTLIGHT_METADATA* m_contentLightMetadata;
   };
 
   struct INPUTSTREAM_TIMES
