@@ -1186,6 +1186,8 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
         m_confirmSkinChange = false;
         settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
       }
+      else
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_STARTUP_ANIM);
     }
   }
   else
