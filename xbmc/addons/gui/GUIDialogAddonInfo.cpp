@@ -79,13 +79,16 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       if (iControl == CONTROL_BTN_INSTALL)
       {
-        if (!m_localAddon)
+        const auto& itemAddonInfo = m_item->GetAddonInfo();
+        if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(
+                itemAddonInfo->ID(), itemAddonInfo->Origin(), itemAddonInfo->Version()))
         {
           OnInstall();
           return true;
         }
         else
         {
+          m_silentUninstall = false;
           OnUninstall();
           return true;
         }
@@ -158,7 +161,9 @@ void CGUIDialogAddonInfo::UpdateControls()
   if (!m_item)
     return;
 
-  bool isInstalled = NULL != m_localAddon.get();
+  const auto& itemAddonInfo = m_item->GetAddonInfo();
+  bool isInstalled = CServiceBroker::GetAddonMgr().IsAddonInstalled(
+      itemAddonInfo->ID(), itemAddonInfo->Origin(), itemAddonInfo->Version());
   m_addonEnabled =
       m_localAddon && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_localAddon->ID());
   bool canDisable =
@@ -329,29 +334,39 @@ void CGUIDialogAddonInfo::OnInstall()
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
-  if (m_localAddon || !m_item->HasAddonInfo())
+  if (!m_item->HasAddonInfo())
     return;
 
-  std::string addonId = m_item->GetAddonInfo()->ID();
-  std::vector<std::pair<AddonVersion, std::string>> versions;
-
-  CAddonDatabase database;
-  if (!database.Open() || !database.GetAvailableVersions(addonId, versions) || versions.empty())
+  if (m_localAddon)
   {
-    CLog::Log(LOGERROR, "ADDON: no available versions of %s", addonId.c_str());
-    return;
-  }
+    const std::string& header = g_localizeStrings.Get(19098); // Warning!
+    const std::string text =
+        StringUtils::Format(g_localizeStrings.Get(39028), m_localAddon->ID(),
+                            m_localAddon->Origin(), m_localAddon->Version().asString());
 
-  int i = versions.size() == 1 ? 0 : AskForVersion(versions);
-  if (i != -1)
-  {
-    Close();
-    auto deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID());
-    if (!deps.empty() && !ShowDependencyList(deps, false))
+    if (CGUIDialogYesNo::ShowAndGetInput(header, text))
+    {
+      m_silentUninstall = true;
+      OnUninstall();
+    }
+    else
+    {
       return;
-
-    CAddonInstaller::GetInstance().Install(addonId, versions[i].first, versions[i].second);
+    }
   }
+
+  const auto& itemAddonInfo = m_item->GetAddonInfo();
+
+  const std::string& addonId = itemAddonInfo->ID();
+  const std::string& origin = itemAddonInfo->Origin();
+  const AddonVersion& version = itemAddonInfo->Version();
+
+  Close();
+  const auto& deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(addonId);
+  if (!deps.empty() && !ShowDependencyList(deps, false))
+    return;
+
+  CAddonInstaller::GetInstance().Install(addonId, version, origin);
 }
 
 void CGUIDialogAddonInfo::OnSelect()
@@ -437,7 +452,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
+  if (!m_silentUninstall && !CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
     return;
 
   bool removeData = false;

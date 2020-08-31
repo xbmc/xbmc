@@ -733,9 +733,19 @@ bool CAddonInstallJob::DoFileOperation(FileAction action, CFileItemList &items, 
 
 bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryPtr& repo)
 {
-  SetText(g_localizeStrings.Get(24079));
-  auto deps = m_addon->GetDependencies();
+  const auto& deps = m_addon->GetDependencies();
 
+  if (!deps.empty() && m_addon->HasType(ADDON_REPOSITORY))
+  {
+    CLog::Log(
+        LOGERROR,
+        "CAddonInstallJob::{}: failed to install repository [{}]. It has dependencies defined",
+        __func__, m_addon->ID());
+    ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24088));
+    return false;
+  }
+
+  SetText(g_localizeStrings.Get(24079));
   unsigned int totalSteps = static_cast<unsigned int>(deps.size()) + 1;
   if (ShouldCancel(0, totalSteps))
     return false;

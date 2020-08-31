@@ -498,7 +498,7 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
   VECADDONS addons = CServiceBroker::GetAddonMgr().GetAvailableUpdates();
-  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
+  CAddonsDirectory::GenerateAddonListingUpdates(path, addons, items, g_localizeStrings.Get(24043));
 
   if (!items.IsEmpty())
   {
@@ -537,8 +537,8 @@ static bool Browse(const CURL& path, CFileItemList &items)
     }
     database.Close();
 
-    // get all addons
-    addonRepos.GetLatestAddonVersions(addons);
+    // get all latest addon versions by repo
+    addonRepos.GetLatestAddonVersionsFromAllRepos(addons);
 
     items.SetProperty("reponame", g_localizeStrings.Get(24087));
     items.SetLabel(g_localizeStrings.Get(24087));
@@ -781,9 +781,26 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     const VECADDONS& addons, CFileItemList &items, const std::string label)
 {
-  std::set<std::string> outdated;
-  for (const auto& addon : CServiceBroker::GetAddonMgr().GetAvailableUpdates())
-    outdated.insert(addon->ID());
+  GenerateAddonListing(path, addons, items, label, false);
+}
+
+void CAddonsDirectory::GenerateAddonListingUpdates(const CURL& path,
+                                                   const VECADDONS& addons,
+                                                   CFileItemList& items,
+                                                   const std::string label)
+{
+  GenerateAddonListing(path, addons, items, label, true);
+}
+
+void CAddonsDirectory::GenerateAddonListing(const CURL& path,
+                                            const VECADDONS& addons,
+                                            CFileItemList& items,
+                                            const std::string label,
+                                            bool alwaysShowUpdateIcon)
+{
+  std::set<std::shared_ptr<IAddon>> outdated;
+  for (const auto& addon : CServiceBroker::GetAddonMgr().GetOutdatedAddons())
+    outdated.insert(addon);
 
   items.ClearItems();
   items.SetContent("addons");
@@ -794,9 +811,17 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     itemPath.SetFileName(addon->ID());
     CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
 
-    bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID());
+    bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID(), addon->Origin(),
+                                                                    addon->Version());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
-    bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
+
+    bool hasUpdate =
+        alwaysShowUpdateIcon ||
+        std::any_of(outdated.begin(), outdated.end(), [&](const std::shared_ptr<IAddon>& i) {
+          return i->ID() == addon->ID() && i->Origin() == addon->Origin() &&
+                 i->Version() == addon->Version();
+        });
+
     bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon);
 
     pItem->SetProperty("Addon.IsInstalled", installed);

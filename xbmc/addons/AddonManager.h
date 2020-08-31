@@ -123,7 +123,10 @@ namespace ADDON
     bool ReloadSettings(const std::string &id);
 
     /*! Get addons with available updates */
-    VECADDONS GetAvailableUpdates() const;
+    std::vector<std::shared_ptr<IAddon>> GetAvailableUpdates() const;
+
+    /*! Get addons that are outdated */
+    std::vector<std::shared_ptr<IAddon>> GetOutdatedAddons() const;
 
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();
@@ -221,6 +224,16 @@ namespace ADDON
      \param ID id of the addon
     */
     bool IsAddonInstalled(const std::string& ID);
+
+    /* \brief Checks whether an addon is installed from a
+     *        particular origin repo and version
+     * \param ID id of the addon
+     * \param origin origin repository id
+     * \param version the version of the addon
+     */
+    bool IsAddonInstalled(const std::string& ID,
+                          const std::string& origin,
+                          const AddonVersion& version);
 
     /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
@@ -380,10 +393,21 @@ namespace ADDON
 
     VECADDONS m_updateableAddons;
 
+    /*!
+     * \brief returns a vector with either available updates or outdated addons.
+     *        usually called by its wrappers GetAvailableUpdates() or
+     *        GetOutdatedAddons()
+     * \param[in] true to return outdated addons, false to return available updates
+     * \return vector filled with either available updates or outdated addons
+     */
+    std::vector<std::shared_ptr<IAddon>> GetAvailableUpdatesOrOutdatedAddons(
+        bool returnOutdatedAddons) const;
+
     bool GetAddonsInternal(const TYPE& type,
                            VECADDONS& addons,
                            bool enabledOnly,
                            bool checkIncompatible = false) const;
+
     bool EnableSingle(const std::string& id);
 
     void FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path);
