@@ -216,7 +216,6 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // read the png into image_data through row_pointers
   png_read_image(png_ptr, row_pointers);
 
-  frames.user = NULL;
   DecodedFrame frame;
 
   frame.rgbaImage.pixels = (char *)image_data;
@@ -224,6 +223,9 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frame.rgbaImage.width = temp_width;
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * temp_width;
+
+  frame.decoder = this;
+
   frames.frameList.push_back(frame);
   // clean up
   png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
@@ -231,14 +233,9 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   return true;
 }
 
-void PNGDecoder::FreeDecodedFrames(DecodedFrames &frames)
+void PNGDecoder::FreeDecodedFrame(DecodedFrame &frame)
 {
-  for (unsigned int i = 0; i < frames.frameList.size(); i++)
-  {
-    delete [] frames.frameList[i].rgbaImage.pixels;
-  }
-
-  frames.clear();
+  delete [] frame.rgbaImage.pixels;
 }
 
 void PNGDecoder::FillSupportedExtensions()

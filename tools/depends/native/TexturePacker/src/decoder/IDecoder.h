@@ -23,6 +23,34 @@
 #include <string>
 #include <vector>
 
+/* forward declarations */
+
+class DecodedFrame;
+class DecodedFrames;
+
+class IDecoder
+{
+  public:
+    virtual ~IDecoder() = default;
+    virtual bool CanDecode(const std::string &filename) = 0;
+    virtual bool LoadFile(const std::string &filename, DecodedFrames &frames) = 0;
+    virtual void FreeDecodedFrame(DecodedFrame &frame) = 0;
+    virtual const char* GetImageFormatName() = 0;
+    virtual const char* GetDecoderName() = 0;
+
+    const std::vector<std::string>& GetSupportedExtensions()
+    {
+      m_supportedExtensions.clear();
+      FillSupportedExtensions();
+      return m_supportedExtensions;
+    }
+
+  protected:
+    virtual void FillSupportedExtensions() = 0;
+    //fill this with extensions in FillSupportedExtensions like ".png"
+    std::vector<std::string> m_supportedExtensions;
+};
+
 class RGBAImage
 {
 public:
@@ -41,6 +69,7 @@ public:
   DecodedFrame() = default;
   RGBAImage rgbaImage; /* rgbaimage for this frame */
   int delay = 0; /* Frame delay in ms */
+  IDecoder* decoder = nullptr; /* Pointer to decoder */
 };
 
 class DecodedFrames
@@ -48,43 +77,22 @@ class DecodedFrames
   public:
     DecodedFrames() = default;
     std::vector<DecodedFrame> frameList;
-    void* user = nullptr; /* used internally*/
-    void (*destroyFN)(void*) = nullptr;
 
     void clear()
     {
       for (auto f : frameList)
       {
-        delete[] f.rgbaImage.pixels;
-      }
-      if (destroyFN)
-      {
-        destroyFN(user);
+        if (f.decoder != NULL)
+        {
+          f.decoder->FreeDecodedFrame(f);
+        }
+        else
+        {
+          fprintf(stderr,
+            "ERROR: %s - can not determine decoder type for frame!\n",
+            __FUNCTION__);
+        }
       }
       frameList.clear();
-      user = NULL;
     }
-};
-
-class IDecoder
-{
-  public:
-    virtual ~IDecoder() = default;
-    virtual bool CanDecode(const std::string &filename) = 0;
-    virtual bool LoadFile(const std::string &filename, DecodedFrames &frames) = 0;
-    virtual void FreeDecodedFrames(DecodedFrames &frames) = 0;
-    virtual const char* GetImageFormatName() = 0;
-    virtual const char* GetDecoderName() = 0;
-
-    const std::vector<std::string>& GetSupportedExtensions()
-    {
-      m_supportedExtensions.clear();
-      FillSupportedExtensions();
-      return m_supportedExtensions;
-    }
-
-  protected:
-    virtual void FillSupportedExtensions() = 0;
-    //fill this with extensions in FillSupportedExtensions like ".png"
-    std::vector<std::string> m_supportedExtensions;
 };

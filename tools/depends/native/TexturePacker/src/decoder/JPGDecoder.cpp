@@ -86,7 +86,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // Image Size is calculated as (width * height * bytes per pixel = 4
   ImageSize = cinfo.image_width * cinfo.image_height * 4;
 
-  frames.user = NULL;
   DecodedFrame frame;
 
   frame.rgbaImage.pixels = (char *)new char[ImageSize];
@@ -117,20 +116,18 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frame.rgbaImage.width = cinfo.image_width;
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * cinfo.image_width;
+
+  frame.decoder = this;
+
   frames.frameList.push_back(frame);
 
   delete arq;
   return true;
 }
 
-void JPGDecoder::FreeDecodedFrames(DecodedFrames &frames)
+void JPGDecoder::FreeDecodedFrame(DecodedFrame &frame)
 {
-  for (unsigned int i = 0; i < frames.frameList.size(); i++)
-  {
-    delete [] frames.frameList[i].rgbaImage.pixels;
-  }
-
-  frames.clear();
+  delete [] frame.rgbaImage.pixels;
 }
 
 void JPGDecoder::FillSupportedExtensions()

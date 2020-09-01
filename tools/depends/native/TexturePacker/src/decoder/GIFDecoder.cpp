@@ -33,6 +33,8 @@ bool GIFDecoder::CanDecode(const std::string &filename)
 bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 {
   int n = 0;
+  bool result = false;
+
   GifHelper *gifImage = new GifHelper();
   if (gifImage->LoadGif(filename.c_str()))
   {
@@ -55,33 +57,20 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
         frame.rgbaImage.bbp = 32;
         frame.rgbaImage.pitch = pitch;
         frame.delay = extractedFrames[i]->m_delay;
+        frame.decoder = this;
 
         frames.frameList.push_back(frame);
       }
     }
-    frames.user = gifImage;
-    frames.destroyFN = &gifDestroyFN;
-    return true;
+    result = true;
   }
-  else
-  {
-    delete gifImage;
-    return false;
-  }
+  delete gifImage;
+  return result;
 }
 
-void GIFDecoder::FreeDecodedFrames(DecodedFrames &frames)
+void GIFDecoder::FreeDecodedFrame(DecodedFrame &frame)
 {
-  for (unsigned int i = 0; i < frames.frameList.size(); i++)
-  {
-    delete [] frames.frameList[i].rgbaImage.pixels;
-  }
-  delete (GifHelper *)frames.user;
-  frames.clear();
-}
-void GIFDecoder::gifDestroyFN(void* user)
-{
-  delete (GifHelper *)user;
+  delete [] frame.rgbaImage.pixels;
 }
 
 void GIFDecoder::FillSupportedExtensions()
