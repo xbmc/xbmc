@@ -13174,11 +13174,15 @@ msgid "Remove link to TV show"
 msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/platform/darwin/tvos/TVOSTopShelf.mm
+#: system/settings/darwin_tvos.xml
 msgctxt "#20386"
 msgid "Recently added movies"
 msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/platform/darwin/tvos/TVOSTopShelf.mm
+#: system/settings/darwin_tvos.xml
 msgctxt "#20387"
 msgid "Recently added episodes"
 msgstr ""
@@ -15725,6 +15729,21 @@ msgstr ""
 #: apple remote
 msgctxt "#24163"
 msgid "Match Apple tvOS Standard (Siri remote)"
+msgstr ""
+
+#: system/settings/darwin_tvos.xml
+msgctxt "#24164"
+msgid "Top Shelf"
+msgstr ""
+
+#: system/settings/darwin_tvos.xml
+msgctxt "#24165"
+msgid "This category contains the settings for Apple TV Top Shelf feature. Place Kodi on the first line of your Apple TV Home screen to take advantage of this feature."
+msgstr ""
+
+#: system/settings/darwin_tvos.xml
+msgctxt "#24166"
+msgid "Maximum elements number"
 msgstr ""
 
 #empty strings from id 24164 to 24990

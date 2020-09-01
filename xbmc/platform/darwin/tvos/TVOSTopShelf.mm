@@ -16,6 +16,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "tvosShared.h"
 #include "utils/Base64.h"
 #include "utils/StringUtils.h"
@@ -36,8 +38,6 @@
 #import <sys/sysctl.h>
 
 #import "system.h"
-
-static const int MaxItems = 5;
 
 std::string CTVOSTopShelf::m_url;
 bool CTVOSTopShelf::m_handleUrl;
@@ -77,6 +77,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
     CVideoThumbLoader thumbLoader;
     auto fillSharedDicts =
         [&](CFileItemList& items, NSString* categoryKey, uint32_t categoryTitleCode,
+            int categoryMaxItems,
             std::function<std::string(CFileItemPtr videoItem)> getThumbnailForItem,
             std::function<std::string(CFileItemPtr videoItem)> getTitleForItem) {
           if (items.Size() <= 0)
@@ -93,7 +94,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
           categoryDict[@"categoryTitle"] = @(g_localizeStrings.Get(categoryTitleCode).c_str());
 
           // Create an array to store each category item
-          const int categorySize = std::min(items.Size(), MaxItems);
+          const int categorySize = std::min(items.Size(), categoryMaxItems);
           auto categoryItems = [NSMutableArray arrayWithCapacity:categorySize];
           for (int i = 0; i < categorySize; ++i)
           {
@@ -134,6 +135,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
           sharedJailbreak[categoryKey] = categoryDict;
         };
 
+    const std::shared_ptr<CSettings> settings =
+        CServiceBroker::GetSettingsComponent()->GetSettings();
 
     // Based on category type, add items in TopShelf shared dict
     switch (category)
@@ -141,6 +144,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
       case TVOSTopShelfItemsCategory::MOVIES:
         fillSharedDicts(
             items, @"movies", 20386,
+            settings->GetInt(CSettings::SETTING_APPLETV_TOPSHELF_MOVIESITEMSLIMIT),
             [](CFileItemPtr videoItem) {
               if (videoItem->HasArt("poster"))
                 return videoItem->GetArt("poster");
@@ -154,6 +158,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
         videoDb.Open();
         fillSharedDicts(
             items, @"tvshows", 20387,
+            settings->GetInt(CSettings::SETTING_APPLETV_TOPSHELF_TVSHOWSITEMSLIMIT),
             [&videoDb](CFileItemPtr videoItem) {
               int season = videoItem->GetVideoInfoTag()->m_iIdSeason;
               return season > 0 ? videoDb.GetArtForItem(season, MediaTypeSeason, "poster")

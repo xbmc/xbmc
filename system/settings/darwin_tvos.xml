@@ -18,6 +18,30 @@
     <category id="masterlock">
       <visible>false</visible>
     </category>
+    <category id="topshelf" label="24164" help= "24165">
+      <group id="1" label="24166">
+        <setting id="topshelf.moviesitemslimit" type="integer" label="20386">
+          <level>0</level>
+          <default>5</default>
+          <constraints>
+            <minimum label="13106">0</minimum> <!-- Disabled -->
+            <step>1</step>
+            <maximum>30</maximum>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="topshelf.tvshowsitemslimit" type="integer" label="20387">
+          <level>0</level>
+          <default>5</default>
+          <constraints>
+            <minimum label="13106">0</minimum> <!-- Disabled -->
+            <step>1</step>
+            <maximum>30</maximum>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="system">
     <category id="input">
