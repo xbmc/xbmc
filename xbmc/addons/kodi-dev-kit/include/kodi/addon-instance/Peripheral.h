@@ -487,9 +487,9 @@ extern "C"
 
   typedef struct AddonInstance_Peripheral
   {
-    AddonProps_Peripheral props;
-    AddonToKodiFuncTable_Peripheral toKodi;
-    KodiToAddonFuncTable_Peripheral toAddon;
+    struct AddonProps_Peripheral* props;
+    struct AddonToKodiFuncTable_Peripheral* toKodi;
+    struct KodiToAddonFuncTable_Peripheral* toAddon;
   } AddonInstance_Peripheral;
 
 } /* extern "C" */
@@ -728,9 +728,9 @@ public:
    */
   virtual void PowerOffJoystick(unsigned int index) {}
 
-  const std::string AddonPath() const { return m_instanceData->props.addon_path; }
+  const std::string AddonPath() const { return m_instanceData->props->addon_path; }
 
-  const std::string UserPath() const { return m_instanceData->props.user_path; }
+  const std::string UserPath() const { return m_instanceData->props->user_path; }
 
   /*!
    * @brief Trigger a scan for peripherals
@@ -739,7 +739,7 @@ public:
    */
   void TriggerScan(void)
   {
-    return m_instanceData->toKodi.trigger_scan(m_instanceData->toKodi.kodiInstance);
+    return m_instanceData->toKodi->trigger_scan(m_instanceData->toKodi->kodiInstance);
   }
 
   /*!
@@ -750,8 +750,8 @@ public:
    */
   void RefreshButtonMaps(const std::string& deviceName = "", const std::string& controllerId = "")
   {
-    return m_instanceData->toKodi.refresh_button_maps(m_instanceData->toKodi.kodiInstance,
-                                                      deviceName.c_str(), controllerId.c_str());
+    return m_instanceData->toKodi->refresh_button_maps(m_instanceData->toKodi->kodiInstance,
+                                                       deviceName.c_str(), controllerId.c_str());
   }
 
   /*!
@@ -765,8 +765,8 @@ public:
   unsigned int FeatureCount(const std::string& controllerId,
                             JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
   {
-    return m_instanceData->toKodi.feature_count(m_instanceData->toKodi.kodiInstance,
-                                                controllerId.c_str(), type);
+    return m_instanceData->toKodi->feature_count(m_instanceData->toKodi->kodiInstance,
+                                                 controllerId.c_str(), type);
   }
 
   /*!
@@ -780,8 +780,8 @@ public:
    */
   JOYSTICK_FEATURE_TYPE FeatureType(const std::string& controllerId, const std::string& featureName)
   {
-    return m_instanceData->toKodi.feature_type(m_instanceData->toKodi.kodiInstance,
-                                               controllerId.c_str(), featureName.c_str());
+    return m_instanceData->toKodi->feature_type(m_instanceData->toKodi->kodiInstance,
+                                                controllerId.c_str(), featureName.c_str());
   }
 
 private:
@@ -792,33 +792,33 @@ private:
                              "structure not allowed, table must be given from Kodi!");
 
     m_instanceData = static_cast<AddonInstance_Peripheral*>(instance);
-    m_instanceData->toAddon.addonInstance = this;
+    m_instanceData->toAddon->addonInstance = this;
 
-    m_instanceData->toAddon.get_capabilities = ADDON_GetCapabilities;
-    m_instanceData->toAddon.perform_device_scan = ADDON_PerformDeviceScan;
-    m_instanceData->toAddon.free_scan_results = ADDON_FreeScanResults;
-    m_instanceData->toAddon.get_events = ADDON_GetEvents;
-    m_instanceData->toAddon.free_events = ADDON_FreeEvents;
-    m_instanceData->toAddon.send_event = ADDON_SendEvent;
+    m_instanceData->toAddon->get_capabilities = ADDON_GetCapabilities;
+    m_instanceData->toAddon->perform_device_scan = ADDON_PerformDeviceScan;
+    m_instanceData->toAddon->free_scan_results = ADDON_FreeScanResults;
+    m_instanceData->toAddon->get_events = ADDON_GetEvents;
+    m_instanceData->toAddon->free_events = ADDON_FreeEvents;
+    m_instanceData->toAddon->send_event = ADDON_SendEvent;
 
-    m_instanceData->toAddon.get_joystick_info = ADDON_GetJoystickInfo;
-    m_instanceData->toAddon.free_joystick_info = ADDON_FreeJoystickInfo;
-    m_instanceData->toAddon.get_features = ADDON_GetFeatures;
-    m_instanceData->toAddon.free_features = ADDON_FreeFeatures;
-    m_instanceData->toAddon.map_features = ADDON_MapFeatures;
-    m_instanceData->toAddon.get_ignored_primitives = ADDON_GetIgnoredPrimitives;
-    m_instanceData->toAddon.free_primitives = ADDON_FreePrimitives;
-    m_instanceData->toAddon.set_ignored_primitives = ADDON_SetIgnoredPrimitives;
-    m_instanceData->toAddon.save_button_map = ADDON_SaveButtonMap;
-    m_instanceData->toAddon.revert_button_map = ADDON_RevertButtonMap;
-    m_instanceData->toAddon.reset_button_map = ADDON_ResetButtonMap;
-    m_instanceData->toAddon.power_off_joystick = ADDON_PowerOffJoystick;
+    m_instanceData->toAddon->get_joystick_info = ADDON_GetJoystickInfo;
+    m_instanceData->toAddon->free_joystick_info = ADDON_FreeJoystickInfo;
+    m_instanceData->toAddon->get_features = ADDON_GetFeatures;
+    m_instanceData->toAddon->free_features = ADDON_FreeFeatures;
+    m_instanceData->toAddon->map_features = ADDON_MapFeatures;
+    m_instanceData->toAddon->get_ignored_primitives = ADDON_GetIgnoredPrimitives;
+    m_instanceData->toAddon->free_primitives = ADDON_FreePrimitives;
+    m_instanceData->toAddon->set_ignored_primitives = ADDON_SetIgnoredPrimitives;
+    m_instanceData->toAddon->save_button_map = ADDON_SaveButtonMap;
+    m_instanceData->toAddon->revert_button_map = ADDON_RevertButtonMap;
+    m_instanceData->toAddon->reset_button_map = ADDON_ResetButtonMap;
+    m_instanceData->toAddon->power_off_joystick = ADDON_PowerOffJoystick;
   }
 
   inline static void ADDON_GetCapabilities(const AddonInstance_Peripheral* addonInstance,
                                            PERIPHERAL_CAPABILITIES* capabilities)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->GetCapabilities(*capabilities);
   }
 
@@ -827,7 +827,7 @@ private:
       unsigned int* peripheral_count,
       PERIPHERAL_INFO** scan_results)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->PerformDeviceScan(peripheral_count, scan_results);
   }
 
@@ -835,7 +835,7 @@ private:
                                            unsigned int peripheral_count,
                                            PERIPHERAL_INFO* scan_results)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->FreeScanResults(peripheral_count, scan_results);
   }
 
@@ -843,7 +843,7 @@ private:
                                                  unsigned int* event_count,
                                                  PERIPHERAL_EVENT** events)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->GetEvents(event_count, events);
   }
 
@@ -851,14 +851,14 @@ private:
                                       unsigned int event_count,
                                       PERIPHERAL_EVENT* events)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->FreeEvents(event_count, events);
   }
 
   inline static bool ADDON_SendEvent(const AddonInstance_Peripheral* addonInstance,
                                      const PERIPHERAL_EVENT* event)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->SendEvent(event);
   }
 
@@ -866,14 +866,15 @@ private:
   inline static PERIPHERAL_ERROR ADDON_GetJoystickInfo(
       const AddonInstance_Peripheral* addonInstance, unsigned int index, JOYSTICK_INFO* info)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->GetJoystickInfo(index, info);
   }
 
   inline static void ADDON_FreeJoystickInfo(const AddonInstance_Peripheral* addonInstance,
                                             JOYSTICK_INFO* info)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)->FreeJoystickInfo(info);
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
+        ->FreeJoystickInfo(info);
   }
 
   inline static PERIPHERAL_ERROR ADDON_GetFeatures(const AddonInstance_Peripheral* addonInstance,
@@ -882,7 +883,7 @@ private:
                                                    unsigned int* feature_count,
                                                    JOYSTICK_FEATURE** features)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->GetFeatures(joystick, controller_id, feature_count, features);
   }
 
@@ -890,7 +891,7 @@ private:
                                         unsigned int feature_count,
                                         JOYSTICK_FEATURE* features)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->FreeFeatures(feature_count, features);
   }
 
@@ -900,7 +901,7 @@ private:
                                                    unsigned int feature_count,
                                                    const JOYSTICK_FEATURE* features)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->MapFeatures(joystick, controller_id, feature_count, features);
   }
 
@@ -910,7 +911,7 @@ private:
       unsigned int* primitive_count,
       JOYSTICK_DRIVER_PRIMITIVE** primitives)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->GetIgnoredPrimitives(joystick, primitive_count, primitives);
   }
 
@@ -918,7 +919,7 @@ private:
                                           unsigned int primitive_count,
                                           JOYSTICK_DRIVER_PRIMITIVE* primitives)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->FreePrimitives(primitive_count, primitives);
   }
 
@@ -928,21 +929,21 @@ private:
       unsigned int primitive_count,
       const JOYSTICK_DRIVER_PRIMITIVE* primitives)
   {
-    return static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->SetIgnoredPrimitives(joystick, primitive_count, primitives);
   }
 
   inline static void ADDON_SaveButtonMap(const AddonInstance_Peripheral* addonInstance,
                                          const JOYSTICK_INFO* joystick)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->SaveButtonMap(joystick);
   }
 
   inline static void ADDON_RevertButtonMap(const AddonInstance_Peripheral* addonInstance,
                                            const JOYSTICK_INFO* joystick)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->RevertButtonMap(joystick);
   }
 
@@ -950,14 +951,14 @@ private:
                                           const JOYSTICK_INFO* joystick,
                                           const char* controller_id)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->ResetButtonMap(joystick, controller_id);
   }
 
   inline static void ADDON_PowerOffJoystick(const AddonInstance_Peripheral* addonInstance,
                                             unsigned int index)
   {
-    static_cast<CInstancePeripheral*>(addonInstance->toAddon.addonInstance)
+    static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->PowerOffJoystick(index);
   }
 
