@@ -73,6 +73,9 @@ ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
     DEPENDS += libxkbcommon libinput libudev libevdev mtdev
   endif
+  ifeq ($(TARGET_PLATFORM),gbm)
+    DEPENDS += libdrm mesa
+  endif
 endif
 
 ifeq ($(TARGET_PLATFORM),wayland)
@@ -119,6 +122,8 @@ taglib: $(ZLIB)
 dav1d: meson-cross-file
 fribidi: meson-cross-file
 libspdlog: libfmt
+libdrm: meson-cross-file
+mesa: libdrm meson-cross-file
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
