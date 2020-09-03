@@ -23,6 +23,10 @@ ifeq ($(TARGET_PLATFORM),wayland)
   EXPAT = expat
 endif
 
+ifeq ($(TARGET_PLATFORM),gbm)
+  NATIVE += MarkupSafe Mako
+endif
+
 .PHONY: $(NATIVE) native
 
 all: native
@@ -46,6 +50,8 @@ python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
 wayland-scanner: expat
 waylandpp-scanner: cmake
+MarkupSafe: python3 setuptools
+Mako: MarkupSafe
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2: automake
