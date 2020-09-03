@@ -303,6 +303,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
   {
     // Note: We must lock the db the whole time, otherwise races may occure.
     database->Lock();
+    database->BeginTransaction();
 
     XbmcThreads::EndTime processTimeslice(iMaxTimeslice);
     for (const auto& epg : changedEpgs)
@@ -312,18 +313,18 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
         CLog::Log(LOGDEBUG, "EPG Container: Persisting events for channel '%s'...",
                   epg->GetChannelData()->ChannelName().c_str());
 
-        bReturn &= epg->Persist(database, true);
+        bReturn &= epg->Persist(database);
       }
 
       epg->Unlock();
     }
 
-    if (bReturn)
-      database->CommitInsertQueries();
-
+    CLog::Log(LOGDEBUG, "EPG Container: committing {} queries.", database->TransactionCount());
+    database->CommitTransaction();
     database->Unlock();
   }
 
+  CLog::Log(LOGDEBUG, "EPG Container: Persist completed.");
   return bReturn;
 }
 

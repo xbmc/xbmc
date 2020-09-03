@@ -160,9 +160,8 @@ public:
 
   /*!
    * @brief Persist this container in its database.
-   * @param bCommit Whether to commit the data.
    */
-  void Persist(bool bCommit);
+  void Persist();
 
   /*!
    * @brief Delete this container from its database.

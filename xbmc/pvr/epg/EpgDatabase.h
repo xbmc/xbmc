@@ -221,18 +221,16 @@ namespace PVR
      * @brief Update the last scan time.
      * @param iEpgId The table to update the time for.
      * @param lastScanTime The time to write to the database.
-     * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime, bool bQueueWrite);
+    bool PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime);
 
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.
      * @param epg The table to persist.
-     * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    int Persist(const CPVREpg& epg, bool bQueueWrite);
+    int Persist(const CPVREpg& epg);
 
     /*!
      * @brief Erase all EPG tags with the given epg ID and an end time less than the given time.
@@ -252,10 +250,9 @@ namespace PVR
     /*!
      * @brief Persist an infotag.
      * @param tag The tag to persist.
-     * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    int Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate = true);
+    int Persist(const CPVREpgInfoTag& tag);
 
     /*!
      * @return Last EPG id in the database

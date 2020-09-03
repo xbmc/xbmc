@@ -572,7 +572,7 @@ bool CPVREpgTagsContainer::NeedsSave() const
   return !m_changedTags.empty() || !m_deletedTags.empty();
 }
 
-void CPVREpgTagsContainer::Persist(bool bCommit)
+void CPVREpgTagsContainer::Persist()
 {
   if (m_database)
   {
@@ -592,13 +592,10 @@ void CPVREpgTagsContainer::Persist(bool bCommit)
       m_database->DeleteEpgTagsByMinEndMaxStartTime(m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND,
                                                     tag.second->EndAsUTC() - ONE_SECOND);
 
-      tag.second->Persist(m_database, false);
+      tag.second->Persist(m_database);
     }
 
     m_changedTags.clear();
-
-    if (bCommit)
-      m_database->CommitInsertQueries();
 
     m_database->Unlock();
   }

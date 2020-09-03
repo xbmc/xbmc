@@ -960,18 +960,16 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
   return bReturn;
 }
 
-bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId,
-                                             const CDateTime& lastScanTime,
-                                             bool bQueueWrite)
+bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId, const CDateTime& lastScanTime)
 {
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, lastScanTime.GetAsDBDateTime().c_str());
 
-  return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
+  return ExecuteQuery(strQuery);
 }
 
-int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
+int CPVREpgDatabase::Persist(const CPVREpg& epg)
 {
   int iReturn = -1;
   std::string strQuery;
@@ -986,16 +984,8 @@ int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
                           "VALUES ('%s', '%s');",
                           epg.Name().c_str(), epg.ScraperName().c_str());
 
-  if (bQueueWrite)
-  {
-    if (QueueInsertQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? 0 : epg.EpgID();
-  }
-  else
-  {
-    if (ExecuteQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? static_cast<int>(m_pDS->lastinsertid()) : epg.EpgID();
-  }
+  if (ExecuteQuery(strQuery))
+    iReturn = epg.EpgID() <= 0 ? static_cast<int>(m_pDS->lastinsertid()) : epg.EpgID();
 
   return iReturn;
 }
@@ -1022,7 +1012,7 @@ bool CPVREpgDatabase::DeleteEpgTags(int iEpgId)
   return DeleteValues("epgtags", filter);
 }
 
-int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = true */)
+int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag)
 {
   int iReturn(-1);
 
@@ -1081,16 +1071,8 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = 
         tag.UniqueBroadcastID(), iBroadcastId);
   }
 
-  if (bSingleUpdate)
-  {
-    if (ExecuteQuery(strQuery))
-      iReturn = static_cast<int>(m_pDS->lastinsertid());
-  }
-  else
-  {
-    QueueInsertQuery(strQuery);
-    iReturn = 0;
-  }
+  if (ExecuteQuery(strQuery))
+    iReturn = static_cast<int>(m_pDS->lastinsertid());
 
   return iReturn;
 }

@@ -550,7 +550,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
   return bChanged;
 }
 
-bool CPVREpgInfoTag::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bSingleUpdate /* = true */)
+bool CPVREpgInfoTag::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
 {
   bool bReturn = false;
 
@@ -560,7 +560,7 @@ bool CPVREpgInfoTag::Persist(const std::shared_ptr<CPVREpgDatabase>& database, b
     return bReturn;
   }
 
-  int iId = database->Persist(*this, bSingleUpdate);
+  int iId = database->Persist(*this);
   if (iId >= 0)
   {
     bReturn = true;

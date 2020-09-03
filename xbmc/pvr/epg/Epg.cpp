@@ -291,7 +291,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags() const
   return m_tags.GetAllTags();
 }
 
-bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQueueWrite)
+bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database)
 {
   // Note: It is guaranteed that both this EPG instance and database instance are already
   //       locked when this method gets called! No additional locking is needed here!
@@ -304,7 +304,7 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQu
 
   if (m_iEpgID <= 0 || m_bChanged)
   {
-    const int iId = database->Persist(*this, m_iEpgID > 0);
+    const int iId = database->Persist(*this);
     if (iId > 0 && m_iEpgID != iId)
     {
       m_iEpgID = iId;
@@ -313,15 +313,15 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQu
   }
 
   if (m_tags.NeedsSave())
-    m_tags.Persist(!bQueueWrite);
+    m_tags.Persist();
 
   if (m_bUpdateLastScanTime)
-    database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, bQueueWrite);
+    database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime);
 
   m_bChanged = false;
   m_bUpdateLastScanTime = false;
 
-  return bQueueWrite || database->CommitInsertQueries();
+  return true;
 }
 
 bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)
