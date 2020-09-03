@@ -590,11 +590,30 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
 
 bool CPVREpgContainer::RemoveOldEntries()
 {
-  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
+  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() -
+                              CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (database)
+  {
+    database->Lock();
+    database->BeginTransaction();
+  }
+
+  CLog::Log(LOGDEBUG, "EPG Container: Removing old entries...");
 
   /* call Cleanup() on all known EPG tables */
   for (const auto& epgEntry : m_epgIdToEpgMap)
     epgEntry.second->Cleanup(cleanupTime);
+
+  if (database)
+  {
+    CLog::Log(LOGDEBUG, "EPG Container: Committing removed old entries ({} queries)...",
+              database->TransactionCount());
+    database->CommitTransaction();
+    database->Unlock();
+  }
+
+  CLog::Log(LOGDEBUG, "EPG Container: Old entries removed");
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
