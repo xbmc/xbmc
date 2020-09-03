@@ -62,8 +62,8 @@ WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
   DEPENDS += dbus libuuid
-  #not for raspberry pi
-  ifneq ($(TARGET_PLATFORM),raspberry-pi)
+  # not for raspberry pi or gbm
+  ifeq (,$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
     DEPENDS += linux-system-libs
     WAYLANDPP_DEPS += linux-system-libs
   endif
