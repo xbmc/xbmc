@@ -578,7 +578,7 @@ void CPVREpgTagsContainer::Persist()
   {
     m_database->Lock();
 
-    CLog::Log(LOGDEBUG, "EPG Tags Container: Updating %d, deleting %d events...",
+    CLog::Log(LOGDEBUG, LOGEPG, "EPG Tags Container: Updating %d, deleting %d events...",
               m_changedTags.size(), m_deletedTags.size());
 
     for (const auto& tag : m_deletedTags)

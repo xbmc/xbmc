@@ -310,7 +310,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
     {
       if (!processTimeslice.IsTimePast())
       {
-        CLog::Log(LOGDEBUG, "EPG Container: Persisting events for channel '%s'...",
+        CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: Persisting events for channel '%s'...",
                   epg->GetChannelData()->ChannelName().c_str());
 
         bReturn &= epg->Persist(database);
@@ -319,12 +319,13 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
       epg->Unlock();
     }
 
-    CLog::Log(LOGDEBUG, "EPG Container: committing {} queries.", database->TransactionCount());
+    CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: committing {} queries.",
+              database->TransactionCount());
     database->CommitTransaction();
     database->Unlock();
   }
 
-  CLog::Log(LOGDEBUG, "EPG Container: Persist completed.");
+  CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: Persist completed.");
   return bReturn;
 }
 
@@ -599,7 +600,7 @@ bool CPVREpgContainer::RemoveOldEntries()
     database->BeginTransaction();
   }
 
-  CLog::Log(LOGDEBUG, "EPG Container: Removing old entries...");
+  CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: Removing old entries...");
 
   /* call Cleanup() on all known EPG tables */
   for (const auto& epgEntry : m_epgIdToEpgMap)
@@ -607,13 +608,13 @@ bool CPVREpgContainer::RemoveOldEntries()
 
   if (database)
   {
-    CLog::Log(LOGDEBUG, "EPG Container: Committing removed old entries ({} queries)...",
+    CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: Committing removed old entries ({} queries)...",
               database->TransactionCount());
     database->CommitTransaction();
     database->Unlock();
   }
 
-  CLog::Log(LOGDEBUG, "EPG Container: Old entries removed");
+  CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: Old entries removed");
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
