@@ -1,0 +1,9 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-arm-gbm
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ] && [ "$BINARY_ADDONS_CLEAN_NATIVETOOLS" != "0" ]
+then
+  git clean -xffd $WORKSPACE/tools/depends/native
+  cd $WORKSPACE/tools/depends/native;make -j $BUILDTHREADS && tagSuccessFulBuild $WORKSPACE/tools/depends
+fi
