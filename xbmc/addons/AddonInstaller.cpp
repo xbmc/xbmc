@@ -737,12 +737,19 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
 
   if (!deps.empty() && m_addon->HasType(ADDON_REPOSITORY))
   {
-    CLog::Log(
-        LOGERROR,
-        "CAddonInstallJob::{}: failed to install repository [{}]. It has dependencies defined",
-        __func__, m_addon->ID());
-    ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24088));
-    return false;
+    bool notSystemAddon = std::none_of(deps.begin(), deps.end(), [](const DependencyInfo& dep) {
+      return CServiceBroker::GetAddonMgr().IsSystemAddon(dep.id);
+    });
+
+    if (notSystemAddon)
+    {
+      CLog::Log(
+          LOGERROR,
+          "CAddonInstallJob::{}: failed to install repository [{}]. It has dependencies defined",
+          __func__, m_addon->ID());
+      ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24088));
+      return false;
+    }
   }
 
   SetText(g_localizeStrings.Get(24079));
