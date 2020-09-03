@@ -314,6 +314,13 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
                   epg->GetChannelData()->ChannelName().c_str());
 
         bReturn &= epg->Persist(database);
+        if (database->TransactionCount() > 10000)
+        {
+          CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: committing {} queries in loop.",
+                    database->TransactionCount());
+          database->CommitTransaction();
+          database->BeginTransaction();
+        }
       }
 
       epg->Unlock();
