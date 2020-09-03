@@ -23,7 +23,8 @@ namespace ADDON
   public:
     struct DirInfo
     {
-      AddonVersion version{""};
+      AddonVersion minversion{""};
+      AddonVersion maxversion{""};
       std::string info;
       std::string checksum;
       KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};
