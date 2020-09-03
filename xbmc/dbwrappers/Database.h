@@ -106,6 +106,7 @@ public:
   virtual bool CommitTransaction();
   void RollbackTransaction();
   bool InTransaction();
+  int TransactionCount();
   void CopyDB(const std::string& latestDb);
   void DropAnalytics();
 
@@ -255,4 +256,6 @@ private:
 
   bool m_multipleExecute;
   std::vector<std::string> m_multipleQueries;
+
+  int m_transactionCount; /*!< Number of transactions since BeginTransaction() */
 };

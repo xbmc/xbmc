@@ -227,6 +227,7 @@ CDatabase::CDatabase() :
   m_sqlite = true;
   m_bMultiWrite = false;
   m_multipleExecute = false;
+  m_transactionCount = 0;
 }
 
 CDatabase::~CDatabase(void)
@@ -348,6 +349,8 @@ bool CDatabase::ExecuteQuery(const std::string &strQuery)
       return bReturn;
     m_pDS->exec(strQuery);
     bReturn = true;
+    if (InTransaction())
+      ++m_transactionCount;
   }
   catch (...)
   {
@@ -607,6 +610,7 @@ void CDatabase::Close()
 
   m_openCount = 0;
   m_multipleExecute = false;
+  m_transactionCount = 0;
 
   if (nullptr == m_pDB)
     return;
@@ -667,6 +671,7 @@ void CDatabase::BeginTransaction()
   {
     if (nullptr != m_pDB)
       m_pDB->start_transaction();
+    m_transactionCount = 0;
   }
   catch (...)
   {
@@ -707,6 +712,11 @@ bool CDatabase::InTransaction()
   if (nullptr == m_pDB.get())
     return false;
   return m_pDB->in_transaction();
+}
+
+int CDatabase::TransactionCount()
+{
+  return m_transactionCount;
 }
 
 bool CDatabase::CreateDatabase()
