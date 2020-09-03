@@ -75,6 +75,10 @@ ifeq ($(OS),linux)
   endif
   ifeq ($(TARGET_PLATFORM),gbm)
     DEPENDS += libdrm mesa
+    ifeq ($(CPU),x86_64)
+      DEPENDS += libva
+      LIBVA = libva
+    endif
   endif
 endif
 
@@ -107,7 +111,7 @@ pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
 libcec: p8-platform
 crossguid: $(LIBUUID)
 libdvdnav: libdvdread
@@ -124,6 +128,7 @@ fribidi: meson-cross-file
 libspdlog: libfmt
 libdrm: meson-cross-file
 mesa: libdrm meson-cross-file
+libva: libdrm
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
