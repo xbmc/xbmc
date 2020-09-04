@@ -595,7 +595,7 @@ bool CPVREpgTagsContainer::NeedsSave() const
   return !m_changedTags.empty() || !m_deletedTags.empty();
 }
 
-void CPVREpgTagsContainer::Persist(bool bCommit)
+void CPVREpgTagsContainer::Persist(bool bQueueWrite)
 {
   if (m_database)
   {
@@ -605,7 +605,7 @@ void CPVREpgTagsContainer::Persist(bool bCommit)
               m_changedTags.size(), m_deletedTags.size());
 
     for (const auto& tag : m_deletedTags)
-      m_database->Delete(*tag.second);
+      m_database->Delete(*tag.second, !bQueueWrite);
 
     m_deletedTags.clear();
 
@@ -615,15 +615,13 @@ void CPVREpgTagsContainer::Persist(bool bCommit)
     {
       // remove any conflicting events from database before persisting the new event
       m_database->DeleteEpgTagsByMinEndMaxStartTime(m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND,
-                                                    tag.second->EndAsUTC() - ONE_SECOND);
+                                                    tag.second->EndAsUTC() - ONE_SECOND,
+                                                    !bQueueWrite);
 
-      tag.second->Persist(m_database, false);
+      tag.second->Persist(m_database, !bQueueWrite);
     }
 
     m_changedTags.clear();
-
-    if (bCommit)
-      m_database->CommitInsertQueries();
 
     m_database->Unlock();
   }

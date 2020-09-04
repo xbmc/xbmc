@@ -319,7 +319,10 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
     }
 
     if (bReturn)
+    {
+      database->CommitDeleteQueries();
       database->CommitInsertQueries();
+    }
 
     database->Unlock();
   }

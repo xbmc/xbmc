@@ -188,6 +188,19 @@ public:
    */
   bool CommitInsertQueries();
 
+  /*!
+   * @brief Put a DELETE query in the queue.
+   * @param strQuery The query to queue.
+   * @return True if the query was added successfully, false otherwise.
+   */
+  bool QueueDeleteQuery(const std::string& strQuery);
+
+  /*!
+   * @brief Commit all queued DELETE queries.
+   * @return True if all queries were executed successfully, false otherwise.
+   */
+  bool CommitDeleteQueries();
+
   virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl);
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
@@ -249,7 +262,10 @@ private:
   void InitSettings(DatabaseSettings &dbSettings);
   void UpdateVersionNumber();
 
-  bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
+  bool m_bMultiInsert =
+      false; /*!< True if there are any queries in the insert queue, false otherwise */
+  bool m_bMultiDelete =
+      false; /*!< True if there are any queries in the delete queue, false otherwise */
   unsigned int m_openCount;
 
   bool m_multipleExecute;

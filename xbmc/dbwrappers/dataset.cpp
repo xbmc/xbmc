@@ -293,8 +293,16 @@ void Dataset::post() {
 }
 
 
-void Dataset::deletion() {
-  if (ds_state == dsSelect) make_deletion();
+void Dataset::del()
+{
+  ds_state = dsDelete;
+}
+
+
+void Dataset::deletion()
+{
+  if (ds_state == dsDelete)
+    make_deletion();
 }
 
 

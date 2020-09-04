@@ -313,7 +313,7 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQu
   }
 
   if (m_tags.NeedsSave())
-    m_tags.Persist(!bQueueWrite);
+    m_tags.Persist(bQueueWrite);
 
   if (m_bUpdateLastScanTime)
     database->PersistLastEpgScanTime(m_iEpgID, m_lastScanTime, bQueueWrite);
@@ -321,7 +321,7 @@ bool CPVREpg::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQu
   m_bChanged = false;
   m_bUpdateLastScanTime = false;
 
-  return bQueueWrite || database->CommitInsertQueries();
+  return true;
 }
 
 bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)

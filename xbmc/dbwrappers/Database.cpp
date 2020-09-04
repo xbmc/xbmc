@@ -225,7 +225,6 @@ CDatabase::CDatabase() :
 {
   m_openCount = 0;
   m_sqlite = true;
-  m_bMultiWrite = false;
   m_multipleExecute = false;
 }
 
@@ -387,14 +386,14 @@ bool CDatabase::QueueInsertQuery(const std::string &strQuery)
   if (strQuery.empty())
     return false;
 
-  if (!m_bMultiWrite)
+  if (!m_bMultiInsert)
   {
     if (nullptr == m_pDB)
       return false;
     if (nullptr == m_pDS2)
       return false;
 
-    m_bMultiWrite = true;
+    m_bMultiInsert = true;
     m_pDS2->insert();
   }
 
@@ -407,11 +406,11 @@ bool CDatabase::CommitInsertQueries()
 {
   bool bReturn = true;
 
-  if (m_bMultiWrite)
+  if (m_bMultiInsert)
   {
     try
     {
-      m_bMultiWrite = false;
+      m_bMultiInsert = false;
       m_pDS2->post();
       m_pDS2->clear_insert_sql();
     }
@@ -420,6 +419,39 @@ bool CDatabase::CommitInsertQueries()
       bReturn = false;
       CLog::Log(LOGERROR, "%s - failed to execute queries",
           __FUNCTION__);
+    }
+  }
+
+  return bReturn;
+}
+
+bool CDatabase::QueueDeleteQuery(const std::string& strQuery)
+{
+  if (strQuery.empty() || !m_pDB || !m_pDS)
+    return false;
+
+  m_bMultiDelete = true;
+  m_pDS->del();
+  m_pDS->add_delete_sql(strQuery);
+  return true;
+}
+
+bool CDatabase::CommitDeleteQueries()
+{
+  bool bReturn = true;
+
+  if (m_bMultiDelete)
+  {
+    try
+    {
+      m_bMultiDelete = false;
+      m_pDS->deletion();
+      m_pDS->clear_delete_sql();
+    }
+    catch (...)
+    {
+      bReturn = false;
+      CLog::Log(LOGERROR, "%s - failed to execute queries", __FUNCTION__);
     }
   }
 

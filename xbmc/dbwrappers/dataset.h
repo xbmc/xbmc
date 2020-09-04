@@ -333,8 +333,10 @@ public:
   virtual void append() { insert(); }
 /* Start the edit mode */
   virtual void edit();
+  /* Start the delete mode */
+  virtual void del();
 
-/* Add changes, that were made during insert or edit states of dataset into the database */
+  /* Add changes, that were made during insert or edit states of dataset into the database */
   virtual void post();
 /* Delete statements from database */
   virtual void deletion();

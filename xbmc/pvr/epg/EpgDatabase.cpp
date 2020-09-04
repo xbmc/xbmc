@@ -290,7 +290,7 @@ bool CPVREpgDatabase::Delete(const CPVREpg& table)
   return DeleteValues("epg", filter);
 }
 
-bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag)
+bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag, bool bSingleDelete)
 {
   /* tag without a database ID was not persisted */
   if (tag.DatabaseID() <= 0)
@@ -300,7 +300,17 @@ bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag)
 
   CSingleLock lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idBroadcast = %u", tag.DatabaseID()));
-  return DeleteValues("epgtags", filter);
+
+  if (bSingleDelete)
+  {
+    return DeleteValues("epgtags", filter);
+  }
+  else
+  {
+    std::string strQuery;
+    BuildSQL(PrepareSQL("DELETE FROM %s ", "epgtags"), filter, strQuery);
+    return QueueDeleteQuery(strQuery);
+  }
 }
 
 std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
@@ -896,7 +906,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEnd
 
 bool CPVREpgDatabase::DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
                                                         const CDateTime& minEndTime,
-                                                        const CDateTime& maxStartTime)
+                                                        const CDateTime& maxStartTime,
+                                                        bool bSingleDelete)
 {
   time_t minEnd;
   minEndTime.GetAsTime(minEnd);
@@ -910,7 +921,17 @@ bool CPVREpgDatabase::DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
   filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime >= %u AND iStartTime <= %u", iEpgID,
                                 static_cast<unsigned int>(minEnd),
                                 static_cast<unsigned int>(maxStart)));
-  return DeleteValues("epgtags", filter);
+
+  if (bSingleDelete)
+  {
+    return DeleteValues("epgtags", filter);
+  }
+  else
+  {
+    std::string strQuery;
+    BuildSQL("DELETE FROM epgtags", filter, strQuery);
+    return QueueDeleteQuery(strQuery);
+  }
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID)

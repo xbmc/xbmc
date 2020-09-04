@@ -160,9 +160,9 @@ public:
 
   /*!
    * @brief Persist this container in its database.
-   * @param bCommit Whether to commit the data.
+   * @param bQueueWrite If true, don't persist data in the database immediately, only queue it.
    */
-  void Persist(bool bCommit);
+  void Persist(bool bQueueWrite);
 
   /*!
    * @brief Delete this container from its database.

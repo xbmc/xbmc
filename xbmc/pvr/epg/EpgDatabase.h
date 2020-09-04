@@ -90,9 +90,11 @@ namespace PVR
     /*!
      * @brief Remove a single EPG entry.
      * @param tag The entry to remove.
-     * @return True if it was removed successfully, false otherwise.
+     * @param bSingleDelete If true, this is a single delete and the query will be executed
+     * immediately.
+     * @return True if it was removed or queued successfully, false otherwise.
      */
-    bool Delete(const CPVREpgInfoTag& tag);
+    bool Delete(const CPVREpgInfoTag& tag, bool bSingleDelete);
 
     /*!
      * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
@@ -203,11 +205,14 @@ namespace PVR
      * @param iEpgID The ID of the EPG for the tags to delete.
      * @param minEndTime The min end time for the tags to delete.
      * @param maxStartTime The max start time for the tags to delete.
-     * @return True on success, false otherwise.
+     * @param bSingleDelete If true, this is a single delete and the query will be executed
+     * immediately.
+     * @return True if it was removed or queued successfully, false otherwise.
      */
     bool DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
                                            const CDateTime& minEndTime,
-                                           const CDateTime& maxStartTime);
+                                           const CDateTime& maxStartTime,
+                                           bool bSingleDelete);
 
     /*!
      * @brief Get the last stored EPG scan time.
@@ -230,7 +235,7 @@ namespace PVR
      * @brief Persist an EPG table. It's entries are not persisted.
      * @param epg The table to persist.
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
-     * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
+     * @return The database ID of this entry or 0 if bQueueWrite is false and the query was queued.
      */
     int Persist(const CPVREpg& epg, bool bQueueWrite);
 
