@@ -3,6 +3,7 @@
 	<defaultcontrol always="true">10</defaultcontrol>
 	<views>10</views>
 	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
+	<onunload>ClearProperty(ViewMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
 		<include>SideMenu</include>
@@ -39,6 +40,10 @@
 		</control>
 		<include>ScrollBarCommons</include>
 		<include>BottomMenu</include>
+		<include content="ViewMenu">
+			<param name="panel-posy">-80</param>
+			<param name="panel-height">640</param>
+		</include>
 		<include content="PopupMenu">
 			<param name="panel-posy">0</param>
 			<param name="panel-height">560</param>

@@ -213,11 +213,11 @@
 				<label>19003</label>
 				<visible>Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo)</visible>
 			</control>
-			<control type="button" id="7">
-				<description>OK</description>
+			<control type="button" id="11">
+				<description>Reminders</description>
 				<width>230</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>186</label>
+				<label>826</label>
 			</control>
 		</control>
 	</controls>

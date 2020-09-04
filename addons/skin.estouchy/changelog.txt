@@ -1,3 +1,16 @@
+V3.0.3
+- Add chapter indicators to the progress bar
+- Add sort method / sort order / Channel group options to the PVR sections
+- Larger progress and volume bar 
+
+V3.0.2
+- Updated language files from Transifex
+
+V3.0.1
+- Updated language files from Transifex
+
+V3.0.0
+- Kodi v19 Matrix
 
 V2.0.0
 - Kodi v18 Leia
