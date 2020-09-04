@@ -1,0 +1,130 @@
+@dot
+digraph D {
+  graph [label="Orthogonal edges", splines=ortho, nodesep=1.0];
+  node [shape=box fontname=Arial];
+
+  rankdir=LR;
+  color = "white"
+  bgcolor = "white"
+  fillcolor = "white"
+  fontcolor = "white"
+  pencolor = "white"
+
+  _15 [
+    label = <<b>Input Handling</b><br/><font color="#777777"><i>CGenericJoystickInputHandling</i></font>>
+  ]
+
+  _16 [
+    label = <<b>Button Mapping</b><br/><font color="#777777"><i>CGenericJoystickButtonMapping</i></font>>
+  ]
+
+  _19 [
+    label = <<b>Joystick Imitation</b><br/><font color="#777777"><i>CGenericKeyboadHandler</i></font>>
+  ]
+
+  _20 [
+    label = <<b>Button Map</b><br/><font color="#777777"><i>CAddonJoystickButtonMap</i></font>>
+  ]
+
+  _21 [
+    label = <<b>Game Controller</b><br/><font color="#777777"><i>CControllerInput</i></font>>
+  ]
+
+  _22 [
+    label = <<b>Game Add-on</b><br/><font color="#777777"><i>CGameClient</i></font>>
+  ]
+
+  _23 [
+    label = <<b>Button Dialog</b><br/><font color="#777777"><i>CGUIDialogControllerInput</i></font>>
+  ]
+
+  _24 [
+    label = <<b>Game Controller Add-ons</b><br/><font color="#777777"><i>CGameController</i></font>>
+  ]
+
+  _27 [
+    label = <<b>Button Mapper</b><br/><font color="#777777"><i>CButtonMapper</i></font>>
+  ]
+
+  _28 [
+    label = <<b>Libretro Device</b><br/><font color="#777777"><i>CLibretroDevice</i></font>>
+  ]
+
+  _29 [
+    label = <<b>Libretro Core</b><br/><font color="#777777"><i>CLibretroDll</i></font>>
+  ]
+
+  _15 -> _21 [penwidth=3, weight=10];
+  _21 -> _22 [penwidth=3, weight=5];
+  _27 -> _28 -> _29 [penwidth=3, dir=forward, constraint=false, weight=10];
+  _22 -> _28 [penwidth=3, weight=10];
+  _24 -> _21 [penwidth=3, weight=10];
+
+  subgraph cluster_7 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Input Library</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+    rank=same;
+
+    subgraph cluster_7_1 {
+      graph [nodesep=6, ranksep=4];
+      label = ""
+      pencolor = "red";
+      _15 [style=filled, fillcolor=white];
+      _16 [style=filled, fillcolor=white];
+    }
+
+    subgraph cluster_7_2 {
+        graph [nodesep=6, ranksep=4];
+        label = "";
+      "-"  [
+        color="red"
+        fontcolor="red"
+        bgcolor = "red";
+      ];
+      pencolor = "red";
+    }
+
+    subgraph cluster_7_3 {
+      graph [nodesep=6, ranksep=4];
+      label = ""
+      pencolor = "red";
+      _19 [style=filled, fillcolor=white];
+      _20 [style=filled, fillcolor=white];
+    }
+  }
+
+  subgraph cluster_8 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Game API</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    _21 [style=filled, fillcolor=white];
+    _22 [style=filled, fillcolor=white];
+  }
+
+  subgraph cluster_9 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Configuration GUI</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    _23 [style=filled, fillcolor=white];
+    _24 [style=filled, fillcolor=white];
+  }
+
+  subgraph cluster_11 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Libretro API Wrapper</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+    rank=same;
+
+    _27 [style=filled, fillcolor=white];
+    _28 [style=filled, fillcolor=white];
+    _29 [style=filled, fillcolor=white];
+  }
+}
+@enddot

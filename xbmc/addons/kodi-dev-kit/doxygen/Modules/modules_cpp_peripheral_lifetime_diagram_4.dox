@@ -1,0 +1,94 @@
+@dot
+digraph D {
+  graph [label="Orthogonal edges", splines=ortho, nodesep=1.0];
+  node [shape=box fontname=Arial];
+
+  rankdir=LR;
+  color = "white"
+  bgcolor = "white"
+  fillcolor = "white"
+  fontcolor = "white"
+  pencolor = "white"
+
+  _11 [
+    label = <<b>Joystick Peripheral</b><br/><font color="#777777"><i>CPeripheralJoystick</i></font>>
+  ]
+
+  _12 [
+    label = <<b>Event Handling</b><br/><font color="#777777"><i>IJoystickDriverHandler</i></font>>
+  ]
+
+  _13 [
+    label = <<b>Keyboard Peripheral</b><br/><font color="#777777"><i>CPeripheralKeyboard</i></font>>
+  ]
+
+  _14 [
+    label = <<b>Keyboard Handling</b><br/><font color="#777777"><i>IKeyboardHandler</i></font>>
+  ]
+
+  _15 [
+    label = <<b>Input Handling</b><br/><font color="#777777"><i>CGenericJoystickInputHandling</i></font>>
+  ]
+
+  _16 [
+    label = <<b>Button Mapping</b><br/><font color="#777777"><i>CGenericJoystickButtonMapping</i></font>>
+  ]
+
+  _12 -> _15 [penwidth=3, weight=-10];
+  _12 -> _16 [penwidth=3];
+
+  subgraph cluster_4 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Peripheral Busses</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    subgraph cluster_4_1 {
+      graph [nodesep=6, ranksep=4];
+      label = <<font point-size='18'><b>Virtual Add-on Bus</b></font><br/><font color="#777777"><i>CPeripheralBusAddon</i></font>>;
+      fontcolor = "black";
+      bgcolor = "white";
+
+      _11 [style=filled, fillcolor=white];
+      _12 [style=filled, fillcolor=white];
+
+    }
+
+    subgraph cluster_4_2 {
+      graph [nodesep=6, ranksep=4];
+        label = "";
+      ""  [
+        color="red"
+        bgcolor = "red";
+      ];
+      pencolor = "red";
+    }
+
+    subgraph cluster_4_3 {
+      graph [nodesep=6, ranksep=4];
+      label = <<font point-size='18'><b>Virtual Application Bus</b></font><br/><font color="#777777"><i>CPeripheralBusApplication</i></font>>;
+      fontcolor = "black";
+      bgcolor = "white";
+
+      _13 [style=filled, fillcolor=white];
+      _14 [style=filled, fillcolor=white];
+    }
+  }
+
+  subgraph cluster_7 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Input Library</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+    rank=same;
+
+    subgraph cluster_7_1 {
+      graph [nodesep=6, ranksep=4];
+      label = ""
+      pencolor = "red";
+      _15 [style=filled, fillcolor=white];
+      _16 [style=filled, fillcolor=white];
+    }
+  }
+}
+@enddot
