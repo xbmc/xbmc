@@ -842,7 +842,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// listitem.addContextMenuItems([('Theater Showtimes', 'RunScript(special://home/scripts/showtimes/default.py,Iron Man)')])
+      /// listitem.addContextMenuItems([('Theater Showtimes', 'RunScript(script.myaddon,title=Iron Man)')])
       /// ...
       /// ~~~~~~~~~~~~~
       ///

@@ -39,7 +39,7 @@ namespace XBMCAddon
     ///                             look for.
     /// @param scriptPath           string - path to script. used to
     ///                             fallback to if the xml doesn't exist in
-    ///                             the current skin. (eg xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))
+    ///                             the current skin. (eg xbmcaddon.Addon().getAddonInfo('path'))
     /// @param defaultSkin          [opt] string - name of the folder in the
     ///                             skins path to look in for the xml.
     ///                             (default='Default')
@@ -62,7 +62,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080i', False)
+    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path'), 'default', '1080i', False)
     /// win.doModal()
     /// del win
     /// ..
@@ -463,7 +463,7 @@ namespace XBMCAddon
     ///                                 look for.
     /// @param scriptPath               string - path to script. used to
     ///                                 fallback to if the xml doesn't exist in
-    ///                                 the current skin. (eg \ref python_xbmcaddon_Addon "xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))"
+    ///                                 the current skin. (eg \ref python_xbmcaddon_Addon "xbmcaddon.Addon().getAddonInfo('path'))"
     /// @param defaultSkin              [opt] string - name of the folder in the
     ///                                 skins path to look in for the xml.
     ///                                 (default='Default')
@@ -479,7 +479,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// dialog = xbmcgui.WindowXMLDialog('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080i')
+    /// dialog = xbmcgui.WindowXMLDialog('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path'), 'default', '1080i')
     /// dialog.doModal()
     /// del dialog
     /// ..
