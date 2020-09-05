@@ -526,6 +526,16 @@ void Dataset::clear_delete_sql(){
   delete_sql.clear();
 }
 
+size_t Dataset::insert_sql_count()
+{
+  return insert_sql.size();
+}
+
+size_t Dataset::delete_sql_count()
+{
+  return delete_sql.size();
+}
+
 int Dataset::field_count() { return fields_object->size();}
 int Dataset::fieldCount() { return fields_object->size();}
 

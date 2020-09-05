@@ -425,6 +425,11 @@ bool CDatabase::CommitInsertQueries()
   return bReturn;
 }
 
+size_t CDatabase::GetInsertQueriesCount()
+{
+  return m_pDS2->insert_sql_count();
+}
+
 bool CDatabase::QueueDeleteQuery(const std::string& strQuery)
 {
   if (strQuery.empty() || !m_pDB || !m_pDS)
@@ -456,6 +461,11 @@ bool CDatabase::CommitDeleteQueries()
   }
 
   return bReturn;
+}
+
+size_t CDatabase::GetDeleteQueriesCount()
+{
+  return m_pDS->delete_sql_count();
 }
 
 bool CDatabase::Open()

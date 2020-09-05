@@ -313,6 +313,15 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
                   epg->GetChannelData()->ChannelName().c_str());
 
         bReturn &= epg->Persist(database, true);
+
+        size_t queryCount = database->GetInsertQueriesCount() + database->GetDeleteQueriesCount();
+        if (queryCount > 10000)
+        {
+          CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: committing %d queries in loop.", queryCount);
+          database->CommitDeleteQueries();
+          database->CommitInsertQueries();
+          CLog::Log(LOGDEBUG, LOGEPG, "EPG Container: committed %d queries in loop.", queryCount);
+        }
       }
 
       epg->Unlock();

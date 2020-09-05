@@ -189,6 +189,12 @@ public:
   bool CommitInsertQueries();
 
   /*!
+   * @brief Get the number of INSERT queries in the queue.
+   * @return The number of queries.
+   */
+  size_t GetInsertQueriesCount();
+
+  /*!
    * @brief Put a DELETE query in the queue.
    * @param strQuery The query to queue.
    * @return True if the query was added successfully, false otherwise.
@@ -200,6 +206,12 @@ public:
    * @return True if all queries were executed successfully, false otherwise.
    */
   bool CommitDeleteQueries();
+
+  /*!
+   * @brief Get the number of DELETE queries in the queue.
+   * @return The number of queries.
+   */
+  size_t GetDeleteQueriesCount();
 
   virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl);
