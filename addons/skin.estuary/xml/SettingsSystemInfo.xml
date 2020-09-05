@@ -17,11 +17,11 @@
 		</control>
 		<control type="group">
 			<left>40</left>
-			<top>70</top>
+			<top>133</top>
 			<include>OpenClose_Right</include>
 			<control type="grouplist">
 				<left>420</left>
-				<top>105</top>
+				<top>30</top>
 				<height>550</height>
 				<orientation>vertical</orientation>
 				<control type="label" id="2">
@@ -83,14 +83,14 @@
 			<control type="textbox" id="30">
 				<left>420</left>
 				<right>50</right>
-				<top>100</top>
+				<top>30</top>
 				<bottom>347</bottom>
 				<pagecontrol>60</pagecontrol>
 				<autoscroll delay="5000" repeat="7500" time="5000">!Control.HasFocus(60)</autoscroll>
 			</control>
 			<control type="scrollbar" id="60">
 				<right>0</right>
-				<top>93</top>
+				<top>0</top>
 				<width>12</width>
 				<bottom>340</bottom>
 				<orientation>vertical</orientation>
@@ -106,7 +106,7 @@
 			</control>
 			<control type="image">
 				<left>380</left>
-				<top>90</top>
+				<top>-3</top>
 				<right>0</right>
 				<height>3</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
@@ -122,7 +122,7 @@
 			</include>
 			<control type="grouplist" id="9000">
 				<left>0</left>
-				<top>160</top>
+				<top>130</top>
 				<width>420</width>
 				<height>100%</height>
 				<onup>9000</onup>
@@ -131,7 +131,7 @@
 				<control type="button" id="95">
 					<description>Button Summary Values</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[20037]</label>
@@ -139,7 +139,7 @@
 				<control type="button" id="94">
 					<description>Button Storage</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[13277]</label>
@@ -147,7 +147,7 @@
 				<control type="button" id="96">
 					<description>Button Network</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[13279]</label>
@@ -155,7 +155,7 @@
 				<control type="button" id="97">
 					<description>Button Video</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[13280]</label>
@@ -163,7 +163,7 @@
 				<control type="button" id="98">
 					<description>Button Hardware</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[13281]</label>
@@ -171,7 +171,7 @@
 				<control type="button" id="99">
 					<description>Button PVR</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[19191]</label>
@@ -179,7 +179,7 @@
 				<control type="button" id="100">
 					<description>Button Privacy policy</description>
 					<include content="DefaultSettingButton">
-						<param name="height" value="88" />
+						<param name="height" value="85" />
 					</include>
 					<width>420</width>
 					<label>$LOCALIZE[12389]</label>

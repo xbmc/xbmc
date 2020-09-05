@@ -19,7 +19,7 @@
 			<include>OpenClose_Right</include>
 			<control type="grouplist" id="5">
 				<description>control area</description>
-				<top>163</top>
+				<top>133</top>
 				<left>470</left>
 				<pagecontrol>60</pagecontrol>
 				<right>0</right>
@@ -31,7 +31,7 @@
 			</control>
 			<control type="image">
 				<left>470</left>
-				<top>160</top>
+				<top>130</top>
 				<right>0</right>
 				<height>2</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
@@ -89,9 +89,9 @@
 			<control type="grouplist" id="3">
 				<description>button area</description>
 				<left>0</left>
-				<top>160</top>
+				<top>130</top>
 				<width>470</width>
-				<height>720</height>
+				<height>810</height>
 				<usecontrolcoords>true</usecontrolcoords>
 				<onleft>5</onleft>
 				<onright>5</onright>
@@ -101,7 +101,7 @@
 			<control type="button" id="10">
 				<description>Default Category Button</description>
 				<left>0</left>
-				<height>90</height>
+				<height>85</height>
 				<width>470</width>
 				<textoffsetx>40</textoffsetx>
 				<aligny>center</aligny>
@@ -109,34 +109,10 @@
 				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 				<texturenofocus />
 			</control>
-			<control type="radiobutton" id="20">
-				<width>470</width>
-				<left>0</left>
-				<bottom>110</bottom>
-				<height>90</height>
-				<aligny>center</aligny>
-				<onclick>SettingsLevelChange</onclick>
-				<textoffsetx>100</textoffsetx>
-				<textoffsety>0</textoffsety>
-				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-				<texturenofocus />
-				<radioposx>40</radioposx>
-				<radioposy>0</radioposy>
-				<radiowidth>40</radiowidth>
-				<radioheight>40</radioheight>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
-				<textureradioonfocus>icons/settings.png</textureradioonfocus>
-				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
-				<textureradioofffocus>icons/settings.png</textureradioofffocus>
-				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
-			</control>
 		</control>
 		<control type="group">
 			<right>0</right>
-			<top>163</top>
+			<top>133</top>
 			<bottom>137</bottom>
 			<width>60</width>
 			<control type="scrollbar" id="60">
@@ -160,6 +136,34 @@
 			<param name="breadcrumbs_label" value="$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]" />
 		</include>
 		<include>BottomBar</include>
+		<control type="group">
+			<depth>DepthContentPanel</depth>
+			<include>OpenClose_Left</include>
+			<control type="radiobutton" id="20">
+				<width>470</width>
+				<left>0</left>
+				<bottom>70</bottom>
+				<height>90</height>
+				<aligny>center</aligny>
+				<onclick>SettingsLevelChange</onclick>
+				<textoffsetx>100</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus />
+				<radioposx>40</radioposx>
+				<radioposy>0</radioposy>
+				<radiowidth>40</radiowidth>
+				<radioheight>40</radioheight>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<textureradioonfocus>icons/settings.png</textureradioonfocus>
+				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
+				<textureradioofffocus>icons/settings.png</textureradioofffocus>
+				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
+			</control>
+		</control>
 		<control type="group">
 			<include>OpenClose_Right</include>
 			<control type="textbox" id="6">
