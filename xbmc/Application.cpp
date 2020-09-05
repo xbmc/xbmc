@@ -1637,7 +1637,10 @@ bool CApplication::OnAction(const CAction &action)
   // playing or ACTION_PLAYER_PLAY if we are seeking (FF/RW) or not playing.
   if (action.GetID() == ACTION_PLAYER_PLAYPAUSE)
   {
-    if (m_appPlayer.IsPlaying() && m_appPlayer.GetPlaySpeed() == 1)
+    CGUIWindowSlideShow* pSlideShow = CServiceBroker::GetGUI()->
+                         GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+    if ((m_appPlayer.IsPlaying() && m_appPlayer.GetPlaySpeed() == 1) ||
+         (pSlideShow && pSlideShow->InSlideShow() && !pSlideShow->IsPaused()))
       return OnAction(CAction(ACTION_PAUSE));
     else
       return OnAction(CAction(ACTION_PLAYER_PLAY));
