@@ -198,6 +198,7 @@ private:
    * @param tags The events to check/fix.
    */
   void FixOverlappingEvents(std::vector<std::shared_ptr<CPVREpgInfoTag>>& tags) const;
+  void FixOverlappingEvents(std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>>& tags) const;
 
   int m_iEpgID = 0;
   std::shared_ptr<CPVREpgChannelData> m_channelData;
