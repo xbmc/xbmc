@@ -2202,7 +2202,7 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamAudioState()
           if (!m_startTime)
           {
             m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den) - 0.000001;
-            m_seekStream = i;
+            m_seekStream = idx;
           }
           return TRANSPORT_STREAM_STATE::READY;
         }
@@ -2255,7 +2255,7 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamVideoState()
           if (!m_startTime)
           {
             m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den) - 0.000001;
-            m_seekStream = i;
+            m_seekStream = idx;
           }
           return TRANSPORT_STREAM_STATE::READY;
         }
