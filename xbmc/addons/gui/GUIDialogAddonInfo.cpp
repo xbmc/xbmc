@@ -337,7 +337,12 @@ void CGUIDialogAddonInfo::OnInstall()
   if (!m_item->HasAddonInfo())
     return;
 
-  if (m_localAddon)
+  const auto& itemAddonInfo = m_item->GetAddonInfo();
+  const std::string& origin = itemAddonInfo->Origin();
+
+  if (m_localAddon && (m_localAddon->Origin() != origin) &&
+      (CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode() !=
+       AddonRepoUpdateMode::ANY_REPOSITORY))
   {
     const std::string& header = g_localizeStrings.Get(19098); // Warning!
     const std::string text =
@@ -355,10 +360,7 @@ void CGUIDialogAddonInfo::OnInstall()
     }
   }
 
-  const auto& itemAddonInfo = m_item->GetAddonInfo();
-
   const std::string& addonId = itemAddonInfo->ID();
-  const std::string& origin = itemAddonInfo->Origin();
   const AddonVersion& version = itemAddonInfo->Version();
 
   Close();
