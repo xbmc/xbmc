@@ -653,13 +653,13 @@ bool CAddonInstallJob::DoWork()
   // Needed to set origin correctly for new installed addons.
 
   std::string origin;
-  if (m_repo) // if we have an origin use it
+  if (m_addon->HasType(ADDON_REPOSITORY))
   {
-    origin = m_repo->ID();
+    origin = m_addon->ID(); // always set repos origin to itself
   }
-  else if (m_addon->HasType(ADDON_REPOSITORY))
+  else if (m_repo)
   {
-    origin = m_addon->ID(); // set origin to addon-id which is the repo itself
+    origin = m_repo->ID();  // else use addons repo as origin
   }
 
   CServiceBroker::GetAddonMgr().SetAddonOrigin(m_addon->ID(), origin, m_isUpdate);
