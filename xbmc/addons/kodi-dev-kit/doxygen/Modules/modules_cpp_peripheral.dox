@@ -1,0 +1,414 @@
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs Peripheral system
+@ingroup cpp_kodi_addon_peripheral
+@brief System description
+
+*/
+
+//------------------------------------------------------------------------------
+
+
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs_ControllerInput Controller Input
+@ingroup cpp_kodi_addon_peripheral_Docs
+@brief Controller Input for Emulator Development
+
+# Introduction
+
+Input can come from many types of peripherals such as controllers, arcade cabinets, keyboards and remotes. However, the emulator needs to emulate the peripherals of its game platform. For example, NES emulators can emulate controllers, light guns and flight simulator joysticks. This system translates input from hardware peripherals to emulated ones.
+
+## Table of contents
+
+1. @ref cpp_kodi_addon_peripheral_Docs_ControllerInput_Profiles "Controller profiles"
+2. @ref cpp_kodi_addon_peripheral_Docs_ControllerInput_JoystickDrivers "Joystick drivers"
+3. @ref cpp_kodi_addon_peripheral_Docs_ControllerInput_ButtonMaps "Button maps"
+4. @ref cpp_kodi_addon_peripheral_Docs_ControllerInput_JoystickDriverFuckery "Joystick driver fuckery"
+
+*/
+
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs_ControllerInput_Profiles 1. Controller profiles
+@ingroup cpp_kodi_addon_peripheral_Docs_ControllerInput
+
+# 1. Controller profiles
+
+<img src="modules_cpp_peripheral_Docs_ControllerInput_1.jpg" width="100%">
+
+Each emulated peripheral has a profile describing its input. Controller is a generic word for these peripherals, and this is the name shown in the GUI.
+
+Each controller has parts that generate input, like buttons, keys, triggers, analog sticks and accelerometers. These parts are called features of the controller.
+
+Features generate input in several different ways. For example, a button is either 1 or 0. Analog sticks, on the other hand, have two degrees of freedom. They contain two values that can range from -1.0 (fully down/left) to 1.0 (fully up/right).
+
+Features can also receive input. Rumble motors and other haptic parts accept digital or analog input.
+
+Features are grouped by the type of input they generate/accept. For example:
+
+<i>Scalar features</i>
+- Regular buttons generate a single number (either 0 or 1), so these are called scalar features.
+- Likewise, triggers and pressure-sensitive buttons generate a single number (analog value between 0.0 and 1.0, inclusive). These are also called scalar features.
+- For simplicity, keys are considered buttons
+- D-pads, also called hats, are treated as four buttons, so they result in four scalar features.
+
+<i>Vector features</i>
+- Analog sticks generate two analog values, so these are called vector features.
+- Likewise, accelerometers have an X, Y and Z axis and are also called vector features.
+
+<i>Haptic features</i>
+- Motors are technically scalar features, but because they accept input instead of generating it, they're usually processed in a different part of the code. For clarity, they are just called haptic features.
+
+*/
+
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs_ControllerInput_JoystickDrivers 2. Joystick drivers
+@ingroup cpp_kodi_addon_peripheral_Docs_ControllerInput
+
+# 2. Joystick drivers
+
+Unfortunately, none of the input provided by any joystick driver has information about the kind of features it belongs to. Drivers simply provide a long list of values. Generally, these are bools or floats, but some interfaces use enums, like the directions on a d-pad.
+
+To connect this information to the features of a controller profile, it is split into elements that better translate to controller features. These elements are called driver primitives.
+
+## 2.1. Types of driver primitives
+
+Buttons
+
+Consider a bool reported by the driver. This probably belongs to something that can be pressed, so it's called a button. A bool can't belong to multiple features, so it is a driver primitive.
+
+<i>Hat directions</i>
+
+Some drivers use enums or bit flags to report hat presses. In Kodi, hats are treated like four separate buttons for simplicity. Hat enums can belong to four features, so they contain four driver primitives, one for each direction.
+
+<i>Semiaxis directions</i>
+
+A float is a little trickier. The immediate assumption is an axis of an analog stick or accelerometer. However, in DirectInput, triggers are combined into a single float. Therefore, a float can map to two features, so each half of the axis (called a semiaxis) is a driver primitive.
+
+This has interesting implications. An analog stick has two axes, which is four driver primitives. Each semiaxis can map to a different feature, so the analog stick is able to emulate the four buttons of a d-pad, or the N64's C buttons.
+
+*/
+
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs_ControllerInput_ButtonMaps 3. Button maps
+@ingroup cpp_kodi_addon_peripheral_Docs_ControllerInput
+
+# 3. Button maps
+
+Now we return to controller profiles. Each emulator requires its own set of controllers, each with their list of features. These are mapped to the underlying driver primitives provided by the joystick driver using a button map.
+
+In the code, the button map is abstracted away behind a button map interface. This additional abstraction adds some code, but it allows button maps to be managed by an add-on.
+
+The current add-on for button maps, [peripheral.joystick](https://github.com/kodi-game/peripheral.joystick), can only recite button maps it has been given. However, it could be made smarter by using existing button map data. For example, if the add-on knows the most popular way to map a 360 controller to a SNES controller, it can generate a SNES button map knowing only the 360 one.
+
+*/
+
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs_ControllerInput_JoystickDriverFuckery 4. Joystick driver fuckery
+@ingroup cpp_kodi_addon_peripheral_Docs_ControllerInput
+
+# 4. Joystick driver fuckery
+
+Of course, joystick drivers have many quirks that greatly complicate things. So much so that they deserve their own chapter. Here's a list of some of the quirks I've encountered:
+
+### Combined triggers
+
+DirectInput combines left and right triggers into a single axis. They are combined using the strategy in Chapter 4: Dimension Reduction.
+
+Kodi solves this by splitting the axis into two semiaxes, as explained in Chapter 2: Joystick drivers. Each semiaxis is mapped to its own trigger.
+
+### Anomalous triggers
+
+Not all triggers start at 0.0 and travel to 1.0 (or -1.0 in DirectInput). Some triggers start at 1.0 or -1.0, and travel to 0.0 or to the opposite unit. These are called <i>anomalous triggers</i>. These triggers have two properties:
+Center - The theory here is that initial perturbations are minimal. This means that the center is determined by rounding the first value to the closest int.
+Range - The range can be half range (assumed) or full range (detected when a value has the opposite sign)
+
+### Discrete D-pads
+
+Instead of four buttons or a hat enum, D-pads can sometimes be reported as floats that use the discrete values -1.0, 0.0 and 1.0. Fortunately, because analog sticks can emulate D-pads, we can simply treat the discrete D-pad as an analog stick.
+
+### Repeated input
+
+Some buttons generate two input events. For example, some hats operate as four digital buttons AND as a discrete D-pad. This is solved via a "cooldown" while mapping, which ignores any input for around 50ms after a button is mapped.
+
+### Hat enums
+
+I consider hat enums a quirk because it just makes so much more sense to represent them using four buttons. It doesn't even guarantee mutual exclusion between opposite directions, as this can be violated by a flag with the improper bits set.
+
+### Pressure-sensitive buttons
+
+Pressure-sensitive buttons can be reported as an analog axis instead of a digital value.
+
+### Incomplete information
+
+Pertinent info (name, USB VID and PID, etc) might be missing, making it hard to identify the correct button map.
+
+*/
+
+//------------------------------------------------------------------------------
+
+/*!
+
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime Lifetime of a button press
+@ingroup cpp_kodi_addon_peripheral_Docs
+@brief The lifetime of a button press for peripherals with input
+
+# Introduction
+
+@note This documentation assumes you have the source code for Kodi and <b>peripheral.joystick</b> open in front of you. The fixed-width font is the class or struct you should reference.
+
+When a controller is plugged in and a button is pressed, it starts a large chain reaction of different systems. The button's journey is destined to reach one or more eventual outcomes:
+- An emulator / game add-on
+- Kodi's input system
+- A configuration utility
+
+Game input
+----------------
+
+Instead of being forced to use a single controller abstraction, game add-ons can request input in the form of any platform controller known to Kodi. For example, a NES emulator receives input events for a NES controller; if the emulator doesn't care, it receives events for a default 360-style controller.
+
+Kodi's input system
+----------------
+
+If no game is receiving input in fullscreen mode, the button is translated to the default 360-style controller and Kodi's keymapping system takes over from here
+
+Configuration utilities
+----------------
+
+A configuration utility needs know the button's driver index in order to map it to a feature on its controller. In addition to raw driver events, it also needs to promiscuously monitor the input translated to its platform controller to highlight features in the GUI as they're pressed.
+
+The final system can handle any number of these input listeners, monitoring input in the form of any number of platform controllers
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_1.dox
+
+> some class names are outdated, sorry
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_Scanning 1. Scanning for peripherals
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 1. Scanning for peripherals
+
+When Kodi starts up, the peripherals subsystem does a scan for peripherals. Kodi supports several busses including USB. Two new virtual busses have been added:
+- Add-on bus - joysticks are provided by peripheral library binary add-ons
+- Application bus - provides the keyboard, as keyboard input comes from the logical level of the application, not a specific keyboard
+
+This chart shows joysticks being scanned through the peripheral API. The keyboard is always assumed to be attached.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_2.dox
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_Receiving 2. Receiving joystick events
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 2. Receiving joystick events
+
+The peripherals subsystem asks the peripheral add-ons for events every frame. Joysticks are polled by the add-on and changes in state are sent back to the peripherals subsystem.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_3.dox
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_Events 3. Handling events
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 3. Handling events
+
+Joystick drivers present three kinds of elements:
+- Buttons
+- Hats
+- Axes
+
+Most of the time we want to know how these map to a particular system's controller (Kodi uses the Xbox 360 profile).
+The controller configuration GUI, however, also needs access to the raw driver elements. There is an event handler for both of these situations.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_4.dox
+
+@note CGenericJoystickInputHandling and CGenericJoystickButtonMapping are now called CInputHandling and CButtonMapping, respectively.
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_Input 4. Handling input for the Game API
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 4. Handling input for the Game API
+
+When a port is opened by the Game API, it is assigned an input handler that receives driver events involving driver
+elements, and dispatches events in the form of the desired controller.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_5.dox
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_DriverElements 5. Mapping driver elements to the system's controller
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 5. Mapping driver elements to the system's controller
+
+This input handler uses an internal button map to translate driver elements to the desired system controller.
+Currently, all button mapping and translating is done inside peripheral add-ons.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_6.dox
+
+A sample **buttonmap.xml** from the add-on's userdata folder `userdata/addon_data/peripheral.joystick`:
+
+~~~~~~~~~~~~~~~~xml
+<?xml version="1.0" ?>
+<buttonmap>
+    <devices>
+        <device name="Keyboard" provider="application">
+            <controller id="game.controller.default">
+                <feature name="x" button="128" />
+            </controller>
+            <controller id="game.controller.nes">
+                <feature name="a" button="90" />
+                <feature name="b" button="88" />
+                <feature name="down" button="129" />
+                <feature name="left" button="130" />
+                <feature name="right" button="131" />
+                <feature name="select" button="92" />
+                <feature name="start" button="13" />
+                <feature name="up" button="128" />
+            </controller>
+        </device>
+        <device name="Gamepad F310" provider="cocoa" vid="1133" pid="1133">
+            <controller id="game.controller.default">
+                <feature name="a" button="0" />
+                <feature name="b" button="1" />
+                <feature name="x" button="2" />
+                <feature name="y" button="3" />
+                <feature name="lefttrigger" axis="-4" />
+                <feature name="righttrigger" axis="-5" />
+            </controller>
+        </device>
+    </devices>
+</buttonmap>
+~~~~~~~~~~~~~~~~
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_Translating 6. Translating Kodi controller to libretro's "RetroPad"
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 6. Translating Kodi controller to libretro's "RetroPad"
+
+Unfortunately, libretro uses a fixed controller (called the RetroPad) for all of its cores, instead of a
+separate controller per system like Kodi. Therefore, each core needs a map of how its Kodi controller
+translates to the RetroPad.
+
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_7.dox
+
+~~~~~~~~~~~~~~~~xml
+<?xml version="1.0" encoding="UTF-8"?>
+<buttonmap>
+    <controller id="game.controller.nes" type="joypad">
+        <feature name="a" mapto="a"/>
+        <feature name="b" mapto="b"/>
+        <feature name="start" mapto="start"/>
+        <feature name="select" mapto="select"/>
+        <feature name="up" mapto="up"/>
+        <feature name="down" mapto="down"/>
+        <feature name="right" mapto="right"/>
+        <feature name="left" mapto="left"/>
+    </controller>
+    <controller id="game.controller.nes.zapper" type="lightgun">
+        <feature name="trigger" mapto="trigger"/>
+    </controller>
+</buttonmap>
+~~~~~~~~~~~~~~~~
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_KodiInput 7. Kodi Input
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 7. Kodi Input
+
+If the event isn't handled by the Game API, it is sent to a default controller (basically a Xbox 360 controller).
+The default controller translates it to a key for the file joystick.xml.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_8.dox
+
+joystick.xml belongs to Kodi's [keymap system](http://kodi.wiki/view/Keymap). It maps a standardized Xbox
+360 controller to Kodi actions. It looks something like this:
+~~~~~~~~~~~~~~~~xml
+<?xml version="1.0" encoding="UTF-8"?>
+<keymap>
+  <global>
+    <joystick>
+      <a>Select</a>
+      <b>Back</b>
+      <x>ContextMenu</x>
+      <y>FullScreen</y>
+      <start>ActivateWindow(PlayerControls)</start>
+      <back>Back</back>
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down>
+      <leftthumbbutton>Screenshot</leftthumbbutton>
+      <rightthumbbutton>ActivateWindow(ShutdownMenu)</rightthumbbutton>
+      <leftstickleft>AnalogSeekBack</leftstickleft>
+      <leftstickright>AnalogSeekForward</leftstickright>
+      <rightstickup>VolumeUp</rightstickup>
+      <rightstickdown>VolumeDown</rightstickdown>
+      <guide>ActivateWindow(Home)</guide>
+      <lefttrigger>ScrollUp</lefttrigger>
+      <righttrigger>ScrollDown</righttrigger>
+    </joystick>
+  </global>
+</keymap>
+~~~~~~~~~~~~~~~~
+
+Previously, this was 4,000 lines of XML across many files that encoded a large database of how the
+buttons/hats/axes reported by the driver map to Kodi actions depending on driver name and platform.
+This mass of data has been moved to a peripheral add-on; joystick keymapping is now a much more
+pleasant experience.
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_ButtonMapping 8. Button mapping (controller configuration)
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 8. Button mapping (controller configuration)
+
+When the controller's button dialog wants the user to press a button, it creates a button mapper for the controller it belongs to.
+
+<img src="modules_cpp_peripheral_Docs_Lifetime_9.png" width="100%">
+
+It then waits for an event. When the event arrives, the dialog tells its button mapper to map the event to the controller feature being mapped.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_9.dox
+
+*/
+
+/*!
+@defgroup cpp_kodi_addon_peripheral_Docs_Lifetime_KeyboardInput 9. Keyboard input
+@ingroup cpp_kodi_addon_peripheral_Docs_Lifetime
+
+# 9. Keyboard input
+
+Keyboard input is really quite simple. It just emulates a joystick with a large number of buttons.
+Any event handler down the chain that can handle joystick input can request to monitor the keyboard
+as a raw device or as any available controller profile.
+
+NES emulators, for example, don't know if their NES controller is being emulated by a joystick or a keyboard. The event handlers are identical for both.
+
+When the controller's button dialog wants the user to press a button, it creates a button mapper for the controller it belongs to.
+
+@include{doc} Modules/modules_cpp_peripheral_lifetime_diagram_10.dox
+
+*/

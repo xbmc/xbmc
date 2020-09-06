@@ -9,7 +9,7 @@
 #include "PeripheralBusDarwinEmbedded.h"
 
 #include "ServiceBroker.h"
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/peripheral/PeripheralUtils.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "threads/CriticalSection.h"

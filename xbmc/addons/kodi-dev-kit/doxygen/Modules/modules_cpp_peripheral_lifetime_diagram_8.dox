@@ -1,0 +1,86 @@
+@dot
+digraph D {
+  graph [label="Orthogonal edges", splines=ortho, nodesep=1.0];
+  node [shape=box fontname=Arial];
+
+  rankdir=LR;
+  color = "white"
+  bgcolor = "white"
+  fillcolor = "white"
+  fontcolor = "white"
+  pencolor = "white"
+
+
+  _15 [
+    label = <<b>Input Handling</b><br/><font color="#777777"><i>CGenericJoystickInputHandling</i></font>>
+  ]
+
+  _16 [
+    label = <<b>Button Mapping</b><br/><font color="#777777"><i>CGenericJoystickButtonMapping</i></font>>
+  ]
+
+  _19 [
+    label = <<b>Joystick Imitation</b><br/><font color="#777777"><i>CGenericKeyboadHandler</i></font>>
+  ]
+
+  _20 [
+    label = <<b>Button Map</b><br/><font color="#777777"><i>CAddonJoystickButtonMap</i></font>>
+  ]
+
+  _25 [
+    label = <<b>Default Controller</b><br/><font color="#777777"><i>CDefaultController</i></font>>
+  ]
+
+  _26 [
+    label = <<b>Kodi Input Handler</b><br/><font color="#777777"><i>CButtonKeyHandler</i></font>>
+  ]
+
+  _15 -> _25 [penwidth=3];
+  _25 -> _26 [penwidth=3, weight=4];
+
+  subgraph cluster_7 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Input Library</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+    rank=same;
+
+    subgraph cluster_7_1 {
+      graph [nodesep=6, ranksep=4];
+      label = ""
+      pencolor = "red";
+      _15 [style=filled, fillcolor=white];
+      _16 [style=filled, fillcolor=white];
+    }
+
+    subgraph cluster_7_2 {
+      graph [nodesep=6, ranksep=4];
+      label = "";
+      "-"  [
+        color="red"
+        fontcolor="red"
+        bgcolor = "red";
+      ];
+      pencolor = "red";
+    }
+
+    subgraph cluster_7_3 {
+      graph [nodesep=6, ranksep=4];
+      label = ""
+      pencolor = "red";
+      _19 [style=filled, fillcolor=white];
+      _20 [style=filled, fillcolor=white];
+    }
+  }
+
+  subgraph cluster_10 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Kodi Input</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    _25 [style=filled, fillcolor=white];
+    _26 [style=filled, fillcolor=white];
+  }
+}
+@enddot

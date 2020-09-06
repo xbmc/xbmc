@@ -1,6 +1,7 @@
 set(HEADERS audio_decoder.h
             audio_encoder.h
             image_decoder.h
+            peripheral.h
             pvr.h
             screensaver.h
             visualization.h)

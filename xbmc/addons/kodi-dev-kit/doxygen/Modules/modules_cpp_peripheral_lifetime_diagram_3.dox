@@ -1,0 +1,138 @@
+@dot
+digraph D {
+  graph [label="Orthogonal edges", splines=ortho, nodesep=1.0];
+  node [shape=box fontname=Arial];
+
+  rankdir=LR;
+  color = "white"
+  bgcolor = "white"
+  fillcolor = "white"
+  fontcolor = "white"
+  pencolor = "white"
+
+  _1 [
+    label = <<b>Joystick</b>>
+  ];
+  _2 [
+    label =  <<b>Joystick<br/>Event</b>>
+  ];
+  _3 [
+    label =  <<b>Keyboard</b>>
+  ];
+  _4 [
+    label =  <<b>Keyboard<br/>Event</b>>
+  ];
+
+  _5 [
+    label = <<b>Joystick</b><br/><font color="#777777"><i>CJoystick</i></font>>;
+  ]
+  _6 [
+    label = <<b>Peripheral Event</b><br/><font color="#777777"><i>kodi::addon::PeripheralEvent</i></font>>;
+  ]
+  _7 [
+    label = <<b>ButtonMap</b><br/><font color="#777777"><i>kodi::addon::JoystickFeatures*</i></font>>;
+  ]
+
+  _8 [
+    label = <<b>C struct</b><br/><font color="#777777"><i>JOYSTICK_INFO</i></font>>;
+  ]
+  _9 [
+    label = <<b>C struct</b><br/><font color="#777777"><i>PERIPHERAL_EVENT</i></font>>;
+  ]
+  _10 [
+    label = <<b>C structs</b><br/><font color="#777777"><i>JOYSTICK_FEATURE*</i></font>>;
+  ]
+
+  _11 [
+    label = <<b>Joystick Peripheral</b><br/><font color="#777777"><i>CPeripheralJoystick</i></font>>
+  ]
+
+  _12 [
+    label = <<b>Event Handling</b><br/><font color="#777777"><i>IJoystickDriverHandler</i></font>>
+  ]
+
+  _13 [
+    label = <<b>Keyboard Peripheral</b><br/><font color="#777777"><i>CPeripheralKeyboard</i></font>>
+  ]
+
+  _14 [
+    label = <<b>Keyboard Handling</b><br/><font color="#777777"><i>IKeyboardHandler</i></font>>
+  ]
+
+  _2 -> _6 [penwidth=3, weight=5];
+  _6 -> _9 [penwidth=3, weight=10];
+  _9 -> _12 [penwidth=3, weight=5];
+
+  subgraph cluster_1 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>OS</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    _1 [style=filled, fillcolor=white];
+    _2 [style=filled, fillcolor=white];
+    _3 [style=filled, fillcolor=white];
+    _4 [style=filled, fillcolor=white];
+  }
+
+  subgraph cluster_2 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Peripheral Add-on</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    _5 [style=filled, fillcolor=white];
+    _6 [style=filled, fillcolor=white];
+    _7 [style=filled, fillcolor=white];
+  }
+
+  subgraph cluster_3 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Peripheral API</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    _8 [style=filled, fillcolor=white];
+    _9 [style=filled, fillcolor=white];
+    _10 [style=filled, fillcolor=white];
+  }
+
+  subgraph cluster_4 {
+    graph [nodesep=6, ranksep=4];
+    label = <<b><font point-size='20'>Peripheral Busses</font></b>>;
+    fontcolor = "white";
+    bgcolor = "red";
+
+    subgraph cluster_4_1 {
+      graph [nodesep=6, ranksep=4];
+      label = <<font point-size='18'><b>Virtual Add-on Bus</b></font><br/><font color="#777777"><i>CPeripheralBusAddon</i></font>>;
+      fontcolor = "black";
+      bgcolor = "white";
+
+      _11 [style=filled, fillcolor=white];
+      _12 [style=filled, fillcolor=white];
+
+    }
+
+    subgraph cluster_4_2 {
+      graph [nodesep=6, ranksep=4];
+        label = "";
+      ""  [
+        color="red"
+        bgcolor = "red";
+      ];
+      pencolor = "red";
+    }
+
+    subgraph cluster_4_3 {
+      graph [nodesep=6, ranksep=4];
+      label = <<font point-size='18'><b>Virtual Application Bus</b></font><br/><font color="#777777"><i>CPeripheralBusApplication</i></font>>;
+      fontcolor = "black";
+      bgcolor = "white";
+
+      _13 [style=filled, fillcolor=white];
+      _14 [style=filled, fillcolor=white];
+    }
+  }
+}
+@enddot

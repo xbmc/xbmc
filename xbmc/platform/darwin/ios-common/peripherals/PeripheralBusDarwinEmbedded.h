@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/peripheral/PeripheralUtils.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "threads/CriticalSection.h"

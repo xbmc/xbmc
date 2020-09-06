@@ -10,7 +10,6 @@
 
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Peripheral.h"
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"

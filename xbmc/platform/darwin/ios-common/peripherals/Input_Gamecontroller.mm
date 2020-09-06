@@ -8,7 +8,7 @@
 
 #import "Input_Gamecontroller.h"
 
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/peripheral/PeripheralUtils.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
