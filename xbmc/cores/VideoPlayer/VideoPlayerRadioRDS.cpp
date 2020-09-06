@@ -522,22 +522,21 @@ bool CDVDRadioRDSData::CheckStream(CDVDStreamInfo &hints)
 
 bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo hints)
 {
+  CloseStream(true);
+
   m_messageQueue.Init();
   if (hints.type == STREAM_RADIO_RDS)
   {
     Flush();
     CLog::Log(LOGINFO, "Creating UECP (RDS) data thread");
     Create();
+    return true;
   }
-  return true;
+  return false;
 }
 
 void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
 {
-  // wait until buffers are empty
-  if (bWaitForBuffers)
-    m_messageQueue.WaitUntilEmpty();
-
   m_messageQueue.Abort();
 
   // wait for decode_video thread to end
@@ -547,7 +546,8 @@ void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
 
   m_messageQueue.End();
   m_currentInfoTag.reset();
-  m_currentChannel->SetRadioRDSInfoTag(m_currentInfoTag);
+  if (m_currentChannel)
+    m_currentChannel->SetRadioRDSInfoTag(m_currentInfoTag);
   m_currentChannel.reset();
 }
 
