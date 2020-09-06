@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
+#include "addons/kodi-dev-kit/include/kodi/addon-instance/peripheral/PeripheralUtils.h"
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"
 

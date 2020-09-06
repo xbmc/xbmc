@@ -9,7 +9,6 @@
 #pragma once
 
 #include "PeripheralAddon.h" // for FeatureMap
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "input/joysticks/interfaces/IButtonMap.h"

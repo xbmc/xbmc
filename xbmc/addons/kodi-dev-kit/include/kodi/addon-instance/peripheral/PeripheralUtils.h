@@ -8,7 +8,9 @@
 
 #pragma once
 
-#include "Peripheral.h"
+#include "../../c-api/addon-instance/peripheral.h"
+
+#ifdef __cplusplus
 
 #include <array> // Requires c++11
 #include <cstring>
@@ -734,3 +736,5 @@ typedef PeripheralVector<JoystickFeature, JOYSTICK_FEATURE> JoystickFeatures;
 
 } /* namespace addon */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

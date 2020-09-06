@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "../c-api/addon-instance/peripheral.h"
+#include "peripheral/PeripheralUtils.h"
 
 #ifdef __cplusplus
 namespace kodi
