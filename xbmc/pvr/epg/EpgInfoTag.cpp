@@ -550,26 +550,15 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
   return bChanged;
 }
 
-bool CPVREpgInfoTag::Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bSingleUpdate /* = true */)
+bool CPVREpgInfoTag::QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database)
 {
-  bool bReturn = false;
-
   if (!database)
   {
     CLog::LogF(LOGERROR, "Could not open the EPG database");
-    return bReturn;
+    return false;
   }
 
-  int iId = database->Persist(*this, bSingleUpdate);
-  if (iId >= 0)
-  {
-    bReturn = true;
-
-    if (iId > 0)
-      m_iDatabaseID = iId;
-  }
-
-  return bReturn;
+  return database->QueuePersistQuery(*this);
 }
 
 std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const

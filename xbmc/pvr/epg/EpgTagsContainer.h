@@ -159,10 +159,9 @@ public:
   bool NeedsSave() const;
 
   /*!
-   * @brief Persist this container in its database.
-   * @param bQueueWrite If true, don't persist data in the database immediately, only queue it.
+   * @brief Write the query to persist data into database's queue
    */
-  void Persist(bool bQueueWrite);
+  void QueuePersistQuery();
 
   /*!
    * @brief Delete this container from its database.

@@ -290,7 +290,7 @@ bool CPVREpgDatabase::Delete(const CPVREpg& table)
   return DeleteValues("epg", filter);
 }
 
-bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag, bool bSingleDelete)
+bool CPVREpgDatabase::QueueDeleteTagQuery(const CPVREpgInfoTag& tag)
 {
   /* tag without a database ID was not persisted */
   if (tag.DatabaseID() <= 0)
@@ -301,16 +301,9 @@ bool CPVREpgDatabase::Delete(const CPVREpgInfoTag& tag, bool bSingleDelete)
   CSingleLock lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idBroadcast = %u", tag.DatabaseID()));
 
-  if (bSingleDelete)
-  {
-    return DeleteValues("epgtags", filter);
-  }
-  else
-  {
-    std::string strQuery;
-    BuildSQL(PrepareSQL("DELETE FROM %s ", "epgtags"), filter, strQuery);
-    return QueueDeleteQuery(strQuery);
-  }
+  std::string strQuery;
+  BuildSQL(PrepareSQL("DELETE FROM %s ", "epgtags"), filter, strQuery);
+  return QueueDeleteQuery(strQuery);
 }
 
 std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
@@ -904,10 +897,9 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEnd
   return {};
 }
 
-bool CPVREpgDatabase::DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
-                                                        const CDateTime& minEndTime,
-                                                        const CDateTime& maxStartTime,
-                                                        bool bSingleDelete)
+bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
+                                                                  const CDateTime& minEndTime,
+                                                                  const CDateTime& maxStartTime)
 {
   time_t minEnd;
   minEndTime.GetAsTime(minEnd);
@@ -922,16 +914,9 @@ bool CPVREpgDatabase::DeleteEpgTagsByMinEndMaxStartTime(int iEpgID,
                                 static_cast<unsigned int>(minEnd),
                                 static_cast<unsigned int>(maxStart)));
 
-  if (bSingleDelete)
-  {
-    return DeleteValues("epgtags", filter);
-  }
-  else
-  {
-    std::string strQuery;
-    BuildSQL("DELETE FROM epgtags", filter, strQuery);
-    return QueueDeleteQuery(strQuery);
-  }
+  std::string strQuery;
+  BuildSQL("DELETE FROM epgtags", filter, strQuery);
+  return QueueDeleteQuery(strQuery);
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID)
@@ -981,15 +966,13 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
   return bReturn;
 }
 
-bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId,
-                                             const CDateTime& lastScanTime,
-                                             bool bQueueWrite)
+bool CPVREpgDatabase::QueuePersistLastEpgScanTimeQuery(int iEpgId, const CDateTime& lastScanTime)
 {
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, lastScanTime.GetAsDBDateTime().c_str());
 
-  return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
+  return QueueInsertQuery(strQuery);
 }
 
 int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
@@ -1043,14 +1026,12 @@ bool CPVREpgDatabase::DeleteEpgTags(int iEpgId)
   return DeleteValues("epgtags", filter);
 }
 
-int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = true */)
+bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
 {
-  int iReturn(-1);
-
   if (tag.EpgID() <= 0)
   {
     CLog::LogF(LOGERROR, "Tag '%s' does not have a valid table", tag.Title().c_str());
-    return iReturn;
+    return false;
   }
 
   time_t iStartTime, iEndTime;
@@ -1102,18 +1083,8 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag& tag, bool bSingleUpdate /* = 
         tag.UniqueBroadcastID(), iBroadcastId);
   }
 
-  if (bSingleUpdate)
-  {
-    if (ExecuteQuery(strQuery))
-      iReturn = static_cast<int>(m_pDS->lastinsertid());
-  }
-  else
-  {
-    QueueInsertQuery(strQuery);
-    iReturn = 0;
-  }
-
-  return iReturn;
+  QueueInsertQuery(strQuery);
+  return true;
 }
 
 int CPVREpgDatabase::GetLastEPGId()

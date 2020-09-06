@@ -595,7 +595,7 @@ bool CPVREpgTagsContainer::NeedsSave() const
   return !m_changedTags.empty() || !m_deletedTags.empty();
 }
 
-void CPVREpgTagsContainer::Persist(bool bQueueWrite)
+void CPVREpgTagsContainer::QueuePersistQuery()
 {
   if (m_database)
   {
@@ -605,7 +605,7 @@ void CPVREpgTagsContainer::Persist(bool bQueueWrite)
               m_changedTags.size(), m_deletedTags.size());
 
     for (const auto& tag : m_deletedTags)
-      m_database->Delete(*tag.second, !bQueueWrite);
+      m_database->QueueDeleteTagQuery(*tag.second);
 
     m_deletedTags.clear();
 
@@ -614,11 +614,10 @@ void CPVREpgTagsContainer::Persist(bool bQueueWrite)
     for (const auto& tag : m_changedTags)
     {
       // remove any conflicting events from database before persisting the new event
-      m_database->DeleteEpgTagsByMinEndMaxStartTime(m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND,
-                                                    tag.second->EndAsUTC() - ONE_SECOND,
-                                                    !bQueueWrite);
+      m_database->QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(
+          m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND, tag.second->EndAsUTC() - ONE_SECOND);
 
-      tag.second->Persist(m_database, !bQueueWrite);
+      tag.second->QueuePersistQuery(m_database);
     }
 
     m_changedTags.clear();

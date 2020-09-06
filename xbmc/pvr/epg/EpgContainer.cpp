@@ -312,7 +312,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
         CLog::Log(LOGDEBUG, "EPG Container: Persisting events for channel '%s'...",
                   epg->GetChannelData()->ChannelName().c_str());
 
-        bReturn &= epg->Persist(database, true);
+        bReturn &= epg->QueuePersistQuery(database);
 
         size_t queryCount = database->GetInsertQueriesCount() + database->GetDeleteQueriesCount();
         if (queryCount > 10000)
