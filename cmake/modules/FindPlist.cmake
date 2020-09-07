@@ -15,7 +15,7 @@
 #   Plist::Plist   - The Plist library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PLIST libplist QUIET)
+  pkg_search_module(PC_PLIST libplist-2.0 libplist QUIET)
 endif()
 
 find_path(PLIST_INCLUDE_DIR plist/plist.h
@@ -23,7 +23,7 @@ find_path(PLIST_INCLUDE_DIR plist/plist.h
 
 set(PLIST_VERSION ${PC_PLIST_VERSION})
 
-find_library(PLIST_LIBRARY NAMES plist libplist
+find_library(PLIST_LIBRARY NAMES plist-2.0 plist libplist-2.0 libplist
                                  PATHS ${PC_PLIST_LIBDIR})
 
 include(FindPackageHandleStandardArgs)
