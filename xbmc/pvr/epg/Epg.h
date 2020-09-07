@@ -203,12 +203,11 @@ namespace PVR
                                                              const CDateTime& maxEventStart) const;
 
     /*!
-     * @brief Persist this table in the given database
+     * @brief Write the query to persist data into given database's queue
      * @param database The database.
-     * @param bQueueWrite Don't execute the query immediately but queue it if true.
-     * @return True if the table was persisted, false otherwise.
+     * @return True on success, false otherwise.
      */
-    bool Persist(const std::shared_ptr<CPVREpgDatabase>& database, bool bQueueWrite);
+    bool QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Delete this table from the given database

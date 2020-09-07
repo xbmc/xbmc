@@ -159,10 +159,9 @@ public:
   bool NeedsSave() const;
 
   /*!
-   * @brief Persist this container in its database.
-   * @param bCommit Whether to commit the data.
+   * @brief Write the query to persist data into database's queue
    */
-  void Persist(bool bCommit);
+  void QueuePersistQuery();
 
   /*!
    * @brief Delete this container from its database.
@@ -198,6 +197,7 @@ private:
    * @param tags The events to check/fix.
    */
   void FixOverlappingEvents(std::vector<std::shared_ptr<CPVREpgInfoTag>>& tags) const;
+  void FixOverlappingEvents(std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>>& tags) const;
 
   int m_iEpgID = 0;
   std::shared_ptr<CPVREpgChannelData> m_channelData;

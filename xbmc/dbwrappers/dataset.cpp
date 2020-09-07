@@ -293,8 +293,16 @@ void Dataset::post() {
 }
 
 
-void Dataset::deletion() {
-  if (ds_state == dsSelect) make_deletion();
+void Dataset::del()
+{
+  ds_state = dsDelete;
+}
+
+
+void Dataset::deletion()
+{
+  if (ds_state == dsDelete)
+    make_deletion();
 }
 
 
@@ -516,6 +524,16 @@ void Dataset::clear_insert_sql(){
 
 void Dataset::clear_delete_sql(){
   delete_sql.clear();
+}
+
+size_t Dataset::insert_sql_count()
+{
+  return insert_sql.size();
+}
+
+size_t Dataset::delete_sql_count()
+{
+  return delete_sql.size();
 }
 
 int Dataset::field_count() { return fields_object->size();}

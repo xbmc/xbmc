@@ -87,6 +87,45 @@ void ResolveConflictingTags(const std::shared_ptr<CPVREpgInfoTag>& changedTag,
   }
 }
 
+bool FixOverlap(const std::shared_ptr<CPVREpgInfoTag>& previousTag,
+                const std::shared_ptr<CPVREpgInfoTag>& currentTag)
+{
+  if (!previousTag)
+    return true;
+
+  if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
+  {
+    // delete the current tag. it's completely overlapped
+    CLog::LogF(LOGWARNING,
+               "Erasing completely overlapped event from EPG timeline "
+               "(%u - %s - %s - %s) "
+               "(%u - %s - %s - %s).",
+               previousTag->UniqueBroadcastID(), previousTag->Title().c_str(),
+               previousTag->StartAsUTC().GetAsDBDateTime(),
+               previousTag->EndAsUTC().GetAsDBDateTime(), currentTag->UniqueBroadcastID(),
+               currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
+               currentTag->EndAsUTC().GetAsDBDateTime());
+
+    return false;
+  }
+  else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
+  {
+    // fix the end time of the predecessor of the event
+    CLog::LogF(LOGWARNING,
+               "Fixing partly overlapped event in EPG timeline "
+               "(%u - %s - %s - %s) "
+               "(%u - %s - %s - %s).",
+               previousTag->UniqueBroadcastID(), previousTag->Title().c_str(),
+               previousTag->StartAsUTC().GetAsDBDateTime(),
+               previousTag->EndAsUTC().GetAsDBDateTime(), currentTag->UniqueBroadcastID(),
+               currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
+               currentTag->EndAsUTC().GetAsDBDateTime());
+
+    previousTag->SetEndFromUTC(currentTag->StartAsUTC());
+  }
+  return true;
+}
+
 } // unnamed namespace
 
 bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
@@ -174,50 +213,35 @@ void CPVREpgTagsContainer::FixOverlappingEvents(
   for (auto it = tags.begin(); it != tags.end();)
   {
     const std::shared_ptr<CPVREpgInfoTag> currentTag = *it;
-    if (!previousTag)
+    if (FixOverlap(previousTag, currentTag))
     {
-      previousTag = currentTag;
-      ++it;
-      continue;
-    }
-
-    if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
-    {
-      // delete the current tag. it's completely overlapped
-      CLog::LogF(LOGWARNING,
-                 "Erasing completely overlapped event from EPG timeline "
-                 "(%u - %s - %s - %s) "
-                 "(%u - %s - %s - %s).",
-                 previousTag->UniqueBroadcastID(), previousTag->Title().c_str(),
-                 previousTag->StartAsUTC().GetAsDBDateTime(),
-                 previousTag->EndAsUTC().GetAsDBDateTime(), currentTag->UniqueBroadcastID(),
-                 currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
-                 currentTag->EndAsUTC().GetAsDBDateTime());
-
-      it = tags.erase(it);
-      m_tagsCache->Reset();
-    }
-    else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
-    {
-      // fix the end time of the predecessor of the event
-      CLog::LogF(LOGWARNING,
-                 "Fixing partly overlapped event in EPG timeline "
-                 "(%u - %s - %s - %s) "
-                 "(%u - %s - %s - %s).",
-                 previousTag->UniqueBroadcastID(), previousTag->Title().c_str(),
-                 previousTag->StartAsUTC().GetAsDBDateTime(),
-                 previousTag->EndAsUTC().GetAsDBDateTime(), currentTag->UniqueBroadcastID(),
-                 currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
-                 currentTag->EndAsUTC().GetAsDBDateTime());
-
-      previousTag->SetEndFromUTC(currentTag->StartAsUTC());
       previousTag = currentTag;
       ++it;
     }
     else
     {
+      it = tags.erase(it);
+      m_tagsCache->Reset();
+    }
+  }
+}
+
+void CPVREpgTagsContainer::FixOverlappingEvents(
+    std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>>& tags) const
+{
+  std::shared_ptr<CPVREpgInfoTag> previousTag;
+  for (auto it = tags.begin(); it != tags.end();)
+  {
+    const std::shared_ptr<CPVREpgInfoTag> currentTag = (*it).second;
+    if (FixOverlap(previousTag, currentTag))
+    {
       previousTag = currentTag;
       ++it;
+    }
+    else
+    {
+      it = tags.erase(it);
+      m_tagsCache->Reset();
     }
   }
 }
@@ -510,8 +534,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetAllTags() 
       for (const auto& tag : m_changedTags)
         tags.emplace_back(tag.second);
 
-      if (!tags.empty())
-        FixOverlappingEvents(tags);
+      FixOverlappingEvents(tags);
     }
     else
     {
@@ -572,7 +595,7 @@ bool CPVREpgTagsContainer::NeedsSave() const
   return !m_changedTags.empty() || !m_deletedTags.empty();
 }
 
-void CPVREpgTagsContainer::Persist(bool bCommit)
+void CPVREpgTagsContainer::QueuePersistQuery()
 {
   if (m_database)
   {
@@ -582,23 +605,22 @@ void CPVREpgTagsContainer::Persist(bool bCommit)
               m_changedTags.size(), m_deletedTags.size());
 
     for (const auto& tag : m_deletedTags)
-      m_database->Delete(*tag.second);
+      m_database->QueueDeleteTagQuery(*tag.second);
 
     m_deletedTags.clear();
+
+    FixOverlappingEvents(m_changedTags);
 
     for (const auto& tag : m_changedTags)
     {
       // remove any conflicting events from database before persisting the new event
-      m_database->DeleteEpgTagsByMinEndMaxStartTime(m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND,
-                                                    tag.second->EndAsUTC() - ONE_SECOND);
+      m_database->QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(
+          m_iEpgID, tag.second->StartAsUTC() + ONE_SECOND, tag.second->EndAsUTC() - ONE_SECOND);
 
-      tag.second->Persist(m_database, false);
+      tag.second->QueuePersistQuery(m_database);
     }
 
     m_changedTags.clear();
-
-    if (bCommit)
-      m_database->CommitInsertQueries();
 
     m_database->Unlock();
   }
