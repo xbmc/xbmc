@@ -42,7 +42,7 @@ libtool: automake
 libjpeg-turbo: cmake yasm
 libpng: zlib
 meson: python3 setuptools
-ninja: python3
+ninja: meson
 swig: pcre
 distutilscross: python3
 tar: xz automake
@@ -50,7 +50,11 @@ python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
 wayland-scanner: expat
 waylandpp-scanner: cmake
-MarkupSafe: python3 setuptools
+
+# python installs are not thread safe when using easy_install method.
+# MarkupSafe doesn't really depend on ninja but we need to make the
+# build sequential
+MarkupSafe: ninja
 Mako: MarkupSafe
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
