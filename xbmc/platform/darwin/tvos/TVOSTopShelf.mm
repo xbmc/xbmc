@@ -71,7 +71,15 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
     // Shared dicts  (if we are sandboxed we use sharedDefaults, else we use sharedJailbreak)
     auto sharedDefaults =
         isSandboxed ? [[NSUserDefaults alloc] initWithSuiteName:[tvosShared getSharedID]] : nil;
-    auto sharedJailbreak = isSandboxed ? nil : [[NSMutableDictionary alloc] initWithCapacity:2];
+    const auto sharedJailbreakUrl = [storeUrl URLByAppendingPathComponent:@"shared.dict"];
+    NSMutableDictionary* sharedJailbreak = nil;
+    if (!isSandboxed)
+    {
+      if ([[NSFileManager defaultManager] fileExistsAtPath:sharedJailbreakUrl.path])
+        sharedJailbreak = [NSMutableDictionary dictionaryWithContentsOfURL:sharedJailbreakUrl];
+      else
+        sharedJailbreak = [[NSMutableDictionary alloc] initWithCapacity:2];
+    }
 
     // Function used to add category items in TopShelf shared dict
     CVideoThumbLoader thumbLoader;
@@ -177,8 +185,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
 
     // Synchronize shared dict
     [sharedDefaults synchronize];
-    [sharedJailbreak writeToURL:[storeUrl URLByAppendingPathComponent:@"shared.dict"]
-                     atomically:YES];
+    [sharedJailbreak writeToURL:sharedJailbreakUrl atomically:YES];
   }
 }
 
