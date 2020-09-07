@@ -83,7 +83,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
     if (item.IsPVRChannelGroup())
       thumb = CreateChannelGroupThumb(item);
     else
-      CLog::LogF(LOGERROR, "Unsupported PVR item '%s'", item.GetPath().c_str());
+      CLog::LogF(LOGERROR, "Unsupported PVR item '{}'", item.GetPath());
 
     if (!thumb.empty())
     {

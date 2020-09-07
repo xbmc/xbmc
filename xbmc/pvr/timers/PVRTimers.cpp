@@ -231,8 +231,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
             timerNotifications.emplace_back(std::make_pair((*timerIt)->m_iClientId, strMessage));
           }
 
-          CLog::LogFC(LOGDEBUG, LOGPVR, "Updated timer %d on client %d",
-                      (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          CLog::LogFC(LOGDEBUG, LOGPVR, "Updated timer {} on client {}", (*timerIt)->m_iClientIndex,
+                      (*timerIt)->m_iClientId);
         }
       }
       else
@@ -250,8 +250,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
         newTimer->GetNotificationText(strMessage);
         timerNotifications.emplace_back(newTimer->m_iClientId, strMessage);
 
-        CLog::LogFC(LOGDEBUG, LOGPVR, "Added timer %d on client %d",
-                    (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Added timer {} on client {}", (*timerIt)->m_iClientIndex,
+                    (*timerIt)->m_iClientId);
       }
     }
   }
@@ -287,8 +287,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
           continue;
         }
 
-        CLog::LogFC(LOGDEBUG, LOGPVR, "Deleted timer %d on client %d",
-                    timer->m_iClientIndex, timer->m_iClientId);
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Deleted timer {} on client {}", timer->m_iClientIndex,
+                    timer->m_iClientId);
 
         timerNotifications.emplace_back(timer->m_iClientId, timer->GetDeletedNotificationText());
 
@@ -301,7 +301,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
                (!timer->m_bStartAnyTime && timer->StartAsUTC() != it->first))
       {
         /* timer start has changed */
-        CLog::LogFC(LOGDEBUG, LOGPVR, "Changed start time timer %d on client %d",
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Changed start time timer {} on client {}",
                     timer->m_iClientIndex, timer->m_iClientId);
 
         /* remember timer */
@@ -865,8 +865,8 @@ bool CPVRTimers::DeleteTimersOnChannel(const std::shared_ptr<CPVRChannel>& chann
 
         if (bDeleteActiveItem && bDeleteTimerRuleItem && bChannelsMatch)
         {
-          CLog::LogFC(LOGDEBUG, LOGPVR, "Deleted timer %d on client %d",
-                      (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          CLog::LogFC(LOGDEBUG, LOGPVR, "Deleted timer {} on client {}", (*timerIt)->m_iClientIndex,
+                      (*timerIt)->m_iClientId);
           bReturn = ((*timerIt)->DeleteFromClient(true) == TimerOperationResult::OK) || bReturn;
           bChanged = true;
         }

@@ -157,7 +157,8 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
 
       if (status != ADDON_STATUS_OK)
       {
-        CLog::LogF(LOGERROR, "Failed to create add-on %s, status = %d", addon.first->Name().c_str(), status);
+        CLog::LogF(LOGERROR, "Failed to create add-on {}, status = {}", addon.first->Name(),
+                   status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
           CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID(),
@@ -696,9 +697,8 @@ PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName, PVRClientF
 
     if (currentError != PVR_ERROR_NO_ERROR && currentError != PVR_ERROR_NOT_IMPLEMENTED)
     {
-      CLog::LogFunction(LOGERROR, strFunctionName,
-                        "PVR client '%s' returned an error: %s",
-                        clientEntry.second->GetFriendlyName().c_str(), CPVRClient::ToString(currentError));
+      CLog::LogFunction(LOGERROR, strFunctionName, "PVR client '{}' returned an error: {}",
+                        clientEntry.second->GetFriendlyName(), CPVRClient::ToString(currentError));
       lastError = currentError;
       failedClients.emplace_back(clientEntry.first);
     }

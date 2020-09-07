@@ -98,12 +98,12 @@ bool FixOverlap(const std::shared_ptr<CPVREpgInfoTag>& previousTag,
     // delete the current tag. it's completely overlapped
     CLog::LogF(LOGWARNING,
                "Erasing completely overlapped event from EPG timeline "
-               "(%u - %s - %s - %s) "
-               "(%u - %s - %s - %s).",
-               previousTag->UniqueBroadcastID(), previousTag->Title().c_str(),
+               "({} - {} - {} - {}) "
+               "({} - {} - {} - {}).",
+               previousTag->UniqueBroadcastID(), previousTag->Title(),
                previousTag->StartAsUTC().GetAsDBDateTime(),
                previousTag->EndAsUTC().GetAsDBDateTime(), currentTag->UniqueBroadcastID(),
-               currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
+               currentTag->Title(), currentTag->StartAsUTC().GetAsDBDateTime(),
                currentTag->EndAsUTC().GetAsDBDateTime());
 
     return false;
@@ -113,12 +113,12 @@ bool FixOverlap(const std::shared_ptr<CPVREpgInfoTag>& previousTag,
     // fix the end time of the predecessor of the event
     CLog::LogF(LOGWARNING,
                "Fixing partly overlapped event in EPG timeline "
-               "(%u - %s - %s - %s) "
-               "(%u - %s - %s - %s).",
-               previousTag->UniqueBroadcastID(), previousTag->Title().c_str(),
+               "({} - {} - {} - {}) "
+               "({} - {} - {} - {}).",
+               previousTag->UniqueBroadcastID(), previousTag->Title(),
                previousTag->StartAsUTC().GetAsDBDateTime(),
                previousTag->EndAsUTC().GetAsDBDateTime(), currentTag->UniqueBroadcastID(),
-               currentTag->Title().c_str(), currentTag->StartAsUTC().GetAsDBDateTime(),
+               currentTag->Title(), currentTag->StartAsUTC().GetAsDBDateTime(),
                currentTag->EndAsUTC().GetAsDBDateTime());
 
     previousTag->SetEndFromUTC(currentTag->StartAsUTC());
@@ -601,8 +601,8 @@ void CPVREpgTagsContainer::QueuePersistQuery()
   {
     m_database->Lock();
 
-    CLog::Log(LOGDEBUG, "EPG Tags Container: Updating %d, deleting %d events...",
-              m_changedTags.size(), m_deletedTags.size());
+    CLog::LogFC(LOGDEBUG, LOGEPG, "EPG Tags Container: Updating {}, deleting {} events...",
+                m_changedTags.size(), m_deletedTags.size());
 
     for (const auto& tag : m_deletedTags)
       m_database->QueueDeleteTagQuery(*tag.second);

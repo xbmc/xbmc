@@ -53,7 +53,8 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
         }
         else
         {
-          CLog::LogF(LOGERROR, "Invalid channels path '%s' - channel root segment syntax error.", strPath.c_str());
+          CLog::LogF(LOGERROR, "Invalid channels path '{}' - channel root segment syntax error.",
+                     strPath);
           m_kind = Kind::INVALID;
         }
         break;
@@ -84,14 +85,15 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
         }
         else
         {
-          CLog::LogF(LOGERROR, "Invalid channels path '%s' - channel segment syntax error.", strPath.c_str());
+          CLog::LogF(LOGERROR, "Invalid channels path '{}' - channel segment syntax error.",
+                     strPath);
           m_kind = Kind::INVALID;
         }
         break;
       }
 
       case Kind::CHANNEL:
-        CLog::LogF(LOGERROR, "Invalid channels path '%s' - too many path segments.", strPath.c_str());
+        CLog::LogF(LOGERROR, "Invalid channels path '{}' - too many path segments.", strPath);
         m_kind = Kind::INVALID; // too many segments
         break;
     }

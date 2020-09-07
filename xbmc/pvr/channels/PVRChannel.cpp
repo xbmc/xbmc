@@ -500,7 +500,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEpgTags() const
   const std::shared_ptr<CPVREpg> epg = GetEPG();
   if (!epg)
   {
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Cannot get EPG for channel '%s'", m_strChannelName.c_str());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Cannot get EPG for channel '{}'", m_strChannelName);
     return {};
   }
 

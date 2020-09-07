@@ -276,7 +276,8 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups()
   if (bSyncWithBackends)
   {
     GetGroupsFromClients();
-    CLog::LogFC(LOGDEBUG, LOGPVR, "%d new user defined %s channel groups fetched from clients", (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
+    CLog::LogFC(LOGDEBUG, LOGPVR, "{} new user defined {} channel groups fetched from clients",
+                (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
   }
   else
     CLog::LogFC(LOGDEBUG, LOGPVR, "'sync channelgroups' is disabled; skipping groups from clients");
@@ -292,7 +293,8 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups()
       std::vector<std::shared_ptr<CPVRChannel>> channelsToRemove;
       if (!(*it)->Load(channelsToRemove))
       {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "Failed to load user defined channel group '%s'", (*it)->GroupName().c_str());
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Failed to load user defined channel group '{}'",
+                    (*it)->GroupName());
         return false;
       }
 
@@ -306,7 +308,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups()
 
   for (std::vector<std::shared_ptr<CPVRChannelGroup>>::iterator it = emptyGroups.begin(); it != emptyGroups.end(); ++it)
   {
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting empty channel group '%s'", (*it)->GroupName().c_str());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting empty channel group '{}'", (*it)->GroupName());
     DeleteGroup(*(*it));
   }
 
@@ -325,7 +327,7 @@ bool CPVRChannelGroups::Load()
   // remove previous contents
   Clear();
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Loading all %s channel groups", m_bRadio ? "radio" : "TV");
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Loading all {} channel groups", m_bRadio ? "radio" : "TV");
 
   // create the internal channel group
   std::shared_ptr<CPVRChannelGroup> internalGroup = std::shared_ptr<CPVRChannelGroup>(new CPVRChannelGroupInternal(m_bRadio));
@@ -333,7 +335,8 @@ bool CPVRChannelGroups::Load()
 
   // load groups from the database
   database->Get(*this);
-  CLog::LogFC(LOGDEBUG, LOGPVR, "%d %s groups fetched from the database", m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::LogFC(LOGDEBUG, LOGPVR, "{} {} groups fetched from the database", m_groups.size(),
+              m_bRadio ? "radio" : "TV");
 
   // load channels of internal group
   std::vector<std::shared_ptr<CPVRChannel>> channelsToRemove;
@@ -356,7 +359,8 @@ bool CPVRChannelGroups::Load()
   std::shared_ptr<CPVRChannelGroup> lastPlayedGroup = GetLastPlayedGroup();
   SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalGroup);
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "%d %s channel groups loaded", m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::LogFC(LOGDEBUG, LOGPVR, "{} {} channel groups loaded", m_groups.size(),
+              m_bRadio ? "radio" : "TV");
 
   // need at least 1 group
   return m_groups.size() > 0;
