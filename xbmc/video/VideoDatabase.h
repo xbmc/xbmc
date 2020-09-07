@@ -874,6 +874,7 @@ public:
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
   bool SetVideoUserRating(int dbId, int rating, const MediaType& mediaType);
+  bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
 
 protected:
   int GetMovieId(const std::string& strFilenameAndPath);

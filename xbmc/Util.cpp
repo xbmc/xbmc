@@ -59,24 +59,24 @@
 #include "CompileInfo.h"
 #include "platform/darwin/DarwinUtils.h"
 #endif
+#include "URL.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "platform/Environment.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "utils/StringUtils.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "platform/Environment.h"
-
-#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
-#include "URL.h"
-#include "utils/LangCodeExpander.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
@@ -2311,7 +2311,20 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), common_sub_dirs, items);
 
   std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
-  ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
+
+  CVideoDatabase database;
+  database.Open();
+  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(videoPath);
+
+  if (useAllExternalAudio)
+  {
+    for (const auto& audioItem : items.GetList())
+    {
+      vecAudio.push_back(audioItem.get()->GetPath());
+    }
+  }
+  else
+    ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
 }
 
 bool CUtil::CanBindPrivileged()

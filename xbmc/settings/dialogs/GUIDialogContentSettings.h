@@ -40,6 +40,7 @@ public:
   bool GetContainsSingleItem() const { return m_containsSingleItem; }
   bool GetExclude() const { return m_exclude; }
   bool GetNoUpdating() const { return m_noUpdating; }
+  bool GetUseAllExternalAudio() const { return m_allExternalAudio; }
 
   static bool Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content = CONTENT_NONE);
   static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE content = CONTENT_NONE);
@@ -85,4 +86,5 @@ private:
   bool m_containsSingleItem = false;
   bool m_exclude = false;
   bool m_noUpdating = false;
+  bool m_allExternalAudio = false;
 };
