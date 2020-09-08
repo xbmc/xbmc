@@ -4365,6 +4365,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     replaces `ListItem.Property(Addon.UpdateAvail)`.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.IsAutoUpdateable`</b>,
+///                  \anchor ListItem_IsAutoUpdateable
+///                  _boolean_,
+///     @return **True** if this add-on can be updated automatically.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link ListItem_IsAutoUpdateable `ListItem.IsAutoUpdateable`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.IsFromOfficialRepo)`</b>,
 ///                  \anchor ListItem_Property_AddonIsFromOfficialRepo
 ///                  _boolean_,
@@ -6681,6 +6689,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "islive",           LISTITEM_IS_LIVE },
                                   { "tvshowdbid",       LISTITEM_TVSHOWDBID },
                                   { "albumstatus",      LISTITEM_ALBUMSTATUS },
+                                  { "isautoupdateable", LISTITEM_ISAUTOUPDATEABLE },
 };
 
 /// \page modules__infolabels_boolean_conditions
