@@ -111,7 +111,8 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
   for (auto element : Type(ADDON_REPOSITORY)->GetElements("dir"))
   {
     DirInfo dir = ParseDirConfiguration(element.second);
-    if (dir.version <= version)
+    if ((dir.minversion.empty() || version >= dir.minversion) &&
+        (dir.maxversion.empty() || version <= dir.maxversion))
       m_dirs.push_back(std::move(dir));
   }
   if (!Type(ADDON_REPOSITORY)->GetValue("info").empty())
@@ -300,7 +301,9 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& 
     }
   }
 
-  dir.version = AddonVersion{configuration.GetValue("@minversion").asString()};
+  dir.minversion = AddonVersion{configuration.GetValue("@minversion").asString()};
+  dir.maxversion = AddonVersion{configuration.GetValue("@maxversion").asString()};
+
   return dir;
 }
 
