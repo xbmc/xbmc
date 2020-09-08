@@ -15,9 +15,9 @@ cpu = '$CPU'
 endian = 'little'
 
 [properties]
-$($NATIVEPREFIX/bin/python3 -c "print('c_args = {}'.format([x for x in '$CFLAGS'.split()]))")
+$($NATIVEPREFIX/bin/python3 -c "print('c_args = {}'.format([x for x in '$CFLAGS'.split() if x not in ['-g', '-gdwarf-2']]))")
 $($NATIVEPREFIX/bin/python3 -c "print('c_link_args = {}'.format([x for x in '$LDFLAGS'.split()]))")
-$($NATIVEPREFIX/bin/python3 -c "print('cpp_args = {}'.format([x for x in '$CXXFLAGS'.split()]))")
+$($NATIVEPREFIX/bin/python3 -c "print('cpp_args = {}'.format([x for x in '$CXXFLAGS'.split() if x not in ['-g', '-gdwarf-2']]))")
 $($NATIVEPREFIX/bin/python3 -c "print('cpp_link_args = {}'.format([x for x in '$LDFLAGS'.split()]))")
 
 [paths]

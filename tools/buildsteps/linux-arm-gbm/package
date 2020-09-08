@@ -1,0 +1,5 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-arm-gbm
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+#nothing for linux atm

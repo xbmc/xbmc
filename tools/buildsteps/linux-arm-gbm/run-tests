@@ -1,0 +1,14 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-arm-gbm
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+cd $WORKSPACE/build;make -j$BUILDTHREADS kodi-test
+if [ "$Configuration" != "Coverage" ]; then
+  cd $WORKSPACE;build/kodi-test --gtest_output=xml:gtestresults.xml
+else
+  cd $WORKSPACE/build;GTEST_OUTPUT="xml:$WORKSPACE/gtestresults.xml" make coverage
+fi
+
+awk '{ if ($1 == "<testcase" && match($0, "notrun")) print substr($0,0,length($0)-2) "><skipped/></testcase>"; else print $0;}' gtestresults.xml > gtestresults-skipped.xml
+rm gtestresults.xml
+mv gtestresults-skipped.xml gtestresults.xml

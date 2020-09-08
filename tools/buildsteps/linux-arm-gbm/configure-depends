@@ -1,0 +1,9 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-arm-gbm
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  cd $WORKSPACE/tools/depends;./configure \
+    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=arm-linux-gnueabihf --with-platform=gbm --with-tarballs=$TARBALLS $DEBUG_SWITCH
+fi

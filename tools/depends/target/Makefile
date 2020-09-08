@@ -62,8 +62,8 @@ WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
   DEPENDS += dbus libuuid
-  #not for raspberry pi
-  ifneq ($(TARGET_PLATFORM),raspberry-pi)
+  # not for raspberry pi or gbm
+  ifeq (,$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
     DEPENDS += linux-system-libs
     WAYLANDPP_DEPS += linux-system-libs
   endif
@@ -72,6 +72,13 @@ ifeq ($(OS),linux)
   LIBUUID = libuuid
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi gbm))
     DEPENDS += libxkbcommon libinput libudev libevdev mtdev
+  endif
+  ifeq ($(TARGET_PLATFORM),gbm)
+    DEPENDS += libdrm mesa
+    ifeq ($(CPU),x86_64)
+      DEPENDS += libva
+      LIBVA = libva
+    endif
   endif
 endif
 
@@ -104,7 +111,7 @@ pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
 libcec: p8-platform
 crossguid: $(LIBUUID)
 libdvdnav: libdvdread
@@ -119,6 +126,9 @@ taglib: $(ZLIB)
 dav1d: meson-cross-file
 fribidi: meson-cross-file
 libspdlog: libfmt
+libdrm: meson-cross-file
+mesa: libdrm meson-cross-file
+libva: libdrm
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
