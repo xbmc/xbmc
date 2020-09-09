@@ -661,17 +661,28 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   if (language.empty())
     language = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
+  auto& addonMgr = CServiceBroker::GetAddonMgr();
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
-  {
-    CLog::Log(LOGWARNING, "CLangInfo: could not find language add-on '%s', loading default..", language.c_str());
-    language = std::static_pointer_cast<const CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
-        CSettings::SETTING_LOCALE_LANGUAGE))->GetDefault();
 
-    if (!CServiceBroker::GetAddonMgr().GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
+  // Find the chosen language add-on if it's enabled
+  if (!addonMgr.GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true))
+  {
+    if (addonMgr.IsAddonDisabled(addon->ID()) && !addonMgr.EnableAddon(addon->ID()))
     {
-      CLog::Log(LOGFATAL, "CLangInfo: could not find default language add-on '%s'", language.c_str());
-      return false;
+      CLog::Log(LOGWARNING,
+                "CLangInfo::{}: could not find or enable language add-on '{}', loading default...",
+                __func__, language);
+      language = std::static_pointer_cast<const CSettingString>(
+                     CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+                         CSettings::SETTING_LOCALE_LANGUAGE))
+                     ->GetDefault();
+
+      if (!addonMgr.GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
+      {
+        CLog::Log(LOGFATAL, "CLangInfo::{}: could not find default language add-on '{}'", __func__,
+                  language);
+        return false;
+      }
     }
   }
 
