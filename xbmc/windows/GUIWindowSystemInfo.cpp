@@ -156,7 +156,7 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(i++, "Serial: " + CServiceBroker::GetCPUInfo()->GetCPUSerial());
 #endif
     SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
-#if (!defined(__arm__) && !defined(__aarch64__)) || defined(TARGET_RASPBERRY_PI)
+#if (!defined(__arm__) && !defined(__aarch64__))
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
 #endif
 #if !(defined(__arm__) && defined(TARGET_LINUX))

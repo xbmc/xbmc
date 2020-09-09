@@ -492,13 +492,6 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
 #endif
       return true;
-    case SYSTEM_PLATFORM_LINUX_RASPBERRY_PI:
-#if defined(TARGET_RASPBERRY_PI)
-      value = true;
-#else
-      value = false;
-#endif
-      return true;
     case SYSTEM_MEDIA_DVD:
       value = CServiceBroker::GetMediaManager().IsDiscInDrive();
       return true;

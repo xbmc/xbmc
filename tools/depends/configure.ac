@@ -431,30 +431,6 @@ case $use_platform in
     fi
     target_platform=$use_platform
     ;;
-  raspberry-pi)
-     target_platform=raspberry-pi
-     use_cpu=arm1176jzf-s
-     ffmpeg_options_default="--cpu=arm1176jzf-s"
-     platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
-     platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
-     platform_ldflags=""
-     ;;
-  raspberry-pi2)
-     target_platform=raspberry-pi
-     use_cpu=cortex-a7
-     ffmpeg_options_default="--cpu=cortex-a7"
-     platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad"
-     platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad"
-     platform_ldflags="-lpthread"
-     ;;
-  raspberry-pi3)
-     target_platform=raspberry-pi
-     use_cpu=cortex-a53
-     ffmpeg_options_default="--cpu=cortex-a53"
-     platform_cflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
-     platform_cxxflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
-     platform_ldflags="-lpthread"
-     ;;
   tvos)
     platform_cflags+=" -fembed-bitcode"
     platform_cxxflags+=" -fembed-bitcode"
@@ -467,32 +443,6 @@ case $use_platform in
   *)
     AC_MSG_ERROR(unsupported platform ($use_platform))
 esac
-
-if test "$target_platform" = "raspberry-pi" ; then
-  if test -d "${use_firmware}/opt/vc/include"; then
-    :
-  else
-    AC_MSG_ERROR([Raspberry Pi firmware not found])
-  fi
-  use_arch="arm"
-  use_hardcoded_tables="yes"
-  ARCH="arm"
-  cross_compiling="yes"
-  use_host="arm-linux-gnueabihf"
-  deps_dir="$use_platform-$build_type"
-  platform_cflags+=" -pipe -mabi=aapcs-linux -Wno-psabi \
-   -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
-   -isystem${use_firmware}/opt/vc/include \
-   -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
-   -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
-  platform_cxxflags+=" -pipe -mabi=aapcs-linux -Wno-psabi \
-   -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
-   -isystem${use_firmware}/opt/vc/include \
-   -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
-   -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
-  platform_ldflags+=" -L${use_firmware}/opt/vc/lib -lEGL -lGLESv2 -lbcm_host -lvcos \
-   -lvchiq_arm"
-fi
 
 XBMC_SETUP_ARCH_DEFINES()
 

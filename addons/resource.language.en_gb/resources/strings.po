@@ -9037,29 +9037,7 @@ msgctxt "#16329"
 msgid "VAAPI - Motion compensated"
 msgstr ""
 
-#. Description of OSD video settings for deinterlace method with label #16330
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16330"
-msgid "MMAL - Advanced"
-msgstr ""
-
-#. Description of OSD video settings for deinterlace method with label #16331
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16331"
-msgid "MMAL - Advanced (half)"
-msgstr ""
-
-#. Description of OSD video settings for deinterlace method with label #16332
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16332"
-msgid "MMAL - Bob"
-msgstr ""
-
-#. Description of OSD video settings for deinterlace method with label #16333
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16333"
-msgid "MMAL - Bob (half)"
-msgstr ""
+#empty strings from id 16330 to 16333
 
 #. Description of OSD video settings for deinterlace method with label #16334
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -20100,17 +20078,7 @@ msgctxt "#36433"
 msgid "When enabled, VAAPI render method is preferred and the CPU has less load. If you experience hangs, disable this option."
 msgstr ""
 
-#. Description of setting "Enable MMAL hardware decoding of video files"
-#: system/settings/settings.xml
-msgctxt "#36434"
-msgid "Allow hardware acceleration - MMAL"
-msgstr ""
-
-#. Description of setting "Enable MMAL hardware decoding of video files"
-#: system/settings/settings.xml
-msgctxt "#36435"
-msgid "Use VideoPlayer for decoding of video files with MMAL acceleration."
-msgstr ""
+#empty strings from id 36434 to 36435
 
 #. Description for setting #310: "Keyboard layouts"
 #: system/settings/settings.xml
@@ -20355,15 +20323,7 @@ msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr ""
 
-#: system/settings/rbp.xml
-msgctxt "#36542"
-msgid "Output to both analogue (headphones) and HDMI"
-msgstr ""
-
-#: system/settings/rbp.xml
-msgctxt "#36543"
-msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
-msgstr ""
+#empty strings from id 36542 to 36543
 
 #: system/settings/settings.xml
 msgctxt "#36544"
@@ -20382,16 +20342,7 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr ""
 
-#: system/settings/rbp.xml
-msgctxt "#36547"
-msgid "Use higher quality textures for covers and fanart (uses more memory)"
-msgstr ""
-
-#: system/settings/rbp.xml
-#: system/settings/gbm.xml
-msgctxt "#36548"
-msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
-msgstr ""
+#empty strings from id 36547 to 36548
 
 #. Description of setting with label #1268 "iOS 8 compatibility mode"
 #: system/settings/settings.xml
@@ -21024,28 +20975,7 @@ msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding Dolby Digital Plus (E-AC3) streams."
 msgstr ""
 
-#: system/settings/rbp.xml
-msgctxt "#37017"
-msgid "Dual audio output"
-msgstr ""
-
-#: system/settings/rbp.xml
-msgctxt "#37018"
-msgid "Boost centre channel when downmixing"
-msgstr ""
-
-#empty string with id 37019
-
-#: system/settings/rbp.xml
-msgctxt "#37020"
-msgid "Enable higher colour depth artwork"
-msgstr ""
-
-#: system/settings/rbp.xml
-#: system/settings/gbm.xml
-msgctxt "#37021"
-msgid "Set GUI resolution limit"
-msgstr ""
+#empty strings from id 37017 to 37021
 
 #: xbmc/network/upnp/UPnPPlayer.cpp
 msgctxt "#37022"
@@ -21057,40 +20987,34 @@ msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr ""
 
-#: system/settings/rbp.xml
-msgctxt "#37024"
-msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1 (AC3), this allows multichannel audio such as AAC 5.1 or FLAC 5.1 to be listened to in 5.1 surround sound. Note: Not recommended on Pi as this requires a lot of CPU."
-msgstr ""
+#empty string id 37024
 
 #: system/settings/settings.xml
 msgctxt "#37025"
 msgid "Configure audio encoder settings such as quality and compression level"
 msgstr ""
 
-#: system/settings/rbp.xml
 #: system/settings/android.xml
 msgctxt "#37026"
 msgid "Auto"
 msgstr ""
 
-#: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37027"
 msgid "540"
 msgstr ""
 
-#: system/settings/rbp.xml
 #: system/settings/android.xml
 #: system/settings/gbm.xml
 msgctxt "#37028"
 msgid "720"
 msgstr ""
 
-#: system/settings/rbp.xml
+#: system/settings/android.xml
 msgctxt "#37029"
 msgid "900"
 msgstr ""
 
-#: system/settings/rbp.xml
 #: system/settings/android.xml
 #: system/settings/gbm.xml
 msgctxt "#37030"
@@ -21193,12 +21117,7 @@ msgctxt "#37046"
 msgid "1080"
 msgstr ""
 
-#empty strings from id 37047 to 38009
-
-#: system/settings/rbp.xml
-msgctxt "#38010"
-msgid "GPU accelerated"
-msgstr ""
+#empty strings from id 37047 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml
@@ -21279,27 +21198,7 @@ msgctxt "#38026"
 msgid "Appearances"
 msgstr ""
 
-#: system/settings/rbp.xml
-msgctxt "#38027"
-msgid "Decode the stereo stream from 3D files"
-msgstr ""
-
-#. Description of setting with label #38027 "Decode the stereo stream from 3D files"
-#: system/settings/rbp.xml
-msgctxt "#38028"
-msgid "If enabled, videos created in Multiview Video Coding (MVC) format can also be watched in stereoscopic 3D. MVC format is typically found on 3D Blu-rays.[CR]Note: Processing of this data may reduce playback performance, so only enable if you require stereoscopic 3D support."
-msgstr ""
-
-#: system/settings/rbp.xml
-msgctxt "#38029"
-msgid "Enable Full HD HDMI modes for stereoscopic 3D"
-msgstr ""
-
-#. Description of setting "Enable Full HD HDMI modes for stereoscopic 3D" with label #38029
-#: system/settings/rbp.xml
-msgctxt "#38030"
-msgid "This option uses frame-packing to output full resolution for 3D through HDMI.[CR]Enabling this improves quality of Multiview Video Coding (MVC) videos, but may not be supported by all displays."
-msgstr ""
+#empty strings from id 38027 to 38030
 
 #. Label for an option to select the video stream to play if current video has more than one video stream
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp

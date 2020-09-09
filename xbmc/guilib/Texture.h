@@ -133,10 +133,7 @@ protected:
   bool m_bCacheMemory = false;
 };
 
-#if defined(TARGET_RASPBERRY_PI)
-#include "TexturePi.h"
-#define CTexture CPiTexture
-#elif defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL) || defined(HAS_GLES)
 #include "TextureGL.h"
 #define CTexture CGLTexture
 #elif defined(HAS_DX)

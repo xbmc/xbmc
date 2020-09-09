@@ -37,16 +37,6 @@ else()
   endif()
 endif()
 
-# temp until further cleanup is done
-# add Raspberry Pi 2 and 3 specific flags
-if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
-  if(CPU MATCHES "cortex-a7")
-    set(NEON_FLAGS "-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad")
-  elseif(CPU MATCHES "cortex-a53")
-    set(NEON_FLAGS "-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad")
-  endif()
-endif()
-
 if((CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
     AND CMAKE_COMPILER_IS_GNUCXX)
   # Make sure we strip binaries in Release build

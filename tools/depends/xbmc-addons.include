@@ -6,11 +6,6 @@ export PKG_CONFIG_LIBDIR = $(ADDON_DEPS_DIR)/lib/pkgconfig
 ifeq ($(CROSS_COMPILING),yes)
   DEPS = $(TOOLCHAIN_FILE) $(abs_top_srcdir)/target/config-binaddons.site $(abs_top_srcdir)/target/Toolchain_binaddons.cmake $(CONFIG_SUB) $(CONFIG_GUESS)
   TOOLCHAIN = -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
-  ifeq ($(OS),linux)
-    ifneq ($(TARGET_PLATFORM),raspberry-pi)
-      DEPS += linux-system-libs
-    endif
-  endif
 endif
 
 ifeq ($(PLATFORM),)

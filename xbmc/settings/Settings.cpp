@@ -33,9 +33,6 @@
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "SettingAddon.h"
 #endif
-#if defined(TARGET_RASPBERRY_PI)
-#include "platform/linux/RBP.h"
-#endif
 #include "powermanagement/PowerTypes.h"
 #include "profiles/ProfileManager.h"
 #include "ServiceBroker.h"
@@ -142,7 +139,6 @@ const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4 = "videoplayer.us
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 = "videoplayer.usevdpauvc1";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEDXVA2 = "videoplayer.usedxva2";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVTB = "videoplayer.usevtb";
-const std::string CSettings::SETTING_VIDEOPLAYER_USEMMAL = "videoplayer.usemmal";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER = "videoplayer.useprimedecoder";
 const std::string CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT = "videoplayer.usestagefright";
 const std::string CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE = "videoplayer.limitguiupdate";
@@ -625,11 +621,6 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_ANDROID)
   if (CFile::Exists(SETTINGS_XML_FOLDER "android.xml") && !Initialize(SETTINGS_XML_FOLDER "android.xml"))
     CLog::Log(LOGFATAL, "Unable to load android-specific settings definitions");
-#elif defined(TARGET_RASPBERRY_PI)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "rbp.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp.xml"))
-    CLog::Log(LOGFATAL, "Unable to load rbp-specific settings definitions");
-  if (g_RBP.RaspberryPiVersion() > 1 && CFile::Exists(SETTINGS_XML_FOLDER "rbp2.xml") && !Initialize(SETTINGS_XML_FOLDER "rbp2.xml"))
-    CLog::Log(LOGFATAL, "Unable to load rbp2-specific settings definitions");
 #elif defined(TARGET_FREEBSD)
   if (CFile::Exists(SETTINGS_XML_FOLDER "freebsd.xml") && !Initialize(SETTINGS_XML_FOLDER "freebsd.xml"))
     CLog::Log(LOGFATAL, "Unable to load freebsd-specific settings definitions");

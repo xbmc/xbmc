@@ -1176,9 +1176,7 @@ std::string CSysInfo::GetUserAgent()
     result += " " + linuxOSName + "/" + GetOsVersion();
 #endif
 
-#ifdef TARGET_RASPBERRY_PI
-  result += " HW_RaspberryPi/1.0";
-#elif defined (TARGET_DARWIN_EMBEDDED)
+#if defined(TARGET_DARWIN_IOS)
   std::string iDevVer;
   if (iDevStrDigit == std::string::npos)
     iDevVer = "0.0";

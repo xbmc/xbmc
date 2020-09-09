@@ -31,13 +31,6 @@ if(APPLE)
   list(APPEND HEADERS VTB.h)
 endif()
 
-if(MMAL_FOUND)
-  list(APPEND SOURCES MMALCodec.cpp)
-  list(APPEND HEADERS MMALCodec.h)
-  list(APPEND SOURCES MMALFFmpeg.cpp)
-  list(APPEND HEADERS MMALFFmpeg.h)
-endif()
-
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND SOURCES DVDVideoCodecAndroidMediaCodec.cpp)
   list(APPEND HEADERS DVDVideoCodecAndroidMediaCodec.h)
