@@ -170,22 +170,23 @@ private:
    * @brief Callback functions from addon to kodi
    */
   //@{
-  static void cb_close_game(void* kodiInstance);
-  static void* cb_open_stream(void* kodiInstance, const game_stream_properties* properties);
-  static bool cb_get_stream_buffer(void* kodiInstance,
-                                   void* stream,
+  static void cb_close_game(KODI_HANDLE kodiInstance);
+  static KODI_GAME_STREAM_HANDLE cb_open_stream(KODI_HANDLE kodiInstance,
+                                                const game_stream_properties* properties);
+  static bool cb_get_stream_buffer(KODI_HANDLE kodiInstance,
+                                   KODI_GAME_STREAM_HANDLE stream,
                                    unsigned int width,
                                    unsigned int height,
                                    game_stream_buffer* buffer);
-  static void cb_add_stream_data(void* kodiInstance,
-                                 void* stream,
+  static void cb_add_stream_data(KODI_HANDLE kodiInstance,
+                                 KODI_GAME_STREAM_HANDLE stream,
                                  const game_stream_packet* packet);
-  static void cb_release_stream_buffer(void* kodiInstance,
-                                       void* stream,
+  static void cb_release_stream_buffer(KODI_HANDLE kodiInstance,
+                                       KODI_GAME_STREAM_HANDLE stream,
                                        game_stream_buffer* buffer);
-  static void cb_close_stream(void* kodiInstance, void* stream);
-  static game_proc_address_t cb_hw_get_proc_address(void* kodiInstance, const char* sym);
-  static bool cb_input_event(void* kodiInstance, const game_input_event* event);
+  static void cb_close_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream);
+  static game_proc_address_t cb_hw_get_proc_address(KODI_HANDLE kodiInstance, const char* sym);
+  static bool cb_input_event(KODI_HANDLE kodiInstance, const game_input_event* event);
   //@}
 
   // Game subsystems

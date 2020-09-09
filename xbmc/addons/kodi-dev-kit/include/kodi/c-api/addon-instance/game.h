@@ -1120,6 +1120,7 @@ extern "C"
   } AddonProps_Game;
 
   typedef AddonProps_Game game_client_properties;
+  typedef void* KODI_GAME_STREAM_HANDLE;
 
   /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
 
@@ -1135,12 +1136,15 @@ extern "C"
     KODI_HANDLE kodiInstance;
 
     void (*CloseGame)(KODI_HANDLE kodiInstance);
-    void* (*OpenStream)(KODI_HANDLE, const struct game_stream_properties*);
-    bool (*GetStreamBuffer)(
-        KODI_HANDLE, void*, unsigned int, unsigned int, struct game_stream_buffer*);
-    void (*AddStreamData)(KODI_HANDLE, void*, const struct game_stream_packet*);
-    void (*ReleaseStreamBuffer)(KODI_HANDLE, void*, struct game_stream_buffer*);
-    void (*CloseStream)(KODI_HANDLE, void*);
+    KODI_GAME_STREAM_HANDLE (*OpenStream)(KODI_HANDLE, const struct game_stream_properties*);
+    bool (*GetStreamBuffer)(KODI_HANDLE,
+                            KODI_GAME_STREAM_HANDLE,
+                            unsigned int,
+                            unsigned int,
+                            struct game_stream_buffer*);
+    void (*AddStreamData)(KODI_HANDLE, KODI_GAME_STREAM_HANDLE, const struct game_stream_packet*);
+    void (*ReleaseStreamBuffer)(KODI_HANDLE, KODI_GAME_STREAM_HANDLE, struct game_stream_buffer*);
+    void (*CloseStream)(KODI_HANDLE, KODI_GAME_STREAM_HANDLE);
     game_proc_address_t (*HwGetProcAddress)(KODI_HANDLE kodiInstance, const char* symbol);
     bool (*InputEvent)(KODI_HANDLE kodiInstance, const struct game_input_event* event);
   } AddonToKodiFuncTable_Game;

@@ -583,7 +583,7 @@ void CGameClient::LogException(const char* strFunctionName) const
 }
 
 
-void CGameClient::cb_close_game(void* kodiInstance)
+void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
   using namespace MESSAGING;
 
@@ -591,7 +591,8 @@ void CGameClient::cb_close_game(void* kodiInstance)
                                                static_cast<void*>(new CAction(ACTION_STOP)));
 }
 
-void* CGameClient::cb_open_stream(void* kodiInstance, const game_stream_properties* properties)
+KODI_GAME_STREAM_HANDLE CGameClient::cb_open_stream(KODI_HANDLE kodiInstance,
+                                                    const game_stream_properties* properties)
 {
   if (properties == nullptr)
     return nullptr;
@@ -603,8 +604,8 @@ void* CGameClient::cb_open_stream(void* kodiInstance, const game_stream_properti
   return gameClient->Streams().OpenStream(*properties);
 }
 
-bool CGameClient::cb_get_stream_buffer(void* kodiInstance,
-                                       void* stream,
+bool CGameClient::cb_get_stream_buffer(KODI_HANDLE kodiInstance,
+                                       KODI_GAME_STREAM_HANDLE stream,
                                        unsigned int width,
                                        unsigned int height,
                                        game_stream_buffer* buffer)
@@ -619,8 +620,8 @@ bool CGameClient::cb_get_stream_buffer(void* kodiInstance,
   return gameClientStream->GetBuffer(width, height, *buffer);
 }
 
-void CGameClient::cb_add_stream_data(void* kodiInstance,
-                                     void* stream,
+void CGameClient::cb_add_stream_data(KODI_HANDLE kodiInstance,
+                                     KODI_GAME_STREAM_HANDLE stream,
                                      const game_stream_packet* packet)
 {
   if (packet == nullptr)
@@ -633,8 +634,8 @@ void CGameClient::cb_add_stream_data(void* kodiInstance,
   gameClientStream->AddData(*packet);
 }
 
-void CGameClient::cb_release_stream_buffer(void* kodiInstance,
-                                           void* stream,
+void CGameClient::cb_release_stream_buffer(KODI_HANDLE kodiInstance,
+                                           KODI_GAME_STREAM_HANDLE stream,
                                            game_stream_buffer* buffer)
 {
   if (buffer == nullptr)
@@ -647,7 +648,7 @@ void CGameClient::cb_release_stream_buffer(void* kodiInstance,
   gameClientStream->ReleaseBuffer(*buffer);
 }
 
-void CGameClient::cb_close_stream(void* kodiInstance, void* stream)
+void CGameClient::cb_close_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream)
 {
   CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
   if (gameClient == nullptr)
@@ -660,7 +661,7 @@ void CGameClient::cb_close_stream(void* kodiInstance, void* stream)
   gameClient->Streams().CloseStream(gameClientStream);
 }
 
-game_proc_address_t CGameClient::cb_hw_get_proc_address(void* kodiInstance, const char* sym)
+game_proc_address_t CGameClient::cb_hw_get_proc_address(KODI_HANDLE kodiInstance, const char* sym)
 {
   CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
   if (!gameClient)
@@ -670,7 +671,7 @@ game_proc_address_t CGameClient::cb_hw_get_proc_address(void* kodiInstance, cons
   return nullptr;
 }
 
-bool CGameClient::cb_input_event(void* kodiInstance, const game_input_event* event)
+bool CGameClient::cb_input_event(KODI_HANDLE kodiInstance, const game_input_event* event)
 {
   CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
   if (!gameClient)

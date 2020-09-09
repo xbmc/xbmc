@@ -575,7 +575,7 @@ public:
     //--------------------------------------------------------------------------
 
   private:
-    void* m_handle = nullptr;
+    KODI_GAME_STREAM_HANDLE m_handle = nullptr;
   };
   //@}
 
