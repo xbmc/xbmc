@@ -99,6 +99,16 @@ endif()
 
 message(STATUS "FFMPEG_CONF: ${ffmpeg_conf}")
 
+set(MAKE_COMMAND $(MAKE))
+if(CMAKE_GENERATOR STREQUAL Ninja)
+  set(MAKE_COMMAND make)
+  include(ProcessorCount)
+  ProcessorCount(N)
+  if(NOT N EQUAL 0)
+    set(MAKE_COMMAND make -j${N})
+  endif()
+endif()
+
 include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
@@ -124,7 +134,8 @@ externalproject_add(ffmpeg
                       --enable-protocol=http
                       --enable-encoder=png
                       --enable-encoder=mjpeg
-                      ${ffmpeg_conf})
+                      ${ffmpeg_conf}
+                    BUILD_COMMAND ${MAKE_COMMAND})
 
 install(CODE "Message(Done)")
 

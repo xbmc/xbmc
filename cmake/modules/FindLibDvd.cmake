@@ -96,6 +96,16 @@ else()
     set(LIBDVD_ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
   endif()
 
+  set(MAKE_COMMAND $(MAKE))
+  if(CMAKE_GENERATOR STREQUAL Ninja)
+    set(MAKE_COMMAND make)
+    include(ProcessorCount)
+    ProcessorCount(N)
+    if(NOT N EQUAL 0)
+      set(MAKE_COMMAND make -j${N})
+    endif()
+  endif()
+
   if(ENABLE_DVDCSS)
     if(NOT CORE_SYSTEM_NAME MATCHES windows)
       set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
@@ -115,6 +125,7 @@ else()
                                                     "CC=${CMAKE_C_COMPILER}"
                                                     "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                     "LDFLAGS=${CMAKE_LD_FLAGS}"
+                                  BUILD_COMMAND ${MAKE_COMMAND}
                                   BUILD_BYPRODUCTS ${DVDCSS_LIBRARY})
       ExternalProject_Add_Step(dvdcss autoreconf
                                       DEPENDEES download update patch
@@ -156,7 +167,8 @@ else()
                                                   "CC=${CMAKE_C_COMPILER}"
                                                   "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                   "LDFLAGS=${CMAKE_LD_FLAGS}"
-                              BUILD_BYPRODUCTS ${DVDREAD_LIBRARY})
+                                BUILD_COMMAND ${MAKE_COMMAND}
+                                BUILD_BYPRODUCTS ${DVDREAD_LIBRARY})
     ExternalProject_Add_Step(dvdread autoreconf
                                       DEPENDEES download update patch
                                       DEPENDERS configure
@@ -203,6 +215,7 @@ else()
                                                   "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
                                                   "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
                                                   "LIBS=${DVDNAV_LIBS}"
+                                BUILD_COMMAND ${MAKE_COMMAND}
                                 BUILD_BYPRODUCTS ${DVDNAV_LIBRARY})
     ExternalProject_Add_Step(dvdnav autoreconf
                                     DEPENDEES download update patch
