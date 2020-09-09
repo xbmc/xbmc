@@ -265,7 +265,7 @@ void CPlayList::Shuffle(int iPosition)
     CLog::Log(LOGDEBUG,"%s shuffling at pos:%i", __FUNCTION__, iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
-    KODI::UTILS::RandomShuffle(it, m_vecItems.end());
+    KODI::RANDOMUTILS::RandomShuffle(it, m_vecItems.end());
 
     // the list is now shuffled!
     m_bShuffled = true;

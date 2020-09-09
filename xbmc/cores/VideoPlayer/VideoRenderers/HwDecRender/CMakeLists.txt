@@ -57,6 +57,9 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   endif()
 endif()
 
+set(UNITY_EXCLUDES RendererVDPAU.cpp
+                   VdpauGL.cpp)
+
 # we might want to build on linux systems
 # with ENABLE_VDPAU=OFF and ENABLE_VAAPI=OFF
 if(SOURCES)

@@ -16,12 +16,13 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCAudioManagerOnAudioFocusChangeListener";
+static std::string s_classNameAmgr = std::string(CCompileInfo::GetClass()) +
+                                     "/interfaces/XBMCAudioManagerOnAudioFocusChangeListener";
 
 CJNIXBMCAudioManagerOnAudioFocusChangeListener::CJNIXBMCAudioManagerOnAudioFocusChangeListener()
-  : CJNIBase(s_className)
+  : CJNIBase(s_classNameAmgr)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameAmgr)));
   m_object.setGlobal();
 
   add_instance(m_object, this);
@@ -40,7 +41,7 @@ CJNIXBMCAudioManagerOnAudioFocusChangeListener::~CJNIXBMCAudioManagerOnAudioFocu
 
 void CJNIXBMCAudioManagerOnAudioFocusChangeListener::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameAmgr.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

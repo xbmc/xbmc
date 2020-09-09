@@ -6,5 +6,6 @@ set(HEADERS OSScreenSaverTVOS.h
             WinEventsTVOS.h
             WinSystemTVOS.h
             VideoSyncTVos.h)
+set(UNITY_EXCLUDES ${SOURCES})
 
 core_add_library(windowing_tvos)

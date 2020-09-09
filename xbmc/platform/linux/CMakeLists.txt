@@ -34,4 +34,6 @@ if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
                       ScreenshotSurfaceRBP.h)
 endif()
 
+set(UNITY_EXCLUDES SysfsPath.cpp)
+
 core_add_library(linuxsupport)

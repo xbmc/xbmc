@@ -13,7 +13,7 @@
 
 namespace KODI
 {
-namespace UTILS
+namespace RANDOMUTILS
 {
 template<class TIterator>
 void RandomShuffle(TIterator begin, TIterator end)

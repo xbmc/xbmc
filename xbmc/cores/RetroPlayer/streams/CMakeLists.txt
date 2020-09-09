@@ -12,4 +12,8 @@ set(HEADERS IRetroPlayerStream.h
             RPStreamManager.h
 )
 
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos OR CORE_PLATFORM_NAME_LC STREQUAL ios)
+  set(UNITY_EXCLUDES RetroPlayerVideo.cpp)
+endif()
+
 core_add_library(retroplayer_streams)

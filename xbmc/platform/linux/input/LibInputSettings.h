@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+#pragma once
+
 #include "settings/Settings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"

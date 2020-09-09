@@ -15,12 +15,13 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCSurfaceTextureOnFrameAvailableListener";
+static std::string s_classNameSft = std::string(CCompileInfo::GetClass()) +
+                                    "/interfaces/XBMCSurfaceTextureOnFrameAvailableListener";
 
 CJNIXBMCSurfaceTextureOnFrameAvailableListener::CJNIXBMCSurfaceTextureOnFrameAvailableListener()
-  : CJNIBase(s_className)
+  : CJNIBase(s_classNameSft)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameSft)));
   m_object.setGlobal();
 
   add_instance(m_object, this);
@@ -39,7 +40,7 @@ CJNIXBMCSurfaceTextureOnFrameAvailableListener::~CJNIXBMCSurfaceTextureOnFrameAv
 
 void CJNIXBMCSurfaceTextureOnFrameAvailableListener::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameSft.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

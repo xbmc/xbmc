@@ -123,3 +123,7 @@ void CGUIDialogSlider::Display(int label, float value, float min, float delta, f
   slider->SetModalityType(DialogModalityType::MODELESS);
   slider->Open();
 }
+
+#undef CONTROL_HEADING
+#undef CONTROL_SLIDER
+#undef CONTROL_LABEL

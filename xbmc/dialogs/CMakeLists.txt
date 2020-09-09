@@ -61,4 +61,8 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogYesNo.h
             IGUIVolumeBarCallback.h)
 
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos OR CORE_PLATFORM_NAME_LC STREQUAL ios)
+  list(APPEND UNITY_EXCLUDES GUIDialogBoxBase.cpp)
+endif()
+
 core_add_library(dialogs)

@@ -12,4 +12,7 @@ set(HEADERS CocoaInterface.h
             smc.h
             XBMCHelper.h)
 
+set(UNITY_EXCLUDES ${SOURCES}
+                   SDLMain.mm)
+
 core_add_library(platform_osx)

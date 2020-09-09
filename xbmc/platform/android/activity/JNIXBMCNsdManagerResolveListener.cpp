@@ -17,12 +17,12 @@
 using namespace jni;
 
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCNsdManagerResolveListener";
+static std::string s_classNameNsd =
+    std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCNsdManagerResolveListener";
 
-CJNIXBMCNsdManagerResolveListener::CJNIXBMCNsdManagerResolveListener()
-  : CJNIBase(s_className)
+CJNIXBMCNsdManagerResolveListener::CJNIXBMCNsdManagerResolveListener() : CJNIBase(s_classNameNsd)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameNsd)));
   m_object.setGlobal();
 
   add_instance(m_object, this);
@@ -41,7 +41,7 @@ CJNIXBMCNsdManagerResolveListener::~CJNIXBMCNsdManagerResolveListener()
 
 void CJNIXBMCNsdManagerResolveListener::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameNsd.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

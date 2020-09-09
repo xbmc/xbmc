@@ -16,18 +16,19 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCDisplayManagerDisplayListener";
+static std::string s_classNameDspl =
+    std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCDisplayManagerDisplayListener";
 
 CJNIXBMCDisplayManagerDisplayListener::CJNIXBMCDisplayManagerDisplayListener()
-  : CJNIBase(s_className)
+  : CJNIBase(s_classNameDspl)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameDspl)));
   m_object.setGlobal();
 }
 
 void CJNIXBMCDisplayManagerDisplayListener::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameDspl.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

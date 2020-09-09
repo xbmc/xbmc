@@ -168,8 +168,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   // Songs and music videos are random from query, but need mixing together when have both
   if (songcount > 0 && videocount > 0 )
-    KODI::UTILS::RandomShuffle(m_songIDCache.begin(), m_songIDCache.end());
- 
+    KODI::RANDOMUTILS::RandomShuffle(m_songIDCache.begin(), m_songIDCache.end());
+
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Matching songs = {0}", m_iMatchingSongs);
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 

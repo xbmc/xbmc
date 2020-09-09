@@ -170,6 +170,9 @@ if(ENABLE_UPNP)
                       UPnPFile.h)
 endif()
 
+set(UNITY_EXCLUDES HTTPDirectory.cpp
+                   PipesManager.cpp)
+
 core_add_library(filesystem)
 if(ENABLE_STATIC_LIBS AND ENABLE_UPNP)
   target_link_libraries(filesystem PRIVATE upnp)

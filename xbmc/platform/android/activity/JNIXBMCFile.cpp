@@ -18,7 +18,7 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCFile";
+static std::string s_classNameFile = std::string(CCompileInfo::GetClass()) + "/XBMCFile";
 
 CJNIXBMCFile::CJNIXBMCFile()
   : CJNIBase()
@@ -27,7 +27,7 @@ CJNIXBMCFile::CJNIXBMCFile()
 
 void CJNIXBMCFile::RegisterNatives(JNIEnv *env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameFile.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

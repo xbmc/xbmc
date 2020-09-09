@@ -571,3 +571,9 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const std::
   return !editor->m_cancelled;
 }
 
+#undef CONTROL_FIELD
+#undef CONTROL_OPERATOR
+#undef CONTROL_VALUE
+#undef CONTROL_OK
+#undef CONTROL_CANCEL
+#undef CONTROL_BROWSE

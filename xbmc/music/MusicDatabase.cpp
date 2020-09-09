@@ -6596,7 +6596,8 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
 
     // Ensure random order of output when results set is sorted to process multi-value joins
     if (sortDescription.sortBy == SortByRandom && joinLayout.HasFilterFields())
-      KODI::UTILS::RandomShuffle(result["artists"].begin_array(), result["artists"].end_array());
+      KODI::RANDOMUTILS::RandomShuffle(result["artists"].begin_array(),
+                                       result["artists"].end_array());
 
     return true;
   }
@@ -6980,7 +6981,8 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
 
     // Ensure random order of output when results set is sorted to process multi-value joins
     if (sortDescription.sortBy == SortByRandom && joinLayout.HasFilterFields())
-      KODI::UTILS::RandomShuffle(result["albums"].begin_array(), result["albums"].end_array());
+      KODI::RANDOMUTILS::RandomShuffle(result["albums"].begin_array(),
+                                       result["albums"].end_array());
 
     return true;
   }
@@ -7628,7 +7630,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
 
     // Ensure random order of output when results set is sorted to process multi-value joins
     if (sortDescription.sortBy == SortByRandom && joinLayout.HasFilterFields())
-      KODI::UTILS::RandomShuffle(result["songs"].begin_array(), result["songs"].end_array());
+      KODI::RANDOMUTILS::RandomShuffle(result["songs"].begin_array(), result["songs"].end_array());
 
     return true;
   }

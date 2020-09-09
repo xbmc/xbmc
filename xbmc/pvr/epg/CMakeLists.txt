@@ -18,4 +18,11 @@ set(HEADERS Epg.h
             EpgTagsCache.h
             EpgTagsContainer.h)
 
+set(UNITY_EXCLUDES EpgTagsContainer.cpp)
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos OR CORE_PLATFORM_NAME_LC STREQUAL ios)
+  list(APPEND UNITY_EXCLUDES EpgInfoTag.cpp
+                             EpgDatabase.cpp)
+endif()
+
+
 core_add_library(pvr_epg)

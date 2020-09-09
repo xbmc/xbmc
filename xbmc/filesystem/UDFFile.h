@@ -13,7 +13,7 @@
 
 #include <memory>
 
-class udfread;
+struct udfread;
 typedef struct udfread_file UDFFILE;
 
 namespace XFILE

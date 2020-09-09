@@ -11,4 +11,7 @@ set(HEADERS IOSEAGLView.h
             XBMCApplication.h
             XBMCController.h)
 
+set(UNITY_EXCLUDES ${SOURCES}
+                   XBMCApplication.mm)
+
 core_add_library(platform_ios)

@@ -44,20 +44,20 @@
 #include <utility>
 #include <vector>
 
-#define BUTTON_OK                 4
-#define BUTTON_APPLY              5
-#define BUTTON_CANCEL             6
-#define RADIOBUTTON_ACTIVE        7
-#define EDIT_NAME                 8
-#define BUTTON_CHANNEL_LOGO       9
-#define IMAGE_CHANNEL_LOGO        10
-#define RADIOBUTTON_USEEPG        12
-#define SPIN_EPGSOURCE_SELECTION  13
-#define RADIOBUTTON_PARENTAL_LOCK 14
-#define CONTROL_LIST_CHANNELS     20
-#define BUTTON_GROUP_MANAGER      30
-#define BUTTON_NEW_CHANNEL        31
-#define BUTTON_RADIO_TV           34
+#define PVR_CHANNEL_MGR_BUTTON_OK 4
+#define PVR_CHANNEL_MGR_BUTTON_APPLY 5
+#define PVR_CHANNEL_MGR_BUTTON_CANCEL 6
+#define PVR_CHANNEL_MGR_RADIOBUTTON_ACTIVE 7
+#define PVR_CHANNEL_MGR_EDIT_NAME 8
+#define PVR_CHANNEL_MGR_BUTTON_CHANNEL_LOGO 9
+#define PVR_CHANNEL_MGR_IMAGE_CHANNEL_LOGO 10
+#define PVR_CHANNEL_MGR_RADIOBUTTON_USEEPG 12
+#define PVR_CHANNEL_MGR_SPIN_EPGSOURCE_SELECTION 13
+#define PVR_CHANNEL_MGR_RADIOBUTTON_PARENTAL_LOCK 14
+#define PVR_CHANNEL_MGR_CONTROL_LIST_CHANNELS 20
+#define PVR_CHANNEL_MGR_BUTTON_GROUP_MANAGER 30
+#define PVR_CHANNEL_MGR_BUTTON_NEW_CHANNEL 31
+#define PVR_CHANNEL_MGR_BUTTON_RADIO_TV 34
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -78,7 +78,7 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction& action)
   bool bReturn(false);
   int iActionId = action.GetID();
 
-  if (GetFocusedControlID() == CONTROL_LIST_CHANNELS)
+  if (GetFocusedControlID() == PVR_CHANNEL_MGR_CONTROL_LIST_CHANNELS)
   {
     if (iActionId == ACTION_MOUSE_MOVE)
     {
@@ -283,7 +283,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage& message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage& message)
 {
-  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_ACTIVE);
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_ACTIVE);
   if (OnMessage(msg))
   {
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
@@ -303,7 +303,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage& message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage& message)
 {
-  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_PARENTAL_LOCK);
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_PARENTAL_LOCK);
   if (!OnMessage(msg))
     return false;
 
@@ -312,7 +312,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage& 
   // ask for PIN first
   if (CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() != ParentalCheckResult::SUCCESS)
   { // failed - reset to previous
-    SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
+    SET_CONTROL_SELECTED(GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;
   }
 
@@ -331,7 +331,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage& 
 
 bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage& message)
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), EDIT_NAME);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), PVR_CHANNEL_MGR_EDIT_NAME);
   if (OnMessage(msg))
   {
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
@@ -413,7 +413,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage& message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage& message)
 {
-  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_USEEPG);
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_USEEPG);
   if (OnMessage(msg))
   {
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
@@ -435,18 +435,18 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage& message)
 {
   //! @todo Add EPG scraper support
   return true;
-//  CGUISpinControlEx* pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
-//  if (pSpin)
-//  {
-//    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-//    if (pItem)
-//    {
-//      pItem->SetProperty("EPGSource", (int)0);
-//      pItem->SetProperty("Changed", true);
-//      m_bContainsChanges = true;
-//      return true;
-//    }
-//  }
+  //  CGUISpinControlEx* pSpin = (CGUISpinControlEx *)GetControl(PVR_CHANNEL_MGR_SPIN_EPGSOURCE_SELECTION);
+  //  if (pSpin)
+  //  {
+  //    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+  //    if (pItem)
+  //    {
+  //      pItem->SetProperty("EPGSource", (int)0);
+  //      pItem->SetProperty("Changed", true);
+  //      m_bContainsChanges = true;
+  //      return true;
+  //    }
+  //  }
 }
 
 bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage& message)
@@ -514,34 +514,34 @@ bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage& message)
   int iControl = message.GetSenderId();
   switch(iControl)
   {
-  case CONTROL_LIST_CHANNELS:
-    return OnClickListChannels(message);
-  case BUTTON_OK:
-    return OnClickButtonOK(message);
-  case BUTTON_APPLY:
-    return OnClickButtonApply(message);
-  case BUTTON_CANCEL:
-    return OnClickButtonCancel(message);
-  case BUTTON_RADIO_TV:
-    return OnClickButtonRadioTV(message);
-  case RADIOBUTTON_ACTIVE:
-    return OnClickButtonRadioActive(message);
-  case RADIOBUTTON_PARENTAL_LOCK:
-    return OnClickButtonRadioParentalLocked(message);
-  case EDIT_NAME:
-    return OnClickButtonEditName(message);
-  case BUTTON_CHANNEL_LOGO:
-    return OnClickButtonChannelLogo(message);
-  case RADIOBUTTON_USEEPG:
-    return OnClickButtonUseEPG(message);
-  case SPIN_EPGSOURCE_SELECTION:
-    return OnClickEPGSourceSpin(message);
-  case BUTTON_GROUP_MANAGER:
-    return OnClickButtonGroupManager(message);
-  case BUTTON_NEW_CHANNEL:
-    return OnClickButtonNewChannel();
-  default:
-    return false;
+    case PVR_CHANNEL_MGR_CONTROL_LIST_CHANNELS:
+      return OnClickListChannels(message);
+    case PVR_CHANNEL_MGR_BUTTON_OK:
+      return OnClickButtonOK(message);
+    case PVR_CHANNEL_MGR_BUTTON_APPLY:
+      return OnClickButtonApply(message);
+    case PVR_CHANNEL_MGR_BUTTON_CANCEL:
+      return OnClickButtonCancel(message);
+    case PVR_CHANNEL_MGR_BUTTON_RADIO_TV:
+      return OnClickButtonRadioTV(message);
+    case PVR_CHANNEL_MGR_RADIOBUTTON_ACTIVE:
+      return OnClickButtonRadioActive(message);
+    case PVR_CHANNEL_MGR_RADIOBUTTON_PARENTAL_LOCK:
+      return OnClickButtonRadioParentalLocked(message);
+    case PVR_CHANNEL_MGR_EDIT_NAME:
+      return OnClickButtonEditName(message);
+    case PVR_CHANNEL_MGR_BUTTON_CHANNEL_LOGO:
+      return OnClickButtonChannelLogo(message);
+    case PVR_CHANNEL_MGR_RADIOBUTTON_USEEPG:
+      return OnClickButtonUseEPG(message);
+    case PVR_CHANNEL_MGR_SPIN_EPGSOURCE_SELECTION:
+      return OnClickEPGSourceSpin(message);
+    case PVR_CHANNEL_MGR_BUTTON_GROUP_MANAGER:
+      return OnClickButtonGroupManager(message);
+    case PVR_CHANNEL_MGR_BUTTON_NEW_CHANNEL:
+      return OnClickButtonNewChannel();
+    default:
+      return false;
   }
 }
 
@@ -564,7 +564,7 @@ void CGUIDialogPVRChannelManager::OnWindowLoaded()
 
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(GetControl(CONTROL_LIST_CHANNELS));
+  m_viewControl.AddView(GetControl(PVR_CHANNEL_MGR_CONTROL_LIST_CHANNELS));
 }
 
 void CGUIDialogPVRChannelManager::OnWindowUnload()
@@ -683,18 +683,22 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
   if (!pItem)
     return;
 
-  SET_CONTROL_LABEL2(EDIT_NAME, pItem->GetProperty("Name").asString());
-  CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), EDIT_NAME, CGUIEditControl::INPUT_TYPE_TEXT, 19208);
+  SET_CONTROL_LABEL2(PVR_CHANNEL_MGR_EDIT_NAME, pItem->GetProperty("Name").asString());
+  CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), PVR_CHANNEL_MGR_EDIT_NAME,
+                  CGUIEditControl::INPUT_TYPE_TEXT, 19208);
   OnMessage(msg);
 
-  SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_ACTIVE, pItem->GetProperty("ActiveChannel").asBoolean());
-  SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_USEEPG, pItem->GetProperty("UseEPG").asBoolean());
-  SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, pItem->GetProperty("ParentalLocked").asBoolean());
+  SET_CONTROL_SELECTED(GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_ACTIVE,
+                       pItem->GetProperty("ActiveChannel").asBoolean());
+  SET_CONTROL_SELECTED(GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_USEEPG,
+                       pItem->GetProperty("UseEPG").asBoolean());
+  SET_CONTROL_SELECTED(GetID(), PVR_CHANNEL_MGR_RADIOBUTTON_PARENTAL_LOCK,
+                       pItem->GetProperty("ParentalLocked").asBoolean());
 }
 
 void CGUIDialogPVRChannelManager::Update()
 {
-  m_viewControl.SetCurrentView(CONTROL_LIST_CHANNELS);
+  m_viewControl.SetCurrentView(PVR_CHANNEL_MGR_CONTROL_LIST_CHANNELS);
 
   // empty the lists ready for population
   Clear();
@@ -736,7 +740,7 @@ void CGUIDialogPVRChannelManager::Update()
     std::vector< std::pair<std::string, int> > labels;
     labels.emplace_back(g_localizeStrings.Get(19210), 0);
     //! @todo Add Labels for EPG scrapers here
-    SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
+    SET_CONTROL_LABELS(PVR_CHANNEL_MGR_SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
 
   m_clientsWithSettingsList = CServiceBroker::GetPVRManager().Clients()->GetClientsSupportingChannelSettings(m_bIsRadio);
@@ -744,9 +748,9 @@ void CGUIDialogPVRChannelManager::Update()
     m_bAllowNewChannel = true;
 
   if (m_bAllowNewChannel)
-    SET_CONTROL_VISIBLE(BUTTON_NEW_CHANNEL);
+    SET_CONTROL_VISIBLE(PVR_CHANNEL_MGR_BUTTON_NEW_CHANNEL);
   else
-    SET_CONTROL_HIDDEN(BUTTON_NEW_CHANNEL);
+    SET_CONTROL_HIDDEN(PVR_CHANNEL_MGR_BUTTON_NEW_CHANNEL);
 
   Renumber();
   m_viewControl.SetItems(*m_channelItems);

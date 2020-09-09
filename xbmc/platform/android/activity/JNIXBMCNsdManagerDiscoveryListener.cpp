@@ -18,12 +18,13 @@
 using namespace jni;
 
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCNsdManagerDiscoveryListener";
+static std::string s_classNameMDL =
+    std::string(CCompileInfo::GetClass()) + "/interfaces/XBMCNsdManagerDiscoveryListener";
 
 CJNIXBMCNsdManagerDiscoveryListener::CJNIXBMCNsdManagerDiscoveryListener()
-  : CJNIBase(s_className)
+  : CJNIBase(s_classNameMDL)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameMDL)));
   m_object.setGlobal();
 
   add_instance(m_object, this);
@@ -42,7 +43,7 @@ CJNIXBMCNsdManagerDiscoveryListener::~CJNIXBMCNsdManagerDiscoveryListener()
 
 void CJNIXBMCNsdManagerDiscoveryListener::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameMDL.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =

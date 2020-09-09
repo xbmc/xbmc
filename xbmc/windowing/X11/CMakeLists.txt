@@ -34,4 +34,6 @@ if(OPENGLES_FOUND)
   list(APPEND HEADERS WinSystemX11GLESContext.h)
 endif()
 
+set(UNITY_EXCLUDES WinSystemX11GLContext.cpp)
+
 core_add_library(windowing_X11)

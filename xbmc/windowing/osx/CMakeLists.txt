@@ -13,4 +13,8 @@ set(HEADERS CocoaDPMSSupport.h
             WinSystemOSXGL.h
             VideoSyncOsx.h)
 
+set(UNITY_EXCLUDES VideoSyncOsx.mm
+                   WinSystemOSX.mm
+                   WinSystemOSXGL.mm)
+
 core_add_library(windowing_osx)

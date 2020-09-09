@@ -21,12 +21,11 @@
 
 using namespace jni;
 
-static std::string s_className = std::string(CCompileInfo::GetClass()) + "/XBMCMediaSession";
+static std::string s_classNameMs = std::string(CCompileInfo::GetClass()) + "/XBMCMediaSession";
 
-CJNIXBMCMediaSession::CJNIXBMCMediaSession()
-  : CJNIBase(s_className)
+CJNIXBMCMediaSession::CJNIXBMCMediaSession() : CJNIBase(s_classNameMs)
 {
-  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_className)));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(GetDotClassName(s_classNameMs)));
   m_object.setGlobal();
 
   add_instance(m_object, this);
@@ -45,7 +44,7 @@ CJNIXBMCMediaSession::~CJNIXBMCMediaSession()
 
 void CJNIXBMCMediaSession::RegisterNatives(JNIEnv* env)
 {
-  jclass cClass = env->FindClass(s_className.c_str());
+  jclass cClass = env->FindClass(s_classNameMs.c_str());
   if(cClass)
   {
     JNINativeMethod methods[] =
