@@ -29,18 +29,24 @@ namespace addon
 ///
 
 //==============================================================================
-/// \defgroup cpp_kodi_addon_game_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_addon_game
+/// @defgroup cpp_kodi_addon_game_Defs Definitions, structures and enumerators
+/// @ingroup cpp_kodi_addon_game
 /// @brief **Game add-on instance definition values**
-//------------------------------------------------------------------------------
+///
 
 //==============================================================================
-/// @brief
-struct AddonGameControllerLayout
+/// @defgroup cpp_kodi_addon_game_Defs_InputTypes_GameControllerLayout class GameControllerLayout
+/// @ingroup cpp_kodi_addon_game_Defs_InputTypes
+/// @brief Data of layouts for known controllers.
+///
+/// Used on @ref kodi::addon::CInstanceGame::SetControllerLayouts().
+///@{
+class GameControllerLayout
 {
-  /*! \cond PRIVATE */
-  explicit AddonGameControllerLayout() = default;
-  AddonGameControllerLayout(const game_controller_layout& layout)
+public:
+  /*! @cond PRIVATE */
+  explicit GameControllerLayout() = default;
+  GameControllerLayout(const game_controller_layout& layout)
   {
     controller_id = layout.controller_id;
     provides_input = layout.provides_input;
@@ -61,64 +67,63 @@ struct AddonGameControllerLayout
     for (unsigned int i = 0; i < layout.motor_count; ++i)
       motors.push_back(layout.motors[i]);
   }
-  /*! \endcond */
+  /*! @endcond */
 
-  /// @brief
+  /// @brief Controller identifier.
   std::string controller_id;
 
-  /// @brief False for multitaps
+  /// @brief Provides input.
+  ///
+  /// False for multitaps
   bool provides_input;
 
-  /// @brief
+  /// @brief Digital buttons.
   std::vector<std::string> digital_buttons;
 
-  /// @brief
+  /// @brief Analog buttons.
   std::vector<std::string> analog_buttons;
 
-  /// @brief
+  /// @brief Analog sticks.
   std::vector<std::string> analog_sticks;
 
-  /// @brief
+  /// @brief Accelerometers.
   std::vector<std::string> accelerometers;
 
-  /// @brief
+  /// @brief Keys.
   std::vector<std::string> keys;
 
-  /// @brief
+  /// @brief Relative pointers.
   std::vector<std::string> rel_pointers;
 
-  /// @brief
+  /// @brief Absolute pointers.
   std::vector<std::string> abs_pointers;
 
-  /// @brief
+  /// @brief Motors.
   std::vector<std::string> motors;
 };
+///@}
 //------------------------------------------------------------------------------
 
-
 //==============================================================================
-///
-/// \addtogroup cpp_kodi_addon_game
-/// @brief \cpp_class{ kodi::addon::CInstanceGame }
-/// **Game add-on instance**
+/// @addtogroup cpp_kodi_addon_game
+/// @brief @cpp_class{ kodi::addon::CInstanceGame }
+/// **Game add-on instance**\n
+/// This class provides the basic game processing system for use as an add-on in
+/// Kodi.
 ///
 /// This class is created at addon by Kodi.
 ///
-//------------------------------------------------------------------------------
 class ATTRIBUTE_HIDDEN CInstanceGame : public IAddonInstance
 {
 public:
   //============================================================================
-  ///
   /// @defgroup cpp_kodi_addon_game_Base 1. Basic functions
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Functions to manage the addon and get basic information about it**
   ///
-  ///
-  //@{
+  ///@{
 
   //============================================================================
-  ///
   /// @brief Game class constructor
   ///
   /// Used by an add-on that only supports only Game and only in one instance.
@@ -165,15 +170,14 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Destructor
   ///
   ~CInstanceGame() override = default;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>The path of the game client being loaded.
+  /// @brief **Callback to Kodi Function**\n
+  /// The path of the game client being loaded.
   ///
   /// @return the used game client Dll path
   ///
@@ -183,8 +187,8 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>Paths to proxy DLLs used to load the game client.
+  /// @brief **Callback to Kodi Function**\n
+  /// Paths to proxy DLLs used to load the game client.
   ///
   /// @param[out] paths vector list to store available dll paths
   /// @return true if success and dll paths present
@@ -203,8 +207,8 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>The "system" directories of the frontend
+  /// @brief **Callback to Kodi Function**\n
+  /// The "system" directories of the frontend.
   ///
   /// These directories can be used to store system-specific ROMs such as
   /// BIOSes, configuration data, etc.
@@ -225,8 +229,8 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>The writable directory of the frontend
+  /// @brief **Callback to Kodi Function**\n
+  /// The writable directory of the frontend.
   ///
   /// This directory can be used to store SRAM, memory cards, high scores,
   /// etc, if the game client cannot use the regular memory interface,
@@ -240,8 +244,8 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>The value of the <supports_vfs> property from addon.xml
+  /// @brief **Callback to Kodi Function**\n
+  /// The value of the <supports_vfs> property from addon.xml.
   ///
   /// @return true if VFS is supported
   ///
@@ -251,8 +255,8 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>The extensions in the <extensions> property from addon.xml
+  /// @brief **Callback to Kodi Function**\n
+  /// The extensions in the <extensions> property from addon.xml.
   ///
   /// @param[out] extensions vector list to store available extension
   /// @return true if success and extensions present
@@ -270,7 +274,7 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
@@ -283,10 +287,19 @@ public:
   /// These are mandatory functions for using this addon to get the available
   /// channels.
   ///
-  //@{
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Game operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_Operation_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_Operation_source_addon_auto_check
+  ///
+  ///@{
 
   //============================================================================
-  ///
   /// @brief Load a game
   ///
   /// @param[in] url The URL to load
@@ -299,7 +312,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Load a game that requires multiple files
   ///
   /// @param[in] type The game type
@@ -313,7 +325,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Begin playing without a game file
   ///
   /// If the add-on supports standalone mode, it must add the <supports_standalone>
@@ -330,7 +341,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Unload the current game
   ///
   /// Unloads a currently loaded game
@@ -344,7 +354,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Get timing information about the loaded game
   ///
   /// @param[out] timing_info The info structure to fill
@@ -358,7 +367,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Get region of the loaded game
   ///
   /// @return the region, or @ref GAME_REGION_UNKNOWN if unknown or no game is loaded
@@ -370,7 +378,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Return true if the client requires the frontend to provide a game loop
   ///
   /// The game loop is a thread that calls RunFrame() in a loop at a rate
@@ -385,7 +392,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Run a single frame for add-ons that use a game loop
   ///
   /// @return the error, or @ref GAME_ERROR_NO_ERROR if there was no error
@@ -397,7 +403,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Reset the current game
   ///
   /// @return the error, or @ref GAME_ERROR_NO_ERROR if the game was reset
@@ -409,8 +414,8 @@ public:
   //----------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// @brief **Callback to Kodi Function**<br>Requests the frontend to stop the current game
+  /// @brief **Callback to Kodi Function**\n
+  /// Requests the frontend to stop the current game
   ///
   /// @remarks Only called from addon itself
   ///
@@ -418,10 +423,9 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @defgroup cpp_kodi_addon_game_Operation_CStream Class: CStream
   /// @ingroup cpp_kodi_addon_game_Operation
-  /// @brief \cpp_class{ kodi::addon::CInstanceGame::CStream }
+  /// @brief @cpp_class{ kodi::addon::CInstanceGame::CStream }
   /// **Game stream handler**
   ///
   /// This class will be integrated into the addon, which can then open it if
@@ -429,7 +433,7 @@ public:
   ///
   ///
   /// @note Callback to Kodi class
-  //@{
+  ///@{
   class CStream
   {
   public:
@@ -446,7 +450,6 @@ public:
     }
 
     //==========================================================================
-    ///
     /// @ingroup cpp_kodi_addon_game_Operation_CStream
     /// @brief Create a stream for gameplay data
     ///
@@ -475,7 +478,6 @@ public:
     //--------------------------------------------------------------------------
 
     //==========================================================================
-    ///
     /// @ingroup cpp_kodi_addon_game_Operation_CStream
     /// @brief Free the specified stream
     ///
@@ -495,7 +497,6 @@ public:
     //--------------------------------------------------------------------------
 
     //==========================================================================
-    ///
     /// @ingroup cpp_kodi_addon_game_Operation_CStream
     /// @brief Get a buffer for zero-copy stream data
     ///
@@ -504,7 +505,7 @@ public:
     /// @param[out] buffer The buffer, or unmodified if false is returned
     /// @return True if buffer was set, false otherwise
     ///
-    /// @note If this returns true, buffer must be freed using \ref ReleaseBuffer().
+    /// @note If this returns true, buffer must be freed using @ref ReleaseBuffer().
     ///
     /// @remarks Only called from addon itself
     ///
@@ -521,7 +522,6 @@ public:
     //--------------------------------------------------------------------------
 
     //==========================================================================
-    ///
     /// @ingroup cpp_kodi_addon_game_Operation_CStream
     /// @brief Add a data packet to a stream
     ///
@@ -542,7 +542,6 @@ public:
     //--------------------------------------------------------------------------
 
     //==========================================================================
-    ///
     /// @ingroup cpp_kodi_addon_game_Operation_CStream
     /// @brief Free an allocated buffer
     ///
@@ -563,7 +562,6 @@ public:
     //--------------------------------------------------------------------------
 
     //==========================================================================
-    ///
     /// @ingroup cpp_kodi_addon_game_Operation_CStream
     /// @brief To check stream open was OK, e.g. after use of constructor
     ///
@@ -577,9 +575,9 @@ public:
   private:
     KODI_GAME_STREAM_HANDLE m_handle = nullptr;
   };
-  //@}
+  ///@}
 
-  //@}
+  ///@}
 
 //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
@@ -589,10 +587,19 @@ public:
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Hardware rendering operations**
   ///
-  //@{
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Hardware rendering operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_HardwareRendering_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_HardwareRendering_source_addon_auto_check
+  ///
+  ///@{
 
   //============================================================================
-  ///
   /// @brief Invalidates the current HW context and reinitializes GPU resources
   ///
   /// Any GL state is lost, and must not be deinitialized explicitly.
@@ -606,7 +613,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Called before the context is destroyed
   ///
   /// Resources can be deinitialized at this step.
@@ -619,7 +625,6 @@ public:
   }
 
   //============================================================================
-  ///
   /// @brief **Callback to Kodi Function**<br>Get a symbol from the hardware context
   ///
   /// @param[in] sym The symbol's name
@@ -634,20 +639,28 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  ///
   /// @defgroup cpp_kodi_addon_game_InputOperations 4. Input operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Input operations**
   ///
-  //@{
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Hardware rendering operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_InputOperations_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_InputOperations_source_addon_auto_check
+  ///
+  ///@{
 
   //============================================================================
-  ///
   /// @brief Check if input is accepted for a feature on the controller
   ///
   /// If only a subset of the controller profile is used, this can return false
@@ -666,7 +679,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Get the input topology that specifies which controllers can be connected
   ///
   /// @return The input topology, or null to use the default
@@ -684,18 +696,16 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Free the topology's resources
   ///
   /// @param[in] topology The topology returned by GetTopology()
-    ///
+  ///
   virtual void FreeTopology(game_input_topology* topology)
   {
   }
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Set the layouts for known controllers
   ///
   /// @param[in] controllers The controller layouts
@@ -703,13 +713,12 @@ public:
   /// After loading the input topology, the frontend will call this with
   /// controller layouts for all controllers discovered in the topology.
   ///
-  virtual void SetControllerLayouts(const std::vector<AddonGameControllerLayout>& controllers)
+  virtual void SetControllerLayouts(const std::vector<kodi::addon::GameControllerLayout>& controllers)
   {
   }
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Enable/disable keyboard input using the specified controller
   ///
   /// @param[in] enable True to enable input, false otherwise
@@ -724,7 +733,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Enable/disable mouse input using the specified controller
   ///
   /// @param[in] enable True to enable input, false otherwise
@@ -739,7 +747,6 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
   /// @brief Connect/disconnect a controller to a port on the virtual game console
   ///
   /// @param[in] connect True to connect a controller, false to disconnect
@@ -791,7 +798,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Notify the add-on of an input event
   ///
   /// @param[in] event The input event
@@ -805,14 +811,13 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief **Callback to Kodi Function**<br>Notify the port of an input event
   ///
   /// @param[in] event The input event
   /// @return true if the event was handled, false otherwise
   ///
   /// @note Input events can arrive for the following sources:
-  ///   - \ref GAME_INPUT_EVENT_MOTOR
+  ///   - @ref GAME_INPUT_EVENT_MOTOR
   ///
   /// @remarks Only called from addon itself
   ///
@@ -822,20 +827,28 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  ///
   /// @defgroup cpp_kodi_addon_game_SerializationOperations 5. Serialization operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Serialization operations**
   ///
-  //@{
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Serialization operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_SerializationOperations_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_SerializationOperations_source_addon_auto_check
+  ///
+  ///@{
 
   //============================================================================
-  ///
   /// @brief Get the number of bytes required to serialize the game
   ///
   /// @return the number of bytes, or 0 if serialization is not supported
@@ -847,7 +860,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Serialize the state of the game
   ///
   /// @param[in] data The buffer receiving the serialized game data
@@ -862,7 +874,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Deserialize the game from the given state
   ///
   /// @param[in] data A buffer containing the game's new state
@@ -876,20 +887,28 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   //============================================================================
-  ///
   /// @defgroup cpp_kodi_addon_game_CheatOperations 6. Cheat operations
   /// @ingroup cpp_kodi_addon_game
   /// @brief **Cheat operations**
   ///
-  //@{
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Cheat operation parts in interface:**\n
+  /// Copy this to your project and extend with your parts or leave functions
+  /// complete away where not used or supported.
+  ///
+  /// @copydetails cpp_kodi_addon_game_CheatOperations_header_addon_auto_check
+  /// @copydetails cpp_kodi_addon_game_CheatOperations_source_addon_auto_check
+  ///
+  ///@{
 
   //============================================================================
-  ///
   /// @brief Reset the cheat system
   ///
   /// @return the error, or @ref GAME_ERROR_NO_ERROR if the cheat system was reset
@@ -901,7 +920,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Get a region of memory
   ///
   /// @param[in] type The type of memory to retrieve
@@ -917,7 +935,6 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  ///
   /// @brief Set a cheat code
   ///
   /// @param[in] index
@@ -932,7 +949,7 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 private:
   void SetAddonStruct(KODI_HANDLE instance)
@@ -1077,7 +1094,7 @@ private:
     if (controllers == nullptr)
       return;
 
-    std::vector<AddonGameControllerLayout> controllerList;
+    std::vector<GameControllerLayout> controllerList;
     for (unsigned int i = 0; i < controller_count; ++i)
       controllerList.push_back(controllers[i]);
 

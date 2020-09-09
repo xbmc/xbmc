@@ -16,7 +16,7 @@
 #include <stddef.h> /* size_t */
 
 //==============================================================================
-/// \ingroup cpp_kodi_addon_game_Defs
+/// @ingroup cpp_kodi_addon_game_Defs
 /// @brief **Port ID used when topology is unknown**
 #define DEFAULT_PORT_ID "1"
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ extern "C"
 #endif /* __cplusplus */
 
   //============================================================================
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Game add-on error codes**
   ///
   /// Used as return values on most Game related functions.
@@ -61,14 +61,14 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_AudioStream 1. Audio stream
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_AudioStream 1. Audio stream
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **The for Audio stream used data system**
   ///
   /// Used to give Addon currently used audio stream configuration on Kodi and
   /// arrays to give related data to Kodi on callbacks.
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief **Stream Format**
@@ -183,17 +183,17 @@ extern "C"
   } ATTRIBUTE_PACKED game_stream_audio_packet;
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_VideoStream 2. Video stream
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_VideoStream 2. Video stream
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **The for Video stream used data system**
   ///
   /// Used to give Addon currently used video stream configuration on Kodi and
   /// arrays to give related data to Kodi on callbacks.
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief **Pixel format**
@@ -289,14 +289,14 @@ extern "C"
   } ATTRIBUTE_PACKED game_stream_video_packet;
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_HardwareFramebuffer 3. Hardware framebuffer stream
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_HardwareFramebuffer 3. Hardware framebuffer stream
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Hardware framebuffer stream data**
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief **Hardware framebuffer type**
@@ -408,14 +408,14 @@ extern "C"
   typedef void (*game_proc_address_t)(void);
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_SoftwareFramebuffer 4. Software framebuffer stream
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_SoftwareFramebuffer 4. Software framebuffer stream
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Software framebuffer stream data**
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief **Game video stream properties**
@@ -444,14 +444,14 @@ extern "C"
   typedef game_stream_video_packet game_stream_sw_framebuffer_packet;
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_StreamTypes 5. Stream types
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_StreamTypes 5. Stream types
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Stream types data**
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief **Game stream types**
@@ -548,14 +548,14 @@ extern "C"
   } ATTRIBUTE_PACKED game_stream_packet;
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_GameTypes 6. Game types
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_GameTypes 6. Game types
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Game types data**
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief **Game reguin definition**
@@ -690,14 +690,14 @@ extern "C"
   } GAME_SIMD;
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_InputTypes 7. Input types
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_InputTypes 7. Input types
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Input types**
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief
@@ -783,7 +783,7 @@ extern "C"
   } GAME_PORT_TYPE;
   //----------------------------------------------------------------------------
 
-  /*! \cond PRIVATE */
+  /*! @cond PRIVATE */
   /*!
     * @brief "C" Game add-on controller layout.
     *
@@ -812,7 +812,7 @@ extern "C"
     char** motors;
     unsigned int motor_count;
   } ATTRIBUTE_PACKED game_controller_layout;
-  /*! \endcond */
+  /*! @endcond */
 
   struct game_input_port;
 
@@ -1036,14 +1036,14 @@ extern "C"
   } ATTRIBUTE_PACKED game_input_event;
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
-  /// \defgroup cpp_kodi_addon_game_Defs_EnvironmentTypes 8. Environment types
-  /// \ingroup cpp_kodi_addon_game_Defs
+  /// @defgroup cpp_kodi_addon_game_Defs_EnvironmentTypes 8. Environment types
+  /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Environment types**
   ///
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief Game system timing
@@ -1058,64 +1058,64 @@ extern "C"
   };
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   /*!
-  * @brief Game properties
-  *
-    * Not to be used outside this header.
-  */
+   * @brief Game properties
+   *
+   * Not to be used outside this header.
+   */
   typedef struct AddonProps_Game
   {
     /*!
-      * The path of the game client being loaded.
-      */
+     * The path of the game client being loaded.
+     */
     const char* game_client_dll_path;
 
     /*!
-      * Paths to proxy DLLs used to load the game client.
-      */
+     * Paths to proxy DLLs used to load the game client.
+     */
     const char** proxy_dll_paths;
 
     /*!
-      * Number of proxy DLL paths provided.
-      */
+     * Number of proxy DLL paths provided.
+     */
     unsigned int proxy_dll_count;
 
     /*!
-    * The "system" directories of the frontend. These directories can be used to
-    * store system-specific ROMs such as BIOSes, configuration data, etc.
-    */
+     * The "system" directories of the frontend. These directories can be used to
+     * store system-specific ROMs such as BIOSes, configuration data, etc.
+     */
     const char** resource_directories;
 
     /*!
-    * Number of resource directories provided
-    */
+     * Number of resource directories provided
+     */
     unsigned int resource_directory_count;
 
     /*!
-    * The writable directory of the frontend. This directory can be used to store
-    * SRAM, memory cards, high scores, etc, if the game client cannot use the
-    * regular memory interface, GetMemoryData().
-    */
+     * The writable directory of the frontend. This directory can be used to store
+     * SRAM, memory cards, high scores, etc, if the game client cannot use the
+     * regular memory interface, GetMemoryData().
+     */
     const char* profile_directory;
 
     /*!
-    * The value of the <supports_vfs> property from addon.xml
-    */
+     * The value of the <supports_vfs> property from addon.xml
+     */
     bool supports_vfs;
 
     /*!
-    * The extensions in the <extensions> property from addon.xml
-    */
+     * The extensions in the <extensions> property from addon.xml
+     */
     const char** extensions;
 
     /*!
-    * Number of extensions provided
-    */
+     * Number of extensions provided
+     */
     unsigned int extension_count;
   } AddonProps_Game;
 
@@ -1126,10 +1126,10 @@ extern "C"
   struct AddonInstance_Game;
 
   /*!
-  * @brief Game callbacks
-  *
-  * Not to be used outside this header.
-  */
+   * @brief Game callbacks
+   *
+   * Not to be used outside this header.
+   */
   typedef struct AddonToKodiFuncTable_Game
   {
     KODI_HANDLE kodiInstance;
@@ -1149,10 +1149,10 @@ extern "C"
   } AddonToKodiFuncTable_Game;
 
   /*!
-  * @brief Game function hooks
-  *
-  * Not to be used outside this header.
-  */
+   * @brief Game function hooks
+   *
+   * Not to be used outside this header.
+   */
   typedef struct KodiToAddonFuncTable_Game
   {
     KODI_HANDLE addonInstance;
@@ -1194,10 +1194,10 @@ extern "C"
   } KodiToAddonFuncTable_Game;
 
   /*!
-  * @brief Game instance
-  *
-  * Not to be used outside this header.
-  */
+   * @brief Game instance
+   *
+   * Not to be used outside this header.
+   */
   typedef struct AddonInstance_Game
   {
     struct AddonProps_Game* props;
