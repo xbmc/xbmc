@@ -128,7 +128,7 @@
   </VideoMenu>
   <Videos>
     <customcontroller name="SiriRemote">
-      <button id="7">Info</button>
+      <button id="7">ContextMenu</button>
     </customcontroller>
   </Videos>
   <PictureInfo>
