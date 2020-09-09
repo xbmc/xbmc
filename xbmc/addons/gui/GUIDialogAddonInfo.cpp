@@ -17,6 +17,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "addons/gui/GUIHelpers.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -495,7 +496,13 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER);
   }
   else
+  {
+    // Check user want to enable if lifecycle not normal
+    if (!ADDON::GUI::CHelpers::DialogAddonLifecycleUseAsk(m_localAddon))
+      return;
+
     CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());
+  }
 
   UpdateControls();
 }

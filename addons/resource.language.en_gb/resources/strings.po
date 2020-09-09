@@ -15715,7 +15715,31 @@ msgctxt "#24163"
 msgid "Match Apple tvOS Standard (Siri remote)"
 msgstr ""
 
-#empty strings from id 24164 to 24990
+#. Header text for yes/no dialog about enable of broken addon
+#: xbmc/addons/gui/GUIHelpers.cpp
+msgctxt "#24164"
+msgid "Addon \"{0:s}\" broken"
+msgstr ""
+
+#. Yes/no dialog text with addon broken string value and to ask for use
+#: xbmc/addons/gui/GUIHelpers.cpp
+msgctxt "#24165"
+msgid "Addon marked as broken with following note:[CR][B][I]{0:s}[/I][/B][CR][CR]Do you want to enable?"
+msgstr ""
+
+#. Header text for yes/no dialog about enable of deprecated addon
+#: xbmc/addons/gui/GUIHelpers.cpp
+msgctxt "#24166"
+msgid "Addon \"{0:s}\" deprecated"
+msgstr ""
+
+#. Yes/no dialog text with addon deprecated string value and to ask for use
+#: xbmc/addons/gui/GUIHelpers.cpp
+msgctxt "#24167"
+msgid "Addon marked as deprecated with following note:[CR][B][I]{0:s}[/I][/B][CR][CR]Do you want to enable?"
+msgstr ""
+
+#empty strings from id 24168 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
