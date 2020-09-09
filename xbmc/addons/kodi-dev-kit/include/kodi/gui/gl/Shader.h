@@ -10,6 +10,8 @@
 
 #include "GL.h"
 
+#ifdef __cplusplus
+
 #include <stdio.h>
 #include <vector>
 #include <string>
@@ -592,3 +594,5 @@ private:
 } /* namespace gl */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

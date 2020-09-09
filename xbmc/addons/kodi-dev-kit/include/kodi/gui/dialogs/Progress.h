@@ -11,6 +11,8 @@
 #include "../../AddonBase.h"
 #include "../../c-api/gui/definitions.h"
 
+#ifdef __cplusplus
+
 namespace kodi
 {
 namespace gui
@@ -253,3 +255,5 @@ private:
 } /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

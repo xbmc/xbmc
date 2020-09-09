@@ -11,6 +11,8 @@
 #include "../../AddonBase.h"
 #include "../Window.h"
 
+#ifdef __cplusplus
+
 namespace kodi
 {
 namespace gui
@@ -324,3 +326,5 @@ public:
 } /* namespace controls */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#ifdef __cplusplus
+
 #include <angle_gl.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -367,3 +369,5 @@ private:
 using CRenderHelper = gl::CGLonDX;
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

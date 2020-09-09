@@ -12,6 +12,8 @@
 #include "../Window.h"
 #include "../renderHelper.h"
 
+#ifdef __cplusplus
+
 namespace kodi
 {
 namespace gui
@@ -211,3 +213,5 @@ private:
 } /* namespace controls */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

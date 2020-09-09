@@ -11,6 +11,8 @@
 #include "../AddonBase.h"
 #include "../c-api/gui/definitions.h"
 
+#ifdef __cplusplus
+
 #include <memory>
 
 namespace kodi
@@ -363,3 +365,5 @@ namespace gui
 
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

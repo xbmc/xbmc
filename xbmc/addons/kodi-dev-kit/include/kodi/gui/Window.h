@@ -17,6 +17,8 @@
 #include "input/actions/ActionIDs.h"
 #endif
 
+#ifdef __cplusplus
+
 namespace kodi
 {
 namespace gui
@@ -923,3 +925,5 @@ namespace gui
 
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

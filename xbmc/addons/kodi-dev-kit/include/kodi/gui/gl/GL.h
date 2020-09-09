@@ -8,6 +8,8 @@
 
 #pragma once
 
+#ifdef __cplusplus
+
 //==============================================================================
 ///
 /// \defgroup cpp_kodi_gui_gl OpenGL helpers
@@ -109,3 +111,5 @@
 #ifndef BUFFER_OFFSET
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 #endif
+
+#endif /* __cplusplus */

@@ -10,6 +10,8 @@
 
 #include "../AddonBase.h"
 
+#ifdef __cplusplus
+
 namespace kodi
 {
 namespace gui
@@ -76,3 +78,5 @@ inline std::shared_ptr<IRenderHelper> ATTRIBUTE_HIDDEN GetRenderHelper()
 
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

@@ -11,6 +11,8 @@
 #include "../../AddonBase.h"
 #include "../../c-api/gui/definitions.h"
 
+#ifdef __cplusplus
+
 //==============================================================================
 /// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
 /// \ingroup cpp_kodi_gui_dialogs_Select
@@ -267,3 +269,5 @@ namespace dialogs
 } /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */
