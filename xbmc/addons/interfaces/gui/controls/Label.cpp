@@ -35,7 +35,9 @@ void Interface_GUIControlLabel::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_label);
 }
 
-void Interface_GUIControlLabel::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlLabel::set_visible(KODI_HANDLE kodiBase,
+                                            KODI_GUI_CONTROL_HANDLE handle,
+                                            bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUILabelControl* control = static_cast<CGUILabelControl*>(handle);
@@ -49,7 +51,9 @@ void Interface_GUIControlLabel::set_visible(void* kodiBase, void* handle, bool v
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlLabel::set_label(void* kodiBase, void* handle, const char *label)
+void Interface_GUIControlLabel::set_label(KODI_HANDLE kodiBase,
+                                          KODI_GUI_CONTROL_HANDLE handle,
+                                          const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUILabelControl* control = static_cast<CGUILabelControl*>(handle);
@@ -65,7 +69,7 @@ void Interface_GUIControlLabel::set_label(void* kodiBase, void* handle, const ch
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-char* Interface_GUIControlLabel::get_label(void* kodiBase, void* handle)
+char* Interface_GUIControlLabel::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUILabelControl* control = static_cast<CGUILabelControl*>(handle);

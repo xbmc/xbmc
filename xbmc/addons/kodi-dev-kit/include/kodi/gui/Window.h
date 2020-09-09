@@ -22,7 +22,7 @@ namespace kodi
 namespace gui
 {
 
-  class CListItem;
+  using ClientHandle = KODI_GUI_CLIENT_HANDLE;
 
   //============================================================================
   ///
@@ -59,6 +59,8 @@ namespace gui
   /// \ingroup cpp_kodi_gui_CWindow
   /// @brief <b>Library definition values</b>
   ///
+
+  class CListItem;
 
   class ATTRIBUTE_HIDDEN CWindow : public CAddonGUIControlBase
   {
@@ -495,7 +497,8 @@ namespace gui
     ///
     ListItemPtr GetListItem(int listPos)
     {
-      GUIHANDLE handle = m_interface->kodi_gui->window->get_list_item(m_interface->kodiBase, m_controlHandle, listPos);
+      KODI_GUI_LISTITEM_HANDLE handle = m_interface->kodi_gui->window->get_list_item(
+          m_interface->kodiBase, m_controlHandle, listPos);
       if (!handle)
         return ListItemPtr();
 
@@ -805,25 +808,25 @@ namespace gui
     /// ~~~~~~~~~~~~~{.cpp}
     /// ...
     ///
-    /// bool OnInit(GUIHANDLE cbhdl)
+    /// bool OnInit(kodi::gui::ClientHandle cbhdl)
     /// {
     ///   ...
     ///   return true;
     /// }
     ///
-    /// bool OnFocus(GUIHANDLE cbhdl, int controlId)
+    /// bool OnFocus(kodi::gui::ClientHandle cbhdl, int controlId)
     /// {
     ///   ...
     ///   return true;
     /// }
     ///
-    /// bool OnClick(GUIHANDLE cbhdl, int controlId)
+    /// bool OnClick(kodi::gui::ClientHandle cbhdl, int controlId)
     /// {
     ///   ...
     ///   return true;
     /// }
     ///
-    /// bool OnAction(GUIHANDLE cbhdl, int actionId)
+    /// bool OnAction(kodi::gui::ClientHandle cbhdl, int actionId)
     /// {
     ///   ...
     ///   return true;
@@ -836,14 +839,21 @@ namespace gui
     /// ...
     /// ~~~~~~~~~~~~~
     ///
-    void SetIndependentCallbacks(
-      GUIHANDLE                 cbhdl,
-      bool (*CBOnInit)            (GUIHANDLE cbhdl),
-      bool (*CBOnFocus)           (GUIHANDLE cbhdl, int controlId),
-      bool (*CBOnClick)           (GUIHANDLE cbhdl, int controlId),
-      bool (*CBOnAction)          (GUIHANDLE cbhdl, int actionId, uint32_t buttoncode, wchar_t unicode),
-      void (*CBGetContextButtons) (GUIHANDLE cbhdl, int itemNumber, gui_context_menu_pair* buttons, unsigned int* size) = nullptr,
-      bool (*CBOnContextButton)   (GUIHANDLE cbhdl, int itemNumber, unsigned int button) = nullptr)
+    void SetIndependentCallbacks(kodi::gui::ClientHandle cbhdl,
+                                 bool (*CBOnInit)(kodi::gui::ClientHandle cbhdl),
+                                 bool (*CBOnFocus)(kodi::gui::ClientHandle cbhdl, int controlId),
+                                 bool (*CBOnClick)(kodi::gui::ClientHandle cbhdl, int controlId),
+                                 bool (*CBOnAction)(kodi::gui::ClientHandle cbhdl,
+                                                    int actionId,
+                                                    uint32_t buttoncode,
+                                                    wchar_t unicode),
+                                 void (*CBGetContextButtons)(kodi::gui::ClientHandle cbhdl,
+                                                             int itemNumber,
+                                                             gui_context_menu_pair* buttons,
+                                                             unsigned int* size) = nullptr,
+                                 bool (*CBOnContextButton)(kodi::gui::ClientHandle cbhdl,
+                                                           int itemNumber,
+                                                           unsigned int button) = nullptr)
     {
       if (!cbhdl ||
           !CBOnInit || !CBOnFocus || !CBOnClick || !CBOnAction)
@@ -860,27 +870,33 @@ namespace gui
     //@}
 
   private:
-    static bool CBOnInit(GUIHANDLE cbhdl)
+    static bool CBOnInit(KODI_GUI_CLIENT_HANDLE cbhdl)
     {
       return static_cast<CWindow*>(cbhdl)->OnInit();
     }
 
-    static bool CBOnFocus(GUIHANDLE cbhdl, int controlId)
+    static bool CBOnFocus(KODI_GUI_CLIENT_HANDLE cbhdl, int controlId)
     {
       return static_cast<CWindow*>(cbhdl)->OnFocus(controlId);
     }
 
-    static bool CBOnClick(GUIHANDLE cbhdl, int controlId)
+    static bool CBOnClick(KODI_GUI_CLIENT_HANDLE cbhdl, int controlId)
     {
       return static_cast<CWindow*>(cbhdl)->OnClick(controlId);
     }
 
-    static bool CBOnAction(GUIHANDLE cbhdl, int actionId, uint32_t buttoncode, wchar_t unicode)
+    static bool CBOnAction(KODI_GUI_CLIENT_HANDLE cbhdl,
+                           int actionId,
+                           uint32_t buttoncode,
+                           wchar_t unicode)
     {
       return static_cast<CWindow*>(cbhdl)->OnAction(actionId, buttoncode, unicode);
     }
 
-    static void CBGetContextButtons(GUIHANDLE cbhdl, int itemNumber, gui_context_menu_pair* buttons, unsigned int* size)
+    static void CBGetContextButtons(KODI_GUI_CLIENT_HANDLE cbhdl,
+                                    int itemNumber,
+                                    gui_context_menu_pair* buttons,
+                                    unsigned int* size)
     {
       std::vector< std::pair<unsigned int, std::string> > buttonList;
       static_cast<CWindow*>(cbhdl)->GetContextButtons(itemNumber, buttonList);
@@ -899,7 +915,7 @@ namespace gui
       }
     }
 
-    static bool CBOnContextButton(GUIHANDLE cbhdl, int itemNumber, unsigned int button)
+    static bool CBOnContextButton(KODI_GUI_CLIENT_HANDLE cbhdl, int itemNumber, unsigned int button)
     {
       return static_cast<CWindow*>(cbhdl)->OnContextButton(itemNumber, button);
     }

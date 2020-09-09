@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,7 +42,7 @@ namespace ADDON
      * class.
      */
     //@{
-    static void open(void* kodiBase, const char *heading, const char *text);
+    static void open(KODI_HANDLE kodiBase, const char* heading, const char* text);
     //@}
   };
 

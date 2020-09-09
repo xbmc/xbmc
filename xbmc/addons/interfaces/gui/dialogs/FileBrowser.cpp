@@ -41,8 +41,12 @@ void Interface_GUIDialogFileBrowser::DeInit(AddonGlobalInterface* addonInterface
   free(addonInterface->toKodi->kodi_gui->dialogFileBrowser);
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_directory(void* kodiBase, const char* shares, const char* heading,
-                                                            const char* path_in, char** path_out, bool write_only)
+bool Interface_GUIDialogFileBrowser::show_and_get_directory(KODI_HANDLE kodiBase,
+                                                            const char* shares,
+                                                            const char* heading,
+                                                            const char* path_in,
+                                                            char** path_out,
+                                                            bool write_only)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -71,8 +75,14 @@ bool Interface_GUIDialogFileBrowser::show_and_get_directory(void* kodiBase, cons
   return bRet;
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_file(void* kodiBase, const char* shares, const char* mask, const char* heading,
-                                                       const char* path_in, char** path_out, bool use_thumbs, bool use_file_directories)
+bool Interface_GUIDialogFileBrowser::show_and_get_file(KODI_HANDLE kodiBase,
+                                                       const char* shares,
+                                                       const char* mask,
+                                                       const char* heading,
+                                                       const char* path_in,
+                                                       char** path_out,
+                                                       bool use_thumbs,
+                                                       bool use_file_directories)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -101,9 +111,15 @@ bool Interface_GUIDialogFileBrowser::show_and_get_file(void* kodiBase, const cha
   return bRet;
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_file_from_dir(void* kodiBase, const char* directory, const char* mask,
-                                                                const char* heading, const char* path_in, char** path_out,
-                                                                bool use_thumbs, bool use_file_directories, bool single_list)
+bool Interface_GUIDialogFileBrowser::show_and_get_file_from_dir(KODI_HANDLE kodiBase,
+                                                                const char* directory,
+                                                                const char* mask,
+                                                                const char* heading,
+                                                                const char* path_in,
+                                                                char** path_out,
+                                                                bool use_thumbs,
+                                                                bool use_file_directories,
+                                                                bool single_list)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -129,9 +145,14 @@ bool Interface_GUIDialogFileBrowser::show_and_get_file_from_dir(void* kodiBase, 
   return bRet;
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_file_list(void* kodiBase, const char* shares, const char* mask,
-                                                            const char* heading, char*** file_list, unsigned int* entries,
-                                                            bool use_thumbs, bool use_file_directories)
+bool Interface_GUIDialogFileBrowser::show_and_get_file_list(KODI_HANDLE kodiBase,
+                                                            const char* shares,
+                                                            const char* mask,
+                                                            const char* heading,
+                                                            char*** file_list,
+                                                            unsigned int* entries,
+                                                            bool use_thumbs,
+                                                            bool use_file_directories)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -167,8 +188,11 @@ bool Interface_GUIDialogFileBrowser::show_and_get_file_list(void* kodiBase, cons
   return bRet;
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_source(void* kodiBase, const char* path_in, char** path_out,
-                                                         bool allowNetworkShares, const char* additionalShare,
+bool Interface_GUIDialogFileBrowser::show_and_get_source(KODI_HANDLE kodiBase,
+                                                         const char* path_in,
+                                                         char** path_out,
+                                                         bool allowNetworkShares,
+                                                         const char* additionalShare,
                                                          const char* strType)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
@@ -199,8 +223,11 @@ bool Interface_GUIDialogFileBrowser::show_and_get_source(void* kodiBase, const c
   return bRet;
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_image(void* kodiBase, const char* shares, const char* heading,
-                                                        const char* path_in, char** path_out)
+bool Interface_GUIDialogFileBrowser::show_and_get_image(KODI_HANDLE kodiBase,
+                                                        const char* shares,
+                                                        const char* heading,
+                                                        const char* path_in,
+                                                        char** path_out)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -228,7 +255,11 @@ bool Interface_GUIDialogFileBrowser::show_and_get_image(void* kodiBase, const ch
   return bRet;
 }
 
-bool Interface_GUIDialogFileBrowser::show_and_get_image_list(void* kodiBase, const char* shares, const char* heading, char*** file_list, unsigned int* entries)
+bool Interface_GUIDialogFileBrowser::show_and_get_image_list(KODI_HANDLE kodiBase,
+                                                             const char* shares,
+                                                             const char* heading,
+                                                             char*** file_list,
+                                                             unsigned int* entries)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -265,7 +296,9 @@ bool Interface_GUIDialogFileBrowser::show_and_get_image_list(void* kodiBase, con
   return bRet;
 }
 
-void Interface_GUIDialogFileBrowser::clear_file_list(void* kodiBase, char*** file_list, unsigned int entries)
+void Interface_GUIDialogFileBrowser::clear_file_list(KODI_HANDLE kodiBase,
+                                                     char*** file_list,
+                                                     unsigned int entries)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

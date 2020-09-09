@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
 #include "threads/Event.h"
 #include "windows/GUIMediaWindow.h"
 
@@ -46,73 +47,154 @@ namespace ADDON
      */
     //@{
     /* Window creation functions */
-    static void* create(void* kodiBase, const char* xml_filename, const char* default_skin, bool as_dialog, bool is_media);
-    static void destroy(void* kodiBase, void* handle);
-    static void set_callbacks(void* kodiBase,
-                              void* handle,
-                              void* clienthandle,
-                              bool (*CBInit)(void*),
-                              bool (*CBFocus)(void*, int),
-                              bool (*CBClick)(void*, int),
-                              bool (*CBOnAction)(void*, int, uint32_t, wchar_t),
-                              void (*CBGetContextButtons)(void* , int, gui_context_menu_pair*, unsigned int*),
-                              bool (*CBOnContextButton)(void*, int, unsigned int));
-    static bool show(void* kodiBase, void* handle);
-    static bool close(void* kodiBase, void* handle);
-    static bool do_modal(void* kodiBase, void* handle);
+    static KODI_GUI_WINDOW_HANDLE create(KODI_HANDLE kodiBase,
+                                         const char* xml_filename,
+                                         const char* default_skin,
+                                         bool as_dialog,
+                                         bool is_media);
+    static void destroy(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static void set_callbacks(KODI_HANDLE kodiBase,
+                              KODI_GUI_WINDOW_HANDLE handle,
+                              KODI_GUI_CLIENT_HANDLE clienthandle,
+                              bool (*CBInit)(KODI_GUI_CLIENT_HANDLE),
+                              bool (*CBFocus)(KODI_GUI_CLIENT_HANDLE, int),
+                              bool (*CBClick)(KODI_GUI_CLIENT_HANDLE, int),
+                              bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, int, uint32_t, wchar_t),
+                              void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE,
+                                                          int,
+                                                          gui_context_menu_pair*,
+                                                          unsigned int*),
+                              bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int));
+    static bool show(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static bool close(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static bool do_modal(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
 
     /* Window control functions */
-    static bool set_focus_id(void* kodiBase, void* handle, int control_id);
-    static int get_focus_id(void* kodiBase, void* handle);
-    static void set_control_label(void* kodiBase, void* handle, int control_id, const char* label);
-    static void set_control_visible(void* kodiBase, void* handle, int control_id, bool visible);
-    static void set_control_selected(void* kodiBase, void* handle, int control_id, bool selected);
+    static bool set_focus_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle, int control_id);
+    static int get_focus_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static void set_control_label(KODI_HANDLE kodiBase,
+                                  KODI_GUI_WINDOW_HANDLE handle,
+                                  int control_id,
+                                  const char* label);
+    static void set_control_visible(KODI_HANDLE kodiBase,
+                                    KODI_GUI_WINDOW_HANDLE handle,
+                                    int control_id,
+                                    bool visible);
+    static void set_control_selected(KODI_HANDLE kodiBase,
+                                     KODI_GUI_WINDOW_HANDLE handle,
+                                     int control_id,
+                                     bool selected);
 
     /* Window property functions */
-    static void set_property(void* kodiBase, void* handle, const char* key, const char* value);
-    static void set_property_int(void* kodiBase, void* handle, const char* key, int value);
-    static void set_property_bool(void* kodiBase, void* handle, const char* key, bool value);
-    static void set_property_double(void* kodiBase, void* handle, const char* key, double value);
-    static char* get_property(void* kodiBase, void* handle, const char* key);
-    static int get_property_int(void* kodiBase, void* handle, const char* key);
-    static bool get_property_bool(void* kodiBase, void* handle, const char* key);
-    static double get_property_double(void* kodiBase, void* handle, const char* key);
-    static void clear_properties(void* kodiBase, void* handle);
-    static void clear_property(void* kodiBase, void* handle, const char* key);
+    static void set_property(KODI_HANDLE kodiBase,
+                             KODI_GUI_WINDOW_HANDLE handle,
+                             const char* key,
+                             const char* value);
+    static void set_property_int(KODI_HANDLE kodiBase,
+                                 KODI_GUI_WINDOW_HANDLE handle,
+                                 const char* key,
+                                 int value);
+    static void set_property_bool(KODI_HANDLE kodiBase,
+                                  KODI_GUI_WINDOW_HANDLE handle,
+                                  const char* key,
+                                  bool value);
+    static void set_property_double(KODI_HANDLE kodiBase,
+                                    KODI_GUI_WINDOW_HANDLE handle,
+                                    const char* key,
+                                    double value);
+    static char* get_property(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle, const char* key);
+    static int get_property_int(KODI_HANDLE kodiBase,
+                                KODI_GUI_WINDOW_HANDLE handle,
+                                const char* key);
+    static bool get_property_bool(KODI_HANDLE kodiBase,
+                                  KODI_GUI_WINDOW_HANDLE handle,
+                                  const char* key);
+    static double get_property_double(KODI_HANDLE kodiBase,
+                                      KODI_GUI_WINDOW_HANDLE handle,
+                                      const char* key);
+    static void clear_properties(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static void clear_property(KODI_HANDLE kodiBase,
+                               KODI_GUI_WINDOW_HANDLE handle,
+                               const char* key);
 
     /* List item functions */
-    static void clear_item_list(void* kodiBase, void* handle);
-    static void add_list_item(void* kodiBase, void* handle, void* item, int list_position);
-    static void remove_list_item_from_position(void* kodiBase, void* handle, int list_position);
-    static void remove_list_item(void* kodiBase, void* handle, void* item);
-    static void* get_list_item(void* kodiBase, void* handle, int list_position);
-    static void set_current_list_position(void* kodiBase, void* handle, int list_position);
-    static int get_current_list_position(void* kodiBase, void* handle);
-    static int get_list_size(void* kodiBase, void* handle);
-    static void set_container_property(void* kodiBase, void* handle, const char* key, const char* value);
-    static void set_container_content(void* kodiBase, void* handle, const char* value);
-    static int get_current_container_id(void* kodiBase, void* handle);
+    static void clear_item_list(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static void add_list_item(KODI_HANDLE kodiBase,
+                              KODI_GUI_WINDOW_HANDLE handle,
+                              KODI_GUI_LISTITEM_HANDLE item,
+                              int list_position);
+    static void remove_list_item_from_position(KODI_HANDLE kodiBase,
+                                               KODI_GUI_WINDOW_HANDLE handle,
+                                               int list_position);
+    static void remove_list_item(KODI_HANDLE kodiBase,
+                                 KODI_GUI_WINDOW_HANDLE handle,
+                                 KODI_GUI_LISTITEM_HANDLE item);
+    static KODI_GUI_LISTITEM_HANDLE get_list_item(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_WINDOW_HANDLE handle,
+                                                  int list_position);
+    static void set_current_list_position(KODI_HANDLE kodiBase,
+                                          KODI_GUI_WINDOW_HANDLE handle,
+                                          int list_position);
+    static int get_current_list_position(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static int get_list_size(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
+    static void set_container_property(KODI_HANDLE kodiBase,
+                                       KODI_GUI_WINDOW_HANDLE handle,
+                                       const char* key,
+                                       const char* value);
+    static void set_container_content(KODI_HANDLE kodiBase,
+                                      KODI_GUI_WINDOW_HANDLE handle,
+                                      const char* value);
+    static int get_current_container_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
 
     /* Various functions */
-    static void mark_dirty_region(void* kodiBase, void* handle);
+    static void mark_dirty_region(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
 
     /* GUI control access functions */
-    static void* get_control_button(void* kodiBase, void* handle, int control_id);
-    static void* get_control_edit(void* kodiBase, void* handle, int control_id);
-    static void* get_control_fade_label(void* kodiBase, void* handle, int control_id);
-    static void* get_control_image(void* kodiBase, void* handle, int control_id);
-    static void* get_control_label(void* kodiBase, void* handle, int control_id);
-    static void* get_control_radio_button(void* kodiBase, void* handle, int control_id);
-    static void* get_control_progress(void* kodiBase, void* handle, int control_id);
-    static void* get_control_render_addon(void* kodiBase, void* handle, int control_id);
-    static void* get_control_settings_slider(void* kodiBase, void* handle, int control_id);
-    static void* get_control_slider(void* kodiBase, void* handle, int control_id);
-    static void* get_control_spin(void* kodiBase, void* handle, int control_id);
-    static void* get_control_text_box(void* kodiBase, void* handle, int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_button(KODI_HANDLE kodiBase,
+                                                      KODI_GUI_WINDOW_HANDLE handle,
+                                                      int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_edit(KODI_HANDLE kodiBase,
+                                                    KODI_GUI_WINDOW_HANDLE handle,
+                                                    int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_fade_label(KODI_HANDLE kodiBase,
+                                                          KODI_GUI_WINDOW_HANDLE handle,
+                                                          int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_image(KODI_HANDLE kodiBase,
+                                                     KODI_GUI_WINDOW_HANDLE handle,
+                                                     int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_label(KODI_HANDLE kodiBase,
+                                                     KODI_GUI_WINDOW_HANDLE handle,
+                                                     int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_radio_button(KODI_HANDLE kodiBase,
+                                                            KODI_GUI_WINDOW_HANDLE handle,
+                                                            int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_progress(KODI_HANDLE kodiBase,
+                                                        KODI_GUI_WINDOW_HANDLE handle,
+                                                        int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_render_addon(KODI_HANDLE kodiBase,
+                                                            KODI_GUI_WINDOW_HANDLE handle,
+                                                            int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_settings_slider(KODI_HANDLE kodiBase,
+                                                               KODI_GUI_WINDOW_HANDLE handle,
+                                                               int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_slider(KODI_HANDLE kodiBase,
+                                                      KODI_GUI_WINDOW_HANDLE handle,
+                                                      int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_spin(KODI_HANDLE kodiBase,
+                                                    KODI_GUI_WINDOW_HANDLE handle,
+                                                    int control_id);
+    static KODI_GUI_CONTROL_HANDLE get_control_text_box(KODI_HANDLE kodiBase,
+                                                        KODI_GUI_WINDOW_HANDLE handle,
+                                                        int control_id);
     //@}
 
   private:
-    static void* GetControl(void* kodiBase, void* handle, int control_id, const char* function, CGUIControl::GUICONTROLTYPES type, const std::string& typeName);
+    static KODI_GUI_CONTROL_HANDLE GetControl(KODI_HANDLE kodiBase,
+                                              KODI_GUI_WINDOW_HANDLE handle,
+                                              int control_id,
+                                              const char* function,
+                                              CGUIControl::GUICONTROLTYPES type,
+                                              const std::string& typeName);
     static int GetNextAvailableWindowId();
   };
 
@@ -151,13 +233,19 @@ namespace ADDON
     void SetupShares() override;
 
     /* kodi to addon callback function addresses */
-    void* m_clientHandle;
-    bool (*CBOnInit)(void* cbhdl);
-    bool (*CBOnFocus)(void* cbhdl, int controlId);
-    bool (*CBOnClick)(void* cbhdl, int controlId);
-    bool (*CBOnAction)(void* cbhdl, int actionId, uint32_t buttoncode, wchar_t unicode);
-    void (*CBGetContextButtons)(void* cbhdl, int itemNumber, gui_context_menu_pair* buttons, unsigned int* size);
-    bool (*CBOnContextButton)(void* cbhdl, int itemNumber, unsigned int button);
+    KODI_GUI_CLIENT_HANDLE m_clientHandle;
+    bool (*CBOnInit)(KODI_GUI_CLIENT_HANDLE cbhdl);
+    bool (*CBOnFocus)(KODI_GUI_CLIENT_HANDLE cbhdl, int controlId);
+    bool (*CBOnClick)(KODI_GUI_CLIENT_HANDLE cbhdl, int controlId);
+    bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE cbhdl,
+                       int actionId,
+                       uint32_t buttoncode,
+                       wchar_t unicode);
+    void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE cbhdl,
+                                int itemNumber,
+                                gui_context_menu_pair* buttons,
+                                unsigned int* size);
+    bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE cbhdl, int itemNumber, unsigned int button);
 
     const int m_windowId;
     int m_oldWindowId;

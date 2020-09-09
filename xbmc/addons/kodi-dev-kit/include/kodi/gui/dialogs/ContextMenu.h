@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "../definitions.h"
 #include "../../AddonBase.h"
+#include "../../c-api/gui/definitions.h"
 
 namespace kodi
 {

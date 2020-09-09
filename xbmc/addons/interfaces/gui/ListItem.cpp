@@ -49,7 +49,11 @@ void Interface_GUIListItem::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->listItem);
 }
 
-void* Interface_GUIListItem::create(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* path)
+KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,
+                                                       const char* label,
+                                                       const char* label2,
+                                                       const char* icon_image,
+                                                       const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -71,7 +75,7 @@ void* Interface_GUIListItem::create(void* kodiBase, const char* label, const cha
   return item;
 }
 
-void Interface_GUIListItem::destroy(void* kodiBase, void* handle)
+void Interface_GUIListItem::destroy(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -85,7 +89,7 @@ void Interface_GUIListItem::destroy(void* kodiBase, void* handle)
     delete item;
 }
 
-char* Interface_GUIListItem::get_label(void* kodiBase, void* handle)
+char* Interface_GUIListItem::get_label(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -112,7 +116,9 @@ char* Interface_GUIListItem::get_label(void* kodiBase, void* handle)
   return ret;
 }
 
-void Interface_GUIListItem::set_label(void* kodiBase, void* handle, const char *label)
+void Interface_GUIListItem::set_label(KODI_HANDLE kodiBase,
+                                      KODI_GUI_LISTITEM_HANDLE handle,
+                                      const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -137,7 +143,7 @@ void Interface_GUIListItem::set_label(void* kodiBase, void* handle, const char *
   Interface_GUIGeneral::unlock();
 }
 
-char* Interface_GUIListItem::get_label2(void* kodiBase, void* handle)
+char* Interface_GUIListItem::get_label2(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -164,7 +170,9 @@ char* Interface_GUIListItem::get_label2(void* kodiBase, void* handle)
   return ret;
 }
 
-void Interface_GUIListItem::set_label2(void* kodiBase, void* handle, const char *label)
+void Interface_GUIListItem::set_label2(KODI_HANDLE kodiBase,
+                                       KODI_GUI_LISTITEM_HANDLE handle,
+                                       const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -189,7 +197,9 @@ void Interface_GUIListItem::set_label2(void* kodiBase, void* handle, const char 
   Interface_GUIGeneral::unlock();
 }
 
-char* Interface_GUIListItem::get_art(void* kodiBase, void* handle, const char* type)
+char* Interface_GUIListItem::get_art(KODI_HANDLE kodiBase,
+                                     KODI_GUI_LISTITEM_HANDLE handle,
+                                     const char* type)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -216,7 +226,10 @@ char* Interface_GUIListItem::get_art(void* kodiBase, void* handle, const char* t
   return ret;
 }
 
-void Interface_GUIListItem::set_art(void* kodiBase, void* handle, const char* type, const char* label)
+void Interface_GUIListItem::set_art(KODI_HANDLE kodiBase,
+                                    KODI_GUI_LISTITEM_HANDLE handle,
+                                    const char* type,
+                                    const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -241,7 +254,7 @@ void Interface_GUIListItem::set_art(void* kodiBase, void* handle, const char* ty
   Interface_GUIGeneral::unlock();
 }
 
-char* Interface_GUIListItem::get_path(void* kodiBase, void* handle)
+char* Interface_GUIListItem::get_path(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -269,7 +282,9 @@ char* Interface_GUIListItem::get_path(void* kodiBase, void* handle)
 }
 
 
-void Interface_GUIListItem::set_path(void* kodiBase, void* handle, const char* path)
+void Interface_GUIListItem::set_path(KODI_HANDLE kodiBase,
+                                     KODI_GUI_LISTITEM_HANDLE handle,
+                                     const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -294,7 +309,10 @@ void Interface_GUIListItem::set_path(void* kodiBase, void* handle, const char* p
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIListItem::set_property(void* kodiBase, void* handle, const char* key, const char* value)
+void Interface_GUIListItem::set_property(KODI_HANDLE kodiBase,
+                                         KODI_GUI_LISTITEM_HANDLE handle,
+                                         const char* key,
+                                         const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -322,7 +340,9 @@ void Interface_GUIListItem::set_property(void* kodiBase, void* handle, const cha
   Interface_GUIGeneral::unlock();
 }
 
-char* Interface_GUIListItem::get_property(void* kodiBase, void* handle, const char* key)
+char* Interface_GUIListItem::get_property(KODI_HANDLE kodiBase,
+                                          KODI_GUI_LISTITEM_HANDLE handle,
+                                          const char* key)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -352,7 +372,9 @@ char* Interface_GUIListItem::get_property(void* kodiBase, void* handle, const ch
   return ret;
 }
 
-void Interface_GUIListItem::select(void* kodiBase, void* handle, bool select)
+void Interface_GUIListItem::select(KODI_HANDLE kodiBase,
+                                   KODI_GUI_LISTITEM_HANDLE handle,
+                                   bool select)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
@@ -377,7 +399,7 @@ void Interface_GUIListItem::select(void* kodiBase, void* handle, bool select)
   Interface_GUIGeneral::unlock();
 }
 
-bool Interface_GUIListItem::is_selected(void* kodiBase, void* handle)
+bool Interface_GUIListItem::is_selected(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);

@@ -37,7 +37,9 @@ void Interface_GUIControlRadioButton::DeInit(AddonGlobalInterface* addonInterfac
   free(addonInterface->toKodi->kodi_gui->control_radio_button);
 }
 
-void Interface_GUIControlRadioButton::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlRadioButton::set_visible(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
@@ -53,7 +55,9 @@ void Interface_GUIControlRadioButton::set_visible(void* kodiBase, void* handle, 
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlRadioButton::set_enabled(void* kodiBase, void* handle, bool enabled)
+void Interface_GUIControlRadioButton::set_enabled(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  bool enabled)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
@@ -69,7 +73,9 @@ void Interface_GUIControlRadioButton::set_enabled(void* kodiBase, void* handle, 
   control->SetEnabled(enabled);
 }
 
-void Interface_GUIControlRadioButton::set_label(void* kodiBase, void* handle, const char *label)
+void Interface_GUIControlRadioButton::set_label(KODI_HANDLE kodiBase,
+                                                KODI_GUI_CONTROL_HANDLE handle,
+                                                const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
@@ -85,7 +91,8 @@ void Interface_GUIControlRadioButton::set_label(void* kodiBase, void* handle, co
   control->SetLabel(label);
 }
 
-char* Interface_GUIControlRadioButton::get_label(void* kodiBase, void* handle)
+char* Interface_GUIControlRadioButton::get_label(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
@@ -101,7 +108,9 @@ char* Interface_GUIControlRadioButton::get_label(void* kodiBase, void* handle)
   return strdup(control->GetLabel().c_str());
 }
 
-void Interface_GUIControlRadioButton::set_selected(void* kodiBase, void* handle, bool selected)
+void Interface_GUIControlRadioButton::set_selected(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_CONTROL_HANDLE handle,
+                                                   bool selected)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
@@ -117,7 +126,8 @@ void Interface_GUIControlRadioButton::set_selected(void* kodiBase, void* handle,
   control->SetSelected(selected);
 }
 
-bool Interface_GUIControlRadioButton::is_selected(void* kodiBase, void* handle)
+bool Interface_GUIControlRadioButton::is_selected(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);

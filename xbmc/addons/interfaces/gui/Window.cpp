@@ -110,8 +110,11 @@ void Interface_GUIWindow::DeInit(AddonGlobalInterface* addonInterface)
  * Window creation functions
  */
 //@{
-void* Interface_GUIWindow::create(void* kodiBase, const char* xml_filename,
-                                  const char* default_skin, bool as_dialog, bool is_media)
+KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
+                                                   const char* xml_filename,
+                                                   const char* default_skin,
+                                                   bool as_dialog,
+                                                   bool is_media)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !xml_filename || !default_skin)
@@ -194,7 +197,7 @@ void* Interface_GUIWindow::create(void* kodiBase, const char* xml_filename,
   return window;
 }
 
-void Interface_GUIWindow::destroy(void* kodiBase, void* handle)
+void Interface_GUIWindow::destroy(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -228,13 +231,16 @@ void Interface_GUIWindow::destroy(void* kodiBase, void* handle)
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_callbacks(void* kodiBase, void* handle, void* clienthandle,
-                                        bool (*CBOnInit)(void*),
-                                        bool (*CBOnFocus)(void*, int),
-                                        bool (*CBOnClick)(void*, int),
-                                        bool (*CBOnAction)(void*, int, uint32_t, wchar_t),
-                                        void (*CBGetContextButtons)(void* , int, gui_context_menu_pair*, unsigned int*),
-                                        bool (*CBOnContextButton)(void*, int, unsigned int))
+void Interface_GUIWindow::set_callbacks(
+    KODI_HANDLE kodiBase,
+    KODI_GUI_WINDOW_HANDLE handle,
+    KODI_GUI_CLIENT_HANDLE clienthandle,
+    bool (*CBOnInit)(KODI_GUI_CLIENT_HANDLE),
+    bool (*CBOnFocus)(KODI_GUI_CLIENT_HANDLE, int),
+    bool (*CBOnClick)(KODI_GUI_CLIENT_HANDLE, int),
+    bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, int, uint32_t, wchar_t),
+    void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE, int, gui_context_menu_pair*, unsigned int*),
+    bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int))
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -256,7 +262,7 @@ void Interface_GUIWindow::set_callbacks(void* kodiBase, void* handle, void* clie
   Interface_GUIGeneral::unlock();
 }
 
-bool Interface_GUIWindow::show(void* kodiBase, void* handle)
+bool Interface_GUIWindow::show(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -281,7 +287,7 @@ bool Interface_GUIWindow::show(void* kodiBase, void* handle)
   return true;
 }
 
-bool Interface_GUIWindow::close(void* kodiBase, void* handle)
+bool Interface_GUIWindow::close(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -308,7 +314,7 @@ bool Interface_GUIWindow::close(void* kodiBase, void* handle)
   return true;
 }
 
-bool Interface_GUIWindow::do_modal(void* kodiBase, void* handle)
+bool Interface_GUIWindow::do_modal(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -341,7 +347,9 @@ bool Interface_GUIWindow::do_modal(void* kodiBase, void* handle)
  * Window control functions
  */
 //@{
-bool Interface_GUIWindow::set_focus_id(void* kodiBase, void* handle, int control_id)
+bool Interface_GUIWindow::set_focus_id(KODI_HANDLE kodiBase,
+                                       KODI_GUI_WINDOW_HANDLE handle,
+                                       int control_id)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -369,7 +377,7 @@ bool Interface_GUIWindow::set_focus_id(void* kodiBase, void* handle, int control
   return true;
 }
 
-int Interface_GUIWindow::get_focus_id(void* kodiBase, void* handle)
+int Interface_GUIWindow::get_focus_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -393,7 +401,10 @@ int Interface_GUIWindow::get_focus_id(void* kodiBase, void* handle)
   return control_id;
 }
 
-void Interface_GUIWindow::set_control_label(void* kodiBase, void* handle, int control_id, const char *label)
+void Interface_GUIWindow::set_control_label(KODI_HANDLE kodiBase,
+                                            KODI_GUI_WINDOW_HANDLE handle,
+                                            int control_id,
+                                            const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -413,7 +424,10 @@ void Interface_GUIWindow::set_control_label(void* kodiBase, void* handle, int co
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_control_visible(void* kodiBase, void* handle, int control_id, bool visible)
+void Interface_GUIWindow::set_control_visible(KODI_HANDLE kodiBase,
+                                              KODI_GUI_WINDOW_HANDLE handle,
+                                              int control_id,
+                                              bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -431,7 +445,10 @@ void Interface_GUIWindow::set_control_visible(void* kodiBase, void* handle, int 
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_control_selected(void* kodiBase, void* handle, int control_id, bool selected)
+void Interface_GUIWindow::set_control_selected(KODI_HANDLE kodiBase,
+                                               KODI_GUI_WINDOW_HANDLE handle,
+                                               int control_id,
+                                               bool selected)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -454,7 +471,10 @@ void Interface_GUIWindow::set_control_selected(void* kodiBase, void* handle, int
  * Window property functions
  */
 //@{
-void Interface_GUIWindow::set_property(void* kodiBase, void* handle, const char *key, const char *value)
+void Interface_GUIWindow::set_property(KODI_HANDLE kodiBase,
+                                       KODI_GUI_WINDOW_HANDLE handle,
+                                       const char* key,
+                                       const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -475,7 +495,10 @@ void Interface_GUIWindow::set_property(void* kodiBase, void* handle, const char 
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_property_int(void* kodiBase, void* handle, const char *key, int value)
+void Interface_GUIWindow::set_property_int(KODI_HANDLE kodiBase,
+                                           KODI_GUI_WINDOW_HANDLE handle,
+                                           const char* key,
+                                           int value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -496,7 +519,10 @@ void Interface_GUIWindow::set_property_int(void* kodiBase, void* handle, const c
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_property_bool(void* kodiBase, void* handle, const char *key, bool value)
+void Interface_GUIWindow::set_property_bool(KODI_HANDLE kodiBase,
+                                            KODI_GUI_WINDOW_HANDLE handle,
+                                            const char* key,
+                                            bool value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -517,7 +543,10 @@ void Interface_GUIWindow::set_property_bool(void* kodiBase, void* handle, const 
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_property_double(void* kodiBase, void* handle, const char *key, double value)
+void Interface_GUIWindow::set_property_double(KODI_HANDLE kodiBase,
+                                              KODI_GUI_WINDOW_HANDLE handle,
+                                              const char* key,
+                                              double value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -538,7 +567,9 @@ void Interface_GUIWindow::set_property_double(void* kodiBase, void* handle, cons
   Interface_GUIGeneral::unlock();
 }
 
-char* Interface_GUIWindow::get_property(void* kodiBase, void* handle, const char *key)
+char* Interface_GUIWindow::get_property(KODI_HANDLE kodiBase,
+                                        KODI_GUI_WINDOW_HANDLE handle,
+                                        const char* key)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -561,7 +592,9 @@ char* Interface_GUIWindow::get_property(void* kodiBase, void* handle, const char
   return strdup(value.c_str());
 }
 
-int Interface_GUIWindow::get_property_int(void* kodiBase, void* handle, const char *key)
+int Interface_GUIWindow::get_property_int(KODI_HANDLE kodiBase,
+                                          KODI_GUI_WINDOW_HANDLE handle,
+                                          const char* key)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -584,7 +617,9 @@ int Interface_GUIWindow::get_property_int(void* kodiBase, void* handle, const ch
   return value;
 }
 
-bool Interface_GUIWindow::get_property_bool(void* kodiBase, void* handle, const char *key)
+bool Interface_GUIWindow::get_property_bool(KODI_HANDLE kodiBase,
+                                            KODI_GUI_WINDOW_HANDLE handle,
+                                            const char* key)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -607,7 +642,9 @@ bool Interface_GUIWindow::get_property_bool(void* kodiBase, void* handle, const 
   return value;
 }
 
-double Interface_GUIWindow::get_property_double(void* kodiBase, void* handle, const char *key)
+double Interface_GUIWindow::get_property_double(KODI_HANDLE kodiBase,
+                                                KODI_GUI_WINDOW_HANDLE handle,
+                                                const char* key)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -630,7 +667,7 @@ double Interface_GUIWindow::get_property_double(void* kodiBase, void* handle, co
   return value;
 }
 
-void Interface_GUIWindow::clear_properties(void* kodiBase, void* handle)
+void Interface_GUIWindow::clear_properties(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -648,7 +685,9 @@ void Interface_GUIWindow::clear_properties(void* kodiBase, void* handle)
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::clear_property(void* kodiBase, void* handle, const char *key)
+void Interface_GUIWindow::clear_property(KODI_HANDLE kodiBase,
+                                         KODI_GUI_WINDOW_HANDLE handle,
+                                         const char* key)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -674,7 +713,7 @@ void Interface_GUIWindow::clear_property(void* kodiBase, void* handle, const cha
  * List item functions
  */
 //@{
-void Interface_GUIWindow::clear_item_list(void* kodiBase, void* handle)
+void Interface_GUIWindow::clear_item_list(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -692,7 +731,10 @@ void Interface_GUIWindow::clear_item_list(void* kodiBase, void* handle)
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::add_list_item(void* kodiBase, void* handle, void* item, int list_position)
+void Interface_GUIWindow::add_list_item(KODI_HANDLE kodiBase,
+                                        KODI_GUI_WINDOW_HANDLE handle,
+                                        KODI_GUI_LISTITEM_HANDLE item,
+                                        int list_position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -718,7 +760,9 @@ void Interface_GUIWindow::add_list_item(void* kodiBase, void* handle, void* item
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::remove_list_item_from_position(void* kodiBase, void* handle, int list_position)
+void Interface_GUIWindow::remove_list_item_from_position(KODI_HANDLE kodiBase,
+                                                         KODI_GUI_WINDOW_HANDLE handle,
+                                                         int list_position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -736,7 +780,9 @@ void Interface_GUIWindow::remove_list_item_from_position(void* kodiBase, void* h
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::remove_list_item(void* kodiBase, void* handle, void* item)
+void Interface_GUIWindow::remove_list_item(KODI_HANDLE kodiBase,
+                                           KODI_GUI_WINDOW_HANDLE handle,
+                                           KODI_GUI_LISTITEM_HANDLE item)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -762,7 +808,9 @@ void Interface_GUIWindow::remove_list_item(void* kodiBase, void* handle, void* i
   Interface_GUIGeneral::unlock();
 }
 
-void* Interface_GUIWindow::get_list_item(void* kodiBase, void* handle, int list_position)
+KODI_GUI_LISTITEM_HANDLE Interface_GUIWindow::get_list_item(KODI_HANDLE kodiBase,
+                                                            KODI_GUI_WINDOW_HANDLE handle,
+                                                            int list_position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -790,7 +838,9 @@ void* Interface_GUIWindow::get_list_item(void* kodiBase, void* handle, int list_
   return pItem;
 }
 
-void Interface_GUIWindow::set_current_list_position(void* kodiBase, void* handle, int list_position)
+void Interface_GUIWindow::set_current_list_position(KODI_HANDLE kodiBase,
+                                                    KODI_GUI_WINDOW_HANDLE handle,
+                                                    int list_position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -808,7 +858,8 @@ void Interface_GUIWindow::set_current_list_position(void* kodiBase, void* handle
   Interface_GUIGeneral::unlock();
 }
 
-int Interface_GUIWindow::get_current_list_position(void* kodiBase, void* handle)
+int Interface_GUIWindow::get_current_list_position(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -828,7 +879,7 @@ int Interface_GUIWindow::get_current_list_position(void* kodiBase, void* handle)
   return listPos;
 }
 
-int Interface_GUIWindow::get_list_size(void* kodiBase, void* handle)
+int Interface_GUIWindow::get_list_size(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -848,7 +899,10 @@ int Interface_GUIWindow::get_list_size(void* kodiBase, void* handle)
   return listSize;
 }
 
-void Interface_GUIWindow::set_container_property(void* kodiBase, void* handle, const char* key, const char* value)
+void Interface_GUIWindow::set_container_property(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_WINDOW_HANDLE handle,
+                                                 const char* key,
+                                                 const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -866,7 +920,9 @@ void Interface_GUIWindow::set_container_property(void* kodiBase, void* handle, c
   Interface_GUIGeneral::unlock();
 }
 
-void Interface_GUIWindow::set_container_content(void* kodiBase, void* handle, const char* value)
+void Interface_GUIWindow::set_container_content(KODI_HANDLE kodiBase,
+                                                KODI_GUI_WINDOW_HANDLE handle,
+                                                const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -884,7 +940,8 @@ void Interface_GUIWindow::set_container_content(void* kodiBase, void* handle, co
   Interface_GUIGeneral::unlock();
 }
 
-int Interface_GUIWindow::get_current_container_id(void* kodiBase, void* handle)
+int Interface_GUIWindow::get_current_container_id(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -909,7 +966,7 @@ int Interface_GUIWindow::get_current_container_id(void* kodiBase, void* handle)
  * Various functions
  */
 //@{
-void Interface_GUIWindow::mark_dirty_region(void* kodiBase, void* handle)
+void Interface_GUIWindow::mark_dirty_region(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
@@ -932,41 +989,57 @@ void Interface_GUIWindow::mark_dirty_region(void* kodiBase, void* handle)
  * GUI control access functions
  */
 //@{
-void* Interface_GUIWindow::get_control_button(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_button(KODI_HANDLE kodiBase,
+                                                                KODI_GUI_WINDOW_HANDLE handle,
+                                                                int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_BUTTON, "button");
 }
 
-void* Interface_GUIWindow::get_control_edit(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_edit(KODI_HANDLE kodiBase,
+                                                              KODI_GUI_WINDOW_HANDLE handle,
+                                                              int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_EDIT, "edit");
 }
 
-void* Interface_GUIWindow::get_control_fade_label(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_fade_label(KODI_HANDLE kodiBase,
+                                                                    KODI_GUI_WINDOW_HANDLE handle,
+                                                                    int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_FADELABEL, "fade label");
 }
 
-void* Interface_GUIWindow::get_control_image(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_image(KODI_HANDLE kodiBase,
+                                                               KODI_GUI_WINDOW_HANDLE handle,
+                                                               int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_IMAGE, "image");
 }
 
-void* Interface_GUIWindow::get_control_label(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_label(KODI_HANDLE kodiBase,
+                                                               KODI_GUI_WINDOW_HANDLE handle,
+                                                               int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_LABEL, "label");
 }
-void* Interface_GUIWindow::get_control_progress(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_progress(KODI_HANDLE kodiBase,
+                                                                  KODI_GUI_WINDOW_HANDLE handle,
+                                                                  int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_PROGRESS, "progress");
 }
 
-void* Interface_GUIWindow::get_control_radio_button(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_radio_button(KODI_HANDLE kodiBase,
+                                                                      KODI_GUI_WINDOW_HANDLE handle,
+                                                                      int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_RADIO, "radio button");
 }
 
-void* Interface_GUIWindow::get_control_render_addon(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_render_addon(KODI_HANDLE kodiBase,
+                                                                      KODI_GUI_WINDOW_HANDLE handle,
+                                                                      int control_id)
 {
   CGUIControl* pGUIControl = static_cast<CGUIControl*>(GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_RENDERADDON, "renderaddon"));
   if (!pGUIControl)
@@ -976,28 +1049,40 @@ void* Interface_GUIWindow::get_control_render_addon(void* kodiBase, void* handle
   return pRenderControl;
 }
 
-void* Interface_GUIWindow::get_control_settings_slider(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_settings_slider(
+    KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle, int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SETTINGS_SLIDER, "settings slider");
 }
 
-void* Interface_GUIWindow::get_control_slider(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_slider(KODI_HANDLE kodiBase,
+                                                                KODI_GUI_WINDOW_HANDLE handle,
+                                                                int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SLIDER, "slider");
 }
 
-void* Interface_GUIWindow::get_control_spin(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_spin(KODI_HANDLE kodiBase,
+                                                              KODI_GUI_WINDOW_HANDLE handle,
+                                                              int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SPINEX, "spin");
 }
 
-void* Interface_GUIWindow::get_control_text_box(void* kodiBase, void* handle, int control_id)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_text_box(KODI_HANDLE kodiBase,
+                                                                  KODI_GUI_WINDOW_HANDLE handle,
+                                                                  int control_id)
 {
   return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_TEXTBOX, "textbox");
 }
 //@}
 
-void* Interface_GUIWindow::GetControl(void* kodiBase, void* handle, int control_id, const char* function, CGUIControl::GUICONTROLTYPES type, const std::string& typeName)
+KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::GetControl(KODI_HANDLE kodiBase,
+                                                        KODI_GUI_WINDOW_HANDLE handle,
+                                                        int control_id,
+                                                        const char* function,
+                                                        CGUIControl::GUICONTROLTYPES type,
+                                                        const std::string& typeName)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);

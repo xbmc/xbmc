@@ -39,7 +39,9 @@ void Interface_GUIControlEdit::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_edit);
 }
 
-void Interface_GUIControlEdit::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlEdit::set_visible(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -53,7 +55,9 @@ void Interface_GUIControlEdit::set_visible(void* kodiBase, void* handle, bool vi
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlEdit::set_enabled(void* kodiBase, void* handle, bool enable)
+void Interface_GUIControlEdit::set_enabled(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           bool enable)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -67,7 +71,10 @@ void Interface_GUIControlEdit::set_enabled(void* kodiBase, void* handle, bool en
   control->SetEnabled(enable);
 }
 
-void Interface_GUIControlEdit::set_input_type(void* kodiBase, void* handle, int type, const char *heading)
+void Interface_GUIControlEdit::set_input_type(KODI_HANDLE kodiBase,
+                                              KODI_GUI_CONTROL_HANDLE handle,
+                                              int type,
+                                              const char* heading)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -119,7 +126,9 @@ void Interface_GUIControlEdit::set_input_type(void* kodiBase, void* handle, int 
   control->SetInputType(kodiType, heading);
 }
 
-void Interface_GUIControlEdit::set_label(void* kodiBase, void* handle, const char *label)
+void Interface_GUIControlEdit::set_label(KODI_HANDLE kodiBase,
+                                         KODI_GUI_CONTROL_HANDLE handle,
+                                         const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -133,7 +142,7 @@ void Interface_GUIControlEdit::set_label(void* kodiBase, void* handle, const cha
   control->SetLabel(label);
 }
 
-char* Interface_GUIControlEdit::get_label(void* kodiBase, void* handle)
+char* Interface_GUIControlEdit::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -147,7 +156,9 @@ char* Interface_GUIControlEdit::get_label(void* kodiBase, void* handle)
   return strdup(control->GetLabel().c_str());
 }
 
-void Interface_GUIControlEdit::set_text(void* kodiBase, void* handle, const char* text)
+void Interface_GUIControlEdit::set_text(KODI_HANDLE kodiBase,
+                                        KODI_GUI_CONTROL_HANDLE handle,
+                                        const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -161,7 +172,7 @@ void Interface_GUIControlEdit::set_text(void* kodiBase, void* handle, const char
   control->SetLabel2(text);
 }
 
-char* Interface_GUIControlEdit::get_text(void* kodiBase, void* handle)
+char* Interface_GUIControlEdit::get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -175,7 +186,9 @@ char* Interface_GUIControlEdit::get_text(void* kodiBase, void* handle)
   return strdup(control->GetLabel2().c_str());
 }
 
-void Interface_GUIControlEdit::set_cursor_position(void* kodiBase, void* handle, unsigned int position)
+void Interface_GUIControlEdit::set_cursor_position(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_CONTROL_HANDLE handle,
+                                                   unsigned int position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
@@ -189,7 +202,8 @@ void Interface_GUIControlEdit::set_cursor_position(void* kodiBase, void* handle,
   control->SetCursorPosition(position);
 }
 
-unsigned int Interface_GUIControlEdit::get_cursor_position(void* kodiBase, void* handle)
+unsigned int Interface_GUIControlEdit::get_cursor_position(KODI_HANDLE kodiBase,
+                                                           KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "../definitions.h"
 #include "../../AddonBase.h"
+#include "../../c-api/gui/definitions.h"
 
 namespace kodi
 {
@@ -242,7 +242,7 @@ public:
   //--------------------------------------------------------------------------
 
 private:
-  void* m_DialogHandle;
+  KODI_GUI_HANDLE m_DialogHandle;
 };
 
 } /* namespace dialogs */

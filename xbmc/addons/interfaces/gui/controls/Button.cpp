@@ -38,7 +38,9 @@ void Interface_GUIControlButton::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_button);
 }
 
-void Interface_GUIControlButton::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlButton::set_visible(KODI_HANDLE kodiBase,
+                                             KODI_GUI_CONTROL_HANDLE handle,
+                                             bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
@@ -54,7 +56,9 @@ void Interface_GUIControlButton::set_visible(void* kodiBase, void* handle, bool 
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlButton::set_enabled(void* kodiBase, void* handle, bool enabled)
+void Interface_GUIControlButton::set_enabled(KODI_HANDLE kodiBase,
+                                             KODI_GUI_CONTROL_HANDLE handle,
+                                             bool enabled)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
@@ -70,7 +74,9 @@ void Interface_GUIControlButton::set_enabled(void* kodiBase, void* handle, bool 
   control->SetEnabled(enabled);
 }
 
-void Interface_GUIControlButton::set_label(void* kodiBase, void* handle, const char* label)
+void Interface_GUIControlButton::set_label(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
@@ -86,7 +92,7 @@ void Interface_GUIControlButton::set_label(void* kodiBase, void* handle, const c
   control->SetLabel(label);
 }
 
-char* Interface_GUIControlButton::get_label(void* kodiBase, void* handle)
+char* Interface_GUIControlButton::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
@@ -102,7 +108,9 @@ char* Interface_GUIControlButton::get_label(void* kodiBase, void* handle)
   return strdup(control->GetLabel().c_str());
 }
 
-void Interface_GUIControlButton::set_label2(void* kodiBase, void* handle, const char* label)
+void Interface_GUIControlButton::set_label2(KODI_HANDLE kodiBase,
+                                            KODI_GUI_CONTROL_HANDLE handle,
+                                            const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
@@ -118,7 +126,7 @@ void Interface_GUIControlButton::set_label2(void* kodiBase, void* handle, const 
   control->SetLabel2(label);
 }
 
-char* Interface_GUIControlButton::get_label2(void* kodiBase, void* handle)
+char* Interface_GUIControlButton::get_label2(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);

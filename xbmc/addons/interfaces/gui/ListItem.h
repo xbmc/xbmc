@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,20 +42,34 @@ namespace ADDON
      * class.
      */
     //@{
-    static void* create(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* path);
-    static void destroy(void* kodiBase, void* handle);
-    static char* get_label(void* kodiBase, void* handle);
-    static void set_label(void* kodiBase, void* handle, const char* label);
-    static char* get_label2(void* kodiBase, void* handle);
-    static void set_label2(void* kodiBase, void* handle, const char* label);
-    static char* get_art(void* kodiBase, void* handle, const char* type);
-    static void set_art(void* kodiBase, void* handle, const char* type, const char* image);
-    static char* get_path(void* kodiBase, void* handle);
-    static void set_path(void* kodiBase, void* handle, const char* path);
-    static char* get_property(void* kodiBase, void* handle, const char* key);
-    static void set_property(void* kodiBase, void* handle, const char* key, const char* value);
-    static void select(void* kodiBase, void* handle, bool select);
-    static bool is_selected(void* kodiBase, void* handle);
+    static KODI_GUI_LISTITEM_HANDLE create(KODI_HANDLE kodiBase,
+                                           const char* label,
+                                           const char* label2,
+                                           const char* icon_image,
+                                           const char* path);
+    static void destroy(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
+    static char* get_label(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
+    static void set_label(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle, const char* label);
+    static char* get_label2(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
+    static void set_label2(KODI_HANDLE kodiBase,
+                           KODI_GUI_LISTITEM_HANDLE handle,
+                           const char* label);
+    static char* get_art(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle, const char* type);
+    static void set_art(KODI_HANDLE kodiBase,
+                        KODI_GUI_LISTITEM_HANDLE handle,
+                        const char* type,
+                        const char* image);
+    static char* get_path(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
+    static void set_path(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle, const char* path);
+    static char* get_property(KODI_HANDLE kodiBase,
+                              KODI_GUI_LISTITEM_HANDLE handle,
+                              const char* key);
+    static void set_property(KODI_HANDLE kodiBase,
+                             KODI_GUI_LISTITEM_HANDLE handle,
+                             const char* key,
+                             const char* value);
+    static void select(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle, bool select);
+    static bool is_selected(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
     //@}
   };
 

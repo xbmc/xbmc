@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -43,12 +45,12 @@ namespace ADDON
     static void lock();
     static void unlock();
 
-    static int get_screen_height(void* kodiBase);
-    static int get_screen_width(void* kodiBase);
-    static int get_video_resolution(void* kodiBase);
-    static int get_current_window_dialog_id(void* kodiBase);
-    static int get_current_window_id(void* kodiBase);
-    static void* get_hw_context(void* kodiBase);
+    static int get_screen_height(KODI_HANDLE kodiBase);
+    static int get_screen_width(KODI_HANDLE kodiBase);
+    static int get_video_resolution(KODI_HANDLE kodiBase);
+    static int get_current_window_dialog_id(KODI_HANDLE kodiBase);
+    static int get_current_window_id(KODI_HANDLE kodiBase);
+    static ADDON_HARDWARE_CONTEXT get_hw_context(KODI_HANDLE kodiBase);
     //@}
 
   private:

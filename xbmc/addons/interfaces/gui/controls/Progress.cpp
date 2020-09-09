@@ -33,7 +33,9 @@ void Interface_GUIControlProgress::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_progress);
 }
 
-void Interface_GUIControlProgress::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlProgress::set_visible(KODI_HANDLE kodiBase,
+                                               KODI_GUI_CONTROL_HANDLE handle,
+                                               bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
@@ -49,7 +51,9 @@ void Interface_GUIControlProgress::set_visible(void* kodiBase, void* handle, boo
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlProgress::set_percentage(void* kodiBase, void* handle, float percent)
+void Interface_GUIControlProgress::set_percentage(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  float percent)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
@@ -65,7 +69,8 @@ void Interface_GUIControlProgress::set_percentage(void* kodiBase, void* handle, 
   control->SetPercentage(percent);
 }
 
-float Interface_GUIControlProgress::get_percentage(void* kodiBase, void* handle)
+float Interface_GUIControlProgress::get_percentage(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);

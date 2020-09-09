@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "definitions.h"
+#include "../c-api/gui/definitions.h"
 
 namespace kodi
 {
@@ -164,7 +164,7 @@ namespace gui
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline void* GetHWContext()
+  inline kodi::HardwareContext GetHWContext()
   {
     using namespace ::kodi::addon;
     return CAddonBase::m_interface->toKodi->kodi_gui->general->get_hw_context(CAddonBase::m_interface->toKodi->kodiBase);

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,19 +42,24 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
-    static void set_enabled(void* kodiBase, void* handle, bool enabled);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
+    static void set_enabled(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool enabled);
 
-    static void set_input_type(void* kodiBase, void* handle, int type, const char* heading);
+    static void set_input_type(KODI_HANDLE kodiBase,
+                               KODI_GUI_CONTROL_HANDLE handle,
+                               int type,
+                               const char* heading);
 
-    static void set_label(void* kodiBase, void* handle, const char* label);
-    static char* get_label(void* kodiBase, void* handle);
+    static void set_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, const char* label);
+    static char* get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static void set_text(void* kodiBase, void* handle, const char* text);
-    static char* get_text(void* kodiBase, void* handle);
+    static void set_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, const char* text);
+    static char* get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static void set_cursor_position(void* kodiBase, void* handle, unsigned int position);
-    static unsigned int get_cursor_position(void* kodiBase, void* handle);
+    static void set_cursor_position(KODI_HANDLE kodiBase,
+                                    KODI_GUI_CONTROL_HANDLE handle,
+                                    unsigned int position);
+    static unsigned int get_cursor_position(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
     //@}
   };
 

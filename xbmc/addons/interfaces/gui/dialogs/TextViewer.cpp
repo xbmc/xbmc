@@ -33,7 +33,9 @@ void Interface_GUIDialogTextViewer::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->dialogTextViewer);
 }
 
-void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, const char *text)
+void Interface_GUIDialogTextViewer::open(KODI_HANDLE kodiBase,
+                                         const char* heading,
+                                         const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

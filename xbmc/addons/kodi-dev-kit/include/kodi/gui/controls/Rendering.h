@@ -106,7 +106,7 @@ public:
   /// @return                         Add-on needs to return true if successed,
   ///                                 otherwise false.
   ///
-  virtual bool Create(int x, int y, int w, int h, void* device) { return false; }
+  virtual bool Create(int x, int y, int w, int h, kodi::HardwareContext device) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -151,12 +151,16 @@ public:
   /// and not as  parent (with "cCLASS_own : CRendering") from own must
   /// be the callback from Kodi to add-on overdriven with own functions!
   ///
-  void SetIndependentCallbacks(
-      GUIHANDLE cbhdl,
-      bool (*CBCreate)(GUIHANDLE cbhdl, int x, int y, int w, int h, void* device),
-      void (*CBRender)(GUIHANDLE cbhdl),
-      void (*CBStop)(GUIHANDLE cbhdl),
-      bool (*CBDirty)(GUIHANDLE cbhdl))
+  void SetIndependentCallbacks(kodi::gui::ClientHandle cbhdl,
+                               bool (*CBCreate)(kodi::gui::ClientHandle cbhdl,
+                                                int x,
+                                                int y,
+                                                int w,
+                                                int h,
+                                                kodi::HardwareContext device),
+                               void (*CBRender)(kodi::gui::ClientHandle cbhdl),
+                               void (*CBStop)(kodi::gui::ClientHandle cbhdl),
+                               bool (*CBDirty)(kodi::gui::ClientHandle cbhdl))
   {
     if (!cbhdl || !CBCreate || !CBRender || !CBStop || !CBDirty)
     {
@@ -174,13 +178,14 @@ private:
    * Defined callback functions from Kodi to add-on, for use in parent / child system
    * (is private)!
    */
-  static bool OnCreateCB(void* cbhdl, int x, int y, int w, int h, void* device)
+  static bool OnCreateCB(
+      KODI_GUI_CLIENT_HANDLE cbhdl, int x, int y, int w, int h, ADDON_HARDWARE_CONTEXT device)
   {
     static_cast<CRendering*>(cbhdl)->m_renderHelper = kodi::gui::GetRenderHelper();
     return static_cast<CRendering*>(cbhdl)->Create(x, y, w, h, device);
   }
 
-  static void OnRenderCB(void* cbhdl)
+  static void OnRenderCB(KODI_GUI_CLIENT_HANDLE cbhdl)
   {
     if (!static_cast<CRendering*>(cbhdl)->m_renderHelper)
       return;
@@ -189,13 +194,16 @@ private:
     static_cast<CRendering*>(cbhdl)->m_renderHelper->End();
   }
 
-  static void OnStopCB(void* cbhdl)
+  static void OnStopCB(KODI_GUI_CLIENT_HANDLE cbhdl)
   {
     static_cast<CRendering*>(cbhdl)->Stop();
     static_cast<CRendering*>(cbhdl)->m_renderHelper = nullptr;
   }
 
-  static bool OnDirtyCB(void* cbhdl) { return static_cast<CRendering*>(cbhdl)->Dirty(); }
+  static bool OnDirtyCB(KODI_GUI_CLIENT_HANDLE cbhdl)
+  {
+    return static_cast<CRendering*>(cbhdl)->Dirty();
+  }
 
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
 };

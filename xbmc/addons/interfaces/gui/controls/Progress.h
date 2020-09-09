@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,10 +42,10 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
 
-    static void set_percentage(void* kodiBase, void* handle, float percent);
-    static float get_percentage(void* kodiBase, void* handle);
+    static void set_percentage(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, float percent);
+    static float get_percentage(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
     //@}
   };
 

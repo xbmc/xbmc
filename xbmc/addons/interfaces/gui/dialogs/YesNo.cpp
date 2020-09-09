@@ -36,7 +36,7 @@ void Interface_GUIDialogYesNo::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->dialogYesNo);
 }
 
-bool Interface_GUIDialogYesNo::show_and_get_input_single_text(void* kodiBase,
+bool Interface_GUIDialogYesNo::show_and_get_input_single_text(KODI_HANDLE kodiBase,
                                                               const char* heading,
                                                               const char* text,
                                                               bool* canceled,
@@ -65,7 +65,7 @@ bool Interface_GUIDialogYesNo::show_and_get_input_single_text(void* kodiBase,
   return (result == DialogResponse::YES);
 }
 
-bool Interface_GUIDialogYesNo::show_and_get_input_line_text(void* kodiBase,
+bool Interface_GUIDialogYesNo::show_and_get_input_line_text(KODI_HANDLE kodiBase,
                                                             const char* heading,
                                                             const char* line0,
                                                             const char* line1,
@@ -94,7 +94,7 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_text(void* kodiBase,
     DialogResponse::YES;
 }
 
-bool Interface_GUIDialogYesNo::show_and_get_input_line_button_text(void* kodiBase,
+bool Interface_GUIDialogYesNo::show_and_get_input_line_button_text(KODI_HANDLE kodiBase,
                                                                    const char* heading,
                                                                    const char* line0,
                                                                    const char* line1,

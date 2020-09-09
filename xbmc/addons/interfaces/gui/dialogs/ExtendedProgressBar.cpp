@@ -43,7 +43,8 @@ void Interface_GUIDialogExtendedProgress::DeInit(AddonGlobalInterface* addonInte
   free(addonInterface->toKodi->kodi_gui->dialogExtendedProgress);
 }
 
-void* Interface_GUIDialogExtendedProgress::new_dialog(void* kodiBase, const char *title)
+KODI_GUI_HANDLE Interface_GUIDialogExtendedProgress::new_dialog(KODI_HANDLE kodiBase,
+                                                                const char* title)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -67,7 +68,8 @@ void* Interface_GUIDialogExtendedProgress::new_dialog(void* kodiBase, const char
   return dlgProgressHandle;
 }
 
-void Interface_GUIDialogExtendedProgress::delete_dialog(void* kodiBase, void* handle)
+void Interface_GUIDialogExtendedProgress::delete_dialog(KODI_HANDLE kodiBase,
+                                                        KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -85,7 +87,7 @@ void Interface_GUIDialogExtendedProgress::delete_dialog(void* kodiBase, void* ha
   static_cast<CGUIDialogProgressBarHandle*>(handle)->MarkFinished();
 }
 
-char* Interface_GUIDialogExtendedProgress::get_title(void* kodiBase, void* handle)
+char* Interface_GUIDialogExtendedProgress::get_title(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -106,7 +108,9 @@ char* Interface_GUIDialogExtendedProgress::get_title(void* kodiBase, void* handl
   return strdup(static_cast<CGUIDialogProgressBarHandle*>(handle)->Title().c_str());
 }
 
-void Interface_GUIDialogExtendedProgress::set_title(void* kodiBase, void* handle, const char *title)
+void Interface_GUIDialogExtendedProgress::set_title(KODI_HANDLE kodiBase,
+                                                    KODI_GUI_HANDLE handle,
+                                                    const char* title)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -127,7 +131,7 @@ void Interface_GUIDialogExtendedProgress::set_title(void* kodiBase, void* handle
   static_cast<CGUIDialogProgressBarHandle*>(handle)->SetTitle(title);
 }
 
-char* Interface_GUIDialogExtendedProgress::get_text(void* kodiBase, void* handle)
+char* Interface_GUIDialogExtendedProgress::get_text(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -148,7 +152,9 @@ char* Interface_GUIDialogExtendedProgress::get_text(void* kodiBase, void* handle
   return strdup(static_cast<CGUIDialogProgressBarHandle*>(handle)->Text().c_str());
 }
 
-void Interface_GUIDialogExtendedProgress::set_text(void* kodiBase, void* handle, const char *text)
+void Interface_GUIDialogExtendedProgress::set_text(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_HANDLE handle,
+                                                   const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -169,7 +175,7 @@ void Interface_GUIDialogExtendedProgress::set_text(void* kodiBase, void* handle,
   static_cast<CGUIDialogProgressBarHandle*>(handle)->SetText(text);
 }
 
-bool Interface_GUIDialogExtendedProgress::is_finished(void* kodiBase, void* handle)
+bool Interface_GUIDialogExtendedProgress::is_finished(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -190,7 +196,8 @@ bool Interface_GUIDialogExtendedProgress::is_finished(void* kodiBase, void* hand
   return static_cast<CGUIDialogProgressBarHandle*>(handle)->IsFinished();
 }
 
-void Interface_GUIDialogExtendedProgress::mark_finished(void* kodiBase, void* handle)
+void Interface_GUIDialogExtendedProgress::mark_finished(KODI_HANDLE kodiBase,
+                                                        KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -211,7 +218,8 @@ void Interface_GUIDialogExtendedProgress::mark_finished(void* kodiBase, void* ha
   static_cast<CGUIDialogProgressBarHandle*>(handle)->MarkFinished();
 }
 
-float Interface_GUIDialogExtendedProgress::get_percentage(void* kodiBase, void* handle)
+float Interface_GUIDialogExtendedProgress::get_percentage(KODI_HANDLE kodiBase,
+                                                          KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -232,7 +240,9 @@ float Interface_GUIDialogExtendedProgress::get_percentage(void* kodiBase, void* 
   return static_cast<CGUIDialogProgressBarHandle*>(handle)->Percentage();
 }
 
-void Interface_GUIDialogExtendedProgress::set_percentage(void* kodiBase, void* handle, float percentage)
+void Interface_GUIDialogExtendedProgress::set_percentage(KODI_HANDLE kodiBase,
+                                                         KODI_GUI_HANDLE handle,
+                                                         float percentage)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -253,7 +263,10 @@ void Interface_GUIDialogExtendedProgress::set_percentage(void* kodiBase, void* h
   static_cast<CGUIDialogProgressBarHandle*>(handle)->SetPercentage(percentage);
 }
 
-void Interface_GUIDialogExtendedProgress::set_progress(void* kodiBase, void* handle, int currentItem, int itemCount)
+void Interface_GUIDialogExtendedProgress::set_progress(KODI_HANDLE kodiBase,
+                                                       KODI_GUI_HANDLE handle,
+                                                       int currentItem,
+                                                       int itemCount)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

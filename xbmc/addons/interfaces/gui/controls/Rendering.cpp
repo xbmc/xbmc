@@ -33,9 +33,13 @@ void Interface_GUIControlAddonRendering::DeInit(AddonGlobalInterface* addonInter
 }
 
 void Interface_GUIControlAddonRendering::set_callbacks(
-                            void* kodiBase, void* handle, void* clienthandle,
-                            bool (*createCB)(void*,int,int,int,int,void*),
-                            void (*renderCB)(void*), void (*stopCB)(void*), bool (*dirtyCB)(void*))
+    KODI_HANDLE kodiBase,
+    KODI_GUI_CONTROL_HANDLE handle,
+    KODI_GUI_CLIENT_HANDLE clienthandle,
+    bool (*createCB)(KODI_GUI_CLIENT_HANDLE, int, int, int, int, ADDON_HARDWARE_CONTEXT),
+    void (*renderCB)(KODI_GUI_CLIENT_HANDLE),
+    void (*stopCB)(KODI_GUI_CLIENT_HANDLE),
+    bool (*dirtyCB)(KODI_GUI_CLIENT_HANDLE))
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
@@ -60,7 +64,8 @@ void Interface_GUIControlAddonRendering::set_callbacks(
   control->m_control->InitCallback(control);
 }
 
-void Interface_GUIControlAddonRendering::destroy(void* kodiBase, void* handle)
+void Interface_GUIControlAddonRendering::destroy(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);

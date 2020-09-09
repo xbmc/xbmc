@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../../AddonBase.h"
-#include "../definitions.h"
+#include "../../c-api/gui/definitions.h"
 
 namespace kodi
 {

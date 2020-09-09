@@ -46,7 +46,7 @@ void Interface_GUIDialogProgress::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->dialogProgress);
 }
 
-void* Interface_GUIDialogProgress::new_dialog(void* kodiBase)
+KODI_GUI_HANDLE Interface_GUIDialogProgress::new_dialog(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -67,7 +67,7 @@ void* Interface_GUIDialogProgress::new_dialog(void* kodiBase)
   return dialog;
 }
 
-void Interface_GUIDialogProgress::delete_dialog(void* kodiBase, void* handle)
+void Interface_GUIDialogProgress::delete_dialog(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -87,7 +87,7 @@ void Interface_GUIDialogProgress::delete_dialog(void* kodiBase, void* handle)
   static_cast<CGUIDialogProgress*>(handle)->Close();
 }
 
-void Interface_GUIDialogProgress::open(void* kodiBase, void* handle)
+void Interface_GUIDialogProgress::open(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -107,7 +107,9 @@ void Interface_GUIDialogProgress::open(void* kodiBase, void* handle)
   static_cast<CGUIDialogProgress*>(handle)->Open();
 }
 
-void Interface_GUIDialogProgress::set_heading(void* kodiBase, void* handle, const char* heading)
+void Interface_GUIDialogProgress::set_heading(KODI_HANDLE kodiBase,
+                                              KODI_GUI_HANDLE handle,
+                                              const char* heading)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -128,7 +130,10 @@ void Interface_GUIDialogProgress::set_heading(void* kodiBase, void* handle, cons
   static_cast<CGUIDialogProgress*>(handle)->SetHeading(heading);
 }
 
-void Interface_GUIDialogProgress::set_line(void* kodiBase, void* handle, unsigned int line, const char* text)
+void Interface_GUIDialogProgress::set_line(KODI_HANDLE kodiBase,
+                                           KODI_GUI_HANDLE handle,
+                                           unsigned int line,
+                                           const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -149,7 +154,9 @@ void Interface_GUIDialogProgress::set_line(void* kodiBase, void* handle, unsigne
   static_cast<CGUIDialogProgress*>(handle)->SetLine(line, text);
 }
 
-void Interface_GUIDialogProgress::set_can_cancel(void* kodiBase, void* handle, bool canCancel)
+void Interface_GUIDialogProgress::set_can_cancel(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_HANDLE handle,
+                                                 bool canCancel)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -169,7 +176,7 @@ void Interface_GUIDialogProgress::set_can_cancel(void* kodiBase, void* handle, b
   static_cast<CGUIDialogProgress*>(handle)->SetCanCancel(canCancel);
 }
 
-bool Interface_GUIDialogProgress::is_canceled(void* kodiBase, void* handle)
+bool Interface_GUIDialogProgress::is_canceled(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -189,7 +196,9 @@ bool Interface_GUIDialogProgress::is_canceled(void* kodiBase, void* handle)
   return static_cast<CGUIDialogProgress*>(handle)->IsCanceled();
 }
 
-void Interface_GUIDialogProgress::set_percentage(void* kodiBase, void* handle, int percentage)
+void Interface_GUIDialogProgress::set_percentage(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_HANDLE handle,
+                                                 int percentage)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -209,7 +218,7 @@ void Interface_GUIDialogProgress::set_percentage(void* kodiBase, void* handle, i
   static_cast<CGUIDialogProgress*>(handle)->SetPercentage(percentage);
 }
 
-int Interface_GUIDialogProgress::get_percentage(void* kodiBase, void* handle)
+int Interface_GUIDialogProgress::get_percentage(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -229,7 +238,9 @@ int Interface_GUIDialogProgress::get_percentage(void* kodiBase, void* handle)
   return static_cast<CGUIDialogProgress*>(handle)->GetPercentage();
 }
 
-void Interface_GUIDialogProgress::show_progress_bar(void* kodiBase, void* handle, bool onOff)
+void Interface_GUIDialogProgress::show_progress_bar(KODI_HANDLE kodiBase,
+                                                    KODI_GUI_HANDLE handle,
+                                                    bool onOff)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -249,7 +260,9 @@ void Interface_GUIDialogProgress::show_progress_bar(void* kodiBase, void* handle
   static_cast<CGUIDialogProgress*>(handle)->ShowProgressBar(onOff);
 }
 
-void Interface_GUIDialogProgress::set_progress_max(void* kodiBase, void* handle, int max)
+void Interface_GUIDialogProgress::set_progress_max(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_HANDLE handle,
+                                                   int max)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -269,7 +282,9 @@ void Interface_GUIDialogProgress::set_progress_max(void* kodiBase, void* handle,
   static_cast<CGUIDialogProgress*>(handle)->SetProgressMax(max);
 }
 
-void Interface_GUIDialogProgress::set_progress_advance(void* kodiBase, void* handle, int nSteps)
+void Interface_GUIDialogProgress::set_progress_advance(KODI_HANDLE kodiBase,
+                                                       KODI_GUI_HANDLE handle,
+                                                       int nSteps)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -289,7 +304,7 @@ void Interface_GUIDialogProgress::set_progress_advance(void* kodiBase, void* han
   static_cast<CGUIDialogProgress*>(handle)->SetProgressAdvance(nSteps);
 }
 
-bool Interface_GUIDialogProgress::abort(void* kodiBase, void* handle)
+bool Interface_GUIDialogProgress::abort(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

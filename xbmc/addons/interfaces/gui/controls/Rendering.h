@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
 #include "guilib/IRenderingCallback.h"
 
 class CGUIRenderingControl;
@@ -46,14 +47,15 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_callbacks(void* kodiBase,
-                             void* handle,
-                             void* clienthandle,
-                             bool (*createCB)(void*,int,int,int,int,void*),
-                             void (*renderCB)(void*),
-                             void (*stopCB)(void*),
-                             bool (*dirtyCB)(void*));
-    static void destroy(void* kodiBase, void* handle);
+    static void set_callbacks(
+        KODI_HANDLE kodiBase,
+        KODI_GUI_CONTROL_HANDLE handle,
+        KODI_GUI_CLIENT_HANDLE clienthandle,
+        bool (*createCB)(KODI_GUI_CLIENT_HANDLE, int, int, int, int, ADDON_HARDWARE_CONTEXT),
+        void (*renderCB)(KODI_GUI_CLIENT_HANDLE),
+        void (*stopCB)(KODI_GUI_CLIENT_HANDLE),
+        bool (*dirtyCB)(KODI_GUI_CLIENT_HANDLE));
+    static void destroy(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
     //@}
   };
 
@@ -71,21 +73,12 @@ namespace ADDON
     virtual void Delete();
 
   protected:
-    bool (*CBCreate)
-        (void*   cbhdl,
-         int         x,
-         int         y,
-         int         w,
-         int         h,
-         void       *device);
-    void (*CBRender)
-        (void*   cbhdl);
-    void (*CBStop)
-        (void*   cbhdl);
-    bool (*CBDirty)
-        (void*   cbhdl);
+    bool (*CBCreate)(KODI_GUI_CLIENT_HANDLE cbhdl, int x, int y, int w, int h, void* device);
+    void (*CBRender)(KODI_GUI_CLIENT_HANDLE cbhdl);
+    void (*CBStop)(KODI_GUI_CLIENT_HANDLE cbhdl);
+    bool (*CBDirty)(KODI_GUI_CLIENT_HANDLE cbhdl);
 
-    void* m_clientHandle;
+    KODI_GUI_CLIENT_HANDLE m_clientHandle;
     CAddonDll* m_addon;
     CGUIRenderingControl* m_control;
     int m_refCount;

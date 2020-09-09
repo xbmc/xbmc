@@ -50,7 +50,9 @@ void Interface_GUIControlSettingsSlider::DeInit(AddonGlobalInterface* addonInter
   free(addonInterface->toKodi->kodi_gui->control_settings_slider);
 }
 
-void Interface_GUIControlSettingsSlider::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlSettingsSlider::set_visible(KODI_HANDLE kodiBase,
+                                                     KODI_GUI_CONTROL_HANDLE handle,
+                                                     bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -64,7 +66,9 @@ void Interface_GUIControlSettingsSlider::set_visible(void* kodiBase, void* handl
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlSettingsSlider::set_enabled(void* kodiBase, void* handle, bool enabled)
+void Interface_GUIControlSettingsSlider::set_enabled(KODI_HANDLE kodiBase,
+                                                     KODI_GUI_CONTROL_HANDLE handle,
+                                                     bool enabled)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -78,7 +82,9 @@ void Interface_GUIControlSettingsSlider::set_enabled(void* kodiBase, void* handl
   control->SetEnabled(enabled);
 }
 
-void Interface_GUIControlSettingsSlider::set_text(void* kodiBase, void* handle, const char *text)
+void Interface_GUIControlSettingsSlider::set_text(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -94,7 +100,7 @@ void Interface_GUIControlSettingsSlider::set_text(void* kodiBase, void* handle, 
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-void Interface_GUIControlSettingsSlider::reset(void* kodiBase, void* handle)
+void Interface_GUIControlSettingsSlider::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -109,7 +115,10 @@ void Interface_GUIControlSettingsSlider::reset(void* kodiBase, void* handle)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-void Interface_GUIControlSettingsSlider::set_int_range(void* kodiBase, void* handle, int start, int end)
+void Interface_GUIControlSettingsSlider::set_int_range(KODI_HANDLE kodiBase,
+                                                       KODI_GUI_CONTROL_HANDLE handle,
+                                                       int start,
+                                                       int end)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -124,7 +133,9 @@ void Interface_GUIControlSettingsSlider::set_int_range(void* kodiBase, void* han
   control->SetRange(start, end);
 }
 
-void Interface_GUIControlSettingsSlider::set_int_value(void* kodiBase, void* handle, int value)
+void Interface_GUIControlSettingsSlider::set_int_value(KODI_HANDLE kodiBase,
+                                                       KODI_GUI_CONTROL_HANDLE handle,
+                                                       int value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -139,7 +150,8 @@ void Interface_GUIControlSettingsSlider::set_int_value(void* kodiBase, void* han
   control->SetIntValue(value);
 }
 
-int Interface_GUIControlSettingsSlider::get_int_value(void* kodiBase, void* handle)
+int Interface_GUIControlSettingsSlider::get_int_value(KODI_HANDLE kodiBase,
+                                                      KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -153,7 +165,9 @@ int Interface_GUIControlSettingsSlider::get_int_value(void* kodiBase, void* hand
   return control->GetIntValue();
 }
 
-void Interface_GUIControlSettingsSlider::set_int_interval(void* kodiBase, void* handle, int interval)
+void Interface_GUIControlSettingsSlider::set_int_interval(KODI_HANDLE kodiBase,
+                                                          KODI_GUI_CONTROL_HANDLE handle,
+                                                          int interval)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -167,7 +181,9 @@ void Interface_GUIControlSettingsSlider::set_int_interval(void* kodiBase, void* 
   control->SetIntInterval(interval);
 }
 
-void Interface_GUIControlSettingsSlider::set_percentage(void* kodiBase, void* handle, float percent)
+void Interface_GUIControlSettingsSlider::set_percentage(KODI_HANDLE kodiBase,
+                                                        KODI_GUI_CONTROL_HANDLE handle,
+                                                        float percent)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -182,7 +198,8 @@ void Interface_GUIControlSettingsSlider::set_percentage(void* kodiBase, void* ha
   control->SetPercentage(percent);
 }
 
-float Interface_GUIControlSettingsSlider::get_percentage(void* kodiBase, void* handle)
+float Interface_GUIControlSettingsSlider::get_percentage(KODI_HANDLE kodiBase,
+                                                         KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -196,7 +213,10 @@ float Interface_GUIControlSettingsSlider::get_percentage(void* kodiBase, void* h
   return control->GetPercentage();
 }
 
-void Interface_GUIControlSettingsSlider::set_float_range(void* kodiBase, void* handle, float start, float end)
+void Interface_GUIControlSettingsSlider::set_float_range(KODI_HANDLE kodiBase,
+                                                         KODI_GUI_CONTROL_HANDLE handle,
+                                                         float start,
+                                                         float end)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -211,7 +231,9 @@ void Interface_GUIControlSettingsSlider::set_float_range(void* kodiBase, void* h
   control->SetFloatRange(start, end);
 }
 
-void Interface_GUIControlSettingsSlider::set_float_value(void* kodiBase, void* handle, float value)
+void Interface_GUIControlSettingsSlider::set_float_value(KODI_HANDLE kodiBase,
+                                                         KODI_GUI_CONTROL_HANDLE handle,
+                                                         float value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -226,7 +248,8 @@ void Interface_GUIControlSettingsSlider::set_float_value(void* kodiBase, void* h
   control->SetFloatValue(value);
 }
 
-float Interface_GUIControlSettingsSlider::get_float_value(void* kodiBase, void* handle)
+float Interface_GUIControlSettingsSlider::get_float_value(KODI_HANDLE kodiBase,
+                                                          KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);
@@ -240,7 +263,9 @@ float Interface_GUIControlSettingsSlider::get_float_value(void* kodiBase, void* 
   return control->GetFloatValue();
 }
 
-void Interface_GUIControlSettingsSlider::set_float_interval(void* kodiBase, void* handle, float interval)
+void Interface_GUIControlSettingsSlider::set_float_interval(KODI_HANDLE kodiBase,
+                                                            KODI_GUI_CONTROL_HANDLE handle,
+                                                            float interval)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISettingsSliderControl* control = static_cast<CGUISettingsSliderControl*>(handle);

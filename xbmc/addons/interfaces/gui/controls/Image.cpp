@@ -34,7 +34,9 @@ void Interface_GUIControlImage::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_image);
 }
 
-void Interface_GUIControlImage::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlImage::set_visible(KODI_HANDLE kodiBase,
+                                            KODI_GUI_CONTROL_HANDLE handle,
+                                            bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIImage* control = static_cast<CGUIImage*>(handle);
@@ -50,7 +52,10 @@ void Interface_GUIControlImage::set_visible(void* kodiBase, void* handle, bool v
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlImage::set_filename(void* kodiBase, void* handle, const char* filename, bool use_cache)
+void Interface_GUIControlImage::set_filename(KODI_HANDLE kodiBase,
+                                             KODI_GUI_CONTROL_HANDLE handle,
+                                             const char* filename,
+                                             bool use_cache)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIImage* control = static_cast<CGUIImage*>(handle);
@@ -66,7 +71,9 @@ void Interface_GUIControlImage::set_filename(void* kodiBase, void* handle, const
   control->SetFileName(filename, false, use_cache);
 }
 
-void Interface_GUIControlImage::set_color_diffuse(void* kodiBase, void* handle, uint32_t colorDiffuse)
+void Interface_GUIControlImage::set_color_diffuse(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  uint32_t colorDiffuse)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIImage* control = static_cast<CGUIImage*>(handle);

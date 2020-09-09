@@ -40,9 +40,13 @@ void Interface_GUIDialogKeyboard::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->dialogKeyboard);
 }
 
-bool Interface_GUIDialogKeyboard::show_and_get_input_with_head(void* kodiBase, const char* text_in, char** text_out,
-                                                               const char* heading, bool allow_empty_result,
-                                                               bool hidden_input, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_get_input_with_head(KODI_HANDLE kodiBase,
+                                                               const char* text_in,
+                                                               char** text_out,
+                                                               const char* heading,
+                                                               bool allow_empty_result,
+                                                               bool hidden_input,
+                                                               unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -67,7 +71,11 @@ bool Interface_GUIDialogKeyboard::show_and_get_input_with_head(void* kodiBase, c
   return bRet;
 }
 
-bool Interface_GUIDialogKeyboard::show_and_get_input(void* kodiBase, const char* text_in, char** text_out, bool allow_empty_result, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_get_input(KODI_HANDLE kodiBase,
+                                                     const char* text_in,
+                                                     char** text_out,
+                                                     bool allow_empty_result,
+                                                     unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -92,8 +100,12 @@ bool Interface_GUIDialogKeyboard::show_and_get_input(void* kodiBase, const char*
   return bRet;
 }
 
-bool Interface_GUIDialogKeyboard::show_and_get_new_password_with_head(void* kodiBase, const char* password_in, char** password_out,
-                                                                      const char* heading, bool allow_empty_result, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_get_new_password_with_head(KODI_HANDLE kodiBase,
+                                                                      const char* password_in,
+                                                                      char** password_out,
+                                                                      const char* heading,
+                                                                      bool allow_empty_result,
+                                                                      unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -119,7 +131,10 @@ bool Interface_GUIDialogKeyboard::show_and_get_new_password_with_head(void* kodi
   return bRet;
 }
 
-bool Interface_GUIDialogKeyboard::show_and_get_new_password(void* kodiBase, const char* password_in, char** password_out, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_get_new_password(KODI_HANDLE kodiBase,
+                                                            const char* password_in,
+                                                            char** password_out,
+                                                            unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -144,8 +159,11 @@ bool Interface_GUIDialogKeyboard::show_and_get_new_password(void* kodiBase, cons
   return bRet;
 }
 
-bool Interface_GUIDialogKeyboard::show_and_verify_new_password_with_head(void* kodiBase, char** password_out, const char* heading,
-                                                                         bool allowEmpty, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_verify_new_password_with_head(KODI_HANDLE kodiBase,
+                                                                         char** password_out,
+                                                                         const char* heading,
+                                                                         bool allowEmpty,
+                                                                         unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -170,7 +188,9 @@ bool Interface_GUIDialogKeyboard::show_and_verify_new_password_with_head(void* k
   return bRet;
 }
 
-bool Interface_GUIDialogKeyboard::show_and_verify_new_password(void* kodiBase, char** password_out, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_verify_new_password(KODI_HANDLE kodiBase,
+                                                               char** password_out,
+                                                               unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -195,7 +215,12 @@ bool Interface_GUIDialogKeyboard::show_and_verify_new_password(void* kodiBase, c
   return bRet;
 }
 
-int Interface_GUIDialogKeyboard::show_and_verify_password(void* kodiBase, const char* password_in, char** password_out, const char* heading, int retries, unsigned int auto_close_ms)
+int Interface_GUIDialogKeyboard::show_and_verify_password(KODI_HANDLE kodiBase,
+                                                          const char* password_in,
+                                                          char** password_out,
+                                                          const char* heading,
+                                                          int retries,
+                                                          unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -221,7 +246,11 @@ int Interface_GUIDialogKeyboard::show_and_verify_password(void* kodiBase, const 
   return iRet;
 }
 
-bool Interface_GUIDialogKeyboard::show_and_get_filter(void* kodiBase, const char* text_in, char** text_out, bool searching, unsigned int auto_close_ms)
+bool Interface_GUIDialogKeyboard::show_and_get_filter(KODI_HANDLE kodiBase,
+                                                      const char* text_in,
+                                                      char** text_out,
+                                                      bool searching,
+                                                      unsigned int auto_close_ms)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -247,7 +276,9 @@ bool Interface_GUIDialogKeyboard::show_and_get_filter(void* kodiBase, const char
   return bRet;
 }
 
-bool Interface_GUIDialogKeyboard::send_text_to_active_keyboard(void* kodiBase, const char* text, bool close_keyboard)
+bool Interface_GUIDialogKeyboard::send_text_to_active_keyboard(KODI_HANDLE kodiBase,
+                                                               const char* text,
+                                                               bool close_keyboard)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -259,7 +290,7 @@ bool Interface_GUIDialogKeyboard::send_text_to_active_keyboard(void* kodiBase, c
   return CGUIKeyboardFactory::SendTextToActiveKeyboard(text, close_keyboard);
 }
 
-bool Interface_GUIDialogKeyboard::is_keyboard_activated(void* kodiBase)
+bool Interface_GUIDialogKeyboard::is_keyboard_activated(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,27 +42,43 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
-    static void set_enabled(void* kodiBase, void* handle, bool enabled);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
+    static void set_enabled(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool enabled);
 
-    static void set_text(void* kodiBase, void* handle, const char *text);
-    static void reset(void* kodiBase, void* handle);
-    static void set_type(void* kodiBase, void* handle, int type);
+    static void set_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, const char* text);
+    static void reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void set_type(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int type);
 
-    static void add_string_label(void* kodiBase, void* handle, const char* label, const char* value);
-    static void add_int_label(void* kodiBase, void* handle, const char* label, int value);
+    static void add_string_label(KODI_HANDLE kodiBase,
+                                 KODI_GUI_CONTROL_HANDLE handle,
+                                 const char* label,
+                                 const char* value);
+    static void add_int_label(KODI_HANDLE kodiBase,
+                              KODI_GUI_CONTROL_HANDLE handle,
+                              const char* label,
+                              int value);
 
-    static void set_string_value(void* kodiBase, void* handle, const char* value);
-    static char* get_string_value(void* kodiBase, void* handle);
+    static void set_string_value(KODI_HANDLE kodiBase,
+                                 KODI_GUI_CONTROL_HANDLE handle,
+                                 const char* value);
+    static char* get_string_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static void set_int_range(void* kodiBase, void* handle, int start, int end);
-    static void set_int_value(void* kodiBase, void* handle, int value);
-    static int get_int_value(void* kodiBase, void* handle);
+    static void set_int_range(KODI_HANDLE kodiBase,
+                              KODI_GUI_CONTROL_HANDLE handle,
+                              int start,
+                              int end);
+    static void set_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int value);
+    static int get_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static void set_float_range(void* kodiBase, void* handle, float start, float end);
-    static void set_float_value(void* kodiBase, void* handle, float value);
-    static float get_float_value(void* kodiBase, void* handle);
-    static void set_float_interval(void* kodiBase, void* handle, float interval);
+    static void set_float_range(KODI_HANDLE kodiBase,
+                                KODI_GUI_CONTROL_HANDLE handle,
+                                float start,
+                                float end);
+    static void set_float_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, float value);
+    static float get_float_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void set_float_interval(KODI_HANDLE kodiBase,
+                                   KODI_GUI_CONTROL_HANDLE handle,
+                                   float interval);
     //@}
   };
 

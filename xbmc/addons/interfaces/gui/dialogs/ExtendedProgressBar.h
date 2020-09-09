@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,17 +42,20 @@ namespace ADDON
      * class.
      */
     //@{
-    static void* new_dialog(void* kodiBase, const char* title);
-    static void delete_dialog(void* kodiBase, void* handle);
-    static char* get_title(void* kodiBase, void* handle);
-    static void set_title(void* kodiBase, void* handle, const char* title);
-    static char* get_text(void* kodiBase, void* handle);
-    static void set_text(void* kodiBase, void* handle, const char* text);
-    static bool is_finished(void* kodiBase, void* handle);
-    static void mark_finished(void* kodiBase, void* handle);
-    static float get_percentage(void* kodiBase, void* handle);
-    static void set_percentage(void* kodiBase, void* handle, float percentage);
-    static void set_progress(void* kodiBase, void* handle, int currentItem, int itemCount);
+    static KODI_GUI_HANDLE new_dialog(KODI_HANDLE kodiBase, const char* title);
+    static void delete_dialog(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static char* get_title(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void set_title(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, const char* title);
+    static char* get_text(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void set_text(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, const char* text);
+    static bool is_finished(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void mark_finished(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static float get_percentage(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void set_percentage(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, float percentage);
+    static void set_progress(KODI_HANDLE kodiBase,
+                             KODI_GUI_HANDLE handle,
+                             int currentItem,
+                             int itemCount);
     //@}
   };
 

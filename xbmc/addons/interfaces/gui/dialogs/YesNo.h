@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,14 +42,14 @@ namespace ADDON
      * class.
      */
     //@{
-    static bool show_and_get_input_single_text(void* kodiBase,
+    static bool show_and_get_input_single_text(KODI_HANDLE kodiBase,
                                                const char* heading,
                                                const char* text,
                                                bool* canceled,
                                                const char* noLabel,
                                                const char* yesLabel);
 
-    static bool show_and_get_input_line_text(void* kodiBase,
+    static bool show_and_get_input_line_text(KODI_HANDLE kodiBase,
                                              const char* heading,
                                              const char* line0,
                                              const char* line1,
@@ -55,7 +57,7 @@ namespace ADDON
                                              const char* noLabel,
                                              const char* yesLabel);
 
-    static bool show_and_get_input_line_button_text(void* kodiBase,
+    static bool show_and_get_input_line_button_text(KODI_HANDLE kodiBase,
                                                     const char* heading,
                                                     const char* line0,
                                                     const char* line1,

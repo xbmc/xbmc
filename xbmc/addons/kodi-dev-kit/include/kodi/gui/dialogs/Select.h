@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "../definitions.h"
 #include "../../AddonBase.h"
+#include "../../c-api/gui/definitions.h"
 
 //==============================================================================
 /// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators

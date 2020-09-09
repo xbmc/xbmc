@@ -1,7 +1,6 @@
 set(HEADERS General.h
             ListItem.h
             Window.h
-            definitions.h
             renderHelper.h)
 
 if(NOT ENABLE_STATIC_LIBS)

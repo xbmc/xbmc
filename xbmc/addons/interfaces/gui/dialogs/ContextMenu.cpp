@@ -33,7 +33,10 @@ void Interface_GUIDialogContextMenu::DeInit(AddonGlobalInterface* addonInterface
   free(addonInterface->toKodi->kodi_gui->dialogContextMenu);
 }
 
-int Interface_GUIDialogContextMenu::open(void* kodiBase, const char *heading, const char *entries[], unsigned int size)
+int Interface_GUIDialogContextMenu::open(KODI_HANDLE kodiBase,
+                                         const char* heading,
+                                         const char* entries[],
+                                         unsigned int size)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)

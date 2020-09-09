@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+
 extern "C"
 {
 
@@ -40,13 +42,13 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
-    static void set_enabled(void* kodiBase, void* handle, bool enabled);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
+    static void set_enabled(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool enabled);
 
-    static void set_label(void* kodiBase, void* handle, const char* label);
-    static char* get_label(void* kodiBase, void* handle);
-    static void set_label2(void* kodiBase, void* handle, const char* label);
-    static char* get_label2(void* kodiBase, void* handle);
+    static void set_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, const char* label);
+    static char* get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void set_label2(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, const char* label);
+    static char* get_label2(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
     //@}
   };
 

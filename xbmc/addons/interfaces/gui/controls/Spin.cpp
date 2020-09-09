@@ -52,7 +52,9 @@ void Interface_GUIControlSpin::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_spin);
 }
 
-void Interface_GUIControlSpin::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlSpin::set_visible(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -66,7 +68,9 @@ void Interface_GUIControlSpin::set_visible(void* kodiBase, void* handle, bool vi
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlSpin::set_enabled(void* kodiBase, void* handle, bool enabled)
+void Interface_GUIControlSpin::set_enabled(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           bool enabled)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -80,7 +84,9 @@ void Interface_GUIControlSpin::set_enabled(void* kodiBase, void* handle, bool en
   control->SetEnabled(enabled);
 }
 
-void Interface_GUIControlSpin::set_text(void* kodiBase, void* handle, const char *text)
+void Interface_GUIControlSpin::set_text(KODI_HANDLE kodiBase,
+                                        KODI_GUI_CONTROL_HANDLE handle,
+                                        const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -96,7 +102,7 @@ void Interface_GUIControlSpin::set_text(void* kodiBase, void* handle, const char
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-void Interface_GUIControlSpin::reset(void* kodiBase, void* handle)
+void Interface_GUIControlSpin::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -111,7 +117,9 @@ void Interface_GUIControlSpin::reset(void* kodiBase, void* handle)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-void Interface_GUIControlSpin::set_type(void* kodiBase, void* handle, int type)
+void Interface_GUIControlSpin::set_type(KODI_HANDLE kodiBase,
+                                        KODI_GUI_CONTROL_HANDLE handle,
+                                        int type)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -125,7 +133,10 @@ void Interface_GUIControlSpin::set_type(void* kodiBase, void* handle, int type)
   control->SetType(type);
 }
 
-void Interface_GUIControlSpin::add_string_label(void* kodiBase, void* handle, const char* label, const char* value)
+void Interface_GUIControlSpin::add_string_label(KODI_HANDLE kodiBase,
+                                                KODI_GUI_CONTROL_HANDLE handle,
+                                                const char* label,
+                                                const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -139,7 +150,9 @@ void Interface_GUIControlSpin::add_string_label(void* kodiBase, void* handle, co
   control->AddLabel(std::string(label), std::string(value));
 }
 
-void Interface_GUIControlSpin::set_string_value(void* kodiBase, void* handle, const char* value)
+void Interface_GUIControlSpin::set_string_value(KODI_HANDLE kodiBase,
+                                                KODI_GUI_CONTROL_HANDLE handle,
+                                                const char* value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -153,7 +166,8 @@ void Interface_GUIControlSpin::set_string_value(void* kodiBase, void* handle, co
   control->SetStringValue(std::string(value));
 }
 
-char* Interface_GUIControlSpin::get_string_value(void* kodiBase, void* handle)
+char* Interface_GUIControlSpin::get_string_value(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -167,7 +181,10 @@ char* Interface_GUIControlSpin::get_string_value(void* kodiBase, void* handle)
   return strdup(control->GetStringValue().c_str());
 }
 
-void Interface_GUIControlSpin::add_int_label(void* kodiBase, void* handle, const char* label, int value)
+void Interface_GUIControlSpin::add_int_label(KODI_HANDLE kodiBase,
+                                             KODI_GUI_CONTROL_HANDLE handle,
+                                             const char* label,
+                                             int value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -181,7 +198,10 @@ void Interface_GUIControlSpin::add_int_label(void* kodiBase, void* handle, const
   control->AddLabel(std::string(label), value);
 }
 
-void Interface_GUIControlSpin::set_int_range(void* kodiBase, void* handle, int start, int end)
+void Interface_GUIControlSpin::set_int_range(KODI_HANDLE kodiBase,
+                                             KODI_GUI_CONTROL_HANDLE handle,
+                                             int start,
+                                             int end)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -195,7 +215,9 @@ void Interface_GUIControlSpin::set_int_range(void* kodiBase, void* handle, int s
   control->SetRange(start, end);
 }
 
-void Interface_GUIControlSpin::set_int_value(void* kodiBase, void* handle, int value)
+void Interface_GUIControlSpin::set_int_value(KODI_HANDLE kodiBase,
+                                             KODI_GUI_CONTROL_HANDLE handle,
+                                             int value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -209,7 +231,7 @@ void Interface_GUIControlSpin::set_int_value(void* kodiBase, void* handle, int v
   control->SetValue(value);
 }
 
-int Interface_GUIControlSpin::get_int_value(void* kodiBase, void* handle)
+int Interface_GUIControlSpin::get_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -223,7 +245,10 @@ int Interface_GUIControlSpin::get_int_value(void* kodiBase, void* handle)
   return control->GetValue();
 }
 
-void Interface_GUIControlSpin::set_float_range(void* kodiBase, void* handle, float start, float end)
+void Interface_GUIControlSpin::set_float_range(KODI_HANDLE kodiBase,
+                                               KODI_GUI_CONTROL_HANDLE handle,
+                                               float start,
+                                               float end)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -237,7 +262,9 @@ void Interface_GUIControlSpin::set_float_range(void* kodiBase, void* handle, flo
   control->SetFloatRange(start, end);
 }
 
-void Interface_GUIControlSpin::set_float_value(void* kodiBase, void* handle, float value)
+void Interface_GUIControlSpin::set_float_value(KODI_HANDLE kodiBase,
+                                               KODI_GUI_CONTROL_HANDLE handle,
+                                               float value)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -251,7 +278,8 @@ void Interface_GUIControlSpin::set_float_value(void* kodiBase, void* handle, flo
   control->SetFloatValue(value);
 }
 
-float Interface_GUIControlSpin::get_float_value(void* kodiBase, void* handle)
+float Interface_GUIControlSpin::get_float_value(KODI_HANDLE kodiBase,
+                                                KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
@@ -265,7 +293,9 @@ float Interface_GUIControlSpin::get_float_value(void* kodiBase, void* handle)
   return control->GetFloatValue();
 }
 
-void Interface_GUIControlSpin::set_float_interval(void* kodiBase, void* handle, float interval)
+void Interface_GUIControlSpin::set_float_interval(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  float interval)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);

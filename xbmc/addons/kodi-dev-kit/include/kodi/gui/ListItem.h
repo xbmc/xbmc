@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "definitions.h"
+#include "../c-api/gui/definitions.h"
 
 #include <memory>
 
@@ -23,7 +23,7 @@ namespace gui
   class ATTRIBUTE_HIDDEN CAddonGUIControlBase
   {
   public:
-    GUIHANDLE GetControlHandle() const { return m_controlHandle; }
+    KODI_GUI_LISTITEM_HANDLE GetControlHandle() const { return m_controlHandle; }
 
   protected:
     explicit CAddonGUIControlBase(CAddonGUIControlBase* window)
@@ -35,7 +35,7 @@ namespace gui
 
     friend class CWindow;
 
-    GUIHANDLE m_controlHandle;
+    KODI_GUI_LISTITEM_HANDLE m_controlHandle;
     AddonToKodiFuncTable_Addon* m_interface;
     CAddonGUIControlBase* m_Window;
 
@@ -100,8 +100,7 @@ namespace gui
      * Related to call of "ListItemPtr kodi::gui::CWindow::GetListItem(int listPos)"
      * Not needed for addon development itself
      */
-    explicit CListItem(GUIHANDLE listItemHandle)
-      : CAddonGUIControlBase(nullptr)
+    explicit CListItem(KODI_GUI_LISTITEM_HANDLE listItemHandle) : CAddonGUIControlBase(nullptr)
     {
       m_controlHandle = listItemHandle;
     }

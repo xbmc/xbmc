@@ -38,7 +38,9 @@ void Interface_GUIControlTextBox::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->control_text_box);
 }
 
-void Interface_GUIControlTextBox::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlTextBox::set_visible(KODI_HANDLE kodiBase,
+                                              KODI_GUI_CONTROL_HANDLE handle,
+                                              bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
@@ -52,7 +54,7 @@ void Interface_GUIControlTextBox::set_visible(void* kodiBase, void* handle, bool
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlTextBox::reset(void* kodiBase, void* handle)
+void Interface_GUIControlTextBox::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
@@ -67,7 +69,9 @@ void Interface_GUIControlTextBox::reset(void* kodiBase, void* handle)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const char* text)
+void Interface_GUIControlTextBox::set_text(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
@@ -83,7 +87,7 @@ void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const c
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-char* Interface_GUIControlTextBox::get_text(void* kodiBase, void* handle)
+char* Interface_GUIControlTextBox::get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
@@ -97,7 +101,9 @@ char* Interface_GUIControlTextBox::get_text(void* kodiBase, void* handle)
   return strdup(control->GetDescription().c_str());
 }
 
-void Interface_GUIControlTextBox::scroll(void* kodiBase, void* handle, unsigned int position)
+void Interface_GUIControlTextBox::scroll(KODI_HANDLE kodiBase,
+                                         KODI_GUI_CONTROL_HANDLE handle,
+                                         unsigned int position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
@@ -111,7 +117,8 @@ void Interface_GUIControlTextBox::scroll(void* kodiBase, void* handle, unsigned 
   control->Scroll(position);
 }
 
-void Interface_GUIControlTextBox::set_auto_scrolling(void* kodiBase, void* handle, int delay, int time, int repeat)
+void Interface_GUIControlTextBox::set_auto_scrolling(
+    KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int delay, int time, int repeat)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);

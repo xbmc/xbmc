@@ -150,7 +150,7 @@ void Interface_GUIGeneral::unlock()
 //@}
 
 //@{
-int Interface_GUIGeneral::get_screen_height(void* kodiBase)
+int Interface_GUIGeneral::get_screen_height(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -162,7 +162,7 @@ int Interface_GUIGeneral::get_screen_height(void* kodiBase)
   return CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
 }
 
-int Interface_GUIGeneral::get_screen_width(void* kodiBase)
+int Interface_GUIGeneral::get_screen_width(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -174,7 +174,7 @@ int Interface_GUIGeneral::get_screen_width(void* kodiBase)
   return CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
 }
 
-int Interface_GUIGeneral::get_video_resolution(void* kodiBase)
+int Interface_GUIGeneral::get_video_resolution(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -188,7 +188,7 @@ int Interface_GUIGeneral::get_video_resolution(void* kodiBase)
 //@}
 
 //@{
-int Interface_GUIGeneral::get_current_window_dialog_id(void* kodiBase)
+int Interface_GUIGeneral::get_current_window_dialog_id(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -201,7 +201,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(void* kodiBase)
   return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
 }
 
-int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
+int Interface_GUIGeneral::get_current_window_id(KODI_HANDLE kodiBase)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -214,7 +214,7 @@ int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
   return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 }
 
-void* Interface_GUIGeneral::get_hw_context(void* kodiBase)
+ADDON_HARDWARE_CONTEXT Interface_GUIGeneral::get_hw_context(KODI_HANDLE kodiBase)
 {
   return CServiceBroker::GetWinSystem()->GetHWContext();
 }

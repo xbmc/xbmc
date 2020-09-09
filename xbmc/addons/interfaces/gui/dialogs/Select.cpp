@@ -35,7 +35,12 @@ void Interface_GUIDialogSelect::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->dialogSelect);
 }
 
-int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, unsigned int autoclose)
+int Interface_GUIDialogSelect::open(KODI_HANDLE kodiBase,
+                                    const char* heading,
+                                    const char* entries[],
+                                    unsigned int size,
+                                    int selected,
+                                    unsigned int autoclose)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -71,8 +76,13 @@ int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const c
 }
 
 
-bool Interface_GUIDialogSelect::open_multi_select(void* kodiBase, const char *heading, const char *entryIDs[], const char *entryNames[],
-                                                  bool entriesSelected[], unsigned int size, unsigned int autoclose)
+bool Interface_GUIDialogSelect::open_multi_select(KODI_HANDLE kodiBase,
+                                                  const char* heading,
+                                                  const char* entryIDs[],
+                                                  const char* entryNames[],
+                                                  bool entriesSelected[],
+                                                  unsigned int size,
+                                                  unsigned int autoclose)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
