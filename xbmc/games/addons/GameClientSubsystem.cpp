@@ -33,7 +33,7 @@ GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient& gameCli
   GameClientSubsystems subsystems = {};
 
   subsystems.Input.reset(new CGameClientInput(gameClient, gameStruct, clientAccess));
-  subsystems.AddonProperties.reset(new CGameClientProperties(gameClient, gameStruct.props));
+  subsystems.AddonProperties.reset(new CGameClientProperties(gameClient, *gameStruct.props));
   subsystems.Streams.reset(new CGameClientStreams(gameClient));
 
   return subsystems;

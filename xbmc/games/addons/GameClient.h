@@ -38,6 +38,31 @@ class IGameInputCallback;
 
 /*!
  * \ingroup games
+ * \brief Helper class to have "C" struct created before other parts becomes his pointer.
+ */
+class CGameClientStruct
+{
+public:
+  CGameClientStruct()
+  {
+    // Create "C" interface structures, used as own parts to prevent API problems on update
+    m_struct.props = new AddonProps_Game();
+    m_struct.toKodi = new AddonToKodiFuncTable_Game();
+    m_struct.toAddon = new KodiToAddonFuncTable_Game();
+  }
+
+  ~CGameClientStruct()
+  {
+    delete m_struct.toAddon;
+    delete m_struct.toKodi;
+    delete m_struct.props;
+  }
+
+  AddonInstance_Game m_struct;
+};
+
+/*!
+ * \ingroup games
  * \brief Interface between Kodi and Game add-ons.
  *
  * The game add-on system is extremely large. To make the code more manageable,
@@ -65,7 +90,7 @@ class IGameInputCallback;
  * from 1,200 lines to just over 600. Reducing this further is the challenge.
  * You must now choose whether to accept.
  */
-class CGameClient : public ADDON::CAddonDll
+class CGameClient : public ADDON::CAddonDll, private CGameClientStruct
 {
 public:
   explicit CGameClient(const ADDON::AddonInfoPtr& addonInfo);
@@ -187,8 +212,6 @@ private:
   std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;
 
   CCriticalSection m_critSection;
-
-  AddonInstance_Game m_struct;
 };
 
 } // namespace GAME

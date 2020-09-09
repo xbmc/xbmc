@@ -1265,9 +1265,9 @@ typedef struct KodiToAddonFuncTable_Game
  */
 typedef struct AddonInstance_Game
 {
-  AddonProps_Game props;
-  AddonToKodiFuncTable_Game toKodi;
-  KodiToAddonFuncTable_Game toAddon;
+  struct AddonProps_Game* props;
+  struct AddonToKodiFuncTable_Game* toKodi;
+  struct KodiToAddonFuncTable_Game* toAddon;
 } AddonInstance_Game;
 
 } /* extern "C" */
@@ -1360,10 +1360,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  std::string GameClientDllPath() const
-  {
-    return m_instanceData->props.game_client_dll_path;
-  }
+  std::string GameClientDllPath() const { return m_instanceData->props->game_client_dll_path; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -1377,10 +1374,10 @@ public:
   ///
   bool ProxyDllPaths(std::vector<std::string>& paths)
   {
-    for (unsigned int i = 0; i < m_instanceData->props.proxy_dll_count; ++i)
+    for (unsigned int i = 0; i < m_instanceData->props->proxy_dll_count; ++i)
     {
-      if (m_instanceData->props.proxy_dll_paths[i] != nullptr)
-        paths.push_back(m_instanceData->props.proxy_dll_paths[i]);
+      if (m_instanceData->props->proxy_dll_paths[i] != nullptr)
+        paths.push_back(m_instanceData->props->proxy_dll_paths[i]);
     }
     return !paths.empty();
   }
@@ -1399,10 +1396,10 @@ public:
   ///
   bool ResourceDirectories(std::vector<std::string>& dirs)
   {
-    for (unsigned int i = 0; i < m_instanceData->props.resource_directory_count; ++i)
+    for (unsigned int i = 0; i < m_instanceData->props->resource_directory_count; ++i)
     {
-      if (m_instanceData->props.resource_directories[i] != nullptr)
-        dirs.push_back(m_instanceData->props.resource_directories[i]);
+      if (m_instanceData->props->resource_directories[i] != nullptr)
+        dirs.push_back(m_instanceData->props->resource_directories[i]);
     }
     return !dirs.empty();
   }
@@ -1420,10 +1417,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  std::string ProfileDirectory() const
-  {
-    return m_instanceData->props.profile_directory;
-  }
+  std::string ProfileDirectory() const { return m_instanceData->props->profile_directory; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -1434,10 +1428,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  bool SupportsVFS() const
-  {
-    return m_instanceData->props.supports_vfs;
-  }
+  bool SupportsVFS() const { return m_instanceData->props->supports_vfs; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -1451,10 +1442,10 @@ public:
   ///
   bool Extensions(std::vector<std::string>& extensions)
   {
-    for (unsigned int i = 0; i < m_instanceData->props.extension_count; ++i)
+    for (unsigned int i = 0; i < m_instanceData->props->extension_count; ++i)
     {
-      if (m_instanceData->props.extensions[i] != nullptr)
-        extensions.push_back(m_instanceData->props.extensions[i]);
+      if (m_instanceData->props->extensions[i] != nullptr)
+        extensions.push_back(m_instanceData->props->extensions[i]);
     }
     return !extensions.empty();
   }
@@ -1604,7 +1595,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  void CloseGame(void) { m_instanceData->toKodi.CloseGame(m_instanceData->toKodi.kodiInstance); }
+  void CloseGame(void) { m_instanceData->toKodi->CloseGame(m_instanceData->toKodi->kodiInstance); }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -1657,8 +1648,8 @@ public:
       }
 
       AddonToKodiFuncTable_Game& cb =
-          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
-              ->m_instanceData->toKodi;
+          *static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+               ->m_instanceData->toKodi;
       m_handle = cb.OpenStream(cb.kodiInstance, &properties);
       return m_handle != nullptr;
     }
@@ -1677,8 +1668,8 @@ public:
         return;
 
       AddonToKodiFuncTable_Game& cb =
-          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
-              ->m_instanceData->toKodi;
+          *static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+               ->m_instanceData->toKodi;
       cb.CloseStream(cb.kodiInstance, m_handle);
       m_handle = nullptr;
     }
@@ -1704,8 +1695,8 @@ public:
         return false;
 
       AddonToKodiFuncTable_Game& cb =
-          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
-              ->m_instanceData->toKodi;
+          *static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+               ->m_instanceData->toKodi;
       return cb.GetStreamBuffer(cb.kodiInstance, m_handle, width, height, &buffer);
     }
     //--------------------------------------------------------------------------
@@ -1725,8 +1716,8 @@ public:
         return;
 
       AddonToKodiFuncTable_Game& cb =
-          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
-              ->m_instanceData->toKodi;
+          *static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+               ->m_instanceData->toKodi;
       cb.AddStreamData(cb.kodiInstance, m_handle, &packet);
     }
     //--------------------------------------------------------------------------
@@ -1746,8 +1737,8 @@ public:
         return;
 
       AddonToKodiFuncTable_Game& cb =
-          static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
-              ->m_instanceData->toKodi;
+          *static_cast<CInstanceGame*>(CAddonBase::m_interface->globalSingleInstance)
+               ->m_instanceData->toKodi;
       cb.ReleaseStreamBuffer(cb.kodiInstance, m_handle, &buffer);
     }
     //--------------------------------------------------------------------------
@@ -1820,7 +1811,7 @@ public:
   ///
   game_proc_address_t HwGetProcAddress(const char* sym)
   {
-    return m_instanceData->toKodi.HwGetProcAddress(m_instanceData->toKodi.kodiInstance, sym);
+    return m_instanceData->toKodi->HwGetProcAddress(m_instanceData->toKodi->kodiInstance, sym);
   }
   //----------------------------------------------------------------------------
 
@@ -2008,7 +1999,7 @@ public:
   ///
   bool KodiInputEvent(const game_input_event& event)
   {
-    return m_instanceData->toKodi.InputEvent(m_instanceData->toKodi.kodiInstance, &event);
+    return m_instanceData->toKodi->InputEvent(m_instanceData->toKodi->kodiInstance, &event);
   }
   //----------------------------------------------------------------------------
 
@@ -2132,44 +2123,44 @@ private:
                              "allowed, table must be given from Kodi!");
 
     m_instanceData = static_cast<AddonInstance_Game*>(instance);
-    m_instanceData->toAddon.addonInstance = this;
+    m_instanceData->toAddon->addonInstance = this;
 
-    m_instanceData->toAddon.LoadGame = ADDON_LoadGame;
-    m_instanceData->toAddon.LoadGameSpecial = ADDON_LoadGameSpecial;
-    m_instanceData->toAddon.LoadStandalone = ADDON_LoadStandalone;
-    m_instanceData->toAddon.UnloadGame = ADDON_UnloadGame;
-    m_instanceData->toAddon.GetGameTiming = ADDON_GetGameTiming;
-    m_instanceData->toAddon.GetRegion = ADDON_GetRegion;
-    m_instanceData->toAddon.RequiresGameLoop = ADDON_RequiresGameLoop;
-    m_instanceData->toAddon.RunFrame = ADDON_RunFrame;
-    m_instanceData->toAddon.Reset = ADDON_Reset;
+    m_instanceData->toAddon->LoadGame = ADDON_LoadGame;
+    m_instanceData->toAddon->LoadGameSpecial = ADDON_LoadGameSpecial;
+    m_instanceData->toAddon->LoadStandalone = ADDON_LoadStandalone;
+    m_instanceData->toAddon->UnloadGame = ADDON_UnloadGame;
+    m_instanceData->toAddon->GetGameTiming = ADDON_GetGameTiming;
+    m_instanceData->toAddon->GetRegion = ADDON_GetRegion;
+    m_instanceData->toAddon->RequiresGameLoop = ADDON_RequiresGameLoop;
+    m_instanceData->toAddon->RunFrame = ADDON_RunFrame;
+    m_instanceData->toAddon->Reset = ADDON_Reset;
 
-    m_instanceData->toAddon.HwContextReset = ADDON_HwContextReset;
-    m_instanceData->toAddon.HwContextDestroy = ADDON_HwContextDestroy;
+    m_instanceData->toAddon->HwContextReset = ADDON_HwContextReset;
+    m_instanceData->toAddon->HwContextDestroy = ADDON_HwContextDestroy;
 
-    m_instanceData->toAddon.HasFeature = ADDON_HasFeature;
-    m_instanceData->toAddon.GetTopology = ADDON_GetTopology;
-    m_instanceData->toAddon.FreeTopology = ADDON_FreeTopology;
-    m_instanceData->toAddon.SetControllerLayouts = ADDON_SetControllerLayouts;
-    m_instanceData->toAddon.EnableKeyboard = ADDON_EnableKeyboard;
-    m_instanceData->toAddon.EnableMouse = ADDON_EnableMouse;
-    m_instanceData->toAddon.ConnectController = ADDON_ConnectController;
-    m_instanceData->toAddon.InputEvent = ADDON_InputEvent;
+    m_instanceData->toAddon->HasFeature = ADDON_HasFeature;
+    m_instanceData->toAddon->GetTopology = ADDON_GetTopology;
+    m_instanceData->toAddon->FreeTopology = ADDON_FreeTopology;
+    m_instanceData->toAddon->SetControllerLayouts = ADDON_SetControllerLayouts;
+    m_instanceData->toAddon->EnableKeyboard = ADDON_EnableKeyboard;
+    m_instanceData->toAddon->EnableMouse = ADDON_EnableMouse;
+    m_instanceData->toAddon->ConnectController = ADDON_ConnectController;
+    m_instanceData->toAddon->InputEvent = ADDON_InputEvent;
 
-    m_instanceData->toAddon.SerializeSize = ADDON_SerializeSize;
-    m_instanceData->toAddon.Serialize = ADDON_Serialize;
-    m_instanceData->toAddon.Deserialize = ADDON_Deserialize;
+    m_instanceData->toAddon->SerializeSize = ADDON_SerializeSize;
+    m_instanceData->toAddon->Serialize = ADDON_Serialize;
+    m_instanceData->toAddon->Deserialize = ADDON_Deserialize;
 
-    m_instanceData->toAddon.CheatReset = ADDON_CheatReset;
-    m_instanceData->toAddon.GetMemory = ADDON_GetMemory;
-    m_instanceData->toAddon.SetCheat = ADDON_SetCheat;
+    m_instanceData->toAddon->CheatReset = ADDON_CheatReset;
+    m_instanceData->toAddon->GetMemory = ADDON_GetMemory;
+    m_instanceData->toAddon->SetCheat = ADDON_SetCheat;
   }
 
   // --- Game operations ---------------------------------------------------------
 
   inline static GAME_ERROR ADDON_LoadGame(const AddonInstance_Game* instance, const char* url)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->LoadGame(url);
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->LoadGame(url);
   }
 
   inline static GAME_ERROR ADDON_LoadGameSpecial(const AddonInstance_Game* instance,
@@ -2184,45 +2175,45 @@ private:
         urlList.push_back(urls[i]);
     }
 
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->LoadGameSpecial(type, urlList);
   }
 
   inline static GAME_ERROR ADDON_LoadStandalone(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->LoadStandalone();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->LoadStandalone();
   }
 
   inline static GAME_ERROR ADDON_UnloadGame(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->UnloadGame();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->UnloadGame();
   }
 
   inline static GAME_ERROR ADDON_GetGameTiming(const AddonInstance_Game* instance,
                                                game_system_timing* timing_info)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->GetGameTiming(*timing_info);
   }
 
   inline static GAME_REGION ADDON_GetRegion(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->GetRegion();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetRegion();
   }
 
   inline static bool ADDON_RequiresGameLoop(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->RequiresGameLoop();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RequiresGameLoop();
   }
 
   inline static GAME_ERROR ADDON_RunFrame(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->RunFrame();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RunFrame();
   }
 
   inline static GAME_ERROR ADDON_Reset(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->Reset();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->Reset();
   }
 
 
@@ -2230,12 +2221,12 @@ private:
 
   inline static GAME_ERROR ADDON_HwContextReset(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->HwContextReset();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->HwContextReset();
   }
 
   inline static GAME_ERROR ADDON_HwContextDestroy(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->HwContextDestroy();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->HwContextDestroy();
   }
 
 
@@ -2245,19 +2236,19 @@ private:
                                       const char* controller_id,
                                       const char* feature_name)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->HasFeature(controller_id, feature_name);
   }
 
   inline static game_input_topology* ADDON_GetTopology(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->GetTopology();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->GetTopology();
   }
 
   inline static void ADDON_FreeTopology(const AddonInstance_Game* instance,
                                         game_input_topology* topology)
   {
-    static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->FreeTopology(topology);
+    static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->FreeTopology(topology);
   }
 
   inline static void ADDON_SetControllerLayouts(const AddonInstance_Game* instance,
@@ -2271,7 +2262,7 @@ private:
     for (unsigned int i = 0; i < controller_count; ++i)
       controllerList.push_back(controllers[i]);
 
-    static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->SetControllerLayouts(controllerList);
   }
 
@@ -2279,7 +2270,7 @@ private:
                                           bool enable,
                                           const char* controller_id)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->EnableKeyboard(enable, controller_id);
   }
 
@@ -2287,7 +2278,7 @@ private:
                                        bool enable,
                                        const char* controller_id)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->EnableMouse(enable, controller_id);
   }
 
@@ -2296,14 +2287,14 @@ private:
                                              const char* port_address,
                                              const char* controller_id)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->ConnectController(connect, port_address, controller_id);
   }
 
   inline static bool ADDON_InputEvent(const AddonInstance_Game* instance,
                                       const game_input_event* event)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->InputEvent(*event);
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->InputEvent(*event);
   }
 
 
@@ -2311,21 +2302,21 @@ private:
 
   inline static size_t ADDON_SerializeSize(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->SerializeSize();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->SerializeSize();
   }
 
   inline static GAME_ERROR ADDON_Serialize(const AddonInstance_Game* instance,
                                            uint8_t* data,
                                            size_t size)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->Serialize(data, size);
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->Serialize(data, size);
   }
 
   inline static GAME_ERROR ADDON_Deserialize(const AddonInstance_Game* instance,
                                              const uint8_t* data,
                                              size_t size)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->Deserialize(data, size);
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->Deserialize(data, size);
   }
 
 
@@ -2333,7 +2324,7 @@ private:
 
   inline static GAME_ERROR ADDON_CheatReset(const AddonInstance_Game* instance)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->CheatReset();
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->CheatReset();
   }
 
   inline static GAME_ERROR ADDON_GetMemory(const AddonInstance_Game* instance,
@@ -2341,7 +2332,7 @@ private:
                                            uint8_t** data,
                                            size_t* size)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->GetMemory(type, *data, *size);
   }
 
@@ -2350,7 +2341,7 @@ private:
                                           bool enabled,
                                           const char* code)
   {
-    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->SetCheat(index, enabled, code);
   }
 

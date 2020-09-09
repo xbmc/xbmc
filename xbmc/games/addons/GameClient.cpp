@@ -113,8 +113,8 @@ CGameClient::~CGameClient(void)
 std::string CGameClient::LibPath() const
 {
   // If the game client requires a proxy, load its DLL instead
-  if (m_struct.props.proxy_dll_count > 0)
-    return GetDllPath(m_struct.props.proxy_dll_paths[0]);
+  if (m_struct.props->proxy_dll_count > 0)
+    return GetDllPath(m_struct.props->proxy_dll_paths[0]);
 
   return CAddonDll::LibPath();
 }
@@ -160,15 +160,17 @@ bool CGameClient::Initialize(void)
   if (!AddonProperties().InitializeProperties())
     return false;
 
-  m_struct.toKodi.kodiInstance = this;
-  m_struct.toKodi.CloseGame = cb_close_game;
-  m_struct.toKodi.OpenStream = cb_open_stream;
-  m_struct.toKodi.GetStreamBuffer = cb_get_stream_buffer;
-  m_struct.toKodi.AddStreamData = cb_add_stream_data;
-  m_struct.toKodi.ReleaseStreamBuffer = cb_release_stream_buffer;
-  m_struct.toKodi.CloseStream = cb_close_stream;
-  m_struct.toKodi.HwGetProcAddress = cb_hw_get_proc_address;
-  m_struct.toKodi.InputEvent = cb_input_event;
+  m_struct.toKodi->kodiInstance = this;
+  m_struct.toKodi->CloseGame = cb_close_game;
+  m_struct.toKodi->OpenStream = cb_open_stream;
+  m_struct.toKodi->GetStreamBuffer = cb_get_stream_buffer;
+  m_struct.toKodi->AddStreamData = cb_add_stream_data;
+  m_struct.toKodi->ReleaseStreamBuffer = cb_release_stream_buffer;
+  m_struct.toKodi->CloseStream = cb_close_stream;
+  m_struct.toKodi->HwGetProcAddress = cb_hw_get_proc_address;
+  m_struct.toKodi->InputEvent = cb_input_event;
+
+  memset(m_struct.toAddon, 0, sizeof(KodiToAddonFuncTable_Game));
 
   if (CreateInstance(ADDON_INSTANCE_GAME, this, "", &m_struct, nullptr) == ADDON_STATUS_OK)
   {
@@ -229,7 +231,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   try
   {
-    LogError(error = m_struct.toAddon.LoadGame(&m_struct, path.c_str()), "LoadGame()");
+    LogError(error = m_struct.toAddon->LoadGame(&m_struct, path.c_str()), "LoadGame()");
   }
   catch (...)
   {
@@ -265,7 +267,7 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 
   try
   {
-    LogError(error = m_struct.toAddon.LoadStandalone(&m_struct), "LoadStandalone()");
+    LogError(error = m_struct.toAddon->LoadStandalone(&m_struct), "LoadStandalone()");
   }
   catch (...)
   {
@@ -313,7 +315,7 @@ bool CGameClient::LoadGameInfo()
   bool bRequiresGameLoop;
   try
   {
-    bRequiresGameLoop = m_struct.toAddon.RequiresGameLoop(&m_struct);
+    bRequiresGameLoop = m_struct.toAddon->RequiresGameLoop(&m_struct);
   }
   catch (...)
   {
@@ -328,7 +330,7 @@ bool CGameClient::LoadGameInfo()
   bool bSuccess = false;
   try
   {
-    bSuccess = LogError(m_struct.toAddon.GetGameTiming(&m_struct, &timingInfo), "GetGameTiming()");
+    bSuccess = LogError(m_struct.toAddon->GetGameTiming(&m_struct, &timingInfo), "GetGameTiming()");
   }
   catch (...)
   {
@@ -344,7 +346,7 @@ bool CGameClient::LoadGameInfo()
   GAME_REGION region;
   try
   {
-    region = m_struct.toAddon.GetRegion(&m_struct);
+    region = m_struct.toAddon->GetRegion(&m_struct);
   }
   catch (...)
   {
@@ -355,7 +357,7 @@ bool CGameClient::LoadGameInfo()
   size_t serializeSize;
   try
   {
-    serializeSize = m_struct.toAddon.SerializeSize(&m_struct);
+    serializeSize = m_struct.toAddon->SerializeSize(&m_struct);
   }
   catch (...)
   {
@@ -438,7 +440,7 @@ void CGameClient::Reset()
   {
     try
     {
-      LogError(m_struct.toAddon.Reset(&m_struct), "Reset()");
+      LogError(m_struct.toAddon->Reset(&m_struct), "Reset()");
     }
     catch (...)
     {
@@ -465,7 +467,7 @@ void CGameClient::CloseFile()
 
     try
     {
-      LogError(m_struct.toAddon.UnloadGame(&m_struct), "UnloadGame()");
+      LogError(m_struct.toAddon->UnloadGame(&m_struct), "UnloadGame()");
     }
     catch (...)
     {
@@ -494,7 +496,7 @@ void CGameClient::RunFrame()
   {
     try
     {
-      LogError(m_struct.toAddon.RunFrame(&m_struct), "RunFrame()");
+      LogError(m_struct.toAddon->RunFrame(&m_struct), "RunFrame()");
     }
     catch (...)
     {
@@ -515,7 +517,7 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   {
     try
     {
-      bSuccess = LogError(m_struct.toAddon.Serialize(&m_struct, data, size), "Serialize()");
+      bSuccess = LogError(m_struct.toAddon->Serialize(&m_struct, data, size), "Serialize()");
     }
     catch (...)
     {
@@ -538,7 +540,7 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   {
     try
     {
-      bSuccess = LogError(m_struct.toAddon.Deserialize(&m_struct, data, size), "Deserialize()");
+      bSuccess = LogError(m_struct.toAddon->Deserialize(&m_struct, data, size), "Deserialize()");
     }
     catch (...)
     {
