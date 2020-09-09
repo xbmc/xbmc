@@ -1119,7 +1119,6 @@ extern "C"
     unsigned int extension_count;
   } AddonProps_Game;
 
-  typedef AddonProps_Game game_client_properties;
   typedef void* KODI_GAME_STREAM_HANDLE;
 
   /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
