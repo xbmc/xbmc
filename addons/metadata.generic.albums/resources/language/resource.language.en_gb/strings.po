@@ -21,7 +21,7 @@ msgid "Preferences"
 msgstr ""
 
 msgctxt "#30001"
-msgid "Prefered language for album review"
+msgid "Preferred language for album review"
 msgstr ""
 
 msgctxt "#30002"
@@ -61,23 +61,23 @@ msgid "If available, the album review will be downloaded in the selected languag
 msgstr ""
 
 msgctxt "#30202"
-msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30203"
-msgid "Try to get style info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get style info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30204"
-msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30205"
-msgid "Try to get theme info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get theme info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30206"
-msgid "Try to get rating info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get rating info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30301"
