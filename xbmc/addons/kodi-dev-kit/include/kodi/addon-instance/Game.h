@@ -26,14 +26,6 @@
 /// could possible through the Game API.
 ///
 
-namespace kodi
-{
-namespace addon
-{
-class CInstanceGame;
-}
-} // namespace kodi
-
 extern "C"
 {
 
@@ -1217,14 +1209,14 @@ typedef struct AddonToKodiFuncTable_Game
 {
   KODI_HANDLE kodiInstance;
 
-  void (*CloseGame)(void* kodiInstance);
-  void* (*OpenStream)(void*, const game_stream_properties*);
-  bool (*GetStreamBuffer)(void*, void*, unsigned int, unsigned int, game_stream_buffer*);
-  void (*AddStreamData)(void*, void*, const game_stream_packet*);
-  void (*ReleaseStreamBuffer)(void*, void*, game_stream_buffer*);
-  void (*CloseStream)(void*, void*);
-  game_proc_address_t (*HwGetProcAddress)(void* kodiInstance, const char* symbol);
-  bool (*InputEvent)(void* kodiInstance, const game_input_event* event);
+  void (*CloseGame)(KODI_HANDLE kodiInstance);
+  void* (*OpenStream)(KODI_HANDLE, const game_stream_properties*);
+  bool (*GetStreamBuffer)(KODI_HANDLE, void*, unsigned int, unsigned int, game_stream_buffer*);
+  void (*AddStreamData)(KODI_HANDLE, void*, const game_stream_packet*);
+  void (*ReleaseStreamBuffer)(KODI_HANDLE, void*, game_stream_buffer*);
+  void (*CloseStream)(KODI_HANDLE, void*);
+  game_proc_address_t (*HwGetProcAddress)(KODI_HANDLE kodiInstance, const char* symbol);
+  bool (*InputEvent)(KODI_HANDLE kodiInstance, const game_input_event* event);
 } AddonToKodiFuncTable_Game;
 
 /*!
@@ -1234,7 +1226,7 @@ typedef struct AddonToKodiFuncTable_Game
  */
 typedef struct KodiToAddonFuncTable_Game
 {
-  kodi::addon::CInstanceGame* addonInstance;
+  KODI_HANDLE addonInstance;
 
   GAME_ERROR(__cdecl* LoadGame)(const AddonInstance_Game*, const char*);
   GAME_ERROR(__cdecl* LoadGameSpecial)
@@ -2177,7 +2169,7 @@ private:
 
   inline static GAME_ERROR ADDON_LoadGame(const AddonInstance_Game* instance, const char* url)
   {
-    return instance->toAddon.addonInstance->LoadGame(url);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->LoadGame(url);
   }
 
   inline static GAME_ERROR ADDON_LoadGameSpecial(const AddonInstance_Game* instance,
@@ -2192,43 +2184,45 @@ private:
         urlList.push_back(urls[i]);
     }
 
-    return instance->toAddon.addonInstance->LoadGameSpecial(type, urlList);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->LoadGameSpecial(type, urlList);
   }
 
   inline static GAME_ERROR ADDON_LoadStandalone(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->LoadStandalone();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->LoadStandalone();
   }
 
   inline static GAME_ERROR ADDON_UnloadGame(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->UnloadGame();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->UnloadGame();
   }
 
   inline static GAME_ERROR ADDON_GetGameTiming(const AddonInstance_Game* instance,
                                                game_system_timing* timing_info)
   {
-    return instance->toAddon.addonInstance->GetGameTiming(*timing_info);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->GetGameTiming(*timing_info);
   }
 
   inline static GAME_REGION ADDON_GetRegion(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->GetRegion();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->GetRegion();
   }
 
   inline static bool ADDON_RequiresGameLoop(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->RequiresGameLoop();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->RequiresGameLoop();
   }
 
   inline static GAME_ERROR ADDON_RunFrame(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->RunFrame();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->RunFrame();
   }
 
   inline static GAME_ERROR ADDON_Reset(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->Reset();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->Reset();
   }
 
 
@@ -2236,12 +2230,12 @@ private:
 
   inline static GAME_ERROR ADDON_HwContextReset(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->HwContextReset();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->HwContextReset();
   }
 
   inline static GAME_ERROR ADDON_HwContextDestroy(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->HwContextDestroy();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->HwContextDestroy();
   }
 
 
@@ -2251,18 +2245,19 @@ private:
                                       const char* controller_id,
                                       const char* feature_name)
   {
-    return instance->toAddon.addonInstance->HasFeature(controller_id, feature_name);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->HasFeature(controller_id, feature_name);
   }
 
   inline static game_input_topology* ADDON_GetTopology(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->GetTopology();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->GetTopology();
   }
 
   inline static void ADDON_FreeTopology(const AddonInstance_Game* instance,
                                         game_input_topology* topology)
   {
-    instance->toAddon.addonInstance->FreeTopology(topology);
+    static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->FreeTopology(topology);
   }
 
   inline static void ADDON_SetControllerLayouts(const AddonInstance_Game* instance,
@@ -2276,21 +2271,24 @@ private:
     for (unsigned int i = 0; i < controller_count; ++i)
       controllerList.push_back(controllers[i]);
 
-    instance->toAddon.addonInstance->SetControllerLayouts(controllerList);
+    static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->SetControllerLayouts(controllerList);
   }
 
   inline static bool ADDON_EnableKeyboard(const AddonInstance_Game* instance,
                                           bool enable,
                                           const char* controller_id)
   {
-    return instance->toAddon.addonInstance->EnableKeyboard(enable, controller_id);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->EnableKeyboard(enable, controller_id);
   }
 
   inline static bool ADDON_EnableMouse(const AddonInstance_Game* instance,
                                        bool enable,
                                        const char* controller_id)
   {
-    return instance->toAddon.addonInstance->EnableMouse(enable, controller_id);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->EnableMouse(enable, controller_id);
   }
 
   inline static bool ADDON_ConnectController(const AddonInstance_Game* instance,
@@ -2298,13 +2296,14 @@ private:
                                              const char* port_address,
                                              const char* controller_id)
   {
-    return instance->toAddon.addonInstance->ConnectController(connect, port_address, controller_id);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->ConnectController(connect, port_address, controller_id);
   }
 
   inline static bool ADDON_InputEvent(const AddonInstance_Game* instance,
                                       const game_input_event* event)
   {
-    return instance->toAddon.addonInstance->InputEvent(*event);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->InputEvent(*event);
   }
 
 
@@ -2312,21 +2311,21 @@ private:
 
   inline static size_t ADDON_SerializeSize(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->SerializeSize();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->SerializeSize();
   }
 
   inline static GAME_ERROR ADDON_Serialize(const AddonInstance_Game* instance,
                                            uint8_t* data,
                                            size_t size)
   {
-    return instance->toAddon.addonInstance->Serialize(data, size);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->Serialize(data, size);
   }
 
   inline static GAME_ERROR ADDON_Deserialize(const AddonInstance_Game* instance,
                                              const uint8_t* data,
                                              size_t size)
   {
-    return instance->toAddon.addonInstance->Deserialize(data, size);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->Deserialize(data, size);
   }
 
 
@@ -2334,7 +2333,7 @@ private:
 
   inline static GAME_ERROR ADDON_CheatReset(const AddonInstance_Game* instance)
   {
-    return instance->toAddon.addonInstance->CheatReset();
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)->CheatReset();
   }
 
   inline static GAME_ERROR ADDON_GetMemory(const AddonInstance_Game* instance,
@@ -2342,7 +2341,8 @@ private:
                                            uint8_t** data,
                                            size_t* size)
   {
-    return instance->toAddon.addonInstance->GetMemory(type, *data, *size);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->GetMemory(type, *data, *size);
   }
 
   inline static GAME_ERROR ADDON_SetCheat(const AddonInstance_Game* instance,
@@ -2350,7 +2350,8 @@ private:
                                           bool enabled,
                                           const char* code)
   {
-    return instance->toAddon.addonInstance->SetCheat(index, enabled, code);
+    return static_cast<CInstanceGame*>(instance->toAddon.addonInstance)
+        ->SetCheat(index, enabled, code);
   }
 
   AddonInstance_Game* m_instanceData;
