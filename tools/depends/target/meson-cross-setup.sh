@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cat > $PREFIX/share/cross-file.meson << EOF
+cat > $1 << EOF
 [binaries]
 $($NATIVEPREFIX/bin/python3 -c "print('c = {}'.format('$CC'.split()))")
 $($NATIVEPREFIX/bin/python3 -c "print('cpp = {}'.format('$CXX'.split()))")
