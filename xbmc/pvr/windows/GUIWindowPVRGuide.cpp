@@ -803,13 +803,12 @@ bool CGUIWindowPVRGuideBase::OpenDateSelectionDialog()
 {
   bool bReturn = false;
 
-  KODI::TIME::SystemTime date;
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-  epgGridContainer->GetSelectedDate().GetAsSystemTime(date);
+  CDateTime datetime = epgGridContainer->GetSelectedDate();
 
-  if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(19288))) /* Go to date */
+  if (CGUIDialogNumeric::ShowAndGetDate(datetime, g_localizeStrings.Get(19288))) /* Go to date */
   {
-    epgGridContainer->GoToDate(CDateTime(date));
+    epgGridContainer->GoToDate(datetime);
     bReturn = true;
   }
 

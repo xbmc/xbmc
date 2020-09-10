@@ -22,7 +22,7 @@ class IRssObserver;
 typedef struct
 {
   bool rtl;
-  std::vector<int> interval;
+  std::vector<std::chrono::nanoseconds> interval;
   std::vector<std::string> url;
 } RssSet;
 typedef std::map<int, RssSet> RssUrls;
