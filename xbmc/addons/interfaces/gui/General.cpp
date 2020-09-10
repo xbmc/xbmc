@@ -39,9 +39,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-using namespace kodi; // addon-dev-kit namespace
-using namespace kodi::gui; // addon-dev-kit namespace
-
 namespace ADDON
 {
 int Interface_GUIGeneral::m_iAddonGUILockRef = 0;

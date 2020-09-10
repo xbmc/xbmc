@@ -31,9 +31,6 @@
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
-using namespace kodi; // addon-dev-kit namespace
-using namespace kodi::gui; // addon-dev-kit namespace
-
 namespace ADDON
 {
 

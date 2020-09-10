@@ -16,9 +16,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-using namespace kodi; // addon-dev-kit namespace
-using namespace kodi::gui; // addon-dev-kit namespace
-
 namespace ADDON
 {
 
