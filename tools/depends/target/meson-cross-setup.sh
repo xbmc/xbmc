@@ -2,8 +2,8 @@
 
 cat > $PREFIX/share/cross-file.meson << EOF
 [binaries]
-$($NATIVEPREFIX/bin/python3 -c "print('c = \'{}\''.format('$CC'.split()[-1]))")
-$($NATIVEPREFIX/bin/python3 -c "print('cpp = \'{}\''.format('$CXX'.split()[-1]))")
+$($NATIVEPREFIX/bin/python3 -c "print('c = {}'.format('$CC'.split()))")
+$($NATIVEPREFIX/bin/python3 -c "print('cpp = {}'.format('$CXX'.split()))")
 ar = '$AR'
 strip = '$STRIP'
 pkgconfig = '$NATIVEPREFIX/bin/pkg-config'
