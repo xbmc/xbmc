@@ -495,7 +495,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         const CGUIViewState *viewState = window->GetViewState();
         if (viewState)
         {
-          value = (static_cast<unsigned int>(viewState->GetSortMethod().sortBy) == info.GetData2());
+          value = (static_cast<int>(viewState->GetSortMethod().sortBy) == info.GetData2());
           return true;
         }
       }
@@ -509,7 +509,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         const CGUIViewState *viewState = window->GetViewState();
         if (viewState)
         {
-          value = (static_cast<int>(viewState->GetSortOrder()) == info.GetData1());
+          value = (static_cast<unsigned int>(viewState->GetSortOrder()) == info.GetData1());
           return true;
         }
       }
