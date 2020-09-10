@@ -927,21 +927,19 @@ bool CGUIControlButtonSetting::OnClick()
       std::shared_ptr<CSettingDate> settingDate =
           std::static_pointer_cast<CSettingDate>(m_pSetting);
 
-      KODI::TIME::SystemTime systemdate;
-      settingDate->GetDate().GetAsSystemTime(systemdate);
-      if (CGUIDialogNumeric::ShowAndGetDate(systemdate, Localize(buttonControl->GetHeading())))
-        SetValid(settingDate->SetDate(CDateTime(systemdate)));
+      CDateTime datetime = settingDate->GetDate();
+      if (CGUIDialogNumeric::ShowAndGetDate(datetime, Localize(buttonControl->GetHeading())))
+        SetValid(settingDate->SetDate(datetime));
     }
     else if (controlFormat == "time")
     {
       std::shared_ptr<CSettingTime> settingTime =
           std::static_pointer_cast<CSettingTime>(m_pSetting);
 
-      KODI::TIME::SystemTime systemtime;
-      settingTime->GetTime().GetAsSystemTime(systemtime);
+      CDateTime datetime = settingTime->GetTime();
 
-      if (CGUIDialogNumeric::ShowAndGetTime(systemtime, Localize(buttonControl->GetHeading())))
-        SetValid(settingTime->SetTime(CDateTime(systemtime)));
+      if (CGUIDialogNumeric::ShowAndGetTime(datetime, Localize(buttonControl->GetHeading())))
+        SetValid(settingTime->SetTime(datetime));
     }
     else if (controlFormat == "action")
     {

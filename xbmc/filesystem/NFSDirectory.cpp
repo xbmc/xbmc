@@ -180,7 +180,6 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept nfs://server/path[/file]]]]
   int ret = 0;
-  KODI::TIME::FileTime fileTime, localTime;
   CSingleLock lock(gNfsConnection);
   std::string strDirName="";
   std::string myStrPath(url.Get());
@@ -243,25 +242,12 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     iSize = tmpDirent.size;
     bIsDir = tmpDirent.type == NF3DIR;
-    lTimeDate = tmpDirent.mtime.tv_sec;
 
     if (!StringUtils::EqualsNoCase(strName,".") && !StringUtils::EqualsNoCase(strName,"..")
         && !StringUtils::EqualsNoCase(strName,"lost+found"))
     {
-      if(lTimeDate == 0) // if modification date is missing, use create date
-      {
-        lTimeDate = tmpDirent.ctime.tv_sec;
-      }
-
-      long long ll = lTimeDate & 0xffffffff;
-      ll *= 10000000ll;
-      ll += 116444736000000000ll;
-      fileTime.lowDateTime = (DWORD)(ll & 0xffffffff);
-      fileTime.highDateTime = (DWORD)(ll >> 32);
-      KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
-
       CFileItemPtr pItem(new CFileItem(tmpDirent.name));
-      pItem->m_dateTime=localTime;
+      pItem->m_dateTime = tmpDirent.mtime.tv_sec != 0 ? tmpDirent.mtime.tv_sec : tmpDirent.ctime.tv_sec;
       pItem->m_dwSize = iSize;
 
       if (bIsDir)

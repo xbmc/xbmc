@@ -1019,11 +1019,18 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
   }
 
   // look for date?
-  if(entry->m_Description.date.GetLength()) {
-    KODI::TIME::SystemTime time = {};
-    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &time.year, &time.month, &time.day,
-           &time.hour, &time.minute, &time.second);
-    pItem->m_dateTime = time;
+  if (entry->m_Description.date.GetLength())
+  {
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    int second;
+
+    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &year, &month, &day, &hour, &minute, &second);
+
+    pItem->m_dateTime.SetDateTime(year, month, day, hour, minute, second);
   }
 
   // if there is a thumbnail available set it here

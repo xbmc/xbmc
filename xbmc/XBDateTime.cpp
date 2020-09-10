@@ -171,23 +171,6 @@ CDateTime::CDateTime()
   Reset();
 }
 
-CDateTime::CDateTime(const KODI::TIME::SystemTime& systemTime)
-{
-  KODI::TIME::FileTime fileTime;
-  m_state = ToFileTime(systemTime, fileTime) ? valid : invalid;
-
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&fileTime, &time);
-  m_time = std::chrono::system_clock::from_time_t(time);
-}
-
-CDateTime::CDateTime(const KODI::TIME::FileTime& fileTime)
-{
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&fileTime, &time);
-  m_time = std::chrono::system_clock::from_time_t(time);
-}
-
 CDateTime::CDateTime(const CDateTime& time)
 {
   m_time = time.m_time;
@@ -229,27 +212,6 @@ CDateTime CDateTime::GetCurrentDateTime()
 CDateTime CDateTime::GetUTCDateTime()
 {
   return CDateTime(std::chrono::system_clock::now());
-}
-
-const CDateTime& CDateTime::operator=(const KODI::TIME::SystemTime& right)
-{
-  KODI::TIME::FileTime fileTime;
-  m_state = ToFileTime(right, fileTime) ? valid : invalid;
-
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&fileTime, &time);
-  m_time = std::chrono::system_clock::from_time_t(time);
-
-  return *this;
-}
-
-const CDateTime& CDateTime::operator=(const KODI::TIME::FileTime& right)
-{
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&right, &time);
-  m_time = std::chrono::system_clock::from_time_t(time);
-
-  return *this;
 }
 
 const CDateTime& CDateTime::operator =(const time_t& right)
@@ -302,84 +264,6 @@ bool CDateTime::operator ==(const CDateTime& right) const
 }
 
 bool CDateTime::operator !=(const CDateTime& right) const
-{
-  return !operator ==(right);
-}
-
-bool CDateTime::operator>(const KODI::TIME::FileTime& right) const
-{
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&right, &time);
-
-  return m_time > std::chrono::system_clock::from_time_t(time);
-}
-
-bool CDateTime::operator>=(const KODI::TIME::FileTime& right) const
-{
-  return operator >(right) || operator ==(right);
-}
-
-bool CDateTime::operator<(const KODI::TIME::FileTime& right) const
-{
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&right, &time);
-
-  return m_time < std::chrono::system_clock::from_time_t(time);
-}
-
-bool CDateTime::operator<=(const KODI::TIME::FileTime& right) const
-{
-  return operator <(right) || operator ==(right);
-}
-
-bool CDateTime::operator==(const KODI::TIME::FileTime& right) const
-{
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&right, &time);
-
-  return m_time == std::chrono::system_clock::from_time_t(time);
-}
-
-bool CDateTime::operator!=(const KODI::TIME::FileTime& right) const
-{
-  return !operator ==(right);
-}
-
-bool CDateTime::operator>(const KODI::TIME::SystemTime& right) const
-{
-  KODI::TIME::FileTime time;
-  ToFileTime(right, time);
-
-  return operator >(time);
-}
-
-bool CDateTime::operator>=(const KODI::TIME::SystemTime& right) const
-{
-  return operator >(right) || operator ==(right);
-}
-
-bool CDateTime::operator<(const KODI::TIME::SystemTime& right) const
-{
-  KODI::TIME::FileTime time;
-  ToFileTime(right, time);
-
-  return operator <(time);
-}
-
-bool CDateTime::operator<=(const KODI::TIME::SystemTime& right) const
-{
-  return operator <(right) || operator ==(right);
-}
-
-bool CDateTime::operator==(const KODI::TIME::SystemTime& right) const
-{
-  KODI::TIME::FileTime time;
-  ToFileTime(right, time);
-
-  return operator ==(time);
-}
-
-bool CDateTime::operator!=(const KODI::TIME::SystemTime& right) const
 {
   return !operator ==(right);
 }
@@ -514,14 +398,6 @@ CDateTimeSpan CDateTime::operator -(const CDateTime& right) const
   return left;
 }
 
-CDateTime::operator KODI::TIME::FileTime() const
-{
-  KODI::TIME::FileTime fileTime;
-  time_t time = std::chrono::system_clock::to_time_t(m_time);
-  KODI::TIME::TimeTToFileTime(time, &fileTime);
-  return fileTime;
-}
-
 void CDateTime::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
@@ -529,9 +405,7 @@ void CDateTime::Archive(CArchive& ar)
     ar<<(int)m_state;
     if (m_state==valid)
     {
-      KODI::TIME::SystemTime st;
-      GetAsSystemTime(st);
-      ar<<st;
+      ar << GetAsTimePoint();
     }
   }
   else
@@ -542,9 +416,7 @@ void CDateTime::Archive(CArchive& ar)
     m_state = CDateTime::STATE(state);
     if (m_state==valid)
     {
-      KODI::TIME::SystemTime st;
-      ar>>st;
-      ToTimePoint(st, m_time);
+      ar >> m_time;
     }
   }
 }
@@ -563,37 +435,6 @@ void CDateTime::SetValid(bool yesNo)
 bool CDateTime::IsValid() const
 {
   return m_state == valid;
-}
-
-bool CDateTime::ToTimePoint(const KODI::TIME::SystemTime& systemTime,
-                            std::chrono::system_clock::time_point& timePoint) const
-{
-  KODI::TIME::FileTime fileTime;
-  KODI::TIME::SystemTimeToFileTime(&systemTime, &fileTime);
-
-  time_t time;
-  KODI::TIME::FileTimeToTimeT(&fileTime, &time);
-
-  timePoint = std::chrono::system_clock::from_time_t(time);
-  return true;
-}
-
-bool CDateTime::ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const
-{
-  return KODI::TIME::SystemTimeToFileTime(&time, &fileTime) == 1 &&
-         (fileTime.lowDateTime > 0 || fileTime.highDateTime > 0);
-}
-
-bool CDateTime::ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) const
-{
-  long long ll = time;
-  ll *= 10000000ll;
-  ll += 0x19DB1DED53E8000LL;
-
-  fileTime.lowDateTime = (DWORD)(ll & 0xFFFFFFFF);
-  fileTime.highDateTime = (DWORD)(ll >> 32);
-
-  return true;
 }
 
 bool CDateTime::SetFromDateString(const std::string &date)
@@ -730,14 +571,6 @@ bool CDateTime::SetTime(int hour, int minute, int second)
   return true;
 }
 
-void CDateTime::GetAsSystemTime(KODI::TIME::SystemTime& systemTime) const
-{
-  const time_t time = std::chrono::system_clock::to_time_t(m_time);
-  KODI::TIME::FileTime fileTime;
-  ToFileTime(time, fileTime);
-  KODI::TIME::FileTimeToSystemTime(&fileTime, &systemTime);
-}
-
 void CDateTime::GetAsTime(time_t& time) const
 {
   time = std::chrono::system_clock::to_time_t(m_time);
@@ -754,13 +587,6 @@ std::chrono::system_clock::time_point CDateTime::GetAsTimePoint() const
 {
   return m_time;
 }
-
-
-// void CDateTime::GetAsTimeStamp(KODI::TIME::FileTime& fileTime) const
-// {
-//   time_t time = std::chrono::system_clock::to_time_t(m_time);
-//   KODI::TIME::TimeTToFileTime(time, &fileTime);
-// }
 
 std::string CDateTime::GetAsDBDate() const
 {
@@ -1053,12 +879,9 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
   std::string strOut;
   const std::string& strFormat = format.empty() ? g_langInfo.GetTimeFormat() : format;
 
-  KODI::TIME::SystemTime dateTime;
-  GetAsSystemTime(dateTime);
-
   // Prefetch meridiem symbol
   const std::string& strMeridiem =
-      CLangInfo::MeridiemSymbolToString(dateTime.hour > 11 ? MeridiemSymbolPM : MeridiemSymbolAM);
+      CLangInfo::MeridiemSymbolToString(GetHour() > 11 ? MeridiemSymbolPM : MeridiemSymbolAM);
 
   size_t length = strFormat.size();
   for (size_t i=0; i < length; ++i)
@@ -1107,7 +930,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
         i=length;
       }
 
-      int hour = dateTime.hour;
+      int hour = GetHour();
       if (c=='h')
       { // recalc to 12 hour clock
         if (hour > 11)
@@ -1146,9 +969,9 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
       // Format minute string with the length of the mask
       std::string str;
       if (partLength==1)
-        str = StringUtils::Format("{}", dateTime.minute);
+        str = StringUtils::Format("{}", GetMinute());
       else
-        str = StringUtils::Format("{:02}", dateTime.minute);
+        str = StringUtils::Format("{:02}", GetMinute());
 
       strOut+=str;
     }
@@ -1175,9 +998,9 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
         // Format seconds string with the length of the mask
         std::string str;
         if (partLength==1)
-          str = StringUtils::Format("{}", dateTime.second);
+          str = StringUtils::Format("{}", GetSecond());
         else
-          str = StringUtils::Format("{:02}", dateTime.second);
+          str = StringUtils::Format("{:02}", GetSecond());
 
         strOut+=str;
       }
@@ -1215,9 +1038,6 @@ std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
 {
   std::string strOut;
-
-  KODI::TIME::SystemTime dateTime;
-  GetAsSystemTime(dateTime);
 
   size_t length = strFormat.size();
   for (size_t i = 0; i < length; ++i)
@@ -1268,12 +1088,12 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str;
       if (partLength==1) // single-digit number
-        str = StringUtils::Format("{}", dateTime.day);
+        str = StringUtils::Format("{}", GetDay());
       else if (partLength==2) // two-digit number
-        str = StringUtils::Format("{:02}", dateTime.day);
+        str = StringUtils::Format("{:02}", GetDay());
       else // Day of week string
       {
-        int wday = dateTime.dayOfWeek;
+        int wday = GetDayOfWeek();
         if (wday < 1 || wday > 7) wday = 7;
         str = g_localizeStrings.Get((c =='d' ? 40 : 10) + wday);
       }
@@ -1300,12 +1120,12 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str;
       if (partLength==1) // single-digit number
-        str = StringUtils::Format("{}", dateTime.month);
+        str = StringUtils::Format("{}", GetMonth());
       else if (partLength==2) // two-digit number
-        str = StringUtils::Format("{:02}", dateTime.month);
+        str = StringUtils::Format("{:02}", GetMonth());
       else // Month string
       {
-        int wmonth = dateTime.month;
+        int wmonth = GetMonth();
         if (wmonth < 1 || wmonth > 12) wmonth = 12;
         str = g_localizeStrings.Get((c =='m' ? 50 : 20) + wmonth);
       }
@@ -1330,7 +1150,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       }
 
       // Format string with the length of the mask
-      std::string str = StringUtils::Format("{}", dateTime.year); // four-digit number
+      std::string str = StringUtils::Format("{}", GetYear()); // four-digit number
       if (partLength <= 2)
         str.erase(0, 2); // two-digit number
 

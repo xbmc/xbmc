@@ -118,8 +118,6 @@ class CDateTime final : public IArchivable
 public:
   CDateTime();
   CDateTime(const CDateTime& time);
-  explicit CDateTime(const KODI::TIME::SystemTime& time);
-  explicit CDateTime(const KODI::TIME::FileTime& time);
   explicit CDateTime(const time_t& time);
   explicit CDateTime(const tm& time);
   explicit CDateTime(const std::chrono::system_clock::time_point& time);
@@ -139,8 +137,6 @@ public:
   static CDateTime FromUTCDateTime(const time_t &dateTime);
   static CDateTime FromRFC1123DateTime(const std::string &dateTime);
 
-  const CDateTime& operator=(const KODI::TIME::SystemTime& right);
-  const CDateTime& operator=(const KODI::TIME::FileTime& right);
   const CDateTime& operator =(const time_t& right);
   const CDateTime& operator =(const tm& right);
   const CDateTime& operator=(const std::chrono::system_clock::time_point& right);
@@ -151,20 +147,6 @@ public:
   bool operator <=(const CDateTime& right) const;
   bool operator ==(const CDateTime& right) const;
   bool operator !=(const CDateTime& right) const;
-
-  bool operator>(const KODI::TIME::FileTime& right) const;
-  bool operator>=(const KODI::TIME::FileTime& right) const;
-  bool operator<(const KODI::TIME::FileTime& right) const;
-  bool operator<=(const KODI::TIME::FileTime& right) const;
-  bool operator==(const KODI::TIME::FileTime& right) const;
-  bool operator!=(const KODI::TIME::FileTime& right) const;
-
-  bool operator>(const KODI::TIME::SystemTime& right) const;
-  bool operator>=(const KODI::TIME::SystemTime& right) const;
-  bool operator<(const KODI::TIME::SystemTime& right) const;
-  bool operator<=(const KODI::TIME::SystemTime& right) const;
-  bool operator==(const KODI::TIME::SystemTime& right) const;
-  bool operator!=(const KODI::TIME::SystemTime& right) const;
 
   bool operator >(const time_t& right) const;
   bool operator >=(const time_t& right) const;
@@ -194,8 +176,6 @@ public:
   const CDateTime& operator -=(const CDateTimeSpan& right);
 
   CDateTimeSpan operator -(const CDateTime& right) const;
-
-  operator KODI::TIME::FileTime() const;
 
   void Archive(CArchive& ar) override;
 
@@ -228,7 +208,6 @@ public:
    */
   bool SetFromDBDateTime(const std::string &dateTime);
 
-  void GetAsSystemTime(KODI::TIME::SystemTime& time) const;
   void GetAsTime(time_t& time) const;
   void GetAsTm(tm& time) const;
   std::chrono::system_clock::time_point GetAsTimePoint() const;
@@ -249,12 +228,6 @@ public:
 
   void SetValid(bool yesNo);
   bool IsValid() const;
-
-private:
-  bool ToTimePoint(const KODI::TIME::SystemTime& time,
-                   std::chrono::system_clock::time_point& timePoint) const;
-  bool ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const;
-  bool ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) const;
 
 private:
   std::chrono::system_clock::time_point m_time;

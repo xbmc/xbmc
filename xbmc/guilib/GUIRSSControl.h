@@ -62,7 +62,7 @@ protected:
   KODI::GUILIB::GUIINFO::CGUIInfoColor m_headlineColor;
 
   std::vector<std::string> m_vecUrls;
-  std::vector<int> m_vecIntervals;
+  std::vector<std::chrono::nanoseconds> m_vecIntervals;
   bool m_rtl;
   CScrollInfo m_scrollInfo;
   bool m_dirty;

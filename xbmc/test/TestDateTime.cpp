@@ -36,17 +36,16 @@ TEST_F(TestDateTime, DateTimeOperators)
   EXPECT_FALSE(dateTime1 == dateTime2);
 }
 
-TEST_F(TestDateTime, SystemTimeOperators)
+TEST_F(TestDateTime, TimePointOperators)
 {
   CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
   CDateTime dateTime2(1991, 5, 14, 12, 34, 57);
 
-  KODI::TIME::SystemTime systemTime;
-  dateTime2.GetAsSystemTime(systemTime);
+  auto tp = dateTime2.GetAsTimePoint();
 
-  EXPECT_TRUE(dateTime1 < systemTime);
-  EXPECT_FALSE(dateTime1 > systemTime);
-  EXPECT_FALSE(dateTime1 == systemTime);
+  EXPECT_TRUE(dateTime1 < tp);
+  EXPECT_FALSE(dateTime1 > tp);
+  EXPECT_FALSE(dateTime1 == tp);
 }
 
 TEST_F(TestDateTime, TimeTOperators)
@@ -498,15 +497,14 @@ TEST_F(TestDateTime, GetAsLocalized)
   EXPECT_EQ(dateTime2.GetAsLocalizedTime(TIME_FORMAT(256)), "5");
 }
 
-TEST_F(TestDateTime, GetAsSystemTime)
+TEST_F(TestDateTime, GetAsTimePoint)
 {
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
-  KODI::TIME::SystemTime systemTime;
-  dateTime.GetAsSystemTime(systemTime);
+  auto tp = dateTime.GetAsTimePoint();
 
-  EXPECT_TRUE(dateTime == systemTime);
+  EXPECT_TRUE(dateTime == tp);
 }
 
 TEST_F(TestDateTime, GetAsTime)

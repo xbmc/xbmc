@@ -143,7 +143,7 @@ bool CRssManager::Load()
           //!              What about the xml encoding?
           std::string strUrl = pFeed->FirstChild()->ValueStr();
           set.url.push_back(strUrl);
-          set.interval.push_back(iInterval);
+          set.interval.push_back(std::chrono::minutes(iInterval));
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
