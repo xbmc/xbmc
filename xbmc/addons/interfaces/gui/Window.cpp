@@ -39,8 +39,7 @@ namespace ADDON
 
 void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->window = static_cast<AddonToKodiFuncTable_kodi_gui_window*>(
-      malloc(sizeof(AddonToKodiFuncTable_kodi_gui_window)));
+  addonInterface->toKodi->kodi_gui->window = new AddonToKodiFuncTable_kodi_gui_window();
 
   /* Window creation functions */
   addonInterface->toKodi->kodi_gui->window->create = create;
@@ -104,7 +103,7 @@ void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIWindow::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->window);
+  delete addonInterface->toKodi->kodi_gui->window;
 }
 
 /*!

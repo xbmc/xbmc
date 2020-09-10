@@ -22,15 +22,14 @@ namespace ADDON
 void Interface_GUIDialogTextViewer::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->dialogTextViewer =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogTextViewer*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogTextViewer)));
+      new AddonToKodiFuncTable_kodi_gui_dialogTextViewer();
 
   addonInterface->toKodi->kodi_gui->dialogTextViewer->open = open;
 }
 
 void Interface_GUIDialogTextViewer::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogTextViewer);
+  delete addonInterface->toKodi->kodi_gui->dialogTextViewer;
 }
 
 void Interface_GUIDialogTextViewer::open(KODI_HANDLE kodiBase,

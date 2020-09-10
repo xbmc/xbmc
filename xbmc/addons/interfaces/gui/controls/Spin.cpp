@@ -21,9 +21,7 @@ namespace ADDON
 
 void Interface_GUIControlSpin::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_spin =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_spin*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_spin)));
+  addonInterface->toKodi->kodi_gui->control_spin = new AddonToKodiFuncTable_kodi_gui_control_spin();
 
   addonInterface->toKodi->kodi_gui->control_spin->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_spin->set_enabled = set_enabled;
@@ -49,7 +47,7 @@ void Interface_GUIControlSpin::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlSpin::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_spin);
+  delete addonInterface->toKodi->kodi_gui->control_spin;
 }
 
 void Interface_GUIControlSpin::set_visible(KODI_HANDLE kodiBase,

@@ -20,8 +20,7 @@ namespace ADDON
 void Interface_GUIControlFadeLabel::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_fade_label =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_fade_label*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_fade_label)));
+      new AddonToKodiFuncTable_kodi_gui_control_fade_label();
 
   addonInterface->toKodi->kodi_gui->control_fade_label->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_fade_label->add_label = add_label;
@@ -32,7 +31,7 @@ void Interface_GUIControlFadeLabel::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlFadeLabel::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_fade_label);
+  delete addonInterface->toKodi->kodi_gui->control_fade_label;
 }
 
 void Interface_GUIControlFadeLabel::set_visible(KODI_HANDLE kodiBase,

@@ -22,8 +22,7 @@ namespace ADDON
 void Interface_GUIControlTextBox::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_text_box =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_text_box*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_text_box)));
+      new AddonToKodiFuncTable_kodi_gui_control_text_box();
 
   addonInterface->toKodi->kodi_gui->control_text_box->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_text_box->reset = reset;
@@ -35,7 +34,7 @@ void Interface_GUIControlTextBox::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlTextBox::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_text_box);
+  delete addonInterface->toKodi->kodi_gui->control_text_box;
 }
 
 void Interface_GUIControlTextBox::set_visible(KODI_HANDLE kodiBase,

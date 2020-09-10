@@ -21,8 +21,7 @@ namespace ADDON
 
 void Interface_GUIDialogOK::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->dialogOK = static_cast<AddonToKodiFuncTable_kodi_gui_dialogOK*>(
-      malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogOK)));
+  addonInterface->toKodi->kodi_gui->dialogOK = new AddonToKodiFuncTable_kodi_gui_dialogOK();
 
   addonInterface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text =
       show_and_get_input_single_text;
@@ -32,7 +31,7 @@ void Interface_GUIDialogOK::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIDialogOK::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogOK);
+  delete addonInterface->toKodi->kodi_gui->dialogOK;
 }
 
 void Interface_GUIDialogOK::show_and_get_input_single_text(KODI_HANDLE kodiBase,

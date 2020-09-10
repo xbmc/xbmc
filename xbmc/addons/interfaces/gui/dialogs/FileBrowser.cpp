@@ -23,8 +23,7 @@ namespace ADDON
 void Interface_GUIDialogFileBrowser::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->dialogFileBrowser =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogFileBrowser*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogFileBrowser)));
+      new AddonToKodiFuncTable_kodi_gui_dialogFileBrowser();
 
   addonInterface->toKodi->kodi_gui->dialogFileBrowser->show_and_get_directory =
       show_and_get_directory;
@@ -42,7 +41,7 @@ void Interface_GUIDialogFileBrowser::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIDialogFileBrowser::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogFileBrowser);
+  delete addonInterface->toKodi->kodi_gui->dialogFileBrowser;
 }
 
 bool Interface_GUIDialogFileBrowser::show_and_get_directory(KODI_HANDLE kodiBase,

@@ -20,8 +20,7 @@ namespace ADDON
 void Interface_GUIControlProgress::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_progress =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_progress*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_progress)));
+      new AddonToKodiFuncTable_kodi_gui_control_progress();
 
   addonInterface->toKodi->kodi_gui->control_progress->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_progress->set_percentage = set_percentage;
@@ -30,7 +29,7 @@ void Interface_GUIControlProgress::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlProgress::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_progress);
+  delete addonInterface->toKodi->kodi_gui->control_progress;
 }
 
 void Interface_GUIControlProgress::set_visible(KODI_HANDLE kodiBase,

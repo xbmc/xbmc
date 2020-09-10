@@ -23,8 +23,7 @@ namespace ADDON
 void Interface_GUIDialogProgress::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->dialogProgress =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogProgress*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogProgress)));
+      new AddonToKodiFuncTable_kodi_gui_dialogProgress();
 
   addonInterface->toKodi->kodi_gui->dialogProgress->new_dialog = new_dialog;
   addonInterface->toKodi->kodi_gui->dialogProgress->delete_dialog = delete_dialog;
@@ -43,7 +42,7 @@ void Interface_GUIDialogProgress::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIDialogProgress::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogProgress);
+  delete addonInterface->toKodi->kodi_gui->dialogProgress;
 }
 
 KODI_GUI_HANDLE Interface_GUIDialogProgress::new_dialog(KODI_HANDLE kodiBase)

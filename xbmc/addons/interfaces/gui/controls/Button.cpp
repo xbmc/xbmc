@@ -20,8 +20,7 @@ namespace ADDON
 void Interface_GUIControlButton::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_button =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_button*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_button)));
+      new AddonToKodiFuncTable_kodi_gui_control_button();
 
   addonInterface->toKodi->kodi_gui->control_button->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_button->set_enabled = set_enabled;
@@ -35,7 +34,7 @@ void Interface_GUIControlButton::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlButton::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_button);
+  delete addonInterface->toKodi->kodi_gui->control_button;
 }
 
 void Interface_GUIControlButton::set_visible(KODI_HANDLE kodiBase,

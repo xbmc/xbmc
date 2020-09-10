@@ -22,8 +22,7 @@ namespace ADDON
 void Interface_GUIControlLabel::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_label =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_label*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_label)));
+      new AddonToKodiFuncTable_kodi_gui_control_label();
 
   addonInterface->toKodi->kodi_gui->control_label->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_label->set_label = set_label;
@@ -32,7 +31,7 @@ void Interface_GUIControlLabel::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlLabel::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_label);
+  delete addonInterface->toKodi->kodi_gui->control_label;
 }
 
 void Interface_GUIControlLabel::set_visible(KODI_HANDLE kodiBase,

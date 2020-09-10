@@ -22,15 +22,14 @@ namespace ADDON
 void Interface_GUIDialogContextMenu::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->dialogContextMenu =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogContextMenu*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogContextMenu)));
+      new AddonToKodiFuncTable_kodi_gui_dialogContextMenu();
 
   addonInterface->toKodi->kodi_gui->dialogContextMenu->open = open;
 }
 
 void Interface_GUIDialogContextMenu::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogContextMenu);
+  delete addonInterface->toKodi->kodi_gui->dialogContextMenu;
 }
 
 int Interface_GUIDialogContextMenu::open(KODI_HANDLE kodiBase,

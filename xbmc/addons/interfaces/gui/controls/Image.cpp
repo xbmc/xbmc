@@ -21,8 +21,7 @@ namespace ADDON
 void Interface_GUIControlImage::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_image =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_image*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_image)));
+      new AddonToKodiFuncTable_kodi_gui_control_image();
 
   addonInterface->toKodi->kodi_gui->control_image->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_image->set_filename = set_filename;
@@ -31,7 +30,7 @@ void Interface_GUIControlImage::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlImage::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_image);
+  delete addonInterface->toKodi->kodi_gui->control_image;
 }
 
 void Interface_GUIControlImage::set_visible(KODI_HANDLE kodiBase,

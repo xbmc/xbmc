@@ -20,8 +20,7 @@ namespace ADDON
 void Interface_GUIDialogNumeric::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->dialogNumeric =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogNumeric*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogNumeric)));
+      new AddonToKodiFuncTable_kodi_gui_dialogNumeric();
 
   addonInterface->toKodi->kodi_gui->dialogNumeric->show_and_verify_new_password =
       show_and_verify_new_password;
@@ -38,7 +37,7 @@ void Interface_GUIDialogNumeric::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIDialogNumeric::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogNumeric);
+  delete addonInterface->toKodi->kodi_gui->dialogNumeric;
 }
 
 bool Interface_GUIDialogNumeric::show_and_verify_new_password(KODI_HANDLE kodiBase, char** password)

@@ -20,8 +20,7 @@ namespace ADDON
 void Interface_GUIControlAddonRendering::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_rendering =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_rendering*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_rendering)));
+      new AddonToKodiFuncTable_kodi_gui_control_rendering();
 
   addonInterface->toKodi->kodi_gui->control_rendering->set_callbacks = set_callbacks;
   addonInterface->toKodi->kodi_gui->control_rendering->destroy = destroy;
@@ -29,7 +28,7 @@ void Interface_GUIControlAddonRendering::Init(AddonGlobalInterface* addonInterfa
 
 void Interface_GUIControlAddonRendering::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_rendering);
+  delete addonInterface->toKodi->kodi_gui->control_rendering;
 }
 
 void Interface_GUIControlAddonRendering::set_callbacks(

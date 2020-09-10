@@ -19,8 +19,7 @@ namespace ADDON
 void Interface_GUIControlRadioButton::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_radio_button =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_radio_button*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_radio_button)));
+      new AddonToKodiFuncTable_kodi_gui_control_radio_button();
 
   addonInterface->toKodi->kodi_gui->control_radio_button->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_radio_button->set_enabled = set_enabled;
@@ -34,7 +33,7 @@ void Interface_GUIControlRadioButton::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlRadioButton::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_radio_button);
+  delete addonInterface->toKodi->kodi_gui->control_radio_button;
 }
 
 void Interface_GUIControlRadioButton::set_visible(KODI_HANDLE kodiBase,

@@ -19,9 +19,7 @@ namespace ADDON
 
 void Interface_GUIControlEdit::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_edit =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_edit*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_edit)));
+  addonInterface->toKodi->kodi_gui->control_edit = new AddonToKodiFuncTable_kodi_gui_control_edit();
 
   addonInterface->toKodi->kodi_gui->control_edit->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_edit->set_enabled = set_enabled;
@@ -36,7 +34,7 @@ void Interface_GUIControlEdit::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlEdit::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_edit);
+  delete addonInterface->toKodi->kodi_gui->control_edit;
 }
 
 void Interface_GUIControlEdit::set_visible(KODI_HANDLE kodiBase,

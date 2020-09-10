@@ -22,8 +22,7 @@ namespace ADDON
 void Interface_GUIControlSettingsSlider::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->control_settings_slider =
-      static_cast<AddonToKodiFuncTable_kodi_gui_control_settings_slider*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_settings_slider)));
+      new AddonToKodiFuncTable_kodi_gui_control_settings_slider();
 
   addonInterface->toKodi->kodi_gui->control_settings_slider->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_settings_slider->set_enabled = set_enabled;
@@ -48,7 +47,7 @@ void Interface_GUIControlSettingsSlider::Init(AddonGlobalInterface* addonInterfa
 
 void Interface_GUIControlSettingsSlider::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_settings_slider);
+  delete addonInterface->toKodi->kodi_gui->control_settings_slider;
 }
 
 void Interface_GUIControlSettingsSlider::set_visible(KODI_HANDLE kodiBase,

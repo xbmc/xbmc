@@ -22,9 +22,7 @@ namespace ADDON
 
 void Interface_GUIDialogSelect::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->dialogSelect =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogSelect*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogSelect)));
+  addonInterface->toKodi->kodi_gui->dialogSelect = new AddonToKodiFuncTable_kodi_gui_dialogSelect();
 
   addonInterface->toKodi->kodi_gui->dialogSelect->open = open;
   addonInterface->toKodi->kodi_gui->dialogSelect->open_multi_select = open_multi_select;
@@ -32,7 +30,7 @@ void Interface_GUIDialogSelect::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIDialogSelect::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogSelect);
+  delete addonInterface->toKodi->kodi_gui->dialogSelect;
 }
 
 int Interface_GUIDialogSelect::open(KODI_HANDLE kodiBase,

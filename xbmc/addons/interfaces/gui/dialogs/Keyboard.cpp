@@ -20,8 +20,7 @@ namespace ADDON
 void Interface_GUIDialogKeyboard::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui->dialogKeyboard =
-      static_cast<AddonToKodiFuncTable_kodi_gui_dialogKeyboard*>(
-          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogKeyboard)));
+      new AddonToKodiFuncTable_kodi_gui_dialogKeyboard();
 
   addonInterface->toKodi->kodi_gui->dialogKeyboard->show_and_get_input_with_head =
       show_and_get_input_with_head;
@@ -44,7 +43,7 @@ void Interface_GUIDialogKeyboard::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIDialogKeyboard::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogKeyboard);
+  delete addonInterface->toKodi->kodi_gui->dialogKeyboard;
 }
 
 bool Interface_GUIDialogKeyboard::show_and_get_input_with_head(KODI_HANDLE kodiBase,

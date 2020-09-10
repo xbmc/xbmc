@@ -24,8 +24,7 @@ namespace ADDON
 
 void Interface_GUIListItem::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->listItem = static_cast<AddonToKodiFuncTable_kodi_gui_listItem*>(
-      malloc(sizeof(AddonToKodiFuncTable_kodi_gui_listItem)));
+  addonInterface->toKodi->kodi_gui->listItem = new AddonToKodiFuncTable_kodi_gui_listItem();
 
   addonInterface->toKodi->kodi_gui->listItem->create = create;
   addonInterface->toKodi->kodi_gui->listItem->destroy = destroy;
@@ -45,7 +44,7 @@ void Interface_GUIListItem::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIListItem::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->listItem);
+  delete addonInterface->toKodi->kodi_gui->listItem;
 }
 
 KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,

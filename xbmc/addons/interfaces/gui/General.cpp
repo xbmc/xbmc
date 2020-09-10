@@ -48,8 +48,7 @@ int Interface_GUIGeneral::m_iAddonGUILockRef = 0;
 
 void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui =
-      static_cast<AddonToKodiFuncTable_kodi_gui*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui)));
+  addonInterface->toKodi->kodi_gui = new AddonToKodiFuncTable_kodi_gui();
 
   Interface_GUIControlButton::Init(addonInterface);
   Interface_GUIControlEdit::Init(addonInterface);
@@ -76,8 +75,7 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
   Interface_GUIListItem::Init(addonInterface);
   Interface_GUIWindow::Init(addonInterface);
 
-  addonInterface->toKodi->kodi_gui->general = static_cast<AddonToKodiFuncTable_kodi_gui_general*>(
-      malloc(sizeof(AddonToKodiFuncTable_kodi_gui_general)));
+  addonInterface->toKodi->kodi_gui->general = new AddonToKodiFuncTable_kodi_gui_general();
 
   addonInterface->toKodi->kodi_gui->general->lock = lock;
   addonInterface->toKodi->kodi_gui->general->unlock = unlock;
@@ -120,8 +118,8 @@ void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
     Interface_GUIListItem::DeInit(addonInterface);
     Interface_GUIWindow::DeInit(addonInterface);
 
-    free(addonInterface->toKodi->kodi_gui->general);
-    free(addonInterface->toKodi->kodi_gui);
+    delete addonInterface->toKodi->kodi_gui->general;
+    delete addonInterface->toKodi->kodi_gui;
     addonInterface->toKodi->kodi_gui = nullptr;
   }
 }
