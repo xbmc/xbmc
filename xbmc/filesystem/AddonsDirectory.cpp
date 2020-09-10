@@ -807,9 +807,10 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             const std::string label,
                                             bool alwaysShowUpdateIcon)
 {
-  std::set<std::shared_ptr<IAddon>> outdated;
-  for (const auto& addon : CServiceBroker::GetAddonMgr().GetOutdatedAddons())
-    outdated.insert(addon);
+  std::vector<std::shared_ptr<IAddon>> outdated;
+  std::vector<std::shared_ptr<IAddon>> updates;
+
+  CServiceBroker::GetAddonMgr().GetAvailableUpdatesAndOutdatedAddons(outdated, updates);
 
   items.ClearItems();
   items.SetContent("addons");
@@ -824,6 +825,12 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                                                     addon->Version());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
 
+    bool isUpdate =
+        std::any_of(updates.begin(), updates.end(), [&](const std::shared_ptr<IAddon>& i) {
+          return i->ID() == addon->ID() && i->Origin() == addon->Origin() &&
+                 i->Version() == addon->Version();
+        });
+
     bool hasUpdate =
         alwaysShowUpdateIcon ||
         std::any_of(outdated.begin(), outdated.end(), [&](const std::shared_ptr<IAddon>& i) {
@@ -836,6 +843,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
+    pItem->SetProperty("Addon.IsUpdate", isUpdate);
     pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
     pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
 

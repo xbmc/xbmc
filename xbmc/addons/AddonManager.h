@@ -420,6 +420,16 @@ namespace ADDON
 
     /*@}}}*/
 
+    /*!
+     * \brief Fetches list of outdated addons as well as available updates and
+     *        stores them into separate vectors.
+     * \param[out] outdated target vector of outdated addons (that have updates available)
+     * \param[out] updates target vector of available updates (determined for installed add-ons)
+     * \return true or false
+     */
+    bool GetAvailableUpdatesAndOutdatedAddons(std::vector<std::shared_ptr<IAddon>>& outdated,
+                                              std::vector<std::shared_ptr<IAddon>>& updates) const;
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 

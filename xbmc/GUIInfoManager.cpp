@@ -4389,6 +4389,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsBinary `ListItem.Property(Addon.IsBinary)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.IsUpdate)`</b>,
+///                  \anchor ListItem_Property_AddonIsUpdate
+///                  _boolean_,
+///     @return **True** if this add-on is a valid update of an installed outdated add-on.
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsUpdate `ListItem.Property(Addon.IsUpdate)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Label`</b>,
 ///                  \anchor ListItem_Label
 ///                  _string_,

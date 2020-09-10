@@ -247,6 +247,28 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
   return result;
 }
 
+bool CAddonMgr::GetAvailableUpdatesAndOutdatedAddons(
+    std::vector<std::shared_ptr<IAddon>>& outdated,
+    std::vector<std::shared_ptr<IAddon>>& updates) const
+{
+  CSingleLock lock(m_critSection);
+  auto start = XbmcThreads::SystemClockMillis();
+
+  std::vector<std::shared_ptr<IAddon>> installed;
+  CAddonRepos addonRepos(*this);
+
+  addonRepos.LoadAddonsFromDatabase(m_database);
+
+  GetAddonsForUpdate(installed);
+
+  addonRepos.BuildUpdateAndOutdatedList(installed, updates, outdated);
+
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesAndOutdatedAddons took %i ms",
+            XbmcThreads::SystemClockMillis() - start);
+
+  return true;
+}
+
 bool CAddonMgr::HasAvailableUpdates()
 {
   return !GetAvailableUpdates().empty();
