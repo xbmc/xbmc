@@ -4,7 +4,6 @@
 
 # Keep this in alphabetical order
 set(CORE_ADDON_BINDINGS_FILES
-    ${CORE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
 )
 
 set(CORE_ADDON_BINDINGS_DIRS

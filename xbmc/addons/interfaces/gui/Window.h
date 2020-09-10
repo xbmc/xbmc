@@ -53,17 +53,18 @@ extern "C"
                                          bool as_dialog,
                                          bool is_media);
     static void destroy(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
-    static void set_callbacks(
-        KODI_HANDLE kodiBase,
-        KODI_GUI_WINDOW_HANDLE handle,
-        KODI_GUI_CLIENT_HANDLE clienthandle,
-        bool (*CBInit)(KODI_GUI_CLIENT_HANDLE),
-        bool (*CBFocus)(KODI_GUI_CLIENT_HANDLE, int),
-        bool (*CBClick)(KODI_GUI_CLIENT_HANDLE, int),
-        bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, ADDON_ACTION, uint32_t, wchar_t),
-        void (*CBGetContextButtons)(
-            KODI_GUI_CLIENT_HANDLE, int, gui_context_menu_pair*, unsigned int*),
-        bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int));
+    static void set_callbacks(KODI_HANDLE kodiBase,
+                              KODI_GUI_WINDOW_HANDLE handle,
+                              KODI_GUI_CLIENT_HANDLE clienthandle,
+                              bool (*CBInit)(KODI_GUI_CLIENT_HANDLE),
+                              bool (*CBFocus)(KODI_GUI_CLIENT_HANDLE, int),
+                              bool (*CBClick)(KODI_GUI_CLIENT_HANDLE, int),
+                              bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, ADDON_ACTION),
+                              void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE,
+                                                          int,
+                                                          gui_context_menu_pair*,
+                                                          unsigned int*),
+                              bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int));
     static bool show(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
     static bool close(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
     static bool do_modal(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
@@ -238,10 +239,7 @@ extern "C"
     bool (*CBOnInit)(KODI_GUI_CLIENT_HANDLE cbhdl);
     bool (*CBOnFocus)(KODI_GUI_CLIENT_HANDLE cbhdl, int controlId);
     bool (*CBOnClick)(KODI_GUI_CLIENT_HANDLE cbhdl, int controlId);
-    bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE cbhdl,
-                       ADDON_ACTION actionId,
-                       uint32_t buttoncode,
-                       wchar_t unicode);
+    bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE cbhdl, ADDON_ACTION actionId);
     void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE cbhdl,
                                 int itemNumber,
                                 gui_context_menu_pair* buttons,

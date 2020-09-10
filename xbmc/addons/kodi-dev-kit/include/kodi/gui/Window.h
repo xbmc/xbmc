@@ -758,7 +758,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  virtual bool OnAction(ADDON_ACTION actionId, uint32_t buttoncode, wchar_t unicode)
+  virtual bool OnAction(ADDON_ACTION actionId)
   {
     switch (actionId)
     {
@@ -844,7 +844,7 @@ public:
   ///   return true;
   /// }
   ///
-  /// bool OnAction(kodi::gui::ClientHandle cbhdl, ADDON_ACTION actionId, uint32_t buttoncode, wchar_t unicode)
+  /// bool OnAction(kodi::gui::ClientHandle cbhdl, ADDON_ACTION actionId)
   /// {
   ///   ...
   ///   return true;
@@ -862,9 +862,7 @@ public:
                                bool (*CBOnFocus)(kodi::gui::ClientHandle cbhdl, int controlId),
                                bool (*CBOnClick)(kodi::gui::ClientHandle cbhdl, int controlId),
                                bool (*CBOnAction)(kodi::gui::ClientHandle cbhdl,
-                                                  ADDON_ACTION actionId,
-                                                  uint32_t buttoncode,
-                                                  wchar_t unicode),
+                                                  ADDON_ACTION actionId),
                                void (*CBGetContextButtons)(kodi::gui::ClientHandle cbhdl,
                                                            int itemNumber,
                                                            gui_context_menu_pair* buttons,
@@ -902,12 +900,9 @@ private:
     return static_cast<CWindow*>(cbhdl)->OnClick(controlId);
   }
 
-  static bool CBOnAction(KODI_GUI_CLIENT_HANDLE cbhdl,
-                         ADDON_ACTION actionId,
-                         uint32_t buttoncode,
-                         wchar_t unicode)
+  static bool CBOnAction(KODI_GUI_CLIENT_HANDLE cbhdl, ADDON_ACTION actionId)
   {
-    return static_cast<CWindow*>(cbhdl)->OnAction(actionId, buttoncode, unicode);
+    return static_cast<CWindow*>(cbhdl)->OnAction(actionId);
   }
 
   static void CBGetContextButtons(KODI_GUI_CLIENT_HANDLE cbhdl,
