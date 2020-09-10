@@ -82,7 +82,6 @@ private:
 
   static int GetDateAsIndex(const CDateTime& datetime);
   static void SetDateFromIndex(CDateTime& datetime, int date);
-  static void SetTimeFromSystemTime(CDateTime& datetime, const KODI::TIME::SystemTime& time);
 
   static int GetWeekdaysFromSetting(const std::shared_ptr<const CSetting>& setting);
 
