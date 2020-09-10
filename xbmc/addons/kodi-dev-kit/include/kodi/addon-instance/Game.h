@@ -10,12 +10,6 @@
 
 #include "../AddonBase.h"
 
-#ifdef BUILD_KODI_ADDON
-#include "XBMC_vkeys.h"
-#else
-#include "input/XBMC_vkeys.h"
-#endif
-
 //==============================================================================
 /// @addtogroup cpp_kodi_addon_game
 ///
