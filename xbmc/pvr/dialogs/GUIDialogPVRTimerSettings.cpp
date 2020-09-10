@@ -636,22 +636,16 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   const std::string& settingId = setting->GetId();
   if (settingId == SETTING_TMR_BEGIN)
   {
-    KODI::TIME::SystemTime timerStartTime;
-    m_startLocalTime.GetAsSystemTime(timerStartTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(timerStartTime, g_localizeStrings.Get(14066)))
+    if (CGUIDialogNumeric::ShowAndGetTime(m_startLocalTime, g_localizeStrings.Get(14066)))
     {
-      SetTimeFromSystemTime(m_startLocalTime, timerStartTime);
       m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
       SetButtonLabels();
     }
   }
   else if (settingId == SETTING_TMR_END)
   {
-    KODI::TIME::SystemTime timerEndTime;
-    m_endLocalTime.GetAsSystemTime(timerEndTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(timerEndTime, g_localizeStrings.Get(14066)))
+    if (CGUIDialogNumeric::ShowAndGetTime(m_endLocalTime, g_localizeStrings.Get(14066)))
     {
-      SetTimeFromSystemTime(m_endLocalTime, timerEndTime);
       m_timerEndTimeStr = m_endLocalTime.GetAsLocalizedTime("", false);
       SetButtonLabels();
     }
@@ -874,14 +868,6 @@ void CGUIDialogPVRTimerSettings::SetDateFromIndex(CDateTime& datetime, int date)
   const CDateTime newDate(static_cast<time_t>(date));
   datetime.SetDateTime(newDate.GetYear(), newDate.GetMonth(), newDate.GetDay(), datetime.GetHour(),
                        datetime.GetMinute(), datetime.GetSecond());
-}
-
-void CGUIDialogPVRTimerSettings::SetTimeFromSystemTime(CDateTime& datetime,
-                                                       const KODI::TIME::SystemTime& time)
-{
-  const CDateTime newTime(time);
-  datetime.SetDateTime(datetime.GetYear(), datetime.GetMonth(), datetime.GetDay(),
-                       newTime.GetHour(), newTime.GetMinute(), newTime.GetSecond());
 }
 
 void CGUIDialogPVRTimerSettings::InitializeTypesList()

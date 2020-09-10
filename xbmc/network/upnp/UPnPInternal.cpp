@@ -1238,10 +1238,17 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
   // look for date?
   if (entry->m_Description.date.GetLength())
   {
-    KODI::TIME::SystemTime time = {};
-    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &time.year, &time.month, &time.day,
-           &time.hour, &time.minute, &time.second);
-    pItem->m_dateTime = time;
+    unsigned short year;
+    unsigned short month;
+    unsigned short day;
+    unsigned short hour;
+    unsigned short minute;
+    unsigned short second;
+
+    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &year, &month, &day, &hour,
+           &minute, &second);
+
+    pItem->m_dateTime.SetDateTime(year, month, day, hour, minute, second);
   }
 
   // if there is a thumbnail available set it here
