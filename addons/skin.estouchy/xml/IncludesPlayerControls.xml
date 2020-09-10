@@ -84,9 +84,9 @@
 				<control type="progress">
 					<description>Progressbar</description>
 					<posx>0</posx>
-					<posy>40</posy>
+					<posy>34</posy>
 					<width>552</width>
-					<height>12</height>
+					<height>24</height>
 					<info>Player.ProgressCache</info>
 					<midtexture colordiffuse="grey2">white.png</midtexture>
 					<texturebg colordiffuse="grey3">white.png</texturebg>
@@ -94,11 +94,20 @@
 				<control type="progress">
 					<description>Progressbar</description>
 					<posx>0</posx>
-					<posy>40</posy>
+					<posy>34</posy>
 					<width>552</width>
-					<height>12</height>
+					<height>24</height>
 					<info>Player.Progress</info>
 					<texturebg colordiffuse="002C2C2C">white.png</texturebg>
+				</control>
+				<control type="ranges">
+					<description>Chapters</description>
+					<posx>0</posx>
+					<posy>50</posy>
+					<width>552</width>
+					<height>8</height>
+					<info>Player.Chapters</info>
+					<righttexture>white.png</righttexture>
 				</control>
 				<control type="slider" id="87">
 					<description>Seek Slider</description>
