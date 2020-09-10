@@ -13,10 +13,10 @@
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -57,5 +57,5 @@ namespace ADDON
     static int m_iAddonGUILockRef;
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

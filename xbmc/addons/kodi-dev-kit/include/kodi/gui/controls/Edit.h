@@ -20,34 +20,34 @@ namespace gui
 namespace controls
 {
 
-  //============================================================================
-  ///
-  /// \defgroup cpp_kodi_gui_controls_CEdit Control Edit
-  /// \ingroup cpp_kodi_gui
-  /// @brief \cpp_class{ kodi::gui::controls::CEdit }
-  /// **Editable window text control used as an input control for the osd keyboard
-  /// and other input fields**
-  ///
-  /// The edit control  allows a user to  input text in Kodi. You can choose the
-  /// font, size, colour, location and header of the text to be displayed.
-  ///
-  /// It has the header \ref Edit.h "#include <kodi/gui/controls/Edit.h>"
-  /// be included to enjoy it.
-  ///
-  /// Here  you  find  the   needed  skin  part  for  a   \ref skin_Edit_control
-  /// "edit control".
-  ///
-  /// @note The  call of the  control is only possible  from  the  corresponding
-  /// window as its class and identification number is required.
-  ///
+//============================================================================
+///
+/// \defgroup cpp_kodi_gui_controls_CEdit Control Edit
+/// \ingroup cpp_kodi_gui
+/// @brief \cpp_class{ kodi::gui::controls::CEdit }
+/// **Editable window text control used as an input control for the osd keyboard
+/// and other input fields**
+///
+/// The edit control  allows a user to  input text in Kodi. You can choose the
+/// font, size, colour, location and header of the text to be displayed.
+///
+/// It has the header \ref Edit.h "#include <kodi/gui/controls/Edit.h>"
+/// be included to enjoy it.
+///
+/// Here  you  find  the   needed  skin  part  for  a   \ref skin_Edit_control
+/// "edit control".
+///
+/// @note The  call of the  control is only possible  from  the  corresponding
+/// window as its class and identification number is required.
+///
 
-  //============================================================================
-  // see gui/definition.h for use of group "cpp_kodi_gui_controls_CEdit_Defs"
-  ///
-  /// \defgroup cpp_kodi_gui_controls_CEdit_Defs Definitions, structures and enumerators
-  /// \ingroup cpp_kodi_gui_controls_CEdit
-  /// @brief **Library definition values**
-  ///
+//============================================================================
+// see gui/definition.h for use of group "cpp_kodi_gui_controls_CEdit_Defs"
+///
+/// \defgroup cpp_kodi_gui_controls_CEdit_Defs Definitions, structures and enumerators
+/// \ingroup cpp_kodi_gui_controls_CEdit
+/// @brief **Library definition values**
+///
 
 } /* namespace controls */
 } /* namespace gui */

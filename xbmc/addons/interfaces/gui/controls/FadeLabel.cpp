@@ -14,14 +14,14 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIControlFadeLabel::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_fade_label = static_cast<AddonToKodiFuncTable_kodi_gui_control_fade_label*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_fade_label)));
+  addonInterface->toKodi->kodi_gui->control_fade_label =
+      static_cast<AddonToKodiFuncTable_kodi_gui_control_fade_label*>(
+          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_fade_label)));
 
   addonInterface->toKodi->kodi_gui->control_fade_label->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_fade_label->add_label = add_label;
@@ -43,8 +43,10 @@ void Interface_GUIControlFadeLabel::set_visible(KODI_HANDLE kodiBase,
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -59,8 +61,11 @@ void Interface_GUIControlFadeLabel::add_label(KODI_HANDLE kodiBase,
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control || !label)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}', label='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(label),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -75,8 +80,10 @@ char* Interface_GUIControlFadeLabel::get_label(KODI_HANDLE kodiBase, KODI_GUI_CO
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -94,8 +101,10 @@ void Interface_GUIControlFadeLabel::set_scrolling(KODI_HANDLE kodiBase,
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -108,8 +117,10 @@ void Interface_GUIControlFadeLabel::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -118,4 +129,3 @@ void Interface_GUIControlFadeLabel::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

@@ -20,10 +20,10 @@ typedef std::vector<CMediaSource> VECSOURCES;
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -107,8 +107,10 @@ namespace ADDON
     //@}
 
   private:
-    static void GetVECShares(VECSOURCES& vecShares, const std::string& strShares, const std::string& strPath);
+    static void GetVECShares(VECSOURCES& vecShares,
+                             const std::string& strShares,
+                             const std::string& strPath);
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

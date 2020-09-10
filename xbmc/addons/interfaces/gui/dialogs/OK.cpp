@@ -16,17 +16,18 @@
 
 using namespace KODI::MESSAGING;
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIDialogOK::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->dialogOK = static_cast<AddonToKodiFuncTable_kodi_gui_dialogOK*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogOK)));
+  addonInterface->toKodi->kodi_gui->dialogOK = static_cast<AddonToKodiFuncTable_kodi_gui_dialogOK*>(
+      malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogOK)));
 
-  addonInterface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text = show_and_get_input_single_text;
-  addonInterface->toKodi->kodi_gui->dialogOK->show_and_get_input_line_text = show_and_get_input_line_text;
+  addonInterface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text =
+      show_and_get_input_single_text;
+  addonInterface->toKodi->kodi_gui->dialogOK->show_and_get_input_line_text =
+      show_and_get_input_line_text;
 }
 
 void Interface_GUIDialogOK::DeInit(AddonGlobalInterface* addonInterface)
@@ -41,9 +42,9 @@ void Interface_GUIDialogOK::show_and_get_input_single_text(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !heading || !text)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIDialogOK:%s - invalid data (addon='%p', heading='%p', text='%p')",
-              __FUNCTION__, kodiBase, heading, text);
+    CLog::Log(
+        LOGERROR, "Interface_GUIDialogOK:{} - invalid data (addon='{}', heading='{}', text='{}')",
+        __func__, kodiBase, static_cast<const void*>(heading), static_cast<const void*>(text));
     return;
   }
 
@@ -60,13 +61,14 @@ void Interface_GUIDialogOK::show_and_get_input_line_text(KODI_HANDLE kodiBase,
   if (!addon || !heading || !line0 || !line1 || !line2)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIDialogOK::%s - invalid data (addon='%p', heading='%p', line0='%p', "
-              "line1='%p', line2='%p')",
-              __FUNCTION__, kodiBase, heading, line0, line1, line2);
+              "Interface_GUIDialogOK::{} - invalid data (addon='{}', heading='{}', line0='{}', "
+              "line1='{}', line2='{}')",
+              __func__, kodiBase, static_cast<const void*>(heading),
+              static_cast<const void*>(line0), static_cast<const void*>(line1),
+              static_cast<const void*>(line2));
     return;
   }
-  HELPERS::ShowOKDialogLines(CVariant{ heading }, CVariant{ line0 }, CVariant{ line1 }, CVariant{ line2 });
+  HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2});
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

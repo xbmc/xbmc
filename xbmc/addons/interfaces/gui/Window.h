@@ -15,11 +15,11 @@
 extern "C"
 {
 
-struct AddonGlobalInterface;
-struct gui_context_menu_pair;
+  struct AddonGlobalInterface;
+  struct gui_context_menu_pair;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
   class CAddonDll;
 
   /*!
@@ -200,14 +200,14 @@ namespace ADDON
 
   class CGUIAddonWindow : public CGUIMediaWindow
   {
-  friend struct Interface_GUIWindow;
+    friend struct Interface_GUIWindow;
 
   public:
     CGUIAddonWindow(int id, const std::string& strXML, ADDON::CAddonDll* addon, bool isMedia);
     ~CGUIAddonWindow() override = default;
 
     bool OnMessage(CGUIMessage& message) override;
-    bool OnAction(const CAction &action) override;
+    bool OnAction(const CAction& action) override;
     void AllocResources(bool forceLoad = false) override;
     void Render() override;
     bool IsMediaWindow() const override { return m_isMedia; }
@@ -225,10 +225,12 @@ namespace ADDON
     void SetContainerProperty(const std::string& key, const std::string& value);
     void SetContainerContent(const std::string& value);
     int GetCurrentContainerControlId();
-    CGUIControl* GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, const std::string& typeName);
+    CGUIControl* GetAddonControl(int controlId,
+                                 CGUIControl::GUICONTROLTYPES type,
+                                 const std::string& typeName);
 
   protected:
-    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     void SetupShares() override;
 
@@ -266,7 +268,7 @@ namespace ADDON
 
     bool IsDialogRunning() const override { return m_bRunning; }
     bool IsDialog() const override { return true; };
-    bool IsModalDialog() const  override { return true; };
+    bool IsModalDialog() const override { return true; };
 
     void Show(bool show = true, bool modal = true);
     void Show_Internal(bool show = true);
@@ -275,5 +277,5 @@ namespace ADDON
     bool m_bRunning;
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

@@ -34,14 +34,13 @@ using namespace KODI::MESSAGING;
 using namespace kodi; // addon-dev-kit namespace
 using namespace kodi::gui; // addon-dev-kit namespace
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->window = static_cast<AddonToKodiFuncTable_kodi_gui_window*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_window)));
+  addonInterface->toKodi->kodi_gui->window = static_cast<AddonToKodiFuncTable_kodi_gui_window*>(
+      malloc(sizeof(AddonToKodiFuncTable_kodi_gui_window)));
 
   /* Window creation functions */
   addonInterface->toKodi->kodi_gui->window->create = create;
@@ -73,7 +72,8 @@ void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
   /* List item functions */
   addonInterface->toKodi->kodi_gui->window->clear_item_list = clear_item_list;
   addonInterface->toKodi->kodi_gui->window->add_list_item = add_list_item;
-  addonInterface->toKodi->kodi_gui->window->remove_list_item_from_position = remove_list_item_from_position;
+  addonInterface->toKodi->kodi_gui->window->remove_list_item_from_position =
+      remove_list_item_from_position;
   addonInterface->toKodi->kodi_gui->window->remove_list_item = remove_list_item;
   addonInterface->toKodi->kodi_gui->window->get_list_item = get_list_item;
   addonInterface->toKodi->kodi_gui->window->set_current_list_position = set_current_list_position;
@@ -95,7 +95,8 @@ void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_gui->window->get_control_progress = get_control_progress;
   addonInterface->toKodi->kodi_gui->window->get_control_radio_button = get_control_radio_button;
   addonInterface->toKodi->kodi_gui->window->get_control_render_addon = get_control_render_addon;
-  addonInterface->toKodi->kodi_gui->window->get_control_settings_slider = get_control_settings_slider;
+  addonInterface->toKodi->kodi_gui->window->get_control_settings_slider =
+      get_control_settings_slider;
   addonInterface->toKodi->kodi_gui->window->get_control_slider = get_control_slider;
   addonInterface->toKodi->kodi_gui->window->get_control_spin = get_control_spin;
   addonInterface->toKodi->kodi_gui->window->get_control_text_box = get_control_text_box;
@@ -119,15 +120,20 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !xml_filename || !default_skin)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (xml_filename='%p', default_skin='%p') on addon '%s'",
-                          __FUNCTION__, xml_filename, default_skin, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (xml_filename='{}', "
+              "default_skin='{}') on addon '{}'",
+              __func__, static_cast<const void*>(xml_filename),
+              static_cast<const void*>(default_skin), addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
   if (as_dialog && is_media)
   {
-    CLog::Log(LOGWARNING, "Interface_GUIWindow::%s: %s/%s - addon tries to create dialog as media window who not allowed, contact Developer '%s' of this addon",
-                __FUNCTION__, CAddonInfo::TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Author().c_str());
+    CLog::Log(LOGWARNING,
+              "Interface_GUIWindow::{}: {}/{} - addon tries to create dialog as media window who "
+              "not allowed, contact Developer '{}' of this addon",
+              __func__, CAddonInfo::TranslateType(addon->Type()), addon->Name(), addon->Author());
   }
 
   RESOLUTION_INFO res;
@@ -165,8 +171,11 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
       strSkinPath = skinInfo->GetSkinPath(xml_filename, &res);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        CLog::Log(LOGERROR, "Interface_GUIWindow::%s: %s/%s - XML File '%s' for Window is missing, contact Developer '%s' of this addon",
-                    __FUNCTION__, CAddonInfo::TranslateType(addon->Type()).c_str(), addon->Name().c_str(), strSkinPath.c_str(), addon->Author().c_str());
+        CLog::Log(LOGERROR,
+                  "Interface_GUIWindow::{}: {}/{} - XML File '{}' for Window is missing, contact "
+                  "Developer '{}' of this addon",
+                  __func__, CAddonInfo::TranslateType(addon->Type()), addon->Name(), strSkinPath,
+                  addon->Author());
         return nullptr;
       }
     }
@@ -176,7 +185,7 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
   if (id < 0)
     return nullptr;
 
-  CGUIWindow *window;
+  CGUIWindow* window;
   if (!as_dialog)
     window = new CGUIAddonWindow(id, strSkinPath, addon, is_media);
   else
@@ -188,8 +197,9 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
 
   if (!CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id))
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - Requested window id '%i' does not exist for addon '%s'",
-                          __FUNCTION__, id, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - Requested window id '{}' does not exist for addon '{}'",
+              __func__, id, addon->ID());
     delete window;
     return nullptr;
   }
@@ -203,19 +213,22 @@ void Interface_GUIWindow::destroy(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE h
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p') on addon '%s'",
-                          __FUNCTION__, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (handle='{}') on addon '{}'",
+              __func__, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
   Interface_GUIGeneral::lock();
-  CGUIWindow *pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->GetID());
+  CGUIWindow* pWindow =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->GetID());
   if (pWindow)
   {
     // first change to an existing window
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == pAddonWindow->GetID() && !g_application.m_bStop)
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == pAddonWindow->GetID() &&
+        !g_application.m_bStop)
     {
-      if(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_oldWindowId))
+      if (CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_oldWindowId))
         CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(pAddonWindow->m_oldWindowId);
       else // old window does not exist anymore, switch to home
         CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
@@ -246,8 +259,10 @@ void Interface_GUIWindow::set_callbacks(
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !clienthandle)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p', clienthandle='%p') on addon '%s'",
-                          __FUNCTION__, handle, clienthandle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (handle='{}', clienthandle='{}') "
+              "on addon '{}'",
+              __func__, handle, clienthandle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -268,8 +283,9 @@ bool Interface_GUIWindow::show(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE hand
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p') on addon '%s'",
-                          __FUNCTION__, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (handle='{}') on addon '{}'",
+              __func__, handle, addon ? addon->ID() : "unknown");
     return false;
   }
 
@@ -293,8 +309,9 @@ bool Interface_GUIWindow::close(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE han
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p') on addon '%s'",
-                          __FUNCTION__, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (handle='{}') on addon '{}'",
+              __func__, handle, addon ? addon->ID() : "unknown");
     return false;
   }
 
@@ -320,8 +337,9 @@ bool Interface_GUIWindow::do_modal(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE 
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p') on addon '%s'",
-                          __FUNCTION__, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (handle='{}') on addon '{}'",
+              __func__, handle, addon ? addon->ID() : "unknown");
     return false;
   }
 
@@ -355,17 +373,17 @@ bool Interface_GUIWindow::set_focus_id(KODI_HANDLE kodiBase,
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return false;
   }
 
   if (!pAddonWindow->GetControl(control_id))
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow - %s: %s - Control does not exist in window",
-              __FUNCTION__, addon->Name().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIWindow - {}: {} - Control does not exist in window", __func__,
+              addon->Name());
     return false;
   }
 
@@ -383,10 +401,10 @@ int Interface_GUIWindow::get_focus_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HAND
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return -1;
   }
 
@@ -395,8 +413,8 @@ int Interface_GUIWindow::get_focus_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HAND
   Interface_GUIGeneral::unlock();
 
   if (control_id == -1)
-    CLog::Log(LOGERROR, "Interface_GUIWindow - %s: %s - No control in this window has focus",
-              __FUNCTION__, addon->Name().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIWindow - {}: {} - No control in this window has focus",
+              __func__, addon->Name());
 
   return control_id;
 }
@@ -411,9 +429,10 @@ void Interface_GUIWindow::set_control_label(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !label)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "label='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "label='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(label),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -434,8 +453,9 @@ void Interface_GUIWindow::set_control_visible(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -455,13 +475,15 @@ void Interface_GUIWindow::set_control_selected(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
   Interface_GUIGeneral::lock();
-  CGUIMessage msg(selected ? GUI_MSG_SET_SELECTED : GUI_MSG_SET_DESELECTED, pAddonWindow->m_windowId, control_id);
+  CGUIMessage msg(selected ? GUI_MSG_SET_SELECTED : GUI_MSG_SET_DESELECTED,
+                  pAddonWindow->m_windowId, control_id);
   pAddonWindow->OnMessage(msg);
   Interface_GUIGeneral::unlock();
 }
@@ -481,9 +503,10 @@ void Interface_GUIWindow::set_property(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key || !value)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p', value='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, value, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}', value='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              static_cast<const void*>(value), addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -505,9 +528,10 @@ void Interface_GUIWindow::set_property_int(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -529,9 +553,10 @@ void Interface_GUIWindow::set_property_bool(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -553,9 +578,10 @@ void Interface_GUIWindow::set_property_double(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -576,9 +602,10 @@ char* Interface_GUIWindow::get_property(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -601,9 +628,10 @@ int Interface_GUIWindow::get_property_int(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return -1;
   }
 
@@ -626,9 +654,10 @@ bool Interface_GUIWindow::get_property_bool(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return false;
   }
 
@@ -651,9 +680,10 @@ double Interface_GUIWindow::get_property_double(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return 0.0;
   }
 
@@ -673,10 +703,10 @@ void Interface_GUIWindow::clear_properties(KODI_HANDLE kodiBase, KODI_GUI_WINDOW
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -694,9 +724,10 @@ void Interface_GUIWindow::clear_property(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -719,10 +750,10 @@ void Interface_GUIWindow::clear_item_list(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -741,17 +772,17 @@ void Interface_GUIWindow::add_list_item(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !item)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "item='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, item, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "item='{}') on addon '{}'",
+              __func__, kodiBase, handle, item, addon ? addon->ID() : "unknown");
     return;
   }
 
   CFileItemPtr* pItem(static_cast<CFileItemPtr*>(item));
   if (pItem->get() == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - empty list item called on addon '%s'",
-              __FUNCTION__, addon->ID().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIWindow::{} - empty list item called on addon '{}'", __func__,
+              addon->ID());
     return;
   }
 
@@ -768,10 +799,10 @@ void Interface_GUIWindow::remove_list_item_from_position(KODI_HANDLE kodiBase,
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -789,17 +820,17 @@ void Interface_GUIWindow::remove_list_item(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !item)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "item='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, item, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "item='{}') on addon '{}'",
+              __func__, kodiBase, handle, item, addon ? addon->ID() : "unknown");
     return;
   }
 
   CFileItemPtr* pItem(static_cast<CFileItemPtr*>(item));
   if (pItem->get() == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - empty list item called on addon '%s'",
-              __FUNCTION__, addon->ID().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIWindow::{} - empty list item called on addon '{}'", __func__,
+              addon->ID());
     return;
   }
 
@@ -816,8 +847,10 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIWindow::get_list_item(KODI_HANDLE kodiBase
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -825,7 +858,8 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIWindow::get_list_item(KODI_HANDLE kodiBase
   CFileItemPtr* pItem(pAddonWindow->GetListItem(list_position));
   if (pItem == nullptr || pItem->get() == nullptr)
   {
-    CLog::Log(LOGERROR, "ADDON::Interface_GUIWindow - %s: %s - Index out of range", __FUNCTION__, addon->Name().c_str());
+    CLog::Log(LOGERROR, "ADDON::Interface_GUIWindow - {}: {} - Index out of range", __func__,
+              addon->Name());
 
     if (pItem)
     {
@@ -846,10 +880,10 @@ void Interface_GUIWindow::set_current_list_position(KODI_HANDLE kodiBase,
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -865,10 +899,10 @@ int Interface_GUIWindow::get_current_list_position(KODI_HANDLE kodiBase,
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return -1;
   }
 
@@ -885,10 +919,10 @@ int Interface_GUIWindow::get_list_size(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HAN
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return -1;
   }
 
@@ -909,9 +943,10 @@ void Interface_GUIWindow::set_container_property(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !key || !value)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "key='%p', value='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, key, value, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "key='{}', value='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(key),
+              static_cast<const void*>(value), addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -929,9 +964,10 @@ void Interface_GUIWindow::set_container_content(KODI_HANDLE kodiBase,
   if (!addon || !pAddonWindow || !value)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', "
-              "value='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, value, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}', "
+              "value='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(value),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -947,10 +983,10 @@ int Interface_GUIWindow::get_current_container_id(KODI_HANDLE kodiBase,
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return -1;
   }
 
@@ -972,10 +1008,10 @@ void Interface_GUIWindow::mark_dirty_region(KODI_HANDLE kodiBase, KODI_GUI_WINDO
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -993,87 +1029,96 @@ KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_button(KODI_HANDLE kodi
                                                                 KODI_GUI_WINDOW_HANDLE handle,
                                                                 int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_BUTTON, "button");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_BUTTON,
+                    "button");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_edit(KODI_HANDLE kodiBase,
                                                               KODI_GUI_WINDOW_HANDLE handle,
                                                               int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_EDIT, "edit");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_EDIT, "edit");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_fade_label(KODI_HANDLE kodiBase,
                                                                     KODI_GUI_WINDOW_HANDLE handle,
                                                                     int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_FADELABEL, "fade label");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_FADELABEL,
+                    "fade label");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_image(KODI_HANDLE kodiBase,
                                                                KODI_GUI_WINDOW_HANDLE handle,
                                                                int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_IMAGE, "image");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_IMAGE, "image");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_label(KODI_HANDLE kodiBase,
                                                                KODI_GUI_WINDOW_HANDLE handle,
                                                                int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_LABEL, "label");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_LABEL, "label");
 }
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_progress(KODI_HANDLE kodiBase,
                                                                   KODI_GUI_WINDOW_HANDLE handle,
                                                                   int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_PROGRESS, "progress");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_PROGRESS,
+                    "progress");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_radio_button(KODI_HANDLE kodiBase,
                                                                       KODI_GUI_WINDOW_HANDLE handle,
                                                                       int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_RADIO, "radio button");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_RADIO,
+                    "radio button");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_render_addon(KODI_HANDLE kodiBase,
                                                                       KODI_GUI_WINDOW_HANDLE handle,
                                                                       int control_id)
 {
-  CGUIControl* pGUIControl = static_cast<CGUIControl*>(GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_RENDERADDON, "renderaddon"));
+  CGUIControl* pGUIControl = static_cast<CGUIControl*>(GetControl(
+      kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_RENDERADDON, "renderaddon"));
   if (!pGUIControl)
     return nullptr;
 
-  CGUIAddonRenderingControl *pRenderControl = new CGUIAddonRenderingControl(dynamic_cast<CGUIRenderingControl*>(pGUIControl));
+  CGUIAddonRenderingControl* pRenderControl =
+      new CGUIAddonRenderingControl(dynamic_cast<CGUIRenderingControl*>(pGUIControl));
   return pRenderControl;
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_settings_slider(
     KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle, int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SETTINGS_SLIDER, "settings slider");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_SETTINGS_SLIDER,
+                    "settings slider");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_slider(KODI_HANDLE kodiBase,
                                                                 KODI_GUI_WINDOW_HANDLE handle,
                                                                 int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SLIDER, "slider");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_SLIDER,
+                    "slider");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_spin(KODI_HANDLE kodiBase,
                                                               KODI_GUI_WINDOW_HANDLE handle,
                                                               int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SPINEX, "spin");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_SPINEX, "spin");
 }
 
 KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_text_box(KODI_HANDLE kodiBase,
                                                                   KODI_GUI_WINDOW_HANDLE handle,
                                                                   int control_id)
 {
-  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_TEXTBOX, "textbox");
+  return GetControl(kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_TEXTBOX,
+                    "textbox");
 }
 //@}
 
@@ -1088,10 +1133,10 @@ KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::GetControl(KODI_HANDLE kodiBase,
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-        function, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - invalid handler data (kodiBase='{}', handle='{}') on "
+              "addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -1106,14 +1151,17 @@ int Interface_GUIWindow::GetNextAvailableWindowId()
   if (CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_ADDON_END))
   {
     Interface_GUIGeneral::unlock();
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - Maximum number of windows for binary addons reached", __FUNCTION__);
+    CLog::Log(LOGERROR,
+              "Interface_GUIWindow::{} - Maximum number of windows for binary addons reached",
+              __func__);
     return -1;
   }
 
   // window id's WINDOW_ADDON_START - WINDOW_ADDON_END are reserved for addons
   // get first window id that is not in use
   int id = WINDOW_ADDON_START;
-  while (id < WINDOW_ADDON_END && CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id) != nullptr)
+  while (id < WINDOW_ADDON_END &&
+         CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id) != nullptr)
     id++;
 
   Interface_GUIGeneral::unlock();
@@ -1121,40 +1169,40 @@ int Interface_GUIWindow::GetNextAvailableWindowId()
 }
 
 CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddonDll* addon, bool isMedia)
- : CGUIMediaWindow(id, strXML.c_str()),
-   m_clientHandle{nullptr},
-   CBOnInit{nullptr},
-   CBOnFocus{nullptr},
-   CBOnClick{nullptr},
-   CBOnAction{nullptr},
-   CBGetContextButtons{nullptr},
-   CBOnContextButton{nullptr},
-   m_windowId(id),
-   m_oldWindowId(0),
-   m_actionEvent(true),
-   m_addon(addon),
-   m_isMedia(isMedia)
+  : CGUIMediaWindow(id, strXML.c_str()),
+    m_clientHandle{nullptr},
+    CBOnInit{nullptr},
+    CBOnFocus{nullptr},
+    CBOnClick{nullptr},
+    CBOnAction{nullptr},
+    CBGetContextButtons{nullptr},
+    CBOnContextButton{nullptr},
+    m_windowId(id),
+    m_oldWindowId(0),
+    m_actionEvent(true),
+    m_addon(addon),
+    m_isMedia(isMedia)
 {
   m_loadType = LOAD_ON_GUI_INIT;
 }
 
-CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, const std::string& typeName)
+CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId,
+                                              CGUIControl::GUICONTROLTYPES type,
+                                              const std::string& typeName)
 {
   CGUIControl* pGUIControl = GetControl(controlId);
   if (!pGUIControl)
   {
-    CLog::Log(LOGERROR, "CGUIAddonGUI_Window::%s: %s - Requested GUI control Id '%i' for '%s' not present!",
-                __FUNCTION__,
-                m_addon->Name().c_str(),
-                controlId, typeName.c_str());
+    CLog::Log(LOGERROR,
+              "CGUIAddonGUI_Window::{}: {} - Requested GUI control Id '{}' for '{}' not present!",
+              __func__, m_addon->Name(), controlId, typeName);
     return nullptr;
   }
   else if (pGUIControl->GetControlType() != type)
   {
-    CLog::Log(LOGERROR, "CGUIAddonGUI_Window::%s: %s - Requested GUI control Id '%i' not the type '%s'!",
-                __FUNCTION__,
-                m_addon->Name().c_str(),
-                controlId, typeName.c_str());
+    CLog::Log(LOGERROR,
+              "CGUIAddonGUI_Window::{}: {} - Requested GUI control Id '{}' not the type '{}'!",
+              __func__, m_addon->Name(), controlId, typeName);
     return nullptr;
   }
 
@@ -1164,7 +1212,8 @@ CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId, CGUIControl::GUICON
 bool CGUIAddonWindow::OnAction(const CAction& action)
 {
   // Let addon decide whether it wants to handle action first
-  if (CBOnAction && CBOnAction(m_clientHandle, action.GetID(), action.GetButtonCode(), action.GetUnicode()))
+  if (CBOnAction &&
+      CBOnAction(m_clientHandle, action.GetID(), action.GetButtonCode(), action.GetUnicode()))
     return true;
 
   return CGUIWindow::OnAction(action);
@@ -1208,7 +1257,8 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
     case GUI_MSG_NOTIFY_ALL:
     {
       // most messages from GUI_MSG_NOTIFY_ALL break container content, whitelist working ones.
-      if (message.GetParam1() == GUI_MSG_PAGE_CHANGE || message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+      if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
+          message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         return CGUIMediaWindow::OnMessage(message);
       return true;
     }
@@ -1226,13 +1276,14 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
         {
           if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM ||
                                                  message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) ||
-                                                 !controlClicked->IsContainer())
+              !controlClicked->IsContainer())
           {
             if (CBOnClick)
               return CBOnClick(m_clientHandle, iControl);
           }
-          else if (controlClicked->IsContainer() && (message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK ||
-                                                     message.GetParam1() == ACTION_CONTEXT_MENU))
+          else if (controlClicked->IsContainer() &&
+                   (message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK ||
+                    message.GetParam1() == ACTION_CONTEXT_MENU))
           {
             if (CBOnAction)
             {
@@ -1277,7 +1328,7 @@ void CGUIAddonWindow::AddItem(CFileItemPtr* fileItem, int itemPosition)
   {
     m_vecItems->Add(*fileItem);
   }
-  else if (itemPosition <  -1 && !(itemPosition-1 < m_vecItems->Size()))
+  else if (itemPosition < -1 && !(itemPosition - 1 < m_vecItems->Size()))
   {
     m_vecItems->AddFront(*fileItem, 0);
   }
@@ -1385,8 +1436,7 @@ void CGUIAddonWindow::SetupShares()
 
 
 CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, const std::string& strXML, CAddonDll* addon)
-  : CGUIAddonWindow(id, strXML, addon, false),
-    m_bRunning(false)
+  : CGUIAddonWindow(id, strXML, addon, false), m_bRunning(false)
 {
 }
 
@@ -1395,11 +1445,13 @@ void CGUIAddonWindowDialog::Show(bool show /* = true */, bool modal /* = true*/)
   if (modal)
   {
     unsigned int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
+                                                 static_cast<void*>(this));
     CServiceBroker::GetWinSystem()->GetGfxContext().restore(count);
   }
   else
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
+                                                 static_cast<void*>(this));
 }
 
 void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
@@ -1434,4 +1486,3 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

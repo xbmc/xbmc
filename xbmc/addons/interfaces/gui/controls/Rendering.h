@@ -16,10 +16,10 @@ class CGUIRenderingControl;
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   class CAddonDll;
 
@@ -61,12 +61,13 @@ namespace ADDON
 
   class CGUIAddonRenderingControl : public IRenderingCallback
   {
-  friend struct Interface_GUIControlAddonRendering;
+    friend struct Interface_GUIControlAddonRendering;
+
   public:
-    explicit CGUIAddonRenderingControl(CGUIRenderingControl *pControl);
+    explicit CGUIAddonRenderingControl(CGUIRenderingControl* pControl);
     ~CGUIAddonRenderingControl() override = default;
 
-    bool Create(int x, int y, int w, int h, void *device) override;
+    bool Create(int x, int y, int w, int h, void* device) override;
     void Render() override;
     void Stop() override;
     bool IsDirty() override;
@@ -84,5 +85,5 @@ namespace ADDON
     int m_refCount;
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

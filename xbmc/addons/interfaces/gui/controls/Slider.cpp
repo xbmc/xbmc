@@ -16,14 +16,14 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIControlSlider::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_slider = static_cast<AddonToKodiFuncTable_kodi_gui_control_slider*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_slider)));
+  addonInterface->toKodi->kodi_gui->control_slider =
+      static_cast<AddonToKodiFuncTable_kodi_gui_control_slider*>(
+          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_slider)));
 
   addonInterface->toKodi->kodi_gui->control_slider->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_slider->set_enabled = set_enabled;
@@ -58,8 +58,10 @@ void Interface_GUIControlSlider::set_visible(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -74,8 +76,10 @@ void Interface_GUIControlSlider::set_enabled(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -88,8 +92,10 @@ void Interface_GUIControlSlider::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HA
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -104,8 +110,10 @@ char* Interface_GUIControlSlider::get_description(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -121,8 +129,10 @@ void Interface_GUIControlSlider::set_int_range(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -138,8 +148,10 @@ void Interface_GUIControlSlider::set_int_value(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -153,8 +165,10 @@ int Interface_GUIControlSlider::get_int_value(KODI_HANDLE kodiBase, KODI_GUI_CON
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return -1;
   }
 
@@ -169,8 +183,10 @@ void Interface_GUIControlSlider::set_int_interval(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -185,8 +201,10 @@ void Interface_GUIControlSlider::set_percentage(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -201,8 +219,10 @@ float Interface_GUIControlSlider::get_percentage(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return 0.0f;
   }
 
@@ -218,8 +238,10 @@ void Interface_GUIControlSlider::set_float_range(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -235,8 +257,10 @@ void Interface_GUIControlSlider::set_float_value(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -251,8 +275,10 @@ float Interface_GUIControlSlider::get_float_value(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return 0.0f;
   }
 
@@ -267,8 +293,10 @@ void Interface_GUIControlSlider::set_float_interval(KODI_HANDLE kodiBase,
   CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlSlider::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlSlider::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -276,4 +304,3 @@ void Interface_GUIControlSlider::set_float_interval(KODI_HANDLE kodiBase,
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

@@ -16,16 +16,16 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIDialogExtendedProgress::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->dialogExtendedProgress = static_cast<AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress)));
+  addonInterface->toKodi->kodi_gui->dialogExtendedProgress =
+      static_cast<AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress*>(
+          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress)));
 
-  addonInterface->toKodi->kodi_gui->dialogExtendedProgress->new_dialog  = new_dialog;
+  addonInterface->toKodi->kodi_gui->dialogExtendedProgress->new_dialog = new_dialog;
   addonInterface->toKodi->kodi_gui->dialogExtendedProgress->delete_dialog = delete_dialog;
   addonInterface->toKodi->kodi_gui->dialogExtendedProgress->get_title = get_title;
   addonInterface->toKodi->kodi_gui->dialogExtendedProgress->set_title = set_title;
@@ -49,18 +49,21 @@ KODI_GUI_HANDLE Interface_GUIDialogExtendedProgress::new_dialog(KODI_HANDLE kodi
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return nullptr;
   }
 
   // setup the progress dialog
-  CGUIDialogExtendedProgressBar* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogExtendedProgressBar* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
+          WINDOW_DIALOG_EXT_PROGRESS);
   if (!title || !dialog)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIDialogExtendedProgress::%s - invalid handler data (title='%p', "
-              "dialog='%p') on addon '%s'",
-              __FUNCTION__, title, static_cast<void*>(dialog), addon->ID().c_str());
+              "Interface_GUIDialogExtendedProgress::{} - invalid handler data (title='{}', "
+              "dialog='{}') on addon '{}'",
+              __func__, static_cast<const void*>(title), static_cast<void*>(dialog), addon->ID());
     return nullptr;
   }
 
@@ -74,13 +77,17 @@ void Interface_GUIDialogExtendedProgress::delete_dialog(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return;
   }
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p') on addon '%s'", __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid handler data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return;
   }
 
@@ -92,16 +99,17 @@ char* Interface_GUIDialogExtendedProgress::get_title(KODI_HANDLE kodiBase, KODI_
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return nullptr;
   }
 
   if (!handle)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p') on "
-              "addon '%s'",
-              __FUNCTION__, handle, addon->ID().c_str());
+              "Interface_GUIDialogExtendedProgress::{} - invalid handler data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return nullptr;
   }
 
@@ -115,16 +123,17 @@ void Interface_GUIDialogExtendedProgress::set_title(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return;
   }
 
   if (!handle || !title)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p', "
-              "title='%p') on addon '%s'",
-              __FUNCTION__, handle, title, addon->ID().c_str());
+              "Interface_GUIDialogExtendedProgress::{} - invalid handler data (handle='{}', "
+              "title='{}') on addon '{}'",
+              __func__, handle, static_cast<const void*>(title), addon->ID());
     return;
   }
 
@@ -136,16 +145,17 @@ char* Interface_GUIDialogExtendedProgress::get_text(KODI_HANDLE kodiBase, KODI_G
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return nullptr;
   }
 
   if (!handle)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIDialogExtendedProgress::%s - invalid add-on data (handle='%p') on addon '%s'",
-        __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid add-on data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return nullptr;
   }
 
@@ -159,16 +169,17 @@ void Interface_GUIDialogExtendedProgress::set_text(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return;
   }
 
   if (!handle || !text)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p', "
-              "text='%p') on addon '%s'",
-              __FUNCTION__, handle, text, addon->ID().c_str());
+              "Interface_GUIDialogExtendedProgress::{} - invalid handler data (handle='{}', "
+              "text='{}') on addon '{}'",
+              __func__, handle, static_cast<const void*>(text), addon->ID());
     return;
   }
 
@@ -180,16 +191,17 @@ bool Interface_GUIDialogExtendedProgress::is_finished(KODI_HANDLE kodiBase, KODI
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return false;
   }
 
   if (!handle)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIDialogExtendedProgress::%s - invalid add-on data (handle='%p') on addon '%s'",
-        __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid add-on data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return false;
   }
 
@@ -202,16 +214,17 @@ void Interface_GUIDialogExtendedProgress::mark_finished(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return;
   }
 
   if (!handle)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIDialogExtendedProgress::%s - invalid add-on data (handle='%p') on addon '%s'",
-        __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid add-on data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return;
   }
 
@@ -224,16 +237,17 @@ float Interface_GUIDialogExtendedProgress::get_percentage(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return 0.0f;
   }
 
   if (!handle)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIDialogExtendedProgress::%s - invalid add-on data (handle='%p') on addon '%s'",
-        __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid add-on data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return 0.0f;
   }
 
@@ -247,16 +261,17 @@ void Interface_GUIDialogExtendedProgress::set_percentage(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return;
   }
 
   if (!handle)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIDialogExtendedProgress::%s - invalid add-on data (handle='%p') on addon '%s'",
-        __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid add-on data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return;
   }
 
@@ -271,16 +286,17 @@ void Interface_GUIDialogExtendedProgress::set_progress(KODI_HANDLE kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid kodi base data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
+              __func__);
     return;
   }
 
   if (!handle)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_GUIDialogExtendedProgress::%s - invalid add-on data (handle='%p') on addon '%s'",
-        __FUNCTION__, handle, addon->ID().c_str());
+    CLog::Log(LOGERROR,
+              "Interface_GUIDialogExtendedProgress::{} - invalid add-on data (handle='{}') on "
+              "addon '{}'",
+              __func__, handle, addon->ID());
     return;
   }
 
@@ -288,4 +304,3 @@ void Interface_GUIDialogExtendedProgress::set_progress(KODI_HANDLE kodiBase,
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

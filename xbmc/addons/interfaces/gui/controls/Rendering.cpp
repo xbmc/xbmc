@@ -14,14 +14,14 @@
 #include "guilib/GUIRenderingControl.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIControlAddonRendering::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_rendering = static_cast<AddonToKodiFuncTable_kodi_gui_control_rendering*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_rendering)));
+  addonInterface->toKodi->kodi_gui->control_rendering =
+      static_cast<AddonToKodiFuncTable_kodi_gui_control_rendering*>(
+          malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_rendering)));
 
   addonInterface->toKodi->kodi_gui->control_rendering->set_callbacks = set_callbacks;
   addonInterface->toKodi->kodi_gui->control_rendering->destroy = destroy;
@@ -46,9 +46,9 @@ void Interface_GUIControlAddonRendering::set_callbacks(
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', "
-              "handle='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIControlAddonRendering::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -72,9 +72,9 @@ void Interface_GUIControlAddonRendering::destroy(KODI_HANDLE kodiBase,
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', "
-              "handle='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIControlAddonRendering::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -84,7 +84,7 @@ void Interface_GUIControlAddonRendering::destroy(KODI_HANDLE kodiBase,
 }
 
 
-CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *control)
+CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl* control)
   : CBCreate{nullptr},
     CBRender{nullptr},
     CBStop{nullptr},
@@ -96,7 +96,7 @@ CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *contr
 {
 }
 
-bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)
+bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void* device)
 {
   if (CBCreate)
   {
@@ -147,4 +147,3 @@ bool CGUIAddonRenderingControl::IsDirty()
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

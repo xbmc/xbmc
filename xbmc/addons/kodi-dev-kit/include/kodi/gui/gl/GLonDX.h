@@ -10,16 +10,16 @@
 
 #ifdef __cplusplus
 
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 #include <angle_gl.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
 #include <kodi/AddonBase.h>
 #include <kodi/gui/General.h>
 #include <wrl/client.h>
 
-#pragma comment( lib, "d3dcompiler.lib" )
+#pragma comment(lib, "d3dcompiler.lib")
 #ifndef GL_CLIENT_VERSION
 #define GL_CLIENT_VERSION 3
 #endif
@@ -34,33 +34,41 @@ namespace gl
 class ATTRIBUTE_HIDDEN CGLonDX : public kodi::gui::IRenderHelper
 {
 public:
-  explicit CGLonDX() : m_pContext(reinterpret_cast<ID3D11DeviceContext*>(kodi::gui::GetHWContext())) {}
+  explicit CGLonDX() : m_pContext(reinterpret_cast<ID3D11DeviceContext*>(kodi::gui::GetHWContext()))
+  {
+  }
   ~CGLonDX() override { destruct(); }
 
   bool Init() override
   {
-    EGLint egl_display_attrs[] =
-    {
-      EGL_PLATFORM_ANGLE_TYPE_ANGLE, EGL_PLATFORM_ANGLE_TYPE_D3D11_ANGLE,
-      EGL_PLATFORM_ANGLE_MAX_VERSION_MAJOR_ANGLE, EGL_DONT_CARE,
-      EGL_PLATFORM_ANGLE_MAX_VERSION_MAJOR_ANGLE, EGL_DONT_CARE,
-      EGL_EXPERIMENTAL_PRESENT_PATH_ANGLE, EGL_EXPERIMENTAL_PRESENT_PATH_FAST_ANGLE,
-      EGL_NONE
-    };
-    EGLint egl_config_attrs[] =
-    {
-      EGL_RED_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_ALPHA_SIZE, 8,
-      EGL_BIND_TO_TEXTURE_RGBA, EGL_TRUE,
-      EGL_RENDERABLE_TYPE, GL_CLIENT_VERSION == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT,
-      EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
-      EGL_NONE
-    };
-    EGLint egl_context_attrs[] =
-    {
-      EGL_CONTEXT_CLIENT_VERSION, GL_CLIENT_VERSION, EGL_NONE
-    };
+    EGLint egl_display_attrs[] = {EGL_PLATFORM_ANGLE_TYPE_ANGLE,
+                                  EGL_PLATFORM_ANGLE_TYPE_D3D11_ANGLE,
+                                  EGL_PLATFORM_ANGLE_MAX_VERSION_MAJOR_ANGLE,
+                                  EGL_DONT_CARE,
+                                  EGL_PLATFORM_ANGLE_MAX_VERSION_MAJOR_ANGLE,
+                                  EGL_DONT_CARE,
+                                  EGL_EXPERIMENTAL_PRESENT_PATH_ANGLE,
+                                  EGL_EXPERIMENTAL_PRESENT_PATH_FAST_ANGLE,
+                                  EGL_NONE};
+    EGLint egl_config_attrs[] = {EGL_RED_SIZE,
+                                 8,
+                                 EGL_GREEN_SIZE,
+                                 8,
+                                 EGL_BLUE_SIZE,
+                                 8,
+                                 EGL_ALPHA_SIZE,
+                                 8,
+                                 EGL_BIND_TO_TEXTURE_RGBA,
+                                 EGL_TRUE,
+                                 EGL_RENDERABLE_TYPE,
+                                 GL_CLIENT_VERSION == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT,
+                                 EGL_SURFACE_TYPE,
+                                 EGL_PBUFFER_BIT,
+                                 EGL_NONE};
+    EGLint egl_context_attrs[] = {EGL_CONTEXT_CLIENT_VERSION, GL_CLIENT_VERSION, EGL_NONE};
 
-    m_eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE, EGL_DEFAULT_DISPLAY, egl_display_attrs);
+    m_eglDisplay =
+        eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE, EGL_DEFAULT_DISPLAY, egl_display_attrs);
     if (m_eglDisplay == EGL_NO_DISPLAY)
     {
       Log(ADDON_LOG_ERROR, "GLonDX: unable to get EGL display (%s)", eglGetErrorString());
@@ -74,7 +82,8 @@ public:
     }
 
     EGLint numConfigs = 0;
-    if (eglChooseConfig(m_eglDisplay, egl_config_attrs, &m_eglConfig, 1, &numConfigs) != EGL_TRUE || numConfigs == 0)
+    if (eglChooseConfig(m_eglDisplay, egl_config_attrs, &m_eglConfig, 1, &numConfigs) != EGL_TRUE ||
+        numConfigs == 0)
     {
       Log(ADDON_LOG_ERROR, "GLonDX: unable to get EGL config (%s)", eglGetErrorString());
       return false;
@@ -167,7 +176,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11Resource> pRTResource;
     Microsoft::WRL::ComPtr<ID3D11Texture2D> pRTTexture;
     Microsoft::WRL::ComPtr<ID3D11Texture2D> pOffScreenTexture;
-    Microsoft::WRL::ComPtr<IDXGIResource>  dxgiResource;
+    Microsoft::WRL::ComPtr<IDXGIResource> dxgiResource;
 
     m_pContext->GetDevice(&pDevice);
     m_pContext->OMGetRenderTargets(1, &pRTView, nullptr);
@@ -189,7 +198,8 @@ private:
       return false;
     }
 
-    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(pOffScreenTexture.Get(), D3D11_SRV_DIMENSION_TEXTURE2D);
+    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(pOffScreenTexture.Get(),
+                                             D3D11_SRV_DIMENSION_TEXTURE2D);
     if (FAILED(pDevice->CreateShaderResourceView(pOffScreenTexture.Get(), &srvDesc, &m_pSRView)))
     {
       Log(ADDON_LOG_ERROR, "GLonDX: unable to create shader view");
@@ -217,18 +227,19 @@ private:
     }
 
     // create EGL buffer from D3D shared texture
-    EGLint egl_buffer_attrs[] =
-    {
-      EGL_WIDTH, static_cast<EGLint>(texDesc.Width),
-      EGL_HEIGHT, static_cast<EGLint>(texDesc.Height),
-      EGL_TEXTURE_TARGET, EGL_TEXTURE_2D,
-      EGL_TEXTURE_FORMAT, EGL_TEXTURE_RGBA,
-      EGL_NONE
-    };
+    EGLint egl_buffer_attrs[] = {EGL_WIDTH,
+                                 static_cast<EGLint>(texDesc.Width),
+                                 EGL_HEIGHT,
+                                 static_cast<EGLint>(texDesc.Height),
+                                 EGL_TEXTURE_TARGET,
+                                 EGL_TEXTURE_2D,
+                                 EGL_TEXTURE_FORMAT,
+                                 EGL_TEXTURE_RGBA,
+                                 EGL_NONE};
 
-    m_eglBuffer = eglCreatePbufferFromClientBuffer(m_eglDisplay,
-      EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE,
-      sharedHandle, m_eglConfig, egl_buffer_attrs);
+    m_eglBuffer =
+        eglCreatePbufferFromClientBuffer(m_eglDisplay, EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE,
+                                         sharedHandle, m_eglConfig, egl_buffer_attrs);
 
     if (m_eglBuffer == EGL_NO_SURFACE)
     {
@@ -238,13 +249,15 @@ private:
     return true;
   }
 
-  HRESULT d3dCreateShader(ShaderType shaderType, const std::string& source, IUnknown** ppShader) const
+  HRESULT d3dCreateShader(ShaderType shaderType,
+                          const std::string& source,
+                          IUnknown** ppShader) const
   {
     Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
     Microsoft::WRL::ComPtr<ID3DBlob> pErrors;
 
     auto hr = D3DCompile(source.c_str(), source.length(), nullptr, nullptr, nullptr, "main",
-      shaderType == PIXEL_SHADER ? "ps_4_0" : "vs_4_0", 0, 0, &pBlob, &pErrors);
+                         shaderType == PIXEL_SHADER ? "ps_4_0" : "vs_4_0", 0, 0, &pBlob, &pErrors);
 
     if (SUCCEEDED(hr))
     {
@@ -254,18 +267,18 @@ private:
       if (shaderType == PIXEL_SHADER)
       {
         hr = pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr,
-          reinterpret_cast<ID3D11PixelShader**>(ppShader));
+                                        reinterpret_cast<ID3D11PixelShader**>(ppShader));
       }
       else
       {
         hr = pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr,
-          reinterpret_cast<ID3D11VertexShader**>(ppShader));
+                                         reinterpret_cast<ID3D11VertexShader**>(ppShader));
       }
 
       if (FAILED(hr))
       {
         Log(ADDON_LOG_ERROR, "GLonDX: unable to create %s shader",
-          shaderType == PIXEL_SHADER ? "pixel" : "vertex");
+            shaderType == PIXEL_SHADER ? "pixel" : "vertex");
       }
     }
     else
@@ -277,7 +290,9 @@ private:
 
   static const char* eglGetErrorString()
   {
-#define CASE_STR( value ) case value: return #value
+#define CASE_STR(value) \
+  case value: \
+    return #value
     switch (eglGetError())
     {
       CASE_STR(EGL_SUCCESS);
@@ -295,8 +310,8 @@ private:
       CASE_STR(EGL_BAD_NATIVE_PIXMAP);
       CASE_STR(EGL_BAD_NATIVE_WINDOW);
       CASE_STR(EGL_CONTEXT_LOST);
-    default:
-      return "Unknown";
+      default:
+        return "Unknown";
     }
 #undef CASE_STR
   }
@@ -340,9 +355,10 @@ private:
   Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPShader = nullptr;
 
 #define TO_STRING(...) #__VA_ARGS__
-  std::string vs_out_shader_text = TO_STRING(
-  void main(uint id : SV_VertexId, out float2 tex : TEXCOORD0, out float4 pos : SV_POSITION)
-  {
+  std::string vs_out_shader_text = TO_STRING(void main(uint id
+                                                       : SV_VertexId, out float2 tex
+                                                       : TEXCOORD0, out float4 pos
+                                                       : SV_POSITION) {
     tex = float2(id % 2, (id % 4) >> 1);
     pos = float4((tex.x - 0.5f) * 2, -(tex.y - 0.5f) * 2, 0, 1);
   });
