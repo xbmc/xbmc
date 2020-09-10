@@ -46,65 +46,6 @@ void KodiTimeToSystemTime(const SystemTime& st, SYSTEMTIME& sst)
 }
 } // namespace
 
-uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
-{
-  if (!timeZoneInformation)
-    return KODI_TIME_ZONE_ID_INVALID;
-
-  TIME_ZONE_INFORMATION tzi;
-  uint32_t result = ::GetTimeZoneInformation(&tzi);
-  if (result == KODI_TIME_ZONE_ID_INVALID)
-    return result;
-
-  timeZoneInformation->bias = tzi.Bias;
-  timeZoneInformation->daylightBias = tzi.DaylightBias;
-  SystemTimeToKodiTime(tzi.DaylightDate, timeZoneInformation->daylightDate);
-  timeZoneInformation->daylightName = FromW(tzi.DaylightName);
-  timeZoneInformation->standardBias = tzi.StandardBias;
-  SystemTimeToKodiTime(tzi.StandardDate, timeZoneInformation->standardDate);
-  timeZoneInformation->standardName = FromW(tzi.StandardName);
-
-  return result;
-}
-
-void GetLocalTime(SystemTime* systemTime)
-{
-  SYSTEMTIME time;
-  ::GetLocalTime(&time);
-
-  systemTime->year = time.wYear;
-  systemTime->month = time.wMonth;
-  systemTime->dayOfWeek = time.wDayOfWeek;
-  systemTime->day = time.wDay;
-  systemTime->hour = time.wHour;
-  systemTime->minute = time.wMinute;
-  systemTime->second = time.wSecond;
-  systemTime->milliseconds = time.wMilliseconds;
-}
-
-int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
-{
-  FILETIME file{};
-  file.dwLowDateTime = fileTime->lowDateTime;
-  file.dwHighDateTime = fileTime->highDateTime;
-
-  SYSTEMTIME systemTime{};
-  if (FALSE == ::FileTimeToSystemTime(&file, &systemTime))
-    return FALSE;
-
-  SYSTEMTIME localSystemTime{};
-  if (FALSE == ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localSystemTime))
-    return FALSE;
-
-  FILETIME localFile{};
-  int ret = ::SystemTimeToFileTime(&localSystemTime, &localFile);
-
-  localFileTime->lowDateTime = localFile.dwLowDateTime;
-  localFileTime->highDateTime = localFile.dwHighDateTime;
-
-  return ret;
-}
-
 int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 {
   SYSTEMTIME time;

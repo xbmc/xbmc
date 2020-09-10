@@ -28,7 +28,7 @@ TEST(TestRssReader, ParseCorrectRss)
   buffer << fstr.rdbuf();
 
   std::vector<std::string> urls{"dummy"};
-  std::vector<int> times{0};
+  std::vector<std::chrono::nanoseconds> times{0};
   CRssReader rssReader;
   rssReader.Create(nullptr, urls, times, 0, false);
 
@@ -46,7 +46,7 @@ TEST(TestRssReader, ParseCorruptRss)
   content.replace(xmlTagPos, strlen("</pubDate>"), "</pubDatee>");
 
   std::vector<std::string> urls{"dummy"};
-  std::vector<int> times{0};
+  std::vector<std::chrono::nanoseconds> times{0};
   CRssReader rssReader;
   rssReader.Create(nullptr, urls, times, 0, false);
 
