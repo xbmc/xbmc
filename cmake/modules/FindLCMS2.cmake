@@ -15,7 +15,7 @@
 #   LCMS2::LCMS2   - The LCMS Color Management library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_LCMS2 lcms2 QUIET)
+  pkg_check_modules(PC_LCMS2 lcms2>=2.10 QUIET)
 endif()
 
 find_path(LCMS2_INCLUDE_DIR NAMES lcms2.h
@@ -33,7 +33,7 @@ find_package_handle_standard_args(LCMS2
 if(LCMS2_FOUND)
   set(LCMS2_LIBRARIES ${LCMS2_LIBRARY})
   set(LCMS2_INCLUDE_DIRS ${LCMS2_INCLUDE_DIR})
-  set(LCMS2_DEFINITIONS -DHAVE_LCMS2=1)
+  set(LCMS2_DEFINITIONS -DHAVE_LCMS2=1 -DCMS_NO_REGISTER_KEYWORD=1)
 
   if(NOT TARGET LCMS2::LCMS2)
     add_library(LCMS2::LCMS2 UNKNOWN IMPORTED)
