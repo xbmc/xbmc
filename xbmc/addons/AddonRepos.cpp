@@ -208,20 +208,21 @@ void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IA
   }
 }
 
-void CAddonRepos::BuildUpdateAndOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                             std::vector<std::shared_ptr<IAddon>>& updates,
-                                             std::vector<std::shared_ptr<IAddon>>& outdated) const
+void CAddonRepos::BuildAddonsWithUpdateList(
+    const std::vector<std::shared_ptr<IAddon>>& installed,
+    std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const
 {
   std::shared_ptr<IAddon> update;
 
-  CLog::Log(LOGDEBUG, "CAddonRepos::{}: Building combined list from installed add-ons", __func__);
+  CLog::Log(LOGDEBUG,
+            "CAddonRepos::{}: Building combined addons-with-update map from installed add-ons",
+            __func__);
 
   for (const auto& addon : installed)
   {
     if (DoAddonUpdateCheck(addon, update))
     {
-      updates.emplace_back(update);
-      outdated.emplace_back(addon);
+      addonsWithUpdate.insert({addon->ID(), {addon, update}});
     }
   }
 }

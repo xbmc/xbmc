@@ -807,10 +807,9 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             const std::string label,
                                             bool alwaysShowUpdateIcon)
 {
-  std::vector<std::shared_ptr<IAddon>> outdated;
-  std::vector<std::shared_ptr<IAddon>> updates;
+  std::map<std::string, CAddonWithUpdate> addonsWithUpdate;
 
-  CServiceBroker::GetAddonMgr().GetAvailableUpdatesAndOutdatedAddons(outdated, updates);
+  CServiceBroker::GetAddonMgr().GetAddonsWithAvailableUpdate(addonsWithUpdate);
 
   items.ClearItems();
   items.SetContent("addons");
@@ -825,18 +824,22 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                                                     addon->Version());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
 
-    bool isUpdate =
-        std::any_of(updates.begin(), updates.end(), [&](const std::shared_ptr<IAddon>& i) {
-          return i->ID() == addon->ID() && i->Origin() == addon->Origin() &&
-                 i->Version() == addon->Version();
-        });
+    std::function<bool(bool)> CheckOutdatedOrUpdate = [&](bool checkOutdated) -> bool {
+      const auto& mapEntry = addonsWithUpdate.find(addon->ID());
+      if (mapEntry != addonsWithUpdate.end())
+      {
+        const std::shared_ptr<IAddon>& checkedObject =
+            checkOutdated ? mapEntry->second.m_installed : mapEntry->second.m_update;
 
+        return (checkedObject->Origin() == addon->Origin() &&
+                checkedObject->Version() == addon->Version());
+      }
+      return false;
+    };
+
+    bool isUpdate = CheckOutdatedOrUpdate(false); // check if it's an available update
     bool hasUpdate =
-        alwaysShowUpdateIcon ||
-        std::any_of(outdated.begin(), outdated.end(), [&](const std::shared_ptr<IAddon>& i) {
-          return i->ID() == addon->ID() && i->Origin() == addon->Origin() &&
-                 i->Version() == addon->Version();
-        });
+        alwaysShowUpdateIcon || CheckOutdatedOrUpdate(true); // check if it's an outdated addon
 
     bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon);
 

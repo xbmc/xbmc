@@ -22,6 +22,15 @@ class CRepository;
 class IAddon;
 
 /**
+ * Struct - CAddonWithUpdate
+ */
+struct CAddonWithUpdate
+{
+  std::shared_ptr<IAddon> m_installed;
+  std::shared_ptr<IAddon> m_update;
+};
+
+/**
  * Class - CAddonRepos
  * Reads information about installed official/third party repos and their contained add-ons from the database.
  * Used to check for updates for installed add-ons and dependencies while obeying permission rules.
@@ -77,16 +86,13 @@ public:
                          std::vector<std::shared_ptr<IAddon>>& outdated) const;
 
   /*!
-   * \brief Build the list of available updates as well as outdated addons.
-   *        Stored into two separate vectors
+   * \brief Build the list of outdated addons and their available updates.
    * \param installed vector of all addons installed on the system that are
    *        checked for an update
-   * \param[out] updates list of addon versions that have an update available
-   * \param[out] outdated list of addons that are outdated
+   * \param[out] addonsWithUpdate target map
    */
-  void BuildUpdateAndOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                  std::vector<std::shared_ptr<IAddon>>& updates,
-                                  std::vector<std::shared_ptr<IAddon>>& outdated) const;
+  void BuildAddonsWithUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                                 std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const;
 
   /*!
    * \brief Checks if the origin-repository of a given addon is defined as official repo
