@@ -465,7 +465,7 @@ public:
   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
   \return false if HEAD requests have to be avoided
   */
-  bool ContentLookup() { return m_doContentLookup; };
+  bool ContentLookup() const { return m_doContentLookup; };
 
   /*!
    \brief (Re)set the mime-type for internet files if allowed (m_doContentLookup)

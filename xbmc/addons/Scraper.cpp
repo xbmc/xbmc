@@ -17,13 +17,13 @@
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "filesystem/PluginDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
 #include "music/infoscanner/MusicAlbumInfo.h"
 #include "music/infoscanner/MusicArtistInfo.h"
+#include "plugins/actions/AsyncGetPluginResult.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SettingsValueFlatJsonSerializer.h"
@@ -44,6 +44,7 @@
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
 using namespace VIDEO;
+using namespace PLUGIN;
 
 namespace ADDON
 {
@@ -516,8 +517,9 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
         << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
 
     CFileItem item("resolve me", false);
+    item.SetPath(str.str());
 
-    if (XFILE::CPluginDirectory::GetPluginResult(str.str(), item, false))
+    if (AsyncGetPluginResult(item, false).ExecuteAndWait())
       scurlRet.ParseFromData(item.GetDynPath());
 
     return scurlRet;
@@ -838,7 +840,7 @@ static bool PythonDetails(const std::string &ID,
 
   CFileItem item(url, false);
 
-  if (!XFILE::CPluginDirectory::GetPluginResult(str.str(), item, false))
+  if (!AsyncGetPluginResult(item, false).ExecuteAndWait())
     return false;
 
   DetailsFromFileItem(item, result);

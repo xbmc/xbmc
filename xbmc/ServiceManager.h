@@ -34,6 +34,11 @@ namespace PLAYLIST
   class CPlayListPlayer;
 }
 
+namespace PLUGIN
+{
+  class CPluginExecutor;
+}
+
 class CContextMenuManager;
 #ifdef HAS_PYTHON
 class XBPython;
@@ -124,6 +129,8 @@ public:
   CDatabaseManager &GetDatabaseManager();
 
   CMediaManager& GetMediaManager();
+  
+  PLUGIN::CPluginExecutor& GetPluginExecutor();
 
 protected:
   struct delete_dataCacheCore
@@ -168,4 +175,5 @@ protected:
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
   std::unique_ptr<CDatabaseManager> m_databaseManager;
   std::unique_ptr<CMediaManager> m_mediaManager;
+  std::unique_ptr<PLUGIN::CPluginExecutor> m_pluginExecutor;
 };

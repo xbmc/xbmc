@@ -232,6 +232,11 @@ CMediaManager& CServiceBroker::GetMediaManager()
   return g_application.m_ServiceManager->GetMediaManager();
 }
 
+PLUGIN::CPluginExecutor& CServiceBroker::GetPluginExecutor()
+{
+  return g_application.m_ServiceManager->GetPluginExecutor();
+}
+
 CGUIComponent* CServiceBroker::GetGUI()
 {
   return g_serviceBroker.m_pGUI;

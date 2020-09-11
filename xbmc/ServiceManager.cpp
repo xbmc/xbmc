@@ -25,6 +25,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
 #include "network/Network.h"
+#include "plugins/CPluginExecutor.h"
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
@@ -122,6 +123,9 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_binaryAddonCache->Init();
 
   m_favouritesService.reset(new CFavouritesService(profilesUserDataFolder));
+  
+  m_pluginExecutor.reset(new PLUGIN::CPluginExecutor());
+  m_pluginExecutor->Initialize();
 
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
@@ -198,6 +202,7 @@ void CServiceManager::DeinitStageTwo()
   m_gameControllerManager.reset();
   m_contextMenuManager.reset();
   m_serviceAddons.reset();
+  m_pluginExecutor.reset();
   m_favouritesService.reset();
   m_binaryAddonCache.reset();
   m_dataCacheCore.reset();
@@ -366,4 +371,9 @@ CDatabaseManager &CServiceManager::GetDatabaseManager()
 CMediaManager& CServiceManager::GetMediaManager()
 {
   return *m_mediaManager;
+}
+
+PLUGIN::CPluginExecutor& CServiceManager::GetPluginExecutor()
+{
+  return *m_pluginExecutor;
 }

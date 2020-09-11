@@ -78,6 +78,11 @@ namespace PERIPHERALS
   class CPeripherals;
 }
 
+namespace PLUGIN
+{
+  class CPluginExecutor;
+}
+
 class CServiceBroker
 {
 public:
@@ -118,6 +123,7 @@ public:
   static CDatabaseManager &GetDatabaseManager();
   static CEventLog &GetEventLog();
   static CMediaManager& GetMediaManager();
+  static PLUGIN::CPluginExecutor& GetPluginExecutor();
 
   static CGUIComponent* GetGUI();
   static void RegisterGUI(CGUIComponent *gui);
