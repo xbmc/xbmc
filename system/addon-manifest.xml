@@ -54,5 +54,6 @@
   <addon>xbmc.metadata</addon>
   <addon>xbmc.python</addon>
   <addon>xbmc.webinterface</addon>
+  <addon>service.autoexec</addon>
   <addon optional="true">peripheral.joystick</addon>
 </addons>

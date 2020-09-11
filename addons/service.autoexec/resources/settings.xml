@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<settings version="1">
+  <section id="service.autoexec">
+    <!-- General -->
+    <category id="general" label="32010">
+      <group id="1">
+        <setting id="enable_autoexec" type="boolean" label="32100">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

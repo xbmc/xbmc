@@ -1,0 +1,23 @@
+# Autosubs language file
+# Addon Name: Autoexec
+# Addon id: service.autoexec
+# Addon Provider: davu
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Autoexec\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#32010"
+msgid "General"
+msgstr ""
+
+msgctxt "#32100"
+msgid "Execute autoexec.py at startup"
+msgstr ""

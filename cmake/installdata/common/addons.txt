@@ -29,6 +29,7 @@ addons/resource.language.en_gb/*
 addons/resource.uisounds.kodi/*
 addons/resource.images.weathericons.default/*
 addons/service.xbmc.versioncheck/*
+addons/service.autoexec/*
 addons/metadata.local/*
 addons/metadata.album.universal/*
 addons/metadata.artists.universal/*
