@@ -10,6 +10,7 @@
 
 #include "Addon.h"
 #include "AddonDatabase.h"
+#include "AddonUpdateRules.h"
 #include "Repository.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
@@ -244,9 +245,40 @@ namespace ADDON
 
     bool IsSystemAddon(const std::string& id);
 
-    bool AddToUpdateBlacklist(const std::string& id);
-    bool RemoveFromUpdateBlacklist(const std::string& id);
-    bool IsBlacklisted(const std::string& id) const;
+    /*!
+     * @brief Addon update rules.
+     *
+     * member functions for handling and querying add-on update rules
+     *
+     * @warning This should be never used from other places outside of addon
+     * system directory.
+     *
+     */
+    /*@{{{*/
+
+    /* \brief Add a single update rule to the list for an addon
+     * \sa CAddonUpdateRules::AddUpdateRuleToList()
+     */
+    bool AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule);
+
+    /* \brief Remove all rules from update rules list for an addon
+     * \sa CAddonUpdateRules::RemoveAllUpdateRulesFromList()
+     */
+    bool RemoveAllUpdateRulesFromList(const std::string& id);
+
+    /* \brief Remove a specific rule from update rules list for an addon
+     * \sa CAddonUpdateRules::RemoveUpdateRuleFromList()
+     */
+    bool RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule updateRule);
+
+    /* \brief Check if an addon version is auto-updateable
+     * \param id addon id to be checked
+     * \return true is addon is auto-updateable, false otherwise
+     * \sa CAddonUpdateRules::IsAutoUpdateable()
+     */
+    bool IsAutoUpdateable(const std::string& id) const;
+
+    /*@}}}*/
 
     void UpdateLastUsed(const std::string& id);
 
@@ -388,6 +420,16 @@ namespace ADDON
 
     /*@}}}*/
 
+    /*!
+     * \brief Fetches list of outdated addons as well as available updates and
+     *        stores them into separate vectors.
+     * \param[out] outdated target vector of outdated addons (that have updates available)
+     * \param[out] updates target vector of available updates (determined for installed add-ons)
+     * \return true or false
+     */
+    bool GetAvailableUpdatesAndOutdatedAddons(std::vector<std::shared_ptr<IAddon>>& outdated,
+                                              std::vector<std::shared_ptr<IAddon>>& updates) const;
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 
@@ -451,10 +493,10 @@ namespace ADDON
     mutable std::mutex m_installAddonsMutex;
 
     std::map<std::string, AddonDisabledReason> m_disabled;
-    std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     mutable CCriticalSection m_critSection;
     CAddonDatabase m_database;
+    CAddonUpdateRules m_updateRules;
     CEventSource<AddonEvent> m_events;
     CBlockingEventSource<AddonEvent> m_unloadEvents;
     std::set<std::string> m_systemAddons;

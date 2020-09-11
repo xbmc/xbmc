@@ -77,6 +77,18 @@ public:
                          std::vector<std::shared_ptr<IAddon>>& outdated) const;
 
   /*!
+   * \brief Build the list of available updates as well as outdated addons.
+   *        Stored into two separate vectors
+   * \param installed vector of all addons installed on the system that are
+   *        checked for an update
+   * \param[out] updates list of addon versions that have an update available
+   * \param[out] outdated list of addons that are outdated
+   */
+  void BuildUpdateAndOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                                  std::vector<std::shared_ptr<IAddon>>& updates,
+                                  std::vector<std::shared_ptr<IAddon>>& outdated) const;
+
+  /*!
    * \brief Checks if the origin-repository of a given addon is defined as official repo
    *        but does not check the origin path (e.g. https://mirrors.kodi.tv ...)
    * \param addon pointer to addon to be checked

@@ -7,6 +7,7 @@ set(SOURCES Addon.cpp
             AddonRepos.cpp
             AddonStatusHandler.cpp
             AddonSystemSettings.cpp
+            AddonUpdateRules.cpp
             AddonVersion.cpp
             AudioDecoder.cpp
             AudioEncoder.cpp
@@ -42,6 +43,7 @@ set(HEADERS Addon.h
             AddonRepos.h
             AddonStatusHandler.h
             AddonSystemSettings.h
+            AddonUpdateRules.h
             AddonVersion.h
             AudioDecoder.h
             AudioEncoder.h

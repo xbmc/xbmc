@@ -247,6 +247,28 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
   return result;
 }
 
+bool CAddonMgr::GetAvailableUpdatesAndOutdatedAddons(
+    std::vector<std::shared_ptr<IAddon>>& outdated,
+    std::vector<std::shared_ptr<IAddon>>& updates) const
+{
+  CSingleLock lock(m_critSection);
+  auto start = XbmcThreads::SystemClockMillis();
+
+  std::vector<std::shared_ptr<IAddon>> installed;
+  CAddonRepos addonRepos(*this);
+
+  addonRepos.LoadAddonsFromDatabase(m_database);
+
+  GetAddonsForUpdate(installed);
+
+  addonRepos.BuildUpdateAndOutdatedList(installed, updates, outdated);
+
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesAndOutdatedAddons took %i ms",
+            XbmcThreads::SystemClockMillis() - start);
+
+  return true;
+}
+
 bool CAddonMgr::HasAvailableUpdates()
 {
   return !GetAvailableUpdates().empty();
@@ -465,7 +487,7 @@ bool CAddonMgr::GetAddonUpdateCandidates(VECADDONS& updates) const
   updates = GetAvailableUpdates();
   updates.erase(
       std::remove_if(updates.begin(), updates.end(),
-                     [this](const AddonPtr& addon) { return IsBlacklisted(addon->ID()); }),
+                     [this](const AddonPtr& addon) { return !IsAutoUpdateable(addon->ID()); }),
       updates.end());
   return updates.empty();
 }
@@ -585,9 +607,7 @@ bool CAddonMgr::FindAddons()
   m_database.GetDisabled(tmpDisabled);
   m_disabled = std::move(tmpDisabled);
 
-  std::set<std::string> tmpBlacklist;
-  m_database.GetBlacklisted(tmpBlacklist);
-  m_updateBlacklist = std::move(tmpBlacklist);
+  m_updateRules.RefreshRulesMap(m_database);
 
   return true;
 }
@@ -660,30 +680,8 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
 {
   CSingleLock lock(m_critSection);
   m_disabled.erase(id);
-  m_updateBlacklist.erase(id);
+  RemoveAllUpdateRulesFromList(id);
   m_events.Publish(AddonEvents::UnInstalled(id));
-}
-
-bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
-{
-  CSingleLock lock(m_critSection);
-  if (!IsBlacklisted(id))
-    return true;
-  return m_database.RemoveAddonFromBlacklist(id) && m_updateBlacklist.erase(id) > 0;
-}
-
-bool CAddonMgr::AddToUpdateBlacklist(const std::string& id)
-{
-  CSingleLock lock(m_critSection);
-  if (IsBlacklisted(id))
-    return true;
-  return m_database.BlacklistAddon(id) && m_updateBlacklist.insert(id).second;
-}
-
-bool CAddonMgr::IsBlacklisted(const std::string& id) const
-{
-  CSingleLock lock(m_critSection);
-  return m_updateBlacklist.find(id) != m_updateBlacklist.end();
 }
 
 void CAddonMgr::UpdateLastUsed(const std::string& id)
@@ -866,6 +864,26 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
     addon = CAddonBuilder::Generate(addonInfo, ADDON_UNKNOWN);
 
   return addon != nullptr;
+}
+
+bool CAddonMgr::AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule)
+{
+  return m_updateRules.AddUpdateRuleToList(m_database, id, updateRule);
+}
+
+bool CAddonMgr::RemoveAllUpdateRulesFromList(const std::string& id)
+{
+  return m_updateRules.RemoveAllUpdateRulesFromList(m_database, id);
+}
+
+bool CAddonMgr::RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule updateRule)
+{
+  return m_updateRules.RemoveUpdateRuleFromList(m_database, id, updateRule);
+}
+
+bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
+{
+  return m_updateRules.IsAutoUpdateable(id);
 }
 
 bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons)

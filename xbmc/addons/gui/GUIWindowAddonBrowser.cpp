@@ -165,6 +165,16 @@ class UpdateAddons : public IRunnable
   }
 };
 
+class UpdateAllowedAddons : public IRunnable
+{
+  void Run() override
+  {
+    for (const auto& addon : CServiceBroker::GetAddonMgr().GetAvailableUpdates())
+      if (CServiceBroker::GetAddonMgr().IsAutoUpdateable(addon->ID()))
+        CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
+  }
+};
+
 void CGUIWindowAddonBrowser::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
 {
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -217,6 +227,12 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string& player)
   if (item->GetPath() == "addons://update_all/")
   {
     UpdateAddons updater;
+    CGUIDialogBusy::Wait(&updater, 100, true);
+    return true;
+  }
+  if (item->GetPath() == "addons://update_allowed/")
+  {
+    UpdateAllowedAddons updater;
     CGUIDialogBusy::Wait(&updater, 100, true);
     return true;
   }
