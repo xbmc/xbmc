@@ -174,6 +174,7 @@ private:
   int TranslateListItem(const Property& cat, const Property& prop, int id, bool container);
   int TranslateMusicPlayerString(const std::string &info) const;
   int TranslateVideoPlayerString(const std::string& info) const;
+  int TranslatePlayerString(const std::string& info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
 
   std::string GetMultiInfoLabel(const KODI::GUILIB::GUIINFO::CGUIInfo &info, int contextWindow, std::string *fallback = nullptr) const;

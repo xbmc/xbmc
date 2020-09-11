@@ -49,17 +49,17 @@
 #define PLAYER_SUBTITLE_DELAY        42
 #define PLAYER_AUDIO_DELAY           43
 #define PLAYER_PASSTHROUGH           44
-#define PLAYER_PATH                  45
-#define PLAYER_FILEPATH              46
+// unused 45
+// unused 46
 #define PLAYER_SEEKOFFSET            47
 #define PLAYER_PROGRESS_CACHE        48
 #define PLAYER_ITEM_ART              49
 #define PLAYER_CAN_PAUSE             50
 #define PLAYER_CAN_SEEK              51
 #define PLAYER_START_TIME            52
-#define PLAYER_TITLE                 53
+// unused 53
 #define PLAYER_ISINTERNETSTREAM      54
-#define PLAYER_FILENAME              55
+// unused 55
 #define PLAYER_SEEKSTEPSIZE          56
 #define PLAYER_IS_CHANNEL_PREVIEW_ACTIVE  57
 #define PLAYER_SUPPORTS_TEMPO        58
@@ -73,6 +73,15 @@
 #define PLAYER_ICON                  66
 #define PLAYER_CUTLIST               67
 #define PLAYER_CHAPTERS              68
+// Keep player infolabels that work with offset and position together
+#define PLAYER_PATH                  81
+#define PLAYER_FILEPATH              82
+#define PLAYER_TITLE                 83
+#define PLAYER_FILENAME              84
+
+// Range of player infolabels that work with offset and position
+#define PLAYER_OFFSET_POSITION_FIRST PLAYER_PATH
+#define PLAYER_OFFSET_POSITION_LAST PLAYER_FILENAME
 
 #define WEATHER_CONDITIONS_TEXT     100
 #define WEATHER_TEMPERATURE         101
