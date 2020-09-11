@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../../AddonBase.h"
-#include "../../c-api/gui/definitions.h"
+#include "../../c-api/gui/dialogs/select.h"
 
 #ifdef __cplusplus
 

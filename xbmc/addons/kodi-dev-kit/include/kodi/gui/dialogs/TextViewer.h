@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../../AddonBase.h"
-#include "../../c-api/gui/definitions.h"
+#include "../../c-api/gui/dialogs/text_viewer.h"
 
 #ifdef __cplusplus
 

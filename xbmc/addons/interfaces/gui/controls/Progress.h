@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/c-api/gui/definitions.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/controls/progress.h"
 
 extern "C"
 {

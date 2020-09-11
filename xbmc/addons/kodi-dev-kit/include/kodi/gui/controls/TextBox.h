@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../../AddonBase.h"
+#include "../../c-api/gui/controls/text_box.h"
 #include "../Window.h"
 
 #ifdef __cplusplus

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../../AddonBase.h"
+#include "../../c-api/gui/controls/edit.h"
 #include "../Window.h"
 
 #ifdef __cplusplus
@@ -48,54 +48,6 @@ namespace controls
 /// \ingroup cpp_kodi_gui_controls_CEdit
 /// @brief **Library definition values**
 ///
-
-} /* namespace controls */
-} /* namespace gui */
-} /* namespace kodi */
-
-//============================================================================
-///
-/// \ingroup cpp_kodi_gui_controls_CEdit_Defs
-/// @{
-/// @anchor AddonGUIInputType
-/// @brief Text input types used on kodi::gui::controls::CEdit
-enum AddonGUIInputType
-{
-  /// Text inside edit control only readable
-  ADDON_INPUT_TYPE_READONLY = -1,
-  /// Normal text entries
-  ADDON_INPUT_TYPE_TEXT = 0,
-  /// To use on edit control only numeric numbers
-  ADDON_INPUT_TYPE_NUMBER,
-  /// To insert seconds
-  ADDON_INPUT_TYPE_SECONDS,
-  /// To insert time
-  ADDON_INPUT_TYPE_TIME,
-  /// To insert a date
-  ADDON_INPUT_TYPE_DATE,
-  /// Used for write in IP addresses
-  ADDON_INPUT_TYPE_IPADDRESS,
-  /// Text field used as password entry field with not visible text
-  ADDON_INPUT_TYPE_PASSWORD,
-  /// Text field used as password entry field with not visible text but
-  /// returned as MD5 value
-  ADDON_INPUT_TYPE_PASSWORD_MD5,
-  /// Use text field for search purpose
-  ADDON_INPUT_TYPE_SEARCH,
-  /// Text field as filter
-  ADDON_INPUT_TYPE_FILTER,
-  ///
-  ADDON_INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW
-};
-/// @}
-//----------------------------------------------------------------------------
-
-namespace kodi
-{
-namespace gui
-{
-namespace controls
-{
 
 class ATTRIBUTE_HIDDEN CEdit : public CAddonGUIControlBase
 {

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../../AddonBase.h"
+#include "../../c-api/gui/controls/rendering.h"
 #include "../Window.h"
 #include "../renderHelper.h"
 

@@ -15,6 +15,8 @@ xbmc/addons/kodi-dev-kit/include/kodi/c-api addons_kodi-dev-kit_include_kodi_c-a
 xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance addons_kodi-dev-kit_include_kodi_c-api_addon-instance
 xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr addons_kodi-dev-kit_include_kodi_c-api_addon-instance_pvr
 xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui addons_kodi-dev-kit_include_kodi_c-api_gui
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui/controls addons_kodi-dev-kit_include_kodi_c-api_gui_controls
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui/dialogs addons_kodi-dev-kit_include_kodi_c-api_gui_dialogs
 xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui/input addons_kodi-dev-kit_include_kodi_c-api_gui_input
 xbmc/addons/kodi-dev-kit/include/kodi/gui addons_kodi-dev-kit_include_kodi_gui
 xbmc/addons/kodi-dev-kit/include/kodi/gui/controls addons_kodi-dev-kit_include_kodi_gui_controls

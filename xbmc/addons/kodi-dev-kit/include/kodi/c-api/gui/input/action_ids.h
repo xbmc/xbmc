@@ -11,8 +11,8 @@
 #ifndef C_API_GUI_ACTION_IDS_H
 #define C_API_GUI_ACTION_IDS_H
 
-/// @defgroup cpp_kodi_gui_key_action_ids enum ADDON_ACTION
-/// @ingroup cpp_kodi_gui
+/// @defgroup cpp_kodi_gui_Defs_action_ids enum ADDON_ACTION
+/// @ingroup cpp_kodi_gui_Defs
 /// @brief **Action Id's**\n
 /// Actions that we have defined.
 ///

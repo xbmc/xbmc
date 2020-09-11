@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../../AddonBase.h"
+#include "../../c-api/gui/controls/slider.h"
 #include "../Window.h"
 
 #ifdef __cplusplus

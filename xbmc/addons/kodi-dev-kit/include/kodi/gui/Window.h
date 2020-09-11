@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
+#include "../c-api/gui/window.h"
 #include "ListItem.h"
 #include "input/ActionIDs.h"
 

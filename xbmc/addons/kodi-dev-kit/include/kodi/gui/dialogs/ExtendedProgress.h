@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../../AddonBase.h"
-#include "../../c-api/gui/definitions.h"
+#include "../../c-api/gui/dialogs/extended_progress.h"
 
 #ifdef __cplusplus
 
