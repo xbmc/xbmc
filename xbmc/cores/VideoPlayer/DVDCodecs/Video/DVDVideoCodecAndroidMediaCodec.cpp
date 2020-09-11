@@ -897,7 +897,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       size_t out_size = buffer.capacity();
       if ((size_t)iSize > out_size)
       {
-        CLog::Log(LOGNOTICE, "CDVDVideoCodecAndroidMediaCodec::AddData: iSize(%d) > size(%d)",
+        CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::AddData: iSize(%d) > size(%d)",
                   iSize, out_size);
         iSize = out_size;
       }

@@ -375,7 +375,7 @@ private:
 /// {
 ///   if (instanceType == ADDON_INSTANCE_VISUALIZATION)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my visualization");
+///     kodi::Log(ADDON_LOG_INFO, "Creating my visualization");
 ///     addonInstance = new CMyVisualization(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
@@ -449,7 +449,7 @@ public:
   ///                                       const std::string& version,
   ///                                       KODI_HANDLE& addonInstance)
   /// {
-  ///   kodi::Log(ADDON_LOG_NOTICE, "Creating my visualization");
+  ///   kodi::Log(ADDON_LOG_INFO, "Creating my visualization");
   ///   addonInstance = new CMyVisualization(instance, version);
   ///   return ADDON_STATUS_OK;
   /// }

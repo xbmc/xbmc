@@ -364,7 +364,7 @@ namespace addon
 /// {
 ///   if (instanceType == ADDON_INSTANCE_PVR)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my PVR client instance");
+///     kodi::Log(ADDON_LOG_INFO, "Creating my PVR client instance");
 ///     addonInstance = new CMyPVRClient(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
@@ -484,7 +484,7 @@ public:
   ///                                       const std::string& version,
   ///                                       KODI_HANDLE& addonInstance)
   /// {
-  ///   kodi::Log(ADDON_LOG_NOTICE, "Creating my PVR client instance");
+  ///   kodi::Log(ADDON_LOG_INFO, "Creating my PVR client instance");
   ///   addonInstance = new CMyPVRClient(instance, version);
   ///   return ADDON_STATUS_OK;
   /// }

@@ -535,11 +535,9 @@ void shairplay_log(void *cls, int level, const char *msg)
   switch(level)
   {
     case RAOP_LOG_EMERG:    // system is unusable
-      xbmcLevel = LOGFATAL;
-      break;
     case RAOP_LOG_ALERT:    // action must be taken immediately
     case RAOP_LOG_CRIT:     // critical conditions
-      xbmcLevel = LOGSEVERE;
+      xbmcLevel = LOGFATAL;
       break;
     case RAOP_LOG_ERR:      // error conditions
       xbmcLevel = LOGERROR;
@@ -548,8 +546,6 @@ void shairplay_log(void *cls, int level, const char *msg)
       xbmcLevel = LOGWARNING;
       break;
     case RAOP_LOG_NOTICE:   // normal but significant condition
-      xbmcLevel = LOGNOTICE;
-      break;
     case RAOP_LOG_INFO:     // informational
       xbmcLevel = LOGINFO;
       break;

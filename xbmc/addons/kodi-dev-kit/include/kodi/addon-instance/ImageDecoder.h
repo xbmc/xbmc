@@ -177,7 +177,7 @@ namespace addon
 /// {
 ///   if (instanceType == ADDON_INSTANCE_IMAGEDECODER)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my image decoder instance");
+///     kodi::Log(ADDON_LOG_INFO, "Creating my image decoder instance");
 ///     addonInstance = new CMyImageDecoder(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }

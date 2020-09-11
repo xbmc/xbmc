@@ -529,7 +529,7 @@ namespace addon
 /// {
 ///   if (instanceType == ADDON_INSTANCE_VFS)
 ///   {
-///     kodi::Log(ADDON_LOG_NOTICE, "Creating my VFS instance");
+///     kodi::Log(ADDON_LOG_INFO, "Creating my VFS instance");
 ///     addonInstance = new CMyVFS(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
