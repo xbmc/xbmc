@@ -55,7 +55,6 @@
   25 //!< turn subtitles on/off. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_NEXT_SUBTITLE \
   26 //!< switch to next subtitle of movie. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_BROWSE_SUBTITLE 247 //!< Browse for subtitle. Can be used in videofullscreen
 #define ACTION_PLAYER_DEBUG 27 //!< show debug info for VideoPlayer
 #define ACTION_NEXT_PICTURE \
   28 //!< show next picture of slideshow. Can b used in slideshow.xml window id=2007
@@ -327,7 +326,7 @@
 #define ACTION_VOLUME_SET 245
 #define ACTION_TOGGLE_COMMSKIP 246
 
-#define ACTION_HDR_TOGGLE 247 //!< Toggle display HDR on/off
+#define ACTION_BROWSE_SUBTITLE 247 //!< Browse for subtitle. Can be used in videofullscreen
 
 #define ACTION_PLAYER_RESET 248 //!< Send a reset command to the active game
 
@@ -335,6 +334,8 @@
 
 #define ACTION_VIDEO_NEXT_STREAM 250 //!< Cycle video streams. Used in videofullscreen.
 #define ACTION_QUEUE_ITEM_NEXT 251 //!< used to queue an item to the next position in the playlist
+
+#define ACTION_HDR_TOGGLE 260 //!< Toggle display HDR on/off
 
 // Voice actions
 #define ACTION_VOICE_RECOGNIZE 300
