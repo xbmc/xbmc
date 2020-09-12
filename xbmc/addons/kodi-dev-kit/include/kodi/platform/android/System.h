@@ -9,29 +9,7 @@
 #pragma once
 
 #include "../../AddonBase.h"
-
-/*
- * For interface between add-on and kodi.
- *
- * This structure defines the addresses of functions stored inside Kodi which
- * are then available for the add-on to call
- *
- * All function pointers there are used by the C++ interface functions below.
- * You find the set of them on xbmc/addons/interfaces/General.cpp
- *
- * Note: For add-on development itself this is not needed
- */
-
-static const char* INTERFACE_ANDROID_SYSTEM_NAME = "ANDROID_SYSTEM";
-static const char* INTERFACE_ANDROID_SYSTEM_VERSION = "1.0.1";
-static const char* INTERFACE_ANDROID_SYSTEM_VERSION_MIN = "1.0.1";
-
-struct AddonToKodiFuncTable_android_system
-{
-  void* (*get_jni_env)();
-  int (*get_sdk_version)();
-  const char *(*get_class_name)();
-};
+#include "../../c-api/platform/android/system.h"
 
 //==============================================================================
 ///
@@ -43,10 +21,12 @@ struct AddonToKodiFuncTable_android_system
 ///
 //------------------------------------------------------------------------------
 
+#ifdef __cplusplus
 namespace kodi
 {
 namespace platform
 {
+
 class ATTRIBUTE_HIDDEN CInterfaceAndroidSystem
 {
 public:
@@ -112,3 +92,4 @@ private:
 
 } /* namespace platform */
 } /* namespace kodi */
+#endif /* __cplusplus */
