@@ -1187,6 +1187,20 @@ CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId,
                                               CGUIControl::GUICONTROLTYPES type,
                                               const std::string& typeName)
 {
+  // Load window resources, if not already done, to have related xml content
+  // present and to let control find it
+  if (!m_windowLoaded)
+  {
+    if (!Initialize())
+    {
+      CLog::Log(LOGERROR,
+                "CGUIAddonGUI_Window::{}: {} - Window initialize failed by control id '{}' request "
+                "for '{}'",
+                __func__, m_addon->Name(), controlId, typeName);
+      return nullptr;
+    }
+  }
+
   CGUIControl* pGUIControl = GetControl(controlId);
   if (!pGUIControl)
   {
