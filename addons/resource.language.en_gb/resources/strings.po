@@ -20348,7 +20348,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr ""
 
-#empty strings from id 36547 to 36548
+#empty string with id 36547
+
+#. Description of setting with label #37021 "Set GUI resolution limit"
+#: system/settings/android.xml
+#: system/settings/gbm.xml
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
+msgstr ""
 
 #. Description of setting with label #1268 "iOS 8 compatibility mode"
 #: system/settings/settings.xml
@@ -20981,7 +20988,13 @@ msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding Dolby Digital Plus (E-AC3) streams."
 msgstr ""
 
-#empty strings from id 37017 to 37021
+#empty strings from id 37017 to 37020
+
+#: system/settings/android.xml
+#: system/settings/gbm.xml
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr ""
 
 #: xbmc/network/upnp/UPnPPlayer.cpp
 msgctxt "#37022"
