@@ -262,7 +262,7 @@ case $host in
         if test "x$use_cpu" = "xarm64-v8a"; then
           platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
         fi
-        meson_cpu="arch64"
+        meson_cpu="aarch64"
       ;;
       i*86*-linux-android*|x86_64*-linux-android*)
         if test "x$use_cpu" = "xauto"; then

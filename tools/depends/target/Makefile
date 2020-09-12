@@ -12,7 +12,7 @@ DEPENDS = \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
 	python3 libshairplay libfmt libspdlog \
 	libplist libcec libbluray tinyxml \
-	taglib libusb libnfs meson-cross-file \
+	taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg crossguid libudfread \
 	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
@@ -191,7 +191,7 @@ linux-system-libs: linux-system-libs-egl
 	[ -f $(PREFIX)/lib/pkgconfig/xkbcommon.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xkbcommon.pc $(PREFIX)/lib/pkgconfig/xkbcommon.pc
 	[ -f $(PREFIX)/lib/pkgconfig/libva.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libva.pc $(PREFIX)/lib/pkgconfig/libva.pc
 
-meson-cross-file:
+$(PREFIX)/share/cross-file.meson:
 	PREFIX="$(PREFIX)" \
 	NATIVEPREFIX="$(NATIVEPREFIX)" \
 	CC="$(CC)" \
@@ -204,5 +204,7 @@ meson-cross-file:
 	CFLAGS="$(CFLAGS)" \
 	CXXFLAGS="$(CXXFLAGS)" \
 	LDFLAGS="$(LDFLAGS)" \
-	./meson-cross-setup.sh
+	./meson-cross-setup.sh $@
 
+.PHONY: meson-cross-file
+meson-cross-file: $(PREFIX)/share/cross-file.meson

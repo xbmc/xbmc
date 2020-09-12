@@ -27,7 +27,7 @@ export CC CXX CFLAGS CXXFLAGS
 endif
 export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
-LIBDYLIB=$(PLATFORM)/build/libinput.a
+LIBDYLIB=$(PLATFORM)/build/libinput.so
 
 all: .installed-$(PLATFORM)
 
