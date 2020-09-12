@@ -868,6 +868,17 @@ namespace XBMCAddon
       /// the offset in seconds at which to start playback of an item.  Others may be used in the skin
       /// to add extra information, such as 'WatchedCount' for tvshow items
       ///
+      /// - **Internal Properties**
+      /// | Key           | Description                                     |
+      /// |--------------:|:------------------------------------------------|
+      /// | inputstream   | string (inputstream.adaptive) - Set the inputstream add-on that will be used to play the item
+      /// | IsPlayable    | string - "true", "false" - Mark the item as playable, **mandatory for playable items**
+      /// | MimeType      | string (application/x-mpegURL) - Set the MimeType of the item before playback
+      /// | ResumeTime    | float (1962.0) - Set the resume point of the item in seconds
+      /// | SpecialSort   | string - "top", "bottom" - The item will remain at the top or bottom of the current list
+      /// | StartOffset   | float (60.0) - Set the offset in seconds at which to start playback of the item
+      /// | StartPercent  | float (15.0) - Set the percentage at which to start playback of the item
+      /// | TotalTime     | float (7848.0) - Set the total time of the item in seconds
       ///
       ///-----------------------------------------------------------------------
       ///
