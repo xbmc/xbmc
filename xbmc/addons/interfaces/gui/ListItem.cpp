@@ -47,7 +47,6 @@ void Interface_GUIListItem::DeInit(AddonGlobalInterface* addonInterface)
 KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,
                                                        const char* label,
                                                        const char* label2,
-                                                       const char* icon_image,
                                                        const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
@@ -62,8 +61,6 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,
     item->get()->SetLabel(label);
   if (label2)
     item->get()->SetLabel2(label2);
-  if (icon_image)
-    item->get()->SetArt("icon", icon_image);
   if (path)
     item->get()->SetPath(path);
 

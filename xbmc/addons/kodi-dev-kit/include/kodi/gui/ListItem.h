@@ -83,17 +83,15 @@ public:
   ///
   /// @param[in] label                Item label
   /// @param[in] label2               Second Item label (if needed)
-  /// @param[in] iconImage            Item icon image (if needed)
   /// @param[in] path                 Path to where item is defined
   ///
   CListItem(const std::string& label = "",
             const std::string& label2 = "",
-            const std::string& iconImage = "",
             const std::string& path = "")
     : CAddonGUIControlBase(nullptr)
   {
-    m_controlHandle = m_interface->kodi_gui->listItem->create(
-        m_interface->kodiBase, label.c_str(), label2.c_str(), iconImage.c_str(), path.c_str());
+    m_controlHandle = m_interface->kodi_gui->listItem->create(m_interface->kodiBase, label.c_str(),
+                                                              label2.c_str(), path.c_str());
   }
 
   /*

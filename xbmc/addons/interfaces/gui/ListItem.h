@@ -45,7 +45,6 @@ extern "C"
     static KODI_GUI_LISTITEM_HANDLE create(KODI_HANDLE kodiBase,
                                            const char* label,
                                            const char* label2,
-                                           const char* icon_image,
                                            const char* path);
     static void destroy(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
     static char* get_label(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);

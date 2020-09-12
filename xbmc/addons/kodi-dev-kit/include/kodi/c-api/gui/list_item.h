@@ -24,7 +24,6 @@ extern "C"
     (KODI_HANDLE kodiBase,
      const char* label,
      const char* label2,
-     const char* icon_image,
      const char* path);
     void (*destroy)(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
 
