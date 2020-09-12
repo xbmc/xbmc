@@ -12,6 +12,7 @@
 #define C_API_GUI_DEFINITIONS_H
 
 #include "../addon_base.h"
+#include "input/action_ids.h"
 
 #include <stddef.h>
 
@@ -501,16 +502,17 @@ extern "C"
      bool is_media);
     void (*destroy)(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
 
-    void (*set_callbacks)(KODI_HANDLE kodiBase,
-                          KODI_GUI_WINDOW_HANDLE handle,
-                          KODI_GUI_CLIENT_HANDLE clienthandle,
-                          bool (*CBInit)(KODI_GUI_CLIENT_HANDLE),
-                          bool (*CBFocus)(KODI_GUI_CLIENT_HANDLE, int),
-                          bool (*CBClick)(KODI_GUI_CLIENT_HANDLE, int),
-                          bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, int, uint32_t, wchar_t),
-                          void (*CBGetContextButtons)(
-                              KODI_GUI_CLIENT_HANDLE, int, gui_context_menu_pair*, unsigned int*),
-                          bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int));
+    void (*set_callbacks)(
+        KODI_HANDLE kodiBase,
+        KODI_GUI_WINDOW_HANDLE handle,
+        KODI_GUI_CLIENT_HANDLE clienthandle,
+        bool (*CBInit)(KODI_GUI_CLIENT_HANDLE),
+        bool (*CBFocus)(KODI_GUI_CLIENT_HANDLE, int),
+        bool (*CBClick)(KODI_GUI_CLIENT_HANDLE, int),
+        bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, enum ADDON_ACTION, uint32_t, wchar_t),
+        void (*CBGetContextButtons)(
+            KODI_GUI_CLIENT_HANDLE, int, gui_context_menu_pair*, unsigned int*),
+        bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int));
     bool (*show)(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
     bool (*close)(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);
     bool (*do_modal)(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle);

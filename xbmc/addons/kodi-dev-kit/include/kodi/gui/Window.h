@@ -10,12 +10,7 @@
 
 #include "../AddonBase.h"
 #include "ListItem.h"
-
-#ifdef BUILD_KODI_ADDON
-#include "../ActionIDs.h"
-#else
-#include "input/actions/ActionIDs.h"
-#endif
+#include "input/ActionIDs.h"
 
 #ifdef __cplusplus
 
@@ -741,18 +736,18 @@ public:
   /// {
   ///   switch (action)
   ///   {
-  ///     case ACTION_PREVIOUS_MENU:
-  ///     case ACTION_NAV_BACK:
+  ///     case ADDON_ACTION_PREVIOUS_MENU:
+  ///     case ADDON_ACTION_NAV_BACK:
   ///       printf("action recieved: previous");
   ///       Close();
   ///       return true;
-  ///     case ACTION_SHOW_INFO:
+  ///     case ADDON_ACTION_SHOW_INFO:
   ///       printf("action recieved: show info");
   ///       break;
-  ///     case ACTION_STOP:
+  ///     case ADDON_ACTION_STOP:
   ///       printf("action recieved: stop");
   ///       break;
-  ///     case ACTION_PAUSE:
+  ///     case ADDON_ACTION_PAUSE:
   ///       printf("action recieved: pause");
   ///       break;
   ///     default:
@@ -763,12 +758,12 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  virtual bool OnAction(int actionId, uint32_t buttoncode, wchar_t unicode)
+  virtual bool OnAction(ADDON_ACTION actionId, uint32_t buttoncode, wchar_t unicode)
   {
     switch (actionId)
     {
-      case ACTION_PREVIOUS_MENU:
-      case ACTION_NAV_BACK:
+      case ADDON_ACTION_PREVIOUS_MENU:
+      case ADDON_ACTION_NAV_BACK:
         Close();
         return true;
       default:
@@ -849,7 +844,7 @@ public:
   ///   return true;
   /// }
   ///
-  /// bool OnAction(kodi::gui::ClientHandle cbhdl, int actionId)
+  /// bool OnAction(kodi::gui::ClientHandle cbhdl, ADDON_ACTION actionId, uint32_t buttoncode, wchar_t unicode)
   /// {
   ///   ...
   ///   return true;
@@ -867,7 +862,7 @@ public:
                                bool (*CBOnFocus)(kodi::gui::ClientHandle cbhdl, int controlId),
                                bool (*CBOnClick)(kodi::gui::ClientHandle cbhdl, int controlId),
                                bool (*CBOnAction)(kodi::gui::ClientHandle cbhdl,
-                                                  int actionId,
+                                                  ADDON_ACTION actionId,
                                                   uint32_t buttoncode,
                                                   wchar_t unicode),
                                void (*CBGetContextButtons)(kodi::gui::ClientHandle cbhdl,
@@ -908,7 +903,7 @@ private:
   }
 
   static bool CBOnAction(KODI_GUI_CLIENT_HANDLE cbhdl,
-                         int actionId,
+                         ADDON_ACTION actionId,
                          uint32_t buttoncode,
                          wchar_t unicode)
   {

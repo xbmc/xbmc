@@ -1,8 +1,10 @@
-set(SOURCES General.cpp
+set(SOURCES GUITranslator.cpp
+            General.cpp
             ListItem.cpp
             Window.cpp)
 
-set(HEADERS General.h
+set(HEADERS GUITranslator.h
+            General.h
             ListItem.h
             Window.h)
 

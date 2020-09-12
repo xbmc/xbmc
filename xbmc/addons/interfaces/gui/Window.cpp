@@ -10,6 +10,7 @@
 
 #include "Application.h"
 #include "FileItem.h"
+#include "GUITranslator.h"
 #include "General.h"
 #include "ServiceBroker.h"
 #include "Window.h"
@@ -247,7 +248,7 @@ void Interface_GUIWindow::set_callbacks(
     bool (*CBOnInit)(KODI_GUI_CLIENT_HANDLE),
     bool (*CBOnFocus)(KODI_GUI_CLIENT_HANDLE, int),
     bool (*CBOnClick)(KODI_GUI_CLIENT_HANDLE, int),
-    bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, int, uint32_t, wchar_t),
+    bool (*CBOnAction)(KODI_GUI_CLIENT_HANDLE, ADDON_ACTION, uint32_t, wchar_t),
     void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE, int, gui_context_menu_pair*, unsigned int*),
     bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int))
 {
@@ -1209,7 +1210,8 @@ bool CGUIAddonWindow::OnAction(const CAction& action)
 {
   // Let addon decide whether it wants to handle action first
   if (CBOnAction &&
-      CBOnAction(m_clientHandle, action.GetID(), action.GetButtonCode(), action.GetUnicode()))
+      CBOnAction(m_clientHandle, CAddonGUITranslator::TranslateActionIdToAddon(action.GetID()),
+                 action.GetButtonCode(), action.GetUnicode()))
     return true;
 
   return CGUIWindow::OnAction(action);
@@ -1285,7 +1287,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
             {
               // Check addon want to handle right click for a context menu, if
               // not used from addon becomes "GetContextButtons(...)" called.
-              if (CBOnAction(m_clientHandle, ACTION_CONTEXT_MENU, 0, 0))
+              if (CBOnAction(m_clientHandle, ADDON_ACTION_CONTEXT_MENU, 0, 0))
                 return true;
             }
           }
