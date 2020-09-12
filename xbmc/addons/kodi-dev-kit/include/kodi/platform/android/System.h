@@ -11,22 +11,35 @@
 #include "../../AddonBase.h"
 #include "../../c-api/platform/android/system.h"
 
-//==============================================================================
-///
-/// \defgroup cpp_kodi_platform  Interface - kodi::platform
-/// \ingroup cpp
-/// @brief **Android platform specific functions**
-///
-/// #include <kodi/platform/android/System.h>"
-///
-//------------------------------------------------------------------------------
-
 #ifdef __cplusplus
 namespace kodi
 {
 namespace platform
 {
 
+//==============================================================================
+/// @defgroup cpp_kodi_platform_CInterfaceAndroidSystem class CInterfaceAndroidSystem
+/// @ingroup cpp_kodi_platform
+/// @brief **Android platform specific functions**\n
+/// C++ class to query Android specific things in Kodi.
+///
+/// It has the header is @ref System.h "#include <kodi/platform/android/System.h>".
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/platform/android/System.h>
+///
+/// #if defined(ANDROID)
+/// kodi::platform::CInterfaceAndroidSystem system;
+/// if (system.GetSDKVersion() >= 23)
+/// {
+///   ...
+/// }
+/// #endif
+/// ~~~~~~~~~~~~~
+///
 class ATTRIBUTE_HIDDEN CInterfaceAndroidSystem
 {
 public:
@@ -35,13 +48,12 @@ public:
           GetInterface(INTERFACE_ANDROID_SYSTEM_NAME, INTERFACE_ANDROID_SYSTEM_VERSION))){};
 
   //============================================================================
+  /// @ingroup cpp_kodi_platform_CInterfaceAndroidSystem
+  /// @brief Request an JNI env pointer for the calling thread.
   ///
-  /// \ingroup cpp_kodi_platform
-  /// @brief request an JNI env pointer for the calling thread.
   /// JNI env has to be controlled by kodi because of the underlying
   /// threading concep.
   ///
-  /// @param[in]:
   /// @return JNI env pointer for the calling thread
   ///
   inline void* GetJNIEnv()
@@ -54,11 +66,9 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @ingroup cpp_kodi_platform_CInterfaceAndroidSystem
+  /// @brief Request the android sdk version to e.g. initialize <b>`JNIBase`</b>.
   ///
-  /// \ingroup cpp_kodi_platform
-  /// @brief request the android sdk version to e.g. initialize JNIBase.
-  ///
-  /// @param[in]:
   /// @return Android SDK version
   ///
   inline int GetSDKVersion()
@@ -68,13 +78,12 @@ public:
 
     return 0;
   }
+  //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @ingroup cpp_kodi_platform_CInterfaceAndroidSystem
+  /// @brief Request the android main class name e.g. <b>`org.xbmc.kodi`</b>.
   ///
-  /// \ingroup cpp_kodi_platform
-  /// @brief request the android main class name e.g. org.xbmc.kodi.
-  ///
-  /// @param[in]:
   /// @return package class name
   ///
   inline std::string GetClassName()
@@ -84,11 +93,12 @@ public:
 
     return std::string();
   }
+  //----------------------------------------------------------------------------
 
 private:
   AddonToKodiFuncTable_android_system* m_interface;
 };
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 } /* namespace platform */
 } /* namespace kodi */
