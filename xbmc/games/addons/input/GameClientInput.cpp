@@ -137,7 +137,8 @@ bool CGameClientInput::HasFeature(const std::string& controllerId,
 
   try
   {
-    bHasFeature = m_struct.toAddon.HasFeature(&m_struct, controllerId.c_str(), featureName.c_str());
+    bHasFeature =
+        m_struct.toAddon->HasFeature(&m_struct, controllerId.c_str(), featureName.c_str());
   }
   catch (...)
   {
@@ -164,7 +165,7 @@ bool CGameClientInput::InputEvent(const game_input_event& event)
 
   try
   {
-    bHandled = m_struct.toAddon.InputEvent(&m_struct, &event);
+    bHandled = m_struct.toAddon->InputEvent(&m_struct, &event);
   }
   catch (...)
   {
@@ -182,7 +183,7 @@ void CGameClientInput::LoadTopology()
   {
     try
     {
-      topologyStruct = m_struct.toAddon.GetTopology(&m_struct);
+      topologyStruct = m_struct.toAddon->GetTopology(&m_struct);
     }
     catch (...)
     {
@@ -208,7 +209,7 @@ void CGameClientInput::LoadTopology()
 
     try
     {
-      m_struct.toAddon.FreeTopology(&m_struct, topologyStruct);
+      m_struct.toAddon->FreeTopology(&m_struct, topologyStruct);
     }
     catch (...)
     {
@@ -252,8 +253,8 @@ void CGameClientInput::SetControllerLayouts(const ControllerVector& controllers)
 
   try
   {
-    m_struct.toAddon.SetControllerLayouts(&m_struct, controllerStructs.data(),
-                                          static_cast<unsigned int>(controllerStructs.size()));
+    m_struct.toAddon->SetControllerLayouts(&m_struct, controllerStructs.data(),
+                                           static_cast<unsigned int>(controllerStructs.size()));
   }
   catch (...)
   {
@@ -334,7 +335,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller)
     {
       try
       {
-        bSuccess = m_struct.toAddon.EnableKeyboard(&m_struct, true, controller->ID().c_str());
+        bSuccess = m_struct.toAddon->EnableKeyboard(&m_struct, true, controller->ID().c_str());
       }
       catch (...)
       {
@@ -364,7 +365,7 @@ void CGameClientInput::CloseKeyboard()
     {
       try
       {
-        m_struct.toAddon.EnableKeyboard(&m_struct, false, "");
+        m_struct.toAddon->EnableKeyboard(&m_struct, false, "");
       }
       catch (...)
       {
@@ -399,7 +400,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller)
     {
       try
       {
-        bSuccess = m_struct.toAddon.EnableMouse(&m_struct, true, controller->ID().c_str());
+        bSuccess = m_struct.toAddon->EnableMouse(&m_struct, true, controller->ID().c_str());
       }
       catch (...)
       {
@@ -428,7 +429,7 @@ void CGameClientInput::CloseMouse()
     {
       try
       {
-        m_struct.toAddon.EnableMouse(&m_struct, false, "");
+        m_struct.toAddon->EnableMouse(&m_struct, false, "");
       }
       catch (...)
       {
@@ -467,8 +468,8 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
     {
       try
       {
-        bSuccess = m_struct.toAddon.ConnectController(&m_struct, true, portAddress.c_str(),
-                                                      controller->ID().c_str());
+        bSuccess = m_struct.toAddon->ConnectController(&m_struct, true, portAddress.c_str(),
+                                                       controller->ID().c_str());
       }
       catch (...)
       {
@@ -512,7 +513,7 @@ void CGameClientInput::CloseJoystick(const std::string& portAddress)
     {
       try
       {
-        m_struct.toAddon.ConnectController(&m_struct, false, portAddress.c_str(), "");
+        m_struct.toAddon->ConnectController(&m_struct, false, portAddress.c_str(), "");
       }
       catch (...)
       {

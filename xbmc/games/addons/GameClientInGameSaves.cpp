@@ -78,7 +78,7 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
 
   try
   {
-    m_dllStruct->toAddon.GetMemory(m_dllStruct, memoryType, &gameMemory, &size);
+    m_dllStruct->toAddon->GetMemory(m_dllStruct, memoryType, &gameMemory, &size);
   }
   catch (...)
   {
@@ -123,7 +123,7 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
 
   try
   {
-    m_dllStruct->toAddon.GetMemory(m_dllStruct, memoryType, &gameMemory, &size);
+    m_dllStruct->toAddon->GetMemory(m_dllStruct, memoryType, &gameMemory, &size);
   }
   catch (...)
   {
