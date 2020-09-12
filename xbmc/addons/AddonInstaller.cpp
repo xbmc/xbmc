@@ -11,6 +11,7 @@
 #include "FilesystemInstaller.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h" // for callback
+#include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -656,6 +657,9 @@ bool CAddonInstallJob::DoWork()
   if (m_addon->HasType(ADDON_REPOSITORY))
   {
     origin = m_addon->ID(); // always set repos origin to itself
+    if (m_isUpdate)
+      CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
+          std::static_pointer_cast<CRepository>(m_addon), false);
   }
   else if (m_repo)
   {
