@@ -825,6 +825,7 @@ INPUT                  = main.txt \
                          ../../../GUIInfoManager.cpp \
                          Modules/modules_general.dox \
                          Modules/modules_cpp.dox \
+                         Modules/modules_cpp_gui.dox \
                          Modules/modules_cpp_peripheral.dox \
                          Modules/modules_python.dox \
                          Skin/skin.dox \

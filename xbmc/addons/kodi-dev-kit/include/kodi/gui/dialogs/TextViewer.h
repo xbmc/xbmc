@@ -20,14 +20,12 @@ namespace gui
 namespace dialogs
 {
 
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_TextViewer Dialog Text Viewer
-/// \ingroup cpp_kodi_gui
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_TextViewer Dialog Text Viewer
+/// @ingroup cpp_kodi_gui_dialogs
 /// @{
-/// @brief \cpp_namespace{ kodi::gui::dialogs::TextViewer }
-/// **Text viewer dialog**
-///
+/// @brief @cpp_namespace{ kodi::gui::dialogs::TextViewer }
+/// **Text viewer dialog**\n
 /// The text viewer dialog can be used to display descriptions, help texts or
 /// other larger texts.
 ///
@@ -40,13 +38,12 @@ namespace dialogs
 ///
 namespace TextViewer
 {
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_TextViewer
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_TextViewer
 /// @brief Show info text dialog
 ///
-/// @param[in] heading  Small heading text
-/// @param[in] text     Showed text on dialog
+/// @param[in] heading  mall heading text
+/// @param[in] text Showed text on dialog
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -101,7 +98,7 @@ inline void ATTRIBUTE_HIDDEN Show(const std::string& heading, const std::string&
   CAddonBase::m_interface->toKodi->kodi_gui->dialogTextViewer->open(
       CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 }; // namespace TextViewer
 /// @}
 

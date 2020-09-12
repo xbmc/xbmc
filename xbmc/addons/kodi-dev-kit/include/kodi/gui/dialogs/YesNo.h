@@ -20,14 +20,12 @@ namespace gui
 namespace dialogs
 {
 
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_YesNo Dialog Yes/No
-/// \ingroup cpp_kodi_gui
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_YesNo Dialog Yes/No
+/// @ingroup cpp_kodi_gui_dialogs
 /// @{
-/// @brief \cpp_namespace{ kodi::gui::dialogs::YesNo }
-/// **Yes / No dialog**
-///
+/// @brief @cpp_namespace{ kodi::gui::dialogs::YesNo }
+/// **Yes / No dialog**\n
 /// The Yes / No dialog can be used to inform the user about questions and get
 /// the answer.
 ///
@@ -35,24 +33,22 @@ namespace dialogs
 /// in the <em>"./resources/language/resource.language.??_??/strings.po"</em>
 /// to call with <b>std::string kodi::general::GetLocalizedString(...);</b>.
 ///
-/// It has the header \ref YesNo.h "#include <kodi/gui/dialogs/YesNo.h>"
+/// It has the header @ref YesNo.h "#include <kodi/gui/dialogs/YesNo.h>"
 /// be included to enjoy it.
-///
 ///
 namespace YesNo
 {
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_YesNo
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_YesNo
 /// @brief Use dialog to get numeric new password with one text string shown
-/// everywhere and cancel return field
+/// everywhere and cancel return field.
 ///
-/// @param[in] heading    Dialog heading
-/// @param[in] text       Multi-line text
-/// @param[out] canceled  Return value about cancel button
-/// @param[in] noLabel    [opt] label to put on the no button
-/// @param[in] yesLabel   [opt] label to put on the yes button
-/// @return           Returns True if 'Yes' was pressed, else False
+/// @param[in] heading Dialog heading
+/// @param[in] text  Multi-line text
+/// @param[out] canceled Return value about cancel button
+/// @param[in] noLabel [opt] label to put on the no button
+/// @param[in] yesLabel [opt] label to put on the yes button
+/// @return Returns True if 'Yes' was pressed, else False
 ///
 /// @note It is preferred to only use this as it is actually a multi-line text.
 ///
@@ -63,13 +59,13 @@ namespace YesNo
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/gui/dialogs/YesNo.h>
 ///
-/// bool canceled;
+/// bool canceled = false;
 /// bool ret = kodi::gui::dialogs::YesNo::ShowAndGetInput(
-///    "Yes / No test call",   /* The Header */
+///    "Yes / No test call",   // The Header
 ///    "You has opened Yes / No dialog for test\n\nIs this OK for you?",
-///    canceled,               /* return value about cancel button */
-///    "Not really",           /* No label, is optional and if empty "No" */
-///    "Ohhh yes");            /* Yes label, also optional and if empty "Yes" */
+///    canceled,               // return value about cancel button
+///    "Not really",           // No label, is optional and if empty "No"
+///    "Ohhh yes");            // Yes label, also optional and if empty "Yes"
 /// fprintf(stderr, "You has called Yes/No, returned '%s' and was %s\n",
 ///          ret ? "yes" : "no",
 ///          canceled ? "canceled" : "not canceled");
@@ -86,20 +82,19 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
       CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str(), &canceled,
       noLabel.c_str(), yesLabel.c_str());
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_YesNo
+/// @brief Use dialog to get numeric new password with separated line strings.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_YesNo
-/// @brief Use dialog to get numeric new password with separated line strings
-///
-/// @param[in] heading      Dialog heading
-/// @param[in] line0        Line #0 text
-/// @param[in] line1        Line #1 text
-/// @param[in] line2        Line #2 text
-/// @param[in] noLabel      [opt] label to put on the no button.
-/// @param[in] yesLabel     [opt] label to put on the yes button.
-/// @return                 Returns True if 'Yes' was pressed, else False.
+/// @param[in] heading Dialog heading
+/// @param[in] line0 Line #0 text
+/// @param[in] line1 Line #1 text
+/// @param[in] line2 Line #2 text
+/// @param[in] noLabel [opt] label to put on the no button
+/// @param[in] yesLabel [opt] label to put on the yes button
+/// @return Returns True if 'Yes' was pressed, else False
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -131,21 +126,21 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
       CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
       line2.c_str(), noLabel.c_str(), yesLabel.c_str());
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_YesNo
+/// @brief Use dialog to get numeric new password with separated line strings
+/// and cancel return field.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_YesNo
-/// @brief Use dialog to get numeric new password with separated line strings and cancel return field
-///
-/// @param[in] heading      Dialog heading
-/// @param[in] line0        Line #0 text
-/// @param[in] line1        Line #1 text
-/// @param[in] line2        Line #2 text
-/// @param[out] canceled    Return value about cancel button
-/// @param[in] noLabel      [opt] label to put on the no button
-/// @param[in] yesLabel     [opt] label to put on the yes button
-/// @return                 Returns True if 'Yes' was pressed, else False
+/// @param[in] heading Dialog heading
+/// @param[in] line0 Line #0 text
+/// @param[in] line1 Line #1 text
+/// @param[in] line2 Line #2 text
+/// @param[out] canceled Return value about cancel button
+/// @param[in] noLabel [opt] label to put on the no button
+/// @param[in] yesLabel [opt] label to put on the yes button
+/// @return Returns True if 'Yes' was pressed, else False
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -154,7 +149,7 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/gui/dialogs/YesNo.h>
 ///
-/// bool canceled;
+/// bool canceled = false;
 /// bool ret = kodi::gui::dialogs::YesNo::ShowAndGetInput(
 ///    "Yes / No test call",   // The Header
 ///    "You has opened Yes / No dialog for test",
@@ -182,7 +177,7 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
           CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
           line2.c_str(), &canceled, noLabel.c_str(), yesLabel.c_str());
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 }; // namespace YesNo
 /// @}
 

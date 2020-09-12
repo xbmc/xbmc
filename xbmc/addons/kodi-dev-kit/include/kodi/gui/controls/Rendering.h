@@ -22,46 +22,36 @@ namespace controls
 {
 
 //============================================================================
+/// @defgroup cpp_kodi_gui_windows_controls_CRendering Control Rendering
+/// @ingroup cpp_kodi_gui_windows_controls
+/// @brief @cpp_class{ kodi::gui::controls::CRendering }
+/// **Window control for rendering own parts**\n
+/// This rendering control is used when own parts are needed.
 ///
-/// \defgroup cpp_kodi_gui_controls_CRendering Control Rendering
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_class{ kodi::gui::controls::CRendering }
-/// **Window control for rendering own parts**
+/// You have the control over them to render direct OpenGL or DirectX content
+/// to the screen set by the size of them.
 ///
-/// This rendering control is used  when own parts are needed.  You  have  the
-/// control  over them  to render direct  OpenGL or  DirectX  content  to  the
-/// screen set by the size of them.
+/// Alternative can be the virtual functions from t his been ignored if the
+/// callbacks are defined by the @ref CRendering_SetIndependentCallbacks
+/// function and class is used as single and not as a parent class.
 ///
-/// Alternative  can be  the virtual  functions from t his been ignored if the
-/// callbacks are  defined  by the  \ref CRendering_SetIndependentCallbacks function  and
-/// class is used as single and not as a parent class.
-///
-/// It has the header \ref Rendering.h "#include <kodi/gui/controls/Rendering.h>"
+/// It has the header @ref Rendering.h "#include <kodi/gui/controls/Rendering.h>"
 /// be included to enjoy it.
 ///
-/// Here you find the needed skin part for a \ref Addon_Rendering_control "rendering control"
+/// Here you find the needed skin part for a @ref Addon_Rendering_control "rendering control".
 ///
-/// @note The  call of  the control is only  possible  from  the corresponding
+/// @note The call of the control is only possible from the corresponding
 /// window as its class and identification number is required.
 ///
-
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_controls_CRendering_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_gui_controls_CRendering
-/// @brief **Library definition values**
-///
-
 class ATTRIBUTE_HIDDEN CRendering : public CAddonGUIControlBase
 {
 public:
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @brief Construct a new control.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// @brief Construct a new control
-  ///
-  /// @param[in] window               related window control class
-  /// @param[in] controlId            Used skin xml control id
+  /// @param[in] window Related window control class
+  /// @param[in] controlId Used skin xml control id
   ///
   CRendering(CWindow* window, int controlId) : CAddonGUIControlBase(window)
   {
@@ -78,9 +68,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// @brief Destructor
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @brief Destructor.
   ///
   ~CRendering() override
   {
@@ -89,69 +78,80 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @brief To create rendering control on Add-on.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// @brief To create rendering control on Add-on
-  ///
-  /// Function  creates the  needed rendering  control for Kodi  which becomes
+  /// Function creates the needed rendering control for Kodi which becomes
   /// handled and processed from Add-on
   ///
-  /// @note This is  callback  function  from Kodi  to  Add-on and  not to use
+  /// @note This is callback function from Kodi to Add-on and not to use
   /// for calls from add-on to this function.
   ///
-  /// @param[in] x                    Horizontal position
-  /// @param[in] y                    Vertical position
-  /// @param[in] w                    Width of control
-  /// @param[in] h                    Height of control
-  /// @param[in] device               The device to use.  For OpenGL  is empty
-  ///                                 on Direct X is the needed device send.
-  /// @return                         Add-on needs to return true if successed,
-  ///                                 otherwise false.
+  /// @param[in] x Horizontal position
+  /// @param[in] y Vertical position
+  /// @param[in] w Width of control
+  /// @param[in] h Height of control
+  /// @param[in] device The device to use. For OpenGL is empty on Direct X is
+  ///                   the needed device send.
+  /// @return Add-on needs to return true if successed, otherwise false.
+  ///
+  /// @note The @ref kodi::HardwareContext is basically a simple pointer which
+  /// has to be changed to the desired format at the corresponding places using
+  /// <b>`static_cast<...>(...)`</b>.
   ///
   virtual bool Create(int x, int y, int w, int h, kodi::HardwareContext device) { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @brief Render process call from Kodi.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// @brief Render process call from Kodi
-  ///
-  /// @note This  is callback  function from  Kodi to  Add-on  and not  to use
-  /// for calls from add-on to this function.
+  /// @note This is callback function from  Kodi to Add-on and not to use for
+  /// calls from add-on to this function.
   ///
   virtual void Render() {}
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @brief Call from Kodi to stop rendering process.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// @brief Call from Kodi to stop rendering process
-  ///
-  /// @note This  is callback  function from  Kodi to  Add-on  and not  to use
+  /// @note This is callback function from Kodi to Add-on and not to use
   /// for calls from add-on to this function.
   ///
   virtual void Stop() {}
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// @brief Call from Kodi where add-on  becomes asked about  dirty rendering
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @brief Call from Kodi where add-on becomes asked about dirty rendering
   /// region.
   ///
-  /// @note This  is callback  function from  Kodi to  Add-on  and not  to use
+  /// @note This is callback function from Kodi to Add-on and not to use
   /// for calls from add-on to this function.
+  ///
+  /// @return True if a render region is dirty and need rendering.
   ///
   virtual bool Dirty() { return false; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CRendering
-  /// \anchor CRendering_SetIndependentCallbacks
-  /// @brief If the  class is used  independent (with "new CRendering")
-  /// and not as  parent (with "cCLASS_own : CRendering") from own must
+  /// @ingroup cpp_kodi_gui_windows_controls_CRendering
+  /// @anchor CRendering_SetIndependentCallbacks
+  /// @brief If the class is used independent (with "new CRendering")
+  /// and not as parent (with "cCLASS_own : CRendering") from own must
   /// be the callback from Kodi to add-on overdriven with own functions!
+  ///
+  /// @param[in] cbhdl Addon related class point where becomes given as value on
+  ///                  related functions.
+  /// @param[in] CBCreate External creation function pointer, see also @ref Create
+  ///                     about related values
+  /// @param[in] CBRender External render function pointer, see also @ref Render
+  ///                     about related values
+  /// @param[in] CBStop External stop function pointer, see also @ref Stop
+  ///                   about related values
+  /// @param[in] CBDirty External dirty function pointer, see also @ref Dirty
+  ///                    about related values
   ///
   void SetIndependentCallbacks(kodi::gui::ClientHandle cbhdl,
                                bool (*CBCreate)(kodi::gui::ClientHandle cbhdl,

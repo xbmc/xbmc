@@ -21,34 +21,33 @@ namespace controls
 {
 
 //============================================================================
+/// @defgroup cpp_kodi_gui_windows_controls_CTextBox Control Text Box
+/// @ingroup cpp_kodi_gui_windows_controls
+/// @brief @cpp_class{ kodi::gui::controls::CTextBox }
+/// **Used to show a multi-page piece of text**\n
+/// The text box control can be used to display descriptions, help texts or
+/// other larger texts.
 ///
-/// \defgroup cpp_kodi_gui_controls_CTextBox Control Text Box
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_class{ kodi::gui::controls::CTextBox }
-/// **Used to show a multi-page piece of text**
+/// It corresponds to the representation which is also to be seen on the
+/// @ref CDialogTextViewer.
 ///
-/// The text box control  can be used to display  descriptions,  help texts or
-/// other larger texts.  It corresponds to the representation which is also to
-/// be seen on the CDialogTextViewer.
-///
-/// It has the header \ref TextBox.h "#include <kodi/gui/controls/TextBox.h>"
+/// It has the header @ref TextBox.h "#include <kodi/gui/controls/TextBox.h>"
 /// be included to enjoy it.
 ///
-/// Here you find the needed skin part for a \ref Text_Box "textbox control".
+/// Here you find the needed skin part for a @ref Text_Box "textbox control".
 ///
-/// @note The call  of the  control is  only possible  from the  corresponding
+/// @note The call of the control is only possible from the corresponding
 /// window as its class and identification number is required.
 ///
 class ATTRIBUTE_HIDDEN CTextBox : public CAddonGUIControlBase
 {
 public:
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief Construct a new control.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief Construct a new control
-  ///
-  /// @param[in] window               related window control class
-  /// @param[in] controlId            Used skin xml control id
+  /// @param[in] window related window control class
+  /// @param[in] controlId Used skin xml control id
   ///
   CTextBox(CWindow* window, int controlId) : CAddonGUIControlBase(window)
   {
@@ -61,19 +60,17 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief Destructor
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief Destructor.
   ///
   ~CTextBox() override = default;
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief Set the control on window to visible.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief Set the control on window to visible
-  ///
-  /// @param[in] visible              If true visible, otherwise hidden
+  /// @param[in] visible If true visible, otherwise hidden
   ///
   void SetVisible(bool visible)
   {
@@ -83,19 +80,17 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief To reset box an remove all the text
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief To reset box an remove all the text.
   ///
   void Reset() { m_interface->kodi_gui->control_text_box->reset(m_controlHandle, m_controlHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief To set the text on box.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief To set the text on box
-  ///
-  /// @param[in] text                 Text to show
+  /// @param[in] text Text to show
   ///
   void SetText(const std::string& text)
   {
@@ -105,11 +100,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief Get the used text from control.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief Get the used text from control
-  ///
-  /// @return                         Text shown
+  /// @return Text shown
   ///
   std::string GetText() const
   {
@@ -127,11 +121,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
+  /// @brief To scroll text on other position.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
-  /// @brief To scroll text on other position
-  ///
-  /// @param[in] position             The line position to scroll to
+  /// @param[in] position The line position to scroll to
   ///
   void Scroll(unsigned int position)
   {
@@ -141,8 +134,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CTextBox
+  /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
   /// @brief To set automatic scrolling of textbox
   ///
   /// Specifies the timing  and conditions of  any autoscrolling  this textbox
@@ -152,10 +144,10 @@ public:
   /// time,  fades out over 1 second,  and repeats.  It does not wrap or reset
   /// to the top at the end of the scroll.
   ///
-  /// @param[in] delay                Content delay
-  /// @param[in] time                 One line per time interval
-  /// @param[in] repeat               Delays with given time, fades out over 1
-  ///                                 second, and repeats
+  /// @param[in] delay Content delay
+  /// @param[in] time One line per time interval
+  /// @param[in] repeat Delays with given time, fades out over 1 second, and
+  ///                   repeats
   ///
   void SetAutoScrolling(int delay, int time, int repeat)
   {

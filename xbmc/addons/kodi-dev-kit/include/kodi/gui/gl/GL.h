@@ -11,27 +11,22 @@
 #ifdef __cplusplus
 
 //==============================================================================
-///
-/// \defgroup cpp_kodi_gui_gl OpenGL helpers
-/// \ingroup cpp_kodi_gui
-/// \brief Auxiliary functions for Open GL
-///
+/// @defgroup cpp_kodi_gui_helpers_gl OpenGL helpers
+/// @ingroup cpp_kodi_gui_helpers
+/// @brief **Auxiliary functions for Open GL**\n
 /// This group includes help for definitions, functions, and classes for
 /// OpenGL.
 ///
-/// To use OpenGL for your system, add the \ref GL.h "#include <kodi/gui/gl/GL.h>".
+/// To use OpenGL for your system, add the @ref GL.h "#include <kodi/gui/gl/GL.h>".
 ///
-///
-///-----------------------------------------------------------------------------
-///
-/// The \ref HAS_GL is declared if Open GL is required and \ref HAS_GLES if Open GL
+/// The @ref HAS_GL is declared if Open GL is required and @ref HAS_GLES if Open GL
 /// Embedded Systems (ES) is required, with ES the version is additionally given
 /// in the definition, this can be "2" or "3".
 ///
 ///
 ///-----------------------------------------------------------------------------
 ///
-/// Following \ref GL_TYPE_STRING define can be used, for example, to manage
+/// Following @ref GL_TYPE_STRING define can be used, for example, to manage
 /// different folders for GL and GLES and make the selection easier.
 /// This are on OpenGL <b>"GL"</b> and on Open GL|ES <b>"GLES"</b>.
 ///
@@ -43,7 +38,7 @@
 ///
 ///----------------------------------------------------------------------------
 ///
-/// In addition, \ref BUFFER_OFFSET is declared in it which can be used to give an
+/// In addition, @ref BUFFER_OFFSET is declared in it which can be used to give an
 /// offset on the array to GL.
 ///
 /// **Example:**
@@ -109,6 +104,8 @@
 #endif
 
 #ifndef BUFFER_OFFSET
+/// @ingroup cpp_kodi_gui_helpers_gl
+/// @brief To give a offset number as pointer value.
 #define BUFFER_OFFSET(i) ((char*)nullptr + (i))
 #endif
 

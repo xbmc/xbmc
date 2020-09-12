@@ -13,25 +13,32 @@
 
 #ifdef __cplusplus
 
+namespace kodi
+{
+namespace gui
+{
+namespace dialogs
+{
+
 //==============================================================================
-/// \defgroup cpp_kodi_vfs_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_gui_dialogs_Select
-/// @brief **Dialog Select definition values**
+/// @defgroup cpp_kodi_gui_dialogs_Select_Defs Definitions, structures and enumerators
+/// @ingroup cpp_kodi_gui_dialogs_Select
+/// @brief **Dialog Select definition values**\n
+/// Data structures associated with this dialog.
+///
 //------------------------------------------------------------------------------
 
 //==============================================================================
-/// \ingroup cpp_kodi_vfs_Defs
-/// @brief **Selection entry structure**
+/// @ingroup cpp_kodi_gui_dialogs_Select_Defs
+/// @brief **Selection entry structure**\n
+/// Used to provide the necessary data for the selection dialog and to declare
+/// the selected position in it.
 ///
 typedef struct SSelectionEntry
 {
-  //============================================================================
-  /// Structure constructor
-  ///
-  /// There becomes selected always set to false.
-  ///
+  /*! \cond PRIVATE */
   SSelectionEntry() = default;
-  //----------------------------------------------------------------------------
+  /*! \endcond */
 
   /// Entry identfication string
   std::string id;
@@ -45,43 +52,33 @@ typedef struct SSelectionEntry
 } SSelectionEntry;
 //------------------------------------------------------------------------------
 
-namespace kodi
-{
-namespace gui
-{
-namespace dialogs
-{
-
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_Select Dialog Select
-/// \ingroup cpp_kodi_gui
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_Select Dialog Select
+/// @ingroup cpp_kodi_gui_dialogs
 /// @{
-/// @brief \cpp_namespace{ kodi::gui::dialogs::Select }
-/// **Selection dialog**
-///
+/// @brief @cpp_namespace{ kodi::gui::dialogs::Select }
+/// **Selection dialog**\n
 /// The function listed below permits the call of a dialogue to select of an
 /// entry as a key
 ///
-/// It has the header \ref Select.h "#include <kodi/gui/dialogs/Select.h>"
+/// It has the header @ref Select.h "#include <kodi/gui/dialogs/Select.h>"
 /// be included to enjoy it.
 ///
 ///
 namespace Select
 {
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_Select
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_Select
 /// @brief Show a selection dialog about given parts.
 ///
-/// @param[in] heading      Dialog heading name
-/// @param[in] entries      String list about entries
-/// @param[in] selected     [opt] Predefined selection (default is
-///                         <tt>-1</tt> for the first)
-/// @param[in] autoclose    [opt] To close dialog automatic after the given
-///                         time in ms. As '0' it stays open.
-/// @return                 The selected entry, if return <tt>-1</tt> was
-///                         nothing selected or canceled
+/// @param[in] heading Dialog heading name
+/// @param[in] entries String list about entries
+/// @param[in] selected [opt] Predefined selection (default is <tt>-1</tt> for
+///                     the first)
+/// @param[in] autoclose [opt] To close dialog automatic after the given time
+///                      in ms. As '0' it stays open.
+/// @return The selected entry, if return <tt>-1</tt> was nothing selected or
+///         canceled
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -124,24 +121,23 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   free(cEntries);
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_Select
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_Select
 /// @brief Show a selection dialog about given parts.
 ///
 /// This function is mostly equal to the other, only becomes the string list
-/// here done by a SSelectionEntry, where a ID string can be defined.
+/// here done by a @ref SSelectionEntry, where a ID string can be defined.
 ///
-/// @param[in] heading      Dialog heading name
-/// @param[in] entries      SSelectionEntry list about entries
-/// @param[in] selected     [opt] Predefined selection (default is
-///                         <tt>-1</tt> for the first)
-/// @param[in] autoclose    [opt] To close dialog automatic after the given
-///                         time in ms. As '0' it stays open.
-/// @return                 The selected entry, if return <tt>-1</tt> was
-///                         nothing selected or canceled
+/// @param[in] heading Dialog heading name
+/// @param[in] entries @ref SSelectionEntry list about entries
+/// @param[in] selected [opt] Predefined selection (default is <tt>-1</tt> for
+///                     the first)
+/// @param[in] autoclose [opt] To close dialog automatic after the given time
+///                      in ms. As '0' it stays open.
+/// @return The selected entry, if return <tt>-1</tt> was nothing selected
+///         or canceled
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -150,7 +146,7 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/gui/dialogs/Select.h>
 ///
-/// std::vector<SSelectionEntry> entries
+/// std::vector<kodi::gui::dialogs::SSelectionEntry> entries
 /// {
 ///   { "ID 1", "Test 1", false },
 ///   { "ID 2", "Test 2", false },
@@ -167,7 +163,7 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
 /// ~~~~~~~~~~~~~
 ///
 inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
-                                 std::vector<SSelectionEntry>& entries,
+                                 std::vector<kodi::gui::dialogs::SSelectionEntry>& entries,
                                  int selected = -1,
                                  unsigned int autoclose = 0)
 {
@@ -190,21 +186,20 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   free(cEntries);
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_Select
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_Select
 /// @brief Show a multiple selection dialog about given parts.
 ///
-/// @param[in] heading      Dialog heading name
-/// @param[in] entries      SSelectionEntry list about entries
-/// @param[in] autoclose    [opt] To close dialog automatic after the given
-///                         time in ms. As '0' it stays open.
-/// @return                 The selected entries, if return <tt>empty</tt> was
-///                         nothing selected or canceled
+/// @param[in] heading Dialog heading name
+/// @param[in] entries @ref SSelectionEntry list about entries
+/// @param[in] autoclose [opt] To close dialog automatic after the given time in
+///                       ms. As '0' it stays open.
+/// @return The selected entries, if return <tt>empty</tt> was nothing selected
+///         or canceled
 ///
-/// With selected on SSelectionEntry can be a pre selection defined.
+/// With selected on @ref SSelectionEntry can be a pre selection defined.
 ///
 ///-------------------------------------------------------------------------
 ///
@@ -212,7 +207,7 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/gui/dialogs/Select.h>
 ///
-/// std::vector<SSelectionEntry> entries
+/// std::vector<kodi::gui::dialogs::SSelectionEntry> entries
 /// {
 ///   { "ID 1", "Test 1", false },
 ///   { "ID 2", "Test 2", false },
@@ -236,7 +231,7 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
 /// ~~~~~~~~~~~~~
 ///
 inline bool ATTRIBUTE_HIDDEN ShowMultiSelect(const std::string& heading,
-                                             std::vector<SSelectionEntry>& entries,
+                                             std::vector<kodi::gui::dialogs::SSelectionEntry>& entries,
                                              int autoclose = 0)
 {
   using namespace ::kodi::addon;
@@ -263,7 +258,7 @@ inline bool ATTRIBUTE_HIDDEN ShowMultiSelect(const std::string& heading,
   free(cEntriesSelected);
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 }; // namespace Select
 /// @}
 

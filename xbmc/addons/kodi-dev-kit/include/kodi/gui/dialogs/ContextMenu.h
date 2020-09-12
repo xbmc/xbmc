@@ -20,30 +20,27 @@ namespace gui
 namespace dialogs
 {
 
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_ContextMenu Dialog Context Menu
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_namespace{ kodi::gui::dialogs::ContextMenu }
-/// **Context menu dialog**
-///
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_ContextMenu Dialog Context Menu
+/// @ingroup cpp_kodi_gui_dialogs
+/// @brief @cpp_namespace{ kodi::gui::dialogs::ContextMenu }
+/// **Context menu dialog**@n
 /// The function listed below permits the call of a dialogue as context menu to
 /// select of an entry as a key
 ///
-/// It has the header \ref ContextMenu.h "#include <kodi/gui/dialogs/ContextMenu.h>"
+/// It has the header @ref ContextMenu.h "#include <kodi/gui/dialogs/ContextMenu.h>"
 /// be included to enjoy it.
 ///
 ///
 namespace ContextMenu
 {
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_ContextMenu
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_ContextMenu
 /// @brief Show a context menu dialog about given parts.
 ///
-/// @param[in] heading   Dialog heading name
-/// @param[in] entries   String list about entries
-/// @return          The selected entry, if return <tt>-1</tt> was nothing selected or canceled
+/// @param[in] heading Dialog heading name
+/// @param[in] entries String list about entries
+/// @return The selected entry, if return <tt>-1</tt> was nothing selected or canceled
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -83,16 +80,15 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   free(cEntries);
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_ContextMenu
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_ContextMenu
 /// @brief Show a context menu dialog about given parts.
 ///
-/// @param[in] heading   Dialog heading name
-/// @param[in] entries   String list about entries
-/// @return          The selected entry, if return <tt>-1</tt> was nothing selected or canceled
+/// @param[in] heading Dialog heading name
+/// @param[in] entries String list about entries
+/// @return The selected entry, if return <tt>-1</tt> was nothing selected or canceled
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -132,16 +128,15 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   free(cEntries);
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_ContextMenu
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_ContextMenu
 /// @brief Show a context menu dialog about given parts.
 ///
-/// @param[in] heading   Dialog heading name
-/// @param[in] entries   String list about entries
-/// @return          The selected entry, if return <tt>-1</tt> was nothing selected or canceled
+/// @param[in] heading Dialog heading name
+/// @param[in] entries String list about entries
+/// @return The selected entry, if return <tt>-1</tt> was nothing selected or canceled
 ///
 ///
 ///-------------------------------------------------------------------------
@@ -181,7 +176,7 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   free(cEntries);
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 }; // namespace ContextMenu
 
 } /* namespace dialogs */

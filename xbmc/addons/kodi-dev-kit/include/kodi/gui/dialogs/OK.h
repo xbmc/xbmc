@@ -20,26 +20,24 @@ namespace gui
 namespace dialogs
 {
 
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_OK Dialog OK
-/// \ingroup cpp_kodi_gui
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_OK Dialog OK
+/// @ingroup cpp_kodi_gui_dialogs
 /// @{
-/// @brief \cpp_namespace{ kodi::gui::dialogs::OK }
-/// **OK dialog**
-///
+/// @brief @cpp_namespace{ kodi::gui::dialogs::OK }
+/// **OK dialog**\n
 /// The functions listed below permit the call of a dialogue of information, a
 /// confirmation of the user by press from OK required.
 ///
-/// It has the header \ref OK.h "#include <kodi/gui/dialogs/OK.h>"
+/// It has the header @ref OK.h "#include <kodi/gui/dialogs/OK.h>"
 /// be included to enjoy it.
 ///
 namespace OK
 {
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_OK
-/// @brief Use dialog to inform user with text and confirmation with OK with continued string.
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_OK
+/// @brief Use dialog to inform user with text and confirmation with OK with
+/// continued string.
 ///
 /// @param[in] heading Dialog heading.
 /// @param[in] text Multi-line text.
@@ -60,12 +58,12 @@ inline void ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading, const s
   CAddonBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text(
       CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
-///
-/// \ingroup cpp_kodi_gui_dialogs_OK
-/// @brief Use dialog to inform user with text and confirmation with OK with strings separated to the lines.
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_OK
+/// @brief Use dialog to inform user with text and confirmation with OK with
+/// strings separated to the lines.
 ///
 /// @param[in] heading Dialog heading.
 /// @param[in] line0 Line #1 text.
@@ -92,7 +90,7 @@ inline void ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
       CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
       line2.c_str());
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 } // namespace OK
 /// @}
 

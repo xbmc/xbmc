@@ -20,51 +20,45 @@ namespace gui
 namespace dialogs
 {
 
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_FileBrowser Dialog File Browser
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_namespace{ kodi::gui::dialogs::FileBrowser }
-/// **File browser dialog**
-///
-/// The functions listed below of the class "FileBrowser" offer
-/// the possibility to select to a file by the user of the add-on.
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_FileBrowser Dialog File Browser
+/// @ingroup cpp_kodi_gui_dialogs
+/// @brief @cpp_namespace{ kodi::gui::dialogs::FileBrowser }
+/// **File browser dialog**\n
+/// The functions listed below of the class "FileBrowser" offer the possibility
+/// to select to a file by the user of the add-on.
 ///
 /// It allows all the options that are possible in Kodi itself and offers all
 /// support file types.
 ///
-/// It has the header \ref FileBrowser.h "#include <kodi/gui/dialogs/FileBrowser.h>"
+/// It has the header @ref FileBrowser.h "#include <kodi/gui/dialogs/FileBrowser.h>"
 /// be included to enjoy it.
 ///
 namespace FileBrowser
 {
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief Directory selection dialog.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief Directory selection dialog
-///
-/// @param[in] shares       With Shares becomes the available start folders
-///                         be set.
-/// @param[in] heading      Dialog header name
-/// @param[in,out] path     As in the path to start and return value about
-///                         selected directory
-/// @param[in] writeOnly    If set only writeable folders are shown.
-/// @return                 False if selection becomes canceled.
+/// @param[in] shares With Shares becomes the available start folders be set
+/// @param[in] heading Dialog header name
+/// @param[in,out] path As in the path to start and return value about
+///                     selected directory
+/// @param[in] writeOnly [opt] If set only writeable folders are shown
+/// @return False if selection becomes canceled
 ///
 /// **Example:**
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/gui/dialogs/FileBrowser.h>
 ///
-/// /*
-///  * Example show directory selection dialog with on 'share' (first value)
-///  * defined directory types.
-///  *
-///  * If this becomes leaved empty and 'directory' is empty goes it to the
-///  * base path of the hard disk.
-///  *
-///  * Also can be with path written to 'directory' before the dialog forced
-///  * to a start place.
-///  */
+/// // Example show directory selection dialog with on 'share' (first value)
+/// // defined directory types.
+/// //
+/// // If this becomes leaved empty and 'directory' is empty goes it to the
+/// // base path of the hard disk.
+/// //
+/// // Also can be with path written to 'directory' before the dialog forced
+/// // to a start place.
 /// std::string directory;
 /// bool ret = kodi::gui::dialogs::FileBrowser::ShowAndGetDirectory("local|network|removable",
 ///                                                    "Test directory selection",
@@ -92,24 +86,21 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetDirectory(const std::string& shares,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief File selection dialog.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief File selection dialog
-///
-/// @param[in] shares               With Shares becomes the available  start
-///                                 folders be set.
-/// @param[in] mask                 The mask to filter visible  files,  e.g.
-///                                 ".m3u|.pls|.b4s|.wpl".
-/// @param[in] heading              Dialog header name
-/// @param[in,out] path             As in the path to start and Return value
-///                                 about selected file
-/// @param[in] useThumbs            If set show thumbs if possible on dialog.
-/// @param[in] useFileDirectories   If set also  packages  (e.g. *.zip)  are
-///                                 handled as directories.
-/// @return                         False if selection becomes canceled.
+/// @param[in] shares With Shares becomes the available start folders be set.
+/// @param[in] mask The mask to filter visible files, e.g. ".m3u|.pls|.b4s|.wpl"
+/// @param[in] heading Dialog header name
+/// @param[in,out] path As in the path to start and Return value about selected
+///                     file
+/// @param[in] useThumbs [opt] If set show thumbs if possible on dialog
+/// @param[in] useFileDirectories [opt] If set also packages (e.g. *.zip) are
+///                               handled as directories.
+/// @return False if selection becomes canceled
 ///
 inline bool ATTRIBUTE_HIDDEN ShowAndGetFile(const std::string& shares,
                                             const std::string& mask,
@@ -132,26 +123,23 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetFile(const std::string& shares,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief File selection from a directory.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief File selection from a directory
-///
-/// @param[in] directory            The  directory  name  where  the  dialog
-///                                 start, possible  are  normal  names  and
-///                                 kodi's special names.
-/// @param[in] mask                 The mask to filter visible  files,  e.g.
-///                                 ".m3u|.pls|.b4s|.wpl".
-/// @param[in] heading              Dialog header name
-/// @param[in,out] path             As in the path to start and Return value
-///                                 about selected file
-/// @param[in] useThumbs            If set show thumbs if possible on dialog.
-/// @param[in] useFileDirectories   If set also  packages  (e.g. *.zip)  are
-///                                 handled as directories.
-/// @param[in] singleList
-/// @return                         False if selection becomes canceled.
+/// @param[in] directory The directory name where the dialog start, possible are
+///                      normal names and kodi's special names
+/// @param[in] mask The mask to filter visible files, e.g. ".m3u|.pls|.b4s|.wpl"
+/// @param[in] heading Dialog header name
+/// @param[in,out] path As in the path to start and Return value about selected
+///                     file
+/// @param[in] useThumbs [opt] If set show thumbs if possible on dialog
+/// @param[in] useFileDirectories [opt] If set also  packages (e.g. *.zip) are
+///                               handled as directories
+/// @param[in] singleList [opt]
+/// @return False if selection becomes canceled
 ///
 inline bool ATTRIBUTE_HIDDEN ShowAndGetFileFromDir(const std::string& directory,
                                                    const std::string& mask,
@@ -176,21 +164,18 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetFileFromDir(const std::string& directory,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief File selection dialog to get several in to a list.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief File selection dialog to get several in to a list
-///
-/// @param[in] shares             With Shares becomes  the  available  start
-///                               folders be set.
-/// @param[in] mask               The mask to  filter  visible  files,  e.g.
-///                               ".m3u|.pls|.b4s|.wpl".
-/// @param[in] heading            Dialog header name
-/// @param[out] fileList          Return value about selected files
-/// @param[in] useThumbs          If set show thumbs if possible on dialog.
-/// @param[in] useFileDirectories If  set  also  packages  (e.g. *.zip)  are
+/// @param[in] shares With Shares becomes the available start folders be set.
+/// @param[in] mask The mask to filter visible files, e.g. ".m3u|.pls|.b4s|.wpl"
+/// @param[in] heading Dialog header name
+/// @param[out] fileList Return value about selected files
+/// @param[in] useThumbs [opt] If set show thumbs if possible on dialog.
+/// @param[in] useFileDirectories [opt] If set also packages (e.g. *.zip) are
 ///                               handled as directories.
 /// @return False if selection becomes canceled.
 ///
@@ -216,20 +201,19 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetFileList(const std::string& shares,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief Source selection dialog.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief Source selection dialog
-///
-/// @param[in,out] path           As in the path to start and Return value
-///                               about selected source
+/// @param[in,out] path As in the path to start and Return value about selected
+///                     source
 /// @param[in] allowNetworkShares Allow also access to network
-/// @param[in] additionalShare    With additionalShare becomes the available
-///                               start folders be set (optional).
-/// @param[in] type
-/// @return                       False if selection becomes canceled.
+/// @param[in] additionalShare [opt] With additionalShare becomes the available
+///                            start folders be set.
+/// @param[in] type [opt]
+/// @return False if selection becomes canceled
 ///
 inline bool ATTRIBUTE_HIDDEN ShowAndGetSource(std::string& path,
                                               bool allowNetworkShares,
@@ -250,18 +234,16 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetSource(std::string& path,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief Image selection dialog.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief Image selection dialog
-///
-/// @param[in] shares     With Shares becomes the available start folders be
-///                       set.
-/// @param[in] heading    Dialog header name
-/// @param[out] path      Return value about selected image
-/// @return               False if selection becomes canceled.
+/// @param[in] shares With Shares becomes the available start folders be set
+/// @param[in] heading Dialog header name
+/// @param[out] path Return value about selected image
+/// @return False if selection becomes canceled
 ///
 inline bool ATTRIBUTE_HIDDEN ShowAndGetImage(const std::string& shares,
                                              const std::string& heading,
@@ -281,18 +263,16 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetImage(const std::string& shares,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//==========================================================================
+//==============================================================================
+/// @ingroup cpp_kodi_gui_dialogs_FileBrowser
+/// @brief Image selection dialog to get several in to a list.
 ///
-/// \ingroup cpp_kodi_gui_dialogs_FileBrowser
-/// @brief Image selection dialog to get several in to a list
-///
-/// @param[in] shares       With Shares becomes the available  start folders
-///                         be set.
-/// @param[in] heading      Dialog header name
-/// @param[out] file_list   Return value about selected images
-/// @return                 False if selection becomes canceled.
+/// @param[in] shares With Shares becomes the available start folders be set
+/// @param[in] heading Dialog header name
+/// @param[out] file_list Return value about selected images
+/// @return False if selection becomes canceled
 ///
 inline bool ATTRIBUTE_HIDDEN ShowAndGetImageList(const std::string& shares,
                                                  const std::string& heading,
@@ -312,7 +292,7 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetImageList(const std::string& shares,
   }
   return ret;
 }
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 }; // namespace FileBrowser
 
 } /* namespace dialogs */
