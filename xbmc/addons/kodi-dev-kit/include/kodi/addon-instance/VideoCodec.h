@@ -23,6 +23,45 @@ namespace addon
 
 class CInstanceVideoCodec;
 
+class ATTRIBUTE_HIDDEN VideoCodecInitdata
+  : public CStructHdl<VideoCodecInitdata, VIDEOCODEC_INITDATA>
+{
+  friend class CInstanceVideoCodec;
+
+public:
+  VIDEOCODEC_TYPE GetCodecType() const { return m_cStructure->codec; }
+
+  STREAMCODEC_PROFILE GetCodecProfile() const { return m_cStructure->codecProfile; }
+
+  std::vector<VIDEOCODEC_FORMAT> GetVideoFormats() const
+  {
+    std::vector<VIDEOCODEC_FORMAT> formats;
+    unsigned int i = 0;
+    while (i < VIDEOCODEC_FORMAT_MAXFORMATS &&
+           m_cStructure->videoFormats[i] != VIDEOCODEC_FORMAT_UNKNOWN)
+      formats.emplace_back(m_cStructure->videoFormats[i++]);
+    if (formats.empty())
+      formats.emplace_back(VIDEOCODEC_FORMAT_UNKNOWN);
+    return formats;
+  }
+
+  uint32_t GetWidth() const { return m_cStructure->width; }
+
+  uint32_t GetHeight() const { return m_cStructure->height; }
+
+  const uint8_t* GetExtraData() const { return m_cStructure->extraData; }
+
+  unsigned int GetExtraDataSize() const { return m_cStructure->extraDataSize; }
+
+  kodi::addon::StreamCryptoSession GetCryptoSession() const { return &m_cStructure->cryptoSession; }
+
+private:
+  VideoCodecInitdata() = delete;
+  VideoCodecInitdata(const VideoCodecInitdata& session) : CStructHdl(session) {}
+  VideoCodecInitdata(const VIDEOCODEC_INITDATA* session) : CStructHdl(session) {}
+  VideoCodecInitdata(VIDEOCODEC_INITDATA* session) : CStructHdl(session) {}
+};
+
 class ATTRIBUTE_HIDDEN CInstanceVideoCodec : public IAddonInstance
 {
 public:
@@ -41,10 +80,10 @@ public:
   ~CInstanceVideoCodec() override = default;
 
   //! \copydoc CInstanceVideoCodec::Open
-  virtual bool Open(VIDEOCODEC_INITDATA& initData) { return false; };
+  virtual bool Open(const kodi::addon::VideoCodecInitdata& initData) { return false; };
 
   //! \copydoc CInstanceVideoCodec::Reconfigure
-  virtual bool Reconfigure(VIDEOCODEC_INITDATA& initData) { return false; };
+  virtual bool Reconfigure(const kodi::addon::VideoCodecInitdata& initData) { return false; };
 
   //! \copydoc CInstanceVideoCodec::AddData
   virtual bool AddData(const DEMUX_PACKET& packet) { return false; };
@@ -96,14 +135,14 @@ private:
   inline static bool ADDON_Open(const AddonInstance_VideoCodec* instance,
                                 VIDEOCODEC_INITDATA* initData)
   {
-    return static_cast<CInstanceVideoCodec*>(instance->toAddon->addonInstance)->Open(*initData);
+    return static_cast<CInstanceVideoCodec*>(instance->toAddon->addonInstance)->Open(initData);
   }
 
   inline static bool ADDON_Reconfigure(const AddonInstance_VideoCodec* instance,
                                        VIDEOCODEC_INITDATA* initData)
   {
     return static_cast<CInstanceVideoCodec*>(instance->toAddon->addonInstance)
-        ->Reconfigure(*initData);
+        ->Reconfigure(initData);
   }
 
   inline static bool ADDON_AddData(const AddonInstance_VideoCodec* instance,
