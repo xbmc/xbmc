@@ -18,7 +18,7 @@
 #include "VideoPlayerTeletext.h"
 #include "VideoPlayerVideo.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"

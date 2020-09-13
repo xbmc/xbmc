@@ -13,7 +13,7 @@
 #include "RenderFactory.h"
 #include "RenderFlags.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"

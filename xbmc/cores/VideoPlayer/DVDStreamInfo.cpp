@@ -9,7 +9,7 @@
 #include "DVDStreamInfo.h"
 
 #include "DVDDemuxers/DVDDemux.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 
 CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = NULL; Clear(); }
 CDVDStreamInfo::CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }

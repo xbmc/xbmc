@@ -24,7 +24,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
+#include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"

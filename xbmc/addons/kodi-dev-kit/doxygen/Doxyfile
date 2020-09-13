@@ -830,9 +830,6 @@ INPUT                  = main.txt \
                          Modules/modules_python.dox \
                          Skin/skin.dox \
                          ../../../../cmake/scripts/common/AddonHelpers.dox \
-                         ../../../cores/VideoPlayer/Interface/Addon/DemuxPacket.h \
-                         ../../../cores/VideoPlayer/Interface/Addon/InputStreamConstants.h \
-                         ../../../cores/VideoPlayer/Interface/Addon/TimingConstants.h \
                          ../../../guilib/GUIRenderingControl.dox \
                          ../../../guilib/GUIButtonControl.dox \
                          ../../../guilib/GUIEditControl.dox \

@@ -8,8 +8,8 @@
 
 #include "DVDMessageQueue.h"
 
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 

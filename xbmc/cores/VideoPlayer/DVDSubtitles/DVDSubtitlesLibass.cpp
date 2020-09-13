@@ -9,7 +9,7 @@
 #include "DVDSubtitlesLibass.h"
 
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"

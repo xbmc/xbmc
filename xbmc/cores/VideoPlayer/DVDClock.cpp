@@ -9,7 +9,7 @@
 #include "DVDClock.h"
 
 #include "VideoReferenceClock.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
