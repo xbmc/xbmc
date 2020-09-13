@@ -11,9 +11,9 @@
 #ifndef C_API_ADDONINSTANCE_INPUTSTREAM_H
 #define C_API_ADDONINSTANCE_INPUTSTREAM_H
 
-#include "../../StreamCodec.h"
 #include "../../StreamCrypto.h"
 #include "../addon_base.h"
+#include "inputstream/stream_codec.h"
 #include "inputstream/stream_constants.h"
 #include "inputstream/timing_constants.h"
 #ifdef BUILD_KODI_ADDON

@@ -3,7 +3,6 @@ set(HEADERS AddonBase.h
             Filesystem.h
             General.h
             Network.h
-            StreamCodec.h
             StreamCrypto.h
             versions.h)
 

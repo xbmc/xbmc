@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_INPUTSTREAM_STREAMCODEC_H
+#define C_API_ADDONINSTANCE_INPUTSTREAM_STREAMCODEC_H
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -124,3 +127,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_INPUTSTREAM_STREAMCODEC_H */

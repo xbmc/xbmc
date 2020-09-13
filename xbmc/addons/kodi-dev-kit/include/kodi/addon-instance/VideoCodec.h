@@ -10,7 +10,7 @@
 
 #include "../AddonBase.h"
 #include "../StreamCrypto.h"
-#include "../StreamCodec.h"
+#include "inputstream/StreamCodec.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "../DemuxPacket.h"

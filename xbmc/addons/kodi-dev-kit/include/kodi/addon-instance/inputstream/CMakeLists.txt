@@ -1,4 +1,5 @@
-set(HEADERS StreamConstants.h
+set(HEADERS StreamCodec.h
+            StreamConstants.h
             TimingConstants.h)
 
 if(NOT ENABLE_STATIC_LIBS)
