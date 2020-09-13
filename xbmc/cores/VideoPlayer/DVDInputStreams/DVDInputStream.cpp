@@ -9,7 +9,7 @@
 #include "DVDInputStream.h"
 
 #include "URL.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
+#include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 
 CDVDInputStream::CDVDInputStream(DVDStreamType streamType, const CFileItem& fileitem)
 {

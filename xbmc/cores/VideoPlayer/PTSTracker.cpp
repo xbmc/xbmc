@@ -9,7 +9,7 @@
 #include "PTSTracker.h"
 
 #include "DVDCodecs/DVDCodecUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
