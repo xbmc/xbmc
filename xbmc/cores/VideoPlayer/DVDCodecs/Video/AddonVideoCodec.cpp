@@ -204,7 +204,8 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     return CDVDVideoCodec::VC_ERROR;
 
   VIDEOCODEC_PICTURE picture;
-  picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE_FLAG_DRAIN : VIDEOCODEC_PICTURE_FLAG_DROP;
+  picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE_FLAG_DRAIN
+                                                        : VIDEOCODEC_PICTURE_FLAG_DROP;
 
   switch (m_struct.toAddon->get_picture(&m_struct, &picture))
   {

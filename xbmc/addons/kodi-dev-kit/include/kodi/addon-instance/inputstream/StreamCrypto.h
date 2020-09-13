@@ -19,12 +19,14 @@ namespace addon
 
 class CInstanceInputStream;
 class InputstreamInfo;
+class VideoCodecInitdata;
 
 class ATTRIBUTE_HIDDEN StreamCryptoSession
   : public CStructHdl<StreamCryptoSession, STREAM_CRYPTO_SESSION>
 {
   friend class CInstanceInputStream;
   friend class InputstreamInfo;
+  friend class VideoCodecInitdata;
 
 public:
   /*! \cond PRIVATE */
