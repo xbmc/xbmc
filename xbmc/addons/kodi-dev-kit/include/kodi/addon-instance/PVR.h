@@ -2324,7 +2324,7 @@ public:
   /// @remarks Required, and only used if addon has its own demuxer.
   /// Return `nullptr` if this add-on won't provide this function.
   ///
-  virtual DemuxPacket* DemuxRead() { return nullptr; }
+  virtual DEMUX_PACKET* DemuxRead() { return nullptr; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -2413,7 +2413,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  inline DemuxPacket* AllocateDemuxPacket(int iDataSize)
+  inline DEMUX_PACKET* AllocateDemuxPacket(int iDataSize)
   {
     return m_instanceData->toKodi->AllocateDemuxPacket(m_instanceData->toKodi->kodiInstance,
                                                        iDataSize);
@@ -2428,7 +2428,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  inline void FreeDemuxPacket(DemuxPacket* pPacket)
+  inline void FreeDemuxPacket(DEMUX_PACKET* pPacket)
   {
     m_instanceData->toKodi->FreeDemuxPacket(m_instanceData->toKodi->kodiInstance, pPacket);
   }
@@ -3364,7 +3364,7 @@ private:
     static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->DemuxFlush();
   }
 
-  inline static DemuxPacket* ADDON_DemuxRead(const AddonInstance_PVR* instance)
+  inline static DEMUX_PACKET* ADDON_DemuxRead(const AddonInstance_PVR* instance)
   {
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->DemuxRead();
   }

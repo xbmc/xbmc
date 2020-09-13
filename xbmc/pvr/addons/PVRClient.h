@@ -18,6 +18,8 @@
 #include <utility>
 #include <vector>
 
+struct DemuxPacket;
+
 namespace PVR
 {
 class CPVRChannel;
@@ -1178,7 +1180,7 @@ private:
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    * @param pPacket The packet to free.
    */
-  static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
+  static void cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket);
 
   /*!
    * @brief Allocate a demux packet. Free with FreeDemuxPacket
@@ -1186,7 +1188,7 @@ private:
    * @param iDataSize The size of the data that will go into the packet
    * @return The allocated packet.
    */
-  static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+  static DEMUX_PACKET* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
 
   /*!
    * @brief Notify a state change for a PVR backend connection
