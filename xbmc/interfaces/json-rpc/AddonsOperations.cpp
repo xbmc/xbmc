@@ -247,10 +247,14 @@ static CVariant Serialize(const AddonPtr& addon)
     info["optional"] = dep.optional;
     variant["dependencies"].push_back(std::move(info));
   }
-  if (!addon->IsBroken())
-    variant["broken"] = false;
+  if (addon->LifecycleState() == AddonLifecycleState::BROKEN)
+    variant["broken"] = addon->LifecycleStateDescription();
   else
-    variant["broken"] = addon->Broken();
+    variant["broken"] = false;
+  if (addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
+    variant["deprecated"] = addon->LifecycleStateDescription();
+  else
+    variant["deprecated"] = false;
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& kv : addon->ExtraInfo())
   {

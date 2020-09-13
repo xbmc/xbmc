@@ -1622,7 +1622,7 @@
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
       "enum": [ "name", "version", "summary", "description", "path", "author", "thumbnail", "disclaimer", "fanart",
-                "dependencies", "broken", "extrainfo", "rating", "enabled", "installed" ]
+                "dependencies", "broken", "extrainfo", "rating", "enabled", "installed", "deprecated" ]
     }
   },
   "Addon.Details": {
@@ -1659,7 +1659,8 @@
       },
       "rating": { "type": "integer" },
       "enabled": { "type": "boolean" },
-      "installed": { "type": "boolean" }
+      "installed": { "type": "boolean" },
+      "deprecated": { "type": [ "boolean", "string" ] }
     }
   },
   "GUI.Stereoscopy.Mode": {

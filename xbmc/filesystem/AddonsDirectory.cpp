@@ -853,8 +853,10 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24023));
     if (hasUpdate)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
-    else if (addon->IsBroken())
+    else if (addon->LifecycleState() == AddonLifecycleState::BROKEN)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24098));
+    else if (addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24170));
 
     items.Add(pItem);
   }

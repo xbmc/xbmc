@@ -55,6 +55,24 @@ enum class AddonUpdateRule
   PIN_OLD_VERSION = 2 //!< user downgraded to an older version
 };
 
+/*!
+ * @brief Add-on state defined within addon.xml to report about the current addon
+ * lifecycle state.
+ *
+ * E.g. the add-on is broken and can no longer be used.
+ *
+ * XML examples:
+ * ~~~~~~~~~~~~~{.xml}
+ * <lifecyclestate type="broken" lang="en_GB">SOME TEXT</lifecyclestate>
+ * ~~~~~~~~~~~~~
+ */
+enum class AddonLifecycleState
+{
+  NORMAL = 0, //!< Used if an add-on has no special lifecycle state which is the default state
+  DEPRECATED = 1, //!< the add-on should be marked as deprecated but is still usable
+  BROKEN = 2, //!< the add-on should marked as broken in the repository
+};
+
 struct DependencyInfo
 {
   std::string id;
@@ -172,7 +190,11 @@ public:
   const std::vector<std::string>& Screenshots() const { return m_screenshots; }
   const std::string& Disclaimer() const { return GetTranslatedText(m_disclaimer); }
   const std::vector<DependencyInfo>& GetDependencies() const { return m_dependencies; }
-  const std::string& Broken() const { return m_broken; }
+  AddonLifecycleState LifecycleState() const { return m_lifecycleState; }
+  const std::string& LifecycleStateDescription() const
+  {
+    return GetTranslatedText(m_lifecycleStateDescription);
+  }
   const std::string& Origin() const { return m_origin; }
   const InfoMap& ExtraInfo() const { return m_extrainfo; }
 
@@ -218,7 +240,8 @@ private:
   std::vector<std::string> m_screenshots;
   std::unordered_map<std::string, std::string> m_disclaimer;
   std::vector<DependencyInfo> m_dependencies;
-  std::string m_broken;
+  AddonLifecycleState m_lifecycleState = AddonLifecycleState::NORMAL;
+  std::unordered_map<std::string, std::string> m_lifecycleStateDescription;
   CDateTime m_installDate;
   CDateTime m_lastUpdated;
   CDateTime m_lastUsed;

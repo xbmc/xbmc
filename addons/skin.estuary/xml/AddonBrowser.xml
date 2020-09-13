@@ -20,6 +20,26 @@
 				<include content="ListThumbInfoPanel">
 					<param name="fallback_image" value="DefaultAddon.png" />
 				</include>
+				<control type="group">
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
+					<control type="image">
+						<left>64</left>
+						<top>109</top>
+						<width>472</width>
+						<height>472</height>
+						<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+					</control>
+					<control type="textbox">
+						<left>85</left>
+						<top>110</top>
+						<width>425</width>
+						<height>470</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$VAR[AddonLifecycleType]</label>
+						<font>font36_title</font>
+					</control>
+				</control>
 			</control>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />

@@ -17,6 +17,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "addons/gui/GUIHelpers.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -168,7 +169,8 @@ void CGUIDialogAddonInfo::UpdateControls()
       m_localAddon && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_localAddon->ID());
   bool canDisable =
       isInstalled && CServiceBroker::GetAddonMgr().CanAddonBeDisabled(m_localAddon->ID());
-  bool canInstall = !isInstalled && !m_item->GetAddonInfo()->IsBroken();
+  bool canInstall =
+      !isInstalled && m_item->GetAddonInfo()->LifecycleState() != AddonLifecycleState::BROKEN;
   bool canUninstall = m_localAddon && CServiceBroker::GetAddonMgr().CanUninstall(m_localAddon);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall || canUninstall);
@@ -494,7 +496,13 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER);
   }
   else
+  {
+    // Check user want to enable if lifecycle not normal
+    if (!ADDON::GUI::CHelpers::DialogAddonLifecycleUseAsk(m_localAddon))
+      return;
+
     CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());
+  }
 
   UpdateControls();
 }

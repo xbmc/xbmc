@@ -56,8 +56,34 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         value = addonInfo->ChangeLog();
         return true;
       case LISTITEM_ADDON_BROKEN:
-        value = addonInfo->Broken();
+      {
+        // Fallback for old GUI info
+        if (addonInfo->LifecycleState() == ADDON::AddonLifecycleState::BROKEN)
+          value = addonInfo->LifecycleStateDescription();
+        else
+          value = "";
         return true;
+      }
+      case LISTITEM_ADDON_LIFECYCLE_TYPE:
+      {
+        const ADDON::AddonLifecycleState state = addonInfo->LifecycleState();
+        switch (state)
+        {
+          case ADDON::AddonLifecycleState::BROKEN:
+            value = g_localizeStrings.Get(24171); // "Broken"
+            break;
+          case ADDON::AddonLifecycleState::DEPRECATED:
+            value = g_localizeStrings.Get(24170); // "Deprecated";
+            break;
+          case ADDON::AddonLifecycleState::NORMAL:
+          default:
+            value = g_localizeStrings.Get(24169); // "Normal";
+            break;
+        }
+        return true;
+      }
+      case LISTITEM_ADDON_LIFECYCLE_DESC:
+        value = addonInfo->LifecycleStateDescription();
       case LISTITEM_ADDON_TYPE:
         value = ADDON::CAddonInfo::TranslateType(addonInfo->Type(), true);
         return true;

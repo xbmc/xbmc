@@ -669,11 +669,20 @@ bool CAddonInstallJob::DoWork()
   CServiceBroker::GetEventLog().Add(
       EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);
 
-  if (m_isAutoUpdate && m_addon->IsBroken())
+  if (m_isAutoUpdate && m_addon->LifecycleState() == AddonLifecycleState::BROKEN)
   {
     CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: auto-disabling due to being marked as broken", m_addon->ID().c_str());
     CServiceBroker::GetAddonMgr().DisableAddon(m_addon->ID(), AddonDisabledReason::USER);
     CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
+  }
+  else if (m_addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
+  {
+    CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: installed addon marked as deprecated",
+              m_addon->ID().c_str());
+    std::string text =
+        StringUtils::Format(g_localizeStrings.Get(24168), m_addon->LifecycleStateDescription());
+    CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(m_addon, text)), true,
+                                      false);
   }
 
   // and we're done!

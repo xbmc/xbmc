@@ -14,7 +14,7 @@
         <xs:element name="website" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="source" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="broken" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="lifecyclestate" type="translatedLifecycleState" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="news" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="reuselanguageinvoker" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
         <xs:element name="assets" type="assetsList" minOccurs="0" maxOccurs="1"/>
@@ -36,6 +36,14 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+ <xs:complexType name="translatedLifecycleState">
+    <xs:simpleContent>
+      <xs:extension base="nonEmptyStringCapped">
+        <xs:attribute name="type" type="lifecycleStateType" use="required"/>
+        <xs:attribute name="lang" type="langIdentifier"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:simpleType name="platformType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="linux"/>
@@ -53,6 +61,13 @@
   <xs:simpleType name="langIdentifier">
     <xs:restriction base="xs:string">
       <xs:pattern value="[a-z]{2,3}(_[A-Z]{2}(@\S+)?)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="lifecycleStateType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="normal"/>
+      <xs:enumeration value="deprecated"/>
+      <xs:enumeration value="broken"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="assetsList">

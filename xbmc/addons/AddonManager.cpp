@@ -842,7 +842,8 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID,
 
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
 {
-  return addon != nullptr && !addon->IsBroken() && !IsAddonInstalled(addon->ID());
+  return addon != nullptr && addon->LifecycleState() != AddonLifecycleState::BROKEN &&
+         !IsAddonInstalled(addon->ID());
 }
 
 bool CAddonMgr::CanUninstall(const AddonPtr& addon)

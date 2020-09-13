@@ -321,7 +321,8 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
     {
       for (int i = items.Size() - 1; i >= 0; i--)
       {
-        if (items[i]->GetAddonInfo() && items[i]->GetAddonInfo()->IsBroken())
+        if (items[i]->GetAddonInfo() &&
+            items[i]->GetAddonInfo()->LifecycleState() == AddonLifecycleState::BROKEN)
         {
           //check if it's installed
           AddonPtr addon;
