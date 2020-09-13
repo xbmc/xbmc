@@ -9,10 +9,10 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "../StreamCrypto.h"
 #include "../c-api/addon-instance/inputstream.h"
 #include "inputstream/StreamCodec.h"
 #include "inputstream/StreamConstants.h"
+#include "inputstream/StreamCrypto.h"
 #include "inputstream/TimingConstants.h"
 
 #ifdef __cplusplus
@@ -339,9 +339,15 @@ public:
 
   unsigned int GetBlockAlign() const { return m_cStructure->m_BlockAlign; }
 
-  void SetCryptoInfo(const CRYPTO_INFO& cryptoInfo) { m_cStructure->m_cryptoInfo = cryptoInfo; }
+  void SetCryptoSession(const kodi::addon::StreamCryptoSession& cryptoSession)
+  {
+    m_cryptoSession = cryptoSession;
+    m_cryptoSession.SetSessionId(cryptoSession.GetSessionId());
+    memcpy(&m_cStructure->m_cryptoSession, m_cryptoSession.GetCStructure(),
+           sizeof(STREAM_CRYPTO_SESSION));
+  }
 
-  const CRYPTO_INFO& GetCryptoInfo() const { return m_cStructure->m_cryptoInfo; }
+  const kodi::addon::StreamCryptoSession& GetCryptoSession() const { return m_cryptoSession; }
 
   void SetCodecFourCC(unsigned int codecFourCC) { m_cStructure->m_codecFourCC = codecFourCC; }
 
@@ -416,6 +422,7 @@ private:
       m_contentLightMetadata = m_cStructure->m_contentLightMetadata;
   }
   std::vector<uint8_t> m_extraData;
+  StreamCryptoSession m_cryptoSession;
   InputstreamMasteringMetadata m_masteringMetadata;
   InputstreamContentlightMetadata m_contentLightMetadata;
 };

@@ -524,8 +524,8 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
       demuxStream->ExtraData[j] = stream->m_ExtraData[j];
   }
 
-  if (stream->m_cryptoInfo.m_CryptoKeySystem != CRYPTO_KEY_SYSTEM_NONE &&
-      stream->m_cryptoInfo.m_CryptoKeySystem < CRYPTO_KEY_SYSTEM_COUNT)
+  if (stream->m_cryptoSession.keySystem != STREAM_CRYPTO_KEY_SYSTEM_NONE &&
+      stream->m_cryptoSession.keySystem < STREAM_CRYPTO_KEY_SYSTEM_COUNT)
   {
     static const CryptoSessionSystem map[] = {
         CRYPTO_SESSION_SYSTEM_NONE,
@@ -534,8 +534,8 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
         CRYPTO_SESSION_SYSTEM_WISEPLAY,
     };
     demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
-        map[stream->m_cryptoInfo.m_CryptoKeySystem], stream->m_cryptoInfo.m_CryptoSessionIdSize,
-        stream->m_cryptoInfo.m_CryptoSessionId, stream->m_cryptoInfo.flags));
+        map[stream->m_cryptoSession.keySystem], stream->m_cryptoSession.sessionIdSize,
+        stream->m_cryptoSession.sessionId, stream->m_cryptoSession.flags));
 
     if ((stream->m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
       demuxStream->externalInterfaces = thisClass->m_subAddonProvider;

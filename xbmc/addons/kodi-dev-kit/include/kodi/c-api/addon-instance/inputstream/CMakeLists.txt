@@ -1,5 +1,6 @@
 set(HEADERS stream_codec.h
             stream_constants.h
+            stream_crypto.h
             timing_constants.h)
 
 if(NOT ENABLE_STATIC_LIBS)
