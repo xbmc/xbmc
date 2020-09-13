@@ -9,8 +9,8 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "../StreamCrypto.h"
 #include "inputstream/StreamCodec.h"
+#include "inputstream/StreamCrypto.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "../DemuxPacket.h"
@@ -48,7 +48,7 @@ extern "C"
     const uint8_t *extraData;
     unsigned int extraDataSize;
 
-    CRYPTO_INFO cryptoInfo;
+    struct STREAM_CRYPTO_SESSION cryptoSession;
   };
 
   struct VIDEOCODEC_PICTURE

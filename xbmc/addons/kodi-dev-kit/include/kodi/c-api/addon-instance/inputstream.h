@@ -11,10 +11,10 @@
 #ifndef C_API_ADDONINSTANCE_INPUTSTREAM_H
 #define C_API_ADDONINSTANCE_INPUTSTREAM_H
 
-#include "../../StreamCrypto.h"
 #include "../addon_base.h"
 #include "inputstream/stream_codec.h"
 #include "inputstream/stream_constants.h"
+#include "inputstream/stream_crypto.h"
 #include "inputstream/timing_constants.h"
 #ifdef BUILD_KODI_ADDON
 #include "../../DemuxPacket.h"
@@ -303,7 +303,7 @@ extern "C"
 
     //@}
 
-    struct CRYPTO_INFO m_cryptoInfo;
+    struct STREAM_CRYPTO_SESSION m_cryptoSession;
 
     // new in API version 2.0.8
     //@{
