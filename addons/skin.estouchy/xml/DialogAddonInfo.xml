@@ -193,7 +193,7 @@
 					<aligny>center</aligny>
 					<font>font20_title</font>
 					<textcolor>selected</textcolor>
-					<visible>String.IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24169])</visible>
 				</control>
 				<control type="textbox">
 					<description>Disclaimer</description>
@@ -205,7 +205,7 @@
 					<label fallback="231">$INFO[ListItem.AddonDisclaimer]</label>
 					<textcolor>selected</textcolor>
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-					<visible>String.IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24169])</visible>
 				</control>
 				<control type="label">
 					<description>Broken label</description>
@@ -214,11 +214,24 @@
 					<width>200</width>
 					<height>25</height>
 					<font>font20_title</font>
-					<label>$LOCALIZE[24098]:</label>
+					<label>$LOCALIZE[24171]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>selected</textcolor>
-					<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
+				</control>
+				<control type="label">
+					<description>Deprecated label</description>
+					<posx>200</posx>
+					<posy>120</posy>
+					<width>200</width>
+					<height>25</height>
+					<font>font20_title</font>
+					<label>$LOCALIZE[24170]:</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])</visible>
 				</control>
 				<control type="textbox">
 					<description>Reason label</description>
@@ -227,12 +240,11 @@
 					<width>730</width>
 					<height>50</height>
 					<font>font20</font>
-					<label>$INFO[ListItem.Addonbroken]</label>
+					<label>$INFO[ListItem.AddonLifecycleDesc]</label>
 					<align>left</align>
-					<aligny>center</aligny>
 					<textcolor>selected</textcolor>
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-					<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
 				</control>
 			</control>
 		</control>
@@ -275,6 +287,7 @@
 				<align>left</align>
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>21340</label>
+				<textwidth>150</textwidth>
 			</control>
 			<control type="button" id="12">
 				<description>Changelog button</description>
