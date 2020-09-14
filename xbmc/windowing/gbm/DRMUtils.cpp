@@ -16,6 +16,7 @@
 #include "windowing/GraphicContext.h"
 
 #include <errno.h>
+#include <sstream>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -921,4 +922,60 @@ bool CDRMUtils::CheckConnector(int connector_id)
   drmModeFreeConnector(connectorcheck.connector);
 
   return finalConnectionState == DRM_MODE_CONNECTED;
+}
+
+std::string CDRMUtils::FourCCToString(uint32_t fourcc)
+{
+  std::stringstream ss;
+  ss << static_cast<char>((fourcc & 0x000000FF));
+  ss << static_cast<char>((fourcc & 0x0000FF00) >> 8);
+  ss << static_cast<char>((fourcc & 0x00FF0000) >> 16);
+  ss << static_cast<char>((fourcc & 0xFF000000) >> 24);
+
+  return ss.str();
+}
+
+bool plane::SupportsFormat(uint32_t format)
+{
+  for (uint32_t i = 0; i < plane->count_formats; i++)
+    if (plane->formats[i] == format)
+      return true;
+
+  return false;
+}
+
+bool plane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
+{
+  if (modifier == DRM_FORMAT_MOD_LINEAR)
+  {
+    if (!SupportsFormat(format))
+    {
+      CLog::Log(LOGDEBUG, "plane::{} - format not supported: {}", __FUNCTION__,
+                CDRMUtils::FourCCToString(format));
+      return false;
+    }
+  }
+  else
+  {
+    auto formatModifiers = &modifiers_map[format];
+    if (formatModifiers->empty())
+    {
+      CLog::Log(LOGDEBUG, "plane::{} - format not supported: {}", __FUNCTION__,
+                CDRMUtils::FourCCToString(format));
+      return false;
+    }
+
+    auto formatModifier = std::find(formatModifiers->begin(), formatModifiers->end(), modifier);
+    if (formatModifier == formatModifiers->end())
+    {
+      CLog::Log(LOGDEBUG, "plane::{} - modifier ({:#x}) not supported for format ({})",
+                __FUNCTION__, modifier, CDRMUtils::FourCCToString(format));
+      return false;
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "plane::{} - found plane format ({}) and modifier ({:#x})", __FUNCTION__,
+            CDRMUtils::FourCCToString(format), modifier);
+
+  return true;
 }

@@ -35,14 +35,45 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer) &&
-      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-          SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
+  if (buffer && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                    SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
-    CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-    if (winSystem && winSystem->GetDrm()->GetVideoPlane()->plane &&
-        std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
-      return new CRendererDRMPRIME();
+    auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
+    if (!buf)
+      return nullptr;
+
+    auto winSystem = static_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+    if (!winSystem)
+      return nullptr;
+
+    auto drm = std::static_pointer_cast<CDRMAtomic>(winSystem->GetDrm());
+    if (!drm)
+      return nullptr;
+
+    if (!buf->AcquireDescriptor())
+      return nullptr;
+
+    AVDRMFrameDescriptor* desc = buf->GetDescriptor();
+    if (!desc)
+    {
+      buf->ReleaseDescriptor();
+      return nullptr;
+    }
+
+    AVDRMLayerDescriptor* layer = &desc->layers[0];
+    uint32_t format = layer->format;
+    uint64_t modifier = desc->objects[0].format_modifier;
+
+    buf->ReleaseDescriptor();
+
+    auto plane = drm->GetVideoPlane();
+    if (!plane)
+      return nullptr;
+
+    if (!plane->SupportsFormatAndModifier(format, modifier))
+      return nullptr;
+
+    return new CRendererDRMPRIME();
   }
 
   return nullptr;
