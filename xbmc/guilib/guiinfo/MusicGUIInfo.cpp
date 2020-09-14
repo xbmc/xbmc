@@ -145,6 +145,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           return true;
         }
         break;
+      case MUSICPLAYER_TOTALDISCS:
       case LISTITEM_TOTALDISCS:
         value = StringUtils::Format("%i", tag->GetTotalDiscs());
         return true;
@@ -573,6 +574,9 @@ bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
 
 bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
+  const CFileItem* item = static_cast<const CFileItem*>(gitem);
+  const CMusicInfoTag* tag = item->GetMusicInfoTag();
+
   switch (info.m_info)
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,7 +623,13 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       value = (index >= 0 && index < CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size());
       return true;
     }
-
+    case MUSICPLAYER_ISMULTIDISC:
+      if (tag)
+      {
+        value = (item->GetMusicInfoTag()->GetTotalDiscs() > 1);
+        return true;
+      }
+      break;
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // MUSICPM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,8 +641,6 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
     // LISTITEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case LISTITEM_IS_BOXSET:
-      const CFileItem* item = static_cast<const CFileItem*>(gitem);
-      const CMusicInfoTag* tag = item->GetMusicInfoTag();
       if (tag)
       {
         value = item->GetMusicInfoTag()->GetBoxset() == true;
