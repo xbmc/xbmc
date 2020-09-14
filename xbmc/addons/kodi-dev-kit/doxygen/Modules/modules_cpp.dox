@@ -145,6 +145,15 @@ Here is a table of the types currently possible:
 \brief **Graphical functions for Windows and Dialogs to show**
 */
 /*!
+\defgroup cpp_kodi_platform Interface - kodi::platform
+\ingroup cpp
+\brief **Platform specific functions**\n
+This group contains OS platform specific functions with which Kodi is accessed.
+
+@note Its header and its classes and functions are only available in the
+associated OS and are not available outside.
+*/
+/*!
 \defgroup cpp_kodi_tools Interface - kodi::tools
 \ingroup cpp
 \brief **Helper tools and functions**\n
