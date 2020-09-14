@@ -39,11 +39,14 @@ if(CORE_SYSTEM_NAME STREQUAL android)
                       RendererMediaCodecSurface.h)
 endif()
 
-if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
-  list(APPEND SOURCES RendererDRMPRIME.cpp
-                      VideoLayerBridgeDRMPRIME.cpp)
-  list(APPEND HEADERS RendererDRMPRIME.h
-                      VideoLayerBridgeDRMPRIME.h)
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
+  if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+    list(APPEND SOURCES RendererDRMPRIME.cpp
+                        VideoLayerBridgeDRMPRIME.cpp)
+    list(APPEND HEADERS RendererDRMPRIME.h
+                        VideoLayerBridgeDRMPRIME.h)
+  endif()
+
   if(OPENGLES_FOUND)
     list(APPEND SOURCES RendererDRMPRIMEGLES.cpp
                         DRMPRIMEEGL.cpp)

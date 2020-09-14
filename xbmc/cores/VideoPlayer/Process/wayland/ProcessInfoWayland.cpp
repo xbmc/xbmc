@@ -8,6 +8,7 @@
 
 #include "ProcessInfoWayland.h"
 
+#include "cores/VideoPlayer/Buffers/VideoBufferPoolDMA.h"
 #include "threads/SingleLock.h"
 
 using namespace VIDEOPLAYER;
@@ -20,6 +21,11 @@ CProcessInfo* CProcessInfoWayland::Create()
 void CProcessInfoWayland::Register()
 {
   CProcessInfo::RegisterProcessControl("Wayland", CProcessInfoWayland::Create);
+}
+
+CProcessInfoWayland::CProcessInfoWayland()
+{
+  m_videoBufferManager.RegisterPool(std::make_shared<CVideoBufferPoolDMA>());
 }
 
 void CProcessInfoWayland::SetSwDeinterlacingMethods()
