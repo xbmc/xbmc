@@ -136,6 +136,9 @@
 		<value condition="String.IsEmpty(listitem.Title)">$INFO[listitem.TrackNumber]</value>
 		<value>$INFO[listitem.TrackNumber,,.]$INFO[listitem.Title, ]</value>
 	</variable>
+	<variable name="MultiDiscVar">
+		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.DiscNumber, - [$LOCALIZE[427] ,] ]$INFO[MusicPlayer.DiscTitle]</value>
+	</variable>
 	<variable name="WidgetGenreIconVar">
 		<value condition="System.AddonIsEnabled(resource.images.moviegenreicons.transparent)">$INFO[ListItem.Label,resource://resource.images.moviegenreicons.transparent/,.png]</value>
 		<value>DefaultGenre.png</value>
