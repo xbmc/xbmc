@@ -109,7 +109,6 @@ cp -r $APP $DIRNAME/$PACKAGE/Applications/
 find $DIRNAME/$PACKAGE/Applications/ -name '.svn' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.git*' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.DS_Store'  -exec rm -rf {} \;
-find $DIRNAME/$PACKAGE/Applications/ -name '*.xcent'  -exec rm -rf {} \;
 
 echo Packaging $PACKAGE
 # Tell tar, pax, etc. on Mac OS X 10.4+ not to archive

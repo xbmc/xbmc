@@ -23,5 +23,10 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
                                                               XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_OUT_PATH})
   target_link_libraries(${TOPSHELF_EXTENSION_NAME} "-framework TVServices" "-framework Foundation")
 
+  add_custom_command(TARGET ${TOPSHELF_EXTENSION_NAME} POST_BUILD
+    COMMAND "NATIVEPREFIX=${NATIVEPREFIX}"
+            ${CMAKE_SOURCE_DIR}/tools/darwin/Support/Codesign-topshelf.command
+  )
+
   add_dependencies(${APP_NAME_LC} ${TOPSHELF_EXTENSION_NAME})
 endif()
