@@ -11,6 +11,7 @@
 #include "AddonBuilder.h"
 #include "FileItem.h"
 #include "addons/Addon.h"
+#include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/Database.h"
 
 #include <string>
@@ -18,6 +19,28 @@
 
 namespace ADDON
 {
+
+/*!
+ * @brief Addon content serializer/deserializer.
+ *
+ * Used to save data from the add-on in the database using json format.
+ * The corresponding field in SQL is "addons" for "metadata".
+ *
+ * @warning Changes in the json format need a way to update the addon database
+ * for users, otherwise problems may occur when reading the old content.
+ */
+class CAddonDatabaseSerializer
+{
+  CAddonDatabaseSerializer() = delete;
+
+public:
+  static std::string SerializeMetadata(const CAddonInfo& addon);
+  static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::CFromDB& builder);
+
+private:
+  static CVariant SerializeExtensions(const CAddonExtensions& addonType);
+  static void DeserializeExtensions(const CVariant& document, CAddonExtensions& addonType);
+};
 
 class CAddonDatabase : public CDatabase
 {

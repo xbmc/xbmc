@@ -72,6 +72,7 @@ typedef enum
 } TYPE;
 
 class CAddonInfoBuilder;
+class CAddonDatabaseSerializer;
 
 class CAddonType : public CAddonExtensions
 {
@@ -108,6 +109,7 @@ public:
 
 private:
   friend class CAddonInfoBuilder;
+  friend class CAddonDatabaseSerializer;
 
   void SetProvides(const std::string& content);
 

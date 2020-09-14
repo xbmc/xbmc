@@ -18,6 +18,7 @@ namespace ADDON
 {
 
 class CAddonInfoBuilder;
+class CAddonDatabaseSerializer;
 
 struct SExtValue
 {
@@ -67,6 +68,7 @@ public:
 
 private:
   friend class CAddonInfoBuilder;
+  friend class CAddonDatabaseSerializer;
 
   std::string m_point;
   EXT_VALUES m_values;
