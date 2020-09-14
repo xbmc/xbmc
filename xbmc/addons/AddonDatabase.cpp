@@ -26,7 +26,7 @@
 
 using namespace ADDON;
 
-static std::string SerializeMetadata(const IAddon& addon)
+static std::string SerializeMetadata(const CAddonInfo& addon)
 {
   CVariant variant;
   variant["author"] = addon.Author();
@@ -47,7 +47,7 @@ static std::string SerializeMetadata(const IAddon& addon)
     variant["screenshots"].push_back(item);
 
   variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(ADDON::CAddonInfo::TranslateType(addon.Type(), false));
+  variant["extensions"].push_back(ADDON::CAddonInfo::TranslateType(addon.MainType(), false));
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& dep : addon.GetDependencies())
@@ -747,8 +747,10 @@ int CAddonDatabase::GetRepositoryId(const std::string& addonId)
   return m_pDS->fv("id").get_asInt();
 }
 
-bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, const AddonVersion& version,
-    const std::string& checksum, const std::vector<AddonPtr>& addons)
+bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository,
+                                             const AddonVersion& version,
+                                             const std::string& checksum,
+                                             const std::vector<AddonInfoPtr>& addons)
 {
   try
   {

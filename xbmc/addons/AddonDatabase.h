@@ -45,8 +45,10 @@ public:
   /*! Returns all addons in the repositories with id `addonId`. */
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons) const;
 
-  bool UpdateRepositoryContent(const std::string& repositoryId, const ADDON::AddonVersion& version,
-      const std::string& checksum, const std::vector<ADDON::AddonPtr>& addons);
+  bool UpdateRepositoryContent(const std::string& repositoryId,
+                               const ADDON::AddonVersion& version,
+                               const std::string& checksum,
+                               const std::vector<AddonInfoPtr>& addons);
 
   int GetRepoChecksum(const std::string& id, std::string& checksum);
 

@@ -897,36 +897,6 @@ bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
   return m_updateRules.IsAutoUpdateable(id);
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons)
-{
-  CXBMCTinyXML doc;
-  if (!doc.Parse(xml))
-  {
-    CLog::Log(LOGERROR, "CAddonMgr::{}: Failed to parse addons.xml", __FUNCTION__);
-    return false;
-  }
-
-  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
-  {
-    CLog::Log(LOGERROR, "CAddonMgr::{}: Failed to parse addons.xml. Malformed", __FUNCTION__);
-    return false;
-  }
-
-  // each addon XML should have a UTF-8 declaration
-  auto element = doc.RootElement()->FirstChildElement("addon");
-  while (element)
-  {
-    auto addonInfo = CAddonInfoBuilder::Generate(element, repo);
-    auto addon = CAddonBuilder::Generate(addonInfo, ADDON_UNKNOWN);
-    if (addon)
-      addons.push_back(std::move(addon));
-
-    element = element->NextSiblingElement("addon");
-  }
-
-  return true;
-}
-
 bool CAddonMgr::IsCompatible(const IAddon& addon) const
 {
   for (const auto& dependency : addon.GetDependencies())
@@ -1137,6 +1107,37 @@ bool CAddonMgr::SetAddonOrigin(const std::string& addonId, const std::string& re
   const AddonInfoPtr info = GetAddonInfo(addonId);
   if (info)
     m_database.GetInstallData(info);
+  return true;
+}
+
+bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo,
+                                  const std::string& xml,
+                                  std::vector<AddonInfoPtr>& addons)
+{
+  CXBMCTinyXML doc;
+  if (!doc.Parse(xml))
+  {
+    CLog::Log(LOGERROR, "CAddonMgr::{}: Failed to parse addons.xml", __func__);
+    return false;
+  }
+
+  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "CAddonMgr::{}: Failed to parse addons.xml. Malformed", __func__);
+    return false;
+  }
+
+  // each addon XML should have a UTF-8 declaration
+  auto element = doc.RootElement()->FirstChildElement("addon");
+  while (element)
+  {
+    auto addonInfo = CAddonInfoBuilder::Generate(element, repo);
+    if (addonInfo)
+      addons.emplace_back(addonInfo);
+
+    element = element->NextSiblingElement("addon");
+  }
+
   return true;
 }
 
