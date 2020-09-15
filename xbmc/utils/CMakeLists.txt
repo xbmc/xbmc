@@ -210,7 +210,7 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
     list(APPEND HEADERS DMAHeapBufferObject.h)
   endif()
 
-  if(GBM_HAS_BO_MAP)
+  if(GBM_HAS_BO_MAP AND CORE_PLATFORM_NAME_LC STREQUAL gbm)
     list(APPEND SOURCES GBMBufferObject.cpp)
     list(APPEND HEADERS GBMBufferObject.h)
   endif()
