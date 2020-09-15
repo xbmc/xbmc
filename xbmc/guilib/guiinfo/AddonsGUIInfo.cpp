@@ -84,6 +84,7 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       }
       case LISTITEM_ADDON_LIFECYCLE_DESC:
         value = addonInfo->LifecycleStateDescription();
+        return true;
       case LISTITEM_ADDON_TYPE:
         value = ADDON::CAddonInfo::TranslateType(addonInfo->Type(), true);
         return true;
