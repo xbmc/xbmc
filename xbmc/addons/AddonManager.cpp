@@ -762,6 +762,10 @@ bool CAddonMgr::EnableSingle(const std::string& id)
     return false;
   m_disabled.erase(id);
 
+  // If enabling a repo add-on without an origin, set its origin to its own id
+  if (addon->HasType(ADDON_REPOSITORY) && addon->Origin().empty())
+    SetAddonOrigin(id, id, false);
+
   CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
   CLog::Log(LOGDEBUG, "CAddonMgr: enabled %s", addon->ID().c_str());
