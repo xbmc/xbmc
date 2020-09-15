@@ -23,11 +23,31 @@
 
 #include <vector>
 
-#ifndef S_ISDIR
-#define S_ISDIR(mode) ((((mode)) & 0170000) == (0040000))
+#if defined(TARGET_WINDOWS)
+#ifndef S_IFLNK
+#define S_IFLNK 0120000
+#endif
+#ifndef S_ISBLK
+#define S_ISBLK(m) (0)
+#endif
+#ifndef S_ISSOCK
+#define S_ISSOCK(m) (0)
 #endif
 #ifndef S_ISLNK
-#define S_ISLNK(mode) ((((mode)) & 0170000) == (0120000))
+#define S_ISLNK(m) ((m & S_IFLNK) != 0)
+#endif
+#ifndef S_ISCHR
+#define S_ISCHR(m) ((m & _S_IFCHR) != 0)
+#endif
+#ifndef S_ISDIR
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#endif
+#ifndef S_ISFIFO
+#define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
+#endif
+#ifndef S_ISREG
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
 #endif
 
 using namespace kodi; // addon-dev-kit namespace
@@ -46,6 +66,7 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_filesystem->create_directory = create_directory;
   addonInterface->toKodi->kodi_filesystem->directory_exists = directory_exists;
   addonInterface->toKodi->kodi_filesystem->remove_directory = remove_directory;
+  addonInterface->toKodi->kodi_filesystem->remove_directory_recursive = remove_directory_recursive;
   addonInterface->toKodi->kodi_filesystem->get_directory = get_directory;
   addonInterface->toKodi->kodi_filesystem->free_directory = free_directory;
 
@@ -193,6 +214,19 @@ bool Interface_Filesystem::remove_directory(void* kodiBase, const char* path)
   return CDirectory::Remove(path);
 }
 
+bool Interface_Filesystem::remove_directory_recursive(void* kodiBase, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || path == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', path='{}')",
+              __FUNCTION__, kodiBase, static_cast<const void*>(path));
+    return false;
+  }
+
+  return CDirectory::RemoveRecursive(path);
+}
+
 static void CFileItemListToVFSDirEntries(VFSDirEntry* entries, const CFileItemList& items)
 {
   for (unsigned int i = 0; i < static_cast<unsigned int>(items.Size()); ++i)
@@ -297,12 +331,18 @@ bool Interface_Filesystem::stat_file(void* kodiBase,
     return false;
 
   buffer->deviceId = statBuffer.st_dev;
+  buffer->fileSerialNumber = statBuffer.st_ino;
   buffer->size = statBuffer.st_size;
   buffer->accessTime = statBuffer.st_atime;
   buffer->modificationTime = statBuffer.st_mtime;
   buffer->statusTime = statBuffer.st_ctime;
   buffer->isDirectory = S_ISDIR(statBuffer.st_mode);
   buffer->isSymLink = S_ISLNK(statBuffer.st_mode);
+  buffer->isBlock = S_ISBLK(statBuffer.st_mode);
+  buffer->isCharacter = S_ISCHR(statBuffer.st_mode);
+  buffer->isFifo = S_ISFIFO(statBuffer.st_mode);
+  buffer->isRegular = S_ISREG(statBuffer.st_mode);
+  buffer->isSocket = S_ISSOCK(statBuffer.st_mode);
 
   return true;
 }

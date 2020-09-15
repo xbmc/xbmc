@@ -201,6 +201,19 @@ extern "C"
     bool isDirectory;
     /// The stat url is a symbolic link
     bool isSymLink;
+    /// The stat url is block special
+    bool isBlock;
+    /// The stat url is character special
+    bool isCharacter;
+    /// The stat url is FIFO special
+    bool isFifo;
+    /// The stat url is regular
+    bool isRegular;
+    /// The stat url is socket
+    bool isSocket;
+    /// The file serial number, which distinguishes this file from all other files on the same
+    /// device.
+    uint64_t fileSerialNumber;
   };
 
   struct VFS_CACHE_STATUS_DATA
@@ -297,6 +310,7 @@ extern "C"
 
     bool (*get_disk_space)(
         void* kodiBase, const char* path, uint64_t* capacity, uint64_t* free, uint64_t* available);
+    bool (*remove_directory_recursive)(void* kodiBase, const char* path);
   } AddonToKodiFuncTable_kodi_filesystem;
 
   //}}}
