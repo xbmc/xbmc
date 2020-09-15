@@ -14,14 +14,13 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIControlFadeLabel::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_fade_label = static_cast<AddonToKodiFuncTable_kodi_gui_control_fade_label*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_fade_label)));
+  addonInterface->toKodi->kodi_gui->control_fade_label =
+      new AddonToKodiFuncTable_kodi_gui_control_fade_label();
 
   addonInterface->toKodi->kodi_gui->control_fade_label->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_fade_label->add_label = add_label;
@@ -32,31 +31,40 @@ void Interface_GUIControlFadeLabel::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlFadeLabel::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_fade_label);
+  delete addonInterface->toKodi->kodi_gui->control_fade_label;
 }
 
-void Interface_GUIControlFadeLabel::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlFadeLabel::set_visible(KODI_HANDLE kodiBase,
+                                                KODI_GUI_CONTROL_HANDLE handle,
+                                                bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlFadeLabel::add_label(void* kodiBase, void* handle, const char *label)
+void Interface_GUIControlFadeLabel::add_label(KODI_HANDLE kodiBase,
+                                              KODI_GUI_CONTROL_HANDLE handle,
+                                              const char* label)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control || !label)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}', label='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(label),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -65,14 +73,16 @@ void Interface_GUIControlFadeLabel::add_label(void* kodiBase, void* handle, cons
   control->OnMessage(msg);
 }
 
-char* Interface_GUIControlFadeLabel::get_label(void* kodiBase, void* handle)
+char* Interface_GUIControlFadeLabel::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -82,28 +92,34 @@ char* Interface_GUIControlFadeLabel::get_label(void* kodiBase, void* handle)
   return strdup(text.c_str());
 }
 
-void Interface_GUIControlFadeLabel::set_scrolling(void* kodiBase, void* handle, bool scroll)
+void Interface_GUIControlFadeLabel::set_scrolling(KODI_HANDLE kodiBase,
+                                                  KODI_GUI_CONTROL_HANDLE handle,
+                                                  bool scroll)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
   control->SetScrolling(scroll);
 }
 
-void Interface_GUIControlFadeLabel::reset(void* kodiBase, void* handle)
+void Interface_GUIControlFadeLabel::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlFadeLabel::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlFadeLabel::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -112,4 +128,3 @@ void Interface_GUIControlFadeLabel::reset(void* kodiBase, void* handle)
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

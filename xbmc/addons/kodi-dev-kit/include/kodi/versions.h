@@ -46,10 +46,11 @@
 #define ADDON_GLOBAL_VERSION_GENERAL_XML_ID           "kodi.binary.global.general"
 #define ADDON_GLOBAL_VERSION_GENERAL_DEPENDS          "General.h"
 
-#define ADDON_GLOBAL_VERSION_GUI                      "5.14.1"
-#define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.14.0"
+#define ADDON_GLOBAL_VERSION_GUI                      "5.15.0"
+#define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.15.0"
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
-#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "ActionIDs.h" \
+#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "c-api/gui/input/action_ids.h" \
+                                                      "c-api/gui/" \
                                                       "gui/"
 
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.1.1"

@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/dialogs/keyboard.h"
+
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -40,18 +42,53 @@ namespace ADDON
      * class.
      */
     //@{
-    static bool show_and_get_input_with_head(void* kodiBase, const char* text_in, char** text_out, const char* heading, bool allow_empty_result, bool hidden_input, unsigned int auto_close_ms);
-    static bool show_and_get_input(void* kodiBase, const char* text_in, char** text_out, bool allow_empty_result, unsigned int auto_close_ms);
-    static bool show_and_get_new_password_with_head(void* kodiBase, const char* password_in, char** password_out, const char* heading, bool allow_empty_result, unsigned int auto_close_ms);
-    static bool show_and_get_new_password(void* kodiBase, const char* password_in, char** password_out, unsigned int auto_close_ms);
-    static bool show_and_verify_new_password_with_head(void* kodiBase, char** password_out, const char* heading, bool allowEmpty, unsigned int auto_close_ms);
-    static bool show_and_verify_new_password(void* kodiBase, char** password_out, unsigned int auto_close_ms);
-    static int show_and_verify_password(void* kodiBase, const char* password_in, char** password_out, const char* heading, int retries, unsigned int auto_close_ms);
-    static bool show_and_get_filter(void* kodiBase, const char* text_in, char** text_out, bool searching, unsigned int auto_close_ms);
-    static bool send_text_to_active_keyboard(void* kodiBase, const char* text, bool close_keyboard);
-    static bool is_keyboard_activated(void* kodiBase);
+    static bool show_and_get_input_with_head(KODI_HANDLE kodiBase,
+                                             const char* text_in,
+                                             char** text_out,
+                                             const char* heading,
+                                             bool allow_empty_result,
+                                             bool hidden_input,
+                                             unsigned int auto_close_ms);
+    static bool show_and_get_input(KODI_HANDLE kodiBase,
+                                   const char* text_in,
+                                   char** text_out,
+                                   bool allow_empty_result,
+                                   unsigned int auto_close_ms);
+    static bool show_and_get_new_password_with_head(KODI_HANDLE kodiBase,
+                                                    const char* password_in,
+                                                    char** password_out,
+                                                    const char* heading,
+                                                    bool allow_empty_result,
+                                                    unsigned int auto_close_ms);
+    static bool show_and_get_new_password(KODI_HANDLE kodiBase,
+                                          const char* password_in,
+                                          char** password_out,
+                                          unsigned int auto_close_ms);
+    static bool show_and_verify_new_password_with_head(KODI_HANDLE kodiBase,
+                                                       char** password_out,
+                                                       const char* heading,
+                                                       bool allowEmpty,
+                                                       unsigned int auto_close_ms);
+    static bool show_and_verify_new_password(KODI_HANDLE kodiBase,
+                                             char** password_out,
+                                             unsigned int auto_close_ms);
+    static int show_and_verify_password(KODI_HANDLE kodiBase,
+                                        const char* password_in,
+                                        char** password_out,
+                                        const char* heading,
+                                        int retries,
+                                        unsigned int auto_close_ms);
+    static bool show_and_get_filter(KODI_HANDLE kodiBase,
+                                    const char* text_in,
+                                    char** text_out,
+                                    bool searching,
+                                    unsigned int auto_close_ms);
+    static bool send_text_to_active_keyboard(KODI_HANDLE kodiBase,
+                                             const char* text,
+                                             bool close_keyboard);
+    static bool is_keyboard_activated(KODI_HANDLE kodiBase);
     //@}
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

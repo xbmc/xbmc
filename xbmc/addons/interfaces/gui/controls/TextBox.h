@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/controls/text_box.h"
+
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -41,14 +43,15 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
-    static void reset(void* kodiBase, void* handle);
-    static void set_text(void* kodiBase, void* handle, const char* text);
-    static char* get_text(void* kodiBase, void* handle);
-    static void scroll(void* kodiBase, void* handle, unsigned int position);
-    static void set_auto_scrolling(void* kodiBase, void* handle, int delay, int time, int repeat);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
+    static void reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void set_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, const char* text);
+    static char* get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void scroll(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, unsigned int position);
+    static void set_auto_scrolling(
+        KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int delay, int time, int repeat);
     //@}
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

@@ -8,8 +8,10 @@
 
 #pragma once
 
-#include "../definitions.h"
 #include "../../AddonBase.h"
+#include "../../c-api/gui/dialogs/extended_progress.h"
+
+#ifdef __cplusplus
 
 namespace kodi
 {
@@ -18,14 +20,13 @@ namespace gui
 namespace dialogs
 {
 
-//============================================================================
-///
-/// \defgroup cpp_kodi_gui_dialogs_CExtendedProgress Dialog Extended Progress
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_class{ kodi::gui::dialogs::ExtendedProgress }
+//==============================================================================
+/// @defgroup cpp_kodi_gui_dialogs_CExtendedProgress Dialog Extended Progress
+/// @ingroup cpp_kodi_gui_dialogs
+/// @brief @cpp_class{ kodi::gui::dialogs::ExtendedProgress }
 /// **Progress dialog shown for background work**
 ///
-/// The with \ref ExtendedProgress.h "#include <kodi/gui/dialogs/ExtendedProgress.h>"
+/// The with @ref ExtendedProgress.h "#include <kodi/gui/dialogs/ExtendedProgress.h>"
 /// given class are basically used to create Kodi's extended progress.
 ///
 ///
@@ -57,12 +58,11 @@ namespace dialogs
 class ATTRIBUTE_HIDDEN CExtendedProgress
 {
 public:
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// Construct a new dialog.
   ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// Construct a new dialog
-  ///
-  /// @param[in] title  Title string
+  /// @param[in] title [opt] Title string
   ///
   explicit CExtendedProgress(const std::string& title = "")
   {
@@ -73,12 +73,11 @@ public:
       kodi::Log(ADDON_LOG_FATAL,
                 "kodi::gui::CDialogExtendedProgress can't create window class from Kodi !!!");
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// Destructor
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// Destructor.
   ///
   ~CExtendedProgress()
   {
@@ -87,12 +86,11 @@ public:
       CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->delete_dialog(
           CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief Get the used title
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief Get the used title.
   ///
   /// @return Title string
   ///
@@ -111,14 +109,13 @@ public:
     }
     return text;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief To set the title of dialog.
   ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief To set the title of dialog
-  ///
-  /// @param[in] title     Title string
+  /// @param[in] title Title string
   ///
   void SetTitle(const std::string& title)
   {
@@ -126,12 +123,11 @@ public:
     CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_title(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle, title.c_str());
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief Get the used text information string
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief Get the used text information string.
   ///
   /// @return Text string
   ///
@@ -150,14 +146,13 @@ public:
     }
     return text;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief To set the used text information string.
   ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief To set the used text information string
-  ///
-  /// @param[in] text         information text to set
+  /// @param[in] text Information text to set
   ///
   void SetText(const std::string& text)
   {
@@ -165,12 +160,11 @@ public:
     CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_text(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle, text.c_str());
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief To ask dialog is finished
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief To ask dialog is finished.
   ///
   /// @return True if on end
   ///
@@ -180,12 +174,11 @@ public:
     return CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->is_finished(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief Mark progress finished
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief Mark progress finished.
   ///
   void MarkFinished()
   {
@@ -193,12 +186,11 @@ public:
     CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->mark_finished(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief Get the current progress position as percent
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief Get the current progress position as percent.
   ///
   /// @return Position
   ///
@@ -208,14 +200,13 @@ public:
     return CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->get_percentage(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief To set the current progress position as percent.
   ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief To set the current progress position as percent
-  ///
-  /// @param[in] percentage   Position to use from 0.0 to 100.0
+  /// @param[in] percentage Position to use from 0.0 to 100.0
   ///
   void SetPercentage(float percentage)
   {
@@ -223,15 +214,14 @@ public:
     CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_percentage(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle, percentage);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
+  /// @brief To set progress position with predefined places.
   ///
-  /// \ingroup cpp_kodi_gui_dialogs_CExtendedProgress
-  /// @brief To set progress position with predefined places
-  ///
-  /// @param[in] currentItem    Place position to use
-  /// @param[in] itemCount      Amount of used places
+  /// @param[in] currentItem Place position to use
+  /// @param[in] itemCount Amount of used places
   ///
   void SetProgress(int currentItem, int itemCount)
   {
@@ -239,12 +229,14 @@ public:
     CAddonBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_progress(
         CAddonBase::m_interface->toKodi->kodiBase, m_DialogHandle, currentItem, itemCount);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
 private:
-  void* m_DialogHandle;
+  KODI_GUI_HANDLE m_DialogHandle;
 };
 
 } /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

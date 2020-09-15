@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <stdint.h>
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/controls/image.h"
 
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -42,11 +42,16 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
-    static void set_filename(void* kodiBase, void* handle, const char* filename, bool use_cache);
-    static void set_color_diffuse(void* kodiBase, void* handle, uint32_t color_diffuse);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
+    static void set_filename(KODI_HANDLE kodiBase,
+                             KODI_GUI_CONTROL_HANDLE handle,
+                             const char* filename,
+                             bool use_cache);
+    static void set_color_diffuse(KODI_HANDLE kodiBase,
+                                  KODI_GUI_CONTROL_HANDLE handle,
+                                  uint32_t color_diffuse);
     //@}
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

@@ -10,9 +10,11 @@
 
 #include "GL.h"
 
+#ifdef __cplusplus
+
 #include <stdio.h>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <kodi/AddonBase.h>
 #include <kodi/Filesystem.h>
@@ -34,8 +36,7 @@ class ATTRIBUTE_HIDDEN CShader
 public:
   CShader() = default;
   virtual ~CShader() = default;
-  virtual bool Compile(const std::string& extraBegin = "",
-                       const std::string& extraEnd = "") = 0;
+  virtual bool Compile(const std::string& extraBegin = "", const std::string& extraEnd = "") = 0;
   virtual void Free() = 0;
   virtual GLuint Handle() = 0;
 
@@ -46,7 +47,8 @@ public:
     kodi::vfs::CFile source;
     if (!source.OpenFile(file))
     {
-      kodi::Log(ADDON_LOG_ERROR, "CShader::%s: Failed to open file '%s'", __FUNCTION__, file.c_str());
+      kodi::Log(ADDON_LOG_ERROR, "CShader::%s: Failed to open file '%s'", __FUNCTION__,
+                file.c_str());
       return false;
     }
     size_t len = source.Read(buffer, sizeof(buffer));
@@ -80,8 +82,7 @@ public:
     m_vertexShader = 0;
   }
 
-  bool Compile(const std::string& extraBegin = "",
-               const std::string& extraEnd = "") override
+  bool Compile(const std::string& extraBegin = "", const std::string& extraEnd = "") override
   {
     GLint params[4];
 
@@ -90,7 +91,7 @@ public:
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
     GLsizei count = 0;
-    const char *sources[3];
+    const char* sources[3];
     if (!extraBegin.empty())
       sources[count++] = extraBegin.c_str();
     if (!m_source.empty())
@@ -141,8 +142,7 @@ public:
     m_pixelShader = 0;
   }
 
-  bool Compile(const std::string& extraBegin = "",
-               const std::string& extraEnd = "") override
+  bool Compile(const std::string& extraBegin = "", const std::string& extraEnd = "") override
   {
     GLint params[4];
 
@@ -151,7 +151,7 @@ public:
     m_pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     GLsizei count = 0;
-    const char *sources[3];
+    const char* sources[3];
     if (!extraBegin.empty())
       sources[count++] = extraBegin.c_str();
     if (!m_source.empty())
@@ -189,16 +189,14 @@ protected:
 //------------------------------------------------------------------------
 
 //============================================================================
-///
-/// \defgroup cpp_kodi_gui_gl_CShaderProgram GL Shader Program
-/// \ingroup cpp_kodi_gui_gl
-/// @brief \cpp_class{ kodi::gui::gl::CShaderProgram }
-/// **Class to manage an OpenGL shader program**
-///
+/// @defgroup cpp_kodi_gui_helpers_gl_CShaderProgram GL Shader Program
+/// @ingroup cpp_kodi_gui_helpers_gl
+/// @brief @cpp_class{ kodi::gui::gl::CShaderProgram }
+/// **Class to manage an OpenGL shader program**\n
 /// With this class the used GL shader code can be defined on the GPU and
 /// its variables can be managed between CPU and GPU.
 ///
-/// It has the header \ref Shader.h "#include <kodi/gui/gl/Shader.h>"
+/// It has the header @ref Shader.h "#include <kodi/gui/gl/Shader.h>"
 /// be included to enjoy it.
 ///
 /// ----------------------------------------------------------------------------
@@ -275,58 +273,45 @@ protected:
 /// ADDONCREATOR(CExample);
 /// ~~~~~~~~~~~~~
 ///
-
-//========================================================================
-/// CShaderProgram
 class ATTRIBUTE_HIDDEN CShaderProgram
 {
 public:
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief Construct a new shader.
   ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief Construct a new shader
-  ///
-  /// Load must be done later with \ref LoadShaderFiles.
+  /// Load must be done later with @ref LoadShaderFiles.
   ///
   CShaderProgram() = default;
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief Construct a new shader and load defined shader files
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief Construct a new shader and load defined shader files.
   ///
   /// @param[in] vert Path to used GL vertext shader
   /// @param[in] frag Path to used GL fragment shader
   ///
-  CShaderProgram(const std::string& vert, const std::string& frag)
-  {
-    LoadShaderFiles(vert, frag);
-  }
+  CShaderProgram(const std::string& vert, const std::string& frag) { LoadShaderFiles(vert, frag); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief Destructor.
   ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief Destructor
-  ///
-  virtual ~CShaderProgram()
-  {
-    ShaderFree();
-  }
+  virtual ~CShaderProgram() { ShaderFree(); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief To load manually the needed shader files
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief To load manually the needed shader files.
   ///
   /// @param[in] vert Path to used GL vertext shader
   /// @param[in] frag Path to used GL fragment shader
   ///
   ///
   /// @note The use of the files is optional, but it must either be passed over
-  /// here or via \ref CompileAndLink, or both of the source code.
+  /// here or via @ref CompileAndLink, or both of the source code.
   ///
   bool LoadShaderFiles(const std::string& vert, const std::string& frag)
   {
@@ -347,9 +332,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief To compile and link the shader to the GL interface
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief To compile and link the shader to the GL interface.
   ///
   /// Optionally, additional source code can be transferred here, or it can be
   /// used independently without any files
@@ -421,7 +405,7 @@ public:
       GLchar log[LOG_SIZE];
       glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, nullptr, log);
       kodi::Log(ADDON_LOG_ERROR, "CShaderProgram::%s: %s", __FUNCTION__, log);
-      fprintf(stderr, "CShaderProgram::%s: %s\n", __FUNCTION__, log);
+      fprintf(stderr, "CShaderProgram::%s: %s@n", __FUNCTION__, log);
       ShaderFree();
       return false;
     }
@@ -434,14 +418,13 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief To activate the shader and use it on the GPU
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief To activate the shader and use it on the GPU.
   ///
   /// @return true if enable was successfull done
   ///
   ///
-  /// @note During this call, the \ref OnEnabled stored in the child is also
+  /// @note During this call, the @ref OnEnabled stored in the child is also
   /// called
   ///
   bool EnableShader()
@@ -480,9 +463,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief To deactivate the shader use on the GPU
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief To deactivate the shader use on the GPU.
   ///
   void DisableShader()
   {
@@ -495,8 +477,7 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
   /// @brief Used to check if shader has been loaded before.
   ///
   /// @return true if enable was successfull done
@@ -507,9 +488,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief To get the vertex shader class used by Kodi at the addon
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief To get the vertex shader class used by Kodi at the addon.
   ///
   /// @return pointer to vertex shader class
   ///
@@ -517,9 +497,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief To get the fragment shader class used by Kodi at the addon
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief To get the fragment shader class used by Kodi at the addon.
   ///
   /// @return pointer to fragment shader class
   ///
@@ -527,9 +506,8 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief Used to get the definition created in the OpenGL itself
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief Used to get the definition created in the OpenGL itself.
   ///
   /// @return GLuint of GL shader program handler
   ///
@@ -537,24 +515,22 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \defgroup cpp_kodi_gui_gl_CShaderProgram_child Child Functions
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram
-  /// @brief \cpp_class{ kodi::gui::gl::CShaderProgram child functions }
+  /// @defgroup cpp_kodi_gui_helpers_gl_CShaderProgram_child Child Functions
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
+  /// @brief @cpp_class{ kodi::gui::gl::CShaderProgram child functions }
   ///
   /// Functions that are added by parent in the child
-  //@{
+  /// @{
   //==========================================================================
   ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram_child
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram_child
   /// @brief Mandatory child function to set the necessary CPU to GPU data
   ///
-  virtual void OnCompiledAndLinked() {};
+  virtual void OnCompiledAndLinked(){};
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram_child
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram_child
   /// @brief Optional function to exchange data between CPU and GPU while
   /// activating the shader
   ///
@@ -564,13 +540,12 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_gl_CShaderProgram_child
+  /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram_child
   /// @brief Optional child function that may have to be performed when
   /// switching off the shader
-  virtual void OnDisabled() {};
+  virtual void OnDisabled(){};
   //--------------------------------------------------------------------------
-  //@}
+  /// @}
 
 private:
   void ShaderFree()
@@ -592,3 +567,5 @@ private:
 } /* namespace gl */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

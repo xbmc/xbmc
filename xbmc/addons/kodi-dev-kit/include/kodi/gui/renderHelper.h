@@ -10,6 +10,8 @@
 
 #include "../AddonBase.h"
 
+#ifdef __cplusplus
+
 namespace kodi
 {
 namespace gui
@@ -37,8 +39,8 @@ namespace gui
 struct ATTRIBUTE_HIDDEN CRenderHelperStub : public IRenderHelper
 {
   bool Init() override { return true; }
-  void Begin() override { }
-  void End() override { }
+  void Begin() override {}
+  void End() override {}
 }; /* class CRenderHelperStub */
 
 using CRenderHelper = CRenderHelperStub;
@@ -76,3 +78,5 @@ inline std::shared_ptr<IRenderHelper> ATTRIBUTE_HIDDEN GetRenderHelper()
 
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

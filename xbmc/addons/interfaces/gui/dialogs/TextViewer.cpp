@@ -16,39 +16,43 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIDialogTextViewer::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->dialogTextViewer = static_cast<AddonToKodiFuncTable_kodi_gui_dialogTextViewer*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_dialogTextViewer)));
+  addonInterface->toKodi->kodi_gui->dialogTextViewer =
+      new AddonToKodiFuncTable_kodi_gui_dialogTextViewer();
 
   addonInterface->toKodi->kodi_gui->dialogTextViewer->open = open;
 }
 
 void Interface_GUIDialogTextViewer::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->dialogTextViewer);
+  delete addonInterface->toKodi->kodi_gui->dialogTextViewer;
 }
 
-void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, const char *text)
+void Interface_GUIDialogTextViewer::open(KODI_HANDLE kodiBase,
+                                         const char* heading,
+                                         const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogTextViewer::%s - invalid data", __FUNCTION__);
+    CLog::Log(LOGERROR, "Interface_GUIDialogTextViewer::{} - invalid data", __func__);
     return;
   }
 
-  CGUIDialogTextViewer* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
+  CGUIDialogTextViewer* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(
+          WINDOW_DIALOG_TEXT_VIEWER);
   if (!heading || !text || !dialog)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIDialogTextViewer::%s - invalid handler data (heading='%p', text='%p', "
-              "dialog='%p') on addon '%s'",
-              __FUNCTION__, heading, text, static_cast<void*>(dialog), addon->ID().c_str());
+              "Interface_GUIDialogTextViewer::{} - invalid handler data (heading='{}', text='{}', "
+              "dialog='{}') on addon '{}'",
+              __func__, static_cast<const void*>(heading), static_cast<const void*>(text),
+              static_cast<void*>(dialog), addon->ID());
     return;
   }
 
@@ -58,4 +62,3 @@ void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, co
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

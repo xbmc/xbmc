@@ -8,8 +8,10 @@
 
 #pragma once
 
-#include "../../AddonBase.h"
+#include "../../c-api/gui/controls/image.h"
 #include "../Window.h"
+
+#ifdef __cplusplus
 
 namespace kodi
 {
@@ -19,33 +21,30 @@ namespace controls
 {
 
 //============================================================================
-///
-/// \defgroup cpp_kodi_gui_controls_CImage Control Image
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_class{ kodi::gui::controls::CImage }
-/// **Window control used to show an image.**
-///
-/// The  image control is used  for displaying  images in Kodi. You can choose
+/// @defgroup cpp_kodi_gui_windows_controls_CImage Control Image
+/// @ingroup cpp_kodi_gui_windows_controls
+/// @brief @cpp_class{ kodi::gui::controls::CImage }
+/// **Window control used to show an image.**\n
+/// The image control is used for displaying images in Kodi. You can choose
 /// the position, size, transparency and contents of the image to be displayed.
 ///
-/// It has the header \ref Image.h "#include <kodi/gui/controls/Image.h>"
+/// It has the header @ref Image.h "#include <kodi/gui/controls/Image.h>"
 /// be included to enjoy it.
 ///
-/// Here you find the needed skin part for a \ref Image_Control "image control"
+/// Here you find the needed skin part for a @ref Image_Control "image control".
 ///
-/// @note The  call of  the control is  only possible  from the  corresponding
+/// @note The call of the control is only possible from the corresponding
 /// window as its class and identification number is required.
 ///
 class ATTRIBUTE_HIDDEN CImage : public CAddonGUIControlBase
 {
 public:
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CImage
+  /// @brief Construct a new control.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CImage
-  /// @brief Construct a new control
-  ///
-  /// @param[in] window               related window control class
-  /// @param[in] controlId            Used skin xml control id
+  /// @param[in] window Related window control class
+  /// @param[in] controlId Used skin xml control id
   ///
   CImage(CWindow* window, int controlId) : CAddonGUIControlBase(window)
   {
@@ -58,19 +57,17 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CImage
-  /// @brief Destructor
+  /// @ingroup cpp_kodi_gui_windows_controls_CImage
+  /// @brief Destructor.
   ///
   ~CImage() override = default;
   //--------------------------------------------------------------------------
 
   //==========================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CImage
+  /// @brief Set the control on window to visible.
   ///
-  /// \ingroup cpp_kodi_gui_controls_CImage
-  /// @brief Set the control on window to visible
-  ///
-  /// @param[in] visible              If true visible, otherwise hidden
+  /// @param[in] visible If true visible, otherwise hidden
   ///
   void SetVisible(bool visible)
   {
@@ -80,14 +77,12 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CImage
+  /// @ingroup cpp_kodi_gui_windows_controls_CImage
   /// @brief To set the filename used on image control.
   ///
-  /// @param[in] filename             Image file to use
-  /// @param[in] useCache             To define  storage of image,  default is
-  ///                                 in  cache,  if false  becomes it  loaded
-  ///                                 always on changes again
+  /// @param[in] filename Image file to use
+  /// @param[in] useCache To define storage of image, default is in cache, if
+  ///                     false becomes it loaded always on changes again
   ///
   void SetFileName(const std::string& filename, bool useCache = true)
   {
@@ -97,11 +92,10 @@ public:
   //--------------------------------------------------------------------------
 
   //==========================================================================
-  ///
-  /// \ingroup cpp_kodi_gui_controls_CImage
+  /// @ingroup cpp_kodi_gui_windows_controls_CImage
   /// @brief To set set the diffuse color on image.
   ///
-  /// @param[in] colorDiffuse         Color to use for diffuse
+  /// @param[in] colorDiffuse Color to use for diffuse
   ///
   void SetColorDiffuse(uint32_t colorDiffuse)
   {
@@ -114,3 +108,5 @@ public:
 } /* namespace controls */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

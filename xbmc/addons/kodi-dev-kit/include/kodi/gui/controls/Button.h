@@ -8,8 +8,10 @@
 
 #pragma once
 
-#include "../../AddonBase.h"
+#include "../../c-api/gui/controls/button.h"
 #include "../Window.h"
+
+#ifdef __cplusplus
 
 namespace kodi
 {
@@ -18,35 +20,33 @@ namespace gui
 namespace controls
 {
 
-//============================================================================
+//==============================================================================
+/// @defgroup cpp_kodi_gui_windows_controls_CButton Control Button
+/// @ingroup cpp_kodi_gui_windows_controls
+/// @brief @cpp_class{ kodi::gui::controls::CButton }
+/// **Standard push button control for window**\n
+/// The button control is used for creating push buttons in Kodi.
 ///
-/// \defgroup cpp_kodi_gui_controls_CButton Control Button
-/// \ingroup cpp_kodi_gui
-/// @brief \cpp_class{ kodi::gui::controls::CButton }
-/// **Standard push button control for window**
+/// You can choose the position, size, and look of the button, as well as
+/// choosing what action(s) should be performed when pushed.
 ///
-/// The  button  control  is used for creating push buttons  in Kodi.  You can
-/// choose the position,  size,  and look of the button,  as well as  choosing
-/// what action(s) should be performed when pushed.
-///
-/// It has the header \ref Button.h "#include <kodi/gui/controls/Button.h>"
+/// It has the header @ref Button.h "#include <kodi/gui/controls/Button.h>"
 /// be included to enjoy it.
 ///
-/// Here you find the needed skin part for a \ref skin_Button_control "button control"
+/// Here you find the needed skin part for a @ref skin_Button_control "button control"
 ///
-/// @note The call of the control is  only  possible  from  the  corresponding
+/// @note The call of the control is only possible from the corresponding
 /// window as its class and identification number is required.
 ///
 class ATTRIBUTE_HIDDEN CButton : public CAddonGUIControlBase
 {
 public:
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief Construct a new control.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief Construct a new control
-  ///
-  /// @param[in] window               related window control class
-  /// @param[in] controlId            Used skin xml control id
+  /// @param[in] window Related window control class
+  /// @param[in] controlId Used skin xml control id
   ///
   CButton(CWindow* window, int controlId) : CAddonGUIControlBase(window)
   {
@@ -55,64 +55,59 @@ public:
     if (!m_controlHandle)
       kodi::Log(ADDON_LOG_FATAL, "kodi::gui::CButton can't create control class from Kodi !!!");
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
-  ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief Destructor
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief Destructor.
   ///
   ~CButton() override = default;
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief Set the control on window to visible.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief Set the control on window to visible
-  ///
-  /// @param[in] visible              If true visible, otherwise hidden
+  /// @param[in] visible If true visible, otherwise hidden
   ///
   void SetVisible(bool visible)
   {
     m_interface->kodi_gui->control_button->set_visible(m_interface->kodiBase, m_controlHandle,
                                                        visible);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief Set's the control's enabled/disabled state.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief Set's the control's enabled/disabled state
-  ///
-  /// @param[in] enabled              If true enabled, otherwise disabled
+  /// @param[in] enabled If true enabled, otherwise disabled
   ///
   void SetEnabled(bool enabled)
   {
     m_interface->kodi_gui->control_button->set_enabled(m_interface->kodiBase, m_controlHandle,
                                                        enabled);
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief To set the text string on button.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief To set the text string on button
-  ///
-  /// @param[in] label                Text to show
+  /// @param[in] label Text to show
   ///
   void SetLabel(const std::string& label)
   {
     m_interface->kodi_gui->control_button->set_label(m_interface->kodiBase, m_controlHandle,
                                                      label.c_str());
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief Get the used text from button.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief Get the used text from button
-  ///
-  /// @return                         Text shown
+  /// @return Text shown
   ///
   std::string GetLabel() const
   {
@@ -127,28 +122,26 @@ public:
     }
     return label;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief If two labels are used for button becomes it set with them.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief If two labels are used for button becomes it set with them
-  ///
-  /// @param[in] label                Text for second label
+  /// @param[in] label Text for second label
   ///
   void SetLabel2(const std::string& label)
   {
     m_interface->kodi_gui->control_button->set_label2(m_interface->kodiBase, m_controlHandle,
                                                       label.c_str());
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  //==========================================================================
+  //============================================================================
+  /// @ingroup cpp_kodi_gui_windows_controls_CButton
+  /// @brief Get the second label if present.
   ///
-  /// @ingroup cpp_kodi_gui_control_CButton
-  /// @brief Get the second label if present
-  ///
-  /// @return                         Second label
+  /// @return Second label
   ///
   std::string GetLabel2() const
   {
@@ -163,9 +156,11 @@ public:
     }
     return label;
   }
-  //--------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 };
 
 } /* namespace controls */
 } /* namespace gui */
 } /* namespace kodi */
+
+#endif /* __cplusplus */

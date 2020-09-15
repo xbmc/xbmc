@@ -14,14 +14,13 @@
 #include "guilib/GUIRenderingControl.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIControlAddonRendering::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_rendering = static_cast<AddonToKodiFuncTable_kodi_gui_control_rendering*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_rendering)));
+  addonInterface->toKodi->kodi_gui->control_rendering =
+      new AddonToKodiFuncTable_kodi_gui_control_rendering();
 
   addonInterface->toKodi->kodi_gui->control_rendering->set_callbacks = set_callbacks;
   addonInterface->toKodi->kodi_gui->control_rendering->destroy = destroy;
@@ -29,22 +28,26 @@ void Interface_GUIControlAddonRendering::Init(AddonGlobalInterface* addonInterfa
 
 void Interface_GUIControlAddonRendering::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_rendering);
+  delete addonInterface->toKodi->kodi_gui->control_rendering;
 }
 
 void Interface_GUIControlAddonRendering::set_callbacks(
-                            void* kodiBase, void* handle, void* clienthandle,
-                            bool (*createCB)(void*,int,int,int,int,void*),
-                            void (*renderCB)(void*), void (*stopCB)(void*), bool (*dirtyCB)(void*))
+    KODI_HANDLE kodiBase,
+    KODI_GUI_CONTROL_HANDLE handle,
+    KODI_GUI_CLIENT_HANDLE clienthandle,
+    bool (*createCB)(KODI_GUI_CLIENT_HANDLE, int, int, int, int, ADDON_HARDWARE_CONTEXT),
+    void (*renderCB)(KODI_GUI_CLIENT_HANDLE),
+    void (*stopCB)(KODI_GUI_CLIENT_HANDLE),
+    bool (*dirtyCB)(KODI_GUI_CLIENT_HANDLE))
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', "
-              "handle='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIControlAddonRendering::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -60,16 +63,17 @@ void Interface_GUIControlAddonRendering::set_callbacks(
   control->m_control->InitCallback(control);
 }
 
-void Interface_GUIControlAddonRendering::destroy(void* kodiBase, void* handle)
+void Interface_GUIControlAddonRendering::destroy(KODI_HANDLE kodiBase,
+                                                 KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
-              "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', "
-              "handle='%p') on addon '%s'",
-              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+              "Interface_GUIControlAddonRendering::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -79,7 +83,7 @@ void Interface_GUIControlAddonRendering::destroy(void* kodiBase, void* handle)
 }
 
 
-CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *control)
+CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl* control)
   : CBCreate{nullptr},
     CBRender{nullptr},
     CBStop{nullptr},
@@ -91,7 +95,7 @@ CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *contr
 {
 }
 
-bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)
+bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void* device)
 {
   if (CBCreate)
   {
@@ -142,4 +146,3 @@ bool CGUIAddonRenderingControl::IsDirty()
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

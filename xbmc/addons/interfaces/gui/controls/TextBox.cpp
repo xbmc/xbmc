@@ -16,14 +16,13 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-extern "C"
-{
 namespace ADDON
 {
 
 void Interface_GUIControlTextBox::Init(AddonGlobalInterface* addonInterface)
 {
-  addonInterface->toKodi->kodi_gui->control_text_box = static_cast<AddonToKodiFuncTable_kodi_gui_control_text_box*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_control_text_box)));
+  addonInterface->toKodi->kodi_gui->control_text_box =
+      new AddonToKodiFuncTable_kodi_gui_control_text_box();
 
   addonInterface->toKodi->kodi_gui->control_text_box->set_visible = set_visible;
   addonInterface->toKodi->kodi_gui->control_text_box->reset = reset;
@@ -35,31 +34,37 @@ void Interface_GUIControlTextBox::Init(AddonGlobalInterface* addonInterface)
 
 void Interface_GUIControlTextBox::DeInit(AddonGlobalInterface* addonInterface)
 {
-  free(addonInterface->toKodi->kodi_gui->control_text_box);
+  delete addonInterface->toKodi->kodi_gui->control_text_box;
 }
 
-void Interface_GUIControlTextBox::set_visible(void* kodiBase, void* handle, bool visible)
+void Interface_GUIControlTextBox::set_visible(KODI_HANDLE kodiBase,
+                                              KODI_GUI_CONTROL_HANDLE handle,
+                                              bool visible)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlTextBox::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
   control->SetVisible(visible);
 }
 
-void Interface_GUIControlTextBox::reset(void* kodiBase, void* handle)
+void Interface_GUIControlTextBox::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlTextBox::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -67,14 +72,19 @@ void Interface_GUIControlTextBox::reset(void* kodiBase, void* handle)
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const char* text)
+void Interface_GUIControlTextBox::set_text(KODI_HANDLE kodiBase,
+                                           KODI_GUI_CONTROL_HANDLE handle,
+                                           const char* text)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control || !text)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p', text='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, text, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlTextBox::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}', text='{}') on addon '{}'",
+              __func__, kodiBase, handle, static_cast<const void*>(text),
+              addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -83,42 +93,51 @@ void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const c
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
-char* Interface_GUIControlTextBox::get_text(void* kodiBase, void* handle)
+char* Interface_GUIControlTextBox::get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlTextBox::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
   return strdup(control->GetDescription().c_str());
 }
 
-void Interface_GUIControlTextBox::scroll(void* kodiBase, void* handle, unsigned int position)
+void Interface_GUIControlTextBox::scroll(KODI_HANDLE kodiBase,
+                                         KODI_GUI_CONTROL_HANDLE handle,
+                                         unsigned int position)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlTextBox::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
   control->Scroll(position);
 }
 
-void Interface_GUIControlTextBox::set_auto_scrolling(void* kodiBase, void* handle, int delay, int time, int repeat)
+void Interface_GUIControlTextBox::set_auto_scrolling(
+    KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int delay, int time, int repeat)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUITextBox* control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlTextBox::{} - invalid handler data (kodiBase='{}', "
+              "handle='{}') on addon '{}'",
+              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -126,4 +145,3 @@ void Interface_GUIControlTextBox::set_auto_scrolling(void* kodiBase, void* handl
 }
 
 } /* namespace ADDON */
-} /* extern "C" */

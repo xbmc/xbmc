@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/controls/slider.h"
+
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -40,27 +42,37 @@ namespace ADDON
      * class.
      */
     //@{
-    static void set_visible(void* kodiBase, void* handle, bool visible);
-    static void set_enabled(void* kodiBase, void* handle, bool enabled);
+    static void set_visible(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool visible);
+    static void set_enabled(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, bool enabled);
 
-    static void reset(void* kodiBase, void* handle);
+    static void reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static char* get_description(void* kodiBase, void* handle);
+    static char* get_description(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static void set_int_range(void* kodiBase, void* handle, int start, int end);
-    static void set_int_value(void* kodiBase, void* handle, int value);
-    static int get_int_value(void* kodiBase, void* handle);
-    static void set_int_interval(void* kodiBase, void* handle, int interval);
+    static void set_int_range(KODI_HANDLE kodiBase,
+                              KODI_GUI_CONTROL_HANDLE handle,
+                              int start,
+                              int end);
+    static void set_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int value);
+    static int get_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void set_int_interval(KODI_HANDLE kodiBase,
+                                 KODI_GUI_CONTROL_HANDLE handle,
+                                 int interval);
 
-    static void set_percentage(void* kodiBase, void* handle, float percent);
-    static float get_percentage(void* kodiBase, void* handle);
+    static void set_percentage(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, float percent);
+    static float get_percentage(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
 
-    static void set_float_range(void* kodiBase, void* handle, float start, float end);
-    static void set_float_value(void* kodiBase, void* handle, float value);
-    static float get_float_value(void* kodiBase, void* handle);
-    static void set_float_interval(void* kodiBase, void* handle, float interval);
+    static void set_float_range(KODI_HANDLE kodiBase,
+                                KODI_GUI_CONTROL_HANDLE handle,
+                                float start,
+                                float end);
+    static void set_float_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, float value);
+    static float get_float_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle);
+    static void set_float_interval(KODI_HANDLE kodiBase,
+                                   KODI_GUI_CONTROL_HANDLE handle,
+                                   float interval);
     //@}
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

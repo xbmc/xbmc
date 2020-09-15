@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/gui/dialogs/progress.h"
+
 extern "C"
 {
 
-struct AddonGlobalInterface;
+  struct AddonGlobalInterface;
 
-namespace ADDON
-{
+  namespace ADDON
+  {
 
   /*!
    * @brief Global gui Add-on to Kodi callback functions
@@ -40,21 +42,24 @@ namespace ADDON
      * class.
      */
     //@{
-    static void* new_dialog(void* kodiBase);
-    static void delete_dialog(void* kodiBase, void* handle);
-    static void open(void* kodiBase, void* handle);
-    static void set_heading(void* kodiBase, void* handle, const char* heading);
-    static void set_line(void* kodiBase, void* handle, unsigned int line, const char* text);
-    static void set_can_cancel(void* kodiBase, void* handle, bool canCancel);
-    static bool is_canceled(void* kodiBase, void* handle);
-    static void set_percentage(void* kodiBase, void* handle, int percentage);
-    static int get_percentage(void* kodiBase, void* handle);
-    static void show_progress_bar(void* kodiBase, void* handle, bool bOnOff);
-    static void set_progress_max(void* kodiBase, void* handle, int max);
-    static void set_progress_advance(void* kodiBase, void* handle, int nSteps);
-    static bool abort(void* kodiBase, void* handle);
+    static KODI_GUI_HANDLE new_dialog(KODI_HANDLE kodiBase);
+    static void delete_dialog(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void open(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void set_heading(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, const char* heading);
+    static void set_line(KODI_HANDLE kodiBase,
+                         KODI_GUI_HANDLE handle,
+                         unsigned int line,
+                         const char* text);
+    static void set_can_cancel(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, bool canCancel);
+    static bool is_canceled(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void set_percentage(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, int percentage);
+    static int get_percentage(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
+    static void show_progress_bar(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, bool bOnOff);
+    static void set_progress_max(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, int max);
+    static void set_progress_advance(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle, int nSteps);
+    static bool abort(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle);
     //@}
   };
 
-} /* namespace ADDON */
+  } /* namespace ADDON */
 } /* extern "C" */

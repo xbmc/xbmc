@@ -1,0 +1,96 @@
+/*!
+@defgroup cpp_kodi_gui_Defs Definitions, structures and enumerators
+@ingroup cpp_kodi_gui
+@brief **GUI add-on interface definition values**\n
+All GUI functions associated data structures.
+
+Used to exchange the available options between Kodi and addon.\n
+The groups described here correspond to the groups of functions on GUI.
+*/
+
+
+/*!
+@defgroup cpp_kodi_gui_general 1. General
+@ingroup cpp_kodi_gui
+@brief **General GUI related functions**\n
+This includes independent functions which can be used by different locations and
+called up independently.
+
+*/
+
+/*!
+@defgroup cpp_kodi_gui_dialogs 2. Dialogs
+@ingroup cpp_kodi_gui
+@brief **Different GUI dialog for user queries**\n
+This is where the individual dialogs possible for addons are carried out, with
+which any user access can be given, e.g. Yes/No dialog.
+
+
+*/
+
+/*!
+@defgroup cpp_kodi_gui_windows 3. Windows
+@ingroup cpp_kodi_gui
+@brief **Classes and data for displaying a window in Kodi**\n
+This group contains the primary class @ref cpp_kodi_gui_windows_window "kodi::gui::CWindow"
+and also various subclasses belonging to it (various controls, list item).
+
+Kodi is noted as having a very flexible and robust framework for its GUI,
+making theme-skinning and personal customization very accessible. Users
+can create their own skin (or modify an existing skin) and share it with
+others.
+
+This class is used to process the display of a window in Kodi from the addon.
+
+The addon can process the controls stored in the XML and lists displayed in the
+GUI, set values and manage user access.
+
+*/
+
+/*!
+@defgroup cpp_kodi_gui_windows_window 1. GUI window (kodi::gui::CWindow)
+@ingroup cpp_kodi_gui_windows
+*/
+
+/*!
+@defgroup cpp_kodi_gui_windows_listitem 2. GUI list item (kodi::gui::CListItem)
+@ingroup cpp_kodi_gui_windows
+*/
+
+/*!
+@defgroup cpp_kodi_gui_windows_controls 3. GUI controls (kodi::gui::controls::C...)
+@ingroup cpp_kodi_gui_windows
+@brief @cpp_namespace{ kodi::gui::controls }
+<b>GUI control elements</b>\n
+This group contains classes which are used in @ref cpp_kodi_gui_windows_window "kodi::gui::CWindow"
+to edit associated skin control elements, be it to set or get their values, or
+to make them visible or hidden.
+
+See @ref skin_parts for a detailed description of the skin XML parts accessed
+from here.
+
+In order to access a control in skin XML using an add-on, it must have an id,
+otherwise an add-on cannot access it.
+
+~~~~~~~~~~~~~~~xml
+  <control type="..." id="1"> <!-- Id's defined here to use on addon -->
+    ...
+  </control>
+~~~~~~~~~~~~~~~
+
+@note These classes from here can only be used together with the associated
+window and cannot be used independently.
+
+
+*/
+
+
+/*!
+@defgroup cpp_kodi_gui_helpers 4. Helpers
+@ingroup cpp_kodi_gui
+@brief **Auxiliary classes for processing the GUI within the addon**\n
+The auxiliary functions and classes stored here only work indirectly with Kodi
+and are mostly only intended to simplify an add-on development.
+
+
+*/

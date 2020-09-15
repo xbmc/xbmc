@@ -142,7 +142,9 @@ Here is a table of the types currently possible:
 /*!
 \defgroup cpp_kodi_gui Interface - kodi::gui
 \ingroup cpp
-\brief **Graphical functions for Windows and Dialogs to show**
+\brief **Graphical functions for Windows and Dialogs to show**\n
+Offers classes and functions that manipulate the Graphical User Interface
+through windows, dialogs, and various control widgets.
 */
 /*!
 \defgroup cpp_kodi_platform Interface - kodi::platform
