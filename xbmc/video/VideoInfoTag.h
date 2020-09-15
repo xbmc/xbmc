@@ -80,8 +80,8 @@ public:
   const std::map<std::string, std::string>& GetUniqueIDs() const;
   const std::string& GetDefaultUniqueID() const;
   bool HasUniqueID() const;
-  bool HasYear() const;
-  int GetYear() const;
+  virtual bool HasYear() const;
+  virtual int GetYear() const;
   bool HasPremiered() const;
   const CDateTime& GetPremiered() const;
   const CDateTime& GetFirstAired() const;
