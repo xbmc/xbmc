@@ -667,7 +667,8 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   // Find the chosen language add-on if it's enabled
   if (!addonMgr.GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true))
   {
-    if (addonMgr.IsAddonDisabled(addon->ID()) && !addonMgr.EnableAddon(addon->ID()))
+    if (!addonMgr.IsAddonInstalled(language) ||
+        (addonMgr.IsAddonDisabled(language) && !addonMgr.EnableAddon(language)))
     {
       CLog::Log(LOGWARNING,
                 "CLangInfo::{}: could not find or enable language add-on '{}', loading default...",
