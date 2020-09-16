@@ -17,10 +17,10 @@
 
 #include <cstdlib>
 
-#define SECONDS_PER_DAY 86400UL
-#define SECONDS_PER_HOUR 3600UL
-#define SECONDS_PER_MINUTE 60UL
-#define SECONDS_TO_FILETIME 10000000UL
+#define SECONDS_PER_DAY 86400L
+#define SECONDS_PER_HOUR 3600L
+#define SECONDS_PER_MINUTE 60L
+#define SECONDS_TO_FILETIME 10000000L
 
 static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
