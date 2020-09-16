@@ -786,48 +786,18 @@
 					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
 				</control>
 				<control type="grouplist">
-					<left>35</left>
-					<description>Left side of top bar</description>
 					<width>900</width>
-					<top>-7</top>
-					<height>100</height>
-					<orientation>horizontal</orientation>
-					<usecontrolcoords>true</usecontrolcoords>
-					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-					<animation effect="slide" end="0,16" time="200" reversible="true" condition="String.IsEmpty(Control.GetLabel(18900))">Conditional</animation>
-					<animation effect="slide" end="70,0" time="200" reversible="true" condition="Control.IsVisible(799)">Conditional</animation>
-					<control type="label">
-						<label>$PARAM[breadcrumbs_label]</label>
-						<include>BreadcrumbsLabel</include>
-					</control>
-					<control type="label">
-						<label>$INFO[Container.ShowTitle, / ]</label>
-						<include>BreadcrumbsLabel</include>
-						<visible>!String.IsEmpty(Container.ShowTitle) + !String.IsEqual(Container.ShowTitle,Container.FolderName)</visible>
-					</control>
-					<control type="label">
-						<label>$INFO[Container.FolderName, / ]</label>
-						<include>BreadcrumbsLabel</include>
-						<visible>![Container.Content() + Window.IsActive(videos)]</visible>
-						<visible>![Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRTimers.xml) | Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRSearch.xml)]</visible>
-					</control>
-					<control type="label">
-						<label>$INFO[Container.PluginCategory, / ]</label>
-						<include>BreadcrumbsLabel</include>
-						<visible>!String.isempty(Container.PluginCategory)</visible>
-					</control>
-					<control type="label">
-						<label>$INFO[Control.GetLabel(10),: ]</label>
-						<include>BreadcrumbsLabel</include>
-						<visible>!String.IsEqual(Control.GetLabel(10),$LOCALIZE[16100]) + Window.IsActive(videos)</visible>
-					</control>
-					<control type="label">
-						<left>10</left>
-						<label>($LOCALIZE[31052])</label>
-						<include>BreadcrumbsLabel</include>
-						<visible>Container.Filtered</visible>
-					</control>
+					<include content="TopBarLabels">
+						<param name="breadcrumbs_label" value="$PARAM[breadcrumbs_label]" />
+					</include>
+					<visible>Player.HasMedia</visible>
+				</control>
+				<control type="grouplist">
+					<width>1800</width>
+					<include content="TopBarLabels">
+						<param name="breadcrumbs_label" value="$PARAM[breadcrumbs_label]" />
+					</include>
+					<visible>!Player.HasMedia</visible>
 				</control>
 				<control type="button">
 					<top>0</top>
@@ -1005,6 +975,49 @@
 			</control>
 			<include condition="Skin.HasSetting(touchmode) + !Window.IsActive(home)">TouchBackButton</include>
 		</definition>
+	</include>
+	<include name="TopBarLabels">
+		<left>35</left>
+		<description>Left side of top bar</description>
+		<top>-7</top>
+		<height>100</height>
+		<orientation>horizontal</orientation>
+		<usecontrolcoords>true</usecontrolcoords>
+		<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+		<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+		<animation effect="slide" end="0,16" time="200" reversible="true" condition="String.IsEmpty(Control.GetLabel(18900))">Conditional</animation>
+		<animation effect="slide" end="70,0" time="200" reversible="true" condition="Control.IsVisible(799)">Conditional</animation>
+		<control type="label">
+			<label>$PARAM[breadcrumbs_label]</label>
+			<include>BreadcrumbsLabel</include>
+		</control>
+		<control type="label">
+			<label>$INFO[Container.ShowTitle, / ]</label>
+			<include>BreadcrumbsLabel</include>
+			<visible>!String.IsEmpty(Container.ShowTitle) + !String.IsEqual(Container.ShowTitle,Container.FolderName)</visible>
+		</control>
+		<control type="label">
+			<label>$INFO[Container.FolderName, / ]</label>
+			<include>BreadcrumbsLabel</include>
+			<visible>![Container.Content() + Window.IsActive(videos)]</visible>
+			<visible>![Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRTimers.xml) | Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRSearch.xml)]</visible>
+		</control>
+		<control type="label">
+			<label>$INFO[Container.PluginCategory, / ]</label>
+			<include>BreadcrumbsLabel</include>
+			<visible>!String.isempty(Container.PluginCategory)</visible>
+		</control>
+		<control type="label">
+			<label>$INFO[Control.GetLabel(10),: ]</label>
+			<include>BreadcrumbsLabel</include>
+			<visible>!String.IsEqual(Control.GetLabel(10),$LOCALIZE[16100]) + Window.IsActive(videos)</visible>
+		</control>
+		<control type="label">
+			<left>10</left>
+			<label>($LOCALIZE[31052])</label>
+			<include>BreadcrumbsLabel</include>
+			<visible>Container.Filtered</visible>
+		</control>
 	</include>
 	<include name="BreadcrumbsLabel">
 		<font>font45</font>
