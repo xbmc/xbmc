@@ -7,11 +7,11 @@
  */
 
 #include "platform/linux/SysfsPath.h"
+#include "utils/StringUtils.h"
 
-#include <chrono>
-#include <string>
-#include <sstream>
 #include <fstream>
+#include <sstream>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -19,20 +19,14 @@ struct TestSysfsPath : public ::testing::Test
 {
   std::string GetTestFilePath()
   {
-    using namespace std::chrono;
-
     std::string tmpdir{"/tmp"};
     const char *test_tmpdir = getenv("TMPDIR");
+
     if (test_tmpdir && test_tmpdir[0] != '\0') {
       tmpdir.assign(test_tmpdir);
     }
 
-    std::stringstream ss;
-    unsigned long long timestamp = duration_cast< nanoseconds >(
-      system_clock::now().time_since_epoch()).count();
-
-    ss << tmpdir << "/kodi-test-" << timestamp;
-    return ss.str();
+    return tmpdir + "/kodi-test-" + StringUtils::CreateUUID();
   }
 };
 
