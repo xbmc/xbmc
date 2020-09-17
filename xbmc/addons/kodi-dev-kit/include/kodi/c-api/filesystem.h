@@ -28,6 +28,9 @@ typedef intptr_t ssize_t;
 #ifdef DeleteFile
 #undef DeleteFile
 #endif // DeleteFile
+#ifdef RemoveDirectory
+#undef RemoveDirectory
+#endif // RemoveDirectory
 #endif // _WIN32
 
 #ifdef TARGET_POSIX // Linux, Mac, FreeBSD
