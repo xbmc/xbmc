@@ -30,14 +30,14 @@
 						<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
 					</control>
 					<control type="textbox">
-						<left>85</left>
+						<left>75</left>
 						<top>110</top>
-						<width>425</width>
+						<width>450</width>
 						<height>470</height>
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>$VAR[AddonLifecycleType]</label>
-						<font>font36_title</font>
+						<font>font32_title</font>
 					</control>
 				</control>
 			</control>
