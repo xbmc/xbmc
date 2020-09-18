@@ -59,7 +59,7 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
     StringUtils::Trim(key);
     key = name + "." + key;
   }
-  m_struct = {{ 0 }};
+  m_struct = { 0 };
   m_caps = { 0 };
 }
 
@@ -122,11 +122,23 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
 
 bool CInputStreamAddon::Open()
 {
-  m_struct.toKodi.kodiInstance = this;
-  m_struct.toKodi.free_demux_packet = cb_free_demux_packet;
-  m_struct.toKodi.allocate_demux_packet = cb_allocate_demux_packet;
-  m_struct.toKodi.allocate_encrypted_demux_packet = cb_allocate_encrypted_demux_packet;
-  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.open)
+  // Create "C" interface structures, used as own parts to prevent API problems on update
+  m_struct.props = new AddonProps_InputStream();
+  m_struct.toAddon = new KodiToAddonFuncTable_InputStream();
+  m_struct.toKodi = new AddonToKodiFuncTable_InputStream();
+
+  m_struct.toKodi->kodiInstance = this;
+  m_struct.toKodi->free_demux_packet = cb_free_demux_packet;
+  m_struct.toKodi->allocate_demux_packet = cb_allocate_demux_packet;
+  m_struct.toKodi->allocate_encrypted_demux_packet = cb_allocate_encrypted_demux_packet;
+  /*
+  // Way to include part on new API version
+  if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("3.0.0")) // Set the version to your new
+  {
+
+  }
+  */
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->open)
     return false;
 
   INPUTSTREAM props = { 0 };
@@ -171,24 +183,29 @@ bool CInputStreamAddon::Open()
     m_player->GetVideoResolution(videoWidth, videoHeight);
   SetVideoResolution(videoWidth, videoHeight);
 
-  bool ret = m_struct.toAddon.open(&m_struct, &props);
+  bool ret = m_struct.toAddon->open(&m_struct, &props);
   if (ret)
   {
     m_caps = { 0 };
-    m_struct.toAddon.get_capabilities(&m_struct, &m_caps);
+    m_struct.toAddon->get_capabilities(&m_struct, &m_caps);
 
     m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(
-        new CInputStreamProvider(GetAddonInfo(), m_struct.toAddon.addonInstance));
+        new CInputStreamProvider(GetAddonInfo(), m_struct.toAddon->addonInstance));
   }
   return ret;
 }
 
 void CInputStreamAddon::Close()
 {
-  if (m_struct.toAddon.close)
-    m_struct.toAddon.close(&m_struct);
+  if (m_struct.toAddon->close)
+    m_struct.toAddon->close(&m_struct);
   DestroyInstance();
-  m_struct = {{ 0 }};
+
+  // Delete "C" interface structures
+  delete m_struct.toAddon;
+  delete m_struct.toKodi;
+  delete m_struct.props;
+  m_struct = { 0 };
 }
 
 bool CInputStreamAddon::IsEOF()
@@ -198,34 +215,34 @@ bool CInputStreamAddon::IsEOF()
 
 int CInputStreamAddon::Read(uint8_t* buf, int buf_size)
 {
-  if (!m_struct.toAddon.read_stream)
+  if (!m_struct.toAddon->read_stream)
     return -1;
 
-  return m_struct.toAddon.read_stream(&m_struct, buf, buf_size);
+  return m_struct.toAddon->read_stream(&m_struct, buf, buf_size);
 }
 
 int64_t CInputStreamAddon::Seek(int64_t offset, int whence)
 {
-  if (!m_struct.toAddon.seek_stream)
+  if (!m_struct.toAddon->seek_stream)
     return -1;
 
-  return m_struct.toAddon.seek_stream(&m_struct, offset, whence);
+  return m_struct.toAddon->seek_stream(&m_struct, offset, whence);
 }
 
 int64_t CInputStreamAddon::GetLength()
 {
-  if (!m_struct.toAddon.length_stream)
+  if (!m_struct.toAddon->length_stream)
     return -1;
 
-  return m_struct.toAddon.length_stream(&m_struct);
+  return m_struct.toAddon->length_stream(&m_struct);
 }
 
 int CInputStreamAddon::GetBlockSize()
 {
-  if (!m_struct.toAddon.block_size_stream)
+  if (!m_struct.toAddon->block_size_stream)
     return 0;
 
-  return m_struct.toAddon.block_size_stream(&m_struct);
+  return m_struct.toAddon->block_size_stream(&m_struct);
 }
 
 bool CInputStreamAddon::CanSeek()
@@ -249,18 +266,18 @@ CDVDInputStream::IDisplayTime* CInputStreamAddon::GetIDisplayTime()
 
 int CInputStreamAddon::GetTotalTime()
 {
-  if (!m_struct.toAddon.get_total_time)
+  if (!m_struct.toAddon->get_total_time)
     return 0;
 
-  return m_struct.toAddon.get_total_time(&m_struct);
+  return m_struct.toAddon->get_total_time(&m_struct);
 }
 
 int CInputStreamAddon::GetTime()
 {
-  if (!m_struct.toAddon.get_time)
+  if (!m_struct.toAddon->get_time)
     return 0;
 
-  return m_struct.toAddon.get_time(&m_struct);
+  return m_struct.toAddon->get_time(&m_struct);
 }
 
 // ITime
@@ -274,12 +291,12 @@ CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
 
 bool CInputStreamAddon::GetTimes(Times &times)
 {
-  if (!m_struct.toAddon.get_times)
+  if (!m_struct.toAddon->get_times)
     return false;
 
   INPUTSTREAM_TIMES i_times;
 
-  if (m_struct.toAddon.get_times(&m_struct, &i_times))
+  if (m_struct.toAddon->get_times(&m_struct, &i_times))
   {
     times.ptsBegin = i_times.ptsBegin;
     times.ptsEnd = i_times.ptsEnd;
@@ -301,10 +318,10 @@ CDVDInputStream::IPosTime* CInputStreamAddon::GetIPosTime()
 
 bool CInputStreamAddon::PosTime(int ms)
 {
-  if (!m_struct.toAddon.pos_time)
+  if (!m_struct.toAddon->pos_time)
     return false;
 
-  return m_struct.toAddon.pos_time(&m_struct, ms);
+  return m_struct.toAddon->pos_time(&m_struct, ms);
 }
 
 // IDemux
@@ -326,17 +343,17 @@ bool CInputStreamAddon::OpenDemux()
 
 DemuxPacket* CInputStreamAddon::ReadDemux()
 {
-  if (!m_struct.toAddon.demux_read)
+  if (!m_struct.toAddon->demux_read)
     return nullptr;
 
-  return m_struct.toAddon.demux_read(&m_struct);
+  return m_struct.toAddon->demux_read(&m_struct);
 }
 
 std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
 
-  INPUTSTREAM_IDS streamIDs = m_struct.toAddon.get_stream_ids(&m_struct);
+  INPUTSTREAM_IDS streamIDs = m_struct.toAddon->get_stream_ids(&m_struct);
   if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
     return streams;
 
@@ -349,7 +366,7 @@ std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 
 CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 {
-  INPUTSTREAM_INFO stream = m_struct.toAddon.get_stream(&m_struct, streamId);
+  INPUTSTREAM_INFO stream = m_struct.toAddon->get_stream(&m_struct, streamId);
   if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
     return nullptr;
 
@@ -390,39 +407,64 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     videoStream->iBitRate = stream.m_BitRate;
     videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
 
-    if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("2.0.8"))
-    {
-      videoStream->colorSpace = static_cast<AVColorSpace>(stream.m_colorSpace);
-      videoStream->colorRange = static_cast<AVColorRange>(stream.m_colorRange);
-    }
-    if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("2.0.9"))
-    {
-      videoStream->colorPrimaries = static_cast<AVColorPrimaries>(stream.m_colorPrimaries);
-      videoStream->colorTransferCharacteristic = static_cast<AVColorTransferCharacteristic>(stream.m_colorTransferCharacteristic);
+    /*! Added on API version 2.0.8 */
+    //@{
+    videoStream->colorSpace = static_cast<AVColorSpace>(stream.m_colorSpace);
+    videoStream->colorRange = static_cast<AVColorRange>(stream.m_colorRange);
+    //@}
 
-      if (stream.m_masteringMetadata)
-      {
-        videoStream->masteringMetaData = std::shared_ptr<AVMasteringDisplayMetadata>(new AVMasteringDisplayMetadata);
-        videoStream->masteringMetaData->display_primaries[0][0] = av_d2q(stream.m_masteringMetadata->primary_r_chromaticity_x, INT_MAX);
-        videoStream->masteringMetaData->display_primaries[0][1] = av_d2q(stream.m_masteringMetadata->primary_r_chromaticity_y, INT_MAX);
-        videoStream->masteringMetaData->display_primaries[1][0] = av_d2q(stream.m_masteringMetadata->primary_g_chromaticity_x, INT_MAX);
-        videoStream->masteringMetaData->display_primaries[1][1] = av_d2q(stream.m_masteringMetadata->primary_g_chromaticity_y, INT_MAX);
-        videoStream->masteringMetaData->display_primaries[2][0] = av_d2q(stream.m_masteringMetadata->primary_b_chromaticity_x, INT_MAX);
-        videoStream->masteringMetaData->display_primaries[2][1] = av_d2q(stream.m_masteringMetadata->primary_b_chromaticity_y, INT_MAX);
-        videoStream->masteringMetaData->white_point[0] = av_d2q(stream.m_masteringMetadata->white_point_chromaticity_x, INT_MAX);
-        videoStream->masteringMetaData->white_point[1] = av_d2q(stream.m_masteringMetadata->white_point_chromaticity_y, INT_MAX);
-        videoStream->masteringMetaData->min_luminance = av_d2q(stream.m_masteringMetadata->luminance_min, INT_MAX);
-        videoStream->masteringMetaData->max_luminance = av_d2q(stream.m_masteringMetadata->luminance_max, INT_MAX);
-        videoStream->masteringMetaData->has_luminance = videoStream->masteringMetaData->has_primaries = 1;
-      }
+    /*! Added on API version 2.0.9 */
+    //@{
+    videoStream->colorPrimaries = static_cast<AVColorPrimaries>(stream.m_colorPrimaries);
+    videoStream->colorTransferCharacteristic =
+        static_cast<AVColorTransferCharacteristic>(stream.m_colorTransferCharacteristic);
 
-      if (stream.m_contentLightMetadata)
-      {
-        videoStream->contentLightMetaData = std::shared_ptr<AVContentLightMetadata>(new AVContentLightMetadata);
-        videoStream->contentLightMetaData->MaxCLL = static_cast<unsigned>(stream.m_contentLightMetadata->max_cll);
-        videoStream->contentLightMetaData->MaxFALL = static_cast<unsigned>(stream.m_contentLightMetadata->max_fall);
-      }
+    if (stream.m_masteringMetadata)
+    {
+      videoStream->masteringMetaData =
+          std::shared_ptr<AVMasteringDisplayMetadata>(new AVMasteringDisplayMetadata);
+      videoStream->masteringMetaData->display_primaries[0][0] =
+          av_d2q(stream.m_masteringMetadata->primary_r_chromaticity_x, INT_MAX);
+      videoStream->masteringMetaData->display_primaries[0][1] =
+          av_d2q(stream.m_masteringMetadata->primary_r_chromaticity_y, INT_MAX);
+      videoStream->masteringMetaData->display_primaries[1][0] =
+          av_d2q(stream.m_masteringMetadata->primary_g_chromaticity_x, INT_MAX);
+      videoStream->masteringMetaData->display_primaries[1][1] =
+          av_d2q(stream.m_masteringMetadata->primary_g_chromaticity_y, INT_MAX);
+      videoStream->masteringMetaData->display_primaries[2][0] =
+          av_d2q(stream.m_masteringMetadata->primary_b_chromaticity_x, INT_MAX);
+      videoStream->masteringMetaData->display_primaries[2][1] =
+          av_d2q(stream.m_masteringMetadata->primary_b_chromaticity_y, INT_MAX);
+      videoStream->masteringMetaData->white_point[0] =
+          av_d2q(stream.m_masteringMetadata->white_point_chromaticity_x, INT_MAX);
+      videoStream->masteringMetaData->white_point[1] =
+          av_d2q(stream.m_masteringMetadata->white_point_chromaticity_y, INT_MAX);
+      videoStream->masteringMetaData->min_luminance =
+          av_d2q(stream.m_masteringMetadata->luminance_min, INT_MAX);
+      videoStream->masteringMetaData->max_luminance =
+          av_d2q(stream.m_masteringMetadata->luminance_max, INT_MAX);
+      videoStream->masteringMetaData->has_luminance =
+          videoStream->masteringMetaData->has_primaries = 1;
     }
+
+    if (stream.m_contentLightMetadata)
+    {
+      videoStream->contentLightMetaData =
+          std::shared_ptr<AVContentLightMetadata>(new AVContentLightMetadata);
+      videoStream->contentLightMetaData->MaxCLL =
+          static_cast<unsigned>(stream.m_contentLightMetadata->max_cll);
+      videoStream->contentLightMetaData->MaxFALL =
+          static_cast<unsigned>(stream.m_contentLightMetadata->max_fall);
+    }
+    //@}
+
+    /*
+    // Way to include part on new API version
+    if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("3.0.0")) // Set the version to your new
+    {
+
+    }
+    */
     demuxStream = videoStream;
   }
   else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
@@ -487,18 +529,18 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 
 void CInputStreamAddon::EnableStream(int streamId, bool enable)
 {
-  if (!m_struct.toAddon.enable_stream)
+  if (!m_struct.toAddon->enable_stream)
     return;
 
-  m_struct.toAddon.enable_stream(&m_struct, streamId, enable);
+  m_struct.toAddon->enable_stream(&m_struct, streamId, enable);
 }
 
 bool CInputStreamAddon::OpenStream(int streamId)
 {
-  if (!m_struct.toAddon.open_stream)
+  if (!m_struct.toAddon->open_stream)
     return false;
 
-  return m_struct.toAddon.open_stream(&m_struct, streamId);
+  return m_struct.toAddon->open_stream(&m_struct, streamId);
 }
 
 int CInputStreamAddon::GetNrOfStreams() const
@@ -508,15 +550,15 @@ int CInputStreamAddon::GetNrOfStreams() const
 
 void CInputStreamAddon::SetSpeed(int speed)
 {
-  if (!m_struct.toAddon.demux_set_speed)
+  if (!m_struct.toAddon->demux_set_speed)
     return;
 
-  m_struct.toAddon.demux_set_speed(&m_struct, speed);
+  m_struct.toAddon->demux_set_speed(&m_struct, speed);
 }
 
 bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
 {
-  if (!m_struct.toAddon.demux_seek_time)
+  if (!m_struct.toAddon->demux_seek_time)
     return false;
 
   if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_IPOSTIME) != 0)
@@ -531,31 +573,31 @@ bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
     return true;
   }
 
-  return m_struct.toAddon.demux_seek_time(&m_struct, time, backward, startpts);
+  return m_struct.toAddon->demux_seek_time(&m_struct, time, backward, startpts);
 }
 
 void CInputStreamAddon::AbortDemux()
 {
-  if (m_struct.toAddon.demux_abort)
-    m_struct.toAddon.demux_abort(&m_struct);
+  if (m_struct.toAddon->demux_abort)
+    m_struct.toAddon->demux_abort(&m_struct);
 }
 
 void CInputStreamAddon::FlushDemux()
 {
-  if (m_struct.toAddon.demux_flush)
-    m_struct.toAddon.demux_flush(&m_struct);
+  if (m_struct.toAddon->demux_flush)
+    m_struct.toAddon->demux_flush(&m_struct);
 }
 
 void CInputStreamAddon::SetVideoResolution(int width, int height)
 {
-  if (m_struct.toAddon.set_video_resolution)
-    m_struct.toAddon.set_video_resolution(&m_struct, width, height);
+  if (m_struct.toAddon->set_video_resolution)
+    m_struct.toAddon->set_video_resolution(&m_struct, width, height);
 }
 
 bool CInputStreamAddon::IsRealtime()
 {
-  if (m_struct.toAddon.is_real_time_stream)
-    return m_struct.toAddon.is_real_time_stream(&m_struct);
+  if (m_struct.toAddon->is_real_time_stream)
+    return m_struct.toAddon->is_real_time_stream(&m_struct);
   return false;
 }
 
@@ -571,16 +613,16 @@ CDVDInputStream::IChapter* CInputStreamAddon::GetIChapter()
 
 int CInputStreamAddon::GetChapter()
 {
-  if (m_struct.toAddon.get_chapter)
-    return m_struct.toAddon.get_chapter(&m_struct);
+  if (m_struct.toAddon->get_chapter)
+    return m_struct.toAddon->get_chapter(&m_struct);
 
   return -1;
 }
 
 int CInputStreamAddon::GetChapterCount()
 {
-  if (m_struct.toAddon.get_chapter_count)
-    return m_struct.toAddon.get_chapter_count(&m_struct);
+  if (m_struct.toAddon->get_chapter_count)
+    return m_struct.toAddon->get_chapter_count(&m_struct);
 
   return 0;
 }
@@ -588,9 +630,9 @@ int CInputStreamAddon::GetChapterCount()
 void CInputStreamAddon::GetChapterName(std::string& name, int ch)
 {
   name.clear();
-  if (m_struct.toAddon.get_chapter_name)
+  if (m_struct.toAddon->get_chapter_name)
   {
-    const char* res = m_struct.toAddon.get_chapter_name(&m_struct, ch);
+    const char* res = m_struct.toAddon->get_chapter_name(&m_struct, ch);
     if (res)
       name = res;
   }
@@ -598,16 +640,16 @@ void CInputStreamAddon::GetChapterName(std::string& name, int ch)
 
 int64_t CInputStreamAddon::GetChapterPos(int ch)
 {
-  if (m_struct.toAddon.get_chapter_pos)
-    return m_struct.toAddon.get_chapter_pos(&m_struct, ch);
+  if (m_struct.toAddon->get_chapter_pos)
+    return m_struct.toAddon->get_chapter_pos(&m_struct, ch);
 
   return 0;
 }
 
 bool CInputStreamAddon::SeekChapter(int ch)
 {
-  if (m_struct.toAddon.seek_chapter)
-    return m_struct.toAddon.seek_chapter(&m_struct, ch);
+  if (m_struct.toAddon->seek_chapter)
+    return m_struct.toAddon->seek_chapter(&m_struct, ch);
 
   return false;
 }
