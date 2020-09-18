@@ -424,7 +424,7 @@ void CAddonRepos::GetLatestAddonVersionsFromAllRepos(
 }
 
 bool CAddonRepos::FindDependency(const std::string& dependsId,
-                                 const std::shared_ptr<IAddon>& parent,
+                                 const std::string& parentRepoId,
                                  std::shared_ptr<IAddon>& dependencyToInstall,
                                  std::shared_ptr<CRepository>& repoForDep) const
 {
@@ -452,7 +452,7 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
   {
     // If we didn't find an official version of this dependency
     // ...we check in the origin repo of the parent
-    if (!FindDependencyByParentRepo(dependsId, parent, dependencyToInstall))
+    if (!FindDependencyByParentRepo(dependsId, parentRepoId, dependencyToInstall))
       return false;
   }
 
@@ -464,9 +464,8 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
 
   repoForDep = std::static_pointer_cast<CRepository>(tmp);
 
-  CLog::Log(LOGDEBUG,
-            "ADDONS: found dependency [{}] for install/update from repo [{}]. dependee is [{}]",
-            dependencyToInstall->ID(), repoForDep->ID(), parent->ID());
+  CLog::Log(LOGDEBUG, "ADDONS: found dependency [{}] for install/update from repo [{}]",
+            dependencyToInstall->ID(), repoForDep->ID());
 
   if (dependencyToInstall->HasType(ADDON_REPOSITORY))
   {
@@ -481,10 +480,10 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
 }
 
 bool CAddonRepos::FindDependencyByParentRepo(const std::string& dependsId,
-                                             const std::shared_ptr<IAddon>& parent,
+                                             const std::string& parentRepoId,
                                              std::shared_ptr<IAddon>& dependencyToInstall) const
 {
-  const auto& repoEntry = m_latestVersionsByRepo.find(parent->Origin());
+  const auto& repoEntry = m_latestVersionsByRepo.find(parentRepoId);
   if (repoEntry != m_latestVersionsByRepo.end())
   {
     if (GetLatestVersionByMap(dependsId, repoEntry->second, dependencyToInstall))
