@@ -117,12 +117,9 @@ void CAddonDatabaseSerializer::DeserializeMetadata(const std::string& document,
 
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());
-  if (variant.isMember("broken")) // Fallback of old
-    builder.SetLifecycleState(AddonLifecycleState::BROKEN, variant["broken"].asString());
-  else
-    builder.SetLifecycleState(
-        static_cast<AddonLifecycleState>(variant["lifecycletype"].asUnsignedInteger()),
-        variant["lifecycledesc"].asString());
+  builder.SetLifecycleState(
+      static_cast<AddonLifecycleState>(variant["lifecycletype"].asUnsignedInteger()),
+      variant["lifecycledesc"].asString());
   builder.SetPackageSize(variant["size"].asUnsignedInteger());
 
   builder.SetPath(variant["path"].asString());
@@ -329,6 +326,25 @@ void CAddonDatabase::UpdateTables(int version)
       CVariant variant;
       if (!CJSONVariantParser::Parse(metadata, variant))
         continue;
+
+      // Replace obsolete "broken" with new in json text
+      if (variant.isMember("broken") && variant["broken"].asString().empty())
+      {
+        variant["lifecycletype"] = static_cast<unsigned int>(AddonLifecycleState::BROKEN);
+        variant["lifecycledesc"] = variant["broken"].asString();
+        variant.erase("broken");
+      }
+
+      // Fix wrong added change about "broken" to "lifecycle..." (request 18286)
+      // as there was every addon marked as broken. This checks his text and if
+      // them empty, becomes it declared as normal.
+      if (variant.isMember("lifecycledesc") && variant.isMember("lifecycletype") &&
+          variant["lifecycledesc"].asString().empty() &&
+          variant["lifecycletype"].asUnsignedInteger() !=
+              static_cast<unsigned int>(AddonLifecycleState::NORMAL))
+      {
+        variant["lifecycletype"] = static_cast<unsigned int>(AddonLifecycleState::NORMAL);
+      }
 
       CVariant variantUpdate;
       variantUpdate["type"] = variant["extensions"][0].asString();
