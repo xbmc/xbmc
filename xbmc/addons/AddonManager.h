@@ -243,7 +243,21 @@ namespace ADDON
 
     bool CanUninstall(const AddonPtr& addon);
 
+    /*!
+     * @brief Checks whether an addon is a system addon
+     *
+     * @param[in] id id of the addon
+     * @return true if addon is system addon, false otherwise.
+     */
     bool IsSystemAddon(const std::string& id);
+
+   /*!
+     * @brief Checks whether an addon is an optional system addon
+     *
+     * @param[in] id id of the addon
+     * @return true if addon is an optional system addon, false otherwise.
+     */
+    bool IsOptionalSystemAddon(const std::string& id);
 
     /*!
      * @brief Addon update rules.

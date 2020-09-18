@@ -805,7 +805,8 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
     return false;
 
   CSingleLock lock(m_critSection);
-  if (IsSystemAddon(ID))
+  // Non-optional system add-ons can not be disabled
+  if (IsSystemAddon(ID) && !IsOptionalSystemAddon(ID))
     return false;
 
   AddonPtr localAddon;
@@ -848,14 +849,23 @@ bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
 
 bool CAddonMgr::CanUninstall(const AddonPtr& addon)
 {
-  return addon && CanAddonBeDisabled(addon->ID()) &&
-      !StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
+  return addon && !IsSystemAddon(addon->ID()) && CanAddonBeDisabled(addon->ID()) &&
+         !StringUtils::StartsWith(addon->Path(),
+                                  CSpecialProtocol::TranslatePath("special://xbmc/addons"));
 }
 
 bool CAddonMgr::IsSystemAddon(const std::string& id)
 {
   CSingleLock lock(m_critSection);
-  return std::find(m_systemAddons.begin(), m_systemAddons.end(), id) != m_systemAddons.end();
+  return IsOptionalSystemAddon(id) ||
+         std::find(m_systemAddons.begin(), m_systemAddons.end(), id) != m_systemAddons.end();
+}
+
+bool CAddonMgr::IsOptionalSystemAddon(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  return std::find(m_optionalSystemAddons.begin(), m_optionalSystemAddons.end(), id) !=
+         m_optionalSystemAddons.end();
 }
 
 bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &addon)
