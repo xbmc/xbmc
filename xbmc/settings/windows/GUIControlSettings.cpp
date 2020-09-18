@@ -895,7 +895,7 @@ bool CGUIControlButtonSetting::OnClick()
         std::shared_ptr<CSettingList> settingList =
             std::static_pointer_cast<CSettingList>(m_pSetting);
         setting = std::static_pointer_cast<CSettingAddon>(settingList->GetDefinition());
-        for (const SettingPtr addon : settingList->GetValue())
+        for (const SettingPtr& addon : settingList->GetValue())
           addonIDs.push_back(std::static_pointer_cast<CSettingAddon>(addon)->GetValue());
       }
       else
@@ -1021,7 +1021,7 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
               addonIDs.push_back(std::static_pointer_cast<CSettingString>(setting)->GetValue());
 
             std::vector<std::string> addonNames;
-            for (const auto addonID : addonIDs)
+            for (const auto& addonID : addonIDs)
             {
               ADDON::AddonPtr addon;
               if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon))

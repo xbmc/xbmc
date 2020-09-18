@@ -250,7 +250,7 @@ namespace MUSIC_UTILS
 
     db.Close();
 
-    for (const auto type : artTypes)
+    for (const auto& type : artTypes)
     {
       CFileItemPtr artitem(new CFileItem(type, false));
       // Localise the names of common types of art

@@ -320,7 +320,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 
   pSlideShow->Reset();
   bool bShowVideos = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PICTURES_SHOWVIDEOS);
-  for (const auto pItem : *m_vecItems)
+  for (const auto& pItem : *m_vecItems)
   {
     if (!pItem->m_bIsFolder &&
         !(URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath())) &&
