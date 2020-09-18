@@ -53,93 +53,105 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
   @autoreleasepool
   {
     // Retrieve store URL
-    auto storeUrl = [tvosShared getSharedURL];
-    if (!storeUrl)
-      return;
-    storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:YES];
-
-    const auto isSandboxed = CDarwinEmbedUtils::IsIosSandboxed();
+    static const auto isSandboxed = CDarwinEmbedUtils::IsIosSandboxed();
+    static const auto storeUrl = [[tvosShared getSharedURL] URLByAppendingPathComponent:@"RA" isDirectory:YES];
     CLog::Log(LOGDEBUG, "[TopShelf] (sandboxed: {}) Use storeUrl: {}", isSandboxed ? "yes" : "no",
               storeUrl.path.UTF8String);
 
-    // store all old thumbs in array
     auto fileManager = NSFileManager.defaultManager;
-    auto filePaths =
-        [NSMutableSet setWithArray:[fileManager contentsOfDirectoryAtPath:storeUrl.path error:nil]];
-    std::string raPath = storeUrl.path.UTF8String;
 
-    // Shared dicts  (if we are sandboxed we use sharedDefaults, else we use sharedJailbreak)
-    auto sharedDefaults =
-        isSandboxed ? [[NSUserDefaults alloc] initWithSuiteName:[tvosShared getSharedID]] : nil;
-    const auto sharedJailbreakUrl = [storeUrl URLByAppendingPathComponent:@"shared.dict"];
-    NSMutableDictionary* sharedJailbreak = nil;
-    if (!isSandboxed)
+    // Retrieve TopShelf current categories
+    auto sharedSandboxDict = [[NSUserDefaults alloc] initWithSuiteName:[tvosShared getSharedID]];
+    static const auto topshelfKey = @"topshelfCategories";
+    static const auto sharedJailbreakUrl = [storeUrl URLByAppendingPathComponent:@"topshelf.dict"
+                                                                     isDirectory:NO];
+    NSMutableDictionary* topshelfCategories;
+    if (isSandboxed)
+    {
+      if ([sharedSandboxDict objectForKey:topshelfKey])
+        topshelfCategories = [[sharedSandboxDict objectForKey:topshelfKey] mutableCopy];
+      else
+        topshelfCategories = [NSMutableDictionary dictionaryWithCapacity:2];
+    }
+    else
     {
       if ([[NSFileManager defaultManager] fileExistsAtPath:sharedJailbreakUrl.path])
-        sharedJailbreak = [NSMutableDictionary dictionaryWithContentsOfURL:sharedJailbreakUrl];
+        topshelfCategories = [NSMutableDictionary dictionaryWithContentsOfURL:sharedJailbreakUrl];
       else
-        sharedJailbreak = [[NSMutableDictionary alloc] initWithCapacity:2];
+        topshelfCategories = [NSMutableDictionary dictionaryWithCapacity:2];
     }
 
-    // Function used to add category items in TopShelf shared dict
+    // Function used to add category items in TopShelf dict
     CVideoThumbLoader thumbLoader;
     auto fillSharedDicts =
-        [&](CFileItemList& items, NSString* categoryKey, uint32_t categoryTitleCode,
+        [&](CFileItemList& items, NSString* categoryKey, NSString* categoryTitle,
             std::function<std::string(CFileItemPtr videoItem)> getThumbnailForItem,
             std::function<std::string(CFileItemPtr videoItem)> getTitleForItem) {
+          
+          // Store all old thumbs names of this category in array
+          const auto thumbsPath = [storeUrl URLByAppendingPathComponent:categoryKey isDirectory:YES];
+          auto thumbsToRemove = [NSMutableSet setWithArray:[fileManager contentsOfDirectoryAtPath:thumbsPath.path error:nil]];
+          
           if (items.Size() <= 0)
           {
-            // If there is no item in this category, remove this dict from sharedDefaults
-            [sharedDefaults removeObjectForKey:categoryKey];
-            return;
+            // If there is no item in this category, remove it from topshelfCategories
+            [topshelfCategories removeObjectForKey:categoryKey];
           }
-
-          // Create dict for this category
-          auto categoryDict = [NSMutableDictionary dictionaryWithCapacity:2];
-
-          // Save category title in dict
-          categoryDict[@"categoryTitle"] = @(g_localizeStrings.Get(categoryTitleCode).c_str());
-
-          // Create an array to store each category item
-          const int categorySize = std::min(items.Size(), MaxItems);
-          auto categoryItems = [NSMutableArray arrayWithCapacity:categorySize];
-          for (int i = 0; i < categorySize; ++i)
+          else
           {
-            @autoreleasepool
+            // Create dict for this category
+            auto categoryDict = [NSMutableDictionary dictionaryWithCapacity:2];
+
+            // Save category title in dict
+            categoryDict[@"categoryTitle"] = categoryTitle;
+
+            // Create an array to store each category item
+            const int categorySize = std::min(items.Size(), MaxItems);
+            auto categoryItems = [NSMutableArray arrayWithCapacity:categorySize];
+            for (int i = 0; i < categorySize; ++i)
             {
-              auto item = items.Get(i);
-              if (!item->HasArt("thumb"))
-                thumbLoader.LoadItem(item.get());
-
-              auto thumbnailPath = getThumbnailForItem(item);
-              auto fileName = std::to_string(item->GetVideoInfoTag()->m_iDbId) +
-                              URIUtils::GetFileName(thumbnailPath);
-              auto destPath = URIUtils::AddFileToFolder(raPath, fileName);
-              if (!XFILE::CFile::Exists(destPath))
-                XFILE::CFile::Copy(thumbnailPath, destPath);
-              else
+              @autoreleasepool
               {
-                // Remove from array so it doesn't get deleted at the end
-                [filePaths removeObject:@(fileName.c_str())];
+                // Get item thumb and title
+                auto item = items.Get(i);
+                if (!item->HasArt("thumb"))
+                  thumbLoader.LoadItem(item.get());
+
+                auto thumbPathSrc = getThumbnailForItem(item);
+                auto itemThumb = std::to_string(item->GetVideoInfoTag()->m_iDbId) +
+                                URIUtils::GetFileName(thumbPathSrc);
+                auto thumbPathDst = URIUtils::AddFileToFolder(thumbsPath.path.UTF8String, itemThumb);
+                if (!XFILE::CFile::Exists(thumbPathDst))
+                  XFILE::CFile::Copy(thumbPathSrc, thumbPathDst);
+                else
+                {
+                  // Remove from thumbsToRemove array so it doesn't get deleted at the end
+                  [thumbsToRemove removeObject:@(itemThumb.c_str())];
+                }
+
+                auto itemTitle = getTitleForItem(item);
+                
+                // Add item object in categoryItems
+                CLog::Log(LOGDEBUG, "[TopShelf] Adding item '{}' in category '{}'", itemTitle.c_str(),
+                          categoryKey.UTF8String);
+                [categoryItems addObject:@{
+                  @"title" : @(itemTitle.c_str()),
+                  @"thumb" : @(itemThumb.c_str()),
+                  @"url" : @(Base64::Encode(item->GetVideoInfoTag()->GetPath()).c_str())
+                }];
               }
-
-              auto itemTitle = getTitleForItem(item);
-              CLog::Log(LOGDEBUG, "[TopShelf] Adding item '{}' in category '{}'", itemTitle.c_str(),
-                        categoryKey.UTF8String);
-              [categoryItems addObject:@{
-                @"title" : @(itemTitle.c_str()),
-                @"thumb" : @(fileName.c_str()),
-                @"url" : @(Base64::Encode(item->GetVideoInfoTag()->GetPath()).c_str())
-              }];
             }
+
+            // Store category items array in category dict
+            categoryDict[@"categoryItems"] = categoryItems;
+
+            // Store category dict in topshelfCategories
+            topshelfCategories[categoryKey] = categoryDict;
           }
-
-          // Store category items array in category dict
-          categoryDict[@"categoryItems"] = categoryItems;
-
-          // Store category dict in shared dict
-          [sharedDefaults setObject:categoryDict forKey:categoryKey];
-          sharedJailbreak[categoryKey] = categoryDict;
+          
+          // Remove unused thumbs of this TopShelf category from thumbsPath folder
+          for (NSString* thumbFileName in thumbsToRemove)
+            [fileManager removeItemAtURL:[thumbsPath URLByAppendingPathComponent:thumbFileName isDirectory:NO] error:nil];
         };
 
 
@@ -148,7 +160,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
     {
       case TVOSTopShelfItemsCategory::MOVIES:
         fillSharedDicts(
-            items, @"movies", 20386,
+            items, @"movies", @(g_localizeStrings.Get(20386).c_str()),
             [](CFileItemPtr videoItem) {
               if (videoItem->HasArt("poster"))
                 return videoItem->GetArt("poster");
@@ -161,7 +173,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
         CVideoDatabase videoDb;
         videoDb.Open();
         fillSharedDicts(
-            items, @"tvshows", 20387,
+            items, @"tvshows", @(g_localizeStrings.Get(20387).c_str()),
             [&videoDb](CFileItemPtr videoItem) {
               int season = videoItem->GetVideoInfoTag()->m_iIdSeason;
               return season > 0 ? videoDb.GetArtForItem(season, MediaTypeSeason, "poster")
@@ -177,15 +189,14 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
         break;
     }
 
-    // Remove unused thumbs from cache folder
-    NSString* strFiles;
-    for (strFiles in filePaths)
-      [fileManager removeItemAtURL:[storeUrl URLByAppendingPathComponent:strFiles isDirectory:NO]
-                             error:nil];
-
-    // Synchronize shared dict
-    [sharedDefaults synchronize];
-    [sharedJailbreak writeToURL:sharedJailbreakUrl atomically:YES];
+    // Set TopShelf new categories
+    if (isSandboxed)
+    {
+      [sharedSandboxDict setObject:topshelfCategories forKey:topshelfKey];
+      [sharedSandboxDict synchronize];
+    }
+    else
+      [topshelfCategories writeToURL:sharedJailbreakUrl atomically:YES];
   }
 }
 

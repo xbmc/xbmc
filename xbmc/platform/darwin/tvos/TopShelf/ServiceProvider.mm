@@ -36,30 +36,25 @@
 - (NSArray<TVContentItem*>*)topShelfItems
 {
   // Retrieve store URL
-  auto storeUrl = [tvosShared getSharedURL];
-  if (!storeUrl)
-    return @[];
-  storeUrl = [storeUrl URLByAppendingPathComponent:@"RA" isDirectory:YES];
+  static const auto storeUrl = [[tvosShared getSharedURL] URLByAppendingPathComponent:@"RA" isDirectory:YES];
 
-
-  // Retrieve shared dict
-  NSDictionary* sharedDict;
-  if (CDarwinEmbedUtils::IsIosSandboxed())
+  // Retrieve TopShelf categories
+  static const auto isSandboxed = CDarwinEmbedUtils::IsIosSandboxed();
+  NSDictionary* topshelfCategories;
+  if (isSandboxed)
   {
-    auto const sharedID = [tvosShared getSharedID];
-    auto const shared = [[NSUserDefaults alloc] initWithSuiteName:sharedID];
-    sharedDict = shared.dictionaryRepresentation;
+    auto sharedSandboxDict = [[NSUserDefaults alloc] initWithSuiteName:[tvosShared getSharedID]];
+    topshelfCategories = [sharedSandboxDict objectForKey:@"topshelfCategories"];
   }
   else
   {
-    auto sharedDictUrl = [storeUrl URLByAppendingPathComponent:@"shared.dict"
-                                                          isDirectory:NO];
-    sharedDict = [NSDictionary dictionaryWithContentsOfFile:[sharedDictUrl path]];
+    static const auto sharedJailbreakUrl = [storeUrl URLByAppendingPathComponent:@"topshelf.dict"
+                                                                     isDirectory:NO];
+    topshelfCategories = [NSDictionary dictionaryWithContentsOfURL:sharedJailbreakUrl];
   }
 
-
   // Retrieve Kodi URL Scheme
-  auto const mainAppBundle = [tvosShared mainAppBundle];
+  static auto const mainAppBundle = [tvosShared mainAppBundle];
   auto kodiUrlScheme = @"kodi"; // fallback value
   for (NSDictionary* dic in [mainAppBundle objectForInfoDictionaryKey:@"CFBundleURLTypes"])
   {
@@ -73,19 +68,19 @@
   auto wrapperIdentifier = [[TVContentIdentifier alloc] initWithIdentifier:@"shelf-wrapper"
                                                                         container:nil];
 
-
   // Function to create a TVContentItem array from an array of items (a category)
-  auto contentItemsFrom = ^NSArray<TVContentItem*>*(NSArray* categoryItems)
+  auto contentItemsFrom = ^NSArray<TVContentItem*>*(NSString* categoryKey, NSArray* categoryItems)
   {
     NSMutableArray<TVContentItem*>* contentItems =
         [[NSMutableArray alloc] initWithCapacity:categoryItems.count];
+    const auto thumbsPath = [storeUrl URLByAppendingPathComponent:categoryKey isDirectory:YES];
     for (NSDictionary* item in categoryItems)
     {
       auto identifier = [[TVContentIdentifier alloc] initWithIdentifier:@"VOD"
                                                                      container:wrapperIdentifier];
       auto contentItem = [[TVContentItem alloc] initWithContentIdentifier:identifier];
 
-      [contentItem setImageURL:[storeUrl URLByAppendingPathComponent:item[@"thumb"] isDirectory:NO]
+      [contentItem setImageURL:[thumbsPath URLByAppendingPathComponent:item[@"thumb"] isDirectory:NO]
                      forTraits:TVContentItemImageTraitScreenScale1x];
       contentItem.imageShape = TVContentItemImageShapePoster;
       contentItem.title = item[@"title"];
@@ -102,18 +97,10 @@
   // Add each category to TopShelf
   auto topShelfItems = [[NSMutableArray alloc] init];
 
-  [sharedDict enumerateKeysAndObjectsUsingBlock:^(NSString* categoryKey, id categoryDict, BOOL *stop) {
-    if (![categoryDict isKindOfClass:[NSDictionary class]])
-      return;
-    NSArray* categoryItems = categoryDict[@"categoryItems"];
-    if (!categoryItems)
-      return;
-    if (categoryItems.count == 0)
-      return;
-
+  [topshelfCategories enumerateKeysAndObjectsUsingBlock:^(NSString* categoryKey, NSDictionary* categoryDict, BOOL *stop) {
     auto categoryContent = [[TVContentItem alloc] initWithContentIdentifier:wrapperIdentifier];
     categoryContent.title = categoryDict[@"categoryTitle"];
-    categoryContent.topShelfItems = contentItemsFrom(categoryItems);
+    categoryContent.topShelfItems = contentItemsFrom(categoryKey, categoryDict[@"categoryItems"]);
     [topShelfItems addObject:categoryContent];
   }];
 
