@@ -206,7 +206,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 32;
+  return 33;
 }
 
 void CAddonDatabase::CreateTables()
@@ -317,6 +317,51 @@ void CAddonDatabase::UpdateTables(int version)
                 "blacklist");
     m_pDS->exec("DROP INDEX IF EXISTS idxBlack");
     m_pDS->exec("DROP TABLE blacklist");
+  }
+  if (version < 33)
+  {
+    m_pDS->query(PrepareSQL("SELECT * FROM addons"));
+    while (!m_pDS->eof())
+    {
+      const int id = m_pDS->fv("id").get_asInt();
+      const std::string metadata = m_pDS->fv("metadata").get_asString();
+
+      CVariant variant;
+      if (!CJSONVariantParser::Parse(metadata, variant))
+        continue;
+
+      CVariant variantUpdate;
+      variantUpdate["type"] = variant["extensions"][0].asString();
+      variantUpdate["values"] = CVariant(CVariant::VariantTypeArray);
+      variantUpdate["children"] = CVariant(CVariant::VariantTypeArray);
+
+      for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array();
+           ++it)
+      {
+        if ((*it)["key"].asString() == "provides")
+        {
+          CVariant info(CVariant::VariantTypeObject);
+          info["id"] = (*it)["key"].asString();
+          info["content"] = CVariant(CVariant::VariantTypeArray);
+
+          CVariant contentEntry(CVariant::VariantTypeObject);
+          contentEntry["key"] = (*it)["key"].asString();
+          contentEntry["value"] = (*it)["value"].asString();
+          info["content"].push_back(std::move(contentEntry));
+
+          variantUpdate["values"].push_back(std::move(info));
+          break;
+        }
+      }
+      variant["extensions"][0] = variantUpdate;
+
+      std::string json;
+      CJSONVariantWriter::Write(variant, json, true);
+      m_pDS->exec(PrepareSQL("UPDATE addons SET metadata='%s' WHERE id=%i", json.c_str(), id));
+
+      m_pDS->next();
+    }
+    m_pDS->close();
   }
 }
 
