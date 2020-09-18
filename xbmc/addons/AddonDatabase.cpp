@@ -82,7 +82,7 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
 
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());
-  if (variant.isMember("broken")) // Fallback of old
+  if (variant.isMember("broken") && !variant["lifecycletype"].asString().empty()) // Fallback of old
     builder.SetLifecycleState(AddonLifecycleState::BROKEN, variant["broken"].asString());
   else
     builder.SetLifecycleState(
