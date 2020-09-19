@@ -417,49 +417,6 @@ void XBPython::OnNotification(const std::string& sender,
   }
 }
 
-void XBPython::RegisterExtensionLib(LibraryLoader* pLib)
-{
-  if (!pLib)
-    return;
-
-  CSingleLock lock(m_critSection);
-
-  CLog::Log(LOGDEBUG, "%s, adding %s (%p)", __FUNCTION__, pLib->GetName(), (void*)pLib);
-  m_extensions.push_back(pLib);
-}
-
-void XBPython::UnregisterExtensionLib(LibraryLoader* pLib)
-{
-  if (!pLib)
-    return;
-
-  CSingleLock lock(m_critSection);
-  CLog::Log(LOGDEBUG, "%s, removing %s (0x%p)", __FUNCTION__, pLib->GetName(), (void*)pLib);
-  PythonExtensionLibraries::iterator iter = m_extensions.begin();
-  while (iter != m_extensions.end())
-  {
-    if (*iter == pLib)
-    {
-      m_extensions.erase(iter);
-      break;
-    }
-    ++iter;
-  }
-}
-
-void XBPython::UnloadExtensionLibs()
-{
-  CLog::Log(LOGDEBUG, "%s, clearing python extension libraries", __FUNCTION__);
-  CSingleLock lock(m_critSection);
-  PythonExtensionLibraries::iterator iter = m_extensions.begin();
-  while (iter != m_extensions.end())
-  {
-    DllLoaderContainer::ReleaseModule(*iter);
-    ++iter;
-  }
-  m_extensions.clear();
-}
-
 void XBPython::Uninitialize()
 {
   // don't handle any more announcements as most scripts are probably already

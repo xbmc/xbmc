@@ -102,13 +102,7 @@ public:
 
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
-  void RegisterExtensionLib(LibraryLoader* pLib);
-  void UnregisterExtensionLib(LibraryLoader* pLib);
-  void UnloadExtensionLibs();
-
 private:
-  void Finalize();
-
   CCriticalSection m_critSection;
   void* m_mainThreadState;
   bool m_bInitialized;
