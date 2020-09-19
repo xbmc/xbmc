@@ -70,6 +70,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.SetPartymode",                          CPlayerOperations::SetPartymode },
 
   { "Player.SetAudioStream",                        CPlayerOperations::SetAudioStream },
+  { "Player.AddSubtitle",                           CPlayerOperations::AddSubtitle },
   { "Player.SetSubtitle",                           CPlayerOperations::SetSubtitle },
   { "Player.SetVideoStream",                        CPlayerOperations::SetVideoStream },
 

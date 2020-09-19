@@ -457,6 +457,17 @@
     ],
     "returns": "string"
   },
+  "Player.AddSubtitle": {
+    "type": "method",
+    "description": "Add subtitle to the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "subtitle", "type": "string", "required": true, "description": "Local path or remote URL to the subtitle file to load" }
+    ],
+    "returns": "string"
+  },
   "Player.SetSubtitle": {
     "type": "method",
     "description": "Set the subtitle displayed by the player",
