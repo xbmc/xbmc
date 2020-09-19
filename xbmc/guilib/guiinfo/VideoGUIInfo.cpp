@@ -87,8 +87,9 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
 bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   // For videoplayer "offset" and "position" info labels check playlist
-  if (info.GetData1() && info.m_info >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
-      info.m_info <= VIDEOPLAYER_OFFSET_POSITION_LAST)
+  if (info.GetData1() && ((info.m_info >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
+      info.m_info <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
+      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
     return GetPlaylistInfo(value, info);
 
   const CVideoInfoTag* tag = item->GetVideoInfoTag();

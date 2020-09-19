@@ -77,8 +77,9 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   // For musicplayer "offset" and "position" info labels check playlist
-  if (info.GetData1() && info.m_info >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
-      info.m_info <= MUSICPLAYER_OFFSET_POSITION_LAST)
+  if (info.GetData1() && ((info.m_info >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
+      info.m_info <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
+      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
     return GetPlaylistInfo(value, info);
 
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
