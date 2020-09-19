@@ -445,6 +445,7 @@ void CMusicDatabase::CreateViews()
               "        iSampleRate, "
               "        iChannels, "
               "        album.iAlbumDuration AS iAlbumDuration, "
+              "        album.iDiscTotal as iDiscTotal, "
               "        song.dateAdded as dateAdded, "
               "        song.dateNew AS dateNew, "
               "        song.dateModified AS dateModified "
@@ -2832,6 +2833,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   ReplayGain replaygain;
   replaygain.Set(record->at(song_strReplayGain).get_asString());
   item->GetMusicInfoTag()->SetReplayGain(replaygain);
+  item->GetMusicInfoTag()->SetTotalDiscs(record->at(song_iDiscTotal).get_asInt());
 
   item->GetMusicInfoTag()->SetLoaded(true);
   // Get filename with full path
@@ -8598,7 +8600,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 80;
+  return 81; // Bump version to add iDisctotal to songview for MusicPlayer infolabel and boolean
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()

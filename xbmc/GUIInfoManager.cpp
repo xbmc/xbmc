@@ -2593,6 +2593,22 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_BPM `MusicPlayer.BPM`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.IsMultiDisc`</b>,
+///                  \anchor MusicPlayer_IsMultiDisc
+///                  _boolean_,
+///     @return Returns **true** if the album currently playing has more than one disc.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_IsMultiDisc `MusicPlayer.IsMultiDisc`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.TotalDiscs`</b>,
+///                  \anchor MusicPlayer_TotalDiscs
+///                  _string_,
+///     @return The number of discs associated with the currently playing album.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_TotalDiscs `MusicPlayer.TotalDiscs`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -2636,7 +2652,9 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "property",         MUSICPLAYER_PROPERTY },
                                   { "releasedate",      MUSICPLAYER_RELEASEDATE },
                                   { "originaldate",     MUSICPLAYER_ORIGINALDATE },
-                                  { "bpm",              MUSICPLAYER_BPM }
+                                  { "bpm",              MUSICPLAYER_BPM },
+                                  { "ismultidisc",      MUSICPLAYER_ISMULTIDISC },
+                                  { "totaldiscs",       MUSICPLAYER_TOTALDISCS }
 };
 
 /// \page modules__infolabels_boolean_conditions

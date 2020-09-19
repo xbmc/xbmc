@@ -831,6 +831,7 @@ private:
     song_iSampleRate,
     song_iChannels,
     song_iAlbumDuration,
+    song_iDiscTotal,
     song_dateAdded,
     song_dateNew,
     song_dateModified,

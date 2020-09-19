@@ -198,12 +198,14 @@
 #define MUSICPLAYER_CHANNEL_NAME    237
 #define MUSICPLAYER_CHANNEL_GROUP   238
 #define MUSICPLAYER_CHANNEL_NUMBER  239
+#define MUSICPLAYER_TOTALDISCS      240
 // Musicplayer infobools
-#define MUSICPLAYER_HASPREVIOUS     240
-#define MUSICPLAYER_HASNEXT         241
-#define MUSICPLAYER_EXISTS          242
-#define MUSICPLAYER_PLAYLISTPLAYING 243
-#define MUSICPLAYER_CONTENT         244
+#define MUSICPLAYER_HASPREVIOUS     241
+#define MUSICPLAYER_HASNEXT         242
+#define MUSICPLAYER_EXISTS          243
+#define MUSICPLAYER_PLAYLISTPLAYING 244
+#define MUSICPLAYER_CONTENT         245
+#define MUSICPLAYER_ISMULTIDISC     246
 
 // Keep videoplayer infolabels that work with offset and position together
 #define VIDEOPLAYER_TITLE             250
