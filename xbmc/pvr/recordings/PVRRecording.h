@@ -334,6 +334,18 @@ namespace PVR
    CDateTime FirstAired() const;
 
    /*!
+    * @brief Get the premiere year of this event.
+    * @return The premiere year
+    */
+   int GetYear() const override;
+
+   /*!
+    * @brief Check if the premiere year of this event is valid
+    * @return True if the event has as valid premiere date, false otherwise
+    */
+   bool HasYear() const override;
+
+   /*!
     * @brief Check whether this recording will be flagged as new.
     * @return True if this recording will be flagged as new, false otherwise
     */

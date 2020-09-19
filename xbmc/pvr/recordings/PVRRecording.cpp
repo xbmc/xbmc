@@ -581,6 +581,16 @@ CDateTime CPVRRecording::FirstAired() const
   return m_firstAired;
 }
 
+int CPVRRecording::GetYear() const
+{
+  return m_premiered.GetYear();
+}
+
+bool CPVRRecording::HasYear() const
+{
+  return m_premiered.IsValid();
+}
+
 bool CPVRRecording::IsNew() const
 {
   return (m_iFlags & PVR_RECORDING_FLAG_IS_NEW) > 0;
