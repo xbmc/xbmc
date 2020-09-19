@@ -127,7 +127,7 @@
 					<width>1450</width>
 					<height>40</height>
 					<aligny>center</aligny>
-					<label>$INFO[MusicPlayer.Album]$INFO[MusicPlayer.DiscNumber, - $LOCALIZE[427] ]</label>
+					<label>$INFO[MusicPlayer.Album]$VAR[MultiDiscVar]</label>
 					<font>font37</font>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
