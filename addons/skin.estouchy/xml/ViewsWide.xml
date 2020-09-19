@@ -730,7 +730,7 @@
 					<posy>45</posy>
 					<width>840</width>
 					<height>20</height>
-					<font>font20</font>
+					<font>font24</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -741,18 +741,11 @@
 					<posy>7</posy>
 					<width>870</width>
 					<height>30</height>
-					<font>font20</font>
+					<font>font24</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.AddonVersion]$INFO[ListItem.Property(Addon.Status), - ]</label>
-				</control>
-				<control type="image">
-					<posx>40r</posx>
-					<posy>20</posy>
-					<width>30</width>
-					<height>30</height>
-					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
@@ -761,7 +754,7 @@
 					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
-					<label>$INFO[ListItem.AddonBroken,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDisclaimer,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDescription]</label>
+					<label>$INFO[ListItem.AddonLifecycleDesc,[COLOR=selected][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDisclaimer,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDescription]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Addons)" height="240" width="$PARAM[panel-width]">
@@ -796,7 +789,7 @@
 					<posy>45</posy>
 					<width>840</width>
 					<height>20</height>
-					<font>font20</font>
+					<font>font24</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -807,18 +800,11 @@
 					<posy>7</posy>
 					<width>870</width>
 					<height>30</height>
-					<font>font20</font>
+					<font>font24</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.AddonVersion]$INFO[ListItem.Property(Addon.Status), - ]</label>
-				</control>
-				<control type="image">
-					<posx>40r</posx>
-					<posy>20</posy>
-					<width>30</width>
-					<height>30</height>
-					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
@@ -827,7 +813,7 @@
 					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
-					<label>$INFO[ListItem.AddonBroken,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDisclaimer,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDescription]</label>
+					<label>$INFO[ListItem.AddonLifecycleDesc,[COLOR=selected][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDisclaimer,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDescription]</label>
 					<autoscroll delay="2000" time="2000" repeat="2000">True</autoscroll>
 				</control>
 			</focusedlayout>
