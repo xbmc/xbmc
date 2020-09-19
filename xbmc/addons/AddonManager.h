@@ -304,15 +304,6 @@ namespace ADDON
      */
     bool LoadAddonDescription(const std::string &path, AddonPtr &addon);
 
-    /*! \brief Parse a repository XML file for addons and load their descriptors
-     A repository XML is essentially a concatenated list of addon descriptors.
-     \param repo The repository info.
-     \param xml The XML document from repository.
-     \param addons [out] returned list of addons.
-     \return true if the repository XML file is parsed, false otherwise.
-     */
-    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons);
-
     bool ServicesHasStarted() const;
 
     /*!
@@ -409,9 +400,6 @@ namespace ADDON
      *
      * @warning This should be never used from other places outside of addon
      * system directory.
-     *
-     * Currently listed call sources:
-     * - @ref CAddonInstallJob::DoWork
      */
     /*@{{{*/
 
@@ -429,8 +417,28 @@ namespace ADDON
      * @param[in] isUpdate If call becomes done on already installed addon and
      *                     update only.
      * @return True if successfully done, otherwise false
+     *
+     * Currently listed call sources:
+     * - @ref CAddonInstallJob::DoWork
      */
     bool SetAddonOrigin(const std::string& addonId, const std::string& repoAddonId, bool isUpdate);
+
+    /*!
+     * @brief Parse a repository XML file for addons and load their descriptors.
+     *
+     * A repository XML is essentially a concatenated list of addon descriptors.
+     *
+     * @param[in] repo The repository info.
+     * @param[in] xml The XML document from repository.
+     * @param[out] addons returned list of addons.
+     * @return true if the repository XML file is parsed, false otherwise.
+     *
+     * Currently listed call sources:
+     * - @ref CRepository::FetchIndex
+     */
+    bool AddonsFromRepoXML(const CRepository::DirInfo& repo,
+                           const std::string& xml,
+                           std::vector<AddonInfoPtr>& addons);
 
     /*@}}}*/
 

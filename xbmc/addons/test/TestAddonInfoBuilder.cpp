@@ -129,7 +129,9 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
   CAddonInfoBuilder::CFromDB builder;
   builder.SetId("video.blablabla.org");
   builder.SetVersion(AddonVersion("1.2.3"));
-  builder.SetType(ADDON_PLUGIN);
+  CAddonType addonType(ADDON_PLUGIN);
+  addonType.Insert("provides", "video audio");
+  builder.SetExtensions(addonType);
   builder.SetName("The Bla Bla Bla Addon");
   builder.SetAuthor("Team Kodi");
   builder.SetSummary("Summary bla bla bla");
@@ -141,7 +143,6 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
   builder.SetEMail("a@a.dummy");
   builder.SetSource("https://github.com/xbmc/xbmc");
   InfoMap extrainfo;
-  extrainfo["provides"] = "video audio";
   extrainfo["language"] = "marsian";
   builder.SetExtrainfo(extrainfo);
 

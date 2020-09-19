@@ -46,7 +46,7 @@ namespace ADDON
 
     FetchStatus FetchIfChanged(const std::string& oldChecksum,
                                std::string& checksum,
-                               VECADDONS& addons,
+                               std::vector<AddonInfoPtr>& addons,
                                int& recheckAfter) const;
 
     struct ResolveResult
@@ -60,7 +60,9 @@ namespace ADDON
     static bool FetchChecksum(const std::string& url,
                               std::string& checksum,
                               int& recheckAfter) noexcept;
-    static bool FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept;
+    static bool FetchIndex(const DirInfo& repo,
+                           std::string const& digest,
+                           std::vector<AddonInfoPtr>& addons) noexcept;
 
     static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
 

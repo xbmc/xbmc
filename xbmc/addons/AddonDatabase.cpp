@@ -26,7 +26,7 @@
 
 using namespace ADDON;
 
-static std::string SerializeMetadata(const IAddon& addon)
+std::string CAddonDatabaseSerializer::SerializeMetadata(const CAddonInfo& addon)
 {
   CVariant variant;
   variant["author"] = addon.Author();
@@ -47,7 +47,7 @@ static std::string SerializeMetadata(const IAddon& addon)
     variant["screenshots"].push_back(item);
 
   variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(ADDON::CAddonInfo::TranslateType(addon.Type(), false));
+  variant["extensions"].push_back(SerializeExtensions(*addon.Type(addon.MainType())));
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& dep : addon.GetDependencies())
@@ -74,7 +74,42 @@ static std::string SerializeMetadata(const IAddon& addon)
   return json;
 }
 
-static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::CFromDB& builder)
+CVariant CAddonDatabaseSerializer::SerializeExtensions(const CAddonExtensions& addonType)
+{
+  CVariant variant;
+  variant["type"] = addonType.m_point;
+
+  variant["values"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& value : addonType.m_values)
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["id"] = value.first;
+    info["content"] = CVariant(CVariant::VariantTypeArray);
+    for (const auto& content : value.second)
+    {
+      CVariant contentEntry(CVariant::VariantTypeObject);
+      contentEntry["key"] = content.first;
+      contentEntry["value"] = content.second.str;
+      info["content"].push_back(std::move(contentEntry));
+    }
+
+    variant["values"].push_back(std::move(info));
+  }
+
+  variant["children"] = CVariant(CVariant::VariantTypeArray);
+  for (auto& child : addonType.m_children)
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["id"] = child.first;
+    info["child"] = SerializeExtensions(child.second);
+    variant["children"].push_back(std::move(info));
+  }
+
+  return variant;
+}
+
+void CAddonDatabaseSerializer::DeserializeMetadata(const std::string& document,
+                                                   CAddonInfoBuilder::CFromDB& builder)
 {
   CVariant variant;
   if (!CJSONVariantParser::Parse(document, variant))
@@ -82,12 +117,9 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
 
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());
-  if (variant.isMember("broken")) // Fallback of old
-    builder.SetLifecycleState(AddonLifecycleState::BROKEN, variant["broken"].asString());
-  else
-    builder.SetLifecycleState(
-        static_cast<AddonLifecycleState>(variant["lifecycletype"].asUnsignedInteger()),
-        variant["lifecycledesc"].asString());
+  builder.SetLifecycleState(
+      static_cast<AddonLifecycleState>(variant["lifecycletype"].asUnsignedInteger()),
+      variant["lifecycledesc"].asString());
   builder.SetPackageSize(variant["size"].asUnsignedInteger());
 
   builder.SetPath(variant["path"].asString());
@@ -103,7 +135,10 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
     screenshots.push_back(it->asString());
   builder.SetScreenshots(std::move(screenshots));
 
-  builder.SetType(CAddonInfo::TranslateType(variant["extensions"][0].asString()));
+  CAddonType addonType;
+  DeserializeExtensions(variant["extensions"][0], addonType);
+  addonType.m_type = CAddonInfo::TranslateType(addonType.m_point);
+  builder.SetExtensions(std::move(addonType));
 
   {
     std::vector<DependencyInfo> deps;
@@ -119,6 +154,37 @@ static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
     extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
   builder.SetExtrainfo(std::move(extraInfo));
+}
+
+void CAddonDatabaseSerializer::DeserializeExtensions(const CVariant& variant,
+                                                     CAddonExtensions& addonType)
+{
+  addonType.m_point = variant["type"].asString();
+
+  for (auto value = variant["values"].begin_array(); value != variant["values"].end_array();
+       ++value)
+  {
+    std::string id = (*value)["id"].asString();
+    std::vector<std::pair<std::string, SExtValue>> extValues;
+    for (auto content = (*value)["content"].begin_array();
+         content != (*value)["content"].end_array(); ++content)
+    {
+      extValues.emplace_back((*content)["key"].asString(), (*content)["value"].asString());
+    }
+
+    addonType.m_values.emplace_back(id, extValues);
+  }
+
+  for (auto child = variant["children"].begin_array(); child != variant["children"].end_array();
+       ++child)
+  {
+    CAddonExtensions childExt;
+    DeserializeExtensions((*child)["child"], childExt);
+    std::string id = (*child)["id"].asString();
+    addonType.m_children.emplace_back(id, childExt);
+  }
+
+  return;
 }
 
 CAddonDatabase::CAddonDatabase() = default;
@@ -137,7 +203,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 32;
+  return 33;
 }
 
 void CAddonDatabase::CreateTables()
@@ -248,6 +314,70 @@ void CAddonDatabase::UpdateTables(int version)
                 "blacklist");
     m_pDS->exec("DROP INDEX IF EXISTS idxBlack");
     m_pDS->exec("DROP TABLE blacklist");
+  }
+  if (version < 33)
+  {
+    m_pDS->query(PrepareSQL("SELECT * FROM addons"));
+    while (!m_pDS->eof())
+    {
+      const int id = m_pDS->fv("id").get_asInt();
+      const std::string metadata = m_pDS->fv("metadata").get_asString();
+
+      CVariant variant;
+      if (!CJSONVariantParser::Parse(metadata, variant))
+        continue;
+
+      // Replace obsolete "broken" with new in json text
+      if (variant.isMember("broken") && variant["broken"].asString().empty())
+      {
+        variant["lifecycletype"] = static_cast<unsigned int>(AddonLifecycleState::BROKEN);
+        variant["lifecycledesc"] = variant["broken"].asString();
+        variant.erase("broken");
+      }
+
+      // Fix wrong added change about "broken" to "lifecycle..." (request 18286)
+      // as there was every addon marked as broken. This checks his text and if
+      // them empty, becomes it declared as normal.
+      if (variant.isMember("lifecycledesc") && variant.isMember("lifecycletype") &&
+          variant["lifecycledesc"].asString().empty() &&
+          variant["lifecycletype"].asUnsignedInteger() !=
+              static_cast<unsigned int>(AddonLifecycleState::NORMAL))
+      {
+        variant["lifecycletype"] = static_cast<unsigned int>(AddonLifecycleState::NORMAL);
+      }
+
+      CVariant variantUpdate;
+      variantUpdate["type"] = variant["extensions"][0].asString();
+      variantUpdate["values"] = CVariant(CVariant::VariantTypeArray);
+      variantUpdate["children"] = CVariant(CVariant::VariantTypeArray);
+
+      for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array();
+           ++it)
+      {
+        if ((*it)["key"].asString() == "provides")
+        {
+          CVariant info(CVariant::VariantTypeObject);
+          info["id"] = (*it)["key"].asString();
+          info["content"] = CVariant(CVariant::VariantTypeArray);
+
+          CVariant contentEntry(CVariant::VariantTypeObject);
+          contentEntry["key"] = (*it)["key"].asString();
+          contentEntry["value"] = (*it)["value"].asString();
+          info["content"].push_back(std::move(contentEntry));
+
+          variantUpdate["values"].push_back(std::move(info));
+          break;
+        }
+      }
+      variant["extensions"][0] = variantUpdate;
+
+      std::string json;
+      CJSONVariantWriter::Write(variant, json, true);
+      m_pDS->exec(PrepareSQL("UPDATE addons SET metadata='%s' WHERE id=%i", json.c_str(), id));
+
+      m_pDS->next();
+    }
+    m_pDS->close();
   }
 }
 
@@ -435,7 +565,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       builder.SetName(m_pDS->fv("name").get_asString());
       builder.SetSummary(m_pDS->fv("summary").get_asString());
       builder.SetDescription(m_pDS->fv("description").get_asString());
-      DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
+      CAddonDatabaseSerializer::DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
       builder.SetChangelog(m_pDS->fv("news").get_asString());
       builder.SetOrigin(m_pDS->fv("repoID").get_asString());
 
@@ -582,7 +712,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     builder.SetName(m_pDS2->fv("name").get_asString());
     builder.SetSummary(m_pDS2->fv("summary").get_asString());
     builder.SetDescription(m_pDS2->fv("description").get_asString());
-    DeserializeMetadata(m_pDS2->fv("metadata").get_asString(), builder);
+    CAddonDatabaseSerializer::DeserializeMetadata(m_pDS2->fv("metadata").get_asString(), builder);
 
     addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
     return addon != nullptr;
@@ -666,7 +796,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       builder.SetSummary(m_pDS->fv("summary").get_asString());
       builder.SetDescription(m_pDS->fv("description").get_asString());
       builder.SetOrigin(m_pDS->fv("repoID").get_asString());
-      DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
+      CAddonDatabaseSerializer::DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
 
       auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
       if (addon)
@@ -747,8 +877,10 @@ int CAddonDatabase::GetRepositoryId(const std::string& addonId)
   return m_pDS->fv("id").get_asInt();
 }
 
-bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, const AddonVersion& version,
-    const std::string& checksum, const std::vector<AddonPtr>& addons)
+bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository,
+                                             const AddonVersion& version,
+                                             const std::string& checksum,
+                                             const std::vector<AddonInfoPtr>& addons)
 {
   try
   {
@@ -772,13 +904,9 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
       m_pDS->exec(PrepareSQL(
           "INSERT INTO addons (id, metadata, addonID, version, name, summary, description, news) "
           "VALUES (NULL, '%s', '%s', '%s', '%s','%s', '%s','%s')",
-          SerializeMetadata(*addon).c_str(),
-          addon->ID().c_str(),
-          addon->Version().asString().c_str(),
-          addon->Name().c_str(),
-          addon->Summary().c_str(),
-          addon->Description().c_str(),
-          addon->ChangeLog().c_str()));
+          CAddonDatabaseSerializer::SerializeMetadata(*addon).c_str(), addon->ID().c_str(),
+          addon->Version().asString().c_str(), addon->Name().c_str(), addon->Summary().c_str(),
+          addon->Description().c_str(), addon->ChangeLog().c_str()));
 
       int idAddon = static_cast<int>(m_pDS->lastinsertid());
       if (idAddon <= 0)

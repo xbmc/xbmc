@@ -183,7 +183,9 @@ bool CRepository::FetchChecksum(const std::string& url,
   return true;
 }
 
-bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept
+bool CRepository::FetchIndex(const DirInfo& repo,
+                             std::string const& digest,
+                             std::vector<AddonInfoPtr>& addons) noexcept
 {
   XFILE::CCurlFile http;
 
@@ -222,7 +224,7 @@ bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VEC
 
 CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
                                                      std::string& checksum,
-                                                     VECADDONS& addons,
+                                                     std::vector<AddonInfoPtr>& addons,
                                                      int& recheckAfter) const
 {
   checksum = "";
@@ -260,7 +262,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
 
   for (const auto& dirTuple : dirChecksums)
   {
-    VECADDONS tmp;
+    std::vector<AddonInfoPtr> tmp;
     if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp))
       return STATUS_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
@@ -324,7 +326,7 @@ bool CRepositoryUpdateJob::DoWork()
     oldChecksum = "";
 
   std::string newChecksum;
-  VECADDONS addons;
+  std::vector<AddonInfoPtr> addons;
   int recheckAfter;
   auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons, recheckAfter);
 

@@ -57,21 +57,19 @@ public:
     void SetExtrainfo(InfoMap extrainfo)
     {
       m_addonInfo->m_extrainfo = std::move(extrainfo);
-
-      const auto& it = m_addonInfo->m_extrainfo.find("provides");
-      if (it != m_addonInfo->m_extrainfo.end())
-      {
-        CAddonType addonType(m_addonInfo->m_mainType);
-        addonType.SetProvides(it->second);
-        m_addonInfo->m_types.push_back(addonType);
-      }
     }
-    void SetType(TYPE type) { m_addonInfo->m_mainType = type; }
     void SetInstallDate(const CDateTime& installDate) { m_addonInfo->m_installDate = installDate; }
     void SetLastUpdated(const CDateTime& lastUpdated) { m_addonInfo->m_lastUpdated = lastUpdated; }
     void SetLastUsed(const CDateTime& lastUsed) { m_addonInfo->m_lastUsed = lastUsed; }
     void SetOrigin(std::string origin) { m_addonInfo->m_origin = std::move(origin); }
     void SetPackageSize(uint64_t size) { m_addonInfo->m_packageSize = size; }
+    void SetExtensions(CAddonType addonType)
+    {
+      if (!addonType.GetValue("provides").empty())
+        addonType.SetProvides(addonType.GetValue("provides").asString());
+      m_addonInfo->m_types.push_back(std::move(addonType));
+      m_addonInfo->m_mainType = addonType.m_type;
+    }
 
     const AddonInfoPtr& get() { return m_addonInfo; }
 
