@@ -7,7 +7,59 @@
 	<zorder>0</zorder>
 	<controls>
 		<control type="group">
+			<visible>![Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)] + [Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Paused + !Window.IsActive(visualisation)]</visible>
+			<animation effect="fade" start="0" end="100" time="300">VisibleChange</animation>
+			<animation effect="slide" start="0,0" end="0,-80" time="300" condition="Player.Paused + System.IdleTime(5)">Conditional</animation>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>100%</width>
+				<height>55</height>
+				<texture colordiffuse="D0FFFFFF" border="0,55,0,0">frame/osdfade.png</texture>
+			</control>
+			<control type="label">
+				<left>25</left>
+				<top>6</top>
+				<width>700</width>
+				<height>60</height>
+				<label>$VAR[SeekLabel]</label>
+				<font>font30_title</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<centerleft>50%</centerleft>
+				<top>0</top>
+				<width>50%</width>
+				<height>55</height>
+				<align>center</align>
+				<label>$VAR[SeekTimeLabelVar]</label>
+				<font>font37</font>
+				<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
+			</control>
+			<control type="label">
+				<right>25</right>
+				<top>6</top>
+				<width>700</width>
+				<height>60</height>
+				<align>right</align>
+				<font>font30_title</font>
+				<label>$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]</label>
+				<visible>player.chaptercount</visible>
+			</control>
+			<control type="progress">
+				<left>0</left>
+				<top>55</top>
+				<width>100%</width>
+				<height>16</height>
+				<info>Player.Progress</info>
+				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+			</control>
+		</control>
+		<control type="group">
 			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+			<animation effect="slide" start="0,-200" end="0,0" time="300" tween="cubic" easing="out">VisibleChange</animation>
+			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) | ![Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Paused + !Window.IsActive(visualisation)]</visible>
 			<depth>DepthBars</depth>
 			<control type="image">
 				<left>0</left>

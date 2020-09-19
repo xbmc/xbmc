@@ -10,11 +10,11 @@
 			<height>250</height>
 			<animation effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)">conditional</animation>
 			<control type="image">
-				<left>10</left>
-				<top>-240</top>
-				<right>10</right>
-				<height>370</height>
-				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<left>30</left>
+				<top>-220</top>
+				<right>30</right>
+				<height>330</height>
+				<texture border="40">dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="grouplist">
 				<left>52</left>
