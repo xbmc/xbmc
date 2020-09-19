@@ -37,12 +37,17 @@ TEST_F(TestDateTime, FileTimeOperators)
   CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
   CDateTime dateTime2(1991, 5, 14, 12, 34, 57);
 
-  KODI::TIME::FileTime fileTime;
-  dateTime2.GetAsTimeStamp(fileTime);
+  KODI::TIME::FileTime fileTime1;
+  KODI::TIME::FileTime fileTime2;
 
-  EXPECT_TRUE(dateTime1 < fileTime);
-  EXPECT_FALSE(dateTime1 > fileTime);
-  EXPECT_FALSE(dateTime1 == fileTime);
+  dateTime1.GetAsTimeStamp(fileTime1);
+  dateTime2.GetAsTimeStamp(fileTime2);
+
+  CDateTime dateTime3(fileTime1);
+
+  EXPECT_TRUE(dateTime3 < fileTime2);
+  EXPECT_FALSE(dateTime3 > fileTime2);
+  EXPECT_FALSE(dateTime3 == fileTime2);
 }
 
 TEST_F(TestDateTime, SystemTimeOperators)

@@ -106,8 +106,8 @@ public:
   int GetSecondsTotal() const;
 
 private:
-  void ToULargeInt(ULARGE_INTEGER& time) const;
-  void FromULargeInt(const ULARGE_INTEGER& time);
+  void ToLargeInt(LARGE_INTEGER& time) const;
+  void FromLargeInt(const LARGE_INTEGER& time);
 
 private:
   KODI::TIME::FileTime m_timeSpan;
@@ -252,8 +252,8 @@ private:
   bool ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) const;
   bool ToFileTime(const tm& time, KODI::TIME::FileTime& fileTime) const;
 
-  void ToULargeInt(ULARGE_INTEGER& time) const;
-  void FromULargeInt(const ULARGE_INTEGER& time);
+  void ToLargeInt(LARGE_INTEGER& time) const;
+  void FromLargeInt(const LARGE_INTEGER& time);
 
 private:
   KODI::TIME::FileTime m_time;

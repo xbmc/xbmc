@@ -17,10 +17,10 @@
 
 #include <cstdlib>
 
-#define SECONDS_PER_DAY 86400UL
-#define SECONDS_PER_HOUR 3600UL
-#define SECONDS_PER_MINUTE 60UL
-#define SECONDS_TO_FILETIME 10000000UL
+#define SECONDS_PER_DAY 86400L
+#define SECONDS_PER_HOUR 3600L
+#define SECONDS_PER_MINUTE 60L
+#define SECONDS_TO_FILETIME 10000000L
 
 static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
@@ -81,15 +81,15 @@ CDateTimeSpan CDateTimeSpan::operator +(const CDateTimeSpan& right) const
 {
   CDateTimeSpan left(*this);
 
-  ULARGE_INTEGER timeLeft;
-  left.ToULargeInt(timeLeft);
+  LARGE_INTEGER timeLeft;
+  left.ToLargeInt(timeLeft);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeLeft.QuadPart+=timeRight.QuadPart;
 
-  left.FromULargeInt(timeLeft);
+  left.FromLargeInt(timeLeft);
 
   return left;
 }
@@ -98,56 +98,56 @@ CDateTimeSpan CDateTimeSpan::operator -(const CDateTimeSpan& right) const
 {
   CDateTimeSpan left(*this);
 
-  ULARGE_INTEGER timeLeft;
-  left.ToULargeInt(timeLeft);
+  LARGE_INTEGER timeLeft;
+  left.ToLargeInt(timeLeft);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeLeft.QuadPart-=timeRight.QuadPart;
 
-  left.FromULargeInt(timeLeft);
+  left.FromLargeInt(timeLeft);
 
   return left;
 }
 
 const CDateTimeSpan& CDateTimeSpan::operator +=(const CDateTimeSpan& right)
 {
-  ULARGE_INTEGER timeThis;
-  ToULargeInt(timeThis);
+  LARGE_INTEGER timeThis;
+  ToLargeInt(timeThis);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeThis.QuadPart+=timeRight.QuadPart;
 
-  FromULargeInt(timeThis);
+  FromLargeInt(timeThis);
 
   return *this;
 }
 
 const CDateTimeSpan& CDateTimeSpan::operator -=(const CDateTimeSpan& right)
 {
-  ULARGE_INTEGER timeThis;
-  ToULargeInt(timeThis);
+  LARGE_INTEGER timeThis;
+  ToLargeInt(timeThis);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeThis.QuadPart-=timeRight.QuadPart;
 
-  FromULargeInt(timeThis);
+  FromLargeInt(timeThis);
 
   return *this;
 }
 
-void CDateTimeSpan::ToULargeInt(ULARGE_INTEGER& time) const
+void CDateTimeSpan::ToLargeInt(LARGE_INTEGER& time) const
 {
   time.u.HighPart = m_timeSpan.highDateTime;
   time.u.LowPart = m_timeSpan.lowDateTime;
 }
 
-void CDateTimeSpan::FromULargeInt(const ULARGE_INTEGER& time)
+void CDateTimeSpan::FromLargeInt(const LARGE_INTEGER& time)
 {
   m_timeSpan.highDateTime = time.u.HighPart;
   m_timeSpan.lowDateTime = time.u.LowPart;
@@ -155,15 +155,15 @@ void CDateTimeSpan::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
 {
-  ULARGE_INTEGER time;
-  ToULargeInt(time);
+  LARGE_INTEGER time;
+  ToLargeInt(time);
 
   time.QuadPart= static_cast<long long>(day) *SECONDS_PER_DAY*SECONDS_TO_FILETIME;
   time.QuadPart+= static_cast<long long>(hour) *SECONDS_PER_HOUR*SECONDS_TO_FILETIME;
   time.QuadPart+= static_cast<long long>(minute) *SECONDS_PER_MINUTE*SECONDS_TO_FILETIME;
   time.QuadPart+= static_cast<long long>(second) *SECONDS_TO_FILETIME;
 
-  FromULargeInt(time);
+  FromLargeInt(time);
 }
 
 void CDateTimeSpan::SetFromTimeString(const std::string& time) // hh:mm
@@ -178,40 +178,40 @@ void CDateTimeSpan::SetFromTimeString(const std::string& time) // hh:mm
 
 int CDateTimeSpan::GetDays() const
 {
-  ULARGE_INTEGER time;
-  ToULargeInt(time);
+  LARGE_INTEGER time;
+  ToLargeInt(time);
 
   return (int)(time.QuadPart/SECONDS_TO_FILETIME)/SECONDS_PER_DAY;
 }
 
 int CDateTimeSpan::GetHours() const
 {
-  ULARGE_INTEGER time;
-  ToULargeInt(time);
+  LARGE_INTEGER time;
+  ToLargeInt(time);
 
   return (int)((time.QuadPart/SECONDS_TO_FILETIME)%SECONDS_PER_DAY)/SECONDS_PER_HOUR;
 }
 
 int CDateTimeSpan::GetMinutes() const
 {
-  ULARGE_INTEGER time;
-  ToULargeInt(time);
+  LARGE_INTEGER time;
+  ToLargeInt(time);
 
   return (int)((time.QuadPart/SECONDS_TO_FILETIME%SECONDS_PER_DAY)%SECONDS_PER_HOUR)/SECONDS_PER_MINUTE;
 }
 
 int CDateTimeSpan::GetSeconds() const
 {
-  ULARGE_INTEGER time;
-  ToULargeInt(time);
+  LARGE_INTEGER time;
+  ToLargeInt(time);
 
   return (int)(((time.QuadPart/SECONDS_TO_FILETIME%SECONDS_PER_DAY)%SECONDS_PER_HOUR)%SECONDS_PER_MINUTE)%SECONDS_PER_MINUTE;
 }
 
 int CDateTimeSpan::GetSecondsTotal() const
 {
-  ULARGE_INTEGER time;
-  ToULargeInt(time);
+  LARGE_INTEGER time;
+  ToLargeInt(time);
 
   return (int)(time.QuadPart/SECONDS_TO_FILETIME);
 }
@@ -502,15 +502,15 @@ CDateTime CDateTime::operator +(const CDateTimeSpan& right) const
 {
   CDateTime left(*this);
 
-  ULARGE_INTEGER timeLeft;
-  left.ToULargeInt(timeLeft);
+  LARGE_INTEGER timeLeft;
+  left.ToLargeInt(timeLeft);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeLeft.QuadPart+=timeRight.QuadPart;
 
-  left.FromULargeInt(timeLeft);
+  left.FromLargeInt(timeLeft);
 
   return left;
 }
@@ -519,45 +519,45 @@ CDateTime CDateTime::operator -(const CDateTimeSpan& right) const
 {
   CDateTime left(*this);
 
-  ULARGE_INTEGER timeLeft;
-  left.ToULargeInt(timeLeft);
+  LARGE_INTEGER timeLeft;
+  left.ToLargeInt(timeLeft);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeLeft.QuadPart-=timeRight.QuadPart;
 
-  left.FromULargeInt(timeLeft);
+  left.FromLargeInt(timeLeft);
 
   return left;
 }
 
 const CDateTime& CDateTime::operator +=(const CDateTimeSpan& right)
 {
-  ULARGE_INTEGER timeThis;
-  ToULargeInt(timeThis);
+  LARGE_INTEGER timeThis;
+  ToLargeInt(timeThis);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeThis.QuadPart+=timeRight.QuadPart;
 
-  FromULargeInt(timeThis);
+  FromLargeInt(timeThis);
 
   return *this;
 }
 
 const CDateTime& CDateTime::operator -=(const CDateTimeSpan& right)
 {
-  ULARGE_INTEGER timeThis;
-  ToULargeInt(timeThis);
+  LARGE_INTEGER timeThis;
+  ToLargeInt(timeThis);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeThis.QuadPart-=timeRight.QuadPart;
 
-  FromULargeInt(timeThis);
+  FromLargeInt(timeThis);
 
   return *this;
 }
@@ -566,18 +566,18 @@ CDateTimeSpan CDateTime::operator -(const CDateTime& right) const
 {
   CDateTimeSpan left;
 
-  ULARGE_INTEGER timeLeft;
-  left.ToULargeInt(timeLeft);
+  LARGE_INTEGER timeLeft;
+  left.ToLargeInt(timeLeft);
 
-  ULARGE_INTEGER timeThis;
-  ToULargeInt(timeThis);
+  LARGE_INTEGER timeThis;
+  ToLargeInt(timeThis);
 
-  ULARGE_INTEGER timeRight;
-  right.ToULargeInt(timeRight);
+  LARGE_INTEGER timeRight;
+  right.ToLargeInt(timeRight);
 
   timeLeft.QuadPart=timeThis.QuadPart-timeRight.QuadPart;
 
-  left.FromULargeInt(timeLeft);
+  left.FromLargeInt(timeLeft);
 
   return left;
 }
@@ -663,13 +663,13 @@ bool CDateTime::ToFileTime(const tm& time, KODI::TIME::FileTime& fileTime) const
   return SystemTimeToFileTime(&st, &fileTime) == 1;
 }
 
-void CDateTime::ToULargeInt(ULARGE_INTEGER& time) const
+void CDateTime::ToLargeInt(LARGE_INTEGER& time) const
 {
   time.u.HighPart = m_time.highDateTime;
   time.u.LowPart = m_time.lowDateTime;
 }
 
-void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
+void CDateTime::FromLargeInt(const LARGE_INTEGER& time)
 {
   m_time.highDateTime = time.u.HighPart;
   m_time.lowDateTime = time.u.LowPart;
