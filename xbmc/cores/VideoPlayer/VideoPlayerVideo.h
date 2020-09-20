@@ -72,6 +72,7 @@ public:
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;
   void SetSpeed(int iSpeed) override;
+  bool IsStillFrame() const override { return m_stillframe; }
 
   // classes
   CDVDOverlayContainer* m_pOverlayContainer;
@@ -121,6 +122,7 @@ protected:
   float m_fForcedAspectRatio;
   int m_speed;
   std::atomic_bool m_stalled;
+  std::atomic_bool m_stillframe;
   std::atomic_bool m_rewindStalled;
   bool m_paused;
   IDVDStreamPlayer::ESyncState m_syncState;

@@ -95,6 +95,7 @@ public:
   virtual int GetVideoBitrate() = 0;
   virtual void SetSpeed(int iSpeed) = 0;
   virtual bool IsEOS() { return false; };
+  virtual bool IsStillFrame() const { return false; }
 };
 
 class CDVDAudioCodec;

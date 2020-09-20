@@ -61,6 +61,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
 
   m_bRenderSubs = false;
   m_stalled = false;
+  m_stillframe = false;
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iSubtitleDelay = 0;
@@ -381,6 +382,7 @@ void CVideoPlayerVideo::Process()
 
         CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
+        m_stillframe = true;
         pts += frametime * 4;
       }
 
@@ -520,10 +522,11 @@ void CVideoPlayerVideo::Process()
       DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
       bool bPacketDrop = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacketDrop();
 
-      if (m_stalled)
+      if (m_stalled && m_stillframe)
       {
         CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe left, switching to normal playback");
         m_stalled = false;
+        m_stillframe = false;
       }
 
       bRequestDrop = false;
