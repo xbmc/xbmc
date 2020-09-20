@@ -17,10 +17,103 @@
 #include <algorithm>
 #include <vector>
 
+CPictureInfoTag::ExifInfo::ExifInfo(const ExifInfo_t& other)
+  : CameraMake(other.CameraMake),
+    CameraModel(other.CameraModel),
+    DateTime(other.DateTime),
+    Height(other.Height),
+    Width(other.Width),
+    Orientation(other.Orientation),
+    IsColor(other.IsColor),
+    Process(other.Process),
+    FlashUsed(other.FlashUsed),
+    FocalLength(other.FocalLength),
+    ExposureTime(other.ExposureTime),
+    ApertureFNumber(other.ApertureFNumber),
+    Distance(other.Distance),
+    CCDWidth(other.CCDWidth),
+    ExposureBias(other.ExposureBias),
+    DigitalZoomRatio(other.DigitalZoomRatio),
+    FocalLength35mmEquiv(other.FocalLength35mmEquiv),
+    Whitebalance(other.Whitebalance),
+    MeteringMode(other.MeteringMode),
+    ExposureProgram(other.ExposureProgram),
+    ExposureMode(other.ExposureMode),
+    ISOequivalent(other.ISOequivalent),
+    LightSource(other.LightSource),
+    CommentsCharset(EXIF_COMMENT_CHARSET_CONVERTED),
+    XPCommentsCharset(EXIF_COMMENT_CHARSET_CONVERTED),
+    Comments(Convert(other.CommentsCharset, other.Comments)),
+    FileComment(Convert(EXIF_COMMENT_CHARSET_UNKNOWN, other.FileComment)),
+    XPComment(Convert(other.XPCommentsCharset, other.XPComment)),
+    Description(other.Description),
+    ThumbnailOffset(other.ThumbnailOffset),
+    ThumbnailSize(other.ThumbnailSize),
+    LargestExifOffset(other.LargestExifOffset),
+    ThumbnailAtEnd(other.ThumbnailAtEnd),
+    ThumbnailSizeOffset(other.ThumbnailSizeOffset),
+    DateTimeOffsets(other.DateTimeOffsets, other.DateTimeOffsets + other.numDateTimeTags),
+    GpsInfoPresent(other.GpsInfoPresent),
+    GpsLat(other.GpsLat),
+    GpsLong(other.GpsLong),
+    GpsAlt(other.GpsAlt)
+{
+}
+
+std::string CPictureInfoTag::ExifInfo::Convert(int charset, const char* data)
+{
+  std::string value;
+
+  // The charset used for the UserComment is stored in CommentsCharset:
+  // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
+  if (charset == EXIF_COMMENT_CHARSET_UNICODE)
+  {
+    g_charsetConverter.ucs2ToUTF8(std::u16string(reinterpret_cast<const char16_t*>(data)), value);
+  }
+  else
+  {
+    // Ascii doesn't need to be converted (EXIF_COMMENT_CHARSET_ASCII)
+    // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
+    // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
+    g_charsetConverter.unknownToUTF8(data, value);
+  }
+
+  return value;
+}
+
+CPictureInfoTag::IPTCInfo::IPTCInfo(const IPTCInfo_t& other)
+  : RecordVersion(other.RecordVersion),
+    SupplementalCategories(other.SupplementalCategories),
+    Keywords(other.Keywords),
+    Caption(other.Caption),
+    Author(other.Author),
+    Headline(other.Headline),
+    SpecialInstructions(other.SpecialInstructions),
+    Category(other.Category),
+    Byline(other.Byline),
+    BylineTitle(other.BylineTitle),
+    Credit(other.Credit),
+    Source(other.Source),
+    CopyrightNotice(other.CopyrightNotice),
+    ObjectName(other.ObjectName),
+    City(other.City),
+    State(other.State),
+    Country(other.Country),
+    TransmissionReference(other.TransmissionReference),
+    Date(other.Date),
+    Urgency(other.Urgency),
+    ReferenceService(other.ReferenceService),
+    CountryCode(other.CountryCode),
+    TimeCreated(other.TimeCreated),
+    SubLocation(other.SubLocation),
+    ImageType(other.ImageType)
+{
+}
+
 void CPictureInfoTag::Reset()
 {
-  memset(&m_exifInfo, 0, sizeof(m_exifInfo));
-  memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
+  m_exifInfo = {};
+  m_iptcInfo = {};
   m_isLoaded = false;
   m_isInfoSetExternally = false;
   m_dateTimeTaken.Reset();
@@ -30,8 +123,15 @@ bool CPictureInfoTag::Load(const std::string &path)
 {
   m_isLoaded = false;
 
-  if (process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
+  ExifInfo_t exifInfo;
+  IPTCInfo_t iptcInfo;
+
+  if (process_jpeg(path.c_str(), &exifInfo, &iptcInfo))
+  {
+    m_exifInfo = ExifInfo(exifInfo);
+    m_iptcInfo = IPTCInfo(iptcInfo);
     m_isLoaded = true;
+  }
 
   ConvertDateTime();
 
@@ -45,14 +145,19 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_isLoaded;
     ar << m_isInfoSetExternally;
     ar << m_exifInfo.ApertureFNumber;
-    ar << std::string(m_exifInfo.CameraMake);
-    ar << std::string(m_exifInfo.CameraModel);
+    ar << m_exifInfo.CameraMake;
+    ar << m_exifInfo.CameraModel;
     ar << m_exifInfo.CCDWidth;
-    ar << GetInfo(SLIDESHOW_EXIF_COMMENT); // Store and restore the comment charset converted
-    ar << std::string(m_exifInfo.Description);
-    ar << std::string(m_exifInfo.DateTime);
-    for (int dateTimeOffset : m_exifInfo.DateTimeOffsets)
-      ar << dateTimeOffset;
+    ar << m_exifInfo.Comments;
+    ar << m_exifInfo.Description;
+    ar << m_exifInfo.DateTime;
+    for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
+    {
+      if (i < m_exifInfo.DateTimeOffsets.size())
+        ar << m_exifInfo.DateTimeOffsets[i];
+      else
+        ar << static_cast<int>(0);
+    }
     ar << m_exifInfo.DigitalZoomRatio;
     ar << m_exifInfo.Distance;
     ar << m_exifInfo.ExposureBias;
@@ -63,16 +168,16 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_exifInfo.FocalLength;
     ar << m_exifInfo.FocalLength35mmEquiv;
     ar << m_exifInfo.GpsInfoPresent;
-    ar << std::string(m_exifInfo.GpsAlt);
-    ar << std::string(m_exifInfo.GpsLat);
-    ar << std::string(m_exifInfo.GpsLong);
+    ar << m_exifInfo.GpsAlt;
+    ar << m_exifInfo.GpsLat;
+    ar << m_exifInfo.GpsLong;
     ar << m_exifInfo.Height;
     ar << m_exifInfo.IsColor;
     ar << m_exifInfo.ISOequivalent;
     ar << m_exifInfo.LargestExifOffset;
     ar << m_exifInfo.LightSource;
     ar << m_exifInfo.MeteringMode;
-    ar << m_exifInfo.numDateTimeTags;
+    ar << static_cast<int>(m_exifInfo.DateTimeOffsets.size());
     ar << m_exifInfo.Orientation;
     ar << m_exifInfo.Process;
     ar << m_exifInfo.ThumbnailAtEnd;
@@ -83,45 +188,51 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_exifInfo.Width;
     ar << m_dateTimeTaken;
 
-    ar << std::string(m_iptcInfo.Author);
-    ar << std::string(m_iptcInfo.Byline);
-    ar << std::string(m_iptcInfo.BylineTitle);
-    ar << std::string(m_iptcInfo.Caption);
-    ar << std::string(m_iptcInfo.Category);
-    ar << std::string(m_iptcInfo.City);
-    ar << std::string(m_iptcInfo.Urgency);
-    ar << std::string(m_iptcInfo.CopyrightNotice);
-    ar << std::string(m_iptcInfo.Country);
-    ar << std::string(m_iptcInfo.CountryCode);
-    ar << std::string(m_iptcInfo.Credit);
-    ar << std::string(m_iptcInfo.Date);
-    ar << std::string(m_iptcInfo.Headline);
-    ar << std::string(m_iptcInfo.Keywords);
-    ar << std::string(m_iptcInfo.ObjectName);
-    ar << std::string(m_iptcInfo.ReferenceService);
-    ar << std::string(m_iptcInfo.Source);
-    ar << std::string(m_iptcInfo.SpecialInstructions);
-    ar << std::string(m_iptcInfo.State);
-    ar << std::string(m_iptcInfo.SupplementalCategories);
-    ar << std::string(m_iptcInfo.TransmissionReference);
-    ar << std::string(m_iptcInfo.TimeCreated);
-    ar << std::string(m_iptcInfo.SubLocation);
-    ar << std::string(m_iptcInfo.ImageType);
+    ar << m_iptcInfo.Author;
+    ar << m_iptcInfo.Byline;
+    ar << m_iptcInfo.BylineTitle;
+    ar << m_iptcInfo.Caption;
+    ar << m_iptcInfo.Category;
+    ar << m_iptcInfo.City;
+    ar << m_iptcInfo.Urgency;
+    ar << m_iptcInfo.CopyrightNotice;
+    ar << m_iptcInfo.Country;
+    ar << m_iptcInfo.CountryCode;
+    ar << m_iptcInfo.Credit;
+    ar << m_iptcInfo.Date;
+    ar << m_iptcInfo.Headline;
+    ar << m_iptcInfo.Keywords;
+    ar << m_iptcInfo.ObjectName;
+    ar << m_iptcInfo.ReferenceService;
+    ar << m_iptcInfo.Source;
+    ar << m_iptcInfo.SpecialInstructions;
+    ar << m_iptcInfo.State;
+    ar << m_iptcInfo.SupplementalCategories;
+    ar << m_iptcInfo.TransmissionReference;
+    ar << m_iptcInfo.TimeCreated;
+    ar << m_iptcInfo.SubLocation;
+    ar << m_iptcInfo.ImageType;
   }
   else
   {
     ar >> m_isLoaded;
     ar >> m_isInfoSetExternally;
     ar >> m_exifInfo.ApertureFNumber;
-    GetStringFromArchive(ar, m_exifInfo.CameraMake, sizeof(m_exifInfo.CameraMake));
-    GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
+    ar >> m_exifInfo.CameraMake;
+    ar >> m_exifInfo.CameraModel;
     ar >> m_exifInfo.CCDWidth;
-    GetStringFromArchive(ar, m_exifInfo.Comments, sizeof(m_exifInfo.Comments));
+    ar >> m_exifInfo.Comments;
     m_exifInfo.CommentsCharset = EXIF_COMMENT_CHARSET_CONVERTED; // Store and restore the comment charset converted
-    GetStringFromArchive(ar, m_exifInfo.Description, sizeof(m_exifInfo.Description));
-    GetStringFromArchive(ar, m_exifInfo.DateTime, sizeof(m_exifInfo.DateTime));
-    for (int& dateTimeOffset : m_exifInfo.DateTimeOffsets)
+    ar >> m_exifInfo.Description;
+    ar >> m_exifInfo.DateTime;
+    m_exifInfo.DateTimeOffsets.clear();
+    m_exifInfo.DateTimeOffsets.reserve(MAX_DATE_COPIES);
+    for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
+    {
+      int dateTimeOffset;
       ar >> dateTimeOffset;
+      m_exifInfo.DateTimeOffsets.push_back(dateTimeOffset);
+    }
     ar >> m_exifInfo.DigitalZoomRatio;
     ar >> m_exifInfo.Distance;
     ar >> m_exifInfo.ExposureBias;
@@ -132,16 +243,18 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_exifInfo.FocalLength;
     ar >> m_exifInfo.FocalLength35mmEquiv;
     ar >> m_exifInfo.GpsInfoPresent;
-    GetStringFromArchive(ar, m_exifInfo.GpsAlt, sizeof(m_exifInfo.GpsAlt));
-    GetStringFromArchive(ar, m_exifInfo.GpsLat, sizeof(m_exifInfo.GpsLat));
-    GetStringFromArchive(ar, m_exifInfo.GpsLong, sizeof(m_exifInfo.GpsLong));
+    ar >> m_exifInfo.GpsAlt;
+    ar >> m_exifInfo.GpsLat;
+    ar >> m_exifInfo.GpsLong;
     ar >> m_exifInfo.Height;
     ar >> m_exifInfo.IsColor;
     ar >> m_exifInfo.ISOequivalent;
     ar >> m_exifInfo.LargestExifOffset;
     ar >> m_exifInfo.LightSource;
     ar >> m_exifInfo.MeteringMode;
-    ar >> m_exifInfo.numDateTimeTags;
+    int numDateTimeTags;
+    ar >> numDateTimeTags;
+    m_exifInfo.DateTimeOffsets.resize(numDateTimeTags);
     ar >> m_exifInfo.Orientation;
     ar >> m_exifInfo.Process;
     ar >> m_exifInfo.ThumbnailAtEnd;
@@ -152,44 +265,49 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_exifInfo.Width;
     ar >> m_dateTimeTaken;
 
-    GetStringFromArchive(ar, m_iptcInfo.Author, sizeof(m_iptcInfo.Author));
-    GetStringFromArchive(ar, m_iptcInfo.Byline, sizeof(m_iptcInfo.Byline));
-    GetStringFromArchive(ar, m_iptcInfo.BylineTitle, sizeof(m_iptcInfo.BylineTitle));
-    GetStringFromArchive(ar, m_iptcInfo.Caption, sizeof(m_iptcInfo.Caption));
-    GetStringFromArchive(ar, m_iptcInfo.Category, sizeof(m_iptcInfo.Category));
-    GetStringFromArchive(ar, m_iptcInfo.City, sizeof(m_iptcInfo.City));
-    GetStringFromArchive(ar, m_iptcInfo.Urgency, sizeof(m_iptcInfo.Urgency));
-    GetStringFromArchive(ar, m_iptcInfo.CopyrightNotice, sizeof(m_iptcInfo.CopyrightNotice));
-    GetStringFromArchive(ar, m_iptcInfo.Country, sizeof(m_iptcInfo.Country));
-    GetStringFromArchive(ar, m_iptcInfo.CountryCode, sizeof(m_iptcInfo.CountryCode));
-    GetStringFromArchive(ar, m_iptcInfo.Credit, sizeof(m_iptcInfo.Credit));
-    GetStringFromArchive(ar, m_iptcInfo.Date, sizeof(m_iptcInfo.Date));
-    GetStringFromArchive(ar, m_iptcInfo.Headline, sizeof(m_iptcInfo.Headline));
-    GetStringFromArchive(ar, m_iptcInfo.Keywords, sizeof(m_iptcInfo.Keywords));
-    GetStringFromArchive(ar, m_iptcInfo.ObjectName, sizeof(m_iptcInfo.ObjectName));
-    GetStringFromArchive(ar, m_iptcInfo.ReferenceService, sizeof(m_iptcInfo.ReferenceService));
-    GetStringFromArchive(ar, m_iptcInfo.Source, sizeof(m_iptcInfo.Source));
-    GetStringFromArchive(ar, m_iptcInfo.SpecialInstructions, sizeof(m_iptcInfo.SpecialInstructions));
-    GetStringFromArchive(ar, m_iptcInfo.State, sizeof(m_iptcInfo.State));
-    GetStringFromArchive(ar, m_iptcInfo.SupplementalCategories, sizeof(m_iptcInfo.SupplementalCategories));
-    GetStringFromArchive(ar, m_iptcInfo.TransmissionReference, sizeof(m_iptcInfo.TransmissionReference));
-    GetStringFromArchive(ar, m_iptcInfo.TimeCreated, sizeof(m_iptcInfo.TimeCreated));
-    GetStringFromArchive(ar, m_iptcInfo.SubLocation, sizeof(m_iptcInfo.SubLocation));
-    GetStringFromArchive(ar, m_iptcInfo.ImageType, sizeof(m_iptcInfo.ImageType));
+    ar >> m_iptcInfo.Author;
+    ar >> m_iptcInfo.Byline;
+    ar >> m_iptcInfo.BylineTitle;
+    ar >> m_iptcInfo.Caption;
+    ar >> m_iptcInfo.Category;
+    ar >> m_iptcInfo.City;
+    ar >> m_iptcInfo.Urgency;
+    ar >> m_iptcInfo.CopyrightNotice;
+    ar >> m_iptcInfo.Country;
+    ar >> m_iptcInfo.CountryCode;
+    ar >> m_iptcInfo.Credit;
+    ar >> m_iptcInfo.Date;
+    ar >> m_iptcInfo.Headline;
+    ar >> m_iptcInfo.Keywords;
+    ar >> m_iptcInfo.ObjectName;
+    ar >> m_iptcInfo.ReferenceService;
+    ar >> m_iptcInfo.Source;
+    ar >> m_iptcInfo.SpecialInstructions;
+    ar >> m_iptcInfo.State;
+    ar >> m_iptcInfo.SupplementalCategories;
+    ar >> m_iptcInfo.TransmissionReference;
+    ar >> m_iptcInfo.TimeCreated;
+    ar >> m_iptcInfo.SubLocation;
+    ar >> m_iptcInfo.ImageType;
   }
 }
 
 void CPictureInfoTag::Serialize(CVariant& value) const
 {
   value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
-  value["cameramake"] = std::string(m_exifInfo.CameraMake);
-  value["cameramodel"] = std::string(m_exifInfo.CameraModel);
+  value["cameramake"] = m_exifInfo.CameraMake;
+  value["cameramodel"] = m_exifInfo.CameraModel;
   value["ccdwidth"] = m_exifInfo.CCDWidth;
-  value["comments"] = GetInfo(SLIDESHOW_EXIF_COMMENT); // Charset conversion
-  value["description"] = std::string(m_exifInfo.Description);
-  value["datetime"] = std::string(m_exifInfo.DateTime);
-  for (int i = 0; i < 10; i++)
-    value["datetimeoffsets"][i] = m_exifInfo.DateTimeOffsets[i];
+  value["comments"] = m_exifInfo.Comments;
+  value["description"] = m_exifInfo.Description;
+  value["datetime"] = m_exifInfo.DateTime;
+  for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
+  {
+    if (i < m_exifInfo.DateTimeOffsets.size())
+      value["datetimeoffsets"][static_cast<int>(i)] = m_exifInfo.DateTimeOffsets[i];
+    else
+      value["datetimeoffsets"][static_cast<int>(i)] = static_cast<int>(0);
+  }
   value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
   value["distance"] = m_exifInfo.Distance;
   value["exposurebias"] = m_exifInfo.ExposureBias;
@@ -200,16 +318,16 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["focallength"] = m_exifInfo.FocalLength;
   value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
   value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
-  value["gpsinfo"]["alt"] = std::string(m_exifInfo.GpsAlt);
-  value["gpsinfo"]["lat"] = std::string(m_exifInfo.GpsLat);
-  value["gpsinfo"]["long"] = std::string(m_exifInfo.GpsLong);
+  value["gpsinfo"]["alt"] = m_exifInfo.GpsAlt;
+  value["gpsinfo"]["lat"] = m_exifInfo.GpsLat;
+  value["gpsinfo"]["long"] = m_exifInfo.GpsLong;
   value["height"] = m_exifInfo.Height;
   value["iscolor"] = m_exifInfo.IsColor;
   value["isoequivalent"] = m_exifInfo.ISOequivalent;
   value["largestexifoffset"] = m_exifInfo.LargestExifOffset;
   value["lightsource"] = m_exifInfo.LightSource;
   value["meteringmode"] = m_exifInfo.MeteringMode;
-  value["numdatetimetags"] = m_exifInfo.numDateTimeTags;
+  value["numdatetimetags"] = static_cast<int>(m_exifInfo.DateTimeOffsets.size());
   value["orientation"] = m_exifInfo.Orientation;
   value["process"] = m_exifInfo.Process;
   value["thumbnailatend"] = m_exifInfo.ThumbnailAtEnd;
@@ -219,46 +337,36 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["whitebalance"] = m_exifInfo.Whitebalance;
   value["width"] = m_exifInfo.Width;
 
-  value["author"] = std::string(m_iptcInfo.Author);
-  value["byline"] = std::string(m_iptcInfo.Byline);
-  value["bylinetitle"] = std::string(m_iptcInfo.BylineTitle);
-  value["caption"] = std::string(m_iptcInfo.Caption);
-  value["category"] = std::string(m_iptcInfo.Category);
-  value["city"] = std::string(m_iptcInfo.City);
-  value["urgency"] = std::string(m_iptcInfo.Urgency);
-  value["copyrightnotice"] = std::string(m_iptcInfo.CopyrightNotice);
-  value["country"] = std::string(m_iptcInfo.Country);
-  value["countrycode"] = std::string(m_iptcInfo.CountryCode);
-  value["credit"] = std::string(m_iptcInfo.Credit);
-  value["date"] = std::string(m_iptcInfo.Date);
-  value["headline"] = std::string(m_iptcInfo.Headline);
-  value["keywords"] = std::string(m_iptcInfo.Keywords);
-  value["objectname"] = std::string(m_iptcInfo.ObjectName);
-  value["referenceservice"] = std::string(m_iptcInfo.ReferenceService);
-  value["source"] = std::string(m_iptcInfo.Source);
-  value["specialinstructions"] = std::string(m_iptcInfo.SpecialInstructions);
-  value["state"] = std::string(m_iptcInfo.State);
-  value["supplementalcategories"] = std::string(m_iptcInfo.SupplementalCategories);
-  value["transmissionreference"] = std::string(m_iptcInfo.TransmissionReference);
-  value["timecreated"] = std::string(m_iptcInfo.TimeCreated);
-  value["sublocation"] = std::string(m_iptcInfo.SubLocation);
-  value["imagetype"] = std::string(m_iptcInfo.ImageType);
+  value["author"] = m_iptcInfo.Author;
+  value["byline"] = m_iptcInfo.Byline;
+  value["bylinetitle"] = m_iptcInfo.BylineTitle;
+  value["caption"] = m_iptcInfo.Caption;
+  value["category"] = m_iptcInfo.Category;
+  value["city"] = m_iptcInfo.City;
+  value["urgency"] = m_iptcInfo.Urgency;
+  value["copyrightnotice"] = m_iptcInfo.CopyrightNotice;
+  value["country"] = m_iptcInfo.Country;
+  value["countrycode"] = m_iptcInfo.CountryCode;
+  value["credit"] = m_iptcInfo.Credit;
+  value["date"] = m_iptcInfo.Date;
+  value["headline"] = m_iptcInfo.Headline;
+  value["keywords"] = m_iptcInfo.Keywords;
+  value["objectname"] = m_iptcInfo.ObjectName;
+  value["referenceservice"] = m_iptcInfo.ReferenceService;
+  value["source"] = m_iptcInfo.Source;
+  value["specialinstructions"] = m_iptcInfo.SpecialInstructions;
+  value["state"] = m_iptcInfo.State;
+  value["supplementalcategories"] = m_iptcInfo.SupplementalCategories;
+  value["transmissionreference"] = m_iptcInfo.TransmissionReference;
+  value["timecreated"] = m_iptcInfo.TimeCreated;
+  value["sublocation"] = m_iptcInfo.SubLocation;
+  value["imagetype"] = m_iptcInfo.ImageType;
 }
 
 void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
   if (field == FieldDateTaken && m_dateTimeTaken.IsValid())
     sortable[FieldDateTaken] = m_dateTimeTaken.GetAsDBDateTime();
-}
-
-void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t length)
-{
-  std::string temp;
-  ar >> temp;
-  length = std::min(temp.size(), length - 1);
-  if (!temp.empty())
-    memcpy(string, temp.c_str(), length);
-  string[length] = 0;
 }
 
 const std::string CPictureInfoTag::GetInfo(int info) const
@@ -299,33 +407,13 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDESHOW_COMMENT:
-    g_charsetConverter.unknownToUTF8(m_exifInfo.FileComment, value);
+    value = m_exifInfo.FileComment;
     break;
   case SLIDESHOW_EXIF_COMMENT:
-    // The charset used for the UserComment is stored in CommentsCharset:
-    // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
-    if (m_exifInfo.CommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
-    {
-      g_charsetConverter.ucs2ToUTF8(std::u16string((const char16_t*)m_exifInfo.Comments), value);
-    }
-    else
-    {
-      // Ascii doesn't need to be converted (EXIF_COMMENT_CHARSET_ASCII)
-      // Archived data is already converted (EXIF_COMMENT_CHARSET_CONVERTED)
-      // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
-      // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
-      g_charsetConverter.unknownToUTF8(m_exifInfo.Comments, value);
-    }
+    value = m_exifInfo.Comments;
     break;
   case SLIDESHOW_EXIF_XPCOMMENT:
-    if (m_exifInfo.XPCommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
-    {
-      g_charsetConverter.ucs2ToUTF8(std::u16string((const char16_t*)m_exifInfo.XPComment), value);
-    }
-    else
-    {
-      value = "Illegal charset used.";
-    }
+    value = m_exifInfo.XPComment;
     break;
   case SLIDESHOW_EXIF_LONG_DATE_TIME:
     if (m_dateTimeTaken.IsValid())
@@ -612,8 +700,7 @@ void CPictureInfoTag::SetInfo(const std::string &key, const std::string& value)
     }
   case SLIDESHOW_EXIF_DATE_TIME:
     {
-      strncpy(m_exifInfo.DateTime, value.c_str(), sizeof(m_exifInfo.DateTime) - 1);
-      m_exifInfo.DateTime[sizeof(m_exifInfo.DateTime) - 1] = '\0';
+      m_exifInfo.DateTime = value;
       m_isInfoSetExternally = true; // Set the internal state to show metadata has been set by call to SetInfo
       ConvertDateTime();
       break;
@@ -630,9 +717,9 @@ const CDateTime& CPictureInfoTag::GetDateTimeTaken() const
 
 void CPictureInfoTag::ConvertDateTime()
 {
-  if (strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
+  const std::string& dateTime = m_exifInfo.DateTime;
+  if (dateTime.length() >= 19 && dateTime[0] != ' ')
   {
-    std::string dateTime = m_exifInfo.DateTime;
     int year  = atoi(dateTime.substr(0, 4).c_str());
     int month = atoi(dateTime.substr(5, 2).c_str());
     int day   = atoi(dateTime.substr(8, 2).c_str());
