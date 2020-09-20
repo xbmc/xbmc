@@ -1127,11 +1127,11 @@ AEAudioFormat CActiveAE::GetInputFormat(AEAudioFormat *desiredFmt)
 
   if (m_streams.empty())
   {
-    inputFormat.m_dataFormat    = AE_FMT_FLOAT;
-    inputFormat.m_sampleRate    = 44100;
-    inputFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
-    inputFormat.m_frames        = 0;
-    inputFormat.m_frameSize     = 0;
+    inputFormat.m_dataFormat = AE_FMT_FLOAT;
+    inputFormat.m_sampleRate = m_settings.passthrough ? 48000 : 44100;
+    inputFormat.m_channelLayout = static_cast<enum AEStdChLayout>(m_settings.channels);
+    inputFormat.m_frames = 0;
+    inputFormat.m_frameSize = 0;
   }
   // force input format after unpausing slave
   else if (desiredFmt != NULL)
