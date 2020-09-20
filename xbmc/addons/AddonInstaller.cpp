@@ -817,7 +817,13 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           RepositoryPtr repoForDep;
           AddonPtr dependencyToInstall;
 
-          if (!addonRepos.FindDependency(addonID, m_addon, dependencyToInstall, repoForDep))
+          // origin of m_addon is empty at least if an addon is installed for the first time
+          // we need to override "parentRepoId" in this case
+
+          const std::string& parentRepoId =
+              m_addon->Origin().empty() ? repo->ID() : m_addon->Origin();
+
+          if (!addonRepos.FindDependency(addonID, parentRepoId, dependencyToInstall, repoForDep))
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to find dependency {}", m_addon->ID(),
                       addonID);

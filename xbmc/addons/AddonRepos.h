@@ -146,27 +146,27 @@ public:
    *        If the dependency cannot be found in official versions we look in the
    *        installing/updating addon's (the parent's) origin repository
    * \param dependsId addon id of the dependency we're looking for
-   * \param parent addon that is the dependee / parent
+   * \param parentRepoId origin repository of the dependee
    * \param [out] dependencyToInstall pointer to the found dependency, only use
    *              if function returns true
    * \param [out] repoForDep the repository that dependency will install from finally
    * \return true if the dependency was found, false otherwise
    */
   bool FindDependency(const std::string& dependsId,
-                      const std::shared_ptr<IAddon>& parent,
+                      const std::string& parentRepoId,
                       std::shared_ptr<IAddon>& dependencyToInstall,
                       std::shared_ptr<CRepository>& repoForDep) const;
 
   /*!
    * \brief Find a dependency addon in the repository of its parent
    * \param dependsId addon id of the dependency we're looking for
-   * \param parent addon that is the dependee / parent
+   * \param parentRepoId origin repository of the dependee
    * \param [out] dependencyToInstall pointer to the found dependency, only use
    *              if function returns true
    * \return true if the dependency was found, false otherwise
    */
   bool FindDependencyByParentRepo(const std::string& dependsId,
-                                  const std::shared_ptr<IAddon>& parent,
+                                  const std::string& parentRepoId,
                                   std::shared_ptr<IAddon>& dependencyToInstall) const;
 
 private:
