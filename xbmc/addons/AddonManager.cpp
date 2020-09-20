@@ -879,11 +879,13 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
 
 bool CAddonMgr::AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule)
 {
+  m_events.Publish(AddonEvents::UpdateRuleModified(id));
   return m_updateRules.AddUpdateRuleToList(m_database, id, updateRule);
 }
 
 bool CAddonMgr::RemoveAllUpdateRulesFromList(const std::string& id)
 {
+  m_events.Publish(AddonEvents::UpdateRuleModified(id));
   return m_updateRules.RemoveAllUpdateRulesFromList(m_database, id);
 }
 
