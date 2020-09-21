@@ -946,6 +946,13 @@ bool plane::SupportsFormat(uint32_t format)
 
 bool plane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
 {
+  /*
+   * Some broadcom modifiers have parameters encoded which need to be
+   * masked out before comparing with reported modifiers.
+   */
+  if (modifier >> 56 == DRM_FORMAT_MOD_VENDOR_BROADCOM)
+    modifier = fourcc_mod_broadcom_mod(modifier);
+
   if (modifier == DRM_FORMAT_MOD_LINEAR)
   {
     if (!SupportsFormat(format))
