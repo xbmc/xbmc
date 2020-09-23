@@ -41,13 +41,13 @@ TEST_F(TestSysfsPath, SysfsPathTestInt)
 
   CSysfsPath path(filepath);
   ASSERT_TRUE(path.Exists());
-  EXPECT_EQ(path.Get<int>(), 1234);
-  EXPECT_EQ(path.Get<float>(), 1234);
-  EXPECT_EQ(path.Get<double>(), 1234);
-  EXPECT_EQ(path.Get<uint64_t>(), 1234);
-  EXPECT_EQ(path.Get<uint16_t>(), 1234);
-  EXPECT_EQ(path.Get<unsigned int>(), 1234);
-  EXPECT_EQ(path.Get<unsigned long int>(), 1234);
+  EXPECT_EQ(path.Get<int>(), static_cast<int>(1234));
+  EXPECT_EQ(path.Get<float>(), static_cast<float>(1234));
+  EXPECT_EQ(path.Get<double>(), static_cast<double>(1234));
+  EXPECT_EQ(path.Get<uint64_t>(), static_cast<uint64_t>(1234));
+  EXPECT_EQ(path.Get<uint16_t>(), static_cast<uint16_t>(1234));
+  EXPECT_EQ(path.Get<unsigned int>(), static_cast<unsigned int>(1234));
+  EXPECT_EQ(path.Get<unsigned long int>(), static_cast<unsigned long int>(1234));
 
   std::remove(filepath.c_str());
 }
