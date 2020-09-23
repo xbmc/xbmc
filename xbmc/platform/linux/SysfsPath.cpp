@@ -19,7 +19,7 @@ bool CSysfsPath::Exists()
 }
 
 template<>
-std::string CSysfsPath::Get()
+std::string CSysfsPath::Get() const
 {
   std::ifstream file(m_path);
 
@@ -35,3 +35,4 @@ std::string CSysfsPath::Get()
 
   return value;
 }
+

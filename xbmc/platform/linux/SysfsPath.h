@@ -23,7 +23,7 @@ public:
   bool Exists();
 
   template<typename T>
-  T Get()
+  T Get() const
   {
     std::ifstream file(m_path);
 
