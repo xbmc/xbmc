@@ -340,6 +340,8 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
     else
       CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
                                                         AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
+
+    CServiceBroker::GetAddonMgr().PublishEventAutoUpdateStateChanged(m_localAddon->ID());
   }
 }
 

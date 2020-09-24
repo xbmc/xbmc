@@ -47,8 +47,12 @@ bool CAddonUpdateRules::AddUpdateRuleToList(CAddonDatabase& db,
     return true;
   }
 
-  m_updateRules[id].emplace_back(updateRule);
-  return db.AddUpdateRuleForAddon(id, updateRule);
+  if (db.AddUpdateRuleForAddon(id, updateRule))
+  {
+    m_updateRules[id].emplace_back(updateRule);
+    return true;
+  }
+  return false;
 }
 
 bool CAddonUpdateRules::RemoveUpdateRuleFromList(CAddonDatabase& db,
@@ -77,20 +81,21 @@ bool CAddonUpdateRules::RemoveFromUpdateRuleslist(CAddonDatabase& db,
     if (updateRule == AddonUpdateRule::ANY ||
         (onlySingleRule && updateRulesEntry->second.front() == updateRule))
     {
-      m_updateRules.erase(id);
-      db.RemoveAllUpdateRulesForAddon(id);
-      return true;
+      if (db.RemoveAllUpdateRulesForAddon(id))
+      {
+        m_updateRules.erase(id);
+        return true;
+      }
     }
     else if (!onlySingleRule)
     {
       const auto& position =
           std::find(updateRulesEntry->second.begin(), updateRulesEntry->second.end(), updateRule);
-      if (position != updateRulesEntry->second.end())
+      if (position != updateRulesEntry->second.end() && db.RemoveUpdateRuleForAddon(id, updateRule))
       {
         updateRulesEntry->second.erase(position);
-        db.RemoveUpdateRuleForAddon(id, updateRule);
+        return true;
       }
-      return true;
     }
   }
   return false;

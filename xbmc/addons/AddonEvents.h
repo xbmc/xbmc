@@ -83,11 +83,11 @@ namespace ADDON
     };
 
     /**
-     * Emitted after the auto-update rules of the add-on has been changed.
+     * Emitted after the auto-update state of the add-on has been changed.
      */
-    struct UpdateRuleModified : AddonEvent
+    struct AutoUpdateStateChanged : AddonEvent
     {
-      explicit UpdateRuleModified(std::string id) : AddonEvent(std::move(id)) {}
+      explicit AutoUpdateStateChanged(std::string id) : AddonEvent(std::move(id)) {}
     };
   }
 }

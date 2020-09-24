@@ -294,6 +294,11 @@ namespace ADDON
 
     /*@}}}*/
 
+    /* \brief Launches event AddonEvent::AutoUpdateStateChanged
+     * \param id addon id to pass through
+     * \sa CGUIDialogAddonInfo::OnToggleAutoUpdates()
+     */
+    void PublishEventAutoUpdateStateChanged(const std::string& id);
     void UpdateLastUsed(const std::string& id);
 
     /*! \brief Load the addon in the given path

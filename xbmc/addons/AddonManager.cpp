@@ -883,13 +883,11 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
 
 bool CAddonMgr::AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule)
 {
-  m_events.Publish(AddonEvents::UpdateRuleModified(id));
   return m_updateRules.AddUpdateRuleToList(m_database, id, updateRule);
 }
 
 bool CAddonMgr::RemoveAllUpdateRulesFromList(const std::string& id)
 {
-  m_events.Publish(AddonEvents::UpdateRuleModified(id));
   return m_updateRules.RemoveAllUpdateRulesFromList(m_database, id);
 }
 
@@ -901,6 +899,11 @@ bool CAddonMgr::RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule 
 bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
 {
   return m_updateRules.IsAutoUpdateable(id);
+}
+
+void CAddonMgr::PublishEventAutoUpdateStateChanged(const std::string& id)
+{
+  m_events.Publish(AddonEvents::AutoUpdateStateChanged(id));
 }
 
 bool CAddonMgr::IsCompatible(const IAddon& addon) const
