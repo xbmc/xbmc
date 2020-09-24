@@ -191,7 +191,7 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   if (!CAddonInstallJob::GetAddon(addonID, repo, addon))
     return false;
 
-  return DoInstall(addon, repo, background, modal);
+  return DoInstall(addon, repo, background, modal, false, false);
 }
 
 bool CAddonInstaller::InstallOrUpdate(const ADDON::AddonPtr& addon,
@@ -200,7 +200,9 @@ bool CAddonInstaller::InstallOrUpdate(const ADDON::AddonPtr& addon,
   return DoInstall(addon, repo, false, false);
 }
 
-void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& version, const std::string& repoId)
+bool CAddonInstaller::Install(const std::string& addonId,
+                              const AddonVersion& version,
+                              const std::string& repoId)
 {
   CLog::Log(LOGDEBUG, "CAddonInstaller: installing '%s' version '%s' from repository '%s'",
       addonId.c_str(), version.asString().c_str(), repoId.c_str());
@@ -209,17 +211,24 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   CAddonDatabase database;
 
   if (!database.Open() || !database.GetAddon(addonId, version, repoId, addon))
-    return;
+    return false;
 
   AddonPtr repo;
   if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, ADDON_REPOSITORY))
-    return;
+    return false;
 
-  DoInstall(addon, std::static_pointer_cast<CRepository>(repo), true, false);
+  return DoInstall(addon, std::static_pointer_cast<CRepository>(repo), true, false, false, false);
 }
 
-bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo, bool background /* = true */, bool modal /* = false */, bool autoUpdate /* = false*/)
+bool CAddonInstaller::DoInstall(const AddonPtr& addon,
+                                const RepositoryPtr& repo,
+                                bool background,
+                                bool modal,
+                                bool autoUpdate,
+                                bool dependsInstall)
 {
+  // ! @Todo: bool arguments should be replaced with appropiate enum class
+
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
@@ -233,6 +242,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo
     unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this, CJob::PRIORITY_DEDICATED);
     m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
     m_idle.Reset();
+
     return true;
   }
 
@@ -279,7 +289,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
 
   AddonPtr addon;
   if (CServiceBroker::GetAddonMgr().LoadAddonDescription(items[0]->GetPath(), addon))
-    return DoInstall(addon, RepositoryPtr());
+    return DoInstall(addon, RepositoryPtr(), true, false, false, false);
 
   CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
       StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
@@ -433,7 +443,7 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
     AddonPtr toInstall;
     RepositoryPtr repo;
     if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
-      DoInstall(toInstall, repo, false, false, true);
+      DoInstall(toInstall, repo, false, false, true, false);
   }
   if (wait)
   {
