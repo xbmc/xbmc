@@ -1689,6 +1689,23 @@ void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
     m_strPath = music.GetURL();
   m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
 
+  static const std::string ORIGINAL_THUMB = "OriginalThumb";
+  const std::string thumb = music.GetStationArt();
+  if (!thumb.empty())
+  {
+    // Overwrite whatever thumb we have; remember what we had originally.
+    if (!HasProperty(ORIGINAL_THUMB))
+      SetProperty(ORIGINAL_THUMB, GetArt("thumb"));
+
+    SetArt("thumb", music.GetStationArt());
+  }
+  else if (HasProperty(ORIGINAL_THUMB))
+  {
+    // Restore original thumb
+    SetArt("thumb", GetProperty(ORIGINAL_THUMB).asString());
+    ClearProperty(ORIGINAL_THUMB);
+  }
+
   *GetMusicInfoTag() = music;
   FillInDefaultIcon();
   FillInMimeType(false);

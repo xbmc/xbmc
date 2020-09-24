@@ -15,9 +15,12 @@
 
 #include "FileCache.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
 #include "utils/JSONVariantParser.h"
@@ -185,6 +188,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
 
       std::string title;
       std::string artistInfo;
+      std::string coverURL;
 
       CRegExp reURL(true);
       reURL.RegComp("StreamUrl=\'(.*?)\';");
@@ -216,6 +220,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
                   // Example: StreamUrl='https://listenapi.bauerradio.com/api9/eventdata/58431417'
                   artistInfo = json["eventSongArtist"].asString();
                   title = json["eventSongTitle"].asString();
+                  coverURL = json["eventImageUrl"].asString();
                 }
               }
             }
@@ -263,9 +268,13 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
         }
       }
 
+      if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bShoutcastArt)
+        coverURL.clear();
+
       CSingleLock lock(m_tagSection);
       m_tag.SetArtist(artistInfo);
       m_tag.SetTitle(title);
+      m_tag.SetStationArt(coverURL);
     }
   }
 

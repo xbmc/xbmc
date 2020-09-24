@@ -227,6 +227,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bHTTPDirectoryStatFilesize;
 
     bool m_bFTPThumbs;
+    bool m_bShoutcastArt;
 
     std::string m_musicThumbs;
     std::string m_fanartImages;

@@ -318,6 +318,11 @@ const std::string& CMusicInfoTag::GetStationName() const
   return m_stationName;
 }
 
+const std::string& CMusicInfoTag::GetStationArt() const
+{
+  return m_stationArt;
+}
+
 void CMusicInfoTag::SetURL(const std::string& strURL)
 {
   m_strURL = strURL;
@@ -765,6 +770,11 @@ void CMusicInfoTag::SetAlbumReleaseStatus(const std::string& ReleaseStatus)
   m_strReleaseStatus = ReleaseStatus;
 }
 
+void CMusicInfoTag::SetStationArt(const std::string& strStationArt)
+{
+  m_stationArt = strStationArt;
+}
+
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
@@ -1183,6 +1193,7 @@ void CMusicInfoTag::Clear()
   m_bitrate = 0;
   m_channels = 0;
   m_stationName.clear();
+  m_stationArt.clear();
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)
