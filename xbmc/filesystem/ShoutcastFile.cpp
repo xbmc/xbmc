@@ -69,34 +69,39 @@ bool CShoutcastFile::Open(const CURL& url)
   else if (url.GetProtocol() == "shout")
     url2.SetProtocol("http");
 
+  std::string icyTitle;
+  std::string icyGenre;
+
   bool result = m_file.Open(url2);
   if (result)
   {
-    std::string icyTitle;
     icyTitle = m_file.GetHttpHeader().GetValue("icy-name");
     if (icyTitle.empty())
       icyTitle = m_file.GetHttpHeader().GetValue("ice-name"); // icecast
     if (icyTitle == "This is my server name") // Handle badly set up servers
       icyTitle.clear();
 
-    std::string icyGenre = m_file.GetHttpHeader().GetValue("icy-genre");
+    icyGenre = m_file.GetHttpHeader().GetValue("icy-genre");
     if (icyGenre.empty())
       icyGenre = m_file.GetHttpHeader().GetValue("ice-genre"); // icecast
-
-    {
-      CSingleLock lock(m_tagSection);
-      m_tag.SetStationName(icyTitle);
-      m_tag.SetGenre(icyGenre);
-      m_tag.SetLoaded(true);
-    }
   }
   m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
   m_metaint = atoi(m_file.GetHttpHeader().GetValue("icy-metaint").c_str());
   if (!m_metaint)
     m_metaint = -1;
   m_buffer = new char[16*255];
-  m_tagPos = 1;
-  m_tagChange.Set();
+
+  if (result)
+  {
+    CSingleLock lock(m_tagSection);
+
+    m_tag.SetStationName(icyTitle);
+    m_tag.SetGenre(icyGenre);
+    m_tag.SetLoaded(true);
+
+    m_tagPos = 1;
+    m_tagChange.Set();
+  }
 
   return result;
 }
@@ -111,13 +116,17 @@ ssize_t CShoutcastFile::Read(void* lpBuf, size_t uiBufSize)
     unsigned char header;
     m_file.Read(&header,1);
     ReadTruncated(m_buffer, header*16);
-    if ((ExtractTagInfo(m_buffer)
+    if (ExtractTagInfo(m_buffer)
         // this is here to workaround issues caused by application posting callbacks to itself (3cf882d9)
         // the callback will set an empty tag in the info manager item, while we think we have ours set
-        || m_file.GetPosition() < 10*m_metaint) && !m_tagPos)
+        || (m_file.GetPosition() < 10 * m_metaint))
     {
-      m_tagPos = m_file.GetPosition();
-      m_tagChange.Set();
+      CSingleLock lock(m_tagSection);
+      if (!m_tagPos)
+      {
+        m_tagPos = m_file.GetPosition();
+        m_tagChange.Set();
+      }
     }
     m_discarded += header*16+1;
     m_currint = 0;
@@ -309,7 +318,8 @@ int CShoutcastFile::IoControl(EIoControl control, void* payload)
 {
   if (control == IOCTRL_SET_CACHE && m_cacheReader == nullptr)
   {
-    m_cacheReader = (CFileCache*)payload;
+    CSingleLock lock(m_tagSection);
+    m_cacheReader = static_cast<CFileCache*>(payload);
     Create();
   }
 
@@ -322,11 +332,22 @@ void CShoutcastFile::Process()
   {
     if (m_tagChange.WaitMSec(500))
     {
-      while (!m_bStop && m_cacheReader->GetPosition() < m_tagPos)
-        CThread::Sleep(20);
       CSingleLock lock(m_tagSection);
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1,-1, static_cast<void*>(new CFileItem(m_tag)));
-      m_tagPos = 0;
+      while (!m_bStop)
+      {
+        if (m_cacheReader->GetPosition() < m_tagPos)
+        {
+          CSingleExit ex(m_tagSection);
+          CThread::Sleep(20);
+        }
+        else
+        {
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
+                                                       static_cast<void*>(new CFileItem(m_tag)));
+          m_tagPos = 0;
+          break; // wait for next tag change
+        }
+      }
     }
   }
 }
