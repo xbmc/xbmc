@@ -14,6 +14,12 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   LINK_ICONV=-framework CoreFoundation -liconv
 endif
 
+ifeq ($(OS), darwin_embedded)
+  # Darwinembedded platforms do not have a public getentropy function
+  # getentropy is incorrectly found, so disable explicitly
+  export ac_cv_func_getentropy=no
+endif
+
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-shared \

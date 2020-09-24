@@ -26,6 +26,11 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
 
 LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.a
 
+ifeq ($(OS), darwin_embedded)
+  # build errors with _yp_get_default_domain NIS failure
+  CFLAGS+= -Wno-error=implicit-function-declaration
+endif
+
 export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
 export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
 export HOST
