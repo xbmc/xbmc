@@ -23,6 +23,7 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UrlOptions.h"
 
 #include <climits>
 
@@ -219,6 +220,22 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
               }
             }
           }
+        }
+        else if (StringUtils::StartsWithNoCase(streamUrlData, "&"))
+        {
+          // Check for SAM Cast meta data.
+          // Example: StreamUrl='&artist=RECLAM&title=BOLORDURAN%2017&album=&duration=17894&songtype=S&overlay=no&buycd=&website=&picture='
+
+          CUrlOptions urlOptions(streamUrlData);
+          const CUrlOptions::UrlOptions& options = urlOptions.GetOptions();
+
+          auto it = options.find("artist");
+          if (it != options.end())
+            artistInfo = (*it).second.asString();
+
+          it = options.find("title");
+          if (it != options.end())
+            title = (*it).second.asString();
         }
       }
 
