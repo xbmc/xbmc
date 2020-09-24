@@ -48,6 +48,7 @@ protected:
   int m_discarded; // data used for tags
   int m_currint;
   char* m_buffer; // buffer used for tags
+  std::string m_title;
   MUSIC_INFO::CMusicInfoTag m_tag;
 
   CFileCache* m_cacheReader;

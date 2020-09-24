@@ -16,9 +16,11 @@
 #include "FileCache.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "filesystem/CurlFile.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 
@@ -139,6 +141,7 @@ void CShoutcastFile::Close()
   delete[] m_buffer;
   m_buffer = NULL;
   m_file.Close();
+  m_title.clear();
 
   {
     CSingleLock lock(m_tagSection);
@@ -174,25 +177,76 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   {
     const std::string newtitle = reTitle.GetMatch(1);
 
-    CSingleLock lock(m_tagSection);
-    result = (m_tag.GetTitle() != newtitle);
-    if (result)
+    result = (m_title != newtitle);
+    if (result) // track has changed
     {
+      m_title = newtitle;
+
       std::string title;
       std::string artistInfo;
 
-      // Most stations supply StreamTitle in format "artist - songtitle"
-      const std::vector<std::string> tokens = StringUtils::Split(newtitle, " - ");
-      if (tokens.size() == 2)
+      CRegExp reURL(true);
+      reURL.RegComp("StreamUrl=\'(.*?)\';");
+      bool haveStreamUrlData =
+          (reURL.RegFind(strBuffer.c_str()) != -1) && !reURL.GetMatch(1).empty();
+
+      if (haveStreamUrlData) // track has changed and extra metadata might be available
       {
-        artistInfo = tokens[0];
-        title = tokens[1];
-      }
-      else
-      {
-        title = newtitle;
+        const std::string streamUrlData = reURL.GetMatch(1);
+        if (StringUtils::StartsWithNoCase(streamUrlData, "http://") ||
+            StringUtils::StartsWithNoCase(streamUrlData, "https://"))
+        {
+          // Bauer Media Radio listenapi null event to erase current data
+          if (!StringUtils::EndsWithNoCase(streamUrlData, "eventdata/-1"))
+          {
+            const CURL dataURL(streamUrlData);
+            XFILE::CCurlFile http;
+            std::string extData;
+
+            if (http.Get(dataURL.Get(), extData))
+            {
+              const std::string contentType = http.GetHttpHeader().GetMimeType();
+              if (StringUtils::EqualsNoCase(contentType, "application/json"))
+              {
+                CVariant json;
+                if (CJSONVariantParser::Parse(extData, json))
+                {
+                  // Check for Bauer Media Radio listenapi meta data.
+                  // Example: StreamUrl='https://listenapi.bauerradio.com/api9/eventdata/58431417'
+                  artistInfo = json["eventSongArtist"].asString();
+                  title = json["eventSongTitle"].asString();
+                }
+              }
+            }
+          }
+        }
       }
 
+      if (artistInfo.empty() || title.empty())
+      {
+        // Most stations supply StreamTitle in format "artist - songtitle"
+        const std::vector<std::string> tokens = StringUtils::Split(newtitle, " - ");
+        if (tokens.size() == 2)
+        {
+          if (artistInfo.empty())
+            artistInfo = tokens[0];
+
+          if (title.empty())
+            title = tokens[1];
+        }
+        else
+        {
+          if (title.empty())
+          {
+            // Do not display Bauer Media Radio SteamTitle values to mark start/stop of ad breaks.
+            if (!StringUtils::StartsWithNoCase(newtitle, "START ADBREAK ") &&
+                !StringUtils::StartsWithNoCase(newtitle, "STOP ADBREAK "))
+              title = newtitle;
+          }
+        }
+      }
+
+      CSingleLock lock(m_tagSection);
       m_tag.SetArtist(artistInfo);
       m_tag.SetTitle(title);
     }
