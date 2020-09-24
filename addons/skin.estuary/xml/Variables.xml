@@ -164,8 +164,8 @@
 		<value>$LOCALIZE[16018]</value>
 	</variable>
 	<variable name="AddonLifecycleType">
-		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">$LOCALIZE[24049]</value> <!-- Deprecated -->
-		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">$LOCALIZE[24096]</value> <!-- Broken -->
+		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">[COLOR button_focus]$LOCALIZE[24170][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value> <!-- Deprecated -->
+		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">[COLOR button_focus]$LOCALIZE[24171][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value> <!-- Broken -->
 	</variable>
 	<variable name="AddonsListIconVar">
 		<value condition="[String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])] + !ListItem.Property(addon.isenabled)">icons/addonstatus/disable.png</value>
