@@ -493,3 +493,13 @@ bool CAddonRepos::FindDependencyByParentRepo(const std::string& dependsId,
 
   return false;
 }
+
+void CAddonRepos::BuildCompatibleVersionsList(
+    std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const
+{
+  for (const auto& addon : m_allAddons)
+  {
+    if (m_addonMgr.IsCompatible(*addon))
+      compatibleVersions.emplace_back(addon);
+  }
+}

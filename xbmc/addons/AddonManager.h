@@ -458,6 +458,15 @@ namespace ADDON
     bool GetAddonsWithAvailableUpdate(
         std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const;
 
+    /*!
+     * \brief Retrieves list of compatible addon versions of all origins
+     * \param[in] addonId addon to look up
+     * \param[out] compatibleVersions target vector to be filled
+     * \return true or false
+     */
+    bool GetCompatibleVersions(const std::string& addonId,
+                               std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 

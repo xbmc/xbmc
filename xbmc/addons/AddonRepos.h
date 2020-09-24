@@ -16,6 +16,7 @@
 namespace ADDON
 {
 
+class AddonVersion;
 class CAddonDatabase;
 class CAddonMgr;
 class CRepository;
@@ -174,6 +175,13 @@ public:
   bool FindDependencyByParentRepo(const std::string& dependsId,
                                   const std::string& parentRepoId,
                                   std::shared_ptr<IAddon>& dependencyToInstall) const;
+
+  /*!
+   * \brief Build compatible versions list based on the contents of m_allAddons
+   * \note content of m_allAddons depends on the preceding call to @ref LoadAddonsFromDatabase()
+   * \param[out] compatibleVersions target vector to be filled
+   */
+  void BuildCompatibleVersionsList(std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
 
 private:
   /*!

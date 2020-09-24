@@ -194,10 +194,13 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   return DoInstall(addon, repo, background, modal, false, false);
 }
 
-bool CAddonInstaller::InstallOrUpdate(const ADDON::AddonPtr& addon,
-                                      const ADDON::RepositoryPtr& repo)
+bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
+                                                const ADDON::RepositoryPtr& repo)
 {
-  return DoInstall(addon, repo, false, false);
+  return DoInstall(dependsId, repo, false, /* background */
+                   false, /* modal */
+                   false, /* autoUpdate */
+                   true); /* dependsInstall */
 }
 
 bool CAddonInstaller::Install(const std::string& addonId,
@@ -249,6 +252,8 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
   m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
   m_idle.Reset();
   lock.Leave();
+
+  installJob->SetDependsInstall(dependsInstall);
 
   bool result = false;
   if (modal)
@@ -678,6 +683,56 @@ bool CAddonInstallJob::DoWork()
 
   CServiceBroker::GetAddonMgr().SetAddonOrigin(m_addon->ID(), origin, m_isUpdate);
 
+  if (m_dependsInstall)
+  {
+    CLog::Log(LOGDEBUG, "ADDONS: dependency [{}] will not be version checked and unpinned",
+              m_addon->ID());
+  }
+  else
+  {
+    if (!m_addon->Origin().empty()) // we only do pinning/unpinning for non-zip installs
+    {
+      std::vector<std::shared_ptr<IAddon>> compatibleVersions;
+
+      // get all compatible versions of an addon-id regardless of their origin
+      CServiceBroker::GetAddonMgr().GetCompatibleVersions(m_addon->ID(), compatibleVersions);
+
+      // find the latest version for the origin we installed from
+      AddonVersion latestVersion; // initializes to 0.0.0
+      for (const auto& compatibleVersion : compatibleVersions)
+      {
+        if (compatibleVersion->Origin() == m_addon->Origin() &&
+            compatibleVersion->Version() > latestVersion)
+        {
+          latestVersion = compatibleVersion->Version();
+        }
+      }
+
+      if (m_addon->Version() == latestVersion)
+      {
+        // unpin the installed addon if it's the latest of its origin
+        CServiceBroker::GetAddonMgr().RemoveUpdateRuleFromList(m_addon->ID(),
+                                                               AddonUpdateRule::PIN_OLD_VERSION);
+        CLog::Log(LOGDEBUG, "ADDONS: unpinned: [{}] Origin: {} Version: {}", m_addon->ID(),
+                  m_addon->Origin(), m_addon->Version().asString());
+      }
+      else
+      {
+        // ..pin if it is NOT the latest
+        CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_addon->ID(),
+                                                          AddonUpdateRule::PIN_OLD_VERSION);
+        CLog::Log(LOGDEBUG, "ADDONS: pinned: [{}] Origin: {} Version: {}", m_addon->ID(),
+                  m_addon->Origin(), m_addon->Version().asString());
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG,
+                "ADDONS: zip installed addon [{}] will not be version checked and unpinned",
+                m_addon->ID());
+    }
+  }
+
   bool notify = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
         || !m_isAutoUpdate) && !IsModal();
   CServiceBroker::GetEventLog().Add(
@@ -844,6 +899,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           if (IsModal())
           {
             CAddonInstallJob dependencyJob(dependencyToInstall, repoForDep, false);
+            dependencyJob.SetDependsInstall(true);
 
             // pass our progress indicators to the temporary job and don't allow it to
             // show progress or information updates (no progress, title or text changes)
@@ -858,7 +914,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
               return false;
             }
           }
-          else if (!CAddonInstaller::GetInstance().InstallOrUpdate(dependencyToInstall, repoForDep))
+          else if (!CAddonInstaller::GetInstance().InstallOrUpdateDependency(dependencyToInstall,
+                                                                             repoForDep))
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
                       m_addon->ID(), dependencyToInstall->ID());

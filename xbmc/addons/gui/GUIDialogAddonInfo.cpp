@@ -264,11 +264,18 @@ void CGUIDialogAddonInfo::OnUpdate()
   if (!m_localAddon)
     return;
 
+  std::vector<std::shared_ptr<IAddon>> compatibleVersions;
   std::vector<std::pair<AddonVersion, std::string>> versions;
+
+  // get all compatible versions of an addon-id regardless of their origin
+  CServiceBroker::GetAddonMgr().GetCompatibleVersions(m_localAddon->ID(), compatibleVersions);
+
+  for (const auto& compatibleVersion : compatibleVersions)
+    versions.emplace_back(
+        std::make_pair(compatibleVersion->Version(), compatibleVersion->Origin()));
 
   CAddonDatabase database;
   database.Open();
-  database.GetAvailableVersions(m_localAddon->ID(), versions);
 
   CFileItemList items;
   if (XFILE::CDirectory::GetDirectory("special://home/addons/packages/", items, ".zip",
@@ -303,20 +310,6 @@ void CGUIDialogAddonInfo::OnUpdate()
     if (i != -1)
     {
       Close();
-      // turn auto updating off if downgrading
-
-      if (m_localAddon->Version() > versions[i].first)
-        CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
-                                                          AddonUpdateRule::PIN_OLD_VERSION);
-
-      // turn auto updating on if upgrading or changing origin
-      // (but not when changing to local cache)
-
-      if ((m_localAddon->Version() < versions[i].first &&
-           m_localAddon->Origin() == versions[i].second) ||
-          (m_localAddon->Origin() != versions[i].second && versions[i].second != LOCAL_CACHE))
-        CServiceBroker::GetAddonMgr().RemoveUpdateRuleFromList(m_localAddon->ID(),
-                                                               AddonUpdateRule::PIN_OLD_VERSION);
 
       if (versions[i].second == LOCAL_CACHE)
         CAddonInstaller::GetInstance().InstallFromZip(

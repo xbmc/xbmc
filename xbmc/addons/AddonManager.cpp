@@ -266,6 +266,22 @@ bool CAddonMgr::GetAddonsWithAvailableUpdate(
   return true;
 }
 
+bool CAddonMgr::GetCompatibleVersions(
+    const std::string& addonId, std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const
+{
+  CSingleLock lock(m_critSection);
+  auto start = XbmcThreads::SystemClockMillis();
+
+  CAddonRepos addonRepos(*this);
+  addonRepos.LoadAddonsFromDatabase(m_database, addonId);
+  addonRepos.BuildCompatibleVersionsList(compatibleVersions);
+
+  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__,
+            XbmcThreads::SystemClockMillis() - start);
+
+  return true;
+}
+
 bool CAddonMgr::HasAvailableUpdates()
 {
   return !GetAvailableUpdates().empty();

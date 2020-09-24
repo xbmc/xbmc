@@ -51,13 +51,14 @@ public:
    */
   bool InstallOrUpdate(const std::string &addonID, bool background = true, bool modal = false);
 
-  /*! \brief Install an addon from a specific repository
-   \param addon the addon to install
+  /*! \brief Install a dependency from a specific repository
+   \param dependsId the dependency to install
    \param repo the repository to install the addon from
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool InstallOrUpdate(const ADDON::AddonPtr& addon, const ADDON::RepositoryPtr& repo);
+  bool InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
+                                 const ADDON::RepositoryPtr& repo);
 
   /*! \brief Installs a vector of addons
    \param addons the list of addons to install
@@ -182,6 +183,9 @@ public:
    */
   static bool GetAddon(const std::string& addonID, ADDON::RepositoryPtr& repo, ADDON::AddonPtr& addon);
 
+  /*! Setter for m_dependsInstall */
+  void SetDependsInstall(bool dependsInstall) { m_dependsInstall = dependsInstall; };
+
 private:
   void OnPreInstall();
   void OnPostInstall();
@@ -201,6 +205,7 @@ private:
   ADDON::RepositoryPtr m_repo;
   bool m_isUpdate;
   bool m_isAutoUpdate;
+  bool m_dependsInstall = false;
   const char* m_currentType = TYPE_DOWNLOAD;
 };
 
