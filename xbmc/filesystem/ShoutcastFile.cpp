@@ -241,6 +241,19 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
           it = options.find("title");
           if (it != options.end())
             title = (*it).second.asString();
+
+          it = options.find("picture");
+          if (it != options.end())
+          {
+            coverURL = (*it).second.asString();
+            if (!coverURL.empty())
+            {
+              // Check value being a URL (not just a file name)
+              const CURL url(coverURL);
+              if (url.GetProtocol().empty())
+                coverURL.clear();
+            }
+          }
         }
       }
 
