@@ -277,6 +277,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           return true;
         }
         break;
+      case MUSICPLAYER_STATIONNAME:
+        value = tag->GetStationName();
+        return true;
 
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
@@ -644,7 +647,7 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
     case LISTITEM_IS_BOXSET:
       if (tag)
       {
-        value = item->GetMusicInfoTag()->GetBoxset() == true;
+        value = tag->GetBoxset() == true;
         return true;
       }
       break;

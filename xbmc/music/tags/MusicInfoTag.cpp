@@ -313,6 +313,11 @@ const std::string& CMusicInfoTag::GetAlbumReleaseStatus() const
   return m_strReleaseStatus;
 }
 
+const std::string& CMusicInfoTag::GetStationName() const
+{
+  return m_stationName;
+}
+
 void CMusicInfoTag::SetURL(const std::string& strURL)
 {
   m_strURL = strURL;
@@ -646,6 +651,11 @@ bool CMusicInfoTag::Loaded() const
 void CMusicInfoTag::SetBPM(int bpm)
 {
   m_iBPM = bpm;
+}
+
+void CMusicInfoTag::SetStationName(const std::string& strStationName)
+{
+  m_stationName = strStationName;
 }
 
 const std::string& CMusicInfoTag::GetMusicBrainzTrackID() const
@@ -1172,6 +1182,7 @@ void CMusicInfoTag::Clear()
   m_samplerate = 0;
   m_bitrate = 0;
   m_channels = 0;
+  m_stationName.clear();
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)

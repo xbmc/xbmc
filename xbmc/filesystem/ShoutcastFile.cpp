@@ -16,7 +16,6 @@
 #include "FileCache.h"
 #include "FileItem.h"
 #include "URL.h"
-#include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
@@ -66,13 +65,23 @@ bool CShoutcastFile::Open(const CURL& url)
   bool result = m_file.Open(url2);
   if (result)
   {
-    m_tag.SetTitle(m_file.GetHttpHeader().GetValue("icy-name"));
-    if (m_tag.GetTitle().empty())
-      m_tag.SetTitle(m_file.GetHttpHeader().GetValue("ice-name")); // icecast
-    m_tag.SetGenre(m_file.GetHttpHeader().GetValue("icy-genre"));
-    if (m_tag.GetGenre().empty())
-      m_tag.SetGenre(m_file.GetHttpHeader().GetValue("ice-genre")); // icecast
-    m_tag.SetLoaded(true);
+    std::string icyTitle;
+    icyTitle = m_file.GetHttpHeader().GetValue("icy-name");
+    if (icyTitle.empty())
+      icyTitle = m_file.GetHttpHeader().GetValue("ice-name"); // icecast
+    if (icyTitle == "This is my server name") // Handle badly set up servers
+      icyTitle.clear();
+
+    std::string icyGenre = m_file.GetHttpHeader().GetValue("icy-genre");
+    if (icyGenre.empty())
+      icyGenre = m_file.GetHttpHeader().GetValue("ice-genre"); // icecast
+
+    {
+      CSingleLock lock(m_tagSection);
+      m_tag.SetStationName(icyTitle);
+      m_tag.SetGenre(icyGenre);
+      m_tag.SetLoaded(true);
+    }
   }
   m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
   m_metaint = atoi(m_file.GetHttpHeader().GetValue("icy-metaint").c_str());
@@ -129,6 +138,12 @@ void CShoutcastFile::Close()
   delete[] m_buffer;
   m_buffer = NULL;
   m_file.Close();
+
+  {
+    CSingleLock lock(m_tagSection);
+    m_tag.Clear();
+    m_tagChange.Set();
+  }
 }
 
 bool CShoutcastFile::ExtractTagInfo(const char* buf)
@@ -156,10 +171,12 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
 
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
   {
-    std::string newtitle(reTitle.GetMatch(1));
+    const std::string newtitle = reTitle.GetMatch(1);
+
     CSingleLock lock(m_tagSection);
     result = (m_tag.GetTitle() != newtitle);
-    m_tag.SetTitle(newtitle);
+    if (result)
+      m_tag.SetTitle(newtitle);
   }
 
   return result;
