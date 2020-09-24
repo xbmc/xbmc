@@ -8,6 +8,7 @@ AC_CANONICAL_HOST
 
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx.m4])
+m4_include([m4/ax_compare_version.m4])
 
 # check for not same cpu value
 AC_DEFUN([MC_CHECK_NOT_CPU],
@@ -372,17 +373,7 @@ case $host in
         fi
 
         target_minver="10.13"
-
-        # now that we know which sdk, error check sdk_name
-        case $use_sdk in
-          10.13);;
-          10.14);;
-          10.15);;
-          *)
-            AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-        esac
       ;;
-
       aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
 
@@ -406,22 +397,14 @@ case $host in
           AC_MSG_ERROR(invalid architecture (--with-cpu=$use_cpu))
         fi
 
-        case $use_sdk in
-          11.*);;
-          12.*);;
-          13.*);;
-          14.*);;
-            *)
-              AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-            ;;
-        esac
-
         platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings"
         platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
         optimize_flags="-O3"
         platform_ldflags+=" -L$use_sdk_path/usr/lib"
       ;;
     esac
+
+    AX_COMPARE_VERSION([$use_sdk], [ge], [$target_minver], , AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk))
 
     platform_min_version="$target_platform-version-min=$target_minver"
 
