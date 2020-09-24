@@ -358,7 +358,14 @@ case $host in
     found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
     use_sdk="${use_sdk:-$found_sdk_version}"
     sdk_name=$target_platform$use_sdk
-    use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
+
+    use_sdk_path=$($use_xcodebuild -version -sdk $sdk_name Path 2>&1)
+    # test if sdk is available to xcodebuild, otherwise error out
+    valid_sdk=[`echo $use_sdk_path | grep "error:"`]
+
+    if test "x$valid_sdk" != "x"; then
+      AC_MSG_ERROR("invalid SDK version provided (--with-sdk=$use_sdk) is not available in xcodebuild -showsdks")
+    fi
 
     case $host in
       x86_64-apple-darwin)
@@ -404,7 +411,7 @@ case $host in
       ;;
     esac
 
-    AX_COMPARE_VERSION([$use_sdk], [ge], [$target_minver], , AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk))
+    AX_COMPARE_VERSION([$use_sdk], [ge], [$target_minver], , AC_MSG_ERROR("invalid SDK version provided (--with-sdk=$use_sdk) less than minimum supported ($target_minver)"))
 
     platform_min_version="$target_platform-version-min=$target_minver"
 
