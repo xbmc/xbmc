@@ -20,6 +20,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 
 #include <climits>
 
@@ -176,7 +177,25 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
     CSingleLock lock(m_tagSection);
     result = (m_tag.GetTitle() != newtitle);
     if (result)
-      m_tag.SetTitle(newtitle);
+    {
+      std::string title;
+      std::string artistInfo;
+
+      // Most stations supply StreamTitle in format "artist - songtitle"
+      const std::vector<std::string> tokens = StringUtils::Split(newtitle, " - ");
+      if (tokens.size() == 2)
+      {
+        artistInfo = tokens[0];
+        title = tokens[1];
+      }
+      else
+      {
+        title = newtitle;
+      }
+
+      m_tag.SetArtist(artistInfo);
+      m_tag.SetTitle(title);
+    }
   }
 
   return result;
