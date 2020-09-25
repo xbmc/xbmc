@@ -1667,6 +1667,12 @@ bool CApplication::OnAction(const CAction &action)
   // Display HDR : toggle HDR on/off
   if (action.GetID() == ACTION_HDR_TOGGLE)
   {
+    // Only enables manual HDR toggle if no video is playing or auto HDR switch is disabled
+    if (m_appPlayer.IsPlayingVideo() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY))
+      return true;
+
     HDR_STATUS hdrStatus = CServiceBroker::GetWinSystem()->ToggleHDR();
 
     if (hdrStatus == HDR_STATUS::HDR_OFF)

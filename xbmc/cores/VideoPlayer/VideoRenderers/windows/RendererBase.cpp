@@ -518,7 +518,13 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
   }
 
   if (!DX::Windowing()->IsHDROutput())
+  {
+    if (m_lastHdr10.RedPrimary[0] != 0)
+      m_lastHdr10 = {};
+    if (m_HdrType != HDR_TYPE::HDR_NONE_SDR)
+      m_HdrType = HDR_TYPE::HDR_NONE_SDR;
     return;
+  }
 
   // HDR10
   if (rb->color_transfer == AVCOL_TRC_SMPTE2084 && rb->primaries == AVCOL_PRI_BT2020)
@@ -579,6 +585,7 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
         DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
         m_HdrType = HDR_TYPE::HDR_NONE_SDR;
         m_iCntMetaData = 0;
+        m_lastHdr10 = {};
         if (m_AutoSwitchHDR)
           DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
       }
