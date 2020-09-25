@@ -1,0 +1,21 @@
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -369,7 +369,7 @@
+ int
+ main ()
+ {
+-  exit(0);
++  return 0;
+ }
+ EOF
+ gmp_compile="$1 conftest.c"
+@@ -410,7 +410,7 @@
+ int
+ main ()
+ {
+-  exit (0);
++  return 0;
+ }
+ EOF
+   for i in .exe ,ff8 ""; do
+
