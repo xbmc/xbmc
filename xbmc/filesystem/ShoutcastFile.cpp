@@ -19,6 +19,7 @@
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "messaging/ApplicationMessenger.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
@@ -41,7 +42,6 @@ CShoutcastFile::CShoutcastFile() :
   m_currint = 0;
   m_buffer = NULL;
   m_cacheReader = NULL;
-  m_tagPos = 0;
   m_metaint = 0;
 }
 
@@ -95,11 +95,12 @@ bool CShoutcastFile::Open(const CURL& url)
   {
     CSingleLock lock(m_tagSection);
 
-    m_tag.SetStationName(icyTitle);
-    m_tag.SetGenre(icyGenre);
-    m_tag.SetLoaded(true);
+    m_masterTag.reset(new CMusicInfoTag());
+    m_masterTag->SetStationName(icyTitle);
+    m_masterTag->SetGenre(icyGenre);
+    m_masterTag->SetLoaded(true);
 
-    m_tagPos = 1;
+    m_tags.push({1, m_masterTag});
     m_tagChange.Set();
   }
 
@@ -116,18 +117,7 @@ ssize_t CShoutcastFile::Read(void* lpBuf, size_t uiBufSize)
     unsigned char header;
     m_file.Read(&header,1);
     ReadTruncated(m_buffer, header*16);
-    if (ExtractTagInfo(m_buffer)
-        // this is here to workaround issues caused by application posting callbacks to itself (3cf882d9)
-        // the callback will set an empty tag in the info manager item, while we think we have ours set
-        || (m_file.GetPosition() < 10 * m_metaint))
-    {
-      CSingleLock lock(m_tagSection);
-      if (!m_tagPos)
-      {
-        m_tagPos = m_file.GetPosition();
-        m_tagChange.Set();
-      }
-    }
+    ExtractTagInfo(m_buffer);
     m_discarded += header*16+1;
     m_currint = 0;
   }
@@ -158,7 +148,9 @@ void CShoutcastFile::Close()
 
   {
     CSingleLock lock(m_tagSection);
-    m_tag.Clear();
+    while (!m_tags.empty())
+      m_tags.pop();
+    m_masterTag.reset();
     m_tagChange.Set();
   }
 }
@@ -294,9 +286,14 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
         coverURL.clear();
 
       CSingleLock lock(m_tagSection);
-      m_tag.SetArtist(artistInfo);
-      m_tag.SetTitle(title);
-      m_tag.SetStationArt(coverURL);
+
+      const std::shared_ptr<CMusicInfoTag> tag = std::make_shared<CMusicInfoTag>(*m_masterTag);
+      tag->SetArtist(artistInfo);
+      tag->SetTitle(title);
+      tag->SetStationArt(coverURL);
+
+      m_tags.push({m_file.GetPosition(), tag});
+      m_tagChange.Set();
     }
   }
 
@@ -333,19 +330,20 @@ void CShoutcastFile::Process()
     if (m_tagChange.WaitMSec(500))
     {
       CSingleLock lock(m_tagSection);
-      while (!m_bStop)
+      while (!m_bStop && !m_tags.empty())
       {
-        if (m_cacheReader->GetPosition() < m_tagPos)
+        const TagInfo& front = m_tags.front();
+        if (m_cacheReader->GetPosition() < front.first) // tagpos
         {
           CSingleExit ex(m_tagSection);
           CThread::Sleep(20);
         }
         else
         {
+          CFileItem* item = new CFileItem(*front.second); // will be deleted by msg receiver
+          m_tags.pop();
           CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
-                                                       static_cast<void*>(new CFileItem(m_tag)));
-          m_tagPos = 0;
-          break; // wait for next tag change
+                                                       static_cast<void*>(item));
         }
       }
     }
