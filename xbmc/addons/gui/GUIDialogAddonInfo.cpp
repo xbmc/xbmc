@@ -153,8 +153,8 @@ bool CGUIDialogAddonInfo::OnAction(const CAction& action)
 
 void CGUIDialogAddonInfo::OnInitWindow()
 {
-  UpdateControls();
   CGUIDialog::OnInitWindow();
+  UpdateControls();
 }
 
 void CGUIDialogAddonInfo::UpdateControls()
@@ -201,6 +201,10 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
+  if (isInstalled && m_localAddon->HasSettings())
+  {
+    SET_CONTROL_FOCUS(CONTROL_BTN_SETTINGS, 0);
+  }
 
   auto deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DEPENDENCIES, !deps.empty());
