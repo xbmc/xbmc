@@ -15,16 +15,20 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 endif
 
 ifeq ($(OS), darwin_embedded)
-  # Darwinembedded platforms do not have a public getentropy function
-  # getentropy is incorrectly found, so disable explicitly
-  export ac_cv_func_getentropy=no
+  EXTRA_CONFIGURE=ac_cv_func_wait3=no ac_cv_func_wait4=no ac_cv_func_waitpid=no \
+                  ac_cv_func_execv=no ac_cv_func_fexecv=no ac_cv_func_getentropy=no \
+                  ac_cv_func_setpriority=no ac_cv_func_sendfile=no ac_cv_header_sched_h=no \
+                  ac_cv_func_posix_spawn=no ac_cv_func_posix_spawnp=no \
+                  ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
+                  ac_cv_func_getgroups=no
 endif
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-shared \
   --without-ensurepip \
-  --disable-framework --with-system-expat --with-system-ffi --without-pymalloc --enable-ipv6
+  --disable-framework --with-system-expat --with-system-ffi --without-pymalloc --enable-ipv6 \
+  $(EXTRA_CONFIGURE)
 
 
 LIBDYLIB=$(PLATFORM)/libpython3.8.a
