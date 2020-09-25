@@ -187,8 +187,6 @@ void CGUIDialogAddonInfo::UpdateControls()
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, isInstalled);
   }
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
-
   bool autoUpdatesOn = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                            CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON;
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
@@ -259,14 +257,26 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  if (!m_localAddon)
-    return;
+  std::string processAddonId;
+
+  if (m_localAddon)
+  {
+    processAddonId = m_localAddon->ID(); // we're doing an update as usual
+  }
+  else if (m_item->HasAddonInfo())
+  {
+    processAddonId = m_item->GetAddonInfo()->ID(); // we're doing an install
+  }
+  else
+  {
+    return; // none of the above
+  }
 
   std::vector<std::shared_ptr<IAddon>> compatibleVersions;
   std::vector<std::pair<AddonVersion, std::string>> versions;
 
   // get all compatible versions of an addon-id regardless of their origin
-  CServiceBroker::GetAddonMgr().GetCompatibleVersions(m_localAddon->ID(), compatibleVersions);
+  CServiceBroker::GetAddonMgr().GetCompatibleVersions(processAddonId, compatibleVersions);
 
   for (const auto& compatibleVersion : compatibleVersions)
     versions.emplace_back(
@@ -285,11 +295,11 @@ void CGUIDialogAddonInfo::OnUpdate()
       std::string versionString;
       if (AddonVersion::SplitFileName(packageId, versionString, items[i]->GetLabel()))
       {
-        if (packageId == m_localAddon->ID())
+        if (packageId == processAddonId)
         {
           std::string hash;
           std::string path(items[i]->GetPath());
-          if (database.GetPackageHash(m_localAddon->ID(), items[i]->GetPath(), hash))
+          if (database.GetPackageHash(processAddonId, items[i]->GetPath(), hash))
           {
             std::string md5 = CUtil::GetFileDigest(path, KODI::UTILITY::CDigest::Type::MD5);
             if (StringUtils::EqualsNoCase(md5, hash))
@@ -311,10 +321,10 @@ void CGUIDialogAddonInfo::OnUpdate()
 
       if (versions[i].second == LOCAL_CACHE)
         CAddonInstaller::GetInstance().InstallFromZip(
-            StringUtils::Format("special://home/addons/packages/%s-%s.zip",
-                                m_localAddon->ID().c_str(), versions[i].first.asString().c_str()));
+            StringUtils::Format("special://home/addons/packages/%s-%s.zip", processAddonId.c_str(),
+                                versions[i].first.asString().c_str()));
       else
-        CAddonInstaller::GetInstance().Install(m_localAddon->ID(), versions[i].first,
+        CAddonInstaller::GetInstance().Install(processAddonId, versions[i].first,
                                                versions[i].second);
     }
   }
