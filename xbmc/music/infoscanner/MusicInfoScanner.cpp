@@ -154,8 +154,8 @@ void CMusicInfoScanner::Process()
 
             if (m_flags & SCAN_ONLINE)
               // Download additional album and artist information for the recently added albums.
-              // This also identifies any local artist thumb and fanart if it exists, and gives it priority,
-              // otherwise it is set to the first available from the remote thumbs and fanart that was scraped.
+              // This also identifies any local artist art if it exists, and gives it priority,
+              // otherwise it is set to the first available from the remote art that was scraped.
               ScrapeInfoAddedAlbums();
           }
         }
@@ -1943,7 +1943,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   std::map<std::string, std::string> addedart;
   std::string strArt;
 
-  // Handle thumb and fanart separately, can be from multiple confgurable file names
+  // Handle thumb separately, can be from multiple confgurable file names
   if (artist.art.find("thumb") == artist.art.end())
   {
     if (!artfolder.empty())
@@ -1955,18 +1955,6 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
       strArt = CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType("thumb"));
     if (!strArt.empty())
       addedart.insert(std::make_pair("thumb", strArt));
-  }
-  if (artist.art.find("fanart") == artist.art.end())
-  {
-    if (!artfolder.empty())
-    { // Local music fanart images named by <fanart>
-      CFileItem item(artfolder, true);
-      strArt = item.GetLocalFanart();
-    }
-    if (strArt.empty())
-      strArt = artist.fanart.GetImageURL();
-    if (!strArt.empty())
-      addedart.insert(std::make_pair("fanart", strArt));
   }
 
   // Process additional art types in artist folder
@@ -1980,7 +1968,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
 
   for (const auto& it : addedart)
   {
-    // Cache thumb, fanart and whitelisted artwork immediately 
+    // Cache thumb, fanart and other whitelisted artwork immediately
     // (other art types will be cached when first displayed)
     if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == "thumb" ||
         it.first == "fanart")
@@ -2101,7 +2089,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
       CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL);
   for (const auto& it : addedart)
   {
-    // Cache thumb, fanart and whitelisted artwork immediately 
+    // Cache thumb, fanart and whitelisted artwork immediately
     // (other art types will be cached when first displayed)
     if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == "thumb" ||
         it.first == "fanart")
@@ -2112,6 +2100,29 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
       m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, it.first, it.second);
   }
   return addedart.size() > 0;
+}
+
+std::vector<CVariant> CMusicInfoScanner::GetArtWhitelist(const MediaType& mediaType, int iArtLevel)
+{
+  std::vector<CVariant> whitelistarttypes;
+  if (iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
+  {
+    // Basic artist artwork = thumb + fanart (but not "family" fanart1, fanart2 etc.)
+    // Basic album artwork = thumb only, thumb handled separately not in whitelist
+    if (mediaType == MediaTypeArtist)
+      whitelistarttypes.emplace_back("fanart");
+  }
+  else
+  {
+    if (mediaType == MediaTypeArtist)
+      whitelistarttypes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+          CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST);
+    else
+      whitelistarttypes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+          CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST);
+  }
+
+  return whitelistarttypes;
 }
 
 bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
@@ -2125,17 +2136,8 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
 
   int iArtLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL);
-  if (iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
-    return false; // Minimal artwork
 
-  std::vector<CVariant> whitelistarttypes;
-  if (mediaType == MediaTypeAlbum)
-    whitelistarttypes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
-        CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST);
-  else
-    whitelistarttypes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
-        CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST);
-
+  std::vector<CVariant> whitelistarttypes = GetArtWhitelist(mediaType, iArtLevel);
   bool bUseAll = (iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL) ||
                  ((iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM) &&
                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -2174,40 +2176,41 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     if (period != std::string::npos && strCandidate[period] == '.')
     {
       strExt = strCandidate.substr(period); // ".jpg", ".png" etc.
-      strCandidate.erase(period);
+      strCandidate.erase(period); // "abc16" for file Abc16.jpg
     }
     if (strCandidate.empty())
       continue;
-    // Skip files already used as artist fanart (but not the type family)
-    if (mediaType == "artist" && strCandidate == "fanart")
-      continue;
-    // Validate additional art type name
+    // Validate art type name
     size_t last_index = strCandidate.find_last_not_of("0123456789");
     std::string strDigits = strCandidate.substr(last_index + 1);
-    std::string strFamilyType = strCandidate.substr(0, last_index + 1); // "abc" of abc16.jpg
-    if (strFamilyType.empty())
-      continue;
-    if (!MUSIC_UTILS::IsValidArtType(strFamilyType))
-      continue;
-    // Disc specific art from disc subfolder
-    // Append disc number when or skip any art where number does not match disc
-    if (discnum > 0)
+    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
     {
-      if (strDigits.empty())
-        strCandidate += StringUtils::Format("%i", discnum);
-      else if (atoi(strDigits.c_str()) != discnum)
+      // Basic art exact match to whitelist, otherwise whitelist contains art type "families" so
+      // 'fanart' also matches 'fanart1', 'fanart2' etc.
+      strCandidate = strCandidate.substr(0, last_index + 1); // "abc" of "abc16"
+      if (strCandidate.empty())
         continue;
     }
-    if ((bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strFamilyType) !=
+    if (!MUSIC_UTILS::IsValidArtType(strCandidate))
+      continue;
+    // Disc specific art from disc subfolder
+    // Skip art where digits of filename do not match disc number
+    if (discnum > 0 && !strDigits.empty() && (atoi(strDigits.c_str()) != discnum))
+      continue;
+    
+    if ((bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strCandidate) !=
                         whitelistarttypes.end()))
     {
       // Catch any variants of music thumbs e.g. folder2.jpg as "thumb2"
       // Used for disc sets when files all in one album folder
       if (!strDigits.empty() &&
-          std::find(thumbs.begin(), thumbs.end(), strFamilyType + strExt) != thumbs.end())
+          std::find(thumbs.begin(), thumbs.end(), strCandidate + strExt) != thumbs.end())
       {
         strCandidate = "thumb" + strDigits;
       }
+      // Append disc number when candidate art type (and file) not have it
+      if (discnum > 0 && strDigits.empty())
+        strCandidate += StringUtils::Format("%i", discnum);
       if (art.find(strCandidate) == art.end())
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));
     }
@@ -2222,17 +2225,8 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
 {
   int iArtLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL);
-  if (iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
-    return false; // Minimal artwork
 
-  std::vector<CVariant> whitelistarttypes;
-  if (mediaType == MediaTypeAlbum)
-    whitelistarttypes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
-        CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST);
-  else
-    whitelistarttypes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
-        CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST);
-
+  std::vector<CVariant> whitelistarttypes = GetArtWhitelist(mediaType, iArtLevel);
   bool bUseAll = (iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL) ||
                  ((iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM) &&
                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -2253,8 +2247,9 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
       continue;
     if (!bUseAll)
     { // Check whitelist for art type family e.g. "discart" for aspect="discart2"
-      size_t last_index = url.m_aspect.find_last_not_of("0123456789");
-      std::string strName = url.m_aspect.substr(0, last_index + 1);
+      std::string strName = url.m_aspect;
+      if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
+        StringUtils::TrimRight(strName, "0123456789");
       if (std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strName) ==
           whitelistarttypes.end())
         continue;
