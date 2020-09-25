@@ -818,10 +818,10 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           AddonPtr dependencyToInstall;
 
           // origin of m_addon is empty at least if an addon is installed for the first time
-          // we need to override "parentRepoId" in this case
+          // we need to override "parentRepoId" if the passed in repo is valid.
 
           const std::string& parentRepoId =
-              m_addon->Origin().empty() ? repo->ID() : m_addon->Origin();
+              m_addon->Origin().empty() && repo ? repo->ID() : m_addon->Origin();
 
           if (!addonRepos.FindDependency(addonID, parentRepoId, dependencyToInstall, repoForDep))
           {
