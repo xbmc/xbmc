@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "DRMUtils.h"
 #include "VideoLayerBridge.h"
+#include "drm/DRMUtils.h"
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
 

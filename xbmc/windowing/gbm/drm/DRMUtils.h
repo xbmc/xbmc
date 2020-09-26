@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "GBMUtils.h"
+#include "windowing/gbm/GBMUtils.h"
 #include "windowing/Resolution.h"
 
 #include <map>

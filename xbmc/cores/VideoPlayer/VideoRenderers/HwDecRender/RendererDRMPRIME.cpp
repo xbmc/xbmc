@@ -21,8 +21,8 @@
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-#include "windowing/gbm/DRMAtomic.h"
 #include "windowing/gbm/WinSystemGbm.h"
+#include "windowing/gbm/drm/DRMAtomic.h"
 
 using namespace KODI::WINDOWING::GBM;
 

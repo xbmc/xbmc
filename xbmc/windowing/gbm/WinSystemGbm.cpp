@@ -8,12 +8,12 @@
 
 #include "WinSystemGbm.h"
 
-#include "DRMAtomic.h"
-#include "DRMLegacy.h"
 #include "GBMDPMSSupport.h"
-#include "OffScreenModeSetting.h"
 #include "OptionalsReg.h"
 #include "ServiceBroker.h"
+#include "drm/DRMAtomic.h"
+#include "drm/DRMLegacy.h"
+#include "drm/OffScreenModeSetting.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"

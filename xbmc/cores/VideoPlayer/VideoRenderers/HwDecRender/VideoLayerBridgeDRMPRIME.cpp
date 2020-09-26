@@ -10,7 +10,7 @@
 
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "utils/log.h"
-#include "windowing/gbm/DRMUtils.h"
+#include "windowing/gbm/drm/DRMUtils.h"
 
 using namespace KODI::WINDOWING::GBM;
 using namespace DRMPRIME;
