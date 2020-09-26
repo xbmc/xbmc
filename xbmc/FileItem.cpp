@@ -141,16 +141,14 @@ void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannel>& channel, co
       musictag->SetGenre(tag->Genre());
       musictag->SetDuration(tag->GetDuration());
     }
-    else
+    else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
     {
-      musictag->SetTitle(channel->ChannelName()); // can be overwritten by PVRGUIInfo
+      musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
     }
+
     musictag->SetURL(channel->Path());
-    musictag->SetArtist(channel->ChannelName());
-    musictag->SetAlbumArtist(channel->ChannelName());
     musictag->SetLoaded(true);
-    musictag->SetComment("");
-    musictag->SetLyrics("");
   }
 }
 
@@ -164,20 +162,15 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   SetLabel(GetEpgTagTitle(tag));
   m_dateTime = tag->StartAsLocalTime();
 
+  const std::shared_ptr<CPVRChannel> channel =
+      CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+
   if (!tag->Icon().empty())
     SetArt("icon", tag->Icon());
-  else
-  {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
-    if (channel)
-    {
-      if (!channel->IconPath().empty())
-        SetArt("icon", channel->IconPath());
+  else if (channel && !channel->IconPath().empty())
+    SetArt("icon", channel->IconPath());
 
-      FillMusicInfoTag(channel, tag);
-    }
-  }
-
+  FillMusicInfoTag(channel, tag);
   FillInMimeType(false);
 }
 
