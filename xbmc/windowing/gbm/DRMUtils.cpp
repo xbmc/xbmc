@@ -849,11 +849,8 @@ void CDRMUtils::DestroyDrm()
 {
   RestoreOriginalMode();
 
-  auto ret = drmDropMaster(m_fd);
-  if (ret < 0)
-  {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to drop drm master: %s", __FUNCTION__, strerror(errno));
-  }
+  if (drmAuthMagic(m_fd, 0) == EINVAL)
+    drmDropMaster(m_fd);
 
   close(m_renderFd);
   close(m_fd);
