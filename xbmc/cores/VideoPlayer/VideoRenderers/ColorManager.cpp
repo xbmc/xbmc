@@ -9,7 +9,6 @@
 #include "ColorManager.h"
 
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -85,21 +84,25 @@ bool CColorManager::IsValid() const
   }
 }
 
-CMS_PRIMARIES videoFlagsToPrimaries(int flags)
+CMS_PRIMARIES avColorToCmsPrimaries(AVColorPrimaries primaries)
 {
-  if (flags & CONF_FLAGS_COLPRI_BT709)
-    return CMS_PRIMARIES_BT709;
-  if (flags & CONF_FLAGS_COLPRI_BT2020)
-    return CMS_PRIMARIES_BT2020;
-  if (flags & CONF_FLAGS_COLPRI_170M)
-    return CMS_PRIMARIES_170M;
-  if (flags & CONF_FLAGS_COLPRI_BT470M)
-    return CMS_PRIMARIES_BT470M;
-  if (flags & CONF_FLAGS_COLPRI_BT470BG)
-    return CMS_PRIMARIES_BT470BG;
-  if (flags & CONF_FLAGS_COLPRI_240M)
-    return CMS_PRIMARIES_240M;
-  return CMS_PRIMARIES_BT709; // default to bt.709
+  switch (primaries)
+  {
+    case AVCOL_PRI_BT709:
+      return CMS_PRIMARIES_BT709;
+    case AVCOL_PRI_BT470M:
+      return CMS_PRIMARIES_BT470M;
+    case AVCOL_PRI_BT470BG:
+      return CMS_PRIMARIES_BT470BG;
+    case AVCOL_PRI_SMPTE170M:
+      return CMS_PRIMARIES_170M;
+    case AVCOL_PRI_SMPTE240M:
+      return CMS_PRIMARIES_240M;
+    case AVCOL_PRI_BT2020:
+      return CMS_PRIMARIES_BT2020;
+    default:
+      return CMS_PRIMARIES_BT709;
+  }
 }
 
 bool CColorManager::Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dataSize)
@@ -152,10 +155,11 @@ bool CColorManager::Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dat
   }
 }
 
-bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData)
+bool CColorManager::GetVideo3dLut(AVColorPrimaries srcPrimaries, int* cmsToken,
+                                  CMS_DATA_FORMAT format, int clutSize, uint16_t* clutData)
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  CMS_PRIMARIES videoPrimaries = videoFlagsToPrimaries(videoFlags);
+  CMS_PRIMARIES videoPrimaries = avColorToCmsPrimaries(srcPrimaries);
   CLog::Log(LOGDEBUG, "ColorManager: video primaries: %d", (int)videoPrimaries);
   switch (settings->GetInt("videoscreen.cmsmode"))
   {
@@ -240,7 +244,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
   return true;
 }
 
-bool CColorManager::CheckConfiguration(int cmsToken, int flags)
+bool CColorManager::CheckConfiguration(int cmsToken, AVColorPrimaries srcPrimaries)
 {
   if (cmsToken != m_curCmsToken)
     return false;
@@ -261,7 +265,8 @@ bool CColorManager::CheckConfiguration(int cmsToken, int flags)
       return false; // whitepoint changed
     {
       CMS_PRIMARIES primaries = static_cast<CMS_PRIMARIES>(settings->GetInt("videoscreen.cmsprimaries"));
-      if (primaries == CMS_PRIMARIES_AUTO) primaries = videoFlagsToPrimaries(flags);
+      if (primaries == CMS_PRIMARIES_AUTO)
+        primaries = avColorToCmsPrimaries(srcPrimaries);
       if (m_curIccPrimaries != primaries)
         return false; // primaries changed
     }

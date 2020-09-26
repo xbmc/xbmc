@@ -244,7 +244,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // load 3DLUT
   if (m_ColorManager->IsEnabled())
   {
-    if (!m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags))
+    if (!m_ColorManager->CheckConfiguration(m_cmsToken, m_srcPrimaries))
     {
       CLog::Log(LOGDEBUG, "CMS configuration changed, reload LUT");
       if (!LoadCLUT())
@@ -674,7 +674,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
                             (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
   bool nonLinStretchChanged = false;
   bool cmsChanged = (m_cmsOn != m_ColorManager->IsEnabled()) ||
-                    (m_cmsOn && !m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags));
+                    (m_cmsOn && !m_ColorManager->CheckConfiguration(m_cmsToken, m_srcPrimaries));
   if (m_nonLinStretchGui != CDisplaySettings::GetInstance().IsNonLinearStretched() || pixelRatioChanged)
   {
     m_nonLinStretchGui = CDisplaySettings::GetInstance().IsNonLinearStretched();
@@ -714,7 +714,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   {
     if (m_ColorManager->IsEnabled())
     {
-      if (!m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags))
+      if (!m_ColorManager->CheckConfiguration(m_cmsToken, m_srcPrimaries))
       {
         CLog::Log(LOGDEBUG, "CMS configuration changed, reload LUT");
         LoadCLUT();
@@ -2670,7 +2670,8 @@ bool CLinuxRendererGL::LoadCLUT()
   m_CLUT = static_cast<uint16_t*>(malloc(dataSize));
 
   // load 3DLUT
-  if ( !m_ColorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, CMS_DATA_FMT_RGB, m_CLUTsize, m_CLUT) )
+  if (!m_ColorManager->GetVideo3dLut(m_srcPrimaries, &m_cmsToken, CMS_DATA_FMT_RGB, m_CLUTsize,
+                                     m_CLUT))
   {
     free(m_CLUT);
     CLog::Log(LOGERROR, "Error loading the LUT");
@@ -2681,7 +2682,7 @@ bool CLinuxRendererGL::LoadCLUT()
   CLog::Log(LOGDEBUG, "LinuxRendererGL: creating 3DLUT");
   glGenTextures(1, &m_tCLUTTex);
   glActiveTexture(GL_TEXTURE4);
-  if ( m_tCLUTTex <= 0 )
+  if (m_tCLUTTex <= 0)
   {
     CLog::Log(LOGERROR, "Error creating 3DLUT texture");
     return false;

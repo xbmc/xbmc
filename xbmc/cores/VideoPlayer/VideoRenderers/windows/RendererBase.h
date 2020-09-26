@@ -137,7 +137,7 @@ protected:
   explicit CRendererBase(CVideoSettings& videoSettings);
 
   bool CreateIntermediateTarget(unsigned int width, unsigned int height, bool dynamic = false);
-  void OnCMSConfigChanged(unsigned flags);
+  void OnCMSConfigChanged(AVColorPrimaries srcPrimaries);
   void ReorderDrawPoints(const CRect& destRect, CPoint(&rotatedPoints)[4]) const;
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
