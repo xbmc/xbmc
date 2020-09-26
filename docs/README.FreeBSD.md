@@ -168,6 +168,7 @@ Build a specific group of add-ons:
 ```
 sudo gmake -j$(sysctl hw.ncpu | awk '{print $2}') -C tools/depends/target/binary-addons PREFIX=/usr/local ADDONS="pvr.*"
 ```
+For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
 **NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 

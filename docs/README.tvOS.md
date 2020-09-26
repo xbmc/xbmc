@@ -161,6 +161,7 @@ Generate Xcode project to build a specific group of add-ons:
 ```
 make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON -DADDONS_TO_BUILD='pvr.*'"
 ```
+For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
 Generate Xcode project to build all add-ons automatically:
 ```

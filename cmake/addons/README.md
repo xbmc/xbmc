@@ -25,9 +25,11 @@ If no add-on definitions could be found, the buildsystem assumes that the bootst
 
 ## Buildsystem variables
 The buildsystem uses the following addon-related variables (which can be passed into it when executing cmake with the -D`<variable-name>=<value>` format) to manipulate the build process:
-- `ADDONS_TO_BUILD` has two variations, which are tested in order:
-     - a quoted, space delimited list of `<addon-id>s` that you want to build (default is *all*)
-     - a regular expression that every `<addon-id>` is matched against (e.g. `ADDONS_TO_BUILD="pvr.*"`) to build all pvr add-ons
+- `ADDONS_TO_BUILD` has four rules for matching a provided space delimited list:
+     - to build all addons, just use `all` (default is *all*)
+     - an exact match of an `<addon-id>` that you want to build (e.g. `ADDONS_TO_BUILD="game.libretro"`)
+     - a regular expression `<addon-id>` is matched against (e.g. `ADDONS_TO_BUILD="pvr.*"`) to build all pvr add-ons
+     - a regular expression exclusion can be made using `-<addon-id regex>` (e.g. `ADDONS_TO_BUILD="pvr.* -pvr.dvb"`) to exclude pvr.dvblink and pvr.dvbviewer, but build all other pvr add-ons
 - `ADDONS_DEFINITION_DIR` points to the directory containing the definitions for the addons to be built
 - `ADDON_SRC_PREFIX` can be used to override the add-on repository location. It must point to the locally available parent directory of the add-on(s) to build. `<addon-id>` will be appended to this path automatically
 - `CMAKE_INSTALL_PREFIX` points to the directory where the built add-ons and their additional files (addon.xml, resources, ...) will be installed to (defaults to `<ADDON_DEPENDS_PATH>`)
