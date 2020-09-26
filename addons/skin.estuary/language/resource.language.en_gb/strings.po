@@ -780,3 +780,9 @@ msgstr ""
 msgctxt "#31167"
 msgid "Animate background"
 msgstr ""
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
