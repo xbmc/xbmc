@@ -586,141 +586,220 @@ bool CDRMUtils::FindModifiersForPlane(struct plane *object)
   return true;
 }
 
+void CDRMUtils::PrintDrmDeviceInfo(drmDevicePtr device)
+{
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} - Device Info:", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} -   available_nodes: {:#04x}", __FUNCTION__,
+            device->available_nodes);
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} -   nodes:", __FUNCTION__);
+  for (int i = 0; i < DRM_NODE_MAX; i++)
+  {
+    if (device->available_nodes & 1 << i)
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} -     nodes[{}]: {}", __FUNCTION__, i, device->nodes[i]);
+  }
+
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} -   bustype: {:#04x}", __FUNCTION__, device->bustype);
+
+  if (device->bustype == DRM_BUS_PCI)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     pci:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       domain: {:#04x}", __FUNCTION__,
+              device->businfo.pci->domain);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       bus:    {:#02x}", __FUNCTION__,
+              device->businfo.pci->bus);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       dev:    {:#02x}", __FUNCTION__,
+              device->businfo.pci->dev);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       func:   {:#1}", __FUNCTION__,
+              device->businfo.pci->func);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     pci:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       vendor_id:    {:#04x}", __FUNCTION__,
+              device->deviceinfo.pci->vendor_id);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       device_id:    {:#04x}", __FUNCTION__,
+              device->deviceinfo.pci->device_id);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       subvendor_id: {:#04x}", __FUNCTION__,
+              device->deviceinfo.pci->subvendor_id);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       subdevice_id: {:#04x}", __FUNCTION__,
+              device->deviceinfo.pci->subdevice_id);
+  }
+  else if (device->bustype == DRM_BUS_USB)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     usb:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       bus: {:#03}", __FUNCTION__,
+              device->businfo.usb->bus);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       dev: {:#03}", __FUNCTION__,
+              device->businfo.usb->dev);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     usb:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       vendor:  {:#04x}", __FUNCTION__,
+              device->deviceinfo.usb->vendor);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       product: {:#04x}", __FUNCTION__,
+              device->deviceinfo.usb->product);
+  }
+  else if (device->bustype == DRM_BUS_PLATFORM)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     platform:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       fullname: {}", __FUNCTION__,
+              device->businfo.platform->fullname);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     platform:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       compatible:", __FUNCTION__);
+
+    auto compatible = device->deviceinfo.platform->compatible;
+    while (*compatible)
+    {
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} -         {}:", __FUNCTION__, *compatible);
+      compatible++;
+    }
+  }
+  else if (device->bustype == DRM_BUS_HOST1X)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     host1x:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       fullname: {}", __FUNCTION__,
+              device->businfo.host1x->fullname);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     host1x:", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       compatible:", __FUNCTION__);
+
+    auto compatible = device->deviceinfo.host1x->compatible;
+    while (*compatible)
+    {
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} -         {}:", __FUNCTION__, *compatible);
+      compatible++;
+    }
+  }
+  else
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - unhandled bus type", __FUNCTION__);
+}
+
 bool CDRMUtils::OpenDrm(bool needConnector)
 {
-  static constexpr const char *modules[] =
+  int numDevices = drmGetDevices2(0, nullptr, 0);
+  if (numDevices <= 0)
   {
-    "i915",
-    "amdgpu",
-    "radeon",
-    "nouveau",
-    "vmwgfx",
-    "exynos",
-    "msm",
-    "imx-drm",
-    "rockchip",
-    "vc4",
-    "virtio_gpu",
-    "mediatek",
-    "meson",
-    "sun4i-drm",
-    "vboxvideo",
-  };
+    CLog::Log(LOGERROR, "CDRMUtils::{} - no drm devices found: ({})", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
 
-  for (auto module : modules)
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} - drm devices found: {}", __FUNCTION__, numDevices);
+
+  std::vector<drmDevicePtr> devices(numDevices);
+
+  int ret = drmGetDevices2(0, devices.data(), devices.size());
+  if (ret < 0)
   {
-    m_fd.attach(drmOpenWithType(module, nullptr, DRM_NODE_PRIMARY));
-    if (m_fd)
+    CLog::Log(LOGERROR, "CDRMUtils::{} - drmGetDevices2 return an error: ({})", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
+
+  for (const auto device : devices)
+  {
+    for (int i = 0; i < DRM_NODE_MAX; i++)
     {
-      if(!GetResources())
+      if (device->available_nodes & 1 << i)
       {
-        continue;
-      }
+        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opening device: {}", __FUNCTION__, device->nodes[i]);
+        PrintDrmDeviceInfo(device);
 
-      if (needConnector)
-      {
-        if(!FindConnector())
-        {
+        close(m_fd);
+        m_fd = open(device->nodes[i], O_RDWR | O_CLOEXEC);
+        if (m_fd < 0)
           continue;
+
+        if (!GetResources())
+          continue;
+
+        if (needConnector)
+        {
+          if (!FindConnector())
+            continue;
+
+          drmModeFreeConnector(m_connector->connector);
+          m_connector->connector = nullptr;
+          FreeProperties(m_connector);
         }
 
-        drmModeFreeConnector(m_connector->connector);
-        m_connector->connector = nullptr;
-        FreeProperties(m_connector);
+        drmModeFreeResources(m_drm_resources);
+        m_drm_resources = nullptr;
+
+        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened device: {}", __FUNCTION__, device->nodes[i]);
+
+        const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
+        if (renderPath)
+        {
+          m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
+          if (m_renderFd != 0)
+            CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
+        }
+
+        drmFreeDevices(devices.data(), devices.size());
+        return true;
       }
-
-      drmModeFreeResources(m_drm_resources);
-      m_drm_resources = nullptr;
-
-      m_module = module;
-
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_fd), module);
-
-      m_renderFd.attach(drmOpenWithType(module, nullptr, DRM_NODE_RENDER));
-      if (m_renderFd)
-      {
-        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened render node: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_renderFd), module);
-      }
-
-      return true;
     }
   }
 
-  m_fd.reset();
-
+  drmFreeDevices(devices.data(), devices.size());
   return false;
 }
 
 bool CDRMUtils::InitDrm()
 {
-  if(m_fd)
-  {
-    /* caps need to be set before allocating connectors, encoders, crtcs, and planes */
-    auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
-    if (ret)
-    {
-      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set universal planes capability: {}", __FUNCTION__, strerror(errno));
-      return false;
-    }
+  if (m_fd < 0)
+    return false;
 
-    ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_STEREO_3D, 1);
-    if (ret)
-    {
-      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set stereo 3d capability: {}", __FUNCTION__, strerror(errno));
-      return false;
-    }
+  /* caps need to be set before allocating connectors, encoders, crtcs, and planes */
+  int ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set universal planes capability: {}",
+              __FUNCTION__, strerror(errno));
+    return false;
+  }
+
+  ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_STEREO_3D, 1);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set stereo 3d capability: {}", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
 
 #if defined(DRM_CLIENT_CAP_ASPECT_RATIO)
-    ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ASPECT_RATIO, 0);
-    if (ret != 0)
-    {
-      CLog::Log(LOGERROR, "CDRMUtils::{} - aspect ratio capability is not supported: {}", __FUNCTION__, strerror(errno));
-    }
+  ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ASPECT_RATIO, 0);
+  if (ret != 0)
+    CLog::Log(LOGERROR, "CDRMUtils::{} - aspect ratio capability is not supported: {}",
+              __FUNCTION__, strerror(errno));
 #endif
 
-    if(!GetResources())
-    {
-      return false;
-    }
+  if (!GetResources())
+    return false;
 
-    if(!FindConnector())
-    {
-      return false;
-    }
+  if (!FindConnector())
+    return false;
 
-    if (!FindEncoder())
-    {
-      return false;
-    }
+  if (!FindEncoder())
+    return false;
 
-    if (!FindCrtcs())
-    {
-      return false;
-    }
+  if (!FindCrtcs())
+    return false;
 
-    if(!FindPlanes())
-    {
-      return false;
-    }
-  }
+  if (!FindPlanes())
+    return false;
 
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;
 
-  if(!m_fd)
-  {
-    return false;
-  }
-
   if(!FindPreferredMode())
-  {
     return false;
-  }
 
-  auto ret = drmSetMaster(m_fd);
+  ret = drmSetMaster(m_fd);
   if (ret < 0)
   {
-    CLog::Log(LOGWARNING, "CDRMUtils::%s - failed to set drm master, will try to authorize instead: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGDEBUG,
+              "CDRMUtils::%s - failed to set drm master, will try to authorize instead: %s",
+              __FUNCTION__, strerror(errno));
 
     drm_magic_t magic;
 
@@ -776,8 +855,8 @@ void CDRMUtils::DestroyDrm()
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to drop drm master: %s", __FUNCTION__, strerror(errno));
   }
 
-  m_renderFd.reset();
-  m_fd.reset();
+  close(m_renderFd);
+  close(m_fd);
 
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;
