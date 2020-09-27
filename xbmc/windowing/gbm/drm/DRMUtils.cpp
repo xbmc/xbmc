@@ -11,21 +11,8 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-
-#include <errno.h>
-#include <sstream>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <EGL/egl.h>
-#include <drm_mode.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 using namespace KODI::WINDOWING::GBM;
 
@@ -34,20 +21,14 @@ namespace
 const std::string SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
 }
 
-CDRMUtils::CDRMUtils()
-  : m_connector(new connector)
-  , m_encoder(new encoder)
-  , m_video_plane(new plane)
-  , m_gui_plane(new plane)
-{
-}
+CDRMUtils::CDRMUtils() = default;
 
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
-  if (!CheckConnector(m_connector->connector->connector_id))
+  if (!m_connector->CheckConnector())
     return false;
 
-  m_mode = &m_connector->connector->modes[atoi(res.strId.c_str())];
+  m_mode = m_connector->GetModeForIndex(std::atoi(res.strId.c_str()));
   m_width = res.iWidth;
   m_height = res.iHeight;
 
@@ -161,195 +142,11 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   return fb;
 }
 
-bool CDRMUtils::GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object)
-{
-  drmModeObjectPropertiesPtr props = drmModeObjectGetProperties(fd, id, type);
-  if (!props)
-    return false;
-
-  object->id = id;
-  object->type = type;
-  object->props = props;
-  object->props_info = new drmModePropertyPtr[props->count_props];
-
-  for (uint32_t i = 0; i < props->count_props; i++)
-    object->props_info[i] = drmModeGetProperty(fd, props->props[i]);
-
-  return true;
-}
-
-void CDRMUtils::FreeProperties(struct drm_object *object)
-{
-  if (object->props_info)
-  {
-    for (uint32_t i = 0; i < object->props->count_props; i++)
-      drmModeFreeProperty(object->props_info[i]);
-
-    delete [] object->props_info;
-    object->props_info = nullptr;
-  }
-
-  drmModeFreeObjectProperties(object->props);
-  object->props = nullptr;
-  object->type = 0;
-  object->id = 0;
-}
-
-bool CDRMUtils::SupportsProperty(struct drm_object *object, const char *name)
-{
-  for (uint32_t i = 0; i < object->props->count_props; i++)
-    if (!strcmp(object->props_info[i]->name, name))
-      return true;
-
-  return false;
-}
-
-bool CDRMUtils::SupportsPropertyAndValue(struct drm_object* object,
-                                         const char* name,
-                                         uint64_t value)
-{
-  for (uint32_t i = 0; i < object->props->count_props; i++)
-  {
-    if (!StringUtils::EqualsNoCase(object->props_info[i]->name, name))
-      continue;
-
-    if (drm_property_type_is(object->props_info[i], DRM_MODE_PROP_ENUM) != 0)
-    {
-      for (int j = 0; j < object->props_info[i]->count_enums; j++)
-      {
-        if (object->props_info[i]->enums[j].value == value)
-          return true;
-      }
-    }
-
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} - property '{}' does not support value '{}'", __FUNCTION__,
-              name, value);
-    break;
-  }
-
-  return false;
-}
-
-uint32_t CDRMUtils::GetPropertyId(struct drm_object *object, const char *name)
-{
-  for (uint32_t i = 0; i < object->props->count_props; i++)
-    if (!strcmp(object->props_info[i]->name, name))
-      return object->props_info[i]->prop_id;
-
-  CLog::Log(LOGWARNING, "CDRMUtils::%s - could not find property %s", __FUNCTION__, name);
-  return 0;
-}
-
-bool CDRMUtils::GetResources()
-{
-  m_drm_resources = drmModeGetResources(m_fd);
-  if(!m_drm_resources)
-  {
-    return false;
-  }
-
-  return true;
-}
-
-bool CDRMUtils::FindConnector()
-{
-  for(auto i = 0; i < m_drm_resources->count_connectors; i++)
-  {
-    m_connector->connector = drmModeGetConnector(m_fd, m_drm_resources->connectors[i]);
-    if((m_connector->connector->encoder_id > 0) &&
-        m_connector->connector->connection == DRM_MODE_CONNECTED)
-    {
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - found connector: %d", __FUNCTION__,
-                                                                 m_connector->connector->connector_id);
-      break;
-    }
-    drmModeFreeConnector(m_connector->connector);
-    m_connector->connector = nullptr;
-  }
-
-  if(!m_connector->connector)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get connector: %s", __FUNCTION__, strerror(errno));
-    return false;
-  }
-
-  if (!GetProperties(m_fd, m_connector->connector->connector_id, DRM_MODE_OBJECT_CONNECTOR, m_connector))
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get connector %u properties: %s", __FUNCTION__, m_connector->connector->connector_id, strerror(errno));
-    return false;
-  }
-
-  return true;
-}
-
-bool CDRMUtils::FindEncoder()
-{
-  for(auto i = 0; i < m_drm_resources->count_encoders; i++)
-  {
-    m_encoder->encoder = drmModeGetEncoder(m_fd, m_drm_resources->encoders[i]);
-    if(m_encoder->encoder->encoder_id == m_connector->connector->encoder_id)
-    {
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - found encoder: %d", __FUNCTION__,
-                                                               m_encoder->encoder->encoder_id);
-      break;
-    }
-    drmModeFreeEncoder(m_encoder->encoder);
-    m_encoder->encoder = nullptr;
-  }
-
-  if(!m_encoder->encoder)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get encoder: %s", __FUNCTION__, strerror(errno));
-    return false;
-  }
-
-  return true;
-}
-
-bool CDRMUtils::FindCrtcs()
-{
-  for (auto i = 0; i < m_drm_resources->count_crtcs; i++)
-  {
-    struct crtc* object = nullptr;
-
-    if (m_encoder->encoder->possible_crtcs & (1 << i))
-    {
-      object = new struct crtc;
-      object->crtc = drmModeGetCrtc(m_fd, m_drm_resources->crtcs[i]);
-
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} - found possible crtc: {}", __FUNCTION__,
-                object->crtc->crtc_id);
-
-      if (!GetProperties(m_fd, object->crtc->crtc_id, DRM_MODE_OBJECT_CRTC, object))
-      {
-        CLog::Log(LOGERROR, "CDRMUtils::{} - could not get crtc {} properties: {}", __FUNCTION__,
-                  object->crtc->crtc_id, strerror(errno));
-        drmModeFreeCrtc(object->crtc);
-        delete object;
-        object = nullptr;
-      }
-
-      if (object && object->crtc->crtc_id == m_encoder->encoder->crtc_id)
-        m_orig_crtc = object;
-    }
-
-    m_crtcs.emplace_back(object);
-  }
-
-  if (m_crtcs.empty())
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::{} - could not get crtc: {}", __FUNCTION__, strerror(errno));
-    return false;
-  }
-
-  return true;
-}
-
 bool CDRMUtils::FindPreferredMode()
 {
-  for(auto i = 0, area = 0; i < m_connector->connector->count_modes; i++)
+  for (int i = 0, area = 0; i < m_connector->GetModesCount(); i++)
   {
-    drmModeModeInfo *current_mode = &m_connector->connector->modes[i];
+    drmModeModeInfo* current_mode = m_connector->GetModeForIndex(i);
 
     if(current_mode->type & DRM_MODE_TYPE_PREFERRED)
     {
@@ -381,207 +178,63 @@ bool CDRMUtils::FindPreferredMode()
   return true;
 }
 
-bool CDRMUtils::SupportsFormat(drmModePlanePtr plane, uint32_t format)
-{
-  for (uint32_t i = 0; i < plane->count_formats; i++)
-    if (plane->formats[i] == format)
-      return true;
-
-  return false;
-}
-
-drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_index, int type)
-{
-  for (uint32_t i = 0; i < resources->count_planes; i++)
-  {
-    drmModePlanePtr plane = drmModeGetPlane(m_fd, resources->planes[i]);
-
-    if (plane && plane->possible_crtcs & (1 << crtc_index))
-    {
-      drmModeObjectPropertiesPtr props = drmModeObjectGetProperties(m_fd, plane->plane_id, DRM_MODE_OBJECT_PLANE);
-
-      for (uint32_t j = 0; j < props->count_props; j++)
-      {
-        drmModePropertyPtr p = drmModeGetProperty(m_fd, props->props[j]);
-
-        if ((strcmp(p->name, "type") == 0) && (props->prop_values[j] != DRM_PLANE_TYPE_CURSOR))
-        {
-          switch (type)
-          {
-            case KODI_VIDEO_PLANE:
-            {
-              if (SupportsFormat(plane, DRM_FORMAT_NV12))
-              {
-                CLog::Log(LOGDEBUG, "CDRMUtils::%s - found video plane %u", __FUNCTION__, plane->plane_id);
-                drmModeFreeProperty(p);
-                drmModeFreeObjectProperties(props);
-                return plane;
-              }
-
-              break;
-            }
-            case KODI_GUI_PLANE:
-            {
-              uint32_t plane_id = 0;
-              if (m_video_plane->plane)
-                plane_id = m_video_plane->plane->plane_id;
-
-              if (plane->plane_id != plane_id &&
-                  (plane_id == 0 || SupportsFormat(plane, DRM_FORMAT_ARGB8888)) &&
-                  SupportsFormat(plane, DRM_FORMAT_XRGB8888))
-              {
-                CLog::Log(LOGDEBUG, "CDRMUtils::%s - found gui plane %u", __FUNCTION__, plane->plane_id);
-                drmModeFreeProperty(p);
-                drmModeFreeObjectProperties(props);
-                return plane;
-              }
-
-              break;
-            }
-          }
-        }
-
-        drmModeFreeProperty(p);
-      }
-
-      drmModeFreeObjectProperties(props);
-    }
-
-    drmModeFreePlane(plane);
-  }
-
-  CLog::Log(LOGWARNING, "CDRMUtils::{} - could not find {} plane for crtc index {}", __FUNCTION__,
-            (type == KODI_VIDEO_PLANE) ? "video" : "gui", crtc_index);
-  return nullptr;
-}
-
 bool CDRMUtils::FindPlanes()
 {
-  drmModePlaneResPtr plane_resources = drmModeGetPlaneResources(m_fd);
-  if (!plane_resources)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - drmModeGetPlaneResources failed: %s", __FUNCTION__,
-              strerror(errno));
-    return false;
-  }
-
-  drmModePlanePtr fallback = nullptr;
-
   for (size_t i = 0; i < m_crtcs.size(); i++)
   {
-    const auto crtc = m_crtcs[i];
+    const auto crtc = m_crtcs[i].get();
     if (!crtc)
       continue;
 
-    m_video_plane->plane = FindPlane(plane_resources, i, KODI_VIDEO_PLANE);
-    m_gui_plane->plane = FindPlane(plane_resources, i, KODI_GUI_PLANE);
+    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [this, &i](auto& plane) {
+      if (plane->GetPossibleCrtcs() & (1 << i))
+      {
+        return plane->SupportsFormat(DRM_FORMAT_NV12);
+      }
+      return false;
+    });
 
-    if (m_video_plane->plane && m_gui_plane->plane)
+    uint32_t videoPlaneId{0};
+
+    if (videoPlane != m_planes.end())
+      videoPlaneId = videoPlane->get()->GetPlaneId();
+
+    auto guiPlane =
+        std::find_if(m_planes.begin(), m_planes.end(), [this, &i, &videoPlaneId](auto& plane) {
+          if (plane->GetPossibleCrtcs() & (1 << i))
+          {
+            return (plane->GetPlaneId() != videoPlaneId &&
+                    (videoPlaneId == 0 || plane->SupportsFormat(DRM_FORMAT_ARGB8888)) &&
+                    plane->SupportsFormat(DRM_FORMAT_XRGB8888));
+          }
+          return false;
+        });
+
+    if (videoPlane->get() && guiPlane->get())
     {
       m_crtc = crtc;
+      m_video_plane = videoPlane->get();
+      m_gui_plane = guiPlane->get();
       break;
     }
 
-    if (m_gui_plane->plane)
+    if (guiPlane->get())
     {
-      if (!m_crtc && m_encoder->encoder->crtc_id == crtc->crtc->crtc_id)
+      if (!m_crtc && m_encoder->GetCrtcId() == crtc->GetCrtcId())
       {
         m_crtc = crtc;
-        fallback = m_gui_plane->plane;
+        m_gui_plane = guiPlane->get();
       }
-      else
-      {
-        drmModeFreePlane(m_gui_plane->plane);
-        m_gui_plane->plane = nullptr;
-      }
-    }
-
-    if (m_video_plane->plane)
-    {
-      drmModeFreePlane(m_video_plane->plane);
-      m_video_plane->plane = nullptr;
     }
   }
-
-  if (!m_gui_plane->plane)
-    m_gui_plane->plane = fallback;
-
-  drmModeFreePlaneResources(plane_resources);
 
   // video plane may not be available
-  if (m_video_plane->plane)
-  {
+  if (m_video_plane)
     CLog::Log(LOGDEBUG, "CDRMUtils::{} - using video plane {}", __FUNCTION__,
-              m_video_plane->plane->plane_id);
-
-    if (!GetProperties(m_fd, m_video_plane->plane->plane_id, DRM_MODE_OBJECT_PLANE, m_video_plane))
-    {
-      CLog::Log(LOGERROR, "CDRMUtils::%s - could not get video plane %u properties: %s", __FUNCTION__, m_video_plane->plane->plane_id, strerror(errno));
-      return false;
-    }
-
-    if (!FindModifiersForPlane(m_video_plane))
-    {
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the video plane",
-                __FUNCTION__);
-    }
-  }
+              m_video_plane->GetPlaneId());
 
   CLog::Log(LOGDEBUG, "CDRMUtils::{} - using gui plane {}", __FUNCTION__,
-            m_gui_plane->plane->plane_id);
-
-  // gui plane should always be available
-  if (!GetProperties(m_fd, m_gui_plane->plane->plane_id, DRM_MODE_OBJECT_PLANE, m_gui_plane))
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get gui plane %u properties: %s", __FUNCTION__, m_gui_plane->plane->plane_id, strerror(errno));
-    return false;
-  }
-
-  if (!FindModifiersForPlane(m_gui_plane))
-  {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the gui plane", __FUNCTION__);
-    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-  }
-
-  return true;
-}
-
-bool CDRMUtils::FindModifiersForPlane(struct plane *object)
-{
-  uint64_t blob_id = 0;
-
-  for (uint32_t i = 0; i < object->props->count_props; i++)
-  {
-    if (strcmp(object->props_info[i]->name, "IN_FORMATS") == 0)
-      blob_id = object->props->prop_values[i];
-  }
-
-  if (blob_id == 0)
-    return false;
-
-  drmModePropertyBlobPtr blob = drmModeGetPropertyBlob(m_fd, blob_id);
-  if (!blob)
-    return false;
-
-  drm_format_modifier_blob *header = static_cast<drm_format_modifier_blob*>(blob->data);
-  uint32_t *formats = reinterpret_cast<uint32_t*>(reinterpret_cast<char*>(header) + header->formats_offset);
-  drm_format_modifier *mod = reinterpret_cast<drm_format_modifier*>(reinterpret_cast<char*>(header) + header->modifiers_offset);
-
-  for (uint32_t i = 0; i < header->count_formats; i++)
-  {
-    std::vector<uint64_t> modifiers;
-    for (uint32_t j = 0; j < header->count_modifiers; j++)
-    {
-      if (mod[j].formats & 1ULL << i)
-        modifiers.emplace_back(mod[j].modifier);
-    }
-
-    object->modifiers_map.emplace(formats[i], modifiers);
-  }
-
-  if (blob)
-    drmModeFreePropertyBlob(blob);
+            m_gui_plane->GetPlaneId());
 
   return true;
 }
@@ -708,21 +361,21 @@ bool CDRMUtils::OpenDrm(bool needConnector)
         if (m_fd < 0)
           continue;
 
-        if (!GetResources())
-          continue;
-
         if (needConnector)
         {
-          if (!FindConnector())
+          auto resources = drmModeGetResources(m_fd);
+          if (!resources)
             continue;
 
-          drmModeFreeConnector(m_connector->connector);
-          m_connector->connector = nullptr;
-          FreeProperties(m_connector);
-        }
+          for (int i = 0; i < resources->count_connectors; i++)
+          {
+            auto connector = std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]);
+            if (connector->GetEncoderId() > 0 && connector->IsConnected())
+              break;
+          }
 
-        drmModeFreeResources(m_drm_resources);
-        m_drm_resources = nullptr;
+          drmModeFreeResources(resources);
+        }
 
         CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened device: {}", __FUNCTION__, device->nodes[i]);
 
@@ -773,8 +426,41 @@ bool CDRMUtils::InitDrm()
               __FUNCTION__, strerror(errno));
 #endif
 
-  if (!GetResources())
+  auto resources = drmModeGetResources(m_fd);
+  if (!resources)
     return false;
+
+  for (int i = 0; i < resources->count_connectors; i++)
+    m_connectors.emplace_back(std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]));
+
+  for (int i = 0; i < resources->count_encoders; i++)
+    m_encoders.emplace_back(std::make_unique<CDRMEncoder>(m_fd, resources->encoders[i]));
+
+  for (int i = 0; i < resources->count_crtcs; i++)
+    m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i]));
+
+  drmModeFreeResources(resources);
+
+  auto planeResources = drmModeGetPlaneResources(m_fd);
+  if (!planeResources)
+    return false;
+
+  for (uint32_t i = 0; i < planeResources->count_planes; i++)
+    m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
+
+  for (auto& plane : m_planes)
+  {
+    if (!plane->FindModifiers())
+    {
+      if (plane->SupportsFormat(DRM_FORMAT_ARGB8888))
+        plane->GetModifiersForFormat(DRM_FORMAT_ARGB8888)->emplace_back(DRM_FORMAT_MOD_LINEAR);
+
+      if (plane->SupportsFormat(DRM_FORMAT_XRGB8888))
+        plane->GetModifiersForFormat(DRM_FORMAT_XRGB8888)->emplace_back(DRM_FORMAT_MOD_LINEAR);
+    }
+  }
+
+  drmModeFreePlaneResources(planeResources);
 
   if (!FindConnector())
     return false;
@@ -782,16 +468,13 @@ bool CDRMUtils::InitDrm()
   if (!FindEncoder())
     return false;
 
-  if (!FindCrtcs())
+  if (!FindCrtc())
     return false;
 
   if (!FindPlanes())
     return false;
 
-  drmModeFreeResources(m_drm_resources);
-  m_drm_resources = nullptr;
-
-  if(!FindPreferredMode())
+  if (!FindPreferredMode())
     return false;
 
   ret = drmSetMaster(m_fd);
@@ -823,6 +506,47 @@ bool CDRMUtils::InitDrm()
   return true;
 }
 
+bool CDRMUtils::FindConnector()
+{
+  auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [this](auto& connector) {
+    return connector->GetEncoderId() > 0 && connector->IsConnected();
+  });
+  if (connector == m_connectors.end())
+    return false;
+
+  m_connector = connector->get();
+  return true;
+}
+
+bool CDRMUtils::FindEncoder()
+{
+  auto encoder = std::find_if(m_encoders.begin(), m_encoders.end(), [this](auto& encoder) {
+    return encoder->GetEncoderId() == m_connector->GetEncoderId();
+  });
+  if (encoder == m_encoders.end())
+    return false;
+
+  m_encoder = encoder->get();
+  return true;
+}
+
+bool CDRMUtils::FindCrtc()
+{
+  for (size_t i = 0; i < m_crtcs.size(); i++)
+  {
+    if (m_encoder->GetPossibleCrtcs() & (1 << i))
+    {
+      if (m_crtcs[i]->GetCrtcId() == m_encoder->GetCrtcId())
+      {
+        m_orig_crtc = m_crtcs[i].get();
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 bool CDRMUtils::RestoreOriginalMode()
 {
   if(!m_orig_crtc)
@@ -830,9 +554,9 @@ bool CDRMUtils::RestoreOriginalMode()
     return false;
   }
 
-  auto ret = drmModeSetCrtc(m_fd, m_orig_crtc->crtc->crtc_id, m_orig_crtc->crtc->buffer_id,
-                            m_orig_crtc->crtc->x, m_orig_crtc->crtc->y,
-                            &m_connector->connector->connector_id, 1, &m_orig_crtc->crtc->mode);
+  auto ret = drmModeSetCrtc(m_fd, m_orig_crtc->GetCrtcId(), m_orig_crtc->GetBufferId(),
+                            m_orig_crtc->GetX(), m_orig_crtc->GetY(), m_connector->GetConnectorId(),
+                            1, m_orig_crtc->GetMode());
 
   if(ret)
   {
@@ -855,39 +579,11 @@ void CDRMUtils::DestroyDrm()
   close(m_renderFd);
   close(m_fd);
 
-  drmModeFreeResources(m_drm_resources);
-  m_drm_resources = nullptr;
-
-  drmModeFreeConnector(m_connector->connector);
-  FreeProperties(m_connector);
-  delete m_connector;
   m_connector = nullptr;
-
-  drmModeFreeEncoder(m_encoder->encoder);
-  delete m_encoder;
   m_encoder = nullptr;
-
-  for (auto crtc : m_crtcs)
-  {
-    if (!crtc)
-      continue;
-    drmModeFreeCrtc(crtc->crtc);
-    FreeProperties(crtc);
-    delete crtc;
-    crtc = nullptr;
-  }
-
   m_crtc = nullptr;
   m_orig_crtc = nullptr;
-
-  drmModeFreePlane(m_video_plane->plane);
-  FreeProperties(m_video_plane);
-  delete m_video_plane;
   m_video_plane = nullptr;
-
-  drmModeFreePlane(m_gui_plane->plane);
-  FreeProperties(m_gui_plane);
-  delete m_gui_plane;
   m_gui_plane = nullptr;
 }
 
@@ -957,11 +653,11 @@ RESOLUTION_INFO CDRMUtils::GetCurrentMode()
 std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 {
   std::vector<RESOLUTION_INFO> resolutions;
-  resolutions.reserve(m_connector->connector->count_modes);
+  resolutions.reserve(m_connector->GetModesCount());
 
-  for(auto i = 0; i < m_connector->connector->count_modes; i++)
+  for (auto i = 0; i < m_connector->GetModesCount(); i++)
   {
-    RESOLUTION_INFO res = GetResolutionInfo(&m_connector->connector->modes[i]);
+    RESOLUTION_INFO res = GetResolutionInfo(m_connector->GetModeForIndex(i));
     res.strId = std::to_string(i);
     resolutions.push_back(res);
   }
@@ -979,27 +675,6 @@ uint32_t CDRMUtils::FourCCWithoutAlpha(uint32_t fourcc)
   return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('X');
 }
 
-bool CDRMUtils::CheckConnector(int connector_id)
-{
-  struct connector connectorcheck;
-  unsigned retryCnt = 7;
-
-  connectorcheck.connector = drmModeGetConnector(m_fd, connector_id);
-  while (connectorcheck.connector->connection != DRM_MODE_CONNECTED  && retryCnt > 0)
-  {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - connector is disconnected", __FUNCTION__);
-    retryCnt--;
-    KODI::TIME::Sleep(1000);
-    drmModeFreeConnector(connectorcheck.connector);
-    connectorcheck.connector = drmModeGetConnector(m_fd, connector_id);
-  }
-
-  int finalConnectionState = connectorcheck.connector->connection;
-  drmModeFreeConnector(connectorcheck.connector);
-
-  return finalConnectionState == DRM_MODE_CONNECTED;
-}
-
 std::string CDRMUtils::FourCCToString(uint32_t fourcc)
 {
   std::stringstream ss;
@@ -1009,56 +684,4 @@ std::string CDRMUtils::FourCCToString(uint32_t fourcc)
   ss << static_cast<char>((fourcc & 0xFF000000) >> 24);
 
   return ss.str();
-}
-
-bool plane::SupportsFormat(uint32_t format)
-{
-  for (uint32_t i = 0; i < plane->count_formats; i++)
-    if (plane->formats[i] == format)
-      return true;
-
-  return false;
-}
-
-bool plane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
-{
-  /*
-   * Some broadcom modifiers have parameters encoded which need to be
-   * masked out before comparing with reported modifiers.
-   */
-  if (modifier >> 56 == DRM_FORMAT_MOD_VENDOR_BROADCOM)
-    modifier = fourcc_mod_broadcom_mod(modifier);
-
-  if (modifier == DRM_FORMAT_MOD_LINEAR)
-  {
-    if (!SupportsFormat(format))
-    {
-      CLog::Log(LOGDEBUG, "plane::{} - format not supported: {}", __FUNCTION__,
-                CDRMUtils::FourCCToString(format));
-      return false;
-    }
-  }
-  else
-  {
-    auto formatModifiers = &modifiers_map[format];
-    if (formatModifiers->empty())
-    {
-      CLog::Log(LOGDEBUG, "plane::{} - format not supported: {}", __FUNCTION__,
-                CDRMUtils::FourCCToString(format));
-      return false;
-    }
-
-    auto formatModifier = std::find(formatModifiers->begin(), formatModifiers->end(), modifier);
-    if (formatModifier == formatModifiers->end())
-    {
-      CLog::Log(LOGDEBUG, "plane::{} - modifier ({:#x}) not supported for format ({})",
-                __FUNCTION__, modifier, CDRMUtils::FourCCToString(format));
-      return false;
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "plane::{} - found plane format ({}) and modifier ({:#x})", __FUNCTION__,
-            CDRMUtils::FourCCToString(format), modifier);
-
-  return true;
 }

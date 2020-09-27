@@ -49,7 +49,7 @@ namespace WINDOWING
 {
 namespace GBM
 {
-class CDRMUtils;
+class CDRMAtomic;
 }
 } // namespace WINDOWING
 } // namespace KODI
@@ -59,7 +59,7 @@ class CVideoBufferDRMPRIME;
 class CVideoLayerBridgeDRMPRIME : public KODI::WINDOWING::GBM::CVideoLayerBridge
 {
 public:
-  CVideoLayerBridgeDRMPRIME(std::shared_ptr<KODI::WINDOWING::GBM::CDRMUtils> drm);
+  CVideoLayerBridgeDRMPRIME(std::shared_ptr<KODI::WINDOWING::GBM::CDRMAtomic> drm);
   ~CVideoLayerBridgeDRMPRIME() override;
   void Disable() override;
 
@@ -68,7 +68,7 @@ public:
   virtual void UpdateVideoPlane();
 
 protected:
-  std::shared_ptr<KODI::WINDOWING::GBM::CDRMUtils> m_DRM;
+  std::shared_ptr<KODI::WINDOWING::GBM::CDRMAtomic> m_DRM;
 
 private:
   void Acquire(CVideoBufferDRMPRIME* buffer);

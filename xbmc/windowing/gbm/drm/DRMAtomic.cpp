@@ -53,10 +53,10 @@ uint32_t CDRMAtomic::GetScalingFactor(uint32_t srcWidth,
   return factor_W;
 }
 
-bool CDRMAtomic::SetScalingFilter(struct drm_object* object, const char* name, const char* type)
+bool CDRMAtomic::SetScalingFilter(struct CDRMObject* object, const char* name, const char* type)
 {
   uint32_t filter_type = GetScalingFilterType(type);
-  if (SupportsPropertyAndValue(object, name, filter_type))
+  if (object->SupportsPropertyAndValue(name, filter_type))
   {
     if (AddProperty(object, name, filter_type))
     {
@@ -82,7 +82,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
-    if (!AddProperty(m_connector, "CRTC_ID", m_crtc->crtc->crtc_id))
+    if (!AddProperty(m_connector, "CRTC_ID", m_crtc->GetCrtcId()))
     {
       return;
     }
@@ -92,7 +92,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       return;
     }
 
-    if (m_active && m_orig_crtc && m_orig_crtc->crtc->crtc_id != m_crtc->crtc->crtc_id)
+    if (m_active && m_orig_crtc && m_orig_crtc->GetCrtcId() != m_crtc->GetCrtcId())
     {
       // if using a different CRTC than the original, disable original to avoid EINVAL
       if (!AddProperty(m_orig_crtc, "MODE_ID", 0))
@@ -119,7 +119,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   if (rendered)
   {
     AddProperty(m_gui_plane, "FB_ID", fb_id);
-    AddProperty(m_gui_plane, "CRTC_ID", m_crtc->crtc->crtc_id);
+    AddProperty(m_gui_plane, "CRTC_ID", m_crtc->GetCrtcId());
     AddProperty(m_gui_plane, "SRC_X", 0);
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
@@ -220,13 +220,15 @@ bool CDRMAtomic::InitDrm()
     return false;
   }
 
-  if (!CDRMAtomic::ResetPlanes())
+  for (auto& plane : m_planes)
   {
-    CLog::Log(LOGDEBUG, "CDRMAtomic::%s - failed to reset planes", __FUNCTION__);
+    AddProperty(plane.get(), "FB_ID", 0);
+    AddProperty(plane.get(), "CRTC_ID", 0);
   }
 
   CLog::Log(LOGDEBUG, "CDRMAtomic::%s - initialized atomic DRM", __FUNCTION__);
-  if (SupportsProperty(m_gui_plane, "SCALING_FILTER"))
+
+  if (m_gui_plane->SupportsProperty("SCALING_FILTER"))
   {
     const std::shared_ptr<CSettings> settings =
         CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -259,53 +261,15 @@ bool CDRMAtomic::SetActive(bool active)
   return true;
 }
 
-bool CDRMAtomic::AddProperty(struct drm_object *object, const char *name, uint64_t value)
+bool CDRMAtomic::AddProperty(CDRMObject* object, const char* name, uint64_t value)
 {
-  uint32_t property_id = this->GetPropertyId(object, name);
-  if (!property_id)
+  uint32_t propId = object->GetPropertyId(name);
+  if (propId == 0)
     return false;
 
-  if (drmModeAtomicAddProperty(m_req, object->id, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - could not add property %s", __FUNCTION__, name);
+  int ret = drmModeAtomicAddProperty(m_req, object->GetId(), propId, value);
+  if (ret < 0)
     return false;
-  }
-
-  return true;
-}
-
-bool CDRMAtomic::ResetPlanes()
-{
-  drmModePlaneResPtr plane_resources = drmModeGetPlaneResources(m_fd);
-  if (!plane_resources)
-  {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - drmModeGetPlaneResources failed: %s", __FUNCTION__, strerror(errno));
-    return false;
-  }
-
-  for (uint32_t i = 0; i < plane_resources->count_planes; i++)
-  {
-    drmModePlanePtr plane = drmModeGetPlane(m_fd, plane_resources->planes[i]);
-    if (!plane)
-      continue;
-
-    drm_object object;
-
-    if (!CDRMUtils::GetProperties(m_fd, plane->plane_id, DRM_MODE_OBJECT_PLANE, &object))
-    {
-      CLog::Log(LOGERROR, "CDRMAtomic::%s - could not get plane %u properties: %s", __FUNCTION__, plane->plane_id, strerror(errno));\
-      drmModeFreePlane(plane);
-      continue;
-    }
-
-    AddProperty(&object, "FB_ID", 0);
-    AddProperty(&object, "CRTC_ID", 0);
-
-    CDRMUtils::FreeProperties(&object);
-    drmModeFreePlane(plane);
-  }
-
-  drmModeFreePlaneResources(plane_resources);
 
   return true;
 }

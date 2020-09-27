@@ -32,14 +32,8 @@ bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)
 {
   struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
 
-  auto ret = drmModeSetCrtc(m_fd,
-                            m_crtc->crtc->crtc_id,
-                            drm_fb->fb_id,
-                            0,
-                            0,
-                            &m_connector->connector->connector_id,
-                            1,
-                            m_mode);
+  auto ret = drmModeSetCrtc(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, 0, 0,
+                            m_connector->GetConnectorId(), 1, m_mode);
 
   if(ret < 0)
   {
@@ -124,10 +118,7 @@ bool CDRMLegacy::QueueFlip(struct gbm_bo *bo)
 {
   struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
 
-  auto ret = drmModePageFlip(m_fd,
-                             m_crtc->crtc->crtc_id,
-                             drm_fb->fb_id,
-                             DRM_MODE_PAGE_FLIP_EVENT,
+  auto ret = drmModePageFlip(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, DRM_MODE_PAGE_FLIP_EVENT,
                              &flip_happening);
 
   if(ret)
@@ -166,24 +157,9 @@ bool CDRMLegacy::InitDrm()
 
 bool CDRMLegacy::SetActive(bool active)
 {
-  if (!SetProperty(m_connector, "DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
+  if (!m_connector->SetProperty("DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
   {
     CLog::Log(LOGDEBUG, "CDRMLegacy::%s - failed to set DPMS property");
-    return false;
-  }
-
-  return true;
-}
-
-bool CDRMLegacy::SetProperty(struct drm_object *object, const char *name, uint64_t value)
-{
-  uint32_t property_id = this->GetPropertyId(object, name);
-  if (!property_id)
-    return false;
-
-  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMLegacy::%s - could not set property %s", __FUNCTION__, name);
     return false;
   }
 
