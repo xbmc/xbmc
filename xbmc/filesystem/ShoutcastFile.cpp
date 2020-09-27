@@ -60,6 +60,18 @@ int64_t CShoutcastFile::GetLength()
   return 0;
 }
 
+std::string CShoutcastFile::ToUTF8(const std::string& str)
+{
+  std::string ret = str;
+
+  if (m_fileCharset.empty())
+    g_charsetConverter.unknownToUTF8(ret);
+  else
+    g_charsetConverter.ToUtf8(m_fileCharset, str, ret);
+
+  return ret;
+}
+
 bool CShoutcastFile::Open(const CURL& url)
 {
   CURL url2(url);
@@ -75,20 +87,26 @@ bool CShoutcastFile::Open(const CURL& url)
   bool result = m_file.Open(url2);
   if (result)
   {
+    m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
+
     icyTitle = m_file.GetHttpHeader().GetValue("icy-name");
     if (icyTitle.empty())
       icyTitle = m_file.GetHttpHeader().GetValue("ice-name"); // icecast
     if (icyTitle == "This is my server name") // Handle badly set up servers
       icyTitle.clear();
 
+    icyTitle = ToUTF8(icyTitle);
+
     icyGenre = m_file.GetHttpHeader().GetValue("icy-genre");
     if (icyGenre.empty())
       icyGenre = m_file.GetHttpHeader().GetValue("ice-genre"); // icecast
+
+    icyGenre = ToUTF8(icyGenre);
   }
-  m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
   m_metaint = atoi(m_file.GetHttpHeader().GetValue("icy-metaint").c_str());
   if (!m_metaint)
     m_metaint = -1;
+
   m_buffer = new char[16*255];
 
   if (result)
@@ -157,16 +175,7 @@ void CShoutcastFile::Close()
 
 bool CShoutcastFile::ExtractTagInfo(const char* buf)
 {
-  std::string strBuffer = buf;
-
-  if (!m_fileCharset.empty())
-  {
-    std::string converted;
-    g_charsetConverter.ToUtf8(m_fileCharset, strBuffer, converted);
-    strBuffer = converted;
-  }
-  else
-    g_charsetConverter.unknownToUTF8(strBuffer);
+  std::string strBuffer = ToUTF8(buf);
 
   bool result=false;
 
