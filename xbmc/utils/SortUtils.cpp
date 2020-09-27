@@ -965,6 +965,11 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
     items.erase(items.begin(), items.begin() + limitStart);
     limitEnd -= limitStart;
   }
+  else if (limitStart > 0)
+  {
+    items.erase(items.begin(), items.end());
+    limitEnd = 0;
+  }
   if (limitEnd > 0 && (size_t)limitEnd < items.size())
     items.erase(items.begin() + limitEnd, items.end());
 }
@@ -1003,6 +1008,11 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
   {
     items.erase(items.begin(), items.begin() + limitStart);
     limitEnd -= limitStart;
+  }
+  else if (limitStart > 0)
+  {
+    items.erase(items.begin(), items.end());
+    limitEnd = 0;
   }
   if (limitEnd > 0 && (size_t)limitEnd < items.size())
     items.erase(items.begin() + limitEnd, items.end());
