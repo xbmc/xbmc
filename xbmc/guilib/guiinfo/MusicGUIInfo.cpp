@@ -278,7 +278,10 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         break;
       case MUSICPLAYER_STATIONNAME:
-        value = tag->GetStationName();
+        // This property can be used for example by addons to enforce/override the station name.
+        value = item->GetProperty("StationName").asString();
+        if (value.empty())
+          value = tag->GetStationName();
         return true;
 
       /////////////////////////////////////////////////////////////////////////////////////////////

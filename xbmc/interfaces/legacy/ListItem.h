@@ -878,6 +878,7 @@ namespace XBMCAddon
       /// | SpecialSort   | string - "top", "bottom" - The item will remain at the top or bottom of the current list
       /// | StartOffset   | float (60.0) - Set the offset in seconds at which to start playback of the item
       /// | StartPercent  | float (15.0) - Set the percentage at which to start playback of the item
+      /// | StationName   | string ("My Station Name") - Used to enforce/override MusicPlayer.StationName infolabel from addons (e.g. in radio addons)
       /// | TotalTime     | float (7848.0) - Set the total time of the item in seconds
       ///
       ///-----------------------------------------------------------------------
