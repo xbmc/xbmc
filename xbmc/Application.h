@@ -391,7 +391,6 @@ protected:
   bool m_ignoreSkinSettingChanges = false;
 
   bool m_saveSkinOnUnloading = true;
-  bool m_autoExecScriptExecuted = false;
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;

@@ -4139,19 +4139,6 @@ void CApplication::Process()
   // (this can only be done after CServiceBroker::GetGUI()->GetWindowManager().Render())
   CApplicationMessenger::GetInstance().ProcessWindowMessages();
 
-  if (m_autoExecScriptExecuted)
-  {
-    m_autoExecScriptExecuted = false;
-
-    // autoexec.py - profile
-    std::string strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
-
-    if (XFILE::CFile::Exists(strAutoExecPy))
-      CScriptInvocationManager::GetInstance().ExecuteAsync(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "no profile autoexec.py (%s) found, skipping", strAutoExecPy.c_str());
-  }
-
   // handle any active scripts
 
   {
@@ -4936,9 +4923,6 @@ void CApplication::SetLoggingIn(bool switchingProfiles)
   // would therefore write the previous skin's settings into the new profile
   // instead of into the previous one
   m_saveSkinOnUnloading = !switchingProfiles;
-
-  // make sure that the autoexec.py script is executed after logging in
-  m_autoExecScriptExecuted = true;
 }
 
 void CApplication::CloseNetworkShares()
