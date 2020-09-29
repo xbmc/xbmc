@@ -110,7 +110,16 @@ protected:
   void LoadDiffuseImage();
   bool AllocateOnDemand();
   bool UpdateAnimFrame(unsigned int currentTime);
-  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
+  void Render(float left,
+              float top,
+              float right,
+              float bottom,
+              float u1,
+              float v1,
+              float u2,
+              float v2,
+              float u3,
+              float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
   void ResetAnimState();
 
