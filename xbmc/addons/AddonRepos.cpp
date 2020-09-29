@@ -21,6 +21,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <vector>
 
 using namespace ADDON;
@@ -493,9 +494,31 @@ bool CAddonRepos::FindDependencyByParentRepo(const std::string& dependsId,
 void CAddonRepos::BuildCompatibleVersionsList(
     std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const
 {
+  std::vector<std::shared_ptr<IAddon>> officialVersions;
+  std::vector<std::shared_ptr<IAddon>> privateVersions;
+
   for (const auto& addon : m_allAddons)
   {
     if (m_addonMgr.IsCompatible(*addon))
-      compatibleVersions.emplace_back(addon);
+    {
+      if (IsFromOfficialRepo(addon, CheckAddonPath::NO))
+      {
+        officialVersions.emplace_back(addon);
+      }
+      else
+      {
+        privateVersions.emplace_back(addon);
+      }
+    }
   }
+
+  auto comparator = [](const std::shared_ptr<IAddon>& a, const std::shared_ptr<IAddon>& b) {
+    return (a->Version() > b->Version());
+  };
+
+  std::sort(officialVersions.begin(), officialVersions.end(), comparator);
+  std::sort(privateVersions.begin(), privateVersions.end(), comparator);
+
+  compatibleVersions = officialVersions;
+  std::copy(privateVersions.begin(), privateVersions.end(), back_inserter(compatibleVersions));
 }

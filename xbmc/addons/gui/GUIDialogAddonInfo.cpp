@@ -230,8 +230,6 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
   dialog->SetHeading(CVariant{21338});
   dialog->SetUseDetails(true);
 
-  std::sort(versions.begin(), versions.end(), std::greater<std::pair<AddonVersion, std::string>>());
-
   for (const auto& versionInfo : versions)
   {
     CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339).c_str(),
