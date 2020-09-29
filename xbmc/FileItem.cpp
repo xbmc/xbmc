@@ -1674,30 +1674,68 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
   FillInMimeType(false);
 }
 
-void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
+namespace
 {
-  if (!music.GetTitle().empty())
-    SetLabel(music.GetTitle());
-  if (!music.GetURL().empty())
-    m_strPath = music.GetURL();
-  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
-
-  static const std::string ORIGINAL_THUMB = "OriginalThumb";
-  const std::string thumb = music.GetStationArt();
-  if (!thumb.empty())
+class CPropertySaveHelper
+{
+public:
+  CPropertySaveHelper(CFileItem& item, const std::string& property, const std::string& value)
+    : m_item(item), m_property(property), m_value(value)
   {
-    // Overwrite whatever thumb we have; remember what we had originally.
-    if (!HasProperty(ORIGINAL_THUMB))
-      SetProperty(ORIGINAL_THUMB, GetArt("thumb"));
+  }
 
-    SetArt("thumb", music.GetStationArt());
-  }
-  else if (HasProperty(ORIGINAL_THUMB))
+  bool NeedsSave() const { return !m_value.empty() || m_item.HasProperty(m_property); }
+
+  std::string GetValueToSave(const std::string& currentValue) const
   {
-    // Restore original thumb
-    SetArt("thumb", GetProperty(ORIGINAL_THUMB).asString());
-    ClearProperty(ORIGINAL_THUMB);
+    std::string value;
+
+    if (!m_value.empty())
+    {
+      // Overwrite whatever we have; remember what we had originally.
+      if (!m_item.HasProperty(m_property))
+        m_item.SetProperty(m_property, currentValue);
+
+      value = m_value;
+    }
+    else if (m_item.HasProperty(m_property))
+    {
+      // Restore original value
+      value = m_item.GetProperty(m_property).asString();
+      m_item.ClearProperty(m_property);
+    }
+
+    return value;
   }
+
+private:
+  CFileItem& m_item;
+  const std::string m_property;
+  const std::string m_value;
+};
+} // unnamed namespace
+
+void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& music)
+{
+  const std::string path = GetPath();
+  if (path.empty())
+  {
+    SetPath(music.GetURL());
+  }
+  else
+  {
+    const CPropertySaveHelper dynpath(*this, "OriginalDynPath", music.GetURL());
+    if (dynpath.NeedsSave())
+      SetDynPath(dynpath.GetValueToSave(m_strDynPath));
+  }
+
+  const CPropertySaveHelper label(*this, "OriginalLabel", music.GetTitle());
+  if (label.NeedsSave())
+    SetLabel(label.GetValueToSave(GetLabel()));
+
+  const CPropertySaveHelper thumb(*this, "OriginalThumb", music.GetStationArt());
+  if (thumb.NeedsSave())
+    SetArt("thumb", thumb.GetValueToSave(GetArt("thumb")));
 
   *GetMusicInfoTag() = music;
   FillInDefaultIcon();
