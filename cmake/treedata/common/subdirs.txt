@@ -33,6 +33,7 @@ xbmc/guilib                                     guilib
 xbmc/guilib/guiinfo                             guilib_guiinfo
 xbmc/input                                      input
 xbmc/input/actions                              input/actions
+xbmc/input/button                               input/button
 xbmc/input/joysticks                            input/joysticks
 xbmc/input/joysticks/dialogs                    input/joysticks/dialogs
 xbmc/input/joysticks/generic                    input/joysticks/generic

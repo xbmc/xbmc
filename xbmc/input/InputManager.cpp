@@ -438,8 +438,8 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     } // case
     case XBMC_BUTTON:
     {
-      CKey key(newEvent.keybutton.button, newEvent.keybutton.holdtime);
-      HandleKey(key);
+      HandleKey(
+          m_buttonStat.TranslateKey(CKey(newEvent.keybutton.button, newEvent.keybutton.holdtime)));
       break;
     }
   } // switch
