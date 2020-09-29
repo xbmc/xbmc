@@ -76,12 +76,12 @@ void COSXStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
         {
           if (kCFBooleanFalse == CFDictionaryGetValue(details, kDADiskDescriptionMediaRemovableKey))
           {
-            CMediaSource share;
+            CMediaSource sharesrc;
 
-            share.strPath = mountpoint;
-            Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
-            share.m_ignore = true;
-            localDrives.push_back(share);
+            sharesrc.strPath = mountpoint;
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), sharesrc.strName);
+            sharesrc.m_ignore = true;
+            localDrives.push_back(sharesrc);
           }
           CFRelease(details);
         }
