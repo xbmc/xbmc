@@ -318,11 +318,12 @@
 		<value>$INFO[ListItem.PictureDateTime]</value>
 	</variable>
 	<variable name="NowPlayingBreadcrumbsVar">
-  		<value condition="MusicPlayer.Content(livetv) + Player.HasAudio">$INFO[MusicPlayer.Title]</value> 
+		<value condition="MusicPlayer.Content(livetv) + Player.HasAudio">$INFO[MusicPlayer.Artist,, - ]$INFO[MusicPlayer.Title]</value>
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.Title]</value>
 		<value condition="VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.TVShowTitle]$INFO[VideoPlayer.Year, (,)]</value>
 		<value condition="!VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, (,)]</value>
 		<value condition="MusicPartyMode.Enabled">$LOCALIZE[589]</value>
+		<value condition="!String.IsEmpty(MusicPlayer.Station)">$INFO[MusicPlayer.Station]</value>
 		<value>$LOCALIZE[31000]...</value>
 	</variable>
 	<variable name="OSDSubLabelVar">

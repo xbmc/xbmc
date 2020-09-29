@@ -83,6 +83,8 @@ public:
   int GetNoOfChannels() const;
   int GetSampleRate() const;
   const std::string& GetAlbumReleaseStatus() const;
+  const std::string& GetStationName() const;
+  const std::string& GetStationArt() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -153,6 +155,8 @@ public:
   void SetNoOfChannels(int channels);
   void SetSampleRate(int samplerate);
   void SetAlbumReleaseStatus(const std::string& strReleaseStatus);
+  void SetStationName(const std::string& strStationName); // name of online radio station
+  void SetStationArt(const std::string& strStationArt);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -249,6 +253,8 @@ protected:
   int m_samplerate;
   int m_channels;
   int m_bitrate;
+  std::string m_stationName;
+  std::string m_stationArt; // Used to fetch thumb URL for Shoutcasts
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

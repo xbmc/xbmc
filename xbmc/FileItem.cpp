@@ -141,16 +141,14 @@ void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannel>& channel, co
       musictag->SetGenre(tag->Genre());
       musictag->SetDuration(tag->GetDuration());
     }
-    else
+    else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
     {
-      musictag->SetTitle(channel->ChannelName()); // can be overwritten by PVRGUIInfo
+      musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
     }
+
     musictag->SetURL(channel->Path());
-    musictag->SetArtist(channel->ChannelName());
-    musictag->SetAlbumArtist(channel->ChannelName());
     musictag->SetLoaded(true);
-    musictag->SetComment("");
-    musictag->SetLyrics("");
   }
 }
 
@@ -164,20 +162,15 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   SetLabel(GetEpgTagTitle(tag));
   m_dateTime = tag->StartAsLocalTime();
 
+  const std::shared_ptr<CPVRChannel> channel =
+      CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+
   if (!tag->Icon().empty())
     SetArt("icon", tag->Icon());
-  else
-  {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
-    if (channel)
-    {
-      if (!channel->IconPath().empty())
-        SetArt("icon", channel->IconPath());
+  else if (channel && !channel->IconPath().empty())
+    SetArt("icon", channel->IconPath());
 
-      FillMusicInfoTag(channel, tag);
-    }
-  }
-
+  FillMusicInfoTag(channel, tag);
   FillInMimeType(false);
 }
 
@@ -1681,13 +1674,68 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
   FillInMimeType(false);
 }
 
-void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
+namespace
 {
-  if (!music.GetTitle().empty())
-    SetLabel(music.GetTitle());
-  if (!music.GetURL().empty())
-    m_strPath = music.GetURL();
-  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
+class CPropertySaveHelper
+{
+public:
+  CPropertySaveHelper(CFileItem& item, const std::string& property, const std::string& value)
+    : m_item(item), m_property(property), m_value(value)
+  {
+  }
+
+  bool NeedsSave() const { return !m_value.empty() || m_item.HasProperty(m_property); }
+
+  std::string GetValueToSave(const std::string& currentValue) const
+  {
+    std::string value;
+
+    if (!m_value.empty())
+    {
+      // Overwrite whatever we have; remember what we had originally.
+      if (!m_item.HasProperty(m_property))
+        m_item.SetProperty(m_property, currentValue);
+
+      value = m_value;
+    }
+    else if (m_item.HasProperty(m_property))
+    {
+      // Restore original value
+      value = m_item.GetProperty(m_property).asString();
+      m_item.ClearProperty(m_property);
+    }
+
+    return value;
+  }
+
+private:
+  CFileItem& m_item;
+  const std::string m_property;
+  const std::string m_value;
+};
+} // unnamed namespace
+
+void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& music)
+{
+  const std::string path = GetPath();
+  if (path.empty())
+  {
+    SetPath(music.GetURL());
+  }
+  else
+  {
+    const CPropertySaveHelper dynpath(*this, "OriginalDynPath", music.GetURL());
+    if (dynpath.NeedsSave())
+      SetDynPath(dynpath.GetValueToSave(m_strDynPath));
+  }
+
+  const CPropertySaveHelper label(*this, "OriginalLabel", music.GetTitle());
+  if (label.NeedsSave())
+    SetLabel(label.GetValueToSave(GetLabel()));
+
+  const CPropertySaveHelper thumb(*this, "OriginalThumb", music.GetStationArt());
+  if (thumb.NeedsSave())
+    SetArt("thumb", thumb.GetValueToSave(GetArt("thumb")));
 
   *GetMusicInfoTag() = music;
   FillInDefaultIcon();

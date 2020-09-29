@@ -14,8 +14,16 @@
 
 #include "CurlFile.h"
 #include "IFile.h"
-#include "music/tags/MusicInfoTag.h"
 #include "threads/Thread.h"
+
+#include <memory>
+#include <queue>
+#include <utility>
+
+namespace MUSIC_INFO
+{
+class CMusicInfoTag;
+}
 
 namespace XFILE
 {
@@ -42,18 +50,23 @@ protected:
   bool ExtractTagInfo(const char* buf);
   void ReadTruncated(char* buf2, int size);
 
+private:
+  std::string ToUTF8(const std::string& str);
+
   CCurlFile m_file;
   std::string m_fileCharset;
   int m_metaint;
   int m_discarded; // data used for tags
   int m_currint;
   char* m_buffer; // buffer used for tags
-  MUSIC_INFO::CMusicInfoTag m_tag;
+  std::string m_title;
 
   CFileCache* m_cacheReader;
   CEvent m_tagChange;
   CCriticalSection m_tagSection;
-  int64_t m_tagPos;
+  using TagInfo = std::pair<int64_t, std::shared_ptr<MUSIC_INFO::CMusicInfoTag>>;
+  std::queue<TagInfo> m_tags; // tagpos, tag
+  std::shared_ptr<MUSIC_INFO::CMusicInfoTag> m_masterTag;
 };
 }
 
