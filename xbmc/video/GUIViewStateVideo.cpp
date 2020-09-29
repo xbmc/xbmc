@@ -540,30 +540,21 @@ void CGUIViewStateVideoTVShows::SaveViewState()
 
 CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
-  if (false)//params.GetSeason() > -1)
-  {
-    AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%E. %T","%R"));  // Episode. Title, Rating | empty, empty
-    AddSortMethod(SortByRating, 563, LABEL_MASKS("%E. %T", "%R"));  // Episode. Title, Rating | empty, empty
-    AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%E. %T", "%r"));  // Episode. Title, Userrating | empty, empty
-    AddSortMethod(SortByMPAA, 20074, LABEL_MASKS("%E. %T", "%O"));  // Episode. Title, MPAA | empty, empty
-    AddSortMethod(SortByProductionCode, 20368, LABEL_MASKS("%E. %T","%P", "%E. %T","%P"));  // Episode. Title, Production Code | Episode. Title, Production Code
-    AddSortMethod(SortByDate, 552, LABEL_MASKS("%E. %T","%J","E. %T","%J"));  // Episode. Title, Date | Episode. Title, Date
+  // TvShow - Order. Title, Rating | empty, empty
+  AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%Z - %H. %T","%R"));
+  // TvShow - Order. Title, Rating | empty, empty
+  AddSortMethod(SortByRating, 563, LABEL_MASKS("%Z - %H. %T", "%R"));
+  // TvShow - Order. Title, Userrating | empty, empty
+  AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%Z - %H. %T", "%r"));
+  // TvShow - Order. Title, MPAA | empty, empty
+  AddSortMethod(SortByMPAA, 20074, LABEL_MASKS("%Z - %H. %T", "%O"));
+  // TvShow - Order. Title, Production Code | empty, empty
+  AddSortMethod(SortByProductionCode, 20368, LABEL_MASKS("%Z - %H. %T","%P"));
+  // TvShow - Order. Title, Date | empty, empty
+  AddSortMethod(SortByDate, 552, LABEL_MASKS("%Z - %H. %T","%J"));
 
-    if (CMediaSettings::GetInstance().GetWatchedMode(items.GetContent()) == WatchedModeAll)
-      AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%E. %T", "%V"));  // Episode. Title, Playcount | empty, empty
-  }
-  else
-  { // format here is tvshowtitle - season/episode number. episode title
-    AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%Z - %H. %T","%R"));  // TvShow - Order. Title, Rating | empty, empty
-    AddSortMethod(SortByRating, 563, LABEL_MASKS("%Z - %H. %T", "%R"));  // TvShow - Order. Title, Rating | empty, empty
-    AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%Z - %H. %T", "%r"));  // TvShow - Order. Title, Userrating | empty, empty
-    AddSortMethod(SortByMPAA, 20074, LABEL_MASKS("%Z - %H. %T", "%O"));  // TvShow - Order. Title, MPAA | empty, empty
-    AddSortMethod(SortByProductionCode, 20368, LABEL_MASKS("%Z - %H. %T","%P"));  // TvShow - Order. Title, Production Code | empty, empty
-    AddSortMethod(SortByDate, 552, LABEL_MASKS("%Z - %H. %T","%J"));  // TvShow - Order. Title, Date | empty, empty
-
-    if (CMediaSettings::GetInstance().GetWatchedMode(items.GetContent()) == WatchedModeAll)
-      AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%H. %T", "%V"));  // Order. Title, Playcount | empty, empty
-  }
+  if (CMediaSettings::GetInstance().GetWatchedMode(items.GetContent()) == WatchedModeAll)
+    AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%H. %T", "%V"));  // Order. Title, Playcount | empty, empty
 
   AddSortMethod(SortByLabel, 551, LABEL_MASKS("%Z - %H. %T","%R"),  // TvShow - Order. Title, Rating | empty, empty
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
