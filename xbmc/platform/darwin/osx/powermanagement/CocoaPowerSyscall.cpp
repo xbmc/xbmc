@@ -285,9 +285,7 @@ void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 
 void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)
 {
-  CCocoaPowerSyscall  *ctx;
-
-  ctx = (CCocoaPowerSyscall*)refcon;
+  CCocoaPowerSyscall* ctx = static_cast<CCocoaPowerSyscall*>(refcon);
 
   switch (msg_type)
   {
@@ -334,7 +332,7 @@ void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
 {
   // Called whenever any power source is added, removed, or changes.
   // When on battery, we get called periodically as battery level changes.
-  CCocoaPowerSyscall  *ctx = (CCocoaPowerSyscall*)refcon;
+  CCocoaPowerSyscall* ctx = static_cast<CCocoaPowerSyscall*>(refcon);
 
   CFTypeRef power_sources_info = IOPSCopyPowerSourcesInfo();
   CFArrayRef power_sources_list = IOPSCopyPowerSourcesList(power_sources_info);

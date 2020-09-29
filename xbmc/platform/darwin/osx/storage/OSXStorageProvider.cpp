@@ -148,11 +148,11 @@ void COSXStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
 std::vector<std::string> COSXStorageProvider::GetDiskUsage()
 {
   std::vector<std::string> result;
-  char line[1024];
 
   FILE* pipe = popen("df -HT ufs,cd9660,hfs,apfs,udf", "r");
   if (pipe)
   {
+    char line[1024];
     while (fgets(line, sizeof(line) - 1, pipe))
     {
       result.emplace_back(line);
