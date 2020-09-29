@@ -25,7 +25,7 @@
 #define ARRAY_SIZE(X) (sizeof(X) / sizeof((X)[0]))
 
 CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
-                                           std::string interfaceName,
+                                           const std::string& interfaceName,
                                            char interfaceMacAddrRaw[6])
   : CNetworkInterfacePosix(network, interfaceName, interfaceMacAddrRaw)
 {
