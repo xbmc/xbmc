@@ -110,7 +110,7 @@ private:
   void ResolveExpressions(TiXmlElement *node);
 
   typedef std::map<std::string, std::string> Params;
-  static void InsertNested(TiXmlElement *controls, TiXmlElement *node, TiXmlElement *include);
+  static void InsertNested(TiXmlElement* controls, TiXmlElement* include, TiXmlElement* node);
   static bool GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params);
   static void ResolveParametersForNode(TiXmlElement *node, const Params& params);
   static ResolveParamsResult ResolveParameters(const std::string& strInput, std::string& strOutput, const Params& params);
