@@ -53,7 +53,7 @@ static int InstallAddon(const std::vector<std::string>& params)
   const std::string& addonid = params[0];
 
   AddonPtr addon;
-  CAddonInstaller::GetInstance().InstallModal(addonid, addon);
+  CAddonInstaller::GetInstance().InstallModal(addonid, addon, InstallModalPrompt::PROMPT);
 
   return 0;
 }

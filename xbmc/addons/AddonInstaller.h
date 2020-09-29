@@ -23,6 +23,36 @@ namespace ADDON
 
 class CAddonDatabase;
 
+enum class BackgroundJob
+{
+  YES,
+  NO,
+};
+
+enum class ModalJob
+{
+  YES,
+  NO,
+};
+
+enum class AutoUpdateJob
+{
+  YES,
+  NO,
+};
+
+enum class DependencyJob
+{
+  YES,
+  NO,
+};
+
+enum class InstallModalPrompt
+{
+  PROMPT,
+  NO_PROMPT,
+};
+
 class CAddonInstaller : public IJobCallback
 {
 public:
@@ -40,16 +70,18 @@ public:
    \return true on successful install, false otherwise.
    \sa Install
    */
-  bool InstallModal(const std::string &addonID, ADDON::AddonPtr &addon, bool promptForInstall = true);
+  bool InstallModal(const std::string& addonID,
+                    ADDON::AddonPtr& addon,
+                    InstallModalPrompt promptForInstall);
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
-   \param background whether to install in the background or not. Defaults to true.
+   \param background whether to install in the background or not.
    \param modal whether to show a modal dialog when not installing in background
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool InstallOrUpdate(const std::string &addonID, bool background = true, bool modal = false);
+  bool InstallOrUpdate(const std::string& addonID, BackgroundJob background, ModalJob modal);
 
   /*! \brief Install a dependency from a specific repository
    \param dependsId the dependency to install
@@ -134,10 +166,10 @@ private:
    */
   bool DoInstall(const ADDON::AddonPtr& addon,
                  const ADDON::RepositoryPtr& repo,
-                 bool background,
-                 bool modal,
-                 bool autoUpdate,
-                 bool dependsInstall);
+                 BackgroundJob background,
+                 ModalJob modal,
+                 AutoUpdateJob autoUpdate,
+                 DependencyJob dependsInstall);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -161,7 +193,9 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr& addon, const ADDON::RepositoryPtr& repo, bool isAutoUpdate);
+  CAddonInstallJob(const ADDON::AddonPtr& addon,
+                   const ADDON::RepositoryPtr& repo,
+                   AutoUpdateJob isAutoUpdate);
 
   bool DoWork() override;
 
@@ -183,8 +217,7 @@ public:
    */
   static bool GetAddon(const std::string& addonID, ADDON::RepositoryPtr& repo, ADDON::AddonPtr& addon);
 
-  /*! Setter for m_dependsInstall */
-  void SetDependsInstall(bool dependsInstall) { m_dependsInstall = dependsInstall; };
+  void SetDependsInstall(DependencyJob dependsInstall) { m_dependsInstall = dependsInstall; };
 
 private:
   void OnPreInstall();
@@ -204,8 +237,8 @@ private:
   ADDON::AddonPtr m_addon;
   ADDON::RepositoryPtr m_repo;
   bool m_isUpdate;
-  bool m_isAutoUpdate;
-  bool m_dependsInstall = false;
+  AutoUpdateJob m_isAutoUpdate;
+  DependencyJob m_dependsInstall = DependencyJob::NO;
   const char* m_currentType = TYPE_DOWNLOAD;
 };
 

@@ -161,7 +161,7 @@ class UpdateAddons : public IRunnable
   void Run() override
   {
     for (const auto& addon : CServiceBroker::GetAddonMgr().GetAvailableUpdates())
-      CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
+      CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), BackgroundJob::YES, ModalJob::NO);
   }
 };
 
@@ -171,7 +171,8 @@ class UpdateAllowedAddons : public IRunnable
   {
     for (const auto& addon : CServiceBroker::GetAddonMgr().GetAvailableUpdates())
       if (CServiceBroker::GetAddonMgr().IsAutoUpdateable(addon->ID()))
-        CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
+        CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), BackgroundJob::YES,
+                                                       ModalJob::NO);
   }
 };
 
@@ -607,7 +608,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
         if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID()))
         {
           AddonPtr installedAddon;
-          if (!CAddonInstaller::GetInstance().InstallModal(addon->ID(), installedAddon, false))
+          if (!CAddonInstaller::GetInstance().InstallModal(addon->ID(), installedAddon,
+                                                           InstallModalPrompt::NO_PROMPT))
             continue;
         }
 
