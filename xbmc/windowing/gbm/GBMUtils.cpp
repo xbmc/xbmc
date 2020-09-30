@@ -24,7 +24,8 @@ bool CGBMUtils::CreateDevice(int fd)
   auto device = gbm_create_device(fd);
   if (!device)
   {
-    CLog::Log(LOGERROR, "CGBMUtils::%s - failed to create device", __FUNCTION__);
+    CLog::Log(LOGERROR, "CGBMUtils::{} - failed to create device: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
@@ -53,13 +54,13 @@ bool CGBMUtils::CGBMDevice::CreateSurface(
 
   if (!surface)
   {
-    CLog::Log(LOGERROR, "CGBMUtils::%s - failed to create surface", __FUNCTION__);
+    CLog::Log(LOGERROR, "CGBMUtils::{} - failed to create surface: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CGBMUtils::%s - created surface with size %dx%d", __FUNCTION__,
-                                                                         width,
-                                                                         height);
+  CLog::Log(LOGDEBUG, "CGBMUtils::{} - created surface with size {}x{}", __FUNCTION__, width,
+            height);
 
   m_surface.reset(new CGBMSurface(surface));
 
