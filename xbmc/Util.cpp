@@ -706,11 +706,15 @@ int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
   return n;
 }
 
+/*!
+  \brief Finds next unused filename that matches padded int format identifier provided
+  \param[in]  fn_template    filename template consisting of a padded int format identifier (eg screenshot%03d)
+  \param[in]  max            maximum number to search for avaialble name
+  \return "" on failure, string next available name matching format identifier on success
+*/
+
 std::string CUtil::GetNextFilename(const std::string &fn_template, int max)
 {
-  if (fn_template.find("%03d") == std::string::npos)
-    return "";
-
   std::string searchPath = URIUtils::GetDirectory(fn_template);
   std::string mask = URIUtils::GetExtension(fn_template);
   std::string name = StringUtils::Format(fn_template.c_str(), 0);
