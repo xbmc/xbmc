@@ -21,54 +21,37 @@ std::once_flag flag;
 
 bool CGBMUtils::CreateDevice(int fd)
 {
-  if (m_device)
-    CLog::Log(LOGWARNING, "CGBMUtils::%s - device already created", __FUNCTION__);
-
-  m_device = gbm_create_device(fd);
-  if (!m_device)
+  auto device = gbm_create_device(fd);
+  if (!device)
   {
     CLog::Log(LOGERROR, "CGBMUtils::%s - failed to create device", __FUNCTION__);
     return false;
   }
 
+  m_device.reset(new CGBMDevice(device));
+
   return true;
 }
 
-void CGBMUtils::DestroyDevice()
+CGBMUtils::CGBMDevice::CGBMDevice(gbm_device* device) : m_device(device)
 {
-  if (!m_device)
-    CLog::Log(LOGWARNING, "CGBMUtils::%s - device already destroyed", __FUNCTION__);
-
-  if (m_device)
-  {
-    gbm_device_destroy(m_device);
-    m_device = nullptr;
-  }
 }
 
-bool CGBMUtils::CreateSurface(int width, int height, uint32_t format, const uint64_t *modifiers, const int modifiers_count)
+bool CGBMUtils::CGBMDevice::CreateSurface(
+    int width, int height, uint32_t format, const uint64_t* modifiers, const int modifiers_count)
 {
-  if (m_surface)
-    CLog::Log(LOGWARNING, "CGBMUtils::%s - surface already created", __FUNCTION__);
-
+  gbm_surface* surface{nullptr};
 #if defined(HAS_GBM_MODIFIERS)
-  m_surface = gbm_surface_create_with_modifiers(m_device,
-                                                width,
-                                                height,
-                                                format,
-                                                modifiers,
-                                                modifiers_count);
+  surface = gbm_surface_create_with_modifiers(m_device, width, height, format, modifiers,
+                                              modifiers_count);
 #endif
-  if (!m_surface)
+  if (!surface)
   {
-    m_surface = gbm_surface_create(m_device,
-                                   width,
-                                   height,
-                                   format,
-                                   GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
+    surface = gbm_surface_create(m_device, width, height, format,
+                                 GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
   }
 
-  if (!m_surface)
+  if (!surface)
   {
     CLog::Log(LOGERROR, "CGBMUtils::%s - failed to create surface", __FUNCTION__);
     return false;
@@ -78,30 +61,19 @@ bool CGBMUtils::CreateSurface(int width, int height, uint32_t format, const uint
                                                                          width,
                                                                          height);
 
+  m_surface.reset(new CGBMSurface(surface));
+
   return true;
 }
 
-void CGBMUtils::DestroySurface()
+CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurface(gbm_surface* surface) : m_surface(surface)
 {
-  if (!m_surface)
-    CLog::Log(LOGWARNING, "CGBMUtils::%s - surface already destroyed", __FUNCTION__);
-
-  if (m_surface)
-  {
-    while (!m_buffers.empty())
-    {
-      gbm_surface_release_buffer(m_surface, m_buffers.front());
-      m_buffers.pop();
-    }
-
-    gbm_surface_destroy(m_surface);
-    m_surface = nullptr;
-  }
 }
 
-struct gbm_bo *CGBMUtils::LockFrontBuffer()
+CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer* CGBMUtils::CGBMDevice::CGBMSurface::
+    LockFrontBuffer()
 {
-  m_buffers.emplace(gbm_surface_lock_front_buffer(m_surface));
+  m_buffers.emplace(std::make_unique<CGBMSurfaceBuffer>(m_surface));
 
   if (!static_cast<bool>(gbm_surface_has_free_buffers(m_surface)))
   {
@@ -113,9 +85,19 @@ struct gbm_bo *CGBMUtils::LockFrontBuffer()
     std::call_once(
         flag, [this]() { CLog::Log(LOGDEBUG, "CGBMUtils - using {} buffers", m_buffers.size()); });
 
-    gbm_surface_release_buffer(m_surface, m_buffers.front());
     m_buffers.pop();
   }
 
-  return m_buffers.back();
+  return m_buffers.back().get();
+}
+
+CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer::CGBMSurfaceBuffer(gbm_surface* surface)
+  : m_surface(surface), m_buffer(gbm_surface_lock_front_buffer(surface))
+{
+}
+
+CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer::~CGBMSurfaceBuffer()
+{
+  if (m_surface && m_buffer)
+    gbm_surface_release_buffer(m_surface, m_buffer);
 }

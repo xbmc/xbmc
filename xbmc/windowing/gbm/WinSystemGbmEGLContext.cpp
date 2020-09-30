@@ -23,7 +23,7 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice()))
+  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice()->Get(), m_GBM->GetDevice()->Get()))
   {
     return false;
   }
@@ -69,7 +69,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
   std::vector<uint64_t> *modifiers = m_DRM->GetGuiPlaneModifiersForFormat(format);
 
-  if (!m_GBM->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(), modifiers->size()))
+  if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(),
+                                         modifiers->size()))
   {
     CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -78,7 +79,9 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   // This check + the reinterpret cast is for security reason, if the user has outdated platform header files which often is the case
   static_assert(sizeof(EGLNativeWindowType) == sizeof(gbm_surface*), "Declaration specifier differs in size");
 
-  if (!m_eglContext.CreatePlatformSurface(m_GBM->GetSurface(), reinterpret_cast<EGLNativeWindowType>(m_GBM->GetSurface())))
+  if (!m_eglContext.CreatePlatformSurface(
+          m_GBM->GetDevice()->GetSurface()->Get(),
+          reinterpret_cast<EGLNativeWindowType>(m_GBM->GetDevice()->GetSurface()->Get())))
   {
     return false;
   }
@@ -100,7 +103,6 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
 bool CWinSystemGbmEGLContext::DestroyWindow()
 {
   m_eglContext.DestroySurface();
-  m_GBM->DestroySurface();
 
   CLog::Log(LOGDEBUG, "CWinSystemGbmEGLContext::{} - deinitialized GBM", __FUNCTION__);
   return true;
