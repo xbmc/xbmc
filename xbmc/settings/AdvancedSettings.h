@@ -370,4 +370,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Initialize();
     void Clear();
     void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap);
+    void MigrateOldArtSettings();
 };

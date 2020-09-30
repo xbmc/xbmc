@@ -6875,7 +6875,7 @@ msgctxt "#13386"
 msgid "Use time based seeking"
 msgstr ""
 
-#: system/settings/settings.xml
+#. unused?
 msgctxt "#13387"
 msgid "Track naming template - right"
 msgstr ""
@@ -7338,6 +7338,7 @@ msgstr ""
 #. Button to add a new type of art e.g. "thumb", "poster", "fanart" etc.
 #: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: system/settings/settings.xml
 msgctxt "#13516"
 msgid "Add art type"
 msgstr ""
@@ -19217,44 +19218,41 @@ msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr ""
 
-#. Description of setting with label #258 "Enable tag reading"
+#. Description of setting with label #39125 "Enable tag reading in file view"
 #: system/settings/settings.xml
 msgctxt "#36274"
-msgid "Read the tag information from song files. For large directories this can increase read time, especially over a network."
+msgid "When browsing music files in file view read the tags of those not in the music library as you go. This can make large directories slow to display, especially over a network."
 msgstr ""
 
-#. Description of setting with label #13307 "Track naming template"
+#. Description of setting with label #13307 "Track naming template" for musicfiles.trackformat
 #: system/settings/settings.xml
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
 msgstr ""
 
-#. Description of setting with label #13387 "Track naming template - right"
-#: system/settings/settings.xml
+#. unused?
 msgctxt "#36276"
 msgid "Used for formatting the second column in file lists."
 msgstr ""
 
-#. Description of setting with label #13307 "Now Playing - Track naming template"
+#. Description of setting with label #13307 "Track naming template" in musicfiles.nowplayingtrackformat
 #: system/settings/settings.xml
 msgctxt "#36277"
 msgid "Control the way that the names of songs are displayed in the now playing list."
 msgstr ""
 
-#. Description of setting with label #13387 "Now Playing - Track naming template - right"
-#: system/settings/settings.xml
+#. unused?
 msgctxt "#36278"
 msgid "Used for formatting the second column in the now playing list."
 msgstr ""
 
-#. Description of setting with label #13307 "Library - Track naming template"
+#. Description of setting with label #13307 "Track naming template" in musicfiles.librarytrackformat
 #: system/settings/settings.xml
 msgctxt "#36279"
 msgid "Control the way that the names of songs are displayed in library lists."
 msgstr ""
 
-#. Description of setting with label #13387 "Library - Track naming template - right"
-#: system/settings/settings.xml
+#. unused?
 msgctxt "#36280"
 msgid "Used for formatting the second column in library lists."
 msgstr ""
@@ -19289,7 +19287,7 @@ msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr ""
 
-#. Description of setting with label #13307 "Track naming template"
+#. Description of setting with label #13307 "Track naming template" in audiocds.trackpathformat
 #: system/settings/settings.xml
 msgctxt "#36286"
 msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
@@ -20697,7 +20695,7 @@ msgctxt "#36602"
 msgid "This category contains the settings for how the AirPlay service is handled."
 msgstr ""
 
-#. Description of settings category with label #14216 Display
+#. Description of settings category with label #14220 Display
 #: system/settings/settings.xml
 msgctxt "#36603"
 msgid "This category contains the settings for displays."
@@ -21675,7 +21673,7 @@ msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#38307"
-msgid "Include art work such as thumbnails and fanart"
+msgid "Include artwork such as thumbnails and fanart"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
@@ -21866,7 +21864,7 @@ msgstr ""
 #. Description of category "Library" with label #14202
 #: system/settings/settings.xml
 msgctxt "#39004"
-msgid "This category provides access to the windows for source management and the Library settings for the databases"
+msgid "This category provides access to the windows for source management and library management facilities"
 msgstr ""
 
 #. Description of setting "Videos... with label #14242
@@ -22142,4 +22140,111 @@ msgstr ""
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#39120"
 msgid "Skip filename matching for external audio tracks"
+msgstr ""
+
+#. Label for section of settings controling what is shown on the library windows
+#: system/settings/settings.xml
+msgctxt "#39121"
+msgid "Library Display and Navigation"
+msgstr ""
+
+#. Label for section of settings controling how library is populated
+#: system/settings/settings.xml
+msgctxt "#39122"
+msgid "Library Information Sources"
+msgstr ""
+
+#. Label for section of settings
+#: system/settings/settings.xml
+msgctxt "#39123"
+msgid "Artwork"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39125"
+msgid "Enable tag reading in file view"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39127"
+msgid "Use all local image files as artwork"
+msgstr ""
+
+#. Description of setting with label #39127 "Use all local image files as artwork"
+#: system/settings/settings.xml
+msgctxt "#39128"
+msgid "All image files located alongside the media files are picked up as artwork during library scan, with the file name as the art type."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39129"
+msgid "Use all remote artwork fetched by scrapers"
+msgstr ""
+
+#. Description of setting with label #39129 "Use all remote artwork fetched by scrapers"
+#: system/settings/settings.xml
+msgctxt "#39130"
+msgid "Use the first of each art type of the remote artwork in scraper results to fill any missing art not populated with local art."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39131"
+msgid "Artist art types whitelist"
+msgstr ""
+
+#. Description of setting with label #39131 "Artist art types whitelist"
+#: system/settings/settings.xml
+msgctxt "#39132"
+msgid "Limit the artist artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39133"
+msgid "Album art types whitelist"
+msgstr ""
+
+#. Description of setting with label #39133 "Album art types whitelist"
+#: system/settings/settings.xml
+msgctxt "#39134"
+msgid "Limit the album artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39135"
+msgid "Thumbnail image files"
+msgstr ""
+
+#. Description of setting with label #39135 "Thumbnail image files"
+#: system/settings/settings.xml
+msgctxt "#39136"
+msgid "The names of files that contain primary artwork (thumbnails), generally square and used both full and in reduced size to visually identify a folder, artist, album or song"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39137"
+msgid "Artwork level"
+msgstr ""
+
+#. Description of setting with label #39137 "Artwork level"
+#: system/settings/settings.xml
+msgctxt "#39138"
+msgid "The amount of artwork automatically selected - [Maximum] all local images and remote art; [Basic] save space on limited devices or when using a simple skin; [Custom] configured by user for detailed control; [None] no art"
+msgstr ""
+
+#. Value of setting with label #39137 "Artwork level"
+#: system/settings/settings.xml
+msgctxt "#39140"
+msgid "Maximum"
+msgstr ""
+
+#. Value of setting with label #39137 "Artwork level"
+#: system/settings/settings.xml
+msgctxt "#39141"
+msgid "Basic"
+msgstr ""
+
+#. Value of setting with label #39137 "Artwork level"
+#: system/settings/settings.xml
+msgctxt "#39142"
+msgid "Custom"
 msgstr ""

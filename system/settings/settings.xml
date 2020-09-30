@@ -1002,7 +1002,199 @@
       </group>
     </category>
     <category id="music" label="14216" help="38108">
-      <group id="1" label="593">
+      <group id="1" label="39121">
+        <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.showdiscs" type="boolean" label="13522" help="13523">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.useartistsortname" type="boolean" label="20228" help="36294">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.useoriginaldate" type="boolean" label="13524" help="13525">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2" label="39122">
+        <setting id="musiclibrary.downloadinfo" type="boolean" label="20192" help="36256">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.artistsfolder" type="path" label="20223" help="36293">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
+        </setting>
+        <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
+          <level>1</level>
+          <default>metadata.generic.albums</default>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.albums</addontype>
+          </constraints>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
+        </setting>
+        <setting id="musiclibrary.artistsscraper" type="addon" label="20194" help="36258">
+          <level>1</level>
+          <default>metadata.generic.artists</default>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.artists</addontype>
+          </constraints>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
+        </setting>
+        <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="3" label="39123">
+        <!-- Hidden setting indicating music art settings have been migrated from old advancedsettings.xml format-->
+        <setting id="musiclibrary.artsettings" type="boolean" label="0" help="">
+          <level>4</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.artworklevel" type="integer" label="39137" help="39138">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="39140">0</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_ALL -->
+              <option label="39141">1</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_BASIC -->
+              <option label="39142">2</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM -->
+              <option label="231">3</option> <!-- MUSICLIBRARY_ARTWORK_LEVEL_NONE -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="musiclibrary.usealllocalart" type="boolean" parent="musiclibrary.artworklevel" label="39127" help="39128">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="visible" setting="musiclibrary.artworklevel" operator="is">2</dependency>
+          </dependencies>
+        </setting>
+        <setting id="musiclibrary.useallremoteart" type="boolean" parent="musiclibrary.artworklevel" label="39129" help="39130">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="visible" setting="musiclibrary.artworklevel" operator="is">2</dependency>
+          </dependencies>
+        </setting>
+        <setting id="musiclibrary.artistartwhitelist" type="list[string]" parent="musiclibrary.artworklevel" label="39131" help="39132">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <options>
+              <option>banner</option>
+              <option>clearart</option>
+              <option>clearlogo</option>
+              <option>landscape</option>
+              <option>fanart</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allownewoption>true</allownewoption>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="musiclibrary.artworklevel" operator="is">2</dependency>
+            <dependency type="enable">
+              <or>
+                <condition setting="musiclibrary.usealllocalart" operator="is" >false</condition>
+                <condition setting="musiclibrary.useallremoteart" operator="is">false</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <addbuttonlabel>13516</addbuttonlabel>
+          </control>
+        </setting>
+        <setting id="musiclibrary.albumartwhitelist" type="list[string]" parent="musiclibrary.artworklevel" label="39133" help="39134">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <options>
+              <option>discart</option>
+              <option>back</option>
+              <option>spine</option>
+              <option>3dcase</option>
+              <option>3dflat</option>
+              <option>3dface</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allownewoption>true</allownewoption>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="musiclibrary.artworklevel" operator="is">2</dependency>
+            <dependency type="enable">
+              <or>
+                <condition setting="musiclibrary.usealllocalart" operator="is" >false</condition>
+                <condition setting="musiclibrary.useallremoteart" operator="is">false</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <addbuttonlabel>13516</addbuttonlabel>
+          </control>
+        </setting>
+        <setting id="musiclibrary.musicthumbs" type="list[string]" label="39135" help="39136">
+          <level>3</level>
+          <default>folder.jpg, cover.jpg, cover.jpeg, thumb.jpg</default>
+          <constraints>
+            <options>
+              <option>folder.jpg</option>
+              <option>cover.jpg</option>
+              <option>cover.jpeg</option>
+              <option>thumb.jpg</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allowempty>true</allowempty>
+            <allownewoption>true</allownewoption>
+          </constraints>
+		  <dependencies>
+            <dependency type="enable" setting="musiclibrary.artworklevel" operator="!is">3</dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
+        <setting id="musiclibrary.preferonlinealbumart" type="boolean" label="20224" help="20225">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+		  <dependencies>
+            <dependency type="enable" setting="musiclibrary.artworklevel" operator="!is">3</dependency>
+          </dependencies>		  
+        </setting>
+      </group>
+      <group id="4" label="128">
         <setting id="musicfiles.selectaction" type="boolean" label="12381" help="38112">
           <level>0</level>
           <default>false</default>
@@ -1040,84 +1232,10 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-      </group>
-      <group id="2" label="744">
-        <setting id="musicfiles.usetags" type="boolean" label="258" help="36274">
+        <setting id="musicfiles.usetags" type="boolean" label="39125" help="36274">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>
-      </group>
-      <group id="3" label="14022">
-        <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.showdiscs" type="boolean" label="13522" help="13523">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.useartistsortname" type="boolean" label="20228" help="36294">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.useoriginaldate" type="boolean" label="13524" help="13525">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.downloadinfo" type="boolean" label="20192" help="36256">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.artistsfolder" type="path" label="20223" help="36293">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="path">
-            <heading>657</heading>
-          </control>
-        </setting>
-        <setting id="musiclibrary.preferonlinealbumart" type="boolean" label="20224" help="20225">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
-          <level>1</level>
-          <default>metadata.generic.albums</default>
-          <constraints>
-            <addontype>xbmc.metadata.scraper.albums</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-        <setting id="musiclibrary.artistsscraper" type="addon" label="20194" help="36258">
-          <level>1</level>
-          <default>metadata.generic.artists</default>
-          <constraints>
-            <addontype>xbmc.metadata.scraper.artists</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
         </setting>
       </group>
     </category>

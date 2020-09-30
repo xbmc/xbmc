@@ -3093,13 +3093,40 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
   // if a folder, check for folder.jpg
   if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_FINDREMOTETHUMBS)))
   {
-    std::vector<std::string> thumbs = StringUtils::Split(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicThumbs, "|");
-    for (std::vector<std::string>::const_iterator i = thumbs.begin(); i != thumbs.end(); ++i)
+    std::vector<CVariant> thumbs = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+        CSettings::SETTING_MUSICLIBRARY_MUSICTHUMBS);
+    for (const auto& i : thumbs)
     {
-      std::string folderThumb(GetFolderThumb(*i));
-      if (CFile::Exists(folderThumb))
-      {
+      std::string strFileName = i.asString();
+      std::string folderThumb(GetFolderThumb(strFileName));
+      if (CFile::Exists(folderThumb))   // folder.jpg
         return folderThumb;
+      size_t period = strFileName.find_last_of(".");
+      if (period != std::string::npos)
+      {
+        std::string ext;
+        std::string name = strFileName;
+        std::string folderThumb1 = folderThumb;
+        name.erase(period);
+        ext = strFileName.substr(period);
+        StringUtils::ToUpper(ext);
+        StringUtils::Replace(folderThumb1, strFileName, name + ext);
+        if (CFile::Exists(folderThumb1)) // folder.JPG
+          return folderThumb1;
+        
+        folderThumb1 = folderThumb;
+        std::string firstletter = name.substr(0, 1);
+        StringUtils::ToUpper(firstletter);
+        name.replace(0, 1, firstletter);
+        StringUtils::Replace(folderThumb1, strFileName, name + ext);
+        if (CFile::Exists(folderThumb1)) // Folder.JPG
+          return folderThumb1;
+        
+        folderThumb1 = folderThumb;
+        StringUtils::ToLower(ext);
+        StringUtils::Replace(folderThumb1, strFileName, name + ext);
+        if (CFile::Exists(folderThumb1)) // Folder.jpg
+          return folderThumb1;
       }
     }
   }

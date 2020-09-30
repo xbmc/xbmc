@@ -1192,6 +1192,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   // load in the settings overrides
   CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(pRootElement);
+
+  // Migration of old style art options from advanced setting to GUI setting
+  MigrateOldArtSettings();
 }
 
 void CAdvancedSettings::Clear()
@@ -1376,5 +1379,65 @@ void CAdvancedSettings::SetExtraArtwork(const TiXmlElement* arttypes, std::vecto
     if (arttype->FirstChild())
       artworkMap.push_back(arttype->FirstChild()->ValueStr());
     arttype = arttype->NextSibling("arttype");
+  }
+}
+
+void ConvertToWhitelist(const std::vector<std::string>& oldlist, std::vector<CVariant>& whitelist)
+{
+  for (auto& it : oldlist)
+  {
+    size_t last_index = it.find_last_not_of("0123456789");
+    std::string strFamilyType = it.substr(0, last_index + 1); // "fanart" of "fanart16"
+    if (std::find(whitelist.begin(), whitelist.end(), strFamilyType) == whitelist.end())
+      whitelist.emplace_back(strFamilyType);
+  }
+}
+
+void CAdvancedSettings::MigrateOldArtSettings()
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings->GetBool(CSettings::SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED))
+  {
+    CLog::Log(LOGINFO, "Migrating old music library artwork settings to new GUI settings");
+    // Convert numeric art type variants into simple art type family entry
+    // e.g. {"banner", "fanart1", "fanart2", "fanart3"... } into { "banner", "fanart"}
+    if (!m_musicArtistExtraArt.empty())
+    {
+      std::vector<CVariant> whitelist;
+      ConvertToWhitelist(m_musicArtistExtraArt, whitelist);
+      settings->SetList(CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST, whitelist);
+    }
+    if (!m_musicAlbumExtraArt.empty())
+    {
+      std::vector<CVariant> whitelist;
+      ConvertToWhitelist(m_musicAlbumExtraArt, whitelist);
+      settings->SetList(CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST, whitelist);
+    }
+
+    // Convert value like "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|
+    // cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG" into case-insensitive unique elements
+    // e.g. {"folder.jpg", "cover.jpg", "cover.jpeg", "thumb.jpg"}
+    if (!m_musicThumbs.empty())
+    {
+      std::vector<std::string> thumbs1 = StringUtils::Split(m_musicThumbs, "|");
+      std::vector<std::string> thumbs2;
+      for (auto& it : thumbs1)
+      {
+        StringUtils::ToLower(it);
+        if (std::find(thumbs2.begin(), thumbs2.end(), it) == thumbs2.end())
+          thumbs2.emplace_back(it);
+      }
+      std::vector<CVariant> thumbs;
+      for (const auto& it : thumbs2)
+        thumbs.emplace_back(it);
+      settings->SetList(CSettings::SETTING_MUSICLIBRARY_MUSICTHUMBS, thumbs);
+    }
+
+    // Whitelists configured, set artwork level to custom
+    if (!m_musicAlbumExtraArt.empty() || !m_musicArtistExtraArt.empty())
+      settings->SetInt(CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL, 2);
+
+    // Flag migration of settings so not done again
+    settings->SetBool(CSettings::SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED, true);
   }
 }

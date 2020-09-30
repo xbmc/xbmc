@@ -63,4 +63,12 @@ namespace MUSIC_UTILS
   \return vector of art types that are to be fetched during scanning
   */
   std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
-}
+
+  /*! \brief Validate string is acceptable as the name of an additional art type
+  - limited length, and ascii alphanumberic charaters only
+  \param potentialArtType [in] potential art type name
+ \return true if the art type is valid
+ */
+  bool IsValidArtType(const std::string& potentialArtType);
+
+  } // namespace MUSIC_UTILS

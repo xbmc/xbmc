@@ -14,6 +14,7 @@
 #include "music/MusicDatabase.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
+#include "utils/ScraperUrl.h"
 
 class CAlbum;
 class CArtist;
@@ -151,6 +152,63 @@ protected:
    \return vector of art types that are missing from the set
    */
   std::vector<std::string> GetMissingArtTypes(const MediaType& mediaType, const std::map<std::string, std::string>& art);
+
+  /*! \brief Add extra local artwork for albums and artists
+  This common utility scans the given folder for local (non-thumb) art.
+  The art types checked are determined by whitelist and usealllocalart settings.
+  \param art [in/out] map of art type and file location (URL or path) pairs
+  \param mediaType [in] artist or album
+  \param mediaName [in] artist or album name that may be stripped from image file names
+  \param artfolder [in] path of folder containing local image files
+  \return true when art is added
+  */
+  bool AddLocalArtwork(std::map<std::string, std::string>& art,
+                       const std::string& mediaType,
+                       const std::string& mediaName,
+                       const std::string& artfolder,
+                       int discnum = 0);
+
+  /*! \brief Add extra remote artwork for albums and artists
+  This common utility fills the gaps in artwork using the first available art of each type from the
+  possibile art URL results of previous scraping.
+  The art types applied are determined by whitelist and usealllocalart settings.
+  \param art [in/out] map of art type and file location (URL or path) pairs
+  \param mediaType [in] artist or album
+  \param thumbURL [in] URLs for potential remote artwork (provided by scrapers)
+  \return true when art is added
+  */
+  bool AddRemoteArtwork(std::map<std::string, std::string>& art,
+                        const std::string& mediaType,
+                        const CScraperUrl& thumbURL);
+
+  /*! \brief Add art for an artist
+  This scans the given folder for local art and/or applies the first available art of each type
+  from the possibile art URLs previously scraped. Art is added to any already stored by previous
+  scanning etc.The art types processed are determined by whitelist and other art settings. 
+  When usealllocalart is enabled then all local image files are applied as art (providing name is
+  valid for an art type), and then the URL list of remote art is checked adding the first available
+  image of each art type not yet in the art map.
+  Art found is saved in the album structure and the music database. The images found are cached.
+  \param artist [in/out] an artist, the art is set
+  \param artfolder [in] path of the location to search for local art files
+  \return true when art is added
+  */
+  bool AddArtistArtwork(CArtist& artist, const std::string& artfolder);
+
+  /*! \brief Add art for an album
+  This scans the album folder, and any disc set subfolders, for local art and/or applies the first
+  available art of each type from the possibile art URLs previously scraped. Only those subfolders
+  beneath the album folder containing music files tagged with same unique disc number are scanned.
+  Art is added to any already stored by previous scanning, only "thumb" is optionally replaced.
+  The art types processed are determined by whitelist and other art settings. When usealllocalart is
+  enabled then all local image files are applied as art (providing name is valid for an art type),
+  and then the URL list of remote art is checked adding the first available image of each art type
+  not yet in the art map. 
+  Art found is saved in the album structure and the music database. The images found are cached. 
+  \param artist [in/out] an album, the art is set 
+  \return true when art is added
+  */
+  bool AddAlbumArtwork(CAlbum& album);
 
   /*! \brief Set art for an artist
   Checks for the missing types of art in the given folder. If none is found
