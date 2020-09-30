@@ -189,11 +189,6 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   auto result = m_DRM->SetVideoMode(res, bo);
 
-  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
-  {
-    m_GBM->ReleaseBuffer();
-  }
-
   int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
     m_dispResetTimer.Set(delay * 100);
@@ -217,11 +212,6 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
   }
 
   m_DRM->FlipPage(bo, rendered, videoLayer);
-
-  if (rendered)
-  {
-    m_GBM->ReleaseBuffer();
-  }
 
   if (m_videoLayerBridge && !videoLayer)
   {

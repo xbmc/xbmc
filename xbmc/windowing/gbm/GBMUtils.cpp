@@ -10,7 +10,14 @@
 
 #include "utils/log.h"
 
+#include <mutex>
+
 using namespace KODI::WINDOWING::GBM;
+
+namespace
+{
+std::once_flag flag;
+}
 
 bool CGBMUtils::CreateDevice(int fd)
 {
@@ -81,7 +88,11 @@ void CGBMUtils::DestroySurface()
 
   if (m_surface)
   {
-    ReleaseBuffer();
+    while (!m_buffers.empty())
+    {
+      gbm_surface_release_buffer(m_surface, m_buffers.front());
+      m_buffers.pop();
+    }
 
     gbm_surface_destroy(m_surface);
     m_surface = nullptr;
@@ -90,18 +101,21 @@ void CGBMUtils::DestroySurface()
 
 struct gbm_bo *CGBMUtils::LockFrontBuffer()
 {
-  if (m_next_bo)
-    CLog::Log(LOGWARNING, "CGBMUtils::%s - uneven surface buffer usage", __FUNCTION__);
+  m_buffers.emplace(gbm_surface_lock_front_buffer(m_surface));
 
-  m_next_bo = gbm_surface_lock_front_buffer(m_surface);
-  return m_next_bo;
-}
+  if (!static_cast<bool>(gbm_surface_has_free_buffers(m_surface)))
+  {
+    /*
+     * We want to use call_once here because we want it to be logged the first time that
+     * we have to release buffers. This means that the maximum amount of buffers had been reached.
+     * For mesa this should be 4 buffers but it may vary accross other implementations.
+     */
+    std::call_once(
+        flag, [this]() { CLog::Log(LOGDEBUG, "CGBMUtils - using {} buffers", m_buffers.size()); });
 
-void CGBMUtils::ReleaseBuffer()
-{
-  if (m_bo)
-    gbm_surface_release_buffer(m_surface, m_bo);
+    gbm_surface_release_buffer(m_surface, m_buffers.front());
+    m_buffers.pop();
+  }
 
-  m_bo = m_next_bo;
-  m_next_bo = nullptr;
+  return m_buffers.back();
 }
