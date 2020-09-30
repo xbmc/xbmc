@@ -8,6 +8,7 @@ AC_CANONICAL_HOST
 
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx.m4])
+m4_include([m4/ax_compare_version.m4])
 
 # check for not same cpu value
 AC_DEFUN([MC_CHECK_NOT_CPU],
@@ -167,10 +168,22 @@ case $build in
   ;;
   *darwin*)
     build_os="osx"
-    native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
+    host_includes=-mmacosx-version-min=`sw_vers | grep ProductVersion | awk '{ print $2}'`
     use_xcodepath=`xcode-select -print-path`
     use_build_toolchain=$use_xcodepath
+    use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
+    AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
+
+    # acquire build platform (native) sdk sysroot.
+    build_platform=macosx
+    native_sdk_path=[`$use_xcodebuild -version -sdk $build_platform | grep ^Path | awk '{ print $2}'`]
+    host_includes+=" -isysroot $native_sdk_path"
+
     android_toolchain_name="darwin-x86_64"
+
+    if test "x$prefix" = "xNONE"; then
+      prefix=/Users/Shared/xbmc-depends
+    fi
   ;;
   *)
     AC_MSG_ERROR(unsupported native build platform: $build)
@@ -315,13 +328,6 @@ case $host in
     ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
   ;;
   *darwin*)
-    if test "x$prefix" = "xNONE"; then
-      prefix=/Users/Shared/xbmc-depends
-    fi
-
-    use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
-    AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
-
     # darwin builds are always cross
     cross_compiling="yes"
 
@@ -331,84 +337,84 @@ case $host in
     platform_ldflags="-Wl,-search_paths_first"
     platform_cxxflags="-no-cpp-precomp"
 
+    case $use_platform in
+      tvos)
+        target_platform=appletvos
+        platform_os="darwin_embedded"
+      ;;
+      ios)
+        target_platform=iphoneos
+        platform_os="darwin_embedded"
+      ;;
+      macos)
+        target_platform=macosx
+        platform_os="osx"
+      ;;
+      *)
+        AC_MSG_ERROR(error in configure no platform provided --with-platform)
+      ;;
+    esac
+
+    found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
+    use_sdk="${use_sdk:-$found_sdk_version}"
+    sdk_name=$target_platform$use_sdk
+
+    use_sdk_path=$($use_xcodebuild -version -sdk $sdk_name Path 2>&1)
+    # test if sdk is available to xcodebuild, otherwise error out
+    valid_sdk=[`echo $use_sdk_path | grep "error:"`]
+
+    if test "x$valid_sdk" != "x"; then
+      AC_MSG_ERROR("invalid SDK version provided (--with-sdk=$use_sdk) is not available in xcodebuild -showsdks")
+    fi
+
     case $host in
       x86_64-apple-darwin)
-        MC_CHECK_NOT_CPU([$use_cpu], "arm")
+        MC_CHECK_NOT_CPU([$use_cpu], "arm*")
 
         # setup which cpu to use
         if test "x$use_cpu" = "xauto"; then
           use_cpu=x86_64
+          meson_cpu=$use_cpu
+        else
+          AC_MSG_ERROR(invalid architecture (--with-cpu=$use_cpu))
         fi
 
-        meson_cpu="x86_64"
-
-        # setup which sdk to use
-        target_platform=macosx
-        found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
-        use_sdk="${use_sdk:-$found_sdk_version}"
-
-        # now that we know which sdk, error check sdk_name
-        case $use_sdk in
-          10.13);;
-          10.14);;
-          10.15);;
-          *)
-            AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-        esac
-        sdk_name=$target_platform$use_sdk
-        platform_min_version="macosx-version-min=10.13"
-
-        use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
-        platform_os="osx"
+        target_minver="10.13"
       ;;
-
       aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
 
-        # setup which sdk to use
-        if test "$use_platform" = "tvos"; then
-          target_platform=appletvos
-        else
-          target_platform=iphoneos
-        fi
-        platform_min_version="$target_platform-version-min=11.0"
+        case $platform_os in
+          darwin_embedded)
+            target_minver="11.0"
+          ;;
+          osx)
+            target_minver="11.0"
+          ;;
+          *)
+            AC_MSG_ERROR(invalid platform for architecture ($host))
+          ;;
+        esac
 
         # setup which cpu to use
         if test "x$use_cpu" = "xauto"; then
           use_cpu=arm64
-        fi
-
-        if test "$use_cpu" = "arm64"; then
           meson_cpu="aarch64"
         else
-          meson_cpu="arm"
+          AC_MSG_ERROR(invalid architecture (--with-cpu=$use_cpu))
         fi
-
-        found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
-        use_sdk="${use_sdk:-$found_sdk_version}"
-        sdk_name=$target_platform$use_sdk
-
-        case $use_sdk in
-          11.*);;
-          12.*);;
-          13.*);;
-          14.*);;
-            *)
-              AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-            ;;
-        esac
-
-        platform_os="darwin_embedded"
 
         platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings"
         platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
-        platform_cflags+=" -Wno-error=implicit-function-declaration"
         optimize_flags="-O3"
-        use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
         platform_ldflags+=" -L$use_sdk_path/usr/lib"
-        platform_cxxflags+=" $cpu_flags"
       ;;
     esac
+
+    AX_COMPARE_VERSION([$use_sdk], [ge], [$target_minver], , AC_MSG_ERROR("invalid SDK version provided (--with-sdk=$use_sdk) less than minimum supported ($target_minver)"))
+
+    platform_min_version="$target_platform-version-min=$target_minver"
+
     platform_cflags+=" -arch $use_cpu -m$platform_min_version"
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
     platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -stdlib=libc++"
@@ -433,6 +439,8 @@ case $use_platform in
     if test "$platform_os" != "darwin_embedded"; then
       AC_MSG_ERROR([$use_platform is only supported on the darwin_embedded platform])
     fi
+    ;;
+  ios|macos)
     ;;
   auto)
     ;;
@@ -634,7 +642,7 @@ AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(use_ccache)
-AC_SUBST(native_platform_min_version)
+AC_SUBST(host_includes)
 AC_SUBST(app_rendersystem)
 AC_SUBST(ffmpeg_options)
 

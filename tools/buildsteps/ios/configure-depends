@@ -7,6 +7,7 @@ then
   cd $WORKSPACE/tools/depends;./configure \
     --with-tarballs=/Users/Shared/xbmc-depends/tarballs \
     --host=aarch64-apple-darwin \
+    --with-platform=ios \
     --with-sdk=$SDK_VERSION \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
 fi

@@ -86,6 +86,7 @@ git clone https://github.com/xbmc/xbmc kodi
 
 ## 4. Configure and build tools and dependencies
 Kodi can be built as a 64bit program only for tvOS. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
+**NOTE:** `--with-platform` is mandatory for all Apple platforms
 
 Configure build:
 ```

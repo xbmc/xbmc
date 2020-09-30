@@ -81,12 +81,13 @@ git clone https://github.com/xbmc/xbmc kodi
 Kodi can be built as either a 32bit or 64bit program. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
+**NOTE:** `--with-platform` is mandatory for all Apple platforms
 
 Configure build:
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
-./configure --host=x86_64-apple-darwin
+./configure --host=x86_64-apple-darwin --with-platform=macos
 ```
 
 Build tools and dependencies:
@@ -100,7 +101,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 **NOTE:** **Advanced developers** may want to specify an SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use SDK 10.13:
 ```
-./configure --host=x86_64-apple-darwin --with-sdk=10.13
+./configure --host=x86_64-apple-darwin --with-platform=macos --with-sdk=10.13
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-configure-and-build-tools-and-dependencies)**
