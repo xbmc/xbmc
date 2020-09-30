@@ -20,6 +20,10 @@ namespace WINDOWING
 namespace GBM
 {
 
+/**
+ * @brief A wrapper for gbm c classes to allow OOP and RAII.
+ *
+ */
 class CGBMUtils
 {
 public:
@@ -27,8 +31,20 @@ public:
   CGBMUtils& operator=(const CGBMUtils&) = delete;
   CGBMUtils() = default;
   ~CGBMUtils() = default;
+
+  /**
+   * @brief Create a gbm device for allocating buffers
+   *
+   * @param fd The file descriptor for a backend device
+   * @return true The device creation succeeded
+   * @return false The device creation failed
+   */
   bool CreateDevice(int fd);
 
+  /**
+   * @brief A wrapper for gbm_device to allow OOP and RAII
+   *
+   */
   class CGBMDevice
   {
   public:
@@ -37,14 +53,34 @@ public:
     explicit CGBMDevice(gbm_device* device);
     ~CGBMDevice() = default;
 
+    /**
+     * @brief Create a gbm surface
+     *
+     * @param width The width to use for the surface
+     * @param height The height to use for the surface
+     * @param format The format to use for the surface
+     * @param modifiers The modifiers to use for the surface
+     * @param modifiers_count The amount of modifiers in the modifiers param
+     * @return true The surface creation succeeded
+     * @return false The surface creation failed
+     */
     bool CreateSurface(int width,
                        int height,
                        uint32_t format,
                        const uint64_t* modifiers,
                        const int modifiers_count);
 
+    /**
+     * @brief Get the underlying gbm_device
+     *
+     * @return gbm_device* A pointer to the underlying gbm_device
+     */
     gbm_device* Get() const { return m_device; }
 
+    /**
+     * @brief A wrapper for gbm_surface to allow OOP and RAII
+     *
+     */
     class CGBMSurface
     {
     public:
@@ -53,8 +89,17 @@ public:
       explicit CGBMSurface(gbm_surface* surface);
       ~CGBMSurface() = default;
 
+      /**
+       * @brief Get the underlying gbm_surface
+       *
+       * @return gbm_surface* A pointer to the underlying gbm_surface
+       */
       gbm_surface* Get() const { return m_surface; }
 
+      /**
+       * @brief A wrapper for gbm_bo to allow OOP and RAII
+       *
+       */
       class CGBMSurfaceBuffer
       {
       public:
@@ -63,6 +108,11 @@ public:
         explicit CGBMSurfaceBuffer(gbm_surface* surface);
         ~CGBMSurfaceBuffer();
 
+        /**
+         * @brief Get the underlying gbm_bo
+         *
+         * @return gbm_bo* A pointer to the underlying gbm_bo
+         */
         gbm_bo* Get() const { return m_buffer; }
 
       private:
@@ -70,6 +120,11 @@ public:
         gbm_bo* m_buffer{nullptr};
       };
 
+      /**
+       * @brief Lock the surface's current front buffer.
+       *
+       * @return CGBMSurfaceBuffer* A pointer to a CGBMSurfaceBuffer object
+       */
       CGBMSurfaceBuffer* LockFrontBuffer();
 
     private:
@@ -77,6 +132,11 @@ public:
       std::queue<std::unique_ptr<CGBMSurfaceBuffer>> m_buffers;
     };
 
+    /**
+     * @brief Get the CGBMSurface object
+     *
+     * @return CGBMSurface* A pointer to the CGBMSurface object
+     */
     CGBMDevice::CGBMSurface* GetSurface() const { return m_surface.get(); }
 
   private:
@@ -93,6 +153,11 @@ public:
     std::unique_ptr<CGBMSurface, CGBMSurfaceDeleter> m_surface;
   };
 
+  /**
+   * @brief Get the CGBMDevice object
+   *
+   * @return CGBMDevice* A pointer to the CGBMDevice object
+   */
   CGBMUtils::CGBMDevice* GetDevice() const { return m_device.get(); }
 
 private:
