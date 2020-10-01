@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "tools/StringUtils.h"
+
 namespace kodi
 {
 
@@ -695,13 +697,12 @@ inline void ATTRIBUTE_HIDDEN Log(const AddonLog loglevel, const char* format, ..
 {
   using namespace kodi::addon;
 
-  char buffer[16384];
   va_list args;
   va_start(args, format);
-  vsnprintf(buffer, sizeof(buffer), format, args);
+  const std::string str = kodi::tools::StringUtils::FormatV(format, args);
   va_end(args);
   CAddonBase::m_interface->toKodi->addon_log_msg(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 loglevel, buffer);
+                                                 loglevel, str.c_str());
 }
 //------------------------------------------------------------------------------
 

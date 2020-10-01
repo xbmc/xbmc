@@ -10,6 +10,7 @@
 
 #include "AddonBase.h"
 #include "c-api/general.h"
+#include "tools/StringUtils.h"
 
 #ifdef __cplusplus
 
@@ -317,12 +318,11 @@ inline void ATTRIBUTE_HIDDEN QueueFormattedNotification(QueueMsg type, const cha
   using namespace kodi::addon;
 
   va_list args;
-  char buffer[16384];
   va_start(args, format);
-  vsprintf(buffer, format, args);
+  const std::string str = kodi::tools::StringUtils::FormatV(format, args);
   va_end(args);
   CAddonBase::m_interface->toKodi->kodi->queue_notification(
-      CAddonBase::m_interface->toKodi->kodiBase, type, "", buffer, "", 5000, false, 1000);
+      CAddonBase::m_interface->toKodi->kodiBase, type, "", str.c_str(), "", 5000, false, 1000);
 }
 //------------------------------------------------------------------------------
 
