@@ -253,13 +253,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_srcFormat.m_dataFormat);
     srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_srcFormat.m_dataFormat);
 
-    m_pResampler->Init(dstConfig, srcConfig,
-                       false,
-                       false,
-                       M_SQRT1_2,
-                       NULL,
-                       AE_QUALITY_UNKNOWN,
-                       false);
+    m_pResampler->Init(dstConfig, srcConfig, false, false, M_SQRT1_2, NULL, AE_QUALITY_UNKNOWN,
+                       false, 0.0f);
 
     m_planes = AE_IS_PLANAR(m_srcFormat.m_dataFormat) ? m_channels : 1;
     m_format = m_srcFormat;

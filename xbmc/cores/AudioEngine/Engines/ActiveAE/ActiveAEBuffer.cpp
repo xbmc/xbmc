@@ -144,12 +144,14 @@ CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
   Flush();
 }
 
-bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize)
+bool CActiveAEBufferPoolResample::Create(
+    unsigned int totaltime, bool remap, bool upmix, bool normalize, float mixSubLevel)
 {
   CActiveAEBufferPool::Create(totaltime);
 
   m_remap = remap;
   m_stereoUpmix = upmix;
+  m_mixSubLevel = mixSubLevel * M_SQRT1_2;
 
   m_normalize = true;
   if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count() && !normalize))
@@ -184,13 +186,9 @@ void CActiveAEBufferPoolResample::ChangeResampler()
   srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_inputFormat.m_dataFormat);
   srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_inputFormat.m_dataFormat);
 
-  m_resampler->Init(dstConfig, srcConfig,
-                    m_stereoUpmix,
-                    m_normalize,
-                    m_centerMixLevel,
-                    m_remap ? &m_format.m_channelLayout : nullptr,
-                    m_resampleQuality,
-                    m_forceResampler);
+  m_resampler->Init(dstConfig, srcConfig, m_stereoUpmix, m_normalize, m_centerMixLevel,
+                    m_remap ? &m_format.m_channelLayout : nullptr, m_resampleQuality,
+                    m_forceResampler, m_mixSubLevel);
 
   m_changeResampler = false;
 }
@@ -350,7 +348,10 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
   return busy;
 }
 
-void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
+void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels,
+                                                     bool stereoupmix,
+                                                     AEQuality quality,
+                                                     float mixSubLevel)
 {
   bool normalize = true;
   if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count()) && !normalizelevels)
@@ -358,13 +359,14 @@ void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool 
     normalize = false;
   }
 
-  if (m_normalize != normalize || m_resampleQuality != quality)
+  if (m_normalize != normalize || m_resampleQuality != quality || m_mixSubLevel != mixSubLevel)
   {
     m_changeResampler = true;
   }
 
   m_resampleQuality = quality;
   m_normalize = normalize;
+  m_mixSubLevel = mixSubLevel;
 }
 
 float CActiveAEBufferPoolResample::GetDelay()

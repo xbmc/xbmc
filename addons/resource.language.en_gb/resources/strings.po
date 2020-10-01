@@ -17699,8 +17699,39 @@ msgctxt "#34113"
 msgid "To keep certain AVRs powered we send an inaudible random noise signal. You can disable this setting if you are using headphone or analog output."
 msgstr ""
 
+#. Indicates if Audio Engine should include lfe when downmixing
+#: system/settings/settings.xml
+msgctxt "#34114"
+msgid "Include LFE when downmixing"
+msgstr ""
+
+#. Description of setting with label #34114 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34115"
+msgid "If enabled, this setting will include lfe channel into the mixing when there is no dedicated LFE output channel available. This only makes sense for full range speakers."
+msgstr ""
+
+#. Description of setting with label #34114 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34116"
+msgid "Off"
+msgstr ""
+
+#. Description of setting with label #34114 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34117"
+msgid "50%"
+msgstr ""
+
+#. Description of setting with label #34114 "Include LFE when downmixing"
+#: system/settings/settings.xml
+msgctxt "#34118"
+msgid "100%"
+msgstr ""
+
+
 #empty strings from id 34114 to 34119
-#34114-34119 reserved for future use
+#34119 reserved for future use
 
 #: system/settings/settings.xml
 msgctxt "#34120"

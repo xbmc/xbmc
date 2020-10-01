@@ -36,6 +36,7 @@ CActiveAESink::CActiveAESink(CEvent* inMsgEvent)
   m_stats = nullptr;
   m_volume = 0.0;
   m_streamNoise = true;
+  m_mixSubLevel = 0.0f;
 }
 
 CActiveAESink::~CActiveAESink() = default;
@@ -326,6 +327,10 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
 
         case CSinkControlProtocol::SETNOISETYPE:
           m_streamNoise = *(bool*)msg->data;
+          return;
+
+        case CSinkControlProtocol::SETMIXSUBLEVEL:
+          m_mixSubLevel = *(float*)msg->data;
           return;
 
         default:
@@ -1192,8 +1197,8 @@ void CActiveAESink::GenerateNoise()
   srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
   srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat);
 
-  resampler->Init(dstConfig, srcConfig,
-                  false, false, M_SQRT1_2, nullptr, AE_QUALITY_UNKNOWN, false);
+  resampler->Init(dstConfig, srcConfig, false, false, M_SQRT1_2, nullptr, AE_QUALITY_UNKNOWN, false,
+                  0.0f);
 
   resampler->Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
                      (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);

@@ -78,9 +78,16 @@ public:
   CActiveAEBufferPoolResample(const AEAudioFormat& inputFormat, const AEAudioFormat& outputFormat, AEQuality quality);
   ~CActiveAEBufferPoolResample() override;
   using CActiveAEBufferPool::Create;
-  bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
+  bool Create(unsigned int totaltime,
+              bool remap,
+              bool upmix,
+              bool normalize = true,
+              float mixSubLevel = 0.0f);
   bool ResampleBuffers(int64_t timestamp = 0);
-  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality);
+  void ConfigureResampler(bool normalizelevels,
+                          bool stereoupmix,
+                          AEQuality quality,
+                          float mixSubLevel);
   float GetDelay();
   void Flush();
   void SetDrain(bool drain);
@@ -107,6 +114,7 @@ protected:
   double m_centerMixLevel = M_SQRT1_2;
   bool m_fillPackets = false;
   bool m_normalize = true;
+  float m_mixSubLevel = 0.0f;
   bool m_changeResampler = false;
   bool m_forceResampler = false;
   AEQuality m_resampleQuality;
