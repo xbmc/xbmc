@@ -21,7 +21,7 @@ public:
   IAEResample() = default;
   virtual ~IAEResample() = default;
   virtual bool Init(SampleConfig dstConfig, SampleConfig srcConfig, bool upmix, bool normalize, double centerMix,
-                    CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample) = 0;
+                    CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample, float mixSubLevel) = 0;
   virtual int Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio) = 0;
   virtual int64_t GetDelay(int64_t base) = 0;
   virtual int GetBufferedSamples() = 0;
