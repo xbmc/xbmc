@@ -305,16 +305,16 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     for (const auto& id : system)
     {
       m_pDS->exec(PrepareSQL("UPDATE installed SET enabled=1 WHERE addonID='%s'", id.c_str()));
-      // Set origin *only* for addons that do not have one yet as it may have been changed by an update.
-      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s' AND origin=''",
-          ORIGIN_SYSTEM, id.c_str()));
+      // Make sure system addons always have ORIGIN_SYSTEM origin
+      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s'", ORIGIN_SYSTEM,
+                             id.c_str()));
     }
 
     for (const auto& id : optional)
     {
-      // Set origin for optional system addons that do not have one yet too.
-      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s' AND origin=''",
-                             ORIGIN_SYSTEM, id.c_str()));
+      // Make sure optional system addons always have ORIGIN_SYSTEM origin
+      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s'", ORIGIN_SYSTEM,
+                             id.c_str()));
     }
 
     CommitTransaction();
