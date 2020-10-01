@@ -96,10 +96,14 @@ class CActiveAEStreamBuffers
 public:
   CActiveAEStreamBuffers(const AEAudioFormat& inputFormat, const AEAudioFormat& outputFormat, AEQuality quality);
   virtual ~CActiveAEStreamBuffers();
-  bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
+  bool Create(
+      unsigned int totaltime, bool remap, bool upmix, bool normalize = true, float sublevel = 0.0f);
   void SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
   bool ProcessBuffers();
-  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality);
+  void ConfigureResampler(bool normalizelevels,
+                          bool stereoupmix,
+                          AEQuality quality,
+                          float sublevel);
   bool HasInputLevel(int level);
   float GetDelay();
   void Flush();
