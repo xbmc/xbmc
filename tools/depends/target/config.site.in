@@ -22,7 +22,7 @@ fi
 
 CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
 LDFLAGS="-L@prefix@/@deps_dir@/lib @platform_ldflags@ $LDFLAGS"
-CXXFLAGS="@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
+CXXFLAGS="@platform_cxxflags@ @platform_includes@ @cxx_std@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
 CPPFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CPPFLAGS"
 
 export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config

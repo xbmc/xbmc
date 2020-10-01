@@ -95,7 +95,7 @@ OBJDUMP_FOR_BUILD=@OBJDUMP_FOR_BUILD@
 NATIVE_CFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
 NATIVE_LDFLAGS=@host_includes@ -L@prefix@/@tool_dir@/lib
 NATIVE_CPPFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
-NATIVE_CXXFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
+NATIVE_CXXFLAGS=@host_includes@ @cxx_std@ -I@prefix@/@tool_dir@/include
 
 
 ifeq ($(CPU), arm64)

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.4)
 project(kodi LANGUAGES CXX C ASM)
 
+set(CMAKE_CXX_STANDARD 17)
+
 if(POLICY CMP0069)
   set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
   cmake_policy(SET CMP0069 NEW)

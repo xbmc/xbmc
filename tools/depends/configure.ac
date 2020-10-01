@@ -600,7 +600,7 @@ CXXFLAGS="$platform_cxxflags $platform_includes"
 CXX_CACHED="$CXX"
 AX_CXX_COMPILE_STDCXX([17], [noext], [mandatory])
 CXX="$CXX_CACHED"
-platform_cxxflags+=" -std=c++17"
+cxx_std="-std=c++17"
 
 if test "$ffmpeg_options" == "default"; then
   ffmpeg_options="$ffmpeg_options_default"
@@ -633,6 +633,7 @@ AC_SUBST(platform_cflags_release)
 AC_SUBST(platform_cxxflags_release)
 AC_SUBST(platform_cflags_debug)
 AC_SUBST(platform_cxxflags_debug)
+AC_SUBST(cxx_std)
 AC_SUBST(platform_ldflags)
 AC_SUBST(platform_includes)
 AC_SUBST(platform_os)
