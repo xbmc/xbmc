@@ -40,6 +40,7 @@
 			<visible>[Player.ShowInfo | Window.IsActive(musicosd)] + !MusicPlayer.Content(livetv)</visible>
 			<height>460</height>
 			<include>OpenClose_Left</include>
+			<include>Visible_Left</include>
 			<bottom>0</bottom>
 			<control type="image">
 				<left>0</left>
