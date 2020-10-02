@@ -19,6 +19,20 @@ using namespace KODI::WINDOWING::GBM;
 namespace
 {
 const std::string SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
+
+void DrmFbDestroyCallback(gbm_bo* bo, void* data)
+{
+  drm_fb* fb = static_cast<drm_fb*>(data);
+
+  if (fb->fb_id > 0)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - removing framebuffer: {}", __FUNCTION__, fb->fb_id);
+    int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
+    drmModeRmFB(drm_fd, fb->fb_id);
+  }
+
+  delete fb;
+}
 }
 
 CDRMUtils::~CDRMUtils()
@@ -40,20 +54,6 @@ bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
             m_mode->vrefresh);
 
   return true;
-}
-
-void CDRMUtils::DrmFbDestroyCallback(struct gbm_bo *bo, void *data)
-{
-  struct drm_fb *fb = static_cast<drm_fb *>(data);
-
-  if (fb->fb_id > 0)
-  {
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} - removing framebuffer: {}", __FUNCTION__, fb->fb_id);
-    int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
-    drmModeRmFB(drm_fd, fb->fb_id);
-  }
-
-  delete fb;
 }
 
 drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)

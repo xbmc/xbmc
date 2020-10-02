@@ -85,7 +85,6 @@ private:
   bool FindPlanes();
   bool FindPreferredMode();
   bool RestoreOriginalMode();
-  static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
   void PrintDrmDeviceInfo(drmDevicePtr device);
 
