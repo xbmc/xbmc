@@ -131,7 +131,7 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromIds(unsigned int iTypeId
       return type;
   }
 
-  CLog::LogF(LOGERROR, "Unable to resolve numeric timer type (%d, %d)", iTypeId, iClientId);
+  CLog::LogF(LOGERROR, "Unable to resolve numeric timer type ({}, {})", iTypeId, iClientId);
   return {};
 }
 

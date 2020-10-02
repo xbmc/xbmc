@@ -112,7 +112,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr
     m_FirstDay = CDateTime::GetUTCDateTime();
 
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
-    CLog::LogF(LOGERROR, "Invalid client index supplied by client %d (must be > 0)!", m_iClientId);
+    CLog::LogF(LOGERROR, "Invalid client index supplied by client {} (must be > 0)!", m_iClientId);
 
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
@@ -153,9 +153,11 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr
     }
 
     if (!m_timerType)
-      CLog::LogF(LOGERROR, "No timer type, although timers are supported by client %d!", m_iClientId);
+      CLog::LogF(LOGERROR, "No timer type, although timers are supported by client {}!",
+                 m_iClientId);
     else if (m_iEpgUid == EPG_TAG_INVALID_UID && m_timerType->IsEpgBasedOnetime())
-      CLog::LogF(LOGERROR, "No epg tag given for epg based timer type (%d)!", m_timerType->GetTypeId());
+      CLog::LogF(LOGERROR, "No epg tag given for epg based timer type ({})!",
+                 m_timerType->GetTypeId());
   }
 
   UpdateSummary();

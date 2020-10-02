@@ -364,7 +364,7 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
       bGrouped = false;
     else
     {
-      CLog::LogF(LOGERROR, "Unsupported value '%s' for url parameter 'view'", view.c_str());
+      CLog::LogF(LOGERROR, "Unsupported value '{}' for url parameter 'view'", view);
       return false;
     }
   }
@@ -424,7 +424,7 @@ bool CPVRGUIDirectory::FilterDirectory(CFileItemList& results) const
       }
       else
       {
-        CLog::LogF(LOGERROR, "Unsupported value '%s' for channel list URL parameter 'view'", view.c_str());
+        CLog::LogF(LOGERROR, "Unsupported value '{}' for channel list URL parameter 'view'", view);
         return false;
       }
     }
@@ -506,7 +506,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
       }
       else
       {
-        CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
+        CLog::LogF(LOGERROR, "Unable to obtain members of channel group '{}'", strGroupName);
         return false;
       }
 

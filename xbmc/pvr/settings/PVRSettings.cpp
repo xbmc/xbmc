@@ -69,7 +69,7 @@ void CPVRSettings::Init(const std::set<std::string>& settingNames)
     SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingName);
     if (!setting)
     {
-      CLog::LogF(LOGERROR, "Unknown PVR setting '%s'", settingName.c_str());
+      CLog::LogF(LOGERROR, "Unknown PVR setting '{}'", settingName);
       continue;
     }
 
@@ -113,7 +113,7 @@ bool CPVRSettings::GetBoolValue(const std::string& settingName) const
       return setting->GetValue();
   }
 
-  CLog::LogF(LOGERROR, "PVR setting '%s' not found or wrong type given", settingName.c_str());
+  CLog::LogF(LOGERROR, "PVR setting '{}' not found or wrong type given", settingName);
   return false;
 }
 
@@ -128,7 +128,7 @@ int CPVRSettings::GetIntValue(const std::string& settingName) const
       return setting->GetValue();
   }
 
-  CLog::LogF(LOGERROR, "PVR setting '%s' not found or wrong type given", settingName.c_str());
+  CLog::LogF(LOGERROR, "PVR setting '{}' not found or wrong type given", settingName);
   return -1;
 }
 
@@ -143,7 +143,7 @@ std::string CPVRSettings::GetStringValue(const std::string& settingName) const
       return setting->GetValue();
   }
 
-  CLog::LogF(LOGERROR, "PVR setting '%s' not found or wrong type given", settingName.c_str());
+  CLog::LogF(LOGERROR, "PVR setting '{}' not found or wrong type given", settingName);
   return "";
 }
 

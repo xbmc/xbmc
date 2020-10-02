@@ -128,7 +128,7 @@ namespace PVR
       }
       else
       {
-        CLog::LogF(LOGERROR, "Cannot rename item '%s': no valid recording tag", item->GetPath().c_str());
+        CLog::LogF(LOGERROR, "Cannot rename item '{}': no valid recording tag", item->GetPath());
         return false;
       }
     }
@@ -185,7 +185,7 @@ namespace PVR
       }
       else
       {
-        CLog::LogF(LOGERROR, "Cannot undelete item '%s': no valid recording tag", item->GetPath().c_str());
+        CLog::LogF(LOGERROR, "Cannot undelete item '{}': no valid recording tag", item->GetPath());
         return false;
       }
     }
@@ -313,7 +313,8 @@ namespace PVR
 
     if (!windowSearch)
     {
-      CLog::LogF(LOGERROR, "Unable to get %s!", bRadio ? "WINDOW_RADIO_SEARCH" : "WINDOW_TV_SEARCH");
+      CLog::LogF(LOGERROR, "Unable to get {}!",
+                 bRadio ? "WINDOW_RADIO_SEARCH" : "WINDOW_TV_SEARCH");
       return false;
     }
 
@@ -324,7 +325,8 @@ namespace PVR
          iId != WINDOW_INVALID;
          iId = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog(true /* ignoreClosing */))
     {
-      CLog::LogF(LOGWARNING, "Have to close modal dialog with id %d before search window can be opened.", iId);
+      CLog::LogF(LOGWARNING,
+                 "Have to close modal dialog with id {} before search window can be opened.", iId);
 
       CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(iId);
       if (window)
@@ -333,7 +335,7 @@ namespace PVR
       }
       else
       {
-        CLog::LogF(LOGERROR, "Unable to get window instance %d! Cannot open search window.", iId);
+        CLog::LogF(LOGERROR, "Unable to get window instance {}! Cannot open search window.", iId);
         return false; // return, otherwise we run into an endless loop
       }
     }
@@ -723,7 +725,10 @@ namespace PVR
                 break;
 
               default:
-                CLog::LogF(LOGERROR, "Unknown instant record action selection (%d), defaulting to fixed length recording.", static_cast<int>(eSelected));
+                CLog::LogF(LOGERROR,
+                           "Unknown instant record action selection ({}), defaulting to fixed "
+                           "length recording.",
+                           static_cast<int>(eSelected));
                 epgTag.reset();
                 break;
             }
@@ -731,7 +736,10 @@ namespace PVR
           }
 
           default:
-            CLog::LogF(LOGERROR, "Unknown instant record action setting value (%d), defaulting to fixed length recording.", iAction);
+            CLog::LogF(LOGERROR,
+                       "Unknown instant record action setting value ({}), defaulting to fixed "
+                       "length recording.",
+                       iAction);
             break;
         }
 
@@ -972,7 +980,7 @@ namespace PVR
       }
       default:
       {
-        CLog::LogF(LOGERROR, "Unhandled TimerOperationResult (%d)!", static_cast<int>(result));
+        CLog::LogF(LOGERROR, "Unhandled TimerOperationResult ({})!", static_cast<int>(result));
         break;
       }
     }
@@ -1506,7 +1514,10 @@ namespace PVR
       }
     }
 
-    CLog::LogF(LOGERROR, "Could not determine %s channel to playback. No last played channel found, and first channel of active group could also not be determined.", bIsRadio ? "Radio": "TV");
+    CLog::LogF(LOGERROR,
+               "Could not determine {} channel to playback. No last played channel found, and "
+               "first channel of active group could also not be determined.",
+               bIsRadio ? "Radio" : "TV");
 
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                           g_localizeStrings.Get(19166), // PVR information
@@ -1542,7 +1553,7 @@ namespace PVR
       channel = channels.front()->channel;
     }
 
-    CLog::Log(LOGINFO, "PVR is starting playback of channel '%s'", channel->ChannelName().c_str());
+    CLog::Log(LOGINFO, "PVR is starting playback of channel '{}'", channel->ChannelName());
     CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(group);
     return SwitchToChannel(std::make_shared<CFileItem>(channel), true);
   }
@@ -1644,7 +1655,8 @@ namespace PVR
     }
 
     /* start the channel scan */
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Starting to scan for channels on client %s", scanClient->GetFriendlyName().c_str());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Starting to scan for channels on client {}",
+                scanClient->GetFriendlyName());
     long perfCnt = XbmcThreads::SystemClockMillis();
 
     /* do the scan */
@@ -1652,8 +1664,9 @@ namespace PVR
       HELPERS::ShowOKDialogText(CVariant{257},    // "Error"
                                     CVariant{19193}); // "The channel scan can't be started. Check the log for more information about this message."
 
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Channel scan finished after %li.%li seconds",
-                (XbmcThreads::SystemClockMillis() - perfCnt) / 1000, (XbmcThreads::SystemClockMillis() - perfCnt) % 1000);
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Channel scan finished after {}.{} seconds",
+                (XbmcThreads::SystemClockMillis() - perfCnt) / 1000,
+                (XbmcThreads::SystemClockMillis() - perfCnt) % 1000);
     m_bChannelScanRunning = false;
     return true;
   }
@@ -1734,7 +1747,8 @@ namespace PVR
 
     CDateTime::ResetTimezoneBias();
 
-    CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing %s database", bResetEPGOnly ? "EPG" : "PVR and EPG");
+    CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing {} database",
+                bResetEPGOnly ? "EPG" : "PVR and EPG");
 
     pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
     pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
@@ -1746,7 +1760,7 @@ namespace PVR
 
     if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     {
-      CLog::Log(LOGINFO, "PVR is stopping playback for %s database reset",
+      CLog::Log(LOGINFO, "PVR is stopping playback for {} database reset",
                 bResetEPGOnly ? "EPG" : "PVR and EPG");
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     }
@@ -1810,9 +1824,9 @@ namespace PVR
     pvrDatabase->Close();
     epgDatabase->Close();
 
-    CLog::LogFC(LOGDEBUG, LOGPVR, "%s database cleared", bResetEPGOnly ? "EPG" : "PVR and EPG");
+    CLog::LogFC(LOGDEBUG, LOGPVR, "{} database cleared", bResetEPGOnly ? "EPG" : "PVR and EPG");
 
-    CLog::Log(LOGINFO, "Restarting the PVR Manager after %s database reset",
+    CLog::Log(LOGINFO, "Restarting the PVR Manager after {} database reset",
               bResetEPGOnly ? "EPG" : "PVR and EPG");
     CServiceBroker::GetPVRManager().Start();
 
@@ -1829,7 +1843,8 @@ namespace PVR
     ParentalCheckResult ret = CheckParentalPIN();
 
     if (ret == ParentalCheckResult::FAILED)
-      CLog::LogF(LOGERROR, "Parental lock verification failed for channel '%s': wrong PIN entered.", channel->ChannelName().c_str());
+      CLog::LogF(LOGERROR, "Parental lock verification failed for channel '{}': wrong PIN entered.",
+                 channel->ChannelName());
 
     return ret;
   }

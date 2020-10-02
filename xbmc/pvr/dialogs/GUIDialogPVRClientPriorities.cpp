@@ -44,7 +44,7 @@ std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(std::shared_ptr<ISet
   if (clientEntry != m_clients.end())
     return clientEntry->second->GetFriendlyName();
 
-  CLog::LogF(LOGERROR, "Unable to obtain pvr client with id '%i'", iClientId);
+  CLog::LogF(LOGERROR, "Unable to obtain pvr client with id '{}'", iClientId);
   return CGUIDialogSettingsManualBase::GetLocalizedString(13205); // Unknown
 }
 

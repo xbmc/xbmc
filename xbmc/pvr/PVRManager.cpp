@@ -572,7 +572,8 @@ bool CPVRManager::SetWakeupCommand()
 
       const int iReturn = system(strExecCommand.c_str());
       if (iReturn != 0)
-        CLog::LogF(LOGERROR, "PVR Manager failed to execute wakeup command '%s': %s (%d)", strExecCommand.c_str(), strerror(iReturn), iReturn);
+        CLog::LogF(LOGERROR, "PVR Manager failed to execute wakeup command '{}': {} ({})",
+                   strExecCommand, strerror(iReturn), iReturn);
 
       return iReturn == 0;
     }

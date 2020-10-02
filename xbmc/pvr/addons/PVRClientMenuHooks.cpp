@@ -28,7 +28,7 @@ CPVRClientMenuHook::CPVRClientMenuHook(const std::string& addonId, const PVR_MEN
       hook.category != PVR_MENUHOOK_RECORDING &&
       hook.category != PVR_MENUHOOK_RECORDING &&
       hook.category != PVR_MENUHOOK_SETTING)
-    CLog::LogF(LOGERROR, "Unknown PVR_MENUHOOK_CAT value: %d", hook.category);
+    CLog::LogF(LOGERROR, "Unknown PVR_MENUHOOK_CAT value: {}", hook.category);
 }
 
 bool CPVRClientMenuHook::operator ==(const CPVRClientMenuHook& right) const

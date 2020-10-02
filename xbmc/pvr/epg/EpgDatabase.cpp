@@ -279,7 +279,7 @@ bool CPVREpgDatabase::Delete(const CPVREpg& table)
   /* invalid channel */
   if (table.EpgID() <= 0)
   {
-    CLog::LogF(LOGERROR, "Invalid channel id: %d", table.EpgID());
+    CLog::LogF(LOGERROR, "Invalid channel id: {}", table.EpgID());
     return false;
   }
 
@@ -717,7 +717,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load EPG tag with unique broadcast ID (%u) from the database",
+      CLog::LogF(LOGERROR, "Could not load EPG tag with unique broadcast ID ({}) from the database",
                  iUniqueBroadcastId);
     }
   }
@@ -747,7 +747,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(int iEpgID
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load EPG tag with start time (%s) from the database",
+      CLog::LogF(LOGERROR, "Could not load EPG tag with start time ({}) from the database",
                  startTime.GetAsDBDateTime());
     }
   }
@@ -778,7 +778,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load tags with min start time (%u) for EPG (%d)",
+      CLog::LogF(LOGERROR, "Could not load tags with min start time ({}) for EPG ({})",
                  minStartTime.GetAsDBDateTime(), iEpgID);
     }
   }
@@ -809,7 +809,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(int iEpgI
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load tags with max end time (%u) for EPG (%d)",
+      CLog::LogF(LOGERROR, "Could not load tags with max end time ({}) for EPG ({})",
                  maxEndTime.GetAsDBDateTime(), iEpgID);
     }
   }
@@ -849,7 +849,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinSta
     catch (...)
     {
       CLog::LogF(LOGERROR,
-                 "Could not load tags with min start time (%u) and max end time (%u) for EPG (%d)",
+                 "Could not load tags with min start time ({}) and max end time ({}) for EPG ({})",
                  minStartTime.GetAsDBDateTime(), maxEndTime.GetAsDBDateTime(), iEpgID);
     }
   }
@@ -889,7 +889,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEnd
     catch (...)
     {
       CLog::LogF(LOGERROR,
-                 "Could not load tags with min end time (%u) and max start time (%u) for EPG (%d)",
+                 "Could not load tags with min end time ({}) and max start time ({}) for EPG ({})",
                  minEndTime.GetAsDBDateTime(), maxStartTime.GetAsDBDateTime(), iEpgID);
     }
   }
@@ -939,7 +939,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int 
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load tags for EPG (%d)", iEpgID);
+      CLog::LogF(LOGERROR, "Could not load tags for EPG ({})", iEpgID);
     }
   }
   return {};
@@ -1030,7 +1030,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
 {
   if (tag.EpgID() <= 0)
   {
-    CLog::LogF(LOGERROR, "Tag '%s' does not have a valid table", tag.Title().c_str());
+    CLog::LogF(LOGERROR, "Tag '{}' does not have a valid table", tag.Title());
     return false;
   }
 
