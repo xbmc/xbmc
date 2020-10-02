@@ -71,7 +71,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
+      return !item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;
@@ -97,7 +97,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
+      return !item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;
@@ -234,7 +234,8 @@ void PlayAndQueueRecordings(const std::shared_ptr<CFileItem>& item, int windowId
 
 bool IsActiveRecordingsFolder(const CFileItem& item)
 {
-  if (item.m_bIsFolder && StringUtils::StartsWith(item.GetPath(), "pvr://recordings/"))
+  if (item.m_bIsFolder && !item.IsParentFolder() &&
+      URIUtils::IsPVRRecordingFileOrFolder(item.GetPath()))
   {
     // Note: Recordings contained in the folder must be sorted properly, thus this
     //       item is only available if one of the recordings windows is active.

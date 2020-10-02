@@ -410,7 +410,7 @@ namespace PVR
     bool DeleteWatchedRecordings::IsVisible(const CFileItem& item) const
     {
       // recordings folder?
-      if (item.m_bIsFolder)
+      if (item.m_bIsFolder && !item.IsParentFolder())
         return CPVRRecordingsPath(item.GetPath()).IsValid();
 
       return false;
