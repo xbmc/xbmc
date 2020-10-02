@@ -21,7 +21,10 @@ namespace
 const std::string SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
 }
 
-CDRMUtils::CDRMUtils() = default;
+CDRMUtils::~CDRMUtils()
+{
+  DestroyDrm();
+}
 
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
