@@ -62,10 +62,8 @@ void CDRMLegacy::PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
 
 bool CDRMLegacy::WaitingForFlip()
 {
-  if(!flip_happening)
-  {
+  if (!flip_happening)
     return false;
-  }
 
   struct pollfd drm_fds =
   {
@@ -89,19 +87,13 @@ bool CDRMLegacy::WaitingForFlip()
     auto ret = poll(&drm_fds, 1, -1);
 
     if(ret < 0)
-    {
       return true;
-    }
 
     if(drm_fds.revents & (POLLHUP | POLLERR))
-    {
       return true;
-    }
 
     if(drm_fds.revents & POLLIN)
-    {
       drmHandleEvent(m_fd, &drm_evctx);
-    }
   }
 
   return false;
@@ -135,14 +127,10 @@ void CDRMLegacy::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 bool CDRMLegacy::InitDrm()
 {
   if (!CDRMUtils::OpenDrm(true))
-  {
     return false;
-  }
 
   if (!CDRMUtils::InitDrm())
-  {
     return false;
-  }
 
   CLog::Log(LOGDEBUG, "CDRMLegacy::{} - initialized legacy DRM", __FUNCTION__);
   return true;

@@ -81,37 +81,26 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
     if (!AddProperty(m_connector, "CRTC_ID", m_crtc->GetCrtcId()))
-    {
       return;
-    }
 
     if (drmModeCreatePropertyBlob(m_fd, m_mode, sizeof(*m_mode), &blob_id) != 0)
-    {
       return;
-    }
 
     if (m_active && m_orig_crtc && m_orig_crtc->GetCrtcId() != m_crtc->GetCrtcId())
     {
       // if using a different CRTC than the original, disable original to avoid EINVAL
       if (!AddProperty(m_orig_crtc, "MODE_ID", 0))
-      {
         return;
-      }
+
       if (!AddProperty(m_orig_crtc, "ACTIVE", 0))
-      {
         return;
-      }
     }
 
     if (!AddProperty(m_crtc, "MODE_ID", blob_id))
-    {
       return;
-    }
 
     if (!AddProperty(m_crtc, "ACTIVE", m_active ? 1 : 0))
-    {
       return;
-    }
   }
 
   if (rendered)
@@ -202,9 +191,7 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 bool CDRMAtomic::InitDrm()
 {
   if (!CDRMUtils::OpenDrm(true))
-  {
     return false;
-  }
 
   auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ATOMIC, 1);
   if (ret)
@@ -217,9 +204,7 @@ bool CDRMAtomic::InitDrm()
   m_req = drmModeAtomicAlloc();
 
   if (!CDRMUtils::InitDrm())
-  {
     return false;
-  }
 
   for (auto& plane : m_planes)
   {

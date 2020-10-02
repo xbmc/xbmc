@@ -15,9 +15,7 @@ using namespace KODI::WINDOWING::GBM;
 bool COffScreenModeSetting::InitDrm()
 {
   if (!CDRMUtils::OpenDrm(false))
-  {
     return false;
-  }
 
   CLog::Log(LOGDEBUG, "COffScreenModeSetting::{} - initialized offscreen DRM", __FUNCTION__);
   return true;
