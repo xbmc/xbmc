@@ -31,11 +31,6 @@ public:
   RESOLUTION_INFO GetCurrentMode() override;
   std::vector<RESOLUTION_INFO> GetModes() override;
   bool SetMode(const RESOLUTION_INFO& res) override { return true; }
-
-private:
-  const int DISPLAY_WIDTH = 1280;
-  const int  DISPLAY_HEIGHT= 720;
-  const float DISPLAY_REFRESH = 50.0f;
 };
 
 }
