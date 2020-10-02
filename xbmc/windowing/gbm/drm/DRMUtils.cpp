@@ -32,11 +32,8 @@ bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
   m_width = res.iWidth;
   m_height = res.iHeight;
 
-  CLog::Log(LOGDEBUG, "CDRMUtils::%s - found crtc mode: %dx%d%s @ %d Hz",
-            __FUNCTION__,
-            m_mode->hdisplay,
-            m_mode->vdisplay,
-            m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} - found crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
+            m_mode->hdisplay, m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
             m_mode->vrefresh);
 
   return true;
@@ -48,7 +45,7 @@ void CDRMUtils::DrmFbDestroyCallback(struct gbm_bo *bo, void *data)
 
   if (fb->fb_id > 0)
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - removing framebuffer: %d", __FUNCTION__, fb->fb_id);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - removing framebuffer: {}", __FUNCTION__, fb->fb_id);
     int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
     drmModeRmFB(drm_fd, fb->fb_id);
   }
@@ -151,13 +148,9 @@ bool CDRMUtils::FindPreferredMode()
     if(current_mode->type & DRM_MODE_TYPE_PREFERRED)
     {
       m_mode = current_mode;
-      CLog::Log(LOGDEBUG,
-                "CDRMUtils::%s - found preferred mode: %dx%d%s @ %d Hz",
-                __FUNCTION__,
-                m_mode->hdisplay,
-                m_mode->vdisplay,
-                m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-                m_mode->vrefresh);
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} - found preferred mode: {}x{}{} @ {} Hz", __FUNCTION__,
+                m_mode->hdisplay, m_mode->vdisplay,
+                m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
       break;
     }
 
@@ -171,7 +164,7 @@ bool CDRMUtils::FindPreferredMode()
 
   if(!m_mode)
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to find preferred mode", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find preferred mode", __FUNCTION__);
     return false;
   }
 
@@ -481,7 +474,7 @@ bool CDRMUtils::InitDrm()
   if (ret < 0)
   {
     CLog::Log(LOGDEBUG,
-              "CDRMUtils::%s - failed to set drm master, will try to authorize instead: %s",
+              "CDRMUtils::{} - failed to set drm master, will try to authorize instead: {}",
               __FUNCTION__, strerror(errno));
 
     drm_magic_t magic;
@@ -489,18 +482,20 @@ bool CDRMUtils::InitDrm()
     ret = drmGetMagic(m_fd, &magic);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CDRMUtils::%s - failed to get drm magic: %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm magic: {}", __FUNCTION__,
+                strerror(errno));
       return false;
     }
 
     ret = drmAuthMagic(m_fd, magic);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CDRMUtils::%s - failed to authorize drm magic: %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "CDRMUtils::{} - failed to authorize drm magic: {}", __FUNCTION__,
+                strerror(errno));
       return false;
     }
 
-    CLog::Log(LOGINFO, "CDRMUtils::%s - successfully authorized drm magic", __FUNCTION__);
+    CLog::Log(LOGINFO, "CDRMUtils::{} - successfully authorized drm magic", __FUNCTION__);
   }
 
   return true;
@@ -560,11 +555,11 @@ bool CDRMUtils::RestoreOriginalMode()
 
   if(ret)
   {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - failed to set original crtc mode", __FUNCTION__);
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set original crtc mode", __FUNCTION__);
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CDRMUtils::%s - set original crtc mode", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} - set original crtc mode", __FUNCTION__);
 
   return true;
 }

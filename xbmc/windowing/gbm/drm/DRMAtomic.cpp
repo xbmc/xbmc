@@ -60,8 +60,6 @@ bool CDRMAtomic::SetScalingFilter(struct CDRMObject* object, const char* name, c
   {
     if (AddProperty(object, name, filter_type))
     {
-      CLog::Log(LOGDEBUG, "CDRMAtomic::{}, Original Window size: {}x{}", __FUNCTION__, m_width,
-                m_height);
       uint32_t mar_scale_factor =
           GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
       uint32_t diff_w = m_mode->hdisplay - (mar_scale_factor * m_width);
@@ -147,21 +145,23 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   auto ret = drmModeAtomicCommit(m_fd, m_req, flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - test commit failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMAtomic::{} - test commit failed: {}", __FUNCTION__, strerror(errno));
   }
   else if (ret == 0)
   {
     ret = drmModeAtomicCommit(m_fd, m_req, flags, nullptr);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CDRMAtomic::%s - atomic commit failed: %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
+                strerror(errno));
     }
   }
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
     if (drmModeDestroyPropertyBlob(m_fd, blob_id) != 0)
-      CLog::Log(LOGERROR, "CDRMAtomic::%s - failed to destroy property blob: %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "CDRMAtomic::{} - failed to destroy property blob: {}", __FUNCTION__,
+                strerror(errno));
   }
 
   drmModeAtomicFree(m_req);
@@ -182,7 +182,7 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
     drm_fb = CDRMUtils::DrmFbGetFromBo(bo);
     if (!drm_fb)
     {
-      CLog::Log(LOGERROR, "CDRMAtomic::%s - Failed to get a new FBO", __FUNCTION__);
+      CLog::Log(LOGERROR, "CDRMAtomic::{} - Failed to get a new FBO", __FUNCTION__);
       return;
     }
   }
@@ -193,7 +193,7 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
   {
     flags |= DRM_MODE_ATOMIC_ALLOW_MODESET;
     m_need_modeset = false;
-    CLog::Log(LOGDEBUG, "CDRMAtomic::%s - Execute modeset at next commit", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMAtomic::{} - Execute modeset at next commit", __FUNCTION__);
   }
 
   DrmAtomicCommit(!drm_fb ? 0 : drm_fb->fb_id, flags, rendered, videoLayer);
@@ -209,7 +209,8 @@ bool CDRMAtomic::InitDrm()
   auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_ATOMIC, 1);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CDRMAtomic::%s - no atomic modesetting support: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMAtomic::{} - no atomic modesetting support: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
@@ -226,7 +227,7 @@ bool CDRMAtomic::InitDrm()
     AddProperty(plane.get(), "CRTC_ID", 0);
   }
 
-  CLog::Log(LOGDEBUG, "CDRMAtomic::%s - initialized atomic DRM", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CDRMAtomic::{} - initialized atomic DRM", __FUNCTION__);
 
   if (m_gui_plane->SupportsProperty("SCALING_FILTER"))
   {
