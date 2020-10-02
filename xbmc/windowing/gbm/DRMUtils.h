@@ -11,8 +11,6 @@
 #include "GBMUtils.h"
 #include "windowing/Resolution.h"
 
-#include "platform/posix/utils/FileHandle.h"
-
 #include <map>
 #include <vector>
 
@@ -92,7 +90,6 @@ public:
   virtual bool InitDrm();
   virtual void DestroyDrm();
 
-  std::string GetModule() const { return m_module; }
   int GetFileDescriptor() const { return m_fd; }
   int GetRenderNodeFileDescriptor() const { return m_renderFd; }
   struct plane* GetVideoPlane() const { return m_video_plane; }
@@ -122,7 +119,7 @@ protected:
   static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object);
   static void FreeProperties(struct drm_object *object);
 
-  KODI::UTILS::POSIX::CFileHandle m_fd;
+  int m_fd;
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
@@ -149,9 +146,9 @@ private:
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
   bool CheckConnector(int connectorId);
+  void PrintDrmDeviceInfo(drmDevicePtr device);
 
-  KODI::UTILS::POSIX::CFileHandle m_renderFd;
-  std::string m_module;
+  int m_renderFd;
 
   drmModeResPtr m_drm_resources = nullptr;
 
