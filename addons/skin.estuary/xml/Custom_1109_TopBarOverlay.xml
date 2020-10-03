@@ -44,7 +44,17 @@
 				<align>right</align>
 				<font>font30_title</font>
 				<label>$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]</label>
-				<visible>player.chaptercount</visible>
+				<visible>!VideoPlayer.Content(LiveTV) + player.chaptercount</visible>
+			</control>
+			<control type="label">
+				<right>25</right>
+				<top>6</top>
+				<width>700</width>
+				<height>60</height>
+				<align>right</align>
+				<font>font30_title</font>
+				<label>[COLOR button_focus]$LOCALIZE[31026][/COLOR] $INFO[PVR.TimeshiftCur] (-$INFO[PVR.TimeshiftOffset])</label>
+				<visible>VideoPlayer.Content(LiveTV) + PVR.IsTimeShift</visible>
 			</control>
 			<control type="progress">
 				<left>0</left>
@@ -54,6 +64,33 @@
 				<info>Player.Progress</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="group">
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+				<control type="group">
+					<visible>Player.SeekEnabled + VideoPlayer.HasEPG</visible>
+					<include content="PVRProgress">
+						<param name="ts_bar_top" value="55"/>
+						<param name="epg_bar_top" value="63"/>
+						<param name="ts_bar_height" value="8"/>
+						<param name="epg_bar_height" value="8"/>
+					</include>
+				</control>
+				<control type="group">
+					<visible>Player.SeekEnabled + !VideoPlayer.HasEPG</visible>
+					<include content="PVRProgress">
+						<param name="ts_bar_top" value="55"/>
+						<param name="ts_bar_height" value="16"/>
+					</include>
+				</control>
+				<control type="group">
+					<visible>!Player.SeekEnabled + VideoPlayer.HasEPG</visible>
+					<include content="PVRProgress">
+						<param name="epg_bar_top" value="55"/>
+						<param name="epg_bar_height" value="16"/>
+					</include>
+				</control>
 			</control>
 		</control>
 		<control type="group">
