@@ -441,7 +441,8 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   VECADDONS addons;
   CServiceBroker::GetAddonMgr().GetInstalledAddons(addons);
   addons.erase(std::remove_if(addons.begin(), addons.end(),
-                              std::not1(std::function<bool(const AddonPtr&)>(IsUserInstalled))), addons.end());
+                              [](const AddonPtr& addon) { return !IsUserInstalled(addon); }));
+
   if (addons.empty())
     return;
 
