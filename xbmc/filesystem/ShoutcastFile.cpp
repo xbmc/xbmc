@@ -60,7 +60,7 @@ int64_t CShoutcastFile::GetLength()
   return 0;
 }
 
-std::string CShoutcastFile::ToUTF8(const std::string& str)
+std::string CShoutcastFile::DecodeToUTF8(const std::string& str)
 {
   std::string ret = str;
 
@@ -68,6 +68,11 @@ std::string CShoutcastFile::ToUTF8(const std::string& str)
     g_charsetConverter.unknownToUTF8(ret);
   else
     g_charsetConverter.ToUtf8(m_fileCharset, str, ret);
+
+  std::wstring wBuffer, wConverted;
+  g_charsetConverter.utf8ToW(ret, wBuffer, false);
+  HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
+  g_charsetConverter.wToUTF8(wConverted, ret);
 
   return ret;
 }
@@ -95,13 +100,13 @@ bool CShoutcastFile::Open(const CURL& url)
     if (icyTitle == "This is my server name") // Handle badly set up servers
       icyTitle.clear();
 
-    icyTitle = ToUTF8(icyTitle);
+    icyTitle = DecodeToUTF8(icyTitle);
 
     icyGenre = m_file.GetHttpHeader().GetValue("icy-genre");
     if (icyGenre.empty())
       icyGenre = m_file.GetHttpHeader().GetValue("ice-genre"); // icecast
 
-    icyGenre = ToUTF8(icyGenre);
+    icyGenre = DecodeToUTF8(icyGenre);
   }
   m_metaint = atoi(m_file.GetHttpHeader().GetValue("icy-metaint").c_str());
   if (!m_metaint)
@@ -175,14 +180,9 @@ void CShoutcastFile::Close()
 
 bool CShoutcastFile::ExtractTagInfo(const char* buf)
 {
-  std::string strBuffer = ToUTF8(buf);
+  std::string strBuffer = DecodeToUTF8(buf);
 
-  bool result=false;
-
-  std::wstring wBuffer, wConverted;
-  g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
-  HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
-  g_charsetConverter.wToUTF8(wConverted, strBuffer);
+  bool result = false;
 
   CRegExp reTitle(true);
   reTitle.RegComp("StreamTitle=\'(.*?)\';");
