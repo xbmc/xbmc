@@ -826,7 +826,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     bool isUpdate = CheckOutdatedOrUpdate(false); // check if it's an available update
     bool hasUpdate = CheckOutdatedOrUpdate(true); // check if it's an outdated addon
 
-    bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon);
+    bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon, CheckAddonPath::NO);
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
