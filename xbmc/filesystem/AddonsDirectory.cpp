@@ -499,7 +499,7 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
   VECADDONS addons = CServiceBroker::GetAddonMgr().GetAvailableUpdates();
-  CAddonsDirectory::GenerateAddonListingUpdates(path, addons, items, g_localizeStrings.Get(24043));
+  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
 
   if (!items.IsEmpty())
   {
@@ -788,25 +788,10 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
       || CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), tmp, ADDON_REPOSITORY);
 }
 
-void CAddonsDirectory::GenerateAddonListing(const CURL &path,
-    const VECADDONS& addons, CFileItemList &items, const std::string label)
-{
-  GenerateAddonListing(path, addons, items, label, false);
-}
-
-void CAddonsDirectory::GenerateAddonListingUpdates(const CURL& path,
-                                                   const VECADDONS& addons,
-                                                   CFileItemList& items,
-                                                   const std::string label)
-{
-  GenerateAddonListing(path, addons, items, label, true);
-}
-
 void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             const VECADDONS& addons,
                                             CFileItemList& items,
-                                            const std::string label,
-                                            bool alwaysShowUpdateIcon)
+                                            const std::string label)
 {
   std::map<std::string, CAddonWithUpdate> addonsWithUpdate;
 
@@ -839,8 +824,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     };
 
     bool isUpdate = CheckOutdatedOrUpdate(false); // check if it's an available update
-    bool hasUpdate =
-        alwaysShowUpdateIcon || CheckOutdatedOrUpdate(true); // check if it's an outdated addon
+    bool hasUpdate = CheckOutdatedOrUpdate(true); // check if it's an outdated addon
 
     bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon);
 

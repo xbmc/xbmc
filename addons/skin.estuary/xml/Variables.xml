@@ -172,7 +172,7 @@
 		<value condition="ListItem.Property(addon.orphaned)">icons/addonstatus/orphan.png</value>
 		<value condition="ListItem.Property(addon.downloading)">icons/addonstatus/install.png</value>
 		<value condition="ListItem.Property(addon.isinstalled) + !ListItem.Property(addon.isenabled) + Window.IsActive(addonbrowser)">icons/addonstatus/disable.png</value>
-		<value condition="ListItem.Property(addon.hasupdate)">icons/addonstatus/update.png</value>
+		<value condition="ListItem.Property(addon.hasupdate) | ListItem.Property(addon.isupdate)">icons/addonstatus/update.png</value>
 		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24169])">icons/addonstatus/enabled-normal.png</value>
 		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">icons/addonstatus/enabled-deprecated.png</value>
 		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">icons/addonstatus/enabled-broken.png</value>
