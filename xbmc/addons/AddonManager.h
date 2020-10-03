@@ -139,6 +139,13 @@ namespace ADDON
      */
     bool FindAddons();
 
+    /*! \brief Checks whether given addon with given version is installed
+     * \param addonId addon to check
+     * \param addonVersion version to check
+     * \return True if installed, false otherwise
+     */
+    bool FindAddon(const std::string& addonId, const AddonVersion& addonVersion);
+
     /*!
      * @brief Fills the the provided vector with the list of incompatible
      * enabled addons and returns if there's any.
@@ -183,7 +190,7 @@ namespace ADDON
      *
      * Returns true if the addon was successfully loaded and enabled; otherwise false.
      */
-    bool LoadAddon(const std::string& addonId);
+    bool LoadAddon(const std::string& addonId, const AddonVersion& addonVersion);
 
     /*! @note: should only be called by AddonInstaller
      *
