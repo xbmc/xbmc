@@ -18,6 +18,7 @@
 #include <cstdarg>
 #include <cstring>
 #include <iomanip>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -366,37 +367,190 @@ constexpr auto EnumToInt(T&& arg) noexcept
   return static_cast<int>(arg);
 }
 
+//==============================================================================
+/// @defgroup cpp_kodi_tools_StringUtils_Defs Definitions, structures and enumerators
+/// @ingroup cpp_kodi_tools_StringUtils
+/// @brief **Parts used within string util functions**\n
+/// All to string functions associated data structures.
+///
+/// It is divided into individual modules that correspond to the respective
+/// types.
+///
+///
+///
+
+//==============================================================================
+/// @defgroup cpp_kodi_tools_StringUtils_Defs_TIME_FORMAT enum TIME_FORMAT
+/// @ingroup cpp_kodi_tools_StringUtils_Defs
+/// @brief TIME_FORMAT enum/bitmask used for formatting time strings.
+///
+/// Note the use of bitmasking, e.g. TIME_FORMAT_HH_MM_SS = TIME_FORMAT_HH | TIME_FORMAT_MM | TIME_FORMAT_SS
+/// @sa kodi::tools::StringUtils::SecondsToTimeString
+///
+/// @note For InfoLabels use the equivalent value listed (bold) on the
+/// description of each enum value.
+///
+/// <b>Example:</b> 3661 seconds => h=1, hh=01, m=1, mm=01, ss=01, hours=1, mins=61, secs=3661
+///
+///@{
 enum TIME_FORMAT
 {
+  /// Usually used as the fallback value if the format value is empty
   TIME_FORMAT_GUESS = 0,
+
+  /// <b>ss</b> - seconds only
   TIME_FORMAT_SS = 1,
+
+  /// <b>mm</b> - minutes only (2-digit)
   TIME_FORMAT_MM = 2,
+
+  /// <b>mm:ss</b> - minutes and seconds
   TIME_FORMAT_MM_SS = 3,
+
+  /// <b>hh</b> - hours only (2-digit)
   TIME_FORMAT_HH = 4,
+
+  /// <b>hh:ss</b> - hours and seconds (this is not particularly useful)
   TIME_FORMAT_HH_SS = 5,
+
+  /// <b>hh:mm</b> - hours and minutes
   TIME_FORMAT_HH_MM = 6,
+
+  /// <b>hh:mm:ss</b> - hours, minutes and seconds
   TIME_FORMAT_HH_MM_SS = 7,
+
+  /// <b>xx</b> - returns AM/PM for a 12-hour clock
   TIME_FORMAT_XX = 8,
+
+  /// <b>hh:mm xx</b> - returns hours and minutes in a 12-hour clock format (AM/PM)
   TIME_FORMAT_HH_MM_XX = 14,
+
+  /// <b>hh:mm:ss xx</b> - returns hours (2-digit), minutes and seconds in a 12-hour clock format (AM/PM)
   TIME_FORMAT_HH_MM_SS_XX = 15,
+
+  /// <b>h</b> - hours only (1-digit)
   TIME_FORMAT_H = 16,
+
+  /// <b>hh:mm:ss</b> - hours, minutes and seconds
   TIME_FORMAT_H_MM_SS = 19,
+
+  /// <b>hh:mm:ss xx</b> - returns hours (1-digit), minutes and seconds in a 12-hour clock format (AM/PM)
   TIME_FORMAT_H_MM_SS_XX = 27,
+
+  /// <b>secs</b> - total time in seconds
   TIME_FORMAT_SECS = 32,
+
+  /// <b>mins</b> - total time in minutes
   TIME_FORMAT_MINS = 64,
+
+  /// <b>hours</b> - total time in hours
   TIME_FORMAT_HOURS = 128,
+
+  /// <b>m</b> - minutes only (1-digit)
   TIME_FORMAT_M = 256
 };
+///@}
+//------------------------------------------------------------------------------
 
+//==============================================================================
+/// @defgroup cpp_kodi_tools_StringUtils class StringUtils
+/// @ingroup cpp_kodi_tools
+/// @brief **C++ class for processing strings**\n
+/// This class brings many different functions to edit, check or search texts.
+///
+/// Is intended to reduce any code work of C++ on addons and to have them faster
+/// to use.
+///
+/// All functions are static within the <b>`kodi::tools::StringUtils`</b> class.
+///
+///@{
 class StringUtils
 {
 public:
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_StringUtils_Defs
+  /// @brief Defines a static empty <b>`std::string`</b>.
+  ///
   static const std::string Empty;
+  //----------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------
-  // String format control
-  //@{
+  /// @defgroup cpp_kodi_tools_StringUtils_FormatControl String format
+  /// @ingroup cpp_kodi_tools_StringUtils
+  /// @brief **Formatting functions**\n
+  /// Used to output the given values in newly formatted text using functions.
+  ///
+  /*!@{*/
 
+  //============================================================================
+  /// @brief Returns the C++ string pointed by given format. If format includes
+  /// format specifiers (subsequences beginning with %), the additional arguments
+  /// following format are formatted and inserted in the resulting string replacing
+  /// their respective specifiers.
+  ///
+  /// After the format parameter, the function expects at least as many additional
+  /// arguments as specified by format.
+  ///
+  /// @param[in] fmt The format of the text to process for output.
+  ///                C string that contains the text to be written to the stream.
+  ///                It can optionally contain embedded format specifiers that are
+  ///                replaced by the values specified in subsequent additional
+  ///                arguments and formatted as requested.
+  ///  |  specifier | Output                                             | Example
+  ///  |------------|----------------------------------------------------|------------
+  ///  |  d or i    | Signed decimal integer                             | 392
+  ///  |  u         | Unsigned decimal integer                           | 7235
+  ///  |  o         | Unsigned octal                                     | 610
+  ///  |  x         | Unsigned hexadecimal integer                       | 7fa
+  ///  |  X         | Unsigned hexadecimal integer (uppercase)           | 7FA
+  ///  |  f         | Decimal floating point, lowercase                  | 392.65
+  ///  |  F         | Decimal floating point, uppercase                  | 392.65
+  ///  |  e         | Scientific notation (mantissa/exponent), lowercase | 3.9265e+2
+  ///  |  E         | Scientific notation (mantissa/exponent), uppercase | 3.9265E+2
+  ///  |  g         | Use the shortest representation: %e or %f          | 392.65
+  ///  |  G         | Use the shortest representation: %E or %F          | 392.65
+  ///  |  a         | Hexadecimal floating point, lowercase              | -0xc.90fep-2
+  ///  |  A         | Hexadecimal floating point, uppercase              | -0XC.90FEP-2
+  ///  |  c         | Character                                          | a
+  ///  |  s         | String of characters                               | sample
+  ///  |  p         | Pointer address                                    | b8000000
+  ///  |  %         | A % followed by another % character will write a single % to the stream. | %
+  /// The length sub-specifier modifies the length of the data type. This is a chart
+  /// showing the types used to interpret the corresponding arguments with and without
+  /// length specifier (if a different type is used, the proper type promotion or
+  /// conversion is performed, if allowed):
+  ///  | length| d i           | u o x X               | f F e E g G a A | c     | s       | p       | n               |
+  ///  |-------|---------------|-----------------------|-----------------|-------|---------|---------|-----------------|
+  ///  | (none)| int           | unsigned int          | double          | int   | char*   | void*   | int*            |
+  ///  | hh    | signed char   | unsigned char         |                 |       |         |         | signed char*    |
+  ///  | h     | short int     | unsigned short int    |                 |       |         |         | short int*      |
+  ///  | l     | long int      | unsigned long int     |                 | wint_t| wchar_t*|         | long int*       |
+  ///  | ll    | long long int | unsigned long long int|                 |       |         |         | long long int*  |
+  ///  | j     | intmax_t      | uintmax_t             |                 |       |         |         | intmax_t*       |
+  ///  | z     | size_t        | size_t                |                 |       |         |         | size_t*         |
+  ///  | t     | ptrdiff_t     | ptrdiff_t             |                 |       |         |         | ptrdiff_t*      |
+  ///  | L     |               |                       | long double     |       |         |         |                 |
+  ///  <b>Note:</b> that the c specifier takes an int (or wint_t) as argument, but performs the proper conversion to a char value
+  ///  (or a wchar_t) before formatting it for output.
+  /// @param[in] ... <i>(additional arguments)</i>\n
+  ///                Depending on the format string, the function may expect a
+  ///                sequence of additional arguments, each containing a value
+  ///                to be used to replace a format specifier in the format
+  ///                string (or a pointer to a storage location, for n).\n
+  ///                There should be at least as many of these arguments as the
+  ///                number of values specified in the format specifiers.
+  ///                Additional arguments are ignored by the function.
+  /// @return Formatted string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string str = kodi::tools::StringUtils::Format("Hello %s %i", "World", 2020);
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string Format(const char* fmt, ...)
   {
     va_list args;
@@ -406,7 +560,23 @@ public:
 
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Returns the C++ wide string pointed by given format.
+  ///
+  /// @param[in] fmt The format of the text to process for output
+  ///                (see @ref Format(const char* fmt, ...) for details).
+  /// @param[in] ... <i>(additional arguments)</i>\n
+  ///                Depending on the format string, the function may expect a
+  ///                sequence of additional arguments, each containing a value
+  ///                to be used to replace a format specifier in the format
+  ///                string (or a pointer to a storage location, for n).\n
+  ///                There should be at least as many of these arguments as the
+  ///                number of values specified in the format specifiers.
+  ///                Additional arguments are ignored by the function.
+  /// @return Formatted string
+  ///
   inline static std::wstring Format(const wchar_t* fmt, ...)
   {
     va_list args;
@@ -416,7 +586,17 @@ public:
 
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Returns the C++ string pointed by given format list.
+  ///
+  /// @param[in] fmt The format of the text to process for output
+  ///                (see @ref Format(const char* fmt, ...) for details).
+  /// @param[in] args A value identifying a variable arguments list initialized
+  ///                 with `va_start`.
+  /// @return Formatted string
+  ///
   inline static std::string FormatV(PRINTF_FORMAT_STRING const char* fmt, va_list args)
   {
     if (!fmt || !fmt[0])
@@ -460,7 +640,17 @@ public:
 
     return ""; // unreachable
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Returns the C++ wide string pointed by given format list.
+  ///
+  /// @param[in] fmt The format of the text to process for output
+  ///                (see @ref Format(const char* fmt, ...) for details).
+  /// @param[in] args A value identifying a variable arguments list initialized
+  ///                 with `va_start`.
+  /// @return Formatted string
+  ///
   inline static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t* fmt, va_list args)
   {
     if (!fmt || !fmt[0])
@@ -505,7 +695,60 @@ public:
 
     return L"";
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Returns bytes in a human readable format using the smallest unit
+  /// that will fit `bytes` in at most three digits. The number of decimals are
+  /// adjusted with significance such that 'small' numbers will have more
+  /// decimals than larger ones.
+  ///
+  /// For example: 1024 bytes will be formatted as "1.00kB", 10240 bytes as
+  /// "10.0kB" and 102400 bytes as "100kB". See TestStringUtils for more
+  /// examples.
+  ///
+  /// Supported file sizes:
+  /// | Value      | Short | Metric
+  /// |------------|-------|-----------
+  /// | 1          | B     | byte
+  /// | 1024¹      | kB    | kilobyte
+  /// | 1024²      | MB    | megabyte
+  /// | 1024³      | GB    | gigabyte
+  /// | 1024 exp 4 | TB    | terabyte
+  /// | 1024 exp 5 | PB    | petabyte
+  /// | 1024 exp 6 | EB    | exabyte
+  /// | 1024 exp 7 | ZB    | zettabyte
+  /// | 1024 exp 8 | YB    | yottabyte
+  ///
+  /// @param[in] bytes Bytes amount to return as human readable string
+  /// @return Size as string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// EXPECT_STREQ("0B", kodi::tools::StringUtils::FormatFileSize(0).c_str());
+  ///
+  /// EXPECT_STREQ("999B", kodi::tools::StringUtils::FormatFileSize(999).c_str());
+  /// EXPECT_STREQ("0.98kB", kodi::tools::StringUtils::FormatFileSize(1000).c_str());
+  ///
+  /// EXPECT_STREQ("1.00kB", kodi::tools::StringUtils::FormatFileSize(1024).c_str());
+  /// EXPECT_STREQ("9.99kB", kodi::tools::StringUtils::FormatFileSize(10229).c_str());
+  ///
+  /// EXPECT_STREQ("10.1kB", kodi::tools::StringUtils::FormatFileSize(10387).c_str());
+  /// EXPECT_STREQ("99.9kB", kodi::tools::StringUtils::FormatFileSize(102297).c_str());
+  ///
+  /// EXPECT_STREQ("100kB", kodi::tools::StringUtils::FormatFileSize(102400).c_str());
+  /// EXPECT_STREQ("999kB", kodi::tools::StringUtils::FormatFileSize(1023431).c_str());
+  ///
+  /// EXPECT_STREQ("0.98MB", kodi::tools::StringUtils::FormatFileSize(1023897).c_str());
+  /// EXPECT_STREQ("0.98MB", kodi::tools::StringUtils::FormatFileSize(1024000).c_str());
+  ///
+  /// EXPECT_STREQ("5.30EB", kodi::tools::StringUtils::FormatFileSize(6115888293969133568).c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string FormatFileSize(uint64_t bytes)
   {
     const std::array<std::string, 9> units{{"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"}};
@@ -523,7 +766,18 @@ public:
     auto frmt = "%." + Format("%u", decimals) + "f%s";
     return Format(frmt.c_str(), value, units[i].c_str());
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert the string of binary chars to the actual string.
+  ///
+  /// Convert the string representation of binary chars to the actual string.
+  /// For example <b>`\1\2\3`</b> is converted to a string with binary char
+  /// <b>`\1`</b>, <b>`\2`</b> and <b>`\3`</b>
+  ///
+  /// @param[in] in String to convert
+  /// @return Converted string
+  ///
   inline static std::string BinaryStringToString(const std::string& in)
   {
     std::string out;
@@ -550,7 +804,33 @@ public:
     }
     return out;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert each character in the string to its hexadecimal
+  /// representation and return the concatenated result
+  ///
+  /// Example: "abc\n" -> "6162630a"
+  ///
+  /// @param[in] in String to convert
+  /// @return Converted string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// EXPECT_STREQ("", kodi::tools::StringUtils::ToHexadecimal("").c_str());
+  /// EXPECT_STREQ("616263", kodi::tools::StringUtils::ToHexadecimal("abc").c_str());
+  /// std::string a{"a\0b\n", 4};
+  /// EXPECT_STREQ("6100620a", kodi::tools::StringUtils::ToHexadecimal(a).c_str());
+  /// std::string nul{"\0", 1};
+  /// EXPECT_STREQ("00", kodi::tools::StringUtils::ToHexadecimal(nul).c_str());
+  /// std::string ff{"\xFF", 1};
+  /// EXPECT_STREQ("ff", kodi::tools::StringUtils::ToHexadecimal(ff).c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string ToHexadecimal(const std::string& in)
   {
     std::ostringstream ss;
@@ -561,33 +841,94 @@ public:
     }
     return ss.str();
   }
+  //----------------------------------------------------------------------------
 
-  //@}
+  /*!@}*/
 
   //----------------------------------------------------------------------------
-  // String edit control
-  //@{
+  /// @defgroup cpp_kodi_tools_StringUtils_EditControl String edit
+  /// @ingroup cpp_kodi_tools_StringUtils
+  /// @brief **Edits given texts**\n
+  /// This is used to revise the respective strings and to get them in the desired format.
+  ///
+  /*!@{*/
 
+  //============================================================================
+  /// @brief Convert a string to uppercase.
+  ///
+  /// @param[in,out] str String to convert
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "TEST";
+  ///
+  /// std::string varstr = "TeSt";
+  /// kodi::tools::StringUtils::ToUpper(varstr);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static void ToUpper(std::string& str)
   {
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert a 16bit wide string to uppercase.
+  ///
+  /// @param[in,out] str String to convert
+  ///
   inline static void ToUpper(std::wstring& str)
   {
     transform(str.begin(), str.end(), str.begin(), toupperUnicode);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert a string to lowercase.
+  ///
+  /// @param[in,out] str String to convert
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "test";
+  ///
+  /// std::string varstr = "TeSt";
+  /// kodi::tools::StringUtils::ToLower(varstr);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static void ToLower(std::string& str)
   {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert a 16bit wide string to lowercase.
+  ///
+  /// @param[in,out] str String to convert
+  ///
   inline static void ToLower(std::wstring& str)
   {
     transform(str.begin(), str.end(), str.begin(), tolowerUnicode);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Combine all numerical digits and give it as integer value.
+  ///
+  /// @param[in,out] str String to check for digits
+  /// @return All numerical digits fit together as integer value
+  ///
   inline static int ReturnDigits(const std::string& str)
   {
     std::stringstream ss;
@@ -598,13 +939,88 @@ public:
     }
     return atoi(ss.str().c_str());
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Returns a string from start with givent count.
+  ///
+  /// @param[in] str String to use
+  /// @param[in] count Amount of characters to go from left
+  /// @return The left part string in amount of given count or complete if it
+  ///         was higher.
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr, varstr;
+  /// std::string origstr = "test";
+  ///
+  /// refstr = "";
+  /// varstr = kodi::tools::StringUtils::Left(origstr, 0);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "te";
+  /// varstr = kodi::tools::StringUtils::Left(origstr, 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "test";
+  /// varstr = kodi::tools::StringUtils::Left(origstr, 10);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string Left(const std::string& str, size_t count)
   {
     count = std::max((size_t)0, std::min(count, str.size()));
     return str.substr(0, count);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Get substring from mid of given string.
+  ///
+  /// @param[in] str String to get substring from
+  /// @param[in] first Position from where to start
+  /// @param[in] count [opt] length of position to get after start, default is
+  ///                  complete to end
+  /// @return The substring taken from middle of input string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr, varstr;
+  /// std::string origstr = "test";
+  ///
+  /// refstr = "";
+  /// varstr = kodi::tools::StringUtils::Mid(origstr, 0, 0);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "te";
+  /// varstr = kodi::tools::StringUtils::Mid(origstr, 0, 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "test";
+  /// varstr = kodi::tools::StringUtils::Mid(origstr, 0, 10);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "st";
+  /// varstr = kodi::tools::StringUtils::Mid(origstr, 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "st";
+  /// varstr = kodi::tools::StringUtils::Mid(origstr, 2, 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "es";
+  /// varstr = kodi::tools::StringUtils::Mid(origstr, 1, 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string Mid(const std::string& str,
                                 size_t first,
                                 size_t count = std::string::npos)
@@ -619,53 +1035,186 @@ public:
 
     return str.substr(first, count);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Returns a string from end with givent count.
+  ///
+  /// @param[in] str String to use
+  /// @param[in] count Amount of characters to go from right
+  /// @return The right part string in amount of given count or complete if it
+  ///         was higher.
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr, varstr;
+  /// std::string origstr = "test";
+  ///
+  /// refstr = "";
+  /// varstr = kodi::tools::StringUtils::Right(origstr, 0);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "st";
+  /// varstr = kodi::tools::StringUtils::Right(origstr, 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// refstr = "test";
+  /// varstr = kodi::tools::StringUtils::Right(origstr, 10);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string Right(const std::string& str, size_t count)
   {
     count = std::max((size_t)0, std::min(count, str.size()));
     return str.substr(str.size() - count);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Trim a string with remove of not wanted spaces at begin and end
+  /// of string.
+  ///
+  /// @param[in,out] str String to trim, becomes also changed and given on
+  ///                    return
+  /// @return The changed string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "test test";
+  ///
+  /// std::string varstr = " test test   ";
+  /// kodi::tools::StringUtils::Trim(varstr);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string& Trim(std::string& str)
   {
     TrimLeft(str);
     return TrimRight(str);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Trim a string with remove of not wanted characters at begin and end
+  /// of string.
+  ///
+  /// @param[in,out] str String to trim, becomes also changed and given on
+  ///                    return
+  /// @param[in] chars Characters to use for trim
+  /// @return The changed string
+  ///
   inline static std::string& Trim(std::string& str, const char* const chars)
   {
     TrimLeft(str, chars);
     return TrimRight(str, chars);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Trim a string with remove of not wanted spaces at begin of string.
+  ///
+  /// @param[in,out] str String to trim, becomes also changed and given on
+  ///                    return
+  /// @return The changed string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "test test   ";
+  ///
+  /// std::string varstr = " test test   ";
+  /// kodi::tools::StringUtils::TrimLeft(varstr);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string& TrimLeft(std::string& str)
   {
     str.erase(str.begin(),
               std::find_if(str.begin(), str.end(), [](char s) { return IsSpace(s) == 0; }));
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Trim a string with remove of not wanted characters at begin of
+  /// string.
+  ///
+  /// @param[in,out] str String to trim, becomes also changed and given on
+  ///                    return
+  /// @param[in] chars Characters to use for trim
+  /// @return The changed string
+  ///
   inline static std::string& TrimLeft(std::string& str, const char* const chars)
   {
     size_t nidx = str.find_first_not_of(chars);
     str.erase(0, nidx);
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Trim a string with remove of not wanted spaces at end of string.
+  ///
+  /// @param[in,out] str String to trim, becomes also changed and given on
+  ///                    return
+  /// @return The changed string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = " test test";
+  ///
+  /// std::string varstr = " test test   ";
+  /// kodi::tools::StringUtils::TrimRight(varstr);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string& TrimRight(std::string& str)
   {
     str.erase(std::find_if(str.rbegin(), str.rend(), [](char s) { return IsSpace(s) == 0; }).base(),
               str.end());
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Trim a string with remove of not wanted characters at end of
+  /// string.
+  ///
+  /// @param[in,out] str String to trim, becomes also changed and given on
+  ///                    return
+  /// @param[in] chars Characters to use for trim
+  /// @return The changed string
+  ///
   inline static std::string& TrimRight(std::string& str, const char* const chars)
   {
     size_t nidx = str.find_last_not_of(chars);
     str.erase(str.npos == nidx ? 0 : ++nidx);
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Cleanup string by remove of duplicates of spaces and tabs.
+  ///
+  /// @param[in,out] str String to remove duplicates, becomes also changed and
+  ///                    given further on return
+  /// @return The changed string
+  ///
   inline static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str)
   {
     std::string::iterator it = str.begin();
@@ -692,7 +1241,32 @@ public:
     }
     return str;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Replace a character with another inside text string.
+  ///
+  /// @param[in] str String to replace within
+  /// @param[in] oldChar Character to search for replacement
+  /// @param[in] newChar New character to use for replacement
+  /// @return Amount of replaced characters
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "text text";
+  ///
+  /// std::string varstr = "test test";
+  /// EXPECT_EQ(kodi::tools::StringUtils::Replace(varstr, 's', 'x'), 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// EXPECT_EQ(kodi::tools::StringUtils::Replace(varstr, 's', 'x'), 0);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static int Replace(std::string& str, char oldChar, char newChar)
   {
     int replacedChars = 0;
@@ -707,7 +1281,32 @@ public:
 
     return replacedChars;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Replace a complete text with another inside text string.
+  ///
+  /// @param[in] str String to replace within
+  /// @param[in] oldStr String to search for replacement
+  /// @param[in] newStr New string to use for replacement
+  /// @return Amount of replaced text fields
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "text text";
+  ///
+  /// std::string varstr = "test test";
+  /// EXPECT_EQ(kodi::tools::StringUtils::Replace(varstr, "s", "x"), 2);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  ///
+  /// EXPECT_EQ(kodi::tools::StringUtils::Replace(varstr, "s", "x"), 0);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static int Replace(std::string& str, const std::string& oldStr, const std::string& newStr)
   {
     if (oldStr.empty())
@@ -725,7 +1324,16 @@ public:
 
     return replacedChars;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Replace a complete text with another inside 16bit wide text string.
+  ///
+  /// @param[in] str String to replace within
+  /// @param[in] oldStr String to search for replacement
+  /// @param[in] newStr New string to use for replacement
+  /// @return Amount of replaced text fields
+  ///
   inline static int Replace(std::wstring& str,
                             const std::wstring& oldStr,
                             const std::wstring& newStr)
@@ -745,7 +1353,21 @@ public:
 
     return replacedChars;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Transform characters to create a safe URL.
+  ///
+  /// @param[in] str The string to transform
+  /// @return The transformed string, with unsafe characters replaced by "_"
+  ///
+  /// Safe URLs are composed of the unreserved characters defined in
+  /// RFC 3986 section 2.3:
+  ///
+  ///   ALPHA / DIGIT / "-" / "." / "_" / "~"
+  ///
+  /// Characters outside of this set will be replaced by "_".
+  ///
   inline static std::string MakeSafeUrl(const std::string& str)
   {
     std::string safeUrl;
@@ -763,7 +1385,17 @@ public:
 
     return safeUrl;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Transform characters to create a safe, printable string.
+  ///
+  /// @param[in] str The string to transform
+  /// @return The transformed string, with unsafe characters replaced by " "
+  ///
+  /// Unsafe characters are defined as the non-printable ASCII characters
+  /// (character code 0-31).
+  ///
   inline static std::string MakeSafeString(const std::string& str)
   {
     std::string safeString;
@@ -779,15 +1411,60 @@ public:
 
     return safeString;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Removes a MAC address from a given string.
+  ///
+  /// @param[in] str The string containing a MAC address
+  /// @return The string without the MAC address (for chaining)
+  ///
   inline static std::string RemoveMACAddress(const std::string& str)
   {
     std::regex re(R"mac([\(\[]?([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})[\)\]]?)mac");
     return std::regex_replace(str, re, "", std::regex_constants::format_default);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Remove carriage return and line feeds on string ends.
+  ///
+  /// @param[in,out] str String where CR and LF becomes removed on end
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr, varstr;
+  ///
+  /// refstr = "test\r\nstring\nblah blah";
+  /// varstr = "test\r\nstring\nblah blah\n";
+  /// kodi::tools::StringUtils::RemoveCRLF(varstr);
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static void RemoveCRLF(std::string& strLine) { StringUtils::TrimRight(strLine, "\n\r"); }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert a word to a digit numerical string
+  ///
+  /// @param[in] str String to convert
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// std::string ref, var;
+  ///
+  /// ref = "8378 787464";
+  /// var = "test string";
+  /// kodi::tools::StringUtils::WordToDigits(var);
+  /// EXPECT_STREQ(ref.c_str(), var.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static void WordToDigits(std::string& word)
   {
     static const char word_to_letter[] = "22233344455566677778889999";
@@ -805,7 +1482,28 @@ public:
       }
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Escapes the given string to be able to be used as a parameter.
+  ///
+  /// Escapes backslashes and double-quotes with an additional backslash and
+  ///  adds double-quotes around the whole string.
+  ///
+  /// @param[in] param String to escape/paramify
+  /// @return Escaped/Paramified string
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// const char *input = "some, very \\ odd \"string\"";
+  /// const char *ref   = "\"some, very \\\\ odd \\\"string\\\"\"";
+  ///
+  /// std::string result = kodi::tools::StringUtils::Paramify(input);
+  /// EXPECT_STREQ(ref, result.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string Paramify(const std::string& param)
   {
     std::string result = param;
@@ -817,12 +1515,38 @@ public:
     // add double quotes around the whole string
     return "\"" + result + "\"";
   }
-
-  //@}
   //----------------------------------------------------------------------------
-  // String compare control
-  //@{
 
+  /*!@}*/
+
+  //----------------------------------------------------------------------------
+  /// @defgroup cpp_kodi_tools_StringUtils_CompareControl String compare
+  /// @ingroup cpp_kodi_tools_StringUtils
+  /// @brief **Check strings for the desired state**\n
+  /// With this, texts can be checked to see that they correspond to a required
+  /// format.
+  ///
+  /*!@{*/
+
+  //============================================================================
+  /// @brief Compare two strings with ignore of lower-/uppercase.
+  ///
+  /// @param[in] str1 C++ string to compare
+  /// @param[in] str2 C++ string to compare
+  /// @return True if the strings are equal, false otherwise
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr = "TeSt";
+  ///
+  /// EXPECT_TRUE(kodi::tools::StringUtils::EqualsNoCase(refstr, "TeSt"));
+  /// EXPECT_TRUE(kodi::tools::StringUtils::EqualsNoCase(refstr, "tEsT"));
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool EqualsNoCase(const std::string& str1, const std::string& str2)
   {
     // before we do the char-by-char comparison, first compare sizes of both strings.
@@ -831,12 +1555,28 @@ public:
       return false;
     return EqualsNoCase(str1.c_str(), str2.c_str());
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Compare two strings with ignore of lower-/uppercase.
+  ///
+  /// @param[in] str1 C++ string to compare
+  /// @param[in] s2 C string to compare
+  /// @return True if the strings are equal, false otherwise
+  ///
   inline static bool EqualsNoCase(const std::string& str1, const char* s2)
   {
     return EqualsNoCase(str1.c_str(), s2);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Compare two strings with ignore of lower-/uppercase.
+  ///
+  /// @param[in] s1 C string to compare
+  /// @param[in] s2 C string to compare
+  /// @return True if the strings are equal, false otherwise
+  ///
   inline static bool EqualsNoCase(const char* s1, const char* s2)
   {
     char c2; // we need only one char outside the loop
@@ -851,12 +1591,40 @@ public:
     } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
     return true;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Compare two strings with ignore of lower-/uppercase with given
+  /// size.
+  ///
+  /// Equal to @ref EqualsNoCase only that size can defined and on return the
+  /// difference between compared character becomes given.
+  ///
+  /// @param[in] str1 C++ string to compare
+  /// @param[in] str2 C++ string to compare
+  /// @param[in] n [opt] Length to check, 0 as default to make complete
+  /// @return 0 if equal, otherwise difference of failed character in string to
+  /// other ("a" - "b" = -1)
+  ///
   inline static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0)
   {
     return CompareNoCase(str1.c_str(), str2.c_str(), n);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Compare two strings with ignore of lower-/uppercase with given
+  /// size.
+  ///
+  /// Equal to @ref EqualsNoCase only that size can defined and on return the
+  /// difference between compared character becomes given.
+  ///
+  /// @param[in] s1 C string to compare
+  /// @param[in] s2 C string to compare
+  /// @param[in] n [opt] Length to check, 0 as default to make complete
+  /// @return 0 if equal, otherwise difference of failed character in string to
+  /// other ("a" - "b" = -1)
+  ///
   inline static int CompareNoCase(const char* s1, const char* s2, size_t n = 0)
   {
     char c2; // we need only one char outside the loop
@@ -874,17 +1642,60 @@ public:
              index != n); // At this point, we know c1 == c2, so there's no need to test them both.
     return 0;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the begin of another string.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] str2 C++ string with which text defined in str1 is checked at
+  ///                 the beginning
+  /// @return True if string started with asked text, false otherwise
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// bool ret;
+  /// std::string refstr = "test";
+  ///
+  /// ret = kodi::tools::StringUtils::StartsWith(refstr, "te");
+  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  ///
+  /// ret = kodi::tools::StringUtils::StartsWith(refstr, "abc");
+  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool StartsWith(const std::string& str1, const std::string& str2)
   {
     return str1.compare(0, str2.size(), str2) == 0;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the begin of another string.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] s2 C string with which text defined in str1 is checked at
+  ///               the beginning
+  /// @return True if string started with asked text, false otherwise
+  ///
   inline static bool StartsWith(const std::string& str1, const char* s2)
   {
     return StartsWith(str1.c_str(), s2);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the begin of another string.
+  ///
+  /// @param[in] s1 C string to be checked
+  /// @param[in] s2 C string with which text defined in str1 is checked at
+  ///               the beginning
+  /// @return True if string started with asked text, false otherwise
+  ///
   inline static bool StartsWith(const char* s1, const char* s2)
   {
     while (*s2 != '\0')
@@ -896,17 +1707,66 @@ public:
     }
     return true;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the begin of another string by ignore of
+  /// upper-/lowercase.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] str2 C++ string with which text defined in str1 is checked at
+  ///                 the beginning
+  /// @return True if string started with asked text, false otherwise
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// bool ret;
+  /// std::string refstr = "test";
+  ///
+  /// ret = kodi::tools::StringUtils::StartsWithNoCase(refstr, "te");
+  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  ///
+  /// ret = kodi::tools::StringUtils::StartsWithNoCase(refstr, "TEs");
+  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  ///
+  /// ret = kodi::tools::StringUtils::StartsWithNoCase(refstr, "abc");
+  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool StartsWithNoCase(const std::string& str1, const std::string& str2)
   {
     return StartsWithNoCase(str1.c_str(), str2.c_str());
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the begin of another string by ignore of
+  /// upper-/lowercase.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] s2 C string with which text defined in str1 is checked at
+  ///               the beginning
+  /// @return True if string started with asked text, false otherwise
+  ///
   inline static bool StartsWithNoCase(const std::string& str1, const char* s2)
   {
     return StartsWithNoCase(str1.c_str(), s2);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the begin of another string by ignore of
+  /// upper-/lowercase.
+  ///
+  /// @param[in] s1 C string to be checked
+  /// @param[in] s2 C string with which text defined in str1 is checked at
+  ///               the beginning
+  /// @return True if string started with asked text, false otherwise
+  ///
   inline static bool StartsWithNoCase(const char* s1, const char* s2)
   {
     while (*s2 != '\0')
@@ -918,14 +1778,48 @@ public:
     }
     return true;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the ending of another string.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] str2 C++ string with which text defined in str1 is checked at
+  ///                 the ending
+  /// @return True if string ended with asked text, false otherwise
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// bool ret;
+  /// std::string refstr = "test";
+  ///
+  /// ret = kodi::tools::StringUtils::EndsWith(refstr, "st");
+  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  ///
+  /// ret = kodi::tools::StringUtils::EndsWith(refstr, "abc");
+  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool EndsWith(const std::string& str1, const std::string& str2)
   {
     if (str1.size() < str2.size())
       return false;
     return str1.compare(str1.size() - str2.size(), str2.size(), str2) == 0;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the ending of another string.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] s2 C string with which text defined in str1 is checked at
+  ///               the ending
+  /// @return True if string ended with asked text, false otherwise
+  ///
   inline static bool EndsWith(const std::string& str1, const char* s2)
   {
     size_t len2 = strlen(s2);
@@ -933,7 +1827,33 @@ public:
       return false;
     return str1.compare(str1.size() - len2, len2, s2) == 0;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the ending of another string by ignore of
+  /// upper-/lowercase.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] str2 C++ string with which text defined in str1 is checked at
+  ///                 the ending
+  /// @return True if string ended with asked text, false otherwise
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// bool ret;
+  /// std::string refstr = "test";
+  ///
+  /// ret = kodi::tools::StringUtils::EndsWithNoCase(refstr, "ST");
+  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  ///
+  /// ret = kodi::tools::StringUtils::EndsWithNoCase(refstr, "ABC");
+  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool EndsWithNoCase(const std::string& str1, const std::string& str2)
   {
     if (str1.size() < str2.size())
@@ -949,7 +1869,17 @@ public:
     }
     return true;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a string for the ending of another string by ignore of
+  /// upper-/lowercase.
+  ///
+  /// @param[in] str1 C++ string to be checked
+  /// @param[in] s2 C string with which text defined in str1 is checked at
+  ///               the ending
+  /// @return True if string ended with asked text, false otherwise
+  ///
   inline static bool EndsWithNoCase(const std::string& str1, const char* s2)
   {
     size_t len2 = strlen(s2);
@@ -965,7 +1895,33 @@ public:
     }
     return true;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Compare two strings by his calculated alpha numeric values.
+  ///
+  /// @param[in] left Left string to compare with right
+  /// @param[in] right Right string to compare with left
+  /// @return Return about compare
+  ///         - 0 if left and right the same
+  ///         - -1 if right is longer
+  ///         - 1 if left is longer
+  ///         - < 0 if less equal
+  ///         - > 0 if more equal
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// int64_t ref, var;
+  ///
+  /// ref = 0;
+  /// var = kodi::tools::StringUtils::AlphaNumericCompare(L"123abc", L"abc123");
+  /// EXPECT_LT(var, ref);
+  /// ~~~~~~~~~~~~~
+  ///
   inline static int64_t AlphaNumericCompare(const wchar_t* left, const wchar_t* right)
   {
     const wchar_t* l = left;
@@ -1029,7 +1985,17 @@ public:
     }
     return 0; // files are the same
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief UTF8 version of strlen
+  ///
+  /// Skips any non-starting bytes in the count, thus returning the number of
+  /// utf8 characters.
+  ///
+  /// @param[in] s c-string to find the length of.
+  /// @return The number of utf8 characters in the string.
+  ///
   inline static size_t Utf8StringLength(const char* s)
   {
     size_t length = 0;
@@ -1040,12 +2006,26 @@ public:
     }
     return length;
   }
+  //----------------------------------------------------------------------------
 
-  // hack to check only first byte of UTF-8 character
-  // without this hack "TrimX" functions failed on Win32 and OS X with UTF-8 strings
+  //============================================================================
+  /// @brief Check given character is a space.
+  ///
+  /// Hack to check only first byte of UTF-8 character
+  /// without this hack "TrimX" functions failed on Win32 and OS X with UTF-8 strings
+  ///
+  /// @param[in] c Character to check
+  /// @return true if space, false otherwise
+  ///
   inline static int IsSpace(char c) { return (c & 0x80) == 0 && ::isspace(c); }
+  //----------------------------------------------------------------------------
 
-  // return -1 if not, else return the utf8 char length.
+  //============================================================================
+  /// @brief Checks given pointer in string is a UTF8 letter.
+  ///
+  /// @param[in] str Given character values to check, must be minimum array of 2
+  /// @return return -1 if not, else return the utf8 char length.
+  ///
   inline static int IsUTF8Letter(const unsigned char* str)
   {
     // reference:
@@ -1074,7 +2054,35 @@ public:
       return 2;
     return -1;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Check whether a string is a natural number.
+  ///
+  /// Matches `[ \t]*[0-9]+[ \t]*`
+  ///
+  /// @param[in] str The string to check
+  /// @return true if the string is a natural number, false otherwise.
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// EXPECT_TRUE(kodi::tools::StringUtils::IsNaturalNumber("10"));
+  /// EXPECT_TRUE(kodi::tools::StringUtils::IsNaturalNumber(" 10"));
+  /// EXPECT_TRUE(kodi::tools::StringUtils::IsNaturalNumber("0"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber(" 1 0"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber("1.0"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber("1.1"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber("0x1"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber("blah"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber("120 h"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber(" "));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsNaturalNumber(""));
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool IsNaturalNumber(const std::string& str)
   {
     size_t i = 0, n = 0;
@@ -1090,7 +2098,35 @@ public:
       i++;
     return i == str.size() && n > 0;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Check whether a string is an integer.
+  ///
+  /// Matches `[ \t]*[\-]*[0-9]+[ \t]*`
+  ///
+  /// @param str The string to check
+  /// @return true if the string is an integer, false otherwise.
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// EXPECT_TRUE(kodi::tools::StringUtils::IsInteger("10"));
+  /// EXPECT_TRUE(kodi::tools::StringUtils::IsInteger(" -10"));
+  /// EXPECT_TRUE(kodi::tools::StringUtils::IsInteger("0"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger(" 1 0"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger("1.0"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger("1.1"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger("0x1"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger("blah"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger("120 h"));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger(" "));
+  /// EXPECT_FALSE(kodi::tools::StringUtils::IsInteger(""));
+  /// ~~~~~~~~~~~~~
+  ///
   inline static bool IsInteger(const std::string& str)
   {
     size_t i = 0, n = 0;
@@ -1108,17 +2144,39 @@ public:
       i++;
     return i == str.size() && n > 0;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a character is ascii number.
+  ///
+  /// @param[in] chr Single character to test
+  /// @return true if yes, false otherwise
+  ///
   inline static bool IsAasciiDigit(char chr) // locale independent
   {
     return chr >= '0' && chr <= '9';
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a character is ascii hexadecimal number.
+  ///
+  /// @param[in] chr Single character to test
+  /// @return true if yes, false otherwise
+  ///
   inline static bool IsAsciiXDigit(char chr) // locale independent
   {
     return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Translate a character where defined as a numerical value (0-9)
+  /// string to right integer.
+  ///
+  /// @param[in] chr Single character to translate
+  /// @return
+  ///
   inline static int AsciiDigitValue(char chr) // locale independent
   {
     if (!IsAasciiDigit(chr))
@@ -1126,7 +2184,16 @@ public:
 
     return chr - '0';
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Translate a character where defined as a hexadecimal value string
+  /// to right integer.
+  ///
+  /// @param[in] chr Single character to translate
+  /// @return Corresponding integer value, e.g. character is "A" becomes
+  ///         returned as a integer with 10.
+  ///
   inline static int AsciiXDigitValue(char chr) // locale independent
   {
     int v = AsciiDigitValue(chr);
@@ -1139,22 +2206,51 @@ public:
 
     return -1;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a character is ascii alphabetic lowercase.
+  ///
+  /// @param[in] chr Single character to test
+  /// @return True if ascii uppercase letter, false otherwise
+  ///
   inline static bool IsAsciiUppercaseLetter(char chr) // locale independent
   {
     return (chr >= 'A' && chr <= 'Z');
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a character is ascii alphabetic lowercase.
+  ///
+  /// @param[in] chr Single character to test
+  /// @return True if ascii lowercase letter, false otherwise
+  ///
   inline static bool IsAsciiLowercaseLetter(char chr) // locale independent
   {
     return (chr >= 'a' && chr <= 'z');
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Checks a character is within ascii alphabetic and numerical fields.
+  ///
+  /// @param[in] chr Single character to test
+  /// @return true if alphabetic / numerical ascii value
+  ///
   inline static bool IsAsciiAlphaNum(char chr) // locale independent
   {
     return IsAsciiUppercaseLetter(chr) || IsAsciiLowercaseLetter(chr) || IsAasciiDigit(chr);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Check a string for another text.
+  ///
+  /// @param[in] str String to seach for keywords
+  /// @param[in] keywords List of keywords to search in text
+  /// @return true if string contains word in list
+  ///
   inline static bool ContainsKeyword(const std::string& str,
                                      const std::vector<std::string>& keywords)
   {
@@ -1165,13 +2261,46 @@ public:
     }
     return false;
   }
+  //----------------------------------------------------------------------------
 
-  //@}
+  /*!@}*/
 
   //----------------------------------------------------------------------------
-  // String search control
-  //@{
+  /// @defgroup cpp_kodi_tools_StringUtils_SearchControl String search
+  /// @ingroup cpp_kodi_tools_StringUtils
+  /// @brief **To search a string**\n
+  /// Various functions are defined in here which allow you to search through a
+  /// text in different ways.
+  ///
+  /*!@{*/
 
+  //============================================================================
+  /// @brief Search for a single word within a text.
+  ///
+  /// @param[in] str String to search within
+  /// @param[in] wordLowerCase Word as lowercase to search
+  /// @return Position in string where word is found, -1 (std::string::npos) if
+  ///         not found
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// size_t ref, var;
+  ///
+  /// // The name "string" is alone within text and becomes found on position 5
+  /// ref = 5;
+  /// var = kodi::tools::StringUtils::FindWords("test string", "string");
+  /// EXPECT_EQ(ref, var);
+  ///
+  /// // The 12 is included inside another word and then not found as it should alone (-1 return)
+  /// ref = -1;
+  /// var = kodi::tools::StringUtils::FindWords("apple2012", "12");
+  /// EXPECT_EQ(ref, var);
+  /// ~~~~~~~~~~~~~
+  ///
   inline static size_t FindWords(const char* str, const char* wordLowerCase)
   {
     // NOTE: This assumes word is lowercase!
@@ -1218,7 +2347,31 @@ public:
 
     return std::string::npos;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Search a string for a given bracket and give its end position.
+  ///
+  /// @param[in] str String to search within
+  /// @param[in] opener Begin character to start search
+  /// @param[in] closer End character to end search
+  /// @param[in] startPos [opt] Position to start search in string, 0 as default
+  ///                     to start from begin
+  /// @return End position where found, -1 if failed
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// int ref, var;
+  ///
+  /// ref = 11;
+  /// var = kodi::tools::StringUtils::FindEndBracket("atest testbb test", 'a', 'b');
+  /// EXPECT_EQ(ref, var);
+  /// ~~~~~~~~~~~~~
+  ///
   inline static int FindEndBracket(const std::string& str,
                                    char opener,
                                    char closer,
@@ -1239,7 +2392,25 @@ public:
 
     return static_cast<int>(std::string::npos);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Search a text and return the number of parts found as a number.
+  ///
+  /// @param[in] strInput Input string to search for
+  /// @param[in] strFind String to search in input
+  /// @return Amount how much the string is found
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// EXPECT_EQ(3, kodi::tools::StringUtils::FindNumber("aabcaadeaa", "aa"));
+  /// EXPECT_EQ(1, kodi::tools::StringUtils::FindNumber("aabcaadeaa", "b"));
+  /// ~~~~~~~~~~~~~
+  ///
   inline static int FindNumber(const std::string& strInput, const std::string& strFind)
   {
     size_t pos = strInput.find(strFind, 0);
@@ -1251,13 +2422,51 @@ public:
     }
     return numfound;
   }
+  //----------------------------------------------------------------------------
 
-  //@}
+  /*!@}*/
 
   //----------------------------------------------------------------------------
-  // String list control
-  //@{
+  /// @defgroup cpp_kodi_tools_StringUtils_ListControl String list
+  /// @ingroup cpp_kodi_tools_StringUtils
+  /// @brief **Creating lists using a string**\n
+  /// With this, either simple vectors or lists defined by templates can be given
+  /// for the respective divided text.
+  ///
+  /*!@{*/
 
+  //============================================================================
+  /// @brief Concatenates the elements of a specified array or the members of a
+  /// collection and uses the specified separator between each element or
+  /// member.
+  ///
+  /// @param[in] strings An array of objects whose string representations are
+  ///                    concatenated.
+  /// @param[in] delimiter Delimiter to be used to join the input string
+  /// @return A string consisting of the elements of values, separated by the
+  /// separator character.
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string refstr, varstr;
+  /// std::vector<std::string> strarray;
+  ///
+  /// strarray.emplace_back("a");
+  /// strarray.emplace_back("b");
+  /// strarray.emplace_back("c");
+  /// strarray.emplace_back("de");
+  /// strarray.emplace_back(",");
+  /// strarray.emplace_back("fg");
+  /// strarray.emplace_back(",");
+  /// refstr = "a,b,c,de,,,fg,,";
+  /// varstr = kodi::tools::StringUtils::Join(strarray, ",");
+  /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   template<typename CONTAINER>
   inline static std::string Join(const CONTAINER& strings, const std::string& delimiter)
   {
@@ -1269,7 +2478,38 @@ public:
       result.erase(result.size() - delimiter.size());
     return result;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Splits the given input string using the given delimiter into
+  /// separate strings.
+  ///
+  /// If the given input string is empty the result will be an empty array (not
+  /// an array containing an empty string).
+  ///
+  /// @param[in] input Input string to be split
+  /// @param[in] delimiter Delimiter to be used to split the input string
+  /// @param[in] iMaxStrings [opt] Maximum number of resulting split strings
+  /// @return List of splitted strings
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::vector<std::string> varresults;
+  ///
+  /// varresults = kodi::tools::StringUtils::Split("g,h,ij,k,lm,,n", ",");
+  /// EXPECT_STREQ("g", varresults.at(0).c_str());
+  /// EXPECT_STREQ("h", varresults.at(1).c_str());
+  /// EXPECT_STREQ("ij", varresults.at(2).c_str());
+  /// EXPECT_STREQ("k", varresults.at(3).c_str());
+  /// EXPECT_STREQ("lm", varresults.at(4).c_str());
+  /// EXPECT_STREQ("", varresults.at(5).c_str());
+  /// EXPECT_STREQ("n", varresults.at(6).c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::vector<std::string> Split(const std::string& input,
                                                const std::string& delimiter,
                                                unsigned int iMaxStrings = 0)
@@ -1278,7 +2518,20 @@ public:
     SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
     return result;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Splits the given input string using the given delimiter into
+  /// separate strings.
+  ///
+  /// If the given input string is empty the result will be an empty array (not
+  /// an array containing an empty string).
+  ///
+  /// @param[in] input Input string to be split
+  /// @param[in] delimiter Delimiter to be used to split the input string
+  /// @param[in] iMaxStrings [opt] Maximum number of resulting split strings
+  /// @return List of splitted strings
+  ///
   inline static std::vector<std::string> Split(const std::string& input,
                                                const char delimiter,
                                                size_t iMaxStrings = 0)
@@ -1287,7 +2540,20 @@ public:
     SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
     return result;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Splits the given input string using the given delimiter into
+  /// separate strings.
+  ///
+  /// If the given input string is empty the result will be an empty array (not
+  /// an array containing an empty string).
+  ///
+  /// @param[in] input Input string to be split
+  /// @param[in] delimiters Delimiter strings to be used to split the input
+  ///                       strings
+  /// @return List of splitted strings
+  ///
   inline static std::vector<std::string> Split(const std::string& input,
                                                const std::vector<std::string>& delimiters)
   {
@@ -1295,7 +2561,22 @@ public:
     SplitTo(std::back_inserter(result), input, delimiters);
     return result;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Splits the given input string using the given delimiter into
+  /// separate strings.
+  ///
+  /// If the given input string is empty nothing will be put into the target
+  /// iterator.
+  ///
+  /// @param[in] d_first The beginning of the destination range
+  /// @param[in] input Input string to be split
+  /// @param[in] delimiter Delimiter to be used to split the input string
+  /// @param[in] iMaxStrings [opt] Maximum number of resulting split strings
+  /// @return Output iterator to the element in the destination range, one past
+  ///         the last element that was put there
+  ///
   template<typename OutputIt>
   inline static OutputIt SplitTo(OutputIt d_first,
                                  const std::string& input,
@@ -1329,6 +2610,22 @@ public:
 
     return dest;
   }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Splits the given input string using the given delimiter into
+  /// separate strings.
+  ///
+  /// If the given input string is empty nothing will be put into the target
+  /// iterator.
+  ///
+  /// @param[in] d_first The beginning of the destination range
+  /// @param[in] input Input string to be split
+  /// @param[in] delimiter Delimiter to be used to split the input string
+  /// @param[in] iMaxStrings [opt] Maximum number of resulting split strings
+  /// @return Output iterator to the element in the destination range, one past
+  ///         the last element that was put there
+  ///
   template<typename OutputIt>
   inline static OutputIt SplitTo(OutputIt d_first,
                                  const std::string& input,
@@ -1337,7 +2634,22 @@ public:
   {
     return SplitTo(d_first, input, std::string(1, delimiter), iMaxStrings);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Splits the given input string using the given delimiter into
+  /// separate strings.
+  ///
+  /// If the given input string is empty nothing will be put into the target
+  /// iterator.
+  ///
+  /// @param[in] d_first The beginning of the destination range
+  /// @param[in] input Input string to be split
+  /// @param[in] delimiters Delimiter strings to be used to split the input
+  ///                       strings
+  /// @return Output iterator to the element in the destination range, one past
+  ///         the last element that was put there
+  ///
   template<typename OutputIt>
   inline static OutputIt SplitTo(OutputIt d_first,
                                  const std::string& input,
@@ -1357,7 +2669,26 @@ public:
       StringUtils::Replace(str, delimiters[di], delimiters[0]);
     return SplitTo(dest, str, delimiters[0]);
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Splits the given input strings using the given delimiters into
+  /// further separate strings.
+  ///
+  /// If the given input string vector is empty the result will be an empty
+  /// array (not an array containing an empty string).
+  ///
+  /// Delimiter strings are applied in order, so once the (optional) maximum
+  /// number of items is produced no other delimiters are applied. This produces
+  /// different results to applying all delimiters at once e.g. "a/b#c/d"
+  /// becomes "a", "b#c", "d" rather than "a", "b", "c/d"
+  ///
+  /// @param[in] input Input vector of strings each to be split
+  /// @param[in] delimiters Delimiter strings to be used to split the input
+  ///                       strings
+  /// @param[in] iMaxStrings [opt] Maximum number of resulting split strings
+  /// @return List of splitted strings
+  ///
   inline static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
                                                     const std::vector<std::string>& delimiters,
                                                     unsigned int iMaxStrings = 0)
@@ -1413,7 +2744,23 @@ public:
     }
     return results;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Split a string by the specified delimiters.
+  ///
+  /// Splits a string using one or more delimiting characters, ignoring empty
+  /// tokens.
+  ///
+  /// Differs from Split() in two ways:
+  /// 1. The delimiters are treated as individual characters, rather than a single delimiting string.
+  /// 2. Empty tokens are ignored.
+  ///
+  ///
+  /// @param[in] input String to split
+  /// @param[in] delimiters Delimiters
+  /// @return A vector of tokens
+  ///
   inline static std::vector<std::string> Tokenize(const std::string& input,
                                                   const std::string& delimiters)
   {
@@ -1421,7 +2768,16 @@ public:
     Tokenize(input, tokens, delimiters);
     return tokens;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Tokenizing a string denotes splitting a string with respect to a
+  /// delimiter.
+  ///
+  /// @param[in] input String to split
+  /// @param[out] tokens A vector of tokens
+  /// @param[in] delimiters Delimiters
+  ///
   inline static void Tokenize(const std::string& input,
                               std::vector<std::string>& tokens,
                               const std::string& delimiters)
@@ -1439,14 +2795,32 @@ public:
       dataPos = input.find_first_not_of(delimiters, nextDelimPos);
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Tokenizing a string denotes splitting a string with respect to a
+  /// delimiter.
+  ///
+  /// @param[in] input String to split
+  /// @param[in] delimiter Delimiters
+  /// @return A vector of tokens
+  ///
   inline static std::vector<std::string> Tokenize(const std::string& input, const char delimiter)
   {
     std::vector<std::string> tokens;
     Tokenize(input, tokens, delimiter);
     return tokens;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Tokenizing a string denotes splitting a string with respect to a
+  /// delimiter.
+  ///
+  /// @param[in] input String to split
+  /// @param[out] tokens List of
+  /// @param[in] delimiter Delimiters
+  ///
   inline static void Tokenize(const std::string& input,
                               std::vector<std::string>& tokens,
                               const char delimiter)
@@ -1464,13 +2838,46 @@ public:
       dataPos = input.find_first_not_of(delimiter, nextDelimPos);
     }
   }
+  //----------------------------------------------------------------------------
 
-  //@}
+  /*!@}*/
 
   //----------------------------------------------------------------------------
-  // String time control
-  //@{
+  /// @defgroup cpp_kodi_tools_StringUtils_TimeControl Time value processing
+  /// @ingroup cpp_kodi_tools_StringUtils
+  /// @brief **String time formats**\n
+  /// This is used to process the respective time formats in text fields.
+  /*!@{*/
 
+  //============================================================================
+  /// @brief Converts a time string to the respective integer value.
+  ///
+  /// @param[in] timeString String with time.\n
+  ///                       Following types are possible:
+  ///                       - "MM min" (integer number with "min" on end)
+  ///                       - "HH:MM:SS"
+  /// @return Time in seconds
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// EXPECT_EQ(77455, kodi::tools::StringUtils::TimeStringToSeconds("21:30:55"));
+  /// EXPECT_EQ(7*60, kodi::tools::StringUtils::TimeStringToSeconds("7 min"));
+  /// EXPECT_EQ(7*60, kodi::tools::StringUtils::TimeStringToSeconds("7 min\t"));
+  /// EXPECT_EQ(154*60, kodi::tools::StringUtils::TimeStringToSeconds("   154 min"));
+  /// EXPECT_EQ(1*60+1, kodi::tools::StringUtils::TimeStringToSeconds("1:01"));
+  /// EXPECT_EQ(4*60+3, kodi::tools::StringUtils::TimeStringToSeconds("4:03"));
+  /// EXPECT_EQ(2*3600+4*60+3, kodi::tools::StringUtils::TimeStringToSeconds("2:04:03"));
+  /// EXPECT_EQ(2*3600+4*60+3, kodi::tools::StringUtils::TimeStringToSeconds("   2:4:3"));
+  /// EXPECT_EQ(2*3600+4*60+3, kodi::tools::StringUtils::TimeStringToSeconds("  \t\t 02:04:03 \n "));
+  /// EXPECT_EQ(1*3600+5*60+2, kodi::tools::StringUtils::TimeStringToSeconds("01:05:02:04:03 \n "));
+  /// EXPECT_EQ(0, kodi::tools::StringUtils::TimeStringToSeconds("blah"));
+  /// EXPECT_EQ(0, kodi::tools::StringUtils::TimeStringToSeconds("ля-ля"));
+  /// ~~~~~~~~~~~~~
+  ///
   inline static long TimeStringToSeconds(const std::string& timeString)
   {
     std::string strCopy(timeString);
@@ -1492,7 +2899,31 @@ public:
       return timeInSecs;
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Convert a time in seconds to a string based on the given time
+  /// format.
+  ///
+  /// @param[in] seconds time in seconds
+  /// @param[in] format [opt] The format we want the time in
+  /// @return The formatted time
+  ///
+  /// @sa TIME_FORMAT
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// std::string ref, var;
+  ///
+  /// ref = "21:30:55";
+  /// var = kodi::tools::StringUtils::SecondsToTimeString(77455);
+  /// EXPECT_STREQ(ref.c_str(), var.c_str());
+  /// ~~~~~~~~~~~~~
+  ///
   inline static std::string SecondsToTimeString(long seconds,
                                                 TIME_FORMAT format = TIME_FORMAT_GUESS)
   {
@@ -1532,7 +2963,33 @@ public:
 
     return strHMS;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Converts a string in the format YYYYMMDD to the corresponding
+  /// integer value.
+  ///
+  /// @param[in] dateString The date in the associated format, possible values
+  ///                       are:
+  ///                       - DD (for days only)
+  ///                       - MM-DD (for days with month)
+  ///                       - YYYY-MM-DD (for years, then month and last days)
+  /// @return Corresponding integer, e.g. "2020-12-24" return as integer value
+  ///         20201224
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// #include <kodi/tools/StringUtils.h>
+  ///
+  /// int ref, var;
+  ///
+  /// ref = 20120706;
+  /// var = kodi::tools::StringUtils::DateStringToYYYYMMDD("2012-07-06");
+  /// EXPECT_EQ(ref, var);
+  /// ~~~~~~~~~~~~~
+  ///
   inline static int DateStringToYYYYMMDD(const std::string& dateString)
   {
     std::vector<std::string> days = StringUtils::Split(dateString, '-');
@@ -1545,8 +3002,9 @@ public:
     else
       return -1;
   }
+  //----------------------------------------------------------------------------
 
-  //@}
+  /*!@}*/
 
 private:
   inline static int compareWchar(const void* a, const void* b)
@@ -1615,6 +3073,8 @@ private:
     return c;
   }
 };
+///@}
+//------------------------------------------------------------------------------
 
 } /* namespace tools */
 } /* namespace kodi */
