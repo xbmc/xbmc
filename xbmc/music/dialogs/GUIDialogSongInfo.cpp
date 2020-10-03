@@ -453,7 +453,7 @@ void CGUIDialogSongInfo::OnGetArt()
     // Show any fallback art when song art removed
     if (newArt.empty() && m_song->HasArt(type))
       newArt = m_song->GetArt(type);
-    for (const auto artitem : m_artTypeList)
+    for (const auto& artitem : m_artTypeList)
     {
       if (artitem->GetProperty("artType") == type)
       {

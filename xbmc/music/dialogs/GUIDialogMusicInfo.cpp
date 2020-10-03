@@ -932,7 +932,7 @@ void CGUIDialogMusicInfo::OnGetArt()
 
     // Update local item and art list with current art
     m_item->SetArt(type, newArt);
-    for (const auto artitem : m_artTypeList)
+    for (const auto& artitem : m_artTypeList)
     {
       if (artitem->GetProperty("artType") == type)
       {

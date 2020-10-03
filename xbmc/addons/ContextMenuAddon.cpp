@@ -76,10 +76,10 @@ void CContextMenuAddon::ParseMenu(
 
   m_items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, ID()));
 
-  for (const auto subMenu : elem->GetElements("menu"))
+  for (const auto& subMenu : elem->GetElements("menu"))
     ParseMenu(&subMenu.second, menuId, anonGroupCount);
 
-  for (const auto element : elem->GetElements("item"))
+  for (const auto& element : elem->GetElements("item"))
   {
     std::string visCondition = element.second.GetValue("visible").asString();
     std::string library = element.second.GetValue("@library").asString();
