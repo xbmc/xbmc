@@ -123,6 +123,7 @@ private:
    * \brief Render a frame using the given renderer
    */
   void RenderInternal(const std::shared_ptr<CRPBaseRenderer>& renderer,
+                      IRenderBuffer* renderBuffer,
                       bool bClear,
                       uint32_t alpha);
 
