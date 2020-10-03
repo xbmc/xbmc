@@ -138,12 +138,16 @@ namespace XBMCAddon
         // send message
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
       }
+      else
+      {
+        m_label = text;
+      }
     }
 
     String ControlTextBox::getText()
     {
-      if (!pGUIControl)
-        return nullptr;
+      if (pGUIControl == nullptr)
+        return m_label;
 
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       return static_cast<CGUITextBox*>(pGUIControl)->GetDescription();
@@ -157,6 +161,7 @@ namespace XBMCAddon
         CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
       }
+      m_label.clear();
     }
 
     void ControlTextBox::scroll(long position)
@@ -182,8 +187,9 @@ namespace XBMCAddon
            (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
            label);
 
-      // reset textbox
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
+      // set label
+      CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
+      msg.SetLabel(m_label);
       pGUIControl->OnMessage(msg);
 
       return pGUIControl;
