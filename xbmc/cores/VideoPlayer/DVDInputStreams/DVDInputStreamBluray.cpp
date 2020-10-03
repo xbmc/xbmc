@@ -865,7 +865,7 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
   /* uncompress and draw bitmap */
   if (ov->argb && ov->cmd == BD_ARGB_OVERLAY_DRAW)
   {
-    SOverlay overlay(new CDVDOverlayImage(), [](CDVDOverlay* ov) { CDVDOverlay::Release(ov); });
+    SOverlay overlay(new CDVDOverlayImage(), std::ptr_fun(CDVDOverlay::Release));
 
     overlay->palette_colors = 0;
     overlay->palette        = nullptr;
