@@ -23,11 +23,84 @@ namespace kodi
 namespace tools
 {
 
+//==============================================================================
+/// @defgroup cpp_kodi_tools_CThread class CThread
+/// @ingroup cpp_kodi_tools
+/// @brief **Helper class to represent threads of execution**\n
+/// An execution thread is a sequence of instructions that can run concurrently
+/// with other such sequences in multithreaded environments while sharing the
+/// same address space.
+///
+/// Is intended to reduce any code work of C++ on addons and to have them faster
+/// to use.
+///
+/// His code uses the support of platform-independent thread system introduced
+/// with C++11.
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/tools/Thread.h>
+/// #include <kodi/AddonBase.h>
+///
+/// class ATTRIBUTE_HIDDEN CTestAddon
+///   : public kodi::addon::CAddonBase,
+///     public kodi::tools::CThread
+/// {
+/// public:
+///   CTestAddon() = default;
+///
+///   ADDON_STATUS Create() override;
+///
+///   void Process() override;
+/// };
+///
+/// ADDON_STATUS CTestAddon::Create()
+/// {
+///   kodi::Log(ADDON_LOG_INFO, "Starting thread");
+///   CreateThread();
+///
+///   Sleep(4000);
+///
+///   kodi::Log(ADDON_LOG_INFO, "Stopping thread");
+///   // This added as example and also becomes stopped by class destructor
+///   StopThread();
+///
+///   return ADDON_STATUS_OK;
+/// }
+///
+/// void CTestAddon::Process()
+/// {
+///   kodi::Log(ADDON_LOG_INFO, "Thread started");
+///
+///   while (!m_threadStop)
+///   {
+///     kodi::Log(ADDON_LOG_INFO, "Hello World");
+///     Sleep(1000);
+///   }
+///
+///   kodi::Log(ADDON_LOG_INFO, "Thread ended");
+/// }
+///
+/// ADDONCREATOR(CTestAddon)
+/// ~~~~~~~~~~~~~
+///
+///@{
 class CThread
 {
 public:
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Class constructor.
+  ///
   CThread() : m_threadStop(false) {}
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Class destructor.
+  ///
   virtual ~CThread()
   {
     StopThread();
@@ -37,11 +110,36 @@ public:
       delete m_thread;
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Check auto delete is enabled on this thread class.
+  ///
+  /// @return true if auto delete is used, false otherwise
+  ///
   bool IsAutoDelete() const { return m_autoDelete; }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Check caller is on this running thread.
+  ///
+  /// @return true if called from thread inside the class, false if from another
+  ///         thread
+  ///
   bool IsCurrentThread() const { return m_threadId == std::this_thread::get_id(); }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Check thread inside this class is running and active.
+  ///
+  /// @note This function should be used from outside and not within process to
+  /// check thread is active. Use use atomic bool @ref m_threadStop for this.
+  ///
+  /// @return true if running, false if not
+  ///
   bool IsRunning() const
   {
     if (m_thread != nullptr)
@@ -58,7 +156,17 @@ public:
     else
       return false;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Create a new thread defined by this class on child.
+  ///
+  /// This starts then @ref Process() where is available on the child by addon.
+  ///
+  /// @param[in] autoDelete To set thread to delete itself after end, default is
+  ///                       false
+  ///
   void CreateThread(bool autoDelete = false)
   {
     if (m_thread != nullptr)
@@ -145,7 +253,16 @@ public:
       m_startEvent.wait(lock);
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Stop a running thread.
+  ///
+  /// @param[in] wait As true (default) to wait until thread is finished and
+  ///                 stopped, as false the function return directly and thread
+  ///                 becomes independently stopped.
+  ///
   void StopThread(bool wait = true)
   {
     std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
@@ -170,7 +287,21 @@ public:
       m_threadId = std::thread::id();
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Thread sleep with given amount of milliseconds.
+  ///
+  /// This makes a sleep in the thread with a given time value. If it is called
+  /// within the process itself, it is also checked whether the thread is
+  /// terminated and the sleep process is thereby interrupted.
+  ///
+  /// If the external point calls this, only a regular sleep is used, which runs
+  /// through completely.
+  ///
+  /// @param[in] milliseconds Time to sleep
+  ///
   void Sleep(uint32_t milliseconds)
   {
     if (milliseconds > 10 && IsCurrentThread())
@@ -183,7 +314,18 @@ public:
       std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief The function returns when the thread execution has completed or
+  /// timing is reached in milliseconds beforehand
+  ///
+  /// This synchronizes the moment this function returns with the completion of
+  /// all operations on the thread.
+  ///
+  /// @param[in] milliseconds Time to wait for join
+  ///
   bool Join(unsigned int milliseconds)
   {
     std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
@@ -209,11 +351,34 @@ public:
     else
       return false;
   }
+  //----------------------------------------------------------------------------
 
 protected:
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief The function to be added by the addon as a child to carry out the
+  /// process thread.
+  ///
+  /// Use @ref m_threadStop to check about active of thread and want stopped from
+  /// external place.
+  ///
+  /// @note This function is necessary and must be implemented by the addon.
+  ///
   virtual void Process() = 0;
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_tools_CThread
+  /// @brief Atomic bool to indicate thread is active.
+  ///
+  /// This should be used in @ref Process() to check the activity of the thread and,
+  /// if true, to terminate the process.
+  ///
+  /// - <b>`false`</b>: Thread active and should be run
+  /// - <b>`true`</b>: Thread ends and should be stopped
+  ///
   std::atomic<bool> m_threadStop;
+  //----------------------------------------------------------------------------
 
 private:
   bool m_autoDelete = false;
@@ -225,6 +390,8 @@ private:
   std::thread* m_thread = nullptr;
   std::future<bool> m_future;
 };
+///@}
+//------------------------------------------------------------------------------
 
 } /* namespace tools */
 } /* namespace kodi */
