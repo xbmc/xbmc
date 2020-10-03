@@ -169,12 +169,34 @@ void CGUIDialogAddonInfo::UpdateControls()
       m_localAddon && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_localAddon->ID());
   bool canDisable =
       isInstalled && CServiceBroker::GetAddonMgr().CanAddonBeDisabled(m_localAddon->ID());
-  bool canInstall =
-      !isInstalled && m_item->GetAddonInfo()->LifecycleState() != AddonLifecycleState::BROKEN;
+  bool canInstall = !isInstalled && itemAddonInfo->LifecycleState() != AddonLifecycleState::BROKEN;
   bool canUninstall = m_localAddon && CServiceBroker::GetAddonMgr().CanUninstall(m_localAddon);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall || canUninstall);
-  SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
+  bool isUpdate = (!isInstalled && CServiceBroker::GetAddonMgr().IsAddonInstalled(
+                                       itemAddonInfo->ID(), itemAddonInfo->Origin()));
+
+  if (isInstalled)
+  {
+    SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, 24037); // uninstall
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canUninstall);
+  }
+  else
+  {
+    if (isUpdate)
+    {
+      SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, 24138); // update
+    }
+    else
+    {
+      SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, 24038); // install
+    }
+
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall);
+    if (canInstall)
+    {
+      SET_CONTROL_FOCUS(CONTROL_BTN_INSTALL, 0);
+    }
+  }
 
   if (m_addonEnabled)
   {
