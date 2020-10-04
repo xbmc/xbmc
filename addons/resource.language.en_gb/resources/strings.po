@@ -9370,13 +9370,7 @@ msgctxt "#19040"
 msgid "Timers"
 msgstr ""
 
-#empty string with id 19041
-
-#. label for "rename timer" confirmation input dialog
-#: xbmc/pvr/PVRGUIActions.cpp
-msgctxt "#19042"
-msgid "Are you sure you want to rename this timer?"
-msgstr ""
+#empty strings from id 19041 to 19042
 
 #. pvr settings "recording" category label
 #: system/settings/settings.xml

@@ -155,13 +155,6 @@ namespace PVR
     std::shared_ptr<CFileItem> GetTimerRule(const std::shared_ptr<CFileItem>& item) const;
 
     /*!
-     * @brief Rename a timer, showing a text input dialog.
-     * @param item containing a timer to rename.
-     * @return true, if the timer was renamed successfully, false otherwise.
-     */
-    bool RenameTimer(const std::shared_ptr<CFileItem>& item) const;
-
-    /*!
      * @brief Delete a timer, always showing a confirmation dialog.
      * @param item containing a timer to delete. item must be a timer, an epg tag or a channel.
      * @return true, if the timer was deleted successfully, false otherwise.

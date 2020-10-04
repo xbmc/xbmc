@@ -963,20 +963,6 @@ TimerOperationResult CPVRTimers::DeleteTimer(const std::shared_ptr<CPVRTimerInfo
   return ret;
 }
 
-bool CPVRTimers::RenameTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, const std::string& strNewName)
-{
-  bool bReturn = false;
-  if (tag->IsOwnedByClient())
-  {
-    bReturn = tag->RenameOnClient(strNewName);
-  }
-  else
-  {
-    bReturn = RenameLocalTimer(tag, strNewName);
-  }
-  return bReturn;
-}
-
 bool CPVRTimers::UpdateTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 {
   bool bReturn = false;
@@ -1080,21 +1066,6 @@ bool CPVRTimers::DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, 
     lock.Leave();
     NotifyTimersEvent();
   }
-
-  return bReturn;
-}
-
-bool CPVRTimers::RenameLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, const std::string& strNewName)
-{
-  {
-    CSingleLock lock(m_critSection);
-    tag->m_strTitle = strNewName;
-  }
-  // no need to re-create timer and children. changed timer title does not invalidate any children.
-  bool bReturn = !!PersistAndUpdateLocalTimer(tag, nullptr);
-
-  if (bReturn)
-    NotifyTimersEvent();
 
   return bReturn;
 }

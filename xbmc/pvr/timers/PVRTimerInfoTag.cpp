@@ -531,18 +531,6 @@ TimerOperationResult CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false *
   return (error == PVR_ERROR_NO_ERROR) ? TimerOperationResult::OK : TimerOperationResult::FAILED;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(const std::string& strNewName)
-{
-  {
-    // set the new timer title locally
-    CSingleLock lock(m_critSection);
-    m_strTitle = strNewName;
-  }
-
-  // update timer data in the backend
-  return UpdateOnClient();
-}
-
 bool CPVRTimerInfoTag::Persist()
 {
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
