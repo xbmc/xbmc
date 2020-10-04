@@ -45,6 +45,7 @@ option(VERBOSE            "Enable verbose output?" OFF)
 option(ENABLE_CLANGTIDY   "Enable clang-tidy support?" OFF)
 option(ENABLE_CPPCHECK    "Enable cppcheck support?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
+option(ENABLE_INCLUDEWHATYOUUSE "Enable include-what-you-use support?" OFF)
 option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
@@ -152,6 +153,7 @@ set(optional_deps Alsa
                   Cppcheck
                   Dav1d
                   DBus
+                  IncludeWhatYouUse
                   Iso9660pp
                   LCMS2
                   LircClient
