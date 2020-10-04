@@ -22247,4 +22247,47 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39142"
 msgid "Custom"
+
+#: system/settings/settings.xml
+msgctxt "#39143"
+msgid "Movie art types whitelist"
+msgstr ""
+
+#. Description of setting with label #39150 "Movie art types whitelist"
+#: system/settings/settings.xml
+msgctxt "#39144"
+msgid "Limit the movie and movie set artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39145"
+msgid "TV show art types whitelist"
+msgstr ""
+
+#. Description of setting with label #39152 "TV show art types whitelist"
+#: system/settings/settings.xml
+msgctxt "#39146"
+msgid "Limit the TV show and season artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39147"
+msgid "Episode art types whitelist"
+msgstr ""
+
+#. Description of setting with label #39154 "Episode art types whitelist"
+#: system/settings/settings.xml
+msgctxt "#39148"
+msgid "Limit the episode artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39149"
+msgid "Music video art types whitelist"
+msgstr ""
+
+#. Description of setting with label #39156 "Music video art types whitelist"
+#: system/settings/settings.xml
+msgctxt "#39150"
+msgid "Limit the music video artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
 msgstr ""

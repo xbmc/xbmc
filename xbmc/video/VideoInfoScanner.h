@@ -91,14 +91,6 @@ namespace VIDEO
      */
     void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, const std::string &actorArtPath = "");
 
-    /*! \brief Retrieve the art type for an image from the given size.
-     \param width the width of the image.
-     \param height the height of the image.
-     \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
-             is at least 1:4, "thumb" otherwise.
-     */
-    static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
-
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
      \param show     tvshow info tag
@@ -244,8 +236,17 @@ namespace VIDEO
     std::set<int> m_pathsToClean;
 
   private:
-    void GetLocalMovieSetArtwork(CGUIListItem::ArtMap& art,
-        const std::vector<std::string>& artTypes, const std::string& setTitle);
+    static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
+      const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
+      bool addAll, bool exactName);
+
+    /*! \brief Retrieve the art type for an image from the given size.
+     \param width the width of the image.
+     \param height the height of the image.
+     \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
+             is at least 1:4, "thumb" otherwise.
+     */
+    static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
   };
 }
 

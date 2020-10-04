@@ -385,6 +385,23 @@ public:
    */
   std::string GetLocalFanart() const;
 
+  /*!
+   \brief Assemble the base filename of local artwork for an item,
+   accounting for archives, stacks and multi-paths, and BDMV/VIDEO_TS folders.
+   `useFolder` is set to false
+   \return the path to the base filename for artwork lookup.
+   \sa GetLocalArt
+   */
+  std::string GetLocalArtBaseFilename() const;
+  /*!
+   \brief Assemble the base filename of local artwork for an item,
+   accounting for archives, stacks and multi-paths, and BDMV/VIDEO_TS folders.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the base filename for artwork lookup.
+   \sa GetLocalArt
+   */
+  std::string GetLocalArtBaseFilename(bool& useFolder) const;
+
   /*! \brief Assemble the filename of a particular piece of local artwork for an item.
              No file existence check is typically performed.
    \param artFile the art file to search for.
@@ -392,7 +409,7 @@ public:
    \return the path to the local artwork.
    \sa FindLocalArt
    */
-  std::string GetLocalArt(const std::string &artFile, bool useFolder = false) const;
+  std::string GetLocalArt(const std::string& artFile, bool useFolder = false) const;
 
   /*! \brief Assemble the filename of a particular piece of local artwork for an item,
              and check for file existence.

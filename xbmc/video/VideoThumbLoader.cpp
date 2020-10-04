@@ -223,68 +223,93 @@ static void SetupRarOptions(CFileItem& item, const std::string& path)
   g_directoryCache.ClearDirectory(url.GetWithoutFilename());
 }
 
+namespace
+{
+std::vector<std::string> GetSettingListAsString(const std::string& settingID)
+{
+  std::vector<CVariant> values =
+    CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(settingID);
+  std::vector<std::string> result;
+  std::transform(values.begin(), values.end(), std::back_inserter(result),
+    [](CVariant s) { return s.asString(); });
+  return result;
+}
+
+const std::map<std::string, std::vector<std::string>> artTypeDefaults = {
+  {MediaTypeEpisode, {"thumb"}},
+  {MediaTypeTvShow, {"poster", "fanart", "banner"}},
+  {MediaTypeSeason, {"poster", "fanart", "banner"}},
+  {MediaTypeMovie, {"poster", "fanart"}},
+  {MediaTypeVideoCollection, {"poster", "fanart"}},
+  {MediaTypeMusicVideo, {"poster", "fanart"}},
+  {MediaTypeNone, { "poster", "fanart", "banner", "thumb" }},
+};
+
+const std::vector<std::string> artTypeDefaultsFallback = {};
+
+const std::vector<std::string>& GetArtTypeDefault(const std::string& mediaType)
+{
+  auto defaults = artTypeDefaults.find(mediaType);
+  if (defaults != artTypeDefaults.end())
+    return defaults->second;
+  return artTypeDefaultsFallback;
+}
+
+const std::map<std::string, std::string> artTypeSettings = {
+  {MediaTypeEpisode, CSettings::SETTING_VIDEOLIBRARY_EPISODEART_WHITELIST},
+  {MediaTypeTvShow, CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST},
+  {MediaTypeSeason, CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST},
+  {MediaTypeMovie, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
+  {MediaTypeVideoCollection, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
+  {MediaTypeMusicVideo, CSettings::SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST},
+};
+} // namespace
+
 std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
 {
-  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  std::vector<std::string> ret;
-  if (type == MediaTypeEpisode)
+  int artworkLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+    CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
+  if (artworkLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
   {
-    ret = {"thumb"};
-    for (auto& artType : advancedSettings->m_videoEpisodeExtraArt)
-    {
-      if (find(ret.begin(), ret.end(), artType) == ret.end())
-        ret.push_back(artType);
-    }
+    return {};
   }
-  else if (type == MediaTypeTvShow)
-  {
-    ret = {"poster", "fanart", "banner"};
-    for (auto& artType : advancedSettings->m_videoTvShowExtraArt)
-    {
-      if (find(ret.begin(), ret.end(), artType) == ret.end())
-        ret.push_back(artType);
-    }
-  }
-  else if (type == MediaTypeSeason)
-  {
-    ret = {"poster", "fanart", "banner"};
-    for (auto& artType : advancedSettings->m_videoTvSeasonExtraArt)
-    {
-      if (find(ret.begin(), ret.end(), artType) == ret.end())
-        ret.push_back(artType);
-    }
-  }
-  else if (type == MediaTypeMovie)
-  {
-    ret = {"poster", "fanart"};
-    for (auto& artType : advancedSettings->m_videoMovieExtraArt)
-    {
-      if (find(ret.begin(), ret.end(), artType) == ret.end())
-        ret.push_back(artType);
-    }
-  }
-  else if (type == MediaTypeVideoCollection)
-  {
-    ret = {"poster", "fanart"};
-    for (auto& artType : advancedSettings->m_videoMovieSetExtraArt)
-    {
-      if (find(ret.begin(), ret.end(), artType) == ret.end())
-        ret.push_back(artType);
-    }
-  }
-  else if (type == MediaTypeMusicVideo)
-  {
-    ret = {"poster", "fanart"};
-    for (auto& artType : advancedSettings->m_videoMusicVideoExtraArt)
-    {
-      if (find(ret.begin(), ret.end(), artType) == ret.end())
-        ret.push_back(artType);
-    }
-  }
-  else if (type.empty()) // unknown, just the basics
-    ret = { "poster", "fanart", "banner", "thumb" };
 
-  return ret;
+  std::vector<std::string> result = GetArtTypeDefault(type);
+  if (artworkLevel != CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_CUSTOM)
+  {
+    return result;
+  }
+
+  auto settings = artTypeSettings.find(type);
+  if (settings == artTypeSettings.end())
+    return result;
+
+  for (auto& artType : GetSettingListAsString(settings->second))
+  {
+    if (find(result.begin(), result.end(), artType) == result.end())
+      result.push_back(artType);
+  }
+
+  return result;
+}
+
+bool CVideoThumbLoader::IsValidArtType(const std::string& potentialArtType)
+{
+  return !potentialArtType.empty() && potentialArtType.length() <= 25 &&
+    std::find_if_not(
+      potentialArtType.begin(), potentialArtType.end(),
+      StringUtils::isasciialphanum
+    ) == potentialArtType.end();
+}
+
+bool CVideoThumbLoader::IsArtTypeInWhitelist(const std::string& artType, const std::vector<std::string>& whitelist, bool exact)
+{
+  // whitelist contains art "families", 'fanart' also matches 'fanart1', 'fanart2', and so on
+  std::string compareArtType = artType;
+  if (!exact)
+    StringUtils::TrimRight(compareArtType, "0123456789");
+
+  return std::find(whitelist.begin(), whitelist.end(), compareArtType) != whitelist.end();
 }
 
 /**

@@ -1000,6 +1000,113 @@
           </control>
         </setting>
       </group>
+      <group id="4" label="39123">
+        <!-- Hidden setting indicating video art settings have been migrated from old advancedsettings.xml format-->
+        <setting id="videolibrary.artsettingsupdated" type="boolean" label="0" help="">
+          <level>4</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.artworklevel" type="integer" label="39137" help="39138">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="39140">0</option> <!-- VIDEOLIBRARY_ARTWORK_LEVEL_ALL -->
+              <option label="39141">1</option> <!-- VIDEOLIBRARY_ARTWORK_LEVEL_BASIC -->
+              <option label="39142">2</option> <!-- VIDEOLIBRARY_ARTWORK_LEVEL_CUSTOM -->
+              <option label="231">3</option> <!-- VIDEOLIBRARY_ARTWORK_LEVEL_NONE -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="videolibrary.movieartwhitelist" type="list[string]" parent="videolibrary.artworklevel" label="39143" help="39144">
+          <level>2</level>
+          <default></default>
+          <constraints>
+            <options>
+              <option>clearart</option>
+              <option>discart</option>
+              <option>keyart</option>
+              <option>banner</option>
+              <option>landscape</option>
+              <option>clearlogo</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allownewoption>true</allownewoption>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.artworklevel" operator="is">2</dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <addbuttonlabel>13516</addbuttonlabel>
+          </control>
+        </setting>
+        <setting id="videolibrary.tvshowartwhitelist" type="list[string]" parent="videolibrary.artworklevel" label="39145" help="39146">
+          <level>2</level>
+          <default></default>
+          <constraints>
+            <options>
+              <option>clearart</option>
+              <option>discart</option>
+              <option>keyart</option>
+              <option>banner</option>
+              <option>landscape</option>
+              <option>clearlogo</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allownewoption>true</allownewoption>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.artworklevel" operator="is">2</dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <addbuttonlabel>13516</addbuttonlabel>
+          </control>
+        </setting>
+        <setting id="videolibrary.episodeartwhitelist" type="list[string]" parent="videolibrary.artworklevel" label="39147" help="39148">
+          <level>2</level>
+          <default></default>
+          <constraints>
+            <options>
+              <option>fanart</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allownewoption>true</allownewoption>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.artworklevel" operator="is">2</dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <addbuttonlabel>13516</addbuttonlabel>
+          </control>
+        </setting>
+        <setting id="videolibrary.musicvideoartwhitelist" type="list[string]" parent="videolibrary.artworklevel" label="39149" help="39150">
+          <level>2</level>
+          <default></default>
+          <constraints>
+            <options>
+              <option>clearart</option>
+              <option>discart</option>
+              <option>banner</option>
+              <option>landscape</option>
+              <option>clearlogo</option>
+            </options>
+            <delimiter>, </delimiter>
+            <allownewoption>true</allownewoption>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.artworklevel" operator="is">2</dependency>
+          </dependencies>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <addbuttonlabel>13516</addbuttonlabel>
+          </control>
+        </setting>
+      </group>
     </category>
     <category id="music" label="14216" help="38108">
       <group id="1" label="39121">
