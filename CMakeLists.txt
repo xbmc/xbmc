@@ -42,6 +42,7 @@ include(ExternalProject)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
+option(ENABLE_CLANGTIDY   "Enable clang-tidy support?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
@@ -146,6 +147,7 @@ set(optional_deps Alsa
                   CCache
                   CEC
                   ClangFormat
+                  ClangTidy
                   Dav1d
                   DBus
                   Iso9660pp
@@ -164,13 +166,13 @@ set(optional_deps Alsa
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
 
-# Required tools
-find_package(TexturePacker REQUIRED)
-find_package(JsonSchemaBuilder REQUIRED)
-
 # Check optional deps first, since their availability can influence required ones, e.g. ffmpeg
 core_optional_dep(${optional_deps})
 core_require_dep(${required_deps})
+
+# Required tools
+find_package(TexturePacker REQUIRED)
+find_package(JsonSchemaBuilder REQUIRED)
 
 SET(PYTHON_VERSION 3.8)
 
