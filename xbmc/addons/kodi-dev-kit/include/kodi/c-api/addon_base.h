@@ -11,6 +11,10 @@
 #ifndef C_API_ADDON_BASE_H
 #define C_API_ADDON_BASE_H
 
+#if !defined(NOMINMAX)
+#define NOMINMAX
+#endif
+
 #include "stdbool.h"
 #include "stdint.h"
 

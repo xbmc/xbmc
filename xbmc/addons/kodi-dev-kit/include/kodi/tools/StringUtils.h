@@ -10,6 +10,10 @@
 
 #ifdef __cplusplus
 
+#if !defined(NOMINMAX)
+#define NOMINMAX
+#endif
+
 #include <algorithm>
 #include <array>
 #include <cassert>
