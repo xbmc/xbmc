@@ -218,13 +218,6 @@ namespace PVR
     bool CanEditRecording(const CFileItem& item) const;
 
     /*!
-     * @brief Rename a recording, showing a text input dialog.
-     * @param item containing a recording to rename.
-     * @return true, if the recording was renamed successfully, false otherwise.
-     */
-    bool RenameRecording(const std::shared_ptr<CFileItem>& item) const;
-
-    /*!
      * @brief Delete a recording, always showing a confirmation dialog.
      * @param item containing a recording to delete.
      * @return true, if the recording was deleted successfully, false otherwise.

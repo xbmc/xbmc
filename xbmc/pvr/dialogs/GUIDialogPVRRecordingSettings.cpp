@@ -131,7 +131,7 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSe
     if (m_recording->WillBeExpiredWithNewLifetime(iNewLifetime))
     {
       if (HELPERS::ShowYesNoDialogText(CVariant{19068}, // "Recording settings"
-                                       StringUtils::Format(g_localizeStrings.Get(19147).c_str(), iNewLifetime)) // "Setting the lieftime..."
+                                       StringUtils::Format(g_localizeStrings.Get(19147).c_str(), iNewLifetime)) // "Setting the lifetime..."
           != HELPERS::DialogResponse::YES)
         return false;
     }

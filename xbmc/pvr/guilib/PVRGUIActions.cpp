@@ -1080,25 +1080,6 @@ namespace PVR
     return CGUIDialogPVRRecordingSettings::CanEditRecording(item);
   }
 
-  bool CPVRGUIActions::RenameRecording(const CFileItemPtr& item) const
-  {
-    const std::shared_ptr<CPVRRecording> recording(item->GetPVRRecordingInfoTag());
-    if (!recording)
-      return false;
-
-    std::string strNewName(recording->m_strTitle);
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19041)}, false))
-      return false;
-
-    if (!AsyncRenameRecording(strNewName).Execute(item))
-    {
-      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
-      return false;
-    }
-
-    return true;
-  }
-
   bool CPVRGUIActions::DeleteRecording(const CFileItemPtr& item) const
   {
     if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
