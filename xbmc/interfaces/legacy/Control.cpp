@@ -261,7 +261,8 @@ namespace XBMCAddon
 
     String ControlButton::getLabel()
     {
-      if (!pGUIControl) return NULL;
+      if (pGUIControl == nullptr)
+        return strText;
 
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       return static_cast<CGUIButtonControl*>(pGUIControl)->GetLabel();
@@ -269,7 +270,8 @@ namespace XBMCAddon
 
     String ControlButton::getLabel2()
     {
-      if (!pGUIControl) return NULL;
+      if (pGUIControl == nullptr)
+        return strText2;
 
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       return static_cast<CGUIButtonControl*>(pGUIControl)->GetLabel2();
@@ -978,8 +980,6 @@ namespace XBMCAddon
 
     String ControlLabel::getLabel()
     {
-      if (!pGUIControl)
-        return NULL;
       return strText;
     }
     // ============================================================
@@ -1002,6 +1002,10 @@ namespace XBMCAddon
       strTextureNoFocus = noFocusTexture ? noFocusTexture :
         XBMCAddonUtils::getDefaultImage("edit", "texturenofocus");
 
+      if (!label.empty())
+      {
+        strText = label;
+      }
       if (font) strFont = font;
       if (_textColor) sscanf( _textColor, "%x", &textColor );
       if (_disabledColor) sscanf( _disabledColor, "%x", &disabledColor );
@@ -1026,6 +1030,11 @@ namespace XBMCAddon
         label,
         strText);
 
+      // set label
+      CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
+      msg.SetLabel(strText);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
+
       return pGUIControl;
     }
 
@@ -1042,8 +1051,6 @@ namespace XBMCAddon
 
     String ControlEdit::getLabel()
     {
-      if (!pGUIControl)
-        return NULL;
       return strText;
     }
 
