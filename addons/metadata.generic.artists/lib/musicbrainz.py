@@ -14,7 +14,7 @@ def musicbrainz_artistfind(data, artist):
             artistdata['gender'] = item['gender']
         if 'disambiguation' in item:
             artistdata['disambiguation'] = item['disambiguation']
-        artistdata['mbid'] = item['id']
+        artistdata['mbartistid'] = item['id']
         if item.get('score',1):
             artistdata['relevance'] = str(item['score'] / 100.00)
         artists.append(artistdata)
@@ -47,7 +47,14 @@ def musicbrainz_artistdetails(data):
         artistdata['albums'] = albums
     for item in data['relations']:
         if item['type'] == 'allmusic':
-            artistdata['allmusic-url'] = item['url']['resource']
+            artistdata['allmusic'] = item['url']['resource']
         elif item['type'] == 'discogs':
-            artistdata['discogs-url'] = item['url']['resource']
+            dataid = item['url']['resource'].rsplit('/', 1)[1]
+            artistdata['discogs'] = dataid
+        elif item['type'] == 'wikidata':
+            dataid = item['url']['resource'].rsplit('/', 1)[1]
+            artistdata['wikidata'] = dataid
+        elif item['type'] == 'wikipedia':
+            dataid = item['url']['resource'].rsplit('/', 1)[1]
+            artistdata['wikipedia'] = dataid
     return artistdata

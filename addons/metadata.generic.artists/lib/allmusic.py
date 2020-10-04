@@ -1,6 +1,30 @@
 # -*- coding: utf-8 -*-
-
+import difflib
 import re
+
+def allmusic_artistfind(data, artist):
+    data = data.decode('utf-8')
+    artists = []
+    artistlist = re.findall('class="artist">\s*(.*?)\s*</li', data, re.S)
+    for item in artistlist:
+        artistdata = {}
+        artistname = re.search('class="name">.*?>(.*?)</a', item, re.S)
+        if artistname:
+            artistdata['artist'] = artistname.group(1)
+        else: # not likely to happen, but just in case
+            continue
+        # filter inaccurate results
+        artistmatch = difflib.SequenceMatcher(None, artist.lower(), artistdata['artist'].lower()).ratio()
+        if artistmatch > 0.95:
+            artisturl = re.search('class="name">\s*<a href="(.*?)"', item)
+            if artisturl:
+                artistdata['url'] = artisturl.group(1)
+            else: # not likely to happen, but just in case
+                continue
+            artists.append(artistdata)
+            # we are only interested in the top result
+            break
+    return artists
 
 def allmusic_artistdetails(data):
     data = data.decode('utf-8')

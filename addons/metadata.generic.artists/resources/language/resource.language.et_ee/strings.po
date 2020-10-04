@@ -1,0 +1,111 @@
+# Kodi Media Center language file
+# Addon Name: Generic Artist Scraper
+# Addon id: metadata.generic.artists
+# Addon Provider: Team Kodi
+# Translators:
+# Olav <olav.magi@gmail.com>, 2020
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-09-08 20:22+0000\n"
+"Last-Translator: Olav <olav.magi@gmail.com>, 2020\n"
+"Language-Team: Estonian (Estonia) (https://www.transifex.com/teamxbmc/teams/40581/et_EE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et_EE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr "Eelistused"
+
+msgctxt "#30001"
+msgid "Preferred language for artist biography"
+msgstr "Eelistatud keel esitaja andmete puhul"
+
+msgctxt "#30002"
+msgid "Prefer biography from"
+msgstr "Eelista andmeid kohast"
+
+msgctxt "#30003"
+msgid "Prefer discography from"
+msgstr "Eelista muusikalisi andmeid kohast"
+
+msgctxt "#30004"
+msgid "Prefer genres from"
+msgstr "Eelista žanreid kohast"
+
+msgctxt "#30005"
+msgid "Prefer styles from"
+msgstr "Eelista stiile kohast"
+
+msgctxt "#30006"
+msgid "Prefer moods from"
+msgstr "Eelista tujusid kohast"
+
+msgctxt "#30101"
+msgid "Allow less accurate search results"
+msgstr "Luba vähemtäpsemad otsingutulemused"
+
+msgctxt "#30201"
+msgid ""
+"If available, the artist biography will be downloaded in the selected "
+"language. It will fallback to English."
+msgstr ""
+"Olemasolul laaditakse esitaja elulugu alla valitud keeles. Selle puudumisel "
+"kasutatakse inglise keelt."
+
+msgctxt "#30202"
+msgid ""
+"Try to get the artist biography using the selected scraper. Other scrapers "
+"will be used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida esitaja elulugu valitud kaabitsaga. Teisi kaabitsaid "
+"kasutatakse, kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30203"
+msgid ""
+"Try to get the artist discography using the selected scraper. Other scrapers"
+" will be used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida esitaja musikaalset ajalugu valitud kaabitsaga. Teisi "
+"kaabitsaid kasutatakse, kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30204"
+msgid ""
+"Try to get genre info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida žanri teavet valitud kaabitsaga. Teisi kaabitsaid kasutatakse,"
+" kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30205"
+msgid ""
+"Try to get style info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida stiili teavet valitud kaabitsaga. Teisi kaabitsaid "
+"kasutatakse, kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30206"
+msgid ""
+"Try to get mood info using the selected scraper. Other scrapers will be used"
+" if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida tuju teavet valitud kaabitsaga. Teisi kaabitsaid kasutatakse, "
+"kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30301"
+msgid ""
+"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
+"search those sites based on artistname. Since artist names are not unique, "
+"this could potentially result in a mixture of metadata from multiple artists"
+" by the same name."
+msgstr ""
+"Kui Musicbrainz ei paku allmusicu ja/või discogsi linki, saame neist "
+"lehtedest otsida esitaja ja albumi nime järgi. Kuna on olemas samanimelised "
+"esitajad, võivad nende metaandmed seguneda."

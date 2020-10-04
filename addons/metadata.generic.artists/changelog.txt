@@ -1,3 +1,25 @@
+v1.0.14
+- add translations
+
+v1.0.13
+- provide fanart as part of thumbs list
+
+v1.0.12
+- don't populate the art table, this is handled by kodi now
+
+v1.0.11
+- use our own api keys
+
+v1.0.10
+- option for less accurate results
+
+v1.0.9
+- add wikipedia support
+
+v1.0.8
+- use musicbrainz provided links to allmusic / discogs
+- speed up scraping, improve api rate limit timing
+
 v1.0.7
 - include alias and sortname in artist search
 - filter inaccurate search results from discogs

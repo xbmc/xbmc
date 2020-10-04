@@ -1,0 +1,128 @@
+# Kodi Media Center language file
+# Addon Name: Generic Album Scraper
+# Addon id: metadata.generic.albums
+# Addon Provider: Team Kodi
+# Translators:
+# TeamKODI <transifex.translator@gmail.com>, 2020
+# Lucas Mindêllo de Andrade <lucas@mindello.com.br>, 2020
+# Igor Rückert, 2020
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-09-08 20:23+0000\n"
+"Last-Translator: Igor Rückert, 2020\n"
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/teamxbmc/teams/40581/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr "Preferências"
+
+msgctxt "#30001"
+msgid "Preferred language for album review"
+msgstr "Idioma preferido para resenha do álbum"
+
+msgctxt "#30002"
+msgid "Prefer genres from"
+msgstr "Preferir gêneros de"
+
+msgctxt "#30003"
+msgid "Prefer styles from"
+msgstr "Preferir estilos de"
+
+msgctxt "#30004"
+msgid "Prefer moods from"
+msgstr "Preferir humores de"
+
+msgctxt "#30005"
+msgid "Prefer themes from"
+msgstr "Preferir temas de"
+
+msgctxt "#30006"
+msgid "Prefer rating from"
+msgstr "Preferir classificação de"
+
+msgctxt "#30007"
+msgid "Prefer review from"
+msgstr "Preferir avaliações de"
+
+msgctxt "#30101"
+msgid "Allow less accurate search results"
+msgstr "Permitir resultados de busca menos precisos"
+
+msgctxt "#30201"
+msgid ""
+"If available, the album review will be downloaded in the selected language. "
+"It will fallback to English."
+msgstr ""
+"Se disponível, a avaliação do album será baixada no idioma selecionado. Caso"
+" contrário, será em inglês."
+
+msgctxt "#30202"
+msgid ""
+"Try to get genre info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Tenta buscar as informações de gênero utilizando o scraper selecionado. Os "
+"demais scrapers serão utilizados se o prioritário não trouxer resultados."
+
+msgctxt "#30203"
+msgid ""
+"Try to get style info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Tentar obter informações de estilo usando o scraper selecionado. Os demais "
+"scrapers serão utilizados se o prioritário não trouxer resultados."
+
+msgctxt "#30204"
+msgid ""
+"Try to get mood info using the selected scraper. Other scrapers will be used"
+" if the preferred scraper returns no results."
+msgstr ""
+"Tentar obter as informações de humor usando o scraper selecionado. Os demais"
+" scrapers serão utilizados se o prioritário não trouxer resultados."
+
+msgctxt "#30205"
+msgid ""
+"Try to get theme info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Tenta buscar as informações de tema utilizando o scraper selecionado. Outros"
+" scrapers serão utilizados se o prioritário não trouxer resultados."
+
+msgctxt "#30206"
+msgid ""
+"Try to get rating info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Tenta buscar as informações de classificação utilizando o scraper "
+"selecionado. Outros scrapers serão utilizados se o prioritário não trouxer "
+"resultados."
+
+msgctxt "#30207"
+msgid ""
+"Try to get the album review using the selected scraper. Other scrapers will "
+"be used if the preferred scraper returns no results."
+msgstr ""
+"Tenta buscar avaliações do álbum utilizando o scraper selecionado. Outros "
+"scrapers serão utilizados se o prioritário não trouxer resultados."
+
+msgctxt "#30301"
+msgid ""
+"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
+"search those sites based on artistname & albumname. In circumstances where "
+"an artist has released multiple albums by the same name, this could "
+"potentially result in a mixture of metadata from those albums."
+msgstr ""
+"Se Musicbrainz não fornecer um link para allmusic e/ou discogs, nós podemos "
+"procurar nestes sites pelo nome do artista e nome do álbum. Nos casos em que"
+" o artista tiver lançado vários álbuns com o mesmo nome, isto pode "
+"potencialmente resultar numa junção de metadados de múltiplos artistas com "
+"mesmo nome."

@@ -60,16 +60,19 @@ def theaudiodb_artistdetails(data):
             fanartdata = {}
             fanartdata['image'] = item['strArtistFanart']
             fanartdata['preview'] = item['strArtistFanart'] + '/preview'
+            fanartdata['aspect'] = 'fanart'
             fanart.append(fanartdata)
             if item['strArtistFanart2']:
                 fanartdata = {}
                 fanartdata['image'] = item['strArtistFanart2']
                 fanartdata['preview'] = item['strArtistFanart2'] + '/preview'
+                fanartdata['aspect'] = 'fanart'
                 fanart.append(fanartdata)
                 if item['strArtistFanart3']:
                     fanartdata = {}
                     fanartdata['image'] = item['strArtistFanart3']
                     fanartdata['preview'] = item['strArtistFanart3'] + '/preview'
+                    fanartdata['aspect'] = 'fanart'
                     fanart.append(fanartdata)
             artistdata['fanart'] = fanart
         if item.get('strArtistThumb',''):
@@ -81,28 +84,24 @@ def theaudiodb_artistdetails(data):
             thumbs.append(thumbdata)
             artistdata['thumb'] = thumbs
         if item.get('strArtistLogo',''):
-            artistdata['clearlogo'] = item['strArtistLogo']
             extradata = {}
             extradata['image'] = item['strArtistLogo']
             extradata['preview'] = item['strArtistLogo'] + '/preview'
             extradata['aspect'] = 'clearlogo'
             extras.append(extradata)
         if item.get('strArtistClearart',''):
-            artistdata['clearart'] = item['strArtistClearart']
             extradata = {}
             extradata['image'] = item['strArtistClearart']
             extradata['preview'] = item['strArtistClearart'] + '/preview'
             extradata['aspect'] = 'clearart'
             extras.append(extradata)
         if item.get('strArtistWideThumb',''):
-            artistdata['landscape'] = item['strArtistWideThumb']
             extradata = {}
             extradata['image'] = item['strArtistWideThumb']
             extradata['preview'] = item['strArtistWideThumb'] + '/preview'
             extradata['aspect'] = 'landscape'
             extras.append(extradata)
         if item.get('strArtistBanner',''):
-            artistdata['banner'] = item['strArtistBanner']
             extradata = {}
             extradata['image'] = item['strArtistBanner']
             extradata['preview'] = item['strArtistBanner'] + '/preview'

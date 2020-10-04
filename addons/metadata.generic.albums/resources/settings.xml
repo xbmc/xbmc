@@ -27,6 +27,17 @@
 						</options>
 					</constraints>
 				</setting>
+				<setting help="30207" id="review" label="30007" type="string">
+					<level>0</level>
+					<default>theaudiodb</default>
+					<control format="string" type="spinner"/>
+					<constraints>
+						<options>
+							<option label="theaudiodb">theaudiodb</option>
+							<option label="wikipedia">wikipedia</option>
+						</options>
+					</constraints>
+				</setting>
 				<setting help="30202" id="genre" label="30002" type="string">
 					<level>0</level>
 					<default>theaudiodb</default>
@@ -90,16 +101,10 @@
 		</category>
 		<category id="options" label="33063">
 			<group id="1">
-				<setting help="30301" id="usediscogs" label="30101" type="integer">
+				<setting help="30301" id="inaccurate" label="30101" type="boolean">
 					<level>0</level>
-					<default>0</default>
-					<control format="string" type="spinner"/>
-					<constraints>
-						<options>
-							<option label="30102">0</option>
-							<option label="30103">1</option>
-						</options>
-					</constraints>
+					<default>false</default>
+					<control type="toggle"/>
 				</setting>
 			</group>
 		</category>

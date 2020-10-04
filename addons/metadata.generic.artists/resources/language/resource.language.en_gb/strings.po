@@ -21,7 +21,7 @@ msgid "Preferences"
 msgstr ""
 
 msgctxt "#30001"
-msgid "Prefered language for artist biography"
+msgid "Preferred language for artist biography"
 msgstr ""
 
 msgctxt "#30002"
@@ -45,41 +45,33 @@ msgid "Prefer moods from"
 msgstr ""
 
 msgctxt "#30101"
-msgid "Use Discogs.com"
-msgstr ""
-
-msgctxt "#30102"
-msgid "As fallback only"
-msgstr ""
-
-msgctxt "#30103"
-msgid "Always"
+msgid "Allow less accurate search results"
 msgstr ""
 
 msgctxt "#30201"
-msgid "If available, the artist biography will be downloaded in the selected language. It will fallback to english."
+msgid "If available, the artist biography will be downloaded in the selected language. It will fallback to English."
 msgstr ""
 
 msgctxt "#30202"
-msgid "Try to get the artist biography using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get the artist biography using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30203"
-msgid "Try to get the artist discography using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get the artist discography using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30204"
-msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30205"
-msgid "Try to get style info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get style info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30206"
-msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30301"
-msgid "Fallback: only use the discogs scraper if the artist can't be found on MusicBrainz (faster, but could result in less complete results). Always: retrieve info from discogs.com for each artist (slower, but results could be more complete)"
+msgid "If Musicbrainz does not provide a link to allmusic and/or discogs, we can search those sites based on artistname. Since artist names are not unique, this could potentially result in a mixture of metadata from multiple artists by the same name."
 msgstr ""

@@ -1,0 +1,103 @@
+# Kodi Media Center language file
+# Addon Name: Generic Artist Scraper
+# Addon id: metadata.generic.artists
+# Addon Provider: Team Kodi
+# Translators:
+# TeamKODI <transifex.translator@gmail.com>, 2020
+# Jan Krejčí, 2020
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-09-08 20:22+0000\n"
+"Last-Translator: Jan Krejčí, 2020\n"
+"Language-Team: Czech (Czech Republic) (https://www.transifex.com/teamxbmc/teams/40581/cs_CZ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs_CZ\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr "Předvolby"
+
+msgctxt "#30001"
+msgid "Preferred language for artist biography"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Prefer biography from"
+msgstr "Upřednostněná biografie z"
+
+msgctxt "#30003"
+msgid "Prefer discography from"
+msgstr "Upřednostněná diskografie z"
+
+msgctxt "#30004"
+msgid "Prefer genres from"
+msgstr "Upřednostněný žánr z"
+
+msgctxt "#30005"
+msgid "Prefer styles from"
+msgstr "Upřednostněný styl z"
+
+msgctxt "#30006"
+msgid "Prefer moods from"
+msgstr "Upřednostněná nálada z"
+
+msgctxt "#30101"
+msgid "Allow less accurate search results"
+msgstr "Povolit méně přesné výsledky vyhledávání"
+
+msgctxt "#30201"
+msgid ""
+"If available, the artist biography will be downloaded in the selected "
+"language. It will fallback to English."
+msgstr ""
+"Biografie umělce se stáhne ve vybraném jazyce, pokud je dostupná. V opačném "
+"případě se stáhne v angličtině."
+
+msgctxt "#30202"
+msgid ""
+"Try to get the artist biography using the selected scraper. Other scrapers "
+"will be used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30203"
+msgid ""
+"Try to get the artist discography using the selected scraper. Other scrapers"
+" will be used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30204"
+msgid ""
+"Try to get genre info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30205"
+msgid ""
+"Try to get style info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30206"
+msgid ""
+"Try to get mood info using the selected scraper. Other scrapers will be used"
+" if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30301"
+msgid ""
+"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
+"search those sites based on artistname. Since artist names are not unique, "
+"this could potentially result in a mixture of metadata from multiple artists"
+" by the same name."
+msgstr ""
+"Pokud Musicbrainz neposkytne odkaz na allmusic a /nebo discogs, můžeme tyto "
+"stránky prohledat podle jména umělce. Protože jména umělců nejsou jedinečná,"
+" může to potenciálně způsobit smíchání metadat od několika umělců se stejným"
+" jménem."
