@@ -1808,7 +1808,7 @@ namespace XBMCAddon
     /// below shows how a ControlTextBox can be created, added to the current window and
     /// have some of its properties changed.
     ///
-    /// /// **Extended example:**
+    /// **Extended example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ...
     /// textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')
@@ -1837,6 +1837,7 @@ namespace XBMCAddon
       /// @param text                 string  - text string.
       ///
       ///-----------------------------------------------------------------------
+      ///
       /// @python_v19 setText can now be used before adding the control to the window (the defined
       /// value is taken into consideration when the control is created)
       ///
@@ -1863,6 +1864,7 @@ namespace XBMCAddon
       /// @return                       To get text from box
       ///
       ///-----------------------------------------------------------------------
+      ///
       /// @python_v19 getText() can now be used before adding the control to the window
       ///
       /// **Example:**
@@ -1912,6 +1914,7 @@ namespace XBMCAddon
       ///
       /// @note scroll() only works after the control is added to a window.
       ///
+      ///
       ///-----------------------------------------------------------------------
       ///
       /// **Example:**
@@ -1941,6 +1944,7 @@ namespace XBMCAddon
       /// @note autoScroll only works after you add the control to a window.
       ///
       ///-----------------------------------------------------------------------
+      ///
       /// @python_v15 New function added.
       ///
       /// **Example:**
