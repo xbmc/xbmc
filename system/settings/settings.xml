@@ -879,11 +879,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="myvideos.extractthumb" type="boolean" label="38190" help="36180">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="myvideos.extractchapterthumbs" type="boolean" label="37044" help="37045">
           <level>2</level>
           <default>true</default>
@@ -983,11 +978,6 @@
             <dependency type="enable" setting="videolibrary.tvshowsselectfirstunwatcheditem" operator="!is">0</dependency> <!-- Never -->
           </dependencies>
           <control type="list" format="string" />
-        </setting>
-        <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
         </setting>
         <setting id="videolibrary.moviesetsfolder" type="path" label="20226" help="36300">
           <level>1</level>
@@ -1105,6 +1095,22 @@
             <multiselect>true</multiselect>
             <addbuttonlabel>13516</addbuttonlabel>
           </control>
+        </setting>
+        <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.artworklevel" operator="!is">3</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="myvideos.extractthumb" type="boolean" label="38190" help="36180">
+          <level>1</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible" setting="videolibrary.artworklevel" operator="!is">3</dependency>
+          </dependencies>
+          <control type="toggle" />
         </setting>
       </group>
     </category>

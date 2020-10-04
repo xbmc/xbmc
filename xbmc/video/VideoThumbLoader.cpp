@@ -482,7 +482,9 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         }
       }
       else if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
-               settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+               settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+               settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL) !=
+                   CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
       {
         CFileItem item(*pItem);
         std::string path(item.GetPath());
