@@ -1,5 +1,6 @@
 set(HEADERS DllHelper.h
-            StringUtils.h)
+            StringUtils.h
+            Thread.h)
 
 if(NOT ENABLE_STATIC_LIBS)
   core_add_library(addons_kodi-dev-kit_include_kodi_tools)
