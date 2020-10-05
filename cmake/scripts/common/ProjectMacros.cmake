@@ -77,12 +77,12 @@ endfunction()
 
 function(sca_add_tests)
   find_program(CLANGCHECK_COMMAND clang-check)
-  find_program(CPPCHECK_COMMAND cppcheck)
+  find_program(CPPCHECK_EXECUTABLE cppcheck)
   if(CLANGCHECK_COMMAND AND CMAKE_EXPORT_COMPILE_COMMANDS)
     configure_file(${PROJECT_SOURCE_DIR}/cmake/scripts/linux/clang-check-test.sh.in
                    ${CORE_BUILD_DIR}/clang-check-test.sh)
   endif()
-  if(CPPCHECK_COMMAND)
+  if(CPPCHECK_EXECUTABLE)
     configure_file(${PROJECT_SOURCE_DIR}/cmake/scripts/linux/cppcheck-test.sh.in
                    ${CORE_BUILD_DIR}/cppcheck-test.sh)
     set(CPPCHECK_INCLUDES)
@@ -99,9 +99,9 @@ function(sca_add_tests)
                  COMMAND ${CORE_BUILD_DIR}/clang-check-test.sh ${CLANGCHECK_COMMAND} ${src}
                  CONFIGURATIONS analyze clang-check)
       endif()
-      if(CPPCHECK_COMMAND)
+      if(CPPCHECK_EXECUTABLE)
         add_test(NAME cppcheck+${name}
-                 COMMAND ${CORE_BUILD_DIR}/cppcheck-test.sh ${CPPCHECK_COMMAND} ${src} ${CPPCHECK_INCLUDES}
+                 COMMAND ${CORE_BUILD_DIR}/cppcheck-test.sh ${CPPCHECK_EXECUTABLE} ${src} ${CPPCHECK_INCLUDES}
                  CONFIGURATIONS analyze cppcheck)
       endif()
     endif()
