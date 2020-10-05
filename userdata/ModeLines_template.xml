@@ -19,4 +19,12 @@
         <modeline id="ATSC-1080-60p" label="1080p/60">
            148.5 1920 1960 2016 2200 1080 1082 1088 1125
         </modeline>
+	
+	<modeline id="ATSC-1440-60i" label="1440i/60">
+           296.0 1920 1960 2016 2200 1080 1082 1088 1125
+        </modeline>
+
+        <modeline id="ATSC-1440-60p" label="1440p/60">
+           296.0 1920 1960 2016 2200 1080 1082 1088 1125
+        </modeline>
 </modelines>
