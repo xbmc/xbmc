@@ -91,6 +91,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
+#include "windowing/WindowSystemFactory.h"
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
@@ -577,9 +578,6 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
 
-  m_pWinSystem = CWinSystemBase::CreateWinSystem();
-  CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
-
   if (!m_ServiceManager->InitStageTwo(params, m_pSettingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
   {
     return false;
@@ -624,9 +622,40 @@ bool CApplication::CreateGUI()
 
   m_renderGUI = true;
 
-  if (!CServiceBroker::GetWinSystem()->InitWindowSystem())
+  auto windowSystems = KODI::WINDOWING::CWindowSystemFactory::GetWindowSystems();
+
+  for (auto& windowSystem : windowSystems)
   {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
+    CLog::Log(LOGDEBUG, "CApplication::{} - trying to init {} windowing system", __FUNCTION__,
+              windowSystem);
+    m_pWinSystem = KODI::WINDOWING::CWindowSystemFactory::CreateWindowSystem(windowSystem);
+
+    if (!m_pWinSystem)
+      continue;
+
+    CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
+
+    if (!m_pWinSystem->InitWindowSystem())
+    {
+      CLog::Log(LOGDEBUG, "CApplication::{} - unable to init {} windowing system", __FUNCTION__,
+                windowSystem);
+      m_pWinSystem->DestroyWindowSystem();
+      m_pWinSystem.reset();
+      CServiceBroker::UnregisterWinSystem();
+      continue;
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "CApplication::{} - using the {} windowing system", __FUNCTION__,
+                windowSystem);
+      break;
+    }
+  }
+
+  if (!m_pWinSystem)
+  {
+    CLog::Log(LOGFATAL, "CApplication::{} - unable to init windowing system", __FUNCTION__);
+    CServiceBroker::UnregisterWinSystem();
     return false;
   }
 
@@ -644,7 +673,7 @@ bool CApplication::CreateGUI()
   }
 
   // update the window resolution
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
   CServiceBroker::GetWinSystem()->SetWindowResolution(settings->GetInt(CSettings::SETTING_WINDOW_WIDTH), settings->GetInt(CSettings::SETTING_WINDOW_HEIGHT));
 
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen && CDisplaySettings::GetInstance().GetCurrentResolution() == RES_WINDOW)

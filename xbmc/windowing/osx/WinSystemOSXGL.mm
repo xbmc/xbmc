@@ -10,14 +10,17 @@
 
 #include "guilib/Texture.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "windowing/WindowSystemFactory.h"
 
 
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemOSXGL::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemOSXGL());
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemOSXGL::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemOSXGL>();
 }
 
 void CWinSystemOSXGL::PresentRenderImpl(bool rendered)

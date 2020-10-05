@@ -23,6 +23,9 @@ class CVaapiProxy;
 class CWinSystemWaylandEGLContextGL : public CWinSystemWaylandEGLContext, public CRenderSystemGL
 {
 public:
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   // Implementation of CWinSystemBase via CWinSystemWaylandEGLContext
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;

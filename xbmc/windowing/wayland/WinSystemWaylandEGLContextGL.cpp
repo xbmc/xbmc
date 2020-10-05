@@ -18,15 +18,20 @@
 #include "utils/DMAHeapBufferObject.h"
 #include "utils/UDMABufferObject.h"
 #include "utils/log.h"
+#include "windowing/WindowSystemFactory.h"
 
 #include <EGL/eglext.h>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemWaylandEGLContextGL::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWaylandEGLContextGL());
-  return winSystem;
+  CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem, "wayland");
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemWaylandEGLContextGL::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemWaylandEGLContextGL>();
 }
 
 bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
