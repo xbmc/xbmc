@@ -22,6 +22,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -92,6 +93,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup& group, bool bUpdateFromCl
     {
       updateGroup->SetLastWatched(group.LastWatched());
       updateGroup->SetHidden(group.IsHidden());
+      updateGroup->SetLastOpened(group.LastOpened());
     }
   }
 
@@ -355,9 +357,9 @@ bool CPVRChannelGroups::Load()
     return false;
   }
 
-  // set the last played group as selected group at startup
-  std::shared_ptr<CPVRChannelGroup> lastPlayedGroup = GetLastPlayedGroup();
-  SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalGroup);
+  // set the last opened group as selected group at startup
+  std::shared_ptr<CPVRChannelGroup> lastOpenedGroup = GetLastOpenedGroup();
+  SetSelectedGroup(lastOpenedGroup ? lastOpenedGroup : internalGroup);
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "{} {} channel groups loaded", m_groups.size(),
               m_bRadio ? "radio" : "TV");
@@ -409,6 +411,21 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastPlayedGroup(int iCha
   }
 
   return group;
+}
+
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastOpenedGroup() const
+{
+  std::shared_ptr<CPVRChannelGroup> lastOpenedGroup;
+
+  CSingleLock lock(m_critSection);
+  for (const auto& group : m_groups)
+  {
+    if (group->LastOpened() > 0 &&
+        (!lastOpenedGroup || group->LastOpened() > lastOpenedGroup->LastOpened()))
+      lastOpenedGroup = group;
+  }
+
+  return lastOpenedGroup;
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetMembers(bool bExcludeHidden /* = false */) const
@@ -497,6 +514,10 @@ void CPVRChannelGroups::SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>
 
   for (auto& group : m_groups)
     group->SetSelectedGroup(group == m_selectedGroup);
+
+  auto duration = std::chrono::system_clock::now().time_since_epoch();
+  uint64_t tsMillis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+  m_selectedGroup->SetLastOpened(tsMillis);
 }
 
 void CPVRChannelGroups::UpdateSelectedGroup()
