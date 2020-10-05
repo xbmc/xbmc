@@ -6,9 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "platform/linux/PlatformLinux.h"
+#pragma once
 
-CPlatform* CPlatform::CreateInstance()
+#include "platform/posix/PlatformPosix.h"
+
+class CPlatformLinux : public CPlatformPosix
 {
-  return new CPlatformLinux();
-}
+public:
+  void Init() override;
+};
