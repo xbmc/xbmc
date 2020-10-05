@@ -309,9 +309,12 @@ set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 set(OTHER_FILES cmake/README.md)
 
 # Subdirs
+foreach(CORE_PLATFORM_LC ${CORE_PLATFORM_NAME_LC})
+  core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/common/${CORE_PLATFORM_LC}/*.txt
+                                 ${CMAKE_SOURCE_DIR}/cmake/treedata/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_LC}/*.txt)
+endforeach()
+
 core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/common/*.txt
-                               ${CMAKE_SOURCE_DIR}/cmake/treedata/common/${CORE_PLATFORM_NAME_LC}/*.txt
-                               ${CMAKE_SOURCE_DIR}/cmake/treedata/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}/*.txt
                                ${CMAKE_SOURCE_DIR}/cmake/treedata/${CORE_SYSTEM_NAME}/*.txt)
 core_add_optional_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/optional/common/*.txt
                                         ${CMAKE_SOURCE_DIR}/cmake/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)

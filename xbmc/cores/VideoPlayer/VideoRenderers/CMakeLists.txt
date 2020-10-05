@@ -40,12 +40,12 @@ if(OPENGL_FOUND)
                       FrameBufferObject.h)
 endif()
 
-if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
-                       CORE_PLATFORM_NAME_LC STREQUAL ios OR
-                       CORE_PLATFORM_NAME_LC STREQUAL tvos OR
-                       CORE_PLATFORM_NAME_LC STREQUAL gbm OR
-                       CORE_PLATFORM_NAME_LC STREQUAL x11 OR
-                       CORE_PLATFORM_NAME_LC STREQUAL wayland))
+if(OPENGLES_FOUND AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
+                       "ios" IN_LIST CORE_PLATFORM_NAME_LC OR
+                       "tvos" IN_LIST CORE_PLATFORM_NAME_LC OR
+                       "gbm" IN_LIST CORE_PLATFORM_NAME_LC OR
+                       "x11" IN_LIST CORE_PLATFORM_NAME_LC OR
+                       "wayland" IN_LIST CORE_PLATFORM_NAME_LC))
   list(APPEND SOURCES LinuxRendererGLES.cpp
                       FrameBufferObject.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h

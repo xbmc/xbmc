@@ -6,7 +6,7 @@ if(LIRCCLIENT_FOUND)
   list(APPEND HEADERS LIRC.h)
 endif()
 
-if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+if("gbm" IN_LIST CORE_PLATFORM_NAME_LC)
   if(LIBINPUT_FOUND)
     list(APPEND SOURCES LibInputHandler.cpp
                         LibInputKeyboard.cpp

@@ -1,5 +1,5 @@
-set(PLATFORM_REQUIRED_DEPS WaylandProtocols>=1.7 Waylandpp>=0.2.2 LibDRM Xkbcommon>=0.4.1)
-set(PLATFORM_OPTIONAL_DEPS VAAPI)
+list(APPEND PLATFORM_REQUIRED_DEPS WaylandProtocols>=1.7 Waylandpp>=0.2.2 LibDRM Xkbcommon>=0.4.1)
+list(APPEND PLATFORM_OPTIONAL_DEPS VAAPI)
 
 set(WAYLAND_RENDER_SYSTEM "" CACHE STRING "Render system to use with Wayland: \"gl\" or \"gles\"")
 
