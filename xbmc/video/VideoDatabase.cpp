@@ -8564,9 +8564,17 @@ void CVideoDatabase::GetMoviesByName(const std::string& strSearch, CFileItemList
       return;
 
     if (m_profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL = PrepareSQL("SELECT movie.idMovie, movie.c%02d, path.strPath, movie.idSet FROM movie INNER JOIN files ON files.idFile=movie.idFile INNER JOIN path ON path.idPath=files.idPath WHERE movie.c%02d LIKE '%%%s%%'", VIDEODB_ID_TITLE, VIDEODB_ID_TITLE, strSearch.c_str());
+      strSQL = PrepareSQL("SELECT movie.idMovie, movie.c%02d, path.strPath, movie.idSet FROM movie "
+                          "INNER JOIN files ON files.idFile=movie.idFile INNER JOIN path ON "
+                          "path.idPath=files.idPath " 
+                          "WHERE movie.c%02d LIKE '%%%s%%' OR movie.c%02d LIKE '%%%s%%'",
+                          VIDEODB_ID_TITLE, VIDEODB_ID_TITLE, strSearch.c_str(),
+                          VIDEODB_ID_ORIGINALTITLE, strSearch.c_str());
     else
-      strSQL = PrepareSQL("select movie.idMovie,movie.c%02d, movie.idSet from movie where movie.c%02d like '%%%s%%'",VIDEODB_ID_TITLE,VIDEODB_ID_TITLE,strSearch.c_str());
+      strSQL = PrepareSQL("SELECT movie.idMovie,movie.c%02d, movie.idSet FROM movie WHERE "
+                          "movie.c%02d like '%%%s%%' OR movie.c%02d LIKE '%%%s%%'",
+                          VIDEODB_ID_TITLE, VIDEODB_ID_TITLE, strSearch.c_str(),
+                          VIDEODB_ID_ORIGINALTITLE, strSearch.c_str());
     m_pDS->query( strSQL );
 
     while (!m_pDS->eof())
