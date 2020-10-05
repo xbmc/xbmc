@@ -887,6 +887,12 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID,
           tmp->Version() == version);
 }
 
+bool CAddonMgr::IsAddonInstalled(const std::string& ID, const std::string& origin) const
+{
+  AddonPtr tmp;
+  return (GetAddon(ID, tmp, ADDON_UNKNOWN, false) && tmp && tmp->Origin() == origin);
+}
+
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
 {
   return addon != nullptr && addon->LifecycleState() != AddonLifecycleState::BROKEN &&
