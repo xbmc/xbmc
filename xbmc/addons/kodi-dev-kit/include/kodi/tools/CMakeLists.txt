@@ -1,4 +1,5 @@
 set(HEADERS DllHelper.h
+            EndTime.h
             StringUtils.h
             Thread.h
             Timer.h)
