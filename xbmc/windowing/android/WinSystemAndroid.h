@@ -10,11 +10,10 @@
 
 #include "AndroidUtils.h"
 #include "rendering/gles/RenderSystemGLES.h"
+#include "system_egl.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 #include "windowing/WinSystem.h"
-
-#include <EGL/egl.h>
 
 class CDecoderFilterManager;
 class IDispResource;

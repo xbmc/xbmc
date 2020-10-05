@@ -10,7 +10,8 @@
 
 #ifdef __cplusplus
 
-#include <EGL/egl.h>
+#include "system_egl.h"
+
 #include <EGL/eglext.h>
 #include <angle_gl.h>
 #include <d3d11.h>

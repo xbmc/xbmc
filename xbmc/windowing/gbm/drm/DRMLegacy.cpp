@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <EGL/egl.h>
 #include <drm_mode.h>
 #include <fcntl.h>
 #include <poll.h>

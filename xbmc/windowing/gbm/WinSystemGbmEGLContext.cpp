@@ -87,7 +87,7 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
 
   if (!m_eglContext.CreatePlatformSurface(
           m_GBM->GetDevice()->GetSurface()->Get(),
-          reinterpret_cast<EGLNativeWindowType>(m_GBM->GetDevice()->GetSurface()->Get())))
+          reinterpret_cast<khronos_uintptr_t>(m_GBM->GetDevice()->GetSurface()->Get())))
   {
     return false;
   }

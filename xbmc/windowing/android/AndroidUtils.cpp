@@ -12,6 +12,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
+#include "system_egl.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -21,7 +22,6 @@
 #include <cmath>
 #include <stdlib.h>
 
-#include <EGL/egl.h>
 #include <androidjni/Build.h>
 #include <androidjni/Display.h>
 #include <androidjni/System.h>

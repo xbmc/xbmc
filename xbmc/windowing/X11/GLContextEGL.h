@@ -9,9 +9,9 @@
 #pragma once
 
 #include "GLContext.h"
+#include "system_egl.h"
 #include "threads/CriticalSection.h"
 
-#include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <EGL/eglextchromium.h>
 #include <X11/Xutil.h>
