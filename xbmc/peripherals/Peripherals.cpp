@@ -701,7 +701,8 @@ bool CPeripherals::OnAction(const CAction& action)
   }
 
   if (SupportsCEC() && action.GetAmount() &&
-      (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
+      (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN ||
+       action.GetID() == ACTION_CEC_VOLUME_UP || action.GetID() == ACTION_CEC_VOLUME_DOWN))
   {
     PeripheralVector peripherals;
     if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
@@ -712,7 +713,7 @@ bool CPeripherals::OnAction(const CAction& action)
             std::static_pointer_cast<CPeripheralCecAdapter>(peripheral);
         if (cecDevice->HasAudioControl())
         {
-          if (action.GetID() == ACTION_VOLUME_UP)
+          if (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_CEC_VOLUME_UP)
             cecDevice->VolumeUp();
           else
             cecDevice->VolumeDown();

@@ -247,6 +247,10 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     // Voice
     {"voicerecognizer", ACTION_VOICE_RECOGNIZE},
 
+    // CEC
+    ("cec_volup", ACTION_CEC_VOLUME_UP),
+    ("cec_voldown", ACTION_CEC_VOLUME_DOWN),
+
     // Do nothing / error action
     {"error", ACTION_ERROR},
     {"noop", ACTION_NOOP}};
