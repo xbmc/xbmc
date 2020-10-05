@@ -28,7 +28,7 @@ class JPGDecoder : public IDecoder
     ~JPGDecoder() override = default;
     bool CanDecode(const std::string &filename) override;
     bool LoadFile(const std::string &filename, DecodedFrames &frames) override;
-    void FreeDecodedFrames(DecodedFrames &frames) override;
+    void FreeDecodedFrame(DecodedFrame &frame) override;
     const char* GetImageFormatName() override { return "JPG"; }
     const char* GetDecoderName() override { return "libjpeg"; }
   protected:
