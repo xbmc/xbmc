@@ -95,6 +95,7 @@ namespace XBMCAddon
         0,
         true,
         false);
+      pGUIControl->SetVisible(m_visible);
 
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
       pGUIControl->OnMessage(msg);
@@ -186,6 +187,7 @@ namespace XBMCAddon
       pGUIControl = new CGUITextBox(iParentId, iControlId,
            (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
            label);
+      pGUIControl->SetVisible(m_visible);
 
       // set label
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
@@ -305,6 +307,7 @@ namespace XBMCAddon
         CTextureInfo(strTextureFocus),
         CTextureInfo(strTextureNoFocus),
         label);
+      pGUIControl->SetVisible(m_visible);
 
       CGUIButtonControl* pGuiButtonControl =
         static_cast<CGUIButtonControl*>(pGUIControl);
@@ -359,6 +362,7 @@ namespace XBMCAddon
       pGUIControl = new CGUIImage(iParentId, iControlId,
             (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
             CTextureInfo(strFileName));
+      pGUIControl->SetVisible(m_visible);
 
       if (pGUIControl && aspectRatio <= CAspectRatio::AR_KEEP)
         static_cast<CGUIImage*>(pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
@@ -417,6 +421,7 @@ namespace XBMCAddon
          CTextureInfo(strTextureBg), CTextureInfo(strTextureLeft),
          CTextureInfo(strTextureMid), CTextureInfo(strTextureRight),
          CTextureInfo(strTextureOverlay));
+      pGUIControl->SetVisible(m_visible);
 
       if (pGUIControl && colorDiffuse)
         static_cast<CGUIProgressControl*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
@@ -521,6 +526,7 @@ namespace XBMCAddon
                                          (float) dwPosY,
                                          (float) dwWidth,
                                          (float) dwHeight);
+      pGUIControl->SetVisible(m_visible);
       return pGUIControl;
     }
 
@@ -666,6 +672,7 @@ namespace XBMCAddon
         CTextureInfo(strTextureRadioOffNoFocus),
         CTextureInfo(strTextureRadioOnDisabled),
         CTextureInfo(strTextureRadioOffDisabled));
+      pGUIControl->SetVisible(m_visible);
 
       CGUIRadioButtonControl* pGuiButtonControl =
         static_cast<CGUIRadioButtonControl*>(pGUIControl);
@@ -706,8 +713,14 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       XBMCAddonUtils::GuiLock lock(languageHook, false);
-      if (pGUIControl)
+      if (pGUIControl != nullptr)
+      {
         pGUIControl->SetVisible(visible);
+      }
+      else
+      {
+        m_visible = visible;
+      }
     }
 
     bool Control::isVisible()
@@ -969,6 +982,7 @@ namespace XBMCAddon
         label,
         false,
         bHasPath);
+      pGUIControl->SetVisible(m_visible);
       static_cast<CGUILabelControl*>(pGUIControl)->SetLabel(strText);
       return pGUIControl;
     }
@@ -1035,6 +1049,7 @@ namespace XBMCAddon
         CTextureInfo(strTextureNoFocus),
         label,
         strText);
+      pGUIControl->SetVisible(m_visible);
 
       // set label
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
@@ -1163,7 +1178,7 @@ namespace XBMCAddon
         (float)itemHeight,
         (float)imageWidth, (float)imageHeight,
         (float)space);
-
+      pGUIControl->SetVisible(m_visible);
       return pGUIControl;
     }
 
