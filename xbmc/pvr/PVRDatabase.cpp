@@ -104,17 +104,16 @@ void CPVRDatabase::CreateTables()
   );
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
-  m_pDS->exec(
-      "CREATE TABLE channelgroups ("
-        "idGroup         integer primary key,"
-        "bIsRadio        bool, "
-        "iGroupType      integer, "
-        "sName           varchar(64), "
-        "iLastWatched    integer, "
-        "bIsHidden       bool, "
-        "iPosition       integer"
-      ")"
-  );
+  m_pDS->exec("CREATE TABLE channelgroups ("
+              "idGroup         integer primary key,"
+              "bIsRadio        bool, "
+              "iGroupType      integer, "
+              "sName           varchar(64), "
+              "iLastWatched    integer, "
+              "bIsHidden       bool, "
+              "iPosition       integer"
+              "iLastOpened     integer, "
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'map_channelgroups_channels'");
   m_pDS->exec(
@@ -217,6 +216,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE map_channelgroups_channels ADD iClientSubChannelNumber integer");
     m_pDS->exec("UPDATE map_channelgroups_channels SET iClientSubChannelNumber = 0");
   }
+
+  if (iVersion < 37)
+    m_pDS->exec("ALTER TABLE channelgroups ADD iLastOpened integer");
 }
 
 /********** Client methods **********/
@@ -598,6 +600,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups& results)
         data.SetLastWatched(static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt()));
         data.SetHidden(m_pDS->fv("bIsHidden").get_asBool());
         data.SetPosition(m_pDS->fv("iPosition").get_asInt());
+        data.SetLastOpened(static_cast<uint64_t>(m_pDS->fv("iLastOpened").get_asInt64()));
         results.Update(data);
 
         CLog::LogFC(LOGDEBUG, LOGPVR, "Group '{}' loaded from PVR database", data.GroupName());
@@ -785,11 +788,19 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
   {
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
     if (group.GroupID() <= 0)
-      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, bIsHidden, iPosition) VALUES (%i, %i, '%s', %u, %i, %i)",
-          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition());
+      strQuery =
+          PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, "
+                     "bIsHidden, iPosition, iLastOpened) VALUES (%i, %i, '%s', %u, %i, %i, %llu)",
+                     (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
+                     static_cast<unsigned int>(group.LastWatched()), group.IsHidden(),
+                     group.GetPosition(), group.LastOpened());
     else
-      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, bIsHidden, iPosition) VALUES (%i, %i, %i, '%s', %u, %i, %i)",
-          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition());
+      strQuery = PrepareSQL(
+          "REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, "
+          "bIsHidden, iPosition, iLastOpened) VALUES (%i, %i, %i, '%s', %u, %i, %i, %llu)",
+          group.GroupID(), (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
+          static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition(),
+          group.LastOpened());
 
     bReturn = ExecuteQuery(strQuery);
 
@@ -878,6 +889,15 @@ bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup& group)
   CSingleLock lock(m_critSection);
   const std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %u WHERE idGroup = %d",
     static_cast<unsigned int>(group.LastWatched()), group.GroupID());
+  return ExecuteQuery(strQuery);
+}
+
+bool CPVRDatabase::UpdateLastOpened(const CPVRChannelGroup& group)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("UPDATE channelgroups SET iLastOpened = %llu WHERE idGroup = %d",
+                 group.LastOpened(), group.GroupID());
   return ExecuteQuery(strQuery);
 }
 

@@ -245,6 +245,18 @@ namespace PVR
     bool SetLastWatched(time_t iLastWatched);
 
     /*!
+     * @return Time in milliseconds from epoch this group was last opened.
+     */
+    uint64_t LastOpened() const;
+
+    /*!
+     * @brief Set the time in milliseconds from epoch this group was last opened.
+     * @param iLastOpened The new value.
+     * @return True if something changed, false otherwise.
+     */
+    bool SetLastOpened(uint64_t iLastOpened);
+
+    /*!
      * @brief Set if sorting and renumbering should happen after adding/updating channels to group.
      * @param bPreventSortAndRenumber The new sorting and renumbering prevention value for this group.
      */
@@ -559,6 +571,7 @@ namespace PVR
     bool m_bUsingBackendChannelNumbers = false; /*!< true to use the channel numbers from 1 backend, false otherwise */
     bool m_bPreventSortAndRenumber = false; /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
     time_t m_iLastWatched = 0; /*!< last time group has been watched */
+    uint64_t m_iLastOpened = 0; /*!< time in milliseconds from epoch this group was last opened */
     bool m_bHidden = false; /*!< true if this group is hidden, false otherwise */
     int m_iPosition = 0; /*!< the position of this group within the group list */
     std::vector<std::shared_ptr<PVRChannelGroupMember>> m_sortedMembers; /*!< members sorted by channel number */

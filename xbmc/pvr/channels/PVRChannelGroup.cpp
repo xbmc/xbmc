@@ -1065,6 +1065,30 @@ bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
   return false;
 }
 
+uint64_t CPVRChannelGroup::LastOpened() const
+{
+  CSingleLock lock(m_critSection);
+  return m_iLastOpened;
+}
+
+bool CPVRChannelGroup::SetLastOpened(uint64_t iLastOpened)
+{
+  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
+
+  CSingleLock lock(m_critSection);
+
+  if (m_iLastOpened != iLastOpened)
+  {
+    m_iLastOpened = iLastOpened;
+
+    /* update the database immediately */
+    if (database)
+      return database->UpdateLastOpened(*this);
+  }
+
+  return false;
+}
+
 bool CPVRChannelGroup::PreventSortAndRenumber() const
 {
   CSingleLock lock(m_critSection);

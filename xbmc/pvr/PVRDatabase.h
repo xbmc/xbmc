@@ -49,7 +49,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 36; }
+    int GetSchemaVersion() const override { return 37; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -212,6 +212,14 @@ namespace PVR
      * @return whether the update was successful
      */
     bool UpdateLastWatched(const CPVRChannelGroup& group);
+    //@}
+
+    /*!
+     * @brief Updates the last opened timestamp for the channel group
+     * @param group the group
+     * @return whether the update was successful
+     */
+    bool UpdateLastOpened(const CPVRChannelGroup& group);
     //@}
 
   private:
