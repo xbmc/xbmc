@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile
 
 # lib name, version
 LIBNAME=samba
-VERSION=4.11.6
+VERSION=4.11.13
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
