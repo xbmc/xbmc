@@ -257,6 +257,11 @@ CCPUInfoLinux::CCPUInfoLinux()
     m_cpuFeatures |= CPU_FEATURE_NEON;
 #endif
 
+#if defined(HAS_NEON) && defined(__aarch64__)
+  if (getauxval(AT_HWCAP) & HWCAP_ASIMD)
+    m_cpuFeatures |= CPU_FEATURE_NEON;
+#endif
+
   // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
   if (m_cpuFeatures & CPU_FEATURE_SSE)
     m_cpuFeatures |= CPU_FEATURE_MMX2;
