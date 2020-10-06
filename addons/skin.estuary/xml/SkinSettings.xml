@@ -129,6 +129,12 @@
 					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
 					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
 				</control>
+				<control type="radiobutton" id="6067">
+					<label>$LOCALIZE[31168]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(show_musicvideoposter)</onclick>
+					<selected>Skin.HasSetting(show_musicvideoposter)</selected>
+				</control>
 			</control>
 			<control type="grouplist" id="610">
 				<top>133</top>

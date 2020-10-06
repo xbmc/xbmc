@@ -58,7 +58,7 @@
 			<control type="group">
 				<top>154</top>
 				<left>70</left>
-				<visible>String.IsEqual(ListItem.DBType,musicvideo)</visible>
+				<visible>String.IsEqual(ListItem.DBType,musicvideo) + !Skin.HasSetting(show_musicvideoposter)</visible>
 				<include>OpenClose_Left</include>
 				<control type="image">
 					<width>526</width>
