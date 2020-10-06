@@ -121,6 +121,15 @@ bool CWinSystemGbm::InitWindowSystem()
     return false;
   }
 
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE)
+      ->SetVisible(true);
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting("videoscreen.limitguisize")
+      ->SetVisible(true);
+
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
 }

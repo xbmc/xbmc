@@ -73,6 +73,12 @@ bool CWinSystemX11::InitWindowSystem()
   if ((m_dpy = XOpenDisplay(NULL)))
   {
     bool ret = CWinSystemBase::InitWindowSystem();
+
+    CServiceBroker::GetSettingsComponent()
+        ->GetSettings()
+        ->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE)
+        ->SetVisible(true);
+
     return ret;
   }
   else

@@ -34,6 +34,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
 #include "utils/ActorProtocol.h"
 #include "utils/MathUtils.h"
@@ -239,6 +240,11 @@ bool CWinSystemWayland::InitWindowSystem()
   CServiceBroker::GetInputManager().SetMouseActive(false);
   // Always use the generic touch action handler
   CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());
+
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE)
+      ->SetVisible(true);
 
   return CWinSystemBase::InitWindowSystem();
 }
