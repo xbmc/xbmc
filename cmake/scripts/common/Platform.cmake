@@ -3,10 +3,13 @@ if(NOT CORE_SYSTEM_NAME)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
-  # Set default CORE_PLATFORM_NAME to X11
+  # Set default CORE_PLATFORM_NAME to X11 WAYLAND GBM
   # This is overridden by user setting -DCORE_PLATFORM_NAME=<platform>
-  set(_DEFAULT_PLATFORM X11)
-  option(ENABLE_APP_AUTONAME    "Enable renaming the binary according to windowing?" ON)
+  set(_DEFAULT_PLATFORM X11 WAYLAND GBM)
+
+  if(NOT APP_RENDER_SYSTEM)
+    message(SEND_ERROR "You need to decide whether you want to use GL- or GLES-based rendering. Please set APP_RENDER_SYSTEM to either \"gl\" or \"gles\". For normal desktop systems, you will usually want to use \"gl\".")
+  endif()
 else()
   string(TOLOWER ${CORE_SYSTEM_NAME} _DEFAULT_PLATFORM)
 endif()
@@ -34,6 +37,7 @@ list(APPEND final_message "Platforms: ${CORE_PLATFORM_STRING}")
 
 list(LENGTH CORE_PLATFORM_NAME_LC PLATFORM_COUNT)
 if(PLATFORM_COUNT EQUAL 1)
+  option(ENABLE_APP_AUTONAME "Enable renaming the binary according to windowing?" ON)
   if(ENABLE_APP_AUTONAME)
     set(APP_BINARY_SUFFIX "-${CORE_PLATFORM_NAME_LC}")
   endif()
