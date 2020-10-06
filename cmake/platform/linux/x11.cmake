@@ -13,5 +13,3 @@ elseif(X11_RENDER_SYSTEM STREQUAL "gles")
 else()
   message(SEND_ERROR "You need to decide whether you want to use GL- or GLES-based rendering in combination with the X11 windowing system. Please set X11_RENDER_SYSTEM to either \"gl\" or \"gles\". For normal desktop systems, you will usually want to use \"gl\".")
 endif()
-
-list(APPEND PLATFORM_DEFINES -DPLATFORM_SETTINGS_FILE=x11.xml)

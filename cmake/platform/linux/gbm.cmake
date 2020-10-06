@@ -12,5 +12,3 @@ elseif(GBM_RENDER_SYSTEM STREQUAL "gles")
 else()
   message(SEND_ERROR "You need to decide whether you want to use GL- or GLES-based rendering in combination with the GBM windowing system. Please set GBM_RENDER_SYSTEM to either \"gl\" or \"gles\". For normal desktop systems, you will usually want to use \"gl\".")
 endif()
-
-list(APPEND PLATFORM_DEFINES -DPLATFORM_SETTINGS_FILE=gbm.xml)
