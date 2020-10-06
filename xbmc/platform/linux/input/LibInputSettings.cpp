@@ -39,6 +39,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   settings->GetSettingsManager()->RegisterCallback(this, settingSet);
   settings->GetSettingsManager()->RegisterSettingOptionsFiller("libinputkeyboardlayout", SettingOptionsKeyboardLayoutsFiller);
+  settings->GetSetting(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT)->SetVisible(true);
 
   /* load the keyboard layouts from xkeyboard-config */
   std::string xkbFile("/usr/share/X11/xkb/rules/base.xml");
