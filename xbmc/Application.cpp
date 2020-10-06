@@ -365,6 +365,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bPlatformDirectories = params.m_platformDirectories;
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
+  m_windowing = params.m_windowing;
 
   CServiceBroker::CreateLogging();
 
@@ -624,6 +625,9 @@ bool CApplication::CreateGUI()
 
   auto windowSystems = KODI::WINDOWING::CWindowSystemFactory::GetWindowSystems();
 
+  if (!m_windowing.empty())
+    windowSystems = {m_windowing};
+
   for (auto& windowSystem : windowSystems)
   {
     CLog::Log(LOGDEBUG, "CApplication::{} - trying to init {} windowing system", __FUNCTION__,
@@ -631,6 +635,9 @@ bool CApplication::CreateGUI()
     m_pWinSystem = KODI::WINDOWING::CWindowSystemFactory::CreateWindowSystem(windowSystem);
 
     if (!m_pWinSystem)
+      continue;
+
+    if (!m_windowing.empty() && m_windowing != windowSystem)
       continue;
 
     CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
