@@ -39,5 +39,8 @@ enum class INTERCARDINAL_DIRECTION
   LEFTUP = LEFT | UP,
   LEFTDOWN = LEFT | DOWN,
 };
+
+const unsigned int HOLD_TRESHOLD = 250;
+
 } // namespace INPUT
 } // namespace KODI
