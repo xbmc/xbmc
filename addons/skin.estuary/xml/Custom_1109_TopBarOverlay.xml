@@ -66,6 +66,17 @@
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>50</top>
+				<width>100%</width>
+				<height>26</height>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
+				<info>Player.Seekbar</info>
+				<visible>!VideoPlayer.Content(LiveTV) + [Player.Seeking | Player.DisplayAfterSeek]</visible>
+			</control>
 			<control type="group">
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<control type="group">
@@ -91,6 +102,17 @@
 						<param name="epg_bar_height" value="16"/>
 					</include>
 				</control>
+			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>50</top>
+				<width>100%</width>
+				<height>26</height>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
+				<info>PVR.TimeShiftSeekbar</info>
+				<visible>[Player.Seeking | Player.DisplayAfterSeek] + !Player.ChannelPreviewActive</visible>
 			</control>
 		</control>
 		<control type="group">
