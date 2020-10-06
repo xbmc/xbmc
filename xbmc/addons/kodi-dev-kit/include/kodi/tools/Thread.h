@@ -270,7 +270,7 @@ public:
     if (m_threadStop)
       return;
 
-    if (!m_running)
+    if (m_thread && !m_running)
       m_startEvent.wait(lock);
     m_running = false;
     m_threadStop = true;
