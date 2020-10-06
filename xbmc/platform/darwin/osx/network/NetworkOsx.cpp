@@ -25,7 +25,7 @@
 #define ARRAY_SIZE(X) (sizeof(X) / sizeof((X)[0]))
 
 CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
-                                           std::string interfaceName,
+                                           const std::string& interfaceName,
                                            char interfaceMacAddrRaw[6])
   : CNetworkInterfacePosix(network, interfaceName, interfaceMacAddrRaw)
 {
@@ -59,10 +59,6 @@ bool CNetworkInterfaceOsx::GetHostMacAddress(unsigned long host_ip, std::string&
 {
   bool ret = false;
   size_t needed;
-  char *buf, *next;
-  struct rt_msghdr* rtm;
-  struct sockaddr_inarp* sin;
-  struct sockaddr_dl* sdl;
   int mib[6];
 
   mac = "";
@@ -76,17 +72,18 @@ bool CNetworkInterfaceOsx::GetHostMacAddress(unsigned long host_ip, std::string&
 
   if (sysctl(mib, ARRAY_SIZE(mib), NULL, &needed, NULL, 0) == 0)
   {
-    buf = (char*)malloc(needed);
+    char* buf = static_cast<char*>(malloc(needed));
     if (buf)
     {
       if (sysctl(mib, ARRAY_SIZE(mib), buf, &needed, NULL, 0) == 0)
       {
-        for (next = buf; next < buf + needed; next += rtm->rtm_msglen)
+        struct rt_msghdr* rtm;
+        for (char* next = buf; next < buf + needed; next += rtm->rtm_msglen)
         {
 
-          rtm = (struct rt_msghdr*)next;
-          sin = (struct sockaddr_inarp*)(rtm + 1);
-          sdl = (struct sockaddr_dl*)(sin + 1);
+          rtm = reinterpret_cast<struct rt_msghdr*>(next);
+          struct sockaddr_inarp* sin = reinterpret_cast<struct sockaddr_inarp*>(rtm + 1);
+          struct sockaddr_dl* sdl = reinterpret_cast<struct sockaddr_dl*>(sin + 1);
 
           if (host_ip != sin->sin_addr.s_addr || sdl->sdl_alen < 6)
             continue;

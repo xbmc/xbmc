@@ -17,7 +17,7 @@ class CNetworkInterfaceOsx : public CNetworkInterfacePosix
 {
 public:
   CNetworkInterfaceOsx(CNetworkPosix* network,
-                       std::string interfaceName,
+                       const std::string& interfaceName,
                        char interfaceMacAddrRaw[6]);
   ~CNetworkInterfaceOsx() override = default;
 

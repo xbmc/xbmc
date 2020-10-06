@@ -211,12 +211,12 @@ void XBMCHelper::Configure()
     strConfig += strDelay;
 
     // Find out where we're running from.
-    char real_path[2*MAXPATHLEN];
-    char given_path[2*MAXPATHLEN];
-    uint32_t path_size = 2*MAXPATHLEN;
+    char given_path[2 * MAXPATHLEN];
+    uint32_t path_size = 2 * MAXPATHLEN;
 
     if (_NSGetExecutablePath(given_path, &path_size) == 0)
     {
+      char real_path[2 * MAXPATHLEN];
       if (realpath(given_path, real_path) != NULL)
       {
         strConfig += "--appPath \"";
