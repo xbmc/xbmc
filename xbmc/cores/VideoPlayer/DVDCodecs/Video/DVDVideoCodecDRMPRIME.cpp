@@ -96,10 +96,11 @@ CDVDVideoCodec* CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 
 void CDVDVideoCodecDRMPRIME::Register()
 {
-  CServiceBroker::GetSettingsComponent()
-      ->GetSettings()
-      ->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER)
-      ->SetVisible(true);
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER)->SetVisible(true);
+  settings->GetSetting(SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW)->SetVisible(true);
+
   CDVDFactoryCodec::RegisterHWVideoCodec("drm_prime", CDVDVideoCodecDRMPRIME::Create);
 }
 
