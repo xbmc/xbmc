@@ -786,3 +786,9 @@ msgstr ""
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
