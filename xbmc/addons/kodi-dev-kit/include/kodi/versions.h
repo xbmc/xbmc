@@ -73,11 +73,14 @@
 #define ADDON_GLOBAL_VERSION_NETWORK_DEPENDS          "Network.h" \
                                                       "c-api/network.h"
 
-#define ADDON_GLOBAL_VERSION_TOOLS                    "1.0.3"
+#define ADDON_GLOBAL_VERSION_TOOLS                    "1.0.4"
 #define ADDON_GLOBAL_VERSION_TOOLS_MIN                "1.0.0"
 #define ADDON_GLOBAL_VERSION_TOOLS_XML_ID             "kodi.binary.global.tools"
 #define ADDON_GLOBAL_VERSION_TOOLS_DEPENDS            "tools/DllHelper.h" \
-                                                      "tools/StringUtils.h"
+                                                      "tools/EndTime.h" \
+                                                      "tools/StringUtils.h" \
+                                                      "tools/Thread.h" \
+                                                      "tools/Timer.h"
 
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "3.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "3.0.0"
