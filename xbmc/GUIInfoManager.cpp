@@ -7445,6 +7445,14 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///     @return The position of currently timeshifted title on TV as integer.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`PVR.TimeShiftSeekbar`</b>,
+///                  \anchor PVR_TimeShiftSeekbar
+///                  _integer_,
+///     @return The percentage we are seeking to in a timeshifted title.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link PVR_TimeShiftSeekbar `PVR.TimeShiftSeekbar`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`PVR.NowRecordingTitle`</b>,
 ///                  \anchor PVR_NowRecordingTitle
 ///                  _string_,
@@ -7790,6 +7798,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreamprovidername",    PVR_ACTUAL_STREAM_PROVIDER },
                                   { "istimeshift",              PVR_IS_TIMESHIFTING },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS },
+                                  { "timeshiftseekbar",         PVR_TIMESHIFT_SEEKBAR },
                                   { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
                                   { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
                                   { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },

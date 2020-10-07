@@ -1112,6 +1112,9 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
     case PVR_TIMESHIFT_PROGRESS_BUFFER_END:
       iValue = m_timesInfo.GetTimeshiftProgressBufferEnd();
       return true;
+    case PVR_TIMESHIFT_SEEKBAR:
+      iValue = GetTimeShiftSeekPercent();
+      return true;
     case PVR_ACTUAL_STREAM_SIG_PROGR:
       iValue = std::lrintf(static_cast<float>(m_qualityInfo.iSignal) / 0xFFFF * 100);
       return true;
@@ -1763,4 +1766,25 @@ void CPVRGUIInfo::UpdateNextTimer()
   m_anyTimersInfo.UpdateNextTimer();
   m_tvTimersInfo.UpdateNextTimer();
   m_radioTimersInfo.UpdateNextTimer();
+}
+
+int CPVRGUIInfo::GetTimeShiftSeekPercent() const
+{
+  int progress = m_timesInfo.GetTimeshiftProgressPlayPosition();
+
+  int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+  if (seekSize != 0)
+  {
+    int total = m_timesInfo.GetTimeshiftProgressDuration();
+
+    float totalTime = static_cast<float>(total);
+    if (totalTime == 0.0f)
+      return 0;
+
+    float percentPerSecond = 100.0f / totalTime;
+    float percent = progress + percentPerSecond * seekSize;
+    percent = std::max(0.0f, std::min(percent, 100.0f));
+    return std::lrintf(percent);
+  }
+  return progress;
 }

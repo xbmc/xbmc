@@ -82,6 +82,7 @@ namespace PVR
 
     bool GetListItemAndPlayerInt(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
     bool GetPVRInt(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, int& iValue) const;
+    int GetTimeShiftSeekPercent() const;
 
     bool GetListItemAndPlayerBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
     bool GetPVRBool(const CFileItem* item, const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
