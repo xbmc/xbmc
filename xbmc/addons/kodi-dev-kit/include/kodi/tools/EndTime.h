@@ -136,12 +136,12 @@ public:
 
     auto elapsed = system_clock::now().time_since_epoch() - m_startTime;
 
-    unsigned int timeWaitedAlready = duration_cast<milliseconds>(elapsed).count();
+    auto timeWaitedAlready = duration_cast<milliseconds>(elapsed).count();
 
     if (timeWaitedAlready >= m_totalWaitTime.count())
       return 0;
 
-    return m_totalWaitTime.count() - timeWaitedAlready;
+    return static_cast<unsigned int>(m_totalWaitTime.count() - timeWaitedAlready);
   }
   //----------------------------------------------------------------------------
 
@@ -188,7 +188,7 @@ public:
   inline unsigned int GetInitialTimeoutValue(void) const
   {
     auto value = std::chrono::duration_cast<std::chrono::milliseconds>(m_totalWaitTime);
-    return value.count();
+    return static_cast<unsigned int>(value.count());
   }
 
   //============================================================================
