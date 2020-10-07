@@ -36,6 +36,9 @@
 
 #include <algorithm>
 
+// Only required for Py3 < 3.7
+PyThreadState* savestate;
+
 XBPython::XBPython()
 {
   m_bInitialized = false;
@@ -528,7 +531,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    PyEval_SaveThread();
+    savestate = PyEval_SaveThread();
 
     m_bInitialized = true;
   }
