@@ -12,6 +12,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 #include <errno.h>
@@ -22,6 +24,57 @@
 #include <unistd.h>
 
 using namespace KODI::WINDOWING::GBM;
+
+const std::string CDRMAtomic::SETTING_VIDEOSCREEN_HW_SCALING_FILTER = "videoscreen.hwscalingfilter";
+
+enum drm_scaling_filter
+{
+  DRM_SCALING_FILTER_DEFAULT,
+  DRM_SCALING_FILTER_NEAREST_NEIGHBOR,
+};
+
+uint32_t CDRMAtomic::GetScalingFilterType(const char* type)
+{
+  if (!strcmp(type, "Nearest Neighbor"))
+    return DRM_SCALING_FILTER_NEAREST_NEIGHBOR;
+  else
+    return DRM_SCALING_FILTER_DEFAULT;
+}
+
+uint32_t CDRMAtomic::GetScalingFactor(uint32_t srcWidth,
+                                      uint32_t srcHeight,
+                                      uint32_t destWidth,
+                                      uint32_t destHeight)
+{
+  uint32_t factor_W = destWidth / srcWidth;
+  uint32_t factor_H = destHeight / srcHeight;
+  if (factor_W != factor_H)
+    return (factor_W < factor_H) ? factor_W : factor_H;
+  return factor_W;
+}
+
+bool CDRMAtomic::SetScalingFilter(struct drm_object* object, const char* name, const char* type)
+{
+  uint32_t filter_type = GetScalingFilterType(type);
+  if (SupportsPropertyAndValue(object, name, filter_type))
+  {
+    if (AddProperty(object, name, filter_type))
+    {
+      CLog::Log(LOGDEBUG, "CDRMAtomic::{}, Original Window size: {}x{}", __FUNCTION__, m_width,
+                m_height);
+      uint32_t mar_scale_factor =
+          GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
+      uint32_t diff_w = m_mode->hdisplay - (mar_scale_factor * m_width);
+      uint32_t diff_h = m_mode->vdisplay - (mar_scale_factor * m_height);
+      AddProperty(object, "CRTC_X", (diff_w / 2));
+      AddProperty(object, "CRTC_Y", (diff_h / 2));
+      AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
+      AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
+      return true;
+    }
+  }
+  return false;
+}
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
@@ -71,10 +124,18 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
-    AddProperty(m_gui_plane, "CRTC_X", 0);
-    AddProperty(m_gui_plane, "CRTC_Y", 0);
-    AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
-    AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
+    if (DislayHardwareScalingEnabled())
+    {
+      SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
+    }
+    else
+    {
+      AddProperty(m_gui_plane, "CRTC_X", 0);
+      AddProperty(m_gui_plane, "CRTC_Y", 0);
+      AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
+      AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
+    }
+
   }
   else if (videoLayer && !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls())
   {
@@ -165,6 +226,13 @@ bool CDRMAtomic::InitDrm()
   }
 
   CLog::Log(LOGDEBUG, "CDRMAtomic::%s - initialized atomic DRM", __FUNCTION__);
+  if (SupportsProperty(m_gui_plane, "SCALING_FILTER"))
+  {
+    const std::shared_ptr<CSettings> settings =
+        CServiceBroker::GetSettingsComponent()->GetSettings();
+    settings->GetSetting(SETTING_VIDEOSCREEN_HW_SCALING_FILTER)->SetVisible(true);
+  }
+
   return true;
 }
 
@@ -240,4 +308,14 @@ bool CDRMAtomic::ResetPlanes()
   drmModeFreePlaneResources(plane_resources);
 
   return true;
+}
+
+bool CDRMAtomic::DislayHardwareScalingEnabled()
+{
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  if (settings && settings->GetBool(SETTING_VIDEOSCREEN_HW_SCALING_FILTER))
+    return true;
+
+  return false;
 }
