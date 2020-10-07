@@ -219,6 +219,9 @@ private:
   std::set<std::string> m_failedShaderPresets;
   std::atomic<bool> m_bFlush = {false};
 
+  // Windowing state
+  bool m_bDisplayScaleSet = false;
+
   // Playback parameters
   std::atomic<double> m_speed = {1.0};
 

@@ -65,6 +65,8 @@ public:
 
   // Windowing functions
   bool UseLimitedColor();
+  bool DisplayHardwareScalingEnabled();
+  void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo);
 
   // Graphics functions
   int GetScreenWidth();
@@ -76,7 +78,7 @@ public:
   bool IsFullScreenVideo();
   bool IsCalibrating();
   RESOLUTION GetVideoResolution();
-  void Clear(UTILS::Color color = 0);
+  void Clear(::UTILS::Color color = 0);
   RESOLUTION_INFO GetResInfo();
   void SetRenderingResolution(const RESOLUTION_INFO& res, bool needsScaling);
   UTILS::Color MergeAlpha(UTILS::Color color);
