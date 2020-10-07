@@ -141,24 +141,32 @@ cd $HOME/kodi-build
 
 Configure build for X11:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DX11_RENDER_SYSTEM=gl
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl
 ```
 
 **NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
 
 Or configure build for Wayland:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gl
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DAPP_RENDER_SYSTEM=gl
 ```
 
 **NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
 
 Or configure build for GBM:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm -DGBM_RENDER_SYSTEM=gles
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm -DAPP_RENDER_SYSTEM=gles
 ```
 
 **NOTE:** You can use `gl` instead of `gles` if you want to build with `GL`.
+
+Or configure build with any combination of the three (default is "x11 wayland gbm"):
+```
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME="x11 wayland gbm" -DAPP_RENDER_SYSTEM=gl
+```
+
+**NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
+
 
 ### 4.2. Build
 ```
