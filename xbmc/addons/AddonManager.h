@@ -245,6 +245,13 @@ namespace ADDON
                           const std::string& origin,
                           const AddonVersion& version);
 
+    /* \brief Checks whether an addon is installed from a
+     *        particular origin repo
+     * \param ID id of the addon
+     * \param origin origin repository id
+     */
+    bool IsAddonInstalled(const std::string& ID, const std::string& origin) const;
+
     /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
     */
