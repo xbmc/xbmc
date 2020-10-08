@@ -27,7 +27,7 @@
  \ingroup textures
  \brief
  */
-class CGUIFontTTFDX : public CGUIFontTTFBase, public ID3DResource
+class CGUIFontTTFDX : public CGUIFontTTF, public ID3DResource
 {
 public:
   explicit CGUIFontTTFDX(const std::string& strFileName);

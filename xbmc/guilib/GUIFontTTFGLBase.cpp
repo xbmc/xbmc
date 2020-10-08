@@ -32,7 +32,7 @@ namespace
 constexpr int ELEMENT_ARRAY_MAX_CHAR_INDEX{1000};
 }
 
-CGUIFontTTFGLBase::CGUIFontTTFGLBase(const std::string& strFileName) : CGUIFontTTFBase(strFileName)
+CGUIFontTTFGLBase::CGUIFontTTFGLBase(const std::string& strFileName) : CGUIFontTTF(strFileName)
 {
   m_updateY1 = 0;
   m_updateY2 = 0;

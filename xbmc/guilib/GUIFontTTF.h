@@ -43,16 +43,15 @@ typedef std::vector<character_t> vecText;
 
 #include "GUIFontCache.h"
 
-class CGUIFontTTFBase
+class CGUIFontTTF
 {
   friend class CGUIFont;
 
 public:
+  explicit CGUIFontTTF(const std::string& strFileName);
+  virtual ~CGUIFontTTF(void);
 
-  explicit CGUIFontTTFBase(const std::string& strFileName);
-  virtual ~CGUIFontTTFBase(void);
-
-  static CGUIFontTTFBase* GetGUIFontTTF(const std::string& strFileName);
+  static CGUIFontTTF* GetGUIFontTTF(const std::string& strFileName);
 
   void Clear();
 
@@ -167,8 +166,8 @@ protected:
 private:
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
-  CGUIFontTTFBase(const CGUIFontTTFBase&) = delete;
-  CGUIFontTTFBase& operator=(const CGUIFontTTFBase&) = delete;
+  CGUIFontTTF(const CGUIFontTTF&) = delete;
+  CGUIFontTTF& operator=(const CGUIFontTTF&) = delete;
   int m_referenceCount;
 };
 

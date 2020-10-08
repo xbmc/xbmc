@@ -34,13 +34,12 @@ using namespace Microsoft::WRL;
 #include FT_GLYPH_H
 
 
-CGUIFontTTFBase* CGUIFontTTFBase::GetGUIFontTTF(const std::string& strFileName)
+CGUIFontTTF* CGUIFontTTF::GetGUIFontTTF(const std::string& strFileName)
 {
   return new CGUIFontTTFDX(strFileName);
 }
 
-CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName)
-: CGUIFontTTFBase(strFileName)
+CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName) : CGUIFontTTF(strFileName)
 {
   m_speedupTexture = nullptr;
   m_vertexBuffer   = nullptr;
@@ -88,7 +87,7 @@ void CGUIFontTTFDX::LastEnd()
   if (!pContext)
     return;
 
-  typedef CGUIFontTTFBase::CTranslatedVertices trans;
+  typedef CGUIFontTTF::CTranslatedVertices trans;
   bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
                                   [](trans& _) { return _.vertexBuffer->size <= 0; });
   // no chars to render
