@@ -16,14 +16,6 @@
 #include "utils/Color.h"
 #include "utils/Geometry.h"
 
-#ifdef HAS_DX
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-
-using namespace DirectX;
-using namespace DirectX::PackedVector;
-#endif
-
 constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
 
 class CTexture;
@@ -49,20 +41,7 @@ typedef std::vector<character_t> vecText;
  \brief
  */
 
-struct SVertex
-{
-  float x, y, z;
-#ifdef HAS_DX
-  XMFLOAT4 col;
-#else
-  unsigned char r, g, b, a;
-#endif
-  float u, v;
-};
-
-
 #include "GUIFontCache.h"
-
 
 class CGUIFontTTFBase
 {
@@ -120,6 +99,7 @@ protected:
   virtual CTexture* ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
+  virtual void RenderCharacter(CRect* texture, SVertex* v, float* x, float* y, float* z) = 0;
 
   // modifying glyphs
   void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);

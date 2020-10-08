@@ -38,6 +38,8 @@ protected:
                          unsigned int y2) override;
   void DeleteHardwareTexture() override;
 
+  void RenderCharacter(CRect* texture, SVertex* v, float* x, float* y, float* z) override;
+
   unsigned int m_updateY1;
   unsigned int m_updateY2;
 

@@ -218,3 +218,39 @@ void CGUIFontTTFGLBase::DestroyStaticVertexBuffers()
   glDeleteBuffers(1, &m_elementArrayHandle);
   m_staticVertexBufferCreated = false;
 }
+
+void CGUIFontTTFGLBase::RenderCharacter(CRect* texture, SVertex* v, float* x, float* y, float* z)
+{
+  for (int i = 0; i < 4; i++)
+  {
+    v[i].r = GET_R(m_color);
+    v[i].g = GET_G(m_color);
+    v[i].b = GET_B(m_color);
+    v[i].a = GET_A(m_color);
+  }
+
+  // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
+  v[0].u = texture->x1 * m_textureScaleX;
+  v[0].v = texture->y1 * m_textureScaleY;
+  v[0].x = x[0];
+  v[0].y = y[0];
+  v[0].z = z[0];
+
+  v[1].u = texture->x1 * m_textureScaleX;
+  v[1].v = texture->y2 * m_textureScaleY;
+  v[1].x = x[3];
+  v[1].y = y[3];
+  v[1].z = z[3];
+
+  v[2].u = texture->x2 * m_textureScaleX;
+  v[2].v = texture->y1 * m_textureScaleY;
+  v[2].x = x[1];
+  v[2].y = y[1];
+  v[2].z = z[1];
+
+  v[3].u = texture->x2 * m_textureScaleX;
+  v[3].v = texture->y2 * m_textureScaleY;
+  v[3].x = x[2];
+  v[3].y = y[2];
+  v[3].z = z[2];
+}

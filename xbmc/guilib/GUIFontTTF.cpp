@@ -862,80 +862,11 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   z[2] = (float)MathUtils::round_int(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
   z[3] = (float)MathUtils::round_int(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-  // tex coords converted to 0..1 range
-  float tl = texture.x1 * m_textureScaleX;
-  float tr = texture.x2 * m_textureScaleX;
-  float tt = texture.y1 * m_textureScaleY;
-  float tb = texture.y2 * m_textureScaleY;
-
   vertices.resize(vertices.size() + 4);
   SVertex* v = &vertices[vertices.size() - 4];
   m_color = color;
 
-#if !defined(HAS_DX)
-  unsigned char r = GET_R(color)
-              , g = GET_G(color)
-              , b = GET_B(color)
-              , a = GET_A(color);
-#endif
-
-  for(int i = 0; i < 4; i++)
-  {
-#ifdef HAS_DX
-    CD3DHelper::XMStoreColor(&v[i].col, color);
-#else
-    v[i].r = r;
-    v[i].g = g;
-    v[i].b = b;
-    v[i].a = a;
-#endif
-  }
-
-#if defined(HAS_DX)
-  for(int i = 0; i < 4; i++)
-  {
-    v[i].x = x[i];
-    v[i].y = y[i];
-    v[i].z = z[i];
-  }
-
-  v[0].u = tl;
-  v[0].v = tt;
-
-  v[1].u = tr;
-  v[1].v = tt;
-
-  v[2].u = tr;
-  v[2].v = tb;
-
-  v[3].u = tl;
-  v[3].v = tb;
-#else
-  // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
-  v[0].u = tl;
-  v[0].v = tt;
-  v[0].x = x[0];
-  v[0].y = y[0];
-  v[0].z = z[0];
-
-  v[1].u = tl;
-  v[1].v = tb;
-  v[1].x = x[3];
-  v[1].y = y[3];
-  v[1].z = z[3];
-
-  v[2].u = tr;
-  v[2].v = tt;
-  v[2].x = x[1];
-  v[2].y = y[1];
-  v[2].z = z[1];
-
-  v[3].u = tr;
-  v[3].v = tb;
-  v[3].x = x[2];
-  v[3].y = y[2];
-  v[3].z = z[2];
-#endif
+  RenderCharacter(&texture, v, x, y, z);
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)

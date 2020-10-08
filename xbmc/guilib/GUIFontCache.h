@@ -27,6 +27,14 @@
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01f)
 
+struct SVertex
+{
+  float x, y, z;
+  float col[4];
+  unsigned char r, g, b, a;
+  float u, v;
+};
+
 template<class Position, class Value> class CGUIFontCache;
 class CGUIFontTTFBase;
 

@@ -7,12 +7,19 @@
  */
 
 #include "GUIFontTTFDX.h"
+
 #include "GUIFontManager.h"
 #include "GUIShaderDX.h"
 #include "Texture.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
+
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+
+using namespace DirectX;
+using namespace DirectX::PackedVector;
 
 // stuff for freetype
 #include <ft2build.h>
@@ -367,4 +374,29 @@ void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 
 void CGUIFontTTFDX::OnCreateDevice(void)
 {
+}
+
+void CGUIFontTTFDX::RenderCharacter(CRect* texture, SVertex* v, float* x, float* y, float* z)
+{
+  for (int i = 0; i < 4; i++)
+    CD3DHelper::XMStoreColor(&v[i].col, m_color);
+
+  for (int i = 0; i < 4; i++)
+  {
+    v[i].x = x[i];
+    v[i].y = y[i];
+    v[i].z = z[i];
+  }
+
+  v[0].u = texture.x1 * m_textureScaleX;
+  v[0].v = texture.y1 * m_textureScaleY;
+
+  v[1].u = texture.x2 * m_textureScaleX;
+  v[1].v = texture.y1 * m_textureScaleY;
+
+  v[2].u = texture.x2 * m_textureScaleX;
+  v[2].v = texture.y2 * m_textureScaleY;
+
+  v[3].u = texture.x1 * m_textureScaleX;
+  v[3].v = texture.y2 * m_textureScaleY;
 }
