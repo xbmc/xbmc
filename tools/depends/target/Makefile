@@ -61,24 +61,24 @@ endif
 WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid alsa-lib
+  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev wayland waylandpp wayland-protocols linux-system-x11-libs
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
-  ifeq ($(TARGET_PLATFORM),gbm)
-    DEPENDS += libxkbcommon libinput libudev libevdev mtdev libdrm mesa
-    ifeq ($(CPU),x86_64)
-      DEPENDS += libva
-      LIBVA = libva
-    endif
+  ifeq ($(RENDER_SYSTEM),gl)
+    DEPENDS += linux-system-gl-libs
   else
-    DEPENDS += linux-system-libs
-    WAYLANDPP_DEPS += linux-system-libs
+    DEPENDS += mesa
   endif
-endif
 
-ifeq ($(TARGET_PLATFORM),wayland)
-  DEPENDS += wayland waylandpp wayland-protocols
+  MESA_DEPS += wayland-protocols wayland linux-system-x11-libs
+
+  ifeq ($(CPU),x86_64)
+    LIBVA_DEPS += wayland linux-system-x11-libs
+
+    DEPENDS += libva
+    LIBVA = libva
+  endif
 endif
 
 .PHONY: $(DEPENDS)
@@ -122,8 +122,8 @@ dav1d: meson-cross-file
 fribidi: meson-cross-file
 libspdlog: libfmt
 libdrm: meson-cross-file
-mesa: libdrm meson-cross-file
-libva: libdrm
+mesa: libdrm meson-cross-file $(MESA_DEPS)
+libva: libdrm $(LIBVA_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -148,9 +148,7 @@ test-dependencies:
 distclean::
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
 
-linux-system-libs-egl:
-	[ -f $(PREFIX)/lib/pkgconfig/egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/egl.pc $(PREFIX)/lib/pkgconfig/egl.pc
-	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
+linux-system-x11-libs:
 	[ -f $(PREFIX)/lib/pkgconfig/damageproto.pc ] || ln -sf  /usr/share/pkgconfig/damageproto.pc $(PREFIX)/lib/pkgconfig/damageproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/fixesproto.pc ] || ln -sf  /usr/share/pkgconfig/fixesproto.pc $(PREFIX)/lib/pkgconfig/fixesproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/x11-xcb.pc ] || ln -sf  /usr/lib/$(HOST)/pkgconfig/x11-xcb.pc $(PREFIX)/lib/pkgconfig/x11-xcb.pc
@@ -168,8 +166,6 @@ linux-system-libs-egl:
 	[ -f $(PREFIX)/lib/pkgconfig/xfixes.pc ] || ln -sf  /usr/lib/$(HOST)/pkgconfig/xfixes.pc $(PREFIX)/lib/pkgconfig/xfixes.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xshmfence.pc ] || ln -sf  /usr/lib/$(HOST)/pkgconfig/xshmfence.pc $(PREFIX)/lib/pkgconfig/xshmfence.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xxf86vm.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xxf86vm.pc $(PREFIX)/lib/pkgconfig/xxf86vm.pc
-
-linux-system-libs: linux-system-libs-egl
 	[ -f $(PREFIX)/lib/pkgconfig/x11.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/x11.pc $(PREFIX)/lib/pkgconfig/x11.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xproto.pc ] || ln -sf /usr/share/pkgconfig/xproto.pc $(PREFIX)/lib/pkgconfig/xproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/kbproto.pc ] || ln -sf /usr/share/pkgconfig/kbproto.pc $(PREFIX)/lib/pkgconfig/kbproto.pc
@@ -187,9 +183,12 @@ linux-system-libs: linux-system-libs-egl
 	[ -f $(PREFIX)/lib/pkgconfig/ice.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/ice.pc $(PREFIX)/lib/pkgconfig/ice.pc
 	[ -f $(PREFIX)/lib/pkgconfig/sm.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/sm.pc $(PREFIX)/lib/pkgconfig/sm.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xmu.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xmu.pc $(PREFIX)/lib/pkgconfig/xmu.pc
-	[ -f $(PREFIX)/lib/pkgconfig/libdrm.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(PREFIX)/lib/pkgconfig/libdrm.pc
-	[ -f $(PREFIX)/lib/pkgconfig/xkbcommon.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/xkbcommon.pc $(PREFIX)/lib/pkgconfig/xkbcommon.pc
-	[ -f $(PREFIX)/lib/pkgconfig/libva.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/libva.pc $(PREFIX)/lib/pkgconfig/libva.pc
+
+linux-system-gl-libs:
+	[ -f $(PREFIX)/lib/pkgconfig/egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/egl.pc $(PREFIX)/lib/pkgconfig/egl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/gl.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/gl.pc $(PREFIX)/lib/pkgconfig/gl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/glu.pc ] || ln -sf /usr/lib/$(HOST)/pkgconfig/glu.pc $(PREFIX)/lib/pkgconfig/glu.pc
 
 $(PREFIX)/share/cross-file.meson:
 	PREFIX="$(PREFIX)" \

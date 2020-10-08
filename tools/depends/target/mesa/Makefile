@@ -15,6 +15,7 @@ ifeq ($(CPU), x86_64)
   MESA_GALLIUM_DRIVERS=iris
 else ifeq ($(CPU), arm)
   MESA_GALLIUM_DRIVERS=kmsro,vc4
+  MESA_EXTRA=-Dplatforms=wayland,drm
 endif
 
 # configuration settings
@@ -41,7 +42,6 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Dbuild-tests=false \
 	-Dselinux=false \
 	-Dosmesa=none \
-	-Dplatforms="drm" \
 	-Ddri3=false \
 	-Dglx=disabled \
 	-Dglvnd=false \
@@ -50,7 +50,8 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Dgallium-va=false \
 	-Dgallium-xa=false \
 	-Dgles1=false \
-	-Dgles2=true
+	-Dgles2=true \
+	$(MESA_EXTRA)
 
 ifeq ($(CROSS_COMPILING), yes)
 CONFIGURE += --cross-file $(PREFIX)/share/cross-file.meson

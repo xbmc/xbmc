@@ -40,6 +40,7 @@ endif
 
 .installed-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM) install
+	ln -sf $(PREFIX)/share/pkgconfig/wayland-protocols.pc $(PREFIX)/lib/pkgconfig/wayland-protocols.pc
 	touch $@
 
 clean:

@@ -432,7 +432,7 @@ case $host in
 esac
 
 case $use_platform in
-  gbm|wayland)
+  gbm|wayland|x11)
     if test "$platform_os" != "linux"; then
       AC_MSG_ERROR([$use_platform is only supported on the Linux platform])
     fi

@@ -18,13 +18,13 @@ ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar ldid
 endif
 
-ifeq ($(TARGET_PLATFORM),wayland)
+ifeq ($(OS),linux)
   NATIVE += expat wayland-scanner waylandpp-scanner
   EXPAT = expat
-endif
 
-ifeq ($(TARGET_PLATFORM),gbm)
-  NATIVE += MarkupSafe Mako
+  ifeq ($(RENDER_SYSTEM),gles)
+    NATIVE += MarkupSafe Mako
+  endif
 endif
 
 .PHONY: $(NATIVE) native
