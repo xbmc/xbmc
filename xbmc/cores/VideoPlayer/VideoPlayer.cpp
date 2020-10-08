@@ -137,6 +137,9 @@ public:
     if ((ss.flags & StreamFlags::FLAG_FORCED) && (ss.flags & StreamFlags::FLAG_DEFAULT))
       return false;
 
+    if (ss.language == "cc" && ss.flags & StreamFlags::FLAG_HEARING_IMPAIRED)
+      return false;
+
     if(!original)
     {
       std::string subtitle_language = g_langInfo.GetSubtitleLanguage();
