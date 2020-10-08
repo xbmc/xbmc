@@ -11,14 +11,14 @@
 #include "WinSystemWaylandEGLContext.h"
 #include "rendering/gl/RenderSystemGL.h"
 
-class CVaapiProxy;
-
 namespace KODI
 {
 namespace WINDOWING
 {
 namespace WAYLAND
 {
+
+class CVaapiProxy;
 
 class CWinSystemWaylandEGLContextGL : public CWinSystemWaylandEGLContext, public CRenderSystemGL
 {

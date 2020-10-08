@@ -11,14 +11,14 @@
 #include "WinSystemWaylandEGLContext.h"
 #include "rendering/gles/RenderSystemGLES.h"
 
-class CVaapiProxy;
-
 namespace KODI
 {
 namespace WINDOWING
 {
 namespace WAYLAND
 {
+
+class CVaapiProxy;
 
 class CWinSystemWaylandEGLContextGLES : public CWinSystemWaylandEGLContext, public CRenderSystemGLES
 {
