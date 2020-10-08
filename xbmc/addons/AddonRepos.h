@@ -22,6 +22,12 @@ class CAddonMgr;
 class CRepository;
 class IAddon;
 
+enum class CheckAddonPath
+{
+  YES,
+  NO,
+};
+
 /**
  * Struct - CAddonWithUpdate
  */
@@ -97,21 +103,15 @@ public:
 
   /*!
    * \brief Checks if the origin-repository of a given addon is defined as official repo
-   *        but does not check the origin path (e.g. https://mirrors.kodi.tv ...)
+   *        and can also verify if the origin-path (e.g. https://mirrors.kodi.tv ...)
+   *        is matching
    * \param addon pointer to addon to be checked
-   * \return true if the repository id of a given addon is defined as official
-   */
-  static bool IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon);
-
-  /*!
-   * \brief Checks if the origin-repository of a given addon is defined as official repo
-   *        and verify if the origin-path is also defined and matching
-   * \param addon pointer to addon to be checked
-   * \param bCheckAddonPath also check origin path
+   * \param checkAddonPath also check origin path
    * \return true if the repository id of a given addon is defined as official
    *         and the addons origin matches the defined official origin of the repo id
    */
-  static bool IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon, bool bCheckAddonPath);
+  static bool IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon,
+                                 CheckAddonPath checkAddonPath);
 
   /*!
    * \brief Check if an update is available for a single addon

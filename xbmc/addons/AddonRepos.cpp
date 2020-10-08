@@ -21,6 +21,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <vector>
 
 using namespace ADDON;
@@ -32,15 +33,11 @@ static std::vector<RepoInfo> officialRepoInfos = CCompileInfo::LoadOfficialRepoI
  *
  */
 
-bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon)
-{
-  return IsFromOfficialRepo(addon, false);
-}
-
-bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon, bool bCheckAddonPath)
+bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon,
+                                     CheckAddonPath checkAddonPath)
 {
   auto comparator = [&](const RepoInfo& officialRepo) {
-    if (bCheckAddonPath)
+    if (checkAddonPath == CheckAddonPath::YES)
     {
       return (addon->Origin() == officialRepo.m_repoId &&
               StringUtils::StartsWithNoCase(addon->Path(), officialRepo.m_origin));
@@ -133,7 +130,7 @@ void CAddonRepos::SetupLatestVersionMaps()
     {
       const auto& addonToAdd = addonMapEntry.second;
 
-      if (IsFromOfficialRepo(addonToAdd, true))
+      if (IsFromOfficialRepo(addonToAdd, CheckAddonPath::YES))
       {
         AddAddonIfLatest(addonToAdd, m_latestOfficialVersions);
       }
@@ -246,7 +243,7 @@ bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
     if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
     {
       // If we didn't find an official update
-      if (IsFromOfficialRepo(addon, true)) // is an official addon
+      if (IsFromOfficialRepo(addon, CheckAddonPath::YES)) // is an official addon
       {
         if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
         {
@@ -497,9 +494,31 @@ bool CAddonRepos::FindDependencyByParentRepo(const std::string& dependsId,
 void CAddonRepos::BuildCompatibleVersionsList(
     std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const
 {
+  std::vector<std::shared_ptr<IAddon>> officialVersions;
+  std::vector<std::shared_ptr<IAddon>> privateVersions;
+
   for (const auto& addon : m_allAddons)
   {
     if (m_addonMgr.IsCompatible(*addon))
-      compatibleVersions.emplace_back(addon);
+    {
+      if (IsFromOfficialRepo(addon, CheckAddonPath::NO))
+      {
+        officialVersions.emplace_back(addon);
+      }
+      else
+      {
+        privateVersions.emplace_back(addon);
+      }
+    }
   }
+
+  auto comparator = [](const std::shared_ptr<IAddon>& a, const std::shared_ptr<IAddon>& b) {
+    return (a->Version() > b->Version());
+  };
+
+  std::sort(officialVersions.begin(), officialVersions.end(), comparator);
+  std::sort(privateVersions.begin(), privateVersions.end(), comparator);
+
+  compatibleVersions = officialVersions;
+  std::copy(privateVersions.begin(), privateVersions.end(), back_inserter(compatibleVersions));
 }

@@ -13646,7 +13646,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#21342"
-msgid "There are currently no updates available for this add-on."
+msgid "There are currently no versions available for this add-on."
 msgstr ""
 
 #: system/settings.xml
@@ -15224,7 +15224,7 @@ msgid "Update available"
 msgstr ""
 
 msgctxt "#24069"
-msgid "Update"
+msgid "Versions"
 msgstr ""
 
 msgctxt "#24070"
@@ -15584,7 +15584,11 @@ msgctxt "#24137"
 msgid "Install auto updates only"
 msgstr ""
 
-#empty strings from id 24138 to 24138
+#. Button caption in DialogAddoninfo
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24138"
+msgid "Update"
+msgstr ""
 
 #. Label for the action provided by addon management events to jump to a specific Add-on
 #: xbmc/events/AddonManagementEvent.cpp
