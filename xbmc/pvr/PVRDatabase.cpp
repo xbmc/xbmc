@@ -111,8 +111,8 @@ void CPVRDatabase::CreateTables()
               "sName           varchar(64), "
               "iLastWatched    integer, "
               "bIsHidden       bool, "
-              "iPosition       integer"
-              "iLastOpened     integer, "
+              "iPosition       integer, "
+              "iLastOpened     integer"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'map_channelgroups_channels'");
