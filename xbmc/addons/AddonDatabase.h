@@ -214,6 +214,13 @@ public:
 
   void GetInstallData(const ADDON::AddonInfoPtr& addon);
 
+  /*! \brief Add dataset for a new installed addon to the database
+   *  \param addon the addon to insert
+   *  \param origin the origin it was installed from
+   *  \return true on success, false otherwise
+   */
+  bool AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon, const std::string& origin);
+
 protected:
   void CreateTables() override;
   void CreateAnalytics() override;

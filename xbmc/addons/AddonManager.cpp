@@ -590,9 +590,11 @@ bool CAddonMgr::HasType(const std::string &id, const TYPE &type)
   return GetAddon(id, addon, type, false);
 }
 
-bool CAddonMgr::FindAddon(const std::string& addonId, const AddonVersion& addonVersion)
+bool CAddonMgr::FindAddon(const std::string& addonId,
+                          const std::string& origin,
+                          const AddonVersion& addonVersion)
 {
-  ADDON_INFO_LIST installedAddons;
+  std::map<std::string, std::shared_ptr<CAddonInfo>> installedAddons;
 
   FindAddons(installedAddons, "special://xbmcbin/addons");
   FindAddons(installedAddons, "special://xbmc/addons");
@@ -607,6 +609,11 @@ bool CAddonMgr::FindAddon(const std::string& addonId, const AddonVersion& addonV
   m_database.GetInstallData(it->second);
   CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addonId,
             addonVersion.asString());
+
+  if (!IsAddonInstalled(addonId))
+  {
+    m_database.AddInstalledAddon(it->second, origin);
+  }
 
   m_installedAddons[addonId] = it->second; // insert/replace entry
 
@@ -680,7 +687,9 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
   return true;
 }
 
-bool CAddonMgr::LoadAddon(const std::string& addonId, const AddonVersion& addonVersion)
+bool CAddonMgr::LoadAddon(const std::string& addonId,
+                          const std::string& origin,
+                          const AddonVersion& addonVersion)
 {
   CSingleLock lock(m_critSection);
 
@@ -690,7 +699,7 @@ bool CAddonMgr::LoadAddon(const std::string& addonId, const AddonVersion& addonV
     return true;
   }
 
-  if (!FindAddon(addonId, addonVersion))
+  if (!FindAddon(addonId, origin, addonVersion))
   {
     CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. FindAddon failed.", addonId.c_str());
     return false;

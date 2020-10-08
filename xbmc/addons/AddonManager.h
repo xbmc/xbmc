@@ -139,12 +139,15 @@ namespace ADDON
      */
     bool FindAddons();
 
-    /*! \brief Checks whether given addon with given version is installed
+    /*! \brief Checks whether given addon with given origin/version is installed
      * \param addonId addon to check
+     * \param origin origin to check
      * \param addonVersion version to check
      * \return True if installed, false otherwise
      */
-    bool FindAddon(const std::string& addonId, const AddonVersion& addonVersion);
+    bool FindAddon(const std::string& addonId,
+                   const std::string& origin,
+                   const AddonVersion& addonVersion);
 
     /*!
      * @brief Fills the the provided vector with the list of incompatible
@@ -190,7 +193,9 @@ namespace ADDON
      *
      * Returns true if the addon was successfully loaded and enabled; otherwise false.
      */
-    bool LoadAddon(const std::string& addonId, const AddonVersion& addonVersion);
+    bool LoadAddon(const std::string& addonId,
+                   const std::string& origin,
+                   const AddonVersion& addonVersion);
 
     /*! @note: should only be called by AddonInstaller
      *

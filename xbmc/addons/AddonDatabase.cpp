@@ -1284,3 +1284,28 @@ void CAddonDatabase::GetInstallData(const AddonInfoPtr& addon)
     CLog::Log(LOGERROR, "CAddonDatabase::{}: failed", __FUNCTION__);
   }
 }
+
+bool CAddonDatabase::AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon,
+                                       const std::string& origin)
+{
+  try
+  {
+    if (!m_pDB)
+      return false;
+    if (!m_pDS)
+      return false;
+
+    std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
+
+    m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate, origin) "
+                           "VALUES('%s', 1, '%s', '%s')",
+                           addon->ID().c_str(), now.c_str(), origin.c_str()));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
+
+  return true;
+}
