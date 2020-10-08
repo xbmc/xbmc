@@ -73,6 +73,8 @@ public:
   explicit CGUIFontTTFBase(const std::string& strFileName);
   virtual ~CGUIFontTTFBase(void);
 
+  static CGUIFontTTFBase* GetGUIFontTTF(const std::string& strFileName);
+
   void Clear();
 
   bool Load(const std::string& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
@@ -190,8 +192,3 @@ private:
   int m_referenceCount;
 };
 
-#if defined(HAS_GL) || defined(HAS_GLES)
-#include "GUIFontTTFGLBase.h"
-#elif defined(HAS_DX)
-#include "GUIFontTTFDX.h"
-#endif

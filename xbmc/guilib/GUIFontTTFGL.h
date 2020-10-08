@@ -26,5 +26,3 @@ public:
 private:
   CRenderSystemGL* m_renderSystem = nullptr;
 };
-
-using CGUIFontTTF = CGUIFontTTFGL;

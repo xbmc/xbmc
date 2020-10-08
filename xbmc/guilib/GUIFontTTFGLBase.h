@@ -56,8 +56,3 @@ protected:
   bool m_staticVertexBufferCreated{false};
 };
 
-#if defined(HAS_GL)
-#include "GUIFontTTFGL.h"
-#elif defined(HAS_GLES)
-#include "GUIFontTTFGLES.h"
-#endif

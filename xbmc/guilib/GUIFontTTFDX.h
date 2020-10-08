@@ -62,5 +62,3 @@ private:
   static bool m_staticIndexBufferCreated;
   static Microsoft::WRL::ComPtr<ID3D11Buffer> m_staticIndexBuffer;
 };
-
-using CGUIFontTTF = CGUIFontTTFDX;

@@ -16,6 +16,11 @@
 #include "utils/GLUtils.h"
 #include "windowing/GraphicContext.h"
 
+CGUIFontTTFBase* CGUIFontTTFBase::GetGUIFontTTF(const std::string& strFileName)
+{
+  return new CGUIFontTTFGLES(strFileName);
+}
+
 CGUIFontTTFGLES::CGUIFontTTFGLES(const std::string& strFileName) : CGUIFontTTFGLBase(strFileName)
 {
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
