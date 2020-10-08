@@ -18,6 +18,15 @@
 
 #include "system_gl.h"
 
+
+
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CWinSystemX11GLContext;
 
 class CVideoSyncGLX : public CVideoSync, IDispResource
@@ -45,3 +54,7 @@ private:
   volatile bool m_displayReset;
   CEvent m_lostEvent;
 };
+
+}
+}
+}

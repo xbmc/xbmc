@@ -19,6 +19,8 @@
 
 #include <X11/extensions/Xrandr.h>
 
+using namespace KODI::WINDOWING::X11;
+
 Display* CVideoSyncGLX::m_Dpy = NULL;
 
 void CVideoSyncGLX::OnLostDisplay()

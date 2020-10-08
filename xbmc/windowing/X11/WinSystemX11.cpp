@@ -36,7 +36,7 @@
 #include <X11/extensions/Xrandr.h>
 
 using namespace KODI::MESSAGING;
-using namespace KODI::WINDOWING;
+using namespace KODI::WINDOWING::X11;
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -477,7 +477,7 @@ void CWinSystemX11::ShowOSMouse(bool show)
     XDefineCursor(m_dpy,m_mainWindow, m_invisibleCursor);
 }
 
-std::unique_ptr<IOSScreenSaver> CWinSystemX11::GetOSScreenSaverImpl()
+std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemX11::GetOSScreenSaverImpl()
 {
   std::unique_ptr<IOSScreenSaver> ret;
   if (m_dpy)

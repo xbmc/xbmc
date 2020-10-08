@@ -14,6 +14,8 @@
 
 #include "system_gl.h"
 
+using namespace KODI::WINDOWING::X11;
+
 CGLContextGLX::CGLContextGLX(Display *dpy) : CGLContext(dpy)
 {
   m_extPrefix = "GLX_";

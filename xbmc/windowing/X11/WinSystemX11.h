@@ -21,6 +21,14 @@
 #include <X11/Xutil.h>
 
 class IDispResource;
+
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CWinEventsX11;
 
 class CWinSystemX11 : public CWinSystemBase
@@ -100,3 +108,7 @@ private:
   bool HasWindowManager();
   void UpdateCrtc();
 };
+
+}
+}
+}

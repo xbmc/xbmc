@@ -19,6 +19,14 @@
 #include <EGL/egl.h>
 
 class CGLContext;
+
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CVaapiProxy;
 
 class CWinSystemX11GLContext : public CWinSystemX11, public CRenderSystemGL
@@ -68,3 +76,7 @@ protected:
 
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };
+
+}
+}
+}

@@ -12,6 +12,13 @@
 
 #include <GL/glx.h>
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CGLContextGLX : public CGLContext
 {
 public:
@@ -35,3 +42,7 @@ protected:
   int m_iVSyncErrors;
   int m_vsyncMode;
 };
+
+}
+}
+}
