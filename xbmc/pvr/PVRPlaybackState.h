@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <memory>
 #include <string>
 
@@ -33,6 +35,11 @@ public:
    * @brief dtor.
    */
   virtual ~CPVRPlaybackState();
+
+  /*!
+   * @brief clear all data.
+   */
+  void Clear();
 
   /*!
    * @brief Inform that playback of an item just started.
@@ -212,6 +219,8 @@ private:
    * @param time The last watched time to set
    */
   void UpdateLastWatched(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& time);
+
+  mutable CCriticalSection m_critSection;
 
   std::shared_ptr<CPVRChannel> m_playingChannel;
   std::shared_ptr<CPVRRecording> m_playingRecording;

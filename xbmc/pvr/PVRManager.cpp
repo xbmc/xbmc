@@ -294,7 +294,7 @@ std::shared_ptr<CPVRGUIActions> CPVRManager::GUIActions() const
 
 std::shared_ptr<CPVRPlaybackState> CPVRManager::PlaybackState() const
 {
-  CSingleLock lock(m_critSection);
+  // note: m_playbackState is const (only set/reset in ctor/dtor). no need for a lock here.
   return m_playbackState;
 }
 
@@ -306,6 +306,7 @@ CPVREpgContainer& CPVRManager::EpgContainer()
 
 void CPVRManager::Clear()
 {
+  m_playbackState->Clear();
   m_pendingUpdates->Clear();
   m_epgContainer.Clear();
 
@@ -316,7 +317,6 @@ void CPVRManager::Clear()
   m_recordings.reset();
   m_channelGroups.reset();
   m_parentalTimer.reset();
-  m_playbackState.reset();
   m_database.reset();
 
   m_bEpgsCreated = false;
@@ -333,7 +333,6 @@ void CPVRManager::ResetProperties()
   m_timers.reset(new CPVRTimers);
   m_guiInfo.reset(new CPVRGUIInfo);
   m_parentalTimer.reset(new CStopWatch);
-  m_playbackState.reset(new CPVRPlaybackState);
 }
 
 void CPVRManager::Init()
