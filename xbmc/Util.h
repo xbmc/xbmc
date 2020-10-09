@@ -195,6 +195,12 @@ public:
   static int64_t ConvertMilliSecsToSecsInt(int64_t offset) { return offset / 1000; }
   static int64_t ConvertMilliSecsToSecsIntRounded(int64_t offset) { return ConvertMilliSecsToSecsInt(offset + 499); }
 
+  /** \brief Copy files from the application bundle over to the user data directory in Application Support/Kodi.
+  */
+  static void CopyUserDataIfNeeded(const std::string& strPath,
+                                   const std::string& file,
+                                   const std::string& destname = "");
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;

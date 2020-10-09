@@ -10,32 +10,15 @@
 
 #include "filesystem/SpecialProtocol.h"
 
-// clang-format off
-#if defined(TARGET_DARWIN_IOS)
-#include "windowing/ios/WinSystemIOS.h"
-#endif
-#if defined(TARGET_DARWIN_TVOS)
-#include "windowing/tvos/WinSystemTVOS.h"
-#endif
-#if defined(TARGET_DARWIN_OSX)
-#include "windowing/osx/WinSystemOSXGL.h"
-#endif
-// clang-format on
+#include <cstdlib>
 
-#include <stdlib.h>
-
-void CPlatformDarwin::Init()
+bool CPlatformDarwin::Init()
 {
-  CPlatformPosix::Init();
+  if (!CPlatformPosix::Init())
+    return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
 
-#if defined(TARGET_DARWIN_IOS)
-  CWinSystemIOS::Register();
-#endif
-#if defined(TARGET_DARWIN_TVOS)
-  CWinSystemTVOS::Register();
-#endif
-#if defined(TARGET_DARWIN_OSX)
-  CWinSystemOSXGL::Register();
-#endif
+  setenv("OS", "OS X", true); // for python scripts that check the OS
+
+  return true;
 }

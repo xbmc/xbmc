@@ -34,14 +34,19 @@
 #endif
 // clang-format on
 
+#include <cstdlib>
+
 CPlatform* CPlatform::CreateInstance()
 {
   return new CPlatformFreebsd();
 }
 
-void CPlatformFreebsd::Init()
+bool CPlatformFreebsd::Init()
 {
-  CPlatformPosix::Init();
+  if (!CPlatformPosix::Init())
+    return false;
+
+  setenv("OS", "Linux", true); // for python scripts that check the OS
 
 #if defined(HAS_GLES)
 #if defined(HAVE_WAYLAND)
@@ -66,4 +71,6 @@ void CPlatformFreebsd::Init()
   KODI::WINDOWING::GBM::CWinSystemGbmGLContext::Register();
 #endif
 #endif
+
+  return true;
 }

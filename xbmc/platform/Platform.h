@@ -33,6 +33,5 @@ public:
    * This method can be used to do platform specific environment preparation
    * or initialisation (like setting environment variables for example)
    */
-  virtual void Init();
-
+  virtual bool Init();
 };

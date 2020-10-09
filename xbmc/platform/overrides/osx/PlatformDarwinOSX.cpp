@@ -6,13 +6,25 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "filesystem/SpecialProtocol.h"
+#include "PlatformDarwinOSX.h"
 
-#include "platform/darwin/PlatformDarwin.h"
-
-#include <stdlib.h>
+#include "platform/darwin/osx/XBMCHelper.h"
+#include "windowing/osx/WinSystemOSXGL.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
-  return new CPlatformDarwin();
+  return new CPlatformDarwinOSX();
+}
+
+bool CPlatformDarwinOSX::Init()
+{
+  if (!CPlatformDarwin::Init())
+    return false;
+
+  // Configure and possible manually start the helper.
+  XBMCHelper::GetInstance().Configure();
+
+  CWinSystemOSXGL::Register();
+
+  return true;
 }

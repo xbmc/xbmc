@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -34,9 +34,19 @@
 #endif
 // clang-format on
 
-void CPlatformLinux::Init()
+#include <cstdlib>
+
+CPlatform* CPlatform::CreateInstance()
 {
-  CPlatformPosix::Init();
+  return new CPlatformLinux();
+}
+
+bool CPlatformLinux::Init()
+{
+  if (!CPlatformPosix::Init())
+    return false;
+
+  setenv("OS", "Linux", true); // for python scripts that check the OS
 
 #if defined(HAS_GLES)
 #if defined(HAVE_WAYLAND)
@@ -61,4 +71,6 @@ void CPlatformLinux::Init()
   KODI::WINDOWING::GBM::CWinSystemGbmGLContext::Register();
 #endif
 #endif
+
+  return true;
 }

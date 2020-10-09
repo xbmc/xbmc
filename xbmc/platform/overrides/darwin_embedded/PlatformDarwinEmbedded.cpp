@@ -6,13 +6,36 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "filesystem/SpecialProtocol.h"
+#include "PlatformDarwinEmbedded.h"
 
-#include "platform/darwin/PlatformDarwin.h"
+#include "Util.h"
 
-#include <stdlib.h>
+// clang-format off
+#if defined(TARGET_DARWIN_IOS)
+#include "windowing/ios/WinSystemIOS.h"
+#endif
+#if defined(TARGET_DARWIN_TVOS)
+#include "windowing/tvos/WinSystemTVOS.h"
+#endif
+// clang-format on
 
 CPlatform* CPlatform::CreateInstance()
 {
-  return new CPlatformDarwin();
+  return new CPlatformDarwinEmbedded();
+}
+
+bool CPlatformDarwinEmbedded::Init()
+{
+  if (!CPlatformDarwin::Init())
+    return false;
+
+#if defined(TARGET_DARWIN_IOS)
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "iOS/sources.xml", "sources.xml");
+  CWinSystemIOS::Register();
+#endif
+#if defined(TARGET_DARWIN_TVOS)
+  CWinSystemTVOS::Register();
+#endif
+
+  return true;
 }
