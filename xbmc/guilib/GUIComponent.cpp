@@ -41,9 +41,6 @@ void CGUIComponent::Init()
   m_stereoscopicsManager->Initialize();
   m_guiInfoManager->Initialize();
 
-  //! @todo This is something we need to change
-  m_pWindowManager->AddMsgTarget(m_stereoscopicsManager.get());
-
   CServiceBroker::RegisterGUI(this);
 }
 
