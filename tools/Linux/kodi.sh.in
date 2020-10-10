@@ -44,39 +44,13 @@ do
             LIBDIR="$2"
             shift; shift
             ;;
-        --windowing)
-            WINDOWING="$2"
-            echo "$SAVED_ARGS" | sed "s/--windowing[ ]*$2//g"
-            shift; shift
-            ;;
         *)
             shift
             ;;
     esac
 done
 
-# Note: by default only one of those binaries exists
-# To be able to select a different one, if has to be compiled specifically
-# Your distribution might provide extra packages for those
-if [ "$WINDOWING" = "auto" ]; then
-    # Wayland
-    if [ -n "$WAYLAND_DISPLAY" ] && [ -x $LIBDIR/${bin_name}/${bin_name}-wayland ]; then
-        KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-wayland
-    # X11
-    elif echo $DISPLAY | grep -qE ":[0-9]+" && [ -x $LIBDIR/${bin_name}/${bin_name}-x11 ]; then
-        KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-x11
-    # GBM/DRM
-    elif [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -x $LIBDIR/${bin_name}/${bin_name}-gbm ]; then
-        KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-gbm
-    # Default kodi.bin
-    else
-        KODI_BINARY=${APP_BINARY}
-    fi
-elif [ -n "$WINDOWING" ]; then
-    KODI_BINARY=$LIBDIR/${bin_name}/${bin_name}-${WINDOWING}
-else
-    KODI_BINARY=${APP_BINARY}
-fi
+KODI_BINARY=${APP_BINARY}
 
 if [ ! -x ${KODI_BINARY} ]; then
     echo "Error: ${KODI_BINARY} not found"
