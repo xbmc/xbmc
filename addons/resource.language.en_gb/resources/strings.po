@@ -5022,7 +5022,12 @@ msgctxt "#10057"
 msgid "Edit file source"
 msgstr ""
 
-#empty strings from id 10058 to 10098
+#: xbmc/video/dialogs/CGUIDialogVideoInfo.cpp
+msgctxt "#10058"
+msgid "Remove tag from library"
+msgstr ""
+
+#empty strings from id 10059 to 10098
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10099"

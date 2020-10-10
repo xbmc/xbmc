@@ -842,21 +842,6 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       m_database.DeleteSet(params.GetSetId());
     }
   }
-  else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
-  {
-    CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(CVariant{432});
-    pDialog->SetLine(1, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) });
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-    if (pDialog->IsConfirmed())
-    {
-      CVideoDatabaseDirectory dir;
-      CQueryParams params;
-      dir.GetQueryParams(pItem->GetPath(), params);
-      m_database.DeleteTag(params.GetTagId(), (VIDEODB_CONTENT_TYPE)params.GetContentType());
-    }
-  }
   else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
            m_vecItems->IsPath("special://videoplaylists/"))
   {
