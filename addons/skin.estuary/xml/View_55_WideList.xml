@@ -280,6 +280,7 @@
 				<aligny>center</aligny>
 				<font>font27</font>
 				<label>$VAR[AddonsLabel2Var]</label>
+				<scroll>true</scroll>
 			</control>
 			<control type="image">
 				<right>40</right>
@@ -303,7 +304,6 @@
 				<height>80</height>
 				<right>40</right>
 				<aligny>center</aligny>
-				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
 			</control>
 			<control type="label">
