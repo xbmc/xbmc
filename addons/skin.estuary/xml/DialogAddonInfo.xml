@@ -217,7 +217,7 @@
 								</item>
 								<item>
 									<label>$LOCALIZE[126]:</label>
-									<label2>$INFO[ListItem.Property(Addon.Status)]</label2>
+									<label2>$INFO[ListItem.Property(Addon.Status)]$INFO[ListItem.Property(Addon.ValidUpdateVersion),[CR]($LOCALIZE[19114]: ,)]</label2>
 									<visible>!String.IsEmpty(ListItem.Property(Addon.Status))</visible>
 								</item>
 								<item>
@@ -251,11 +251,6 @@
 						<param name="icon" value="icons/infodialogs/configure.png" />
 						<param name="label" value="$LOCALIZE[24020]" />
 					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="8" />
-						<param name="icon" value="icons/infodialogs/update.png" />
-						<param name="label" value="$LOCALIZE[24069]" />
-					</include>
 					<control type="radiobutton" id="13">
 						<width>262</width>
 						<height>140</height>
@@ -280,6 +275,16 @@
 						<param name="icon_off" value="icons/infodialogs/enabled.png" />
 						<param name="selected" value="!String.StartsWith(Control.GetLabel(7),$LOCALIZE[24022]) | !Window.IsActive(addonbrowser)" />
 						<param name="label" value="" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="8" />
+						<param name="icon" value="icons/infodialogs/install.png" />
+						<param name="label" value="$LOCALIZE[24138]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="14" />
+						<param name="icon" value="icons/infodialogs/update.png" />
+						<param name="label" value="$LOCALIZE[24069]" />
 					</include>
 					<include content="InfoDialogToggleButton">
 						<param name="id" value="6" />
