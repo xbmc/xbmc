@@ -64,12 +64,10 @@ namespace PVR
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
     DECL_STATICCONTEXTMENUITEM(EditRecording);
-    DECL_STATICCONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
     DECL_STATICCONTEXTMENUITEM(DeleteWatchedRecordings);
     DECL_CONTEXTMENUITEM(ToggleTimerState);
-    DECL_STATICCONTEXTMENUITEM(RenameTimer);
     DECL_STATICCONTEXTMENUITEM(AddReminder);
 
     class PVRClientMenuHook : public IContextMenuItem
@@ -334,27 +332,6 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Rename recording
-
-    bool RenameRecording::IsVisible(const CFileItem& item) const
-    {
-      const std::shared_ptr<CPVRRecording> recording = item.GetPVRRecordingInfoTag();
-      if (recording &&
-          !recording->IsDeleted() &&
-          !recording->IsInProgress())
-      {
-        const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(recording->ClientID());
-        return client && client->GetClientCapabilities().SupportsRecordingsRename();
-      }
-      return false;
-    }
-
-    bool RenameRecording::Execute(const CFileItemPtr& item) const
-    {
-      return CServiceBroker::GetPVRManager().GUIActions()->RenameRecording(item);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
     // Delete recording
 
     std::string DeleteRecording::GetLabel(const CFileItem& item) const
@@ -581,31 +558,6 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Rename timer
-
-    bool RenameTimer::IsVisible(const CFileItem& item) const
-    {
-      const std::shared_ptr<CPVRTimerInfoTag> timer(item.GetPVRTimerInfoTag());
-      if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-        return false;
-
-      // As epg-based timers will get it's title from the epg tag, they should not be renamable.
-      if (timer->IsManual())
-      {
-        const std::shared_ptr<CPVRTimerType> timerType(timer->GetTimerType());
-        if (!timerType->IsReadOnly())
-          return true;
-      }
-
-      return false;
-    }
-
-    bool RenameTimer::Execute(const CFileItemPtr& item) const
-    {
-      return CServiceBroker::GetPVRManager().GUIActions()->RenameTimer(item);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
     // Delete timer
 
     std::string DeleteTimer::GetLabel(const CFileItem& item) const
@@ -707,12 +659,10 @@ namespace PVR
         std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
         std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
         std::make_shared<CONTEXTMENUITEM::EditTimer>(),
-        std::make_shared<CONTEXTMENUITEM::RenameTimer>(118), /* Rename */
         std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
         std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
         std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
         std::make_shared<CONTEXTMENUITEM::EditRecording>(21450), /* Edit */
-        std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
         std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
         std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
         std::make_shared<CONTEXTMENUITEM::DeleteWatchedRecordings>(19327), /* Delete watched */

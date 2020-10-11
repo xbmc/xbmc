@@ -218,13 +218,6 @@ namespace PVR
     TimerOperationResult DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bForce = false, bool bDeleteRule = false);
 
     /*!
-     * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
-     * @param tag The timer to rename.
-     * @return True if timer rename request was sent correctly, false if not.
-     */
-    bool RenameTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, const std::string& strNewName);
-
-    /*!
      * @brief Update the timer on the client. Doesn't update the timer in the container. The backend will do this.
      * @param tag The timer to update.
      * @return True if timer update request was sent correctly, false if not.
@@ -273,7 +266,6 @@ namespace PVR
 
     bool AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify);
     bool DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify);
-    bool RenameLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, const std::string& strNewName);
     bool UpdateLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag);
     std::shared_ptr<CPVRTimerInfoTag> PersistAndUpdateLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer,
                                                                  const std::shared_ptr<CPVRTimerInfoTag>& parentTimer);

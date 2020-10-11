@@ -276,13 +276,6 @@ namespace PVR
     TimerOperationResult DeleteFromClient(bool bForce = false) const;
 
     /*!
-     * @brief Rename this timer on the backend, transferring all local data of this timer to the backend.
-     * @param strNewName The new name.
-     * @return True on success, false otherwise.
-     */
-    bool RenameOnClient(const std::string& strNewName);
-
-    /*!
      * @brief Update this timer on the backend, transferring all local data of this timer to the backend.
      * @return True on success, false otherwise.
      */
