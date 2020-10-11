@@ -433,7 +433,7 @@ namespace PVR
 
     CEventSource<PVREvent> m_events;
 
-    std::shared_ptr<CPVRPlaybackState> m_playbackState;
+    const std::shared_ptr<CPVRPlaybackState> m_playbackState;
 
     CPVRGUIActionListener m_actionListener;
     CPVRSettings m_settings;
