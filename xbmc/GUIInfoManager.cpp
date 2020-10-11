@@ -1697,6 +1697,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @param id - the addon id
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.AddonUpdateCount`</b>,
+///                  \anchor System_AddonUpdateCount
+///                  _string_,
+///     @return The number of available addon updates.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link  System_AddonUpdateCount `
+///     System.AddonUpdateCount`\endlink <p>
+///   }
 ///   \table_row3{   <b>`System.IdleTime(time)`</b>,
 ///                  \anchor System_IdleTime
 ///                  _boolean_,
@@ -1790,6 +1798,7 @@ const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"hascms", SYSTEM_HAS_CMS},
                                  {"privacypolicy", SYSTEM_PRIVACY_POLICY},
                                  {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
+                                 {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
                                  {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE}};
 
 /// \page modules__infolabels_boolean_conditions
