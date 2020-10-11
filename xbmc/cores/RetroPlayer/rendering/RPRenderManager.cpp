@@ -284,13 +284,49 @@ void CRPRenderManager::Flush()
 
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes)
 {
+  // Get a renderer for the fullscreen window
   std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(nullptr);
   if (!renderer)
     return;
 
+  // Get a render buffer for the renderer
+  IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
+
   m_renderContext.SetRenderingResolution(m_renderContext.GetVideoResolution(), false);
 
-  RenderInternal(renderer, bClear, 255);
+  if (!m_bDisplayScaleSet && m_renderContext.DisplayHardwareScalingEnabled())
+  {
+    // If the renderer has a render buffer, get the dimensions
+    const unsigned int sourceWidth = (renderBuffer != nullptr ? renderBuffer->GetWidth() : 0);
+    const unsigned int sourceHeight = (renderBuffer != nullptr ? renderBuffer->GetHeight() : 0);
+
+    // Get render video settings for the fullscreen window
+    CRenderVideoSettings renderVideoSettings = GetEffectiveSettings(nullptr);
+
+    // Get the scaling mode of the render video settings
+    const SCALINGMETHOD scaleMode = renderVideoSettings.GetScalingMethod();
+    const STRETCHMODE stretchMode = renderVideoSettings.GetRenderStretchMode();
+
+    // Update display with video dimensions for integer scaling
+    if (scaleMode == SCALINGMETHOD::NEAREST && stretchMode == STRETCHMODE::Original &&
+        sourceWidth > 0 && sourceHeight > 0)
+    {
+      RESOLUTION_INFO gameRes = m_renderContext.GetResInfo();
+      gameRes.Overscan.left = 0;
+      gameRes.Overscan.top = 0;
+      gameRes.Overscan.right = sourceWidth;
+      gameRes.Overscan.bottom = sourceHeight;
+      gameRes.iWidth = sourceWidth;
+      gameRes.iHeight = sourceHeight;
+      gameRes.iScreenWidth = sourceWidth;
+      gameRes.iScreenHeight = sourceHeight;
+
+      m_renderContext.UpdateDisplayHardwareScaling(gameRes);
+      m_bDisplayScaleSet = true;
+    }
+  }
+
+  RenderInternal(renderer, renderBuffer, bClear, 255);
 
   m_renderContext.SetRenderingResolution(coordsRes, false);
 }
@@ -300,9 +336,13 @@ void CRPRenderManager::RenderControl(bool bClear,
                                      const CRect& renderRegion,
                                      const IGUIRenderSettings* renderSettings)
 {
+  // Get a renderer for the control
   std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(renderSettings);
   if (!renderer)
     return;
+
+  // Get a render buffer for the renderer
+  IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
 
   // Set fullscreen
   const bool bWasFullscreen = m_renderContext.IsFullScreenVideo();
@@ -331,7 +371,7 @@ void CRPRenderManager::RenderControl(bool bClear,
   if (bUseAlpha)
     alpha = m_renderContext.MergeAlpha(0xFF000000) >> 24;
 
-  RenderInternal(renderer, false, alpha);
+  RenderInternal(renderer, renderBuffer, false, alpha);
 
   // Restore coordinates
   m_renderContext.RemoveTransform();
@@ -373,21 +413,13 @@ bool CRPRenderManager::SupportsScalingMethod(SCALINGMETHOD method) const
 }
 
 void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& renderer,
+                                      IRenderBuffer* renderBuffer,
                                       bool bClear,
                                       uint32_t alpha)
 {
   renderer->PreRender(bClear);
 
   CSingleExit exitLock(m_renderContext.GraphicsMutex());
-
-  IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
-
-  // If our renderer has no buffer, try to create one from paused frame now
-  if (renderBuffer == nullptr)
-  {
-    CreateRenderBuffer(renderer->GetBufferPool());
-    renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
-  }
 
   if (renderBuffer != nullptr)
   {
@@ -510,9 +542,18 @@ IRenderBuffer* CRPRenderManager::GetRenderBuffer(IRenderBufferPool* bufferPool)
 
   CSingleLock lock(m_bufferMutex);
 
-  auto it = std::find_if(
-      m_renderBuffers.begin(), m_renderBuffers.end(),
-      [bufferPool](IRenderBuffer* renderBuffer) { return renderBuffer->GetPool() == bufferPool; });
+  auto getRenderBuffer = [bufferPool](IRenderBuffer* renderBuffer) {
+    return renderBuffer->GetPool() == bufferPool;
+  };
+
+  auto it = std::find_if(m_renderBuffers.begin(), m_renderBuffers.end(), getRenderBuffer);
+
+  // If our renderer has no buffer, try to create one from paused frame now
+  if (it == m_renderBuffers.end())
+  {
+    CreateRenderBuffer(bufferPool);
+    it = std::find_if(m_renderBuffers.begin(), m_renderBuffers.end(), getRenderBuffer);
+  }
 
   if (it != m_renderBuffers.end())
   {

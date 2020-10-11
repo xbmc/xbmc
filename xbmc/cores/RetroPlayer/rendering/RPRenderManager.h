@@ -123,6 +123,7 @@ private:
    * \brief Render a frame using the given renderer
    */
   void RenderInternal(const std::shared_ptr<CRPBaseRenderer>& renderer,
+                      IRenderBuffer* renderBuffer,
                       bool bClear,
                       uint32_t alpha);
 
@@ -217,6 +218,9 @@ private:
   bool m_bHasCachedFrame = false; // Invariant: m_cachedFrame is empty if false
   std::set<std::string> m_failedShaderPresets;
   std::atomic<bool> m_bFlush = {false};
+
+  // Windowing state
+  bool m_bDisplayScaleSet = false;
 
   // Playback parameters
   std::atomic<double> m_speed = {1.0};

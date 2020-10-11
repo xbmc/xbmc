@@ -40,6 +40,8 @@ public:
 
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool DisplayHardwareScalingEnabled() override;
+  void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo) override;
 
   void FlipPage(bool rendered, bool videoLayer);
 

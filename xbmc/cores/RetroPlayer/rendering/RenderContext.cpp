@@ -176,6 +176,16 @@ bool CRenderContext::UseLimitedColor()
   return m_windowing->UseLimitedColor();
 }
 
+bool CRenderContext::DisplayHardwareScalingEnabled()
+{
+  return m_windowing->DisplayHardwareScalingEnabled();
+}
+
+void CRenderContext::UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo)
+{
+  return m_windowing->UpdateDisplayHardwareScaling(resInfo);
+}
+
 int CRenderContext::GetScreenWidth()
 {
   return m_graphicsContext.GetWidth();
@@ -221,7 +231,7 @@ RESOLUTION CRenderContext::GetVideoResolution()
   return m_graphicsContext.GetVideoResolution();
 }
 
-void CRenderContext::Clear(UTILS::Color color /* = 0 */)
+void CRenderContext::Clear(::UTILS::Color color /* = 0 */)
 {
   m_graphicsContext.Clear(color);
 }
@@ -236,7 +246,7 @@ void CRenderContext::SetRenderingResolution(const RESOLUTION_INFO& res, bool nee
   m_graphicsContext.SetRenderingResolution(res, needsScaling);
 }
 
-UTILS::Color CRenderContext::MergeAlpha(UTILS::Color color)
+::UTILS::Color CRenderContext::MergeAlpha(::UTILS::Color color)
 {
   return m_graphicsContext.MergeAlpha(color);
 }
