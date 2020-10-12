@@ -57,6 +57,10 @@ protected:
 
   virtual void OnSelect(int idx);
 
+  CFileItemPtr m_selectedItem;
+  std::unique_ptr<CFileItemList> m_vecList;
+  CGUIViewControl m_viewControl;
+
 private:
   bool m_bButtonEnabled;
   bool m_bButton2Enabled;
@@ -64,12 +68,9 @@ private:
   bool m_bButton2Pressed;
   std::string m_buttonLabel;
   std::string m_button2Label;
-  CFileItemPtr m_selectedItem;
   bool m_useDetails;
   bool m_multiSelection;
   bool m_focusToButton{};
 
   std::vector<int> m_selectedItems;
-  std::unique_ptr<CFileItemList> m_vecList;
-  CGUIViewControl m_viewControl;
 };
