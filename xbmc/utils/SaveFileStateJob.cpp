@@ -104,7 +104,8 @@ void CSaveFileState::DoWork(CFileItem& item,
                 CVariant data;
                 data["id"] = item.GetVideoInfoTag()->m_iDbId;
                 data["type"] = item.GetVideoInfoTag()->m_type;
-                CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+                CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                                   "OnUpdate", data);
               }
             }
           }
@@ -128,7 +129,8 @@ void CSaveFileState::DoWork(CFileItem& item,
               CVariant data;
               data["id"] = item.GetVideoInfoTag()->m_iDbId;
               data["type"] = item.GetVideoInfoTag()->m_type;
-              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                                 "OnUpdate", data);
             }
 
             updateListing = true;
@@ -195,7 +197,8 @@ void CSaveFileState::DoWork(CFileItem& item,
             CVariant data;
             data["id"] = item.GetMusicInfoTag()->GetDatabaseId();
             data["type"] = item.GetMusicInfoTag()->GetType();
-            CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
+            CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary,
+                                                               "OnUpdate", data);
           }
         }
       }

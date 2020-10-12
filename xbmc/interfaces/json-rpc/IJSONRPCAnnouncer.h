@@ -20,7 +20,11 @@ namespace JSONRPC
     ~IJSONRPCAnnouncer() override = default;
 
   protected:
-    static std::string AnnouncementToJSONRPC(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
+    static std::string AnnouncementToJSONRPC(ANNOUNCEMENT::AnnouncementFlag flag,
+                                             const std::string& sender,
+                                             const std::string& method,
+                                             const CVariant& data,
+                                             bool compactOutput)
     {
       CVariant root;
       root["jsonrpc"] = "2.0";

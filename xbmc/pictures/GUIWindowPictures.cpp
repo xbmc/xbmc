@@ -39,9 +39,6 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
-
-#define CONTROL_BTNVIEWASICONS      2
-#define CONTROL_BTNSORTBY           3
 #define CONTROL_BTNSORTASC          4
 #define CONTROL_LABELFILES         12
 
@@ -342,7 +339,8 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     CVariant param;
     param["player"]["speed"] = 1;
     param["player"]["playerid"] = PLAYLIST_PICTURE;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", pSlideShow->GetCurrentSlide(), param);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
+                                                       pSlideShow->GetCurrentSlide(), param);
   }
 
   m_slideShowStarted = true;

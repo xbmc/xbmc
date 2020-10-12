@@ -11,35 +11,37 @@
 
 #include "AirTunesServer.h"
 
-#include <map>
-#include <string>
-#include <utility>
-
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "CompileInfo.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
-#include "network/dacp/dacp.h"
 #include "network/Network.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
+#include "network/dacp/dacp.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "URL.h"
 #include "utils/EndianSwap.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <map>
+#include <string>
+#include <utility>
 
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
@@ -161,11 +163,15 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
   RefreshMetadata();
 }
 
-void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                               const std::string& sender,
+                               const std::string& message,
+                               const CVariant& data)
 {
-  if ( (flag & ANNOUNCEMENT::Player) && strcmp(sender, "xbmc") == 0)
+  if ((flag & ANNOUNCEMENT::Player) &&
+      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
   {
-    if ((strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0) && m_streamStarted)
+    if ((message == "OnPlay" || message == "OnResume") && m_streamStarted)
     {
       RefreshMetadata();
       RefreshCoverArt();
@@ -174,14 +180,14 @@ void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
         m_pDACP->Play();
     }
 
-    if (strcmp(message, "OnStop") == 0 && m_streamStarted)
+    if (message == "OnStop" && m_streamStarted)
     {
       CSingleLock lock(m_dacpLock);
       if (m_pDACP)
         m_pDACP->Stop();
     }
 
-    if (strcmp(message, "OnPause") == 0 && m_streamStarted)
+    if (message == "OnPause" && m_streamStarted)
     {
       CSingleLock lock(m_dacpLock);
       if (m_pDACP)

@@ -61,7 +61,10 @@ void CGUIWindowHome::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
-void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                              const std::string& sender,
+                              const std::string& message,
+                              const CVariant& data)
 {
   int ra_flag = 0;
 
@@ -74,11 +77,10 @@ void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
   if (data.isMember("transaction") && data["transaction"].asBoolean())
     return;
 
-  if (strcmp(message, "OnScanStarted") == 0 ||
-      strcmp(message, "OnCleanStarted") == 0)
+  if (message == "OnScanStarted" || message == "OnCleanStarted")
     return;
 
-  bool onUpdate = strcmp(message, "OnUpdate") == 0;
+  bool onUpdate = message == "OnUpdate";
   // always update Totals except on an OnUpdate with no playcount update
   if (!onUpdate || data.isMember("playcount"))
     ra_flag |= Totals;

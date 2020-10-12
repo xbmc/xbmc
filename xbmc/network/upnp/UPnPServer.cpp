@@ -39,6 +39,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "view/GUIViewState.h"
+#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -410,26 +411,30 @@ failure:
 /*----------------------------------------------------------------------
 |   CUPnPServer::Announce
 +---------------------------------------------------------------------*/
-void
-CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CUPnPServer::Announce(AnnouncementFlag flag,
+                           const std::string& sender,
+                           const std::string& message,
+                           const CVariant& data)
 {
     NPT_String path;
     int item_id;
     std::string item_type;
 
-    if (strcmp(sender, "xbmc"))
-        return;
+    if (sender != CAnnouncementManager::ANNOUNCEMENT_SENDER)
+      return;
 
-    if (strcmp(message, "OnUpdate") && strcmp(message, "OnRemove")
-        && strcmp(message, "OnScanStarted") && strcmp(message, "OnScanFinished"))
-        return;
+    if (message != "OnUpdate" && message != "OnRemove" && message != "OnScanStarted" &&
+        message != "OnScanFinished")
+      return;
 
     if (data.isNull()) {
-        if (!strcmp(message, "OnScanStarted") || !strcmp(message, "OnCleanStarted")) {
-            m_scanning = true;
+      if (message == "OnScanStarted" || message == "OnCleanStarted")
+      {
+        m_scanning = true;
         }
-        else if (!strcmp(message, "OnScanFinished") || !strcmp(message, "OnCleanFinished")) {
-            OnScanCompleted(flag);
+        else if (message == "OnScanFinished" || message == "OnCleanFinished")
+        {
+          OnScanCompleted(flag);
         }
     }
     else {
@@ -1085,7 +1090,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
               CVariant data;
               data["id"] = updated.GetVideoInfoTag()->m_iDbId;
               data["type"] = updated.GetVideoInfoTag()->m_type;
-              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                                 "OnUpdate", data);
             }
             updatelisting = true;
         }

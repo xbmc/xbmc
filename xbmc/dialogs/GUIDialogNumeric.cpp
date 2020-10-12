@@ -86,7 +86,7 @@ void CGUIDialogNumeric::OnInitWindow()
 
   data["value"] = GetOutputString();
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "OnInputRequested", data);
 }
 
 void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
@@ -94,7 +94,7 @@ void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
   // call base class
   CGUIDialog::OnDeinitWindow(nextWindowID);
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "OnInputFinished");
 }
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)

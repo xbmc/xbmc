@@ -203,16 +203,19 @@ CPVRManager::~CPVRManager()
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance destroyed");
 }
 
-void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender, const char* message, const CVariant& data)
+void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                           const std::string& sender,
+                           const std::string& message,
+                           const CVariant& data)
 {
   if (!IsStarted())
     return;
 
   if ((flag & (ANNOUNCEMENT::GUI)))
   {
-    if (strcmp(message, "OnScreensaverActivated") == 0)
+    if (message == "OnScreensaverActivated")
       m_addons->OnPowerSavingActivated();
-    else if (strcmp(message, "OnScreensaverDeactivated") == 0)
+    else if (message == "OnScreensaverDeactivated")
       m_addons->OnPowerSavingDeactivated();
   }
 }

@@ -90,7 +90,10 @@ public:
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
   // IAnnouncer IF
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char* sender, const char* message, const CVariant& data) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override;
 
   void onReceive(CJNIIntent intent) override;
   void onNewIntent(CJNIIntent intent) override;

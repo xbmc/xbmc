@@ -54,7 +54,10 @@ public:
   ~CDirectoryProvider() override;
 
   bool Update(bool forceRefresh) override;
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override;
   void Fetch(std::vector<CGUIListItemPtr> &items) override;
   void Reset() override;
   bool OnClick(const CGUIListItemPtr &item) override;

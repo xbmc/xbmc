@@ -599,7 +599,10 @@ void CWinEventsWin10::OnSystemMediaButtonPressed(const SystemMediaTransportContr
   }
 }
 
-void CWinEventsWin10::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char * sender, const char * message, const CVariant & data)
+void CWinEventsWin10::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                               const std::string& sender,
+                               const std::string& message,
+                               const CVariant& data)
 {
   if (flag & ANNOUNCEMENT::Player)
   {
@@ -610,22 +613,22 @@ void CWinEventsWin10::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     bool changed = false;
     MediaPlaybackStatus status = MediaPlaybackStatus::Changing;
 
-    if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0)
+    if (message == "OnPlay" || message == "OnResume")
     {
       changed = true;
       status = MediaPlaybackStatus::Playing;
     }
-    else if (strcmp(message, "OnStop") == 0)
+    else if (message == "OnStop")
     {
       changed = true;
       status = MediaPlaybackStatus::Stopped;
     }
-    else if (strcmp(message, "OnPause") == 0)
+    else if (message == "OnPause")
     {
       changed = true;
       status = MediaPlaybackStatus::Paused;
     }
-    else if (strcmp(message, "OnSpeedChanged") == 0)
+    else if (message == "OnSpeedChanged")
     {
       changed = true;
       status = speed != 0.0 ? MediaPlaybackStatus::Playing : MediaPlaybackStatus::Paused;

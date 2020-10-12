@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string>
+
 class CVariant;
 namespace ANNOUNCEMENT
 {
@@ -70,6 +72,9 @@ namespace ANNOUNCEMENT
   public:
     IAnnouncer() = default;
     virtual ~IAnnouncer() = default;
-    virtual void Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
+    virtual void Announce(AnnouncementFlag flag,
+                          const std::string& sender,
+                          const std::string& message,
+                          const CVariant& data) = 0;
   };
 }

@@ -222,7 +222,10 @@ int CTCPServer::GetCapabilities()
   return Response | Announcing;
 }
 
-void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                          const std::string& sender,
+                          const std::string& message,
+                          const CVariant& data)
 {
   std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonOutputCompact);
 

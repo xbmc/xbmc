@@ -9,29 +9,31 @@
  *  from Airplayer. https://github.com/PascalW/Airplayer
  */
 
-#include "network/Network.h"
 #include "AirPlayServer.h"
 
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "threads/SingleLock.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "FileItem.h"
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+#include "CompileInfo.h"
+#include "FileItem.h"
 #include "PlayListPlayer.h"
-#include "utils/Digest.h"
-#include "utils/Variant.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "input/Key.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/IPlayer.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "network/Network.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/Digest.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #ifdef HAS_ZEROCONF
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
@@ -150,13 +152,17 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 #define AUTH_REALM "AirPlay"
 #define AUTH_REQUIRED "WWW-Authenticate: Digest realm=\""  AUTH_REALM  "\", nonce=\"%s\"\r\n"
 
-void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                              const std::string& sender,
+                              const std::string& message,
+                              const CVariant& data)
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if ( (flag & ANNOUNCEMENT::Player) && strcmp(sender, "xbmc") == 0 && ServerInstance)
+  if ((flag & ANNOUNCEMENT::Player) &&
+      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
   {
-    if (strcmp(message, "OnStop") == 0)
+    if (message == "OnStop")
     {
       bool shouldRestoreVolume = true;
       if (data.isMember("player") && data["player"].isMember("playerid"))
@@ -167,11 +173,11 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
 
       ServerInstance->AnnounceToClients(EVENT_STOPPED);
     }
-    else if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0)
+    else if (message == "OnPlay" || message == "OnResume")
     {
       ServerInstance->AnnounceToClients(EVENT_PLAYING);
     }
-    else if (strcmp(message, "OnPause") == 0)
+    else if (message == "OnPause")
     {
       ServerInstance->AnnounceToClients(EVENT_PAUSED);
     }

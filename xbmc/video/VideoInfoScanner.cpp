@@ -105,7 +105,8 @@ namespace VIDEO
       m_bCanInterrupt = true;
 
       CLog::Log(LOGINFO, "VideoInfoScanner: Starting scan ..");
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                         "OnScanStarted");
 
       // Database operations should not be canceled
       // using Interrupt() while scanning as it could
@@ -165,7 +166,8 @@ namespace VIDEO
     }
 
     m_bRunning = false;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                       "OnScanFinished");
 
     if (m_handle)
       m_handle->MarkFinished();
@@ -1407,7 +1409,8 @@ namespace VIDEO
     data["added"] = true;
     if (m_bRunning)
       data["transaction"] = true;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
+                                                       itemCopy, data);
     return lResult;
   }
 
