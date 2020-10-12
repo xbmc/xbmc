@@ -118,8 +118,6 @@ bool CWinSystemGbm::InitWindowSystem()
 
 bool CWinSystemGbm::DestroyWindowSystem()
 {
-  m_GBM->DestroyDevice();
-
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
 
   m_libinput.reset();
@@ -184,15 +182,10 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
-    bo = m_GBM->LockFrontBuffer();
+    bo = m_GBM->GetDevice()->GetSurface()->LockFrontBuffer()->Get();
   }
 
   auto result = m_DRM->SetVideoMode(res, bo);
-
-  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
-  {
-    m_GBM->ReleaseBuffer();
-  }
 
   int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
@@ -234,15 +227,10 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
 
   if (rendered)
   {
-    bo = m_GBM->LockFrontBuffer();
+    bo = m_GBM->GetDevice()->GetSurface()->LockFrontBuffer()->Get();
   }
 
   m_DRM->FlipPage(bo, rendered, videoLayer);
-
-  if (rendered)
-  {
-    m_GBM->ReleaseBuffer();
-  }
 
   if (m_videoLayerBridge && !videoLayer)
   {
