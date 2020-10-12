@@ -111,7 +111,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
-    if (DislayHardwareScalingEnabled())
+    if (DisplayHardwareScalingEnabled())
     {
       SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
     }
@@ -260,7 +260,7 @@ bool CDRMAtomic::AddProperty(CDRMObject* object, const char* name, uint64_t valu
   return true;
 }
 
-bool CDRMAtomic::DislayHardwareScalingEnabled()
+bool CDRMAtomic::DisplayHardwareScalingEnabled()
 {
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 

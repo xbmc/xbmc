@@ -29,7 +29,7 @@ public:
   void DestroyDrm() override;
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
 
-  static bool DislayHardwareScalingEnabled();
+  static bool DisplayHardwareScalingEnabled();
 
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
