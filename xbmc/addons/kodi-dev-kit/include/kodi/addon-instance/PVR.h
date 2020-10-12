@@ -623,8 +623,8 @@ public:
   //============================================================================
   /// @brief Get the disk space reported by the backend (if supported).
   ///
-  /// @param[in] total The total disk space in bytes.
-  /// @param[in] used The used disk space in bytes.
+  /// @param[in] total The total disk space in KiB.
+  /// @param[in] used The used disk space in KiB.
   /// @return @ref PVR_ERROR_NO_ERROR if the drive space has been fetched
   ///         successfully.
   ///
@@ -635,8 +635,8 @@ public:
   /// ~~~~~~~~~~~~~{.cpp}
   /// PVR_ERROR CMyPVRClient::GetDriveSpace(uint64_t& total, uint64_t& used)
   /// {
-  ///   total = 10 * 1024 * 1024 * 1024; // To set complete size of drive in bytes
-  ///   used =  122324243; // To set the used amount
+  ///   total = 100 * 1024 * 1024; // To set complete size of drive in KiB (100GB)
+  ///   used =  12232424; // To set the used amount
   ///   return PVR_ERROR_NO_ERROR;
   /// }
   /// ~~~~~~~~~~~~~
