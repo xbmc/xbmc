@@ -25,7 +25,10 @@
 
 using namespace KODI::WINDOWING::GBM;
 
-const std::string CDRMAtomic::SETTING_VIDEOSCREEN_HW_SCALING_FILTER = "videoscreen.hwscalingfilter";
+namespace
+{
+
+const auto SETTING_VIDEOSCREEN_HW_SCALING_FILTER = "videoscreen.hwscalingfilter";
 
 enum drm_scaling_filter
 {
@@ -33,7 +36,7 @@ enum drm_scaling_filter
   DRM_SCALING_FILTER_NEAREST_NEIGHBOR,
 };
 
-uint32_t CDRMAtomic::GetScalingFilterType(const char* type)
+uint32_t GetScalingFilterType(const char* type)
 {
   if (!strcmp(type, "Nearest Neighbor"))
     return DRM_SCALING_FILTER_NEAREST_NEIGHBOR;
@@ -41,10 +44,10 @@ uint32_t CDRMAtomic::GetScalingFilterType(const char* type)
     return DRM_SCALING_FILTER_DEFAULT;
 }
 
-uint32_t CDRMAtomic::GetScalingFactor(uint32_t srcWidth,
-                                      uint32_t srcHeight,
-                                      uint32_t destWidth,
-                                      uint32_t destHeight)
+uint32_t GetScalingFactor(uint32_t srcWidth,
+                          uint32_t srcHeight,
+                          uint32_t destWidth,
+                          uint32_t destHeight)
 {
   uint32_t factor_W = destWidth / srcWidth;
   uint32_t factor_H = destHeight / srcHeight;
@@ -52,6 +55,8 @@ uint32_t CDRMAtomic::GetScalingFactor(uint32_t srcWidth,
     return (factor_W < factor_H) ? factor_W : factor_H;
   return factor_W;
 }
+
+} // namespace
 
 bool CDRMAtomic::SetScalingFilter(struct CDRMObject* object, const char* name, const char* type)
 {

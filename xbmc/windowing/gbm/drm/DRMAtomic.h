@@ -29,19 +29,12 @@ public:
   void DestroyDrm() override;
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
 
-  static bool DisplayHardwareScalingEnabled();
+  bool DisplayHardwareScalingEnabled();
 
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
-  uint32_t GetScalingFilterType(const char* type);
-  uint32_t GetScalingFactor(uint32_t srcWidth,
-                            uint32_t srcHeight,
-                            uint32_t destWidth,
-                            uint32_t destHeight);
   bool SetScalingFilter(struct CDRMObject* object, const char* name, const char* type);
-
-  static const std::string SETTING_VIDEOSCREEN_HW_SCALING_FILTER;
 
   bool m_need_modeset;
   bool m_active = true;
