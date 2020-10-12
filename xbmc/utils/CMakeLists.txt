@@ -184,18 +184,16 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
   set_source_files_properties(Mime.cpp PROPERTIES COMPILE_FLAGS -O0)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
+if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES GLUtils.cpp)
   list(APPEND HEADERS GLUtils.h)
 endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
   list(APPEND SOURCES BufferObject.cpp
-                      BufferObjectFactory.cpp
-                      EGLImage.cpp)
+                      BufferObjectFactory.cpp)
   list(APPEND HEADERS BufferObject.h
-                      BufferObjectFactory.h
-                      EGLImage.h)
+                      BufferObjectFactory.h)
 
   if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
     list(APPEND SOURCES DumbBufferObject.cpp)
@@ -212,9 +210,14 @@ if(CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL wayland)
     list(APPEND HEADERS DMAHeapBufferObject.h)
   endif()
 
-  if(GBM_HAS_BO_MAP)
+  if(GBM_HAS_BO_MAP AND CORE_PLATFORM_NAME_LC STREQUAL gbm)
     list(APPEND SOURCES GBMBufferObject.cpp)
     list(APPEND HEADERS GBMBufferObject.h)
+  endif()
+
+  if(EGL_FOUND)
+    list(APPEND SOURCES EGLImage.cpp)
+    list(APPEND HEADERS EGLImage.h)
   endif()
 endif()
 

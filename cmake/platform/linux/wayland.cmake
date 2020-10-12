@@ -1,13 +1,13 @@
-set(PLATFORM_REQUIRED_DEPS EGL WaylandProtocols>=1.7 Waylandpp>=0.2.2 LibDRM Xkbcommon>=0.4.1)
+set(PLATFORM_REQUIRED_DEPS WaylandProtocols>=1.7 Waylandpp>=0.2.2 LibDRM Xkbcommon>=0.4.1)
 set(PLATFORM_OPTIONAL_DEPS VAAPI)
 
 set(WAYLAND_RENDER_SYSTEM "" CACHE STRING "Render system to use with Wayland: \"gl\" or \"gles\"")
 
 if(WAYLAND_RENDER_SYSTEM STREQUAL "gl")
-  list(APPEND PLATFORM_REQUIRED_DEPS OpenGl)
+  list(APPEND PLATFORM_REQUIRED_DEPS OpenGl EGL)
   set(APP_RENDER_SYSTEM gl)
 elseif(WAYLAND_RENDER_SYSTEM STREQUAL "gles")
-  list(APPEND PLATFORM_REQUIRED_DEPS OpenGLES)
+  list(APPEND PLATFORM_REQUIRED_DEPS OpenGLES EGL)
   set(APP_RENDER_SYSTEM gles)
 else()
   message(SEND_ERROR "You need to decide whether you want to use GL- or GLES-based rendering in combination with the Wayland windowing system. Please set WAYLAND_RENDER_SYSTEM to either \"gl\" or \"gles\". For normal desktop systems, you will usually want to use \"gl\".")
