@@ -116,11 +116,12 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
-    if (DisplayHardwareScalingEnabled())
-    {
-      SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
-    }
-    else
+    //! @todo: disabled until upstream kernel changes are merged
+    // if (DisplayHardwareScalingEnabled())
+    // {
+    //   SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
+    // }
+    // else
     {
       AddProperty(m_gui_plane, "CRTC_X", 0);
       AddProperty(m_gui_plane, "CRTC_Y", 0);
@@ -219,12 +220,13 @@ bool CDRMAtomic::InitDrm()
 
   CLog::Log(LOGDEBUG, "CDRMAtomic::{} - initialized atomic DRM", __FUNCTION__);
 
-  if (m_gui_plane->SupportsProperty("SCALING_FILTER"))
-  {
-    const std::shared_ptr<CSettings> settings =
-        CServiceBroker::GetSettingsComponent()->GetSettings();
-    settings->GetSetting(SETTING_VIDEOSCREEN_HW_SCALING_FILTER)->SetVisible(true);
-  }
+  //! @todo: disabled until upstream kernel changes are merged
+  // if (m_gui_plane->SupportsProperty("SCALING_FILTER"))
+  // {
+  //   const std::shared_ptr<CSettings> settings =
+  //       CServiceBroker::GetSettingsComponent()->GetSettings();
+  //   settings->GetSetting(SETTING_VIDEOSCREEN_HW_SCALING_FILTER)->SetVisible(true);
+  // }
 
   return true;
 }
