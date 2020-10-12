@@ -1515,6 +1515,11 @@ namespace VIDEO
 
   void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, const std::string &actorArtPath)
   {
+    int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
+    if (artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
+      return;
+
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
@@ -1532,8 +1537,6 @@ namespace VIDEO
       for (std::string artType : movieSetArtTypes)
         artTypes.push_back("set." + artType);
     }
-    int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->
-      GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
     bool addAll = artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL;
     bool exactName = artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_BASIC;
     // find local art

@@ -362,13 +362,20 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.empty())
         item->SetArt("thumb", it->thumb);
-      else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      { // backward compatibility
-        std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
-        if (!thumb.empty())
-        {
-          item->SetArt("thumb", thumb);
-          CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+      else
+      {
+        const std::shared_ptr<CSettings> settings =
+            CServiceBroker::GetSettingsComponent()->GetSettings();
+        if (settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL) !=
+                CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE &&
+            settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
+        { // backward compatibility
+          std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
+          if (!thumb.empty())
+          {
+            item->SetArt("thumb", thumb);
+            CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+          }
         }
       }
       item->SetArt("icon", "DefaultActor.png");
