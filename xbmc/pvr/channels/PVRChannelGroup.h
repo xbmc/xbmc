@@ -462,18 +462,12 @@ namespace PVR
     void SetPosition(int iPosition);
 
     /*!
-     * @brief Check, whether channel group member data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
+     * @brief Check, whether data for a given pvr client are currently valid. For instance, data
+     * can be invalid because the client's backend was offline when data was last queried.
      * @param iClientId The id of the client.
-     * @return True, if data is currently missing, false otherwise.
+     * @return True, if data is currently valid, false otherwise.
      */
-    bool IsMissingChannelGroupMembersFromClient(int iClientId) const;
-
-    /*!
-     * @brief Check, whether channel data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
-     * @param iClientId The id of the client.
-     * @return True, if data is currently missing, false otherwise.
-     */
-    bool IsMissingChannelsFromClient(int iClientId) const;
+    bool HasValidDataFromClient(int iClientId) const;
 
     /*!
      * @brief For each channel and its corresponding epg channel data update the order from the group members
@@ -531,13 +525,6 @@ namespace PVR
     virtual bool AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers);
 
     /*!
-     * @brief Check whether a channel should be removed from this group.
-     * @param channel The channel to check.
-     * @return True if channel should be removed, false otherwise.
-     */
-    virtual bool ShouldRemoveChannel(const std::shared_ptr<CPVRChannel>& channel);
-
-    /*!
      * @brief Remove deleted channels from this group.
      * @param channels The new channels to use for this group.
      * @return The removed channels.
@@ -584,8 +571,7 @@ namespace PVR
     std::vector<std::shared_ptr<PVRChannelGroupMember>> m_sortedMembers; /*!< members sorted by channel number */
     std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> m_members; /*!< members with key clientid+uniqueid */
     mutable CCriticalSection m_critSection;
-    std::vector<int> m_failedClientsForChannels;
-    std::vector<int> m_failedClientsForChannelGroupMembers;
+    std::vector<int> m_failedClients;
     CEventSource<PVREvent> m_events;
     bool m_bIsSelectedGroup = false; /*!< Whether or not this group is currently selected */
     bool m_bStartGroupChannelNumbersFromOne = false; /*!< true if we start group channel numbers from one when not using backend channel numbers, false otherwise */
