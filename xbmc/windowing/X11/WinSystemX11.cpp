@@ -63,6 +63,13 @@ CWinSystemX11::~CWinSystemX11() = default;
 
 bool CWinSystemX11::InitWindowSystem()
 {
+  const char* env = getenv("DISPLAY");
+  if (!env)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemX11::{} - DISPLAY env not set", __FUNCTION__);
+    return false;
+  }
+
   if ((m_dpy = XOpenDisplay(NULL)))
   {
     bool ret = CWinSystemBase::InitWindowSystem();
