@@ -48,7 +48,14 @@ public:
   void UploadImage(GLenum textureTarget);
   void DestroyImage();
 
+#if defined(EGL_EXT_image_dma_buf_import_modifiers)
+  bool SupportsFormatAndModifier(uint32_t format, uint64_t modifier);
+
 private:
+  bool SupportsFormat(uint32_t format);
+#else
+private:
+#endif
   EGLDisplay m_display{nullptr};
   EGLImageKHR m_image{nullptr};
 
