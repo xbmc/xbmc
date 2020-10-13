@@ -17,6 +17,13 @@
 
 #include <X11/Xlib.h>
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CWinEventsX11 : public IWinEvents
 {
 public:
@@ -47,3 +54,7 @@ protected:
   bool m_xrrEventPending;
   CWinSystemX11& m_winSystem;
 };
+
+}
+}
+}

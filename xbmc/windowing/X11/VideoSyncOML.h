@@ -13,6 +13,14 @@
 
 #include <atomic>
 
+
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CWinSystemX11GLContext;
 
 class CVideoSyncOML : public CVideoSync, IDispResource
@@ -31,3 +39,6 @@ private:
   CWinSystemX11GLContext &m_winSystem;
 };
 
+}
+}
+}

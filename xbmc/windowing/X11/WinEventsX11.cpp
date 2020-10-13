@@ -28,6 +28,7 @@
 #include <X11/keysymdef.h>
 
 using namespace KODI::MESSAGING;
+using namespace KODI::WINDOWING::X11;
 
 static uint32_t SymMappingsX11[][2] =
 {

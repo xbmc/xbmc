@@ -38,7 +38,7 @@
 #include "windowing/WinSystem.h"
 
 #if defined(HAVE_X11)
-#define WIN_SYSTEM_CLASS CWinSystemX11
+#define WIN_SYSTEM_CLASS KODI::WINDOWING::X11::CWinSystemX11
 #include "windowing/X11/WinSystemX11.h"
 #elif defined(TARGET_DARWIN_OSX)
 #define WIN_SYSTEM_CLASS CWinSystemOSX

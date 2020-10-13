@@ -18,6 +18,13 @@
 
 class CGLContextEGL;
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace X11
+{
+
 class CWinSystemX11GLESContext : public CWinSystemX11, public CRenderSystemGLES
 {
 public:
@@ -52,3 +59,7 @@ protected:
 
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };
+
+} // namespace X11
+} // namespace WINDOWING
+} // namespace KODI
