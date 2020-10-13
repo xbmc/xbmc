@@ -120,6 +120,13 @@ namespace PVR
     bool AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers) override;
 
     /*!
+     * @brief Check whether a channel should be removed from this group.
+     * @param channel The channel to check.
+     * @return True if channel should be removed, false otherwise.
+     */
+    bool ShouldRemoveChannel(const std::shared_ptr<CPVRChannel>& channel) override;
+
+    /*!
      * @brief Remove deleted channels from this group.
      * @param channels The new channels to use for this group.
      * @return The removed channels.

@@ -523,12 +523,19 @@ namespace PVR
     virtual bool UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove);
 
     /*!
-     * @brief Add new channels to this group; updtae data.
+     * @brief Add new channels to this group; update data.
      * @param channels The new channels to use for this group.
      * @param bUseBackendChannelNumbers True, if channel numbers from backends shall be used.
      * @return True if everything went well, false otherwise.
      */
     virtual bool AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers);
+
+    /*!
+     * @brief Check whether a channel should be removed from this group.
+     * @param channel The channel to check.
+     * @return True if channel should be removed, false otherwise.
+     */
+    virtual bool ShouldRemoveChannel(const std::shared_ptr<CPVRChannel>& channel);
 
     /*!
      * @brief Remove deleted channels from this group.

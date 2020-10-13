@@ -598,6 +598,11 @@ bool CPVRChannelGroup::UpdateChannelNumbersFromAllChannelsGroup()
   return bChanged;
 }
 
+bool CPVRChannelGroup::ShouldRemoveChannel(const std::shared_ptr<CPVRChannel>& channel)
+{
+  return !IsMissingChannelGroupMembersFromClient(channel->ClientID());
+}
+
 std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup& channels)
 {
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels;
@@ -607,11 +612,11 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroup::RemoveDeletedChannel
   for (std::vector<std::shared_ptr<PVRChannelGroupMember>>::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
     const std::shared_ptr<CPVRChannel> channel = (*it)->channel;
-    if (channels.m_members.find(channel->StorageId()) == channels.m_members.end())
+    if (channels.m_members.find(channel->StorageId()) == channels.m_members.end() &&
+        ShouldRemoveChannel(channel))
     {
-      /* channel was not found */
-      CLog::Log(LOGINFO, "Deleted {} channel '{}' from group '{}'", IsRadio() ? "radio" : "TV",
-                channel->ChannelName(), GroupName());
+      CLog::Log(LOGINFO, "Removed stale {} channel '{}' from group '{}'",
+                IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
 
       removedChannels.emplace_back(channel);
 

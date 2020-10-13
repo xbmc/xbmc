@@ -277,21 +277,19 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup& chan
   return bReturn;
 }
 
+bool CPVRChannelGroupInternal::ShouldRemoveChannel(const std::shared_ptr<CPVRChannel>& channel)
+{
+  return !IsMissingChannelsFromClient(channel->ClientID());
+}
+
 std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDeletedChannels(const CPVRChannelGroup& channels)
 {
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels = CPVRChannelGroup::RemoveDeletedChannels(channels);
 
-  if (!removedChannels.empty())
+  for (const auto& channel : removedChannels)
   {
-    for (const auto& channel : removedChannels)
-    {
-      /* do we have valid data from channel's client? */
-      if (!IsMissingChannelsFromClient(channel->ClientID()))
-      {
-        /* since channel was not found in the internal group, it was deleted from the backend */
-        channel->Delete();
-      }
-    }
+    // since channel was not found in the internal group, it was deleted from the backend
+    channel->Delete();
   }
 
   return removedChannels;
