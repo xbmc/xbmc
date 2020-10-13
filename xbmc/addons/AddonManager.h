@@ -26,6 +26,12 @@ namespace ADDON
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
+  enum class AddonCheckType
+  {
+    OUTDATED_ADDONS,
+    AVAILABLE_UPDATES
+  };
+
   struct CAddonWithUpdate;
 
   /**
@@ -507,7 +513,7 @@ namespace ADDON
      * \return vector filled with either available updates or outdated addons
      */
     std::vector<std::shared_ptr<IAddon>> GetAvailableUpdatesOrOutdatedAddons(
-        bool returnOutdatedAddons) const;
+        AddonCheckType addonCheckType) const;
 
     bool GetAddonsInternal(const TYPE& type,
                            VECADDONS& addons,

@@ -175,32 +175,20 @@ void CAddonRepos::AddAddonIfLatest(
   }
 }
 
-void CAddonRepos::BuildUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                  std::vector<std::shared_ptr<IAddon>>& updates) const
-{
-  BuildUpdateOrOutdatedList(installed, updates, false);
-}
-
-void CAddonRepos::BuildOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                    std::vector<std::shared_ptr<IAddon>>& outdated) const
-{
-  BuildUpdateOrOutdatedList(installed, outdated, true);
-}
-
 void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
                                             std::vector<std::shared_ptr<IAddon>>& result,
-                                            bool returnOutdatedAddons) const
+                                            AddonCheckType addonCheckType) const
 {
   std::shared_ptr<IAddon> update;
 
   CLog::Log(LOGDEBUG, "CAddonRepos::{}: Building {} list from installed add-ons", __func__,
-            returnOutdatedAddons ? "outdated" : "update");
+            addonCheckType == AddonCheckType::OUTDATED_ADDONS ? "outdated" : "update");
 
   for (const auto& addon : installed)
   {
     if (DoAddonUpdateCheck(addon, update))
     {
-      result.emplace_back(returnOutdatedAddons ? addon : update);
+      result.emplace_back(addonCheckType == AddonCheckType::OUTDATED_ADDONS ? addon : update);
     }
   }
 }

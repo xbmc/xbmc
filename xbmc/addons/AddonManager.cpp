@@ -212,7 +212,7 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdates() const
 {
   std::vector<std::shared_ptr<IAddon>> availableUpdates =
-      GetAvailableUpdatesOrOutdatedAddons(false);
+      GetAvailableUpdatesOrOutdatedAddons(AddonCheckType::AVAILABLE_UPDATES);
 
   std::lock_guard<std::mutex> lock(m_lastAvailableUpdatesCountMutex);
   m_lastAvailableUpdatesCountAsString = std::to_string(availableUpdates.size());
@@ -228,11 +228,11 @@ const std::string& CAddonMgr::GetLastAvailableUpdatesCountAsString() const
 
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetOutdatedAddons() const
 {
-  return GetAvailableUpdatesOrOutdatedAddons(true);
+  return GetAvailableUpdatesOrOutdatedAddons(AddonCheckType::OUTDATED_ADDONS);
 }
 
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAddons(
-    bool returnOutdatedAddons) const
+    AddonCheckType addonCheckType) const
 {
   CSingleLock lock(m_critSection);
   auto start = XbmcThreads::SystemClockMillis();
@@ -245,14 +245,7 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
 
   GetAddonsForUpdate(installed);
 
-  if (returnOutdatedAddons)
-  {
-    addonRepos.BuildOutdatedList(installed, result);
-  }
-  else
-  {
-    addonRepos.BuildUpdateList(installed, result);
-  }
+  addonRepos.BuildUpdateOrOutdatedList(installed, result, addonCheckType);
 
   CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesOrOutdatedAddons took %i ms",
             XbmcThreads::SystemClockMillis() - start);
