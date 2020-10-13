@@ -42,13 +42,13 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
 
   bool general, deepColor;
-  m_vaapiProxy.reset(::WAYLAND::VaapiProxyCreate());
-  ::WAYLAND::VaapiProxyConfig(m_vaapiProxy.get(),GetConnection()->GetDisplay(),
-                              m_eglContext.GetEGLDisplay());
-  ::WAYLAND::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+  m_vaapiProxy.reset(WAYLAND::VaapiProxyCreate());
+  WAYLAND::VaapiProxyConfig(m_vaapiProxy.get(), GetConnection()->GetDisplay(),
+                            m_eglContext.GetEGLDisplay());
+  WAYLAND::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
   if (general)
   {
-    ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
+    WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
 
   CBufferObjectFactory::ClearBufferObjects();
@@ -117,5 +117,5 @@ void CWinSystemWaylandEGLContextGL::PresentRenderImpl(bool rendered)
 
 void CWinSystemWaylandEGLContextGL::delete_CVaapiProxy::operator()(CVaapiProxy *p) const
 {
-  ::WAYLAND::VaapiProxyDelete(p);
+  WAYLAND::VaapiProxyDelete(p);
 }

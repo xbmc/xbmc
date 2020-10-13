@@ -13,14 +13,20 @@
 // VAAPI
 //-----------------------------------------------------------------------------
 
-class CVaapiProxy;
-
+namespace KODI
+{
+namespace WINDOWING
+{
 namespace WAYLAND
 {
+class CVaapiProxy;
+
 CVaapiProxy* VaapiProxyCreate();
 void VaapiProxyDelete(CVaapiProxy *proxy);
 void VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy);
 void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
 void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
-}
 
+} // namespace WAYLAND
+} // namespace WINDOWING
+} // namespace KODI
