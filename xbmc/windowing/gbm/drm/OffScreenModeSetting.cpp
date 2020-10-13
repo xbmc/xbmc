@@ -12,14 +12,19 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+namespace
+{
+constexpr int DISPLAY_WIDTH = 1280;
+constexpr int DISPLAY_HEIGHT = 720;
+constexpr float DISPLAY_REFRESH = 50.0f;
+} // namespace
+
 bool COffScreenModeSetting::InitDrm()
 {
   if (!CDRMUtils::OpenDrm(false))
-  {
     return false;
-  }
 
-  CLog::Log(LOGDEBUG, "COffScreenModeSetting::%s - initialized offscreen DRM", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "COffScreenModeSetting::{} - initialized offscreen DRM", __FUNCTION__);
   return true;
 }
 

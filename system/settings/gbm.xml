@@ -48,6 +48,7 @@
           <visible>false</visible>
         </setting>
         <setting id="videoscreen.hwscalingfilter" type="boolean" label="39151" help="39152">
+          <visible>false</visible>
           <level>3</level>
           <default>true</default>
           <control type="toggle" />

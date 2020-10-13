@@ -21,8 +21,8 @@
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-#include "windowing/gbm/DRMAtomic.h"
 #include "windowing/gbm/WinSystemGbm.h"
+#include "windowing/gbm/drm/DRMAtomic.h"
 
 using namespace KODI::WINDOWING::GBM;
 
@@ -82,7 +82,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 void CRendererDRMPRIME::Register()
 {
   CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-  if (winSystem && winSystem->GetDrm()->GetVideoPlane()->plane &&
+  if (winSystem && winSystem->GetDrm()->GetVideoPlane() &&
       std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
   {
     CServiceBroker::GetSettingsComponent()
@@ -209,7 +209,8 @@ void CRendererDRMPRIME::RenderUpdate(
     m_videoLayerBridge =
         std::dynamic_pointer_cast<CVideoLayerBridgeDRMPRIME>(winSystem->GetVideoLayerBridge());
     if (!m_videoLayerBridge)
-      m_videoLayerBridge = std::make_shared<CVideoLayerBridgeDRMPRIME>(winSystem->GetDrm());
+      m_videoLayerBridge = std::make_shared<CVideoLayerBridgeDRMPRIME>(
+          std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()));
     winSystem->RegisterVideoLayerBridge(m_videoLayerBridge);
   }
 

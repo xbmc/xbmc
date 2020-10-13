@@ -32,33 +32,20 @@ bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)
 {
   struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
 
-  auto ret = drmModeSetCrtc(m_fd,
-                            m_crtc->crtc->crtc_id,
-                            drm_fb->fb_id,
-                            0,
-                            0,
-                            &m_connector->connector->connector_id,
-                            1,
-                            m_mode);
+  auto ret = drmModeSetCrtc(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, 0, 0,
+                            m_connector->GetConnectorId(), 1, m_mode);
 
   if(ret < 0)
   {
-    CLog::Log(LOGERROR,
-              "CDRMLegacy::%s - failed to set crtc mode: %dx%d%s @ %d Hz",
-              __FUNCTION__,
-              m_mode->hdisplay,
-              m_mode->vdisplay,
-              m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
-              m_mode->vrefresh);
+    CLog::Log(LOGERROR, "CDRMLegacy::{} - failed to set crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
+              m_mode->hdisplay, m_mode->vdisplay,
+              m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
 
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CDRMLegacy::%s - set crtc mode: %dx%d%s @ %d Hz",
-            __FUNCTION__,
-            m_mode->hdisplay,
-            m_mode->vdisplay,
-            m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
+  CLog::Log(LOGDEBUG, "CDRMLegacy::{} - set crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
+            m_mode->hdisplay, m_mode->vdisplay, m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
             m_mode->vrefresh);
 
   return true;
@@ -75,10 +62,8 @@ void CDRMLegacy::PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
 
 bool CDRMLegacy::WaitingForFlip()
 {
-  if(!flip_happening)
-  {
+  if (!flip_happening)
     return false;
-  }
 
   struct pollfd drm_fds =
   {
@@ -102,19 +87,13 @@ bool CDRMLegacy::WaitingForFlip()
     auto ret = poll(&drm_fds, 1, -1);
 
     if(ret < 0)
-    {
       return true;
-    }
 
     if(drm_fds.revents & (POLLHUP | POLLERR))
-    {
       return true;
-    }
 
     if(drm_fds.revents & POLLIN)
-    {
       drmHandleEvent(m_fd, &drm_evctx);
-    }
   }
 
   return false;
@@ -124,15 +103,12 @@ bool CDRMLegacy::QueueFlip(struct gbm_bo *bo)
 {
   struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
 
-  auto ret = drmModePageFlip(m_fd,
-                             m_crtc->crtc->crtc_id,
-                             drm_fb->fb_id,
-                             DRM_MODE_PAGE_FLIP_EVENT,
+  auto ret = drmModePageFlip(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, DRM_MODE_PAGE_FLIP_EVENT,
                              &flip_happening);
 
   if(ret)
   {
-    CLog::Log(LOGDEBUG, "CDRMLegacy::%s - failed to queue DRM page flip", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to queue DRM page flip", __FUNCTION__);
     return false;
   }
 
@@ -151,39 +127,20 @@ void CDRMLegacy::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 bool CDRMLegacy::InitDrm()
 {
   if (!CDRMUtils::OpenDrm(true))
-  {
     return false;
-  }
 
   if (!CDRMUtils::InitDrm())
-  {
     return false;
-  }
 
-  CLog::Log(LOGDEBUG, "CDRMLegacy::%s - initialized legacy DRM", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CDRMLegacy::{} - initialized legacy DRM", __FUNCTION__);
   return true;
 }
 
 bool CDRMLegacy::SetActive(bool active)
 {
-  if (!SetProperty(m_connector, "DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
+  if (!m_connector->SetProperty("DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
   {
-    CLog::Log(LOGDEBUG, "CDRMLegacy::%s - failed to set DPMS property");
-    return false;
-  }
-
-  return true;
-}
-
-bool CDRMLegacy::SetProperty(struct drm_object *object, const char *name, uint64_t value)
-{
-  uint32_t property_id = this->GetPropertyId(object, name);
-  if (!property_id)
-    return false;
-
-  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMLegacy::%s - could not set property %s", __FUNCTION__, name);
+    CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to set DPMS property");
     return false;
   }
 
