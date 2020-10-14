@@ -32,11 +32,11 @@ public:
   uint32_t GetPlaneId() const { return m_plane->plane_id; }
   uint32_t GetPossibleCrtcs() const { return m_plane->possible_crtcs; }
 
-  bool FindModifiers();
+  void FindModifiers();
 
   void SetFormat(const uint32_t newFormat) { m_format = newFormat; }
   uint32_t GetFormat() const { return m_format; }
-  std::vector<uint64_t>* GetModifiersForFormat(uint32_t format) { return &m_modifiers_map[format]; }
+  std::vector<uint64_t>& GetModifiersForFormat(uint32_t format) { return m_modifiers_map[format]; }
 
   bool SupportsFormat(uint32_t format);
   bool SupportsFormatAndModifier(uint32_t format, uint64_t modifier);

@@ -75,7 +75,7 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   return true;
 }
 
-bool CDRMPlane::FindModifiers()
+void CDRMPlane::FindModifiers()
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [](auto& prop) {
     return StringUtils::EqualsNoCase(prop->name, "IN_FORMATS");
@@ -86,11 +86,11 @@ bool CDRMPlane::FindModifiers()
     blob_id = m_props->prop_values[std::distance(m_propsInfo.begin(), property)];
 
   if (blob_id == 0)
-    return false;
+    return;
 
   drmModePropertyBlobPtr blob = drmModeGetPropertyBlob(m_fd, blob_id);
   if (!blob)
-    return false;
+    return;
 
   drm_format_modifier_blob* header = static_cast<drm_format_modifier_blob*>(blob->data);
   uint32_t* formats =
@@ -112,6 +112,4 @@ bool CDRMPlane::FindModifiers()
 
   if (blob)
     drmModeFreePropertyBlob(blob);
-
-  return true;
 }

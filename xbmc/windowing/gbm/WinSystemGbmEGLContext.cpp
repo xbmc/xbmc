@@ -68,10 +68,15 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
-  std::vector<uint64_t>* modifiers = m_DRM->GetGuiPlane()->GetModifiersForFormat(format);
 
-  if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(),
-                                         modifiers->size()))
+  std::vector<uint64_t> modifiers;
+
+  auto plane = m_DRM->GetGuiPlane();
+  if (plane)
+    modifiers = plane->GetModifiersForFormat(format);
+
+  if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
+                                         modifiers.size()))
   {
     CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
     return false;

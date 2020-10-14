@@ -423,18 +423,9 @@ bool CDRMUtils::InitDrm()
   }
 
   for (uint32_t i = 0; i < planeResources->count_planes; i++)
-    m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
-
-  for (auto& plane : m_planes)
   {
-    if (!plane->FindModifiers())
-    {
-      if (plane->SupportsFormat(DRM_FORMAT_ARGB8888))
-        plane->GetModifiersForFormat(DRM_FORMAT_ARGB8888)->emplace_back(DRM_FORMAT_MOD_LINEAR);
-
-      if (plane->SupportsFormat(DRM_FORMAT_XRGB8888))
-        plane->GetModifiersForFormat(DRM_FORMAT_XRGB8888)->emplace_back(DRM_FORMAT_MOD_LINEAR);
-    }
+    m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
+    m_planes[i]->FindModifiers();
   }
 
   drmModeFreePlaneResources(planeResources);
