@@ -41,6 +41,7 @@ private:
   void UpdateControls();
 
   void OnUpdate();
+  void OnSelectVersion();
   void OnInstall();
   void OnUninstall();
   void OnEnableDisable();

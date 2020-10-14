@@ -811,7 +811,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
 
     std::function<bool(bool)> CheckOutdatedOrUpdate = [&](bool checkOutdated) -> bool {
-      const auto& mapEntry = addonsWithUpdate.find(addon->ID());
+      auto mapEntry = addonsWithUpdate.find(addon->ID());
       if (mapEntry != addonsWithUpdate.end())
       {
         const std::shared_ptr<IAddon>& checkedObject =
@@ -826,12 +826,20 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     bool isUpdate = CheckOutdatedOrUpdate(false); // check if it's an available update
     bool hasUpdate = CheckOutdatedOrUpdate(true); // check if it's an outdated addon
 
+    std::string validUpdateVersion;
+    if (hasUpdate)
+    {
+      auto mapEntry = addonsWithUpdate.find(addon->ID());
+      validUpdateVersion = mapEntry->second.m_update->Version().asString();
+    }
+
     bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon, CheckAddonPath::NO);
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
     pItem->SetProperty("Addon.IsUpdate", isUpdate);
+    pItem->SetProperty("Addon.ValidUpdateVersion", validUpdateVersion);
     pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
     pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
 

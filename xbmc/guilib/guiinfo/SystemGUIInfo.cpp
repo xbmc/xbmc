@@ -305,6 +305,10 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_RENDER_VERSION:
       value = CServiceBroker::GetRenderSystem()->GetRenderVersionString();
       return true;
+    case SYSTEM_ADDON_UPDATE_COUNT:
+      value =
+          StringUtils::Format("{0}", CServiceBroker::GetAddonMgr().GetAvailableUpdates().size());
+      return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // NETWORK_*

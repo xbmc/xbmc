@@ -13,17 +13,8 @@
 		<value></value>
 	</variable>
 	<variable name="AddonCountLabel">
-		<value condition="Integer.IsGreater(Container(8000).NumItems,10)">&gt;9</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,9)">9</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,8)">8</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,7)">7</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,6)">6</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,5)">5</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,4)">4</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,3)">3</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,2)">2</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,0)">1</value>
-		<value>[COLOR grey]0[/COLOR]</value>
+		<value condition="Integer.IsGreater(System.AddonUpdateCount,0)">$INFO[System.AddonUpdateCount]</value>
+		<value>$INFO[System.AddonUpdateCount,[COLOR grey],[/COLOR]]</value>
 	</variable>
 	<variable name="MusicInfoTextboxVar">
 		<value condition="String.IsEqual(ListItem.DbType,song)">$INFO[ListItem.Comment,[B]$LOCALIZE[569][/B][CR][COLOR=white],[/COLOR]]</value>

@@ -698,7 +698,8 @@ bool CAddonInstallJob::DoWork()
   }
   else
   {
-    if (!m_addon->Origin().empty()) // we only do pinning/unpinning for non-zip installs
+    // we only do pinning/unpinning for non-zip installs and not system origin
+    if (!m_addon->Origin().empty() && m_addon->Origin() != ORIGIN_SYSTEM)
     {
       std::vector<std::shared_ptr<IAddon>> compatibleVersions;
 

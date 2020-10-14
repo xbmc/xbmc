@@ -1697,6 +1697,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @param id - the addon id
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.AddonUpdateCount`</b>,
+///                  \anchor System_AddonUpdateCount
+///                  _string_,
+///     @return The number of available addon updates.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link  System_AddonUpdateCount `
+///     System.AddonUpdateCount`\endlink <p>
+///   }
 ///   \table_row3{   <b>`System.IdleTime(time)`</b>,
 ///                  \anchor System_IdleTime
 ///                  _boolean_,
@@ -1790,6 +1798,7 @@ const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"hascms", SYSTEM_HAS_CMS},
                                  {"privacypolicy", SYSTEM_PRIVACY_POLICY},
                                  {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
+                                 {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
                                  {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE}};
 
 /// \page modules__infolabels_boolean_conditions
@@ -4486,6 +4495,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return **True** if this add-on is a valid update of an installed outdated add-on.
 ///     <p><hr>
 ///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsUpdate `ListItem.Property(Addon.IsUpdate)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.ValidUpdateVersion)`</b>,
+///                  \anchor ListItem_Property_ValidUpdateVersion
+///                  _string_,
+///     @return The version string of a valid update for the addon. Empty string if there is no valid update available.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_Property_ValidUpdateVersion `ListItem.Property(Addon.ValidUpdateVersion)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Label`</b>,
