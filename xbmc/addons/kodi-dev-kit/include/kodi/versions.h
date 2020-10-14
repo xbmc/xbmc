@@ -104,8 +104,8 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.3.3"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "2.3.1"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.3.4"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "2.3.4"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "addon-instance/Inputstream.h"
 
@@ -158,8 +158,8 @@
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h" \
                                                       "c-api/addon-instance/visualization.h"
 
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "1.0.3"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "1.0.2"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "1.0.4"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "1.0.4"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID      "kodi.binary.instance.videocodec"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "addon-instance/VideoCodec.h" \
                                                       "StreamCodec.h" \

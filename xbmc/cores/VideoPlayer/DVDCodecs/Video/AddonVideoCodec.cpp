@@ -15,8 +15,6 @@
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/log.h"
 
-using namespace kodi::addon;
-
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
                                    ADDON::AddonInfoPtr& addonInfo,
                                    KODI_HANDLE parentInstance)
@@ -25,11 +23,14 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
     m_codecFlags(0),
     m_displayAspect(0.0f)
 {
-  m_struct = { { 0 } };
-  m_struct.toKodi.kodiInstance = this;
-  m_struct.toKodi.get_frame_buffer = get_frame_buffer;
-  m_struct.toKodi.release_frame_buffer = release_frame_buffer;
-  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon.open)
+  m_struct.props = new AddonProps_VideoCodec();
+  m_struct.toAddon = new KodiToAddonFuncTable_VideoCodec();
+  m_struct.toKodi = new AddonToKodiFuncTable_VideoCodec();
+
+  m_struct.toKodi->kodiInstance = this;
+  m_struct.toKodi->get_frame_buffer = get_frame_buffer;
+  m_struct.toKodi->release_frame_buffer = release_frame_buffer;
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->open)
   {
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
     return;
@@ -42,6 +43,11 @@ CAddonVideoCodec::~CAddonVideoCodec()
   Reset();
 
   DestroyInstance();
+
+  // Delete "C" interface structures
+  delete m_struct.toAddon;
+  delete m_struct.toKodi;
+  delete m_struct.props;
 }
 
 bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints)
@@ -155,7 +161,7 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
 
 bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!m_struct.toAddon.open)
+  if (!m_struct.toAddon->open)
     return false;
 
   unsigned int nformats(0);
@@ -166,7 +172,7 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (!CopyToInitData(initData, hints))
     return false;
 
-  bool ret = m_struct.toAddon.open(&m_struct, &initData);
+  bool ret = m_struct.toAddon->open(&m_struct, &initData);
   m_processInfo.SetVideoDecoderName(GetName(), false);
 
   return ret;
@@ -174,33 +180,33 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
 bool CAddonVideoCodec::Reconfigure(CDVDStreamInfo &hints)
 {
-  if (!m_struct.toAddon.reconfigure)
+  if (!m_struct.toAddon->reconfigure)
     return false;
 
   VIDEOCODEC_INITDATA initData;
   if (!CopyToInitData(initData, hints))
     return false;
 
-  return m_struct.toAddon.reconfigure(&m_struct, &initData);
+  return m_struct.toAddon->reconfigure(&m_struct, &initData);
 }
 
 bool CAddonVideoCodec::AddData(const DemuxPacket &packet)
 {
-  if (!m_struct.toAddon.add_data)
+  if (!m_struct.toAddon->add_data)
     return false;
 
-  return m_struct.toAddon.add_data(&m_struct, &packet);
+  return m_struct.toAddon->add_data(&m_struct, &packet);
 }
 
 CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPicture)
 {
-  if (!m_struct.toAddon.get_picture)
+  if (!m_struct.toAddon->get_picture)
     return CDVDVideoCodec::VC_ERROR;
 
   VIDEOCODEC_PICTURE picture;
   picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE::FLAG_DRAIN : 0;
 
-  switch (m_struct.toAddon.get_picture(&m_struct, &picture))
+  switch (m_struct.toAddon->get_picture(&m_struct, &picture))
   {
   case VIDEOCODEC_RETVAL::VC_NONE:
     return CDVDVideoCodec::VC_NONE;
@@ -237,7 +243,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     if (pVideoPicture->videoBuffer)
       pVideoPicture->videoBuffer->Release();
 
-    pVideoPicture->videoBuffer = static_cast<CVideoBuffer*>(picture.buffer);
+    pVideoPicture->videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
 
     int strides[YuvImage::MAX_PLANES], planeOffsets[YuvImage::MAX_PLANES];
     for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
@@ -286,8 +292,8 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
 
 const char* CAddonVideoCodec::GetName()
 {
-  if (m_struct.toAddon.get_name)
-    return m_struct.toAddon.get_name(&m_struct);
+  if (m_struct.toAddon->get_name)
+    return m_struct.toAddon->get_name(&m_struct);
   return "";
 }
 
@@ -302,17 +308,17 @@ void CAddonVideoCodec::Reset()
   picture.flags = VIDEOCODEC_PICTURE::FLAG_DRAIN;
 
   VIDEOCODEC_RETVAL ret;
-  while ((ret = m_struct.toAddon.get_picture(&m_struct, &picture)) != VIDEOCODEC_RETVAL::VC_EOF)
+  while ((ret = m_struct.toAddon->get_picture(&m_struct, &picture)) != VIDEOCODEC_RETVAL::VC_EOF)
   {
     if (ret == VIDEOCODEC_RETVAL::VC_PICTURE)
     {
-      videoBuffer = static_cast<CVideoBuffer*>(picture.buffer);
+      videoBuffer = static_cast<CVideoBuffer*>(picture.videoBufferHandle);
       if (videoBuffer)
         videoBuffer->Release();
     }
   }
-  if (m_struct.toAddon.reset)
-    m_struct.toAddon.reset(&m_struct);
+  if (m_struct.toAddon->reset)
+    m_struct.toAddon->reset(&m_struct);
 }
 
 bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
@@ -324,7 +330,7 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
     return false;
   }
   picture.decodedData = videoBuffer->GetMemPtr();
-  picture.buffer = videoBuffer;
+  picture.videoBufferHandle = videoBuffer;
 
   return true;
 }
