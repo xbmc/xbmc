@@ -248,7 +248,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFram
   }
 
   // create an xbmc texture
-  *ppTexture = new CTexture();
+  *ppTexture = CBaseTexture::CreateTexture();
   (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), frame.HasAlpha(), buffer);
 
   delete[] buffer;

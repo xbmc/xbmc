@@ -15,11 +15,6 @@
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
 
-class CTexture;
-class CGLTexture;
-class CPiTexture;
-class CDXTexture;
-
 enum class TEXTURE_SCALING
 {
   LINEAR,
@@ -35,8 +30,11 @@ class CBaseTexture
 
 public:
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
-
   virtual ~CBaseTexture();
+
+  static CBaseTexture* CreateTexture(unsigned int width = 0,
+                                     unsigned int height = 0,
+                                     unsigned int format = XB_FMT_A8R8G8B8);
 
   /*! \brief Load a texture from a file
    Loads a texture from a file, restricting in size if needed based on maxHeight and maxWidth.

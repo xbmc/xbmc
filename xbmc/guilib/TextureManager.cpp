@@ -398,7 +398,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     auto frame = anim.ReadFrame();
     while (frame)
     {
-      CTexture *glTexture = new CTexture();
+      CBaseTexture* glTexture = CBaseTexture::CreateTexture();
       if (glTexture)
       {
         glTexture->LoadFromMemory(anim.Width(), anim.Height(), frame->GetPitch(), XB_FMT_A8R8G8B8, true, frame->m_pImage);

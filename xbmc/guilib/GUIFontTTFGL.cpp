@@ -322,7 +322,7 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
   newHeight = CBaseTexture::PadPow2(newHeight);
 
-  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
+  CBaseTexture* newTexture = CBaseTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
