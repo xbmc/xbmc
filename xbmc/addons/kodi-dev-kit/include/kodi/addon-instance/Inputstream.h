@@ -38,35 +38,35 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  enum INPUTSTREAM_MASKTYPE
+  {
+    /// supports interface IDemux
+    INPUTSTREAM_SUPPORTS_IDEMUX = (1 << 0),
+
+    /// supports interface IPosTime
+    INPUTSTREAM_SUPPORTS_IPOSTIME = (1 << 1),
+
+    /// supports interface IDisplayTime
+    INPUTSTREAM_SUPPORTS_IDISPLAYTIME = (1 << 2),
+
+    /// supports seek
+    INPUTSTREAM_SUPPORTS_SEEK = (1 << 3),
+
+    /// supports pause
+    INPUTSTREAM_SUPPORTS_PAUSE = (1 << 4),
+
+    /// supports interface ITime
+    INPUTSTREAM_SUPPORTS_ITIME = (1 << 5),
+
+    /// supports interface IChapter
+    INPUTSTREAM_SUPPORTS_ICHAPTER = (1 << 6),
+  };
+
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
    */
   struct INPUTSTREAM_CAPABILITIES
   {
-    enum MASKTYPE : uint32_t
-    {
-      /// supports interface IDemux
-      SUPPORTS_IDEMUX = (1 << 0),
-
-      /// supports interface IPosTime
-      SUPPORTS_IPOSTIME = (1 << 1),
-
-      /// supports interface IDisplayTime
-      SUPPORTS_IDISPLAYTIME = (1 << 2),
-
-      /// supports seek
-      SUPPORTS_SEEK = (1 << 3),
-
-      /// supports pause
-      SUPPORTS_PAUSE = (1 << 4),
-
-      /// supports interface ITime
-      SUPPORTS_ITIME = (1 << 5),
-
-      /// supports interface IChapter
-      SUPPORTS_ICHAPTER = (1 << 6),
-    };
-
     /// set of supported capabilities
     uint32_t m_mask;
   };
@@ -74,7 +74,7 @@ extern "C"
   /*!
    * @brief structure of key/value pairs passed to addon on Open()
    */
-  struct INPUTSTREAM
+  struct INPUTSTREAM_PROPERTY
   {
     const char* m_strURL;
     const char* m_mimeType;
@@ -125,122 +125,123 @@ extern "C"
     uint64_t max_fall;
   };
 
+  enum INPUTSTREAM_TYPE
+  {
+    INPUTSTREAM_TYPE_NONE = 0,
+    INPUTSTREAM_TYPE_VIDEO,
+    INPUTSTREAM_TYPE_AUDIO,
+    INPUTSTREAM_TYPE_SUBTITLE,
+    INPUTSTREAM_TYPE_TELETEXT,
+    INPUTSTREAM_TYPE_RDS,
+  };
+
+  enum INPUTSTREAM_CODEC_FEATURES
+  {
+    INPUTSTREAM_FEATURE_NONE = 0,
+    INPUTSTREAM_FEATURE_DECODE = (1 << 0)
+  };
+
+  enum INPUTSTREAM_FLAGS
+  {
+    INPUTSTREAM_FLAG_NONE = 0x0000,
+    INPUTSTREAM_FLAG_DEFAULT = 0x0001,
+    INPUTSTREAM_FLAG_DUB = 0x0002,
+    INPUTSTREAM_FLAG_ORIGINAL = 0x0004,
+    INPUTSTREAM_FLAG_COMMENT = 0x0008,
+    INPUTSTREAM_FLAG_LYRICS = 0x0010,
+    INPUTSTREAM_FLAG_KARAOKE = 0x0020,
+    INPUTSTREAM_FLAG_FORCED = 0x0040,
+    INPUTSTREAM_FLAG_HEARING_IMPAIRED = 0x0080,
+    INPUTSTREAM_FLAG_VISUAL_IMPAIRED = 0x0100,
+  };
+
+  // Keep in sync with AVColorSpace
+  enum INPUTSTREAM_COLORSPACE
+  {
+    INPUTSTREAM_COLORSPACE_RGB = 0,
+    INPUTSTREAM_COLORSPACE_BT709 = 1,
+    INPUTSTREAM_COLORSPACE_UNSPECIFIED = 2,
+    INPUTSTREAM_COLORSPACE_UNKNOWN = INPUTSTREAM_COLORSPACE_UNSPECIFIED, // compatibility
+    INPUTSTREAM_COLORSPACE_RESERVED = 3,
+    INPUTSTREAM_COLORSPACE_FCC = 4,
+    INPUTSTREAM_COLORSPACE_BT470BG = 5,
+    INPUTSTREAM_COLORSPACE_SMPTE170M = 6,
+    INPUTSTREAM_COLORSPACE_SMPTE240M = 7,
+    INPUTSTREAM_COLORSPACE_YCGCO = 8,
+    INPUTSTREAM_COLORSPACE_YCOCG = INPUTSTREAM_COLORSPACE_YCGCO,
+    INPUTSTREAM_COLORSPACE_BT2020_NCL = 9,
+    INPUTSTREAM_COLORSPACE_BT2020_CL = 10,
+    INPUTSTREAM_COLORSPACE_SMPTE2085 = 11,
+    INPUTSTREAM_COLORSPACE_CHROMA_DERIVED_NCL = 12,
+    INPUTSTREAM_COLORSPACE_CHROMA_DERIVED_CL = 13,
+    INPUTSTREAM_COLORSPACE_ICTCP = 14,
+    INPUTSTREAM_COLORSPACE_MAX
+  };
+
+  // Keep in sync with AVColorPrimaries
+  enum INPUTSTREAM_COLORPRIMARIES
+  {
+    INPUTSTREAM_COLORPRIMARY_RESERVED0 = 0,
+    INPUTSTREAM_COLORPRIMARY_BT709 = 1,
+    INPUTSTREAM_COLORPRIMARY_UNSPECIFIED = 2,
+    INPUTSTREAM_COLORPRIMARY_RESERVED = 3,
+    INPUTSTREAM_COLORPRIMARY_BT470M = 4,
+    INPUTSTREAM_COLORPRIMARY_BT470BG = 5,
+    INPUTSTREAM_COLORPRIMARY_SMPTE170M = 6,
+    INPUTSTREAM_COLORPRIMARY_SMPTE240M = 7,
+    INPUTSTREAM_COLORPRIMARY_FILM = 8,
+    INPUTSTREAM_COLORPRIMARY_BT2020 = 9,
+    INPUTSTREAM_COLORPRIMARY_SMPTE428 = 10,
+    INPUTSTREAM_COLORPRIMARY_SMPTEST428_1 = INPUTSTREAM_COLORPRIMARY_SMPTE428,
+    INPUTSTREAM_COLORPRIMARY_SMPTE431 = 11,
+    INPUTSTREAM_COLORPRIMARY_SMPTE432 = 12,
+    INPUTSTREAM_COLORPRIMARY_JEDEC_P22 = 22,
+    INPUTSTREAM_COLORPRIMARY_MAX
+  };
+
+  // Keep in sync with AVColorRange
+  enum INPUTSTREAM_COLORRANGE
+  {
+    INPUTSTREAM_COLORRANGE_UNKNOWN = 0,
+    INPUTSTREAM_COLORRANGE_LIMITED,
+    INPUTSTREAM_COLORRANGE_FULLRANGE,
+    INPUTSTREAM_COLORRANGE_MAX
+  };
+
+  // keep in sync with AVColorTransferCharacteristic
+  enum INPUTSTREAM_COLORTRC
+  {
+    INPUTSTREAM_COLORTRC_RESERVED0 = 0,
+    INPUTSTREAM_COLORTRC_BT709 = 1,
+    INPUTSTREAM_COLORTRC_UNSPECIFIED = 2,
+    INPUTSTREAM_COLORTRC_RESERVED = 3,
+    INPUTSTREAM_COLORTRC_GAMMA22 = 4,
+    INPUTSTREAM_COLORTRC_GAMMA28 = 5,
+    INPUTSTREAM_COLORTRC_SMPTE170M = 6,
+    INPUTSTREAM_COLORTRC_SMPTE240M = 7,
+    INPUTSTREAM_COLORTRC_LINEAR = 8,
+    INPUTSTREAM_COLORTRC_LOG = 9,
+    INPUTSTREAM_COLORTRC_LOG_SQRT = 10,
+    INPUTSTREAM_COLORTRC_IEC61966_2_4 = 11,
+    INPUTSTREAM_COLORTRC_BT1361_ECG = 12,
+    INPUTSTREAM_COLORTRC_IEC61966_2_1 = 13,
+    INPUTSTREAM_COLORTRC_BT2020_10 = 14,
+    INPUTSTREAM_COLORTRC_BT2020_12 = 15,
+    INPUTSTREAM_COLORTRC_SMPTE2084 = 16,
+    INPUTSTREAM_COLORTRC_SMPTEST2084 = INPUTSTREAM_COLORTRC_SMPTE2084,
+    INPUTSTREAM_COLORTRC_SMPTE428 = 17,
+    INPUTSTREAM_COLORTRC_SMPTEST428_1 = INPUTSTREAM_COLORTRC_SMPTE428,
+    INPUTSTREAM_COLORTRC_ARIB_STD_B67 = 18,
+    INPUTSTREAM_COLORTRC_MAX
+  };
+
   /*!
    * @brief stream properties
    */
   struct INPUTSTREAM_INFO
   {
-    enum STREAM_TYPE
-    {
-      TYPE_NONE = 0,
-      TYPE_VIDEO,
-      TYPE_AUDIO,
-      TYPE_SUBTITLE,
-      TYPE_TELETEXT,
-      TYPE_RDS,
-    };
-    STREAM_TYPE m_streamType;
-
-    enum Codec_FEATURES : uint32_t
-    {
-      FEATURE_DECODE = 1
-    };
+    enum INPUTSTREAM_TYPE m_streamType;
     uint32_t m_features;
-
-    enum STREAM_FLAGS : uint32_t
-    {
-      FLAG_NONE = 0x0000,
-      FLAG_DEFAULT = 0x0001,
-      FLAG_DUB = 0x0002,
-      FLAG_ORIGINAL = 0x0004,
-      FLAG_COMMENT = 0x0008,
-      FLAG_LYRICS = 0x0010,
-      FLAG_KARAOKE = 0x0020,
-      FLAG_FORCED = 0x0040,
-      FLAG_HEARING_IMPAIRED = 0x0080,
-      FLAG_VISUAL_IMPAIRED = 0x0100,
-    };
-
-    // Keep in sync with AVColorSpace
-    enum COLORSPACE
-    {
-      COLORSPACE_RGB = 0,
-      COLORSPACE_BT709 = 1,
-      COLORSPACE_UNSPECIFIED = 2,
-      COLORSPACE_UNKNOWN = COLORSPACE_UNSPECIFIED, // compatibility
-      COLORSPACE_RESERVED = 3,
-      COLORSPACE_FCC = 4,
-      COLORSPACE_BT470BG = 5,
-      COLORSPACE_SMPTE170M = 6,
-      COLORSPACE_SMPTE240M = 7,
-      COLORSPACE_YCGCO = 8,
-      COLORSPACE_YCOCG = COLORSPACE_YCGCO,
-      COLORSPACE_BT2020_NCL = 9,
-      COLORSPACE_BT2020_CL = 10,
-      COLORSPACE_SMPTE2085 = 11,
-      COLORSPACE_CHROMA_DERIVED_NCL = 12,
-      COLORSPACE_CHROMA_DERIVED_CL = 13,
-      COLORSPACE_ICTCP = 14,
-      COLORSPACE_MAX
-    };
-
-    // Keep in sync with AVColorPrimaries
-    enum COLORPRIMARIES : int32_t
-    {
-      COLORPRIMARY_RESERVED0 = 0,
-      COLORPRIMARY_BT709 = 1,
-      COLORPRIMARY_UNSPECIFIED = 2,
-      COLORPRIMARY_RESERVED = 3,
-      COLORPRIMARY_BT470M = 4,
-      COLORPRIMARY_BT470BG = 5,
-      COLORPRIMARY_SMPTE170M = 6,
-      COLORPRIMARY_SMPTE240M = 7,
-      COLORPRIMARY_FILM = 8,
-      COLORPRIMARY_BT2020 = 9,
-      COLORPRIMARY_SMPTE428 = 10,
-      COLORPRIMARY_SMPTEST428_1 = COLORPRIMARY_SMPTE428,
-      COLORPRIMARY_SMPTE431 = 11,
-      COLORPRIMARY_SMPTE432 = 12,
-      COLORPRIMARY_JEDEC_P22 = 22,
-      COLORPRIMARY_MAX
-    };
-
-    // Keep in sync with AVColorRange
-    enum COLORRANGE
-    {
-      COLORRANGE_UNKNOWN = 0,
-      COLORRANGE_LIMITED,
-      COLORRANGE_FULLRANGE,
-      COLORRANGE_MAX
-    };
-
-    // keep in sync with AVColorTransferCharacteristic
-    enum COLORTRC : int32_t
-    {
-      COLORTRC_RESERVED0 = 0,
-      COLORTRC_BT709 = 1,
-      COLORTRC_UNSPECIFIED = 2,
-      COLORTRC_RESERVED = 3,
-      COLORTRC_GAMMA22 = 4,
-      COLORTRC_GAMMA28 = 5,
-      COLORTRC_SMPTE170M = 6,
-      COLORTRC_SMPTE240M = 7,
-      COLORTRC_LINEAR = 8,
-      COLORTRC_LOG = 9,
-      COLORTRC_LOG_SQRT = 10,
-      COLORTRC_IEC61966_2_4 = 11,
-      COLORTRC_BT1361_ECG = 12,
-      COLORTRC_IEC61966_2_1 = 13,
-      COLORTRC_BT2020_10 = 14,
-      COLORTRC_BT2020_12 = 15,
-      COLORTRC_SMPTE2084 = 16,
-      COLORTRC_SMPTEST2084 = COLORTRC_SMPTE2084,
-      COLORTRC_SMPTE428 = 17,
-      COLORTRC_SMPTEST428_1 = COLORTRC_SMPTE428,
-      COLORTRC_ARIB_STD_B67 = 18,
-      COLORTRC_MAX
-    };
-
     uint32_t m_flags;
 
     //! @brief (optional) name of the stream, \0 for default handling
@@ -253,7 +254,7 @@ extern "C"
     char m_codecInternalName[INPUTSTREAM_MAX_STRING_CODEC_SIZE];
 
     //! @brief (optional) the profile of the codec
-    STREAMCODEC_PROFILE m_codecProfile;
+    enum STREAMCODEC_PROFILE m_codecProfile;
 
     //! @brief (required) physical index
     unsigned int m_pID;
@@ -302,7 +303,7 @@ extern "C"
 
     //@}
 
-    CRYPTO_INFO m_cryptoInfo;
+    struct CRYPTO_INFO m_cryptoInfo;
 
     // new in API version 2.0.8
     //@{
@@ -310,23 +311,23 @@ extern "C"
     unsigned int m_codecFourCC;
 
     //! @brief definition of colorspace
-    COLORSPACE m_colorSpace;
+    enum INPUTSTREAM_COLORSPACE m_colorSpace;
 
     //! @brief color range if available
-    COLORRANGE m_colorRange;
+    enum INPUTSTREAM_COLORSPACE m_colorRange;
     //@}
 
     //new in API 2.0.9 / INPUTSTREAM_VERSION_LEVEL 1
     //@{
-    COLORPRIMARIES m_colorPrimaries;
-    COLORTRC m_colorTransferCharacteristic;
+    enum INPUTSTREAM_COLORPRIMARIES m_colorPrimaries;
+    enum INPUTSTREAM_COLORTRC m_colorTransferCharacteristic;
     //@}
 
     //! @brief mastering static Metadata
-    INPUTSTREAM_MASTERING_METADATA* m_masteringMetadata;
+    struct INPUTSTREAM_MASTERING_METADATA* m_masteringMetadata;
 
     //! @brief content light static Metadata
-    INPUTSTREAM_CONTENTLIGHT_METADATA* m_contentLightMetadata;
+    struct INPUTSTREAM_CONTENTLIGHT_METADATA* m_contentLightMetadata;
   };
 
   struct INPUTSTREAM_TIMES
@@ -351,11 +352,11 @@ extern "C"
   typedef struct AddonToKodiFuncTable_InputStream /* internal */
   {
     KODI_HANDLE kodiInstance;
-    DemuxPacket* (*allocate_demux_packet)(void* kodiInstance, int data_size);
-    DemuxPacket* (*allocate_encrypted_demux_packet)(void* kodiInstance,
-                                                    unsigned int data_size,
-                                                    unsigned int encrypted_subsample_count);
-    void (*free_demux_packet)(void* kodiInstance, DemuxPacket* packet);
+    struct DemuxPacket* (*allocate_demux_packet)(void* kodiInstance, int data_size);
+    struct DemuxPacket* (*allocate_encrypted_demux_packet)(void* kodiInstance,
+                                                           unsigned int data_size,
+                                                           unsigned int encrypted_subsample_count);
+    void (*free_demux_packet)(void* kodiInstance, struct DemuxPacket* packet);
   } AddonToKodiFuncTable_InputStream;
 
   struct AddonInstance_InputStream;
@@ -363,63 +364,66 @@ extern "C"
   {
     KODI_HANDLE addonInstance;
 
-    bool(__cdecl* open)(const AddonInstance_InputStream* instance, INPUTSTREAM* props);
-    void(__cdecl* close)(const AddonInstance_InputStream* instance);
-    const char*(__cdecl* get_path_list)(const AddonInstance_InputStream* instance);
-    void(__cdecl* get_capabilities)(const AddonInstance_InputStream* instance,
-                                    INPUTSTREAM_CAPABILITIES* capabilities);
+    bool(__cdecl* open)(const struct AddonInstance_InputStream* instance,
+                        struct INPUTSTREAM_PROPERTY* props);
+    void(__cdecl* close)(const struct AddonInstance_InputStream* instance);
+    const char*(__cdecl* get_path_list)(const struct AddonInstance_InputStream* instance);
+    void(__cdecl* get_capabilities)(const struct AddonInstance_InputStream* instance,
+                                    struct INPUTSTREAM_CAPABILITIES* capabilities);
 
     // IDemux
-    bool(__cdecl* get_stream_ids)(const AddonInstance_InputStream* instance,
+    bool(__cdecl* get_stream_ids)(const struct AddonInstance_InputStream* instance,
                                   struct INPUTSTREAM_IDS* ids);
-    bool(__cdecl* get_stream)(const AddonInstance_InputStream* instance,
+    bool(__cdecl* get_stream)(const struct AddonInstance_InputStream* instance,
                               int streamid,
                               struct INPUTSTREAM_INFO* info);
-    void(__cdecl* enable_stream)(const AddonInstance_InputStream* instance,
+    void(__cdecl* enable_stream)(const struct AddonInstance_InputStream* instance,
                                  int streamid,
                                  bool enable);
-    bool(__cdecl* open_stream)(const AddonInstance_InputStream* instance, int streamid);
-    void(__cdecl* demux_reset)(const AddonInstance_InputStream* instance);
-    void(__cdecl* demux_abort)(const AddonInstance_InputStream* instance);
-    void(__cdecl* demux_flush)(const AddonInstance_InputStream* instance);
-    DemuxPacket*(__cdecl* demux_read)(const AddonInstance_InputStream* instance);
-    bool(__cdecl* demux_seek_time)(const AddonInstance_InputStream* instance,
+    bool(__cdecl* open_stream)(const struct AddonInstance_InputStream* instance, int streamid);
+    void(__cdecl* demux_reset)(const struct AddonInstance_InputStream* instance);
+    void(__cdecl* demux_abort)(const struct AddonInstance_InputStream* instance);
+    void(__cdecl* demux_flush)(const struct AddonInstance_InputStream* instance);
+    struct DemuxPacket*(__cdecl* demux_read)(const struct AddonInstance_InputStream* instance);
+    bool(__cdecl* demux_seek_time)(const struct AddonInstance_InputStream* instance,
                                    double time,
                                    bool backwards,
                                    double* startpts);
-    void(__cdecl* demux_set_speed)(const AddonInstance_InputStream* instance, int speed);
-    void(__cdecl* set_video_resolution)(const AddonInstance_InputStream* instance,
+    void(__cdecl* demux_set_speed)(const struct AddonInstance_InputStream* instance, int speed);
+    void(__cdecl* set_video_resolution)(const struct AddonInstance_InputStream* instance,
                                         int width,
                                         int height);
 
     // IDisplayTime
-    int(__cdecl* get_total_time)(const AddonInstance_InputStream* instance);
-    int(__cdecl* get_time)(const AddonInstance_InputStream* instance);
+    int(__cdecl* get_total_time)(const struct AddonInstance_InputStream* instance);
+    int(__cdecl* get_time)(const struct AddonInstance_InputStream* instance);
 
     // ITime
-    bool(__cdecl* get_times)(const AddonInstance_InputStream* instance, INPUTSTREAM_TIMES* times);
+    bool(__cdecl* get_times)(const struct AddonInstance_InputStream* instance,
+                             struct INPUTSTREAM_TIMES* times);
 
     // IPosTime
-    bool(__cdecl* pos_time)(const AddonInstance_InputStream* instance, int ms);
+    bool(__cdecl* pos_time)(const struct AddonInstance_InputStream* instance, int ms);
 
-    int(__cdecl* read_stream)(const AddonInstance_InputStream* instance,
+    int(__cdecl* read_stream)(const struct AddonInstance_InputStream* instance,
                               uint8_t* buffer,
                               unsigned int bufferSize);
-    int64_t(__cdecl* seek_stream)(const AddonInstance_InputStream* instance,
+    int64_t(__cdecl* seek_stream)(const struct AddonInstance_InputStream* instance,
                                   int64_t position,
                                   int whence);
-    int64_t(__cdecl* position_stream)(const AddonInstance_InputStream* instance);
-    int64_t(__cdecl* length_stream)(const AddonInstance_InputStream* instance);
-    bool(__cdecl* is_real_time_stream)(const AddonInstance_InputStream* instance);
+    int64_t(__cdecl* position_stream)(const struct AddonInstance_InputStream* instance);
+    int64_t(__cdecl* length_stream)(const struct AddonInstance_InputStream* instance);
+    bool(__cdecl* is_real_time_stream)(const struct AddonInstance_InputStream* instance);
 
     // IChapter
-    int(__cdecl* get_chapter)(const AddonInstance_InputStream* instance);
-    int(__cdecl* get_chapter_count)(const AddonInstance_InputStream* instance);
-    const char*(__cdecl* get_chapter_name)(const AddonInstance_InputStream* instance, int ch);
-    int64_t(__cdecl* get_chapter_pos)(const AddonInstance_InputStream* instance, int ch);
-    bool(__cdecl* seek_chapter)(const AddonInstance_InputStream* instance, int ch);
+    int(__cdecl* get_chapter)(const struct AddonInstance_InputStream* instance);
+    int(__cdecl* get_chapter_count)(const struct AddonInstance_InputStream* instance);
+    const char*(__cdecl* get_chapter_name)(const struct AddonInstance_InputStream* instance,
+                                           int ch);
+    int64_t(__cdecl* get_chapter_pos)(const struct AddonInstance_InputStream* instance, int ch);
+    bool(__cdecl* seek_chapter)(const struct AddonInstance_InputStream* instance, int ch);
 
-    int(__cdecl* block_size_stream)(const AddonInstance_InputStream* instance);
+    int(__cdecl* block_size_stream)(const struct AddonInstance_InputStream* instance);
   } KodiToAddonFuncTable_InputStream;
 
   typedef struct AddonInstance_InputStream /* internal */
@@ -460,7 +464,7 @@ public:
      * @return True if the stream has been opened successfully, false otherwise.
      * @remarks
      */
-  virtual bool Open(INPUTSTREAM& props) = 0;
+  virtual bool Open(INPUTSTREAM_PROPERTY& props) = 0;
 
   /*!
      * Close an open stream.
@@ -755,7 +759,8 @@ private:
     */
   }
 
-  inline static bool ADDON_Open(const AddonInstance_InputStream* instance, INPUTSTREAM* props)
+  inline static bool ADDON_Open(const AddonInstance_InputStream* instance,
+                                INPUTSTREAM_PROPERTY* props)
   {
     return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->Open(*props);
   }
@@ -782,7 +787,7 @@ private:
         static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetStreamIds(idList);
     if (ret)
     {
-      for (size_t i = 0; i < idList.size() && i < INPUTSTREAM_IDS::MAX_STREAM_COUNT; ++i)
+      for (size_t i = 0; i < idList.size() && i < INPUTSTREAM_MAX_STREAM_COUNT; ++i)
       {
         ids->m_streamCount++;
         ids->m_streamIds[i] = idList[i];

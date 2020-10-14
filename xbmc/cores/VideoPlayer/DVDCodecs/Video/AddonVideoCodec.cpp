@@ -122,16 +122,16 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
     switch (hints.cryptoSession->keySystem)
     {
     case CRYPTO_SESSION_SYSTEM_NONE:
-      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE;
+      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_KEY_SYSTEM_NONE;
       break;
     case CRYPTO_SESSION_SYSTEM_WIDEVINE:
-      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_WIDEVINE;
+      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_KEY_SYSTEM_WIDEVINE;
       break;
     case CRYPTO_SESSION_SYSTEM_PLAYREADY:
-      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_PLAYREADY;
+      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_KEY_SYSTEM_PLAYREADY;
       break;
     case CRYPTO_SESSION_SYSTEM_WISEPLAY:
-      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_INFO::CRYPTO_KEY_SYSTEM_WISEPLAY;
+      initData.cryptoInfo.m_CryptoKeySystem = CRYPTO_KEY_SYSTEM_WISEPLAY;
       break;
     default:
       return false;
