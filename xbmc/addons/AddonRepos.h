@@ -105,6 +105,9 @@ public:
    * \brief Checks if the origin-repository of a given addon is defined as official repo
    *        and can also verify if the origin-path (e.g. https://mirrors.kodi.tv ...)
    *        is matching
+   * \note if this function is called on locally installed add-ons, for instance when populating
+   *       'My add-ons', the local installation path is returned as origin.
+   *       thus parameter CheckAddonPath::NO needs to be passed in such cases
    * \param addon pointer to addon to be checked
    * \param checkAddonPath also check origin path
    * \return true if the repository id of a given addon is defined as official
