@@ -239,6 +239,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
       int recheckAfterThisDir;
       if (!FetchChecksum(dir.checksum, part, recheckAfterThisDir))
       {
+        recheckAfter = 1 * 60 * 60; // retry after 1 hour
         CLog::Log(LOGERROR, "CRepository: failed read '%s'", dir.checksum.c_str());
         return STATUS_ERROR;
       }
