@@ -64,14 +64,14 @@ struct SVertex
 #include "GUIFontCache.h"
 
 
-class CGUIFontTTFBase
+class CGUIFontTTF
 {
   friend class CGUIFont;
 
 public:
-  virtual ~CGUIFontTTFBase();
+  virtual ~CGUIFontTTF();
 
-  static CGUIFontTTFBase* CreateGUIFontTTF(const std::string& fileName);
+  static CGUIFontTTF* CreateGUIFontTTF(const std::string& fileName);
 
   void Clear();
 
@@ -86,7 +86,7 @@ public:
   const std::string& GetFileName() const { return m_strFileName; };
 
 protected:
-  explicit CGUIFontTTFBase(const std::string& strFileName);
+  explicit CGUIFontTTF(const std::string& strFileName);
 
   struct Character
   {
@@ -187,15 +187,7 @@ protected:
 private:
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
-  CGUIFontTTFBase(const CGUIFontTTFBase&) = delete;
-  CGUIFontTTFBase& operator=(const CGUIFontTTFBase&) = delete;
+  CGUIFontTTF(const CGUIFontTTF&) = delete;
+  CGUIFontTTF& operator=(const CGUIFontTTF&) = delete;
   int m_referenceCount;
 };
-
-#if defined(HAS_GL) || defined(HAS_GLES)
-#include "GUIFontTTFGL.h"
-#define CGUIFontTTF CGUIFontTTFGL
-#elif defined(HAS_DX)
-#include "GUIFontTTFDX.h"
-#define CGUIFontTTF CGUIFontTTFDX
-#endif
