@@ -45,9 +45,9 @@ class CGUIRangesControl : public CGUIControl
     bool UpdateLayout(float fBackgroundTextureHeight, float fPosX, float fPosY, float fWidth, float fScaleX, float fScaleY);
 
   private:
-    std::unique_ptr<CGUITextureBase> m_guiLowerTexture;
-    std::unique_ptr<CGUITextureBase> m_guiFillTexture;
-    std::unique_ptr<CGUITextureBase> m_guiUpperTexture;
+    std::unique_ptr<CGUITexture> m_guiLowerTexture;
+    std::unique_ptr<CGUITexture> m_guiFillTexture;
+    std::unique_ptr<CGUITexture> m_guiUpperTexture;
     std::pair<float,float> m_percentValues;
   };
 
@@ -77,8 +77,8 @@ protected:
   bool UpdateColors() override;
   bool UpdateLayout();
 
-  std::unique_ptr<CGUITextureBase> m_guiBackground;
-  std::unique_ptr<CGUITextureBase> m_guiOverlay;
+  std::unique_ptr<CGUITexture> m_guiBackground;
+  std::unique_ptr<CGUITexture> m_guiOverlay;
   const CTextureInfo m_guiLowerTextureInfo;
   const CTextureInfo m_guiFillTextureInfo;
   const CTextureInfo m_guiUpperTextureInfo;

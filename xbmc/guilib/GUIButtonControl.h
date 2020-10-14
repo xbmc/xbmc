@@ -80,8 +80,8 @@ protected:
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
 
-  std::unique_ptr<CGUITextureBase> m_imgFocus;
-  std::unique_ptr<CGUITextureBase> m_imgNoFocus;
+  std::unique_ptr<CGUITexture> m_imgFocus;
+  std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int  m_focusCounter;
   unsigned char m_alpha;
 

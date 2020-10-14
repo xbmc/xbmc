@@ -18,7 +18,7 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-CGUITextureBase* CGUITextureBase::CreateTexture(
+CGUITexture* CGUITexture::CreateTexture(
     float posX, float posY, float width, float height, const CTextureInfo& texture)
 {
   return new CGUITextureGL(posX, posY, width, height, texture);
@@ -26,7 +26,7 @@ CGUITextureBase* CGUITextureBase::CreateTexture(
 
 CGUITextureGL::CGUITextureGL(
     float posX, float posY, float width, float height, const CTextureInfo& texture)
-  : CGUITextureBase(posX, posY, width, height, texture)
+  : CGUITexture(posX, posY, width, height, texture)
 {
   m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
 }
@@ -242,10 +242,10 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   }
 }
 
-void CGUITextureBase::DrawQuad(const CRect& rect,
-                               UTILS::Color color,
-                               CTexture* texture,
-                               const CRect* texCoords)
+void CGUITexture::DrawQuad(const CRect& rect,
+                           UTILS::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
 {
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (texture)

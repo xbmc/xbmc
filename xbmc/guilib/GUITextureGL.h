@@ -17,7 +17,7 @@
 
 class CRenderSystemGL;
 
-class CGUITextureGL : public CGUITextureBase
+class CGUITextureGL : public CGUITexture
 {
 public:
   CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture);

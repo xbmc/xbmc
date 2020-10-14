@@ -53,11 +53,11 @@ protected:
   bool Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 
-  std::unique_ptr<CGUITextureBase> m_guiBackground;
-  std::unique_ptr<CGUITextureBase> m_guiBarNoFocus;
-  std::unique_ptr<CGUITextureBase> m_guiBarFocus;
-  std::unique_ptr<CGUITextureBase> m_guiNibNoFocus;
-  std::unique_ptr<CGUITextureBase> m_guiNibFocus;
+  std::unique_ptr<CGUITexture> m_guiBackground;
+  std::unique_ptr<CGUITexture> m_guiBarNoFocus;
+  std::unique_ptr<CGUITexture> m_guiBarFocus;
+  std::unique_ptr<CGUITexture> m_guiNibNoFocus;
+  std::unique_ptr<CGUITexture> m_guiNibFocus;
 
   int m_numItems;
   int m_pageSize;

@@ -29,12 +29,12 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID,
                                                const CTextureInfo& radioOffDisabled)
   : CGUIButtonControl(
         parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo),
-    m_imgRadioOnFocus(CGUITextureBase::CreateTexture(posX, posY, 16, 16, radioOnFocus)),
-    m_imgRadioOnNoFocus(CGUITextureBase::CreateTexture(posX, posY, 16, 16, radioOnNoFocus)),
-    m_imgRadioOffFocus(CGUITextureBase::CreateTexture(posX, posY, 16, 16, radioOffFocus)),
-    m_imgRadioOffNoFocus(CGUITextureBase::CreateTexture(posX, posY, 16, 16, radioOffNoFocus)),
-    m_imgRadioOnDisabled(CGUITextureBase::CreateTexture(posX, posY, 16, 16, radioOnDisabled)),
-    m_imgRadioOffDisabled(CGUITextureBase::CreateTexture(posX, posY, 16, 16, radioOffDisabled))
+    m_imgRadioOnFocus(CGUITexture::CreateTexture(posX, posY, 16, 16, radioOnFocus)),
+    m_imgRadioOnNoFocus(CGUITexture::CreateTexture(posX, posY, 16, 16, radioOnNoFocus)),
+    m_imgRadioOffFocus(CGUITexture::CreateTexture(posX, posY, 16, 16, radioOffFocus)),
+    m_imgRadioOffNoFocus(CGUITexture::CreateTexture(posX, posY, 16, 16, radioOffNoFocus)),
+    m_imgRadioOnDisabled(CGUITexture::CreateTexture(posX, posY, 16, 16, radioOnDisabled)),
+    m_imgRadioOffDisabled(CGUITexture::CreateTexture(posX, posY, 16, 16, radioOffDisabled))
 {
   m_radioPosX = 0;
   m_radioPosY = 0;

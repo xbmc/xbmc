@@ -28,7 +28,7 @@ public:
   CRect CalcRenderRegion() const override;
 
 protected:
-  std::unique_ptr<CGUITextureBase> m_borderImage;
+  std::unique_ptr<CGUITexture> m_borderImage;
   CRect m_borderSize;
 
 private:

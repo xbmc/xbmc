@@ -28,11 +28,11 @@ GUIScrollBarControl::GUIScrollBarControl(int parentID,
                                          ORIENTATION orientation,
                                          bool showOnePage)
   : CGUIControl(parentID, controlID, posX, posY, width, height),
-    m_guiBackground(CGUITextureBase::CreateTexture(posX, posY, width, height, backGroundTexture)),
-    m_guiBarNoFocus(CGUITextureBase::CreateTexture(posX, posY, width, height, barTexture)),
-    m_guiBarFocus(CGUITextureBase::CreateTexture(posX, posY, width, height, barTextureFocus)),
-    m_guiNibNoFocus(CGUITextureBase::CreateTexture(posX, posY, width, height, nibTexture)),
-    m_guiNibFocus(CGUITextureBase::CreateTexture(posX, posY, width, height, nibTextureFocus))
+    m_guiBackground(CGUITexture::CreateTexture(posX, posY, width, height, backGroundTexture)),
+    m_guiBarNoFocus(CGUITexture::CreateTexture(posX, posY, width, height, barTexture)),
+    m_guiBarFocus(CGUITexture::CreateTexture(posX, posY, width, height, barTextureFocus)),
+    m_guiNibNoFocus(CGUITexture::CreateTexture(posX, posY, width, height, nibTexture)),
+    m_guiNibFocus(CGUITexture::CreateTexture(posX, posY, width, height, nibTextureFocus))
 {
   m_guiNibNoFocus->SetAspectRatio(CAspectRatio::AR_CENTER);
   m_guiNibFocus->SetAspectRatio(CAspectRatio::AR_CENTER);

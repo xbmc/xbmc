@@ -110,12 +110,12 @@ protected:
   std::vector<std::string> m_vecLabels;
   std::vector<int> m_vecValues;
   std::vector<std::string> m_vecStrValues;
-  std::unique_ptr<CGUITextureBase> m_imgspinUp;
-  std::unique_ptr<CGUITextureBase> m_imgspinDown;
-  std::unique_ptr<CGUITextureBase> m_imgspinUpFocus;
-  std::unique_ptr<CGUITextureBase> m_imgspinDownFocus;
-  std::unique_ptr<CGUITextureBase> m_imgspinUpDisabled;
-  std::unique_ptr<CGUITextureBase> m_imgspinDownDisabled;
+  std::unique_ptr<CGUITexture> m_imgspinUp;
+  std::unique_ptr<CGUITexture> m_imgspinDown;
+  std::unique_ptr<CGUITexture> m_imgspinUpFocus;
+  std::unique_ptr<CGUITexture> m_imgspinDownFocus;
+  std::unique_ptr<CGUITexture> m_imgspinUpDisabled;
+  std::unique_ptr<CGUITexture> m_imgspinDownDisabled;
   CGUILabel   m_label;
   bool m_bShowRange;
   char m_szTyped[10];

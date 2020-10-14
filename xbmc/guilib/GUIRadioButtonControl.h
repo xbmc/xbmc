@@ -51,12 +51,12 @@ public:
   bool IsSelected() const { return m_bSelected; };
 protected:
   bool UpdateColors() override;
-  std::unique_ptr<CGUITextureBase> m_imgRadioOnFocus;
-  std::unique_ptr<CGUITextureBase> m_imgRadioOnNoFocus;
-  std::unique_ptr<CGUITextureBase> m_imgRadioOffFocus;
-  std::unique_ptr<CGUITextureBase> m_imgRadioOffNoFocus;
-  std::unique_ptr<CGUITextureBase> m_imgRadioOnDisabled;
-  std::unique_ptr<CGUITextureBase> m_imgRadioOffDisabled;
+  std::unique_ptr<CGUITexture> m_imgRadioOnFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOnNoFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOffFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOffNoFocus;
+  std::unique_ptr<CGUITexture> m_imgRadioOnDisabled;
+  std::unique_ptr<CGUITexture> m_imgRadioOffDisabled;
   float m_radioPosX;
   float m_radioPosY;
   INFO::InfoPtr m_toggleSelect;

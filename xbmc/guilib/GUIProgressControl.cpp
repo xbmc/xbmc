@@ -26,11 +26,11 @@ CGUIProgressControl::CGUIProgressControl(int parentID,
                                          const CTextureInfo& overlayTexture,
                                          bool reveal)
   : CGUIControl(parentID, controlID, posX, posY, width, height),
-    m_guiBackground(CGUITextureBase::CreateTexture(posX, posY, width, height, backGroundTexture)),
-    m_guiLeft(CGUITextureBase::CreateTexture(posX, posY, width, height, leftTexture)),
-    m_guiMid(CGUITextureBase::CreateTexture(posX, posY, width, height, midTexture)),
-    m_guiRight(CGUITextureBase::CreateTexture(posX, posY, width, height, rightTexture)),
-    m_guiOverlay(CGUITextureBase::CreateTexture(posX, posY, width, height, overlayTexture))
+    m_guiBackground(CGUITexture::CreateTexture(posX, posY, width, height, backGroundTexture)),
+    m_guiLeft(CGUITexture::CreateTexture(posX, posY, width, height, leftTexture)),
+    m_guiMid(CGUITexture::CreateTexture(posX, posY, width, height, midTexture)),
+    m_guiRight(CGUITexture::CreateTexture(posX, posY, width, height, rightTexture)),
+    m_guiOverlay(CGUITexture::CreateTexture(posX, posY, width, height, overlayTexture))
 {
   m_fPercent = 0;
   m_iInfoCode = 0;

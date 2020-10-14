@@ -11,7 +11,7 @@
 #include "GUITexture.h"
 #include "utils/Color.h"
 
-class CGUITextureD3D : public CGUITextureBase
+class CGUITextureD3D : public CGUITexture
 {
 public:
   CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo& texture);

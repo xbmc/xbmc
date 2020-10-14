@@ -24,7 +24,7 @@ CGUIBorderedImage::CGUIBorderedImage(int parentID,
               width - borderSize.x1 - borderSize.x2,
               height - borderSize.y1 - borderSize.y2,
               texture),
-    m_borderImage(CGUITextureBase::CreateTexture(posX, posY, width, height, borderTexture)),
+    m_borderImage(CGUITexture::CreateTexture(posX, posY, width, height, borderTexture)),
     m_borderSize(borderSize)
 {
   ControlType = GUICONTROL_BORDEREDIMAGE;

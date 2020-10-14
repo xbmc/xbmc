@@ -24,8 +24,8 @@ CGUIResizeControl::CGUIResizeControl(int parentID,
                                      const CTextureInfo& textureFocus,
                                      const CTextureInfo& textureNoFocus)
   : CGUIControl(parentID, controlID, posX, posY, width, height),
-    m_imgFocus(CGUITextureBase::CreateTexture(posX, posY, width, height, textureFocus)),
-    m_imgNoFocus(CGUITextureBase::CreateTexture(posX, posY, width, height, textureNoFocus))
+    m_imgFocus(CGUITexture::CreateTexture(posX, posY, width, height, textureFocus)),
+    m_imgNoFocus(CGUITexture::CreateTexture(posX, posY, width, height, textureNoFocus))
 {
   m_frameCounter = 0;
   m_lastMoveTime = 0;

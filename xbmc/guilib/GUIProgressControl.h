@@ -51,11 +51,11 @@ public:
   bool UpdateLayout(void);
 protected:
   bool UpdateColors() override;
-  std::unique_ptr<CGUITextureBase> m_guiBackground;
-  std::unique_ptr<CGUITextureBase> m_guiLeft;
-  std::unique_ptr<CGUITextureBase> m_guiMid;
-  std::unique_ptr<CGUITextureBase> m_guiRight;
-  std::unique_ptr<CGUITextureBase> m_guiOverlay;
+  std::unique_ptr<CGUITexture> m_guiBackground;
+  std::unique_ptr<CGUITexture> m_guiLeft;
+  std::unique_ptr<CGUITexture> m_guiMid;
+  std::unique_ptr<CGUITexture> m_guiRight;
+  std::unique_ptr<CGUITexture> m_guiOverlay;
   CRect m_guiMidClipRect;
 
   int m_iInfoCode;

@@ -87,7 +87,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
     m_blockSize(0),
     m_analogScrollCount(0),
     m_guiProgressIndicatorTexture(
-        CGUITextureBase::CreateTexture(posX, posY, width, height, progressIndicatorTexture)),
+        CGUITexture::CreateTexture(posX, posY, width, height, progressIndicatorTexture)),
     m_scrollTime(scrollTime ? scrollTime : 1),
     m_programmeScrollLastTime(0),
     m_programmeScrollSpeed(0),

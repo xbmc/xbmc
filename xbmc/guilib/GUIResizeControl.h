@@ -57,8 +57,8 @@ protected:
   bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);
-  std::unique_ptr<CGUITextureBase> m_imgFocus;
-  std::unique_ptr<CGUITextureBase> m_imgNoFocus;
+  std::unique_ptr<CGUITexture> m_imgFocus;
+  std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int m_frameCounter;
   unsigned int m_lastMoveTime;
   int m_nDirection;

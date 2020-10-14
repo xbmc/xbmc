@@ -23,12 +23,9 @@ CGUIRangesControl::CGUIRange::CGUIRange(float fPosX,
                                         const CTextureInfo& fillTextureInfo,
                                         const CTextureInfo& upperTextureInfo,
                                         const std::pair<float, float>& percentages)
-  : m_guiLowerTexture(
-        CGUITextureBase::CreateTexture(fPosX, fPosY, fWidth, fHeight, lowerTextureInfo)),
-    m_guiFillTexture(
-        CGUITextureBase::CreateTexture(fPosX, fPosY, fWidth, fHeight, fillTextureInfo)),
-    m_guiUpperTexture(
-        CGUITextureBase::CreateTexture(fPosX, fPosY, fWidth, fHeight, upperTextureInfo)),
+  : m_guiLowerTexture(CGUITexture::CreateTexture(fPosX, fPosY, fWidth, fHeight, lowerTextureInfo)),
+    m_guiFillTexture(CGUITexture::CreateTexture(fPosX, fPosY, fWidth, fHeight, fillTextureInfo)),
+    m_guiUpperTexture(CGUITexture::CreateTexture(fPosX, fPosY, fWidth, fHeight, upperTextureInfo)),
     m_percentValues(percentages)
 {
 }
@@ -188,8 +185,8 @@ CGUIRangesControl::CGUIRangesControl(int iParentID,
                                      int iInfo)
   : CGUIControl(iParentID, iControlID, fPosX, fPosY, fWidth, fHeight),
     m_guiBackground(
-        CGUITextureBase::CreateTexture(fPosX, fPosY, fWidth, fHeight, backGroundTextureInfo)),
-    m_guiOverlay(CGUITextureBase::CreateTexture(fPosX, fPosY, fWidth, fHeight, overlayTextureInfo)),
+        CGUITexture::CreateTexture(fPosX, fPosY, fWidth, fHeight, backGroundTextureInfo)),
+    m_guiOverlay(CGUITexture::CreateTexture(fPosX, fPosY, fWidth, fHeight, overlayTextureInfo)),
     m_guiLowerTextureInfo(lowerTextureInfo),
     m_guiFillTextureInfo(fillTextureInfo),
     m_guiUpperTextureInfo(upperTextureInfo),
