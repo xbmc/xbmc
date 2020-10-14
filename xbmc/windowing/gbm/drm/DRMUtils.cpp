@@ -178,8 +178,7 @@ bool CDRMUtils::FindPlanes()
 {
   for (size_t i = 0; i < m_crtcs.size(); i++)
   {
-    const auto crtc = m_crtcs[i].get();
-    if (!crtc)
+    if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
     auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [this, &i](auto& plane) {
@@ -208,7 +207,7 @@ bool CDRMUtils::FindPlanes()
 
     if (videoPlane->get() && guiPlane->get())
     {
-      m_crtc = crtc;
+      m_crtc = m_crtcs[i].get();
       m_video_plane = videoPlane->get();
       m_gui_plane = guiPlane->get();
       break;
@@ -216,9 +215,9 @@ bool CDRMUtils::FindPlanes()
 
     if (guiPlane->get())
     {
-      if (!m_crtc && m_encoder->GetCrtcId() == crtc->GetCrtcId())
+      if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
       {
-        m_crtc = crtc;
+        m_crtc = m_crtcs[i].get();
         m_gui_plane = guiPlane->get();
       }
     }
