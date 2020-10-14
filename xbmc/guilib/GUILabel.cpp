@@ -23,7 +23,19 @@ CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CL
 {
 }
 
-CGUILabel::~CGUILabel(void) = default;
+CGUILabel::CGUILabel(const CGUILabel& label)
+  : m_label(label.m_label),
+    m_textLayout(label.m_textLayout),
+    m_scrolling(label.m_scrolling),
+    m_overflowType(label.m_overflowType),
+    m_scrollInfo(label.m_scrollInfo),
+    m_renderRect(label.m_renderRect),
+    m_maxRect(label.m_maxRect),
+    m_invalid(label.m_invalid),
+    m_color(label.m_color),
+    m_maxScrollLoops(label.m_maxScrollLoops)
+{
+}
 
 bool CGUILabel::SetScrolling(bool scrolling)
 {

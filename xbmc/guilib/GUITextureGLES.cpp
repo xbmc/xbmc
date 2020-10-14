@@ -19,11 +19,21 @@
 
 #include <cstddef>
 
+CGUITextureBase* CGUITextureBase::CreateTexture(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+{
+  return new CGUITextureGLES(posX, posY, width, height, texture);
+}
 
 CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+}
+
+CGUITextureGLES* CGUITextureGLES::Clone() const
+{
+  return new CGUITextureGLES(*this);
 }
 
 void CGUITextureGLES::Begin(UTILS::Color color)
@@ -215,7 +225,7 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
   }
 }
 
-void CGUITextureGLES::DrawQuad(const CRect& rect,
+void CGUITextureBase::DrawQuad(const CRect& rect,
                                UTILS::Color color,
                                CTexture* texture,
                                const CRect* texCoords)

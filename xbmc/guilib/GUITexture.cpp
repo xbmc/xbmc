@@ -60,22 +60,19 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_use_cache = true;
 }
 
-CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
-  m_height(right.m_height),
-  m_alpha(right.m_alpha),
-  m_info(right.m_info),
-  m_aspect(right.m_aspect)
+CGUITextureBase::CGUITextureBase(const CGUITextureBase& right)
+  : m_visible(right.m_visible),
+    m_diffuseColor(right.m_diffuseColor),
+    m_posX(right.m_posX),
+    m_posY(right.m_posY),
+    m_width(right.m_width),
+    m_height(right.m_height),
+    m_use_cache(right.m_use_cache),
+    m_alpha(right.m_alpha),
+    m_allocateDynamically(right.m_allocateDynamically),
+    m_info(right.m_info),
+    m_aspect(right.m_aspect)
 {
-  m_posX = right.m_posX;
-  m_posY = right.m_posY;
-  m_width = right.m_width;
-
-  m_visible = right.m_visible;
-  m_diffuseColor = right.m_diffuseColor;
-
-  m_allocateDynamically = right.m_allocateDynamically;
-  m_use_cache = right.m_use_cache;
-
   // defaults
   m_vertex.SetRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
 
@@ -94,8 +91,6 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_isAllocated = NO;
   m_invalid = true;
 }
-
-CGUITextureBase::~CGUITextureBase(void) = default;
 
 bool CGUITextureBase::AllocateOnDemand()
 {

@@ -25,7 +25,7 @@ class CGUISettingsSliderControl :
 {
 public:
   CGUISettingsSliderControl(int parentID, int controlID, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType);
-  ~CGUISettingsSliderControl(void) override;
+  ~CGUISettingsSliderControl() override = default;
   CGUISettingsSliderControl *Clone() const override { return new CGUISettingsSliderControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
@@ -57,6 +57,8 @@ protected:
   virtual void ProcessText();
 
 private:
+  CGUISettingsSliderControl(const CGUISettingsSliderControl& control);
+
   CGUIButtonControl m_buttonControl;
   CGUILabel m_label;
   bool m_active; ///< Whether the slider has been activated by a click.
