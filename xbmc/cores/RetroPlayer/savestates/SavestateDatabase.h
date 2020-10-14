@@ -25,21 +25,29 @@ public:
   CSavestateDatabase();
   virtual ~CSavestateDatabase() = default;
 
-  std::unique_ptr<ISavestate> CreateSavestate();
+  static std::unique_ptr<ISavestate> AllocateSavestate();
 
-  bool AddSavestate(const std::string& gamePath, const ISavestate& save);
+  bool AddSavestate(std::string& savestatePath,
+                    const std::string& gamePath,
+                    const ISavestate& save);
 
-  bool GetSavestate(const std::string& gamePath, ISavestate& save);
+  bool GetSavestate(const std::string& savestatePath, ISavestate& save);
 
   bool GetSavestatesNav(CFileItemList& items,
                         const std::string& gamePath,
                         const std::string& gameClient = "");
 
-  bool RenameSavestate(const std::string& path, const std::string& label);
+  bool RenameSavestate(const std::string& savestatePath, const std::string& label);
 
-  bool DeleteSavestate(const std::string& path);
+  bool DeleteSavestate(const std::string& savestatePath);
 
   bool ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient = "");
+
+  std::string MakeThumbnailPath(const std::string& savestatePath);
+
+private:
+  std::string MakePath(const std::string& gamePath);
+  bool CreateFolderIfNotExists(const std::string& path);
 };
 } // namespace RETRO
 } // namespace KODI

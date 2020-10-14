@@ -111,7 +111,7 @@ public:
   virtual void SetType(SAVE_TYPE type) = 0;
   virtual void SetSlot(uint8_t slot) = 0;
   virtual void SetLabel(const std::string& label) = 0;
-  virtual void SetCreated(const CDateTime& created) = 0;
+  virtual void SetCreated(const CDateTime& createdUTC) = 0;
   virtual void SetGameFileName(const std::string& gameFileName) = 0;
   virtual void SetTimestampFrames(uint64_t timestampFrames) = 0;
   virtual void SetTimestampWallClock(double timestampWallClock) = 0;

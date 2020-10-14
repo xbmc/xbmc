@@ -84,6 +84,8 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
         {
           using namespace MESSAGING;
 
+          OnClickAction();
+
           // Changed from sending ACTION_SHOW_OSD to closing the dialog
           Close();
 

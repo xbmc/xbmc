@@ -28,7 +28,7 @@ public:
   virtual ~IAutoSaveCallback() = default;
 
   virtual bool IsAutoSaveEnabled() const = 0;
-  virtual std::string CreateSavestate() = 0;
+  virtual std::string CreateAutosave() = 0;
 };
 
 class CRetroPlayerAutoSave : protected CThread

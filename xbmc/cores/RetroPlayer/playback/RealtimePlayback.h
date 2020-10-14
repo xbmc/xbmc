@@ -31,7 +31,7 @@ public:
   double GetSpeed() const override { return 1.0; }
   void SetSpeed(double speedFactor) override {}
   void PauseAsync() override {}
-  std::string CreateSavestate() override { return ""; }
+  std::string CreateSavestate(bool autosave) override { return ""; }
   bool LoadSavestate(const std::string& path) override { return false; }
 };
 } // namespace RETRO

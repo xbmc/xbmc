@@ -27,7 +27,7 @@ table Savestate {
   type:SaveType;
   slot:uint8;
   label:string;
-  created:string; // RFC 1123 date time
+  created:string; // W3C date time [ISO 8601 : 1988 (E)] with timezone info
 
   // Game properties
   game_file_name:string;

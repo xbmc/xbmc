@@ -27,3 +27,23 @@ std::string CGUIGameSettingsHandle::GameClientID()
 {
   return m_renderManager.GameClientID();
 }
+
+std::string CGUIGameSettingsHandle::GetPlayingGame()
+{
+  return m_renderManager.GetPlayingGame();
+}
+
+std::string CGUIGameSettingsHandle::CreateSavestate(bool autosave)
+{
+  return m_renderManager.CreateSavestate(autosave);
+}
+
+bool CGUIGameSettingsHandle::LoadSavestate(const std::string& path)
+{
+  return m_renderManager.LoadSavestate(path);
+}
+
+void CGUIGameSettingsHandle::CloseOSD()
+{
+  m_renderManager.CloseOSD();
+}

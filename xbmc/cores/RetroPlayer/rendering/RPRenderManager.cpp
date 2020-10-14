@@ -19,6 +19,7 @@
 #include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
+#include "pictures/Picture.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/TransformMatrix.h"
@@ -691,4 +692,44 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(
   }
 
   return effectiveSettings;
+}
+
+void CRPRenderManager::SaveThumbnail(const std::string& path)
+{
+  m_bufferMutex.lock();
+
+  if (m_renderBuffers.size() <= 0)
+  {
+    m_bufferMutex.unlock();
+    return;
+  }
+
+  const uint8_t* const data = m_renderBuffers[0]->GetMemory();
+  const size_t size = m_renderBuffers[0]->GetFrameSize();
+  const unsigned int width = m_renderBuffers[0]->GetWidth();
+  const unsigned int height = m_renderBuffers[0]->GetHeight();
+  const AVPixelFormat format = m_renderBuffers[0]->GetFormat();
+
+  std::vector<uint8_t> copiedData(data, data + size);
+
+  m_bufferMutex.unlock();
+
+  const int stride = CRenderTranslator::TranslateWidthToBytes(width, format);
+
+  unsigned int scaleWidth = 400;
+  unsigned int scaleHeigth = 220;
+  CPicture::GetScale(width, height, scaleWidth, scaleHeigth);
+
+  const int bytesPerPixel = 4;
+  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeigth * bytesPerPixel);
+
+  const AVPixelFormat outFormat = AV_PIX_FMT_BGR0;
+  const int scaleStride = CRenderTranslator::TranslateWidthToBytes(scaleWidth, outFormat);
+
+  if (CPicture::ScaleImage(copiedData.data(), width, height, stride, format, scaledImage.data(),
+                           scaleWidth, scaleHeigth, scaleStride, outFormat))
+  {
+    CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeigth, scaleStride,
+                                         path);
+  }
 }
