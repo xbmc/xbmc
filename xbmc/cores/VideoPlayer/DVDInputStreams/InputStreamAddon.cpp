@@ -140,7 +140,7 @@ bool CInputStreamAddon::Open()
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->open)
     return false;
 
-  INPUTSTREAM props = { 0 };
+  INPUTSTREAM_PROPERTY props = {0};
   std::map<std::string, std::string> propsMap;
   for (auto &key : m_fileItemProps)
   {
@@ -246,18 +246,18 @@ int CInputStreamAddon::GetBlockSize()
 
 bool CInputStreamAddon::CanSeek()
 {
-  return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_SEEK) != 0;
+  return (m_caps.m_mask & INPUTSTREAM_SUPPORTS_SEEK) != 0;
 }
 
 bool CInputStreamAddon::CanPause()
 {
-  return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_PAUSE) != 0;
+  return (m_caps.m_mask & INPUTSTREAM_SUPPORTS_PAUSE) != 0;
 }
 
 // IDisplayTime
 CDVDInputStream::IDisplayTime* CInputStreamAddon::GetIDisplayTime()
 {
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_IDISPLAYTIME) == 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_IDISPLAYTIME) == 0)
     return nullptr;
 
   return this;
@@ -282,7 +282,7 @@ int CInputStreamAddon::GetTime()
 // ITime
 CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
 {
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_ITIME) == 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_ITIME) == 0)
     return nullptr;
 
   return this;
@@ -309,7 +309,7 @@ bool CInputStreamAddon::GetTimes(Times &times)
 // IPosTime
 CDVDInputStream::IPosTime* CInputStreamAddon::GetIPosTime()
 {
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_IPOSTIME) == 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_IPOSTIME) == 0)
     return nullptr;
 
   return this;
@@ -326,7 +326,7 @@ bool CInputStreamAddon::PosTime(int ms)
 // IDemux
 CDVDInputStream::IDemux* CInputStreamAddon::GetIDemux()
 {
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_IDEMUX) == 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_IDEMUX) == 0)
     return nullptr;
 
   return this;
@@ -334,7 +334,7 @@ CDVDInputStream::IDemux* CInputStreamAddon::GetIDemux()
 
 bool CInputStreamAddon::OpenDemux()
 {
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_IDEMUX) != 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_IDEMUX) != 0)
     return true;
   else
     return false;
@@ -368,14 +368,14 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 {
   INPUTSTREAM_INFO stream{};
   bool ret = m_struct.toAddon->get_stream(&m_struct, streamId, &stream);
-  if (!ret || stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
+  if (!ret || stream.m_streamType == INPUTSTREAM_TYPE_NONE)
     return nullptr;
 
   std::string codecName(stream.m_codecName);
   AVCodec* codec = nullptr;
 
-  if (stream.m_streamType != INPUTSTREAM_INFO::TYPE_TELETEXT &&
-      stream.m_streamType != INPUTSTREAM_INFO::TYPE_RDS)
+  if (stream.m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
+      stream.m_streamType != INPUTSTREAM_TYPE_RDS)
   {
     StringUtils::ToLower(codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
@@ -385,7 +385,7 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 
   CDemuxStream *demuxStream;
 
-  if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_AUDIO)
+  if (stream.m_streamType == INPUTSTREAM_TYPE_AUDIO)
   {
     CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
 
@@ -396,7 +396,7 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     audioStream->iBitsPerSample = stream.m_BitsPerSample;
     demuxStream = audioStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_VIDEO)
+  else if (stream.m_streamType == INPUTSTREAM_TYPE_VIDEO)
   {
     CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
 
@@ -468,17 +468,17 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     */
     demuxStream = videoStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
+  else if (stream.m_streamType == INPUTSTREAM_TYPE_SUBTITLE)
   {
     CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
     demuxStream = subtitleStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_TELETEXT)
+  else if (stream.m_streamType == INPUTSTREAM_TYPE_TELETEXT)
   {
     CDemuxStreamTeletext* teletextStream = new CDemuxStreamTeletext();
     demuxStream = teletextStream;
   }
-  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_RDS)
+  else if (stream.m_streamType == INPUTSTREAM_TYPE_RDS)
   {
     CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
     demuxStream = rdsStream;
@@ -510,8 +510,8 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
       demuxStream->ExtraData[j] = stream.m_ExtraData[j];
   }
 
-  if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
-    stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
+  if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_KEY_SYSTEM_NONE &&
+      stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_KEY_SYSTEM_COUNT)
   {
     static const CryptoSessionSystem map[] = {
         CRYPTO_SESSION_SYSTEM_NONE,
@@ -522,7 +522,7 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
       map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId, stream.m_cryptoInfo.flags));
 
-    if ((stream.m_features & INPUTSTREAM_INFO::FEATURE_DECODE) != 0)
+    if ((stream.m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
       demuxStream->externalInterfaces = m_subAddonProvider;
   }
   return demuxStream;
@@ -562,7 +562,7 @@ bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
   if (!m_struct.toAddon->demux_seek_time)
     return false;
 
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_IPOSTIME) != 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_IPOSTIME) != 0)
   {
     if (!PosTime(static_cast<int>(time)))
       return false;
@@ -606,7 +606,7 @@ bool CInputStreamAddon::IsRealtime()
 // IChapter
 CDVDInputStream::IChapter* CInputStreamAddon::GetIChapter()
 {
-  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTS_ICHAPTER) == 0)
+  if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_ICHAPTER) == 0)
     return nullptr;
 
   return this;
