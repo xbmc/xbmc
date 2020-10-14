@@ -69,9 +69,9 @@ class CGUIFontTTFBase
   friend class CGUIFont;
 
 public:
+  virtual ~CGUIFontTTFBase();
 
-  explicit CGUIFontTTFBase(const std::string& strFileName);
-  virtual ~CGUIFontTTFBase(void);
+  static CGUIFontTTFBase* CreateGUIFontTTF(const std::string& fileName);
 
   void Clear();
 
@@ -86,6 +86,8 @@ public:
   const std::string& GetFileName() const { return m_strFileName; };
 
 protected:
+  explicit CGUIFontTTFBase(const std::string& strFileName);
+
   struct Character
   {
     short offsetX, offsetY;
@@ -197,4 +199,3 @@ private:
 #include "GUIFontTTFDX.h"
 #define CGUIFontTTF CGUIFontTTFDX
 #endif
-

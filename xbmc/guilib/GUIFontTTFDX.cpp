@@ -27,6 +27,11 @@ using namespace Microsoft::WRL;
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
+CGUIFontTTFBase* CGUIFontTTFBase::CreateGUIFontTTF(const std::string& fileName)
+{
+  return new CGUIFontTTFDX(fileName);
+}
+
 CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName)
 : CGUIFontTTFBase(strFileName)
 {

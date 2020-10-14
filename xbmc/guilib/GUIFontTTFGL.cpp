@@ -34,8 +34,12 @@
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
-: CGUIFontTTFBase(strFileName)
+CGUIFontTTFBase* CGUIFontTTFBase::CreateGUIFontTTF(const std::string& fileName)
+{
+  return new CGUIFontTTFGL(fileName);
+}
+
+CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName) : CGUIFontTTFBase(strFileName)
 {
   m_updateY1 = 0;
   m_updateY2 = 0;

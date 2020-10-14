@@ -28,6 +28,14 @@
 // stuff for freetype
 #include <ft2build.h>
 
+#if defined(HAS_GL) || defined(HAS_GLES)
+#include "system_gl.h"
+#endif
+
+#if defined(HAS_DX)
+#include "guilib/D3DResource.h"
+#endif
+
 #ifdef TARGET_WINDOWS_STORE
 #define generic GenericFromFreeTypeLibrary
 #endif

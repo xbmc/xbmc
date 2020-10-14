@@ -134,7 +134,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
-    pFontFile = new CGUIFontTTF(TTFfontName);
+    pFontFile = CGUIFontTTFBase::CreateGUIFontTTF(TTFfontName);
     bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect, 1.0f, border);
 
     if (!bFontLoaded)
@@ -226,7 +226,7 @@ void GUIFontManager::ReloadTTFFonts(void)
     CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
     if (!pFontFile)
     {
-      pFontFile = new CGUIFontTTF(TTFfontName);
+      pFontFile = CGUIFontTTFBase::CreateGUIFontTTF(TTFfontName);
       if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
       {
         delete pFontFile;
