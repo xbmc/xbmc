@@ -303,7 +303,7 @@ bool CGUIFontTTFBase::Load(const std::string& strFilename, float height, float a
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
 
-  m_textureWidth = CBaseTexture::PadPow2(m_textureWidth);
+  m_textureWidth = CTexture::PadPow2(m_textureWidth);
 
   if (m_textureWidth > m_renderSystem->GetMaxTextureSize())
     m_textureWidth = m_renderSystem->GetMaxTextureSize();
@@ -748,7 +748,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
           return false;
         }
 
-        CBaseTexture* newTexture = NULL;
+        CTexture* newTexture = NULL;
         newTexture = ReallocTexture(newHeight);
         if(newTexture == NULL)
         {

@@ -33,7 +33,7 @@ public:
   void BindToUnit(unsigned int unit) override;
 
   // GUI texture interface
-  CBaseTexture* GetTexture() { return m_texture.get(); }
+  CTexture* GetTexture() { return m_texture.get(); }
 
 protected:
   AVPixelFormat TranslateFormat(unsigned int textureFormat);
@@ -42,7 +42,7 @@ protected:
   // Texture parameters
   SCALINGMETHOD m_scalingMethod;
   unsigned int m_textureFormat = XB_FMT_UNKNOWN;
-  std::unique_ptr<CBaseTexture> m_texture;
+  std::unique_ptr<CTexture> m_texture;
 };
 
 } // namespace RETRO

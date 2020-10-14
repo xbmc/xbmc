@@ -106,9 +106,14 @@ bool CThumbnailWriter::DoWork()
   return success;
 }
 
-bool CPicture::ResizeTexture(const std::string &image, CBaseTexture *texture,
-  uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
-  CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
+bool CPicture::ResizeTexture(const std::string& image,
+                             CTexture* texture,
+                             uint32_t& dest_width,
+                             uint32_t& dest_height,
+                             uint8_t*& result,
+                             size_t& result_size,
+                             CPictureScalingAlgorithm::Algorithm
+                                 scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   if (image.empty() || texture == NULL)
     return false;
@@ -180,8 +185,12 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   return success;
 }
 
-bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
-  CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
+bool CPicture::CacheTexture(CTexture* texture,
+                            uint32_t& dest_width,
+                            uint32_t& dest_height,
+                            const std::string& dest,
+                            CPictureScalingAlgorithm::Algorithm
+                                scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   return CacheTexture(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
                       texture->GetOrientation(), dest_width, dest_height, dest, scalingAlgorithm);
@@ -275,7 +284,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     int y = i / num_across;
     // load in the image
     unsigned int width = tile_width - 2*tile_gap, height = tile_height - 2*tile_gap;
-    CBaseTexture *texture = CTexture::LoadFromFile(files[i], width, height, true);
+    CTexture* texture = CTexture::LoadFromFile(files[i], width, height, true);
     if (texture && texture->GetWidth() && texture->GetHeight())
     {
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);

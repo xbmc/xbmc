@@ -82,7 +82,11 @@ public:
                    const std::string &strExtensions="");
   void StartSlideShow();
   bool InSlideShow() const;
-  void OnLoadPic(int iPic, int iSlideNumber, const std::string &strFileName, CBaseTexture* pTexture, bool bFullSize);
+  void OnLoadPic(int iPic,
+                 int iSlideNumber,
+                 const std::string& strFileName,
+                 CTexture* pTexture,
+                 bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();

@@ -14,7 +14,7 @@
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
-class CDXTexture : public CBaseTexture
+class CDXTexture : public CTexture
 {
 public:
   CDXTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_UNKNOWN);
