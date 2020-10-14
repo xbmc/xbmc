@@ -140,7 +140,7 @@ void CAdvancedSettings::Initialize()
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
   m_videoDefaultPlayer = "VideoPlayer";
   m_videoIgnoreSecondsAtStart = 3*60;
-  m_videoIgnorePercentAtEnd   = 8.0f;
+  m_videoIgnorePercentAtEnd   = 10.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = -1;
   m_videoNonLinStretchRatio = 0.5f;
