@@ -40,27 +40,6 @@ public:
 
 private:
   /*!
-   * \brief Install the specified game client
-   *
-   * If the game client is not installed, a model dialog is shown installing
-   * the game client. If the installation fails, an error dialog is shown.
-   *
-   * \param gameClient The game client to install
-   *
-   * \return True if the game client is installed, false otherwise
-   */
-  static bool Install(const std::string& gameClient);
-
-  /*!
-   * \brief Enable the specified game client
-   *
-   * \param gameClient the game client to enable
-   *
-   * \return True if the game client is enabled, false otherwise
-   */
-  static bool Enable(const std::string& gameClient);
-
-  /*!
    * \brief Get an initialized select dialog
    *
    * \param title The title of the select dialog

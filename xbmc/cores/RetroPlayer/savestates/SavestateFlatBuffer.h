@@ -49,7 +49,7 @@ public:
   void SetType(SAVE_TYPE type) override;
   void SetSlot(uint8_t slot) override;
   void SetLabel(const std::string& label) override;
-  void SetCreated(const CDateTime& created) override;
+  void SetCreated(const CDateTime& createdUTC) override;
   void SetGameFileName(const std::string& gameFileName) override;
   void SetTimestampFrames(uint64_t timestampFrames) override;
   void SetTimestampWallClock(double timestampWallClock) override;

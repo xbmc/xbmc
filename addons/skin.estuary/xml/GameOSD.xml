@@ -5,7 +5,7 @@
 	<depth>DepthOSD</depth>
 	<controls>
 		<control type="group" id="1">
-			<visible>!Window.IsActive(1101) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
+			<visible>!Window.IsActive(1101) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation) + !Window.IsActive(InGameSaves)</visible>
 			<control type="group" id="10">
 				<visible>System.GetBool(gamesgeneral.showosdhelp)</visible>
 				<defaultcontrol always="true">1103</defaultcontrol>
@@ -62,13 +62,13 @@
 			<control type="group" id="20">
 				<visible>!System.GetBool(gamesgeneral.showosdhelp)</visible>
 				<centerleft>50%</centerleft>
-				<height>400</height>
+				<height>480</height>
 				<centertop>50%</centertop>
 				<width>700</width>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
-					<param name="height" value="400" />
+					<param name="height" value="480" />
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
@@ -76,7 +76,7 @@
 					<top>80</top>
 					<control type="list" id="1103">
 						<defaultcontrol always="true">2101</defaultcontrol>
-						<height>400</height>
+						<height>480</height>
 						<orientation>vertical</orientation>
 						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
 							<control type="image">
@@ -218,6 +218,12 @@
 								<label2>$LOCALIZE[31060]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
+							</item>
+							<item id="2107">
+								<description>Saved games button</description>
+								<label>$LOCALIZE[35249]</label>
+								<icon>osd/fullscreen/buttons/saves.png</icon>
+								<onclick>ActivateWindow(InGameSaves)</onclick>
 							</item>
 							<item id="2108">
 								<description>Settings button</description>
