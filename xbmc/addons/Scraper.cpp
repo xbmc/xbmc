@@ -820,9 +820,16 @@ void DetailsFromFileItem<CArtist>(const CFileItem &item, CArtist &artist)
   int nThumbs = item.GetProperty("artist.thumbs").asInteger32();
   ParseThumbs(artist.thumbURL, item, nThumbs, "artist.thumb");
 
+  // Support deprecated fanarts property, add to artist.thumbURL
   int nFanart = item.GetProperty("artist.fanarts").asInteger32();
-  artist.fanart.m_xml = ParseFanart(item, nFanart, "artist.fanart");
-  artist.fanart.Unpack();
+  if (nFanart > 0)
+  {
+    CFanart fanart;
+    fanart.m_xml = ParseFanart(item, nFanart, "artist.fanart");
+    fanart.Unpack();
+    for (unsigned int i = 0; i < fanart.GetNumFanarts(); i++)
+      artist.thumbURL.AddParsedUrl(fanart.GetImageURL(i), "fanart", fanart.GetPreviewURL(i));
+  }
 }
 
 template<>

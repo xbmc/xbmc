@@ -758,46 +758,24 @@ void CGUIDialogMusicInfo::OnGetArt()
 
  // Grab the thumbnails of this art type scraped from the web
   std::vector<std::string> remotethumbs;
-  if (type == "fanart" && m_bArtistInfo)
-  {
-    // Scraped artist fanart URLs are held separately from other art types
-    //! @todo Change once scraping all art types is unified
-    for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
-    {
-      std::string strItemPath;
-      strItemPath = StringUtils::Format("fanart://Remote%i", i);
-      CFileItemPtr item(new CFileItem(strItemPath, false));
-      // Preview "thumb" of fanart image for browsing
-      std::string thumb = m_artist.fanart.GetPreviewURL(i);
-      std::string wrappedthumb = CTextureUtils::GetWrappedThumbURL(thumb);
-      item->SetArt("thumb", wrappedthumb);
-      item->SetArt("icon", "DefaultPicture.png");
-      item->SetLabel(g_localizeStrings.Get(20441));
-
-      items.Add(item);
-    }
-  }
+  // Art type is encoded into the scraper XML as optional "aspect=" field
+  // Type "thumb" returns URLs for all types of art including those without aspect.
+  // Those URL without aspect are also returned for all other type values.
+  if (m_bArtistInfo)
+    m_artist.thumbURL.GetThumbUrls(remotethumbs, type);
   else
+    m_album.thumbURL.GetThumbUrls(remotethumbs, type);
+
+  for (unsigned int i = 0; i < remotethumbs.size(); ++i)
   {
-    // Art type is encoded into the scraper XML as optional "aspect=" field
-    // Type "thumb" returns URLs for all types of art including those without aspect.
-    // Those URL without aspect are also returned for all other type values.
-    if (m_bArtistInfo)
-      m_artist.thumbURL.GetThumbUrls(remotethumbs, type);
-    else
-      m_album.thumbURL.GetThumbUrls(remotethumbs, type);
+    std::string strItemPath;
+    strItemPath = StringUtils::Format("thumb://Remote%i", i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetArt("thumb", remotethumbs[i]);
+    item->SetArt("icon", "DefaultPicture.png");
+    item->SetLabel(g_localizeStrings.Get(13513));
 
-    for (unsigned int i = 0; i < remotethumbs.size(); ++i)
-    {
-      std::string strItemPath;
-      strItemPath = StringUtils::Format("thumb://Remote%i", i);
-      CFileItemPtr item(new CFileItem(strItemPath, false));
-      item->SetArt("thumb", remotethumbs[i]);
-      item->SetArt("icon", "DefaultPicture.png");
-      item->SetLabel(g_localizeStrings.Get(13513));
-
-      items.Add(item);
-    }
+    items.Add(item);
   }
 
   // Local art
@@ -823,9 +801,6 @@ void CGUIDialogMusicInfo::OnGetArt()
       if (type == "thumb")
         // Local music thumbnail images named by <musicthumbs>
         localArt = item.GetUserMusicThumb(true);
-      else if (type == "fanart")
-        // Local fanart images named by <fanart>
-        localArt = item.GetLocalFanart();
       else
       { // Check case and ext insenitively for local images with type as name
         // e.g. <arttype>.jpg
@@ -875,8 +850,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   for (auto& item : items)
   {
     // Skip images from remote sources, recache done by refresh (could be slow)
-    if (StringUtils::StartsWith(item->GetPath(), "fanart://Remote") ||
-        StringUtils::StartsWith(item->GetPath(), "thumb://Remote"))
+    if (StringUtils::StartsWith(item->GetPath(), "thumb://Remote"))
       continue;
     std::string thumb(item->GetArt("thumb"));
     if (thumb.empty())
@@ -910,12 +884,6 @@ void CGUIDialogMusicInfo::OnGetArt()
     {
       int number = atoi(result.substr(14).c_str());
       newArt = remotethumbs[number];
-    }
-    else if (StringUtils::StartsWith(result, "fanart://Remote"))
-    {
-      int iFanart = atoi(result.substr(15).c_str());
-      m_artist.fanart.SetPrimaryFanart(iFanart);
-      newArt = m_artist.fanart.GetImageURL();
     }
     else if (result == "thumb://Thumb")
       newArt = m_item->GetArt("thumb");

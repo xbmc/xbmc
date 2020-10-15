@@ -125,7 +125,7 @@ void CMusicDatabase::CreateTables()
               " strBorn text, strFormed text, strGenres text, strMoods text, "
               " strStyles text, strInstruments text, strBiography text, "
               " strDied text, strDisbanded text, strYearsActive text, "
-              " strImage text, strFanart text, "
+              " strImage text, "
               " lastScraped varchar(20) default NULL, "
               " bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
               " idInfoSetting INTEGER NOT NULL DEFAULT 0, "
@@ -498,7 +498,7 @@ void CMusicDatabase::CreateViews()
               "  strBorn, strFormed, strGenres,"
               "  strMoods, strStyles, strInstruments, "
               "  strBiography, strDied, strDisbanded, "
-              "  strYearsActive, strImage, strFanart, "
+              "  strYearsActive, strImage, "
               "  bScrapedMBID, lastScraped, "
               "  dateAdded, dateNew, dateModified "
               "FROM artist");
@@ -1614,8 +1614,7 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
                artist.strBiography, artist.strDied,
                artist.strDisbanded,
                StringUtils::Join(artist.yearsActive, itemSeparator).c_str(),
-               artist.thumbURL.GetData(),
-               artist.fanart.m_xml.c_str());
+               artist.thumbURL.GetData());
 
   DeleteArtistDiscography(artist.idArtist);
   for (const auto &disc : artist.discography)
@@ -1790,10 +1789,8 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                                   const std::string& strStyles, const std::string& strInstruments,
                                   const std::string& strBiography, const std::string& strDied,
                                   const std::string& strDisbanded, const std::string& strYearsActive,
-                                  const std::string& strImage, const std::string& strFanart)
+                                  const std::string& strImage)
 {
-  CScraperUrl thumbURL;
-  CFanart fanart;
   if (idArtist < 0)
     return -1;
 
@@ -1818,7 +1815,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       " strBorn = '%s', strFormed = '%s', strGenres = '%s', "
                       " strMoods = '%s', strStyles = '%s', strInstruments = '%s', "
                       " strBiography = '%s', strDied = '%s', strDisbanded = '%s', "
-                      " strYearsActive = '%s', strImage = '%s', strFanart = '%s', "
+                      " strYearsActive = '%s', strImage = '%s', "
                       " lastScraped = '%s', bScrapedMBID = %i",
                       strArtist.c_str(),
                       /* strSortName.c_str(),*/
@@ -1827,7 +1824,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       strBorn.c_str(), strFormed.c_str(), strGenres.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strInstruments.c_str(),
                       strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
-                      strYearsActive.c_str(), strImage.c_str(), strFanart.c_str(),
+                      strYearsActive.c_str(), strImage.c_str(),
                       CDateTime::GetUTCDateTime().GetAsDBDateTime().c_str(), isScrapedMBID);
   if (useMBIDNull)
     strSQL += PrepareSQL(", strMusicBrainzArtistID = NULL");
@@ -2989,8 +2986,6 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
 
   if (needThumb)
   {
-    artist.fanart.m_xml = record->at(artist_strFanart).get_asString();
-    artist.fanart.Unpack();
     artist.thumbURL.ParseFromData(record->at(artist_strImage).get_asString());
   }
 
@@ -8579,7 +8574,55 @@ void CMusicDatabase::UpdateTables(int version)
                 "WHERE song.idAlbum = album.idAlbum) "
                 "WHERE EXISTS (SELECT 1 FROM song WHERE song.idAlbum = album.idAlbum)");
   }
-
+  if (version < 82)
+  {
+    // Update artist table combining fanart URL data into strImage field
+    // Clear empty URL data <fanart /> and <thumb />
+    m_pDS->exec("UPDATE artist SET strFanart = '' WHERE strFanart = '<fanart />'");
+    m_pDS->exec("UPDATE artist SET strImage = '' WHERE strImage = '<thumb />'");
+    //Prepare strFanart - strip <fanart>...</fanart>, add aspect to the URLs
+    m_pDS->exec("UPDATE artist SET strFanart = REPLACE(strFanart, '<fanart>', '')");
+    m_pDS->exec("UPDATE artist SET strFanart = REPLACE(strFanart, '</fanart>', '')");
+    m_pDS->exec("UPDATE artist SET strFanart = REPLACE(strFanart, 'thumb preview', 'thumb "
+                "aspect=\"fanart\" preview')");
+    // Remove strFanart column from artist table
+    m_pDS->exec("CREATE TABLE artist_new (idArtist INTEGER PRIMARY KEY, "
+                "strArtist varchar(256), strMusicBrainzArtistID text, "
+                "strSortName text, "
+                "strType text, strGender text, strDisambiguation text, "
+                "strBorn text, strFormed text, strGenres text, strMoods text, "
+                "strStyles text, strInstruments text, strBiography text, "
+                "strDied text, strDisbanded text, strYearsActive text, "
+                "strImage text, "
+                "lastScraped varchar(20) default NULL, "
+                "bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
+                "idInfoSetting INTEGER NOT NULL DEFAULT 0, "
+                "dateAdded TEXT, dateNew TEXT, dateModified TEXT)");
+    // Concatentate fanart URLs into strImage field
+    // Prepare SQL to convert CONCAT to || in SQLite
+    m_pDS->exec(PrepareSQL("INSERT INTO artist_new "
+                           "(idArtist, strArtist, strMusicBrainzArtistID, "
+                           "strSortName, strType, strGender, strDisambiguation, "
+                           "strBorn, strFormed, strGenres, strMoods, "
+                           "strStyles , strInstruments , strBiography , "
+                           "strDied, strDisbanded, strYearsActive, "
+                           "strImage, "
+                           "lastScraped, bScrapedMBID, idInfoSetting, "
+                           "dateAdded, dateNew, dateModified) "
+                           "SELECT "
+                           "artist.idArtist, "
+                           "strArtist, strMusicBrainzArtistID, "
+                           "strSortName, strType, strGender, strDisambiguation, "
+                           "strBorn, strFormed, strGenres, strMoods, "
+                           "strStyles, strInstruments, strBiography, "
+                           "strDied, strDisbanded, strYearsActive, "
+                           "CONCAT(strImage, strFanart), "
+                           "lastScraped, bScrapedMBID, idInfoSetting, "
+                           "dateAdded, dateNew, dateModified "
+                           "FROM artist"));
+    m_pDS->exec("DROP TABLE artist");
+    m_pDS->exec("ALTER TABLE artist_new RENAME TO artist");
+  }
   // Set the verion of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
   // that needs this. Forced rescanning (of music files that have not changed since they were
@@ -8600,7 +8643,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 81; // Bump version to add iDisctotal to songview for MusicPlayer infolabel and boolean
+  return 82;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -12007,11 +12050,6 @@ std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId
     CArtist artist;
     if (GetArtist(mediaId, artist))
     {
-      //! @todo artwork: fanart stored separately, doesn't need to be
-      if (artist.fanart.GetNumFanarts())
-        result.emplace_back("fanart");
-
-      // all other images
       for (const auto& urlEntry : artist.thumbURL.GetUrls())
       {
         std::string artType = urlEntry.m_aspect;

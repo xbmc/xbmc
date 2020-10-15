@@ -338,7 +338,7 @@ public:
                     const std::string& strStyles, const std::string& strInstruments,
                     const std::string& strBiography, const std::string& strDied,
                     const std::string& strDisbanded, const std::string& strYearsActive,
-                    const std::string& strImage, const std::string& strFanart);
+                    const std::string& strImage);
   bool UpdateArtistScrapedMBID(int idArtist, const std::string& strMusicBrainzArtistID);
   bool GetTranslateBlankArtist() { return m_translateBlankArtist; }
   void SetTranslateBlankArtist(bool translate) { m_translateBlankArtist = translate; }
@@ -915,7 +915,6 @@ private:
     artist_strDisbanded,
     artist_strYearsActive,
     artist_strImage,
-    artist_strFanart,
     artist_bScrapedMBID,
     artist_lastScraped,
     artist_dateAdded,

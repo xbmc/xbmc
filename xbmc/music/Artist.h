@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "utils/Fanart.h"
 #include "utils/ScraperUrl.h"
 #include "utils/StringUtils.h"
 
@@ -110,8 +109,7 @@ public:
   std::string strDisbanded;
   std::vector<std::string> yearsActive;
   std::string strPath;
-  CScraperUrl thumbURL; // Data for available thumbs
-  CFanart fanart;  // Data for available fanart, urls etc.
+  CScraperUrl thumbURL; // Data for available remote art
   std::map<std::string, std::string> art;  // Current artwork - thumb, fanart etc.
   std::vector<CDiscoAlbum> discography;
   CDateTime dateAdded; // From related file creation or modification times, or when (re-)scanned

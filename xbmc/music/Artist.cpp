@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Fanart.h"
 #include "utils/XMLUtils.h"
 
 #include <algorithm>
@@ -55,8 +56,7 @@ void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true 
   strDisbanded = source.strDisbanded;
   yearsActive = source.yearsActive;
 
-  thumbURL = source.thumbURL; // Available remote thumbs
-  fanart = source.fanart;  // Available remote fanart
+  thumbURL = source.thumbURL; // Available remote art
   // Current artwork - thumb, fanart etc., to be stored in art table
   if (!source.art.empty())
     art = source.art;
@@ -133,10 +133,11 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     node = node->NextSiblingElement("album");
   }
 
-  // Available artist fanart
+  // Support old style <fanart></fanart> for backwards compatibility of old nfo files and scrapers
   const TiXmlElement *fanart2 = artist->FirstChildElement("fanart");
   if (fanart2)
   {
+    CFanart fanart;
     // we prefix to handle mixed-mode nfo's with fanart set
     if (prioritise)
     {
@@ -147,6 +148,9 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     else
       fanart.m_xml << *fanart2;
     fanart.Unpack();
+    // Append fanart to other image URLs
+    for (unsigned int i = 0; i < fanart.GetNumFanarts(); i++)
+      thumbURL.AddParsedUrl(fanart.GetImageURL(i), "fanart", fanart.GetPreviewURL(i));
   }
 
  // Current artwork  - thumb, fanart etc. (the chosen art, not the lists of those available)
@@ -190,7 +194,7 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
   XMLUtils::SetString(artist,                 "biography", strBiography);
   XMLUtils::SetString(artist,                      "died", strDied);
   XMLUtils::SetString(artist,                 "disbanded", strDisbanded);
-  // Available thumbs
+  // Available remote art
   if (thumbURL.HasData())
   {
     CXBMCTinyXML doc;
@@ -203,13 +207,6 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
     }
   }
   XMLUtils::SetString(artist,        "path", strPath);
-  // Available fanart
-  if (fanart.m_xml.size())
-  {
-    CXBMCTinyXML doc;
-    doc.Parse(fanart.m_xml);
-    artist->InsertEndChild(*doc.RootElement());
-  }
 
   // Discography
   for (const auto& it : discography)
