@@ -178,8 +178,7 @@ bool CDRMUtils::FindPlanes()
 {
   for (size_t i = 0; i < m_crtcs.size(); i++)
   {
-    const auto crtc = m_crtcs[i].get();
-    if (!crtc)
+    if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
     auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [this, &i](auto& plane) {
@@ -208,7 +207,7 @@ bool CDRMUtils::FindPlanes()
 
     if (videoPlane->get() && guiPlane->get())
     {
-      m_crtc = crtc;
+      m_crtc = m_crtcs[i].get();
       m_video_plane = videoPlane->get();
       m_gui_plane = guiPlane->get();
       break;
@@ -216,13 +215,15 @@ bool CDRMUtils::FindPlanes()
 
     if (guiPlane->get())
     {
-      if (!m_crtc && m_encoder->GetCrtcId() == crtc->GetCrtcId())
+      if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
       {
-        m_crtc = crtc;
+        m_crtc = m_crtcs[i].get();
         m_gui_plane = guiPlane->get();
       }
     }
   }
+
+  CLog::Log(LOGINFO, "CDRMUtils::{} - using crtc: {}", __FUNCTION__, m_crtc->GetCrtcId());
 
   // video plane may not be available
   if (m_video_plane)
@@ -237,88 +238,62 @@ bool CDRMUtils::FindPlanes()
 
 void CDRMUtils::PrintDrmDeviceInfo(drmDevicePtr device)
 {
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} - Device Info:", __FUNCTION__);
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} -   available_nodes: {:#04x}", __FUNCTION__,
-            device->available_nodes);
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} -   nodes:", __FUNCTION__);
+  std::string message;
+
+  // clang-format off
+  message.append(fmt::format("CDRMUtils::{} - DRM Device Info:", __FUNCTION__));
+  message.append(fmt::format("\n  available_nodes: {:#04x}", device->available_nodes));
+  message.append("\n  nodes:");
+
   for (int i = 0; i < DRM_NODE_MAX; i++)
   {
     if (device->available_nodes & 1 << i)
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} -     nodes[{}]: {}", __FUNCTION__, i, device->nodes[i]);
+      message.append(fmt::format("\n    nodes[{}]: {}", i, device->nodes[i]));
   }
 
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} -   bustype: {:#04x}", __FUNCTION__, device->bustype);
+  message.append(fmt::format("\n  bustype: {:#04x}", device->bustype));
 
   if (device->bustype == DRM_BUS_PCI)
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     pci:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       domain: {:#04x}", __FUNCTION__,
-              device->businfo.pci->domain);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       bus:    {:#02x}", __FUNCTION__,
-              device->businfo.pci->bus);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       dev:    {:#02x}", __FUNCTION__,
-              device->businfo.pci->dev);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       func:   {:#1}", __FUNCTION__,
-              device->businfo.pci->func);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     pci:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       vendor_id:    {:#04x}", __FUNCTION__,
-              device->deviceinfo.pci->vendor_id);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       device_id:    {:#04x}", __FUNCTION__,
-              device->deviceinfo.pci->device_id);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       subvendor_id: {:#04x}", __FUNCTION__,
-              device->deviceinfo.pci->subvendor_id);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       subdevice_id: {:#04x}", __FUNCTION__,
-              device->deviceinfo.pci->subdevice_id);
+    message.append("\n    pci:");
+    message.append(fmt::format("\n      domain: {:#04x}", device->businfo.pci->domain));
+    message.append(fmt::format("\n      bus:    {:#02x}", device->businfo.pci->bus));
+    message.append(fmt::format("\n      dev:    {:#02x}", device->businfo.pci->dev));
+    message.append(fmt::format("\n      func:   {:#1}", device->businfo.pci->func));
+
+    message.append("\n  deviceinfo:");
+    message.append("\n    pci:");
+    message.append(fmt::format("\n      vendor_id:    {:#04x}", device->deviceinfo.pci->vendor_id));
+    message.append(fmt::format("\n      device_id:    {:#04x}", device->deviceinfo.pci->device_id));
+    message.append(fmt::format("\n      subvendor_id: {:#04x}", device->deviceinfo.pci->subvendor_id));
+    message.append(fmt::format("\n      subdevice_id: {:#04x}", device->deviceinfo.pci->subdevice_id));
   }
   else if (device->bustype == DRM_BUS_USB)
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     usb:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       bus: {:#03}", __FUNCTION__,
-              device->businfo.usb->bus);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       dev: {:#03}", __FUNCTION__,
-              device->businfo.usb->dev);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     usb:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       vendor:  {:#04x}", __FUNCTION__,
-              device->deviceinfo.usb->vendor);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       product: {:#04x}", __FUNCTION__,
-              device->deviceinfo.usb->product);
+    message.append("\n    usb:");
+    message.append(fmt::format("\n      bus: {:#03x}", device->businfo.usb->bus));
+    message.append(fmt::format("\n      dev: {:#03x}", device->businfo.usb->dev));
+
+    message.append("\n  deviceinfo:");
+    message.append("\n    usb:");
+    message.append(fmt::format("\n      vendor:  {:#04x}", device->deviceinfo.usb->vendor));
+    message.append(fmt::format("\n      product: {:#04x}", device->deviceinfo.usb->product));
   }
   else if (device->bustype == DRM_BUS_PLATFORM)
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     platform:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       fullname: {}", __FUNCTION__,
-              device->businfo.platform->fullname);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     platform:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       compatible:", __FUNCTION__);
-
-    auto compatible = device->deviceinfo.platform->compatible;
-    while (*compatible)
-    {
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} -         {}:", __FUNCTION__, *compatible);
-      compatible++;
-    }
+    message.append("\n    platform:");
+    message.append(fmt::format("\n      fullname: {}", device->businfo.platform->fullname));
   }
   else if (device->bustype == DRM_BUS_HOST1X)
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     host1x:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       fullname: {}", __FUNCTION__,
-              device->businfo.host1x->fullname);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -   deviceinfo:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -     host1x:", __FUNCTION__);
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} -       compatible:", __FUNCTION__);
-
-    auto compatible = device->deviceinfo.host1x->compatible;
-    while (*compatible)
-    {
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} -         {}:", __FUNCTION__, *compatible);
-      compatible++;
-    }
+    message.append("\n    host1x:");
+    message.append(fmt::format("\n      fullname: {}", device->businfo.host1x->fullname));
   }
   else
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} - unhandled bus type", __FUNCTION__);
+    message.append("\n    unhandled bus type");
+  // clang-format on
+
+  CLog::Log(LOGDEBUG, "{}", message);
 }
 
 bool CDRMUtils::OpenDrm(bool needConnector)
@@ -424,7 +399,10 @@ bool CDRMUtils::InitDrm()
 
   auto resources = drmModeGetResources(m_fd);
   if (!resources)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm resources: {}", __FUNCTION__, strerror(errno));
     return false;
+  }
 
   for (int i = 0; i < resources->count_connectors; i++)
     m_connectors.emplace_back(std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]));
@@ -439,21 +417,15 @@ bool CDRMUtils::InitDrm()
 
   auto planeResources = drmModeGetPlaneResources(m_fd);
   if (!planeResources)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm plane resources: {}", __FUNCTION__, strerror(errno));
     return false;
+  }
 
   for (uint32_t i = 0; i < planeResources->count_planes; i++)
-    m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
-
-  for (auto& plane : m_planes)
   {
-    if (!plane->FindModifiers())
-    {
-      if (plane->SupportsFormat(DRM_FORMAT_ARGB8888))
-        plane->GetModifiersForFormat(DRM_FORMAT_ARGB8888)->emplace_back(DRM_FORMAT_MOD_LINEAR);
-
-      if (plane->SupportsFormat(DRM_FORMAT_XRGB8888))
-        plane->GetModifiersForFormat(DRM_FORMAT_XRGB8888)->emplace_back(DRM_FORMAT_MOD_LINEAR);
-    }
+    m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
+    m_planes[i]->FindModifiers();
   }
 
   drmModeFreePlaneResources(planeResources);
@@ -509,8 +481,15 @@ bool CDRMUtils::FindConnector()
   auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [this](auto& connector) {
     return connector->GetEncoderId() > 0 && connector->IsConnected();
   });
+
   if (connector == m_connectors.end())
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find connected connector", __FUNCTION__);
     return false;
+  }
+
+  CLog::Log(LOGINFO, "CDRMUtils::{} - using connector: {}", __FUNCTION__,
+            *connector->get()->GetConnectorId());
 
   m_connector = connector->get();
   return true;
@@ -521,8 +500,16 @@ bool CDRMUtils::FindEncoder()
   auto encoder = std::find_if(m_encoders.begin(), m_encoders.end(), [this](auto& encoder) {
     return encoder->GetEncoderId() == m_connector->GetEncoderId();
   });
+
   if (encoder == m_encoders.end())
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find encoder for connector id: {}", __FUNCTION__,
+              *m_connector->GetConnectorId());
     return false;
+  }
+
+  CLog::Log(LOGINFO, "CDRMUtils::{} - using encoder: {}", __FUNCTION__,
+            encoder->get()->GetEncoderId());
 
   m_encoder = encoder->get();
   return true;

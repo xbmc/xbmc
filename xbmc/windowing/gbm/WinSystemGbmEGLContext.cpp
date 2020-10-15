@@ -33,7 +33,8 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  uint32_t visualId = m_DRM->GetGuiPlane()->GetFormat();
+  auto plane = m_DRM->GetGuiPlane();
+  uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
 
   // prefer alpha visual id, fallback to non-alpha visual id
   if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
@@ -67,10 +68,15 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
-  std::vector<uint64_t>* modifiers = m_DRM->GetGuiPlane()->GetModifiersForFormat(format);
 
-  if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(),
-                                         modifiers->size()))
+  std::vector<uint64_t> modifiers;
+
+  auto plane = m_DRM->GetGuiPlane();
+  if (plane)
+    modifiers = plane->GetModifiersForFormat(format);
+
+  if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
+                                         modifiers.size()))
   {
     CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
     return false;

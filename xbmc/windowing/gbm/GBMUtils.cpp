@@ -43,8 +43,11 @@ bool CGBMUtils::CGBMDevice::CreateSurface(
 {
   gbm_surface* surface{nullptr};
 #if defined(HAS_GBM_MODIFIERS)
-  surface = gbm_surface_create_with_modifiers(m_device, width, height, format, modifiers,
-                                              modifiers_count);
+  if (modifiers)
+  {
+    surface = gbm_surface_create_with_modifiers(m_device, width, height, format, modifiers,
+                                                modifiers_count);
+  }
 #endif
   if (!surface)
   {
