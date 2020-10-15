@@ -259,8 +259,9 @@ public:
    \brief Starts a video library cleanup.
    \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
    \param content Content type to clean, blank for everything
+   \param strDirectory The path to clean or "" (empty string) for a global clean.
    */
-  void StartVideoCleanup(bool userInitiated = true, const std::string& content = "");
+  void StartVideoCleanup(bool userInitiated = true, const std::string& content = "", const std::string& strDirectory = "");
 
   /*!
    \brief Starts a video library update.

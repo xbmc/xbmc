@@ -1821,7 +1821,8 @@
     "permission": "RemoveData",
     "params": [
       { "name": "showdialogs", "type": "boolean", "default": true, "description": "Whether or not to show the progress bar or any other GUI dialog" },
-      { "name": "content", "type": "string", "default": "video", "enum": [ "video", "movies", "tvshows", "musicvideos" ], "description": "Content type to clean for" }
+      { "name": "content", "type": "string", "default": "video", "enum": [ "video", "movies", "tvshows", "musicvideos" ], "description": "Content type to clean for" },
+      { "name": "directory", "type": "string", "default": "", "description": "Path to the directory to clean up; performs a global cleanup if not specified" }
     ],
     "returns": "string"
   },

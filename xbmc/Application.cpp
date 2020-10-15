@@ -4763,18 +4763,23 @@ void CApplication::StopMusicScan()
 }
 
 void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
-                                     const std::string& content /* = "" */)
+                                     const std::string& content /* = "" */,
+                                     const std::string& strDirectory /* = "" */)
 {
   if (userInitiated && CVideoLibraryQueue::GetInstance().IsRunning())
     return;
 
   std::set<int> paths;
-  if (!content.empty())
+  if (!content.empty() || !strDirectory.empty())
   {
     CVideoDatabase db;
     std::set<std::string> contentPaths;
-    if (db.Open() && db.GetPaths(contentPaths))
+    if (db.Open())
     {
+      if (!strDirectory.empty())
+        contentPaths.insert(strDirectory);
+      else
+        db.GetPaths(contentPaths);
       for (const std::string& path : contentPaths)
       {
         if (db.GetContentForPath(path) == content)

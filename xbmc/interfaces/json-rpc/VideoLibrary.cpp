@@ -901,11 +901,16 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
 
 JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  std::string directory = parameterObject["directory"].asString();
   std::string cmd;
   if (parameterObject["content"].empty())
-    cmd = StringUtils::Format("cleanlibrary(video, {0})", parameterObject["showdialogs"].asBoolean() ? "true" : "false");
+    cmd = StringUtils::Format("cleanlibrary(video, {0}, {1})",
+                              parameterObject["showdialogs"].asBoolean() ? "true" : "false",
+                              StringUtils::Paramify(directory).c_str());
   else
-    cmd = StringUtils::Format("cleanlibrary({0}, {1})", parameterObject["content"].asString(), parameterObject["showdialogs"].asBoolean() ? "true" : "false");
+    cmd = StringUtils::Format("cleanlibrary({0}, {1}, {2})", parameterObject["content"].asString(),
+                              parameterObject["showdialogs"].asBoolean() ? "true" : "false",
+                              StringUtils::Paramify(directory).c_str());
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;

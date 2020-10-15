@@ -46,7 +46,7 @@ static int CleanLibrary(const std::vector<std::string>& params)
     if (!g_application.IsVideoScanning())
     {
       const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
-      g_application.StartVideoCleanup(userInitiated, content);
+      g_application.StartVideoCleanup(userInitiated, content, params.size() > 2 ? params[2] : "");
     }
     else
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning or cleaning");
