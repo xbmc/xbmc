@@ -21,7 +21,7 @@ msgid "Preferences"
 msgstr ""
 
 msgctxt "#30001"
-msgid "Prefered language for album review"
+msgid "Preferred language for album review"
 msgstr ""
 
 msgctxt "#30002"
@@ -44,42 +44,42 @@ msgctxt "#30006"
 msgid "Prefer rating from"
 msgstr ""
 
+msgctxt "#30007"
+msgid "Prefer review from"
+msgstr ""
+
 msgctxt "#30101"
-msgid "Use Discogs.com"
-msgstr ""
-
-msgctxt "#30102"
-msgid "As fallback only"
-msgstr ""
-
-msgctxt "#30103"
-msgid "Always"
+msgid "Allow less accurate search results"
 msgstr ""
 
 msgctxt "#30201"
-msgid "If available, the album review will be downloaded in the selected language. It will fallback to english."
+msgid "If available, the album review will be downloaded in the selected language. It will fallback to English."
 msgstr ""
 
 msgctxt "#30202"
-msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30203"
-msgid "Try to get style info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get style info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30204"
-msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30205"
-msgid "Try to get theme info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get theme info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30206"
-msgid "Try to get rating info using the selected scraper. Other scrapers will be used if the prefered scraper returns no results."
+msgid "Try to get rating info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30207"
+msgid "Try to get the album review using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr ""
 
 msgctxt "#30301"
-msgid "Fallback: only use the discogs scraper if the album can't be found on MusicBrainz (faster, but could result in less complete results). Always: retrieve info from discogs.com for each album (slower, but results could be more complete)"
+msgid "If Musicbrainz does not provide a link to allmusic and/or discogs, we can search those sites based on artistname & albumname. In circumstances where an artist has released multiple albums by the same name, this could potentially result in a mixture of metadata from those albums."
 msgstr ""

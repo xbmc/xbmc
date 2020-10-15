@@ -76,42 +76,36 @@ def theaudiodb_albumdetails(data):
             thumbdata['aspect'] = 'thumb'
             thumbs.append(thumbdata)
         if item.get('strAlbumThumbBack',''):
-            albumdata['back'] = item['strAlbumThumbBack']
             extradata = {}
             extradata['image'] = item['strAlbumThumbBack']
             extradata['preview'] = item['strAlbumThumbBack'] + '/preview'
             extradata['aspect'] = 'back'
             extras.append(extradata)
         if item.get('strAlbumSpine',''):
-            albumdata['spine'] = item['strAlbumSpine']
             extradata = {}
             extradata['image'] = item['strAlbumSpine']
             extradata['preview'] = item['strAlbumSpine'] + '/preview'
             extradata['aspect'] = 'spine'
             extras.append(extradata)
         if item.get('strAlbumCDart',''):
-            albumdata['discart'] = item['strAlbumCDart']
             extradata = {}
             extradata['image'] = item['strAlbumCDart']
             extradata['preview'] = item['strAlbumCDart'] + '/preview'
             extradata['aspect'] = 'discart'
             extras.append(extradata)
         if item.get('strAlbum3DCase',''):
-            albumdata['3dcase'] = item['strAlbum3DCase']
             extradata = {}
             extradata['image'] = item['strAlbum3DCase']
             extradata['preview'] = item['strAlbum3DCase'] + '/preview'
             extradata['aspect'] = '3dcase'
             extras.append(extradata)
         if item.get('strAlbum3DFlat',''):
-            albumdata['3dflat'] = item['strAlbum3DFlat']
             extradata = {}
             extradata['image'] = item['strAlbum3DFlat']
             extradata['preview'] = item['strAlbum3DFlat'] + '/preview'
             extradata['aspect'] = '3dflat'
             extras.append(extradata)
         if item.get('strAlbum3DFace',''):
-            albumdata['3dface'] = item['strAlbum3DFace']
             extradata = {}
             extradata['image'] = item['strAlbum3DFace']
             extradata['preview'] = item['strAlbum3DFace'] + '/preview'

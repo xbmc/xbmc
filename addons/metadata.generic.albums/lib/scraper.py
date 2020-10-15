@@ -7,23 +7,26 @@ import time
 import urllib.parse
 import urllib.request
 import _strptime # https://bugs.python.org/issue7980
+from socket import timeout
 from threading import Thread
 from urllib.error import HTTPError, URLError
-from socket import timeout
 import xbmc
+import xbmcaddon
 import xbmcgui
 import xbmcplugin
-import xbmcaddon
-from .theaudiodb import theaudiodb_albumdetails
-from .musicbrainz import musicbrainz_albumfind
-from .musicbrainz import musicbrainz_albumdetails
-from .musicbrainz import musicbrainz_albumart
-from .discogs import discogs_albumfind
-from .discogs import discogs_albumdetails
 from .allmusic import allmusic_albumfind
 from .allmusic import allmusic_albumdetails
-from .nfo import nfo_geturl
+from .discogs import discogs_albumfind
+from .discogs import discogs_albummain
+from .discogs import discogs_albumdetails
 from .fanarttv import fanarttv_albumart
+from .musicbrainz import musicbrainz_albumfind
+from .musicbrainz import musicbrainz_albumdetails
+from .musicbrainz import musicbrainz_albumlinks
+from .musicbrainz import musicbrainz_albumart
+from .nfo import nfo_geturl
+from .theaudiodb import theaudiodb_albumdetails
+from .wikipedia import wikipedia_albumdetails
 from .utils import *
 
 ADDONID = xbmcaddon.Addon().getAddonInfo('id')
@@ -35,8 +38,12 @@ def log(txt):
     message = '%s: %s' % (ADDONID, txt)
     xbmc.log(msg=message, level=xbmc.LOGDEBUG)
 
-def get_data(url, jsonformat):
+def get_data(url, jsonformat, retry=True):
     try:
+        if url.startswith('https://musicbrainz.org/'):
+            api_timeout('musicbrainztime')
+        elif url.startswith('https://api.discogs.com/'):
+            api_timeout('discogstime')
         headers = {}
         headers['User-Agent'] = '%s/%s ( http://kodi.tv )' % (ADDONNAME, ADDONVERSION)
         req = urllib.request.Request(url, headers=headers)
@@ -53,30 +60,43 @@ def get_data(url, jsonformat):
         return
     if resp.getcode() == 503:
         log('exceeding musicbrainz api limit')
-        return
+        if retry:
+            xbmc.sleep(1000)
+            get_data(url, jsonformat, retry=False)
+        else:
+            return
     elif resp.getcode() == 429:
         log('exceeding discogs api limit')
-        return
+        if retry:
+            xbmc.sleep(1000)
+            get_data(url, jsonformat, retry=False)
+        else:
+            return
     if jsonformat:
         respdata = json.loads(respdata)
     return respdata
 
+def api_timeout(scraper):
+    currenttime = round(time.time() * 1000)
+    previoustime = xbmcgui.Window(10000).getProperty(scraper)
+    if previoustime:
+        timeout = currenttime - int(previoustime)
+        if timeout < 1000:
+            xbmc.sleep(1000 - timeout)
+    xbmcgui.Window(10000).setProperty(scraper, str(round(time.time() * 1000)))
+
 
 class Scraper():
     def __init__(self, action, key, artist, album, url, nfo, settings):
-        # get start time in milliseconds
-        self.start = int(round(time.time() * 1000))
         # parse path settings
         self.parse_settings(settings)
-        # return a dummy result, this is just for backward compitability with xml based scrapers https://github.com/xbmc/xbmc/pull/11632
+        # this is just for backward compitability with xml based scrapers https://github.com/xbmc/xbmc/pull/11632
         if action == 'resolveid':
+            # return the result
             result = self.resolve_mbid(key)
-            if result:
-                self.return_resolved(result)
+            self.return_resolved(result)
         # search for artist name / album title matches
         elif action == 'find':
-            # both musicbrainz and discogs allow 1 api per second. this query requires 1 musicbrainz api call and optionally 1 discogs api call
-            RATELIMIT = 1000
             # try musicbrainz first
             result = self.find_album(artist, album, 'musicbrainz')
             if result:
@@ -86,101 +106,100 @@ class Scraper():
                 result = self.find_album(artist, album, 'discogs')
                 if result:
                     self.return_search(result)
-        # return info using artistname / albumtitle / id's
+        # return info id's
         elif action == 'getdetails':
             details = {}
+            links = {}
             url = json.loads(url)
-            artist = url['artist'].encode('utf-8')
-            album = url['album'].encode('utf-8')
-            mbid = url.get('mbalbumid', '')
-            dcid = url.get('dcalbumid', '')
-            mbreleasegroupid = url.get('mbreleasegroupid', '')
+            artist = url.get('artist')
+            album = url.get('album')
+            mbalbumid = url.get('mbalbumid')
+            mbreleasegroupid = url.get('mbreleasegroupid')
+            dcid = url.get('dcalbumid')
             threads = []
-            # we have a musicbrainz album id, but no musicbrainz releasegroupid
-            if mbid and not mbreleasegroupid:
-                # musicbrainz allows 1 api per second.
-                RATELIMIT = 1000
-                for item in [[mbid, 'musicbrainz']]:
-                    thread = Thread(target = self.get_details, args = (item[0], item[1], details))
-                    threads.append(thread)
-                    thread.start()
-                # wait for musicbrainz to finish
-                threads[0].join()
-                # check if we have a result:
-                if 'musicbrainz' in details:
-                    artist = details['musicbrainz']['artist_description'].encode('utf-8')
-                    album = details['musicbrainz']['album'].encode('utf-8')
-                    mbreleasegroupid = details['musicbrainz']['mbreleasegroupid']
-                    scrapers = [[mbreleasegroupid, 'theaudiodb'], [mbreleasegroupid, 'fanarttv'], [mbreleasegroupid, 'coverarchive'], [[artist, album], 'allmusic']]
-                    if self.usediscogs == 1:
-                        scrapers.append([[artist, album, dcid], 'discogs'])
-                        # discogs allows 1 api per second. this query requires 2 discogs api calls
-                        RATELIMIT = 2000
-                    for item in scrapers:
-                        thread = Thread(target = self.get_details, args = (item[0], item[1], details))
-                        threads.append(thread)
-                        thread.start()
-            # we have a discogs id and artistname and albumtitle
-            elif dcid:
-                # discogs allows 1 api per second. this query requires 1 discogs api call
-                RATELIMIT = 1000
-                for item in [[[artist, album, dcid], 'discogs'], [[artist, album], 'allmusic']]:
-                    thread = Thread(target = self.get_details, args = (item[0], item[1], details))
-                    threads.append(thread)
-                    thread.start()
-            # we have musicbrainz album id, musicbrainz releasegroupid, artistname and albumtitle
-            else:
-                # musicbrainz allows 1 api per second.
-                RATELIMIT = 1000
-                scrapers = [[mbid, 'musicbrainz'], [mbreleasegroupid, 'theaudiodb'], [mbreleasegroupid, 'fanarttv'], [mbreleasegroupid, 'coverarchive'], [[artist, album], 'allmusic']]
-                if self.usediscogs == 1:
-                    scrapers.append([[artist, album, dcid], 'discogs'])
-                    # discogs allows 1 api per second. this query requires 2 discogs api calls
-                    RATELIMIT = 2000
+            extrascrapers = []
+            # we have musicbrainz album id
+            if mbalbumid:
+                # get the mbreleasegroupid, artist and album if we don't have them
+                if not mbreleasegroupid:
+                    result = self.get_details(mbalbumid, 'musicbrainz', details)
+                    if not result:
+                        scrapers = [[mbalbumid, 'musicbrainz']]
+                    else:
+                        mbreleasegroupid = details['musicbrainz']['mbreleasegroupid']
+                        artist = details['musicbrainz']['artist_description']
+                        album = details['musicbrainz']['album']
+                        scrapers = [[mbreleasegroupid, 'theaudiodb'], [mbreleasegroupid, 'fanarttv'], [mbreleasegroupid, 'coverarchive']]
+                else:
+                    scrapers = [[mbalbumid, 'musicbrainz'], [mbreleasegroupid, 'theaudiodb'], [mbreleasegroupid, 'fanarttv'], [mbreleasegroupid, 'coverarchive']]
+                # get musicbrainz links to other metadata sites
+                lthread = Thread(target = self.get_links, args = (mbreleasegroupid, links))
+                lthread.start()
                 for item in scrapers:
                     thread = Thread(target = self.get_details, args = (item[0], item[1], details))
                     threads.append(thread)
                     thread.start()
+                # wait for the musicbrainz links to return
+                lthread.join()
+                if 'musicbrainz' in links:
+                    # scrape allmusic if we have an url provided by musicbrainz
+                    if 'allmusic' in links['musicbrainz']:
+                        extrascrapers.append([{'url': links['musicbrainz']['allmusic']}, 'allmusic'])
+                    # only scrape allmusic by artistname and albumtitle if explicitly enabled
+                    elif self.inaccurate and artist and album:
+                        extrascrapers.append([{'artist': artist, 'album': album}, 'allmusic'])
+                    # scrape discogs if we have an url provided by musicbrainz
+                    if 'discogs' in links['musicbrainz']:
+                        extrascrapers.append([{'masterurl': links['musicbrainz']['discogs']}, 'discogs'])
+                    # only scrape discogs by artistname and albumtitle if explicitly enabled
+                    elif self.inaccurate and artist and album:
+                        extrascrapers.append([{'artist': artist, 'album': album}, 'discogs'])
+                    # scrape wikipedia if we have an url provided by musicbrainz
+                    if 'wikipedia' in links['musicbrainz']:
+                        extrascrapers.append([links['musicbrainz']['wikipedia'], 'wikipedia'])
+                    elif 'wikidata' in links['musicbrainz']:
+                        extrascrapers.append([links['musicbrainz']['wikidata'], 'wikidata'])
+                for item in extrascrapers:
+                    thread = Thread(target = self.get_details, args = (item[0], item[1], details))
+                    threads.append(thread)
+                    thread.start()
+            # we have a discogs id
+            else:
+                thread = Thread(target = self.get_details, args = ({'url': dcid}, 'discogs', details))
+                threads.append(thread)
+                thread.start()
             for thread in threads:
                 thread.join()
             result = self.compile_results(details)
             if result:
                 self.return_details(result)
-        # extract the mbid from the provided musicbrainz url
+        # extract the mbalbumid from the provided musicbrainz url
         elif action == 'NfoUrl':
-            mbid = nfo_geturl(nfo)
-            if mbid:
-                # create a dummy item
-                result = self.resolve_mbid(mbid)
-                if result:
-                    self.return_nfourl(result)
-        # get end time in milliseconds
-        self.end = int(round(time.time() * 1000))
-        # handle musicbrainz and discogs ratelimit
-        if action == 'find' or action == 'getdetails':
-            if self.end - self.start < RATELIMIT:
-                # wait max 2 seconds
-                diff = RATELIMIT - (self.end - self.start)
-                xbmc.sleep(diff)
+            # check if there is a musicbrainz url in the nfo file
+            mbalbumid = nfo_geturl(nfo)
+            if mbalbumid:
+                # return the result
+                result = self.resolve_mbid(mbalbumid)
+                self.return_nfourl(result)
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
     def parse_settings(self, data):
         settings = json.loads(data)
         # note: path settings are taken from the db, they may not reflect the current settings.xml file
+        self.review = settings['review']
         self.genre = settings['genre']
         self.lang = settings['lang']
         self.mood = settings['mood']
         self.rating = settings['rating']
         self.style = settings['style']
         self.theme = settings['theme']
-        self.usediscogs = settings['usediscogs']
+        self.inaccurate = settings['inaccurate']
 
-    def resolve_mbid(self, mbid):
-        # create dummy result
+    def resolve_mbid(self, mbalbumid):
         item = {}
         item['artist_description'] = ''
         item['album'] = ''
-        item['mbalbumid'] = mbid
+        item['mbalbumid'] = mbalbumid
         item['mbreleasegroupid'] = ''
         return item
 
@@ -194,16 +213,20 @@ class Scraper():
         elif site == 'discogs':
             url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(album), urllib.parse.quote_plus(artist), DISCOGSKEY , DISCOGSSECRET))
             scraper = discogs_albumfind
-        # allmusic
-        elif site == 'allmusic':
-            url = ALLMUSICURL % (ALLMUSICSEARCH % (urllib.parse.quote_plus(artist), urllib.parse.quote_plus(album)))
-            scraper = allmusic_albumfind
-            json = False
         result = get_data(url, json)
         if not result:
             return
         albumresults = scraper(result, artist, album)
         return albumresults
+
+    def get_links(self, param, links):
+        json = True
+        url = MUSICBRAINZURL % (MUSICBRAINZLINKS % param)
+        result = get_data(url, json)
+        if result:
+            linkresults = musicbrainz_albumlinks(result)
+            links['musicbrainz'] = linkresults
+            return links
 
     def get_details(self, param, site, details):
         json = True
@@ -225,28 +248,63 @@ class Scraper():
             albumscraper = musicbrainz_albumart
         # discogs
         elif site == 'discogs':
-            dcalbumid = param[2]
-            if not dcalbumid:
-                # search
-                found = self.find_album(param[0], param[1], 'discogs')
-                if found:
-                    # get details
-                    dcalbumid = found[0]['dcalbumid']
+            # musicbrainz provides a link to the master release, but we need the main release
+            if 'masterurl' in param:
+                masterdata = get_data(DISCOGSURL % (DISCOGSMASTER % (param['masterurl'], DISCOGSKEY , DISCOGSSECRET)), True)
+                if masterdata:
+                    url = discogs_albummain(masterdata)
+                    if url:
+                        param['url'] = url
+                    else:
+                        return
                 else:
                     return
-            url = DISCOGSURL % (DISCOGSDETAILS % (dcalbumid, DISCOGSKEY, DISCOGSSECRET))
+            # search by artistname and albumtitle if we do not have an url
+            if not 'url' in param:
+                url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(param['album']), urllib.parse.quote_plus(param['artist']), DISCOGSKEY , DISCOGSSECRET))
+                albumresult = get_data(url, json)
+                if albumresult:
+                    albums = discogs_albumfind(albumresult, param['artist'], param['album'])
+                    if albums:
+                        albumresult = sorted(albums, key=lambda k: k['relevance'], reverse=True)
+                        param['url'] = albumresult[0]['dcalbumid']
+                    else:
+                        return
+                else:
+                    return
+            url = DISCOGSURL % (DISCOGSDETAILS % (param['url'], DISCOGSKEY, DISCOGSSECRET))
             albumscraper = discogs_albumdetails
+        # wikipedia
+        elif site == 'wikipedia':
+            url = WIKIPEDIAURL % param
+            albumscraper = wikipedia_albumdetails
+        elif site == 'wikidata':
+            # resolve wikidata to wikipedia url
+            result = get_data(WIKIDATAURL % param, json)
+            try:
+                album = result['entities'][param]['sitelinks']['enwiki']['url'].rsplit('/', 1)[1]
+            except:
+                return
+            site = 'wikipedia'
+            url = WIKIPEDIAURL % album
+            albumscraper = wikipedia_albumdetails
         # allmusic
         elif site == 'allmusic':
-            # search
-            found = self.find_album(param[0], param[1], 'allmusic')
-            if found:
-                # get details
-                url = ALLMUSICDETAILS % found[0]['url']
-                albumscraper = allmusic_albumdetails
-                json = False
-            else:
-                return
+            json = False
+            # search by artistname and albumtitle if we do not have an url
+            if not 'url' in param:
+                url = ALLMUSICURL % (ALLMUSICSEARCH % (urllib.parse.quote_plus(param['artist']), urllib.parse.quote_plus(param['album'])))
+                albumresult = get_data(url, json)
+                if albumresult:
+                    albums = allmusic_albumfind(albumresult, param['artist'], param['album'])
+                    if albums:
+                        param['url'] = albums[0]['url']
+                    else:
+                        return
+                else:
+                    return
+            url = ALLMUSICDETAILS % param['url']
+            albumscraper = allmusic_albumdetails
         result = get_data(url, json)
         if not result:
             return
@@ -263,40 +321,50 @@ class Scraper():
         # merge metadata results, start with the least accurate sources
         if 'discogs' in details:
             for k, v in details['discogs'].items():
-                result[k] = v
-                if k == 'thumb':
+                if v:
+                    result[k] = v
+                if k == 'thumb' and v:
                     thumbs.append(v)
+        if 'wikipedia' in details:
+            for k, v in details['wikipedia'].items():
+                if v:
+                    result[k] = v
         if 'allmusic' in details:
             for k, v in details['allmusic'].items():
-                result[k] = v
-                if k == 'thumb':
+                if v:
+                    result[k] = v
+                if k == 'thumb' and v:
                     thumbs.append(v)
         if 'theaudiodb' in details:
             for k, v in details['theaudiodb'].items():
-                result[k] = v
-                if k == 'thumb':
+                if v:
+                    result[k] = v
+                if k == 'thumb' and v:
                     thumbs.append(v)
-                if k == 'extras':
+                if k == 'extras' and v:
                     extras.append(v)
         if 'musicbrainz' in details:
             for k, v in details['musicbrainz'].items():
-                result[k] = v
+                if v:
+                    result[k] = v
         if 'coverarchive' in details:
             for k, v in details['coverarchive'].items():
-                result[k] = v
-                if k == 'thumb':
+                if v:
+                    result[k] = v
+                if k == 'thumb' and v:
                     thumbs.append(v)
-                if k == 'extras':
+                if k == 'extras' and v:
                     extras.append(v)
         # prefer artwork from fanarttv
         if 'fanarttv' in details:
             for k, v in details['fanarttv'].items():
-                result[k] = v
-                if k == 'thumb':
+                if v:
+                    result[k] = v
+                if k == 'thumb' and v:
                     thumbs.append(v)
-                if k == 'extras':
+                if k == 'extras' and v:
                     extras.append(v)
-        # use musicbrainz artist list as they provide mbid's, these can be passed to the artist scraper
+        # use musicbrainz artist as it provides the mbartistid (used for resolveid in the artist scraper)
         if 'musicbrainz' in details:
             result['artist'] = details['musicbrainz']['artist']
         # provide artwork from all scrapers for getthumb option
@@ -313,19 +381,23 @@ class Scraper():
                 for item in extralist:
                     extraart.append(item)
             # add the extra art to the end of the thumb list
-            thumbnails.extend(extraart)
-            result['thumb'] = thumbnails
+            if extraart:
+                thumbnails.extend(extraart)
+            if thumbnails:
+                result['thumb'] = thumbnails
         data = self.user_prefs(details, result)
         return data
 
     def user_prefs(self, details, result):
         # user preferences
         lang = 'description' + self.lang
-        if 'theaudiodb' in details:
+        if self.review == 'theaudiodb' and 'theaudiodb' in details:
             if lang in details['theaudiodb']:
                 result['description'] = details['theaudiodb'][lang]
             elif 'descriptionEN' in details['theaudiodb']:
                 result['description'] = details['theaudiodb']['descriptionEN']
+        elif (self.review in details) and ('description' in details[self.review]):
+            result['description'] = details[self.review]['description']
         if (self.genre in details) and ('genre' in details[self.genre]):
             result['genre'] = details[self.genre]['genre']
         if (self.style in details) and ('styles' in details[self.style]):
@@ -340,7 +412,8 @@ class Scraper():
         return result
 
     def return_search(self, data):
-        for count, item in enumerate(data):
+        items = []
+        for item in data:
             listitem = xbmcgui.ListItem(item['album'], offscreen=True)
             listitem.setArt({'thumb': item['thumb']})
             listitem.setProperty('album.artist', item['artist_description'])
@@ -352,20 +425,19 @@ class Scraper():
             url = {'artist':item['artist_description'], 'album':item['album']}
             if 'mbalbumid' in item:
                 url['mbalbumid'] = item['mbalbumid']
-            if 'mbreleasegroupid' in item:
                 url['mbreleasegroupid'] = item['mbreleasegroupid']
             if 'dcalbumid' in item:
                 url['dcalbumid'] = item['dcalbumid']
-            xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=json.dumps(url), listitem=listitem, isFolder=True)
+            items.append((json.dumps(url), listitem, True))
+        if items:
+            xbmcplugin.addDirectoryItems(handle=int(sys.argv[1]), items=items)
 
     def return_nfourl(self, item):
-        url = {'artist':item['artist_description'], 'album':item['album'], 'mbalbumid':item['mbalbumid'], 'mbreleasegroupid':item['mbreleasegroupid']}
         listitem = xbmcgui.ListItem(offscreen=True)
-        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=json.dumps(url), listitem=listitem, isFolder=True)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=json.dumps(item), listitem=listitem, isFolder=True)
 
     def return_resolved(self, item):
-        url = {'artist':item['artist_description'], 'album':item['album'], 'mbalbumid':item['mbalbumid'], 'mbreleasegroupid':item['mbreleasegroupid']}
-        listitem = xbmcgui.ListItem(path=json.dumps(url), offscreen=True)
+        listitem = xbmcgui.ListItem(path=json.dumps(item), offscreen=True)
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=listitem)
 
     def return_details(self, item):
@@ -415,24 +487,6 @@ class Scraper():
             listitem.setProperty('album.rating', item['rating'])
         if 'votes' in item:
             listitem.setProperty('album.votes', item['votes'])
-        art = {}
-        if 'discart' in item:
-            art['discart'] = item['discart']
-        if 'multidiscart' in item:
-            for k, v in item['multidiscart'].items():
-                discart = 'discart%s' % k
-                art[discart] = v[0]['image']
-        if 'back' in item:
-            art['back'] = item['back']
-        if 'spine' in item:
-            art['spine'] = item['spine']
-        if '3dcase' in item:
-            art['3dcase'] = item['3dcase']
-        if '3dflat' in item:
-            art['3dflat'] = item['3dflat']
-        if '3dface' in item:
-            art['3dface'] = item['3dface']
-        listitem.setArt(art)
         if 'thumb' in item:
             listitem.setProperty('album.thumbs', str(len(item['thumb'])))
             for count, thumb in enumerate(item['thumb']):

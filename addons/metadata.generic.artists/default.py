@@ -11,7 +11,7 @@ class Main:
 
     def _parse_argv(self):
         params = dict(parse_qsl(sys.argv[2].lstrip('?')))
-        # actions: resolveid, find, getdetails, NfoUrl
+        # actions: find, resolveid, NfoUrl, getdetails
         action = params['action']
         # key: musicbrainz id
         key = params.get('key', '')

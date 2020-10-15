@@ -15,7 +15,6 @@ def fanarttv_albumart(data):
                     thumbdata['aspect'] = 'thumb'
                     thumbs.append(thumbdata)
             if 'cdart' in art:
-                albumdata['discart'] = art['cdart'][0]['url']
                 for cdart in art['cdart']:
                     extradata = {}
                     extradata['image'] = cdart['url']
@@ -36,7 +35,6 @@ def fanarttv_albumart(data):
             albumdata['thumb'] = thumbs
         # only return for multi-discs, not single discs
         if len(discs) > 1:
-            albumdata['multidiscart'] = discs
             for k, v in discs.items():
                 for item in v:
                     extras.append(item)

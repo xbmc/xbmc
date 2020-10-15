@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Generic Album Scraper
+# Addon id: metadata.generic.albums
+# Addon Provider: Team Kodi
+# Translators:
+# TeamKODI <transifex.translator@gmail.com>, 2020
+# Любомир Василев, 2020
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-09-08 20:23+0000\n"
+"Last-Translator: Любомир Василев, 2020\n"
+"Language-Team: Bulgarian (Bulgaria) (https://www.transifex.com/teamxbmc/teams/40581/bg_BG/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg_BG\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr "Предпочитания"
+
+msgctxt "#30001"
+msgid "Preferred language for album review"
+msgstr "Предпочитан език за рецензиите на албумите"
+
+msgctxt "#30002"
+msgid "Prefer genres from"
+msgstr "Да се предпочитат жанрове от"
+
+msgctxt "#30003"
+msgid "Prefer styles from"
+msgstr "Да се предпочитат стилове от"
+
+msgctxt "#30004"
+msgid "Prefer moods from"
+msgstr "Да се предпочитат настроения от"
+
+msgctxt "#30005"
+msgid "Prefer themes from"
+msgstr "Да се предпочитат теми от"
+
+msgctxt "#30006"
+msgid "Prefer rating from"
+msgstr "Да се предпочитат оценки от"
+
+msgctxt "#30007"
+msgid "Prefer review from"
+msgstr "Да се предпочитат рецензии от"
+
+msgctxt "#30101"
+msgid "Allow less accurate search results"
+msgstr "Разрешаване на по-неточни резултати при търсене"
+
+msgctxt "#30201"
+msgid ""
+"If available, the album review will be downloaded in the selected language. "
+"It will fallback to English."
+msgstr ""
+"При възможност, рецензията на албума ще бъде свалена на избрания език. Иначе"
+" ще се показва на английски."
+
+msgctxt "#30202"
+msgid ""
+"Try to get genre info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Информацията за жанра по възможност ще се получава чрез избрания скрипт. Ако"
+" избраният скрипт не върне резултат, ще бъдат използвани други."
+
+msgctxt "#30203"
+msgid ""
+"Try to get style info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Информацията за стила по възможност ще се получава чрез избрания скрипт. Ако"
+" избраният скрипт не върне резултат, ще бъдат използвани други."
+
+msgctxt "#30204"
+msgid ""
+"Try to get mood info using the selected scraper. Other scrapers will be used"
+" if the preferred scraper returns no results."
+msgstr ""
+"Информацията за настроението по възможност ще се получава чрез избрания "
+"скрипт. Ако избраният скрипт не върне резултат, ще бъдат използвани други."
+
+msgctxt "#30205"
+msgid ""
+"Try to get theme info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Информацията за темата по възможност ще се получава чрез избрания скрипт. "
+"Ако избраният скрипт не върне резултат, ще бъдат използвани други."
+
+msgctxt "#30206"
+msgid ""
+"Try to get rating info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Информацията за оценката по възможност ще се получава чрез избрания скрипт. "
+"Ако избраният скрипт не върне резултат, ще бъдат използвани други."
+
+msgctxt "#30207"
+msgid ""
+"Try to get the album review using the selected scraper. Other scrapers will "
+"be used if the preferred scraper returns no results."
+msgstr ""
+"Рецензията по възможност ще се получава чрез избрания скрипт. Ако избраният "
+"скрипт не върне резултат, ще бъдат използвани други."
+
+msgctxt "#30301"
+msgid ""
+"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
+"search those sites based on artistname & albumname. In circumstances where "
+"an artist has released multiple albums by the same name, this could "
+"potentially result in a mixture of metadata from those albums."
+msgstr ""
+"Ако „Musicbrainz“ не предоставя връзка към „allmusic“ и/или „discogs“, можем"
+" да потърсим в тези уеб сайтове по името на изпълнителя и албума. Ако "
+"изпълнителят има няколко албума с едно и също име, тогава данните може да са"
+" объркани между различните албуми."

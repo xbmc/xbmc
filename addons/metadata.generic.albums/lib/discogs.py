@@ -22,12 +22,17 @@ def discogs_albumfind(data, artist, album):
             # discogs does not provide relevance, use our own
             artistmatch = difflib.SequenceMatcher(None, artist.lower(), albumdata['artist'].lower()).ratio()
             albummatch = difflib.SequenceMatcher(None, album.lower(), albumdata['album'].lower()).ratio()
-            artistscore = round(artistmatch, 2)
-            albumscore = round(albummatch, 2)
-            score = round(((artistscore + albumscore) / 2), 2)
-            albumdata['relevance'] = str(score)
-            albums.append(albumdata)
+            if artistmatch > 0.90 and albummatch > 0.90:
+                score = round(((artistmatch + albummatch) / 2), 2)
+                albumdata['relevance'] = str(score)
+                albums.append(albumdata)
     return albums
+
+def discogs_albummain(data):
+    if data:
+        if 'main_release_url' in data:
+            url = data['main_release_url'].rsplit('/', 1)[1]
+            return url
 
 def discogs_albumdetails(data):
     albumdata = {}

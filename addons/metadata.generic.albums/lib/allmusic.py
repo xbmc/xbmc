@@ -5,7 +5,6 @@ import difflib
 import time
 import re
 
-# not used for 'find', but needed for 'getdetails'
 def allmusic_albumfind(data, artist, album):
     data = data.decode('utf-8')
     albums = []
@@ -23,25 +22,17 @@ def allmusic_albumfind(data, artist, album):
         else: # not likely to happen, but just in case
             continue
         # filter inaccurate results
-        artistmatch = difflib.SequenceMatcher(None, artist.decode('utf-8').lower(), albumdata['artist'].lower()).ratio()
-        albummatch = difflib.SequenceMatcher(None, album.decode('utf-8').lower(), albumdata['album'].lower()).ratio()
+        artistmatch = difflib.SequenceMatcher(None, artist.lower(), albumdata['artist'].lower()).ratio()
+        albummatch = difflib.SequenceMatcher(None, album.lower(), albumdata['album'].lower()).ratio()
         if artistmatch > 0.90 and albummatch > 0.90:
             albumurl = re.search('class="title">\s*<a href="(.*?)"', item)
             if albumurl:
                 albumdata['url'] = albumurl.group(1)
             else: # not likely to happen, but just in case
                 continue
-            albumyear = re.search('class="year">\s*(.*?)\s*<', item, re.S)
-            if albumyear:
-                albumdata['year'] = albumyear.group(1)
-            else:
-                albumdata['year'] = ''
-            albumthumb = re.search('img src="(.*?)"', item)
-            if albumthumb:
-                albumdata['thumb'] = albumthumb.group(1)
-            else:
-                albumdata['thumb'] = ''
             albums.append(albumdata)
+            # we are only interested in the top result
+            break
     return albums
 
 def allmusic_albumdetails(data):

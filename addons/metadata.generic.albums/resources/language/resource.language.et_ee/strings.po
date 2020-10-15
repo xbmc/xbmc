@@ -1,0 +1,123 @@
+# Kodi Media Center language file
+# Addon Name: Generic Album Scraper
+# Addon id: metadata.generic.albums
+# Addon Provider: Team Kodi
+# Translators:
+# Olav <olav.magi@gmail.com>, 2020
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-09-08 20:23+0000\n"
+"Last-Translator: Olav <olav.magi@gmail.com>, 2020\n"
+"Language-Team: Estonian (Estonia) (https://www.transifex.com/teamxbmc/teams/40581/et_EE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et_EE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr "Eelistused"
+
+msgctxt "#30001"
+msgid "Preferred language for album review"
+msgstr "Eelistatud keel albumi kontrollimisel"
+
+msgctxt "#30002"
+msgid "Prefer genres from"
+msgstr "Eelista žanreid kohast"
+
+msgctxt "#30003"
+msgid "Prefer styles from"
+msgstr "Eelista stiile kohast"
+
+msgctxt "#30004"
+msgid "Prefer moods from"
+msgstr "Eelista tujusid kohast"
+
+msgctxt "#30005"
+msgid "Prefer themes from"
+msgstr "Eelista teemasid kohast"
+
+msgctxt "#30006"
+msgid "Prefer rating from"
+msgstr "Eelista hinnangut kohast"
+
+msgctxt "#30007"
+msgid "Prefer review from"
+msgstr "Eelista ülevaadet kohast"
+
+msgctxt "#30101"
+msgid "Allow less accurate search results"
+msgstr "Luba vähemtäpsemad otsingutulemused"
+
+msgctxt "#30201"
+msgid ""
+"If available, the album review will be downloaded in the selected language. "
+"It will fallback to English."
+msgstr ""
+"Olemasolul laaditakse albumi ülevaade alla valitud keeles. Selle puudumisel "
+"kasutatakse inglise keelt."
+
+msgctxt "#30202"
+msgid ""
+"Try to get genre info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida žanri teavet valitud kaabitsaga. Teisi kaabitsaid kasutatakse,"
+" kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30203"
+msgid ""
+"Try to get style info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida stiili teavet valitud kaabitsaga. Teisi kaabitsaid "
+"kasutatakse, kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30204"
+msgid ""
+"Try to get mood info using the selected scraper. Other scrapers will be used"
+" if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida tuju teavet valitud kaabitsaga. Teisi kaabitsaid kasutatakse, "
+"kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30205"
+msgid ""
+"Try to get theme info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida teema teavet valitud kaabitsaga. Teisi kaabitsaid kasutatakse,"
+" kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30206"
+msgid ""
+"Try to get rating info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida hinnangu teavet valitud kaabitsaga. Teisi kaabitsaid "
+"kasutatakse, kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30207"
+msgid ""
+"Try to get the album review using the selected scraper. Other scrapers will "
+"be used if the preferred scraper returns no results."
+msgstr ""
+"Ürita hankida albumi ülevaadet valitud kaabitsaga. Teisi kaabitsaid "
+"kasutatakse, kui eelistatud kaabits ei leia otsitut."
+
+msgctxt "#30301"
+msgid ""
+"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
+"search those sites based on artistname & albumname. In circumstances where "
+"an artist has released multiple albums by the same name, this could "
+"potentially result in a mixture of metadata from those albums."
+msgstr ""
+"Kui Musicbrainz ei paku allmusicu ja/või discogsi linki, saame neist "
+"lehtedest otsida esitaja ja albumi nime järgi. Kui esitaja on avaldanud mitu"
+" samanimelist albumit, võivad nende albumite metaandmed seguneda."

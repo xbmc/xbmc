@@ -1,3 +1,27 @@
+v1.0.14
+- add translations
+
+v1.0.13
+- fix missing endOfDirectory() call when returning 0 results
+- scrape using mbalbumid only if we don't have a mbreleasegroupid
+
+v1.0.12
+- don't populate the art table, this is handled by kodi now
+
+v1.0.11
+- use our own api keys
+
+v1.0.10
+- option for less accurate results
+
+v1.0.9
+- use musicbrainz provided links to allmusic / discogs
+- add wikipedia support
+
+v1.0.8
+- don't request info that is not used
+- speed up scraping, improve api rate limit timing
+
 v1.0.7
 - fix crash when album type is absent or empty in the api response
 - filter inaccurate search results from discogs

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="metadata.generic.albums" name="Generic Album Scraper" version="1.0.7" provider-name="Team Kodi">
+<addon id="metadata.generic.albums" name="Generic Album Scraper" version="1.0.14" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="xbmc.metadata" version="2.1.0"/>
@@ -12,9 +12,10 @@
 		<license>GPL-2.0-only</license>
 		<forum>https://forum.kodi.tv/showthread.php?tid=351570</forum>
 		<source>https://gitlab.com/ronie/metadata.generic.albums/</source>
+		<reuselanguageinvoker>true</reuselanguageinvoker>
 		<assets>
 			<icon>resources/icon.png</icon>
 		</assets>
-		<news>- first release</news>
+		<news>- add wikipedia support</news>
 	</extension>
 </addon>

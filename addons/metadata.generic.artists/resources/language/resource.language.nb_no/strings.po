@@ -1,0 +1,96 @@
+# Kodi Media Center language file
+# Addon Name: Generic Artist Scraper
+# Addon id: metadata.generic.artists
+# Addon Provider: Team Kodi
+# Translators:
+# TeamKODI <transifex.translator@gmail.com>, 2020
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-09-08 20:22+0000\n"
+"Last-Translator: TeamKODI <transifex.translator@gmail.com>, 2020\n"
+"Language-Team: Norwegian Bokmål (Norway) (https://www.transifex.com/teamxbmc/teams/40581/nb_NO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Preferences"
+msgstr "Innstillinger"
+
+msgctxt "#30001"
+msgid "Preferred language for artist biography"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Prefer biography from"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Prefer discography from"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Prefer genres from"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Prefer styles from"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Prefer moods from"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Allow less accurate search results"
+msgstr ""
+
+msgctxt "#30201"
+msgid ""
+"If available, the artist biography will be downloaded in the selected "
+"language. It will fallback to English."
+msgstr ""
+
+msgctxt "#30202"
+msgid ""
+"Try to get the artist biography using the selected scraper. Other scrapers "
+"will be used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30203"
+msgid ""
+"Try to get the artist discography using the selected scraper. Other scrapers"
+" will be used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30204"
+msgid ""
+"Try to get genre info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30205"
+msgid ""
+"Try to get style info using the selected scraper. Other scrapers will be "
+"used if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30206"
+msgid ""
+"Try to get mood info using the selected scraper. Other scrapers will be used"
+" if the preferred scraper returns no results."
+msgstr ""
+
+msgctxt "#30301"
+msgid ""
+"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
+"search those sites based on artistname. Since artist names are not unique, "
+"this could potentially result in a mixture of metadata from multiple artists"
+" by the same name."
+msgstr ""
