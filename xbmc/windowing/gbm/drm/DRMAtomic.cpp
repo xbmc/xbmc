@@ -30,20 +30,6 @@ namespace
 
 const auto SETTING_VIDEOSCREEN_HW_SCALING_FILTER = "videoscreen.hwscalingfilter";
 
-enum drm_scaling_filter
-{
-  DRM_SCALING_FILTER_DEFAULT,
-  DRM_SCALING_FILTER_NEAREST_NEIGHBOR,
-};
-
-uint32_t GetScalingFilterType(const char* type)
-{
-  if (!strcmp(type, "Nearest Neighbor"))
-    return DRM_SCALING_FILTER_NEAREST_NEIGHBOR;
-  else
-    return DRM_SCALING_FILTER_DEFAULT;
-}
-
 uint32_t GetScalingFactor(uint32_t srcWidth,
                           uint32_t srcHeight,
                           uint32_t destWidth,
@@ -60,17 +46,13 @@ uint32_t GetScalingFactor(uint32_t srcWidth,
 
 bool CDRMAtomic::SetScalingFilter(struct CDRMObject* object, const char* name, const char* type)
 {
-  uint32_t filter_type = GetScalingFilterType(type);
-  if (object->SupportsPropertyAndValue(name, filter_type))
+  uint64_t filter_type{};
+  if (m_gui_plane->GetPropertyValue(name, type, filter_type))
   {
     if (AddProperty(object, name, filter_type))
     {
       uint32_t mar_scale_factor =
           GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
-      uint32_t diff_w = m_mode->hdisplay - (mar_scale_factor * m_width);
-      uint32_t diff_h = m_mode->vdisplay - (mar_scale_factor * m_height);
-      AddProperty(object, "CRTC_X", (diff_w / 2));
-      AddProperty(object, "CRTC_Y", (diff_h / 2));
       AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
       AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
       return true;
@@ -116,6 +98,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
+    AddProperty(m_gui_plane, "CRTC_X", 0);
+    AddProperty(m_gui_plane, "CRTC_Y", 0);
     //! @todo: disabled until upstream kernel changes are merged
     // if (DisplayHardwareScalingEnabled())
     // {
@@ -123,8 +107,6 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     // }
     // else
     {
-      AddProperty(m_gui_plane, "CRTC_X", 0);
-      AddProperty(m_gui_plane, "CRTC_Y", 0);
       AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
       AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
     }
