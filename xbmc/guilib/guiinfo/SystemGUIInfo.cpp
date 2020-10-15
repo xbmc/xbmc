@@ -308,6 +308,12 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_ADDON_UPDATE_COUNT:
       value = CServiceBroker::GetAddonMgr().GetLastAvailableUpdatesCountAsString();
       return true;
+#if defined(TARGET_LINUX)
+    case SYSTEM_PLATFORM_WINDOWING:
+      value = CServiceBroker::GetWinSystem()->GetName();
+      StringUtils::ToCapitalize(value);
+      return true;
+#endif
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // NETWORK_*

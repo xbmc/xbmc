@@ -457,7 +457,7 @@
 #define SYSTEM_PLATFORM_DARWIN_IOS  745
 #define SYSTEM_PLATFORM_UWP         746
 #define SYSTEM_PLATFORM_ANDROID     747
-// previously used by rpi           748
+#define SYSTEM_PLATFORM_WINDOWING   748
 #define SYSTEM_PLATFORM_WIN10       749
 
 #define SYSTEM_CAN_POWERDOWN        750

@@ -22355,3 +22355,8 @@ msgstr ""
 msgctxt "#39152"
 msgid "Integer scaling (IS) is a Nearest-Neighbor(NN) upscaling technique using Display Engine"
 msgstr ""
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39153"
+msgid "Windowing system:"
+msgstr ""
