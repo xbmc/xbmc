@@ -216,14 +216,14 @@
 									<visible>!String.IsEmpty(ListItem.AddonSize)</visible>
 								</item>
 								<item>
-									<label>$LOCALIZE[126]:</label>
-									<label2>$INFO[ListItem.Property(Addon.Status)]$INFO[ListItem.Property(Addon.ValidUpdateVersion),[CR]($LOCALIZE[19114]: ,)]</label2>
-									<visible>!String.IsEmpty(ListItem.Property(Addon.Status))</visible>
-								</item>
-								<item>
 									<label>$LOCALIZE[467]:</label>
 									<label2>$LOCALIZE[31135]</label2>
 									<visible>ListItem.Property(Addon.IsBinary)</visible>
+								</item>
+								<item>
+									<label>$LOCALIZE[126]:</label>
+									<label2>$INFO[ListItem.Property(Addon.Status)]$INFO[ListItem.Property(Addon.ValidUpdateVersion),[CR]($LOCALIZE[19114]: ,)]</label2>
+									<visible>!String.IsEmpty(ListItem.Property(Addon.Status))</visible>
 								</item>
 							</content>
 						</control>

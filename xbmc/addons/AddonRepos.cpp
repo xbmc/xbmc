@@ -501,7 +501,7 @@ void CAddonRepos::BuildCompatibleVersionsList(
   {
     if (m_addonMgr.IsCompatible(*addon))
     {
-      if (IsFromOfficialRepo(addon, CheckAddonPath::NO))
+      if (IsFromOfficialRepo(addon, CheckAddonPath::YES))
       {
         officialVersions.emplace_back(addon);
       }
