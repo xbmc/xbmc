@@ -268,6 +268,7 @@
 		</font>
 		<font>
 			<name>WeatherTemp</name>
+			<aspect>0.75</aspect>
 			<filename>arial.ttf</filename>
 			<size>120</size>
 			<style>bold</style>
