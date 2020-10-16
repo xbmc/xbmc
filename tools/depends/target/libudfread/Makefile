@@ -15,7 +15,7 @@ endif
 # configuration settings
 CONFIGURE = ./configure --prefix=$(PREFIX) --disable-shared --enable-static
 
-LIBDYLIB=$(PLATFORM)/lib/lib$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
