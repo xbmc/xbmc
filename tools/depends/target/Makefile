@@ -58,7 +58,6 @@ ifeq ($(NEED_LIBICONV),1)
   ICONV = libiconv
 endif
 
-WAYLANDPP_DEPS=
 ALSA_LIB=
 ifeq ($(OS),linux)
   DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev wayland waylandpp wayland-protocols linux-system-x11-libs
@@ -66,8 +65,10 @@ ifeq ($(OS),linux)
   LIBUUID = libuuid
 
   ifeq ($(RENDER_SYSTEM),gl)
+    WAYLANDPP_DEPS += linux-system-gl-libs
     DEPENDS += linux-system-gl-libs
   else
+    WAYLANDPP_DEPS += mesa
     DEPENDS += mesa
   endif
 
