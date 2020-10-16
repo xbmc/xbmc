@@ -610,12 +610,8 @@ bool CAddonMgr::FindAddon(const std::string& addonId,
   CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addonId,
             addonVersion.asString());
 
-  if (!IsAddonInstalled(addonId))
-  {
-    m_database.AddInstalledAddon(it->second, origin);
-  }
-
   m_installedAddons[addonId] = it->second; // insert/replace entry
+  m_database.AddInstalledAddon(it->second, origin);
 
   // Reload caches
   std::map<std::string, AddonDisabledReason> tmpDisabled;
