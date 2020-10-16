@@ -48,7 +48,7 @@ distutilscross: python3
 tar: xz automake
 python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
-wayland-scanner: expat
+wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml
 pugixml: cmake
 
