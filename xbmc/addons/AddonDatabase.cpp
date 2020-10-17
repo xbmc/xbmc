@@ -1295,11 +1295,16 @@ bool CAddonDatabase::AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon,
     if (!m_pDS)
       return false;
 
-    std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
+    m_pDS->query(PrepareSQL("SELECT * FROM installed WHERE addonID='%s'", addon->ID().c_str()));
 
-    m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate, origin) "
-                           "VALUES('%s', 1, '%s', '%s')",
-                           addon->ID().c_str(), now.c_str(), origin.c_str()));
+    if (m_pDS->eof())
+    {
+      std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
+
+      m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate, origin) "
+                             "VALUES('%s', 1, '%s', '%s')",
+                             addon->ID().c_str(), now.c_str(), origin.c_str()));
+    }
   }
   catch (...)
   {
