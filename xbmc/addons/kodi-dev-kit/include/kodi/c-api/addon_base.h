@@ -232,7 +232,7 @@ extern "C"
   typedef struct KodiToAddonFuncTable_Addon
   {
     void (*destroy)();
-    ADDON_STATUS (*get_status)();
+    ADDON_STATUS (*get_status)(); // TODO unused remove by next min version increase
     ADDON_STATUS(*create_instance)
     (int instanceType,
      const char* instanceID,

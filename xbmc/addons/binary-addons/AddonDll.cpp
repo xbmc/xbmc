@@ -326,11 +326,6 @@ AddonVersion CAddonDll::GetTypeMinVersionDll(int type) const
   return AddonVersion(m_pDll ? m_pDll->GetAddonTypeMinVersion(type) : nullptr);
 }
 
-ADDON_STATUS CAddonDll::GetStatus()
-{
-  return m_pDll->GetStatus();
-}
-
 void CAddonDll::SaveSettings()
 {
   // must save first, as TransferSettings() reloads saved settings!
