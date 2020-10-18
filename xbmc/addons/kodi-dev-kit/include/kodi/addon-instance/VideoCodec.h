@@ -9,14 +9,9 @@
 #pragma once
 
 #include "../AddonBase.h"
+#include "inputstream/DemuxPacket.h"
 #include "inputstream/StreamCodec.h"
 #include "inputstream/StreamCrypto.h"
-
-#ifdef BUILD_KODI_ADDON
-#include "../DemuxPacket.h"
-#else
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#endif
 
 extern "C"
 {
@@ -109,7 +104,7 @@ extern "C"
     bool (__cdecl* reconfigure) (const AddonInstance_VideoCodec* instance, VIDEOCODEC_INITDATA *initData);
 
     //! \brief Feed codec if requested from GetPicture() (return VC_BUFFER)
-    bool (__cdecl* add_data) (const AddonInstance_VideoCodec* instance, const DemuxPacket *packet);
+    bool(__cdecl* add_data)(const AddonInstance_VideoCodec* instance, const DEMUX_PACKET* packet);
 
     //! \brief Get a decoded picture / request new data
     VIDEOCODEC_RETVAL (__cdecl* get_picture) (const AddonInstance_VideoCodec* instance, VIDEOCODEC_PICTURE *picture);
@@ -164,7 +159,7 @@ namespace kodi
       virtual bool Reconfigure(VIDEOCODEC_INITDATA &initData) { return false; };
 
       //! \copydoc CInstanceVideoCodec::AddData
-      virtual bool AddData(const DemuxPacket &packet) { return false; };
+      virtual bool AddData(const DEMUX_PACKET& packet) { return false; };
 
       //! \copydoc CInstanceVideoCodec::GetPicture
       virtual VIDEOCODEC_RETVAL GetPicture(VIDEOCODEC_PICTURE &picture) { return VC_ERROR; };
@@ -221,7 +216,8 @@ namespace kodi
             ->Reconfigure(*initData);
       }
 
-      inline static bool ADDON_AddData(const AddonInstance_VideoCodec* instance, const DemuxPacket *packet)
+      inline static bool ADDON_AddData(const AddonInstance_VideoCodec* instance,
+                                       const DEMUX_PACKET* packet)
       {
         return static_cast<CInstanceVideoCodec*>(instance->toAddon->addonInstance)
             ->AddData(*packet);

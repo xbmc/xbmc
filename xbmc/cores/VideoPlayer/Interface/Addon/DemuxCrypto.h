@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include <inttypes.h>
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/demux_packet.h"
+
 #include <string.h>
 
 //CryptoSession is usually obtained once per stream, but could change if an key expires
@@ -58,14 +59,15 @@ private:
 
 //CryptoInfo stores the information to decrypt a sample
 
-struct DemuxCryptoInfo
+struct DemuxCryptoInfo : DEMUX_CRYPTO_INFO
 {
   explicit DemuxCryptoInfo(const unsigned int numSubs)
-    : numSubSamples(numSubs)
-    , flags(0)
-    , clearBytes(new uint16_t[numSubs])
-    , cipherBytes(new uint32_t[numSubs])
-  {};
+  {
+    numSubSamples = numSubs;
+    flags = 0;
+    clearBytes = new uint16_t[numSubs];
+    cipherBytes = new uint32_t[numSubs];
+  };
 
   ~DemuxCryptoInfo()
   {
@@ -73,14 +75,6 @@ struct DemuxCryptoInfo
     delete[] cipherBytes;
   }
 
-  uint16_t numSubSamples; //number of subsamples
-  uint16_t flags; //flags for later use
-
-  uint16_t *clearBytes; // numSubSamples uint16_t's wich define the size of clear size of a subsample
-  uint32_t *cipherBytes; // numSubSamples uint32_t's wich define the size of cipher size of a subsample
-
-  uint8_t iv[16]; // initialization vector
-  uint8_t kid[16]; // key id
 private:
   DemuxCryptoInfo(const DemuxCryptoInfo&) = delete;
   DemuxCryptoInfo& operator=(const DemuxCryptoInfo&) = delete;

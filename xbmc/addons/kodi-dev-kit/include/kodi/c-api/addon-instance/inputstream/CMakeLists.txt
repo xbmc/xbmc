@@ -1,4 +1,5 @@
-set(HEADERS stream_codec.h
+set(HEADERS demux_packet.h
+            stream_codec.h
             stream_constants.h
             stream_crypto.h
             timing_constants.h)

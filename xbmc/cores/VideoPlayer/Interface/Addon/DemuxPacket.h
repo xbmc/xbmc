@@ -9,42 +9,38 @@
 #pragma once
 
 #include "TimingConstants.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/demux_packet.h"
 
-#include <cstdint>
-#include <memory>
-
-#define DMX_SPECIALID_STREAMINFO    -10
-#define DMX_SPECIALID_STREAMCHANGE  -11
+#define DMX_SPECIALID_STREAMINFO DEMUX_SPECIALID_STREAMINFO
+#define DMX_SPECIALID_STREAMCHANGE DEMUX_SPECIALID_STREAMCHANGE
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
-  struct DemuxCryptoInfo;
-
-  typedef struct DemuxPacket
+  struct DemuxPacket : DEMUX_PACKET
   {
-    DemuxPacket() = default;
+    DemuxPacket()
+    {
+      pData = nullptr;
+      iSize = 0;
+      iStreamId = -1;
+      demuxerId = -1;
+      iGroupId = -1;
 
-    uint8_t* pData = nullptr;
-    int iSize = 0;
-    int iStreamId = -1;
-    int64_t demuxerId = -1; // id of the demuxer that created the packet
-    int iGroupId =
-        -1; // the group this data belongs to, used to group data from different streams together
+      pSideData = nullptr;
+      iSideDataElems = 0;
 
-    void* pSideData = nullptr;
-    int iSideDataElems = 0;
+      pts = DVD_NOPTS_VALUE;
+      dts = DVD_NOPTS_VALUE;
+      duration = 0;
+      dispTime = 0;
+      recoveryPoint = false;
 
-    double pts = DVD_NOPTS_VALUE;
-    double dts = DVD_NOPTS_VALUE;
-    double duration = 0; // duration in DVD_TIME_BASE if available
-    int dispTime = 0;
-    bool recoveryPoint = false;
-
-    struct DemuxCryptoInfo* cryptoInfo = nullptr;
-  } DemuxPacket;
+      cryptoInfo = nullptr;
+    }
+  };
 
 #ifdef __cplusplus
 } /* extern "C" */
