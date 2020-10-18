@@ -138,7 +138,8 @@ extern "C"
       TYPE_SUBTITLE,
       TYPE_TELETEXT,
       TYPE_RDS,
-    } m_streamType;
+    };
+    STREAM_TYPE m_streamType;
 
     enum Codec_FEATURES : uint32_t
     {
@@ -371,8 +372,9 @@ extern "C"
     // IDemux
     bool(__cdecl* get_stream_ids)(const AddonInstance_InputStream* instance,
                                   struct INPUTSTREAM_IDS* ids);
-    struct INPUTSTREAM_INFO(__cdecl* get_stream)(const AddonInstance_InputStream* instance,
-                                                 int streamid);
+    bool(__cdecl* get_stream)(const AddonInstance_InputStream* instance,
+                              int streamid,
+                              struct INPUTSTREAM_INFO* info);
     void(__cdecl* enable_stream)(const AddonInstance_InputStream* instance,
                                  int streamid,
                                  bool enable);
@@ -485,7 +487,7 @@ public:
      * @return struc of stream properties
      * @remarks
      */
-  virtual INPUTSTREAM_INFO GetStream(int streamid) = 0;
+  virtual bool GetStream(int streamid, INPUTSTREAM_INFO& stream) = 0;
 
   /*!
      * Enable or disable a stream.
@@ -789,11 +791,12 @@ private:
     return ret;
   }
 
-  inline static struct INPUTSTREAM_INFO ADDON_GetStream(const AddonInstance_InputStream* instance,
-                                                        int streamid)
+  inline static bool ADDON_GetStream(const AddonInstance_InputStream* instance,
+                                     int streamid,
+                                     struct INPUTSTREAM_INFO* info)
   {
     return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)
-        ->GetStream(streamid);
+        ->GetStream(streamid, *info);
   }
 
   inline static void ADDON_EnableStream(const AddonInstance_InputStream* instance,
