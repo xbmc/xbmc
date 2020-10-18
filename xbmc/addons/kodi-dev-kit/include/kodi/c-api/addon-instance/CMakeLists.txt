@@ -7,6 +7,7 @@ set(HEADERS audio_decoder.h
             pvr.h
             screensaver.h
             vfs.h
+            video_codec.h
             visualization.h)
 
 if(NOT ENABLE_STATIC_LIBS)

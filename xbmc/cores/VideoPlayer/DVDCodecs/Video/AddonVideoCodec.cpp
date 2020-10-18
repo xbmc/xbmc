@@ -56,7 +56,7 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   switch (hints.codec)
   {
   case AV_CODEC_ID_H264:
-    initData.codec = VIDEOCODEC_INITDATA::CodecH264;
+    initData.codec = VIDEOCODEC_H264;
     switch (hints.profile)
     {
     case 0:
@@ -89,10 +89,10 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
     }
     break;
   case AV_CODEC_ID_VP8:
-    initData.codec = VIDEOCODEC_INITDATA::CodecVp8;
+    initData.codec = VIDEOCODEC_VP8;
     break;
   case AV_CODEC_ID_VP9:
-    initData.codec = VIDEOCODEC_INITDATA::CodecVp9;
+    initData.codec = VIDEOCODEC_VP9;
     switch (hints.profile)
     {
     case FF_PROFILE_UNKNOWN:
@@ -165,8 +165,8 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
 
   unsigned int nformats(0);
-  m_formats[nformats++] = VideoFormatYV12;
-  m_formats[nformats] = UnknownVideoFormat;
+  m_formats[nformats++] = VIDEOCODEC_FORMAT_YV12;
+  m_formats[nformats] = VIDEOCODEC_FORMAT_UNKNOWN;
 
   VIDEOCODEC_INITDATA initData;
   if (!CopyToInitData(initData, hints))
@@ -204,7 +204,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     return CDVDVideoCodec::VC_ERROR;
 
   VIDEOCODEC_PICTURE picture;
-  picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE::FLAG_DRAIN : 0;
+  picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE_FLAG_DRAIN : VIDEOCODEC_PICTURE_FLAG_DROP;
 
   switch (m_struct.toAddon->get_picture(&m_struct, &picture))
   {
@@ -305,7 +305,7 @@ void CAddonVideoCodec::Reset()
 
   // Get the remaining pictures out of the external decoder
   VIDEOCODEC_PICTURE picture;
-  picture.flags = VIDEOCODEC_PICTURE::FLAG_DRAIN;
+  picture.flags = VIDEOCODEC_PICTURE_FLAG_DRAIN;
 
   VIDEOCODEC_RETVAL ret;
   while ((ret = m_struct.toAddon->get_picture(&m_struct, &picture)) != VIDEOCODEC_RETVAL::VC_EOF)
