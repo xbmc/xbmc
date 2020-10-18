@@ -170,15 +170,18 @@
 // clang-format on
 
 //==============================================================================
-///
-/// @ingroup cpp_kodi_addon_addonbase
-/// The currently available instance types for Kodi add-ons
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_ADDON_TYPE enum ADDON_TYPE
+/// **The currently available instance types for Kodi add-ons**\n
+/// This identifies the associated API part on the interface in Kodi and in the
+/// addon.
 ///
 /// \internal
 /// @note For add of new types take a new number on end. To change
 /// existing numbers can be make problems on already compiled add-ons.
 /// \endinternal
 ///
+///@{
 typedef enum ADDON_TYPE
 {
   /* addon global parts */
@@ -228,6 +231,7 @@ typedef enum ADDON_TYPE
   /// Video Decoder instance, see \ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
   ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
+///@}
 //------------------------------------------------------------------------------
 
 #ifdef __cplusplus

@@ -96,9 +96,11 @@ extern "C"
 #endif /* __cplusplus */
 
   //============================================================================
-  /// @ingroup cpp_kodi_addon_addonbase
-  /// @brief Return value of functions in @ref cpp_kodi_addon_addonbase "kodi::addon::CAddonBase"
-  /// and associated classes.
+  /// @ingroup cpp_kodi_addon_addonbase_Defs
+  /// @defgroup cpp_kodi_addon_addonbase_Defs_ADDON_STATUS enum ADDON_STATUS
+  /// @brief <b>Return value of functions in @ref cpp_kodi_addon_addonbase "kodi::addon::CAddonBase"
+  /// and associated classes</b>\n
+  /// With this Kodi can do any follow-up work or add-on e.g. declare it as defective.
   ///
   ///@{
   typedef enum ADDON_STATUS
