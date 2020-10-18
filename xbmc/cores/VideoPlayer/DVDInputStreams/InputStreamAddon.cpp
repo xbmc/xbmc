@@ -345,7 +345,7 @@ DemuxPacket* CInputStreamAddon::ReadDemux()
   if (!m_struct.toAddon->demux_read)
     return nullptr;
 
-  return m_struct.toAddon->demux_read(&m_struct);
+  return static_cast<DemuxPacket*>(m_struct.toAddon->demux_read(&m_struct));
 }
 
 std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
@@ -705,19 +705,20 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
  * Callbacks from add-on to kodi
  */
 //@{
-DemuxPacket* CInputStreamAddon::cb_allocate_demux_packet(void* kodiInstance, int data_size)
+DEMUX_PACKET* CInputStreamAddon::cb_allocate_demux_packet(void* kodiInstance, int data_size)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(data_size);
 }
 
-DemuxPacket* CInputStreamAddon::cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount)
+DEMUX_PACKET* CInputStreamAddon::cb_allocate_encrypted_demux_packet(
+    void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(dataSize, encryptedSubsampleCount);
 }
 
-void CInputStreamAddon::cb_free_demux_packet(void* kodiInstance, DemuxPacket* packet)
+void CInputStreamAddon::cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* packet)
 {
-  CDVDDemuxUtils::FreeDemuxPacket(packet);
+  CDVDDemuxUtils::FreeDemuxPacket(static_cast<DemuxPacket*>(packet));
 }
 
 //@}

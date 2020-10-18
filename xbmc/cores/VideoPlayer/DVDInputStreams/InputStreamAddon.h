@@ -124,7 +124,7 @@ private:
    * @param iDataSize The size of the data that will go into the packet
    * @return The allocated packet.
    */
-  static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+  static DEMUX_PACKET* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
 
   /*!
   * @brief Allocate an encrypted demux packet. Free with FreeDemuxPacket
@@ -133,14 +133,16 @@ private:
   * @param encryptedSubsampleCount The number of subsample description blocks to allocate
   * @return The allocated packet.
   */
-  static DemuxPacket* cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount);
+  static DEMUX_PACKET* cb_allocate_encrypted_demux_packet(void* kodiInstance,
+                                                          unsigned int dataSize,
+                                                          unsigned int encryptedSubsampleCount);
 
   /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket
    * @param kodiInstance A pointer to the add-on.
    * @param pPacket The packet to free.
    */
-  static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
+  static void cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket);
 
   /*!
    * @brief Callback used by @ref GetStream to get the data

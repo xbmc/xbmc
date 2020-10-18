@@ -1,4 +1,5 @@
-set(HEADERS StreamCodec.h
+set(HEADERS DemuxPacket.h
+            StreamCodec.h
             StreamConstants.h
             TimingConstants.h)
 
