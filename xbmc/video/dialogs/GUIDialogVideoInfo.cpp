@@ -34,6 +34,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -621,24 +622,17 @@ void CGUIDialogVideoInfo::DoSearch(std::string& strSearch, CFileItemList& items)
   CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20391) + "] ", items);
   db.Close();
 
+  // Search for music albums by artist with name matching search string
   CMusicDatabase music_database;
   if (!music_database.Open())
     return;
 
-  VECALBUMS allAlbums;
-  if (music_database.GetAllAlbumsForArtist(strSearch, allAlbums))
+  if (music_database.SearchAlbumsByArtistName(strSearch, movies))
   {
-    for (auto album : allAlbums)
+    for (int i = 0; i < movies.Size(); ++i)
     {
-      std::string path = StringUtils::Format("musicdb://albums/%ld/", album.idAlbum);
-      CFileItemPtr pItem(new CFileItem(path, album));
-      pItem->SetProperty("musicvideomediatype", MediaTypeAlbum);
-      pItem->GetMusicInfoTag()->SetAlbum(album);
-      pItem->GetVideoInfoTag()->m_type = MediaTypeAlbum;
-      std::string label =
-          StringUtils::Format("%s (%i)", album.strAlbum, pItem->GetMusicInfoTag()->GetYear());
-      pItem->SetLabel(label);
-      movies.Add(pItem);
+      // Set type so that video thumbloader handles album art
+      movies[i]->GetVideoInfoTag()->m_type = MediaTypeAlbum;
     }
     CGUIWindowVideoBase::AppendAndClearSearchItems(
         movies, "[" + g_localizeStrings.Get(36918) + "] ", items);
@@ -664,6 +658,12 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
     db.GetMusicVideoInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   db.Close();
+  if (type == VIDEODB_CONTENT_MUSICALBUMS)
+  {
+    Close();
+    CGUIDialogMusicInfo::ShowFor(const_cast<CFileItem*>(pItem));
+    return; // No video info to refresh so just close the window and go back to the fileitem list
+  }
 
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;

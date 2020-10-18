@@ -315,6 +315,7 @@ public:
                                   const std::string& strArtist,
                                   int& idAlbum,
                                   std::string& strReview);
+  bool SearchAlbumsByArtistName(const std::string& strArtist, CFileItemList& items);
   int GetAlbumByMatch(const CAlbum& album);
   std::string GetAlbumById(int id);
   std::string GetAlbumDiscTitle(int idAlbum, int idDisc);

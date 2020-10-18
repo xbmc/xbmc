@@ -42,7 +42,6 @@
 #include "utils/ProgressJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -77,7 +76,6 @@ public:
 
     CMusicDatabase database;
     database.Open();
-
     // May only have partially populated music item, so fetch all artist or album data from db
     if (tag.GetType() == MediaTypeArtist)
     {
@@ -1011,22 +1009,19 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
     }
     musicitem.SetFromMusicInfoTag(*pItem->GetMusicInfoTag());
   }
-  else if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() &&
-           !pItem->GetVideoInfoTag()->m_artist.empty())
+  else if (pItem->HasProperty("artist_musicid"))
   {
-    // Music video artist or album
-    musicitem.GetMusicInfoTag()->SetArtist(pItem->GetVideoInfoTag()->m_artist);
-    if (!pItem->GetVideoInfoTag()->m_strAlbum.empty())
-    {
-      musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger(), MediaTypeAlbum);
-      musicitem.GetMusicInfoTag()->SetAlbum(pItem->GetVideoInfoTag()->m_strAlbum);
-    }
-    else
-      musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger(),
-                                                 MediaTypeArtist);
+    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger(),
+                                               MediaTypeArtist);
+  }
+  else if (pItem->HasProperty("album_musicid"))
+  {
+    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger(),
+                                               MediaTypeAlbum);
   }
   else
     return; // nothing to do
+
 
   CGUIDialogMusicInfo *pDlgMusicInfo = CServiceBroker::GetGUI()->GetWindowManager().
 	  GetWindow<CGUIDialogMusicInfo>(WINDOW_DIALOG_MUSIC_INFO);
@@ -1044,5 +1039,4 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
         }
       }
     }
-
 }

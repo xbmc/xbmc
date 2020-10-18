@@ -867,7 +867,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
   // No need to attempt to read music file tags for music videos
   if (items.IsVideoDb())
     return;
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb()||
+  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
      (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
   {
     return;

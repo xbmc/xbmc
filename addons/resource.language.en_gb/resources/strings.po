@@ -8784,6 +8784,7 @@ msgstr ""
 #empty strings from id 16042 to 16099
 
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/windows/VideoFileItemListModifier.cpp
 msgctxt "#16100"
 msgid "All videos"
 msgstr ""
@@ -15979,6 +15980,7 @@ msgstr ""
 
 #. Artists which sing the music (if present)
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#29904"
 msgid "Artist"
 msgstr ""
@@ -20178,13 +20180,7 @@ msgctxt "#36438"
 msgid "Any repositories"
 msgstr ""
 
-#. Description of settings with label #20473 "Name for a container to hold music videos not associated with an album"
-#: system/settings/settings.xml
-msgctxt "#36439"
-msgid "The category name to use for music videos not associated with an album"
-msgstr ""
-
-#empty strings from id 36440 to 36441
+#empty strings from id 36439 to 36441
 
 #. Description of setting "System -> Audio output -> Volume control steps" with label #1302
 #: system/settings/settings.xml
@@ -21014,6 +21010,7 @@ msgid "artists"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#36918"
 msgid "album"
 msgstr ""

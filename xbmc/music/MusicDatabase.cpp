@@ -9907,10 +9907,12 @@ bool CMusicDatabase::GetMatchingMusicVideoAlbum(const std::string& strAlbum,
                                                 const std::string& strArtist,
                                                 int& idAlbum,
                                                 std::string& strReview)
-{ /*This gets the first album that matches with the title and artist (this might not be desirable).
-    Called by the videodatabase to find the details for an album that matches with a musicvideo
-    album. As we can't definitively identify an album by title and artist alone we just take the
-    first match returned by the db and ignore re-releases etc.
+{
+  /*
+    Get the first album that matches with the title and artist display name.
+    Artist(s) and album title may not be sufficient to uniquely identify a match since library can
+    store multiple releases, and occasionally artists even have different albums with same name.
+    Taking the first album that matches and ignoring re-releases etc. is acceptable for musicvideo
   */
   try
   {
@@ -9947,27 +9949,37 @@ bool CMusicDatabase::GetMatchingMusicVideoAlbum(const std::string& strAlbum,
   return false;
 }
 
-bool CMusicDatabase::GetAllAlbumsForArtist(const std::string& strArtist, VECALBUMS& allAlbums)
-{ // Stores all the albums by an artist in allAlbums.  Returns true if there is at least one album,
-  // else returns false.
-
+bool CMusicDatabase::SearchAlbumsByArtistName(const std::string& strArtist, CFileItemList& items)
+{
   try
   {
-    int idArtist = GetArtistByName(strArtist);
-    if (idArtist > -1)
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS)
+      return false;
+
+    std::string strSQL;
+    strSQL = PrepareSQL("SELECT albumview.* FROM albumview "
+      "JOIN album_artist ON album_artist.idAlbum = albumview.idAlbum "
+      "WHERE  album_artist.strArtist LIKE '%s'",
+      strArtist.c_str());
+
+    if (!m_pDS->query(strSQL))
+      return false;
+
+    while (!m_pDS->eof())
     {
-      std::vector<int> idAlbums;
-      GetAlbumsByArtist(idArtist, idAlbums);
-      if (idAlbums.size() == 0) // no albums for artist
-        return false;
-      for (auto album : idAlbums)
-      {
-        CAlbum AlbumData;
-        GetAlbum(album, AlbumData, false);
-        allAlbums.push_back(AlbumData);
-      }
-      return true;
+      CAlbum album = GetAlbumFromDataset(m_pDS.get());
+      std::string path = StringUtils::Format("musicdb://albums/%ld/", album.idAlbum);
+      CFileItemPtr pItem(new CFileItem(path, album));
+      std::string label =
+        StringUtils::Format("%s (%i)", album.strAlbum, pItem->GetMusicInfoTag()->GetYear());
+      pItem->SetLabel(label);
+      items.Add(pItem);
+      m_pDS->next();
     }
+    m_pDS->close(); // cleanup recordset data
+    return true;
   }
   catch (...)
   {
