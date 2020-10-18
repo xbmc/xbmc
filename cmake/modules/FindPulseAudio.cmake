@@ -14,14 +14,10 @@
 #
 #   PulseAudio::PulseAudio   - The PulseAudio library
 
-if(NOT PulseAudio_FIND_VERSION)
-  set(PulseAudio_FIND_VERSION 2.0.0)
-endif()
-
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PULSEAUDIO libpulse>=${PulseAudio_FIND_VERSION} QUIET)
-  pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib QUIET)
-  pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple QUIET)
+  pkg_check_modules(PC_PULSEAUDIO libpulse>=11.0.0 QUIET)
+  pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib>=11.0.0 QUIET)
+  pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple>=11.0.0 QUIET)
 endif()
 
 find_path(PULSEAUDIO_INCLUDE_DIR NAMES pulse/pulseaudio.h pulse/simple.h
