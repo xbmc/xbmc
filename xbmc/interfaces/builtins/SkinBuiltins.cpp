@@ -48,7 +48,7 @@ static int ReloadSkin(const std::vector<std::string>& params)
  */
 static int UnloadSkin(const std::vector<std::string>& params)
 {
-  g_application.UnloadSkin(true); // we're reloading the skin after this
+  g_application.UnloadSkin();
 
   return 0;
 }
