@@ -11,6 +11,7 @@
 #include "../AddonBase.h"
 #include "../StreamCrypto.h"
 #include "../c-api/addon-instance/inputstream.h"
+#include "inputstream/StreamConstants.h"
 #include "inputstream/TimingConstants.h"
 
 #ifdef __cplusplus
