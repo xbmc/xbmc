@@ -318,7 +318,6 @@ public:
   CAddonBase()
   {
     m_interface->toAddon->destroy = ADDONBASE_Destroy;
-    m_interface->toAddon->get_status = ADDONBASE_GetStatus;
     m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
     m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
     m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
@@ -488,11 +487,6 @@ public:
   {
     delete static_cast<CAddonBase*>(m_interface->addonBase);
     m_interface->addonBase = nullptr;
-  }
-
-  static inline ADDON_STATUS ADDONBASE_GetStatus()
-  {
-    return static_cast<CAddonBase*>(m_interface->addonBase)->GetStatus();
   }
 
   static inline ADDON_STATUS ADDONBASE_SetSetting(const char* settingName, const void* settingValue)
@@ -1299,10 +1293,6 @@ inline void* GetInterface(const std::string& name, const std::string& version)
   extern "C" ATTRIBUTE_DLL_EXPORT void ADDON_Destroy() \
   { \
     kodi::addon::CAddonBase::ADDONBASE_Destroy(); \
-  } \
-  extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_GetStatus() \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_GetStatus(); \
   } \
   extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_SetSetting(const char* settingName, \
                                                                  const void* settingValue) \
