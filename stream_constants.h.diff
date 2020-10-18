@@ -1,0 +1,18 @@
+--- a/xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/stream_constants.h
++++ b/xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/stream_constants.h
+@@ -8,6 +8,9 @@
+ 
+ #pragma once
+ 
++#ifndef C_API_ADDONINSTANCE_INPUTSTREAM_STREAMCONSTANTS_H
++#define C_API_ADDONINSTANCE_INPUTSTREAM_STREAMCONSTANTS_H
++
+ /// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
+ /// @brief The name of the inputstream add-on that should be used by Kodi to
+ /// play the stream.
+@@ -44,3 +47,5 @@
+ /// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
+ /// @brief Max number of properties that can be sent to an Inputstream addon
+ #define STREAM_MAX_PROPERTY_COUNT 30
++
++#endif /* !C_API_ADDONINSTANCE_INPUTSTREAM_STREAMCONSTANTS_H */

@@ -14,13 +14,12 @@
 #include "../../StreamCodec.h"
 #include "../../StreamCrypto.h"
 #include "../addon_base.h"
+#include "inputstream/stream_constants.h"
 #include "inputstream/timing_constants.h"
 #ifdef BUILD_KODI_ADDON
 #include "../../DemuxPacket.h"
-#include "../../InputStreamConstants.h"
 #else
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #endif
 
 #include <time.h>
