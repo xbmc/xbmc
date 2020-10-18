@@ -206,7 +206,8 @@ void CAddonDll::Destroy()
   /* Unload library file */
   if (m_pDll)
   {
-    m_pDll->Destroy();
+    if (m_interface.toAddon->destroy)
+      m_interface.toAddon->destroy();
     m_pDll->Unload();
   }
 
@@ -336,6 +337,9 @@ void CAddonDll::SaveSettings()
 
 ADDON_STATUS CAddonDll::TransferSettings()
 {
+  if (!m_interface.toAddon->set_setting)
+    return ADDON_STATUS_NOT_IMPLEMENTED;
+
   bool restart = false;
   ADDON_STATUS reportStatus = ADDON_STATUS_OK;
 
@@ -361,32 +365,33 @@ ADDON_STATUS CAddonDll::TransferSettings()
               case SettingType::Boolean:
               {
                 bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
-                status = m_pDll->SetSetting(id, &tmp);
+                status = m_interface.toAddon->set_setting(id, &tmp);
                 break;
               }
 
               case SettingType::Integer:
               {
                 int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
-                status = m_pDll->SetSetting(id, &tmp);
+                status = m_interface.toAddon->set_setting(id, &tmp);
                 break;
               }
 
               case SettingType::Number:
               {
                 float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-                status = m_pDll->SetSetting(id, &tmpf);
+                status = m_interface.toAddon->set_setting(id, &tmpf);
                 break;
               }
 
               case SettingType::String:
-                status = m_pDll->SetSetting(id, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                status = m_interface.toAddon->set_setting(
+                    id, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
                 break;
 
               default:
                 // log unknowns as an error, but go ahead and transfer the string
                 CLog::Log(LOGERROR, "Unknown setting type of '%s' for %s", id, Name().c_str());
-                status = m_pDll->SetSetting(id, setting->ToString().c_str());
+                status = m_interface.toAddon->set_setting(id, setting->ToString().c_str());
                 break;
             }
 

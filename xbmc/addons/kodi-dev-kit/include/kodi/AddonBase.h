@@ -482,7 +482,7 @@ public:
   static AddonGlobalInterface*
       m_interface; // Interface function table to hold addresses on add-on and from kodi
 
-  /*private:*/ /* Needed public as long the old call functions becomes used! */
+private:
   static inline void ADDONBASE_Destroy()
   {
     delete static_cast<CAddonBase*>(m_interface->addonBase);
@@ -495,7 +495,6 @@ public:
         ->SetSetting(settingName, CSettingValue(settingValue));
   }
 
-private:
   static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType,
                                                       const char* instanceID,
                                                       KODI_HANDLE instance,
@@ -1273,14 +1272,100 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 
 } /* namespace kodi */
 
-/*! addon creation macro
- * @todo cleanup this stupid big macro
- * This macro includes now all for add-on's needed functions. This becomes a bigger
- * rework after everything is done on Kodi itself, currently is this way needed
- * to have compatibility with not reworked interfaces.
- *
- * Becomes really cleaned up soon :D
- */
+//==============================================================================
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_ADDONCREATORAddonClass macro ADDONCREATOR(AddonClass)
+/// @brief **Addon creation macro**\n
+/// This export the three mandatory "C" functions to have available for Kodi.
+///
+/// @note Only this macro can be used on a C++ addon, everything else is done
+/// automatically.
+///
+/// @param[in] AddonClass Used addon class to be exported with CAddonBase as
+///            parent.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+///
+/// #include <kodi/AddonBash.h>
+///
+/// class CMyAddon : public kodi::addon::CAddonBase
+/// {
+/// public:
+///   CMyAddon() = default;
+///   ADDON_STATUS Create() override;
+/// };
+///
+/// ADDON_STATUS CMyAddon::Create()
+/// {
+///   // Some work
+///
+///   return ADDON_STATUS_OK;
+/// }
+///
+/// ADDONCREATOR(CMyAddon)
+/// ~~~~~~~~~~~~~
+///
+/// ----------------------------------------------------------------------------
+///
+/// As information, the following functions are exported using this macro:
+/// \table_start
+///   \table_h3{ Function, Use, Description }
+///   \table_row3{   <b>`ADDON_Create(KODI_HANDLE addonInterface\, const char* globalApiVersion\, void* unused)`</b>,
+///                  \anchor ADDON_Create
+///                  _required_,
+///     <b>Addon creation call.</b>
+///     <br>
+///     Like an `int main()` is this the first on addon called place on his start
+///     and create within C++ API related class inside addon.
+///     <br>
+///     @param[in] addonInterface Handle pointer to get Kodi's given table.
+///                               There have addon needed values and functions
+///                               to Kodi and addon must set his functions there
+///                               for Kodi.
+///     @param[in] globalApiVersion This give the main version @ref ADDON_GLOBAL_VERSION_MAIN
+///                                 where currently on Kodi's side.<br>
+///                                 This is unsued on addon as there also other
+///                                 special callback functions for.<br>
+///                                 Only thought for future use if needed earlier.
+///     @param[in] unused This is a not used value\, only there to have in case of
+///                       need no Major API version increase where break current.
+///     @return @ref ADDON_STATUS_OK if correct\, for possible errors see
+///             @ref ADDON_STATUS.
+///     <p>
+///   }
+///   \table_row3{   <b>`const char* ADDON_GetTypeVersion(int type)`</b>,
+///                  \anchor ADDON_GetTypeVersion
+///                  _required_,
+///     <b>Ask addon about version of given type.</b>
+///     <br>
+///     This is used to query its associated version in the addon before work
+///     is carried out in it and the Kodi can adapt to it.
+///     <br>
+///     @param[in] type With @ref ADDON_TYPE defined type to ask.
+///     @return Version as string of asked type.
+///     <p>
+///   }
+///   \table_row3{   <b>`const char* ADDON_GetTypeMinVersion(int type)`</b>,
+///                  \anchor ADDON_GetTypeMinVersion
+///                  _optional_,
+///     <b>Ask addon about minimal version of given type.</b>
+///     <br>
+///     This is used to query its associated min version in the addon before work
+///     is carried out in it and the Kodi can adapt to it.
+///     <br>
+///     @note The minimum version is optional\, if it were not available\, the
+///     major version is used instead.
+///     <br>
+///     @param[in] type With @ref ADDON_TYPE defined type to ask.
+///     @return Min version as string of asked type.
+///     <p>
+///   }
+/// \table_end
+///
 #define ADDONCREATOR(AddonClass) \
   extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_Create( \
       KODI_HANDLE addonInterface, const char* /*globalApiVersion*/, void* /*unused*/) \
@@ -1289,15 +1374,6 @@ inline void* GetInterface(const std::string& name, const std::string& version)
     kodi::addon::CAddonBase::m_interface->addonBase = new AddonClass; \
     return static_cast<kodi::addon::CAddonBase*>(kodi::addon::CAddonBase::m_interface->addonBase) \
         ->Create(); \
-  } \
-  extern "C" ATTRIBUTE_DLL_EXPORT void ADDON_Destroy() \
-  { \
-    kodi::addon::CAddonBase::ADDONBASE_Destroy(); \
-  } \
-  extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_SetSetting(const char* settingName, \
-                                                                 const void* settingValue) \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_SetSetting(settingName, settingValue); \
   } \
   extern "C" ATTRIBUTE_DLL_EXPORT const char* ADDON_GetTypeVersion(int type) \
   { \
@@ -1308,5 +1384,6 @@ inline void* GetInterface(const std::string& name, const std::string& version)
     return kodi::addon::GetTypeMinVersion(type); \
   } \
   AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr;
+//------------------------------------------------------------------------------
 
 #endif /* __cplusplus */
