@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef C_API_ADDONINSTANCE_VISUALIZATION_H
+#define C_API_ADDONINSTANCE_VISUALIZATION_H
+
 #include "../addon_base.h"
 
 #define VIZ_LYRICS_SIZE 32768
@@ -115,3 +118,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_VISUALIZATION_H */

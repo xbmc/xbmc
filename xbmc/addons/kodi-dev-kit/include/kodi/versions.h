@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef KODI_VERSIONS_H
+#define KODI_VERSIONS_H
+
 #include <string.h>
 
 #define STR_HELPER(x) #x
@@ -501,3 +504,5 @@ inline int GetTypeId(const char* name)
 } /* namespace kodi */
 } /* extern "C" */
 #endif
+
+#endif /* !KODI_VERSIONS_H */
