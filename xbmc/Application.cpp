@@ -1386,10 +1386,8 @@ bool CApplication::LoadSkin(const std::string& skinID)
   return true;
 }
 
-void CApplication::UnloadSkin(bool forReload /* = false */)
+void CApplication::UnloadSkin()
 {
-  CLog::Log(LOGINFO, "Unloading old skin %s...", forReload ? "for reload " : "");
-
   if (g_SkinInfo != nullptr && m_saveSkinOnUnloading)
     g_SkinInfo->SaveSettings();
   else if (!m_saveSkinOnUnloading)
@@ -1419,6 +1417,8 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 //  The g_SkinInfo shared_ptr ought to be reset here
 // but there are too many places it's used without checking for NULL
 // and as a result a race condition on exit can cause a crash.
+
+  CLog::Log(LOGINFO, "Unloaded skin");
 }
 
 bool CApplication::LoadCustomWindows()

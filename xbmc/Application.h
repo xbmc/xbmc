@@ -157,7 +157,7 @@ public:
 
   bool IsCurrentThread() const;
   void Stop(int exitCode);
-  void UnloadSkin(bool forReload = false);
+  void UnloadSkin();
   bool LoadCustomWindows();
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
