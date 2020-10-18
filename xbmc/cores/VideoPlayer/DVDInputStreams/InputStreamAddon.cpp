@@ -39,7 +39,6 @@ void CInputStreamProvider::GetAddonInstance(INSTANCE_TYPE instance_type,
 /*****************************************************************************************************************/
 
 using namespace ADDON;
-using namespace kodi::addon;
 
 CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
                                      IVideoPlayer* player,
@@ -367,8 +366,9 @@ std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 
 CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 {
-  INPUTSTREAM_INFO stream = m_struct.toAddon->get_stream(&m_struct, streamId);
-  if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
+  INPUTSTREAM_INFO stream{};
+  bool ret = m_struct.toAddon->get_stream(&m_struct, streamId, &stream);
+  if (!ret || stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
     return nullptr;
 
   std::string codecName(stream.m_codecName);
