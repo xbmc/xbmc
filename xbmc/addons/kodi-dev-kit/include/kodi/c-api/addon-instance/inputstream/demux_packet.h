@@ -24,40 +24,93 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  struct DEMUX_CRYPTO_INFO
-  {
-    uint16_t numSubSamples; // number of subsamples
-    uint16_t flags; // flags for later use
+  struct DEMUX_CRYPTO_INFO;
 
-    uint16_t*
-        clearBytes; // numSubSamples uint16_t's wich define the size of clear size of a subsample
-    uint32_t*
-        cipherBytes; // numSubSamples uint32_t's wich define the size of cipher size of a subsample
-
-    uint8_t iv[16]; // initialization vector
-    uint8_t kid[16]; // key id
-  };
-
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_DEMUX_PACKET struct DEMUX_PACKET
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Demux packet**\n
+  /// To processed codec and demux inputstream stream.
+  ///
+  /// This part is in the "C" style in order to have better performance and
+  /// possibly to be used in "C" libraries.
+  ///
+  /// The structure should be created with @ref kodi::addon::CInstanceInputStream::AllocateDemuxPacket()
+  /// or @ref kodi::addon::CInstanceInputStream::AllocateEncryptedDemuxPacket()
+  /// and if not added to Kodi with @ref kodi::addon::CInstanceInputStream::FreeDemuxPacket()
+  /// be deleted again.
+  ///
+  /// Packages that have been given to Kodi and processed will then be deleted
+  /// by him.
+  ///
+  ///@{
   struct DEMUX_PACKET
   {
+    /// @brief Stream package which is given for decoding.
+    ///
+    /// @note Associated storage from here is created using
+    /// @ref kodi::addon::CInstanceInputStream::AllocateDemuxPacket()
+    /// or @ref kodi::addon::CInstanceInputStream::AllocateEncryptedDemuxPacket().
     uint8_t* pData;
-    int iSize;
-    int iStreamId;
-    int64_t demuxerId; // id of the demuxer that created the packet
-    int iGroupId; // the group this data belongs to, used to group data from different streams
-                  // together
 
+    /// @brief Size of the package given at @ref pData.
+    int iSize;
+
+    /// @brief Identification of the stream.
+    int iStreamId;
+
+    /// @brief Identification of the associated demuxer, this can be identical
+    /// on several streams.
+    int64_t demuxerId;
+
+    /// @brief The group this data belongs to, used to group data from different
+    /// streams together.
+    int iGroupId;
+
+    //------------------------------------------
+
+    /// @brief Additional packet data that can be provided by the container.
+    ///
+    /// Packet can contain several types of side information.
+    ///
+    /// This is usually based on that of ffmpeg, see
+    /// [AVPacketSideData](https://ffmpeg.org/doxygen/trunk/structAVPacketSideData.html).
     void* pSideData;
+
+    /// @brief Data elements stored at @ref pSideData.
     int iSideDataElems;
 
+    //------------------------------------------
+
+    /// @brief Presentation time stamp (PTS).
     double pts;
+
+    /// @brief Decoding time stamp (DTS).
     double dts;
-    double duration; // duration in DVD_TIME_BASE if available
+
+    /// @brief Duration in @ref STREAM_TIME_BASE if available
+    double duration;
+
+    /// @brief Display time from input stream
     int dispTime;
+
+    /// @brief To show that this package allows recreating the presentation by
+    /// mistake.
     bool recoveryPoint;
 
+    //------------------------------------------
+
+    /// @brief Optional data to allow decryption at processing site if
+    /// necessary.
+    ///
+    /// This can be created using @ref kodi::addon::CInstanceInputStream::AllocateEncryptedDemuxPacket(),
+    /// otherwise this is declared as <b>`nullptr`</b>.
+    ///
+    /// See @ref DEMUX_CRYPTO_INFO for their style.
     struct DEMUX_CRYPTO_INFO* cryptoInfo;
   };
+  ///@}
+  //----------------------------------------------------------------------------
 
 #ifdef __cplusplus
 } /* extern "C" */

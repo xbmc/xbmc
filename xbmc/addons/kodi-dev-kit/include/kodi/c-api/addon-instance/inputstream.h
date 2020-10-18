@@ -34,29 +34,61 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  //==============================================================================
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamCapabilities
+  /// @brief **Capability types of inputstream addon.**\n
+  /// This values are needed to tell Kodi which options are supported on the addon.
+  ///
+  /// If one of this is defined, then the corresponding methods from
+  /// @ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream" need
+  /// to be implemented.
+  ///
+  /// Used on @ref kodi::addon::CInstanceInputStream::GetCapabilities().
+  ///
+  ///@{
   enum INPUTSTREAM_MASKTYPE
   {
-    /// supports interface IDemux
+    /// @brief **0000 0000 0000 0001 :** Supports interface demuxing.
+    ///
+    /// If set must be @ref cpp_kodi_addon_inputstream_Demux "Demux support" included.
     INPUTSTREAM_SUPPORTS_IDEMUX = (1 << 0),
 
-    /// supports interface IPosTime
+    /// @brief **0000 0000 0000 0010 :** Supports interface position time.
+    ///
+    /// This means that the start time and the current stream time are used.
+    ///
+    /// If set must be @ref cpp_kodi_addon_inputstream_Time "Time support" included.
     INPUTSTREAM_SUPPORTS_IPOSTIME = (1 << 1),
 
-    /// supports interface IDisplayTime
+    /// @brief **0000 0000 0000 0100 :** Supports interface for display time.
+    ///
+    /// This will call up the complete stream time information. The start time
+    /// and the individual PTS times are then given using @ref cpp_kodi_addon_inputstream_Defs_Times.
+    ///
+    /// If set must be @ref cpp_kodi_addon_inputstream_Times "Times support" included.
     INPUTSTREAM_SUPPORTS_IDISPLAYTIME = (1 << 2),
 
-    /// supports seek
+    /// @brief **0000 0000 0000 1000 :** Supports seek
     INPUTSTREAM_SUPPORTS_SEEK = (1 << 3),
 
-    /// supports pause
+    /// @brief **0000 0000 0001 0000 :** Supports pause
     INPUTSTREAM_SUPPORTS_PAUSE = (1 << 4),
 
-    /// supports interface ITime
+    /// @brief **0000 0000 0010 0000 :** Supports interface to give position time.
+    ///
+    /// This will only ask for the current time of the stream, not for length or
+    /// start.
+    ///
+    /// If set must be @ref cpp_kodi_addon_inputstream_PosTime "Position time support" included.
     INPUTSTREAM_SUPPORTS_ITIME = (1 << 5),
 
-    /// supports interface IChapter
+    /// @brief **0000 0000 0100 0000 :** Supports interface for chapter selection.
+    ///
+    /// If set must be @ref cpp_kodi_addon_inputstream_Chapter "Chapter support" included.
     INPUTSTREAM_SUPPORTS_ICHAPTER = (1 << 6),
   };
+  ///@}
+  //----------------------------------------------------------------------------
 
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
@@ -121,115 +153,348 @@ extern "C"
     uint64_t max_fall;
   };
 
+  //==============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_TYPE enum INPUTSTREAM_TYPE
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream types**\n
+  /// To identify type on stream.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetStreamType and @ref kodi::addon::InputstreamInfo::GetStreamType.
+  ///
+  ///@{
   enum INPUTSTREAM_TYPE
   {
+    /// @brief **0 :** To set nothing defined
     INPUTSTREAM_TYPE_NONE = 0,
+
+    /// @brief **1 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Video
     INPUTSTREAM_TYPE_VIDEO,
+
+    /// @brief **2 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Audio
     INPUTSTREAM_TYPE_AUDIO,
+
+    /// @brief **3 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Subtitle
     INPUTSTREAM_TYPE_SUBTITLE,
+
+    /// @brief **4 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Teletext
     INPUTSTREAM_TYPE_TELETEXT,
+
+    /// @brief **5 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Radio RDS
     INPUTSTREAM_TYPE_RDS,
   };
+  ///@}
+  //------------------------------------------------------------------------------
 
+  //==============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_CODEC_FEATURES enum INPUTSTREAM_CODEC_FEATURES
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream codec features**\n
+  /// To identify special extra features used for optional codec on inputstream.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetFeatures and @ref kodi::addon::InputstreamInfo::GetFeatures.
+  ///
+  /// @note These variables are bit flags which are created using "|" can be used together.
+  ///
+  ///@{
   enum INPUTSTREAM_CODEC_FEATURES
   {
+    /// @brief **0000 0000 0000 0000 :** Empty to set if nothing is used
     INPUTSTREAM_FEATURE_NONE = 0,
+
+    /// @brief **0000 0000 0000 0001 :** To set addon decode should used with @ref cpp_kodi_addon_videocodec.
     INPUTSTREAM_FEATURE_DECODE = (1 << 0)
   };
+  ///@}
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_FLAGS enum INPUTSTREAM_FLAGS
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream flags**\n
+  /// To identify extra stream flags used on inputstream.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetFlags and @ref kodi::addon::InputstreamInfo::GetFlags.
+  ///
+  /// @note These variables are bit flags which are created using "|" can be used together.
+  ///
+  ///@{
   enum INPUTSTREAM_FLAGS
   {
+    /// @brief **0000 0000 0000 0000 :** Empty to set if nothing is used
     INPUTSTREAM_FLAG_NONE = (1 << 0),
+
+    /// @brief **0000 0000 0000 0001 :** Default
     INPUTSTREAM_FLAG_DEFAULT = (1 << 1),
+
+    /// @brief **0000 0000 0000 0010 :** Dub
     INPUTSTREAM_FLAG_DUB = (1 << 2),
+
+    /// @brief **0000 0000 0000 0100 :** Original
     INPUTSTREAM_FLAG_ORIGINAL = (1 << 3),
+
+    /// @brief **0000 0000 0000 1000 :** Comment
     INPUTSTREAM_FLAG_COMMENT = (1 << 4),
+
+    /// @brief **0000 0000 0001 0000 :** Lyrics
     INPUTSTREAM_FLAG_LYRICS = (1 << 5),
+
+    /// @brief **0000 0000 0010 0000 :** Karaoke
     INPUTSTREAM_FLAG_KARAOKE = (1 << 6),
+
+    /// @brief **0000 0000 0100 0000 :** Forced
     INPUTSTREAM_FLAG_FORCED = (1 << 7),
+
+    /// @brief **0000 0000 1000 0000 :** Hearing impaired
     INPUTSTREAM_FLAG_HEARING_IMPAIRED = (1 << 8),
+
+    /// @brief **0000 0001 0000 0000 :** Visual impaired
     INPUTSTREAM_FLAG_VISUAL_IMPAIRED = (1 << 9),
   };
+  ///@}
+  //----------------------------------------------------------------------------
 
   // Keep in sync with AVColorSpace
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_COLORSPACE enum INPUTSTREAM_COLORSPACE
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream color space flags**\n
+  /// YUV colorspace type. These values match the ones defined by ISO/IEC 23001-8_2013 § 7.3.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetColorSpace and @ref kodi::addon::InputstreamInfo::GetColorSpace.
+  ///
+  ///@{
   enum INPUTSTREAM_COLORSPACE
   {
+    /// @brief **0 :** Order of coefficients is actually GBR, also IEC 61966-2-1 (sRGB)
     INPUTSTREAM_COLORSPACE_RGB = 0,
+
+    /// @brief **1 :** Also ITU-R BT1361 / IEC 61966-2-4 xvYCC709 / SMPTE RP177 Annex B
     INPUTSTREAM_COLORSPACE_BT709 = 1,
+
+    /// @brief **2 :** To set stream is unspecified
     INPUTSTREAM_COLORSPACE_UNSPECIFIED = 2,
+
+    /// @brief **2 :** To set stream is unkown
+    /// @note Same as @ref INPUTSTREAM_COLORSPACE_UNSPECIFIED
     INPUTSTREAM_COLORSPACE_UNKNOWN = INPUTSTREAM_COLORSPACE_UNSPECIFIED, // compatibility
+
+    /// @brief **3 :** To set colorspace reserved
     INPUTSTREAM_COLORSPACE_RESERVED = 3,
+
+    /// @brief **4 :** FCC Title 47 Code of Federal Regulations 73.682 (a)(20)
     INPUTSTREAM_COLORSPACE_FCC = 4,
+
+    /// @brief **5 :** Also ITU-R BT601-6 625 / ITU-R BT1358 625 / ITU-R BT1700 625 PAL & SECAM / IEC 61966-2-4 xvYCC601
     INPUTSTREAM_COLORSPACE_BT470BG = 5,
+
+    /// @brief **6 :** Also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC
     INPUTSTREAM_COLORSPACE_SMPTE170M = 6,
+
+    /// @brief **7 :** Functionally identical to above @ref INPUTSTREAM_COLORSPACE_SMPTE170M
     INPUTSTREAM_COLORSPACE_SMPTE240M = 7,
+
+    /// @brief **8 :** Used by Dirac / VC-2 and H.264 FRext, see ITU-T SG16
     INPUTSTREAM_COLORSPACE_YCGCO = 8,
+
+    /// @brief **8 :** To set colorspace as YCOCG
+    /// @note Same as @ref INPUTSTREAM_COLORSPACE_YCGCO
     INPUTSTREAM_COLORSPACE_YCOCG = INPUTSTREAM_COLORSPACE_YCGCO,
+
+    /// @brief **9 :** ITU-R BT2020 non-constant luminance system
     INPUTSTREAM_COLORSPACE_BT2020_NCL = 9,
+
+    /// @brief **10 :** ITU-R BT2020 constant luminance system
     INPUTSTREAM_COLORSPACE_BT2020_CL = 10,
+
+    /// @brief **11 :** SMPTE 2085, Y'D'zD'x
     INPUTSTREAM_COLORSPACE_SMPTE2085 = 11,
+
+    /// @brief **12 :** Chromaticity-derived non-constant luminance system
     INPUTSTREAM_COLORSPACE_CHROMA_DERIVED_NCL = 12,
+
+    /// @brief **13 :** Chromaticity-derived constant luminance system
     INPUTSTREAM_COLORSPACE_CHROMA_DERIVED_CL = 13,
+
+    /// @brief **14 :** ITU-R BT.2100-0, ICtCp
     INPUTSTREAM_COLORSPACE_ICTCP = 14,
+
+    /// @brief The maximum value to use in a list.
     INPUTSTREAM_COLORSPACE_MAX
   };
+  ///@}
+  //------------------------------------------------------------------------------
 
   // Keep in sync with AVColorPrimaries
+  //==============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_COLORPRIMARIES enum INPUTSTREAM_COLORPRIMARIES
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream color primaries flags**\n
+  /// Chromaticity coordinates of the source primaries. These values match the ones defined by ISO/IEC 23001-8_2013 § 7.1.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetColorPrimaries and @ref kodi::addon::InputstreamInfo::GetColorPrimaries.
+  ///
+  ///@{
   enum INPUTSTREAM_COLORPRIMARIES
   {
+    /// @brief **0 :** Reserved
     INPUTSTREAM_COLORPRIMARY_RESERVED0 = 0,
+
+    /// @brief **1 :** Also ITU-R BT1361 / IEC 61966-2-4 / SMPTE RP177 Annex B
     INPUTSTREAM_COLORPRIMARY_BT709 = 1,
+
+    /// @brief **2 :** Unspecified
     INPUTSTREAM_COLORPRIMARY_UNSPECIFIED = 2,
+
+    /// @brief **3 :** Reserved
     INPUTSTREAM_COLORPRIMARY_RESERVED = 3,
+
+    /// @brief **4 :** Also FCC Title 47 Code of Federal Regulations 73.682 (a)(20)
     INPUTSTREAM_COLORPRIMARY_BT470M = 4,
+
+    /// @brief **5 :** Also ITU-R BT601-6 625 / ITU-R BT1358 625 / ITU-R BT1700 625 PAL & SECAM
     INPUTSTREAM_COLORPRIMARY_BT470BG = 5,
+
+    /// @brief **6 :** Also ITU-R BT601-6 525 / ITU-R BT1358 525 / ITU-R BT1700 NTSC
     INPUTSTREAM_COLORPRIMARY_SMPTE170M = 6,
+
+    /// @brief **7 :** Functionally identical to above
     INPUTSTREAM_COLORPRIMARY_SMPTE240M = 7,
+
+    /// @brief **8 :** Colour filters using Illuminant C
     INPUTSTREAM_COLORPRIMARY_FILM = 8,
+
+    /// @brief **9 :** ITU-R BT2020
     INPUTSTREAM_COLORPRIMARY_BT2020 = 9,
+
+    /// @brief **10 :** SMPTE ST 428-1 (CIE 1931 XYZ)
     INPUTSTREAM_COLORPRIMARY_SMPTE428 = 10,
+
+    /// @brief **10 :**
+    /// @note Same as @ref INPUTSTREAM_COLORPRIMARY_SMPTE428
     INPUTSTREAM_COLORPRIMARY_SMPTEST428_1 = INPUTSTREAM_COLORPRIMARY_SMPTE428,
+
+    /// @brief **11 :** SMPTE ST 431-2 (2011) / DCI P3
     INPUTSTREAM_COLORPRIMARY_SMPTE431 = 11,
+
+    /// @brief **12 :** SMPTE ST 432-1 (2010) / P3 D65 / Display P3
     INPUTSTREAM_COLORPRIMARY_SMPTE432 = 12,
+
+    /// @brief **22 :** JEDEC P22 phosphors
     INPUTSTREAM_COLORPRIMARY_JEDEC_P22 = 22,
+
+    /// @brief The maximum value to use in a list.
     INPUTSTREAM_COLORPRIMARY_MAX
   };
+  ///@}
+  //------------------------------------------------------------------------------
 
   // Keep in sync with AVColorRange
+  //==============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_COLORRANGE enum INPUTSTREAM_COLORRANGE
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream color range flags**\n
+  /// MPEG vs JPEG YUV range.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetColorRange and @ref kodi::addon::InputstreamInfo::GetColorRange.
+  ///
+  ///@{
   enum INPUTSTREAM_COLORRANGE
   {
+    /// @brief **0 :** To define as unkown
     INPUTSTREAM_COLORRANGE_UNKNOWN = 0,
+
+    /// @brief **1 :** The normal 219*2^(n-8) "MPEG" YUV ranges
     INPUTSTREAM_COLORRANGE_LIMITED,
+
+    /// @brief **2 :** The normal 2^n-1 "JPEG" YUV ranges
     INPUTSTREAM_COLORRANGE_FULLRANGE,
+
+    /// @brief The maximum value to use in a list.
     INPUTSTREAM_COLORRANGE_MAX
   };
+  ///@}
+  //------------------------------------------------------------------------------
 
   // keep in sync with AVColorTransferCharacteristic
+  //==============================================================================
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_INPUTSTREAM_COLORTRC enum INPUTSTREAM_COLORTRC
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+  /// @brief **Inputstream color TRC flags**\n
+  /// Color Transfer Characteristic. These values match the ones defined by ISO/IEC 23001-8_2013 § 7.2.
+  ///
+  /// Used on @ref kodi::addon::InputstreamInfo::SetColorTransferCharacteristic and @ref kodi::addon::InputstreamInfo::GetColorTransferCharacteristic.
+  ///
+  ///@{
   enum INPUTSTREAM_COLORTRC
   {
+    /// @brief **0 :** Reserved
     INPUTSTREAM_COLORTRC_RESERVED0 = 0,
+
+    /// @brief **1 :** Also ITU-R BT1361
     INPUTSTREAM_COLORTRC_BT709 = 1,
+
+    /// @brief **2 :** Unspecified
     INPUTSTREAM_COLORTRC_UNSPECIFIED = 2,
+
+    /// @brief **3 :** Reserved
     INPUTSTREAM_COLORTRC_RESERVED = 3,
+
+    /// @brief **4 :** Also ITU-R BT470M / ITU-R BT1700 625 PAL & SECAM
     INPUTSTREAM_COLORTRC_GAMMA22 = 4,
+
+    /// @brief **5 :** Also ITU-R BT470BG
     INPUTSTREAM_COLORTRC_GAMMA28 = 5,
+
+    /// @brief **6 :** Also ITU-R BT601-6 525 or 625 / ITU-R BT1358 525 or 625 / ITU-R BT1700 NTSC
     INPUTSTREAM_COLORTRC_SMPTE170M = 6,
+
+    /// @brief **7 :** Functionally identical to above @ref INPUTSTREAM_COLORTRC_SMPTE170M
     INPUTSTREAM_COLORTRC_SMPTE240M = 7,
+
+    /// @brief **8 :** Linear transfer characteristics
     INPUTSTREAM_COLORTRC_LINEAR = 8,
+
+    /// @brief **9 :** Logarithmic transfer characteristic (100:1 range)
     INPUTSTREAM_COLORTRC_LOG = 9,
+
+    /// @brief **10 :** Logarithmic transfer characteristic (100 * Sqrt(10) : 1 range)
     INPUTSTREAM_COLORTRC_LOG_SQRT = 10,
+
+    /// @brief **11 :** IEC 61966-2-4
     INPUTSTREAM_COLORTRC_IEC61966_2_4 = 11,
+
+    /// @brief **12 :** ITU-R BT1361 Extended Colour Gamut
     INPUTSTREAM_COLORTRC_BT1361_ECG = 12,
+
+    /// @brief **13 :** IEC 61966-2-1 (sRGB or sYCC)
     INPUTSTREAM_COLORTRC_IEC61966_2_1 = 13,
+
+    /// @brief **14 :**  ITU-R BT2020 for 10-bit system
     INPUTSTREAM_COLORTRC_BT2020_10 = 14,
+
+    /// @brief **15 :**  ITU-R BT2020 for 12-bit system
     INPUTSTREAM_COLORTRC_BT2020_12 = 15,
+
+    /// @brief **16 :**  SMPTE ST 2084 for 10-, 12-, 14- and 16-bit systems
     INPUTSTREAM_COLORTRC_SMPTE2084 = 16,
+
+    /// @brief **16 :** Same as @ref INPUTSTREAM_COLORTRC_SMPTE2084
     INPUTSTREAM_COLORTRC_SMPTEST2084 = INPUTSTREAM_COLORTRC_SMPTE2084,
+
+    /// @brief **17 :**  SMPTE ST 428-1
     INPUTSTREAM_COLORTRC_SMPTE428 = 17,
+
+    /// @brief **17 :**  Same as @ref INPUTSTREAM_COLORTRC_SMPTE428
     INPUTSTREAM_COLORTRC_SMPTEST428_1 = INPUTSTREAM_COLORTRC_SMPTE428,
+
+    /// @brief **18 :**  ARIB STD-B67, known as "Hybrid log-gamma"
     INPUTSTREAM_COLORTRC_ARIB_STD_B67 = 18,
+
+    /// @brief The maximum value to use in a list.
     INPUTSTREAM_COLORTRC_MAX
   };
+  ///@}
+  //------------------------------------------------------------------------------
 
   /*!
    * @brief stream properties
