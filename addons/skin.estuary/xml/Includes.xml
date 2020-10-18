@@ -860,7 +860,7 @@
 						</control>
 						<control type="label" id="7700">
 							<label>$VAR[NowPlayingSublabelVar]</label>
-							<left>-45</left>
+							<left>-44</left>
 							<top>44</top>
 							<font>font12</font>
 							<textcolor>grey</textcolor>
@@ -868,6 +868,7 @@
 							<height>25</height>
 							<width>630</width>
 							<align>right</align>
+							<scroll>true</scroll>
 						</control>
 					</control>
 					<control type="group">
