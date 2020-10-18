@@ -129,7 +129,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_limiterHold;
     float m_limiterRelease;
 
-    bool  m_omlSync = false;
+    bool  m_omlSync = true;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
