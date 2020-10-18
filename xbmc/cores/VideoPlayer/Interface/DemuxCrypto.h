@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/demux_packet.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/stream_crypto.h"
 
 #include <string.h>
 
