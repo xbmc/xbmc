@@ -306,8 +306,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = CServiceBroker::GetRenderSystem()->GetRenderVersionString();
       return true;
     case SYSTEM_ADDON_UPDATE_COUNT:
-      value =
-          StringUtils::Format("{0}", CServiceBroker::GetAddonMgr().GetAvailableUpdates().size());
+      value = CServiceBroker::GetAddonMgr().GetLastAvailableUpdatesCountAsString();
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

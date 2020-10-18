@@ -211,8 +211,20 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
 
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdates() const
 {
-  return GetAvailableUpdatesOrOutdatedAddons(false);
+  std::vector<std::shared_ptr<IAddon>> availableUpdates =
+      GetAvailableUpdatesOrOutdatedAddons(false);
+
+  std::lock_guard<std::mutex> lock(m_lastAvailableUpdatesCountMutex);
+  m_lastAvailableUpdatesCountAsString = std::to_string(availableUpdates.size());
+
+  return availableUpdates;
 }
+
+const std::string& CAddonMgr::GetLastAvailableUpdatesCountAsString() const
+{
+  std::lock_guard<std::mutex> lock(m_lastAvailableUpdatesCountMutex);
+  return m_lastAvailableUpdatesCountAsString;
+};
 
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetOutdatedAddons() const
 {

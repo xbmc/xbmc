@@ -486,6 +486,14 @@ namespace ADDON
     bool GetCompatibleVersions(const std::string& addonId,
                                std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
 
+    /*!
+     * \brief Return number of available updates formatted as string
+     *        this can be used as a lightweight method of retrieving the number of updates
+     *        rather than using the expensive GetAvailableUpdates call
+     * \return number of available updates
+     */
+    const std::string& GetLastAvailableUpdatesCountAsString() const;
+
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
 
@@ -561,6 +569,12 @@ namespace ADDON
 
     // Temporary path given to add-ons, whose content is deleted when Kodi is stopped
     const std::string m_tempAddonBasePath = "special://temp/addons";
+
+    /*!
+     * latest count of available updates
+     */
+    mutable std::string m_lastAvailableUpdatesCountAsString;
+    mutable std::mutex m_lastAvailableUpdatesCountMutex;
   };
 
 }; /* namespace ADDON */
