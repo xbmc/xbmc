@@ -139,8 +139,7 @@ void CPVRChannelGroup::Unload()
   CSingleLock lock(m_critSection);
   m_sortedMembers.clear();
   m_members.clear();
-  m_failedClientsForChannels.clear();
-  m_failedClientsForChannelGroupMembers.clear();
+  m_failedClients.clear();
 }
 
 bool CPVRChannelGroup::Update(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove)
@@ -152,7 +151,7 @@ bool CPVRChannelGroup::Update(std::vector<std::shared_ptr<CPVRChannel>>& channel
   CPVRChannelGroup PVRChannels_tmp(m_path, m_iGroupId, m_allChannelsGroup);
   PVRChannels_tmp.SetPreventSortAndRenumber();
   PVRChannels_tmp.LoadFromClients();
-  m_failedClientsForChannelGroupMembers = PVRChannels_tmp.m_failedClientsForChannelGroupMembers;
+  m_failedClients = PVRChannels_tmp.m_failedClients;
   return UpdateGroupEntries(PVRChannels_tmp, channelsToRemove);
 }
 
@@ -487,7 +486,8 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroup::LoadFromClients()
 {
   /* get the channels from the backends */
-  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(this, m_failedClientsForChannelGroupMembers) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(this, m_failedClients) ==
+         PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers)
@@ -542,18 +542,10 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup& channels, bo
   return bReturn;
 }
 
-bool CPVRChannelGroup::IsMissingChannelsFromClient(int iClientId) const
+bool CPVRChannelGroup::HasValidDataFromClient(int iClientId) const
 {
-  return std::find(m_failedClientsForChannels.begin(),
-                   m_failedClientsForChannels.end(),
-                   iClientId) != m_failedClientsForChannels.end();
-}
-
-bool CPVRChannelGroup::IsMissingChannelGroupMembersFromClient(int iClientId) const
-{
-  return std::find(m_failedClientsForChannelGroupMembers.begin(),
-                   m_failedClientsForChannelGroupMembers.end(),
-                   iClientId) != m_failedClientsForChannelGroupMembers.end();
+  return std::find(m_failedClients.begin(), m_failedClients.end(), iClientId) ==
+         m_failedClients.end();
 }
 
 void CPVRChannelGroup::UpdateClientOrder()
@@ -607,11 +599,11 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroup::RemoveDeletedChannel
   for (std::vector<std::shared_ptr<PVRChannelGroupMember>>::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
     const std::shared_ptr<CPVRChannel> channel = (*it)->channel;
-    if (channels.m_members.find(channel->StorageId()) == channels.m_members.end())
+    if (channels.m_members.find(channel->StorageId()) == channels.m_members.end() &&
+        HasValidDataFromClient(channel->ClientID()))
     {
-      /* channel was not found */
-      CLog::Log(LOGINFO, "Deleted {} channel '{}' from group '{}'", IsRadio() ? "radio" : "TV",
-                channel->ChannelName(), GroupName());
+      CLog::Log(LOGINFO, "Removed stale {} channel '{}' from group '{}'",
+                IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
 
       removedChannels.emplace_back(channel);
 

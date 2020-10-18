@@ -110,7 +110,7 @@ bool CPVRChannelGroupInternal::Update(std::vector<std::shared_ptr<CPVRChannel>>&
   CPVRChannelGroupInternal PVRChannels_tmp(IsRadio());
   PVRChannels_tmp.SetPreventSortAndRenumber();
   PVRChannels_tmp.LoadFromClients();
-  m_failedClientsForChannels = PVRChannels_tmp.m_failedClientsForChannels;
+  m_failedClients = PVRChannels_tmp.m_failedClients;
   return UpdateGroupEntries(PVRChannels_tmp, channelsToRemove);
 }
 
@@ -219,7 +219,8 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroupInternal::LoadFromClients()
 {
   /* get the channels from the backends */
-  return CServiceBroker::GetPVRManager().Clients()->GetChannels(this, m_failedClientsForChannels) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannels(this, m_failedClients) ==
+         PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
@@ -281,17 +282,10 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDelete
 {
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels = CPVRChannelGroup::RemoveDeletedChannels(channels);
 
-  if (!removedChannels.empty())
+  for (const auto& channel : removedChannels)
   {
-    for (const auto& channel : removedChannels)
-    {
-      /* do we have valid data from channel's client? */
-      if (!IsMissingChannelsFromClient(channel->ClientID()))
-      {
-        /* since channel was not found in the internal group, it was deleted from the backend */
-        channel->Delete();
-      }
-    }
+    // since channel was not found in the internal group, it was deleted from the backend
+    channel->Delete();
   }
 
   return removedChannels;
