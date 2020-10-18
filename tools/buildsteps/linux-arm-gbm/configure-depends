@@ -5,5 +5,5 @@ XBMC_PLATFORM_DIR=linux-arm-gbm
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
-    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=arm-linux-gnueabihf --with-platform=gbm --with-tarballs=$TARBALLS $DEBUG_SWITCH
+    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=arm-linux-gnueabihf --with-platform=gbm --with-rendersystem=gles --with-tarballs=$TARBALLS $DEBUG_SWITCH
 fi

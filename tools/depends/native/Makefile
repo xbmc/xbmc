@@ -18,13 +18,13 @@ ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar ldid
 endif
 
-ifeq ($(TARGET_PLATFORM),wayland)
-  NATIVE += expat wayland-scanner waylandpp-scanner
+ifeq ($(OS),linux)
+  NATIVE += expat wayland-scanner pugixml waylandpp-scanner
   EXPAT = expat
-endif
 
-ifeq ($(TARGET_PLATFORM),gbm)
-  NATIVE += MarkupSafe Mako
+  ifeq ($(RENDER_SYSTEM),gles)
+    NATIVE += MarkupSafe Mako
+  endif
 endif
 
 .PHONY: $(NATIVE) native
@@ -48,8 +48,9 @@ distutilscross: python3
 tar: xz automake
 python3: $(EXPAT) libffi pkg-config zlib
 setuptools: python3
-wayland-scanner: expat
-waylandpp-scanner: cmake
+wayland-scanner: expat pkg-config
+waylandpp-scanner: cmake pugixml
+pugixml: cmake
 
 # python installs are not thread safe when using easy_install method.
 # MarkupSafe doesn't really depend on ninja but we need to make the

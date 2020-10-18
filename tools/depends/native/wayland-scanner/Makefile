@@ -5,7 +5,7 @@ DEPS=../../Makefile.include Makefile
 
 APPNAME=wayland-scanner
 PROJECTNAME=wayland
-VERSION=1.13.0
+VERSION=1.17.0
 SOURCE=$(PROJECTNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 

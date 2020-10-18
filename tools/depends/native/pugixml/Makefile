@@ -4,18 +4,14 @@ PLATFORM=$(NATIVEPLATFORM)
 DEPS=../../Makefile.include Makefile
 
 # lib name, version
-LIBNAME=waylandpp
-VERSION=0.2.8
+LIBNAME=pugixml
+VERSION=1.10
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-APP=$(PLATFORM)/wayland-scanner++
+LIBDYLIB=$(PLATFORM)/build/libpugixml.a
 
-CMAKE_OPTIONS := -DBUILD_DOCUMENTATION=OFF \
-                 -DBUILD_LIBRARIES=OFF \
-                 -DBUILD_EXAMPLES=OFF \
-                 -DBUILD_SCANNER=ON \
-                 -DCMAKE_INSTALL_LIBDIR=lib \
+CMAKE_OPTIONS := -DCMAKE_INSTALL_LIBDIR=lib \
                  -DCMAKE_INSTALL_PREFIX=$(NATIVEPREFIX) \
                  $(CMAKE_OPTIONS)
 
@@ -32,10 +28,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(NATIVEPREFIX)/bin/cmake $(CMAKE_OPTIONS) ..
 
-$(APP): $(PLATFORM)
+$(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(BUILDDIR)
 
-.installed-$(PLATFORM): $(APP)
+.installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(BUILDDIR) install
 	touch $@
 
