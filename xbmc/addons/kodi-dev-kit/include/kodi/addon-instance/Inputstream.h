@@ -80,6 +80,231 @@ private:
   InputstreamCapabilities(INPUTSTREAM_CAPABILITIES* stream) : CStructHdl(stream) {}
 };
 
+class ATTRIBUTE_HIDDEN InputstreamInfo : public CStructHdl<InputstreamInfo, INPUTSTREAM_INFO>
+{
+  friend class CInstanceInputStream;
+
+public:
+  /*! \cond PRIVATE */
+  InputstreamInfo() = default;
+  InputstreamInfo(const InputstreamInfo& stream) : CStructHdl(stream) { CopyExtraData(); }
+  /*! \endcond */
+
+  void SetStreamType(INPUTSTREAM_TYPE streamType) { m_cStructure->m_streamType = streamType; }
+
+  INPUTSTREAM_TYPE GetStreamType() const { return m_cStructure->m_streamType; }
+
+  void SetFeatures(uint32_t features) { m_cStructure->m_features = features; }
+
+  uint32_t GetFeatures() const { return m_cStructure->m_features; }
+
+  void SetFlags(uint32_t flags) { m_cStructure->m_flags = flags; }
+
+  uint32_t GetFlags() const { return m_cStructure->m_flags; }
+
+  void SetName(const std::string& name)
+  {
+    strncpy(m_cStructure->m_name, name.c_str(), INPUTSTREAM_MAX_STRING_NAME_SIZE);
+  }
+
+  std::string GetName() const { return m_cStructure->m_name; }
+
+  void SetCodecName(const std::string& codecName)
+  {
+    strncpy(m_cStructure->m_codecName, codecName.c_str(), INPUTSTREAM_MAX_STRING_CODEC_SIZE);
+  }
+
+  std::string GetCodecName() const { return m_cStructure->m_codecName; }
+
+  void SetCodecInternalName(const std::string& codecName)
+  {
+    strncpy(m_cStructure->m_codecInternalName, codecName.c_str(),
+            INPUTSTREAM_MAX_STRING_CODEC_SIZE);
+  }
+
+  std::string GetCodecInternalName() const { return m_cStructure->m_codecInternalName; }
+
+  void SetCodecProfile(STREAMCODEC_PROFILE codecProfile)
+  {
+    m_cStructure->m_codecProfile = codecProfile;
+  }
+
+  STREAMCODEC_PROFILE GetCodecProfile() const { return m_cStructure->m_codecProfile; }
+
+  void SetPhysicalIndex(unsigned int id) { m_cStructure->m_pID = id; }
+
+  unsigned int GetPhysicalIndex() const { return m_cStructure->m_pID; }
+
+  void SetExtraData(const std::vector<uint8_t>& extraData)
+  {
+    m_extraData = extraData;
+    m_cStructure->m_ExtraData = m_extraData.data();
+    m_cStructure->m_ExtraSize = m_extraData.size();
+  }
+
+  void SetExtraData(const uint8_t* extraData, size_t extraSize)
+  {
+    m_extraData.clear();
+    if (extraData && extraSize > 0)
+    {
+      for (size_t i = 0; i < extraSize; ++i)
+        m_extraData.emplace_back(extraData[i]);
+    }
+
+    m_cStructure->m_ExtraData = m_extraData.data();
+    m_cStructure->m_ExtraSize = m_extraData.size();
+  }
+
+  const std::vector<uint8_t>& GetExtraData() { return m_extraData; }
+
+  size_t GetExtraDataSize() { return m_extraData.size(); }
+
+  bool CompareExtraData(const uint8_t* extraData, size_t extraSize) const
+  {
+    if (m_extraData.size() != extraSize)
+      return false;
+    for (size_t i = 0; i < extraSize; ++i)
+    {
+      if (m_extraData[i] != extraData[i])
+        return false;
+    }
+    return true;
+  }
+
+  void ClearExtraData()
+  {
+    m_extraData.clear();
+    m_cStructure->m_ExtraData = m_extraData.data();
+    m_cStructure->m_ExtraSize = m_extraData.size();
+  }
+
+  void SetLanguage(const std::string& language)
+  {
+    strncpy(m_cStructure->m_language, language.c_str(), INPUTSTREAM_MAX_STRING_LANGUAGE_SIZE);
+  }
+
+  std::string GetLanguage() const { return m_cStructure->m_language; }
+
+  void SetFpsScale(unsigned int fpsScale) { m_cStructure->m_FpsScale = fpsScale; }
+
+  unsigned int GetFpsScale() const { return m_cStructure->m_FpsScale; }
+
+  void SetFpsRate(unsigned int fpsRate) { m_cStructure->m_FpsRate = fpsRate; }
+
+  unsigned int GetFpsRate() const { return m_cStructure->m_FpsRate; }
+
+  void SetHeight(unsigned int height) { m_cStructure->m_Height = height; }
+
+  unsigned int GetHeight() const { return m_cStructure->m_Height; }
+
+  void SetWidth(unsigned int width) { m_cStructure->m_Width = width; }
+
+  unsigned int GetWidth() const { return m_cStructure->m_Width; }
+
+  void SetAspect(float aspect) { m_cStructure->m_Aspect = aspect; }
+
+  float GetAspect() const { return m_cStructure->m_Aspect; }
+
+  void SetChannels(unsigned int channels) { m_cStructure->m_Channels = channels; }
+
+  unsigned int GetChannels() const { return m_cStructure->m_Channels; }
+
+  void SetSampleRate(unsigned int sampleRate) { m_cStructure->m_SampleRate = sampleRate; }
+
+  unsigned int GetSampleRate() const { return m_cStructure->m_SampleRate; }
+
+  void SetBitRate(unsigned int bitRate) { m_cStructure->m_BitRate = bitRate; }
+
+  unsigned int GetBitRate() const { return m_cStructure->m_BitRate; }
+
+  void SetBitsPerSample(unsigned int bitsPerSample)
+  {
+    m_cStructure->m_BitsPerSample = bitsPerSample;
+  }
+
+  unsigned int GetBitsPerSample() const { return m_cStructure->m_BitsPerSample; }
+
+  void SetBlockAlign(unsigned int blockAlign) { m_cStructure->m_BlockAlign = blockAlign; }
+
+  unsigned int GetBlockAlign() const { return m_cStructure->m_BlockAlign; }
+
+  void SetCryptoInfo(const CRYPTO_INFO& cryptoInfo) { m_cStructure->m_cryptoInfo = cryptoInfo; }
+
+  const CRYPTO_INFO& GetCryptoInfo() const { return m_cStructure->m_cryptoInfo; }
+
+  void SetCodecFourCC(unsigned int codecFourCC) { m_cStructure->m_codecFourCC = codecFourCC; }
+
+  unsigned int GetCodecFourCC() const { return m_cStructure->m_codecFourCC; }
+
+  void SetColorSpace(INPUTSTREAM_COLORSPACE colorSpace) { m_cStructure->m_colorSpace = colorSpace; }
+
+  INPUTSTREAM_COLORSPACE GetColorSpace() const { return m_cStructure->m_colorSpace; }
+
+  void SetColorRange(INPUTSTREAM_COLORRANGE colorRange) { m_cStructure->m_colorRange = colorRange; }
+
+  INPUTSTREAM_COLORRANGE GetColorRange() const { return m_cStructure->m_colorRange; }
+
+  void SetColorPrimaries(INPUTSTREAM_COLORPRIMARIES colorPrimaries)
+  {
+    m_cStructure->m_colorPrimaries = colorPrimaries;
+  }
+
+  INPUTSTREAM_COLORPRIMARIES GetColorPrimaries() const { return m_cStructure->m_colorPrimaries; }
+
+  void SetColorTransferCharacteristic(INPUTSTREAM_COLORTRC colorTransferCharacteristic)
+  {
+    m_cStructure->m_colorTransferCharacteristic = colorTransferCharacteristic;
+  }
+
+  INPUTSTREAM_COLORTRC GetColorTransferCharacteristic() const
+  {
+    return m_cStructure->m_colorTransferCharacteristic;
+  }
+
+  void SetMasteringMetadata(const INPUTSTREAM_MASTERING_METADATA& masteringMetadata)
+  {
+    m_masteringMetadata = masteringMetadata;
+    m_cStructure->m_masteringMetadata = &m_masteringMetadata;
+  }
+
+  const INPUTSTREAM_MASTERING_METADATA& GetMasteringMetadata() const { return m_masteringMetadata; }
+
+  void ClearMasteringMetadata() { m_cStructure->m_masteringMetadata = nullptr; }
+
+  void SetContentLightMetadata(const INPUTSTREAM_CONTENTLIGHT_METADATA& contentLightMetadata)
+  {
+    m_contentLightMetadata = contentLightMetadata;
+    m_cStructure->m_contentLightMetadata = &m_contentLightMetadata;
+  }
+
+  const INPUTSTREAM_CONTENTLIGHT_METADATA& GetContentLightMetadata() const
+  {
+    return m_contentLightMetadata;
+  }
+
+  void ClearContentLightMetadata() { m_cStructure->m_contentLightMetadata = nullptr; }
+
+private:
+  InputstreamInfo(const INPUTSTREAM_INFO* stream) : CStructHdl(stream) { CopyExtraData(); }
+  InputstreamInfo(INPUTSTREAM_INFO* stream) : CStructHdl(stream) { CopyExtraData(); }
+
+  void CopyExtraData()
+  {
+    if (m_cStructure->m_ExtraData && m_cStructure->m_ExtraSize > 0)
+    {
+      for (unsigned int i = 0; i < m_cStructure->m_ExtraSize; ++i)
+        m_extraData.emplace_back(m_cStructure->m_ExtraData[i]);
+    }
+    if (m_cStructure->m_masteringMetadata)
+      m_masteringMetadata = *m_cStructure->m_masteringMetadata;
+    if (m_cStructure->m_contentLightMetadata)
+      m_contentLightMetadata = *m_cStructure->m_contentLightMetadata;
+  }
+  std::vector<uint8_t> m_extraData;
+  INPUTSTREAM_MASTERING_METADATA m_masteringMetadata;
+  INPUTSTREAM_CONTENTLIGHT_METADATA m_contentLightMetadata;
+};
+
 class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
 {
 public:
@@ -130,12 +355,7 @@ public:
      * @return struc of stream properties
      * @remarks
      */
-  virtual bool GetStream(int streamid,
-                         INPUTSTREAM_INFO* info,
-                         KODI_HANDLE* demuxStream,
-                         KODI_HANDLE (*transfer_stream)(KODI_HANDLE handle,
-                                                        int streamId,
-                                                        struct INPUTSTREAM_INFO* stream)) = 0;
+  virtual bool GetStream(int streamid, kodi::addon::InputstreamInfo& stream) { return false; }
 
   /*!
      * Enable or disable a stream.
@@ -449,8 +669,16 @@ private:
                                      int streamId,
                                      struct INPUTSTREAM_INFO* stream))
   {
-    return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)
-        ->GetStream(streamid, info, demuxStream, transfer_stream);
+    InputstreamInfo infoData(info);
+    bool ret = static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)
+                   ->GetStream(streamid, infoData);
+    if (ret && transfer_stream)
+    {
+      // Do this with given callback to prevent memory problems and leaks. This
+      // then create on Kodi the needed class where then given back on demuxStream.
+      *demuxStream = transfer_stream(instance->toKodi->kodiInstance, streamid, info);
+    }
+    return ret;
   }
 
   inline static void ADDON_EnableStream(const AddonInstance_InputStream* instance,
@@ -595,7 +823,6 @@ private:
     return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->IsRealTimeStream();
   }
 
-public: // temporary to have commit usable on addon
   AddonInstance_InputStream* m_instanceData;
 };
 
