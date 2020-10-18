@@ -27,6 +27,8 @@
 #endif
 #endif
 
+// Generic helper definitions for smallest possible alignment
+//@{
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN
 #undef PRAGMA_PACK_END
@@ -34,18 +36,16 @@
 #if defined(__GNUC__)
 #define ATTRIBUTE_PACKED __attribute__((packed))
 #define PRAGMA_PACK 0
-#define ATTRIBUTE_HIDDEN __attribute__((visibility("hidden")))
 #endif
 
 #if !defined(ATTRIBUTE_PACKED)
 #define ATTRIBUTE_PACKED
 #define PRAGMA_PACK 1
 #endif
+//@}
 
-#if !defined(ATTRIBUTE_HIDDEN)
-#define ATTRIBUTE_HIDDEN
-#endif
-
+// Generic helper definitions for inline function support
+//@{
 #ifdef _MSC_VER
 #define ATTRIBUTE_FORCEINLINE __forceinline
 #elif defined(__GNUC__)
@@ -59,6 +59,27 @@
 #else
 #define ATTRIBUTE_FORCEINLINE inline
 #endif
+//@}
+
+// Generic helper definitions for shared library support
+//@{
+#if defined _WIN32 || defined __CYGWIN__
+#define ATTRIBUTE_DLL_IMPORT __declspec(dllimport)
+#define ATTRIBUTE_DLL_EXPORT __declspec(dllexport)
+#define ATTRIBUTE_DLL_LOCAL
+#else
+#if __GNUC__ >= 4
+#define ATTRIBUTE_DLL_IMPORT __attribute__ ((visibility ("default")))
+#define ATTRIBUTE_DLL_EXPORT __attribute__ ((visibility ("default")))
+#define ATTRIBUTE_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+#else
+#define ATTRIBUTE_DLL_IMPORT
+#define ATTRIBUTE_DLL_EXPORT
+#define ATTRIBUTE_DLL_LOCAL
+#endif
+#endif
+#define ATTRIBUTE_HIDDEN ATTRIBUTE_DLL_LOCAL // Fallback to old
+//@}
 
 // Hardware specific device context interface
 #define ADDON_HARDWARE_CONTEXT void*

@@ -1288,7 +1288,7 @@ inline void* GetInterface(const std::string& name, const std::string& version)
  * Becomes really cleaned up soon :D
  */
 #define ADDONCREATOR(AddonClass) \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create( \
+  extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_Create( \
       KODI_HANDLE addonInterface, const char* /*globalApiVersion*/, void* /*unused*/) \
   { \
     kodi::addon::CAddonBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
@@ -1296,24 +1296,24 @@ inline void* GetInterface(const std::string& name, const std::string& version)
     return static_cast<kodi::addon::CAddonBase*>(kodi::addon::CAddonBase::m_interface->addonBase) \
         ->Create(); \
   } \
-  extern "C" __declspec(dllexport) void ADDON_Destroy() \
+  extern "C" ATTRIBUTE_DLL_EXPORT void ADDON_Destroy() \
   { \
     kodi::addon::CAddonBase::ADDONBASE_Destroy(); \
   } \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_GetStatus() \
+  extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_GetStatus() \
   { \
     return kodi::addon::CAddonBase::ADDONBASE_GetStatus(); \
   } \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_SetSetting(const char* settingName, \
+  extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_SetSetting(const char* settingName, \
                                                                  const void* settingValue) \
   { \
     return kodi::addon::CAddonBase::ADDONBASE_SetSetting(settingName, settingValue); \
   } \
-  extern "C" __declspec(dllexport) const char* ADDON_GetTypeVersion(int type) \
+  extern "C" ATTRIBUTE_DLL_EXPORT const char* ADDON_GetTypeVersion(int type) \
   { \
     return kodi::addon::GetTypeVersion(type); \
   } \
-  extern "C" __declspec(dllexport) const char* ADDON_GetTypeMinVersion(int type) \
+  extern "C" ATTRIBUTE_DLL_EXPORT const char* ADDON_GetTypeMinVersion(int type) \
   { \
     return kodi::addon::GetTypeMinVersion(type); \
   } \
