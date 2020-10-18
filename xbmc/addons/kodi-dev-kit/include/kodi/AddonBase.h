@@ -65,7 +65,8 @@ using HardwareContext = ADDON_HARDWARE_CONTEXT;
 //==============================================================================
 /// @ingroup cpp_kodi_addon_addonbase_Defs
 /// @defgroup cpp_kodi_addon_addonbase_Defs_CSettingValue class CSettingValue
-/// @brief Inside addon main instance used helper class to give settings value.
+/// @brief **Setting value handler**\n
+/// Inside addon main instance used helper class to give settings value.
 ///
 /// This is used on @ref addon::CAddonBase::SetSetting() to inform addon about
 /// settings change by used. This becomes then used to give the related value
@@ -311,10 +312,19 @@ private:
   bool m_owner = false;
 };
 
-/// Add-on main instance class.
+//============================================================================
+/// @addtogroup cpp_kodi_addon_addonbase
+/// @brief **Add-on main instance class**\n
+/// This is the addon main class, similar to an <b>`int main()`</b> in executable and
+/// carries out initial work and later management of it.
+///
 class ATTRIBUTE_HIDDEN CAddonBase
 {
 public:
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Addon base class constructor.
+  ///
   CAddonBase()
   {
     m_interface->toAddon->destroy = ADDONBASE_Destroy;
@@ -322,11 +332,35 @@ public:
     m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
     m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Destructor.
+  ///
   virtual ~CAddonBase() = default;
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Main addon creation function
+  ///
+  /// With this function addon can carry out necessary work which is required
+  /// at later points or start necessary processes.
+  ///
+  /// This function is optional and necessary work can also be carried out
+  /// using @ref CreateInstance (if it concerns any instance types).
+  ///
+  /// @return @ref ADDON_STATUS_OK if correct, for possible errors see
+  ///         @ref ADDON_STATUS
+  ///
+  /// @note Terminating the add-on must be carried out using the class destructor
+  /// given by child.
+  ///
   virtual ADDON_STATUS Create() { return ADDON_STATUS_OK; }
+  //----------------------------------------------------------------------------
 
+  // obsolete
   virtual ADDON_STATUS GetStatus() { return ADDON_STATUS_OK; }
 
   //============================================================================
@@ -413,8 +447,8 @@ public:
   ///
   /// ...
   ///
-  /// /* If you use only one instance in your add-on, can be instanceType and
-  ///  * instanceID ignored */
+  /// // If you use only one instance in your add-on, can be instanceType and
+  /// // instanceID ignored
   /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
   ///                                       const std::string& instanceID,
   ///                                       KODI_HANDLE instance,
@@ -584,7 +618,7 @@ private:
 } /* namespace addon */
 
 //==============================================================================
-/// @ingroup cpp_kodi_addon
+/// @ingroup cpp_kodi
 /// @brief To get used version inside Kodi itself about asked type.
 ///
 /// This thought to allow a addon a handling of newer addon versions within
@@ -606,6 +640,11 @@ inline std::string ATTRIBUTE_HIDDEN GetKodiTypeVersion(int type)
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @ingroup cpp_kodi
+/// @brief To get the addon system installation folder.
+///
+/// @param[in] append [optional] Path to append to given string
+/// @return Path where addon is installed
 ///
 inline std::string ATTRIBUTE_HIDDEN GetAddonPath(const std::string& append = "")
 {
@@ -630,6 +669,14 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonPath(const std::string& append = "")
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @ingroup cpp_kodi
+/// @brief To get the user-related folder of the addon.
+///
+/// @note This folder is not created automatically and has to be created by the
+/// addon the first time.
+///
+/// @param[in] append [optional] Path to append to given string
+/// @return User path of addon
 ///
 inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = "")
 {
@@ -654,6 +701,19 @@ inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = 
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @ingroup cpp_kodi
+/// @brief This function gives OS associated executable binary path of the addon.
+///
+/// With some systems this can differ from the addon path at @ref GetAddonPath.
+///
+/// As an example on Linux:
+/// - Addon path is at `/usr/share/kodi/addons/YOUR_ADDON_ID`
+/// - Library path is at `/usr/lib/kodi/addons/YOUR_ADDON_ID`
+///
+/// @note In addition, in this function, for a given folder, the add-on path
+/// itself, but its parent.
+///
+/// @return Kodi's sytem library path where related addons are installed.
 ///
 inline std::string ATTRIBUTE_HIDDEN GetLibPath()
 {
@@ -1216,6 +1276,11 @@ inline void ATTRIBUTE_HIDDEN SetSettingEnum(const std::string& settingName, enum
 /*!@}*/
 
 //============================================================================
+/// @ingroup cpp_kodi
+/// @brief Get to related @ref ADDON_STATUS a human readable text.
+///
+/// @param[in] status Status value to get name for
+/// @return Wanted name, as "Unknown" if status not known
 ///
 inline std::string ATTRIBUTE_HIDDEN TranslateAddonStatus(ADDON_STATUS status)
 {
