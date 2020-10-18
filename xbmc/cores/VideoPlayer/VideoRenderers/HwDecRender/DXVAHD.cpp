@@ -372,19 +372,18 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(CRenderBuffer* view,
   // UHDTV
   if (view->primaries == AVCOL_PRI_BT2020)
   {
-    if (view->color_transfer == AVCOL_TRC_SMPTEST2084 && supportHDR) // HDR10
-      // Could also be:
-      // DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020
+    // Windows 10 doesn't support HLG passthrough, always is used PQ for HDR passthrough
+    if ((view->color_transfer == AVCOL_TRC_SMPTEST2084 ||
+         view->color_transfer == AVCOL_TRC_ARIB_STD_B67) && supportHDR) // is HDR display ON
       return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
 
-    if (view->color_transfer == AVCOL_TRC_ARIB_STD_B67 && supportHLG) // HLG
+    // HLG transfer can be used for HLG source in SDR display if is supported
+    if (view->color_transfer == AVCOL_TRC_ARIB_STD_B67 && supportHLG) // driver supports HLG
       return DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020;
 
     if (view->full_range)
       return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
 
-    // Could also be:
-    // DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020
     return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
   }
   // SDTV
@@ -418,17 +417,12 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(CRenderBuffer* view)
   if (!DX::Windowing()->IsHDROutput())
     return color;
 
-  // HDR10
-  if (view->color_transfer == AVCOL_TRC_SMPTE2084 && view->primaries == AVCOL_PRI_BT2020)
+  // HDR10 or HLG
+  if (view->primaries == AVCOL_PRI_BT2020 && (view->color_transfer == AVCOL_TRC_SMPTE2084 ||
+                                              view->color_transfer == AVCOL_TRC_ARIB_STD_B67))
   {
     color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
                                                : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-  }
-  // HLG or Rec.2020
-  else if (view->primaries == AVCOL_PRI_BT2020)
-  {
-    color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
-                                               : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
   }
 
   return color;

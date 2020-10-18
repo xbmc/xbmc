@@ -60,7 +60,7 @@ public:
 
   void ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight);
   void GetDefines(DefinesMap &map) const;
-  bool Create(bool useLUT, bool useDithering, int ditherDepth, bool toneMapping);
+  bool Create(bool useLUT, bool useDithering, int ditherDepth, bool toneMapping, bool HLGtoPQ);
   void Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
             , CD3DTexture& target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture& sourceTexture, CRect sourceRect, CRect destRect
@@ -87,6 +87,8 @@ private:
   bool m_useLut = false;
   bool m_useDithering = false;
   bool m_toneMapping = false;
+  bool m_useHLGtoPQ = false;
+
   bool m_hasDisplayMetadata = false;
   bool m_hasLightMetadata = false;
   unsigned m_sourceWidth = 0;
