@@ -6,8 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
-
 #ifndef C_API_GUI_DIALOGS_TEXT_VIEWER_H
 #define C_API_GUI_DIALOGS_TEXT_VIEWER_H
 

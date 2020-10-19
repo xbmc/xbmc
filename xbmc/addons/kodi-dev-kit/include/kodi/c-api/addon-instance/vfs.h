@@ -5,8 +5,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
-
 #ifndef C_API_ADDONINSTANCE_VFS_H
 #define C_API_ADDONINSTANCE_VFS_H
 
