@@ -372,6 +372,8 @@ void CAdvancedSettings::Initialize()
   m_iPVRNumericChannelSwitchTimeout = 2000;
   m_iPVRTimeshiftThreshold = 10;
   m_bPVRTimeshiftSimpleOSD = true;
+  m_PVRDefaultSortOrder.sortBy = SortByDate;
+  m_PVRDefaultSortOrder.sortOrder = SortOrderDescending;
 
   m_cacheMemSize = 1024 * 1024 * 20; // 20 MiB
   m_cacheBufferMode = CACHE_BUFFER_MODE_INTERNET; // Default (buffer all internet streams/filesystems)
@@ -1087,6 +1089,24 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pPVR, "numericchannelswitchtimeout", m_iPVRNumericChannelSwitchTimeout, 50, 60000);
     XMLUtils::GetInt(pPVR, "timeshiftthreshold", m_iPVRTimeshiftThreshold, 0, 60);
     XMLUtils::GetBoolean(pPVR, "timeshiftsimpleosd", m_bPVRTimeshiftSimpleOSD);
+    TiXmlElement* pSortDecription = pPVR->FirstChildElement("pvrrecordings");
+    if (pSortDecription)
+    {
+      const char* XML_SORTMETHOD = "sortmethod";
+      const char* XML_SORTORDER = "sortorder";
+      int sortMethod;
+      // ignore SortByTime for duration defaults
+      if (XMLUtils::GetInt(pSortDecription, XML_SORTMETHOD, sortMethod, SortByLabel, SortByFile))
+      {
+        int sortOrder;
+        if (XMLUtils::GetInt(pSortDecription, XML_SORTORDER, sortOrder, SortOrderAscending,
+                             SortOrderDescending))
+        {
+          m_PVRDefaultSortOrder.sortBy = (SortBy)sortMethod;
+          m_PVRDefaultSortOrder.sortOrder = (SortOrder)sortOrder;
+        }
+      }
+    }
   }
 
   TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
