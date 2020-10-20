@@ -25,7 +25,7 @@ bool CRendererHQ::Supports(ESCALINGMETHOD method)
 
   if (DX::DeviceResources::Get()->GetDeviceFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
   {
-    if (method == VS_SCALINGMETHOD_CUBIC ||
+    if (method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
         method == VS_SCALINGMETHOD_LANCZOS2 ||
         method == VS_SCALINGMETHOD_SPLINE36_FAST ||
         method == VS_SCALINGMETHOD_LANCZOS3_FAST ||
@@ -53,7 +53,7 @@ void CRendererHQ::SelectPSVideoFilter()
 {
   switch (m_scalingMethod)
   {
-  case VS_SCALINGMETHOD_CUBIC:
+  case VS_SCALINGMETHOD_CUBIC_MITCHELL:
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:

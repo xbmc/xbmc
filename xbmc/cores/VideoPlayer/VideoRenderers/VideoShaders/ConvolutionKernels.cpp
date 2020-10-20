@@ -34,8 +34,16 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
     Spline36();
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
     Lanczos3();
-  else if (method == VS_SCALINGMETHOD_CUBIC)
+  else if (method == VS_SCALINGMETHOD_CUBIC_B_SPLINE)
+    Bicubic(1.0, 0.0);
+  else if (method == VS_SCALINGMETHOD_CUBIC_MITCHELL)
     Bicubic(1.0 / 3.0, 1.0 / 3.0);
+  else if (method == VS_SCALINGMETHOD_CUBIC_CATMULL)
+    Bicubic(0.0, 0.5);
+  else if (method == VS_SCALINGMETHOD_CUBIC_0_075)
+    Bicubic(0.0, 0.75);
+  else if (method == VS_SCALINGMETHOD_CUBIC_0_1)
+    Bicubic(0.0, 1.0);
 
   ToIntFract();
   ToUint8();
