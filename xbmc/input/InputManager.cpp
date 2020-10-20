@@ -234,7 +234,6 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       if (wKeyID & ES_FLAG_UNICODE)
       {
         key = CKey(0u, 0u, static_cast<wchar_t>(wKeyID & ~ES_FLAG_UNICODE), 0, 0, 0, 0);
-        key.SetFromService(true);
         return OnKey(key);
       }
 
