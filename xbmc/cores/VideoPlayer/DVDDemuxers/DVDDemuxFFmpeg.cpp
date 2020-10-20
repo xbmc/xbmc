@@ -2009,6 +2009,10 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
     if (m_pFormatContext->streams[idx]->codecpar->codec_id != stream->codec)
       return true;
+    if (m_pFormatContext->streams[idx]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO &&
+        m_pFormatContext->streams[idx]->codecpar->channels !=
+            static_cast<CDemuxStreamAudio*>(stream)->iChannels)
+      return true;
     if (m_pFormatContext->streams[idx]->codecpar->extradata_size != static_cast<int>(stream->ExtraSize))
       return true;
   }
