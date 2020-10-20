@@ -108,6 +108,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       int64_t iSize = 0;
       bool bIsDir = true;
       bool hidden = false;
+      struct stat info = {0};
 
       if(StringUtils::EndsWith(strFile, "$") && aDir.type == SMBC_FILE_SHARE )
         continue;
@@ -122,7 +123,6 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         // set this here to if the stat should fail
         bIsDir = (aDir.type == SMBC_DIR);
 
-        struct stat info = {0};
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
