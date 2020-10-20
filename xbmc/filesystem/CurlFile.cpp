@@ -631,9 +631,11 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   if (!m_cipherlist.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_SSL_CIPHER_LIST, m_cipherlist.c_str());
 
-  // enable HTTP2 support. default: CURL_HTTP_VERSION_1_1. Curl >= 7.62.0 defaults to CURL_HTTP_VERSION_2TLS
-  g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
-
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlDisableHTTP2)
+    g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+  else
+    // enable HTTP2 support. default: CURL_HTTP_VERSION_1_1. Curl >= 7.62.0 defaults to CURL_HTTP_VERSION_2TLS
+    g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
