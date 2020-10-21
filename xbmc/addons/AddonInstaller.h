@@ -14,9 +14,12 @@
 #include "utils/FileOperationJob.h"
 #include "utils/Stopwatch.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+class CFileItemList;
 
 namespace ADDON
 {
@@ -183,7 +186,7 @@ private:
   bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database, std::pair<std::string, std::string> &failedDep);
 
   void PrunePackageCache();
-  int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);
+  int64_t EnumeratePackageFolder(std::map<std::string, std::unique_ptr<CFileItemList>>& result);
 
   mutable CCriticalSection m_critSection;
   JobMap m_downloadJobs;
