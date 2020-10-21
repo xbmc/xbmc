@@ -40,7 +40,7 @@ flatbuffers: cmake
 heimdal: libtool
 libtool: automake
 libjpeg-turbo: cmake yasm
-libpng: zlib
+libpng: zlib automake
 meson: python3 setuptools
 ninja: meson
 swig: pcre
