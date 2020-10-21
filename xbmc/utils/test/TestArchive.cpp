@@ -245,12 +245,12 @@ TEST_F(TestArchive, DateTimeArchive)
   CDateTime dateTime2;
 
   CArchive arstore(file, CArchive::store);
-  dateTime.Archive(arstore);
+  dateTime1.Archive(arstore);
   arstore.Close();
 
   ASSERT_EQ(0, file->Seek(0, SEEK_SET));
   CArchive arload(file, CArchive::load);
-  dateTime.Archive(arload);
+  dateTime2.Archive(arload);
   arload.Close();
 
   EXPECT_TRUE(dateTime1 == dateTime2);
