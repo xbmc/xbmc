@@ -362,7 +362,7 @@ CDateTime CDateTime::operator +(const CDateTimeSpan& right) const
 {
   CDateTime left(*this);
 
-  left.m_time + right.m_timeSpan;
+  left.m_time += right.m_timeSpan;
 
   return left;
 }
@@ -371,7 +371,7 @@ CDateTime CDateTime::operator -(const CDateTimeSpan& right) const
 {
   CDateTime left(*this);
 
-  left.m_time - right.m_timeSpan;
+  left.m_time -= right.m_timeSpan;
 
   return left;
 }
