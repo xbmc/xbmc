@@ -61,6 +61,16 @@
 				<top>55</top>
 				<width>100%</width>
 				<height>16</height>
+				<info>Player.ProgressCache</info>
+				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<midtexture>colors/white50.png</midtexture>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="progress">
+				<left>0</left>
+				<top>55</top>
+				<width>100%</width>
+				<height>16</height>
 				<info>Player.Progress</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
@@ -112,7 +122,27 @@
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
 				<info>PVR.TimeShiftSeekbar</info>
-				<visible>[Player.Seeking | Player.DisplayAfterSeek] + !Player.ChannelPreviewActive</visible>
+				<visible>VideoPlayer.Content(LiveTV) + [Player.Seeking | Player.DisplayAfterSeek] + !Player.ChannelPreviewActive</visible>
+			</control>
+			<control type="ranges">
+				<left>0</left>
+				<top>55</top>
+				<width>100%</width>
+				<height>8</height>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<lefttexture>colors/white.png</lefttexture>
+				<midtexture colordiffuse="FFFF0000">colors/white.png</midtexture>
+				<righttexture>colors/white.png</righttexture>
+				<info>Player.Cutlist</info>
+			</control>
+			<control type="ranges">
+				<left>0</left>
+				<top>67</top>
+				<width>100%</width>
+				<height>4</height>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<righttexture>colors/white.png</righttexture>
+				<info>Player.Chapters</info>
 			</control>
 		</control>
 		<control type="group">
