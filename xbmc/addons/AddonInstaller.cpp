@@ -8,6 +8,7 @@
 
 #include "AddonInstaller.h"
 
+#include "FileItem.h"
 #include "FilesystemInstaller.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h" // for callback
@@ -391,7 +392,7 @@ bool CAddonInstaller::HasJob(const std::string& ID) const
 
 void CAddonInstaller::PrunePackageCache()
 {
-  std::map<std::string,CFileItemList*> packs;
+  std::map<std::string, std::unique_ptr<CFileItemList>> packs;
   int64_t size = EnumeratePackageFolder(packs);
   int64_t limit = static_cast<int64_t>(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_addonPackageFolderSize) * 1024 * 1024;
   if (size < limit)
@@ -402,7 +403,7 @@ void CAddonInstaller::PrunePackageCache()
   CFileItemList items;
   CAddonDatabase db;
   db.Open();
-  for (std::map<std::string,CFileItemList*>::const_iterator it = packs.begin(); it != packs.end(); ++it)
+  for (auto it = packs.begin(); it != packs.end(); ++it)
   {
     it->second->Sort(SortByLabel, SortOrderDescending);
     for (int j = 2; j < it->second->Size(); j++)
@@ -422,7 +423,7 @@ void CAddonInstaller::PrunePackageCache()
   {
     // 2. Remove the oldest packages (leaving least 1 for each add-on)
     items.Clear();
-    for (std::map<std::string,CFileItemList*>::iterator it = packs.begin(); it != packs.end(); ++it)
+    for (auto it = packs.begin(); it != packs.end(); ++it)
     {
       if (it->second->Size() > 1)
         items.Add(CFileItemPtr(new CFileItem(*it->second->Get(1))));
@@ -437,10 +438,6 @@ void CAddonInstaller::PrunePackageCache()
       CFileUtils::DeleteItem(items[i++]);
     }
   }
-
-  // clean up our mess
-  for (std::map<std::string,CFileItemList*>::iterator it = packs.begin(); it != packs.end(); ++it)
-    delete it->second;
 }
 
 void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
@@ -465,7 +462,8 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
   }
 }
 
-int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result)
+int64_t CAddonInstaller::EnumeratePackageFolder(
+    std::map<std::string, std::unique_ptr<CFileItemList>>& result)
 {
   CFileItemList items;
   CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
@@ -479,7 +477,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
     std::string pack,dummy;
     AddonVersion::SplitFileName(pack, dummy, items[i]->GetLabel());
     if (result.find(pack) == result.end())
-      result[pack] = new CFileItemList;
+      result[pack] = std::make_unique<CFileItemList>();
     result[pack]->Add(CFileItemPtr(new CFileItem(*items[i])));
   }
 
