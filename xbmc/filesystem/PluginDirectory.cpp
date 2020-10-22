@@ -254,7 +254,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_fetchComplete.Set();
 }
 
-void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &label2Mask, const std::string &labelMask)
+void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &labelMask, const std::string &label2Mask)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);

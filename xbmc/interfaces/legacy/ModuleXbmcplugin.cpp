@@ -63,7 +63,7 @@ namespace XBMCAddon
       XFILE::CPluginDirectory::SetResolvedUrl(handle, succeeded, pListItem->item.get());
     }
 
-    void addSortMethod(int handle, int sortMethod, const String& clabel2Mask, const String& clabelMask)
+    void addSortMethod(int handle, int sortMethod, const String& clabelMask, const String& clabel2Mask)
     {
       String labelMask;
       if (sortMethod == SORT_METHOD_TRACKNUM)
@@ -78,7 +78,7 @@ namespace XBMCAddon
 
       // call the directory class to add the sort method.
       if (sortMethod >= SORT_METHOD_NONE && sortMethod < SORT_METHOD_MAX)
-        XFILE::CPluginDirectory::AddSortMethod(handle, (SORT_METHOD)sortMethod, label2Mask, labelMask);
+        XFILE::CPluginDirectory::AddSortMethod(handle, (SORT_METHOD)sortMethod, labelMask, label2Mask);
     }
 
     String getSetting(int handle, const char* id)
