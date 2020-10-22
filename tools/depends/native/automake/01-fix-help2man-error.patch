@@ -1,0 +1,12 @@
+diff -Naur a/Makefile.in b/Makefile.in
+--- a/Makefile.in	2020-03-16 19:11:10.000000000 -0700
++++ b/Makefile.in	2020-10-22 08:06:24.606751367 -0700
+@@ -699,7 +699,7 @@
+ update_mans = \
+   $(AM_V_GEN): \
+     && $(MKDIR_P) doc \
+-    && ./pre-inst-env $(PERL) $(srcdir)/doc/help2man --output=$@
++    && ./pre-inst-env $(PERL) $(srcdir)/doc/help2man --output=$@ --no-discard-stderr
+ 
+ amhello_sources = \
+   doc/amhello/configure.ac \
