@@ -1183,12 +1183,6 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
         case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
           cs = DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
           break;
-        case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020:
-          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
-          break;
-        case DXGI_COLOR_SPACE_YCBCR_FULL_GHLG_TOPLEFT_P2020:
-          cs = DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020;
-          break;
       }
     }
     if (SUCCEEDED(swapChain3->SetColorSpace1(cs)))

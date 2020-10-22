@@ -221,13 +221,18 @@ void COutputShader::GetDefines(DefinesMap& map) const
   {
     map["KODI_TONE_MAPPING"] = "";
   }
+  if (m_useHLGtoPQ)
+  {
+    map["KODI_HLG_TO_PQ"] = "";
+  }
 }
 
-bool COutputShader::Create(bool useLUT, bool useDithering, int ditherDepth, bool toneMapping)
+bool COutputShader::Create(bool useLUT, bool useDithering, int ditherDepth, bool toneMapping, bool HLGtoPQ)
 {
   m_useLut = useLUT;
   m_ditherDepth = ditherDepth;
   m_toneMapping = toneMapping && !DX::Windowing()->IsHDROutput();
+  m_useHLGtoPQ = HLGtoPQ;
 
   CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
 

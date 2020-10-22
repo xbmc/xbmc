@@ -48,8 +48,7 @@ enum class HDR_TYPE : uint32_t
 {
   HDR_NONE_SDR = 0x00,
   HDR_HDR10 = 0x01,
-  HDR_HLG = 0x02,
-  HDR_REC2020 = 0x03
+  HDR_HLG = 0x02
 };
 
 class CRenderBuffer
@@ -158,6 +157,7 @@ protected:
   bool m_useDithering = false;
   bool m_cmsOn = false;
   bool m_clutLoaded = false;
+  bool m_useHLGtoPQ = false;
 
   int m_iBufferIndex = 0;
   int m_iNumBuffers = 0;
@@ -183,6 +183,5 @@ protected:
 
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
   HDR_TYPE m_HdrType = HDR_TYPE::HDR_NONE_SDR;
-  int m_iCntMetaData = 0;
   bool m_AutoSwitchHDR = false;
 };

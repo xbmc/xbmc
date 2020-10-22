@@ -50,12 +50,49 @@ float tonemap(float val)
   return val * (1 + val/(g_toneP1*g_toneP1))/(1 + val);
 }
 #endif
+#if defined(KODI_HLG_TO_PQ)
+float inverseHLG(float x)
+{
+  const float B67_a = 0.17883277;
+  const float B67_b = 0.28466892;
+  const float B67_c = 0.55991073;
+  const float B67_inv_r2 = 4.0;
+  if (x <= 0.5)
+    x = x * x * B67_inv_r2;
+  else
+    x = exp((x - B67_c) / B67_a) + B67_b;
+  return x;
+}
+
+float4 tranferPQ(float4 color)
+{
+  const float ST2084_m1 = 2610.0 / (4096.0 * 4.0);
+  const float ST2084_m2 = (2523.0 / 4096.0) * 128.0;
+  const float ST2084_c1 = 3424.0 / 4096.0;
+  const float ST2084_c2 = (2413.0 / 4096.0) * 32.0;
+  const float ST2084_c3 = (2392.0 / 4096.0) * 32.0;
+  color = pow(color / 1000.0, ST2084_m1);
+  color = (ST2084_c1 + ST2084_c2 * color) / (1 + ST2084_c3 * color);
+  color = pow(color, ST2084_m2);
+  return color;
+}
+#endif
+
 
 float4 output4(float4 color, float2 uv)
 {
 #if defined(KODI_TONE_MAPPING)
   float luma = dot(color.rgb, g_coefsDst);
   color.rgb *= tonemap(luma) / luma;
+#endif
+#if defined(KODI_HLG_TO_PQ)
+  color.r = inverseHLG(color.r);
+  color.g = inverseHLG(color.g);
+  color.b = inverseHLG(color.b);
+  float3 ootf_2020 = float3(0.2627, 0.6780, 0.0593);
+  float ootf_ys = 2000.0 * dot(ootf_2020, color);
+  color = color * pow(ootf_ys, 0.200);
+  color = tranferPQ(color);
 #endif
 #if defined(KODI_3DLUT)
   half3 scale = m_LUTParams.x;
