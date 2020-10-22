@@ -1421,6 +1421,9 @@ bool CGUIDialogVideoInfo::CanDeleteVideoItem(const CFileItemPtr &item)
   if (item == nullptr || !item->HasVideoInfoTag())
     return false;
 
+  if (item->GetVideoInfoTag()->m_type == "tag")
+    return true;
+
   CQueryParams params;
   CVideoDatabaseDirectory::GetQueryParams(item->GetPath(), params);
 
@@ -1451,26 +1454,34 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
 
   int heading = -1;
   VIDEODB_CONTENT_TYPE type = static_cast<VIDEODB_CONTENT_TYPE>(item->GetVideoContentType());
-  switch (type)
+  std::string& subtype = item->GetVideoInfoTag()->m_type;
+  if (subtype != "tag")
   {
-    case VIDEODB_CONTENT_MOVIES:
-      heading = 432;
-      break;
-    case VIDEODB_CONTENT_EPISODES:
-      heading = 20362;
-      break;
-    case VIDEODB_CONTENT_TVSHOWS:
-      heading = 20363;
-      break;
-    case VIDEODB_CONTENT_MUSICVIDEOS:
-      heading = 20392;
-      break;
-    case VIDEODB_CONTENT_MOVIE_SETS:
-      heading = 646;
-      break;
+    switch (type)
+    {
+      case VIDEODB_CONTENT_MOVIES:
+        heading = 432;
+        break;
+      case VIDEODB_CONTENT_EPISODES:
+        heading = 20362;
+        break;
+      case VIDEODB_CONTENT_TVSHOWS:
+        heading = 20363;
+        break;
+      case VIDEODB_CONTENT_MUSICVIDEOS:
+        heading = 20392;
+        break;
+      case VIDEODB_CONTENT_MOVIE_SETS:
+        heading = 646;
+        break;
 
-    default:
-      return false;
+      default:
+        return false;
+    }
+  }
+  else
+  {
+    heading = 10058;
   }
 
   pDialog->SetHeading(CVariant{heading});
@@ -1496,6 +1507,12 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
 
   if (item->GetVideoInfoTag()->m_iDbId < 0)
     return false;
+
+  if (subtype == "tag")
+  {
+    database.DeleteTag(item->GetVideoInfoTag()->m_iDbId, type);
+    return true;
+  }
 
   switch (type)
   {
