@@ -37,5 +37,5 @@ public:
   Display *m_dpy;
 
 protected:
-  bool m_omlSync = false;
+  bool m_omlSync = true;
 };
