@@ -62,12 +62,14 @@ const std::string SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaa
 
 void VAAPI::VaErrorCallback(void *user_context, const char *message)
 {
-  CLog::Log(LOGERROR, "libva error: {}", message);
+  std::string str{message};
+  CLog::Log(LOGERROR, "libva error: {}", StringUtils::TrimRight(str));
 }
 
 void VAAPI::VaInfoCallback(void *user_context, const char *message)
 {
-  CLog::Log(LOGDEBUG, "libva info: {}", message);
+  std::string str{message};
+  CLog::Log(LOGDEBUG, "libva info: {}", StringUtils::TrimRight(str));
 }
 
 //-----------------------------------------------------------------------------
