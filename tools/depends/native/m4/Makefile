@@ -1,7 +1,22 @@
+ifneq ("$(wildcard ../../Makefile.include)","")
+
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
 DEPS= ../../Makefile.include Makefile 01-fix-ftbfs-with-glibc-2.28.patch osx_snprintf.patch
+
+else
+
+include ../../Makefile.include.in
+DEPS=Makefile osx_snprintf.patch
+PREFIX=$(CURDIR)/../../pre-build-deps
+PLATFORM=native
+TARBALLS_LOCATION_BOOTSTRAP ?= $(PREFIX)
+TARBALLS_LOCATION=$(TARBALLS_LOCATION_BOOTSTRAP)
+RETRIEVE_TOOL=curl
+ARCHIVE_TOOL=tar
+
+endif
 
 # lib name, version
 LIBNAME=m4
@@ -17,6 +32,7 @@ LIBDYLIB=$(PLATFORM)/src/$(LIBNAME)
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
+	mkdir -p $(TARBALLS_LOCATION)
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
