@@ -11,5 +11,5 @@ if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   #clean up the rest too
   cd $WORKSPACE;git clean -xffd
-  cd $WORKSPACE/tools/depends/;./bootstrap
+  cd $WORKSPACE/tools/depends/;TARBALLS_LOCATION_BOOTSTRAP=$TARBALLS ./bootstrap
 fi
