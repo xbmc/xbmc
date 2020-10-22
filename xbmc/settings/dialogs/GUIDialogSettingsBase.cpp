@@ -664,7 +664,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
   if (controlType == "toggle")
   {
     if (m_pOriginalRadioButton != NULL)
-      pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
+      pControl = m_pOriginalRadioButton->Clone();
     if (pControl == NULL)
       return NULL;
 
@@ -722,7 +722,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     else
     {
       if (m_pOriginalSlider != NULL)
-        pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
+        pControl = m_pOriginalSlider->Clone();
       if (pControl == NULL)
         return NULL;
 
@@ -734,7 +734,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
   else if (controlType == "range")
   {
     if (m_pOriginalSlider != NULL)
-      pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
+      pControl = m_pOriginalSlider->Clone();
     if (pControl == NULL)
       return NULL;
 

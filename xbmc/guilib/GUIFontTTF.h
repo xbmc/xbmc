@@ -26,7 +26,7 @@ using namespace DirectX::PackedVector;
 
 constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
 
-class CBaseTexture;
+class CTexture;
 class CRenderSystemBase;
 
 struct FT_FaceRec_;
@@ -64,14 +64,14 @@ struct SVertex
 #include "GUIFontCache.h"
 
 
-class CGUIFontTTFBase
+class CGUIFontTTF
 {
   friend class CGUIFont;
 
 public:
+  virtual ~CGUIFontTTF();
 
-  explicit CGUIFontTTFBase(const std::string& strFileName);
-  virtual ~CGUIFontTTFBase(void);
+  static CGUIFontTTF* CreateGUIFontTTF(const std::string& fileName);
 
   void Clear();
 
@@ -86,6 +86,8 @@ public:
   const std::string& GetFileName() const { return m_strFileName; };
 
 protected:
+  explicit CGUIFontTTF(const std::string& strFileName);
+
   struct Character
   {
     short offsetX, offsetY;
@@ -115,7 +117,7 @@ protected:
   void RenderCharacter(float posX, float posY, const Character *ch, UTILS::Color color, bool roundX, std::vector<SVertex> &vertices);
   void ClearCharacterCache();
 
-  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
+  virtual CTexture* ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
 
@@ -123,7 +125,7 @@ protected:
   void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
-  CBaseTexture* m_texture;        // texture that holds our rendered characters (8bit alpha only)
+  CTexture* m_texture; // texture that holds our rendered characters (8bit alpha only)
 
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // height of our texture
@@ -185,16 +187,7 @@ protected:
 private:
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
-  CGUIFontTTFBase(const CGUIFontTTFBase&) = delete;
-  CGUIFontTTFBase& operator=(const CGUIFontTTFBase&) = delete;
+  CGUIFontTTF(const CGUIFontTTF&) = delete;
+  CGUIFontTTF& operator=(const CGUIFontTTF&) = delete;
   int m_referenceCount;
 };
-
-#if defined(HAS_GL) || defined(HAS_GLES)
-#include "GUIFontTTFGL.h"
-#define CGUIFontTTF CGUIFontTTFGL
-#elif defined(HAS_DX)
-#include "GUIFontTTFDX.h"
-#define CGUIFontTTF CGUIFontTTFDX
-#endif
-

@@ -126,7 +126,9 @@ void CTextureCache::BackgroundCacheImage(const std::string &url)
   AddJob(new CTextureCacheJob(path, details.hash));
 }
 
-std::string CTextureCache::CacheImage(const std::string &image, CBaseTexture **texture /* = NULL */, CTextureDetails *details /* = NULL */)
+std::string CTextureCache::CacheImage(const std::string& image,
+                                      CTexture** texture /* = NULL */,
+                                      CTextureDetails* details /* = NULL */)
 {
   std::string url = CTextureUtils::UnwrapImageURL(image);
   if (url.empty())
@@ -165,7 +167,7 @@ std::string CTextureCache::CacheImage(const std::string &image, CBaseTexture **t
   if (!cachedpath.empty())
   {
     if (texture)
-      *texture = CBaseTexture::LoadFromFile(cachedpath, 0, 0);
+      *texture = CTexture::LoadFromFile(cachedpath, 0, 0);
   }
   else
   {

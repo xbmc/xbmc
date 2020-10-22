@@ -85,7 +85,9 @@ public:
                    OVER_FLOW_CLIP };
 
   CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, OVER_FLOW overflow = OVER_FLOW_TRUNCATE);
-  virtual ~CGUILabel(void);
+  CGUILabel(const CGUILabel& label);
+
+  virtual ~CGUILabel() = default;
 
   /*! \brief Process the label
    \return bool stating if process caused control to change

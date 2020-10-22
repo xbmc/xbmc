@@ -28,20 +28,20 @@
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
+CTexture::CTexture(unsigned int width, unsigned int height, unsigned int format)
 {
   m_pixels = NULL;
   m_loadedToGPU = false;
   Allocate(width, height, format);
 }
 
-CBaseTexture::~CBaseTexture()
+CTexture::~CTexture()
 {
   KODI::MEMORY::AlignedFree(m_pixels);
   m_pixels = NULL;
 }
 
-void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
+void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
 {
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
@@ -105,7 +105,12 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   }
 }
 
-void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU)
+void CTexture::Update(unsigned int width,
+                      unsigned int height,
+                      unsigned int pitch,
+                      unsigned int format,
+                      const unsigned char* pixels,
+                      bool loadToGPU)
 {
   if (pixels == NULL)
     return;
@@ -142,7 +147,7 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
     LoadToGPU();
 }
 
-void CBaseTexture::ClampToEdge()
+void CTexture::ClampToEdge()
 {
   if (m_pixels == nullptr)
     return;
@@ -175,7 +180,11 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
-CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool requirePixels, const std::string& strMimeType)
+CTexture* CTexture::LoadFromFile(const std::string& texturePath,
+                                 unsigned int idealWidth,
+                                 unsigned int idealHeight,
+                                 bool requirePixels,
+                                 const std::string& strMimeType)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -192,30 +201,38 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
       if (!inputBuffSize)
         return NULL;
 
-      CTexture *texture = new CTexture();
+      CTexture* texture = CTexture::CreateTexture();
       texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
       delete [] inputBuff;
       return texture;
     }
   }
 #endif
-  CTexture *texture = new CTexture();
+  CTexture* texture = CTexture::CreateTexture();
   if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, requirePixels, strMimeType))
     return texture;
   delete texture;
   return NULL;
 }
 
-CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t bufferSize, const std::string &mimeType, unsigned int idealWidth, unsigned int idealHeight)
+CTexture* CTexture::LoadFromFileInMemory(unsigned char* buffer,
+                                         size_t bufferSize,
+                                         const std::string& mimeType,
+                                         unsigned int idealWidth,
+                                         unsigned int idealHeight)
 {
-  CTexture *texture = new CTexture();
+  CTexture* texture = CTexture::CreateTexture();
   if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight))
     return texture;
   delete texture;
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool requirePixels, const std::string& strMimeType)
+bool CTexture::LoadFromFileInternal(const std::string& texturePath,
+                                    unsigned int maxWidth,
+                                    unsigned int maxHeight,
+                                    bool requirePixels,
+                                    const std::string& strMimeType)
 {
   if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images
@@ -278,7 +295,11 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
   return true;
 }
 
-bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType, unsigned int maxWidth, unsigned int maxHeight)
+bool CTexture::LoadFromFileInMem(unsigned char* buffer,
+                                 size_t size,
+                                 const std::string& mimeType,
+                                 unsigned int maxWidth,
+                                 unsigned int maxHeight)
 {
   if (!buffer || !size)
     return false;
@@ -298,7 +319,11 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   return true;
 }
 
-bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
+bool CTexture::LoadIImage(IImage* pImage,
+                          unsigned char* buffer,
+                          unsigned int bufSize,
+                          unsigned int width,
+                          unsigned int height)
 {
   if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
   {
@@ -322,7 +347,12 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
   return false;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, const unsigned char* pixels)
+bool CTexture::LoadFromMemory(unsigned int width,
+                              unsigned int height,
+                              unsigned int pitch,
+                              unsigned int format,
+                              bool hasAlpha,
+                              const unsigned char* pixels)
 {
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
@@ -332,7 +362,12 @@ bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsig
   return true;
 }
 
-bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette)
+bool CTexture::LoadPaletted(unsigned int width,
+                            unsigned int height,
+                            unsigned int pitch,
+                            unsigned int format,
+                            const unsigned char* pixels,
+                            const COLOR* palette)
 {
   if (pixels == NULL || palette == NULL)
     return false;
@@ -356,7 +391,7 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
   return true;
 }
 
-unsigned int CBaseTexture::PadPow2(unsigned int x)
+unsigned int CTexture::PadPow2(unsigned int x)
 {
   --x;
   x |= x >> 1;
@@ -367,7 +402,11 @@ unsigned int CBaseTexture::PadPow2(unsigned int x)
   return ++x;
 }
 
-bool CBaseTexture::SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements, unsigned int offset)
+bool CTexture::SwapBlueRed(unsigned char* pixels,
+                           unsigned int height,
+                           unsigned int pitch,
+                           unsigned int elements,
+                           unsigned int offset)
 {
   if (!pixels) return false;
   unsigned char *dst = pixels;
@@ -380,7 +419,7 @@ bool CBaseTexture::SwapBlueRed(unsigned char *pixels, unsigned int height, unsig
   return true;
 }
 
-unsigned int CBaseTexture::GetPitch(unsigned int width) const
+unsigned int CTexture::GetPitch(unsigned int width) const
 {
   switch (m_format)
   {
@@ -401,7 +440,7 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
   }
 }
 
-unsigned int CBaseTexture::GetRows(unsigned int height) const
+unsigned int CTexture::GetRows(unsigned int height) const
 {
   switch (m_format)
   {
@@ -416,7 +455,7 @@ unsigned int CBaseTexture::GetRows(unsigned int height) const
   }
 }
 
-unsigned int CBaseTexture::GetBlockSize() const
+unsigned int CTexture::GetBlockSize() const
 {
   switch (m_format)
   {
@@ -433,17 +472,17 @@ unsigned int CBaseTexture::GetBlockSize() const
   }
 }
 
-bool CBaseTexture::HasAlpha() const
+bool CTexture::HasAlpha() const
 {
   return m_hasAlpha;
 }
 
-void CBaseTexture::SetMipmapping()
+void CTexture::SetMipmapping()
 {
   m_mipmapping = true;
 }
 
-bool CBaseTexture::IsMipmapped() const
+bool CTexture::IsMipmapped() const
 {
   return m_mipmapping;
 }

@@ -32,7 +32,7 @@ class CGUISpinControl : public CGUIControl
 {
 public:
   CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CTextureInfo& textureUpDisabled, const CTextureInfo& textureDownDisabled, const CLabelInfo& labelInfo, int iType);
-  ~CGUISpinControl(void) override;
+  ~CGUISpinControl() override = default;
   CGUISpinControl *Clone() const override { return new CGUISpinControl(*this); };
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
@@ -66,8 +66,8 @@ public:
   int GetMinimum() const;
   void SetSpinAlign(uint32_t align, float offsetX) { m_label.GetLabelInfo().align = align; m_label.GetLabelInfo().offsetX = offsetX; };
   void SetType(int iType) { m_iType = iType; };
-  float GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
-  float GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
+  float GetSpinWidth() const { return m_imgspinUp->GetWidth(); };
+  float GetSpinHeight() const { return m_imgspinUp->GetHeight(); };
   void SetFloatInterval(float fInterval);
   void SetShowRange(bool bOnoff) ;
   void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; };
@@ -78,6 +78,8 @@ public:
   bool IsVisible() const override;
 
 protected:
+  CGUISpinControl(const CGUISpinControl& control);
+
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
   bool UpdateColors() override;
   /*! \brief Render the spinner text
@@ -108,12 +110,12 @@ protected:
   std::vector<std::string> m_vecLabels;
   std::vector<int> m_vecValues;
   std::vector<std::string> m_vecStrValues;
-  CGUITexture m_imgspinUp;
-  CGUITexture m_imgspinDown;
-  CGUITexture m_imgspinUpFocus;
-  CGUITexture m_imgspinDownFocus;
-  CGUITexture m_imgspinUpDisabled;
-  CGUITexture m_imgspinDownDisabled;
+  std::unique_ptr<CGUITexture> m_imgspinUp;
+  std::unique_ptr<CGUITexture> m_imgspinDown;
+  std::unique_ptr<CGUITexture> m_imgspinUpFocus;
+  std::unique_ptr<CGUITexture> m_imgspinDownFocus;
+  std::unique_ptr<CGUITexture> m_imgspinUpDisabled;
+  std::unique_ptr<CGUITexture> m_imgspinDownDisabled;
   CGUILabel   m_label;
   bool m_bShowRange;
   char m_szTyped[10];

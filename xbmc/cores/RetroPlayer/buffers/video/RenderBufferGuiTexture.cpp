@@ -26,7 +26,7 @@ bool CRenderBufferGuiTexture::Allocate(AVPixelFormat format,
 
   if (m_format != AV_PIX_FMT_NONE)
   {
-    m_texture.reset(new CTexture(width, height, m_textureFormat));
+    m_texture.reset(CTexture::CreateTexture(width, height, m_textureFormat));
     m_texture->SetScalingMethod(TranslateScalingMethod(m_scalingMethod));
     m_texture->SetCacheMemory(true);
 

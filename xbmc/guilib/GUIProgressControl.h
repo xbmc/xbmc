@@ -29,7 +29,7 @@ public:
                       const CTextureInfo& leftTexture, const CTextureInfo& midTexture,
                       const CTextureInfo& rightTexture, const CTextureInfo& overlayTexture,
                       bool reveal=false);
-  ~CGUIProgressControl(void) override;
+  ~CGUIProgressControl() override = default;
   CGUIProgressControl *Clone() const override { return new CGUIProgressControl(*this); };
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
@@ -51,11 +51,11 @@ public:
   bool UpdateLayout(void);
 protected:
   bool UpdateColors() override;
-  CGUITexture m_guiBackground;
-  CGUITexture m_guiLeft;
-  CGUITexture m_guiMid;
-  CGUITexture m_guiRight;
-  CGUITexture m_guiOverlay;
+  std::unique_ptr<CGUITexture> m_guiBackground;
+  std::unique_ptr<CGUITexture> m_guiLeft;
+  std::unique_ptr<CGUITexture> m_guiMid;
+  std::unique_ptr<CGUITexture> m_guiRight;
+  std::unique_ptr<CGUITexture> m_guiOverlay;
   CRect m_guiMidClipRect;
 
   int m_iInfoCode;
@@ -64,5 +64,8 @@ protected:
   float m_fPercent2 = 0.0f;
   bool m_bReveal;
   bool m_bChanged;
+
+private:
+  CGUIProgressControl(const CGUIProgressControl& control);
 };
 

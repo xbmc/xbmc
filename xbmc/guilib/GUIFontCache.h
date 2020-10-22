@@ -28,7 +28,7 @@
 #define FONT_CACHE_DIST_LIMIT (0.01f)
 
 template<class Position, class Value> class CGUIFontCache;
-class CGUIFontTTFBase;
+class CGUIFontTTF;
 
 template<class Position, class Value>
 class CGUIFontCacheImpl;
@@ -129,9 +129,9 @@ class CGUIFontCache
   const CGUIFontCache<Position,Value>& operator=(const CGUIFontCache<Position,Value>&) = delete;
 
 public:
-  const CGUIFontTTFBase &m_font;
+  const CGUIFontTTF& m_font;
 
-  explicit CGUIFontCache(CGUIFontTTFBase &font);
+  explicit CGUIFontCache(CGUIFontTTF& font);
 
   ~CGUIFontCache();
 
@@ -203,7 +203,10 @@ struct CVertexBuffer
   BufferHandleType bufferHandle = BUFFER_HANDLE_INIT; // this is really a GLuint
   size_t size = 0;
   CVertexBuffer() : m_font(NULL) {}
-  CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
+  CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTF* font)
+    : bufferHandle(bufferHandle), size(size), m_font(font)
+  {
+  }
   CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
     /* In practice, the copy constructor is only called before a vertex buffer
@@ -223,7 +226,7 @@ struct CVertexBuffer
   }
   void clear();
 private:
-  const CGUIFontTTFBase *m_font;
+  const CGUIFontTTF* m_font;
 };
 
 typedef CVertexBuffer CGUIFontCacheDynamicValue;

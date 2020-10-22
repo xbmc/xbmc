@@ -7,9 +7,10 @@
  */
 
 #include "GUIFontTTFDX.h"
+
 #include "GUIFontManager.h"
 #include "GUIShaderDX.h"
-#include "Texture.h"
+#include "TextureDX.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
@@ -26,8 +27,12 @@ using namespace Microsoft::WRL;
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
-CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName)
-: CGUIFontTTFBase(strFileName)
+CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fileName)
+{
+  return new CGUIFontTTFDX(fileName);
+}
+
+CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName) : CGUIFontTTF(strFileName)
 {
   m_speedupTexture = nullptr;
   m_vertexBuffer   = nullptr;
@@ -75,7 +80,7 @@ void CGUIFontTTFDX::LastEnd()
   if (!pContext)
     return;
 
-  typedef CGUIFontTTFBase::CTranslatedVertices trans;
+  typedef CGUIFontTTF::CTranslatedVertices trans;
   bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
                                   [](trans& _) { return _.vertexBuffer->size <= 0; });
   // no chars to render
@@ -215,7 +220,7 @@ void CGUIFontTTFDX::ClearReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
     font->m_buffers.erase(it);
 }
 
-CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
+CTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
   assert(newHeight != 0);
   assert(m_textureWidth != 0);

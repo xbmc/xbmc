@@ -34,8 +34,12 @@
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
-: CGUIFontTTFBase(strFileName)
+CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fileName)
+{
+  return new CGUIFontTTFGL(fileName);
+}
+
+CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName) : CGUIFontTTF(strFileName)
 {
   m_updateY1 = 0;
   m_updateY2 = 0;
@@ -318,11 +322,11 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
   }
 }
 
-CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
+CTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
-  newHeight = CBaseTexture::PadPow2(newHeight);
+  newHeight = CTexture::PadPow2(newHeight);
 
-  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
+  CTexture* newTexture = CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
   if (!newTexture || newTexture->GetPixels() == NULL)
   {

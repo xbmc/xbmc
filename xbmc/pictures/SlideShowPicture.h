@@ -17,7 +17,7 @@
 #include <wrl/client.h>
 #endif
 
-class CBaseTexture;
+class CTexture;
 
 class CSlideShowPic
 {
@@ -35,8 +35,11 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
-  void SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(CBaseTexture* pTexture);
+  void SetTexture(int iSlideNumber,
+                  CTexture* pTexture,
+                  DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
+                  TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
+  void UpdateTexture(CTexture* pTexture);
 
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
@@ -76,10 +79,13 @@ public:
   bool m_bCanMoveHorizontally;
   bool m_bCanMoveVertically;
 private:
-  void SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
+  void SetTexture_Internal(int iSlideNumber,
+                           CTexture* pTexture,
+                           DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
+                           TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
-  void Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Color color);
-  CBaseTexture *m_pImage;
+  void Render(float* x, float* y, CTexture* pTexture, UTILS::Color color);
+  CTexture* m_pImage;
 
   int m_iOriginalWidth;
   int m_iOriginalHeight;

@@ -37,7 +37,7 @@ public:
                    float posX, float posY, float width, float height,
                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
-  ~CGUIMoverControl(void) override;
+  ~CGUIMoverControl(void) override = default;
   CGUIMoverControl *Clone() const override { return new CGUIMoverControl(*this); };
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
@@ -64,8 +64,8 @@ protected:
   bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);
-  CGUITexture m_imgFocus;
-  CGUITexture m_imgNoFocus;
+  std::unique_ptr<CGUITexture> m_imgFocus;
+  std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int m_frameCounter;
   unsigned int m_lastMoveTime;
   int m_nDirection;
@@ -75,5 +75,8 @@ protected:
   float m_fAcceleration;
   int m_iX1, m_iX2, m_iY1, m_iY2;
   int m_iLocationX, m_iLocationY;
+
+private:
+  CGUIMoverControl(const CGUIMoverControl& control);
 };
 
