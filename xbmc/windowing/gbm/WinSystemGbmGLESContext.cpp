@@ -28,8 +28,6 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
 #include <gbm.h>
 
 using namespace KODI::WINDOWING::GBM;

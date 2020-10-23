@@ -13,5 +13,4 @@ else()
   message(SEND_ERROR "You need to decide whether you want to use GL- or GLES-based rendering in combination with the GBM windowing system. Please set GBM_RENDER_SYSTEM to either \"gl\" or \"gles\". For normal desktop systems, you will usually want to use \"gl\".")
 endif()
 
-# __GBM__ is needed by eglplatform.h in case it is included before gbm.h
-list(APPEND PLATFORM_DEFINES -DMESA_EGL_NO_X11_HEADERS -DEGL_NO_X11 -D__GBM__=1 -DPLATFORM_SETTINGS_FILE=gbm.xml)
+list(APPEND PLATFORM_DEFINES -DPLATFORM_SETTINGS_FILE=gbm.xml)

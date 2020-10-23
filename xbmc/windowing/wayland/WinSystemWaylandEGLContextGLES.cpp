@@ -22,8 +22,6 @@
 #include "utils/UDMABufferObject.h"
 #include "utils/log.h"
 
-#include <EGL/egl.h>
-
 using namespace KODI::WINDOWING::WAYLAND;
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()

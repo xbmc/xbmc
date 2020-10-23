@@ -22,12 +22,13 @@
 #include <GLES3/gl3.h>
 #endif
 
-#include <EGL/egl.h>
+#include "system_egl.h"
+#include "utils/Geometry.h"
+
+#include "platform/posix/utils/FileHandle.h"
+
 #include <EGL/eglext.h>
 #include <va/va.h>
-
-#include "utils/Geometry.h"
-#include "platform/posix/utils/FileHandle.h"
 
 namespace VAAPI
 {

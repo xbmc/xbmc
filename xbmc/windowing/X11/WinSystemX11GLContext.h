@@ -10,13 +10,12 @@
 
 #include "WinSystemX11.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "system_egl.h"
 
 #include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
 
 #include <memory>
-
-#include <EGL/egl.h>
 
 class CGLContext;
 

@@ -17,7 +17,6 @@
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/input/LibInputHandler.h"
 
-#include <EGL/egl.h>
 #include <gbm.h>
 
 class IDispResource;

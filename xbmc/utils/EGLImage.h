@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include "system_egl.h"
+
 #include <array>
 
-#include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <drm_fourcc.h>
 

@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include <EGL/egl.h>
+#include "system_egl.h"
 
 class CEGLUtils
 {

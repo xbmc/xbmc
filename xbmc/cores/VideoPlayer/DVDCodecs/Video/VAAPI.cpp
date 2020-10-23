@@ -38,11 +38,11 @@ extern "C" {
 #include <libavfilter/buffersrc.h>
 }
 
+#include "system_egl.h"
+
+#include <EGL/eglext.h>
 #include <va/va_vpp.h>
 #include <xf86drm.h>
-
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
 
 #if VA_CHECK_VERSION(1, 0, 0)
 # include <va/va_str.h>
