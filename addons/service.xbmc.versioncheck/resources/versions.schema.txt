@@ -1,0 +1,214 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "jsonrpc": {
+            "type": "string"
+        },
+        "releases": {
+            "type": "object",
+            "properties": {
+                "stable": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "string"
+                            },
+                            "minor": {
+                                "type": "string"
+                            },
+                            "tag": {
+                                "type": "string"
+                            },
+                            "tagversion": {
+                                "type": "string"
+                            },
+                            "revision": {
+                                "type": "string"
+                            },
+                            "extrainfo": {
+                                "type": "string"
+                            },
+                            "addon_support": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "addon_support",
+                            "extrainfo",
+                            "major",
+                            "minor",
+                            "revision",
+                            "tag",
+                            "tagversion"
+                        ]
+                    }
+                },
+                "releasecandidate": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "string"
+                            },
+                            "minor": {
+                                "type": "string"
+                            },
+                            "tag": {
+                                "type": "string"
+                            },
+                            "tagversion": {
+                                "type": "string"
+                            },
+                            "revision": {
+                                "type": "string"
+                            },
+                            "extrainfo": {
+                                "type": "string"
+                            },
+                            "addon_support": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "addon_support",
+                            "extrainfo",
+                            "major",
+                            "minor",
+                            "revision",
+                            "tag",
+                            "tagversion"
+                        ]
+                    }
+                },
+                "beta": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "string"
+                            },
+                            "minor": {
+                                "type": "string"
+                            },
+                            "tag": {
+                                "type": "string"
+                            },
+                            "tagversion": {
+                                "type": "string"
+                            },
+                            "revision": {
+                                "type": "string"
+                            },
+                            "addon_support": {
+                                "type": "string"
+                            },
+                            "extrainfo": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "addon_support",
+                            "extrainfo",
+                            "major",
+                            "minor",
+                            "revision",
+                            "tag",
+                            "tagversion"
+                        ]
+                    }
+                },
+                "alpha": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "string"
+                            },
+                            "minor": {
+                                "type": "string"
+                            },
+                            "tag": {
+                                "type": "string"
+                            },
+                            "tagversion": {
+                                "type": "string"
+                            },
+                            "revision": {
+                                "type": "string"
+                            },
+                            "addon_support": {
+                                "type": "string"
+                            },
+                            "extrainfo": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "addon_support",
+                            "extrainfo",
+                            "major",
+                            "minor",
+                            "revision",
+                            "tag",
+                            "tagversion"
+                        ]
+                    }
+                },
+                "prealpha": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "string"
+                            },
+                            "minor": {
+                                "type": "string"
+                            },
+                            "tag": {
+                                "type": "string"
+                            },
+                            "tagversion": {
+                                "type": "string"
+                            },
+                            "revision": {
+                                "type": "string"
+                            },
+                            "extrainfo": {
+                                "type": "string"
+                            },
+                            "addon_support": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "addon_support",
+                            "extrainfo",
+                            "major",
+                            "minor",
+                            "revision",
+                            "tag",
+                            "tagversion"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "alpha",
+                "beta",
+                "releasecandidate",
+                "stable"
+            ]
+        }
+    },
+    "required": [
+        "jsonrpc",
+        "releases"
+    ]
+}

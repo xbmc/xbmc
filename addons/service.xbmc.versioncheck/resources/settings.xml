@@ -1,8 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<settings>
-    <category label="32020">
-        <setting label="32021" type="bool" id="versioncheck_enable" default="true"/>
-        <setting label="32023" type="bool" id="upgrade_system" default="false"/>
-        <setting label="32024" type="bool" id="upgrade_apt" default="false"/>
-    </category>
+<?xml version="1.0" ?>
+<settings version="1">
+    <section id="service.xbmc.versioncheck">
+        <category help="" id="general" label="32020">
+            <group id="1">
+                <setting help="" id="versioncheck_enable" label="32021" type="boolean">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting help="" id="upgrade_system" label="32023" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting help="" id="upgrade_apt" label="32024" type="boolean">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+    </section>
 </settings>
