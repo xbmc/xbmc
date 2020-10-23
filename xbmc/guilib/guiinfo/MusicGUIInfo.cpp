@@ -41,11 +41,6 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
     item->LoadMusicTag();
 
     CMusicInfoTag* tag = item->GetMusicInfoTag(); // creates item if not yet set, so no nullptr checks needed
-    if (tag->GetTitle().empty())
-    {
-      // No title in tag, show filename only
-      tag->SetTitle(CUtil::GetTitleFromPath(item->GetPath()));
-    }
     tag->SetLoaded(true);
 
     // find a thumb for this file.
@@ -103,11 +98,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return !value.empty();
       case MUSICPLAYER_TITLE:
         value = tag->GetTitle();
-        if (value.empty())
-          value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return !value.empty();
       case LISTITEM_TITLE:
         value = tag->GetTitle();
         return true;
@@ -572,6 +563,32 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) co
   }
 
   return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
+}
+
+bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
+                                     const CFileItem* item,
+                                     int contextWindow,
+                                     const CGUIInfo& info,
+                                     std::string* fallback)
+{
+  const CMusicInfoTag* tag = item->GetMusicInfoTag();
+  if (tag)
+  {
+    switch (info.m_info)
+    {
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      // MUSICPLAYER_*
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      case MUSICPLAYER_TITLE:
+        value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
+      default:
+        break;
+    }
+  }
+  return false;
 }
 
 bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
