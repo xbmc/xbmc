@@ -9946,6 +9946,91 @@ int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::strin
   return -1;
 }
 
+bool CMusicDatabase::GetMatchingMusicVideoAlbum(const std::string& strAlbum,
+                                                const std::string& strArtist,
+                                                int& idAlbum,
+                                                std::string& strReview)
+{
+  /*
+    Get the first album that matches with the title and artist display name.
+    Artist(s) and album title may not be sufficient to uniquely identify a match since library can
+    store multiple releases, and occasionally artists even have different albums with same name.
+    Taking the first album that matches and ignoring re-releases etc. is acceptable for musicvideo
+  */
+  try
+  {
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS)
+      return false;
+
+    std::string strSQL;
+    if (strArtist.empty())
+      strSQL =
+          PrepareSQL("SELECT idAlbum, strReview FROM album WHERE album.strAlbum LIKE '%s'",
+                     strAlbum.c_str());
+    else
+      strSQL =
+          PrepareSQL("SELECT idAlbum, strReview FROM album WHERE album.strAlbum LIKE '%s' AND "
+                     "album.strArtistDisp LIKE '%s'",
+                     strAlbum.c_str(), strArtist.c_str());
+    // run query
+    if (!m_pDS->query(strSQL))
+      return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound > 0)
+    {
+      idAlbum = m_pDS->fv("idAlbum").get_asInt();
+      strReview = m_pDS->fv("strReview").get_asString();
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CMusicDatabase::SearchAlbumsByArtistName(const std::string& strArtist, CFileItemList& items)
+{
+  try
+  {
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS)
+      return false;
+
+    std::string strSQL;
+    strSQL = PrepareSQL("SELECT albumview.* FROM albumview "
+      "JOIN album_artist ON album_artist.idAlbum = albumview.idAlbum "
+      "WHERE  album_artist.strArtist LIKE '%s'",
+      strArtist.c_str());
+
+    if (!m_pDS->query(strSQL))
+      return false;
+
+    while (!m_pDS->eof())
+    {
+      CAlbum album = GetAlbumFromDataset(m_pDS.get());
+      std::string path = StringUtils::Format("musicdb://albums/%ld/", album.idAlbum);
+      CFileItemPtr pItem(new CFileItem(path, album));
+      std::string label =
+        StringUtils::Format("%s (%i)", album.strAlbum, pItem->GetMusicInfoTag()->GetYear());
+      pItem->SetLabel(label);
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::vector<std::string>& artist)
 {
   return GetAlbumByName(strAlbum, StringUtils::Join(artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));

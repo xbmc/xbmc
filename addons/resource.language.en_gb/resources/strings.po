@@ -8789,6 +8789,7 @@ msgstr ""
 #empty strings from id 16042 to 16099
 
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/windows/VideoFileItemListModifier.cpp
 msgctxt "#16100"
 msgid "All videos"
 msgstr ""
@@ -13575,7 +13576,12 @@ msgctxt "#20471"
 msgid "Show empty TV shows"
 msgstr ""
 
-#empty strings from id 20472 to 21329
+#: system/settings/settings.xml
+msgctxt "#20472"
+msgid "Show all performers for music videos"
+msgstr ""
+
+#empty strings from id 20473 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
@@ -15973,6 +15979,7 @@ msgstr ""
 
 #. Artists which sing the music (if present)
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#29904"
 msgid "Artist"
 msgstr ""
@@ -19411,7 +19418,11 @@ msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
 msgstr ""
 
-#empty string with id 36308
+#. Description of setting with label #20472 "Show all performers for music videos"
+#: system/settings/settings.xml
+msgctxt "#36308"
+msgid "When enabled, shows all performers in the artist list for music videos, not just the main artist"
+msgstr ""
 
 #. Description of setting with label #22022 "Show video files in listings"
 #: system/settings/settings.xml
@@ -20998,6 +21009,7 @@ msgid "artists"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#36918"
 msgid "album"
 msgstr ""

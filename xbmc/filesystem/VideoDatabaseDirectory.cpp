@@ -54,7 +54,10 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
       item->SetDynPath(item->GetVideoInfoTag()->GetPath());
     }
   }
-  items.SetLabel(pNode->GetLocalizedName());
+  if (items.HasProperty("customtitle"))
+    items.SetLabel(items.GetProperty("customtitle").asString());
+  else
+    items.SetLabel(pNode->GetLocalizedName());
 
   return bResult;
 }

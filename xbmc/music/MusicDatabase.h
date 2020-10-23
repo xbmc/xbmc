@@ -311,7 +311,12 @@ public:
   bool GetAlbumFromSong(int idSong, CAlbum &album);
   int  GetAlbumByName(const std::string& strAlbum, const std::string& strArtist="");
   int  GetAlbumByName(const std::string& strAlbum, const std::vector<std::string>& artist);
-  int  GetAlbumByMatch(const CAlbum &album);
+  bool GetMatchingMusicVideoAlbum(const std::string& strAlbum,
+                                  const std::string& strArtist,
+                                  int& idAlbum,
+                                  std::string& strReview);
+  bool SearchAlbumsByArtistName(const std::string& strArtist, CFileItemList& items);
+  int GetAlbumByMatch(const CAlbum& album);
   std::string GetAlbumById(int id);
   std::string GetAlbumDiscTitle(int idAlbum, int idDisc);
   bool SetAlbumUserrating(const int idAlbum, int userrating);
