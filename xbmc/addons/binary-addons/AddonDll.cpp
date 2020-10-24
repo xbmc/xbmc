@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonStatusHandler.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "addons/settings/AddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -31,7 +32,9 @@ CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase
 {
 }
 
-CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType) : CAddon(addonInfo, addonType)
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType)
+  : CAddon(addonInfo, addonType),
+    m_binaryAddonBase(CServiceBroker::GetBinaryAddonManager().GetRunningAddonBase(addonInfo->ID()))
 {
 }
 

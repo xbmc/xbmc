@@ -62,6 +62,15 @@ namespace ADDON
     void ReleaseAddonBase(const BinaryAddonBasePtr& addonBase, IAddonInstanceHandler* handler);
 
     /*!
+     * @brief Get running addon base class for a given addon id.
+     *
+     * @param[in] addonId the addon id
+     * @return running addon base class if found, nullptr otherwise.
+     *
+     */
+    BinaryAddonBasePtr GetRunningAddonBase(const std::string& addonId) const;
+
+    /*!
      * @brief Used from other addon manager to get active addon over a from him
      * created CAddonDll.
      *

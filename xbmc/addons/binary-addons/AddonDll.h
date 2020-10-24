@@ -46,7 +46,7 @@ class CAddonDll : public CAddon
 {
 public:
   CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase);
-  explicit CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
+  CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
   ~CAddonDll() override;
 
   virtual ADDON_STATUS GetStatus();
