@@ -171,12 +171,9 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
     {
       fileItem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (IsPVRChannel())
-      {
-        const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
-        if (currentChannel)
-          fileItem = std::make_shared<CFileItem>(currentChannel);
-      }
-      else if (player == Video)
+        break;
+
+      if (player == Video)
       {
         if (!CVideoLibrary::FillFileItem(fileItem->GetPath(), fileItem, parameterObject))
         {
@@ -195,33 +192,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
             fileItem->SetPath(originalPath);   // Ensure path unchanged
           }
         }
-      }
-      else
-      {
-        if (!CAudioLibrary::FillFileItem(fileItem->GetPath(), fileItem, parameterObject))
-        {
-          // Fallback to item details held by GUI but ensure path unchanged
-          //! @todo  remove this once there is no route to playback that updates
-          // GUI item without also updating app item e.g. start playback of a
-          // non-library item via JSON
-          const MUSIC_INFO::CMusicInfoTag *currentMusicTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
-          if (currentMusicTag != NULL)
-          {
-            std::string originalLabel = fileItem->GetLabel();
-            std::string originalPath = fileItem->GetPath();
-            fileItem->SetFromMusicInfoTag(*currentMusicTag);
-            if (fileItem->GetLabel().empty())
-              fileItem->SetLabel(originalLabel);
-            fileItem->SetPath(originalPath);   // Ensure path unchanged
-          }
-        }
-      }
 
-      if (IsPVRChannel())
-        break;
-
-      if (player == Video)
-      {
         bool additionalInfo = false;
         for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
         {
@@ -261,8 +232,27 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
           videodatabase.Close();
         }
       }
-      else if (player == Audio)
+      else // Audio
       {
+        if (!CAudioLibrary::FillFileItem(fileItem->GetPath(), fileItem, parameterObject))
+        {
+          // Fallback to item details held by GUI but ensure path unchanged
+          //! @todo  remove this once there is no route to playback that updates
+          // GUI item without also updating app item e.g. start playback of a
+          // non-library item via JSON
+          const MUSIC_INFO::CMusicInfoTag* currentMusicTag =
+              CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
+          if (currentMusicTag != NULL)
+          {
+            std::string originalLabel = fileItem->GetLabel();
+            std::string originalPath = fileItem->GetPath();
+            fileItem->SetFromMusicInfoTag(*currentMusicTag);
+            if (fileItem->GetLabel().empty())
+              fileItem->SetLabel(originalLabel);
+            fileItem->SetPath(originalPath); // Ensure path unchanged
+          }
+        }
+
         if (fileItem->IsMusicDb())
         {
           CMusicDatabase musicdb;
