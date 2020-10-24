@@ -704,7 +704,7 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, const std::shared_pt
   std::string effectString;
   switch(method)
   {
-    case VS_SCALINGMETHOD_CUBIC:
+    case VS_SCALINGMETHOD_CUBIC_MITCHELL:
     case VS_SCALINGMETHOD_LANCZOS2:
     case VS_SCALINGMETHOD_SPLINE36_FAST:
     case VS_SCALINGMETHOD_LANCZOS3_FAST:
@@ -840,7 +840,7 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, const std::share
   std::string effectString;
   switch(method)
   {
-    case VS_SCALINGMETHOD_CUBIC:
+    case VS_SCALINGMETHOD_CUBIC_MITCHELL:
     case VS_SCALINGMETHOD_LANCZOS2:
     case VS_SCALINGMETHOD_SPLINE36_FAST:
     case VS_SCALINGMETHOD_LANCZOS3_FAST:

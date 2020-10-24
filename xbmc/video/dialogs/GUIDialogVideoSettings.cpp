@@ -344,7 +344,11 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.clear();
   entries.push_back(TranslatableIntegerSettingOption(16301, VS_SCALINGMETHOD_NEAREST));
   entries.push_back(TranslatableIntegerSettingOption(16302, VS_SCALINGMETHOD_LINEAR));
-  entries.push_back(TranslatableIntegerSettingOption(16303, VS_SCALINGMETHOD_CUBIC));
+  entries.push_back(TranslatableIntegerSettingOption(16303, VS_SCALINGMETHOD_CUBIC_B_SPLINE));
+  entries.push_back(TranslatableIntegerSettingOption(16314, VS_SCALINGMETHOD_CUBIC_MITCHELL));
+  entries.push_back(TranslatableIntegerSettingOption(16321, VS_SCALINGMETHOD_CUBIC_CATMULL));
+  entries.push_back(TranslatableIntegerSettingOption(16326, VS_SCALINGMETHOD_CUBIC_0_075));
+  entries.push_back(TranslatableIntegerSettingOption(16330, VS_SCALINGMETHOD_CUBIC_0_1));
   entries.push_back(TranslatableIntegerSettingOption(16304, VS_SCALINGMETHOD_LANCZOS2));
   entries.push_back(TranslatableIntegerSettingOption(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
   entries.push_back(TranslatableIntegerSettingOption(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
