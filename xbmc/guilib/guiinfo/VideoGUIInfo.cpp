@@ -116,11 +116,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return !value.empty();
       case VIDEOPLAYER_TITLE:
         value = tag->m_strTitle;
-        if (value.empty())
-          value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return !value.empty();
       case LISTITEM_TITLE:
         value = tag->m_strTitle;
         return true;
@@ -635,6 +631,32 @@ bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
   }
 
   return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
+}
+
+bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
+                                     const CFileItem* item,
+                                     int contextWindow,
+                                     const CGUIInfo& info,
+                                     std::string* fallback)
+{
+  const CVideoInfoTag* tag = item->GetVideoInfoTag();
+  if (tag)
+  {
+    switch (info.m_info)
+    {
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      // VIDEOPLAYER_*
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      case VIDEOPLAYER_TITLE:
+        value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
+      default:
+        break;
+    }
+  }
+  return false;
 }
 
 bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
