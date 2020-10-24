@@ -11,12 +11,19 @@
 # WAYLANDPP_SCANNER      - path to wayland-scanner++
 
 pkg_check_modules(PC_WAYLANDPP wayland-client++ wayland-egl++ wayland-cursor++ QUIET)
-pkg_check_modules(PC_WAYLANDPP_SCANNER wayland-scanner++ QUIET)
+
 if(PC_WAYLANDPP_FOUND)
   pkg_get_variable(PC_WAYLANDPP_PKGDATADIR wayland-client++ pkgdatadir)
+else()
+  message(SEND_ERROR "wayland-client++ not found via pkg-config")
 endif()
+
+pkg_check_modules(PC_WAYLANDPP_SCANNER wayland-scanner++ QUIET)
+
 if(PC_WAYLANDPP_SCANNER_FOUND)
   pkg_get_variable(PC_WAYLANDPP_SCANNER wayland-scanner++ wayland_scannerpp)
+else()
+  message(SEND_ERROR "wayland-scanner++ not found via pkg-config")
 endif()
 
 find_path(WAYLANDPP_INCLUDE_DIR wayland-client.hpp PATHS ${PC_WAYLANDPP_INCLUDEDIR})
