@@ -1154,7 +1154,7 @@ std::string CSysInfo::GetUserAgent()
   {
     std::string cpuStr(un.machine);
     if (cpuStr == "x86_64" && GetXbmcBitness() == 32)
-      cpuStr = "i686 (x86_64)";
+      cpuStr = "i686 on x86_64";
     result += un.sysname;
     result += " ";
     result += cpuStr;
