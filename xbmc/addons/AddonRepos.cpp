@@ -50,6 +50,14 @@ bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon,
          std::any_of(officialRepoInfos.begin(), officialRepoInfos.end(), comparator);
 }
 
+bool CAddonRepos::IsOfficialRepo(const std::string& repoId)
+{
+  return repoId == ORIGIN_SYSTEM || std::any_of(officialRepoInfos.begin(), officialRepoInfos.end(),
+                                                [&repoId](const RepoInfo& officialRepo) {
+                                                  return repoId == officialRepo.m_repoId;
+                                                });
+}
+
 bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database)
 {
   return LoadAddonsFromDatabase(database, "", nullptr);

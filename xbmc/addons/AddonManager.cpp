@@ -891,7 +891,19 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID)
 bool CAddonMgr::IsAddonInstalled(const std::string& ID, const std::string& origin) const
 {
   AddonPtr tmp;
-  return (GetAddon(ID, tmp, ADDON_UNKNOWN, false) && tmp && tmp->Origin() == origin);
+
+  if (GetAddon(ID, tmp, ADDON_UNKNOWN, false) && tmp)
+  {
+    if (tmp->Origin() == ORIGIN_SYSTEM)
+    {
+      return CAddonRepos::IsOfficialRepo(origin);
+    }
+    else
+    {
+      return tmp->Origin() == origin;
+    }
+  }
+  return false;
 }
 
 bool CAddonMgr::IsAddonInstalled(const std::string& ID,
@@ -899,8 +911,19 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID,
                                  const AddonVersion& version)
 {
   AddonPtr tmp;
-  return (GetAddon(ID, tmp, ADDON_UNKNOWN, false) && tmp && tmp->Origin() == origin &&
-          tmp->Version() == version);
+
+  if (GetAddon(ID, tmp, ADDON_UNKNOWN, false) && tmp)
+  {
+    if (tmp->Origin() == ORIGIN_SYSTEM)
+    {
+      return CAddonRepos::IsOfficialRepo(origin) && tmp->Version() == version;
+    }
+    else
+    {
+      return tmp->Origin() == origin && tmp->Version() == version;
+    }
+  }
+  return false;
 }
 
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)

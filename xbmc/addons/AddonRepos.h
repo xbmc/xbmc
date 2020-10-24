@@ -113,6 +113,14 @@ public:
                                  CheckAddonPath checkAddonPath);
 
   /*!
+   * \brief Checks if the passed in repository is defined as official repo
+   *        which includes ORIGIN_SYSTEM
+   * \param repoId repository id to check
+   * \return true if the repository id is defined as official, false otherwise
+   */
+  static bool IsOfficialRepo(const std::string& repoId);
+
+  /*!
    * \brief Check if an update is available for a single addon
    * \param addon that is checked for an update
    * \param[out] update pointer to the found update

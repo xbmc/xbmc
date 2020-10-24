@@ -827,10 +827,12 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     bool hasUpdate = CheckOutdatedOrUpdate(true); // check if it's an outdated addon
 
     std::string validUpdateVersion;
+    std::string validUpdateOrigin;
     if (hasUpdate)
     {
       auto mapEntry = addonsWithUpdate.find(addon->ID());
       validUpdateVersion = mapEntry->second.m_update->Version().asString();
+      validUpdateOrigin = mapEntry->second.m_update->Origin();
     }
 
     bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon, CheckAddonPath::NO);
@@ -840,6 +842,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
     pItem->SetProperty("Addon.IsUpdate", isUpdate);
     pItem->SetProperty("Addon.ValidUpdateVersion", validUpdateVersion);
+    pItem->SetProperty("Addon.ValidUpdateOrigin", validUpdateOrigin);
     pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
     pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
 
