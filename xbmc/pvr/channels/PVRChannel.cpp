@@ -83,12 +83,7 @@ void CPVRChannel::Serialize(CVariant& value) const
 
   std::shared_ptr<CPVREpgInfoTag> epg = GetEPGNow();
   if (epg)
-  {
-    // add the properties of the current EPG item to the main object
-    epg->Serialize(value);
-    // and add an extra sub-object with only the current EPG details
     epg->Serialize(value["broadcastnow"]);
-  }
 
   epg = GetEPGNext();
   if (epg)
