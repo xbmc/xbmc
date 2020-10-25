@@ -688,7 +688,6 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                    std::distance(album.artistCredits.begin(), artistCredit));
   }
 
-  int albumDuration = 0;
   for (auto song = album.songs.begin(); song != album.songs.end(); ++song)
   {
     song->idAlbum = album.idAlbum;
@@ -730,8 +729,15 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
     // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
     AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
-    albumDuration += song->iDuration;
   }
+
+  // Set album duration as total of all songs on album.
+  // Folder layout may mean AddAlbum call has added more songs to an existing album
+  std::string strSQL;
+  strSQL = PrepareSQL("SELECT SUM(iDuration) FROM song WHERE idAlbum = %i", album.idAlbum);
+  int albumDuration = static_cast<int>(strtol(GetSingleValue(strSQL).c_str(), nullptr, 10));
+  m_pDS->exec(PrepareSQL("UPDATE album SET iAlbumDuration = %i WHERE idAlbum = %i", albumDuration,
+                         album.idAlbum));
 
   // Add album sources
   if (idSource > 0)
@@ -782,7 +788,6 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
      For artists that are neither album nor song artists (other roles only) dateadded will be null.
   */
   std::vector<std::string> artistIDs;
-  std::string strSQL;
   // Get distinct song and album artist IDs for this album
   GetArtistsByAlbum(album.idAlbum, artistIDs);
   std::string strIDs = "(" + StringUtils::Join(artistIDs, ",") + ")";
@@ -791,8 +796,6 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                       albumdateadded.c_str(), strIDs.c_str(), albumdateadded.c_str());
   m_pDS->exec(strSQL);
 
-  m_pDS->exec(PrepareSQL("UPDATE album SET iAlbumDuration = %i WHERE idAlbum = %i", albumDuration,
-                         album.idAlbum));
   CommitTransaction();
   return true;
 }
