@@ -8478,7 +8478,9 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
 
     std::string strSQL = "select %s from musicvideo_view ";
     CVideoDbUrl videoUrl;
-    videoUrl.FromString(baseDir);
+    if (!videoUrl.FromString(baseDir))
+      return false;
+
     std::string strSQLExtra;
     const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
     std::string strArtist;
