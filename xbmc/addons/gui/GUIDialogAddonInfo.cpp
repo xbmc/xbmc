@@ -304,10 +304,6 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24138}, CVariant{750}))
-    return;
-
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
   const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
