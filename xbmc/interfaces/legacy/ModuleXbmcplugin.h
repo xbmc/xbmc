@@ -170,7 +170,8 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmcplugin
-    /// @brief \python_func{ xbmcplugin.addSortMethod(handle, sortMethod [,label2Mask]) }
+    /// @brief \python_func{ xbmcplugin.addSortMethod(handle, sortMethod [,labelMask, label2Mask]) }
+    ///-------------------------------------------------------------------------
     /// Adds a sorting method for the media list.
     ///
     /// @param handle               integer - handle the plugin was started
@@ -222,6 +223,17 @@ namespace XBMCAddon
     /// | xbmcplugin.SORT_METHOD_DATE_TAKEN            | Sort by the taken date
     /// | xbmcplugin.SORT_METHOD_VIDEO_USER_RATING     | Sort by the rating of the user of video
     /// | xbmcplugin.SORT_METHOD_SONG_USER_RATING      | Sort by the rating of the user of song
+    /// @param labelMask            [opt] string - the label mask to use for
+    ///                             the first label.
+    /// - applies to:
+    /// | sortMethod                            | labelMask                   |
+    /// |---------------------------------------|-----------------------------|
+    /// | SORT_METHOD_TRACKNUM                  | Defaults to `[%%N. ]%%T`    |
+    /// | SORT_METHOD_EPISODE                   | Defaults to `%%H. %%T`      |
+    /// | SORT_METHOD_PRODUCTIONCODE            | Defaults to `%%H. %%T`      |
+    /// | All other sort methods                | Defaults to `%%T`           |
+    ///
+    ///
     /// @param label2Mask           [opt] string - the label mask to use for
     ///                             the second label.  Defaults to `%%D`
     /// - applies to:
@@ -240,6 +252,7 @@ namespace XBMCAddon
     /// **SORT_METHOD_DATEADDED**, **SORT_METHOD_FULLPATH**, **SORT_METHOD_LABEL_IGNORE_FOLDERS**,
     /// **SORT_METHOD_LASTPLAYED**, **SORT_METHOD_PLAYCOUNT**, **SORT_METHOD_CHANNEL**.
     /// @python_v17 Added new sort **SORT_METHOD_VIDEO_USER_RATING**.
+    /// @python_v19 Added new option **labelMask**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -250,7 +263,7 @@ namespace XBMCAddon
     ///
     addSortMethod(...);
 #else
-    void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString);
+    void addSortMethod(int handle, int sortMethod, const String& labelMask = emptyString, const String& label2Mask = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

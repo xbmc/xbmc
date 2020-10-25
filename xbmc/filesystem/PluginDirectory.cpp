@@ -254,7 +254,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_fetchComplete.Set();
 }
 
-void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &label2Mask)
+void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &labelMask, const std::string &label2Mask)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
@@ -267,114 +267,114 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
     case SORT_METHOD_LABEL:
     case SORT_METHOD_LABEL_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByLabel, 551, LABEL_MASKS("%T", label2Mask), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByLabel, 551, LABEL_MASKS(labelMask, label2Mask), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_TITLE:
     case SORT_METHOD_TITLE_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByTitle, 556, LABEL_MASKS("%T", label2Mask), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByTitle, 556, LABEL_MASKS(labelMask, label2Mask), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_ARTIST:
     case SORT_METHOD_ARTIST_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByArtist, 557, LABEL_MASKS("%T", "%A", "%T", "%A"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByArtist, 557, LABEL_MASKS(labelMask, "%A", labelMask, "%A"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_ALBUM:
     case SORT_METHOD_ALBUM_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByAlbum, 558, LABEL_MASKS("%T", "%B", "%T", "%B"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByAlbum, 558, LABEL_MASKS(labelMask, "%B", labelMask, "%B"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_DATE:
       {
-        dir->m_listItems->AddSortMethod(SortByDate, 552, LABEL_MASKS("%T", "%J", "%T", "%J"));
+        dir->m_listItems->AddSortMethod(SortByDate, 552, LABEL_MASKS(labelMask, "%J", labelMask, "%J"));
         break;
       }
     case SORT_METHOD_BITRATE:
       {
-        dir->m_listItems->AddSortMethod(SortByBitrate, 623, LABEL_MASKS("%T", "%X", "%T", "%X"));
+        dir->m_listItems->AddSortMethod(SortByBitrate, 623, LABEL_MASKS(labelMask, "%X", labelMask, "%X"));
         break;
       }
     case SORT_METHOD_SIZE:
       {
-        dir->m_listItems->AddSortMethod(SortBySize, 553, LABEL_MASKS("%T", "%I", "%T", "%I"));
+        dir->m_listItems->AddSortMethod(SortBySize, 553, LABEL_MASKS(labelMask, "%I", labelMask, "%I"));
         break;
       }
     case SORT_METHOD_FILE:
       {
-        dir->m_listItems->AddSortMethod(SortByFile, 561, LABEL_MASKS("%T", label2Mask, "%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByFile, 561, LABEL_MASKS(labelMask, label2Mask, labelMask, label2Mask));
         break;
       }
     case SORT_METHOD_TRACKNUM:
       {
-        dir->m_listItems->AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS("[%N. ]%T", label2Mask, "[%N. ]%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(labelMask, label2Mask, labelMask, label2Mask));
         break;
       }
     case SORT_METHOD_DURATION:
     case SORT_METHOD_VIDEO_RUNTIME:
       {
-        dir->m_listItems->AddSortMethod(SortByTime, 180, LABEL_MASKS("%T", "%D", "%T", "%D"));
+        dir->m_listItems->AddSortMethod(SortByTime, 180, LABEL_MASKS(labelMask, "%D", labelMask, "%D"));
         break;
       }
     case SORT_METHOD_VIDEO_RATING:
     case SORT_METHOD_SONG_RATING:
       {
-        dir->m_listItems->AddSortMethod(SortByRating, 563, LABEL_MASKS("%T", "%R", "%T", "%R"));
+        dir->m_listItems->AddSortMethod(SortByRating, 563, LABEL_MASKS(labelMask, "%R", labelMask, "%R"));
         break;
       }
     case SORT_METHOD_YEAR:
       {
-        dir->m_listItems->AddSortMethod(SortByYear, 562, LABEL_MASKS("%T", "%Y", "%T", "%Y"));
+        dir->m_listItems->AddSortMethod(SortByYear, 562, LABEL_MASKS(labelMask, "%Y", labelMask, "%Y"));
         break;
       }
     case SORT_METHOD_GENRE:
       {
-        dir->m_listItems->AddSortMethod(SortByGenre, 515, LABEL_MASKS("%T", "%G", "%T", "%G"));
+        dir->m_listItems->AddSortMethod(SortByGenre, 515, LABEL_MASKS(labelMask, "%G", labelMask, "%G"));
         break;
       }
     case SORT_METHOD_COUNTRY:
       {
-        dir->m_listItems->AddSortMethod(SortByCountry, 574, LABEL_MASKS("%T", "%G", "%T", "%G"));
+        dir->m_listItems->AddSortMethod(SortByCountry, 574, LABEL_MASKS(labelMask, "%G", labelMask, "%G"));
         break;
       }
     case SORT_METHOD_VIDEO_TITLE:
       {
-        dir->m_listItems->AddSortMethod(SortByTitle, 369, LABEL_MASKS("%T", "%M", "%T", "%M"));
+        dir->m_listItems->AddSortMethod(SortByTitle, 369, LABEL_MASKS(labelMask, "%M", labelMask, "%M"));
         break;
       }
     case SORT_METHOD_VIDEO_SORT_TITLE:
     case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortBySortTitle, 556, LABEL_MASKS("%T", "%M", "%T", "%M"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortBySortTitle, 556, LABEL_MASKS(labelMask, "%M", labelMask, "%M"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_MPAA_RATING:
       {
-        dir->m_listItems->AddSortMethod(SortByMPAA, 20074, LABEL_MASKS("%T", "%O", "%T", "%O"));
+        dir->m_listItems->AddSortMethod(SortByMPAA, 20074, LABEL_MASKS(labelMask, "%O", labelMask, "%O"));
         break;
       }
     case SORT_METHOD_STUDIO:
     case SORT_METHOD_STUDIO_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByStudio, 572, LABEL_MASKS("%T", "%U", "%T", "%U"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByStudio, 572, LABEL_MASKS(labelMask, "%U", labelMask, "%U"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_PROGRAM_COUNT:
       {
-        dir->m_listItems->AddSortMethod(SortByProgramCount, 567, LABEL_MASKS("%T", "%C", "%T", "%C"));
+        dir->m_listItems->AddSortMethod(SortByProgramCount, 567, LABEL_MASKS(labelMask, "%C", labelMask, "%C"));
         break;
       }
     case SORT_METHOD_UNSORTED:
       {
-        dir->m_listItems->AddSortMethod(SortByNone, 571, LABEL_MASKS("%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByNone, 571, LABEL_MASKS(labelMask, label2Mask));
         break;
       }
     case SORT_METHOD_NONE:
       {
-        dir->m_listItems->AddSortMethod(SortByNone, 552, LABEL_MASKS("%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByNone, 552, LABEL_MASKS(labelMask, label2Mask));
         break;
       }
     case SORT_METHOD_DRIVE_TYPE:
@@ -390,48 +390,48 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
       }
     case SORT_METHOD_EPISODE:
       {
-        dir->m_listItems->AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%H. %T", "%R", "%H. %T", "%R"));
+        dir->m_listItems->AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS(labelMask, "%R", labelMask, "%R"));
         break;
       }
     case SORT_METHOD_PRODUCTIONCODE:
       {
         //dir->m_listItems.AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%E. %T","%P", "%E. %T","%P"));
-        dir->m_listItems->AddSortMethod(SortByProductionCode, 20368, LABEL_MASKS("%H. %T", "%P", "%H. %T", "%P"));
+        dir->m_listItems->AddSortMethod(SortByProductionCode, 20368, LABEL_MASKS(labelMask, "%P", labelMask, "%P"));
         break;
       }
     case SORT_METHOD_LISTENERS:
       {
-       dir->m_listItems->AddSortMethod(SortByListeners, 20455, LABEL_MASKS("%T", "%W"));
+       dir->m_listItems->AddSortMethod(SortByListeners, 20455, LABEL_MASKS(labelMask, "%W"));
        break;
       }
     case SORT_METHOD_DATEADDED:
       {
-        dir->m_listItems->AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T", "%a"));
+        dir->m_listItems->AddSortMethod(SortByDateAdded, 570, LABEL_MASKS(labelMask, "%a"));
         break;
       }
     case SORT_METHOD_FULLPATH:
       {
-        dir->m_listItems->AddSortMethod(SortByPath, 573, LABEL_MASKS("%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByPath, 573, LABEL_MASKS(labelMask, label2Mask));
         break;
       }
     case SORT_METHOD_LABEL_IGNORE_FOLDERS:
       {
-        dir->m_listItems->AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS(labelMask, label2Mask));
         break;
       }
     case SORT_METHOD_LASTPLAYED:
       {
-        dir->m_listItems->AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS("%T", "%G"));
+        dir->m_listItems->AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS(labelMask, "%G"));
         break;
       }
     case SORT_METHOD_PLAYCOUNT:
       {
-        dir->m_listItems->AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V", "%T", "%V"));
+        dir->m_listItems->AddSortMethod(SortByPlaycount, 567, LABEL_MASKS(labelMask, "%V", labelMask, "%V"));
         break;
       }
     case SORT_METHOD_CHANNEL:
       {
-        dir->m_listItems->AddSortMethod(SortByChannel, 19029, LABEL_MASKS("%T", label2Mask));
+        dir->m_listItems->AddSortMethod(SortByChannel, 19029, LABEL_MASKS(labelMask, label2Mask));
         break;
       }
 
