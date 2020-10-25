@@ -6,6 +6,21 @@ configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/Info.plist.in
                ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/osx/Info.plist @ONLY)
 execute_process(COMMAND perl -p -i -e "s/r####/${APP_SCMID}/" ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/osx/Info.plist)
 
+# Create xcode target that allows to build binary-addons.
+if(CMAKE_GENERATOR MATCHES "Xcode")
+  if(ADDONS_TO_BUILD)
+    set(_addons "ADDONS=${ADDONS_TO_BUILD}")
+  endif()
+  add_custom_target(binary-addons
+    COMMAND $(MAKE) -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons clean
+    COMMAND $(MAKE) -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
+          INSTALL_PREFIX="${CMAKE_BINARY_DIR}/addons" CROSS_COMPILING=yes ${_addons})
+  if(ENABLE_XCODE_ADDONBUILD)
+    add_dependencies(${APP_NAME_LC} binary-addons)
+  endif()
+  unset(_addons)
+endif()
+
 add_custom_target(bundle
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${APP_NAME_LC}> ${PACKAGE_OUTPUT_DIR}/${APP_NAME}
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/DllPaths_generated.h
