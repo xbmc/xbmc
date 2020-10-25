@@ -42,5 +42,7 @@ addons/metadata.common.themoviedb.org/*
 addons/metadata.generic.albums/*
 addons/metadata.generic.artists/*
 addons/metadata.themoviedb.org/*
+addons/metadata.themoviedb.org.python/*
 addons/metadata.tvshows.themoviedb.org/*
+addons/metadata.tvshows.themoviedb.org.python/*
 addons/kodi.vfs/*

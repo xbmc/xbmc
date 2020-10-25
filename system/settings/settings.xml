@@ -1405,14 +1405,14 @@
       <group id="1">
         <setting id="scrapers.moviesdefault" type="addon" label="21413" help="36198">
           <level>4</level>
-          <default>metadata.themoviedb.org</default>
+          <default>metadata.themoviedb.org.python</default>
           <constraints>
             <addontype>xbmc.metadata.scraper.movies</addontype>
           </constraints>
         </setting>
         <setting id="scrapers.tvshowsdefault" type="addon" label="21414" help="36199">
           <level>4</level>
-          <default>metadata.tvshows.themoviedb.org</default>
+          <default>metadata.tvshows.themoviedb.org.python</default>
           <constraints>
             <addontype>xbmc.metadata.scraper.tvshows</addontype>
           </constraints>
