@@ -824,6 +824,10 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
            pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+
+    if (!pDialog)
+      return;
+
     pDialog->SetHeading(CVariant{432});
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
