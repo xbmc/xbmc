@@ -1094,6 +1094,22 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
   return ACK;
 }
 
+JSONRPC_STATUS CPlayerOperations::AddSubtitle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (GetPlayer(parameterObject["playerid"]) != Video)
+    return FailedToExecute;
+
+  if (!g_application.GetAppPlayer().HasPlayer())
+    return FailedToExecute;
+
+  if (!parameterObject["subtitle"].isString())
+    return FailedToExecute;
+
+  std::string sub = parameterObject["subtitle"].asString();
+  g_application.GetAppPlayer().AddSubtitle(sub);
+  return ACK;
+}
+
 JSONRPC_STATUS CPlayerOperations::SetSubtitle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
