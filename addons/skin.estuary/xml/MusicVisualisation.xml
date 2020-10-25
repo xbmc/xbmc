@@ -138,9 +138,10 @@
 					<width>1450</width>
 					<height>40</height>
 					<aligny>center</aligny>
-					<label>$INFO[MusicPlayer.offset(1).Title,[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] ]$INFO[MusicPlayer.offset(1).Artist, - ]</label>
+					<label>$VAR[OSDNextLabelVar]</label>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
+					<visible>Integer.IsGreater(Playlist.Length(music),1)</visible>
 				</control>
 			</control>
 		</control>

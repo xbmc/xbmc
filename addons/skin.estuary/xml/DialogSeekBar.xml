@@ -351,8 +351,9 @@
 			<control type="label">
 				<left>240</left>
 				<top>180</top>
+				<right>20</right>
 				<height>25</height>
-				<label>[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] $INFO[VideoPlayer.NextStartTime] - $INFO[VideoPlayer.NextEndTime]: $INFO[VideoPlayer.NextTitle]</label>
+				<label>$VAR[OSDNextLabelVar]</label>
 				<visible>VideoPlayer.HasEpg + !RDS.HasRadioText</visible>
 			</control>
 			<control type="label">
@@ -405,7 +406,7 @@
 				</control>
 				<control type="label">
 					<height>50</height>
-					<label>[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]$INFO[VideoPlayer.offset(1).TVShowtitle, , - ]$INFO[VideoPlayer.offset(1).Season,S,]$INFO[VideoPlayer.offset(1).Episode,E, - ]$INFO[VideoPlayer.offset(1).Title]</label>
+					<label>$VAR[OSDNextLabelVar]</label>
 					<visible>Integer.IsGreater(Playlist.Length(video),1)</visible>
 				</control>
 			</control>
