@@ -112,7 +112,7 @@
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false },
-      "useartistsortname": { "type": "boolean", "default": false }	  
+      "useartistsortname": { "type": "boolean", "default": false }
     }
   },
   "Library.Id": {
@@ -211,10 +211,10 @@
           { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
           { "$ref": "Optional.Number", "minimum":0.5, "maximum": 2.0, "description": "Pixel aspect ratio where 1.0 means square pixel", "required": true } ] },
       "verticalshift": { "type": [
-          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },	  
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
           { "$ref": "Optional.Number", "minimum": -2.0, "maximum": 2.0, "description": "Vertical shift 1.0 means shift to bottom", "required": true } ] },
       "nonlinearstretch": { "type": [
-          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },	  
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
           { "$ref": "Optional.Boolean", "description": "Flag to enable nonlinear stretch", "required": true } ] }
     }
   },
@@ -474,7 +474,7 @@
       "genreid": { "$ref": "Library.Id", "required": true },
       "title": { "type": "string" },
       "thumbnail": { "type": "string" },
-      "sourceid": { "$ref": "Array.Integer", "description": "The ids of sources with songs of the genre" } 
+      "sourceid": { "$ref": "Array.Integer", "description": "The ids of sources with songs of the genre" }
     }
   },
   "Library.Fields.Tag": {
@@ -651,7 +651,7 @@
       "musicbrainzalbumid": { "type": "string" },
       "songgenres": {"$ref": "Audio.Details.Genres"},
       "lastplayed": { "type": "string" },
-      "sourceid": { "$ref": "Array.Integer" }, 
+      "sourceid": { "$ref": "Array.Integer" },
       "isboxset" : { "type": "boolean" },
       "totaldiscs": { "type": "integer" },
       "albumstatus": { "type": "string" },
@@ -708,7 +708,7 @@
       "songslastadded": { "type": "string" },
       "albumslastadded": { "type": "string" },
       "artistslastadded": { "type": "string" },
-      "genreslastadded": { "type": "string" },	  
+      "genreslastadded": { "type": "string" },
       "songsmodified": { "type": "string" },
       "albumsmodified": { "type": "string" },
       "artistsmodified": { "type": "string" }

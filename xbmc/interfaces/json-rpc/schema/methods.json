@@ -359,7 +359,7 @@
         "zoom": { "type": "number", "required": true },
         "pixelratio": { "type": "number", "required": true },
         "verticalshift": { "type": "number", "required": true },
-        "nonlinearstretch": { "type": "boolean", "required": true }		
+        "nonlinearstretch": { "type": "boolean", "required": true }
         }
       }
   },
