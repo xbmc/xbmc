@@ -304,13 +304,9 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24138}, CVariant{750}))
-    return;
-
   const auto& itemAddonInfo = m_item->GetAddonInfo();
-  const std::string& origin = itemAddonInfo->Origin();
   const std::string& addonId = itemAddonInfo->ID();
+  const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
   const AddonVersion& version =
       static_cast<AddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
 
@@ -437,23 +433,25 @@ void CGUIDialogAddonInfo::OnInstall()
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& origin = itemAddonInfo->Origin();
 
-  if (m_localAddon && (m_localAddon->Origin() != origin) &&
-      (CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode() !=
-       AddonRepoUpdateMode::ANY_REPOSITORY))
+  if (m_localAddon && CAddonSystemSettings::GetInstance().GetAddonRepoUpdateMode() !=
+                          AddonRepoUpdateMode::ANY_REPOSITORY)
   {
-    const std::string& header = g_localizeStrings.Get(19098); // Warning!
-    const std::string text =
-        StringUtils::Format(g_localizeStrings.Get(39028), m_localAddon->ID(),
-                            m_localAddon->Origin(), m_localAddon->Version().asString());
+    if (m_localAddon->Origin() != origin && m_localAddon->Origin() != ORIGIN_SYSTEM)
+    {
+      const std::string& header = g_localizeStrings.Get(19098); // Warning!
+      const std::string text =
+          StringUtils::Format(g_localizeStrings.Get(39028), m_localAddon->ID(),
+                              m_localAddon->Origin(), m_localAddon->Version().asString());
 
-    if (CGUIDialogYesNo::ShowAndGetInput(header, text))
-    {
-      m_silentUninstall = true;
-      OnUninstall();
-    }
-    else
-    {
-      return;
+      if (CGUIDialogYesNo::ShowAndGetInput(header, text))
+      {
+        m_silentUninstall = true;
+        OnUninstall();
+      }
+      else
+      {
+        return;
+      }
     }
   }
 

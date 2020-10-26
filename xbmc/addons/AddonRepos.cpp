@@ -50,6 +50,14 @@ bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon,
          std::any_of(officialRepoInfos.begin(), officialRepoInfos.end(), comparator);
 }
 
+bool CAddonRepos::IsOfficialRepo(const std::string& repoId)
+{
+  return repoId == ORIGIN_SYSTEM || std::any_of(officialRepoInfos.begin(), officialRepoInfos.end(),
+                                                [&repoId](const RepoInfo& officialRepo) {
+                                                  return repoId == officialRepo.m_repoId;
+                                                });
+}
+
 bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database)
 {
   return LoadAddonsFromDatabase(database, "", nullptr);
@@ -175,32 +183,20 @@ void CAddonRepos::AddAddonIfLatest(
   }
 }
 
-void CAddonRepos::BuildUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                  std::vector<std::shared_ptr<IAddon>>& updates) const
-{
-  BuildUpdateOrOutdatedList(installed, updates, false);
-}
-
-void CAddonRepos::BuildOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                    std::vector<std::shared_ptr<IAddon>>& outdated) const
-{
-  BuildUpdateOrOutdatedList(installed, outdated, true);
-}
-
 void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
                                             std::vector<std::shared_ptr<IAddon>>& result,
-                                            bool returnOutdatedAddons) const
+                                            AddonCheckType addonCheckType) const
 {
   std::shared_ptr<IAddon> update;
 
   CLog::Log(LOGDEBUG, "CAddonRepos::{}: Building {} list from installed add-ons", __func__,
-            returnOutdatedAddons ? "outdated" : "update");
+            addonCheckType == AddonCheckType::OUTDATED_ADDONS ? "outdated" : "update");
 
   for (const auto& addon : installed)
   {
     if (DoAddonUpdateCheck(addon, update))
     {
-      result.emplace_back(returnOutdatedAddons ? addon : update);
+      result.emplace_back(addonCheckType == AddonCheckType::OUTDATED_ADDONS ? addon : update);
     }
   }
 }

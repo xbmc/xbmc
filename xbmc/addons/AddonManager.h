@@ -26,6 +26,12 @@ namespace ADDON
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
+  enum class AddonCheckType
+  {
+    OUTDATED_ADDONS,
+    AVAILABLE_UPDATES
+  };
+
   struct CAddonWithUpdate;
 
   /**
@@ -242,6 +248,8 @@ namespace ADDON
 
     /* \brief Checks whether an addon is installed from a
      *        particular origin repo
+     * \note if checked for an origin defined as official (i.e. repository.xbmc.org)
+     *       this function will return true even if the addon is a shipped system add-on
      * \param ID id of the addon
      * \param origin origin repository id
      */
@@ -249,6 +257,8 @@ namespace ADDON
 
     /* \brief Checks whether an addon is installed from a
      *        particular origin repo and version
+     * \note if checked for an origin defined as official (i.e. repository.xbmc.org)
+     *       this function will return true even if the addon is a shipped system add-on
      * \param ID id of the addon
      * \param origin origin repository id
      * \param version the version of the addon
@@ -507,7 +517,7 @@ namespace ADDON
      * \return vector filled with either available updates or outdated addons
      */
     std::vector<std::shared_ptr<IAddon>> GetAvailableUpdatesOrOutdatedAddons(
-        bool returnOutdatedAddons) const;
+        AddonCheckType addonCheckType) const;
 
     bool GetAddonsInternal(const TYPE& type,
                            VECADDONS& addons,
