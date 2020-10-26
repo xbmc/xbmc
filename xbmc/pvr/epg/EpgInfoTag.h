@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "utils/ISerializable.h"
 
 #include <memory>
@@ -482,6 +483,8 @@ namespace PVR
     unsigned int m_iFlags = 0; /*!< the flags applicable to this EPG entry */
     std::string m_strSeriesLink; /*!< series link */
     bool m_bIsGapTag = false;
+    mutable bool m_bIsPlayable = false;
+    mutable XbmcThreads::EndTime m_isPlayableRefetchTimeout;
 
     mutable CCriticalSection m_critSection;
     std::shared_ptr<CPVREpgChannelData> m_channelData;

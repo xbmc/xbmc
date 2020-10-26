@@ -606,16 +606,18 @@ bool CPVREpgInfoTag::IsRecordable() const
 
 bool CPVREpgInfoTag::IsPlayable() const
 {
-  bool bIsPlayable = false;
-
   CSingleLock lock(m_critSection);
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
-  if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
+  if (client && m_isPlayableRefetchTimeout.IsTimePast())
   {
-    // fallback
-    bIsPlayable = false;
+    // @todo: root cause should be fixed. details: https://github.com/xbmc/xbmc/pull/14961
+    m_isPlayableRefetchTimeout.Set(60000); // update is playable from backend at most every 1 min
+
+    bool bIsPlayable = false;
+    if (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR)
+      m_bIsPlayable = bIsPlayable;
   }
-  return bIsPlayable;
+  return m_bIsPlayable;
 }
 
 bool CPVREpgInfoTag::IsSeries() const
