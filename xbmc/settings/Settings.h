@@ -191,6 +191,7 @@ public:
   static const std::string SETTING_PVRRECORD_GROUPRECORDINGS;
   static const std::string SETTING_PVRREMINDERS_AUTOCLOSEDELAY;
   static const std::string SETTING_PVRREMINDERS_AUTORECORD;
+  static const std::string SETTING_PVRREMINDERS_AUTOSWITCH;
   static const std::string SETTING_PVRPOWERMANAGEMENT_ENABLED;
   static const std::string SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME;
   static const std::string SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD;

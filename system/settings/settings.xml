@@ -1784,6 +1784,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrreminders.autoswitch" type="boolean" label="19330" help="36434">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="pvrpowermanagement" label="14095" help="36240">

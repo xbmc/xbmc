@@ -11123,7 +11123,31 @@ msgctxt "#19329"
 msgid "Allow backend channel numbers with more than one PVR add-on"
 msgstr ""
 
-#empty strings from id 19330 to 19498
+#. pvr settings "switch to channel on reminder auto-close" setting label
+#: system/settings/settings.xml
+msgctxt "#19330"
+msgid "Switch to channel when auto-closing the reminder popup"
+msgstr ""
+
+#. additional text for reminder announcement dialog, used if a recording can be scheduled
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19331"
+msgid "(Auto-close of this reminder will switch to channel...)"
+msgstr ""
+
+#. text for event log entry for logging auto channel switch for auto-closed reminders
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19332"
+msgid "Switched to channel for auto-closed PVR reminder for '{0:s}' on channel '{1:s}' at '{2:s}'"
+msgstr ""
+
+#. text for event log entry for logging auto scheduled recordings for auto-closed reminders
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19333"
+msgid "Switched to channel for auto-closed PVR reminder for channel '{0:s}' at '{1:s}'"
+msgstr ""
+
+#empty strings from id 19334 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -20173,7 +20197,12 @@ msgctxt "#36433"
 msgid "When enabled, VAAPI render method is preferred and the CPU has less load. If you experience hangs, disable this option."
 msgstr ""
 
-#empty strings from id 36434 to 36435
+#: system/settings/settings.xml
+msgctxt "#36434"
+msgid "If enabled, switch to the channel with the programme to remind when auto-closing the reminder popup."
+msgstr ""
+
+#empty strings from id 36435 to 36435
 
 #. Description for setting #310: "Keyboard layouts"
 #: system/settings/settings.xml

@@ -219,20 +219,18 @@ namespace PVR
   };
 
   CPVRGUIActions::CPVRGUIActions()
-  : m_settings({
-      CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
-      CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
-      CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
-      CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
-      CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
-      CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES,
-      CSettings::SETTING_PVRPARENTAL_PIN,
-      CSettings::SETTING_PVRPARENTAL_ENABLED,
-      CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-      CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,
-      CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY,
-      CSettings::SETTING_PVRREMINDERS_AUTORECORD
-    })
+    : m_settings({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
+                  CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
+                  CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
+                  CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
+                  CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
+                  CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES,
+                  CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED,
+                  CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+                  CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,
+                  CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY,
+                  CSettings::SETTING_PVRREMINDERS_AUTORECORD,
+                  CSettings::SETTING_PVRREMINDERS_AUTOSWITCH})
   {
   }
 
@@ -2072,7 +2070,11 @@ namespace PVR
       dialog->ShowChoice(2, CVariant{222}); // "Cancel"
 
       if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
-        text += "\n\n" + g_localizeStrings.Get(19309); // (Auto-close of this reminder will schedule a recording...)
+        text += "\n\n" + g_localizeStrings.Get(
+                             19309); // (Auto-close of this reminder will schedule a recording...)
+      else if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTOSWITCH))
+        text += "\n\n" + g_localizeStrings.Get(
+                             19331); // (Auto-close of this reminder will swicth to channel...)
     }
     else
     {
@@ -2105,54 +2107,59 @@ namespace PVR
 
     dialog->Close();
 
-    if (iRemaining <= 0) // auto-closed?
+    bool bAutoClosed = (iRemaining <= 0);
+    bool bSwitch = (result == 0);
+    bool bRecord = (result == 1);
+
+    if (bAutoClosed)
     {
-      if (bCanRecord && m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
-        result = 1; // -> schedule recording
-      else
-        result = CGUIDialogProgress::CHOICE_CANCELED; // -> do nothing
+      bRecord = (bCanRecord && m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD));
+      bSwitch = m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTOSWITCH);
     }
 
-    switch (result)
+    if (bRecord)
     {
-      case 0:
-        SwitchToChannel(std::make_shared<CFileItem>(timer->Channel()), false);
-        break;
-      case 1:
-        if (bCanRecord)
+      std::shared_ptr<CPVRTimerInfoTag> newTimer;
+
+      std::shared_ptr<CPVREpgInfoTag> epgTag = timer->GetEpgInfoTag();
+      if (epgTag)
+      {
+        newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, false);
+        if (newTimer)
         {
-          std::shared_ptr<CPVRTimerInfoTag> newTimer;
-
-          std::shared_ptr<CPVREpgInfoTag> epgTag = timer->GetEpgInfoTag();
-          if (epgTag)
-          {
-            newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, false);
-            if (newTimer)
-            {
-              // an epgtag can only have max one timer - we need to clear the reminder to be able to attach the recording timer
-              DeleteTimer(timer, false, false);
-            }
-          }
-          else
-          {
-            int iDuration = (timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal() / 60;
-            newTimer = CPVRTimerInfoTag::CreateTimerTag(timer->Channel(), timer->StartAsUTC(), iDuration);
-          }
-
-          if (newTimer)
-          {
-            // schedule recording
-            AddTimer(std::make_shared<CFileItem>(newTimer), false);
-          }
-
-          if (iRemaining <= 0) // auto-closed?
-          {
-            AddEventLogEntry(timer, 19310, 19311); // Scheduled recording for auto-closed PVR reminder ...
-          }
+          // an epgtag can only have max one timer - we need to clear the reminder to be able to
+          // attach the recording timer
+          DeleteTimer(timer, false, false);
         }
-        break;
-      default:
-        break;
+      }
+      else
+      {
+        int iDuration = (timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal() / 60;
+        newTimer =
+            CPVRTimerInfoTag::CreateTimerTag(timer->Channel(), timer->StartAsUTC(), iDuration);
+      }
+
+      if (newTimer)
+      {
+        // schedule recording
+        AddTimer(std::make_shared<CFileItem>(newTimer), false);
+      }
+
+      if (bAutoClosed)
+      {
+        AddEventLogEntry(timer, 19310,
+                         19311); // Scheduled recording for auto-closed PVR reminder ...
+      }
+    }
+
+    if (bSwitch)
+    {
+      SwitchToChannel(std::make_shared<CFileItem>(timer->Channel()), false);
+
+      if (bAutoClosed)
+      {
+        AddEventLogEntry(timer, 19332, 19333); // Switched channel for auto-closed PVR reminder ...
+      }
     }
   }
 
