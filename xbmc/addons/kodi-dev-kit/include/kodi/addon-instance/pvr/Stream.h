@@ -166,7 +166,7 @@ public:
     m_cStructure->strLanguage[0] = language[0];
     m_cStructure->strLanguage[1] = language[1];
     m_cStructure->strLanguage[2] = language[2];
-    m_cStructure->strLanguage[2] = 0;
+    m_cStructure->strLanguage[3] = 0;
   }
 
   /// @brief To get with @ref SetLanguage() changed values.
