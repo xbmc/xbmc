@@ -113,7 +113,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_DEPENDENCIES)
       {
         auto deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID());
-        ShowDependencyList(deps, true);
+        ShowDependencyList(deps, Reactivate::YES);
         return true;
       }
       else if (iControl == CONTROL_BTN_AUTOUPDATE)
@@ -312,7 +312,7 @@ void CGUIDialogAddonInfo::OnUpdate()
 
   Close();
   const auto& deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(addonId);
-  if (!deps.empty() && !ShowDependencyList(deps, false))
+  if (!deps.empty() && !ShowDependencyList(deps, Reactivate::NO))
     return;
 
   CAddonInstaller::GetInstance().Install(addonId, version, origin);
@@ -461,7 +461,7 @@ void CGUIDialogAddonInfo::OnInstall()
 
   Close();
   const auto& deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(addonId);
-  if (!deps.empty() && !ShowDependencyList(deps, false))
+  if (!deps.empty() && !ShowDependencyList(deps, Reactivate::NO))
     return;
 
   CAddonInstaller::GetInstance().Install(addonId, version, origin);
@@ -595,7 +595,7 @@ void CGUIDialogAddonInfo::OnSettings()
 }
 
 bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::DependencyInfo>& deps,
-                                             bool reactivate)
+                                             Reactivate reactivate)
 {
   auto pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT);
@@ -647,11 +647,11 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
   while (true)
   {
     pDialog->Reset();
-    pDialog->SetHeading(reactivate ? 39024 : 39020);
+    pDialog->SetHeading(reactivate == Reactivate::YES ? 39024 : 39020);
     pDialog->SetUseDetails(true);
     for (auto& it : items)
       pDialog->Add(*it);
-    pDialog->EnableButton(!reactivate, 186);
+    pDialog->EnableButton(reactivate == Reactivate::NO, 186);
     pDialog->SetButtonFocus(true);
     pDialog->Open();
 
@@ -674,7 +674,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
       break;
   }
   SetItem(backup_item);
-  if (reactivate)
+  if (reactivate == Reactivate::YES)
     Open();
 
   return false;

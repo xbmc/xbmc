@@ -15,6 +15,12 @@
 #include <utility>
 #include <vector>
 
+enum class Reactivate
+{
+  YES,
+  NO,
+};
+
 class CGUIDialogAddonInfo : public CGUIDialog
 {
 public:
@@ -82,7 +88,7 @@ private:
    * @param[in] reactivate If true, reactivate info dialog when done
    * @return True if okay was selected, false otherwise
    */
-  bool ShowDependencyList(const std::vector<ADDON::DependencyInfo>& deps, bool reactivate);
+  bool ShowDependencyList(const std::vector<ADDON::DependencyInfo>& deps, Reactivate reactivate);
 
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
