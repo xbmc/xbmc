@@ -16,6 +16,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -190,6 +191,26 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   return OK;
 }
 
+JSONRPC_STATUS CPVROperations::GetBroadcastIsPlayable(const std::string& method,
+                                                      ITransportLayer* transport,
+                                                      IClient* client,
+                                                      const CVariant& parameterObject,
+                                                      CVariant& result)
+{
+  if (!CServiceBroker::GetPVRManager().IsStarted())
+    return FailedToExecute;
+
+  const std::shared_ptr<CPVREpgInfoTag> epgTag =
+      CServiceBroker::GetPVRManager().EpgContainer().GetTagById(
+          nullptr, parameterObject["broadcastid"].asUnsignedInteger());
+
+  if (!epgTag)
+    return InvalidParams;
+
+  result = epgTag->IsPlayable();
+
+  return OK;
+}
 
 JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {

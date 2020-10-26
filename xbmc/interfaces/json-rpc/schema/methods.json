@@ -2095,6 +2095,16 @@
       }
     }
   },
+  "PVR.GetBroadcastIsPlayable": {
+    "type": "method",
+    "description": "Retrieves whether or not a broadcast is playable",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the id of the broadcast to to check for playability" }
+    ],
+    "returns":  "boolean"
+  },
   "PVR.GetTimers": {
     "type": "method",
     "description": "Retrieves the timers",

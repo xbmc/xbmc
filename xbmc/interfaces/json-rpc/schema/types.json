@@ -1052,7 +1052,7 @@
       "hasrecording": { "type": "boolean" },
       "recording": { "type": "string" },
       "isseries": { "type": "boolean" },
-      "isplayable": { "type": "boolean" }
+      "isplayable": { "type": "boolean", "description": "Deprecated - Use GetBroadcastIsPlayable instead" }
     }
   },
   "PVR.Fields.Channel": {

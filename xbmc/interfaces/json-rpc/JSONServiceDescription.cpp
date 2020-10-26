@@ -173,6 +173,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PVR.GetChannelDetails",                        CPVROperations::GetChannelDetails },
   { "PVR.GetBroadcasts",                            CPVROperations::GetBroadcasts },
   { "PVR.GetBroadcastDetails",                      CPVROperations::GetBroadcastDetails },
+  { "PVR.GetBroadcastIsPlayable",                   CPVROperations::GetBroadcastIsPlayable },
   { "PVR.GetTimers",                                CPVROperations::GetTimers },
   { "PVR.GetTimerDetails",                          CPVROperations::GetTimerDetails },
   { "PVR.GetRecordings",                            CPVROperations::GetRecordings },
