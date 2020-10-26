@@ -52,6 +52,32 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       result[field] = item->GetMimeType();
       return true;
     }
+
+    if (item->HasPVRChannelInfoTag())
+    {
+      // Translate PVR.Details.Broadcast -> List.Item.Base format
+      if (field == "cast")
+      {
+        // string -> Video.Cast
+        const std::vector<std::string> actors =
+            StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+
+        result[field] = CVariant(CVariant::VariantTypeArray);
+        for (const auto& actor : actors)
+        {
+          CVariant actorVar;
+          actorVar["name"] = actor;
+          result[field].push_back(actorVar);
+        }
+        return true;
+      }
+      else if (field == "director" || field == "writer")
+      {
+        // string -> Array.String
+        result[field] = StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+        return true;
+      }
+    }
   }
 
   // check for serialized values

@@ -1113,7 +1113,7 @@
                 "weekdays", "priority", "startmargin", "endmargin", "state",
                 "file", "directory", "preventduplicateepisodes", "startanytime",
                 "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
-                "maxrecordings", "epguid", "isreadonly" ]
+                "maxrecordings", "epguid", "isreadonly", "isreminder" ]
     }
   },
   "PVR.Details.Timer": {
@@ -1149,7 +1149,8 @@
       "recordinggroup": { "type": "integer" },
       "maxrecordings": { "type": "integer" },
       "epguid": { "type": "integer" },
-      "isreadonly": { "type": "boolean" }
+      "isreadonly": { "type": "boolean" },
+      "isreminder": { "type": "boolean" }
     }
   },
   "PVR.Fields.Recording": {
@@ -1552,12 +1553,13 @@
                 "disc", "tag", "art", "genreid", "displayartist", "albumartistid",
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "channel", "channeltype", "hidden",
-                "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
-                "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
-                "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
-                "userrating", "votes", "sortartist", "musicbrainzreleasegroupid", "mediapath", "dynpath",
-                "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
-                "bitrate", "samplerate", "channels", "albumstatus", "datemodified", "datenew", "customproperties",
+                "locked", "channelnumber", "subchannelnumber", "starttime", "endtime",
+                "specialsortseason", "specialsortepisode", "compilation", "releasetype",
+                "albumreleasetype", "contributors", "displaycomposer", "displayconductor",
+                "displayorchestra", "displaylyricist", "userrating", "votes", "sortartist",
+                "musicbrainzreleasegroupid", "mediapath", "dynpath", "isboxset", "totaldiscs",
+                "disctitle", "releasedate", "originaldate", "bpm", "bitrate", "samplerate",
+                "channels", "albumstatus", "datemodified", "datenew", "customproperties",
                 "albumduration"]
     }
   },
@@ -1569,6 +1571,7 @@
       "hidden": { "type": "boolean" },
       "locked": { "type": "boolean" },
       "channelnumber": { "type": "integer" },
+      "subchannelnumber": { "type": "integer" },
       "starttime": { "type": "string" },
       "endtime": { "type": "string" }
     }
