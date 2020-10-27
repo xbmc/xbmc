@@ -5,5 +5,5 @@ XBMC_PLATFORM_DIR=linux-aarch64-gbm
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
-    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=aarch64-linux-gnu --with-rendersystem=gles --with-tarballs=$TARBALLS $DEBUG_SWITCH
+    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=aarch64-linux-gnu --with-rendersystem=$RENDER_SYSTEM  --with-tarballs=$TARBALLS $DEBUG_SWITCH
 fi
