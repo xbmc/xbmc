@@ -253,7 +253,9 @@
           "type": { "type": "string", "id": "Notifications.Library.Video.Type", "enum": [ "movie", "tvshow", "episode", "musicvideo" ], "required": true },
           "playcount": { "type": "integer", "minimum": 0, "default": -1 },
           "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." },
-          "added": { "$ref": "Optional.Boolean", "description": "True if the update is for a newly added item." }
+          "added": { "$ref": "Optional.Boolean", "description": "True if the update is for a newly added item." },
+          "action": { "$ref": "Optional.String", "description": "Describes the type of action performed." },
+          "url": { "$ref": "Optional.String", "description": "Provide the url of the updated item." }
         }
       }
     ],
@@ -283,7 +285,9 @@
         "properties": {
           "id": { "$ref": "Library.Id", "required": true },
           "type": { "$ref": "Notifications.Library.Video.Type", "required": true },
-          "transaction": { "$ref": "Optional.Boolean", "description": "True if the removal is being performed within a transaction." }
+          "transaction": { "$ref": "Optional.Boolean", "description": "True if the removal is being performed within a transaction." },
+          "action": { "$ref": "Optional.String", "description": "Describes the type of action performed." },
+          "url": { "$ref": "Optional.String", "description": "Provide the url of the removed item." }
         }
       }
     ],

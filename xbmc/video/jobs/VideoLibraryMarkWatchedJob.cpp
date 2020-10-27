@@ -94,8 +94,10 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
       path = item->GetVideoInfoTag()->GetPath();
 
-    // With both mark as watched and unwatched we want the resume bookmarks to be reset
-    db.ClearBookMarksOfFile(path, CBookmark::RESUME);
+    // Do not modify the database when a plugin manages the values autonomously
+    if (!item->GetProperty("preservewatchedpoint").asBoolean())
+        // With both mark as watched and unwatched we want the resume bookmarks to be reset
+        db.ClearBookMarksOfFile(path, CBookmark::RESUME);
 
     if (m_mark)
       db.IncrementPlayCount(*item);

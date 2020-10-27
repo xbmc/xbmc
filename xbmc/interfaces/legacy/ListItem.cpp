@@ -338,7 +338,16 @@ namespace XBMCAddon
           else if (key == "watched") // backward compat - do we need it?
             videotag.SetPlayCount(strtol(value.c_str(), nullptr, 10));
           else if (key == "playcount")
+          {
+            // Note to "preservewatchedpoint"
+            // When a plugin wants to manage the watched status autonomously set playcount and
+            // resumetime to ListItem, but Kodi assumes these values in a generic way,
+            // we need to know when allow to modify the database or not, so when a user
+            // try change these values manually (e.g. by context menu)
+            // not invalidate existing database values currently not used
+            item->SetProperty("preservewatchedpoint", "true");
             videotag.SetPlayCount(strtol(value.c_str(), nullptr, 10));
+          }
           else if (key == "overlay")
           {
             long overlay = strtol(value.c_str(), nullptr, 10);

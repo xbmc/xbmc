@@ -3198,21 +3198,26 @@ bool CVideoDatabase::GetResumeBookMark(const std::string& strFilenameAndPath, CB
 
 void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
 {
-  if (!m_pDB || !m_pDS)
-    return;
-
-  int fileID = item.GetVideoInfoTag()->m_iFileId;
-  if (fileID < 0)
-  {
-    fileID = GetFileId(item.GetPath());
-    if (fileID < 0)
-      return;
-  }
-
   try
   {
-    std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
-    m_pDS->exec(sql);
+    if (!m_pDB || !m_pDS)
+      return;
+
+    // Do not modify the database when a plugin manages the values autonomously
+    if (!item.GetProperty("preservewatchedpoint").asBoolean())
+    {
+      int fileID = item.GetVideoInfoTag()->m_iFileId;
+      if (fileID < 0)
+      {
+        fileID = GetFileId(item.GetPath());
+        if (fileID < 0)
+          return;
+      }
+
+      std::string sql =
+          PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
+      m_pDS->exec(sql);
+    }
 
     VIDEODB_CONTENT_TYPE iType = static_cast<VIDEODB_CONTENT_TYPE>(item.GetVideoContentType());
     std::string content;
@@ -3236,7 +3241,10 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
 
     if (!content.empty())
     {
-      AnnounceUpdate(content, item.GetVideoInfoTag()->m_iDbId);
+      CVariant data;
+      if (item.GetURL().IsProtocol("plugin"))
+        data["url"] = item.GetPath();
+      AnnounceUpdate(content, item.GetVideoInfoTag()->m_iDbId, "ResetResumePoint", data);
     }
 
   }
@@ -3490,7 +3498,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
-      AnnounceRemove(MediaTypeMovie, idMovie);
+      AnnounceRemove(MediaTypeMovie, idMovie, false, "DeleteMovie");
 
     CommitTransaction();
 
@@ -3555,7 +3563,7 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
-      AnnounceRemove(MediaTypeTvShow, idTvShow);
+      AnnounceRemove(MediaTypeTvShow, idTvShow, false, "DeleteTvShow");
 
     CommitTransaction();
 
@@ -3621,7 +3629,7 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
-      AnnounceRemove(MediaTypeEpisode, idEpisode);
+      AnnounceRemove(MediaTypeEpisode, idEpisode, false, "DeleteEpisode");
 
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancillary tables are still purged
@@ -3679,7 +3687,7 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
-      AnnounceRemove(MediaTypeMusicVideo, idMVideo);
+      AnnounceRemove(MediaTypeMusicVideo, idMVideo, false, "DeleteMusicVideo");
 
     CommitTransaction();
 
@@ -5742,7 +5750,8 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
     {
       for (auto& item : items)
       {
-        if (!item || item->m_bIsFolder || !item->GetProperty("IsPlayable").asBoolean())
+        if (!item || item->m_bIsFolder || !item->GetProperty("IsPlayable").asBoolean() ||
+            item->GetProperty("preservewatchedpoint").asBoolean())
           continue;
 
         std::string path, filename;
@@ -5859,9 +5868,9 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
     m_pDS->exec(exec);
 
     if (type == VIDEODB_CONTENT_TVSHOWS)
-      AnnounceUpdate(MediaTypeTvShow, item.GetVideoInfoTag()->m_iDbId);
+      AnnounceUpdate(MediaTypeTvShow, item.GetVideoInfoTag()->m_iDbId, "UpdateFanart");
     else if (type == VIDEODB_CONTENT_MOVIES)
-      AnnounceUpdate(MediaTypeMovie, item.GetVideoInfoTag()->m_iDbId);
+      AnnounceUpdate(MediaTypeMovie, item.GetVideoInfoTag()->m_iDbId, "UpdateFanart");
   }
   catch (...)
   {
@@ -5871,47 +5880,54 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateTime &date)
 {
-  int id;
-  if (item.HasProperty("original_listitem_url") &&
-      URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-  {
-    CFileItem item2(item);
-    item2.SetPath(item.GetProperty("original_listitem_url").asString());
-    id = AddFile(item2);
-  }
-  else
-    id = AddFile(item);
-  if (id < 0)
-    return;
-
-  // and mark as watched
   try
   {
-    if (nullptr == m_pDB)
-      return;
-    if (nullptr == m_pDS)
-      return;
-
-    std::string strSQL;
-    if (count)
+    // Do not modify the database when a plugin manages the values autonomously
+    if (!item.GetProperty("preservewatchedpoint").asBoolean())
     {
-      if (!date.IsValid())
-        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(), id);
+      int id;
+      if (item.HasProperty("original_listitem_url") &&
+          URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+      {
+        CFileItem item2(item);
+        item2.SetPath(item.GetProperty("original_listitem_url").asString());
+        id = AddFile(item2);
+      }
       else
-        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count, date.GetAsDBDateTime().c_str(), id);
-    }
-    else
-    {
-      if (!date.IsValid())
-        strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
+        id = AddFile(item);
+      if (id < 0)
+        return;
+
+      // and mark as watched
+      if (nullptr == m_pDB)
+        return;
+      if (nullptr == m_pDS)
+        return;
+
+      std::string strSQL;
+      if (count)
+      {
+        if (!date.IsValid())
+          strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i",
+                              count, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(), id);
+        else
+          strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i",
+                              count, date.GetAsDBDateTime().c_str(), id);
+      }
       else
-        strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed='%s' where idFile=%i", date.GetAsDBDateTime().c_str(), id);
+      {
+        if (!date.IsValid())
+          strSQL =
+              PrepareSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
+        else
+          strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed='%s' where idFile=%i",
+                              date.GetAsDBDateTime().c_str(), id);
+      }
+
+      m_pDS->exec(strSQL);
     }
 
-    m_pDS->exec(strSQL);
-
-    // We only need to announce changes to video items in the library
-    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
+    if (item.HasVideoInfoTag())
     {
       CVariant data;
       if (g_application.IsVideoScanning())
@@ -5919,6 +5935,9 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateT
       // Only provide the "playcount" value if it has actually changed
       if (item.GetVideoInfoTag()->GetPlayCount() != count)
         data["playcount"] = count;
+      data["action"] = "PlayCountChange";
+      if (item.GetURL().IsProtocol("plugin"))
+        data["url"] = item.GetPath();
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
                                                          CFileItemPtr(new CFileItem(item)), data);
     }
@@ -5978,7 +5997,7 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const std::string& strNewMovi
     if (!content.empty())
     {
       SetSingleValue(iType, idMovie, FieldTitle, strNewMovieTitle);
-      AnnounceUpdate(content, idMovie);
+      AnnounceUpdate(content, idMovie, "UpdateMovieTitle");
     }
   }
   catch (...)
@@ -6002,7 +6021,7 @@ bool CVideoDatabase::UpdateVideoSortTitle(int idDb, const std::string& strNewSor
 
     if (SetSingleValue(iType, idDb, FieldSortTitle, strNewSortTitle))
     {
-      AnnounceUpdate(content, idDb);
+      AnnounceUpdate(content, idDb, "UpdateVideoSortTitle");
       return true;
     }
   }
@@ -9309,16 +9328,16 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
               StringUtils::SecondsToTimeString(time / 1000).c_str());
 
     for (const auto &i : movieIDs)
-      AnnounceRemove(MediaTypeMovie, i, true);
+      AnnounceRemove(MediaTypeMovie, i, true, "CleanDatabase.DeleteMovie");
 
     for (const auto &i : episodeIDs)
-      AnnounceRemove(MediaTypeEpisode, i, true);
+      AnnounceRemove(MediaTypeEpisode, i, true, "CleanDatabase.DeleteEpisode");
 
     for (const auto &i : tvshowIDs)
-      AnnounceRemove(MediaTypeTvShow, i, true);
+      AnnounceRemove(MediaTypeTvShow, i, true, "CleanDatabase.DeleteTvShow");
 
     for (const auto &i : musicVideoIDs)
-      AnnounceRemove(MediaTypeMusicVideo, i, true);
+      AnnounceRemove(MediaTypeMusicVideo, i, true, "CleanDatabase.DeleteMusicVideo");
   }
   catch (...)
   {
@@ -10452,21 +10471,24 @@ std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::strin
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 
-void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /* = false */)
+void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /* = false */, std::string action /* = "" */)
 {
   CVariant data;
   data["type"] = content;
   data["id"] = id;
   if (scanning)
     data["transaction"] = true;
+  if (!action.empty())
+    data["action"] = action;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRemove", data);
 }
 
-void CVideoDatabase::AnnounceUpdate(std::string content, int id)
+void CVideoDatabase::AnnounceUpdate(std::string content, int id, std::string action /* = "" */, CVariant data /* = CVariant::VariantTypeObject */)
 {
-  CVariant data;
   data["type"] = content;
   data["id"] = id;
+  if (!action.empty())
+    data["action"] = action;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate", data);
 }
 

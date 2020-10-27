@@ -1013,6 +1013,6 @@ private:
   std::vector<int> CleanMediaType(const std::string &mediaType, const std::string &cleanableFileIDs,
                                   std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
 
-  static void AnnounceRemove(std::string content, int id, bool scanning = false);
-  static void AnnounceUpdate(std::string content, int id);
+  static void AnnounceRemove(std::string content, int id, bool scanning = false, std::string action = "");
+  static void AnnounceUpdate(std::string content, int id, std::string action = "", CVariant data = CVariant::VariantTypeObject);
 };
