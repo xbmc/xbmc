@@ -100,3 +100,8 @@ std::vector<ADDON::RepoInfo> CCompileInfo::LoadOfficialRepoInfos()
 
   return officialRepoInfos;
 }
+
+std::vector<std::string> CCompileInfo::GetAvailableWindowSystems()
+{
+  return StringUtils::Split("@CORE_PLATFORM_NAME_LC@", ' ');
+}

@@ -22,6 +22,9 @@ public:
   CWinSystemAndroidGLESContext() = default;
   ~CWinSystemAndroidGLESContext() override = default;
 
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   // Implementation of CWinSystemBase via CWinSystemAndroid
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;

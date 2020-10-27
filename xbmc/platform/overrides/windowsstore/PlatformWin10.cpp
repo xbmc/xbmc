@@ -10,6 +10,7 @@
 
 #include "filesystem/SpecialProtocol.h"
 #include "platform/Environment.h"
+#include "windowing/win10/WinSystemWin10DX.h"
 
 #include <stdlib.h>
 
@@ -25,4 +26,6 @@ CPlatformWin10::~CPlatformWin10() = default;
 void CPlatformWin10::Init()
 {
   CEnvironment::setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+
+  CWinSystemWin10DX::Register();
 }

@@ -181,7 +181,7 @@ bool CDRMUtils::FindPlanes()
     if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
-    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [this, &i](auto& plane) {
+    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [&i](auto& plane) {
       if (plane->GetPossibleCrtcs() & (1 << i))
       {
         return plane->SupportsFormat(DRM_FORMAT_NV12);
@@ -195,7 +195,7 @@ bool CDRMUtils::FindPlanes()
       videoPlaneId = videoPlane->get()->GetPlaneId();
 
     auto guiPlane =
-        std::find_if(m_planes.begin(), m_planes.end(), [this, &i, &videoPlaneId](auto& plane) {
+        std::find_if(m_planes.begin(), m_planes.end(), [&i, &videoPlaneId](auto& plane) {
           if (plane->GetPossibleCrtcs() & (1 << i))
           {
             return (plane->GetPlaneId() != videoPlaneId &&
@@ -480,7 +480,7 @@ bool CDRMUtils::InitDrm()
 
 bool CDRMUtils::FindConnector()
 {
-  auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [this](auto& connector) {
+  auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [](auto& connector) {
     return connector->GetEncoderId() > 0 && connector->IsConnected();
   });
 

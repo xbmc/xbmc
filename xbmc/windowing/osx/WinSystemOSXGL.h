@@ -17,6 +17,9 @@ public:
   CWinSystemOSXGL() = default;
   ~CWinSystemOSXGL() override = default;
 
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   // Implementation of CWinSystemBase via CWinSystemOSX
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;

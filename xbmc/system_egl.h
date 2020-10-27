@@ -8,7 +8,7 @@
 
 #pragma once
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 
 #if defined(WL_EGL_PLATFORM)
 #undef WL_EGL_PLATFORM
@@ -31,7 +31,7 @@
 
 #include <EGL/egl.h>
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 
 #if defined(KODI_WL_EGL_PLATFORM)
 #undef KODI_WL_EGL_PLATFORM

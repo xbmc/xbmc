@@ -9,6 +9,7 @@
 #include "PlatformAndroid.h"
 
 #include "filesystem/SpecialProtocol.h"
+#include "windowing/android/WinSystemAndroidGLESContext.h"
 
 #include <stdlib.h>
 
@@ -21,4 +22,6 @@ void CPlatformAndroid::Init()
 {
   CPlatformPosix::Init();
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+
+  CWinSystemAndroidGLESContext::Register();
 }

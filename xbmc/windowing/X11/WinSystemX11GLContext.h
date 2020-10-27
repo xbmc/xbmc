@@ -34,6 +34,9 @@ public:
   CWinSystemX11GLContext();
   ~CWinSystemX11GLContext() override;
 
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   // Implementation of CWinSystem via CWinSystemX11
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;

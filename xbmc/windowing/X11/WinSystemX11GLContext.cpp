@@ -25,6 +25,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WindowSystemFactory.h"
 
 #include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
@@ -38,10 +39,14 @@ using namespace KODI;
 using namespace KODI::WINDOWING::X11;
 
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemX11GLContext::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemX11GLContext());
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem, "x11");
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemX11GLContext::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemX11GLContext>();
 }
 
 CWinSystemX11GLContext::CWinSystemX11GLContext()

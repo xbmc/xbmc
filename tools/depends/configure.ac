@@ -313,6 +313,7 @@ case $host in
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
     meson_system="linux"
+    target_platform="wayland gbm"
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*|x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     case $host in
@@ -331,6 +332,7 @@ case $host in
     platform_os="linux"
     meson_system="linux"
     ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
+    target_platform="x11 wayland gbm"
   ;;
   *darwin*)
     # darwin builds are always cross
@@ -432,12 +434,6 @@ case $host in
 esac
 
 case $use_platform in
-  gbm|wayland|x11)
-    if test "$platform_os" != "linux"; then
-      AC_MSG_ERROR([$use_platform is only supported on the Linux platform])
-    fi
-    target_platform=$use_platform
-    ;;
   tvos)
     platform_cflags+=" -fembed-bitcode"
     platform_cxxflags+=" -fembed-bitcode"

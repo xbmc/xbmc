@@ -24,14 +24,14 @@ find_path(VAAPI_libva-drm_INCLUDE_DIR va/va_drm.h
                                 PATHS ${PC_VAAPI_libva-drm_INCLUDEDIR})
 find_library(VAAPI_libva-drm_LIBRARY NAMES va-drm
                                      PATHS ${PC_VAAPI_libva-drm_LIBDIR})
-if(CORE_PLATFORM_NAME_LC STREQUAL "wayland")
+if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
   find_path(VAAPI_libva-wayland_INCLUDE_DIR va/va_wayland.h
                                       PATHS ${PC_VAAPI_libva-wayland_INCLUDEDIR})
   find_library(VAAPI_libva-wayland_LIBRARY NAMES va-wayland
                                            PATHS ${PC_VAAPI_libva-wayland_LIBDIR})
   list(APPEND REQUIRED_VARS "VAAPI_libva-wayland_INCLUDE_DIR" "VAAPI_libva-wayland_LIBRARY")
 endif()
-if(CORE_PLATFORM_NAME_LC STREQUAL "x11")
+if("x11" IN_LIST CORE_PLATFORM_NAME_LC)
   find_path(VAAPI_libva-x11_INCLUDE_DIR va/va_x11.h
                                   PATHS ${PC_VAAPI_libva-x11_INCLUDEDIR})
   find_library(VAAPI_libva-x11_LIBRARY NAMES va-x11

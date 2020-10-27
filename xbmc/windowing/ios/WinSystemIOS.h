@@ -27,6 +27,9 @@ public:
   CWinSystemIOS();
   ~CWinSystemIOS() override;
 
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   int GetDisplayIndexFromSettings();
   // Implementation of CWinSystemBase
   CRenderSystemBase *GetRenderSystem() override { return this; }
