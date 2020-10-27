@@ -205,7 +205,7 @@ bool CDRMUtils::FindPlanes()
           return false;
         });
 
-    if (videoPlane->get() && guiPlane->get())
+    if (videoPlane != m_planes.end() && guiPlane != m_planes.end())
     {
       m_crtc = m_crtcs[i].get();
       m_video_plane = videoPlane->get();
@@ -213,12 +213,13 @@ bool CDRMUtils::FindPlanes()
       break;
     }
 
-    if (guiPlane->get())
+    if (guiPlane != m_planes.end())
     {
       if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
       {
         m_crtc = m_crtcs[i].get();
         m_gui_plane = guiPlane->get();
+        m_video_plane = nullptr;
       }
     }
   }
@@ -320,48 +321,45 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
   for (const auto device : devices)
   {
-    for (int i = 0; i < DRM_NODE_MAX; i++)
+    if (!(device->available_nodes & 1 << DRM_NODE_PRIMARY))
+      continue;
+
+    close(m_fd);
+    m_fd = open(device->nodes[DRM_NODE_PRIMARY], O_RDWR | O_CLOEXEC);
+    if (m_fd < 0)
+      continue;
+
+    if (needConnector)
     {
-      if (device->available_nodes & 1 << i)
-      {
-        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opening device: {}", __FUNCTION__, device->nodes[i]);
-        PrintDrmDeviceInfo(device);
+      auto resources = drmModeGetResources(m_fd);
+      if (!resources)
+        continue;
 
-        close(m_fd);
-        m_fd = open(device->nodes[i], O_RDWR | O_CLOEXEC);
-        if (m_fd < 0)
-          continue;
+      m_connectors.clear();
+      for (int i = 0; i < resources->count_connectors; i++)
+        m_connectors.emplace_back(std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]));
 
-        if (needConnector)
-        {
-          auto resources = drmModeGetResources(m_fd);
-          if (!resources)
-            continue;
+      drmModeFreeResources(resources);
 
-          for (int i = 0; i < resources->count_connectors; i++)
-          {
-            auto connector = std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]);
-            if (connector->GetEncoderId() > 0 && connector->IsConnected())
-              break;
-          }
-
-          drmModeFreeResources(resources);
-        }
-
-        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened device: {}", __FUNCTION__, device->nodes[i]);
-
-        const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
-        if (renderPath)
-        {
-          m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
-          if (m_renderFd != 0)
-            CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
-        }
-
-        drmFreeDevices(devices.data(), devices.size());
-        return true;
-      }
+      if (!FindConnector())
+        continue;
     }
+
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened device: {}", __FUNCTION__,
+              device->nodes[DRM_NODE_PRIMARY]);
+
+    PrintDrmDeviceInfo(device);
+
+    const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
+    if (renderPath)
+    {
+      m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
+      if (m_renderFd != 0)
+        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
+    }
+
+    drmFreeDevices(devices.data(), devices.size());
+    return true;
   }
 
   drmFreeDevices(devices.data(), devices.size());
@@ -404,12 +402,15 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
+  m_connectors.clear();
   for (int i = 0; i < resources->count_connectors; i++)
     m_connectors.emplace_back(std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]));
 
+  m_encoders.clear();
   for (int i = 0; i < resources->count_encoders; i++)
     m_encoders.emplace_back(std::make_unique<CDRMEncoder>(m_fd, resources->encoders[i]));
 
+  m_crtcs.clear();
   for (int i = 0; i < resources->count_crtcs; i++)
     m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i]));
 
@@ -422,6 +423,7 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
+  m_planes.clear();
   for (uint32_t i = 0; i < planeResources->count_planes; i++)
   {
     m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
