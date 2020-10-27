@@ -34,7 +34,7 @@ public:
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
-  bool SetScalingFilter(struct CDRMObject* object, const char* name, const char* type);
+  bool SetScalingFilter(CDRMObject* object, const char* name, const char* type);
 
   bool m_need_modeset;
   bool m_active = true;

@@ -58,7 +58,7 @@ uint32_t GetScalingFactor(uint32_t srcWidth,
 
 } // namespace
 
-bool CDRMAtomic::SetScalingFilter(struct CDRMObject* object, const char* name, const char* type)
+bool CDRMAtomic::SetScalingFilter(CDRMObject* object, const char* name, const char* type)
 {
   uint32_t filter_type = GetScalingFilterType(type);
   if (object->SupportsPropertyAndValue(name, filter_type))
