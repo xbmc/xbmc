@@ -715,6 +715,22 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
     return ACK;
   }
+  else if (parameterObject["item"].isMember("broadcastid"))
+  {
+    const std::shared_ptr<CPVREpgInfoTag> epgTag =
+        CServiceBroker::GetPVRManager().EpgContainer().GetTagById(
+            nullptr,
+            static_cast<unsigned int>(parameterObject["item"]["broadcastid"].asUnsignedInteger()));
+
+    if (!epgTag || !epgTag->IsPlayable())
+      return InvalidParams;
+
+    if (!CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(
+            std::make_shared<CFileItem>(epgTag)))
+      return FailedToExecute;
+
+    return ACK;
+  }
   else if (parameterObject["item"].isMember("channelid"))
   {
     const std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
