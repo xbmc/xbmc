@@ -223,8 +223,8 @@ void CAddonRepos::BuildAddonsWithUpdateList(
 bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
                                      std::shared_ptr<IAddon>& update) const
 {
-  CLog::Log(LOGDEBUG, "ADDONS: update check: addonID = {} / Origin = {}", addon->ID(),
-            addon->Origin());
+  CLog::Log(LOGDEBUG, "ADDONS: update check: addonID = {} / Origin = {} / Version = {}",
+            addon->ID(), addon->Origin(), addon->Version().asString());
 
   update.reset();
 
