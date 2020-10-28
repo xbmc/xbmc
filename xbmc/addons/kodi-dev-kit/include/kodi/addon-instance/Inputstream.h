@@ -14,10 +14,51 @@
 
 #ifdef __cplusplus
 
+#include <map>
+
 namespace kodi
 {
 namespace addon
 {
+
+class CInstanceInputStream;
+
+class ATTRIBUTE_HIDDEN InputstreamProperty
+  : public CStructHdl<InputstreamProperty, INPUTSTREAM_PROPERTY>
+{
+  friend class CInstanceInputStream;
+
+public:
+  std::string GetURL() const { return m_cStructure->m_strURL; }
+
+  std::string GetMimeType() const { return m_cStructure->m_mimeType; }
+
+  unsigned int GetPropertiesAmount() const
+  {
+    return m_cStructure->m_nCountInfoValues;
+  }
+
+  const std::map<std::string, std::string> GetProperties() const
+  {
+    std::map<std::string, std::string> props;
+    for (unsigned int i = 0; i < m_cStructure->m_nCountInfoValues; ++i)
+    {
+      props.emplace(m_cStructure->m_ListItemProperties[i].m_strKey,
+                    m_cStructure->m_ListItemProperties[i].m_strValue);
+    }
+    return props;
+  }
+
+  std::string GetLibFolder() const { return m_cStructure->m_libFolder; }
+
+  std::string GetProfileFolder() const { return m_cStructure->m_profileFolder; }
+
+private:
+  InputstreamProperty() = delete;
+  InputstreamProperty(const InputstreamProperty& stream) = delete;
+  InputstreamProperty(const INPUTSTREAM_PROPERTY* stream) : CStructHdl(stream) {}
+  InputstreamProperty(INPUTSTREAM_PROPERTY* stream) : CStructHdl(stream) {}
+};
 
 class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
 {
@@ -42,7 +83,7 @@ public:
      * @return True if the stream has been opened successfully, false otherwise.
      * @remarks
      */
-  virtual bool Open(INPUTSTREAM_PROPERTY& props) = 0;
+  virtual bool Open(const kodi::addon::InputstreamProperty& props) = 0;
 
   /*!
      * Close an open stream.
@@ -345,7 +386,7 @@ private:
   inline static bool ADDON_Open(const AddonInstance_InputStream* instance,
                                 INPUTSTREAM_PROPERTY* props)
   {
-    return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->Open(*props);
+    return static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->Open(props);
   }
 
   inline static void ADDON_Close(const AddonInstance_InputStream* instance)
