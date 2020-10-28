@@ -2066,6 +2066,23 @@
       }
     }
   },
+  "PVR.GetClients": {
+    "type": "method",
+    "description": "Retrieves the enabled PVR clients and their capabilities",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "clients": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Client" }
+        }
+      }
+    }
+  },
   "PVR.GetBroadcasts": {
     "type": "method",
     "description": "Retrieves the program of a specific channel",

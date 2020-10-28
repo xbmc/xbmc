@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -141,6 +142,25 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
     return InvalidParams;
 
   HandleFileItem("channelid", false, "channeldetails", CFileItemPtr(new CFileItem(channel)), parameterObject, parameterObject["properties"], result, false);
+
+  return OK;
+}
+
+JSONRPC_STATUS CPVROperations::GetClients(const std::string& method,
+                                          ITransportLayer* transport,
+                                          IClient* client,
+                                          const CVariant& parameterObject,
+                                          CVariant& result)
+{
+  if (!CServiceBroker::GetPVRManager().IsStarted())
+    return FailedToExecute;
+
+  int start, end;
+
+  auto clientInfos = CServiceBroker::GetPVRManager().Clients()->GetEnabledClientInfos();
+  HandleLimits(parameterObject, result, clientInfos.size(), start, end);
+  for (int index = start; index < end; index++)
+    result["clients"].append(clientInfos[index]);
 
   return OK;
 }

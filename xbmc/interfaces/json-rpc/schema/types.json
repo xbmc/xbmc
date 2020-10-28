@@ -1099,6 +1099,28 @@
       }
     }
   },
+  "PVR.Fields.Client": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "addonid", "supportstv", "supportsradio", "supportsepg",
+                "supportsrecordings", "supportstimers", "supportschannelgroups",
+                "supportschannelscan" ]
+    }
+  },
+  "PVR.Details.Client": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "clientid": { "$ref": "Library.Id", "required": true },
+      "addonid": { "type": "string" },
+      "supportstv": { "type": "boolean" },
+      "supportsradio": { "type": "boolean" },
+      "supportsepg": { "type": "boolean" },
+      "supportsrecordings": { "type": "boolean" },
+      "supportstimers": { "type": "boolean" },
+      "supportschannelgroups": { "type": "boolean" },
+      "supportschannelscan": { "type": "boolean" }
+    }
+  },
   "PVR.TimerState": {
     "type": "string",
     "enum": [ "unknown", "new", "scheduled", "recording", "completed",

@@ -417,6 +417,44 @@ int CPVRClients::EnabledClientAmount() const
   return iReturn;
 }
 
+std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
+{
+  std::vector<CVariant> clientInfos;
+
+  CPVRClientMap clientMap;
+  {
+    CSingleLock lock(m_critSection);
+    clientMap = m_clientMap;
+  }
+
+  for (const auto& client : clientMap)
+  {
+    const auto& addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(client.second->ID());
+
+    if (addonInfo)
+    {
+      // This will be the same variant structure used in the json api
+      CVariant clientInfo(CVariant::VariantTypeObject);
+      clientInfo["clientid"] = client.first;
+      clientInfo["addonid"] = client.second->ID();
+      clientInfo["label"] = addonInfo->Name(); // Note that this is called label instead of name
+
+      const auto& capabilities = client.second->GetClientCapabilities();
+      clientInfo["supportstv"] = capabilities.SupportsTV();
+      clientInfo["supportsradio"] = capabilities.SupportsRadio();
+      clientInfo["supportsepg"] = capabilities.SupportsEPG();
+      clientInfo["supportsrecordings"] = capabilities.SupportsRecordings();
+      clientInfo["supportstimers"] = capabilities.SupportsTimers();
+      clientInfo["supportschannelgroups"] = capabilities.SupportsChannelGroups();
+      clientInfo["supportschannelscan"] = capabilities.SupportsChannelScan();
+
+      clientInfos.push_back(clientInfo);
+    }
+  }
+
+  return clientInfos;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // client API calls
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

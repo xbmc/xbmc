@@ -154,6 +154,12 @@ namespace PVR
      */
     int EnabledClientAmount() const;
 
+    /*!
+     * @brief Get a list of the enabled client infos.
+     * @return A list of enabled client infos.
+     */
+    std::vector<CVariant> GetEnabledClientInfos() const;
+
     //@}
 
     /*! @name general methods */
