@@ -59,18 +59,6 @@ fi
 
 APPORT_CORE="/var/crash/$(echo -n ${KODI_BINARY}|tr / _).$(id -u).crash"
 
-migrate_home()
-{
-  [ "$(basename $0)" = "xbmc" ] && echo "WARNING: Running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
-
-  #check if data migration is needed
-  if [ -d "${HOME}/.xbmc" ] && [ ! -d "${KODI_DATA}" ]; then
-      echo "INFO: migrating userdata folder. Renaming ${HOME}/.xbmc to $KODI_DATA"
-      mv ${HOME}/.xbmc $KODI_DATA
-      touch ${KODI_DATA}/.kodi_data_was_migrated
-  fi
-}
-
 command_exists()
 {
   command -pv $1 >/dev/null 2>&1
@@ -171,8 +159,6 @@ propagate_sigterm() {
 }
 
 trap propagate_sigterm TERM
-
-migrate_home
 
 if command_exists gdb; then
   # Output warning in case ulimit is unsupported by shell
