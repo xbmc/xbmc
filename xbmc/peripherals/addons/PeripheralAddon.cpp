@@ -598,7 +598,7 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
   feature.ToStruct(addonFeature);
 
   LogError(retVal = m_struct.toAddon->map_features(&m_struct, &joystickStruct,
-                                                  strControllerId.c_str(), 1, &addonFeature),
+                                                   strControllerId.c_str(), 1, &addonFeature),
            "MapFeatures()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);
@@ -629,7 +629,7 @@ bool CPeripheralAddon::GetIgnoredPrimitives(const CPeripheral* device, Primitive
   JOYSTICK_DRIVER_PRIMITIVE* pPrimitives = nullptr;
 
   LogError(retVal = m_struct.toAddon->get_ignored_primitives(&m_struct, &joystickStruct,
-                                                            &primitiveCount, &pPrimitives),
+                                                             &primitiveCount, &pPrimitives),
            "GetIgnoredPrimitives()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);
@@ -671,7 +671,7 @@ bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device,
   const unsigned int primitiveCount = static_cast<unsigned int>(primitives.size());
 
   LogError(retVal = m_struct.toAddon->set_ignored_primitives(&m_struct, &joystickStruct,
-                                                            primitiveCount, addonPrimitives),
+                                                             primitiveCount, addonPrimitives),
            "SetIgnoredPrimitives()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);
