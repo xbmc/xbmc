@@ -2247,7 +2247,9 @@
     "description": "Starts a channel scan",
     "transport": "Response",
     "permission": "ControlPVR",
-    "params": [ ],
+    "params": [
+      { "name": "clientid", "$ref": "Library.Id", "default": -2, "description": "Specify a PVR client id to avoid UI dialog, optional in kodi 19, required in kodi 20" }
+    ],
     "returns":  "string"
   },
   "Textures.GetTextures": {

@@ -1561,6 +1561,11 @@ namespace PVR
 
   bool CPVRGUIActions::StartChannelScan()
   {
+    return StartChannelScan(PVR_INVALID_CLIENT_ID);
+  }
+
+  bool CPVRGUIActions::StartChannelScan(int clientId)
+  {
     if (!CServiceBroker::GetPVRManager().IsStarted() || IsRunningChannelScan())
       return false;
 
@@ -1568,8 +1573,28 @@ namespace PVR
     std::vector<std::shared_ptr<CPVRClient>> possibleScanClients = CServiceBroker::GetPVRManager().Clients()->GetClientsSupportingChannelScan();
     m_bChannelScanRunning = true;
 
+    if (clientId != PVR_INVALID_CLIENT_ID)
+    {
+      for (const auto& client : possibleScanClients)
+      {
+        if (client->GetID() == clientId)
+        {
+          scanClient = client;
+          break;
+        }
+      }
+
+      if (!scanClient)
+      {
+        CLog::LogF(LOGERROR,
+                   "Provided client id '%d' could not be found in list of possible scan clients!",
+                   clientId);
+        m_bChannelScanRunning = false;
+        return false;
+      }
+    }
     /* multiple clients found */
-    if (possibleScanClients.size() > 1)
+    else if (possibleScanClients.size() > 1)
     {
       CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       if (!pDialog)

@@ -282,8 +282,11 @@ JSONRPC_STATUS CPVROperations::Scan(const std::string &method, ITransportLayer *
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan();
-  return ACK;
+  if (CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan(
+      parameterObject["clientid"].asInteger()))
+    return ACK;
+  else
+    return FailedToExecute;
 }
 
 JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVariant &result)
