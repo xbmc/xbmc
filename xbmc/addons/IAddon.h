@@ -60,6 +60,7 @@ namespace ADDON
     virtual CDateTime LastUpdated() const =0;
     virtual CDateTime LastUsed() const =0;
     virtual std::string Origin() const =0;
+    virtual std::string OriginName() const = 0;
     virtual uint64_t PackageSize() const =0;
     virtual const InfoMap &ExtraInfo() const =0;
     virtual bool HasSettings() =0;
