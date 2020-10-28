@@ -324,8 +324,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     {
       if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag()->ChannelID() > 0)
          object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
-      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->UniqueBroadcastID() > EPG_TAG_INVALID_UID)
-         object[ID] = item->GetEPGInfoTag()->UniqueBroadcastID();
+      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->DatabaseID() > 0)
+        object[ID] = item->GetEPGInfoTag()->DatabaseID();
       else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iRecordingId > 0)
          object[ID] = item->GetPVRRecordingInfoTag()->m_iRecordingId;
       else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)

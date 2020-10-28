@@ -725,6 +725,32 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
   return {};
 }
 
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgID, int iDatabaseId)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery = PrepareSQL("SELECT * "
+                                          "FROM epgtags "
+                                          "WHERE idEpg = %u AND idBroadcast = %u;",
+                                          iEpgID, iDatabaseId);
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      const std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      m_pDS->close();
+      return tag;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load EPG tag with database ID (%u) from the database",
+                 iDatabaseId);
+    }
+  }
+
+  return {};
+}
+
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(int iEpgID,
                                                                       const CDateTime& startTime)
 {

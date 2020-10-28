@@ -718,9 +718,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   else if (parameterObject["item"].isMember("broadcastid"))
   {
     const std::shared_ptr<CPVREpgInfoTag> epgTag =
-        CServiceBroker::GetPVRManager().EpgContainer().GetTagById(
-            nullptr,
-            static_cast<unsigned int>(parameterObject["item"]["broadcastid"].asUnsignedInteger()));
+        CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
+            static_cast<unsigned int>(parameterObject["item"]["broadcastid"].asInteger()));
 
     if (!epgTag || !epgTag->IsPlayable())
       return InvalidParams;

@@ -180,8 +180,9 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const std::shared_ptr<CPVREpgInfoTag> epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(nullptr,
-                                                                                                           parameterObject["broadcastid"].asUnsignedInteger());
+  const std::shared_ptr<CPVREpgInfoTag> epgTag =
+      CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
+          parameterObject["broadcastid"].asInteger());
 
   if (!epgTag)
     return InvalidParams;
@@ -201,8 +202,8 @@ JSONRPC_STATUS CPVROperations::GetBroadcastIsPlayable(const std::string& method,
     return FailedToExecute;
 
   const std::shared_ptr<CPVREpgInfoTag> epgTag =
-      CServiceBroker::GetPVRManager().EpgContainer().GetTagById(
-          nullptr, parameterObject["broadcastid"].asUnsignedInteger());
+      CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
+          parameterObject["broadcastid"].asInteger());
 
   if (!epgTag)
     return InvalidParams;

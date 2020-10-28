@@ -156,6 +156,13 @@ namespace PVR
     std::shared_ptr<CPVREpgInfoTag> GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const;
 
     /*!
+     * @brief Get the event matching the given database id
+     * @param iDatabaseId The id to look up
+     * @return The matching event or NULL if it wasn't found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetTagByDatabaseId(int iDatabaseId) const;
+
+    /*!
      * @brief Update an entry in this EPG.
      * @param data The tag to update.
      * @param iClientId The id of the pvr client this event belongs to.
