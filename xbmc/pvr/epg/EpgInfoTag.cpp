@@ -185,6 +185,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["wasactive"] = WasActive();
   value["isseries"] = IsSeries();
   value["serieslink"] = m_strSeriesLink;
+  value["clientid"] = m_channelData->ClientId();
 }
 
 int CPVREpgInfoTag::ClientID() const

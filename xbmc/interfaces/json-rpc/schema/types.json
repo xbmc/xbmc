@@ -1016,7 +1016,7 @@
                 "firstaired", "hastimer", "isactive", "parentalrating",
                 "wasactive", "thumbnail", "rating", "originaltitle", "cast",
                 "director", "writer", "year", "imdbnumber", "hastimerrule",
-                "hasrecording", "recording", "isseries", "isplayable" ]
+                "hasrecording", "recording", "isseries", "isplayable", "clientid" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -1052,7 +1052,8 @@
       "hasrecording": { "type": "boolean" },
       "recording": { "type": "string" },
       "isseries": { "type": "boolean" },
-      "isplayable": { "type": "boolean", "description": "Deprecated - Use GetBroadcastIsPlayable instead" }
+      "isplayable": { "type": "boolean", "description": "Deprecated - Use GetBroadcastIsPlayable instead" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Fields.Channel": {
@@ -1060,7 +1061,7 @@
     "items": { "type": "string",
       "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed",
                 "broadcastnow", "broadcastnext", "uniqueid", "icon", "channelnumber",
-                "subchannelnumber", "isrecording", "hasarchive" ]
+                "subchannelnumber", "isrecording", "hasarchive", "clientid" ]
     }
   },
   "PVR.Details.Channel": {
@@ -1080,7 +1081,8 @@
       "channelnumber": { "type": "integer" },
       "subchannelnumber": { "type": "integer" },
       "isrecording": { "type": "boolean" },
-      "hasarchive": { "type": "boolean" }
+      "hasarchive": { "type": "boolean" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Details.ChannelGroup": {
@@ -1135,7 +1137,7 @@
                 "weekdays", "priority", "startmargin", "endmargin", "state",
                 "file", "directory", "preventduplicateepisodes", "startanytime",
                 "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
-                "maxrecordings", "epguid", "isreadonly", "isreminder" ]
+                "maxrecordings", "epguid", "isreadonly", "isreminder", "clientid" ]
     }
   },
   "PVR.Details.Timer": {
@@ -1172,7 +1174,8 @@
       "maxrecordings": { "type": "integer" },
       "epguid": { "type": "integer" },
       "isreadonly": { "type": "boolean" },
-      "isreminder": { "type": "boolean" }
+      "isreminder": { "type": "boolean" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Fields.Recording": {
@@ -1182,7 +1185,7 @@
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
                 "directory", "radio", "isdeleted", "epgeventid", "channeluid",
-                "season", "episode", "showtitle" ]
+                "season", "episode", "showtitle", "clientid" ]
     }
   },
   "PVR.Details.Recording": {
@@ -1211,7 +1214,8 @@
       "channeluid": { "type": "integer" },
       "season": { "type": "integer" },
       "episode": { "type": "integer" },
-      "showtitle": { "type": "string" }
+      "showtitle": { "type": "string" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "Textures.Details.Size": {

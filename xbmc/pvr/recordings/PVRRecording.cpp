@@ -201,6 +201,8 @@ void CPVRRecording::Serialize(CVariant& value) const
     value["art"]["thumb"] = m_strThumbnailPath;
   if (!m_strFanartPath.empty())
     value["art"]["fanart"] = m_strFanartPath;
+
+  value["clientid"] = m_iClientId;
 }
 
 void CPVRRecording::ToSortable(SortItem& sortable, Field field) const

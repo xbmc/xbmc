@@ -307,6 +307,8 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["maxrecordings"]     = m_iMaxRecordings;
   value["epguid"]            = m_iEpgUid;
   value["serieslink"]        = m_strSeriesLink;
+
+  value["clientid"] = m_iClientId;
 }
 
 void CPVRTimerInfoTag::UpdateSummary()
