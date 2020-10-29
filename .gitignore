@@ -99,6 +99,7 @@ cmake_install.cmake
 /kodi.bin
 /kodi-test
 /kodi-xrandr
+/*.diff
 /*.patch
 /kodi-build*/
 /gtestresults.xml

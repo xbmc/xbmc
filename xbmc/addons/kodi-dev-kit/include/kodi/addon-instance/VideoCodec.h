@@ -120,7 +120,7 @@ private:
 
 //##############################################################################
 /// @defgroup cpp_kodi_addon_videocodec_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_addon_videocodec
+/// @ingroup cpp_kodi_addon_videocodec
 /// @brief **Video codec add-on general variables**
 ///
 /// Used to exchange the available options between Kodi and addon.
@@ -129,7 +129,7 @@ private:
 
 //============================================================================
 ///
-/// \addtogroup cpp_kodi_addon_videocodec
+/// @addtogroup cpp_kodi_addon_videocodec
 /// @brief \cpp_class{ kodi::addon::CInstanceVideoCodec }
 /// **Video codec add-on instance**
 ///
