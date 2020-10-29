@@ -9,7 +9,7 @@
 #include "DVDSubtitleParserVplayer.h"
 
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
 
 CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& strFile)

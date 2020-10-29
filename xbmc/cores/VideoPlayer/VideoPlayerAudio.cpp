@@ -6,19 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SingleLock.h"
 #include "VideoPlayerAudio.h"
-#include "ServiceBroker.h"
+
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "system.h"
-#include "utils/log.h"
-#include "utils/MathUtils.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/MathUtils.h"
+#include "utils/log.h"
+
+#include "system.h"
+#ifdef TARGET_RASPBERRY_PI
+#include "platform/linux/RBP.h"
+#endif
 
 #include <sstream>
 #include <iomanip>

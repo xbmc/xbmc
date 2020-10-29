@@ -7,9 +7,10 @@
  */
 
 #include "DVDCodecUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "cores/FFmpeg.h"
+
 #include "Util.h"
+#include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 
 extern "C" {
 #include <libswscale/swscale.h>

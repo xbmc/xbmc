@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h" // added for compile test on related sources only!
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -1315,7 +1314,7 @@ PVR_ERROR CPVRClient::DemuxRead(DemuxPacket*& packet)
   return DoAddonCall(
       __func__,
       [&packet](const AddonInstance* addon) {
-        packet = addon->toAddon->DemuxRead(addon);
+        packet = static_cast<DemuxPacket*>(addon->toAddon->DemuxRead(addon));
         return packet ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
       },
       m_clientCapabilities.HandlesDemuxing());
@@ -1872,12 +1871,12 @@ void CPVRClient::cb_trigger_epg_update(void* kodiInstance, unsigned int iChannel
   CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
 }
 
-void CPVRClient::cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket)
+void CPVRClient::cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket)
 {
-  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  CDVDDemuxUtils::FreeDemuxPacket(static_cast<DemuxPacket*>(pPacket));
 }
 
-DemuxPacket* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
+DEMUX_PACKET* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }

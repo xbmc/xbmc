@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 extern "C" {
 #include <libavcodec/avcodec.h>
 }

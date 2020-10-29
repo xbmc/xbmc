@@ -12,7 +12,7 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"

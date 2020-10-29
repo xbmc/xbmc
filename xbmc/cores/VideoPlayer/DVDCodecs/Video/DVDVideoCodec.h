@@ -10,7 +10,7 @@
 
 #include "DVDResource.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 extern "C" {

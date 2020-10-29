@@ -9,13 +9,8 @@
 #ifndef C_API_ADDONINSTANCE_PVR_GENERAL_H
 #define C_API_ADDONINSTANCE_PVR_GENERAL_H
 
+#include "../inputstream/stream_constants.h"
 #include "pvr_defines.h"
-
-#ifdef BUILD_KODI_ADDON
-#include "../../../InputStreamConstants.h"
-#else
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
-#endif
 
 #include <stdbool.h>
 

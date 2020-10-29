@@ -122,8 +122,8 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
-    void (*FreeDemuxPacket)(void* kodiInstance, struct DemuxPacket* pPacket);
-    struct DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
+    void (*FreeDemuxPacket)(void* kodiInstance, struct DEMUX_PACKET* pPacket);
+    struct DEMUX_PACKET* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
     struct PVR_CODEC (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
@@ -293,7 +293,7 @@ extern "C"
     // Stream demux interface functions
     enum PVR_ERROR(__cdecl* GetStreamProperties)(const struct AddonInstance_PVR*,
                                                  struct PVR_STREAM_PROPERTIES*);
-    struct DemuxPacket*(__cdecl* DemuxRead)(const struct AddonInstance_PVR*);
+    struct DEMUX_PACKET*(__cdecl* DemuxRead)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxReset)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxAbort)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxFlush)(const struct AddonInstance_PVR*);

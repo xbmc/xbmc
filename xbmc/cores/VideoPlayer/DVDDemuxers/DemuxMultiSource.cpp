@@ -12,7 +12,7 @@
 #include "DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "Util.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
 
