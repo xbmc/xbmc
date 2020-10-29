@@ -217,26 +217,26 @@ extern "C"
   {
     KODI_HANDLE addonInstance;
 
-    //! \brief Opens a codec
+    //! @brief Opens a codec
     bool(__cdecl* open)(const struct AddonInstance_VideoCodec* instance,
                         struct VIDEOCODEC_INITDATA* initData);
 
-    //! \brief Reconfigures a codec
+    //! @brief Reconfigures a codec
     bool(__cdecl* reconfigure)(const struct AddonInstance_VideoCodec* instance,
                                struct VIDEOCODEC_INITDATA* initData);
 
-    //! \brief Feed codec if requested from GetPicture() (return VC_BUFFER)
+    //! @brief Feed codec if requested from GetPicture() (return VC_BUFFER)
     bool(__cdecl* add_data)(const struct AddonInstance_VideoCodec* instance,
                             const struct DEMUX_PACKET* packet);
 
-    //! \brief Get a decoded picture / request new data
+    //! @brief Get a decoded picture / request new data
     enum VIDEOCODEC_RETVAL(__cdecl* get_picture)(const struct AddonInstance_VideoCodec* instance,
                                                  struct VIDEOCODEC_PICTURE* picture);
 
-    //! \brief Get the name of this video decoder
+    //! @brief Get the name of this video decoder
     const char*(__cdecl* get_name)(const struct AddonInstance_VideoCodec* instance);
 
-    //! \brief Reset the codec
+    //! @brief Reset the codec
     void(__cdecl* reset)(const struct AddonInstance_VideoCodec* instance);
   } KodiToAddonFuncTable_VideoCodec;
 

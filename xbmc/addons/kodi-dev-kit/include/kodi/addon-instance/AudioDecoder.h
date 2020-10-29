@@ -241,7 +241,7 @@ private:
 
 //==============================================================================
 ///
-/// \addtogroup cpp_kodi_addon_audiodecoder
+/// @addtogroup cpp_kodi_addon_audiodecoder
 /// @brief \cpp_class{ kodi::addon::CInstanceAudioDecoder }
 /// **Audio decoder add-on instance**
 ///
@@ -289,9 +289,11 @@ private:
 /// |:------------------------------|----------------------------------------
 /// | <b>`point`</b>                | Addon type specification<br>At all addon types and for this kind always <b>"kodi.audiodecoder"</b>.
 /// | <b>`library_@PLATFORM@`</b>   | Sets the used library name, which is automatically set by cmake at addon build.
-/// | <b>`name`</b>                 | The name of the decoder used in Kodi for display.
 /// | <b>`extension`</b>            | The file extensions / styles supported by this addon.
-/// | <b>`tags`</b>                 | Boolean to point out that addon can bring own information to replayed file, if <b>`false`</b> only the file name is used as info.<br>If <b>`true`</b>, \ref CInstanceAudioDecoder::ReadTag is used and must be implemented.
+/// | <b>`mimetype`</b>             | A stream URL mimetype where can be used to force to this addon.
+/// | <b>`name`</b>                 | The name of the decoder used in Kodi for display.
+/// | <b>`tags`</b>                 | Boolean to point out that addon can bring own information to replayed file, if <b>`false`</b> only the file name is used as info.<br>If <b>`true`</b>, @ref CInstanceAudioDecoder::ReadTag is used and must be implemented.
+/// | <b>`tracks`</b>               | Boolean to in inform one file can contains several different streams.
 ///
 /// --------------------------------------------------------------------------
 ///

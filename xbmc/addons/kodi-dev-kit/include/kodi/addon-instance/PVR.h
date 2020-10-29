@@ -36,7 +36,7 @@
  * Only must be min version increased if a new compile of addon breaks after
  * changes here.
  *
- * Have by add of new parts a look about **Doxygen** `\\ingroup`, so that
+ * Have by add of new parts a look about **Doxygen** `\@ingroup`, so that
  * added parts included in documentation.
  *
  * If you add addon side related documentation, where his dev need know, use `///`.

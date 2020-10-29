@@ -33,7 +33,7 @@ namespace dialogs
 /// in the <em>"./resources/language/resource.language.??_??/strings.po"</em>
 /// to call with <b>std::string kodi::general::GetLocalizedString(...);</b>.
 ///
-/// It has the header \ref TextViewer.h "#include <kodi/gui/dialogs/TextViewer.h>"
+/// It has the header @ref TextViewer.h "#include <kodi/gui/dialogs/TextViewer.h>"
 /// be included to enjoy it.
 ///
 namespace TextViewer
