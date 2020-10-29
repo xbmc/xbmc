@@ -19,5 +19,5 @@ class CPlatformDarwin : public CPlatformPosix
     /**\brief D'tor */
     ~CPlatformDarwin() override = default;
 
-    void Init() override;
+    bool Init() override;
 };

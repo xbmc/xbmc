@@ -318,26 +318,6 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
-//
-// Utility function used to copy files from the application bundle
-// over to the user data directory in Application Support/Kodi.
-//
-static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &file, const std::string &destname = "")
-{
-  std::string destPath;
-  if (destname == "")
-    destPath = URIUtils::AddFileToFolder(strPath, file);
-  else
-    destPath = URIUtils::AddFileToFolder(strPath, destname);
-
-  if (!CFile::Exists(destPath))
-  {
-    // need to copy it across
-    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
-    CFile::Copy(srcPath, destPath);
-  }
-}
-
 void CApplication::Preflight()
 {
 #ifdef HAS_DBUS
@@ -394,39 +374,12 @@ bool CApplication::Create(const CAppParamParser &params)
   CApplicationMessenger::GetInstance().RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
   CApplicationMessenger::GetInstance().SetGUIThread(m_threadID);
 
-  //! @todo - move to CPlatformXXX
-#ifdef TARGET_POSIX
-  tzset();   // Initialize timezone information variables
-#endif
-
-
-  //! @todo - move to CPlatformXXX
-  #if defined(TARGET_POSIX)
-    // set special://envhome
-    if (getenv("HOME"))
-    {
-      CSpecialProtocol::SetEnvHomePath(getenv("HOME"));
-    }
-    else
-    {
-      fprintf(stderr, "The HOME environment variable is not set!\n");
-      /* Cleanup. Leaving this out would lead to another crash */
-      m_ServiceManager->DeinitStageOne();
-      return false;
-    }
-  #endif
-
   // copy required files
-  CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
 
-  //! @todo - move to CPlatformXXX
-  #ifdef TARGET_DARWIN_IOS
-    CopyUserDataIfNeeded("special://masterprofile/", "iOS/sources.xml", "sources.xml");
-  #endif
-
-    CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://logpath"));
+  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://logpath"));
 
 #ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
   //!       must create these here. Ideally this should be using special://home/ and
@@ -539,16 +492,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   std::string strExecutablePath = CUtil::GetHomePath();
 
-  // for python scripts that check the OS
-  //! @todo - move to CPlatformXXX
-#if defined(TARGET_DARWIN)
-  setenv("OS","OS X",true);
-#elif defined(TARGET_POSIX)
-  setenv("OS","Linux",true);
-#elif defined(TARGET_WINDOWS)
-  CEnvironment::setenv("OS", "win32");
-#endif
-
   // initialize network protocols
   avformat_network_init();
   // set avutil callback
@@ -569,11 +512,6 @@ bool CApplication::Create(const CAppParamParser &params)
   profileManager->CreateProfileFolders();
 
   update_emu_environ();//apply the GUI settings
-
-  //! @todo - move to CPlatformXXX
-#ifdef TARGET_WINDOWS
-  CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
-#endif // TARGET_WINDOWS
 
   // application inbound service
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
@@ -604,12 +542,6 @@ bool CApplication::Create(const CAppParamParser &params)
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to load keyboard layouts");
     return false;
   }
-
-  //! @todo - move to CPlatformXXX
-#if defined(TARGET_DARWIN_OSX)
-  // Configure and possible manually start the helper.
-  XBMCHelper::GetInstance().Configure();
-#endif
 
   CUtil::InitRandomSeed();
 

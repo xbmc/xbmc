@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Team Kodi
+ *  Copyright (C) 2005-2020 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -13,5 +13,9 @@
 class CPlatformLinux : public CPlatformPosix
 {
 public:
-  void Init() override;
+  CPlatformLinux() = default;
+
+  ~CPlatformLinux() override = default;
+
+  bool Init() override;
 };

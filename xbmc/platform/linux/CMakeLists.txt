@@ -1,13 +1,11 @@
 set(SOURCES CPUInfoLinux.cpp
             MemUtils.cpp
             OptionalsReg.cpp
-            PlatformLinux.cpp
             SysfsPath.cpp
             TimeUtils.cpp)
 
 set(HEADERS CPUInfoLinux.h
             OptionalsReg.h
-            PlatformLinux.h
             SysfsPath.h
             TimeUtils.h)
 

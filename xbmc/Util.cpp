@@ -2394,3 +2394,20 @@ int CUtil::GetRandomNumber()
 #endif
 }
 
+void CUtil::CopyUserDataIfNeeded(const std::string& strPath,
+                                 const std::string& file,
+                                 const std::string& destname)
+{
+  std::string destPath;
+  if (destname.empty())
+    destPath = URIUtils::AddFileToFolder(strPath, file);
+  else
+    destPath = URIUtils::AddFileToFolder(strPath, destname);
+
+  if (!CFile::Exists(destPath))
+  {
+    // need to copy it across
+    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
+    CFile::Copy(srcPath, destPath);
+  }
+}

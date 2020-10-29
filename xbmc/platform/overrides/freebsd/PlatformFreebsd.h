@@ -16,5 +16,5 @@ public:
   CPlatformFreebsd() = default;
   ~CPlatformFreebsd() override = default;
 
-  void Init() override;
+  bool Init() override;
 };

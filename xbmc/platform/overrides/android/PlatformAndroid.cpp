@@ -18,10 +18,15 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformAndroid();
 }
 
-void CPlatformAndroid::Init()
+bool CPlatformAndroid::Init()
 {
-  CPlatformPosix::Init();
+  if (!CPlatformPosix::Init())
+    return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
 
+  setenv("OS", "Linux", true); // for python scripts that check the OS
+
   CWinSystemAndroidGLESContext::Register();
+
+  return true;
 }

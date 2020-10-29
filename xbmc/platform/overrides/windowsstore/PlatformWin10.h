@@ -14,10 +14,10 @@ class CPlatformWin10 : public CPlatform
 {
   public:
     /**\brief C'tor */
-    CPlatformWin10();
+    CPlatformWin10() = default;
 
     /**\brief D'tor */
-    virtual ~CPlatformWin10();
+    ~CPlatformWin10() override = default;
 
-    void Init() override;
+    bool Init() override;
 };

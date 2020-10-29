@@ -26,7 +26,8 @@ CPlatform::CPlatform() = default;
 
 CPlatform::~CPlatform() = default;
 
-void CPlatform::Init()
+bool CPlatform::Init()
 {
+  return true;
 }
 

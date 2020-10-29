@@ -81,7 +81,8 @@ void CServiceManager::DeinitTesting()
 bool CServiceManager::InitStageOne()
 {
   m_Platform.reset(CPlatform::CreateInstance());
-  m_Platform->Init();
+  if (!m_Platform->Init())
+    return false;
 
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
