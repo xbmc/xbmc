@@ -32,7 +32,7 @@ namespace kodi
 namespace gui
 {
 struct IRenderHelper;
-} // namespace gui
+} /* namespace gui */
 
 //==============================================================================
 /// @ingroup cpp_kodi_Defs
@@ -424,7 +424,7 @@ public:
   /// @ingroup cpp_kodi_addon_addonbase
   /// @brief Instance created
   ///
-  /// @param[in] instanceType The requested type of required instance, see \ref ADDON_TYPE.
+  /// @param[in] instanceType The requested type of required instance, see @ref ADDON_TYPE.
   /// @param[in] instanceID An individual identification key string given by Kodi.
   /// @param[in] instance The instance handler used by Kodi must be passed to
   ///                     the classes created here. See in the example.
@@ -434,8 +434,8 @@ public:
   ///                    that it can handle differences.
   /// @param[out] addonInstance The pointer to instance class created in addon.
   ///                           Needed to be able to identify them on calls.
-  /// @return                   \ref ADDON_STATUS_OK if correct, for possible errors
-  ///                           see \ref ADDON_STATUS
+  /// @return                   @ref ADDON_STATUS_OK if correct, for possible errors
+  ///                           see @ref ADDON_STATUS
   ///
   ///
   /// --------------------------------------------------------------------------
@@ -495,7 +495,7 @@ public:
   /// This function is optional and intended to notify addon that the instance
   /// is terminating.
   ///
-  /// @param[in] instanceType   The requested type of required instance, see \ref ADDON_TYPE.
+  /// @param[in] instanceType   The requested type of required instance, see @ref ADDON_TYPE.
   /// @param[in] instanceID     An individual identification key string given by Kodi.
   /// @param[in] addonInstance  The pointer to instance class created in addon.
   ///

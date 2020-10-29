@@ -998,7 +998,7 @@ private:
 
 //============================================================================
 ///
-/// \addtogroup cpp_kodi_addon_inputstream
+/// @addtogroup cpp_kodi_addon_inputstream
 /// @brief \cpp_class{ kodi::addon::CInstanceInputStream }
 /// **Inputstream add-on instance**
 ///

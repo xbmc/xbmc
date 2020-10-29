@@ -41,7 +41,7 @@ namespace addon
 /// * <b><c>Render()</c></b> - Called at render time
 /// * <b><c>Stop()</c></b> - Called when the screensaver has no work
 ///
-/// Additionally, there are several \ref cpp_kodi_addon_screensaver_CB "other functions"
+/// Additionally, there are several @ref cpp_kodi_addon_screensaver_CB "other functions"
 /// available in which the child class can ask about the current hardware,
 /// including the device, display and several other parts.
 ///

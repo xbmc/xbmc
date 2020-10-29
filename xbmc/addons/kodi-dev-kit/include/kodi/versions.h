@@ -212,37 +212,37 @@ typedef enum ADDON_TYPE
 
   /* addon type instances */
 
-  /// Audio decoder instance, see \ref cpp_kodi_addon_audiodecoder "kodi::addon::CInstanceAudioDecoder"
+  /// Audio decoder instance, see @ref cpp_kodi_addon_audiodecoder "kodi::addon::CInstanceAudioDecoder"
   ADDON_INSTANCE_AUDIODECODER = 102,
 
-  /// Audio encoder instance, see \ref cpp_kodi_addon_audioencoder "kodi::addon::CInstanceAudioEncoder"
+  /// Audio encoder instance, see @ref cpp_kodi_addon_audioencoder "kodi::addon::CInstanceAudioEncoder"
   ADDON_INSTANCE_AUDIOENCODER = 103,
 
-  /// Game instance, see \ref cpp_kodi_addon_game "kodi::addon::CInstanceGame"
+  /// Game instance, see @ref cpp_kodi_addon_game "kodi::addon::CInstanceGame"
   ADDON_INSTANCE_GAME = 104,
 
-  /// Input stream instance, see \ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream"
+  /// Input stream instance, see @ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream"
   ADDON_INSTANCE_INPUTSTREAM = 105,
 
-  /// Peripheral instance, see \ref cpp_kodi_addon_peripheral "kodi::addon::CInstancePeripheral"
+  /// Peripheral instance, see @ref cpp_kodi_addon_peripheral "kodi::addon::CInstancePeripheral"
   ADDON_INSTANCE_PERIPHERAL = 106,
 
-  /// Game instance, see \ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient"
+  /// Game instance, see @ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient"
   ADDON_INSTANCE_PVR = 107,
 
-  /// PVR client instance, see \ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver"
+  /// PVR client instance, see @ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver"
   ADDON_INSTANCE_SCREENSAVER = 108,
 
-  /// Music visualization instance, see \ref cpp_kodi_addon_visualization "kodi::addon::CInstanceVisualization"
+  /// Music visualization instance, see @ref cpp_kodi_addon_visualization "kodi::addon::CInstanceVisualization"
   ADDON_INSTANCE_VISUALIZATION = 109,
 
-  /// Virtual Filesystem (VFS) instance, see \ref cpp_kodi_addon_vfs "kodi::addon::CInstanceVFS"
+  /// Virtual Filesystem (VFS) instance, see @ref cpp_kodi_addon_vfs "kodi::addon::CInstanceVFS"
   ADDON_INSTANCE_VFS = 110,
 
-  /// Image Decoder instance, see \ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder"
+  /// Image Decoder instance, see @ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder"
   ADDON_INSTANCE_IMAGEDECODER = 111,
 
-  /// Video Decoder instance, see \ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
+  /// Video Decoder instance, see @ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
   ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
 ///@}

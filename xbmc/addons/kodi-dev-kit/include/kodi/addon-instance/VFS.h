@@ -152,7 +152,7 @@ private:
 
 //##############################################################################
 /// @defgroup cpp_kodi_addon_vfs_Defs Definitions, structures and enumerators
-/// \ingroup cpp_kodi_addon_vfs
+/// @ingroup cpp_kodi_addon_vfs
 /// @brief **VFS add-on general variables**
 ///
 /// Used to exchange the available options between Kodi and addon.
@@ -161,7 +161,7 @@ private:
 
 //==============================================================================
 ///
-/// \addtogroup cpp_kodi_addon_vfs
+/// @addtogroup cpp_kodi_addon_vfs
 /// @brief \cpp_class{ kodi::addon::CInstanceVFS }
 /// **Virtual Filesystem (VFS) add-on instance**
 ///
