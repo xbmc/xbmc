@@ -383,16 +383,17 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
 
   if (GetAddon(addonId, addonToUpdate, ADDON_UNKNOWN, false))
   {
-    return addonRepos.DoAddonUpdateCheck(addonToUpdate, result);
+    if (addonRepos.DoAddonUpdateCheck(addonToUpdate, result))
+      return true;
   }
 
   // get the latest version from all repos if the
-  // addon is not installed yet (e.g. for addon select dialog)
+  // addon is up-to-date or not installed yet
 
-  CLog::Log(
-      LOGDEBUG,
-      "CAddonMgr::{}: addon {} is not installed. falling back to get latest version from ALL repos",
-      __FUNCTION__, addonId);
+  CLog::Log(LOGDEBUG,
+            "CAddonMgr::{}: addon {} is up-to-date or not installed. falling back to get latest "
+            "version from all repos",
+            __FUNCTION__, addonId);
 
   return addonRepos.GetLatestAddonVersionFromAllRepos(addonId, result);
 }
