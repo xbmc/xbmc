@@ -8,6 +8,8 @@
 
 #include "PlatformFreebsd.h"
 
+#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
+
 // clang-format off
 #if defined(HAS_GLES)
 #if defined(HAVE_WAYLAND)
@@ -71,6 +73,8 @@ bool CPlatformFreebsd::Init()
   KODI::WINDOWING::GBM::CWinSystemGbmGLContext::Register();
 #endif
 #endif
+
+  CLinuxPowerSyscall::Register();
 
   return true;
 }
