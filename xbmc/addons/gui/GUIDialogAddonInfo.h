@@ -21,6 +21,12 @@ enum class Reactivate
   NO,
 };
 
+enum class PerformButtonFocus
+{
+  YES,
+  NO,
+};
+
 class CGUIDialogAddonInfo : public CGUIDialog
 {
 public:
@@ -44,7 +50,7 @@ private:
    * @return true if we can display information, false otherwise
    */
   bool SetItem(const CFileItemPtr& item);
-  void UpdateControls();
+  void UpdateControls(PerformButtonFocus performButtonFocus);
 
   void OnUpdate();
   void OnSelectVersion();

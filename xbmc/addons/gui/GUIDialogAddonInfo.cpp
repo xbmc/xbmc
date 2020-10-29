@@ -160,10 +160,10 @@ bool CGUIDialogAddonInfo::OnAction(const CAction& action)
 void CGUIDialogAddonInfo::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
-  UpdateControls();
+  UpdateControls(PerformButtonFocus::YES);
 }
 
-void CGUIDialogAddonInfo::UpdateControls()
+void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 {
   if (!m_item)
     return;
@@ -202,7 +202,7 @@ void CGUIDialogAddonInfo::UpdateControls()
     }
 
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall);
-    if (canInstall)
+    if (canInstall && performButtonFocus == PerformButtonFocus::YES)
     {
       SET_CONTROL_FOCUS(CONTROL_BTN_INSTALL, 0);
     }
@@ -244,7 +244,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
-  if (isInstalled && m_localAddon->HasSettings())
+  if (isInstalled && m_localAddon->HasSettings() && performButtonFocus == PerformButtonFocus::YES)
   {
     SET_CONTROL_FOCUS(CONTROL_BTN_SETTINGS, 0);
   }
@@ -586,7 +586,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());
   }
 
-  UpdateControls();
+  UpdateControls(PerformButtonFocus::NO);
 }
 
 void CGUIDialogAddonInfo::OnSettings()
