@@ -13,6 +13,8 @@
 #include "win32util.h"
 #include "windowing/win10/WinSystemWin10DX.h"
 
+#include "platform/win10/powermanagement/Win10PowerSyscall.h"
+
 #include <stdlib.h>
 
 CPlatform* CPlatform::CreateInstance()
@@ -33,6 +35,8 @@ bool CPlatformWin10::Init()
   CWIN32Util::SetThreadLocalLocale(true);
 
   CWinSystemWin10DX::Register();
+
+  CPowerSyscall::Register();
 
   return true;
 }

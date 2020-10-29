@@ -12,7 +12,6 @@
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
 #include "windowing/GraphicContext.h"
 #include "platform/win10/AsyncHelpers.h"
-#include "platform/win10/powermanagement/Win10PowerSyscall.h"
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
@@ -65,7 +64,6 @@ CWinSystemWin10::CWinSystemWin10()
   {
     CAESinkWASAPI::Register();
   }
-  CPowerSyscall::Register();
 }
 
 CWinSystemWin10::~CWinSystemWin10()
