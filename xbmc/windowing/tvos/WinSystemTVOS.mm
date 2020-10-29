@@ -37,7 +37,6 @@
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/tvos/TVOSDisplayManager.h"
 #import "platform/darwin/tvos/XBMCController.h"
-#include "platform/darwin/tvos/powermanagement/TVOSPowerSyscall.h"
 
 #include <memory>
 #include <vector>
@@ -141,7 +140,6 @@ CWinSystemTVOS::CWinSystemTVOS() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_winEvents.reset(new CWinEventsTVOS());
 
   CAESinkDARWINTVOS::Register();
-  CTVOSPowerSyscall::Register();
 }
 
 CWinSystemTVOS::~CWinSystemTVOS()
