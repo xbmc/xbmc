@@ -33,7 +33,6 @@
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/input/IRServerSuite.h"
-#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 
 #include <algorithm>
 
@@ -72,7 +71,6 @@ CWinSystemWin32::CWinSystemWin32()
   AE::CAESinkFactory::ClearSinks();
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
-  CWin32PowerSyscall::Register();
   CScreenshotSurfaceWindows::Register();
 
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer)
