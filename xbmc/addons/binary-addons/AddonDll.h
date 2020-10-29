@@ -49,8 +49,6 @@ public:
   CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
   ~CAddonDll() override;
 
-  virtual ADDON_STATUS GetStatus();
-
   // Implementation of IAddon via CAddon
   std::string LibPath() const override;
 

@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef KODI_VERSIONS_H
+#define KODI_VERSIONS_H
+
 #include <string.h>
 
 #define STR_HELPER(x) #x
@@ -34,7 +37,7 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.2.4"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.3.0"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.2.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
@@ -167,15 +170,18 @@
 // clang-format on
 
 //==============================================================================
-///
-/// @ingroup cpp_kodi_addon_addonbase
-/// The currently available instance types for Kodi add-ons
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_ADDON_TYPE enum ADDON_TYPE
+/// **The currently available instance types for Kodi add-ons**\n
+/// This identifies the associated API part on the interface in Kodi and in the
+/// addon.
 ///
 /// \internal
 /// @note For add of new types take a new number on end. To change
 /// existing numbers can be make problems on already compiled add-ons.
 /// \endinternal
 ///
+///@{
 typedef enum ADDON_TYPE
 {
   /* addon global parts */
@@ -225,6 +231,7 @@ typedef enum ADDON_TYPE
   /// Video Decoder instance, see \ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
   ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
+///@}
 //------------------------------------------------------------------------------
 
 #ifdef __cplusplus
@@ -490,3 +497,5 @@ inline int GetTypeId(const char* name)
 } /* namespace kodi */
 } /* extern "C" */
 #endif
+
+#endif /* !KODI_VERSIONS_H */
