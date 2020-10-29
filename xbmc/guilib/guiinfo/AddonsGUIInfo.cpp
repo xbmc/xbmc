@@ -112,10 +112,9 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
           value = g_localizeStrings.Get(24992);
           return true;
         }
-        ADDON::AddonPtr origin;
-        if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->Origin(), origin, ADDON::ADDON_UNKNOWN, false))
+        if (!item->GetAddonInfo()->OriginName().empty())
         {
-          value = origin->Name();
+          value = item->GetAddonInfo()->OriginName();
           return true;
         }
         else if (!item->GetAddonInfo()->Origin().empty())
