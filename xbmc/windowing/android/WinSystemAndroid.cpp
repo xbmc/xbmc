@@ -33,7 +33,6 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "platform/android/media/decoderfilter/MediaCodecDecoderFilterManager.h"
 #include "platform/android/media/drm/MediaDrmCryptoSession.h"
-#include "platform/android/powermanagement/AndroidPowerSyscall.h"
 
 #include <float.h>
 #include <string.h>
@@ -57,7 +56,6 @@ CWinSystemAndroid::CWinSystemAndroid()
   m_android = nullptr;
 
   m_winEvents.reset(new CWinEventsAndroid());
-  CAndroidPowerSyscall::Register();
 }
 
 CWinSystemAndroid::~CWinSystemAndroid()
