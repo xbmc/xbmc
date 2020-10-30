@@ -675,7 +675,7 @@ static std::vector<T> PythonFind(const std::string &ID,
 
   if (XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
   {
-    for (auto it : items)
+    for (const auto& it : items)
       result.emplace_back(std::move(FromFileItem<T>(*it)));
   }
 

@@ -21,7 +21,7 @@
 template<typename TKey, typename TValue>
 bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pair<TKey, TValue>>& options)
 {
-  for (auto it : options)
+  for (const auto& it : options)
   {
     if (it.second == value)
       return true;
@@ -33,7 +33,7 @@ bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pai
 template<typename TKey, typename TValue>
 bool CheckSettingOptionsValidity(const TValue& value, const std::vector<TKey>& options)
 {
-  for (auto it : options)
+  for (const auto& it : options)
   {
     if (it.value == value)
       return true;
@@ -199,7 +199,7 @@ bool CSetting::IsEnabled() const
   }
 
   bool enabled = m_enabled;
-  for (auto dep : m_dependencies)
+  for (const auto& dep : m_dependencies)
   {
     if (dep.GetType() != SettingDependencyType::Enable)
       continue;
@@ -239,7 +239,7 @@ bool CSetting::IsVisible() const
     return false;
 
   bool visible = true;
-  for (auto dep : m_dependencies)
+  for (const auto& dep : m_dependencies)
   {
     if (dep.GetType() != SettingDependencyType::Visible)
       continue;
@@ -477,7 +477,7 @@ void CSettingList::Reset()
 {
   CExclusiveLock lock(m_critical);
   SettingList values;
-  for (auto it : m_defaults)
+  for (const auto& it : m_defaults)
     values.push_back(it->Clone(it->GetId()));
 
   SetValue(values);
@@ -545,7 +545,7 @@ void CSettingList::SetDefault(const SettingList &values)
   if (!m_changed)
   {
     m_values.clear();
-    for (auto it : m_defaults)
+    for (const auto& it : m_defaults)
       m_values.push_back(it->Clone(it->GetId()));
   }
 }
@@ -573,7 +573,7 @@ void CSettingList::copy(const SettingList &srcValues, SettingList &dstValues)
 {
   dstValues.clear();
 
-  for (auto value : srcValues)
+  for (const auto& value : srcValues)
   {
     if (value == nullptr)
       continue;
@@ -599,7 +599,7 @@ bool CSettingList::fromValues(const std::vector<std::string> &strValues, Setting
 
   bool ret = true;
   int index = 0;
-  for (auto value : strValues)
+  for (const auto& value : strValues)
   {
     auto settingValue = m_definition->Clone(StringUtils::Format("{}.{}", m_id, index++));
     if (settingValue == nullptr ||
@@ -621,7 +621,7 @@ bool CSettingList::fromValues(const std::vector<std::string> &strValues, Setting
 std::string CSettingList::toString(const SettingList &values) const
 {
   std::vector<std::string> strValues;
-  for (auto value : values)
+  for (const auto& value : values)
   {
     if (value != nullptr)
       strValues.push_back(value->ToString());

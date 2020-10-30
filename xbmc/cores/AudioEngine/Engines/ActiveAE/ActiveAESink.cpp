@@ -215,9 +215,8 @@ bool CActiveAESink::DeviceExist(std::string driver, std::string device)
     if (itt.m_sinkName != driver)
       continue;
 
-    for (auto itt2 : itt.m_deviceInfoList)
+    for (const CAEDeviceInfo& info : itt.m_deviceInfoList)
     {
-      CAEDeviceInfo& info = itt2;
       if (info.m_deviceName == device)
         return true;
     }

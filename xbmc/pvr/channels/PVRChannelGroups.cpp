@@ -156,7 +156,7 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetGroupsByCha
   std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
 
   CSingleLock lock(m_critSection);
-  for (std::shared_ptr<CPVRChannelGroup> group : m_groups)
+  for (const std::shared_ptr<CPVRChannelGroup>& group : m_groups)
   {
     if ((!bExcludeHidden || !group->IsHidden()) && group->IsGroupMember(channel))
       groups.push_back(group);
@@ -433,7 +433,7 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetMembers(boo
   std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
 
   CSingleLock lock(m_critSection);
-  for (std::shared_ptr<CPVRChannelGroup> group : m_groups)
+  for (const std::shared_ptr<CPVRChannelGroup>& group : m_groups)
   {
     if (!bExcludeHidden || !group->IsHidden())
       groups.push_back(group);

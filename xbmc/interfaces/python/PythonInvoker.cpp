@@ -150,7 +150,7 @@ bool CPythonInvoker::Execute(
 bool CPythonInvoker::execute(const std::string& script, const std::vector<std::string>& arguments)
 {
   std::vector<std::wstring> w_arguments;
-  for (auto argument : arguments)
+  for (const auto& argument : arguments)
   {
     std::wstring w_argument;
     g_charsetConverter.utf8ToW(argument, w_argument);

@@ -161,7 +161,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
       if (!genre.empty())
       {
         NSMutableArray* genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
-        for (auto genreItem : genre)
+        for (const auto& genreItem : genre)
         {
           [genreArray addObject:@(genreItem.c_str())];
         }

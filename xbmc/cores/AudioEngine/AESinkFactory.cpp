@@ -46,7 +46,7 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
   {
     driver = device.substr(0, pos);
 
-    for (auto reg : m_AESinkRegEntry)
+    for (const auto& reg : m_AESinkRegEntry)
     {
       if (!StringUtils::EqualsNoCase(driver, reg.second.sinkName))
         continue;
@@ -70,7 +70,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   IAESink *sink;
   std::string tmpDevice = device;
 
-  for (auto reg : m_AESinkRegEntry)
+  for (const auto& reg : m_AESinkRegEntry)
   {
     if (driver != reg.second.sinkName)
       continue;
@@ -89,7 +89,7 @@ void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo>& list, bool force, std:
 {
   AESinkInfo info;
 
-  for(auto reg : m_AESinkRegEntry)
+  for (const auto& reg : m_AESinkRegEntry)
   {
     if (!driver.empty() && driver != reg.second.sinkName)
       continue;
@@ -104,7 +104,7 @@ void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo>& list, bool force, std:
 
 void CAESinkFactory::Cleanup()
 {
-  for (auto reg : m_AESinkRegEntry)
+  for (const auto& reg : m_AESinkRegEntry)
   {
     if (reg.second.cleanupFunc)
       reg.second.cleanupFunc();

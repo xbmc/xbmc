@@ -52,7 +52,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   std::vector<AddonInfoPtr> addonInfos;
   CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true /*enabled only*/, ADDON_INPUTSTREAM);
-  for (auto addonInfo : addonInfos)
+  for (const auto& addonInfo : addonInfos)
   {
     if (CInputStreamAddon::Supports(addonInfo, fileitem))
     {

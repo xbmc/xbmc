@@ -43,7 +43,7 @@ void CAddonType::SetProvides(const std::string& content)
     if (GetValue("provides").empty())
       Insert("provides", content);
 
-    for (auto provide : StringUtils::Split(content, ' '))
+    for (const auto& provide : StringUtils::Split(content, ' '))
     {
       TYPE content = CAddonInfo::TranslateSubContent(provide);
       if (content != ADDON_UNKNOWN)

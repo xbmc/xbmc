@@ -44,7 +44,7 @@ public:
 
   const SExtValue GetValue(const std::string& id) const
   {
-    for (auto value : *this)
+    for (const auto& value : *this)
     {
       if (value.first == id)
         return value.second;

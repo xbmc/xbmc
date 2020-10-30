@@ -859,7 +859,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     // Removable sources
     VECSOURCES removables;
     CServiceBroker::GetMediaManager().GetRemovableDrives(removables);
-    for (auto s : removables)
+    for (const auto& s : removables)
     {
       if (URIUtils::CompareWithoutSlashAtEnd(s.strPath, m_vecItems->GetPath()))
       {

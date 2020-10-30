@@ -401,7 +401,7 @@ void CVideoBufferManager::ReleasePools()
 
   m_discardedPools = pools;
 
-  for (auto pool : pools)
+  for (const auto& pool : pools)
   {
     pool->Discard(this, &CVideoBufferManager::ReadyForDisposal);
   }
@@ -441,7 +441,7 @@ void CVideoBufferManager::ReadyForDisposal(IVideoBufferPool *pool)
 CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size, IVideoBufferPool **pPool)
 {
   CSingleLock lock(m_critSection);
-  for (auto pool: m_pools)
+  for (const auto& pool : m_pools)
   {
     if (!pool->IsConfigured())
     {
@@ -453,7 +453,7 @@ CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size, IVideoBuf
     }
   }
 
-  for (auto fact : m_poolFactories)
+  for (const auto& fact : m_poolFactories)
   {
     std::shared_ptr<IVideoBufferPool> pool = fact.second();
     m_pools.push_front(pool);

@@ -156,7 +156,7 @@ CSkinInfo::CSkinInfo(
 
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SKIN)
 {
-  for (auto values : Type(ADDON_SKIN)->GetValues())
+  for (const auto& values : Type(ADDON_SKIN)->GetValues())
   {
     if (values.first != "res")
       continue;

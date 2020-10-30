@@ -497,7 +497,7 @@ void CGUIDialogMusicInfo::SetDiscography(CMusicDatabase& database) const
   m_albumSongs->Clear();
   database.GetArtistDiscography(m_artist.idArtist, *m_albumSongs);
   CMusicThumbLoader loader;
-  for (auto item : *m_albumSongs)
+  for (const auto& item : *m_albumSongs)
   {
     // Load all the album art and related artist(s) art (could be other collaborating artists)
     loader.LoadItem(item.get());

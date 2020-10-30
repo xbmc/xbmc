@@ -264,7 +264,7 @@ PeripheralPtr CPeripheralAddon::GetByPath(const std::string& strPath) const
   PeripheralPtr result;
 
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     if (StringUtils::EqualsNoCase(strPath, it.second->FileLocation()))
     {
@@ -296,7 +296,7 @@ unsigned int CPeripheralAddon::GetPeripheralsWithFeature(PeripheralVector& resul
 {
   unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     if (it.second->HasFeature(feature))
     {
@@ -318,7 +318,7 @@ unsigned int CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId,
 {
   unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     if (it.second->VendorId() == iVendorId && it.second->ProductId() == iProductId)
       iReturn++;
@@ -330,7 +330,7 @@ unsigned int CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId,
 void CPeripheralAddon::GetDirectory(const std::string& strPath, CFileItemList& items) const
 {
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     const PeripheralPtr& peripheral = it.second;
     if (peripheral->IsHidden())
@@ -463,7 +463,7 @@ bool CPeripheralAddon::ProcessEvents(void)
       }
     }
 
-    for (auto it : m_peripherals)
+    for (const auto& it : m_peripherals)
     {
       if (it.second->Type() == PERIPHERAL_JOYSTICK)
         std::static_pointer_cast<CPeripheralJoystick>(it.second)->ProcessAxisMotions();

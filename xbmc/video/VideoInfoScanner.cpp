@@ -1534,7 +1534,7 @@ namespace VIDEO
     if (moviePartOfSet)
     {
       movieSetArtTypes = CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
-      for (std::string artType : movieSetArtTypes)
+      for (const std::string& artType : movieSetArtTypes)
         artTypes.push_back("set." + artType);
     }
     bool addAll = artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL;

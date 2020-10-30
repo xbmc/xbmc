@@ -317,7 +317,7 @@ void CNetworkAndroid::RetrieveInterfaces()
   CJNIConnectivityManager connman(CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   std::vector<CJNINetwork> networks = connman.getAllNetworks();
 
-  for (auto n : networks)
+  for (const auto& n : networks)
   {
     CJNILinkProperties lp = connman.getLinkProperties(n);
     if (lp)

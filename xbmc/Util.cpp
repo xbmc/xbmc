@@ -1965,7 +1965,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
         StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
       continue;
 
-    for (auto ext : item_exts)
+    for (const auto& ext : item_exts)
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {

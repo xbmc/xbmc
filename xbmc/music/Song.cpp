@@ -306,7 +306,7 @@ const std::string CSong::GetArtistSort() const
   if (!strArtistSort.empty())
     return strArtistSort;
   std::vector<std::string> artistvector;
-  for (auto artistcredit: artistCredits)
+  for (const auto& artistcredit : artistCredits)
     if (!artistcredit.GetSortName().empty())
       artistvector.emplace_back(artistcredit.GetSortName());
   std::string artistString;

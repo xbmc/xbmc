@@ -2990,7 +2990,7 @@ bool CFileItemList::Save(int windowID)
     // name when list cached) can not be accurately derived from item path.
     StringUtils::Replace(cachefile, "special://temp/archive_cache/", "");
     StringUtils::Replace(cachefile, ".fi", "");
-    for (auto item : m_items)
+    for (const auto& item : m_items)
       item->SetProperty("cachefilename", cachefile);
 
     CArchive ar(&file, CArchive::store);

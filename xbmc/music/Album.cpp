@@ -271,7 +271,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     {
       if (artistCredit.GetMusicBrainzArtistID().empty())
       {
-        for (auto sourceartistCredit : source.artistCredits)
+        for (const auto& sourceartistCredit : source.artistCredits)
         {
           if (StringUtils::EqualsNoCase(artistCredit.GetArtist(), sourceartistCredit.GetArtist()))
           {
@@ -332,7 +332,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     for (auto &song : songs)
     {
       if (!song.strMusicBrainzTrackID.empty())
-        for (auto sourceSong : source.songs)
+        for (const auto& sourceSong : source.songs)
           if ((sourceSong.strMusicBrainzTrackID == song.strMusicBrainzTrackID) && (sourceSong.iTrack == song.iTrack))
             song.MergeScrapedSong(sourceSong, override);
     }
@@ -388,7 +388,7 @@ const std::string CAlbum::GetAlbumArtistSort() const
   if (!strArtistSort.empty())
     return strArtistSort;
   std::vector<std::string> artistvector;
-  for (auto artistcredit : artistCredits)
+  for (const auto& artistcredit : artistCredits)
     if (!artistcredit.GetSortName().empty())
       artistvector.emplace_back(artistcredit.GetSortName());
   std::string artistString;

@@ -1148,15 +1148,15 @@ void JSONSchemaTypeDefinition::ResolveReference()
   referencedTypeSet = true;
 
   // Take care of all nested types
-  for (auto it : extends)
+  for (const auto& it : extends)
     it->ResolveReference();
-  for (auto it : unionTypes)
+  for (const auto& it : unionTypes)
     it->ResolveReference();
-  for (auto it : items)
+  for (const auto& it : items)
     it->ResolveReference();
-  for (auto it : additionalItems)
+  for (const auto& it : additionalItems)
     it->ResolveReference();
-  for (auto it : properties)
+  for (const auto& it : properties)
     it.second->ResolveReference();
 
   if (additionalProperties)
@@ -1413,7 +1413,7 @@ JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, 
 
 void CJSONServiceDescription::ResolveReferences()
 {
-  for (auto it : m_types)
+  for (const auto& it : m_types)
     it.second->ResolveReference();
 }
 

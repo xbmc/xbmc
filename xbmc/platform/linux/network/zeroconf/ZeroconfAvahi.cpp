@@ -132,7 +132,7 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
 
   //txt records to AvahiStringList
   AvahiStringList *txtList = NULL;
-  for (const auto it : txt)
+  for (const auto& it : txt)
   {
     txtList = avahi_string_list_add_pair(txtList, it.first.c_str(), it.second.c_str());
   }

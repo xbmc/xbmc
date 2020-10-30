@@ -1519,7 +1519,7 @@ void CAddonSettings::FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting
   XFILE::CDirectory::GetDirectory(settingPath->GetSources().front(), items, masking, XFILE::DIR_FLAG_NO_FILE_DIRS);
 
   // process the matching files/directories
-  for (auto item : items)
+  for (const auto& item : items)
   {
     if ((masking == "/" && item->m_bIsFolder) || !item->m_bIsFolder)
     {

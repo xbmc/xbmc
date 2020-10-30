@@ -128,7 +128,7 @@ CAndroidUtils::CAndroidUtils()
   if (CJNIBase::GetSDKVersion() >= 24)
   {
     fetchDisplayModes();
-    for (auto res : s_res_displayModes)
+    for (const auto& res : s_res_displayModes)
     {
       if (res.iWidth > m_width || res.iHeight > m_height)
       {

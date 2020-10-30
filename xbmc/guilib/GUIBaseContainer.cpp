@@ -60,7 +60,7 @@ CGUIBaseContainer::CGUIBaseContainer(const CGUIBaseContainer &) = default;
 CGUIBaseContainer::~CGUIBaseContainer(void)
 {
   // release the container from items
-  for (auto item : m_items)
+  for (const auto& item : m_items)
     item->FreeMemory();
 
   delete m_listProvider;
@@ -1358,7 +1358,7 @@ std::string CGUIBaseContainer::GetLabel(int info) const
   case CONTAINER_NUM_NONFOLDER_ITEMS:
     {
       int numItems = 0;
-      for (auto item : m_items)
+      for (const auto& item : m_items)
       {
         if (!item->m_bIsFolder)
           numItems++;

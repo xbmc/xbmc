@@ -371,7 +371,7 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode* pWindow, int windowID)
     }
   }
 
-  for (auto it : m_buttonMappers)
+  for (const auto& it : m_buttonMappers)
   {
     const std::string& device = it.first;
     IButtonMapper* mapper = it.second;
