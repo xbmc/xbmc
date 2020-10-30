@@ -20,9 +20,9 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-#define AXIS_EPSILON \
-  0.01f // Allowed noise for detecting discrete D-pads (value of 0.007 when centered has been
-        // observed)
+//! Allowed noise for detecting discrete D-pads (value of 0.007 when centered
+//! has been observed)
+#define AXIS_EPSILON 0.01f
 
 // Settings for analog sticks
 #define SETTING_LEFT_STICK_DEADZONE "left_stick_deadzone"

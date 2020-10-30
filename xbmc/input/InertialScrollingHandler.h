@@ -29,10 +29,16 @@ private:
   bool CheckForInertialScrolling(const CAction* action);
   bool ProcessInertialScroll(float frameTime);
 
-  //-------------------------------------------vars for inertial scrolling animation with gestures
-  bool m_bScrolling = false; // flag indicating that we currently do the inertial scrolling
-                             // emulation
-  bool m_bAborting = false; // flag indicating an abort of scrolling
+  /*
+   * vars for inertial scrolling animation with gestures
+   */
+
+  // flag indicating that we currently do the inertial scrolling emulation
+  bool m_bScrolling = false;
+
+  // flag indicating an abort of scrolling
+  bool m_bAborting = false;
+
   CVector m_iFlickVelocity;
 
   struct PanPoint

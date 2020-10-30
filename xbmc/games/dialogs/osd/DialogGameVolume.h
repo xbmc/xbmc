@@ -41,11 +41,11 @@ public:
   // implementation of IGUIVolumeBarCallback
   bool IsShown() const override;
 
-    // implementation of IAnnouncer
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                  const std::string& sender,
-                  const std::string& message,
-                  const CVariant& data) override;
+  // implementation of IAnnouncer
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override;
 
 protected:
   // implementation of CGUIWindow via CGUIDialogSlider
