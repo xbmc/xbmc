@@ -1032,8 +1032,8 @@ void CUtil::SplitExecFunction(const std::string &execString, std::string &functi
 {
   std::string paramString;
 
-  size_t iPos = execString.find("(");
-  size_t iPos2 = execString.rfind(")");
+  size_t iPos = execString.find('(');
+  size_t iPos2 = execString.rfind(')');
   if (iPos != std::string::npos && iPos2 != std::string::npos)
   {
     paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);

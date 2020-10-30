@@ -1093,7 +1093,7 @@ std::set<std::string> CLangInfo::GetSortTokens() const
 bool CLangInfo::DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat)
 {
   // if the time format contains a "h" it's 12-hour and otherwise 24-hour clock format
-  return timeFormat.find("h") == std::string::npos;
+  return timeFormat.find('h') == std::string::npos;
 }
 
 bool CLangInfo::DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat)

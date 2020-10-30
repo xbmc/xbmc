@@ -7674,8 +7674,8 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField)
     StringUtils::Replace(tokenclause, "%", "%%");
     // Single %, _ and ' so avoid using PrepareSQL
     tokenclause = strField + " LIKE '" + tokenclause + "%'";
-    if (token.find("_") != std::string::npos)
-       tokenclause += " ESCAPE '_'";
+    if (token.find('_') != std::string::npos)
+      tokenclause += " ESCAPE '_'";
     if (!strWhen.empty())
        strWhen += " OR ";
     strWhen += tokenclause;

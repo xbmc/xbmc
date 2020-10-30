@@ -703,7 +703,7 @@ bool CDateTime::SetFromDateString(const std::string &date)
   if (strMonth.empty())
     return false;
 
-  size_t iPos2 = date.find(",");
+  size_t iPos2 = date.find(',');
   std::string strDay = (date.size() >= iPos) ? date.substr(iPos, iPos2-iPos) : "";
   std::string strYear = date.substr(date.find(' ', iPos2) + 1);
   while (months[j] && StringUtils::CompareNoCase(strMonth, months[j]) != 0)
@@ -922,7 +922,7 @@ bool CDateTime::SetFromW3CDate(const std::string &dateTime)
 {
   std::string date;
 
-  size_t posT = dateTime.find("T");
+  size_t posT = dateTime.find('T');
   if(posT != std::string::npos)
     date = dateTime.substr(0, posT);
   else
@@ -950,7 +950,7 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
 {
   std::string date, time, zone;
 
-  size_t posT = dateTime.find("T");
+  size_t posT = dateTime.find('T');
   if(posT != std::string::npos)
   {
     date = dateTime.substr(0, posT);

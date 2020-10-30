@@ -69,7 +69,7 @@ bool CPlayListB4S::LoadData(std::istream& stream)
   while (pEntryElement)
   {
     std::string strFileName = XMLUtils::GetAttribute(pEntryElement, "Playstring");
-    size_t iColon = strFileName.find(":");
+    size_t iColon = strFileName.find(':');
     if (iColon != std::string::npos)
     {
       iColon++;

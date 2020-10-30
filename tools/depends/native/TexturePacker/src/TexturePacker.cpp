@@ -49,7 +49,7 @@
 
 #define FLAGS_USE_LZO     1
 
-#define DIR_SEPARATOR "/"
+#define DIR_SEPARATOR '/'
 
 const char *GetFormatString(unsigned int format)
 {

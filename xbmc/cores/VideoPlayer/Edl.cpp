@@ -147,7 +147,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     int64_t iCutStartEnd[2];
     for (int i = 0; i < 2; i++)
     {
-      if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
+      if (strFields[i].find(':') != std::string::npos) // HH:MM:SS.sss format
       {
         std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms

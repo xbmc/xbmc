@@ -1276,7 +1276,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
           XMLUtils::GetString(pxeMovie, "epnum", strEpNum) && !strEpNum.empty())
       {
         CScraperUrl &scurlEp(ep.cScraperUrl);
-        size_t dot = strEpNum.find(".");
+        size_t dot = strEpNum.find('.');
         ep.iEpisode = atoi(strEpNum.c_str());
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         std::string title;

@@ -1631,9 +1631,8 @@ namespace VIDEO
   std::string CVideoInfoScanner::GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath)
   {
     std::string thumb = CScraperUrl::GetThumbUrl(image);
-    if (!thumb.empty() &&
-      thumb.find("/") == std::string::npos &&
-      thumb.find("\\") == std::string::npos)
+    if (!thumb.empty() && thumb.find('/') == std::string::npos &&
+        thumb.find('\\') == std::string::npos)
     {
       std::string strPath = URIUtils::GetDirectory(itemPath);
       thumb = URIUtils::AddFileToFolder(strPath, thumb);

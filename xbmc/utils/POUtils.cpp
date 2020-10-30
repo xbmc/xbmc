@@ -259,7 +259,7 @@ void CPODocument::GetString(CStrEntry &strEntry)
 
   while (startPos < m_Entry.Content.size())
   {
-    nextLFPos = m_Entry.Content.find("\n", startPos);
+    nextLFPos = m_Entry.Content.find('\n', startPos);
     if (nextLFPos == std::string::npos)
       nextLFPos = m_Entry.Content.size();
 
@@ -277,7 +277,7 @@ void CPODocument::GetString(CStrEntry &strEntry)
 
 void CPODocument::ConvertLineEnds(const std::string &filename)
 {
-  size_t foundPos = m_strBuffer.find_first_of("\r");
+  size_t foundPos = m_strBuffer.find_first_of('\r');
   if (foundPos == std::string::npos)
     return; // We have only Linux style line endings in the file, nothing to do
 

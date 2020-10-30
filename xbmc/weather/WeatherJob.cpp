@@ -165,7 +165,7 @@ void CWeatherJob::LoadLocalizedToken()
 
 std::string CWeatherJob::ConstructPath(std::string in) // copy intended
 {
-  if (in.find("/") != std::string::npos || in.find("\\") != std::string::npos)
+  if (in.find('/') != std::string::npos || in.find('\\') != std::string::npos)
     return in;
   if (in.empty() || in == "N/A")
     in = "na.png";

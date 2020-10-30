@@ -236,13 +236,13 @@ void SqliteDatabase::setHostName(const char *newHost) {
   if ( (host[1] == ':') && isalpha(host[0]))
   {
     size_t pos = 0;
-    while ( (pos = host.find("/", pos)) != std::string::npos )
+    while ((pos = host.find('/', pos)) != std::string::npos)
       host.replace(pos++, 1, "\\");
   }
   else
   {
     size_t pos = 0;
-    while ( (pos = host.find("\\", pos)) != std::string::npos )
+    while ((pos = host.find('\\', pos)) != std::string::npos)
       host.replace(pos++, 1, "/");
   }
 }
@@ -761,12 +761,12 @@ int SqliteDataset::exec(const std::string &sql) {
     size_t pos = 0;
     size_t pos2 = 0;
 
-    if ( (pos = qry.find("(")) != std::string::npos )
+    if ((pos = qry.find('(')) != std::string::npos)
     {
       pos++;
-      while ( (pos = qry.find("(", pos)) != std::string::npos )
+      while ((pos = qry.find('(', pos)) != std::string::npos)
       {
-        if ( (pos2 = qry.find(")", pos)) != std::string::npos )
+        if ((pos2 = qry.find(')', pos)) != std::string::npos)
         {
           qry.replace(pos, pos2-pos+1, "");
           pos = pos2;

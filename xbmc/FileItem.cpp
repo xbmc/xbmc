@@ -3101,7 +3101,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
       std::string folderThumb(GetFolderThumb(strFileName));
       if (CFile::Exists(folderThumb))   // folder.jpg
         return folderThumb;
-      size_t period = strFileName.find_last_of(".");
+      size_t period = strFileName.find_last_of('.');
       if (period != std::string::npos)
       {
         std::string ext;
