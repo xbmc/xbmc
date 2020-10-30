@@ -133,6 +133,7 @@ std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
   CSingleLock lock(videoCodecSection);
 
   std::vector<std::string> ret;
+  ret.reserve(m_hwAccels.size());
   for (auto &hwaccel : m_hwAccels)
   {
     ret.push_back(hwaccel.first);

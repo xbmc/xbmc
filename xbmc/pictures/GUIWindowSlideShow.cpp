@@ -1328,6 +1328,7 @@ void CGUIWindowSlideShow::RunSlideShow(std::vector<std::string> paths, int start
   if (dialog)
   {
     std::vector<CFileItemPtr> items;
+    items.reserve(paths.size());
     for (const auto& path : paths)
       items.push_back(std::make_shared<CFileItem>(CTextureUtils::GetWrappedImageURL(path), false));
 

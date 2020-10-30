@@ -341,6 +341,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
   // get all compatible versions of an addon-id regardless of their origin
   CServiceBroker::GetAddonMgr().GetCompatibleVersions(processAddonId, compatibleVersions);
 
+  versions.reserve(compatibleVersions.size());
   for (const auto& compatibleVersion : compatibleVersions)
     versions.emplace_back(
         std::make_pair(compatibleVersion->Version(), compatibleVersion->Origin()));

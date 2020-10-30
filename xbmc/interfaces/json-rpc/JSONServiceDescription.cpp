@@ -1711,6 +1711,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<std::string> &values)
 {
   std::vector<CVariant> enums;
+  enums.reserve(values.size());
   for (const auto& it : values)
     enums.emplace_back(it);
 
@@ -1720,6 +1721,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<int> &values)
 {
   std::vector<CVariant> enums;
+  enums.reserve(values.size());
   for (const auto& it : values)
     enums.emplace_back(it);
 

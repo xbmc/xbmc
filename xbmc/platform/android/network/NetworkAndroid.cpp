@@ -38,6 +38,7 @@ std::vector<std::string> CNetworkInterfaceAndroid::GetNameServers()
   std::vector<std::string> ret;
 
   CJNIList<CJNIInetAddress> lia = m_lp.getDnsServers();
+  ret.reserve(lia.size());
   for (int i=0; i < lia.size(); ++i)
   {
     ret.push_back(lia.get(i).getHostAddress());
