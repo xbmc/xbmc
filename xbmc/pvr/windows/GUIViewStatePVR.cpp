@@ -14,6 +14,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "view/ViewStateSettings.h"
@@ -50,8 +51,8 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
   if (CServiceBroker::GetPVRManager().Clients()->AnyClientSupportingRecordingsSize())
     AddSortMethod(SortBySize,  553, LABEL_MASKS("%L", "%I", "%L", "%I")); // "Size"   : Filename, DateTime | Foldername, empty
 
-  // Default sorting
-  SetSortMethod(SortByDate);
+  SetSortMethod(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()
+                ->m_PVRDefaultSortOrder);
 
   LoadViewState(items.GetPath(), m_windowId);
 }
