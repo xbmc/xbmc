@@ -112,7 +112,7 @@
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false },
-      "useartistsortname": { "type": "boolean", "default": false }	  
+      "useartistsortname": { "type": "boolean", "default": false }
     }
   },
   "Library.Id": {
@@ -211,10 +211,10 @@
           { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
           { "$ref": "Optional.Number", "minimum":0.5, "maximum": 2.0, "description": "Pixel aspect ratio where 1.0 means square pixel", "required": true } ] },
       "verticalshift": { "type": [
-          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },	  
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
           { "$ref": "Optional.Number", "minimum": -2.0, "maximum": 2.0, "description": "Vertical shift 1.0 means shift to bottom", "required": true } ] },
       "nonlinearstretch": { "type": [
-          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },	  
+          { "type": "string", "enum": [ "increase", "decrease" ], "required": true },
           { "$ref": "Optional.Boolean", "description": "Flag to enable nonlinear stretch", "required": true } ] }
     }
   },
@@ -474,7 +474,7 @@
       "genreid": { "$ref": "Library.Id", "required": true },
       "title": { "type": "string" },
       "thumbnail": { "type": "string" },
-      "sourceid": { "$ref": "Array.Integer", "description": "The ids of sources with songs of the genre" } 
+      "sourceid": { "$ref": "Array.Integer", "description": "The ids of sources with songs of the genre" }
     }
   },
   "Library.Fields.Tag": {
@@ -651,7 +651,7 @@
       "musicbrainzalbumid": { "type": "string" },
       "songgenres": {"$ref": "Audio.Details.Genres"},
       "lastplayed": { "type": "string" },
-      "sourceid": { "$ref": "Array.Integer" }, 
+      "sourceid": { "$ref": "Array.Integer" },
       "isboxset" : { "type": "boolean" },
       "totaldiscs": { "type": "integer" },
       "albumstatus": { "type": "string" },
@@ -708,7 +708,7 @@
       "songslastadded": { "type": "string" },
       "albumslastadded": { "type": "string" },
       "artistslastadded": { "type": "string" },
-      "genreslastadded": { "type": "string" },	  
+      "genreslastadded": { "type": "string" },
       "songsmodified": { "type": "string" },
       "albumsmodified": { "type": "string" },
       "artistsmodified": { "type": "string" }
@@ -1016,7 +1016,7 @@
                 "firstaired", "hastimer", "isactive", "parentalrating",
                 "wasactive", "thumbnail", "rating", "originaltitle", "cast",
                 "director", "writer", "year", "imdbnumber", "hastimerrule",
-                "hasrecording", "recording", "isseries", "isplayable" ]
+                "hasrecording", "recording", "isseries", "isplayable", "clientid" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -1052,7 +1052,8 @@
       "hasrecording": { "type": "boolean" },
       "recording": { "type": "string" },
       "isseries": { "type": "boolean" },
-      "isplayable": { "type": "boolean" }
+      "isplayable": { "type": "boolean", "description": "Deprecated - Use GetBroadcastIsPlayable instead" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Fields.Channel": {
@@ -1060,7 +1061,7 @@
     "items": { "type": "string",
       "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed",
                 "broadcastnow", "broadcastnext", "uniqueid", "icon", "channelnumber",
-                "subchannelnumber", "isrecording", "hasarchive" ]
+                "subchannelnumber", "isrecording", "hasarchive", "clientid" ]
     }
   },
   "PVR.Details.Channel": {
@@ -1080,7 +1081,8 @@
       "channelnumber": { "type": "integer" },
       "subchannelnumber": { "type": "integer" },
       "isrecording": { "type": "boolean" },
-      "hasarchive": { "type": "boolean" }
+      "hasarchive": { "type": "boolean" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Details.ChannelGroup": {
@@ -1099,6 +1101,28 @@
       }
     }
   },
+  "PVR.Fields.Client": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "addonid", "supportstv", "supportsradio", "supportsepg",
+                "supportsrecordings", "supportstimers", "supportschannelgroups",
+                "supportschannelscan" ]
+    }
+  },
+  "PVR.Details.Client": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "clientid": { "$ref": "Library.Id", "required": true },
+      "addonid": { "type": "string" },
+      "supportstv": { "type": "boolean" },
+      "supportsradio": { "type": "boolean" },
+      "supportsepg": { "type": "boolean" },
+      "supportsrecordings": { "type": "boolean" },
+      "supportstimers": { "type": "boolean" },
+      "supportschannelgroups": { "type": "boolean" },
+      "supportschannelscan": { "type": "boolean" }
+    }
+  },
   "PVR.TimerState": {
     "type": "string",
     "enum": [ "unknown", "new", "scheduled", "recording", "completed",
@@ -1113,7 +1137,7 @@
                 "weekdays", "priority", "startmargin", "endmargin", "state",
                 "file", "directory", "preventduplicateepisodes", "startanytime",
                 "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
-                "maxrecordings", "epguid", "isreadonly", "isreminder" ]
+                "maxrecordings", "epguid", "isreadonly", "isreminder", "clientid" ]
     }
   },
   "PVR.Details.Timer": {
@@ -1150,7 +1174,8 @@
       "maxrecordings": { "type": "integer" },
       "epguid": { "type": "integer" },
       "isreadonly": { "type": "boolean" },
-      "isreminder": { "type": "boolean" }
+      "isreminder": { "type": "boolean" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Fields.Recording": {
@@ -1160,7 +1185,7 @@
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
                 "directory", "radio", "isdeleted", "epgeventid", "channeluid",
-                "season", "episode", "showtitle" ]
+                "season", "episode", "showtitle", "clientid" ]
     }
   },
   "PVR.Details.Recording": {
@@ -1189,7 +1214,8 @@
       "channeluid": { "type": "integer" },
       "season": { "type": "integer" },
       "episode": { "type": "integer" },
-      "showtitle": { "type": "string" }
+      "showtitle": { "type": "string" },
+      "clientid": { "$ref": "Library.Id" }
     }
   },
   "Textures.Details.Size": {

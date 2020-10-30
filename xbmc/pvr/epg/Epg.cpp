@@ -125,6 +125,12 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByBroadcastId(unsigned int iUniqu
   return m_tags.GetTag(iUniqueBroadcastId);
 }
 
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByDatabaseId(int iDatabaseId) const
+{
+  CSingleLock lock(m_critSection);
+  return m_tags.GetTagByDatabaseID(iDatabaseId);
+}
+
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTime, const CDateTime& endTime, bool bUpdateFromClient /* = false */)
 {
   std::shared_ptr<CPVREpgInfoTag> tag;

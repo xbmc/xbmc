@@ -149,6 +149,13 @@ namespace PVR
     std::shared_ptr<CPVREpgInfoTag> GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const;
 
     /*!
+     * @brief Get the EPG event with the given database id
+     * @param iDatabaseId The id to lookup.
+     * @return The requested event, or an empty tag when not found
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetTagByDatabaseId(int iDatabaseId) const;
+
+    /*!
      * @brief Get all EPG tags matching the given search criteria.
      * @param searchData The search criteria.
      * @return The matching tags.

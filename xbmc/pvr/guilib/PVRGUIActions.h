@@ -309,6 +309,13 @@ namespace PVR
     bool StartChannelScan();
 
     /*!
+     * @brief Start a channel scan on the specified client or open a dialog to select a client
+     * @param clientId the id of client to scan or PVR_INVALID_CLIENT_ID if a dialog will be opened
+     * @return true on success, false otherwise.
+     */
+    bool StartChannelScan(int clientId);
+
+    /*!
      * @return True when a channel scan is currently running, false otherwise.
      */
     bool IsRunningChannelScan() const { return m_bChannelScanRunning; }

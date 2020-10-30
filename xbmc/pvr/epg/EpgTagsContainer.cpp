@@ -368,6 +368,23 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTag(unsigned int iUniqu
   return {};
 }
 
+std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTagByDatabaseID(int iDatabaseID) const
+{
+  if (iDatabaseID <= 0)
+    return {};
+
+  for (const auto& tag : m_changedTags)
+  {
+    if (tag.second->DatabaseID() == iDatabaseID)
+      return tag.second;
+  }
+
+  if (m_database)
+    return CreateEntry(m_database->GetEpgTagByDatabaseID(m_iEpgID, iDatabaseID));
+
+  return {};
+}
+
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTagBetween(const CDateTime& start,
                                                                     const CDateTime& end) const
 {

@@ -96,6 +96,7 @@ void CPVRChannel::Serialize(CVariant& value) const
 
   value["isrecording"] = false; // compat
   value["hasarchive"] = m_bHasArchive;
+  value["clientid"] = m_iClientId;
 }
 
 /********** XBMC related channel methods **********/

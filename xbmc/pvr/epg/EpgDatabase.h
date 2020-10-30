@@ -154,6 +154,14 @@ namespace PVR
                                                                  unsigned int iUniqueBroadcastId);
 
     /*!
+     * @brief Get an EPG tag given its EPG id and database ID.
+     * @param iEpgID The ID of the EPG for the tag to get.
+     * @param iDatabaseId The database ID for the tag to get.
+     * @return The tag or nullptr, if not found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetEpgTagByDatabaseID(int iEpgID, int iDatabaseId);
+
+    /*!
      * @brief Get an EPG tag given its EPG ID and start time.
      * @param iEpgID The ID of the EPG for the tag to get.
      * @param startTime The start time for the tag to get.

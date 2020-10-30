@@ -145,6 +145,11 @@
           },
           { "type": "object", "required": true, "additionalProperties": false,
             "properties": {
+              "broadcastid": { "$ref": "Library.Id", "required": true }
+            }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
               "channelid": { "$ref": "Library.Id", "required": true }
             }
           },
@@ -359,7 +364,7 @@
         "zoom": { "type": "number", "required": true },
         "pixelratio": { "type": "number", "required": true },
         "verticalshift": { "type": "number", "required": true },
-        "nonlinearstretch": { "type": "boolean", "required": true }		
+        "nonlinearstretch": { "type": "boolean", "required": true }
         }
       }
   },
@@ -2061,6 +2066,23 @@
       }
     }
   },
+  "PVR.GetClients": {
+    "type": "method",
+    "description": "Retrieves the enabled PVR clients and their capabilities",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "clients": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Client" }
+        }
+      }
+    }
+  },
   "PVR.GetBroadcasts": {
     "type": "method",
     "description": "Retrieves the program of a specific channel",
@@ -2094,6 +2116,16 @@
         "broadcastdetails": { "$ref": "PVR.Details.Broadcast" }
       }
     }
+  },
+  "PVR.GetBroadcastIsPlayable": {
+    "type": "method",
+    "description": "Retrieves whether or not a broadcast is playable",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the id of the broadcast to to check for playability" }
+    ],
+    "returns":  "boolean"
   },
   "PVR.GetTimers": {
     "type": "method",
@@ -2215,7 +2247,9 @@
     "description": "Starts a channel scan",
     "transport": "Response",
     "permission": "ControlPVR",
-    "params": [ ],
+    "params": [
+      { "name": "clientid", "$ref": "Library.Id", "default": -2, "description": "Specify a PVR client id to avoid UI dialog, optional in kodi 19, required in kodi 20" }
+    ],
     "returns":  "string"
   },
   "Textures.GetTextures": {
