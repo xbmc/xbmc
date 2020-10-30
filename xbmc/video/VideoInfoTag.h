@@ -255,6 +255,7 @@ public:
   std::vector<std::string> m_showLink;
   std::map<int, std::string> m_namedSeasons;
   int m_iTop250;
+  int m_year;
   int m_iSeason;
   int m_iEpisode;
   int m_iIdUniqueID;
