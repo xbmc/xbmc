@@ -544,7 +544,7 @@ void CAddonMgr::SortByDependencies(VECADDONS& updates) const
       // add to the end of sorted list of addons
       if (addToSortedList)
       {
-        sorted.emplace_back(std::move(addon));
+        sorted.emplace_back(addon);
         it = updates.erase(it);
       }
       else

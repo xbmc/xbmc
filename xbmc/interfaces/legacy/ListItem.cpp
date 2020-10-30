@@ -620,7 +620,7 @@ namespace XBMCAddon
             for (const auto& genreEntry: alt.later())
             {
               const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
-              genres.emplace_back(std::move(genre));
+              genres.emplace_back(genre);
             }
 
             gametag.SetGenres(genres);

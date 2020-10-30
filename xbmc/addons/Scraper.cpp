@@ -836,7 +836,7 @@ template<>
 void DetailsFromFileItem<CVideoInfoTag>(const CFileItem &item, CVideoInfoTag &tag)
 {
   if (item.HasVideoInfoTag())
-    tag = std::move(*item.GetVideoInfoTag());
+    tag = *item.GetVideoInfoTag();
 }
 
 template<class T>

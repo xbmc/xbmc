@@ -634,7 +634,7 @@ CVariant& CVariant::operator=(CVariant&& rhs)
     cleanup();
 
   m_type = rhs.m_type;
-  m_data = std::move(rhs.m_data);
+  m_data = rhs.m_data;
 
   //Should be enough to just set m_type here
   //but better safe than sorry, could probably lead to coverity warnings

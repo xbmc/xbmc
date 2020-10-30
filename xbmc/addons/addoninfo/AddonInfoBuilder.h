@@ -51,8 +51,8 @@ public:
     }
     void SetPath(std::string path) { m_addonInfo->m_path = std::move(path); }
     void SetLibName(std::string libname) { m_addonInfo->m_libname = std::move(libname); }
-    void SetVersion(AddonVersion version) { m_addonInfo->m_version = std::move(version); }
-    void SetMinVersion(AddonVersion minversion) { m_addonInfo->m_minversion = std::move(minversion); }
+    void SetVersion(AddonVersion version) { m_addonInfo->m_version = version; }
+    void SetMinVersion(AddonVersion minversion) { m_addonInfo->m_minversion = minversion; }
     void SetDependencies(std::vector<DependencyInfo> dependencies) { m_addonInfo->m_dependencies = std::move(dependencies); }
     void SetExtrainfo(InfoMap extrainfo)
     {

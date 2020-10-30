@@ -87,8 +87,8 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const std::string strLine1,
   // Setup dialog parameters
   pDialog->SetHeading(CVariant{219});
   pDialog->SetLine(0, CVariant{429});
-  pDialog->SetLine(1, CVariant{std::move(strLine1)});
-  pDialog->SetLine(2, CVariant{std::move(strLine2)});
+  pDialog->SetLine(1, CVariant{strLine1});
+  pDialog->SetLine(2, CVariant{strLine2});
   pDialog->SetChoice(ID_BUTTON_PLAY - 10, 208);
   pDialog->SetChoice(ID_BUTTON_EJECT - 10, 13391);
   if (uiAutoCloseTime)

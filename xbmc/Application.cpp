@@ -1932,7 +1932,7 @@ bool CApplication::OnAction(const CAction &action)
       if (!player.empty())
       {
         item.m_lStartOffset = CUtil::ConvertSecsToMilliSecs(GetTime());
-        PlayFile(std::move(item), player, true);
+        PlayFile(item, player, true);
       }
     }
     else

@@ -58,7 +58,7 @@ void CGUIRenderSettings::SetSettings(CRenderSettings settings)
 {
   CSingleLock lock(m_mutex);
 
-  m_renderSettings = std::move(settings);
+  m_renderSettings = settings;
 }
 
 void CGUIRenderSettings::SetDimensions(const CRect& dimensions)

@@ -46,7 +46,7 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& id, TYPE type)
   }
 
   AddonInfoPtr addon = std::make_shared<CAddonInfo>();
-  addon->m_id = std::move(id);
+  addon->m_id = id;
   addon->m_mainType = type;
   return addon;
 }

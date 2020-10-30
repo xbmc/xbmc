@@ -563,7 +563,7 @@ bool CPeripheralAddon::GetFeatures(const CPeripheral* device,
     {
       kodi::addon::JoystickFeature feature(pFeatures[i]);
       if (feature.Type() != JOYSTICK_FEATURE_TYPE_UNKNOWN)
-        features[feature.Name()] = std::move(feature);
+        features[feature.Name()] = feature;
     }
 
     m_struct.toAddon->free_features(&m_struct, featureCount, pFeatures);
