@@ -637,7 +637,7 @@ bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content,
   auto it = paths.find(content);
   if (it == paths.end())
     return false;
-  std::string path = url.GetFileName();
+  const std::string& path = url.GetFileName();
   for (const auto& p : it->second)
     if (p.empty() || p == "/" || URIUtils::PathHasParent(path, p))
       return true;

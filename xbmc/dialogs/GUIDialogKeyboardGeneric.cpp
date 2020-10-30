@@ -327,7 +327,7 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED:
     {
-      std::string code = message.GetStringParam();
+      const std::string& code = message.GetStringParam();
       if (code == m_hzcode)
       {
         int response = message.GetParam1();

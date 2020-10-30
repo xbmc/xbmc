@@ -665,7 +665,7 @@ bool URIUtils::IsOnLAN(const std::string& strPath)
   if(!IsRemote(strPath))
     return false;
 
-  std::string host = url.GetHostName();
+  const std::string& host = url.GetHostName();
 
   return IsHostOnLAN(host);
 }
@@ -1163,7 +1163,7 @@ bool URIUtils::HasSlashAtEnd(const std::string& strFile, bool checkURL /* = fals
   if (checkURL && IsURL(strFile))
   {
     CURL url(strFile);
-    std::string file = url.GetFileName();
+    const std::string& file = url.GetFileName();
     return file.empty() || HasSlashAtEnd(file, false);
   }
   char kar = strFile.c_str()[strFile.size() - 1];

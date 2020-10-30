@@ -156,7 +156,7 @@ bool CDVDInputStreamBluray::Open()
     {
       //get rid of the udf:// protocol
       CURL url2(root);
-      std::string root2 = url2.GetHostName();
+      const std::string& root2 = url2.GetHostName();
       CURL url(root2);
       CFileItem item(url, false);
 

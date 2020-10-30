@@ -132,7 +132,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
   if (pStreamDetails)
   {
 
-    const std::string strPath = item.GetPath();
+    const std::string& strPath = item.GetPath();
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
     //extern subtitles

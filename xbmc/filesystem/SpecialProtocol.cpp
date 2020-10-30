@@ -130,7 +130,7 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     return url.Get();
   }
 
-  std::string FullFileName = url.GetFileName();
+  const std::string& FullFileName = url.GetFileName();
 
   std::string translatedPath;
   std::string FileName;

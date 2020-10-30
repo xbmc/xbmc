@@ -820,7 +820,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       XTextProperty windowName, iconName;
 
       std::string titleString = CCompileInfo::GetAppName();
-      std::string classString = titleString;
+      const std::string& classString = titleString;
       char *title = const_cast<char*>(titleString.c_str());
 
       XStringListToTextProperty(&title, 1, &windowName);

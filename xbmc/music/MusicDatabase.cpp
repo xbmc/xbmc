@@ -3113,7 +3113,7 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList &art
       return false;
     }
 
-    std::string artistLabel(g_localizeStrings.Get(557)); // Artist
+    const std::string& artistLabel(g_localizeStrings.Get(557)); // Artist
     while (!m_pDS->eof())
     {
       std::string path = StringUtils::Format("musicdb://artists/%i/", m_pDS->fv(0).get_asInt());
@@ -3682,7 +3682,6 @@ bool CMusicDatabase::SearchSongs(const std::string& search, CFileItemList &items
     if (!m_pDS->query(strSQL)) return false;
     if (m_pDS->num_rows() == 0) return false;
 
-    std::string songLabel = g_localizeStrings.Get(179); // Song
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
@@ -3719,7 +3718,7 @@ bool CMusicDatabase::SearchAlbums(const std::string& search, CFileItemList &albu
 
     if (!m_pDS->query(strSQL)) return false;
 
-    std::string albumLabel(g_localizeStrings.Get(558)); // Album
+    const std::string& albumLabel(g_localizeStrings.Get(558)); // Album
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
@@ -4297,7 +4296,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           std::string strTitle = cddb.getInexactTitle(i);
           if (strTitle == "") break;
 
-          std::string strArtist = cddb.getInexactArtist(i);
+          const std::string& strArtist = cddb.getInexactArtist(i);
           if (!strArtist.empty())
             strTitle += " - " + strArtist;
 

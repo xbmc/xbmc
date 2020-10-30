@@ -261,7 +261,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
       // check if this really is a category with setting elements
       if (category->FirstChild() && category->FirstChild()->Type() == CXBMCTinyXML::TINYXML_ELEMENT)
       {
-        const auto categoryId = category->ValueStr();
+        const auto& categoryId = category->ValueStr();
         auto setting = category->FirstChild();
         while (setting != nullptr)
         {

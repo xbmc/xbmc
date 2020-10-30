@@ -24,7 +24,6 @@ CSong::CSong(CFileItem& item)
   CMusicInfoTag& tag = *item.GetMusicInfoTag();
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
-  std::vector<std::string> artist = tag.GetArtist();
   strArtistDesc = tag.GetArtistString();
   //Set sort string before processing artist credits
   strArtistSort = tag.GetArtistSort();

@@ -9432,7 +9432,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   if (mediaType.empty() || cleanableFileIDs.empty())
     return cleanedIDs;
 
-  std::string table = mediaType;
+  const std::string& table = mediaType;
   std::string idField;
   std::string parentPathIdField;
   bool isEpisode = false;
@@ -10566,7 +10566,7 @@ void CVideoDatabase::AnnounceUpdate(std::string content, int id)
 
 bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::string &strPath, CFileItemList &items)
 {
-  std::string path(strPath);
+  const std::string& path(strPath);
 
   if(URIUtils::IsMultiPath(path))
   {

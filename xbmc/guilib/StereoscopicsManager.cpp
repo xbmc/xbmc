@@ -162,7 +162,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
 std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &needle) const
 {
   std::string stereoMode;
-  std::string searchString(needle);
+  const std::string& searchString(needle);
   CRegExp re(true);
 
   if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_3d.c_str()))

@@ -50,8 +50,8 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_SETTING_UPDATED:
     {
-      std::string settingId = message.GetStringParam(0);
-      std::string settingValue = message.GetStringParam(1);
+      const std::string& settingId = message.GetStringParam(0);
+      const std::string& settingValue = message.GetStringParam(1);
 
       std::shared_ptr<CSetting> setting = GetSettingsManager()->GetSetting(settingId);
       if (setting != nullptr)

@@ -808,7 +808,7 @@ const void* SqliteDataset::getExecRes() {
 
 bool SqliteDataset::query(const std::string &query) {
     if(!handle()) throw DbErrors("No Database Connection");
-    std::string qry = query;
+    const std::string& qry = query;
     int fs = qry.find("select");
     int fS = qry.find("SELECT");
     if (!( fs >= 0 || fS >=0))

@@ -51,7 +51,7 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share.
    */
-  const std::string strMovie = fileItem.GetDynPath();
+  const std::string& strMovie = fileItem.GetDynPath();
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
       !URIUtils::IsInternetStream(strMovie))
   {

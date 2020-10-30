@@ -537,7 +537,7 @@ void Xcddb::parseData(const char *buffer)
       addTitle((strKeyword + "=" + strValue).c_str());
     else if (strKeyword == "EXTD")
     {
-      std::string strExtd(strValue);
+      const std::string& strExtd(strValue);
 
       if (m_strYear.empty())
       {

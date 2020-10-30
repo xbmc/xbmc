@@ -182,7 +182,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, CVa
 // \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, unsigned int autoCloseMs /* = 0 */)
 {
-  std::string heading = g_localizeStrings.Get(12340);
+  const std::string& heading = g_localizeStrings.Get(12340);
   return ShowAndVerifyNewPassword(newPassword, heading, false, autoCloseMs);
 }
 

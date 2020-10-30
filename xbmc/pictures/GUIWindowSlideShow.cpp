@@ -962,7 +962,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SHOW_PICTURE:
     {
-      std::string strFile = message.GetStringParam();
+      const std::string& strFile = message.GetStringParam();
       Reset();
       CFileItem item(strFile, false);
       Add(&item);
@@ -972,9 +972,9 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_START_SLIDESHOW:
     {
-      std::string strFolder = message.GetStringParam();
+      const std::string& strFolder = message.GetStringParam();
       unsigned int iParams = message.GetParam1();
-      std::string beginSlidePath = message.GetStringParam(1);
+      const std::string& beginSlidePath = message.GetStringParam(1);
       //decode params
       bool bRecursive = false;
       bool bRandom = false;
@@ -1155,7 +1155,7 @@ void CGUIWindowSlideShow::OnLoadPic(
     if (URIUtils::IsInRAR(m_slides.at(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides.at(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
     {
       CURL url(m_slides.at(m_iCurrentSlide)->GetPath());
-      std::string strHostName = url.GetHostName();
+      const std::string& strHostName = url.GetHostName();
       if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
       {
         m_Image[iPic].m_bIsComic = true;

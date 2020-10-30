@@ -144,7 +144,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
     if(!upnp)
         return false;
 
-    std::string uuid   = path.GetHostName();
+    const std::string& uuid = path.GetHostName();
     std::string object = path.GetFileName();
     StringUtils::TrimRight(object, "/");
     object = CURL::Decode(object);

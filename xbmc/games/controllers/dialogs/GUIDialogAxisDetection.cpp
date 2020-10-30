@@ -22,7 +22,7 @@ using namespace GAME;
 std::string CGUIDialogAxisDetection::GetDialogText()
 {
   // "Press all analog buttons now to detect them:[CR][CR]%s"
-  std::string dialogText = g_localizeStrings.Get(35020);
+  const std::string& dialogText = g_localizeStrings.Get(35020);
 
   std::vector<std::string> primitives;
 

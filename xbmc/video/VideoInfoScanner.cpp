@@ -1694,7 +1694,7 @@ namespace VIDEO
       // handle .nfo files
       CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
       CScraperUrl scrUrl;
-      ScraperPtr info(scraper);
+      const ScraperPtr& info(scraper);
       std::unique_ptr<IVideoInfoTagLoader> loader;
       if (useLocal)
       {

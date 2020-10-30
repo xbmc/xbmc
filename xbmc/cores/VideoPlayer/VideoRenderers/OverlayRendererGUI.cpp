@@ -40,7 +40,7 @@ CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, 
 {
   if (CUtil::IsUsingTTFSubtitles())
   {
-    std::string font_file = font;
+    const std::string& font_file = font;
     std::string font_path = URIUtils::AddFileToFolder("special://home/media/Fonts/", font_file);
     if (!XFILE::CFile::Exists(font_path))
       font_path = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", font_file);

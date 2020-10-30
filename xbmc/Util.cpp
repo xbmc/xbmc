@@ -310,8 +310,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   URIUtils::RemoveSlashAtEnd(path);
   std::string strFilename = URIUtils::GetFileName(path);
 
-  std::string strHostname = url.GetHostName();
-
 #ifdef HAS_UPNP
   // UPNP
   if (url.IsProtocol("upnp"))

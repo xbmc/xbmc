@@ -609,7 +609,7 @@ template<>
 CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
 {
   CMusicAlbumInfo info;
-  std::string sTitle = item.GetLabel();
+  const std::string& sTitle = item.GetLabel();
   std::string sArtist = item.GetProperty("album.artist").asString();
   std::string sAlbumName;
   if (!sArtist.empty())
@@ -641,7 +641,7 @@ template<>
 CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
 {
   CMusicArtistInfo info;
-  std::string sTitle = item.GetLabel();
+  const std::string& sTitle = item.GetLabel();
 
   CScraperUrl url;
   url.AppendUrl(CScraperUrl::SUrlEntry(item.GetDynPath()));

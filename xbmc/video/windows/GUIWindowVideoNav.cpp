@@ -152,7 +152,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           if (url.GetOption("showinfo") == "true")
           {
             // We are here if the item is filtered out in the nav window
-            std::string path = message.GetStringParam(0);
+            const std::string& path = message.GetStringParam(0);
             CFileItem item(path, URIUtils::HasSlashAtEnd(path));
             if (item.IsVideoDb())
             {
@@ -718,9 +718,9 @@ bool CGUIWindowVideoNav::GetFilteredItems(const std::string &filter, CFileItemLi
 void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& items)
 {
   CFileItemList tempItems;
-  std::string strGenre = g_localizeStrings.Get(515); // Genre
-  std::string strActor = g_localizeStrings.Get(20337); // Actor
-  std::string strDirector = g_localizeStrings.Get(20339); // Director
+  const std::string& strGenre = g_localizeStrings.Get(515); // Genre
+  const std::string& strActor = g_localizeStrings.Get(20337); // Actor
+  const std::string& strDirector = g_localizeStrings.Get(20339); // Director
 
   //get matching names
   m_database.GetMoviesByName(strSearch, tempItems);

@@ -68,7 +68,7 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
         auto child = source->FirstChild();
         if (child != nullptr)
         {
-          std::string strSource = child->ValueStr();
+          const std::string& strSource = child->ValueStr();
           if (!strSource.empty())
             m_sources.push_back(strSource);
         }

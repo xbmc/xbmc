@@ -41,8 +41,6 @@ bool CXbtFile::Open(const CURL& url)
   if (m_open)
     return false;
 
-  std::string options = url.GetOptions();
-
   CURL xbtUrl(url);
   xbtUrl.SetOptions("");
 
