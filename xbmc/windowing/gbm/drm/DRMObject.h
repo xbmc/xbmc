@@ -29,6 +29,9 @@ public:
   CDRMObject& operator=(const CDRMObject&) = delete;
   virtual ~CDRMObject() = default;
 
+  std::string GetTypeName() const;
+  std::string GetPropertyName(uint32_t propertyId) const;
+
   uint32_t GetId() const { return m_id; }
   uint32_t GetPropertyId(const char* name) const;
   bool GetPropertyValue(std::string name, const std::string& type, uint64_t& value) const;
