@@ -507,7 +507,7 @@ std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /*
   for (const auto& pathPair : m_advancedSettings->m_pathSubstitutions)
   {
     const std::string fromPath = reverse ? pathPair.second : pathPair.first;
-    const std::string toPath = reverse ? pathPair.first : pathPair.second;
+    std::string toPath = reverse ? pathPair.first : pathPair.second;
 
     if (strncmp(strPath.c_str(), fromPath.c_str(), HasSlashAtEnd(fromPath) ? fromPath.size() - 1 : fromPath.size()) == 0)
     {

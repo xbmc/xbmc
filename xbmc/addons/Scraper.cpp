@@ -337,7 +337,7 @@ std::string CScraper::GetPathSettingsAsJSON()
     return EmptyPathSettings;
 
   CSettingsValueFlatJsonSerializer jsonSerializer;
-  const auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
+  auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
   if (json.empty())
     return EmptyPathSettings;
 

@@ -546,7 +546,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
   PersistAll(XbmcThreads::EndTime::InfiniteValue);
 
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
-  const std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
 
   for (const auto& tag : results)
   {
