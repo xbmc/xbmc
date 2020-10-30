@@ -47,6 +47,32 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
   return true;
 }
 
+bool CDRMObject::GetPropertyValue(std::string name, std::string type, uint64_t& value)const
+{
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
+    return StringUtils::EqualsNoCase(prop->name, name);
+  });
+
+  if (property == m_propsInfo.end())
+    return false;
+
+  auto prop = property->get();
+
+  if (drm_property_type_is(prop, DRM_MODE_PROP_ENUM) != 0)
+  {
+    for (int j = 0; j < prop->count_enums; j++)
+    {
+      if (std::strcmp(prop->enums[j].name, type.c_str()) == 0)
+      {
+        value = prop->enums[j].value;
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 bool CDRMObject::SetProperty(const char* name, uint64_t value)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
