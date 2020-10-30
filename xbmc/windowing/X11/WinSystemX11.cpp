@@ -477,7 +477,7 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
   }
 }
 
-bool CWinSystemX11::IsCurrentOutput(std::string output)
+bool CWinSystemX11::IsCurrentOutput(const std::string& output)
 {
   return (StringUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
 }

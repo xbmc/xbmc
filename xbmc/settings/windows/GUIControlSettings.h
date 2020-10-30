@@ -160,13 +160,13 @@ protected:
   void Update(bool fromControl, bool updateDisplayOnly) override;
 
 private:
-  bool GetItems(std::shared_ptr<const CSetting> setting,
+  bool GetItems(const std::shared_ptr<const CSetting>& setting,
                 CFileItemList& items,
                 bool updateItems) const;
-  bool GetIntegerItems(std::shared_ptr<const CSetting> setting,
+  bool GetIntegerItems(const std::shared_ptr<const CSetting>& setting,
                        CFileItemList& items,
                        bool updateItems) const;
-  bool GetStringItems(std::shared_ptr<const CSetting> setting,
+  bool GetStringItems(const std::shared_ptr<const CSetting>& setting,
                       CFileItemList& items,
                       bool updateItems) const;
 
@@ -186,7 +186,7 @@ public:
   bool OnClick() override;
   void Clear() override { m_pButton = NULL; }
 
-  static bool GetPath(std::shared_ptr<CSettingPath> pathSetting, ILocalizer* localizer);
+  static bool GetPath(const std::shared_ptr<CSettingPath>& pathSetting, ILocalizer* localizer);
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -204,7 +204,7 @@ class CGUIControlEditSetting : public CGUIControlBaseSetting
 public:
   CGUIControlEditSetting(CGUIEditControl* pButton,
                          int id,
-                         std::shared_ptr<CSetting> pSetting,
+                         const std::shared_ptr<CSetting>& pSetting,
                          ILocalizer* localizer);
   ~CGUIControlEditSetting() override;
 
@@ -235,7 +235,7 @@ public:
   bool OnClick() override;
   void Clear() override { m_pSlider = NULL; }
 
-  static std::string GetText(std::shared_ptr<CSetting> setting,
+  static std::string GetText(const std::shared_ptr<CSetting>& setting,
                              const CVariant& value,
                              const CVariant& minimum,
                              const CVariant& step,

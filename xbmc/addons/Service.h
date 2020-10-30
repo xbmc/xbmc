@@ -50,7 +50,7 @@ namespace ADDON
   private:
     void OnEvent(const AddonEvent& event);
 
-    void Stop(std::map<std::string, int>::value_type service);
+    void Stop(const std::map<std::string, int>::value_type& service);
 
     CAddonMgr& m_addonMgr;
     CCriticalSection m_criticalSection;

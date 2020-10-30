@@ -605,7 +605,7 @@ public:
    * Erases video settings for files starting with path
    * @param path pattern
    */
-  void EraseAllVideoSettings(std::string path);
+  void EraseAllVideoSettings(const std::string& path);
 
   bool GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times);
   void SetStackTimes(const std::string &filePath, const std::vector<uint64_t> &times);
@@ -1014,6 +1014,6 @@ private:
   std::vector<int> CleanMediaType(const std::string &mediaType, const std::string &cleanableFileIDs,
                                   std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
 
-  static void AnnounceRemove(std::string content, int id, bool scanning = false);
-  static void AnnounceUpdate(std::string content, int id);
+  static void AnnounceRemove(const std::string& content, int id, bool scanning = false);
+  static void AnnounceUpdate(const std::string& content, int id);
 };

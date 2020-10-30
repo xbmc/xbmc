@@ -807,7 +807,7 @@ void CGUIWindowVideoNav::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr
   CGUIWindowVideoBase::OnItemInfo(fileItem, scraper);
 }
 
-void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
+void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
 {
   if (m_vecItems->IsParentFolder())
     return;

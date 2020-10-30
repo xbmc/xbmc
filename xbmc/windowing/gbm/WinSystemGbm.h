@@ -17,6 +17,8 @@
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/input/LibInputHandler.h"
 
+#include <utility>
+
 #include <gbm.h>
 
 class IDispResource;
@@ -55,7 +57,10 @@ public:
   void Unregister(IDispResource* resource) override;
 
   std::shared_ptr<CVideoLayerBridge> GetVideoLayerBridge() const { return m_videoLayerBridge; };
-  void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge) { m_videoLayerBridge = bridge; };
+  void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge)
+  {
+    m_videoLayerBridge = std::move(bridge);
+  };
 
   CGBMUtils::CGBMDevice* GetGBMDevice() const { return m_GBM->GetDevice(); }
   std::shared_ptr<CDRMUtils> GetDrm() const { return m_DRM; }

@@ -81,7 +81,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
   return CGUIDialogSettingsManualBase::OnMessage(message);
 }
 
-void CGUIDialogNetworkSetup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogNetworkSetup::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -110,7 +110,7 @@ void CGUIDialogNetworkSetup::OnSettingChanged(std::shared_ptr<const CSetting> se
     m_password = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 }
 
-void CGUIDialogNetworkSetup::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogNetworkSetup::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

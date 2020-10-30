@@ -31,7 +31,7 @@ CDVDDemuxCDDA::~CDVDDemuxCDDA()
   Dispose();
 }
 
-bool CDVDDemuxCDDA::Open(std::shared_ptr<CDVDInputStream> pInput)
+bool CDVDDemuxCDDA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 {
   Abort();
 

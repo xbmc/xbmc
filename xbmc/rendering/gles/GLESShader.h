@@ -15,8 +15,8 @@
 class CGLESShader : public Shaders::CGLSLShaderProgram
 {
 public:
-  CGLESShader( const char *shader, std::string prefix);
-  CGLESShader(const char *vshader, const char *fshader, std::string prefix);
+  CGLESShader(const char* shader, const std::string& prefix);
+  CGLESShader(const char* vshader, const char* fshader, const std::string& prefix);
   void OnCompiledAndLinked() override;
   bool OnEnabled() override;
   void Free();

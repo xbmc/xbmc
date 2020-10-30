@@ -218,7 +218,7 @@ std::string CGUIDialogAddonSettings::GetLocalizedString(uint32_t labelId) const
   return CGUIDialogSettingsManagerBase::GetLocalizedString(labelId);
 }
 
-std::string CGUIDialogAddonSettings::GetSettingsLabel(std::shared_ptr<ISetting> setting)
+std::string CGUIDialogAddonSettings::GetSettingsLabel(const std::shared_ptr<ISetting>& setting)
 {
   if (setting == nullptr)
     return "";
@@ -261,7 +261,7 @@ CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
   return m_addon->GetSettings()->GetSettingsManager();
 }
 
-void CGUIDialogAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_addon == nullptr || m_addon->GetSettings() == nullptr)
     return;

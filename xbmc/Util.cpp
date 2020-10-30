@@ -499,7 +499,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-std::string CUtil::GetHomePath(std::string strTarget)
+std::string CUtil::GetHomePath(const std::string& strTarget)
 {
   auto strPath = CEnvironment::getenv(strTarget);
 

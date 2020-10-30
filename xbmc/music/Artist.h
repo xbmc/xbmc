@@ -126,11 +126,17 @@ class CArtistCredit
 
 public:
   CArtistCredit() = default;
-  explicit CArtistCredit(std::string strArtist) : m_strArtist(strArtist) { }
+  explicit CArtistCredit(std::string strArtist) : m_strArtist(std::move(strArtist)) {}
   CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID)
-    : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }
+    : m_strArtist(std::move(strArtist)), m_strMusicBrainzArtistID(std::move(strMusicBrainzArtistID))
+  {
+  }
   CArtistCredit(std::string strArtist, std::string strSortName, std::string strMusicBrainzArtistID)
-    : m_strArtist(strArtist), m_strSortName(strSortName), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }
+    : m_strArtist(std::move(strArtist)),
+      m_strSortName(std::move(strSortName)),
+      m_strMusicBrainzArtistID(std::move(strMusicBrainzArtistID))
+  {
+  }
 
   bool operator<(const CArtistCredit& a) const
   {
@@ -179,8 +185,17 @@ class CMusicRole
 {
 public:
   CMusicRole() = default;
-  CMusicRole(std::string strRole, std::string strArtist) : idRole(-1), m_strRole(strRole), m_strArtist(strArtist), idArtist(-1) { }
-  CMusicRole(int role, std::string strRole, std::string strArtist, long ArtistId) : idRole(role), m_strRole(strRole), m_strArtist(strArtist), idArtist(ArtistId) { }
+  CMusicRole(std::string strRole, std::string strArtist)
+    : idRole(-1), m_strRole(std::move(strRole)), m_strArtist(std::move(strArtist)), idArtist(-1)
+  {
+  }
+  CMusicRole(int role, std::string strRole, std::string strArtist, long ArtistId)
+    : idRole(role),
+      m_strRole(std::move(strRole)),
+      m_strArtist(std::move(strArtist)),
+      idArtist(ArtistId)
+  {
+  }
   std::string GetArtist() const { return m_strArtist; }
   std::string GetRoleDesc() const { return m_strRole; }
   int GetRoleId() const { return idRole; }

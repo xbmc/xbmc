@@ -42,7 +42,11 @@ CInputProcessorPointer::CInputProcessorPointer(wayland::surface_t const& surface
 {
 }
 
-void CInputProcessorPointer::OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY)
+void CInputProcessorPointer::OnPointerEnter(CSeat* seat,
+                                            std::uint32_t serial,
+                                            const wayland::surface_t& surface,
+                                            double surfaceX,
+                                            double surfaceY)
 {
   if (surface == m_surface)
   {
@@ -53,7 +57,9 @@ void CInputProcessorPointer::OnPointerEnter(CSeat* seat, std::uint32_t serial, w
   }
 }
 
-void CInputProcessorPointer::OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface)
+void CInputProcessorPointer::OnPointerLeave(CSeat* seat,
+                                            std::uint32_t serial,
+                                            const wayland::surface_t& surface)
 {
   if (m_pointerOnSurface)
   {

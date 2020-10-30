@@ -1200,7 +1200,8 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap() :
 {
 }
 
-void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(JSONSchemaTypeDefinitionPtr property)
+void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(
+    const JSONSchemaTypeDefinitionPtr& property)
 {
   std::string name = property->name;
   StringUtils::ToLower(name);
@@ -1348,7 +1349,8 @@ JSONRPC_STATUS JsonRpcMethod::Check(const CVariant &requestParameters, ITranspor
   return MethodNotFound;
 }
 
-bool JsonRpcMethod::parseParameter(const CVariant &value, JSONSchemaTypeDefinitionPtr parameter)
+bool JsonRpcMethod::parseParameter(const CVariant& value,
+                                   const JSONSchemaTypeDefinitionPtr& parameter)
 {
   parameter->name = GetString(value["name"], "");
 
@@ -1379,7 +1381,12 @@ bool JsonRpcMethod::parseReturn(const CVariant &value)
   return true;
 }
 
-JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, JSONSchemaTypeDefinitionPtr type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
+JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant& requestParameters,
+                                             const JSONSchemaTypeDefinitionPtr& type,
+                                             unsigned int position,
+                                             CVariant& outputParameters,
+                                             unsigned int& handled,
+                                             CVariant& errorData)
 {
   // Let's check if the parameter has been provided
   if (ParameterExists(requestParameters, type->name, position))
@@ -1969,7 +1976,8 @@ bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::ve
   return false;
 }
 
-void CJSONServiceDescription::addReferenceTypeDefinition(JSONSchemaTypeDefinitionPtr typeDefinition)
+void CJSONServiceDescription::addReferenceTypeDefinition(
+    const JSONSchemaTypeDefinitionPtr& typeDefinition)
 {
   // If the given json value is no object or does not contain an "id" field
   // of type string it is no valid type definition
@@ -2009,7 +2017,8 @@ void CJSONServiceDescription::removeReferenceTypeDefinition(const std::string &t
     m_types.erase(type);
 }
 
-void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionPtr type, std::vector<std::string> &referencedTypes)
+void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionPtr& type,
+                                                 std::vector<std::string>& referencedTypes)
 {
   // If the current type is a referenceable object, we can add it to the list
   if (type->ID.size() > 0)

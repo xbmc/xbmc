@@ -60,7 +60,7 @@ void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
   m_item = new CFileItem(*item);
 }
 
-void CGUIDialogPeripheralSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

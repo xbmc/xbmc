@@ -659,7 +659,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   return CGUIMediaWindow::OnSelect(iItem);
 }
 
-bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player)
+bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string& player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
 
@@ -1181,7 +1181,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   return true;
 }
 
-bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
+bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   // Get the current playlist and make sure it is not shuffled
   int iPlaylist = m_guiState->GetPlaylist();
@@ -1217,7 +1217,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
+void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
 {
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())

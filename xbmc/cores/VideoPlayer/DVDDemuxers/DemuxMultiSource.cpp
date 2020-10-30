@@ -114,7 +114,7 @@ int CDemuxMultiSource::GetStreamLength()
   return length;
 }
 
-bool CDemuxMultiSource::Open(std::shared_ptr<CDVDInputStream> pInput)
+bool CDemuxMultiSource::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 {
   if (!pInput)
     return false;
@@ -216,7 +216,7 @@ bool CDemuxMultiSource::SeekTime(double time, bool backwards, double* startpts)
   return ret;
 }
 
-void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
+void CDemuxMultiSource::SetMissingStreamDetails(const DemuxPtr& demuxer)
 {
   std::string baseFileName = m_pInput->GetFileName();
   std::string fileName = demuxer->GetFileName();

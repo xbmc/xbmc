@@ -87,8 +87,9 @@ public:
 
   const std::set<std::string>& GetSettings() const { return m_settings; }
 
-  CSettingDependencyConditionCombination* Add(CSettingDependencyConditionPtr condition);
-  CSettingDependencyConditionCombination* Add(CSettingDependencyConditionCombinationPtr operation);
+  CSettingDependencyConditionCombination* Add(const CSettingDependencyConditionPtr& condition);
+  CSettingDependencyConditionCombination* Add(
+      const CSettingDependencyConditionCombinationPtr& operation);
 
 private:
   CBooleanLogicOperation* newOperation() override { return new CSettingDependencyConditionCombination(m_settingsManager); }

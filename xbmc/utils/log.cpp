@@ -69,7 +69,7 @@ void CLog::OnSettingsLoaded()
   SetComponentLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
 }
 
-void CLog::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CLog::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -141,7 +141,7 @@ void CLog::Uninitialize()
   settingsManager->UnregisterCallback(this);
 
   // flush all loggers
-  spdlog::apply_all([](std::shared_ptr<spdlog::logger> logger) { logger->flush(); });
+  spdlog::apply_all([](const std::shared_ptr<spdlog::logger>& logger) { logger->flush(); });
 
   // flush the file sink
   m_fileSink->flush();
@@ -190,7 +190,7 @@ bool CLog::CanLogComponent(uint32_t component) const
   return ((m_componentLogLevels & component) == component);
 }
 
-void CLog::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting,
+void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
                                                  int& current,
                                                  void* data)

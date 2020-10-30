@@ -14,7 +14,7 @@ using namespace INPUT;
 
 CButtonStat::CButtonStat() = default;
 
-CKey CButtonStat::TranslateKey(CKey key) const
+CKey CButtonStat::TranslateKey(const CKey& key) const
 {
   uint32_t buttonCode = key.GetButtonCode();
   if (key.GetHeld() > HOLD_TRESHOLD)

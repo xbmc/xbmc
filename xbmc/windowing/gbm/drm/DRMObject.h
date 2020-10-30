@@ -31,7 +31,7 @@ public:
 
   uint32_t GetId() const { return m_id; }
   uint32_t GetPropertyId(const char* name) const;
-  bool GetPropertyValue(std::string name, std::string type, uint64_t& value) const;
+  bool GetPropertyValue(std::string name, const std::string& type, uint64_t& value) const;
 
   bool SetProperty(const char* name, uint64_t value);
   bool SupportsProperty(const char* name);

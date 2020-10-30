@@ -65,7 +65,7 @@ protected:
   void UpdateButtons() override;
   void DoSearch(const std::string& strSearch, CFileItemList& items) override;
   virtual void PlayItem(int iItem);
-  void OnDeleteItem(CFileItemPtr pItem) override;
+  void OnDeleteItem(const CFileItemPtr& pItem) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool OnAddMediaSource() override;

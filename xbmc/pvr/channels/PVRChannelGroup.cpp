@@ -879,7 +879,7 @@ bool CPVRChannelGroup::HasChanges() const
   return m_bChanged || HasNewChannels() || HasChangedChannels();
 }
 
-void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPVRChannelGroup::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

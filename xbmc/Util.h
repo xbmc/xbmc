@@ -48,7 +48,8 @@ public:
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
-  static std::string GetHomePath(std::string strTarget = "KODI_HOME"); // default target is "KODI_HOME"
+  static std::string GetHomePath(
+      const std::string& strTarget = "KODI_HOME"); // default target is "KODI_HOME"
   static bool ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps);
   static void GetFileAndProtocol(const std::string& strURL, std::string& strDir);
   static int GetDVDIfoTitle(const std::string& strPathFile);

@@ -6060,7 +6060,7 @@ void CVideoDatabase::EraseAllVideoSettings()
   }
 }
 
-void CVideoDatabase::EraseAllVideoSettings(std::string path)
+void CVideoDatabase::EraseAllVideoSettings(const std::string& path)
 {
   std::string itemsToDelete;
 
@@ -10546,7 +10546,7 @@ std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::strin
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 
-void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /* = false */)
+void CVideoDatabase::AnnounceRemove(const std::string& content, int id, bool scanning /* = false */)
 {
   CVariant data;
   data["type"] = content;
@@ -10556,7 +10556,7 @@ void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRemove", data);
 }
 
-void CVideoDatabase::AnnounceUpdate(std::string content, int id)
+void CVideoDatabase::AnnounceUpdate(const std::string& content, int id)
 {
   CVariant data;
   data["type"] = content;

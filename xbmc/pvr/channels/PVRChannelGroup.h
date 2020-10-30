@@ -37,12 +37,18 @@ namespace PVR
   {
     PVRChannelGroupMember() = default;
 
-    PVRChannelGroupMember(const std::shared_ptr<CPVRChannel> _channel, const CPVRChannelNumber& _channelNumber, int _iClientPriority, int _iOrder, const CPVRChannelNumber& _clientChannelNumber)
-      : channel(_channel)
-      , channelNumber(_channelNumber)
-      , clientChannelNumber(_clientChannelNumber)
-      , iClientPriority(_iClientPriority)
-      , iOrder(_iOrder) {}
+    PVRChannelGroupMember(const std::shared_ptr<CPVRChannel>& _channel,
+                          const CPVRChannelNumber& _channelNumber,
+                          int _iClientPriority,
+                          int _iOrder,
+                          const CPVRChannelNumber& _clientChannelNumber)
+      : channel(_channel),
+        channelNumber(_channelNumber),
+        clientChannelNumber(_clientChannelNumber),
+        iClientPriority(_iClientPriority),
+        iOrder(_iOrder)
+    {
+    }
 
     std::shared_ptr<CPVRChannel> channel;
     CPVRChannelNumber channelNumber; // the channel number this channel has in the group
@@ -292,7 +298,7 @@ namespace PVR
 
     //@}
 
-    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
     /*!
      * @brief Get a channel given it's EPG ID.

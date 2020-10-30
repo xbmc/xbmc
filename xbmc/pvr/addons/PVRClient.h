@@ -1056,7 +1056,7 @@ private:
    */
   typedef AddonInstance_PVR AddonInstance;
   PVR_ERROR DoAddonCall(const char* strFunctionName,
-                        std::function<PVR_ERROR(const AddonInstance*)> function,
+                        const std::function<PVR_ERROR(const AddonInstance*)>& function,
                         bool bIsImplemented = true,
                         bool bCheckReadyToUse = true) const;
 

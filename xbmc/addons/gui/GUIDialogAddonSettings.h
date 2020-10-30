@@ -30,7 +30,7 @@ protected:
   // implementation of CGUIDialogSettingsBase
   void SetupView() override;
   std::string GetLocalizedString(uint32_t labelId) const override;
-  std::string GetSettingsLabel(std::shared_ptr<ISetting> setting) override;
+  std::string GetSettingsLabel(const std::shared_ptr<ISetting>& setting) override;
   int GetSettingLevel() const override;
   std::shared_ptr<CSettingSection> GetSection() override;
 
@@ -40,7 +40,7 @@ protected:
   CSettingsManager* GetSettingsManager() const override;
 
   // implementation of ISettingCallback
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
   ADDON::AddonPtr m_addon;

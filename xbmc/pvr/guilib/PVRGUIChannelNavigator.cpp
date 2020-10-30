@@ -130,7 +130,8 @@ namespace PVR
     return {};
   }
 
-  void CPVRGUIChannelNavigator::SelectChannel(const std::shared_ptr<CPVRChannel> channel, ChannelSwitchMode eSwitchMode)
+  void CPVRGUIChannelNavigator::SelectChannel(const std::shared_ptr<CPVRChannel>& channel,
+                                              ChannelSwitchMode eSwitchMode)
   {
     CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(channel));
 
@@ -253,7 +254,7 @@ namespace PVR
       ShowInfo();
   }
 
-  void CPVRGUIChannelNavigator::SetPlayingChannel(const std::shared_ptr<CPVRChannel> channel)
+  void CPVRGUIChannelNavigator::SetPlayingChannel(const std::shared_ptr<CPVRChannel>& channel)
   {
     CFileItemPtr item;
 

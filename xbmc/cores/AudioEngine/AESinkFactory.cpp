@@ -19,7 +19,7 @@ using namespace AE;
 
 std::map<std::string, AESinkRegEntry> CAESinkFactory::m_AESinkRegEntry;
 
-void CAESinkFactory::RegisterSink(AESinkRegEntry regEntry)
+void CAESinkFactory::RegisterSink(const AESinkRegEntry& regEntry)
 {
   m_AESinkRegEntry[regEntry.sinkName] = regEntry;
 
@@ -85,7 +85,9 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   return nullptr;
 }
 
-void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo>& list, bool force, std::string driver)
+void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo>& list,
+                                 bool force,
+                                 const std::string& driver)
 {
   AESinkInfo info;
 

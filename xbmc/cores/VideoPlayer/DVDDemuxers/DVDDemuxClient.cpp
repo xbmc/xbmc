@@ -13,6 +13,8 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
+#include <utility>
+
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
 class CDemuxStreamClientInternal
@@ -63,7 +65,7 @@ bool CDVDDemuxClient::Open(std::shared_ptr<CDVDInputStream> pInput)
 {
   Abort();
 
-  m_pInput = pInput;
+  m_pInput = std::move(pInput);
   m_IDemux = std::dynamic_pointer_cast<CDVDInputStream::IDemux>(m_pInput);
   if (!m_IDemux)
     return false;

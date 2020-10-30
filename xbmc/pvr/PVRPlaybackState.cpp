@@ -72,7 +72,7 @@ void CPVRPlaybackState::Clear()
   m_lastWatchedUpdateTimer.reset();
 }
 
-void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem> item)
+void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item)
 {
   CSingleLock lock(m_critSection);
 
@@ -128,7 +128,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem> item)
   }
 }
 
-bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem> item)
+bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem>& item)
 {
   // Playback ended due to user interaction
 
@@ -183,7 +183,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem> item)
   return bChanged;
 }
 
-void CPVRPlaybackState::OnPlaybackEnded(const std::shared_ptr<CFileItem> item)
+void CPVRPlaybackState::OnPlaybackEnded(const std::shared_ptr<CFileItem>& item)
 {
   // Playback ended, but not due to user interaction
   OnPlaybackStopped(item);

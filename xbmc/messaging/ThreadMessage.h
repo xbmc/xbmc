@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CEvent;
@@ -49,14 +50,19 @@ public:
   {
   }
 
-  ThreadMessage(uint32_t messageId, int p1, int p2, void* payload, std::string param, std::vector<std::string> vecParams)
-    : dwMessage{ messageId }
-    , param1{ p1 }
-    , param2{ p2 }
-    , param3{ 0 }
-    , lpVoid{ payload }
-    , strParam( param )
-    , params( vecParams )
+  ThreadMessage(uint32_t messageId,
+                int p1,
+                int p2,
+                void* payload,
+                std::string param,
+                std::vector<std::string> vecParams)
+    : dwMessage{messageId},
+      param1{p1},
+      param2{p2},
+      param3{0},
+      lpVoid{payload},
+      strParam(std::move(param)),
+      params(std::move(vecParams))
   {
   }
 

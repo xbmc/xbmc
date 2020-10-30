@@ -280,7 +280,11 @@ JSONRPC_STATUS CFileOperations::Download(const std::string &method, ITransportLa
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }
 
-bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPtr &item, std::string media /* = "" */, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CFileOperations::FillFileItem(
+    const CFileItemPtr& originalItem,
+    CFileItemPtr& item,
+    const std::string& media /* = "" */,
+    const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   if (originalItem.get() == NULL)
     return false;

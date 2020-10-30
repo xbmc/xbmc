@@ -334,7 +334,7 @@ bool CAndroidUtils::IsHDRDisplay()
   return ret;
 }
 
-void  CAndroidUtils::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   const std::string &settingId = setting->GetId();
   /* Calibration (overscan / subtitles) are based on GUI size -> reset required */

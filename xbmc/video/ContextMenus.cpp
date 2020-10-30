@@ -21,11 +21,15 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "view/GUIViewState.h"
 
+#include <utility>
+
 namespace CONTEXTMENU
 {
 
 CVideoInfo::CVideoInfo(MediaType mediaType)
-    : CStaticContextMenuAction(19033), m_mediaType(mediaType) {}
+  : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
+{
+}
 
 bool CVideoInfo::IsVisible(const CFileItem& item) const
 {

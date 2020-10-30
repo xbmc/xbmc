@@ -26,7 +26,7 @@ public:
   /* ISettingCallback*/
 
   static CDiscSettings& GetInstance();
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
   CDiscSettings() = default;

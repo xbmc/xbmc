@@ -318,7 +318,8 @@ const char* CHTTPPythonWsgiInvoker::getInitializationScript() const
   return RUNSCRIPT;
 }
 
-std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(const HTTPPythonRequest* httpRequest, ADDON::AddonPtr addon)
+std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
+    const HTTPPythonRequest* httpRequest, const ADDON::AddonPtr& addon)
 {
   std::map<std::string, std::string> environment;
 

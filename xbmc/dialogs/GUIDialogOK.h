@@ -23,8 +23,11 @@ public:
   CGUIDialogOK(void);
   ~CGUIDialogOK(void) override;
   bool OnMessage(CGUIMessage& message) override;
-  static bool ShowAndGetInput(CVariant heading, CVariant text);
-  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2);
+  static bool ShowAndGetInput(const CVariant& heading, const CVariant& text);
+  static bool ShowAndGetInput(const CVariant& heading,
+                              const CVariant& line0,
+                              const CVariant& line1,
+                              const CVariant& line2);
   /*!
   \brief Open a OK dialog and wait for input
 

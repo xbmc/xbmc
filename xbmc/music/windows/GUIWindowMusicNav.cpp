@@ -212,7 +212,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
+bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
 {
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);

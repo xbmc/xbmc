@@ -29,7 +29,7 @@ public:
 
   // Implementation of ISettingCallback
   static const std::string SETTING_LIMITGUI;
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 protected:
   mutable int m_width;

@@ -73,8 +73,8 @@ void CGUIDialogPlayEject::OnInitWindow()
   CGUIDialogYesNo::OnInitWindow();
 }
 
-bool CGUIDialogPlayEject::ShowAndGetInput(const std::string strLine1,
-                                          const std::string strLine2,
+bool CGUIDialogPlayEject::ShowAndGetInput(const std::string& strLine1,
+                                          const std::string& strLine2,
                                           unsigned int uiAutoCloseTime /* = 0 */)
 {
 

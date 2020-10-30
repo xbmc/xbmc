@@ -360,9 +360,11 @@ protected:
   bool OnSettingsSaving() const override;
   bool Load(const TiXmlNode *settings) override;
   bool Save(TiXmlNode *settings) const override;
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
-  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
+  bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                       const char* oldSettingId,
+                       const TiXmlNode* oldSettingNode) override;
 
   bool LoadSkin(const std::string& skinID);
 

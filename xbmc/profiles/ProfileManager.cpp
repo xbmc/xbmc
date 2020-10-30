@@ -716,7 +716,7 @@ CEventLog& CProfileManager::GetEventLog()
   return m_eventLogs->GetEventLog(GetCurrentProfileId());
 }
 
-void CProfileManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CProfileManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

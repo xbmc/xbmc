@@ -31,7 +31,11 @@ public:
    * \param class_ class of the surface, which should match the name of the
    *               .desktop file of the application
    */
-  CShellSurfaceWlShell(IShellSurfaceHandler& handler, CConnection& connection, wayland::surface_t const& surface, std::string title, std::string class_);
+  CShellSurfaceWlShell(IShellSurfaceHandler& handler,
+                       CConnection& connection,
+                       wayland::surface_t const& surface,
+                       const std::string& title,
+                       const std::string& class_);
 
   void Initialize() override;
 

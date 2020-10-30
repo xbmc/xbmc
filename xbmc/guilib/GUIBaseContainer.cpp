@@ -298,7 +298,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   {
     std::string letter;
     g_charsetConverter.wToUTF8({action.GetUnicode()}, letter);
-    OnJumpLetter(std::move(letter));
+    OnJumpLetter(letter);
     return true;
   }
   // stop the timer on any other action
@@ -562,7 +562,7 @@ void CGUIBaseContainer::OnPrevLetter()
   }
 }
 
-void CGUIBaseContainer::OnJumpLetter(std::string letter, bool skip /*=false*/)
+void CGUIBaseContainer::OnJumpLetter(const std::string& letter, bool skip /*=false*/)
 {
   if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
     m_match += letter;

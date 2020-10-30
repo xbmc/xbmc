@@ -13,12 +13,26 @@
 class CAddonManagementEvent : public CAddonEvent
 {
 public:
-  CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description);
-  CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details);
-  CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
-  CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description);
-  CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details);
-  CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonManagementEvent(const ADDON::AddonPtr& addon, const CVariant& description);
+  CAddonManagementEvent(const ADDON::AddonPtr& addon,
+                        const CVariant& description,
+                        const CVariant& details);
+  CAddonManagementEvent(const ADDON::AddonPtr& addon,
+                        const CVariant& description,
+                        const CVariant& details,
+                        const CVariant& executionLabel);
+  CAddonManagementEvent(const ADDON::AddonPtr& addon,
+                        EventLevel level,
+                        const CVariant& description);
+  CAddonManagementEvent(const ADDON::AddonPtr& addon,
+                        EventLevel level,
+                        const CVariant& description,
+                        const CVariant& details);
+  CAddonManagementEvent(const ADDON::AddonPtr& addon,
+                        EventLevel level,
+                        const CVariant& description,
+                        const CVariant& details,
+                        const CVariant& executionLabel);
   ~CAddonManagementEvent() override = default;
 
   const char* GetType() const override { return "AddonManagementEvent"; }

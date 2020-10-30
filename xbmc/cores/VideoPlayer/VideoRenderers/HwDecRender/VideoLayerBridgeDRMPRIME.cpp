@@ -12,10 +12,13 @@
 #include "utils/log.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
 
+#include <utility>
+
 using namespace KODI::WINDOWING::GBM;
 using namespace DRMPRIME;
 
-CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMAtomic> drm) : m_DRM(drm)
+CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMAtomic> drm)
+  : m_DRM(std::move(drm))
 {
 }
 

@@ -17,6 +17,7 @@
 #include "utils/log.h"
 
 #include <sstream>
+#include <utility>
 
 template<typename TKey, typename TValue>
 bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pair<TKey, TValue>>& options)
@@ -254,7 +255,7 @@ bool CSetting::IsVisible() const
   return visible;
 }
 
-bool CSetting::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CSetting::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_callback == nullptr)
     return true;
@@ -262,7 +263,7 @@ bool CSetting::OnSettingChanging(std::shared_ptr<const CSetting> setting)
   return m_callback->OnSettingChanging(setting);
 }
 
-void CSetting::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CSetting::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_callback == nullptr)
     return;
@@ -270,7 +271,7 @@ void CSetting::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   m_callback->OnSettingChanged(setting);
 }
 
-void CSetting::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CSetting::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_callback == nullptr)
     return;
@@ -278,7 +279,9 @@ void CSetting::OnSettingAction(std::shared_ptr<const CSetting> setting)
   m_callback->OnSettingAction(setting);
 }
 
-bool CSetting::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CSetting::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                               const char* oldSettingId,
+                               const TiXmlNode* oldSettingNode)
 {
   if (m_callback == nullptr)
     return false;
@@ -286,7 +289,8 @@ bool CSetting::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *ol
   return m_callback->OnSettingUpdate(setting, oldSettingId, oldSettingNode);
 }
 
-void CSetting::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName)
+void CSetting::OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
+                                        const char* propertyName)
 {
   if (m_callback == nullptr)
     return;
@@ -319,14 +323,14 @@ void CSetting::Copy(const CSetting &setting)
 CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingList"), m_definition(settingDefinition)
+  : CSetting(id, settingsManager, "CSettingList"), m_definition(std::move(settingDefinition))
 { }
 
 CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            int label,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingList"), m_definition(settingDefinition)
+  : CSetting(id, settingsManager, "CSettingList"), m_definition(std::move(settingDefinition))
 {
   SetLabel(label);
 }

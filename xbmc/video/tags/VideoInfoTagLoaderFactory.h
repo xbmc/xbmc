@@ -22,7 +22,7 @@ namespace VIDEO
     //! \param item The item to find tag loader for
     //! \param type Type of tag loader. In particular used for tvshows
     static IVideoInfoTagLoader* CreateLoader(const CFileItem& item,
-                                             ADDON::ScraperPtr info,
+                                             const ADDON::ScraperPtr& info,
                                              bool lookInFolder,
                                              bool forceRefresh = false);
 

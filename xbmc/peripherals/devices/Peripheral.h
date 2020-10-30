@@ -159,7 +159,7 @@ public:
    * @param setting The setting.
    */
   virtual void AddSetting(const std::string& strKey,
-                          std::shared_ptr<const CSetting> setting,
+                          const std::shared_ptr<const CSetting>& setting,
                           int order);
 
   /*!

@@ -11,6 +11,7 @@
 #include "threads/SingleLock.h"
 
 #include <string.h>
+#include <utility>
 
 //-----------------------------------------------------------------------------
 // CVideoBuffer
@@ -30,7 +31,7 @@ void CVideoBuffer::Acquire()
 void CVideoBuffer::Acquire(std::shared_ptr<IVideoBufferPool> pool)
 {
   m_refCount++;
-  m_pool = pool;
+  m_pool = std::move(pool);
 }
 
 void CVideoBuffer::Release()
@@ -380,14 +381,14 @@ CVideoBufferManager::CVideoBufferManager()
   RegisterPoolFactory("SysMem", &CVideoBufferPoolSysMem::CreatePool);
 }
 
-void CVideoBufferManager::RegisterPool(std::shared_ptr<IVideoBufferPool> pool)
+void CVideoBufferManager::RegisterPool(const std::shared_ptr<IVideoBufferPool>& pool)
 {
   CSingleLock lock(m_critSection);
   // preferred pools are to the front
   m_pools.push_front(pool);
 }
 
-void CVideoBufferManager::RegisterPoolFactory(std::string id, CreatePoolFunc createFunc)
+void CVideoBufferManager::RegisterPoolFactory(const std::string& id, CreatePoolFunc createFunc)
 {
   CSingleLock lock(m_critSection);
   m_poolFactories[id] = createFunc;

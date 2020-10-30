@@ -413,7 +413,7 @@ public:
   /////////////////////////////////////////////////
   // Link tables
   /////////////////////////////////////////////////
-  bool AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, int iOrder);
+  bool AddAlbumArtist(int idArtist, int idAlbum, const std::string& strArtist, int iOrder);
   bool GetAlbumsByArtist(int idArtist, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, CFileItem* item);
   bool GetArtistsByAlbum(int idAlbum, std::vector<std::string>& artistIDs);
@@ -540,8 +540,8 @@ public:
   /////////////////////////////////////////////////
   // Scraper
   /////////////////////////////////////////////////
-  bool SetScraper(int id, const CONTENT_TYPE &content, const ADDON::ScraperPtr scraper);
-  bool SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr scraper);
+  bool SetScraper(int id, const CONTENT_TYPE& content, const ADDON::ScraperPtr& scraper);
+  bool SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper);
   bool GetScraper(int id, const CONTENT_TYPE &content, ADDON::ScraperPtr& scraper);
 
   /*! \brief Check whether a given scraper is in use.

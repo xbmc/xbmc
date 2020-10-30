@@ -214,7 +214,7 @@ std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const
   return settings;
 }
 
-void CPeripheral::AddSetting(const std::string& strKey, SettingConstPtr setting, int order)
+void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& setting, int order)
 {
   if (!setting)
   {

@@ -20,6 +20,7 @@
 
 #include <sstream>
 #include <string>
+#include <utility>
 
 using namespace Shaders;
 
@@ -41,7 +42,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
   m_stretch = 0.0f;
 
   // get defines from the output stage if used
-  m_glslOutput = output;
+  m_glslOutput = std::move(output);
   if (m_glslOutput)
   {
     m_defines += m_glslOutput->GetDefines();
@@ -223,11 +224,15 @@ void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMaster
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, EShaderFormat format, bool stretch,
-                                                   AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
+                                                   EShaderFormat format,
+                                                   bool stretch,
+                                                   AVColorPrimaries dstPrimaries,
+                                                   AVColorPrimaries srcPrimaries,
                                                    bool toneMap,
                                                    std::shared_ptr<GLSLOutput> output)
-  : BaseYUV2RGBGLSLShader(rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, output)
+  : BaseYUV2RGBGLSLShader(
+        rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, std::move(output))
 {
   PixelShader()->LoadSource("gl_yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
@@ -242,11 +247,13 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, EShaderFormat form
 YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                                            EShaderFormat format,
                                            bool stretch,
-                                           AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+                                           AVColorPrimaries dstPrimaries,
+                                           AVColorPrimaries srcPrimaries,
                                            bool toneMap,
                                            ESCALINGMETHOD method,
                                            std::shared_ptr<GLSLOutput> output)
-: BaseYUV2RGBGLSLShader(rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, output)
+  : BaseYUV2RGBGLSLShader(
+        rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, std::move(output))
 {
   m_scaling = method;
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);

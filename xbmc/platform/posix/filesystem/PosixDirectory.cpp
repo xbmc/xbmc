@@ -102,7 +102,7 @@ bool CPosixDirectory::Create(const CURL& url)
   return true;
 }
 
-bool CPosixDirectory::Create(std::string path)
+bool CPosixDirectory::Create(const std::string& path)
 {
   if (mkdir(path.c_str(), 0755) != 0)
   {

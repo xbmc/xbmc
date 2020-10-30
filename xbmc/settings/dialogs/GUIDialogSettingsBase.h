@@ -83,8 +83,8 @@ protected:
   void OnTimeout() override;
 
   // implementations of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting,
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
                                 const char* propertyName) override;
 
   // new virtual methods
@@ -112,9 +112,11 @@ protected:
     \param pSetting Base settings class which need the name
     \return Name used on settings dialog
    */
-  virtual std::string GetSettingsLabel(std::shared_ptr<ISetting> pSetting);
+  virtual std::string GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting);
 
-  virtual CGUIControl* AddSetting(std::shared_ptr<CSetting> pSetting, float width, int& iControlID);
+  virtual CGUIControl* AddSetting(const std::shared_ptr<CSetting>& pSetting,
+                                  float width,
+                                  int& iControlID);
   virtual CGUIControl* AddSettingControl(CGUIControl* pControl,
                                          BaseSettingControlPtr pSettingControl,
                                          float width,
@@ -141,17 +143,20 @@ protected:
 
     \param pSettingControl Setting control that has been interacted with
    */
-  virtual void OnClick(BaseSettingControlPtr pSettingControl);
+  virtual void OnClick(const BaseSettingControlPtr& pSettingControl);
 
   void UpdateSettingControl(const std::string& settingId, bool updateDisplayOnly = false);
-  void UpdateSettingControl(BaseSettingControlPtr pSettingControl, bool updateDisplayOnly = false);
+  void UpdateSettingControl(const BaseSettingControlPtr& pSettingControl,
+                            bool updateDisplayOnly = false);
   void SetControlLabel(int controlId, const CVariant& label);
 
   BaseSettingControlPtr GetSettingControl(const std::string& setting);
   BaseSettingControlPtr GetSettingControl(int controlId);
 
   CGUIControl* AddSeparator(float width, int& iControlID);
-  CGUIControl* AddGroupLabel(std::shared_ptr<CSettingGroup> group, float width, int& iControlID);
+  CGUIControl* AddGroupLabel(const std::shared_ptr<CSettingGroup>& group,
+                             float width,
+                             int& iControlID);
 
   std::vector<std::shared_ptr<CSettingCategory>> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;

@@ -112,7 +112,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void OnSettingsLoaded() override;
     void OnSettingsUnloaded() override;
 
-    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
     void Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr);
     void Uninitialize(CSettingsManager& settingsMgr);

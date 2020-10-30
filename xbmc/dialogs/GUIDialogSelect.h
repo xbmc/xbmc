@@ -41,7 +41,7 @@ public:
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
   void SetSelected(const std::string &strSelectedLabel);
-  void SetSelected(std::vector<int> selectedIndexes);
+  void SetSelected(const std::vector<int>& selectedIndexes);
   void SetSelected(const std::vector<std::string> &selectedLabels);
   void SetUseDetails(bool useDetails);
   void SetMultiSelection(bool multiSelection);

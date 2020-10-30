@@ -58,7 +58,7 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
 }
 
 void CPeripheralImon::AddSetting(const std::string& strKey,
-                                 std::shared_ptr<const CSetting> setting,
+                                 const std::shared_ptr<const CSetting>& setting,
                                  int order)
 {
 #if !defined(TARGET_WINDOWS)

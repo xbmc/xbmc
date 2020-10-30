@@ -73,29 +73,34 @@ CActiveAESettings::~CActiveAESettings()
   m_instance = nullptr;
 }
 
-void CActiveAESettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CActiveAESettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   CSingleLock lock(m_cs);
   m_instance->m_audioEngine.OnSettingsChange();
 }
 
-void CActiveAESettings::SettingOptionsAudioDevicesFiller(SettingConstPtr setting,
-                                                         std::vector<StringSettingOption> &list,
-                                                         std::string &current, void *data)
+void CActiveAESettings::SettingOptionsAudioDevicesFiller(const SettingConstPtr& setting,
+                                                         std::vector<StringSettingOption>& list,
+                                                         std::string& current,
+                                                         void* data)
 {
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, false);
 }
 
-void CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller(SettingConstPtr setting,
-                                                                    std::vector<StringSettingOption> &list,
-                                                                    std::string &current, void *data)
+void CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller(
+    const SettingConstPtr& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    void* data)
 {
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, true);
 }
 
-void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr setting,
-                                                               std::vector<IntegerSettingOption> &list,
-                                                               int &current, void *data)
+void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(
+    const SettingConstPtr& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
 {
   CSingleLock lock(m_instance->m_cs);
 
@@ -111,9 +116,11 @@ void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr s
     list.emplace_back(g_localizeStrings.Get(38010), AE_QUALITY_GPU);
 }
 
-void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr setting,
-                                                               std::vector<IntegerSettingOption> &list,
-                                                               int &current, void *data)
+void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(
+    const SettingConstPtr& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
 {
   CSingleLock lock(m_instance->m_cs);
 
@@ -130,8 +137,10 @@ void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr s
   }
 }
 
-bool CActiveAESettings::IsSettingVisible(const std::string & condition, const std::string & value,
-                                         SettingConstPtr  setting, void * data)
+bool CActiveAESettings::IsSettingVisible(const std::string& condition,
+                                         const std::string& value,
+                                         const SettingConstPtr& setting,
+                                         void* data)
 {
   if (setting == NULL || value.empty())
     return false;
@@ -143,9 +152,11 @@ bool CActiveAESettings::IsSettingVisible(const std::string & condition, const st
   return m_instance->m_audioEngine.IsSettingVisible(value);
 }
 
-void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(SettingConstPtr setting,
-                                                                std::vector<StringSettingOption> &list,
-                                                                std::string &current, bool passthrough)
+void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(
+    const SettingConstPtr& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    bool passthrough)
 {
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   std::string firstDevice;

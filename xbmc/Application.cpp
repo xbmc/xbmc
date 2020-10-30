@@ -955,7 +955,7 @@ void CApplication::StopServices()
 #endif
 }
 
-void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -1053,7 +1053,7 @@ void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     m_replayGainSettings.bAvoidClipping = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
-void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -1091,7 +1091,9 @@ void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_PICTURES);
 }
 
-bool CApplication::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CApplication::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                                   const char* oldSettingId,
+                                   const TiXmlNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;

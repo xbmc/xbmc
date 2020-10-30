@@ -411,7 +411,7 @@ void CButtonTranslator::UnregisterMapper(IButtonMapper* mapper)
   }
 }
 
-uint32_t CButtonTranslator::TranslateString(std::string strMap, std::string strButton)
+uint32_t CButtonTranslator::TranslateString(const std::string& strMap, const std::string& strButton)
 {
   if (strMap == "KB") // standard keyboard map
   {

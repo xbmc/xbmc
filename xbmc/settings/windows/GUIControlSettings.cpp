@@ -94,7 +94,7 @@ static bool CompareSettingOptionDeseconding(const SettingOption& lhs, const Sett
   return StringUtils::CompareNoCase(lhs.label, rhs.label) > 0;
 }
 
-static bool GetIntegerOptions(SettingConstPtr setting,
+static bool GetIntegerOptions(const SettingConstPtr& setting,
                               IntegerSettingOptions& options,
                               std::set<int>& selectedOptions,
                               ILocalizer* localizer,
@@ -200,7 +200,7 @@ static bool GetIntegerOptions(SettingConstPtr setting,
   return true;
 }
 
-static bool GetStringOptions(SettingConstPtr setting,
+static bool GetStringOptions(const SettingConstPtr& setting,
                              StringSettingOptions& options,
                              std::set<std::string>& selectedOptions,
                              ILocalizer* localizer,
@@ -291,7 +291,11 @@ static bool GetStringOptions(SettingConstPtr setting,
 CGUIControlBaseSetting::CGUIControlBaseSetting(int id,
                                                std::shared_ptr<CSetting> pSetting,
                                                ILocalizer* localizer)
-  : m_id(id), m_pSetting(pSetting), m_localizer(localizer), m_delayed(false), m_valid(true)
+  : m_id(id),
+    m_pSetting(std::move(pSetting)),
+    m_localizer(localizer),
+    m_delayed(false),
+    m_valid(true)
 {
 }
 
@@ -334,7 +338,7 @@ CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonCont
                                                              int id,
                                                              std::shared_ptr<CSetting> pSetting,
                                                              ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pRadioButton = pRadioButton;
   if (m_pRadioButton == NULL)
@@ -366,7 +370,7 @@ CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx* pSpin,
                                                    int id,
                                                    std::shared_ptr<CSetting> pSetting,
                                                    ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pSpin = pSpin;
   if (m_pSpin == NULL)
@@ -564,7 +568,7 @@ CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl* pButton,
                                                int id,
                                                std::shared_ptr<CSetting> pSetting,
                                                ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)
@@ -795,7 +799,7 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
   }
 }
 
-bool CGUIControlListSetting::GetItems(SettingConstPtr setting,
+bool CGUIControlListSetting::GetItems(const SettingConstPtr& setting,
                                       CFileItemList& items,
                                       bool updateItems) const
 {
@@ -824,7 +828,7 @@ bool CGUIControlListSetting::GetItems(SettingConstPtr setting,
   return true;
 }
 
-bool CGUIControlListSetting::GetIntegerItems(SettingConstPtr setting,
+bool CGUIControlListSetting::GetIntegerItems(const SettingConstPtr& setting,
                                              CFileItemList& items,
                                              bool updateItems) const
 {
@@ -841,7 +845,7 @@ bool CGUIControlListSetting::GetIntegerItems(SettingConstPtr setting,
   return true;
 }
 
-bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting,
+bool CGUIControlListSetting::GetStringItems(const SettingConstPtr& setting,
                                             CFileItemList& items,
                                             bool updateItems) const
 {
@@ -862,7 +866,7 @@ CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl* pButton,
                                                    int id,
                                                    std::shared_ptr<CSetting> pSetting,
                                                    ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)
@@ -1102,7 +1106,7 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
   m_pButton->SetLabel2(strText);
 }
 
-bool CGUIControlButtonSetting::GetPath(std::shared_ptr<CSettingPath> pathSetting,
+bool CGUIControlButtonSetting::GetPath(const std::shared_ptr<CSettingPath>& pathSetting,
                                        ILocalizer* localizer)
 {
   if (pathSetting == NULL)
@@ -1201,7 +1205,7 @@ void CGUIControlButtonSetting::OnSliderChange(void* data, CGUISliderControl* sli
 
 CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl* pEdit,
                                                int id,
-                                               std::shared_ptr<CSetting> pSetting,
+                                               const std::shared_ptr<CSetting>& pSetting,
                                                ILocalizer* localizer)
   : CGUIControlBaseSetting(id, pSetting, localizer)
 {
@@ -1301,7 +1305,7 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl* pS
                                                    int id,
                                                    std::shared_ptr<CSetting> pSetting,
                                                    ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pSlider = pSlider;
   if (m_pSlider == NULL)
@@ -1423,7 +1427,7 @@ void CGUIControlSliderSetting::Update(bool fromControl, bool updateDisplayOnly)
     m_pSlider->SetTextValue(strText);
 }
 
-std::string CGUIControlSliderSetting::GetText(std::shared_ptr<CSetting> setting,
+std::string CGUIControlSliderSetting::GetText(const std::shared_ptr<CSetting>& setting,
                                               const CVariant& value,
                                               const CVariant& minimum,
                                               const CVariant& step,
@@ -1484,7 +1488,7 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl* pSli
                                                  int id,
                                                  std::shared_ptr<CSetting> pSetting,
                                                  ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pSlider = pSlider;
   if (m_pSlider == NULL)
@@ -1723,7 +1727,7 @@ CGUIControlLabelSetting::CGUIControlLabelSetting(CGUIButtonControl* pButton,
                                                  int id,
                                                  std::shared_ptr<CSetting> pSetting,
                                                  ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, pSetting, localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)

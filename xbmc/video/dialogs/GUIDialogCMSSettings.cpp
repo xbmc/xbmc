@@ -171,7 +171,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
   settingCmsLutSize->SetDependencies(depsCmsIcc);
 }
 
-void CGUIDialogCMSSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogCMSSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -209,11 +209,10 @@ void CGUIDialogCMSSettings::Save()
   CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 }
 
-void CGUIDialogCMSSettings::Cms3dLutsFiller(
-    SettingConstPtr setting,
-    std::vector<StringSettingOption> &list,
-    std::string &current,
-    void *data)
+void CGUIDialogCMSSettings::Cms3dLutsFiller(const SettingConstPtr& setting,
+                                            std::vector<StringSettingOption>& list,
+                                            std::string& current,
+                                            void* data)
 {
   // get 3dLut directory from settings
   CFileItemList items;

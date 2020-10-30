@@ -31,7 +31,7 @@ std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject(bool nee
 }
 
 void CBufferObjectFactory::RegisterBufferObject(
-    std::function<std::unique_ptr<CBufferObject>()> createFunc)
+    const std::function<std::unique_ptr<CBufferObject>()>& createFunc)
 {
   m_bufferObjects.emplace_front(createFunc);
 }

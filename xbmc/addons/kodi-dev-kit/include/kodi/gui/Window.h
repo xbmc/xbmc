@@ -451,7 +451,7 @@ public:
   /// @param[in] item List item to add
   /// @param[in] itemPosition [opt] The position for item, default is on end
   ///
-  void AddListItem(std::shared_ptr<CListItem> item, int itemPosition = -1)
+  void AddListItem(const std::shared_ptr<CListItem>& item, int itemPosition = -1)
   {
     m_interface->kodi_gui->window->add_list_item(m_interface->kodiBase, m_controlHandle,
                                                  item->m_controlHandle, itemPosition);
@@ -465,7 +465,7 @@ public:
   /// @param[in] item List item to add
   /// @param[in] itemPosition [opt] The position for item, default is on end
   ///
-  void AddListItem(const std::string item, int itemPosition = -1)
+  void AddListItem(const std::string& item, int itemPosition = -1)
   {
     m_interface->kodi_gui->window->add_list_item(
         m_interface->kodiBase, m_controlHandle,
@@ -492,7 +492,7 @@ public:
   ///
   /// @param[in] item List item control class to remove
   ///
-  void RemoveListItem(std::shared_ptr<CListItem> item)
+  void RemoveListItem(const std::shared_ptr<CListItem>& item)
   {
     m_interface->kodi_gui->window->remove_list_item(m_interface->kodiBase, m_controlHandle,
                                                     item->m_controlHandle);

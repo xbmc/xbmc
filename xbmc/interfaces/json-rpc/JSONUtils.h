@@ -120,7 +120,13 @@ namespace JSONRPC
      the given object is not an array) or for a parameter at the
      given position (if the given object is an array).
      */
-    static inline bool ParameterExists(const CVariant &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) || (parameterObject.isArray() && parameterObject.size() > position); }
+    static inline bool ParameterExists(const CVariant& parameterObject,
+                                       const std::string& key,
+                                       unsigned int position)
+    {
+      return IsValueMember(parameterObject, key) ||
+             (parameterObject.isArray() && parameterObject.size() > position);
+    }
 
     /*!
      \brief Checks if the given object contains a value
@@ -130,7 +136,10 @@ namespace JSONRPC
      \return True if the given object contains a member with
      the given key otherwise false
      */
-    static inline bool IsValueMember(const CVariant &value, std::string key) { return value.isMember(key); }
+    static inline bool IsValueMember(const CVariant& value, const std::string& key)
+    {
+      return value.isMember(key);
+    }
 
     /*!
      \brief Returns the json value of a parameter
@@ -144,7 +153,12 @@ namespace JSONRPC
      the given object is not an array) or of the parameter at the
      given position (if the given object is an array).
      */
-    static inline CVariant GetParameter(const CVariant &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) ? parameterObject[key] : parameterObject[position]; }
+    static inline CVariant GetParameter(const CVariant& parameterObject,
+                                        const std::string& key,
+                                        unsigned int position)
+    {
+      return IsValueMember(parameterObject, key) ? parameterObject[key] : parameterObject[position];
+    }
 
     /*!
      \brief Returns the json value of a parameter or the given
@@ -161,7 +175,17 @@ namespace JSONRPC
      given position (if the given object is an array). If the
      parameter does not exist the given default value is returned.
      */
-    static inline CVariant GetParameter(const CVariant &parameterObject, std::string key, unsigned int position, CVariant fallback) { return IsValueMember(parameterObject, key) ? parameterObject[key] : ((parameterObject.isArray() && parameterObject.size() > position) ? parameterObject[position] : fallback); }
+    static inline CVariant GetParameter(const CVariant& parameterObject,
+                                        const std::string& key,
+                                        unsigned int position,
+                                        const CVariant& fallback)
+    {
+      return IsValueMember(parameterObject, key)
+                 ? parameterObject[key]
+                 : ((parameterObject.isArray() && parameterObject.size() > position)
+                        ? parameterObject[position]
+                        : fallback);
+    }
 
     /*!
      \brief Returns the given json value as a string
@@ -187,7 +211,7 @@ namespace JSONRPC
      \param transport String representation of the TransportLayerCapability
      \return TransportLayerCapability value of the given string representation
      */
-    static inline TransportLayerCapability StringToTransportLayer(std::string transport)
+    static inline TransportLayerCapability StringToTransportLayer(const std::string& transport)
     {
       if (transport.compare("Announcing") == 0)
         return Announcing;
@@ -205,7 +229,7 @@ namespace JSONRPC
      \param valueType String representation of the JSONSchemaType
      \return JSONSchemaType value of the given string representation
      */
-    static inline JSONSchemaType StringToSchemaValueType(std::string valueType)
+    static inline JSONSchemaType StringToSchemaValueType(const std::string& valueType)
     {
       if (valueType.compare("null") == 0)
         return NullValue;
@@ -417,7 +441,10 @@ namespace JSONRPC
 
     static inline bool HasType(JSONSchemaType typeObject, JSONSchemaType type) { return (typeObject & type) == type; }
 
-    static inline bool ParameterNotNull(const CVariant &parameterObject, std::string key) { return parameterObject.isMember(key) && !parameterObject[key].isNull(); }
+    static inline bool ParameterNotNull(const CVariant& parameterObject, const std::string& key)
+    {
+      return parameterObject.isMember(key) && !parameterObject[key].isNull();
+    }
 
     /*!
      \brief Copies the values from the jsonStringArray to the stringArray.

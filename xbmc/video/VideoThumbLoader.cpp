@@ -232,7 +232,7 @@ std::vector<std::string> GetSettingListAsString(const std::string& settingID)
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(settingID);
   std::vector<std::string> result;
   std::transform(values.begin(), values.end(), std::back_inserter(result),
-    [](CVariant s) { return s.asString(); });
+                 [](const CVariant& s) { return s.asString(); });
   return result;
 }
 

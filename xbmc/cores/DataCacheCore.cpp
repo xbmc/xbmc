@@ -12,6 +12,8 @@
 #include "cores/Cut.h"
 #include "threads/SingleLock.h"
 
+#include <utility>
+
 CDataCacheCore::CDataCacheCore() :
   m_playerVideoInfo {},
   m_playerAudioInfo {},
@@ -76,7 +78,7 @@ void CDataCacheCore::SetVideoDecoderName(std::string name, bool isHw)
 {
   CSingleLock lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.decoderName = name;
+  m_playerVideoInfo.decoderName = std::move(name);
   m_playerVideoInfo.isHwDecoder = isHw;
 }
 
@@ -99,7 +101,7 @@ void CDataCacheCore::SetVideoDeintMethod(std::string method)
 {
   CSingleLock lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.deintMethod = method;
+  m_playerVideoInfo.deintMethod = std::move(method);
 }
 
 std::string CDataCacheCore::GetVideoDeintMethod()
@@ -113,7 +115,7 @@ void CDataCacheCore::SetVideoPixelFormat(std::string pixFormat)
 {
   CSingleLock lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.pixFormat = pixFormat;
+  m_playerVideoInfo.pixFormat = std::move(pixFormat);
 }
 
 std::string CDataCacheCore::GetVideoPixelFormat()
@@ -127,7 +129,7 @@ void CDataCacheCore::SetVideoStereoMode(std::string mode)
 {
   CSingleLock lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.stereoMode = mode;
+  m_playerVideoInfo.stereoMode = std::move(mode);
 }
 
 std::string CDataCacheCore::GetVideoStereoMode()
@@ -192,7 +194,7 @@ void CDataCacheCore::SetAudioDecoderName(std::string name)
 {
   CSingleLock lock(m_audioPlayerSection);
 
-  m_playerAudioInfo.decoderName = name;
+  m_playerAudioInfo.decoderName = std::move(name);
 }
 
 std::string CDataCacheCore::GetAudioDecoderName()
@@ -206,7 +208,7 @@ void CDataCacheCore::SetAudioChannels(std::string channels)
 {
   CSingleLock lock(m_audioPlayerSection);
 
-  m_playerAudioInfo.channels = channels;
+  m_playerAudioInfo.channels = std::move(channels);
 }
 
 std::string CDataCacheCore::GetAudioChannels()

@@ -12,6 +12,7 @@
 #include "settings/AdvancedSettings.h"
 
 #include <set>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -46,10 +47,10 @@ protected:
     database.UpdateRepositoryContent("repository.b", AddonVersion("1.0.0"), "test", addons);
   }
 
-  void CreateAddon(std::vector<AddonInfoPtr>& addons, std::string id, std::string version)
+  void CreateAddon(std::vector<AddonInfoPtr>& addons, std::string id, const std::string& version)
   {
     CAddonInfoBuilder::CFromDB builder;
-    builder.SetId(id);
+    builder.SetId(std::move(id));
     builder.SetVersion(AddonVersion(version));
     addons.push_back(builder.get());
   }

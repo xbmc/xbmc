@@ -22,7 +22,9 @@ class CNetworkAndroid;
 class CNetworkInterfaceAndroid : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceAndroid(CJNINetwork network, CJNILinkProperties lp, CJNINetworkInterface intf);
+  CNetworkInterfaceAndroid(const CJNINetwork& network,
+                           const CJNILinkProperties& lp,
+                           const CJNINetworkInterface& intf);
   std::vector<std::string> GetNameServers();
 
   // CNetworkInterface interface

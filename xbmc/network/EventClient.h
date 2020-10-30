@@ -19,6 +19,7 @@
 #include <list>
 #include <map>
 #include <queue>
+#include <utility>
 
 namespace EVENTCLIENT
 {
@@ -63,9 +64,8 @@ namespace EVENTCLIENT
                       float fAmount,
                       bool isAxis,
                       bool bRepeat,
-                      bool bUseAmount):
-      m_buttonName(buttonName),
-      m_mapName(mapName)
+                      bool bUseAmount)
+      : m_buttonName(std::move(buttonName)), m_mapName(std::move(mapName))
     {
       m_iKeyCode   = iKeyCode;
       m_fAmount    = fAmount;

@@ -295,7 +295,7 @@ void CGUIDialogSelect::SetSelected(const std::string &strSelectedLabel)
   }
 }
 
-void CGUIDialogSelect::SetSelected(std::vector<int> selectedIndexes)
+void CGUIDialogSelect::SetSelected(const std::vector<int>& selectedIndexes)
 {
   for (auto i : selectedIndexes)
     SetSelected(i);

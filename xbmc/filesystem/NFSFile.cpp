@@ -376,7 +376,7 @@ void CNfsConnection::removeFromKeepAliveList(struct nfsfh  *_pFileHandle)
 }
 
 //reset timeouts on read
-void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle)
+void CNfsConnection::resetKeepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle)
 {
   CSingleLock lock(keepAliveLock);
   //refresh last access time of the context aswell
@@ -397,7 +397,7 @@ void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFi
 //keep alive the filehandles nfs connection
 //by blindly doing a read 32bytes - seek back to where
 //we were before
-void CNfsConnection::keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle)
+void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle)
 {
   uint64_t offset = 0;
   char buffer[32];

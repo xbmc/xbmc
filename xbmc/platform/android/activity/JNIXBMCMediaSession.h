@@ -39,7 +39,7 @@ public:
   void OnRewindRequested();
   void OnStopRequested();
   void OnSeekRequested(int64_t pos);
-  bool OnMediaButtonEvent(CJNIIntent intent);
+  bool OnMediaButtonEvent(const CJNIIntent& intent);
   bool isActive() const;
 
 protected:

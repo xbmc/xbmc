@@ -227,7 +227,10 @@ void CSeekHandler::FrameMove()
   }
 }
 
-void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CSeekHandler::SettingOptionsSeekStepsFiller(const SettingConstPtr& setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data)
 {
   std::string label;
   for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
@@ -242,7 +245,7 @@ void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::v
   }
 }
 
-void CSeekHandler::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CSeekHandler::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

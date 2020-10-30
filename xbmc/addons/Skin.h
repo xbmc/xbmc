@@ -169,10 +169,22 @@ public:
   void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
-  static void SettingOptionsSkinColorsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
-  static void SettingOptionsSkinFontsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
-  static void SettingOptionsSkinThemesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
-  static void SettingOptionsStartupWindowsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
+  static void SettingOptionsSkinColorsFiller(const std::shared_ptr<const CSetting>& setting,
+                                             std::vector<StringSettingOption>& list,
+                                             std::string& current,
+                                             void* data);
+  static void SettingOptionsSkinFontsFiller(const std::shared_ptr<const CSetting>& setting,
+                                            std::vector<StringSettingOption>& list,
+                                            std::string& current,
+                                            void* data);
+  static void SettingOptionsSkinThemesFiller(const std::shared_ptr<const CSetting>& setting,
+                                             std::vector<StringSettingOption>& list,
+                                             std::string& current,
+                                             void* data);
+  static void SettingOptionsStartupWindowsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data);
 
   /*! \brief Don't handle skin settings like normal addon settings
    */

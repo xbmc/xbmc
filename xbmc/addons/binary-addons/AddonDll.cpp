@@ -22,13 +22,15 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <utility>
+
 using namespace KODI::MESSAGING;
 
 namespace ADDON
 {
 
 CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
-  : CAddon(addonInfo, addonInfo->MainType()), m_binaryAddonBase(addonBase)
+  : CAddon(addonInfo, addonInfo->MainType()), m_binaryAddonBase(std::move(addonBase))
 {
 }
 

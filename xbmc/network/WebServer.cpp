@@ -533,7 +533,7 @@ void CWebServer::SetupPostDataProcessing(const HTTPRequest& request,
                                          std::shared_ptr<IHTTPRequestHandler> handler,
                                          void** con_cls) const
 {
-  connectionHandler->requestHandler = handler;
+  connectionHandler->requestHandler = std::move(handler);
 
   // we might need to handle the POST data ourselves which is done in the next call to
   // AnswerToConnection

@@ -15,8 +15,12 @@
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
 
-CShellSurfaceWlShell::CShellSurfaceWlShell(IShellSurfaceHandler& handler, CConnection& connection, const wayland::surface_t& surface, std::string title, std::string class_)
-: m_handler{handler}
+CShellSurfaceWlShell::CShellSurfaceWlShell(IShellSurfaceHandler& handler,
+                                           CConnection& connection,
+                                           const wayland::surface_t& surface,
+                                           const std::string& title,
+                                           const std::string& class_)
+  : m_handler{handler}
 {
   {
     CRegistry registry{connection};
@@ -33,8 +37,8 @@ CShellSurfaceWlShell::CShellSurfaceWlShell(IShellSurfaceHandler& handler, CConne
   {
     m_shellSurface.pong(serial);
   };
-  m_shellSurface.on_configure() = [this](wayland::shell_surface_resize, std::int32_t width, std::int32_t height)
-  {
+  m_shellSurface.on_configure() = [this](const wayland::shell_surface_resize&, std::int32_t width,
+                                         std::int32_t height) {
     // wl_shell does not have serials
     m_handler.OnConfigure(0, {width, height}, m_surfaceState);
   };

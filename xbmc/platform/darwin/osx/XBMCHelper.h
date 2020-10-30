@@ -25,7 +25,7 @@ class XBMCHelper : public ISettingCallback
  public:
   static XBMCHelper& GetInstance();
 
-  bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
 
   void Start();
   void Stop();

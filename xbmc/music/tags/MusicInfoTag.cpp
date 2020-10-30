@@ -758,7 +758,7 @@ void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
   m_albumReleaseType = releaseType;
 }
 
-void CMusicInfoTag::SetType(const MediaType mediaType)
+void CMusicInfoTag::SetType(const MediaType& mediaType)
 {
   m_type = mediaType;
 }

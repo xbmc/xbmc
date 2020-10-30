@@ -716,13 +716,16 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
   }
 }
 
-PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName, PVRClientFunction function) const
+PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
+                                         const PVRClientFunction& function) const
 {
   std::vector<int> failedClients;
   return ForCreatedClients(strFunctionName, function, failedClients);
 }
 
-PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int>& failedClients) const
+PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
+                                         const PVRClientFunction& function,
+                                         std::vector<int>& failedClients) const
 {
   PVR_ERROR lastError = PVR_ERROR_NO_ERROR;
 

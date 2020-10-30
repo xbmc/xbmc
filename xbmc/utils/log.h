@@ -46,7 +46,7 @@ public:
   void OnSettingsLoaded() override;
 
   // implementation of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   void Initialize(const std::string& path);
   void Uninitialize();
@@ -56,7 +56,7 @@ public:
   bool IsLogLevelLogged(int loglevel);
 
   bool CanLogComponent(uint32_t component) const;
-  static void SettingOptionsLoggingComponentsFiller(std::shared_ptr<const CSetting> setting,
+  static void SettingOptionsLoggingComponentsFiller(const std::shared_ptr<const CSetting>& setting,
                                                     std::vector<IntegerSettingOption>& list,
                                                     int& current,
                                                     void* data);

@@ -255,12 +255,11 @@ NPT_String CUPnPServer::BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
 /*----------------------------------------------------------------------
 |   CUPnPServer::Build
 +---------------------------------------------------------------------*/
-PLT_MediaObject*
-CUPnPServer::Build(CFileItemPtr                  item,
-                   bool                          with_count,
-                   const PLT_HttpRequestContext& context,
-                   NPT_Reference<CThumbLoader>&  thumb_loader,
-                   const char*                   parent_id /* = NULL */)
+PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
+                                    bool with_count,
+                                    const PLT_HttpRequestContext& context,
+                                    NPT_Reference<CThumbLoader>& thumb_loader,
+                                    const char* parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
     NPT_String       path = item->GetPath().c_str();
@@ -491,7 +490,7 @@ void CUPnPServer::Announce(AnnouncementFlag flag,
 /*----------------------------------------------------------------------
 |   TranslateWMPObjectId
 +---------------------------------------------------------------------*/
-static NPT_String TranslateWMPObjectId(NPT_String id, Logger logger)
+static NPT_String TranslateWMPObjectId(NPT_String id, const Logger& logger)
 {
     if (id == "0") {
         id = "virtualpath://upnproot/";
@@ -1244,8 +1243,8 @@ CUPnPServer::DefaultSortItems(CFileItemList& items)
   }
 }
 
-NPT_Result
-CUPnPServer::AddSubtitleUriForSecResponse(NPT_String movie_md5, NPT_String subtitle_uri)
+NPT_Result CUPnPServer::AddSubtitleUriForSecResponse(const NPT_String& movie_md5,
+                                                     const NPT_String& subtitle_uri)
 {
   /* using existing m_FileMap to store subtitle uri for movie,
      adding subtitle:// prefix, because there is already entry for movie md5 with movie path */

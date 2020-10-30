@@ -24,7 +24,7 @@ public:
   CButtonStat();
   ~CButtonStat() = default;
 
-  CKey TranslateKey(CKey key) const;
+  CKey TranslateKey(const CKey& key) const;
 };
 } // namespace INPUT
 } // namespace KODI

@@ -274,7 +274,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
   return false;
 }
 
-void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -299,7 +299,7 @@ void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> set
   }
 }
 
-void CPVRGUIActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

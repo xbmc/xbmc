@@ -23,6 +23,7 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include <va/va.h>
@@ -190,7 +191,8 @@ public:
 class COutputControlProtocol : public Protocol
 {
 public:
-  COutputControlProtocol(std::string name, CEvent* inEvent, CEvent *outEvent) : Protocol(name, inEvent, outEvent) {};
+  COutputControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : Protocol(std::move(name), inEvent, outEvent){};
   enum OutSignal
   {
     INIT,
@@ -209,7 +211,8 @@ public:
 class COutputDataProtocol : public Protocol
 {
 public:
-  COutputDataProtocol(std::string name, CEvent* inEvent, CEvent *outEvent) : Protocol(name, inEvent, outEvent) {};
+  COutputDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : Protocol(std::move(name), inEvent, outEvent){};
   enum OutSignal
   {
     NEWFRAME = 0,

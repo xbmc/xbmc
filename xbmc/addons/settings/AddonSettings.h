@@ -31,7 +31,7 @@ namespace ADDON
   class CAddonSettings : public CSettingsBase, public CSettingCreator, public CSettingControlCreator, public ISettingCallback
   {
   public:
-    explicit CAddonSettings(std::shared_ptr<const IAddon> addon);
+    explicit CAddonSettings(const std::shared_ptr<const IAddon>& addon);
     ~CAddonSettings() override = default;
 
     // specialization of CSettingsBase
@@ -45,7 +45,7 @@ namespace ADDON
     std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
 
     // implementation of ISettingCallback
-    void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
     std::shared_ptr<const IAddon> GetAddon() { return m_addon.lock(); }
 
@@ -76,12 +76,17 @@ namespace ADDON
 
     bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
 
-    std::shared_ptr<CSettingGroup> ParseOldSettingElement(const TiXmlElement *categoryElement, std::shared_ptr<CSettingCategory> category, std::set<std::string>& settingIds);
+    std::shared_ptr<CSettingGroup> ParseOldSettingElement(
+        const TiXmlElement* categoryElement,
+        const std::shared_ptr<CSettingCategory>& category,
+        std::set<std::string>& settingIds);
 
     std::shared_ptr<CSettingCategory> ParseOldCategoryElement(uint32_t &categoryId, const TiXmlElement * categoryElement, std::set<std::string>& settingIds);
 
     bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
-    std::shared_ptr<CSetting> InitializeFromOldSettingAction(std::string settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
+    std::shared_ptr<CSetting> InitializeFromOldSettingAction(const std::string& settingId,
+                                                             const TiXmlElement* settingElement,
+                                                             const std::string& defaultValue);
     std::shared_ptr<CSetting> InitializeFromOldSettingLabel();
     std::shared_ptr<CSetting> InitializeFromOldSettingBool(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
     std::shared_ptr<CSetting> InitializeFromOldSettingTextIpAddress(const std::string& settingId, const std::string& settingType, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
@@ -107,11 +112,17 @@ namespace ADDON
       std::string m_value;
     };
 
-    bool ParseOldLabel(const TiXmlElement* element, const std::string settingId, int& labelId);
-    bool ParseOldCondition(std::shared_ptr<const CSetting> setting, const std::vector<std::shared_ptr<const CSetting>> settings, const std::string& condition, CSettingDependency& dependeny) const;
+    bool ParseOldLabel(const TiXmlElement* element, const std::string& settingId, int& labelId);
+    bool ParseOldCondition(const std::shared_ptr<const CSetting>& setting,
+                           const std::vector<std::shared_ptr<const CSetting>>& settings,
+                           const std::string& condition,
+                           CSettingDependency& dependeny) const;
     static bool ParseOldConditionExpression(std::string str, ConditionExpression& expression);
 
-    static void FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+    static void FileEnumSettingOptionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                             std::vector<StringSettingOption>& list,
+                                             std::string& current,
+                                             void* data);
 
     std::weak_ptr<const IAddon> m_addon;
     // store these values so that we don't always have to access the weak pointer

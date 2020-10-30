@@ -149,7 +149,7 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   CInfoLoader::OnJobComplete(jobID, success, job);
 }
 
-void CWeatherManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -165,7 +165,7 @@ void CWeatherManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CWeatherManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

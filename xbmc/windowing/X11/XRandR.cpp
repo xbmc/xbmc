@@ -228,7 +228,7 @@ void CXRandR::SaveState()
   Query(true);
 }
 
-bool CXRandR::SetMode(XOutput output, XMode mode)
+bool CXRandR::SetMode(const XOutput& output, const XMode& mode)
 {
   if ((output.name == "" && mode.id == ""))
     return true;

@@ -2316,7 +2316,10 @@ bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
   return ExecuteQuery(PrepareSQL("DELETE FROM song_artist WHERE idSong = %i", idSong));
 }
 
-bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, int iOrder)
+bool CMusicDatabase::AddAlbumArtist(int idArtist,
+                                    int idAlbum,
+                                    const std::string& strArtist,
+                                    int iOrder)
 {
   std::string strSQL;
   strSQL = PrepareSQL("replace into album_artist (idArtist, idAlbum, strArtist, iOrder) values(%i,%i,'%s',%i)",
@@ -10675,7 +10678,7 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperAll(const std::string & strBaseDir, const ADDON::ScraperPtr scraper)
+bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper)
 {
   if (nullptr == m_pDB)
     return false;
@@ -10752,7 +10755,9 @@ bool CMusicDatabase::SetScraperAll(const std::string & strBaseDir, const ADDON::
   return false;
 }
 
-bool CMusicDatabase::SetScraper(int id, const CONTENT_TYPE &content, const ADDON::ScraperPtr scraper)
+bool CMusicDatabase::SetScraper(int id,
+                                const CONTENT_TYPE& content,
+                                const ADDON::ScraperPtr& scraper)
 {
   if (nullptr == m_pDB)
     return false;

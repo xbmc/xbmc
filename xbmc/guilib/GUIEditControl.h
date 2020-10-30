@@ -61,7 +61,7 @@ public:
   unsigned int GetCursorPosition() const;
   void SetCursorPosition(unsigned int iPosition);
 
-  void SetInputType(INPUT_TYPE type, CVariant heading);
+  void SetInputType(INPUT_TYPE type, const CVariant& heading);
 
   void SetTextChangeActions(const CGUIAction& textChangeActions) { m_textChangeActions = textChangeActions; };
 

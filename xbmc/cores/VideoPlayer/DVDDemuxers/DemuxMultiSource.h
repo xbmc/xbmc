@@ -20,7 +20,7 @@
 typedef std::shared_ptr<CDVDDemux> DemuxPtr;
 
 struct comparator{
-  bool operator() (std::pair<double, DemuxPtr> x, std::pair<double, DemuxPtr> y) const
+  bool operator()(const std::pair<double, DemuxPtr>& x, const std::pair<double, DemuxPtr>& y) const
   {
     return x.first > y.first;
   }
@@ -35,7 +35,7 @@ public:
   CDemuxMultiSource();
   ~CDemuxMultiSource() override;
 
-  bool Open(std::shared_ptr<CDVDInputStream> pInput);
+  bool Open(const std::shared_ptr<CDVDInputStream>& pInput);
 
   // implementation of CDVDDemux
   void Abort() override;
@@ -55,7 +55,7 @@ protected:
 
 private:
   void Dispose();
-  void SetMissingStreamDetails(DemuxPtr demuxer);
+  void SetMissingStreamDetails(const DemuxPtr& demuxer);
 
   std::shared_ptr<InputStreamMultiStreams> m_pInput = NULL;
   std::map<DemuxPtr, InputStreamPtr> m_DemuxerToInputStreamMap;

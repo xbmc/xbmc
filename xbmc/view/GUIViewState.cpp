@@ -553,7 +553,7 @@ void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewSta
     settings->Save();
 }
 
-void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)
+void CGUIViewState::AddPlaylistOrder(const CFileItemList& items, const LABEL_MASKS& label_masks)
 {
   SortBy sortBy = SortByPlaylistOrder;
   int sortLabel = 559;

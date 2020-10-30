@@ -1508,7 +1508,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
  *
  * This function is called by OnClick()
  */
-bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
+bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   //play and add current directory to temporary playlist
   int iPlaylist = m_guiState->GetPlaylist();

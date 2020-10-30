@@ -570,7 +570,7 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
   return true;
 }
 
-void CGUIPassword::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIPassword::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

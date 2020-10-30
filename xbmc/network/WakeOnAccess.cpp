@@ -760,7 +760,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
 }
 
-void CWakeOnAccess::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CWakeOnAccess::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

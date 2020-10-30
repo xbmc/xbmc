@@ -418,7 +418,9 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   return true;
 }
 
-bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType, AddonInfoPtr info, const TiXmlElement* child)
+bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType,
+                                      const AddonInfoPtr& info,
+                                      const TiXmlElement* child)
 {
   if (child)
   {

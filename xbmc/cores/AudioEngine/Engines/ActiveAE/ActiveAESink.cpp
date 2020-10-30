@@ -205,7 +205,7 @@ bool CActiveAESink::NeedIECPacking()
   return true;
 }
 
-bool CActiveAESink::DeviceExist(std::string driver, std::string device)
+bool CActiveAESink::DeviceExist(std::string driver, const std::string& device)
 {
   if (driver.empty() && m_sink)
     driver = m_sink->GetName();

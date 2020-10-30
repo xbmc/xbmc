@@ -121,7 +121,7 @@ bool PERIPHERALS::CPeripheralBusDarwinEmbedded::PerformDeviceScan(PeripheralScan
 }
 
 void PERIPHERALS::CPeripheralBusDarwinEmbedded::SetScanResults(
-    const PERIPHERALS::PeripheralScanResults resScanResults)
+    const PERIPHERALS::PeripheralScanResults& resScanResults)
 {
   CSingleLock lock(m_critSectionResults);
   m_scanResults = resScanResults;
@@ -214,12 +214,12 @@ PERIPHERALS::PeripheralScanResults PERIPHERALS::CPeripheralBusDarwinEmbedded::Ge
   return [m_peripheralDarwinEmbedded->callbackClass GetInputDevices];
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::callOnDeviceAdded(const std::string strLocation)
+void PERIPHERALS::CPeripheralBusDarwinEmbedded::callOnDeviceAdded(const std::string& strLocation)
 {
   OnDeviceAdded(strLocation);
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::callOnDeviceRemoved(const std::string strLocation)
+void PERIPHERALS::CPeripheralBusDarwinEmbedded::callOnDeviceRemoved(const std::string& strLocation)
 {
   OnDeviceRemoved(strLocation);
 }

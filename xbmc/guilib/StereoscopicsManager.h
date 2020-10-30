@@ -59,7 +59,7 @@ public:
   static CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
   static std::string NormalizeStereoMode(const std::string &mode);
 
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnStreamChange();
   bool OnMessage(CGUIMessage &message) override;
   /*!

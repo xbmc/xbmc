@@ -16,6 +16,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace ADDON
@@ -78,11 +79,14 @@ struct DependencyInfo
   std::string id;
   AddonVersion versionMin, version;
   bool optional;
-  DependencyInfo(std::string id, AddonVersion versionMin, AddonVersion version, bool optional)
-    : id(id)
-    , versionMin(versionMin.empty() ? version : versionMin)
-    , version(version)
-    , optional(optional)
+  DependencyInfo(std::string id,
+                 const AddonVersion& versionMin,
+                 const AddonVersion& version,
+                 bool optional)
+    : id(std::move(id)),
+      versionMin(versionMin.empty() ? version : versionMin),
+      version(version),
+      optional(optional)
   {
   }
 

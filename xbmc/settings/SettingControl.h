@@ -168,7 +168,8 @@ protected:
 };
 
 class CSetting;
-using SettingControlListValueFormatter = std::string (*)(std::shared_ptr<const CSetting> setting);
+using SettingControlListValueFormatter =
+    std::string (*)(const std::shared_ptr<const CSetting>& setting);
 
 class CSettingControlList : public CSettingControlFormattedRange
 {
@@ -204,7 +205,12 @@ protected:
 };
 
 class CSettingControlSlider;
-using SettingControlSliderFormatter = std::string (*)(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
+using SettingControlSliderFormatter =
+    std::string (*)(const std::shared_ptr<const CSettingControlSlider>& control,
+                    const CVariant& value,
+                    const CVariant& minimum,
+                    const CVariant& step,
+                    const CVariant& maximum);
 
 class CSettingControlSlider : public ISettingControl
 {

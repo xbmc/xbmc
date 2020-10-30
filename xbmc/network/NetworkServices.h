@@ -32,9 +32,11 @@ public:
   CNetworkServices();
   ~CNetworkServices() override;
 
-  bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                       const char* oldSettingId,
+                       const TiXmlNode* oldSettingNode) override;
 
   void Start();
   void Stop(bool bWait);

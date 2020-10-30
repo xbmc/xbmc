@@ -113,7 +113,8 @@ void CPVRClientMenuHooks::Clear()
   m_hooks.reset();
 }
 
-std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(std::function<bool(const CPVRClientMenuHook& hook)> function) const
+std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(
+    const std::function<bool(const CPVRClientMenuHook& hook)>& function) const
 {
   std::vector<CPVRClientMenuHook> hooks;
 

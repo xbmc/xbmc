@@ -23,7 +23,7 @@ class CPosixTimezone : public ISettingCallback, public ISettingsHandler
 public:
    CPosixTimezone();
 
-   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
    void OnSettingsLoaded() override;
 
@@ -33,11 +33,17 @@ public:
    std::vector<std::string> GetTimezonesByCountry(const std::string& country);
    std::string GetCountryByTimezone(const std::string& timezone);
 
-   void SetTimezone(std::string timezone);
+  void SetTimezone(const std::string& timezone);
    int m_IsDST = 0;
 
-   static void SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
-   static void SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsTimezoneCountriesFiller(const std::shared_ptr<const CSetting>& setting,
+                                                    std::vector<StringSettingOption>& list,
+                                                    std::string& current,
+                                                    void* data);
+  static void SettingOptionsTimezonesFiller(const std::shared_ptr<const CSetting>& setting,
+                                            std::vector<StringSettingOption>& list,
+                                            std::string& current,
+                                            void* data);
 
 private:
    std::vector<std::string> m_counties;

@@ -79,7 +79,7 @@ void CGUIDialogLibExportSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogLibExportSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogLibExportSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (!setting)
     return;
@@ -136,7 +136,7 @@ void CGUIDialogLibExportSettings::OnSettingChanged(std::shared_ptr<const CSettin
   }
 }
 
-void CGUIDialogLibExportSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -427,7 +427,7 @@ void CGUIDialogLibExportSettings::SetFocus(const std::string &settingid)
     SET_CONTROL_FOCUS(settingControl->GetID(), 0);
 }
 
-int CGUIDialogLibExportSettings::GetExportItemsFromSetting(SettingConstPtr setting)
+int CGUIDialogLibExportSettings::GetExportItemsFromSetting(const SettingConstPtr& setting)
 {
   std::shared_ptr<const CSettingList> settingList = std::static_pointer_cast<const CSettingList>(setting);
   if (settingList->GetElementType() != SettingType::Integer)

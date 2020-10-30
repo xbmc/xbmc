@@ -36,15 +36,16 @@ namespace MUSIC_UTILS
     std::string m_artType;
     std::string m_newArt;
   public:
-    CSetArtJob(const CFileItemPtr item, const std::string& type, const std::string& newArt) :
-      pItem(item),
-      m_artType(type),
-      m_newArt(newArt)
+    CSetArtJob(const CFileItemPtr& item, const std::string& type, const std::string& newArt)
+      : pItem(item), m_artType(type), m_newArt(newArt)
     { }
 
     ~CSetArtJob(void) override = default;
 
-    bool HasSongExtraArtChanged(const CFileItemPtr pSongItem, const std::string& type, const int itemID, CMusicDatabase& db)
+    bool HasSongExtraArtChanged(const CFileItemPtr& pSongItem,
+                                const std::string& type,
+                                const int itemID,
+                                CMusicDatabase& db)
     {
       if (!pSongItem->HasMusicInfoTag())
         return false;
@@ -174,7 +175,9 @@ namespace MUSIC_UTILS
     }
   };
 
-  void UpdateArtJob(const CFileItemPtr pItem, const std::string& strType, const std::string& strArt)
+  void UpdateArtJob(const CFileItemPtr& pItem,
+                    const std::string& strType,
+                    const std::string& strArt)
   {
     // Asynchronously update that type of art in the database
     CSetArtJob *job = new CSetArtJob(pItem, strType, strArt);
@@ -328,7 +331,7 @@ namespace MUSIC_UTILS
     return -1;
   }
 
-  void UpdateSongRatingJob(const CFileItemPtr pItem, int userrating)
+  void UpdateSongRatingJob(const CFileItemPtr& pItem, int userrating)
   {
     // Asynchronously update the song user rating in music library
     const CMusicInfoTag *tag = pItem->GetMusicInfoTag();

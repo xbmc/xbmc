@@ -29,7 +29,7 @@ public:
   void QueueMACDiscoveryForAllRemotes();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingsLoaded() override;
 
   // struct to keep per host settings

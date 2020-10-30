@@ -18,12 +18,14 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+#include <utility>
+
 using namespace XFILE;
 
 CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
                                        ADDON::ScraperPtr info,
                                        bool lookInFolder)
-  : IVideoInfoTagLoader(item, info, lookInFolder)
+  : IVideoInfoTagLoader(item, std::move(info), lookInFolder)
 {
   if (m_info && m_info->Content() == CONTENT_TVSHOWS && m_item.m_bIsFolder)
     m_path = URIUtils::AddFileToFolder(m_item.GetPath(), "tvshow.nfo");

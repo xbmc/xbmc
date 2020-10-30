@@ -165,7 +165,7 @@ CNetworkServices::~CNetworkServices()
 #endif // HAS_WEB_SERVER
 }
 
-bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return false;
@@ -470,7 +470,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
   return true;
 }
 
-void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CNetworkServices::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -492,7 +492,9 @@ void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-bool CNetworkServices::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CNetworkServices::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                                       const char* oldSettingId,
+                                       const TiXmlNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;

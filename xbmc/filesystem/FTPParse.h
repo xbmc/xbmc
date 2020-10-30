@@ -16,7 +16,7 @@ class CFTPParse
 {
 public:
   CFTPParse();
-  int FTPParse(std::string str);
+  int FTPParse(const std::string& str);
   std::string getName();
   int getFlagtrycwd();
   int getFlagtryretr();
@@ -28,6 +28,6 @@ private:
   int m_flagtryretr;        // 0 if retr is definitely pointless, 1 otherwise
   uint64_t m_size;              // number of octets
   time_t m_time;            // modification time
-  void setTime(std::string str); // Method used to set m_time from a string
+  void setTime(const std::string& str); // Method used to set m_time from a string
   int getDayOfWeek(int month, int date, int year); // Method to get day of week
 };

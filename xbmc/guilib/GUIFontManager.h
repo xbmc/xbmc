@@ -66,7 +66,10 @@ public:
   void Clear();
   void FreeFontFile(CGUIFontTTF* pFont);
 
-  static void SettingOptionsFontsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void SettingOptionsFontsFiller(const std::shared_ptr<const CSetting>& setting,
+                                        std::vector<StringSettingOption>& list,
+                                        std::string& current,
+                                        void* data);
 
 protected:
   void ReloadTTFFonts();

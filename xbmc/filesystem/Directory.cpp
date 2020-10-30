@@ -124,8 +124,11 @@ bool CDirectory::GetDirectory(const std::string& strPath, CFileItemList &items, 
   return GetDirectory(pathToUrl, items, hints);
 }
 
-bool CDirectory::GetDirectory(const std::string& strPath, std::shared_ptr<IDirectory> pDirectory,
-                              CFileItemList &items, const std::string &strMask, int flags)
+bool CDirectory::GetDirectory(const std::string& strPath,
+                              const std::shared_ptr<IDirectory>& pDirectory,
+                              CFileItemList& items,
+                              const std::string& strMask,
+                              int flags)
 {
   CHints hints;
   hints.flags = flags;
@@ -155,8 +158,10 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
   return CDirectory::GetDirectory(url, pDirectory, items, hints);
 }
 
-bool CDirectory::GetDirectory(const CURL& url, std::shared_ptr<IDirectory> pDirectory,
-                              CFileItemList &items, const CHints &hints)
+bool CDirectory::GetDirectory(const CURL& url,
+                              const std::shared_ptr<IDirectory>& pDirectory,
+                              CFileItemList& items,
+                              const CHints& hints)
 {
   try
   {

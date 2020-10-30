@@ -63,7 +63,7 @@ public:
   void RegisterMapper(const std::string& device, IButtonMapper* mapper);
   void UnregisterMapper(IButtonMapper* mapper);
 
-  static uint32_t TranslateString(std::string strMap, std::string strButton);
+  static uint32_t TranslateString(const std::string& strMap, const std::string& strButton);
 
 private:
   struct CButtonAction

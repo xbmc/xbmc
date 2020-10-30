@@ -186,7 +186,7 @@ public:
   virtual ITimes* GetITimes() { return nullptr; }
   virtual IChapter* GetIChapter() { return nullptr; }
 
-  const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
+  const CVariant& GetProperty(const std::string& key) { return m_item.GetProperty(key); }
 
 protected:
   DVDStreamType m_streamType;

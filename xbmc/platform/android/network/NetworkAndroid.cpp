@@ -25,10 +25,10 @@
 #include <netinet/in.h>
 #include <sys/wait.h>
 
-CNetworkInterfaceAndroid::CNetworkInterfaceAndroid(CJNINetwork network, CJNILinkProperties lp, CJNINetworkInterface intf)
-  : m_network(network)
-  , m_lp(lp)
-  , m_intf(intf)
+CNetworkInterfaceAndroid::CNetworkInterfaceAndroid(const CJNINetwork& network,
+                                                   const CJNILinkProperties& lp,
+                                                   const CJNINetworkInterface& intf)
+  : m_network(network), m_lp(lp), m_intf(intf)
 {
   m_name = m_intf.getName();
 }
