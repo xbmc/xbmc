@@ -227,6 +227,8 @@ private:
   float m_scrollItemsPerFrame;
   static const int letter_match_timeout = 1000;
 
+  bool m_gestureActive = false;
+
   // early inertial scroll cancellation
   bool m_waitForScrollEnd = false;
   float m_lastScrollValue = 0.0f;

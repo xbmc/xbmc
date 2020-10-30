@@ -86,6 +86,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   // update our auto-scrolling as necessary
   UpdateAutoScrolling(currentTime);
 
+  if (!m_waitForScrollEnd && !m_gestureActive)
+    ValidateOffset();
+
   if (m_bInvalidated)
     UpdateLayout();
 
@@ -735,6 +738,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
+    m_gestureActive = true;
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
     SendWindowMessage(msg);
     return EVENT_RESULT_HANDLED;
@@ -781,6 +785,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     SetCursor(GetCursor());
     SetFocus(true);
     m_waitForScrollEnd = false;
+    m_gestureActive = false;
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;
