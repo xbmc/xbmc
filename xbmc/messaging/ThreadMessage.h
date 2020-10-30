@@ -62,16 +62,16 @@ public:
 
   ThreadMessage(const ThreadMessage& other) = default;
 
-  ThreadMessage(ThreadMessage&& other)
+  ThreadMessage(ThreadMessage&& other) noexcept
     : dwMessage(other.dwMessage),
-    param1(other.param1),
-    param2(other.param2),
-    param3(other.param3),
-    lpVoid(other.lpVoid),
-    strParam(std::move(other.strParam)),
-    params(std::move(other.params)),
-    waitEvent(std::move(other.waitEvent)),
-    result(std::move(other.result))
+      param1(other.param1),
+      param2(other.param2),
+      param3(other.param3),
+      lpVoid(other.lpVoid),
+      strParam(std::move(other.strParam)),
+      params(std::move(other.params)),
+      waitEvent(std::move(other.waitEvent)),
+      result(std::move(other.result))
   {
   }
 
@@ -91,7 +91,7 @@ public:
     return *this;
   }
 
-  ThreadMessage& operator=(ThreadMessage&& other)
+  ThreadMessage& operator=(ThreadMessage&& other) noexcept
   {
     if (this == &other)
       return *this;
