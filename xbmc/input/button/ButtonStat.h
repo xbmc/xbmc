@@ -22,7 +22,7 @@ class CButtonStat
 {
 public:
   CButtonStat();
-  ~CButtonStat();
+  ~CButtonStat() = default;
 
   CKey TranslateKey(CKey key) const;
 };

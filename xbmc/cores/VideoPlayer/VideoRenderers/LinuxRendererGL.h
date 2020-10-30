@@ -185,7 +185,7 @@ protected:
   struct CPictureBuffer
   {
     CPictureBuffer();
-   ~CPictureBuffer();
+    ~CPictureBuffer() = default;
 
     CYuvPlane fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;

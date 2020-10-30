@@ -258,8 +258,6 @@ static bool has_sei_recovery_point(const uint8_t *p, const uint8_t *end)
 /////////////////////////////////////////////////////////////////////////////////////////////
 CBitstreamParser::CBitstreamParser() = default;
 
-CBitstreamParser::~CBitstreamParser() = default;
-
 void CBitstreamParser::Close()
 {
 }

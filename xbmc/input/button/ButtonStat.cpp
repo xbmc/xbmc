@@ -13,7 +13,6 @@ using namespace KODI;
 using namespace INPUT;
 
 CButtonStat::CButtonStat() = default;
-CButtonStat::~CButtonStat() = default;
 
 CKey CButtonStat::TranslateKey(CKey key) const
 {

@@ -73,7 +73,7 @@ class CBitstreamParser
 {
 public:
   CBitstreamParser();
-  ~CBitstreamParser();
+  ~CBitstreamParser() = default;
 
   static bool Open(){ return true; };
   static void Close();
