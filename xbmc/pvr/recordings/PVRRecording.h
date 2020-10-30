@@ -340,6 +340,12 @@ namespace PVR
    int GetYear() const override;
 
    /*!
+    * @brief Set the premiere year of this event.
+    * @param year The premiere year
+    */
+   void SetYear(int year) override;
+
+   /*!
     * @brief Check if the premiere year of this event is valid
     * @return True if the event has as valid premiere date, false otherwise
     */
