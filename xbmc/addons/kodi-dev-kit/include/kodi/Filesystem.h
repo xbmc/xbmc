@@ -382,6 +382,7 @@ public:
     if (res)
     {
       std::vector<std::string> vecReturn;
+      vecReturn.reserve(numValues);
       for (int i = 0; i < numValues; ++i)
       {
         vecReturn.emplace_back(res[i]);
@@ -2324,6 +2325,7 @@ public:
     if (res)
     {
       std::vector<std::string> vecReturn;
+      vecReturn.reserve(numValues);
       for (int i = 0; i < numValues; ++i)
       {
         vecReturn.emplace_back(res[i]);

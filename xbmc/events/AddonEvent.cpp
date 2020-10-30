@@ -8,32 +8,41 @@
 
 #include "AddonEvent.h"
 
-CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, const CVariant& description)
-  : CUniqueEvent(addon->Name(), description, addon->Icon()),
-    m_addon(addon)
+CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon, const CVariant& description)
+  : CUniqueEvent(addon->Name(), description, addon->Icon()), m_addon(addon)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details)
-  : CUniqueEvent(addon->Name(), description, addon->Icon(), details),
-  m_addon(addon)
+CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon,
+                         const CVariant& description,
+                         const CVariant& details)
+  : CUniqueEvent(addon->Name(), description, addon->Icon(), details), m_addon(addon)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
-  : CUniqueEvent(addon->Name(), description, addon->Icon(), details, executionLabel),
-  m_addon(addon)
+CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon,
+                         const CVariant& description,
+                         const CVariant& details,
+                         const CVariant& executionLabel)
+  : CUniqueEvent(addon->Name(), description, addon->Icon(), details, executionLabel), m_addon(addon)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description)
-  : CUniqueEvent(addon->Name(), description, addon->Icon(), level),
-  m_addon(addon)
+CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon,
+                         EventLevel level,
+                         const CVariant& description)
+  : CUniqueEvent(addon->Name(), description, addon->Icon(), level), m_addon(addon)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details)
-  : CUniqueEvent(addon->Name(), description, addon->Icon(), details, level),
-  m_addon(addon)
+CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon,
+                         EventLevel level,
+                         const CVariant& description,
+                         const CVariant& details)
+  : CUniqueEvent(addon->Name(), description, addon->Icon(), details, level), m_addon(addon)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
+CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon,
+                         EventLevel level,
+                         const CVariant& description,
+                         const CVariant& details,
+                         const CVariant& executionLabel)
   : CUniqueEvent(addon->Name(), description, addon->Icon(), details, executionLabel, level),
-  m_addon(addon)
+    m_addon(addon)
 { }

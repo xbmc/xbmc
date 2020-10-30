@@ -132,7 +132,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
   if (pStreamDetails)
   {
 
-    const std::string strPath = item.GetPath();
+    const std::string& strPath = item.GetPath();
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
     //extern subtitles
@@ -349,7 +349,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   }
 }
 
-bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInputStream, CDVDDemux *pDemuxer, const std::vector<CStreamDetailSubtitle> &subs, CStreamDetails &details)
+bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
+                                          CDVDDemux* pDemuxer,
+                                          const std::vector<CStreamDetailSubtitle>& subs,
+                                          CStreamDetails& details)
 {
   bool result = DemuxerToStreamDetails(pInputStream, pDemuxer, details);
   for (unsigned int i = 0; i < subs.size(); i++)
@@ -363,7 +366,10 @@ bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInpu
 }
 
 /* returns true if details have been added */
-bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const std::string &path)
+bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
+                                          CDVDDemux* pDemux,
+                                          CStreamDetails& details,
+                                          const std::string& path)
 {
   bool retVal = false;
   details.Reset();

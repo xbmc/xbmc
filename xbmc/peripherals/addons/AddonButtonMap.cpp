@@ -480,7 +480,7 @@ bool CAddonButtonMap::GetAxisProperties(unsigned int axisIndex, int& center, uns
 {
   CSingleLock lock(m_mutex);
 
-  for (auto it : m_driverMap)
+  for (const auto& it : m_driverMap)
   {
     const CDriverPrimitive& primitive = it.first;
 

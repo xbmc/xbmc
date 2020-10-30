@@ -25,10 +25,10 @@
 #include <netinet/in.h>
 #include <sys/wait.h>
 
-CNetworkInterfaceAndroid::CNetworkInterfaceAndroid(CJNINetwork network, CJNILinkProperties lp, CJNINetworkInterface intf)
-  : m_network(network)
-  , m_lp(lp)
-  , m_intf(intf)
+CNetworkInterfaceAndroid::CNetworkInterfaceAndroid(const CJNINetwork& network,
+                                                   const CJNILinkProperties& lp,
+                                                   const CJNINetworkInterface& intf)
+  : m_network(network), m_lp(lp), m_intf(intf)
 {
   m_name = m_intf.getName();
 }
@@ -38,6 +38,7 @@ std::vector<std::string> CNetworkInterfaceAndroid::GetNameServers()
   std::vector<std::string> ret;
 
   CJNIList<CJNIInetAddress> lia = m_lp.getDnsServers();
+  ret.reserve(lia.size());
   for (int i=0; i < lia.size(); ++i)
   {
     ret.push_back(lia.get(i).getHostAddress());
@@ -317,7 +318,7 @@ void CNetworkAndroid::RetrieveInterfaces()
   CJNIConnectivityManager connman(CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE));
   std::vector<CJNINetwork> networks = connman.getAllNetworks();
 
-  for (auto n : networks)
+  for (const auto& n : networks)
   {
     CJNILinkProperties lp = connman.getLinkProperties(n);
     if (lp)

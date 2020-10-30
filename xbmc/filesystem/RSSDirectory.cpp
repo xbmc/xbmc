@@ -420,7 +420,7 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
   }
 }
 
-static bool FindMime(SResources resources, std::string mime)
+static bool FindMime(const SResources& resources, const std::string& mime)
 {
   for (const auto& it : resources)
   {

@@ -2316,7 +2316,10 @@ bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
   return ExecuteQuery(PrepareSQL("DELETE FROM song_artist WHERE idSong = %i", idSong));
 }
 
-bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, int iOrder)
+bool CMusicDatabase::AddAlbumArtist(int idArtist,
+                                    int idAlbum,
+                                    const std::string& strArtist,
+                                    int iOrder)
 {
   std::string strSQL;
   strSQL = PrepareSQL("replace into album_artist (idArtist, idAlbum, strArtist, iOrder) values(%i,%i,'%s',%i)",
@@ -3113,7 +3116,7 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList &art
       return false;
     }
 
-    std::string artistLabel(g_localizeStrings.Get(557)); // Artist
+    const std::string& artistLabel(g_localizeStrings.Get(557)); // Artist
     while (!m_pDS->eof())
     {
       std::string path = StringUtils::Format("musicdb://artists/%i/", m_pDS->fv(0).get_asInt());
@@ -3682,7 +3685,6 @@ bool CMusicDatabase::SearchSongs(const std::string& search, CFileItemList &items
     if (!m_pDS->query(strSQL)) return false;
     if (m_pDS->num_rows() == 0) return false;
 
-    std::string songLabel = g_localizeStrings.Get(179); // Song
     while (!m_pDS->eof())
     {
       CFileItemPtr item(new CFileItem);
@@ -3719,7 +3721,7 @@ bool CMusicDatabase::SearchAlbums(const std::string& search, CFileItemList &albu
 
     if (!m_pDS->query(strSQL)) return false;
 
-    std::string albumLabel(g_localizeStrings.Get(558)); // Album
+    const std::string& albumLabel(g_localizeStrings.Get(558)); // Album
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
@@ -4297,7 +4299,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           std::string strTitle = cddb.getInexactTitle(i);
           if (strTitle == "") break;
 
-          std::string strArtist = cddb.getInexactArtist(i);
+          const std::string& strArtist = cddb.getInexactArtist(i);
           if (!strArtist.empty())
             strTitle += " - " + strArtist;
 
@@ -7674,8 +7676,8 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField)
     StringUtils::Replace(tokenclause, "%", "%%");
     // Single %, _ and ' so avoid using PrepareSQL
     tokenclause = strField + " LIKE '" + tokenclause + "%'";
-    if (token.find("_") != std::string::npos)
-       tokenclause += " ESCAPE '_'";
+    if (token.find('_') != std::string::npos)
+      tokenclause += " ESCAPE '_'";
     if (!strWhen.empty())
        strWhen += " OR ";
     strWhen += tokenclause;
@@ -10676,7 +10678,7 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperAll(const std::string & strBaseDir, const ADDON::ScraperPtr scraper)
+bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper)
 {
   if (nullptr == m_pDB)
     return false;
@@ -10753,7 +10755,9 @@ bool CMusicDatabase::SetScraperAll(const std::string & strBaseDir, const ADDON::
   return false;
 }
 
-bool CMusicDatabase::SetScraper(int id, const CONTENT_TYPE &content, const ADDON::ScraperPtr scraper)
+bool CMusicDatabase::SetScraper(int id,
+                                const CONTENT_TYPE& content,
+                                const ADDON::ScraperPtr& scraper)
 {
   if (nullptr == m_pDB)
     return false;

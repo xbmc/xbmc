@@ -149,8 +149,7 @@ void CNfoFile::Close()
   m_scurl.Clear();
 }
 
-std::vector<ScraperPtr> CNfoFile::GetScrapers(TYPE type,
-                                              ScraperPtr selectedScraper)
+std::vector<ScraperPtr> CNfoFile::GetScrapers(TYPE type, const ScraperPtr& selectedScraper)
 {
   AddonPtr addon;
   ScraperPtr defaultScraper;

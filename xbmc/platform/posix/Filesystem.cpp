@@ -90,7 +90,7 @@ std::string create_temp_directory(std::error_code &ec)
   return std::string(tmp);
 }
 
-std::string temp_file_path(std::string suffix, std::error_code &ec)
+std::string temp_file_path(const std::string& suffix, std::error_code& ec)
 {
   char tmp[PATH_MAX];
 

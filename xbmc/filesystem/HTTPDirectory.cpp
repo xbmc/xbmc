@@ -32,7 +32,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   CCurlFile http;
 
-  std::string strBasePath = url.GetFileName();
+  const std::string& strBasePath = url.GetFileName();
 
   if(!http.Open(url))
   {

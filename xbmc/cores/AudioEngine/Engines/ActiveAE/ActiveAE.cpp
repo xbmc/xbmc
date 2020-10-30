@@ -2891,7 +2891,7 @@ void CActiveAE::DeviceChange()
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
 }
 
-void CActiveAE::DeviceCountChange(std::string driver)
+void CActiveAE::DeviceCountChange(const std::string& driver)
 {
   const char* name = driver.c_str();
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECOUNTCHANGE, name,

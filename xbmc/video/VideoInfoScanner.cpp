@@ -1534,7 +1534,7 @@ namespace VIDEO
     if (moviePartOfSet)
     {
       movieSetArtTypes = CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
-      for (std::string artType : movieSetArtTypes)
+      for (const std::string& artType : movieSetArtTypes)
         artTypes.push_back("set." + artType);
     }
     bool addAll = artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL;
@@ -1631,9 +1631,8 @@ namespace VIDEO
   std::string CVideoInfoScanner::GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath)
   {
     std::string thumb = CScraperUrl::GetThumbUrl(image);
-    if (!thumb.empty() &&
-      thumb.find("/") == std::string::npos &&
-      thumb.find("\\") == std::string::npos)
+    if (!thumb.empty() && thumb.find('/') == std::string::npos &&
+        thumb.find('\\') == std::string::npos)
     {
       std::string strPath = URIUtils::GetDirectory(itemPath);
       thumb = URIUtils::AddFileToFolder(strPath, thumb);
@@ -1695,7 +1694,7 @@ namespace VIDEO
       // handle .nfo files
       CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
       CScraperUrl scrUrl;
-      ScraperPtr info(scraper);
+      const ScraperPtr& info(scraper);
       std::unique_ptr<IVideoInfoTagLoader> loader;
       if (useLocal)
       {

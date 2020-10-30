@@ -27,7 +27,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // uses a <fully qualified path>/filename.apk/...
   std::string path = url.GetFileName();
-  std::string host = url.GetHostName();
+  const std::string& host = url.GetHostName();
   URIUtils::AddSlashAtEnd(path);
 
   int zip_flags = 0, zip_error = 0;

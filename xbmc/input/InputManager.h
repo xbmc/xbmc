@@ -223,7 +223,7 @@ public:
   void QueueAction(const CAction& action);
 
   // implementation of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   // implementation of IActionListener
   bool OnAction(const CAction& action) override;

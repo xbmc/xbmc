@@ -80,7 +80,7 @@ XBMCHelper::XBMCHelper()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool XBMCHelper::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool XBMCHelper::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return false;

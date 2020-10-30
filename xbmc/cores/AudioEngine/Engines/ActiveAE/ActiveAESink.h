@@ -16,6 +16,8 @@
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 
+#include <utility>
+
 class CAEBitstreamPacker;
 
 namespace ActiveAE
@@ -42,7 +44,8 @@ struct SinkReply
 class CSinkControlProtocol : public Protocol
 {
 public:
-  CSinkControlProtocol(std::string name, CEvent* inEvent, CEvent *outEvent) : Protocol(name, inEvent, outEvent) {};
+  CSinkControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : Protocol(std::move(name), inEvent, outEvent){};
   enum OutSignal
   {
     CONFIGURE,
@@ -66,7 +69,8 @@ public:
 class CSinkDataProtocol : public Protocol
 {
 public:
-  CSinkDataProtocol(std::string name, CEvent* inEvent, CEvent *outEvent) : Protocol(name, inEvent, outEvent) {};
+  CSinkDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : Protocol(std::move(name), inEvent, outEvent){};
   enum OutSignal
   {
     SAMPLE = 0,
@@ -90,7 +94,7 @@ public:
   AEDeviceType GetDeviceType(const std::string &device);
   bool HasPassthroughDevice();
   bool SupportsFormat(const std::string &device, AEAudioFormat &format);
-  bool DeviceExist(std::string driver, std::string device);
+  bool DeviceExist(std::string driver, const std::string& device);
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 

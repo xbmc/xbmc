@@ -27,8 +27,8 @@ protected:
   void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool OnMessage(CGUIMessage& message) override;
@@ -49,7 +49,7 @@ private:
 
   using CGUIDialogSettingsManualBase::SetFocus;
   void SetFocus(const std::string &settingid);
-  static int GetExportItemsFromSetting(SettingConstPtr setting);
+  static int GetExportItemsFromSetting(const SettingConstPtr& setting);
   void UpdateToggles();
   void UpdateDescription();
 

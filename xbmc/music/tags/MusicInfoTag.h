@@ -147,7 +147,7 @@ public:
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
   void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
-  void SetType(const MediaType mediaType);
+  void SetType(const MediaType& mediaType);
   void SetDiscSubtitle(const std::string& strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);
   void SetBPM(int iBPM);

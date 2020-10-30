@@ -6060,7 +6060,7 @@ void CVideoDatabase::EraseAllVideoSettings()
   }
 }
 
-void CVideoDatabase::EraseAllVideoSettings(std::string path)
+void CVideoDatabase::EraseAllVideoSettings(const std::string& path)
 {
   std::string itemsToDelete;
 
@@ -9432,7 +9432,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   if (mediaType.empty() || cleanableFileIDs.empty())
     return cleanedIDs;
 
-  std::string table = mediaType;
+  const std::string& table = mediaType;
   std::string idField;
   std::string parentPathIdField;
   bool isEpisode = false;
@@ -10546,7 +10546,7 @@ std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::strin
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 
-void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /* = false */)
+void CVideoDatabase::AnnounceRemove(const std::string& content, int id, bool scanning /* = false */)
 {
   CVariant data;
   data["type"] = content;
@@ -10556,7 +10556,7 @@ void CVideoDatabase::AnnounceRemove(std::string content, int id, bool scanning /
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRemove", data);
 }
 
-void CVideoDatabase::AnnounceUpdate(std::string content, int id)
+void CVideoDatabase::AnnounceUpdate(const std::string& content, int id)
 {
   CVariant data;
   data["type"] = content;
@@ -10566,7 +10566,7 @@ void CVideoDatabase::AnnounceUpdate(std::string content, int id)
 
 bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::string &strPath, CFileItemList &items)
 {
-  std::string path(strPath);
+  const std::string& path(strPath);
 
   if(URIUtils::IsMultiPath(path))
   {

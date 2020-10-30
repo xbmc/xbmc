@@ -1390,16 +1390,16 @@ void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
     m_ratings[type].votes = votes;
 }
 
-void CVideoInfoTag::SetPremiered(CDateTime premiered)
+void CVideoInfoTag::SetPremiered(const CDateTime& premiered)
 {
-  m_premiered = std::move(premiered);
+  m_premiered = premiered;
   m_bHasPremiered = premiered.IsValid();
 }
 
-void CVideoInfoTag::SetPremieredFromDBDate(std::string premieredString)
+void CVideoInfoTag::SetPremieredFromDBDate(const std::string& premieredString)
 {
   CDateTime premiered;
-  premiered.SetFromDBDate(std::move(premieredString));
+  premiered.SetFromDBDate(premieredString);
   SetPremiered(premiered);
 }
 

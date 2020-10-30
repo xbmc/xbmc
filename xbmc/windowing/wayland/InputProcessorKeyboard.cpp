@@ -52,12 +52,17 @@ void CInputProcessorKeyboard::OnKeyboardKeymap(CSeat* seat, wayland::keyboard_ke
   }
 }
 
-void CInputProcessorKeyboard::OnKeyboardEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, wayland::array_t keys)
+void CInputProcessorKeyboard::OnKeyboardEnter(CSeat* seat,
+                                              std::uint32_t serial,
+                                              const wayland::surface_t& surface,
+                                              const wayland::array_t& keys)
 {
   m_handler.OnKeyboardEnter();
 }
 
-void CInputProcessorKeyboard::OnKeyboardLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface)
+void CInputProcessorKeyboard::OnKeyboardLeave(CSeat* seat,
+                                              std::uint32_t serial,
+                                              const wayland::surface_t& surface)
 {
   m_keyRepeatTimer.Stop();
   m_handler.OnKeyboardLeave();

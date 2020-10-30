@@ -116,7 +116,8 @@ void CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
 
 void CVideoLibraryQueue::RefreshItem(CFileItemPtr item, bool ignoreNfo /* = false */, bool forceRefresh /* = true */, bool refreshAll /* = false */, const std::string& searchTitle /* = "" */)
 {
-  AddJob(new CVideoLibraryRefreshingJob(item, forceRefresh, refreshAll, ignoreNfo, searchTitle));
+  AddJob(new CVideoLibraryRefreshingJob(std::move(item), forceRefresh, refreshAll, ignoreNfo,
+                                        searchTitle));
 }
 
 bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /* = true */, bool refreshAll /* = false */)
@@ -126,7 +127,7 @@ bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /
     return false;
 
   m_modal = true;
-  CVideoLibraryRefreshingJob refreshingJob(item, forceRefresh, refreshAll);
+  CVideoLibraryRefreshingJob refreshingJob(std::move(item), forceRefresh, refreshAll);
 
   bool result = refreshingJob.DoModal();
   m_modal = false;
@@ -142,7 +143,7 @@ void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
   AddJob(new CVideoLibraryMarkWatchedJob(item, watched));
 }
 
-void CVideoLibraryQueue::ResetResumePoint(const CFileItemPtr item)
+void CVideoLibraryQueue::ResetResumePoint(const CFileItemPtr& item)
 {
   if (item == nullptr)
     return;

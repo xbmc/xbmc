@@ -73,7 +73,7 @@ public:
     CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
   }
 
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override
   {
     if (!setting || setting->GetId() != CSettings::SETTING_DEBUG_SHARE_LOG)
       return;

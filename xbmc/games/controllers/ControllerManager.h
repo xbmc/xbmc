@@ -67,7 +67,7 @@ public:
   ControllerVector GetControllers();
 
 private:
-  ControllerPtr LoadController(ADDON::AddonPtr addon);
+  ControllerPtr LoadController(const ADDON::AddonPtr& addon);
 
   std::map<std::string, ControllerPtr> m_cache;
   std::set<std::string> m_failedControllers; // Controllers that failed to load

@@ -149,7 +149,7 @@ void CGUIDialogContentSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogContentSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogContentSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -174,7 +174,7 @@ void CGUIDialogContentSettings::OnSettingChanged(std::shared_ptr<const CSetting>
     m_allExternalAudio = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
-void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

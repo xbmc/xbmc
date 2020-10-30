@@ -46,7 +46,7 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& id, TYPE type)
   }
 
   AddonInfoPtr addon = std::make_shared<CAddonInfo>();
-  addon->m_id = std::move(id);
+  addon->m_id = id;
   addon->m_mainType = type;
   return addon;
 }
@@ -418,7 +418,9 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   return true;
 }
 
-bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType, AddonInfoPtr info, const TiXmlElement* child)
+bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType,
+                                      const AddonInfoPtr& info,
+                                      const TiXmlElement* child)
 {
   if (child)
   {

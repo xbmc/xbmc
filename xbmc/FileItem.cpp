@@ -2990,7 +2990,7 @@ bool CFileItemList::Save(int windowID)
     // name when list cached) can not be accurately derived from item path.
     StringUtils::Replace(cachefile, "special://temp/archive_cache/", "");
     StringUtils::Replace(cachefile, ".fi", "");
-    for (auto item : m_items)
+    for (const auto& item : m_items)
       item->SetProperty("cachefilename", cachefile);
 
     CArchive ar(&file, CArchive::store);
@@ -3101,7 +3101,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
       std::string folderThumb(GetFolderThumb(strFileName));
       if (CFile::Exists(folderThumb))   // folder.jpg
         return folderThumb;
-      size_t period = strFileName.find_last_of(".");
+      size_t period = strFileName.find_last_of('.');
       if (period != std::string::npos)
       {
         std::string ext;

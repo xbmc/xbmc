@@ -75,7 +75,7 @@ void CAdvancedSettings::OnSettingsUnloaded()
   m_initialized = false;
 }
 
-void CAdvancedSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -1442,6 +1442,7 @@ void CAdvancedSettings::MigrateOldArtSettings()
           thumbs2.emplace_back(it);
       }
       std::vector<CVariant> thumbs;
+      thumbs.reserve(thumbs2.size());
       for (const auto& it : thumbs2)
         thumbs.emplace_back(it);
       settings->SetList(CSettings::SETTING_MUSICLIBRARY_MUSICTHUMBS, thumbs);

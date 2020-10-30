@@ -113,7 +113,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case MUSICPLAYER_LASTPLAYED:
       case LISTITEM_LASTPLAYED:
       {
-        const CDateTime dateTime = tag->GetLastPlayed();
+        const CDateTime& dateTime = tag->GetLastPlayed();
         if (dateTime.IsValid())
         {
           value = dateTime.GetAsLocalizedDate();

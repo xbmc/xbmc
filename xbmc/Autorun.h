@@ -55,7 +55,10 @@ public:
   void HandleAutorun();
   static void ExecuteAutorun(const std::string& path = "", bool bypassSettings = false, bool ignoreplaying = true, bool startFromBeginning = false);
 
-  static void SettingOptionAudioCdActionsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
+  static void SettingOptionAudioCdActionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                std::vector<IntegerSettingOption>& list,
+                                                int& current,
+                                                void* data);
 
 protected:
   static bool RunDisc(XFILE::IDirectory* pDir, const std::string& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings, bool startFromBeginning);

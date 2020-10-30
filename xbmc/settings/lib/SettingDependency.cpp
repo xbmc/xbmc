@@ -292,7 +292,8 @@ bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
   return true;
 }
 
-CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::Add(CSettingDependencyConditionPtr condition)
+CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::Add(
+    const CSettingDependencyConditionPtr& condition)
 {
   if (condition != nullptr)
   {
@@ -306,7 +307,8 @@ CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::
   return this;
 }
 
-CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::Add(CSettingDependencyConditionCombinationPtr operation)
+CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::Add(
+    const CSettingDependencyConditionCombinationPtr& operation)
 {
   if (operation != nullptr)
   {

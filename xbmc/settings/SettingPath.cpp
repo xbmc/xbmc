@@ -68,7 +68,7 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
         auto child = source->FirstChild();
         if (child != nullptr)
         {
-          std::string strSource = child->ValueStr();
+          const std::string& strSource = child->ValueStr();
           if (!strSource.empty())
             m_sources.push_back(strSource);
         }
@@ -102,9 +102,9 @@ std::string CSettingPath::GetMasking(const CFileExtensionProvider& fileExtension
     return m_masking;
 
   // setup masking
-  const auto audioMask = fileExtensionProvider.GetMusicExtensions();
-  const auto videoMask = fileExtensionProvider.GetVideoExtensions();
-  const auto imageMask = fileExtensionProvider.GetPictureExtensions();
+  auto audioMask = fileExtensionProvider.GetMusicExtensions();
+  auto videoMask = fileExtensionProvider.GetVideoExtensions();
+  auto imageMask = fileExtensionProvider.GetPictureExtensions();
   auto execMask = "";
 #if defined(TARGET_WINDOWS)
   execMask = ".exe|.bat|.cmd|.py";

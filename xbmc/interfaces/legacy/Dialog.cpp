@@ -282,7 +282,7 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 10)
           {
-            std::string sDefault = defaultt;
+            const std::string& sDefault = defaultt;
             timedate.day = atoi(sDefault.substr(0, 2).c_str());
             timedate.month = atoi(sDefault.substr(3, 4).c_str());
             timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
@@ -296,7 +296,7 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 5)
           {
-            std::string sDefault = defaultt;
+            const std::string& sDefault = defaultt;
             timedate.hour = atoi(sDefault.substr(0, 2).c_str());
             timedate.minute = atoi(sDefault.substr(3, 2).c_str());
           }
@@ -375,7 +375,7 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 10)
             {
-              std::string sDefault = defaultt;
+              const std::string& sDefault = defaultt;
               timedate.day = atoi(sDefault.substr(0, 2).c_str());
               timedate.month = atoi(sDefault.substr(3, 4).c_str());
               timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
@@ -391,7 +391,7 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 5)
             {
-              std::string sDefault = defaultt;
+              const std::string& sDefault = defaultt;
               timedate.hour = atoi(sDefault.substr(0, 2).c_str());
               timedate.minute = atoi(sDefault.substr(3, 2).c_str());
             }

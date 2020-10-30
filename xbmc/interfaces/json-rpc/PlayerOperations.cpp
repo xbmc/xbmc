@@ -123,7 +123,7 @@ JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITranspo
     playerCoreFactory.GetPlayers(players, true, video);
   }
 
-  for (auto playername: players)
+  for (const auto& playername : players)
   {
     CVariant player(CVariant::VariantTypeObject);
     player["name"] = playername;
@@ -811,7 +811,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
               playerCoreFactory.GetPlayers(*list.Get(0).get(), possiblePlayers);
 
               bool match = false;
-              for (auto entry : possiblePlayers)
+              for (const auto& entry : possiblePlayers)
               {
                 if (StringUtils::EqualsNoCase(entry, playername))
                 {

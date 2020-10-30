@@ -263,7 +263,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnItemInfoAll(const std::string strPath, bool refresh )
+void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
     g_application.StartMusicAlbumScan(strPath, refresh);
@@ -1008,7 +1008,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 
 bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
-  std::string content = items.GetContent();
+  const std::string& content = items.GetContent();
   if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "artists") ||
        StringUtils::EqualsNoCase(content, "albums")  ||

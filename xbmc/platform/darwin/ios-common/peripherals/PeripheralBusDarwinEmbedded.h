@@ -36,10 +36,10 @@ public:
   bool PerformDeviceScan(PeripheralScanResults& results) override;
   PeripheralScanResults GetInputDevices();
 
-  void callOnDeviceAdded(const std::string strLocation);
-  void callOnDeviceRemoved(const std::string strLocation);
+  void callOnDeviceAdded(const std::string& strLocation);
+  void callOnDeviceRemoved(const std::string& strLocation);
 
-  void SetScanResults(const PeripheralScanResults resScanResults);
+  void SetScanResults(const PeripheralScanResults& resScanResults);
 
   const std::string& getDeviceLocationPrefix()
   {

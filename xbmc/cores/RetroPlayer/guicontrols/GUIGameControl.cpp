@@ -150,7 +150,7 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem* item /* = nullptr */)
     if (StringUtils::IsNaturalNumber(strRotation))
     {
       unsigned int rotation;
-      std::istringstream(std::move(strRotation)) >> rotation;
+      std::istringstream(strRotation) >> rotation;
       m_renderSettings->SetRotationDegCCW(rotation);
       m_bHasRotation = true;
     }

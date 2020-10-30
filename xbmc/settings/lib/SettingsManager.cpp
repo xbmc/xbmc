@@ -262,7 +262,7 @@ void CSettingsManager::SetInitialized()
     ResolveSettingDependencies(setting.second);
 }
 
-void CSettingsManager::AddSection(SettingSectionPtr section)
+void CSettingsManager::AddSection(const SettingSectionPtr& section)
 {
   if (section == nullptr)
     return;
@@ -304,8 +304,10 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
   }
 }
 
-bool CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting, std::shared_ptr<CSettingSection> section,
-  std::shared_ptr<CSettingCategory> category, std::shared_ptr<CSettingGroup> group)
+bool CSettingsManager::AddSetting(const std::shared_ptr<CSetting>& setting,
+                                  const std::shared_ptr<CSettingSection>& section,
+                                  const std::shared_ptr<CSettingCategory>& category,
+                                  const std::shared_ptr<CSettingGroup>& group)
 {
   if (setting == nullptr || section == nullptr || category == nullptr || group == nullptr)
     return false;
@@ -458,7 +460,7 @@ void CSettingsManager::UnregisterSettingOptionsFiller(const std::string &identif
   m_optionsFillers.erase(identifier);
 }
 
-void* CSettingsManager::GetSettingOptionsFiller(SettingConstPtr setting)
+void* CSettingsManager::GetSettingOptionsFiller(const SettingConstPtr& setting)
 {
   CSharedLock lock(m_critical);
   if (setting == nullptr)
@@ -567,7 +569,7 @@ SettingDependencyMap CSettingsManager::GetDependencies(const std::string &id) co
   return setting->second.dependencies;
 }
 
-SettingDependencyMap CSettingsManager::GetDependencies(SettingConstPtr setting) const
+SettingDependencyMap CSettingsManager::GetDependencies(const SettingConstPtr& setting) const
 {
   if (setting == nullptr)
     return SettingDependencyMap();
@@ -790,7 +792,7 @@ bool CSettingsManager::Deserialize(const TiXmlNode *node, bool &updated, std::ma
   return true;
 }
 
-bool CSettingsManager::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CSettingsManager::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return false;
@@ -848,7 +850,7 @@ bool CSettingsManager::OnSettingChanging(std::shared_ptr<const CSetting> setting
   return true;
 }
 
-void CSettingsManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CSettingsManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
@@ -874,7 +876,7 @@ void CSettingsManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CSettingsManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CSettingsManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
@@ -892,7 +894,9 @@ void CSettingsManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
     callback->OnSettingAction(setting);
 }
 
-bool CSettingsManager::OnSettingUpdate(SettingPtr setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CSettingsManager::OnSettingUpdate(const SettingPtr& setting,
+                                       const char* oldSettingId,
+                                       const TiXmlNode* oldSettingNode)
 {
   CSharedLock lock(m_settingsCritical);
   if (setting == nullptr)
@@ -913,7 +917,8 @@ bool CSettingsManager::OnSettingUpdate(SettingPtr setting, const char *oldSettin
   return ret;
 }
 
-void CSettingsManager::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName)
+void CSettingsManager::OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
+                                                const char* propertyName)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
@@ -1040,7 +1045,7 @@ void CSettingsManager::OnSettingsCleared()
     settingsHandler->OnSettingsCleared();
 }
 
-bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bool &updated)
+bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& setting, bool& updated)
 {
   updated = false;
 
@@ -1107,7 +1112,9 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bo
   return true;
 }
 
-bool CSettingsManager::UpdateSetting(const TiXmlNode *node, SettingPtr setting, const CSettingUpdate& update)
+bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
+                                     const SettingPtr& setting,
+                                     const CSettingUpdate& update)
 {
   if (node == nullptr || setting == nullptr || update.GetType() == SettingUpdateType::Unknown)
     return false;
@@ -1202,7 +1209,7 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, S
   }
 }
 
-void CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting)
+void CSettingsManager::AddSetting(const std::shared_ptr<CSetting>& setting)
 {
   setting->CheckRequirements();
 
@@ -1221,7 +1228,7 @@ void CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting)
   }
 }
 
-void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection> section)
+void CSettingsManager::ResolveReferenceSettings(const std::shared_ptr<CSettingSection>& section)
 {
   struct GroupedReferenceSettings
   {
@@ -1345,7 +1352,7 @@ void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifie
   m_optionsFillers.insert(make_pair(identifier, optionsFiller));
 }
 
-void CSettingsManager::ResolveSettingDependencies(std::shared_ptr<CSetting> setting)
+void CSettingsManager::ResolveSettingDependencies(const std::shared_ptr<CSetting>& setting)
 {
   if (setting == nullptr)
     return;

@@ -14,7 +14,7 @@ class CStopWatch
 {
 public:
   explicit CStopWatch(bool useFrameTime=false);
-  ~CStopWatch();
+  ~CStopWatch() = default;
 
   /*!
     \brief Retrieve the running state of the stopwatch.

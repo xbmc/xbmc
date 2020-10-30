@@ -128,7 +128,7 @@ CAndroidUtils::CAndroidUtils()
   if (CJNIBase::GetSDKVersion() >= 24)
   {
     fetchDisplayModes();
-    for (auto res : s_res_displayModes)
+    for (const auto& res : s_res_displayModes)
     {
       if (res.iWidth > m_width || res.iHeight > m_height)
       {
@@ -334,7 +334,7 @@ bool CAndroidUtils::IsHDRDisplay()
   return ret;
 }
 
-void  CAndroidUtils::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   const std::string &settingId = setting->GetId();
   /* Calibration (overscan / subtitles) are based on GUI size -> reset required */

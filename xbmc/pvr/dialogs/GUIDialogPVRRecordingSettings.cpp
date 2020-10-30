@@ -115,7 +115,8 @@ bool CGUIDialogPVRRecordingSettings::CanEditRecording(const CFileItem& item)
          capabilities.SupportsRecordingsLifetimeChange();
 }
 
-bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CGUIDialogPVRRecordingSettings::OnSettingChanging(
+    const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
   {
@@ -140,7 +141,8 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(std::shared_ptr<const CSe
   return CGUIDialogSettingsManualBase::OnSettingChanging(setting);
 }
 
-void CGUIDialogPVRRecordingSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogPVRRecordingSettings::OnSettingChanged(
+    const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
   {
@@ -178,8 +180,10 @@ void CGUIDialogPVRRecordingSettings::Save()
   m_recording->m_iLifetime = m_iLifetime;
 }
 
-void CGUIDialogPVRRecordingSettings::LifetimesFiller(
-  SettingConstPtr setting, std::vector<IntegerSettingOption>& list, int& current, void* data)
+void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& setting,
+                                                     std::vector<IntegerSettingOption>& list,
+                                                     int& current,
+                                                     void* data)
 {
   CGUIDialogPVRRecordingSettings* pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
   if (pThis)

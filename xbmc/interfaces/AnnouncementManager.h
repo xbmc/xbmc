@@ -65,7 +65,7 @@ namespace ANNOUNCEMENT
     void DoAnnounce(AnnouncementFlag flag,
                     const std::string& sender,
                     const std::string& message,
-                    CFileItemPtr item,
+                    const CFileItemPtr& item,
                     const CVariant& data);
     void DoAnnounce(AnnouncementFlag flag,
                     const std::string& sender,

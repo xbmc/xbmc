@@ -38,8 +38,6 @@ CKeyboardStat::CKeyboardStat()
   m_lastKeyTime = 0;
 }
 
-CKeyboardStat::~CKeyboardStat() = default;
-
 void CKeyboardStat::Initialize()
 {
 }

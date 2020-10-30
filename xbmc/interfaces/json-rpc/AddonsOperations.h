@@ -30,7 +30,7 @@ namespace JSONRPC
     static JSONRPC_STATUS ExecuteAddon(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
   private:
-    static void FillDetails(ADDON::AddonPtr addon,
+    static void FillDetails(const ADDON::AddonPtr& addon,
                             const CVariant& fields,
                             CVariant& result,
                             ADDON::CAddonDatabase& addondb,

@@ -350,7 +350,7 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
 static void GenerateCategoryListing(const CURL& path, VECADDONS& addons,
     CFileItemList& items)
 {
-  const std::string category = path.GetFileName();
+  const std::string& category = path.GetFileName();
   if (category == CATEGORY_INFO_PROVIDERS)
   {
     items.SetProperty("addoncategory", g_localizeStrings.Get(24993));
@@ -446,7 +446,7 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   if (addons.empty())
     return;
 
-  const std::string category = path.GetFileName();
+  const std::string& category = path.GetFileName();
   if (category.empty())
   {
     GenerateMainCategoryListing(path, addons, items);
@@ -531,7 +531,7 @@ static void RunningAddons(const CURL& path, CFileItemList &items)
 
 static bool Browse(const CURL& path, CFileItemList &items)
 {
-  const std::string repoId = path.GetHostName();
+  const std::string& repoId = path.GetHostName();
 
   VECADDONS addons;
   items.SetPath(path.Get());
@@ -577,7 +577,7 @@ static bool Browse(const CURL& path, CFileItemList &items)
     items.SetLabel(repoAddon->Name());
   }
 
-  const std::string category = path.GetFileName();
+  const std::string& category = path.GetFileName();
   if (category.empty())
     GenerateMainCategoryListing(path, addons, items);
   else
@@ -682,7 +682,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string tmp(url.Get());
   URIUtils::RemoveSlashAtEnd(tmp);
   CURL path(tmp);
-  const std::string endpoint = path.GetHostName();
+  const std::string& endpoint = path.GetHostName();
   items.ClearItems();
   items.ClearProperties();
   items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
@@ -763,7 +763,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   else if (endpoint == "more")
   {
-    std::string type = path.GetFileName();
+    const std::string& type = path.GetFileName();
     if (type == "video" || type == "audio" || type == "image" || type == "executable")
       return Browse(CURL("addons://all/xbmc.addon." + type), items);
     else if (type == "game")
@@ -791,7 +791,7 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
 void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             const VECADDONS& addons,
                                             CFileItemList& items,
-                                            const std::string label)
+                                            const std::string& label)
 {
   std::map<std::string, CAddonWithUpdate> addonsWithUpdate;
 

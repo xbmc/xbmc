@@ -126,7 +126,10 @@ void CSettingConditionsManager::RemoveDynamicCondition(std::string identifier)
     m_conditions.erase(it);
 }
 
-bool CSettingConditionsManager::Check(std::string condition, const std::string &value /* = "" */, std::shared_ptr<const CSetting> setting /* = nullptr */) const
+bool CSettingConditionsManager::Check(
+    std::string condition,
+    const std::string& value /* = "" */,
+    const std::shared_ptr<const CSetting>& setting /* = nullptr */) const
 {
   if (condition.empty())
     return false;

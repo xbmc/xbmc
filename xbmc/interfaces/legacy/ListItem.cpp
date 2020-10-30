@@ -24,6 +24,7 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <utility>
 
 namespace XBMCAddon
 {
@@ -135,7 +136,10 @@ namespace XBMCAddon
         vtag.SetUniqueID(it.second, it.first, it.first == defaultrating);
     }
 
-    void ListItem::setRating(std::string type, float rating, int votes /* = 0 */, bool defaultt /* = false */)
+    void ListItem::setRating(const std::string& type,
+                             float rating,
+                             int votes /* = 0 */,
+                             bool defaultt /* = false */)
     {
       if (!item) return;
 
@@ -148,7 +152,7 @@ namespace XBMCAddon
       if (!item) return;
 
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_namedSeasons[number] = name;
+      GetVideoInfoTag()->m_namedSeasons[number] = std::move(name);
     }
 
     void ListItem::select(bool selected)
@@ -620,7 +624,7 @@ namespace XBMCAddon
             for (const auto& genreEntry: alt.later())
             {
               const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
-              genres.emplace_back(std::move(genre));
+              genres.emplace_back(genre);
             }
 
             gametag.SetGenres(genres);
@@ -688,7 +692,14 @@ namespace XBMCAddon
       GetVideoInfoTag()->m_fanart.Pack();
     }
 
-    void ListItem::addAvailableArtwork(std::string url, std::string art_type, std::string preview, std::string referrer, std::string cache, bool post, bool isgz, int season)
+    void ListItem::addAvailableArtwork(const std::string& url,
+                                       const std::string& art_type,
+                                       const std::string& preview,
+                                       const std::string& referrer,
+                                       const std::string& cache,
+                                       bool post,
+                                       bool isgz,
+                                       int season)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       GetVideoInfoTag()->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post,

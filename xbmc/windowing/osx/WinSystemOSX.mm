@@ -444,7 +444,7 @@ NSString* screenNameForDisplay(CGDirectDisplayID displayID)
   return screenName;
 }
 
-int GetDisplayIndex(std::string dispName)
+int GetDisplayIndex(const std::string& dispName)
 {
   int ret = 0;
 

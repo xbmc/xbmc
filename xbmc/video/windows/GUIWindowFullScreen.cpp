@@ -313,10 +313,10 @@ void CGUIWindowFullScreen::FrameMove()
 
     {
       // get the "View Mode" string
-      std::string strTitle = g_localizeStrings.Get(629);
+      const std::string& strTitle = g_localizeStrings.Get(629);
       const auto& vs = g_application.GetAppPlayer().GetVideoSettings();
       int sId = CViewModeSettings::GetViewModeStringIndex(vs.m_ViewMode);
-      std::string strMode = g_localizeStrings.Get(sId);
+      const std::string& strMode = g_localizeStrings.Get(sId);
       std::string strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);

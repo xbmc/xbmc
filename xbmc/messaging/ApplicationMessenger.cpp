@@ -163,12 +163,16 @@ int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, v
 
 int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam)
 {
-  return SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, std::vector<std::string>{} }, true);
+  return SendMsg(ThreadMessage{messageId, param1, param2, payload, std::move(strParam),
+                               std::vector<std::string>{}},
+                 true);
 }
 
 int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params)
 {
-  return SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, params }, true);
+  return SendMsg(
+      ThreadMessage{messageId, param1, param2, payload, std::move(strParam), std::move(params)},
+      true);
 }
 
 void CApplicationMessenger::PostMsg(uint32_t messageId)
@@ -188,12 +192,15 @@ void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, 
 
 void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam)
 {
-  SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, std::vector<std::string>{} }, false);
+  SendMsg(ThreadMessage{messageId, param1, param2, payload, std::move(strParam),
+                        std::vector<std::string>{}},
+          false);
 }
 
 void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params)
 {
-  SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, params }, false);
+  SendMsg(ThreadMessage{messageId, param1, param2, payload, std::move(strParam), std::move(params)},
+          false);
 }
 
 void CApplicationMessenger::ProcessMessages()

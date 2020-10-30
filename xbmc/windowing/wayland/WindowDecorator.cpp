@@ -383,8 +383,8 @@ std::string CursorForResizeEdge(wayland::shell_surface_resize edge)
 }
 
 template<typename T, typename InstanceProviderT>
-bool HandleCapabilityChange(wayland::seat_capability caps,
-                            wayland::seat_capability cap,
+bool HandleCapabilityChange(const wayland::seat_capability& caps,
+                            const wayland::seat_capability& cap,
                             T& proxy,
                             InstanceProviderT instanceProvider)
 {
@@ -439,7 +439,11 @@ void CWindowDecorator::RemoveSeat(CSeat* seat)
   UpdateButtonHoverState();
 }
 
-void CWindowDecorator::OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY)
+void CWindowDecorator::OnPointerEnter(CSeat* seat,
+                                      std::uint32_t serial,
+                                      const wayland::surface_t& surface,
+                                      double surfaceX,
+                                      double surfaceY)
 {
   auto seatStateI = m_seats.find(seat->GetGlobalName());
   if (seatStateI == m_seats.end())
@@ -464,7 +468,9 @@ void CWindowDecorator::OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland
   }
 }
 
-void CWindowDecorator::OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface)
+void CWindowDecorator::OnPointerLeave(CSeat* seat,
+                                      std::uint32_t serial,
+                                      const wayland::surface_t& surface)
 {
   auto seatStateI = m_seats.find(seat->GetGlobalName());
   if (seatStateI == m_seats.end())
@@ -509,7 +515,13 @@ void CWindowDecorator::OnPointerButton(CSeat* seat, std::uint32_t serial, std::u
   }
 }
 
-void CWindowDecorator::OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y)
+void CWindowDecorator::OnTouchDown(CSeat* seat,
+                                   std::uint32_t serial,
+                                   std::uint32_t time,
+                                   const wayland::surface_t& surface,
+                                   std::int32_t id,
+                                   double x,
+                                   double y)
 {
   auto seatStateI = m_seats.find(seat->GetGlobalName());
   if (seatStateI == m_seats.end())

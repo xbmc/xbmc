@@ -30,7 +30,7 @@ CInputStreamMultiSource::~CInputStreamMultiSource()
 
 void CInputStreamMultiSource::Abort()
 {
-  for (auto iter : m_InputStreams)
+  for (const auto& iter : m_InputStreams)
     iter->Abort();
 }
 
@@ -58,7 +58,7 @@ bool CInputStreamMultiSource::GetCacheStatus(XFILE::SCacheStatus *status)
 int64_t CInputStreamMultiSource::GetLength()
 {
   int64_t length = 0;
-  for (auto iter : m_InputStreams)
+  for (const auto& iter : m_InputStreams)
   {
     length = std::max(length, iter->GetLength());
   }
@@ -71,7 +71,7 @@ bool CInputStreamMultiSource::IsEOF()
   if (m_InputStreams.empty())
     return true;
 
-  for (auto iter : m_InputStreams)
+  for (const auto& iter : m_InputStreams)
   {
     if (!(iter->IsEOF()))
       return false;
@@ -88,7 +88,7 @@ CDVDInputStream::ENextStream CInputStreamMultiSource::NextStream()
 
 
   CDVDInputStream::ENextStream next;
-  for (auto iter : m_InputStreams)
+  for (const auto& iter : m_InputStreams)
   {
     next = iter->NextStream();
     if (next != NEXTSTREAM_NONE)
@@ -136,6 +136,6 @@ int64_t CInputStreamMultiSource::Seek(int64_t offset, int whence)
 
 void CInputStreamMultiSource::SetReadRate(unsigned rate)
 {
-  for (auto iter : m_InputStreams)
+  for (const auto& iter : m_InputStreams)
     iter->SetReadRate(rate);
 }

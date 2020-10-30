@@ -22,13 +22,15 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <utility>
+
 using namespace KODI::MESSAGING;
 
 namespace ADDON
 {
 
 CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
-  : CAddon(addonInfo, addonInfo->MainType()), m_binaryAddonBase(addonBase)
+  : CAddon(addonInfo, addonInfo->MainType()), m_binaryAddonBase(std::move(addonBase))
 {
 }
 
@@ -353,13 +355,13 @@ ADDON_STATUS CAddonDll::TransferSettings()
   auto settings = GetSettings();
   if (settings != nullptr)
   {
-    for (auto section : settings->GetSections())
+    for (const auto& section : settings->GetSections())
     {
-      for (auto category : section->GetCategories())
+      for (const auto& category : section->GetCategories())
       {
-        for (auto group : category->GetGroups())
+        for (const auto& group : category->GetGroups())
         {
-          for (auto setting : group->GetSettings())
+          for (const auto& setting : group->GetSettings())
           {
             ADDON_STATUS status = ADDON_STATUS_OK;
             const char* id = setting->GetId().c_str();

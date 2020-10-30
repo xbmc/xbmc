@@ -474,7 +474,7 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
   }
 }
 
-bool CWinSystemX11::IsCurrentOutput(std::string output)
+bool CWinSystemX11::IsCurrentOutput(const std::string& output)
 {
   return (StringUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
 }
@@ -817,7 +817,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       XTextProperty windowName, iconName;
 
       std::string titleString = CCompileInfo::GetAppName();
-      std::string classString = titleString;
+      const std::string& classString = titleString;
       char *title = const_cast<char*>(titleString.c_str());
 
       XStringListToTextProperty(&title, 1, &windowName);

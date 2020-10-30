@@ -14,6 +14,7 @@
 #include <memory>
 #include <queue>
 #include <string>
+#include <utility>
 
 class CEvent;
 
@@ -71,10 +72,11 @@ private:
 class Protocol
 {
 public:
-  Protocol(std::string name, CEvent* inEvent, CEvent *outEvent)
-    :portName(name), containerInEvent(inEvent), containerOutEvent(outEvent) {}
-  Protocol(std::string name)
-    : Protocol(name, nullptr, nullptr) {}
+  Protocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : portName(std::move(name)), containerInEvent(inEvent), containerOutEvent(outEvent)
+  {
+  }
+  Protocol(std::string name) : Protocol(std::move(name), nullptr, nullptr) {}
   ~Protocol();
   Message *GetMessage();
   void ReturnMessage(Message *msg);

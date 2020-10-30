@@ -87,7 +87,7 @@ public:
   void Unregister(IDispResource* resource) override;
 
   using PresentationFeedbackHandler = std::function<void(timespec /* tv */, std::uint32_t /* refresh */, std::uint32_t /* sync output id */, float /* sync output fps */, std::uint64_t /* msc */)>;
-  CSignalRegistration RegisterOnPresentationFeedback(PresentationFeedbackHandler handler);
+  CSignalRegistration RegisterOnPresentationFeedback(const PresentationFeedbackHandler& handler);
 
   // Like CWinSystemX11
   void GetConnectedOutputs(std::vector<std::string>* outputs);

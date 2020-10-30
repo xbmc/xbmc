@@ -200,7 +200,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   return false;
 }
 
-bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool fileinfo)
+bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool fileinfo)
 {
   AVInputFormat* iformat = NULL;
   std::string strFile;
@@ -273,7 +273,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool fileinf
       if (found != std::string::npos)
       {
         size_t start = found + 3;
-        found = strURL.find("@");
+        found = strURL.find('@');
 
         if (found != std::string::npos && found > start)
         {

@@ -194,7 +194,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
 #ifdef HAS_UPNP
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNP))
     {
-      std::string strDevices = g_localizeStrings.Get(33040); //"% Devices"
+      const std::string& strDevices = g_localizeStrings.Get(33040); //"% Devices"
       share.strPath = "upnp://";
       share.strName = StringUtils::Format(strDevices.c_str(), "UPnP"); //"UPnP Devices"
       locations.push_back(share);

@@ -701,7 +701,7 @@ class CAddonEpgTag : public EPG_TAG
 {
 public:
   CAddonEpgTag() = delete;
-  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag> kodiTag)
+  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& kodiTag)
     : m_strTitle(kodiTag->Title()),
       m_strPlotOutline(kodiTag->PlotOutline()),
       m_strPlot(kodiTag->Plot()),
@@ -1349,7 +1349,7 @@ const char* CPVRClient::ToString(const PVR_ERROR error)
 }
 
 PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
-                                  std::function<PVR_ERROR(const AddonInstance*)> function,
+                                  const std::function<PVR_ERROR(const AddonInstance*)>& function,
                                   bool bIsImplemented /* = true */,
                                   bool bCheckReadyToUse /* = true */) const
 {

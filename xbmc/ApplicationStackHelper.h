@@ -189,7 +189,7 @@ protected:
   typedef std::shared_ptr<StackPartInformation> StackPartInformationPtr;
   typedef std::map<std::string, StackPartInformationPtr> Stackmap;
   Stackmap m_stackmap;
-  StackPartInformationPtr GetStackPartInformation(std::string key);
+  StackPartInformationPtr GetStackPartInformation(const std::string& key);
 
   std::unique_ptr<CFileItemList> m_currentStack;
   int m_currentStackPosition = 0;

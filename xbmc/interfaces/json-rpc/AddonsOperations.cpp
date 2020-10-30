@@ -267,7 +267,11 @@ static CVariant Serialize(const AddonPtr& addon)
   return variant;
 }
 
-void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append /* = false */)
+void CAddonsOperations::FillDetails(const AddonPtr& addon,
+                                    const CVariant& fields,
+                                    CVariant& result,
+                                    CAddonDatabase& addondb,
+                                    bool append /* = false */)
 {
   if (addon.get() == NULL)
     return;

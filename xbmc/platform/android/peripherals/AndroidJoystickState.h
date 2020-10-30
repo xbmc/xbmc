@@ -24,7 +24,7 @@ namespace PERIPHERALS
   {
   public:
     CAndroidJoystickState() = default;
-    CAndroidJoystickState(CAndroidJoystickState &&other);
+    CAndroidJoystickState(CAndroidJoystickState&& other) noexcept;
     virtual ~CAndroidJoystickState();
 
     int GetDeviceId() const { return m_deviceId; }

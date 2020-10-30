@@ -135,7 +135,7 @@ CPosixTimezone::CPosixTimezone()
    free(line);
 }
 
-void CPosixTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPosixTimezone::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -180,7 +180,7 @@ std::string CPosixTimezone::GetCountryByTimezone(const std::string& timezone)
 #endif
 }
 
-void CPosixTimezone::SetTimezone(std::string timezoneName)
+void CPosixTimezone::SetTimezone(const std::string& timezoneName)
 {
 #if !defined(TARGET_DARWIN)
   bool use_timezone = true;
@@ -234,14 +234,21 @@ std::string CPosixTimezone::GetOSConfiguredTimezone()
    return timezoneName;
 }
 
-void CPosixTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CPosixTimezone::SettingOptionsTimezoneCountriesFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    void* data)
 {
   std::vector<std::string> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
     list.emplace_back(countries[i], countries[i]);
 }
 
-void CPosixTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CPosixTimezone::SettingOptionsTimezonesFiller(const std::shared_ptr<const CSetting>& setting,
+                                                   std::vector<StringSettingOption>& list,
+                                                   std::string& current,
+                                                   void* data)
 {
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool found = false;

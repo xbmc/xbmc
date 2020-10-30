@@ -34,8 +34,15 @@ class IRawInputHandlerKeyboard
 {
 public:
   virtual void OnKeyboardKeymap(CSeat* seat, wayland::keyboard_keymap_format format, std::string const& keymap) {}
-  virtual void OnKeyboardEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, wayland::array_t keys) {}
-  virtual void OnKeyboardLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface) {}
+  virtual void OnKeyboardEnter(CSeat* seat,
+                               std::uint32_t serial,
+                               const wayland::surface_t& surface,
+                               const wayland::array_t& keys)
+  {
+  }
+  virtual void OnKeyboardLeave(CSeat* seat, std::uint32_t serial, const wayland::surface_t& surface)
+  {
+  }
   virtual void OnKeyboardKey(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t key, wayland::keyboard_key_state state) {}
   virtual void OnKeyboardModifiers(CSeat* seat, std::uint32_t serial, std::uint32_t modsDepressed, std::uint32_t modsLatched, std::uint32_t modsLocked, std::uint32_t group) {}
   virtual void OnKeyboardRepeatInfo(CSeat* seat, std::int32_t rate, std::int32_t delay) {}
@@ -51,8 +58,16 @@ protected:
 class IRawInputHandlerPointer
 {
 public:
-  virtual void OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY) {}
-  virtual void OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface) {}
+  virtual void OnPointerEnter(CSeat* seat,
+                              std::uint32_t serial,
+                              const wayland::surface_t& surface,
+                              double surfaceX,
+                              double surfaceY)
+  {
+  }
+  virtual void OnPointerLeave(CSeat* seat, std::uint32_t serial, const wayland::surface_t& surface)
+  {
+  }
   virtual void OnPointerMotion(CSeat* seat, std::uint32_t time, double surfaceX, double surfaceY) {}
   virtual void OnPointerButton(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state) {}
   virtual void OnPointerAxis(CSeat* seat, std::uint32_t time, wayland::pointer_axis axis, double value) {}
@@ -68,7 +83,15 @@ protected:
 class IRawInputHandlerTouch
 {
 public:
-  virtual void OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y) {}
+  virtual void OnTouchDown(CSeat* seat,
+                           std::uint32_t serial,
+                           std::uint32_t time,
+                           const wayland::surface_t& surface,
+                           std::int32_t id,
+                           double x,
+                           double y)
+  {
+  }
   virtual void OnTouchUp(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::int32_t id) {}
   virtual void OnTouchMotion(CSeat* seat, std::uint32_t time, std::int32_t id, double x, double y) {}
   virtual void OnTouchCancel(CSeat* seat) {}
@@ -155,7 +178,7 @@ private:
   CSeat(CSeat const& other) = delete;
   CSeat& operator=(CSeat const& other) = delete;
 
-  void HandleOnCapabilities(wayland::seat_capability caps);
+  void HandleOnCapabilities(const wayland::seat_capability& caps);
   void HandlePointerCapability();
   void HandleKeyboardCapability();
   void HandleTouchCapability();

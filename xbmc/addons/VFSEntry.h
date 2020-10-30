@@ -13,6 +13,8 @@
 #include "filesystem/IFile.h"
 #include "filesystem/IFileDirectory.h"
 
+#include <utility>
+
 namespace ADDON
 {
 
@@ -256,7 +258,10 @@ namespace ADDON
   public:
     //! \brief The constructor initializes the reference to the wrapped CVFSEntry.
     //! \param ptr The CVFSEntry to wrap.
-    explicit CVFSEntryIFileDirectoryWrapper(VFSEntryPtr ptr) : CVFSEntryIDirectoryWrapper(ptr) {}
+    explicit CVFSEntryIFileDirectoryWrapper(VFSEntryPtr ptr)
+      : CVFSEntryIDirectoryWrapper(std::move(ptr))
+    {
+    }
 
     //! \brief Empty destructor.
     ~CVFSEntryIFileDirectoryWrapper() override = default;

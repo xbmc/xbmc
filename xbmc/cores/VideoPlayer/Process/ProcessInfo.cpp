@@ -17,7 +17,7 @@
 CCriticalSection createSection;
 std::map<std::string, CreateProcessControl> CProcessInfo::m_processControls;
 
-void CProcessInfo::RegisterProcessControl(std::string id, CreateProcessControl createFunc)
+void CProcessInfo::RegisterProcessControl(const std::string& id, CreateProcessControl createFunc)
 {
   CSingleLock lock(createSection);
 

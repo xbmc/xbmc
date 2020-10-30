@@ -121,12 +121,16 @@ CLibInputSettings::~CLibInputSettings()
   settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
-void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    void* data)
 {
   list = layouts;
 }
 
-void CLibInputSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CLibInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

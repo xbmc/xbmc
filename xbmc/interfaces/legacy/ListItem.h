@@ -20,6 +20,7 @@
 #include "commons/Exception.h"
 
 #include <map>
+#include <utility>
 #include <vector>
 
 
@@ -79,9 +80,7 @@ namespace XBMCAddon
                bool offscreen = false);
 
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
-      inline explicit ListItem(CFileItemPtr pitem) :
-        item(pitem), m_offscreen(false)
-      {}
+      inline explicit ListItem(CFileItemPtr pitem) : item(std::move(pitem)), m_offscreen(false) {}
 
       static inline AddonClass::Ref<ListItem> fromString(const String& str)
       {
@@ -319,7 +318,7 @@ namespace XBMCAddon
       ///
       setRating(...);
 #else
-      void setRating(std::string type, float rating, int votes = 0, bool defaultt = false);
+      void setRating(const std::string& type, float rating, int votes = 0, bool defaultt = false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -773,7 +772,14 @@ namespace XBMCAddon
       ///
       addAvailableArtwork(...);
 #else
-      void addAvailableArtwork(std::string url, std::string art_type = "", std::string preview = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+      void addAvailableArtwork(const std::string& url,
+                               const std::string& art_type = "",
+                               const std::string& preview = "",
+                               const std::string& referrer = "",
+                               const std::string& cache = "",
+                               bool post = false,
+                               bool isgz = false,
+                               int season = -1);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

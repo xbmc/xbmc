@@ -133,7 +133,8 @@ void CGUIDialogInfoProviderSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogInfoProviderSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogInfoProviderSettings::OnSettingChanged(
+    const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -158,7 +159,7 @@ void CGUIDialogInfoProviderSettings::OnSettingChanged(std::shared_ptr<const CSet
   }
 }
 
-void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

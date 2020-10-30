@@ -859,7 +859,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     // Removable sources
     VECSOURCES removables;
     CServiceBroker::GetMediaManager().GetRemovableDrives(removables);
-    for (auto s : removables)
+    for (const auto& s : removables)
     {
       if (URIUtils::CompareWithoutSlashAtEnd(s.strPath, m_vecItems->GetPath()))
       {
@@ -903,7 +903,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     showLabel = 35250; // "Add games..."
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
-    std::string strLabel = g_localizeStrings.Get(showLabel);
+    const std::string& strLabel = g_localizeStrings.Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
     pItem->SetArt("icon", "DefaultAddSource.png");
@@ -1508,7 +1508,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
  *
  * This function is called by OnClick()
  */
-bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
+bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   //play and add current directory to temporary playlist
   int iPlaylist = m_guiState->GetPlaylist();

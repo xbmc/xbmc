@@ -35,7 +35,7 @@ public:
    * @brief Registers a CBufferObject class to class to the factory.
    *
    */
-  static void RegisterBufferObject(std::function<std::unique_ptr<CBufferObject>()>);
+  static void RegisterBufferObject(const std::function<std::unique_ptr<CBufferObject>()>&);
 
   /**
    * @brief Clears the list of registered CBufferObject types

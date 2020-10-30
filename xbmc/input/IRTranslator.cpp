@@ -50,7 +50,7 @@ void CIRTranslator::Load(const std::string& irMapName)
 bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
 {
   std::string remoteMapTag = URIUtils::GetFileName(irMapPath);
-  size_t lastindex = remoteMapTag.find_last_of(".");
+  size_t lastindex = remoteMapTag.find_last_of('.');
   if (lastindex != std::string::npos)
     remoteMapTag = remoteMapTag.substr(0, lastindex);
   StringUtils::ToLower(remoteMapTag);

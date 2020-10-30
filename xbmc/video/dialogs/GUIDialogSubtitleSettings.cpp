@@ -80,7 +80,7 @@ bool CGUIDialogSubtitleSettings::OnMessage(CGUIMessage& message)
   return CGUIDialogSettingsManualBase::OnMessage(message);
 }
 
-void CGUIDialogSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogSubtitleSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -154,7 +154,7 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   return "";
 }
 
-void CGUIDialogSubtitleSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogSubtitleSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -296,7 +296,8 @@ bool CGUIDialogSubtitleSettings::SupportsSubtitleFeature(int feature)
   return false;
 }
 
-void CGUIDialogSubtitleSettings::AddSubtitleStreams(std::shared_ptr<CSettingGroup> group, const std::string &settingId)
+void CGUIDialogSubtitleSettings::AddSubtitleStreams(const std::shared_ptr<CSettingGroup>& group,
+                                                    const std::string& settingId)
 {
   if (group == NULL || settingId.empty())
     return;
@@ -308,7 +309,11 @@ void CGUIDialogSubtitleSettings::AddSubtitleStreams(std::shared_ptr<CSettingGrou
   m_subtitleStreamSetting = AddList(group, settingId, 462, SettingLevel::Basic, m_subtitleStream, SubtitleStreamsOptionFiller, 462);
 }
 
-void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
+    const SettingConstPtr& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
 {
   int subtitleStreamCount = g_application.GetAppPlayer().GetSubtitleCount();
 
@@ -343,7 +348,12 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr set
   }
 }
 
-std::string CGUIDialogSubtitleSettings::SettingFormatterDelay(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
+std::string CGUIDialogSubtitleSettings::SettingFormatterDelay(
+    const std::shared_ptr<const CSettingControlSlider>& control,
+    const CVariant& value,
+    const CVariant& minimum,
+    const CVariant& step,
+    const CVariant& maximum)
 {
   if (!value.isDouble())
     return "";

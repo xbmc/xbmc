@@ -310,8 +310,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   URIUtils::RemoveSlashAtEnd(path);
   std::string strFilename = URIUtils::GetFileName(path);
 
-  std::string strHostname = url.GetHostName();
-
 #ifdef HAS_UPNP
   // UPNP
   if (url.IsProtocol("upnp"))
@@ -501,7 +499,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-std::string CUtil::GetHomePath(std::string strTarget)
+std::string CUtil::GetHomePath(const std::string& strTarget)
 {
   auto strPath = CEnvironment::getenv(strTarget);
 
@@ -1032,8 +1030,8 @@ void CUtil::SplitExecFunction(const std::string &execString, std::string &functi
 {
   std::string paramString;
 
-  size_t iPos = execString.find("(");
-  size_t iPos2 = execString.rfind(")");
+  size_t iPos = execString.find('(');
+  size_t iPos2 = execString.rfind(')');
   if (iPos != std::string::npos && iPos2 != std::string::npos)
   {
     paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);
@@ -1965,7 +1963,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
         StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
       continue;
 
-    for (auto ext : item_exts)
+    for (const auto& ext : item_exts)
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {

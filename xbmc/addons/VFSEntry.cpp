@@ -14,6 +14,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <utility>
+
 #if defined(TARGET_WINDOWS)
 #ifndef S_IFLNK
 #define S_IFLNK 0120000
@@ -563,8 +565,8 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items)
   return true;
 }
 
-CVFSEntryIFileWrapper::CVFSEntryIFileWrapper(VFSEntryPtr ptr) :
-  m_context(nullptr), m_addon(ptr)
+CVFSEntryIFileWrapper::CVFSEntryIFileWrapper(VFSEntryPtr ptr)
+  : m_context(nullptr), m_addon(std::move(ptr))
 {
 }
 
@@ -675,8 +677,7 @@ bool CVFSEntryIFileWrapper::Rename(const CURL& url, const CURL& url2)
   return m_addon->Rename(url, url2);
 }
 
-CVFSEntryIDirectoryWrapper::CVFSEntryIDirectoryWrapper(VFSEntryPtr ptr) :
-  m_addon(ptr)
+CVFSEntryIDirectoryWrapper::CVFSEntryIDirectoryWrapper(VFSEntryPtr ptr) : m_addon(std::move(ptr))
 {
 }
 

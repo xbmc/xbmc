@@ -565,7 +565,7 @@ static struct SCharsetMapping
 
 CCharsetConverter::CCharsetConverter() = default;
 
-void CCharsetConverter::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CCharsetConverter::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -860,7 +860,10 @@ bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc
   return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, failOnBadString);
 }
 
-void CCharsetConverter::SettingOptionsCharsetsFiller(SettingConstPtr setting, std::vector<StringSettingOption>& list, std::string& current, void *data)
+void CCharsetConverter::SettingOptionsCharsetsFiller(const SettingConstPtr& setting,
+                                                     std::vector<StringSettingOption>& list,
+                                                     std::string& current,
+                                                     void* data)
 {
   std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());

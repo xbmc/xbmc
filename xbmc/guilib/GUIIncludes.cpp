@@ -291,7 +291,7 @@ void CGUIIncludes::FlattenSkinVariableConditions()
 
 bool CGUIIncludes::HasLoaded(const std::string &file) const
 {
-  for (auto loadedFile : m_files)
+  for (const auto& loadedFile : m_files)
   {
     if (loadedFile == file)
       return true;

@@ -21,7 +21,8 @@ namespace HELPERS
 {
 DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, uint32_t autoCloseTimeout)
 {
-  return ShowYesNoCustomDialog(heading, text, noLabel, yesLabel, "", autoCloseTimeout);
+  return ShowYesNoCustomDialog(std::move(heading), std::move(text), std::move(noLabel),
+                               std::move(yesLabel), "", autoCloseTimeout);
 }
 
 DialogResponse ShowYesNoCustomDialog(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, CVariant customLabel, uint32_t autoCloseTimeout)

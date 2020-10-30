@@ -137,8 +137,8 @@ public:
   void SetRatings(RatingMap ratings);
   void SetVotes(int votes, const std::string& type = "");
   void SetUniqueIDs(std::map<std::string, std::string> uniqueIDs);
-  void SetPremiered(CDateTime premiered);
-  void SetPremieredFromDBDate(std::string premieredString);
+  void SetPremiered(const CDateTime& premiered);
+  void SetPremieredFromDBDate(const std::string& premieredString);
   void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);

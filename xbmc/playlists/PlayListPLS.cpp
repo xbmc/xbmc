@@ -105,7 +105,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
   {
     strLine = szLine;
     StringUtils::RemoveCRLF(strLine);
-    size_t iPosEqual = strLine.find("=");
+    size_t iPosEqual = strLine.find('=');
     if (iPosEqual != std::string::npos)
     {
       std::string strLeft = strLine.substr(0, iPosEqual);

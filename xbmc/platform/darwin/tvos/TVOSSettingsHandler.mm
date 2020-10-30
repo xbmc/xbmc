@@ -45,7 +45,7 @@ void CTVOSInputSettings::Initialize()
   [g_xbmcController.inputHandler.inputSettings setRemoteIdleTimeout:timeout];
 }
 
-void CTVOSInputSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

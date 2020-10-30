@@ -172,7 +172,7 @@ protected:
   bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
   void OnPrevLetter();
-  void OnJumpLetter(std::string letter, bool skip = false);
+  void OnJumpLetter(const std::string& letter, bool skip = false);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, std::string> > m_letterOffsets;
 

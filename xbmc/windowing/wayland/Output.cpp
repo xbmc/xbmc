@@ -12,16 +12,21 @@
 #include <cmath>
 #include <set>
 #include <stdexcept>
+#include <utility>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
-COutput::COutput(std::uint32_t globalName, wayland::output_t const & output, std::function<void()> doneHandler)
-: m_globalName{globalName}, m_output{output}, m_doneHandler{doneHandler}
+COutput::COutput(std::uint32_t globalName,
+                 wayland::output_t const& output,
+                 std::function<void()> doneHandler)
+  : m_globalName{globalName}, m_output{output}, m_doneHandler{std::move(doneHandler)}
 {
   assert(m_output);
 
-  m_output.on_geometry() = [this](std::int32_t x, std::int32_t y, std::int32_t physWidth, std::int32_t physHeight, wayland::output_subpixel, std::string const& make, std::string const& model, wayland::output_transform)
-  {
+  m_output.on_geometry() = [this](std::int32_t x, std::int32_t y, std::int32_t physWidth,
+                                  std::int32_t physHeight, wayland::output_subpixel,
+                                  std::string const& make, std::string const& model,
+                                  const wayland::output_transform&) {
     CSingleLock lock(m_geometryCriticalSection);
     m_position = {x, y};
     // Some monitors report invalid (negative) values that would cause an exception
@@ -33,8 +38,8 @@ COutput::COutput(std::uint32_t globalName, wayland::output_t const & output, std
     m_make = make;
     m_model = model;
   };
-  m_output.on_mode() = [this](wayland::output_mode flags, std::int32_t width, std::int32_t height, std::int32_t refresh)
-  {
+  m_output.on_mode() = [this](const wayland::output_mode& flags, std::int32_t width,
+                              std::int32_t height, std::int32_t refresh) {
     // std::set.emplace returns pair of iterator to the (possibly) inserted
     // element and boolean information whether the element was actually added
     // which we do not need

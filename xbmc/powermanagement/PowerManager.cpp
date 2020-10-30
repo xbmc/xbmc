@@ -262,7 +262,10 @@ void CPowerManager::RestorePlayerState()
   g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 
-void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CPowerManager::SettingOptionsShutdownStatesFiller(const SettingConstPtr& setting,
+                                                       std::vector<IntegerSettingOption>& list,
+                                                       int& current,
+                                                       void* data)
 {
   if (CServiceBroker::GetPowerManager().CanPowerdown())
     list.emplace_back(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);

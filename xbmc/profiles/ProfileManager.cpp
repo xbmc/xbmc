@@ -471,7 +471,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   if (dlgYesNo == NULL)
     return false;
 
-  std::string str = g_localizeStrings.Get(13201);
+  const std::string& str = g_localizeStrings.Get(13201);
   dlgYesNo->SetHeading(CVariant{13200});
   dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())});
   dlgYesNo->SetLine(1, CVariant{""});
@@ -716,7 +716,7 @@ CEventLog& CProfileManager::GetEventLog()
   return m_eventLogs->GetEventLog(GetCurrentProfileId());
 }
 
-void CProfileManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CProfileManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

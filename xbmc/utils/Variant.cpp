@@ -282,7 +282,7 @@ CVariant::CVariant(const CVariant &variant)
   *this = variant;
 }
 
-CVariant::CVariant(CVariant&& rhs)
+CVariant::CVariant(CVariant&& rhs) noexcept
 {
   //Set this so that operator= don't try and run cleanup
   //when we're not initialized.
@@ -624,7 +624,7 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   return *this;
 }
 
-CVariant& CVariant::operator=(CVariant&& rhs)
+CVariant& CVariant::operator=(CVariant&& rhs) noexcept
 {
   if (m_type == VariantTypeConstNull || this == &rhs)
     return *this;
@@ -634,7 +634,7 @@ CVariant& CVariant::operator=(CVariant&& rhs)
     cleanup();
 
   m_type = rhs.m_type;
-  m_data = std::move(rhs.m_data);
+  m_data = rhs.m_data;
 
   //Should be enough to just set m_type here
   //but better safe than sorry, could probably lead to coverity warnings

@@ -37,7 +37,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
     return false;
 
   // the share name represents an identifier that can be mapped to an addon ID
-  std::string addonId = url.GetShareName();
+  const std::string& addonId = url.GetShareName();
   std::string filePath;
   if (url.GetFileName().length() > addonId.length())
     filePath = url.GetFileName().substr(addonId.size() + 1);

@@ -25,8 +25,9 @@ class CWindowSystemFactory
 public:
   static std::unique_ptr<CWinSystemBase> CreateWindowSystem(const std::string& name);
   static std::list<std::string> GetWindowSystems();
-  static void RegisterWindowSystem(std::function<std::unique_ptr<CWinSystemBase>()> createFunction,
-                                   const std::string& name = "default");
+  static void RegisterWindowSystem(
+      const std::function<std::unique_ptr<CWinSystemBase>()>& createFunction,
+      const std::string& name = "default");
 
 private:
   static std::list<std::pair<std::string, std::function<std::unique_ptr<CWinSystemBase>()>>>

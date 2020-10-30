@@ -220,7 +220,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   std::string tmp = locale;
 
   // look for the modifier after @
-  size_t pos = tmp.find("@");
+  size_t pos = tmp.find('@');
   if (pos != std::string::npos)
   {
     modifier = tmp.substr(pos + 1);
@@ -228,7 +228,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   }
 
   // look for the codeset after .
-  pos = tmp.find(".");
+  pos = tmp.find('.');
   if (pos != std::string::npos)
   {
     codeset = tmp.substr(pos + 1);
@@ -236,7 +236,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   }
 
   // look for the codeset after _
-  pos = tmp.find("_");
+  pos = tmp.find('_');
   if (pos != std::string::npos)
   {
     territory = tmp.substr(pos + 1);

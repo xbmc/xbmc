@@ -30,7 +30,7 @@ public:
    \param setting The setting whose value is being changed (already containing the changed value)
    \return True if the new value is acceptable otherwise false
    */
-  virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) { return true; }
+  virtual bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) { return true; }
 
   /*!
    \brief The value of the given setting has changed.
@@ -41,7 +41,7 @@ public:
 
    \param setting The setting whose value has been changed
    */
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) { }
+  virtual void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) {}
 
   /*!
    \brief The given setting has been activated.
@@ -51,7 +51,7 @@ public:
 
    \param setting The setting which has been activated.
    */
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) { }
+  virtual void OnSettingAction(const std::shared_ptr<const CSetting>& setting) {}
 
   /*!
    \brief The given setting needs to be updated.
@@ -65,7 +65,12 @@ public:
    \param oldSettingNode The old setting node
    \return True if the setting has been successfully updated otherwise false
    */
-  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) { return false; }
+  virtual bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                               const char* oldSettingId,
+                               const TiXmlNode* oldSettingNode)
+  {
+    return false;
+  }
 
   /*!
    \brief The given property of the given setting has changed
@@ -76,5 +81,8 @@ public:
    \param setting The setting which has a changed property
    \param propertyName The string representation of the changed property
    */
-  virtual void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) { }
+  virtual void OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
+                                        const char* propertyName)
+  {
+  }
 };

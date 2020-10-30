@@ -33,8 +33,6 @@ CStopWatch::CStopWatch(bool useFrameTime /*=false*/)
 #endif
 }
 
-CStopWatch::~CStopWatch() = default;
-
 int64_t CStopWatch::GetTicks() const
 {
   if (m_useFrameTime)

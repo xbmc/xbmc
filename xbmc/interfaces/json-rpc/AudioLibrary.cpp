@@ -1088,7 +1088,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   return success;
 }
 
-void CAudioLibrary::FillItemArtistIDs(const std::vector<int> artistids, CFileItemPtr &item)
+void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids, CFileItemPtr& item)
 {
   // Add artistIds as separate property as not part of CMusicInfoTag
   CVariant artistidObj(CVariant::VariantTypeArray);

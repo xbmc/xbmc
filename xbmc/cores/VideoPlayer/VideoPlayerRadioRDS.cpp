@@ -723,7 +723,7 @@ std::string CDVDRadioRDSData::GetRadioText(unsigned int line)
   return str;
 }
 
-void CDVDRadioRDSData::SetRadioStyle(std::string genre)
+void CDVDRadioRDSData::SetRadioStyle(const std::string& genre)
 {
   g_application.CurrentFileItem().GetMusicInfoTag()->SetGenre(genre);
   m_currentInfoTag->SetProgStyle(genre);

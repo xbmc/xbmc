@@ -145,7 +145,7 @@ SettingList CSettingGroup::GetSettings(SettingLevel level) const
   return settings;
 }
 
-void CSettingGroup::AddSetting(SettingPtr setting)
+void CSettingGroup::AddSetting(const SettingPtr& setting)
 {
   addISetting(nullptr, setting, m_settings);
 }
@@ -156,7 +156,8 @@ void CSettingGroup::AddSettings(const SettingList &settings)
     addISetting(nullptr, setting, m_settings);
 }
 
-bool CSettingGroup::ReplaceSetting(std::shared_ptr<const CSetting> currentSetting, std::shared_ptr<CSetting> newSetting)
+bool CSettingGroup::ReplaceSetting(const std::shared_ptr<const CSetting>& currentSetting,
+                                   const std::shared_ptr<CSetting>& newSetting)
 {
   for (auto itSetting = m_settings.begin(); itSetting != m_settings.end(); ++itSetting)
   {
@@ -243,7 +244,7 @@ bool CSettingCategory::CanAccess() const
   return m_accessCondition.Check();
 }
 
-void CSettingCategory::AddGroup(SettingGroupPtr group)
+void CSettingCategory::AddGroup(const SettingGroupPtr& group)
 {
   addISetting(nullptr, group, m_groups);
 }
@@ -312,7 +313,7 @@ SettingCategoryList CSettingSection::GetCategories(SettingLevel level) const
   return categories;
 }
 
-void CSettingSection::AddCategory(SettingCategoryPtr category)
+void CSettingSection::AddCategory(const SettingCategoryPtr& category)
 {
   addISetting(nullptr, category, m_categories);
 }

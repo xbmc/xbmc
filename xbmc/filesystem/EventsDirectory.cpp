@@ -46,7 +46,7 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     events = log.Get(level, includeHigherLevels);
   }
 
-  for (auto eventItem : events)
+  for (const auto& eventItem : events)
     items.Add(EventToFileItem(eventItem));
 
   return true;

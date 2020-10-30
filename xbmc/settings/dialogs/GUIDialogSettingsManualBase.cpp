@@ -88,7 +88,11 @@ SettingCategoryPtr CGUIDialogSettingsManualBase::AddCategory(const std::string &
   return category;
 }
 
-SettingGroupPtr CGUIDialogSettingsManualBase::AddGroup(SettingCategoryPtr category, int label /* = -1 */, int help /* = -1 */, bool separatorBelowLabel /* = true */, bool hideSeparator /* = false */)
+SettingGroupPtr CGUIDialogSettingsManualBase::AddGroup(const SettingCategoryPtr& category,
+                                                       int label /* = -1 */,
+                                                       int help /* = -1 */,
+                                                       bool separatorBelowLabel /* = true */,
+                                                       bool hideSeparator /* = false */)
 {
   if (category == NULL)
     return NULL;
@@ -109,8 +113,14 @@ SettingGroupPtr CGUIDialogSettingsManualBase::AddGroup(SettingCategoryPtr catego
   return group;
 }
 
-std::shared_ptr<CSettingBool> CGUIDialogSettingsManualBase::AddToggle(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, bool value,
-                                                      bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingBool> CGUIDialogSettingsManualBase::AddToggle(const SettingGroupPtr& group,
+                                                                      const std::string& id,
+                                                                      int label,
+                                                                      SettingLevel level,
+                                                                      bool value,
+                                                                      bool delayed /* = false */,
+                                                                      bool visible /* = true */,
+                                                                      int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -127,9 +137,20 @@ std::shared_ptr<CSettingBool> CGUIDialogSettingsManualBase::AddToggle(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddEdit(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value,
-                                                   int minimum /* = 0 */, int step /* = 1 */, int maximum /* = 0 */, bool verifyNewValue /* = false */,
-                                                   int heading /* = -1 */, bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddEdit(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    int minimum /* = 0 */,
+    int step /* = 1 */,
+    int maximum /* = 0 */,
+    bool verifyNewValue /* = false */,
+    int heading /* = -1 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -146,10 +167,20 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddEdit(SettingGroupP
   return setting;
 }
 
-std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddEdit(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float value,
-                                                      float minimum /* = 0.0f */, float step /* = 1.0f */, float maximum /* = 0.0f */,
-                                                      bool verifyNewValue /* = false */, int heading /* = -1 */, bool delayed /* = false */,
-                                                      bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddEdit(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float value,
+    float minimum /* = 0.0f */,
+    float step /* = 1.0f */,
+    float maximum /* = 0.0f */,
+    bool verifyNewValue /* = false */,
+    int heading /* = -1 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -166,9 +197,17 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddEdit(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddEdit(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                      bool allowEmpty /* = false */, bool hidden /* = false */,
-                                                      int heading /* = -1 */, bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddEdit(const SettingGroupPtr& group,
+                                                                      const std::string& id,
+                                                                      int label,
+                                                                      SettingLevel level,
+                                                                      const std::string& value,
+                                                                      bool allowEmpty /* = false */,
+                                                                      bool hidden /* = false */,
+                                                                      int heading /* = -1 */,
+                                                                      bool delayed /* = false */,
+                                                                      bool visible /* = true */,
+                                                                      int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -186,9 +225,16 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddEdit(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddIp(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                    bool allowEmpty /* = false */, int heading /* = -1 */, bool delayed /* = false */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddIp(const SettingGroupPtr& group,
+                                                                    const std::string& id,
+                                                                    int label,
+                                                                    SettingLevel level,
+                                                                    const std::string& value,
+                                                                    bool allowEmpty /* = false */,
+                                                                    int heading /* = -1 */,
+                                                                    bool delayed /* = false */,
+                                                                    bool visible /* = true */,
+                                                                    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -206,9 +252,17 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddIp(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddPasswordMd5(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                             bool allowEmpty /* = false */, int heading /* = -1 */, bool delayed /* = false */,
-                                                             bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddPasswordMd5(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& value,
+    bool allowEmpty /* = false */,
+    int heading /* = -1 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -226,8 +280,15 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddPasswordMd5(Set
   return setting;
 }
 
-std::shared_ptr<CSettingAction> CGUIDialogSettingsManualBase::AddButton(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, const std::string& data /* = "" */,
-                                                        bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingAction> CGUIDialogSettingsManualBase::AddButton(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& data /* = "" */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -245,8 +306,14 @@ std::shared_ptr<CSettingAction> CGUIDialogSettingsManualBase::AddButton(SettingG
   return setting;
 }
 
-std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddInfoLabelButton(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string info,
-                                                                 bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddInfoLabelButton(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& info,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -263,10 +330,22 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddInfoLabelButton
   return setting;
 }
 
-std::shared_ptr<CSettingAddon> CGUIDialogSettingsManualBase::AddAddon(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value, ADDON::TYPE addonType,
-                                                      bool allowEmpty /* = false */, int heading /* = -1 */, bool hideValue /* = false */, bool showInstalledAddons /* = true */,
-                                                      bool showInstallableAddons /* = false */, bool showMoreAddons /* = true */, bool delayed /* = false */,
-                                                      bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingAddon> CGUIDialogSettingsManualBase::AddAddon(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& value,
+    ADDON::TYPE addonType,
+    bool allowEmpty /* = false */,
+    int heading /* = -1 */,
+    bool hideValue /* = false */,
+    bool showInstalledAddons /* = true */,
+    bool showInstallableAddons /* = false */,
+    bool showMoreAddons /* = true */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -285,10 +364,20 @@ std::shared_ptr<CSettingAddon> CGUIDialogSettingsManualBase::AddAddon(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingPath> CGUIDialogSettingsManualBase::AddPath(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value, bool writable /* = true */,
-                                                    const std::vector<std::string> &sources /* = std::vector<std::string>() */, bool allowEmpty /* = false */,
-                                                    int heading /* = -1 */, bool hideValue /* = false */, bool delayed /* = false */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingPath> CGUIDialogSettingsManualBase::AddPath(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& value,
+    bool writable /* = true */,
+    const std::vector<std::string>& sources /* = std::vector<std::string>() */,
+    bool allowEmpty /* = false */,
+    int heading /* = -1 */,
+    bool hideValue /* = false */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -308,9 +397,16 @@ std::shared_ptr<CSettingPath> CGUIDialogSettingsManualBase::AddPath(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingDate> CGUIDialogSettingsManualBase::AddDate(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                    bool allowEmpty /* = false */, int heading /* = -1 */, bool delayed /* = false */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingDate> CGUIDialogSettingsManualBase::AddDate(const SettingGroupPtr& group,
+                                                                    const std::string& id,
+                                                                    int label,
+                                                                    SettingLevel level,
+                                                                    const std::string& value,
+                                                                    bool allowEmpty /* = false */,
+                                                                    int heading /* = -1 */,
+                                                                    bool delayed /* = false */,
+                                                                    bool visible /* = true */,
+                                                                    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
     return NULL;
@@ -327,9 +423,16 @@ std::shared_ptr<CSettingDate> CGUIDialogSettingsManualBase::AddDate(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingTime> CGUIDialogSettingsManualBase::AddTime(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                    bool allowEmpty /* = false */, int heading /* = -1 */, bool delayed /* = false */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingTime> CGUIDialogSettingsManualBase::AddTime(const SettingGroupPtr& group,
+                                                                    const std::string& id,
+                                                                    int label,
+                                                                    SettingLevel level,
+                                                                    const std::string& value,
+                                                                    bool allowEmpty /* = false */,
+                                                                    int heading /* = -1 */,
+                                                                    bool delayed /* = false */,
+                                                                    bool visible /* = true */,
+                                                                    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
     return NULL;
@@ -346,8 +449,16 @@ std::shared_ptr<CSettingTime> CGUIDialogSettingsManualBase::AddTime(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                         StringSettingOptionsFiller filler, bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& value,
+    StringSettingOptionsFiller filler,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -365,9 +476,19 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(Setting
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, int minimum, int step, int maximum,
-                                                      int formatLabel /* = -1 */, int minimumLabel /* = -1 */, bool delayed /* = false */,
-                                                      bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(const SettingGroupPtr& group,
+                                                                      const std::string& id,
+                                                                      int label,
+                                                                      SettingLevel level,
+                                                                      int value,
+                                                                      int minimum,
+                                                                      int step,
+                                                                      int maximum,
+                                                                      int formatLabel /* = -1 */,
+                                                                      int minimumLabel /* = -1 */,
+                                                                      bool delayed /* = false */,
+                                                                      bool visible /* = true */,
+                                                                      int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -387,9 +508,20 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, int minimum, int step, int maximum,
-                                                      const std::string &formatString, int minimumLabel /* = -1 */, bool delayed /* = false */,
-                                                      bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    int minimum,
+    int step,
+    int maximum,
+    const std::string& formatString,
+    int minimumLabel /* = -1 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -409,8 +541,16 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, const TranslatableIntegerSettingOptions &entries,
-                                                      bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    const TranslatableIntegerSettingOptions& entries,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -428,8 +568,16 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, const IntegerSettingOptions &entries,
-                                                      bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    const IntegerSettingOptions& entries,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -447,8 +595,16 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, IntegerSettingOptionsFiller filler,
-                                                      bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    IntegerSettingOptionsFiller filler,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -466,9 +622,20 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float value, float minimum, float step, float maximum,
-                                                         int formatLabel /* = -1 */, int minimumLabel /* = -1 */, bool delayed /* = false */,
-                                                         bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float value,
+    float minimum,
+    float step,
+    float maximum,
+    int formatLabel /* = -1 */,
+    int minimumLabel /* = -1 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -488,9 +655,20 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(Setting
   return setting;
 }
 
-std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float value, float minimum, float step, float maximum,
-                                                         const std::string &formatString, int minimumLabel /* = -1 */, bool delayed /* = false */,
-                                                         bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float value,
+    float minimum,
+    float step,
+    float maximum,
+    const std::string& formatString,
+    int minimumLabel /* = -1 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -510,8 +688,16 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(Setting
   return setting;
 }
 
-std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::string value,
-                                                      StringSettingOptionsFiller filler, int heading, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    const std::string& value,
+    StringSettingOptionsFiller filler,
+    int heading,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -529,8 +715,16 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(SettingGro
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, const TranslatableIntegerSettingOptions &entries,
-                                                  int heading, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    const TranslatableIntegerSettingOptions& entries,
+    int heading,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -548,8 +742,16 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(SettingGroupP
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, const IntegerSettingOptions &entries,
-                                                  int heading, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    const IntegerSettingOptions& entries,
+    int heading,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -567,8 +769,16 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(SettingGroupP
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, IntegerSettingOptionsFiller filler,
-                                                   int heading, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    IntegerSettingOptionsFiller filler,
+    int heading,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -586,9 +796,18 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(SettingGroupP
   return setting;
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::vector<std::string> values,
-                                                    StringSettingOptionsFiller filler, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    std::vector<std::string> values,
+    StringSettingOptionsFiller filler,
+    int heading,
+    int minimumItems /* = 0 */,
+    int maximumItems /* = -1 */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -622,9 +841,18 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::vector<int> values,
-                                                    const TranslatableIntegerSettingOptions &entries, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    std::vector<int> values,
+    const TranslatableIntegerSettingOptions& entries,
+    int heading,
+    int minimumItems /* = 0 */,
+    int maximumItems /* = -1 */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -658,9 +886,18 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::vector<int> values,
-                                                    const IntegerSettingOptions &entries, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
-                                                    bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    std::vector<int> values,
+    const IntegerSettingOptions& entries,
+    int heading,
+    int minimumItems /* = 0 */,
+    int maximumItems /* = -1 */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -694,9 +931,19 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, std::vector<int> values,
-                                                    IntegerSettingOptionsFiller filler, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
-                                                    bool visible /* = true */, int help /* = -1 */, SettingControlListValueFormatter formatter /* = NULL */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    std::vector<int> values,
+    IntegerSettingOptionsFiller filler,
+    int heading,
+    int minimumItems /* = 0 */,
+    int maximumItems /* = -1 */,
+    bool visible /* = true */,
+    int help /* = -1 */,
+    SettingControlListValueFormatter formatter /* = NULL */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -730,9 +977,19 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, int formatLabel,
-                                                               int step /* = 1 */, int heading /* = -1 */, bool usePopup /* = false */, bool delayed /* = false */,
-                                                               bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    int formatLabel,
+    int step /* = 1 */,
+    int heading /* = -1 */,
+    bool usePopup /* = false */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -752,9 +1009,19 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(S
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, const std::string &formatString,
-                                                               int step /* = 1 */, int heading /* = -1 */, bool usePopup /* = false */, bool delayed /* = false */,
-                                                               bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    const std::string& formatString,
+    int step /* = 1 */,
+    int heading /* = -1 */,
+    bool usePopup /* = false */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -774,9 +1041,20 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(S
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, int formatLabel, int minimum, int step,
-                                                     int maximum, int heading /* = -1 */, bool usePopup /* = false */, bool delayed /* = false */,
-                                                     bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(const SettingGroupPtr& group,
+                                                                     const std::string& id,
+                                                                     int label,
+                                                                     SettingLevel level,
+                                                                     int value,
+                                                                     int formatLabel,
+                                                                     int minimum,
+                                                                     int step,
+                                                                     int maximum,
+                                                                     int heading /* = -1 */,
+                                                                     bool usePopup /* = false */,
+                                                                     bool delayed /* = false */,
+                                                                     bool visible /* = true */,
+                                                                     int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -796,9 +1074,21 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(SettingGrou
   return setting;
 }
 
-std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int value, const std::string &formatString,
-                                                     int minimum, int step, int maximum, int heading /* = -1 */, bool usePopup /* = false */, bool delayed /* = false */,
-                                                     bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int value,
+    const std::string& formatString,
+    int minimum,
+    int step,
+    int maximum,
+    int heading /* = -1 */,
+    bool usePopup /* = false */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -818,9 +1108,21 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(SettingGrou
   return setting;
 }
 
-std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float value, int formatLabel, float minimum,
-                                                        float step, float maximum, int heading /* = -1 */, bool usePopup /* = false */, bool delayed /* = false */,
-                                                        bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float value,
+    int formatLabel,
+    float minimum,
+    float step,
+    float maximum,
+    int heading /* = -1 */,
+    bool usePopup /* = false */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -840,9 +1142,21 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(SettingG
   return setting;
 }
 
-std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float value, const std::string &formatString,
-                                                        float minimum, float step, float maximum, int heading /* = -1 */, bool usePopup /* = false */,
-                                                        bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float value,
+    const std::string& formatString,
+    float minimum,
+    float step,
+    float maximum,
+    int heading /* = -1 */,
+    bool usePopup /* = false */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -862,79 +1176,207 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(SettingG
   return setting;
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddPercentageRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper,
-                                                               int valueFormatLabel, int step /* = 1 */, int formatLabel /* = 21469 */, bool delayed /* = false */,
-                                                               bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddPercentageRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int valueFormatLabel,
+    int step /* = 1 */,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, 0, step, 100, "percentage", formatLabel, valueFormatLabel, "", delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddPercentageRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper,
-                                                               const std::string &valueFormatString /* = "%i %%" */, int step /* = 1 */, int formatLabel /* = 21469 */,
-                                                               bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddPercentageRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    const std::string& valueFormatString /* = "%i %%" */,
+    int step /* = 1 */,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, 0, step, 100, "percentage", formatLabel, -1, valueFormatString, delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                     int step, int maximum, int valueFormatLabel, int formatLabel /* = 21469 */, bool delayed /* = false */,
-                                                     bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(const SettingGroupPtr& group,
+                                                                     const std::string& id,
+                                                                     int label,
+                                                                     SettingLevel level,
+                                                                     int valueLower,
+                                                                     int valueUpper,
+                                                                     int minimum,
+                                                                     int step,
+                                                                     int maximum,
+                                                                     int valueFormatLabel,
+                                                                     int formatLabel /* = 21469 */,
+                                                                     bool delayed /* = false */,
+                                                                     bool visible /* = true */,
+                                                                     int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "integer", formatLabel, valueFormatLabel, "", delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                     int step, int maximum, const std::string &valueFormatString /* = "%d" */, int formatLabel /* = 21469 */,
-                                                     bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int minimum,
+    int step,
+    int maximum,
+    const std::string& valueFormatString /* = "%d" */,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "integer", formatLabel, -1, valueFormatString, delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float valueLower, float valueUpper, float minimum,
-                                                     float step, float maximum, int valueFormatLabel, int formatLabel /* = 21469 */, bool delayed /* = false */,
-                                                     bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(const SettingGroupPtr& group,
+                                                                     const std::string& id,
+                                                                     int label,
+                                                                     SettingLevel level,
+                                                                     float valueLower,
+                                                                     float valueUpper,
+                                                                     float minimum,
+                                                                     float step,
+                                                                     float maximum,
+                                                                     int valueFormatLabel,
+                                                                     int formatLabel /* = 21469 */,
+                                                                     bool delayed /* = false */,
+                                                                     bool visible /* = true */,
+                                                                     int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "number", formatLabel, valueFormatLabel, "", delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float valueLower, float valueUpper, float minimum,
-                                                     float step, float maximum, const std::string &valueFormatString /* = "%.1f" */, int formatLabel /* = 21469 */,
-                                                     bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float valueLower,
+    float valueUpper,
+    float minimum,
+    float step,
+    float maximum,
+    const std::string& valueFormatString /* = "%.1f" */,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "number", formatLabel, -1, valueFormatString, delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddDateRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                         int step, int maximum, int valueFormatLabel, int formatLabel /* = 21469 */, bool delayed /* = false */,
-                                                         bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddDateRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int minimum,
+    int step,
+    int maximum,
+    int valueFormatLabel,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "date", formatLabel, valueFormatLabel, "", delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddDateRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                         int step, int maximum, const std::string &valueFormatString /* = "" */, int formatLabel /* = 21469 */,
-                                                         bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddDateRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int minimum,
+    int step,
+    int maximum,
+    const std::string& valueFormatString /* = "" */,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "date", formatLabel, -1, valueFormatString, delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddTimeRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                         int step, int maximum, int valueFormatLabel, int formatLabel /* = 21469 */, bool delayed /* = false */,
-                                                         bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddTimeRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int minimum,
+    int step,
+    int maximum,
+    int valueFormatLabel,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "time", formatLabel, valueFormatLabel, "", delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddTimeRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                         int step, int maximum, const std::string &valueFormatString /* = "mm:ss" */, int formatLabel /* = 21469 */,
-                                                         bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddTimeRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int minimum,
+    int step,
+    int maximum,
+    const std::string& valueFormatString /* = "mm:ss" */,
+    int formatLabel /* = 21469 */,
+    bool delayed /* = false */,
+    bool visible /* = true */,
+    int help /* = -1 */)
 {
   return AddRange(group, id, label, level, valueLower, valueUpper, minimum, step, maximum, "time", formatLabel, -1, valueFormatString, delayed, visible, help);
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, int valueLower, int valueUpper, int minimum,
-                                                     int step, int maximum, const std::string &format, int formatLabel, int valueFormatLabel,
-                                                     const std::string &valueFormatString, bool delayed, bool visible, int help)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    int valueLower,
+    int valueUpper,
+    int minimum,
+    int step,
+    int maximum,
+    const std::string& format,
+    int formatLabel,
+    int valueFormatLabel,
+    const std::string& valueFormatString,
+    bool delayed,
+    bool visible,
+    int help)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -971,9 +1413,23 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
   return setting;
 }
 
-std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGroupPtr group, const std::string &id, int label, SettingLevel level, float valueLower, float valueUpper, float minimum,
-                                                     float step, float maximum, const std::string &format, int formatLabel, int valueFormatLabel,
-                                                     const std::string &valueFormatString, bool delayed, bool visible, int help)
+std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
+    const SettingGroupPtr& group,
+    const std::string& id,
+    int label,
+    SettingLevel level,
+    float valueLower,
+    float valueUpper,
+    float minimum,
+    float step,
+    float maximum,
+    const std::string& format,
+    int formatLabel,
+    int valueFormatLabel,
+    const std::string& valueFormatString,
+    bool delayed,
+    bool visible,
+    int help)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -1010,7 +1466,10 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
   return setting;
 }
 
-void CGUIDialogSettingsManualBase::setSettingDetails(std::shared_ptr<CSetting> setting, SettingLevel level, bool visible, int help)
+void CGUIDialogSettingsManualBase::setSettingDetails(const std::shared_ptr<CSetting>& setting,
+                                                     SettingLevel level,
+                                                     bool visible,
+                                                     int help)
 {
   if (setting == NULL)
     return;

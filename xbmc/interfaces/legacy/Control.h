@@ -1148,7 +1148,7 @@ namespace XBMCAddon
     ///
     class ControlList : public Control
     {
-      void internAddListItem(AddonClass::Ref<ListItem> listitem, bool sendMessage);
+      void internAddListItem(const AddonClass::Ref<ListItem>& listitem, bool sendMessage);
 
     public:
       ControlList(long x, long y, long width, long height, const char* font = NULL,

@@ -47,7 +47,7 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
   return true;
 }
 
-bool CDRMObject::GetPropertyValue(std::string name, std::string type, uint64_t& value)const
+bool CDRMObject::GetPropertyValue(std::string name, const std::string& type, uint64_t& value) const
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
     return StringUtils::EqualsNoCase(prop->name, name);

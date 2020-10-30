@@ -14,6 +14,7 @@
 #include "utils/StaticLoggerBase.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 class CSettingsManager;
@@ -55,14 +56,15 @@ public:
    */
   SettingList GetSettings(SettingLevel level) const;
 
-  void AddSetting(std::shared_ptr<CSetting> setting);
+  void AddSetting(const std::shared_ptr<CSetting>& setting);
   void AddSettings(const SettingList &settings);
 
-  bool ReplaceSetting(std::shared_ptr<const CSetting> currentSetting, std::shared_ptr<CSetting> newSetting);
+  bool ReplaceSetting(const std::shared_ptr<const CSetting>& currentSetting,
+                      const std::shared_ptr<CSetting>& newSetting);
 
   std::shared_ptr<const ISettingControl> GetControl() const { return m_control; }
   std::shared_ptr<ISettingControl> GetControl() { return m_control; }
-  void SetControl(std::shared_ptr<ISettingControl> control) { m_control = control; }
+  void SetControl(std::shared_ptr<ISettingControl> control) { m_control = std::move(control); }
 
 private:
   SettingList m_settings;
@@ -117,7 +119,7 @@ public:
    */
   bool CanAccess() const;
 
-  void AddGroup(SettingGroupPtr group);
+  void AddGroup(const SettingGroupPtr& group);
   void AddGroups(const SettingGroupList &groups);
 
 private:
@@ -166,7 +168,7 @@ public:
    */
   SettingCategoryList GetCategories(SettingLevel level) const;
 
-  void AddCategory(SettingCategoryPtr category);
+  void AddCategory(const SettingCategoryPtr& category);
   void AddCategories(const SettingCategoryList &categories);
 
 private:

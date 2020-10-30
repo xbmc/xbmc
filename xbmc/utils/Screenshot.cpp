@@ -26,7 +26,7 @@ using namespace XFILE;
 
 std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> CScreenShot::m_screenShotSurfaces;
 
-void CScreenShot::Register(std::function<std::unique_ptr<IScreenshotSurface>()> createFunc)
+void CScreenShot::Register(const std::function<std::unique_ptr<IScreenshotSurface>()>& createFunc)
 {
   m_screenShotSurfaces.emplace_back(createFunc);
 }

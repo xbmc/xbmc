@@ -32,8 +32,8 @@ bool CGUIScalarFeatureButton::PromptForInput(CEvent& waitEvent)
   {
     case STATE::NEED_INPUT:
     {
-      std::string strPrompt = g_localizeStrings.Get(35090); // "Press %s"
-      std::string strWarn = g_localizeStrings.Get(35091); // "Press %s (%d)"
+      const std::string& strPrompt = g_localizeStrings.Get(35090); // "Press %s"
+      const std::string& strWarn = g_localizeStrings.Get(35091); // "Press %s (%d)"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, m_feature.Label(), waitEvent);
 

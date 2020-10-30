@@ -98,8 +98,6 @@ CLinuxRendererGL::CPictureBuffer::CPictureBuffer()
   loaded = false;
 }
 
-CLinuxRendererGL::CPictureBuffer::~CPictureBuffer() = default;
-
 CBaseRenderer* CLinuxRendererGL::Create(CVideoBuffer *buffer)
 {
   return new CLinuxRendererGL();

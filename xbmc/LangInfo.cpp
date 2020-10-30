@@ -314,7 +314,7 @@ CLangInfo::CLangInfo()
 
 CLangInfo::~CLangInfo() = default;
 
-void CLangInfo::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CLangInfo::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -1093,7 +1093,7 @@ std::set<std::string> CLangInfo::GetSortTokens() const
 bool CLangInfo::DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat)
 {
   // if the time format contains a "h" it's 12-hour and otherwise 24-hour clock format
-  return timeFormat.find("h") == std::string::npos;
+  return timeFormat.find('h') == std::string::npos;
 }
 
 bool CLangInfo::DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat)
@@ -1122,7 +1122,10 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
   return preparedTimeFormat;
 }
 
-void CLangInfo::SettingOptionsLanguageNamesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsLanguageNamesFiller(const SettingConstPtr& setting,
+                                                  std::vector<StringSettingOption>& list,
+                                                  std::string& current,
+                                                  void* data)
 {
   // find languages...
   ADDON::VECADDONS addons;
@@ -1135,7 +1138,10 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(SettingConstPtr setting, std::
   sort(list.begin(), list.end(), SortLanguage());
 }
 
-void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& setting,
+                                                     std::vector<StringSettingOption>& list,
+                                                     std::string& current,
+                                                     void* data)
 {
   // get a list of language names
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
@@ -1144,7 +1150,10 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, st
     list.emplace_back(language, language);
 }
 
-void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const SettingConstPtr& setting,
+                                                         std::vector<StringSettingOption>& list,
+                                                         std::string& current,
+                                                         void* data)
 {
   list.emplace_back(g_localizeStrings.Get(307), "mediadefault");
   list.emplace_back(g_localizeStrings.Get(308), "original");
@@ -1153,7 +1162,10 @@ void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const SettingConstPtr& setting,
+                                                            std::vector<StringSettingOption>& list,
+                                                            std::string& current,
+                                                            void* data)
 {
   list.emplace_back(g_localizeStrings.Get(231), "none");
   list.emplace_back(g_localizeStrings.Get(13207), "forced_only");
@@ -1163,7 +1175,11 @@ void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(SettingConstPtr sett
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(
+    const SettingConstPtr& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    void* data)
 {
   list.emplace_back(g_localizeStrings.Get(308), "original");
   list.emplace_back(g_localizeStrings.Get(309), "default");
@@ -1171,7 +1187,10 @@ void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(SettingConstPtr se
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsRegionsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsRegionsFiller(const SettingConstPtr& setting,
+                                            std::vector<StringSettingOption>& list,
+                                            std::string& current,
+                                            void* data)
 {
   std::vector<std::string> regions;
   g_langInfo.GetRegionNames(regions);
@@ -1194,7 +1213,10 @@ void CLangInfo::SettingOptionsRegionsFiller(SettingConstPtr setting, std::vector
     current = regions[0];
 }
 
-void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsShortDateFormatsFiller(const SettingConstPtr& setting,
+                                                     std::vector<StringSettingOption>& list,
+                                                     std::string& current,
+                                                     void* data)
 {
   bool match = false;
   const std::string& shortDateFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -1226,7 +1248,10 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, st
     current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsLongDateFormatsFiller(const SettingConstPtr& setting,
+                                                    std::vector<StringSettingOption>& list,
+                                                    std::string& current,
+                                                    void* data)
 {
   bool match = false;
   const std::string& longDateFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -1258,7 +1283,10 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std
     current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsTimeFormatsFiller(const SettingConstPtr& setting,
+                                                std::vector<StringSettingOption>& list,
+                                                std::string& current,
+                                                void* data)
 {
   bool match = false;
   const std::string& timeFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -1329,7 +1357,10 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(SettingConstPtr setting, std::ve
     current = list[0].value;
 }
 
-void CLangInfo::SettingOptions24HourClockFormatsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptions24HourClockFormatsFiller(const SettingConstPtr& setting,
+                                                       std::vector<StringSettingOption>& list,
+                                                       std::string& current,
+                                                       void* data)
 {
   bool match = false;
   const std::string& clock24HourFormatSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -1363,7 +1394,10 @@ void CLangInfo::SettingOptions24HourClockFormatsFiller(SettingConstPtr setting, 
     current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsTemperatureUnitsFiller(const SettingConstPtr& setting,
+                                                     std::vector<StringSettingOption>& list,
+                                                     std::string& current,
+                                                     void* data)
 {
   bool match = false;
   const std::string& temperatureUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -1392,7 +1426,10 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, st
     current = list[0].value;
 }
 
-void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsSpeedUnitsFiller(const SettingConstPtr& setting,
+                                               std::vector<StringSettingOption>& list,
+                                               std::string& current,
+                                               void* data)
 {
   bool match = false;
   const std::string& speedUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();

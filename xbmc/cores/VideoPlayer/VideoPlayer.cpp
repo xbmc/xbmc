@@ -390,7 +390,7 @@ int CSelectionStreams::TypeIndexOf(StreamType type, int source, int64_t demuxerI
     return -1;
 }
 
-int CSelectionStreams::Source(StreamSource source, std::string filename)
+int CSelectionStreams::Source(StreamSource source, const std::string& filename)
 {
   int index = source - 1;
   for (size_t i=0; i<m_Streams.size(); i++)
@@ -424,7 +424,9 @@ void CSelectionStreams::Update(SelectionStream& s)
   }
 }
 
-void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux* demuxer, std::string filename2)
+void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
+                               CDVDDemux* demuxer,
+                               const std::string& filename2)
 {
   if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -546,7 +548,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
   CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
 }
 
-void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux* demuxer)
+void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input, CDVDDemux* demuxer)
 {
   Update(input, demuxer, "");
 }

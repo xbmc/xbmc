@@ -114,7 +114,7 @@ private:
    \param clutSize pointer to CLUT resolution
    \return true if the file can be loaded, false otherwise
    */
-  static bool Probe3dLut(const std::string filename, int *clutSize);
+  static bool Probe3dLut(const std::string& filename, int* clutSize);
 
   /*! \brief Load a .3dlut file
    \param filename full path and filename
@@ -123,7 +123,10 @@ private:
    \param clutData pointer to CLUT data
    \return true on success, false otherwise
    */
-  static bool Load3dLut(const std::string filename, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData);
+  static bool Load3dLut(const std::string& filename,
+                        CMS_DATA_FORMAT format,
+                        int clutSize,
+                        uint16_t* clutData);
 
 
 #if defined(HAVE_LCMS2)
@@ -136,7 +139,7 @@ private:
    \param filename full path and filename
    \return display profile (cmsHPROFILE)
    */
-  cmsHPROFILE LoadIccDisplayProfile(const std::string filename);
+  cmsHPROFILE LoadIccDisplayProfile(const std::string& filename);
 
   /* \brief Load an ICC device link
    \param filename full path and filename

@@ -269,7 +269,15 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   delete thumbLoader;
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
+void CFileItemHandler::HandleFileItem(const char* ID,
+                                      bool allowFile,
+                                      const char* resultname,
+                                      const CFileItemPtr& item,
+                                      const CVariant& parameterObject,
+                                      const CVariant& validFields,
+                                      CVariant& result,
+                                      bool append /* = true */,
+                                      CThumbLoader* thumbLoader /* = NULL */)
 {
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
@@ -281,7 +289,15 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, append, thumbLoader);
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const std::set<std::string> &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
+void CFileItemHandler::HandleFileItem(const char* ID,
+                                      bool allowFile,
+                                      const char* resultname,
+                                      const CFileItemPtr& item,
+                                      const CVariant& parameterObject,
+                                      const std::set<std::string>& validFields,
+                                      CVariant& result,
+                                      bool append /* = true */,
+                                      CThumbLoader* thumbLoader /* = NULL */)
 {
   CVariant object;
   std::set<std::string> fields(validFields.begin(), validFields.end());

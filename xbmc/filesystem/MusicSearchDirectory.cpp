@@ -25,7 +25,7 @@ bool CMusicSearchDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // break up our path
   // format is:  musicsearch://<url encoded search string>
-  std::string search(url.GetHostName());
+  const std::string& search(url.GetHostName());
 
   if (search.empty())
     return false;

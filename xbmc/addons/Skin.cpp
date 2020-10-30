@@ -156,7 +156,7 @@ CSkinInfo::CSkinInfo(
 
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SKIN)
 {
-  for (auto values : Type(ADDON_SKIN)->GetValues())
+  for (const auto& values : Type(ADDON_SKIN)->GetValues())
   {
     if (values.first != "res")
       continue;
@@ -392,7 +392,10 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   }
 }
 
-void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,
+                                               std::vector<StringSettingOption>& list,
+                                               std::string& current,
+                                               void* data)
 {
   if (!g_SkinInfo)
     return;
@@ -436,7 +439,10 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vec
   }
 }
 
-void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
+                                              std::vector<StringSettingOption>& list,
+                                              std::string& current,
+                                              void* data)
 {
   if (!g_SkinInfo)
     return;
@@ -488,7 +494,10 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vect
     current = list[0].value;
 }
 
-void CSkinInfo::SettingOptionsSkinThemesFiller(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinThemesFiller(const SettingConstPtr& setting,
+                                               std::vector<StringSettingOption>& list,
+                                               std::string& current,
+                                               void* data)
 {
   // get the chosen theme and remove the extension from the current theme (backward compat)
   std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -517,7 +526,10 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(SettingConstPtr setting, std::vec
   }
 }
 
-void CSkinInfo::SettingOptionsStartupWindowsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CSkinInfo::SettingOptionsStartupWindowsFiller(const SettingConstPtr& setting,
+                                                   std::vector<IntegerSettingOption>& list,
+                                                   int& current,
+                                                   void* data)
 {
   if (!g_SkinInfo)
     return;

@@ -941,7 +941,7 @@ void CPeripherals::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
     peripheral->UnregisterJoystickButtonMapper(mapper);
 }
 
-void CPeripherals::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPeripherals::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -959,7 +959,7 @@ void CPeripherals::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CPeripherals::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

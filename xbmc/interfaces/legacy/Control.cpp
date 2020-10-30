@@ -1201,7 +1201,8 @@ namespace XBMCAddon
       sendLabelBind(vecItems.size());
     }
 
-    void ControlList::internAddListItem(AddonClass::Ref<ListItem> pListItem, bool sendMessage)
+    void ControlList::internAddListItem(const AddonClass::Ref<ListItem>& pListItem,
+                                        bool sendMessage)
     {
       if (pListItem.isNull())
         throw WindowException("NULL ListItem passed to ControlList::addListItem");

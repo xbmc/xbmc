@@ -25,8 +25,24 @@ namespace JSONRPC
     static void FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader = NULL);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool sortLimit = true);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, int size, bool sortLimit = true);
-    static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append = true, CThumbLoader *thumbLoader = NULL);
-    static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const std::set<std::string> &validFields, CVariant &result, bool append = true, CThumbLoader *thumbLoader = NULL);
+    static void HandleFileItem(const char* ID,
+                               bool allowFile,
+                               const char* resultname,
+                               const CFileItemPtr& item,
+                               const CVariant& parameterObject,
+                               const CVariant& validFields,
+                               CVariant& result,
+                               bool append = true,
+                               CThumbLoader* thumbLoader = NULL);
+    static void HandleFileItem(const char* ID,
+                               bool allowFile,
+                               const char* resultname,
+                               const CFileItemPtr& item,
+                               const CVariant& parameterObject,
+                               const std::set<std::string>& validFields,
+                               CVariant& result,
+                               bool append = true,
+                               CThumbLoader* thumbLoader = NULL);
 
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
   private:

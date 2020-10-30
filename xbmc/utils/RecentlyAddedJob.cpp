@@ -280,7 +280,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       artfound = musicdatabase.GetArtForItem(-1, album.idAlbum, -1, true, art);
       if (artfound)
       {
-        for (auto artitem : art)
+        for (const auto& artitem : art)
         {
           if (artitem.mediaType == MediaTypeAlbum && artitem.artType == "thumb")
             strThumb = artitem.url;

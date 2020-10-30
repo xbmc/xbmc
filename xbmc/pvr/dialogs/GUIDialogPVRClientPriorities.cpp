@@ -37,7 +37,8 @@ void CGUIDialogPVRClientPriorities::SetupView()
   SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222); // Cancel
 }
 
-std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(std::shared_ptr<ISetting> pSetting)
+std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(
+    const std::shared_ptr<ISetting>& pSetting)
 {
   int iClientId = std::atoi(pSetting->GetId().c_str());
   auto clientEntry = m_clients.find(iClientId);
@@ -75,7 +76,7 @@ void CGUIDialogPVRClientPriorities::InitializeSettings()
   }
 }
 
-void CGUIDialogPVRClientPriorities::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogPVRClientPriorities::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
   {

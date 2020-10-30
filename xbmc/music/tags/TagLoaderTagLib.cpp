@@ -1150,8 +1150,8 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
   {
     std::vector<std::string> roles;
     std::string strArtist = values[i];
-    size_t firstLim = values[i].find_first_of("(");
-    size_t lastLim = values[i].find_last_of(")");
+    size_t firstLim = values[i].find_first_of('(');
+    size_t lastLim = values[i].find_last_of(')');
     if (lastLim != std::string::npos && firstLim != std::string::npos && firstLim < lastLim - 1)
     {
       //Pair of brackets with something between them

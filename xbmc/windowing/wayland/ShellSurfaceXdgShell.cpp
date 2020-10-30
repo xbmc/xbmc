@@ -67,8 +67,8 @@ CShellSurfaceXdgShell::CShellSurfaceXdgShell(IShellSurfaceHandler& handler, wayl
   {
     m_handler.OnClose();
   };
-  m_xdgToplevel.on_configure() = [this](std::int32_t width, std::int32_t height, std::vector<wayland::xdg_toplevel_state> states)
-  {
+  m_xdgToplevel.on_configure() = [this](std::int32_t width, std::int32_t height,
+                                        const std::vector<wayland::xdg_toplevel_state>& states) {
     m_configuredSize.Set(width, height);
     m_configuredState.reset();
     for (auto state : states)

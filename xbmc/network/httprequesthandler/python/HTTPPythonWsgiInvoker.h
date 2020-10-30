@@ -39,7 +39,8 @@ protected:
   const char* getInitializationScript() const override;
 
 private:
-  static std::map<std::string, std::string> createCgiEnvironment(const HTTPPythonRequest* httpRequest, ADDON::AddonPtr addon);
+  static std::map<std::string, std::string> createCgiEnvironment(
+      const HTTPPythonRequest* httpRequest, const ADDON::AddonPtr& addon);
   static void addWsgiEnvironment(HTTPPythonRequest* request, void* environment);
 
   XBMCAddon::xbmcwsgi::WsgiResponse* m_wsgiResponse;

@@ -65,7 +65,7 @@ public:
   int GetScreen() { return m_screen; }
   void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<std::string> *outputs);
-  bool IsCurrentOutput(std::string output);
+  bool IsCurrentOutput(const std::string& output);
   void RecreateWindow();
   int GetCrtc() { return m_crtc; }
 

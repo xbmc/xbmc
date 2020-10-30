@@ -217,7 +217,7 @@ void CGUIDialogMediaFilter::OnInitWindow()
   UpdateControls();
 }
 
-void CGUIDialogMediaFilter::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
@@ -739,7 +739,10 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
   }
 }
 
-void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
+                                                 std::vector<StringSettingOption>& list,
+                                                 std::string& current,
+                                                 void* data)
 {
   if (setting == NULL || data == NULL)
     return;

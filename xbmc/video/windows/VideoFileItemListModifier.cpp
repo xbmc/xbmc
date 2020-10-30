@@ -64,7 +64,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   {
   case NODE_TYPE_SEASONS:
   {
-    std::string strLabel = g_localizeStrings.Get(20366);
+    const std::string& strLabel = g_localizeStrings.Get(20366);
     pItem.reset(new CFileItem(strLabel));  // "All Seasons"
     videoUrl.AppendPath("-1/");
     pItem->SetPath(videoUrl.ToString());

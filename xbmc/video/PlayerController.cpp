@@ -452,7 +452,7 @@ bool CPlayerController::OnAction(const CAction &action)
         {
           int playing = 0;
           int idx = 0;
-          for (auto prog : programs)
+          for (const auto& prog : programs)
           {
             dialog->Add(prog.name);
             if (prog.playing)

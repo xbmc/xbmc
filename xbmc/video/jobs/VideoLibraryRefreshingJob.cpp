@@ -30,12 +30,18 @@
 #include "video/tags/VideoInfoTagLoaderFactory.h"
 #include "video/tags/VideoTagLoaderPlugin.h"
 
+#include <utility>
+
 using namespace KODI::MESSAGING;
 using namespace VIDEO;
 
-CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item, bool forceRefresh, bool refreshAll, bool ignoreNfo /* = false */, const std::string& searchTitle /* = "" */)
+CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item,
+                                                       bool forceRefresh,
+                                                       bool refreshAll,
+                                                       bool ignoreNfo /* = false */,
+                                                       const std::string& searchTitle /* = "" */)
   : CVideoLibraryProgressJob(nullptr),
-    m_item(item),
+    m_item(std::move(item)),
     m_forceRefresh(forceRefresh),
     m_refreshAll(refreshAll),
     m_ignoreNfo(ignoreNfo),

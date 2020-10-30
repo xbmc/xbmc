@@ -208,12 +208,13 @@ std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const
   sort(tmpSettings.begin(), tmpSettings.end(), SortBySettingsOrder());
 
   std::vector<std::shared_ptr<CSetting>> settings;
+  settings.reserve(tmpSettings.size());
   for (const auto& it : tmpSettings)
     settings.push_back(it.m_setting);
   return settings;
 }
 
-void CPeripheral::AddSetting(const std::string& strKey, SettingConstPtr setting, int order)
+void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& setting, int order)
 {
   if (!setting)
   {

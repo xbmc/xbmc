@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "PlatformDefs.h" // for ssize_t typedef, used by cdio
 
@@ -206,8 +207,12 @@ public:
   void SetFirstDataTrack( int nTrack ) { m_nFirstData = nTrack; }
   void SetDataTrackCount( int nCount ) { m_nNumData = nCount; }
   void SetAudioTrackCount( int nCount ) { m_nNumAudio = nCount; }
-  void SetTrackInformation( int nTrack, trackinfo nInfo ) { if ( nTrack > 0 && nTrack <= 99 ) m_ti[nTrack - 1] = nInfo; }
-  void SetDiscCDTextInformation( xbmc_cdtext_t cdtext ) { m_cdtext = cdtext; }
+  void SetTrackInformation(int nTrack, trackinfo nInfo)
+  {
+    if (nTrack > 0 && nTrack <= 99)
+      m_ti[nTrack - 1] = std::move(nInfo);
+  }
+  void SetDiscCDTextInformation(xbmc_cdtext_t cdtext) { m_cdtext = std::move(cdtext); }
 
   void SetCddbDiscId( uint32_t ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
   void SetDiscLength( int nLength ) { m_nLength = nLength; }

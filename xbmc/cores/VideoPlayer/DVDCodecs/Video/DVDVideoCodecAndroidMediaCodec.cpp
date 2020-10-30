@@ -38,6 +38,7 @@
 
 #include <cassert>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include <GLES2/gl2.h>
@@ -136,9 +137,9 @@ void CMediaCodecVideoBuffer::Set(int bufferId, int textureId,
 {
   m_bufferId = bufferId;
   m_textureId = textureId;
-  m_surfacetexture = surfacetexture;
-  m_frameready = frameready;
-  m_videoview = videoview;
+  m_surfacetexture = std::move(surfacetexture);
+  m_frameready = std::move(frameready);
+  m_videoview = std::move(videoview);
 }
 
 bool CMediaCodecVideoBuffer::WaitForFrame(int millis)
@@ -647,7 +648,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
       if (std::find_if(profileLevels.cbegin(), profileLevels.cend(),
-        [&](const CJNIMediaCodecInfoCodecProfileLevel profileLevel){ return profileLevel.profile() == profile; }) == profileLevels.cend())
+                       [&](const CJNIMediaCodecInfoCodecProfileLevel& profileLevel) {
+                         return profileLevel.profile() == profile;
+                       }) == profileLevels.cend())
       {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
         continue;

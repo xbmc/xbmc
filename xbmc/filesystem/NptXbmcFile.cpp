@@ -40,8 +40,7 @@ class NPT_XbmcFileStream
 {
 public:
     // constructors and destructor
-    explicit NPT_XbmcFileStream(NPT_XbmcFileReference file) :
-      m_FileReference(file) {}
+  explicit NPT_XbmcFileStream(const NPT_XbmcFileReference& file) : m_FileReference(file) {}
 
     // NPT_FileInterface methods
     NPT_Result Seek(NPT_Position offset);

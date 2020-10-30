@@ -235,7 +235,7 @@ void CAirTunesServer::Process()
       m_actionQueue.clear();
     }
 
-    for (auto currentAction : currentActions)
+    for (const auto& currentAction : currentActions)
     {
       CSingleLock lock(m_dacpLock);
       if (m_pDACP)

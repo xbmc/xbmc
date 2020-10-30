@@ -699,7 +699,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromDate(
   const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
   bool bReadOnly = !!parent; // children of reminder rules are always read-only
-  const std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromDate(parent->Channel(), start, iDuration, true, bReadOnly);
+  std::shared_ptr<CPVRTimerInfoTag> newTimer =
+      CreateFromDate(parent->Channel(), start, iDuration, true, bReadOnly);
   if (newTimer && parent)
   {
     // set parent
@@ -839,7 +840,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromEpg(
   const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
   bool bReadOnly = !!parent; // children of reminder rules are always read-only
-  const std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true, bReadOnly);
+  std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true, bReadOnly);
   if (newTimer && parent)
   {
     // set parent
