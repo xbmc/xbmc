@@ -381,7 +381,21 @@ namespace PVR
     */
    int64_t GetSizeInBytes() const;
 
+    /*!
+     * @brief Mark a recording as dirty/clean.
+     * @param bDirty true to mark as dirty, false to mark as clean.
+     */
+    void SetDirty(bool bDirty) { m_bDirty = bDirty; }
+
+    /*!
+     * @brief Return whether the recording is marked dirty.
+     * @return true if dirty, false otherwise.
+     */
+    bool IsDirty() const { return m_bDirty; }
+
   private:
+    void UpdatePath();
+
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;
     bool m_bIsDeleted; /*!< set if entry is a deleted recording which can be undelete */
@@ -394,8 +408,7 @@ namespace PVR
     unsigned int m_iFlags = 0; /*!< the flags applicable to this recording */
     mutable XbmcThreads::EndTime m_recordingSizeRefetchTimeout;
     int64_t m_sizeInBytes = 0; /*!< the size of the recording in bytes */
-
-    void UpdatePath();
+    bool m_bDirty = false;
 
     mutable CCriticalSection m_critSection;
   };
