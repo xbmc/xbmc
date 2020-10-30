@@ -12,6 +12,8 @@
 #include "win32util.h"
 #include "windowing/windows/WinSystemWin32DX.h"
 
+#include "platform/win32/powermanagement/Win32PowerSyscall.h"
+
 CPlatform* CPlatform::CreateInstance()
 {
   return new CPlatformWin32();
@@ -28,6 +30,8 @@ bool CPlatformWin32::Init()
   CWIN32Util::SetThreadLocalLocale(true);
 
   CWinSystemWin32DX::Register();
+
+  CWin32PowerSyscall::Register();
 
   return true;
 }

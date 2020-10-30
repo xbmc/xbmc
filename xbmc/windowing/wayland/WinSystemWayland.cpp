@@ -46,7 +46,6 @@
 #include "platform/freebsd/OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
 #include "platform/linux/TimeUtils.h"
-#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 #include <algorithm>
 #include <limits>
@@ -178,7 +177,6 @@ CWinSystemWayland::CWinSystemWayland()
     }
   }
   m_winEvents.reset(new CWinEventsWayland());
-  CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
 }
 

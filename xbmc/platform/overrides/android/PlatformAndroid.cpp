@@ -11,6 +11,8 @@
 #include "filesystem/SpecialProtocol.h"
 #include "windowing/android/WinSystemAndroidGLESContext.h"
 
+#include "platform/android/powermanagement/AndroidPowerSyscall.h"
+
 #include <stdlib.h>
 
 CPlatform* CPlatform::CreateInstance()
@@ -27,6 +29,8 @@ bool CPlatformAndroid::Init()
   setenv("OS", "Linux", true); // for python scripts that check the OS
 
   CWinSystemAndroidGLESContext::Register();
+
+  CAndroidPowerSyscall::Register();
 
   return true;
 }

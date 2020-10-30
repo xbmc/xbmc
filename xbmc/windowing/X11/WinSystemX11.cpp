@@ -27,8 +27,6 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
-#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
-
 #include <string>
 #include <vector>
 
@@ -56,7 +54,6 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 
   m_winEventsX11 = new CWinEventsX11(*this);
   m_winEvents.reset(m_winEventsX11);
-  CLinuxPowerSyscall::Register();
 }
 
 CWinSystemX11::~CWinSystemX11() = default;

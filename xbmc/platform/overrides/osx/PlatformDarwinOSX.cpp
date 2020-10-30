@@ -8,8 +8,10 @@
 
 #include "PlatformDarwinOSX.h"
 
-#include "platform/darwin/osx/XBMCHelper.h"
 #include "windowing/osx/WinSystemOSXGL.h"
+
+#include "platform/darwin/osx/XBMCHelper.h"
+#include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -25,6 +27,8 @@ bool CPlatformDarwinOSX::Init()
   XBMCHelper::GetInstance().Configure();
 
   CWinSystemOSXGL::Register();
+
+  CCocoaPowerSyscall::Register();
 
   return true;
 }

@@ -15,6 +15,7 @@
 #include "windowing/ios/WinSystemIOS.h"
 #endif
 #if defined(TARGET_DARWIN_TVOS)
+#include "platform/darwin/tvos/powermanagement/TVOSPowerSyscall.h"
 #include "windowing/tvos/WinSystemTVOS.h"
 #endif
 // clang-format on
@@ -35,6 +36,8 @@ bool CPlatformDarwinEmbedded::Init()
 #endif
 #if defined(TARGET_DARWIN_TVOS)
   CWinSystemTVOS::Register();
+
+  CTVOSPowerSyscall::Register();
 #endif
 
   return true;
