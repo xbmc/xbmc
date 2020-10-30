@@ -21,7 +21,7 @@ jobs:
         env:
           TOKEN: "${{ secrets.WEBLATE_TOKEN }}"
         run: | 
-          curl -v \
+          curl \
             --form file=@addons/resource.language.en_gb/resources/strings.po \
             --form method=source \
             -H "Authorization: Token $TOKEN" \
