@@ -247,7 +247,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
   if (UseToneMapping())
   {
     m_outputShader->SetDisplayMetadata(buf->hasDisplayMetadata, buf->displayMetadata, buf->hasLightMetadata, buf->lightMetadata);
-    m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+    m_outputShader->SetToneMapParam(m_toneMapMethod, m_videoSettings.m_ToneMapParam);
   }
 
   FinalOutput(m_IntermediateTarget, target, source, dest);
@@ -407,7 +407,8 @@ void CRendererBase::UpdateVideoFilters()
   if (!m_outputShader)
   {
     m_outputShader = std::make_shared<COutputShader>();
-    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, UseToneMapping(), m_useHLGtoPQ))
+    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping,
+                                m_toneMapMethod, m_useHLGtoPQ))
     {
       CLog::LogF(LOGDEBUG, "unable to create output shader.");
       m_outputShader.reset();
@@ -422,20 +423,21 @@ void CRendererBase::UpdateVideoFilters()
 void CRendererBase::CheckVideoParameters()
 {
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  int method = m_videoSettings.m_ToneMapMethod;
 
   bool isHDRPQ = (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020);
 
-  // HDR_TYPE::HDR_NONE_SDR is equivalent to !DX::Windowing()->IsHDROutput() using local variable
-  bool toneMap = (isHDRPQ && m_HdrType == HDR_TYPE::HDR_NONE_SDR &&
-                  m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF);
+  bool toneMap = (isHDRPQ && m_HdrType == HDR_TYPE::HDR_NONE_SDR && method != VS_TONEMAPMETHOD_OFF);
 
   bool hlg = (m_HdrType == HDR_TYPE::HDR_HLG);
 
-  if (toneMap != m_toneMapping || m_cmsOn != m_colorManager->IsEnabled() || hlg != m_useHLGtoPQ)
+  if (toneMap != m_toneMapping || m_cmsOn != m_colorManager->IsEnabled() || hlg != m_useHLGtoPQ ||
+      method != m_toneMapMethod)
   {
     m_toneMapping = toneMap;
     m_cmsOn = m_colorManager->IsEnabled();
     m_useHLGtoPQ = hlg;
+    m_toneMapMethod = method;
 
     m_outputShader.reset();
     OnOutputReset();

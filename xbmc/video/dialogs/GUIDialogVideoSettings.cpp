@@ -412,6 +412,9 @@ void CGUIDialogVideoSettings::InitializeSettings()
     entries.clear();
     entries.push_back(TranslatableIntegerSettingOption(36554, VS_TONEMAPMETHOD_OFF));
     entries.push_back(TranslatableIntegerSettingOption(36555, VS_TONEMAPMETHOD_REINHARD));
+    entries.push_back(TranslatableIntegerSettingOption(36557, VS_TONEMAPMETHOD_ACES));
+    entries.push_back(TranslatableIntegerSettingOption(36558, VS_TONEMAPMETHOD_HABLE));
+
     AddSpinner(groupVideo, SETTING_VIDEO_TONEMAP_METHOD, 36553, SettingLevel::Basic,
                videoSettings.m_ToneMapMethod, entries, false, visible);
     AddSlider(groupVideo, SETTING_VIDEO_TONEMAP_PARAM, 36556, SettingLevel::Basic,

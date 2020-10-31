@@ -430,6 +430,8 @@
 
 #define ACTION_HDR_TOGGLE 260 //!< Toggle display HDR on/off
 
+#define ACTION_CYCLE_TONEMAP_METHOD 261 //!< Switch to next tonemap method
+
 // Voice actions
 #define ACTION_VOICE_RECOGNIZE 300
 

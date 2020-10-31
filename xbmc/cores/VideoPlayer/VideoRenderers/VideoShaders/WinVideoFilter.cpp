@@ -185,7 +185,7 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     effect.SetResources("m_ditherMatrix", m_pDitherView.GetAddressOf(), 1);
     effect.SetFloatArray("m_ditherParams", ditherParams, 3);
   }
-  if (m_toneMapping)
+  if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_REINHARD)
   {
     const float def_param = log10(100.0f) / log10(600.0f); // 600 nits --> 0.72
     float param = def_param;
@@ -208,6 +208,49 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     effect.SetScalar("g_toneP1", param);
     effect.SetFloatArray("g_coefsDst", coefs, 3);
   }
+  else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
+  {
+    effect.SetScalar("g_luminance", GetLuminanceValue());
+    effect.SetScalar("g_toneP1", m_toneMappingParam);
+  }
+  else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
+  {
+    float lumin = GetLuminanceValue();
+    float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
+    effect.SetScalar("g_luminance", lumin);
+    effect.SetScalar("g_toneP1", param);
+  }
+}
+
+float COutputShader::GetLuminanceValue() const
+{
+  float lum1 = 400.0f; // default for bad quality HDR-PQ sources (with no metadata)
+  float lum2 = lum1;
+  float lum3 = lum1;
+
+  if (m_hasLightMetadata)
+  {
+    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
+    if (m_lightMetadata.MaxCLL >= lum)
+    {
+      lum1 = static_cast<float>(lum);
+      lum2 = static_cast<float>(m_lightMetadata.MaxCLL);
+    }
+    else
+    {
+      lum1 = static_cast<float>(m_lightMetadata.MaxCLL);
+      lum2 = static_cast<float>(lum);
+    }
+    lum3 = static_cast<float>(m_lightMetadata.MaxFALL);
+    lum1 = (lum1 * 0.5f) + (lum2 * 0.2f) + (lum3 * 0.3f);
+  }
+  else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
+  {
+    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
+    lum1 = static_cast<float>(lum);
+  }
+
+  return lum1;
 }
 
 void COutputShader::GetDefines(DefinesMap& map) const
@@ -220,9 +263,17 @@ void COutputShader::GetDefines(DefinesMap& map) const
   {
     map["KODI_DITHER"] = "";
   }
-  if (m_toneMapping)
+  if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_REINHARD)
   {
-    map["KODI_TONE_MAPPING"] = "";
+    map["KODI_TONE_MAPPING_REINHARD"] = "";
+  }
+  else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
+  {
+    map["KODI_TONE_MAPPING_ACES"] = "";
+  }
+  else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
+  {
+    map["KODI_TONE_MAPPING_HABLE"] = "";
   }
   if (m_useHLGtoPQ)
   {
@@ -230,12 +281,14 @@ void COutputShader::GetDefines(DefinesMap& map) const
   }
 }
 
-bool COutputShader::Create(bool useLUT, bool useDithering, int ditherDepth, bool toneMapping, bool HLGtoPQ)
+bool COutputShader::Create(
+    bool useLUT, bool useDithering, int ditherDepth, bool toneMapping, int toneMethod, bool HLGtoPQ)
 {
   m_useLut = useLUT;
   m_ditherDepth = ditherDepth;
-  m_toneMapping = toneMapping && !DX::Windowing()->IsHDROutput();
+  m_toneMapping = toneMapping;
   m_useHLGtoPQ = HLGtoPQ;
+  m_toneMappingMethod = toneMethod;
 
   CWinShader::CreateVertexBuffer(4, sizeof(Vertex));
 
@@ -296,6 +349,12 @@ void COutputShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDispl
   m_displayMetadata = displayMetadata;
   m_hasLightMetadata = hasLightMetadata;
   m_lightMetadata = lightMetadata;
+}
+
+void COutputShader::SetToneMapParam(int method, float param)
+{
+  m_toneMappingMethod = method;
+  m_toneMappingParam = param;
 }
 
 bool COutputShader::CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID3D11ShaderResourceView** ppLUTView)

@@ -1659,6 +1659,19 @@ bool CApplication::OnAction(const CAction &action)
     }
     return true;
   }
+  // Tone Mapping : switch to next tone map method
+  if (action.GetID() == ACTION_CYCLE_TONEMAP_METHOD)
+  {
+    if (m_appPlayer.IsPlayingVideo())
+    {
+      CVideoSettings vs = m_appPlayer.GetVideoSettings();
+      vs.m_ToneMapMethod++;
+      if (vs.m_ToneMapMethod >= VS_TONEMAPMETHOD_MAX)
+        vs.m_ToneMapMethod = VS_TONEMAPMETHOD_OFF + 1;
+      m_appPlayer.SetVideoSettings(vs);
+    }
+    return true;
+  }
   // built in functions : execute the built-in
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
