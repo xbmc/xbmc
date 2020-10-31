@@ -2248,7 +2248,7 @@
     "transport": "Response",
     "permission": "ControlPVR",
     "params": [
-      { "name": "clientid", "$ref": "Library.Id", "default": -2, "description": "Specify a PVR client id to avoid UI dialog, optional in kodi 19, required in kodi 20" }
+      { "name": "clientid", "$ref": "Library.Id", "description": "Specify a PVR client id to avoid UI dialog, optional in kodi 19, required in kodi 20" }
     ],
     "returns":  "string"
   },
