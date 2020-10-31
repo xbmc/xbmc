@@ -22327,6 +22327,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39142"
 msgid "Custom"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#39143"
