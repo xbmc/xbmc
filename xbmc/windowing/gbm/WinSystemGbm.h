@@ -36,6 +36,8 @@ public:
   CWinSystemGbm();
   ~CWinSystemGbm() override = default;
 
+  const std::string GetName() override { return "gbm"; }
+
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
 
