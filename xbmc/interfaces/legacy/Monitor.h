@@ -44,30 +44,30 @@ namespace XBMCAddon
       {
 	XBMC_TRACE;
         invokeCallback(
-            new CallbackFunction<Monitor, const String&>(this, &Monitor::onScanStarted, library));
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onScanStarted, library));
       }
       inline void    OnScanFinished(const String &library)
       {
 	XBMC_TRACE;
         invokeCallback(
-            new CallbackFunction<Monitor, const String&>(this, &Monitor::onScanFinished, library));
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onScanFinished, library));
       }
       inline void OnCleanStarted(const String& library)
       {
         XBMC_TRACE;
         invokeCallback(
-            new CallbackFunction<Monitor, const String&>(this, &Monitor::onCleanStarted, library));
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onCleanStarted, library));
       }
       inline void OnCleanFinished(const String& library)
       {
         XBMC_TRACE;
         invokeCallback(
-            new CallbackFunction<Monitor, const String&>(this, &Monitor::onCleanFinished, library));
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onCleanFinished, library));
       }
       inline void OnNotification(const String& sender, const String& method, const String& data)
       {
         XBMC_TRACE;
-        invokeCallback(new CallbackFunction<Monitor, const String&, const String&, const String&>(
+        invokeCallback(new CallbackFunction<Monitor, const String, const String, const String>(
             this, &Monitor::onNotification, sender, method, data));
       }
 
@@ -163,7 +163,7 @@ namespace XBMCAddon
       ///
       onScanStarted(...);
 #else
-      virtual void onScanStarted(const String& library) { XBMC_TRACE; }
+      virtual void onScanStarted(const String library) { XBMC_TRACE; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -184,7 +184,7 @@ namespace XBMCAddon
       ///
       onScanFinished(...);
 #else
-      virtual void onScanFinished(const String& library) { XBMC_TRACE; }
+      virtual void onScanFinished(const String library) { XBMC_TRACE; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -205,7 +205,7 @@ namespace XBMCAddon
       ///
       onCleanStarted(...);
 #else
-      virtual void onCleanStarted(const String& library) { XBMC_TRACE; }
+      virtual void onCleanStarted(const String library) { XBMC_TRACE; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -226,7 +226,7 @@ namespace XBMCAddon
       ///
       onCleanFinished(...);
 #else
-      virtual void onCleanFinished(const String& library) { XBMC_TRACE; }
+      virtual void onCleanFinished(const String library) { XBMC_TRACE; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -247,7 +247,7 @@ namespace XBMCAddon
       ///
       onNotification(...);
 #else
-      virtual void onNotification(const String& sender, const String& method, const String& data)
+      virtual void onNotification(const String sender, const String method, const String data)
       {
         XBMC_TRACE;
       }
