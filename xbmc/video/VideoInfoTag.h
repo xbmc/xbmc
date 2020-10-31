@@ -139,7 +139,7 @@ public:
   void SetUniqueIDs(std::map<std::string, std::string> uniqueIDs);
   void SetPremiered(const CDateTime& premiered);
   void SetPremieredFromDBDate(const std::string& premieredString);
-  void SetYear(int year);
+  virtual void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);

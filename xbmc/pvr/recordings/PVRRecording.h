@@ -304,13 +304,13 @@ namespace PVR
    void SetGenre(int iGenreType, int iGenreSubType, const std::string& strGenre);
 
     /*!
-     * @brief Get the genre type ID of this event.
+     * @brief Get the genre type ID of this recording.
      * @return The genre type ID.
      */
     int GenreType() const { return m_iGenreType; }
 
     /*!
-     * @brief Get the genre subtype ID of this event.
+     * @brief Get the genre subtype ID of this recording.
      * @return The genre subtype ID.
      */
     int GenreSubType() const { return m_iGenreSubType; }
@@ -322,26 +322,32 @@ namespace PVR
     const std::vector<std::string> Genre() const { return m_genre; }
 
     /*!
-     * @brief Get the genre(s) of this event as formatted string.
+     * @brief Get the genre(s) of this recording as formatted string.
      * @return The genres label.
      */
    const std::string GetGenresLabel() const;
 
    /*!
-    * @brief Get the first air date of this event.
+    * @brief Get the first air date of this recording.
     * @return The first air date.
     */
    CDateTime FirstAired() const;
 
    /*!
-    * @brief Get the premiere year of this event.
+    * @brief Get the premiere year of this recording.
     * @return The premiere year
     */
    int GetYear() const override;
 
    /*!
-    * @brief Check if the premiere year of this event is valid
-    * @return True if the event has as valid premiere date, false otherwise
+    * @brief Set the premiere year of this recording.
+    * @param year The premiere year
+    */
+   void SetYear(int year) override;
+
+   /*!
+    * @brief Check if the premiere year of this recording is valid
+    * @return True if the recording has as valid premiere date, false otherwise
     */
    bool HasYear() const override;
 

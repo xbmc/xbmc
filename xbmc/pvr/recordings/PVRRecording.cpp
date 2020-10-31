@@ -583,6 +583,12 @@ CDateTime CPVRRecording::FirstAired() const
   return m_firstAired;
 }
 
+void CPVRRecording::SetYear(int year)
+{
+  if (year > 0)
+    m_premiered = CDateTime(year, 1, 1, 0, 0, 0);
+}
+
 int CPVRRecording::GetYear() const
 {
   return m_premiered.GetYear();
