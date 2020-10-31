@@ -196,7 +196,6 @@ public class Splash extends Activity
           else
           {
             SetupEnvironment();
-            MigrateUserData();
 
             if (mState == InError)
             {
@@ -626,55 +625,6 @@ public class Splash extends Activity
     }
   }
 
-  private void MigrateUserData()
-  {
-    String sOldUserDir;
-    File fOldUserDir;
-    try
-    {
-      sOldUserDir = getExternalFilesDir(null).getParentFile().getParentFile() + "/org.xbmc.xbmc/files/.xbmc";
-      fOldUserDir = new File(sOldUserDir);
-      if (!fOldUserDir.exists())
-        return;
-    }
-    catch (Exception e)
-    {
-      return;
-    }
-
-    File fNewUserDir = new File(getExternalFilesDir(null), ".@APP_NAME_LC@");
-    String s@APP_NAME@Migrated = fNewUserDir.getAbsolutePath() + "/.@APP_NAME_LC@_data_was_migrated";
-    File f@APP_NAME@Migrated = new File(s@APP_NAME@Migrated);
-
-    Log.d(TAG, "External_dir = " + fOldUserDir);
-    if (fOldUserDir.exists() && !fNewUserDir.exists())
-    {
-      Log.d(TAG, "XBMC user data detected at " + fOldUserDir.getAbsolutePath() + ", migrating to " + fNewUserDir.getAbsolutePath());
-      if (!fNewUserDir.getParentFile().exists() && !fNewUserDir.getParentFile().mkdirs())
-      {
-        Log.d(TAG, "Error creating " + fNewUserDir.getParentFile().getAbsolutePath());
-        return;
-      }
-      if (fOldUserDir.renameTo(fNewUserDir))
-      {
-        try
-        {
-          new FileOutputStream(f@APP_NAME@Migrated).close();
-        }
-        catch (IOException e1)
-        {
-          e1.printStackTrace();
-        }
-        Log.d(TAG, "XBMC user data migrated to @APP_NAME@ successfully");
-      }
-      else
-      {
-        Log.d(TAG, "Error migrating XBMC user data");
-      }
-    }
-  }
-
-
   private boolean ParseCpuFeature()
   {
     ProcessBuilder cmd;
@@ -951,7 +901,6 @@ public class Splash extends Activity
         mState = ChecksDone;
 
         SetupEnvironment();
-        MigrateUserData();
 
         if ((mState != DownloadingObb && mState != InError) && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs)
         {
