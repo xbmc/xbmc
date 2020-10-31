@@ -941,6 +941,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_3DLUT);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_DISPLAYPROFILE);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
   GetSettingsManager()->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
 
   settingSet.clear();

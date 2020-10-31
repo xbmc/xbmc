@@ -7856,10 +7856,7 @@ msgctxt "#14084"
 msgid "Queue songs on selection"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14085"
-msgid "Whitelist"
-msgstr ""
+#empty string with id 14085
 
 #: system/settings/settings.xml
 msgctxt "#14086"
@@ -8077,7 +8074,22 @@ msgctxt "#14125"
 msgid "Input"
 msgstr ""
 
-#empty strings from id 14126 to 14199
+#: system/settings/settings.xml
+msgctxt "#14126"
+msgid "Whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14127"
+msgid "Allow 3:2 pulldown refresh rates"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14128"
+msgid "Allow double refresh rates"
+msgstr ""
+
+#empty strings from id 14129 to 14199
 
 #: system/settings/settings.xml
 msgctxt "#14200"
@@ -19744,11 +19756,7 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#. Description of setting with label #14085 "Whitelist"
-#: system/settings/settings.xml
-msgctxt "#36356"
-msgid "Whitelisted modes are allowed to be switched to when changing resolution and refresh rate"
-msgstr ""
+#empty string with id 36356
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
@@ -20230,7 +20238,25 @@ msgctxt "#36442"
 msgid "Set the number of volume control steps."
 msgstr ""
 
-#empty strings from id 36443 to 36459
+#. Description of setting with label #14126 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36443"
+msgid "Whitelisted modes give the user the control to choose which display modes are allowed or not allowed to be used"
+msgstr ""
+
+#. Description of setting with label #14127 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36444"
+msgid "Select this option to allow using 3:2 pulldown refresh rates (playing 23.976 FPS video on a 59.94 Hz monitor or playing 24 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 23.976 Hz or 24 Hz mode."
+msgstr ""
+
+#. Description of setting with label #14128 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36445"
+msgid "Select this option to allow using double refresh rates (playing 29.97 FPS video on a 59.94 Hz monitor or playing 30 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 29.97 Hz or 30 Hz mode."
+msgstr ""
+
+#empty strings from id 36446 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml

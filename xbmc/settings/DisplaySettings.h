@@ -38,6 +38,7 @@ public:
   bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                        const char* oldSettingId,
                        const TiXmlNode* oldSettingNode) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   /*!
    \brief Returns the currently active resolution
