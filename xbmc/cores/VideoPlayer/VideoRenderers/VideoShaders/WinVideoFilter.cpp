@@ -187,15 +187,18 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
   }
   if (m_toneMapping)
   {
-    float param = 0.7;
+    const float def_param = log10(100.0f) / log10(600.0f); // 600 nits --> 0.72
+    float param = def_param;
+
     if (m_hasLightMetadata)
-      param = log10(100) / log10(m_lightMetadata.MaxCLL);
+      param = static_cast<float>(log10(100) / log10(m_lightMetadata.MaxCLL));
     else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
-      param = log10(100) / log10(m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den);
+      param = static_cast<float>(log10(100) / log10(m_displayMetadata.max_luminance.num /
+                                                    m_displayMetadata.max_luminance.den));
 
     // Sanity check
     if (param < 0.1f || param > 5.0f)
-      param = 0.7f;
+      param = def_param;
 
     param *= m_toneMappingParam;
 

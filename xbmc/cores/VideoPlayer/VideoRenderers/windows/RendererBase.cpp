@@ -423,12 +423,12 @@ void CRendererBase::CheckVideoParameters()
 {
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
-  bool toneMap = false;
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF && !DX::Windowing()->IsHDROutput())
-  {
-    if (buf->hasLightMetadata || buf->hasDisplayMetadata && buf->displayMetadata.has_luminance)
-      toneMap = true;
-  }
+  bool isHDRPQ = (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020);
+
+  // HDR_TYPE::HDR_NONE_SDR is equivalent to !DX::Windowing()->IsHDROutput() using local variable
+  bool toneMap = (isHDRPQ && m_HdrType == HDR_TYPE::HDR_NONE_SDR &&
+                  m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF);
+
   bool hlg = (m_HdrType == HDR_TYPE::HDR_HLG);
 
   if (toneMap != m_toneMapping || m_cmsOn != m_colorManager->IsEnabled() || hlg != m_useHLGtoPQ)
