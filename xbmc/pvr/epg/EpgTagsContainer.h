@@ -171,9 +171,9 @@ public:
   void QueuePersistQuery();
 
   /*!
-   * @brief Delete this container from its database.
+   * @brief Queue the deletion of this container from its database.
    */
-  void Delete();
+  void QueueDelete();
 
 private:
   /*!

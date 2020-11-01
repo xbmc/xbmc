@@ -217,11 +217,11 @@ namespace PVR
     bool QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
-     * @brief Delete this table from the given database
+     * @brief Write the delete queries into the given database's queue
      * @param database The database.
-     * @return True if the table was deleted, false otherwise.
+     * @return True on success, false otherwise.
      */
-    bool Delete(const std::shared_ptr<CPVREpgDatabase>& database);
+    bool QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
      * @brief Get the start time of the first entry in this table.
