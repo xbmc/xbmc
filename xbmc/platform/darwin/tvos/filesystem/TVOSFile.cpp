@@ -24,7 +24,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include "platform/darwin/ios-common/DarwinNSUserDefaults.h"
+#include "platform/darwin/tvos/TVOSNSUserDefaults.h"
 #include "platform/posix/filesystem/PosixFile.h"
 
 #include <sys/stat.h>
@@ -41,7 +41,7 @@ bool CTVOSFile::WantsFile(const CURL& url)
   if (!StringUtils::EqualsNoCase(url.GetFileType(), "xml") ||
       StringUtils::StartsWithNoCase(url.GetFileNameWithoutPath(), "customcontroller.SiriRemote"))
     return false;
-  return CDarwinNSUserDefaults::IsKeyFromPath(url.Get());
+  return CTVOSNSUserDefaults::IsKeyFromPath(url.Get());
 }
 
 int CTVOSFile::CacheStat(const CURL& url, struct __stat64* buffer)
@@ -50,7 +50,7 @@ int CTVOSFile::CacheStat(const CURL& url, struct __stat64* buffer)
   {
     size_t size = 0;
     // get the size from the data by passing in a nullptr
-    if (CDarwinNSUserDefaults::GetKeyDataFromPath(url.Get(), nullptr, size))
+    if (CTVOSNSUserDefaults::GetKeyDataFromPath(url.Get(), nullptr, size))
     {
       memset(buffer, 0, sizeof(struct __stat64));
       // mimic stat
@@ -69,7 +69,7 @@ int CTVOSFile::CacheStat(const CURL& url, struct __stat64* buffer)
 
 bool CTVOSFile::Open(const CURL& url)
 {
-  if (CDarwinNSUserDefaults::KeyFromPathExists(url.Get()))
+  if (CTVOSNSUserDefaults::KeyFromPathExists(url.Get()))
   {
     m_url = url;
     m_position = 0;
@@ -86,7 +86,7 @@ bool CTVOSFile::Open(const CURL& url)
 
 bool CTVOSFile::OpenForWrite(const CURL& url, bool bOverWrite /* = false */)
 {
-  if (CDarwinNSUserDefaults::KeyFromPathExists(url.Get()) && !bOverWrite)
+  if (CTVOSNSUserDefaults::KeyFromPathExists(url.Get()) && !bOverWrite)
     return false; // no overwrite
 
   bool ret = WantsFile(url); // if we want the file we can write it ...
@@ -100,7 +100,7 @@ bool CTVOSFile::OpenForWrite(const CURL& url, bool bOverWrite /* = false */)
 
 bool CTVOSFile::Delete(const CURL& url)
 {
-  bool ret = CDarwinNSUserDefaults::DeleteKeyFromPath(url.Get(), true);
+  bool ret = CTVOSNSUserDefaults::DeleteKeyFromPath(url.Get(), true);
 
   if (!ret)
   {
@@ -112,7 +112,7 @@ bool CTVOSFile::Delete(const CURL& url)
 
 bool CTVOSFile::Exists(const CURL& url)
 {
-  bool ret = CDarwinNSUserDefaults::KeyFromPathExists(url.Get());
+  bool ret = CTVOSNSUserDefaults::KeyFromPathExists(url.Get());
   if (!ret)
   {
     CPosixFile posix;
@@ -139,14 +139,14 @@ bool CTVOSFile::Rename(const CURL& url, const CURL& urlnew)
   {
     void* lpBuf = nullptr;
     size_t uiBufSize = 0;
-    if (CDarwinNSUserDefaults::GetKeyDataFromPath(url.Get(), lpBuf,
-                                                  uiBufSize)) // get size from old file
+    if (CTVOSNSUserDefaults::GetKeyDataFromPath(url.Get(), lpBuf,
+                                                uiBufSize)) // get size from old file
     {
       lpBuf = static_cast<void*>(new char[uiBufSize]);
-      if (CDarwinNSUserDefaults::GetKeyDataFromPath(url.Get(), lpBuf, uiBufSize)) // read old file
+      if (CTVOSNSUserDefaults::GetKeyDataFromPath(url.Get(), lpBuf, uiBufSize)) // read old file
       {
-        if (CDarwinNSUserDefaults::SetKeyDataFromPath(urlnew.Get(), lpBuf, uiBufSize,
-                                                      true)) // write to new url
+        if (CTVOSNSUserDefaults::SetKeyDataFromPath(urlnew.Get(), lpBuf, uiBufSize,
+                                                    true)) // write to new url
         {
           // remove old file
           Delete(url);
@@ -181,12 +181,12 @@ ssize_t CTVOSFile::Read(void* lpBuf, size_t uiBufSize)
   if (m_position > 0 && m_position == GetLength())
     return 0; // simulate read 0 bytes on EOF
 
-  if (CDarwinNSUserDefaults::GetKeyDataFromPath(m_url.Get(), lpBufInternal,
-                                                uiBufSize)) // read size of file
+  if (CTVOSNSUserDefaults::GetKeyDataFromPath(m_url.Get(), lpBufInternal,
+                                              uiBufSize)) // read size of file
   {
     lpBufInternal = static_cast<void*>(new char[uiBufSize]);
-    if (CDarwinNSUserDefaults::GetKeyDataFromPath(m_url.Get(), lpBufInternal,
-                                                  uiBufSize)) // read file
+    if (CTVOSNSUserDefaults::GetKeyDataFromPath(m_url.Get(), lpBufInternal,
+                                                uiBufSize)) // read file
     {
       memcpy(lpBuf, lpBufInternal, uiBufSize);
     }
@@ -201,8 +201,8 @@ ssize_t CTVOSFile::Write(const void* lpBuf, size_t uiBufSize)
   if (m_pFallbackFile != nullptr)
     return m_pFallbackFile->Write(lpBuf, uiBufSize);
 
-  if (CDarwinNSUserDefaults::SetKeyDataFromPath(m_url.Get(), lpBuf, uiBufSize,
-                                                true)) // write to file
+  if (CTVOSNSUserDefaults::SetKeyDataFromPath(m_url.Get(), lpBuf, uiBufSize,
+                                              true)) // write to file
   {
     m_position = uiBufSize;
     CacheStat(m_url, &m_cachedStat);

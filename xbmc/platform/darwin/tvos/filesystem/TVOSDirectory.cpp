@@ -27,7 +27,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
-#include "platform/darwin/ios-common/DarwinNSUserDefaults.h"
+#include "platform/darwin/tvos/TVOSNSUserDefaults.h"
 #include "platform/darwin/tvos/filesystem/TVOSFile.h"
 #include "platform/darwin/tvos/filesystem/TVOSFileUtils.h"
 #include "platform/posix/filesystem/PosixDirectory.h"
@@ -74,7 +74,7 @@ bool CTVOSDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
   // GetDirectoryContents will return full paths
   std::vector<std::string> contents;
-  CDarwinNSUserDefaults::GetDirectoryContents(rootpath, contents);
+  CTVOSNSUserDefaults::GetDirectoryContents(rootpath, contents);
   for (const auto& path : contents)
   {
     CFileItemPtr pItem(new CFileItem(URIUtils::GetFileName(path)));
