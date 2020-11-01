@@ -571,6 +571,7 @@ public:
   void SetPropertiesForFileItem(CFileItem& item);
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
+  void SetItemUpdated(int mediaId, const std::string& mediaType);
 
   /////////////////////////////////////////////////
   // Art

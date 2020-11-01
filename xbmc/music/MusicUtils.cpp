@@ -100,6 +100,8 @@ namespace MUSIC_UTILS
         db.SetArtForItem(itemID, type, m_artType, m_newArt);
       else
         db.RemoveArtForItem(itemID, type, m_artType);
+      // Artwork changed so set datemodified field for artist, album or song
+      db.SetItemUpdated(itemID, type);
 
       /* Update the art of the songs of the current music playlist.
       Song thumb is often a fallback from the album and fanart is from the artist(s).
