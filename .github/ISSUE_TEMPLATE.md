@@ -69,6 +69,7 @@ Used Operating system:
 <!--- Put your text below this line. Checkboxes can easily be ticked once issue is created -->
  - [ ] Android
  - [ ] iOS
+ - [ ] tvOS
  - [ ] Linux
  - [ ] OSX
  - [ ] Windows
