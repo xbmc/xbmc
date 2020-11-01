@@ -415,16 +415,16 @@ if(CORE_HOST_IS_TARGET AND ENABLE_TESTING)
       message(FATAL_ERROR "Code coverage not (yet) implemented for platform ${CORE_SYSTEM_NAME}")
     endif()
   endif()
+endif()
 
-  # Documentation
-  find_package(Doxygen)
-  if(DOXYGEN_FOUND)
-    add_custom_target(doc
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/docs/doxygen/Doxyfile.doxy
-                      COMMAND ${CMAKE_COMMAND} -E echo "Documentation built to: file://${CMAKE_SOURCE_DIR}/docs/html/index.html"
-                      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs/doxygen
-                      COMMENT "Generating Doxygen documentation" VERBATIM)
-  endif()
+# Documentation
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  add_custom_target(doc
+                    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/docs/doxygen/Doxyfile.doxy
+                    COMMAND ${CMAKE_COMMAND} -E echo "Documentation built to: file://${CMAKE_SOURCE_DIR}/docs/html/index.html"
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs/doxygen
+                    COMMENT "Generating Doxygen documentation" VERBATIM)
 endif()
 
 # link wrapper
