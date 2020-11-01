@@ -9,7 +9,7 @@
 
 #include <string>
 
-class CDarwinNSUserDefaults
+class CTVOSNSUserDefaults
 {
 public:
   static bool Synchronize();

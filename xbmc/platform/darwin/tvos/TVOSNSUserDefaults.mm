@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import "DarwinNSUserDefaults.h"
+#import "TVOSNSUserDefaults.h"
 
 #import "filesystem/SpecialProtocol.h"
 #import "utils/URIUtils.h"
@@ -59,13 +59,13 @@ static bool translatePathIntoKey(const std::string& path, std::string& key)
   return false;
 }
 
-bool CDarwinNSUserDefaults::Synchronize()
+bool CTVOSNSUserDefaults::Synchronize()
 {
   return [[NSUserDefaults standardUserDefaults] synchronize] == YES;
 }
 
-void CDarwinNSUserDefaults::GetDirectoryContents(const std::string& path,
-                                                 std::vector<std::string>& contents)
+void CTVOSNSUserDefaults::GetDirectoryContents(const std::string& path,
+                                               std::vector<std::string>& contents)
 {
   // tvos path adds /private/../..
   // We need to strip this as GetUserHomeDirectory() doesnt have private in the path
@@ -101,7 +101,7 @@ void CDarwinNSUserDefaults::GetDirectoryContents(const std::string& path,
   }
 }
 
-bool CDarwinNSUserDefaults::GetKey(const std::string& key, std::string& value)
+bool CTVOSNSUserDefaults::GetKey(const std::string& key, std::string& value)
 {
   if (!key.empty())
   {
@@ -119,7 +119,7 @@ bool CDarwinNSUserDefaults::GetKey(const std::string& key, std::string& value)
   return false;
 }
 
-bool CDarwinNSUserDefaults::GetKeyData(const std::string& key, void* lpBuf, size_t& uiBufSize)
+bool CTVOSNSUserDefaults::GetKeyData(const std::string& key, void* lpBuf, size_t& uiBufSize)
 {
   if (key.empty())
   {
@@ -150,9 +150,7 @@ bool CDarwinNSUserDefaults::GetKeyData(const std::string& key, void* lpBuf, size
   return true;
 }
 
-bool CDarwinNSUserDefaults::SetKey(const std::string& key,
-                                   const std::string& value,
-                                   bool synchronize)
+bool CTVOSNSUserDefaults::SetKey(const std::string& key, const std::string& value, bool synchronize)
 {
   if (!key.empty() && !value.empty())
   {
@@ -171,10 +169,10 @@ bool CDarwinNSUserDefaults::SetKey(const std::string& key,
   return false;
 }
 
-bool CDarwinNSUserDefaults::SetKeyData(const std::string& key,
-                                       const void* lpBuf,
-                                       size_t uiBufSize,
-                                       bool synchronize)
+bool CTVOSNSUserDefaults::SetKeyData(const std::string& key,
+                                     const void* lpBuf,
+                                     size_t uiBufSize,
+                                     bool synchronize)
 {
   if (!key.empty() && lpBuf != nullptr && uiBufSize > 0)
   {
@@ -196,7 +194,7 @@ bool CDarwinNSUserDefaults::SetKeyData(const std::string& key,
   return false;
 }
 
-bool CDarwinNSUserDefaults::DeleteKey(const std::string& key, bool synchronize)
+bool CTVOSNSUserDefaults::DeleteKey(const std::string& key, bool synchronize)
 {
   if (!key.empty())
   {
@@ -212,7 +210,7 @@ bool CDarwinNSUserDefaults::DeleteKey(const std::string& key, bool synchronize)
   return false;
 }
 
-bool CDarwinNSUserDefaults::KeyExists(const std::string& key)
+bool CTVOSNSUserDefaults::KeyExists(const std::string& key)
 {
   if (!key.empty())
   {
@@ -224,7 +222,7 @@ bool CDarwinNSUserDefaults::KeyExists(const std::string& key)
   return false;
 }
 
-bool CDarwinNSUserDefaults::IsKeyFromPath(const std::string& path)
+bool CTVOSNSUserDefaults::IsKeyFromPath(const std::string& path)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
@@ -236,63 +234,63 @@ bool CDarwinNSUserDefaults::IsKeyFromPath(const std::string& path)
   return false;
 }
 
-bool CDarwinNSUserDefaults::GetKeyFromPath(const std::string& path, std::string& value)
+bool CTVOSNSUserDefaults::GetKeyFromPath(const std::string& path, std::string& value)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
-    return CDarwinNSUserDefaults::GetKey(translated_key, value);
+    return CTVOSNSUserDefaults::GetKey(translated_key, value);
 
   return false;
 }
 
-bool CDarwinNSUserDefaults::GetKeyDataFromPath(const std::string& path,
-                                               void* lpBuf,
-                                               size_t& uiBufSize)
+bool CTVOSNSUserDefaults::GetKeyDataFromPath(const std::string& path,
+                                             void* lpBuf,
+                                             size_t& uiBufSize)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
-    return CDarwinNSUserDefaults::GetKeyData(translated_key, lpBuf, uiBufSize);
+    return CTVOSNSUserDefaults::GetKeyData(translated_key, lpBuf, uiBufSize);
 
   return false;
 }
 
-bool CDarwinNSUserDefaults::SetKeyFromPath(const std::string& path,
-                                           const std::string& value,
-                                           bool synchronize)
+bool CTVOSNSUserDefaults::SetKeyFromPath(const std::string& path,
+                                         const std::string& value,
+                                         bool synchronize)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty() && !value.empty())
-    return CDarwinNSUserDefaults::SetKey(translated_key, value, synchronize);
+    return CTVOSNSUserDefaults::SetKey(translated_key, value, synchronize);
 
   return false;
 }
 
-bool CDarwinNSUserDefaults::SetKeyDataFromPath(const std::string& path,
-                                               const void* lpBuf,
-                                               size_t uiBufSize,
-                                               bool synchronize)
+bool CTVOSNSUserDefaults::SetKeyDataFromPath(const std::string& path,
+                                             const void* lpBuf,
+                                             size_t uiBufSize,
+                                             bool synchronize)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
-    return CDarwinNSUserDefaults::SetKeyData(translated_key, lpBuf, uiBufSize, synchronize);
+    return CTVOSNSUserDefaults::SetKeyData(translated_key, lpBuf, uiBufSize, synchronize);
 
   return false;
 }
 
-bool CDarwinNSUserDefaults::DeleteKeyFromPath(const std::string& path, bool synchronize)
+bool CTVOSNSUserDefaults::DeleteKeyFromPath(const std::string& path, bool synchronize)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
-    return CDarwinNSUserDefaults::DeleteKey(translated_key, synchronize);
+    return CTVOSNSUserDefaults::DeleteKey(translated_key, synchronize);
 
   return false;
 }
 
-bool CDarwinNSUserDefaults::KeyFromPathExists(const std::string& path)
+bool CTVOSNSUserDefaults::KeyFromPathExists(const std::string& path)
 {
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
-    return CDarwinNSUserDefaults::KeyExists(translated_key);
+    return CTVOSNSUserDefaults::KeyExists(translated_key);
 
   return false;
 }
