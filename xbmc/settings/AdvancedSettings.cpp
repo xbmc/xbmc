@@ -152,6 +152,7 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_videoFpsDetect = 1;
+  m_minTempo = 0.75f;
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
 
@@ -699,6 +700,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
     XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
+    XMLUtils::GetFloat(pElement, "mintempo", m_minTempo, 0.3, 0.9);
     XMLUtils::GetFloat(pElement, "maxtempo", m_maxTempo, 1.5, 2.1);
     XMLUtils::GetBoolean(pElement, "preferstereostream", m_videoPreferStereoStream);
 
