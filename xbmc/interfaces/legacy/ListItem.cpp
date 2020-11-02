@@ -497,7 +497,7 @@ namespace XBMCAddon
 
           //! @todo add the rest of the infolabels
           if (key == "dbid" && !type.empty())
-            musictag.SetDatabaseId(strtol(value.c_str(), NULL, 10), type);
+            musictag.SetDatabaseId(static_cast<int>(strtol(value.c_str(), NULL, 10)), type);
           else if (key == "tracknumber")
             musictag.SetTrackNumber(strtol(value.c_str(), NULL, 10));
           else if (key == "discnumber")

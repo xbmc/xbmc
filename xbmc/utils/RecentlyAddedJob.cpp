@@ -212,7 +212,7 @@ bool CRecentlyAddedJob::UpdateMusic()
 
   if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
   {
-    long idAlbum = -1;
+    int idAlbum = -1;
     std::string strAlbumThumb;
     std::string strAlbumFanart;
     for (; i < musicItems.Size(); ++i)

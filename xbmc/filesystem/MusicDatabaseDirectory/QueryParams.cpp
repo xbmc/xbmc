@@ -24,7 +24,7 @@ CQueryParams::CQueryParams()
 
 void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName)
 {
-  long idDb=atol(strNodeName.c_str());
+  int idDb = atoi(strNodeName.c_str());
 
   switch (NodeType)
   {

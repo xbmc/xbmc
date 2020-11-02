@@ -65,7 +65,7 @@ namespace MUSIC_UTILS
           for (CVariant::const_iterator_array varid = pSongItem->GetProperty("artistid").begin_array();
             varid != pSongItem->GetProperty("artistid").end_array(); varid++)
           {
-            int idArtist = varid->asInteger();
+            int idArtist = static_cast<int>(varid->asInteger());
             result = (itemID == idArtist);
             if (result)
               break;

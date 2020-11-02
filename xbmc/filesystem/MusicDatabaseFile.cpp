@@ -35,7 +35,7 @@ std::string CMusicDatabaseFile::TranslateUrl(const CURL& url)
   if (!StringUtils::IsNaturalNumber(strFileName))
     return "";
 
-  long idSong=atol(strFileName.c_str());
+  int idSong = atoi(strFileName.c_str());
 
   CSong song;
   if (!musicDatabase.GetSong(idSong, song))

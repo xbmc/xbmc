@@ -98,7 +98,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     if (pItem->HasProperty("artistid") && pItem->GetProperty("artistid").isArray())
     {
       CVariant::const_iterator_array varid = pItem->GetProperty("artistid").begin_array();
-      int idArtist = varid->asInteger();
+      int idArtist = static_cast<int>(varid->asInteger());
       artistfound = database.GetArtist(idArtist, artist, false);
     }
     else

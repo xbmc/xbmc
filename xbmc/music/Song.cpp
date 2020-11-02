@@ -66,8 +66,8 @@ CSong::CSong(CFileItem& item)
   dateAdded = tag.GetDateAdded();
   replayGain = tag.GetReplayGain();
   strThumb = item.GetUserMusicThumb(true);
-  iStartOffset = item.m_lStartOffset;
-  iEndOffset = item.m_lEndOffset;
+  iStartOffset = static_cast<int>(item.m_lStartOffset);
+  iEndOffset = static_cast<int>(item.m_lEndOffset);
   idSong = -1;
   iTimesPlayed = 0;
   idAlbum = -1;

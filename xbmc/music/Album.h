@@ -141,7 +141,7 @@ public:
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath);
 
-  long idAlbum = -1;
+  int idAlbum = -1;
   std::string strAlbum;
   std::string strMusicBrainzAlbumID;
   std::string strReleaseGroupMBID;

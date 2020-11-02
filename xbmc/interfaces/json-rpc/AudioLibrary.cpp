@@ -277,7 +277,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
       for (unsigned int index = 0; index < result["albums"].size(); index++)
       {
         CFileItem item;
-        item.GetMusicInfoTag()->SetDatabaseId(result["albums"][index]["albumid"].asInteger(), MediaTypeAlbum);
+        item.GetMusicInfoTag()->SetDatabaseId(result["albums"][index]["albumid"].asInteger32(), MediaTypeAlbum);
 
         // Could use FillDetails, but it does unnecessary serialization of empty MusiInfoTag
         // CFileItemPtr itemptr(new CFileItem(item));
@@ -432,9 +432,9 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
         CFileItem item;
         // Only needs song and album id (if we have it) set to get art
         // Getting art is quicker if "albumid" has been fetched
-        item.GetMusicInfoTag()->SetDatabaseId(result["songs"][index]["songid"].asInteger(), MediaTypeSong);
+        item.GetMusicInfoTag()->SetDatabaseId(result["songs"][index]["songid"].asInteger32(), MediaTypeSong);
         if (result["songs"][index].isMember("albumid"))
-          item.GetMusicInfoTag()->SetAlbumId(result["songs"][index]["albumid"].asInteger());
+          item.GetMusicInfoTag()->SetAlbumId(result["songs"][index]["albumid"].asInteger32());
         else
           item.GetMusicInfoTag()->SetAlbumId(-1);
 
