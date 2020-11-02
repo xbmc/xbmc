@@ -19,7 +19,7 @@
 #include <time.h>
 
 // Increment this level always if you add features which can lead to compile failures in the addon
-#define INPUTSTREAM_VERSION_LEVEL 3
+#define INPUTSTREAM_VERSION_LEVEL 4
 
 #define INPUTSTREAM_MAX_INFO_COUNT 8
 #define INPUTSTREAM_MAX_STREAM_COUNT 256
