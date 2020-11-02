@@ -92,10 +92,10 @@ unzip $HOME/Downloads/android-ndk-r20-linux-x86_64.zip -d $HOME/android-tools
 Before Android SDK can be used, you need to accept the licenses and configure it:
 ```
 cd $HOME/android-tools/android-sdk-linux/cmdline-tools/tools/bin
-./sdkmanager --licenses
-./sdkmanager platform-tools
-./sdkmanager "platforms;android-28"
-./sdkmanager "build-tools;28.0.3"
+./sdkmanager --sdk_root=$(pwd)/../.. --licenses
+./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
+./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-28"
+./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;28.0.3"
 ```
 
 ### 3.3. Create a key to sign debug APKs
