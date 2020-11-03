@@ -8,6 +8,9 @@
 
 #include "PlatformLinux.h"
 
+#include "utils/StringUtils.h"
+
+#include "platform/linux/OptionalsReg.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 // clang-format off
@@ -75,6 +78,38 @@ bool CPlatformLinux::Init()
 #endif
 
   CLinuxPowerSyscall::Register();
+
+  std::string envSink;
+  if (getenv("KODI_AE_SINK"))
+    envSink = getenv("KODI_AE_SINK");
+
+  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
+  {
+    OPTIONALS::ALSARegister();
+  }
+  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
+  {
+    OPTIONALS::PulseAudioRegister();
+  }
+  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
+  {
+    OPTIONALS::SndioRegister();
+  }
+  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  {
+    OPTIONALS::ALSARegister();
+    OPTIONALS::PulseAudioRegister();
+  }
+  else
+  {
+    if (!OPTIONALS::PulseAudioRegister())
+    {
+      if (!OPTIONALS::ALSARegister())
+      {
+        OPTIONALS::SndioRegister();
+      }
+    }
+  }
 
   return true;
 }
