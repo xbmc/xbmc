@@ -10,6 +10,7 @@ FAILED_BUILD_FILENAME=".last_failed_revision"
 #TARBALLS ENV-VAR is only used by android scripts atm
 TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
 RENDER_SYSTEM=${RENDER_SYSTEM:-"Default"}
+BUILD_HOST=${BUILD_HOST:-"Default"}
 
 BINARY_ADDONS_ROOT=tools/depends/target
 BINARY_ADDONS="binary-addons"
@@ -46,10 +47,11 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_CONFIGURATION="Debug"
     ;;
 
-  linux*)
+  linux)
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     DEFAULT_RENDER_SYSTEM="gl"
+    DEFAULT_BUILD_HOST="x86_64-linux-gnu"
   ;;
 
   freebsd)
@@ -98,6 +100,11 @@ fi
 if [ "$RENDER_SYSTEM" == "Default" ]
 then
   RENDER_SYSTEM=$DEFAULT_RENDER_SYSTEM
+fi
+
+if [ "$BUILD_HOST" == "Default" ]
+then
+  BUILD_HOST=$DEFAULT_BUILD_HOST
 fi
 
 #helper functions
