@@ -212,7 +212,9 @@ public:
   void GetAsTm(tm& time) const;
   std::chrono::system_clock::time_point GetAsTimePoint() const;
 
-  CDateTime GetAsUTCDateTime() const;
+  /*! \brief convert UTC datetime to local datetime
+   */
+  CDateTime GetAsLocalDateTime() const;
   std::string GetAsSaveString() const;
   std::string GetAsDBDateTime() const;
   std::string GetAsDBDate() const;

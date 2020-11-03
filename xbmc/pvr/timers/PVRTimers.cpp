@@ -1258,7 +1258,6 @@ CDateTime CPVRTimers::GetNextEventTime() const
   {
     CDateTime dailywakeuptime;
     dailywakeuptime.SetFromDBTime(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
-    dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
     dailywakeuptime.SetDateTime(
       now.GetYear(), now.GetMonth(), now.GetDay(),

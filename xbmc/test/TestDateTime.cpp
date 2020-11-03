@@ -531,20 +531,20 @@ TEST_F(TestDateTime, GetAsTm)
   EXPECT_TRUE(dateTime == time);
 }
 
-TEST_F(TestDateTime, GetAsUTCDateTime)
+TEST_F(TestDateTime, GetAsLocalDateTime)
 {
   CDateTime dateTime1;
   dateTime1.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   CDateTime dateTime2;
-  dateTime2 = dateTime1.GetAsUTCDateTime();
+  dateTime2 = dateTime1.GetAsLocalDateTime();
 
-  EXPECT_EQ(dateTime2.GetYear(), 1991);
-  EXPECT_EQ(dateTime2.GetMonth(), 5);
-  EXPECT_EQ(dateTime2.GetDay(), 14);
-  EXPECT_EQ(dateTime2.GetHour(), 12);
-  EXPECT_EQ(dateTime2.GetMinute(), 34);
-  EXPECT_EQ(dateTime2.GetSecond(), 56);
+  auto zoned_time = date::make_zoned(date::current_zone(), dateTime1.GetAsTimePoint());
+  auto time = zoned_time.get_local_time().time_since_epoch();
+
+  CDateTime cmpTime(std::chrono::duration_cast<std::chrono::seconds>(time).count());
+
+  EXPECT_TRUE(dateTime1 == cmpTime);
 }
 
 TEST_F(TestDateTime, Reset)

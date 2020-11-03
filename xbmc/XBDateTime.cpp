@@ -1210,10 +1210,13 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /
   return GetAsLocalizedTime("", false);
 }
 
-CDateTime CDateTime::GetAsUTCDateTime() const
+CDateTime CDateTime::GetAsLocalDateTime() const
 {
-  CDateTime time(m_time);
-  return time;
+  auto zone = date::make_zoned(date::current_zone(), m_time);
+
+  return CDateTime(
+      std::chrono::duration_cast<std::chrono::seconds>(zone.get_local_time().time_since_epoch())
+          .count());
 }
 
 std::string CDateTime::GetAsRFC1123DateTime() const
