@@ -529,7 +529,7 @@ void CPVRRecording::UpdatePath()
 const CDateTime& CPVRRecording::RecordingTimeAsLocalTime() const
 {
   static CDateTime tmp;
-  tmp.SetFromUTCDateTime(m_recordingTime);
+  tmp.SetFromUTCDateTime(m_recordingTime.GetAsLocalDateTime());
 
   return tmp;
 }
@@ -543,7 +543,7 @@ CDateTime CPVRRecording::EndTimeAsUTC() const
 CDateTime CPVRRecording::EndTimeAsLocalTime() const
 {
   CDateTime ret;
-  ret.SetFromUTCDateTime(EndTimeAsUTC());
+  ret.SetFromUTCDateTime(EndTimeAsUTC().GetAsLocalDateTime());
   return ret;
 }
 

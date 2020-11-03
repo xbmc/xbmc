@@ -315,9 +315,7 @@ CDateTime CPVREpgInfoTag::StartAsUTC() const
 
 CDateTime CPVREpgInfoTag::StartAsLocalTime() const
 {
-  CDateTime retVal;
-  retVal.SetFromUTCDateTime(m_startTime);
-  return retVal;
+  return m_startTime.GetAsLocalDateTime();
 }
 
 CDateTime CPVREpgInfoTag::EndAsUTC() const
@@ -327,9 +325,7 @@ CDateTime CPVREpgInfoTag::EndAsUTC() const
 
 CDateTime CPVREpgInfoTag::EndAsLocalTime() const
 {
-  CDateTime retVal;
-  retVal.SetFromUTCDateTime(m_endTime);
-  return retVal;
+  return m_endTime.GetAsLocalDateTime();
 }
 
 void CPVREpgInfoTag::SetEndFromUTC(const CDateTime& end)
