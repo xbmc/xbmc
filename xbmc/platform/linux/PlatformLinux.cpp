@@ -10,7 +10,6 @@
 
 #include "utils/StringUtils.h"
 
-#include "platform/linux/OptionalsReg.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 // clang-format off
@@ -110,6 +109,8 @@ bool CPlatformLinux::Init()
       }
     }
   }
+
+  m_lirc.reset(OPTIONALS::LircRegister());
 
   return true;
 }

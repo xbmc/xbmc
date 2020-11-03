@@ -33,7 +33,6 @@ CWinSystemGbm::CWinSystemGbm() :
   m_libinput(new CLibInputHandler)
 {
   m_dpms = std::make_shared<CGBMDPMSSupport>();
-  m_lirc.reset(OPTIONALS::LircRegister());
   m_libinput->Start();
 }
 

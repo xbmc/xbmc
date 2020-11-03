@@ -38,11 +38,6 @@ std::unique_ptr<CWinSystemBase> CWinSystemX11GLESContext::CreateWinSystem()
   return std::make_unique<CWinSystemX11GLESContext>();
 }
 
-CWinSystemX11GLESContext::CWinSystemX11GLESContext()
-{
-  m_lirc.reset(OPTIONALS::LircRegister());
-}
-
 CWinSystemX11GLESContext::~CWinSystemX11GLESContext()
 {
   delete m_pGLContext;

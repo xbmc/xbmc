@@ -11,7 +11,6 @@
 #include "utils/StringUtils.h"
 
 #include "platform/freebsd/OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 // clang-format off
@@ -118,6 +117,8 @@ bool CPlatformFreebsd::Init()
       }
     }
   }
+
+  m_lirc.reset(OPTIONALS::LircRegister());
 
   return true;
 }

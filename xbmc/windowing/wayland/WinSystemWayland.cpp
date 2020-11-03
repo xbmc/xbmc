@@ -138,7 +138,6 @@ CWinSystemWayland::CWinSystemWayland()
 : CWinSystemBase{}, m_protocol{"WinSystemWaylandInternal"}
 {
   m_winEvents.reset(new CWinEventsWayland());
-  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 CWinSystemWayland::~CWinSystemWayland() noexcept

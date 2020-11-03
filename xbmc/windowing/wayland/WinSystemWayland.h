@@ -20,9 +20,6 @@
 #include "utils/ActorProtocol.h"
 #include "windowing/WinSystem.h"
 
-#include "platform/freebsd/OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
-
 #include <atomic>
 #include <ctime>
 #include <list>
@@ -294,8 +291,6 @@ private:
   std::uint32_t m_lastAckedSerial{0u};
   /// Whether this is the first call to SetFullScreen
   bool m_isInitialSetFullScreen{true};
-
-  std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };
 
 
