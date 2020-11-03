@@ -236,7 +236,7 @@ std::string CPVRGUITimesInfo::TimeToTimeString(time_t datetime, TIME_FORMAT form
 {
   CDateTime time;
   time.SetFromUTCDateTime(datetime);
-  return time.GetAsLocalizedTime(format, withSeconds);
+  return time.GetAsLocalDateTime().GetAsLocalizedTime(format, withSeconds);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftStartTime(TIME_FORMAT format) const
