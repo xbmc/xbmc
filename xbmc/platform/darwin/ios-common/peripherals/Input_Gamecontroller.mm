@@ -395,7 +395,7 @@ struct PlayerControllerState
                              withAxis:GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHT
                       withplayerIndex:playerIndex];
     }
-    if (@available(iOS 12.1, *))
+    if (@available(iOS 12.1, tvOS 12.1, *))
     {
       // Left Thumbstick Button
       if (gamepad.leftThumbstickButton == element)
@@ -566,7 +566,7 @@ struct PlayerControllerState
         [controller.extendedGamepad performSelector:@selector(buttonOptions)] != nil)
       ++optionalButtonCount;
 
-    if (@available(iOS 12.1, *))
+    if (@available(iOS 12.1, tvOS 12.1, *))
     {
       if (controller.extendedGamepad.leftThumbstickButton)
         ++optionalButtonCount;
