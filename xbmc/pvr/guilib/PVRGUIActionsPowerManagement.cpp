@@ -92,7 +92,6 @@ bool CPVRGUIActionsPowerManagement::CanSystemPowerdown(bool bAskUser /*= true*/)
           CDateTime dailywakeuptime;
           dailywakeuptime.SetFromDBTime(
               m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
-          dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
           const CDateTimeSpan diff(dailywakeuptime - now);
           int mins = diff.GetSecondsTotal() / 60;
