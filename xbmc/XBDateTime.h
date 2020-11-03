@@ -175,7 +175,9 @@ public:
     CHOICE_NO = false,
   };
 
-  CDateTime GetAsUTCDateTime() const;
+  /*! \brief convert UTC datetime to local datetime
+   */
+  CDateTime GetAsLocalDateTime() const;
   std::string GetAsSaveString() const;
   std::string GetAsDBDateTime() const;
   std::string GetAsDBDate() const;
