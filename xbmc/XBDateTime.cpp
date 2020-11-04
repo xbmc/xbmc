@@ -613,19 +613,6 @@ std::string CDateTime::GetAsSaveString() const
   return date::format("%Y%m%d_%H%M%S", sp);
 }
 
-bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
-{
-  m_time = dateTime.m_time;
-  m_state = valid;
-  return true;
-}
-
-bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
-{
-  CDateTime tmp(dateTime);
-  return SetFromUTCDateTime(tmp);
-}
-
 bool CDateTime::SetFromW3CDate(const std::string &dateTime)
 {
   std::string date;
@@ -700,10 +687,8 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
 
   if (!ignoreTimezone && !zone.empty())
   {
-    // check if the timezone is UTC
-    if (StringUtils::StartsWith(zone, "Z"))
-      return SetFromUTCDateTime(tmpDateTime);
-    else
+    // check if the timezone is not UTC
+    if (!StringUtils::StartsWith(zone, "Z"))
     {
       // retrieve the timezone offset (ignoring the + or -)
       CDateTimeSpan zoneSpan; zoneSpan.SetFromTimeString(zone.substr(1));
@@ -850,20 +835,6 @@ CDateTime CDateTime::FromW3CDateTime(const std::string &date, bool ignoreTimezon
 {
   CDateTime dt;
   dt.SetFromW3CDateTime(date, ignoreTimezone);
-  return dt;
-}
-
-CDateTime CDateTime::FromUTCDateTime(const CDateTime &dateTime)
-{
-  CDateTime dt;
-  dt.SetFromUTCDateTime(dateTime);
-  return dt;
-}
-
-CDateTime CDateTime::FromUTCDateTime(const time_t &dateTime)
-{
-  CDateTime dt;
-  dt.SetFromUTCDateTime(dateTime);
   return dt;
 }
 

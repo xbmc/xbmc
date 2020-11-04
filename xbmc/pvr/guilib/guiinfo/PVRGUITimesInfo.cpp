@@ -234,8 +234,7 @@ void CPVRGUITimesInfo::Update()
 
 std::string CPVRGUITimesInfo::TimeToTimeString(time_t datetime, TIME_FORMAT format, bool withSeconds)
 {
-  CDateTime time;
-  time.SetFromUTCDateTime(datetime);
+  CDateTime time(datetime);
   return time.GetAsLocalDateTime().GetAsLocalizedTime(format, withSeconds);
 }
 

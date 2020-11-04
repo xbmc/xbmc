@@ -209,32 +209,6 @@ TEST_F(TestDateTime, SetFromW3CDateTime)
   EXPECT_EQ(dateTime2.GetSecond(), 30);
 }
 
-TEST_F(TestDateTime, SetFromUTCDateTime)
-{
-  CDateTime dateTime1;
-  dateTime1.SetFromDBDateTime("1991-05-14 12:34:56");
-
-  CDateTime dateTime2;
-  EXPECT_TRUE(dateTime2.SetFromUTCDateTime(dateTime1));
-  EXPECT_EQ(dateTime2.GetYear(), 1991);
-  EXPECT_EQ(dateTime2.GetMonth(), 5);
-  EXPECT_EQ(dateTime2.GetDay(), 14);
-  EXPECT_EQ(dateTime2.GetHour(), 12);
-  EXPECT_EQ(dateTime2.GetMinute(), 34);
-  EXPECT_EQ(dateTime2.GetSecond(), 56);
-
-  const time_t time = 674224496;
-
-  CDateTime dateTime3;
-  EXPECT_TRUE(dateTime3.SetFromUTCDateTime(time));
-  EXPECT_EQ(dateTime3.GetYear(), 1991);
-  EXPECT_EQ(dateTime3.GetMonth(), 5);
-  EXPECT_EQ(dateTime3.GetDay(), 14);
-  EXPECT_EQ(dateTime3.GetHour(), 12);
-  EXPECT_EQ(dateTime3.GetMinute(), 34);
-  EXPECT_EQ(dateTime3.GetSecond(), 56);
-}
-
 TEST_F(TestDateTime, SetFromRFC1123DateTime)
 {
   std::string dateTime1("Mon, 21 Oct 2018 12:16:24 GMT");
