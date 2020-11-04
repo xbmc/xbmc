@@ -18,8 +18,6 @@
 #include <cstring>
 #include <stddef.h>
 
-#define BUFFER_OFFSET(i) ((char*)NULL + (i))
-
 using namespace KODI;
 using namespace RETRO;
 
@@ -295,9 +293,9 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, x)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
   glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);

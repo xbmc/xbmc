@@ -29,8 +29,6 @@ using namespace DirectX;
 using namespace KODI;
 using namespace RETRO;
 
-#define BUFFER_OFFSET(i) (static_cast<char*>(NULL) + (i))
-
 // --- CRendererFactoryGuiTexture ----------------------------------------------
 
 std::string CRendererFactoryGuiTexture::RenderSystemName() const
@@ -190,9 +188,9 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, x)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(tex0Loc);
