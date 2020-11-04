@@ -123,9 +123,9 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   ////////////////////////////////////////////////////////////////////////
   // Create ruler items
   CDateTime ruler;
-  ruler.SetFromUTCDateTime(m_gridStart.GetAsLocalDateTime());
+  ruler = m_gridStart.GetAsLocalDateTime();
   CDateTime rulerEnd;
-  rulerEnd.SetFromUTCDateTime(m_gridEnd.GetAsLocalDateTime());
+  rulerEnd = m_gridEnd.GetAsLocalDateTime();
   CFileItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true)));
   rulerItem->SetProperty("DateLabel", true);
   m_rulerItems.emplace_back(rulerItem);
