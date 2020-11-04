@@ -40,13 +40,15 @@ void CPVRRecordings::UpdateFromClients()
   for (const auto& recording : m_recordings)
     recording.second->SetDirty(true);
 
-  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false);
-  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true);
+  std::vector<int> failedClients;
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true, failedClients);
 
   // remove recordings that were deleted at the backend
   for (auto it = m_recordings.begin(); it != m_recordings.end();)
   {
-    if ((*it).second->IsDirty())
+    if ((*it).second->IsDirty() && std::find(failedClients.begin(), failedClients.end(),
+                                             (*it).second->ClientID()) == failedClients.end())
       it = m_recordings.erase(it);
     else
       ++it;

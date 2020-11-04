@@ -200,9 +200,12 @@ namespace PVR
      * @brief Get all recordings from clients
      * @param recordings Store the recordings in this container.
      * @param deleted If true, return deleted recordings, return not deleted recordings otherwise.
+     * @param failedClients in case of errors will contain the ids of the clients for which the recordings could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings* recordings, bool deleted);
+    PVR_ERROR GetRecordings(CPVRRecordings* recordings,
+                            bool deleted,
+                            std::vector<int>& failedClients);
 
     /*!
      * @brief Delete all "soft" deleted recordings permanently on the backend.
