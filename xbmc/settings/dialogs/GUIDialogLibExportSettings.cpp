@@ -444,7 +444,7 @@ int CGUIDialogLibExportSettings::GetExportItemsFromSetting(const SettingConstPtr
       CLog::Log(LOGERROR, "CGUIDialogLibExportSettings::%s - wrong items value type", __FUNCTION__);
       return 0;
     }
-    exportitems += value.asInteger();
+    exportitems += static_cast<int>(value.asInteger());
   }
   return exportitems;
 }

@@ -957,7 +957,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
   // If we have a string, we need to check the length
   if (HasType(type, StringValue) && value.isString())
   {
-    int size = value.asString().size();
+    int size = static_cast<int>(value.asString().size());
     if (size < minLength)
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet minLength requirements in type %s", name.c_str());
@@ -1225,7 +1225,7 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator
 
 unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 {
-  return m_propertiesmap.size();
+  return static_cast<unsigned int>(m_propertiesmap.size());
 }
 
 JsonRpcMethod::JsonRpcMethod()

@@ -298,8 +298,12 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     else if (it->first == "TSOC")   SetComposerSort(tag, GetID3v2StringList(it->second));
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TCON")   SetGenre(tag, GetID3v2StringList(it->second));
-    else if (it->first == "TRCK")   tag.SetTrackNumber(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
-    else if (it->first == "TPOS")   tag.SetDiscNumber(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
+    else if (it->first == "TRCK")
+      tag.SetTrackNumber(
+          static_cast<int>(strtol(it->second.front()->toString().toCString(true), nullptr, 10)));
+    else if (it->first == "TPOS")
+      tag.SetDiscNumber(
+          static_cast<int>(strtol(it->second.front()->toString().toCString(true), nullptr, 10)));
     else if (it->first == "TDOR" || it->first == "TORY") // TDOR - ID3v2.4, TORY - ID3v2.3
       tag.SetOriginalDate(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TDAT")   {} // empty as taglib has moved the value to TDRC
@@ -320,7 +324,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     else if (it->first == "TSST")
       tag.SetDiscSubtitle(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TBPM")
-      tag.SetBPM(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
+      tag.SetBPM(
+          static_cast<int>(strtol(it->second.front()->toString().toCString(true), nullptr, 10)));
     else if (it->first == "USLT")
       // Loop through any lyrics frames. Could there be multiple frames, how to choose?
       for (ID3v2::FrameList::ConstIterator lt = it->second.begin(); lt != it->second.end(); ++lt)

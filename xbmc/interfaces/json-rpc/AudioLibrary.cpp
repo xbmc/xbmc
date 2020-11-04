@@ -796,9 +796,9 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
   if (ParameterNotNull(parameterObject, "rating"))
     album.fRating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "userrating"))
-    album.iUserrating = parameterObject["userrating"].asInteger();
+    album.iUserrating = static_cast<int>(parameterObject["userrating"].asInteger());
   if (ParameterNotNull(parameterObject, "votes"))
-    album.iVotes = parameterObject["votes"].asInteger();
+    album.iVotes = static_cast<int>(parameterObject["votes"].asInteger());
   if (ParameterNotNull(parameterObject, "year"))
     album.strReleaseDate = parameterObject["year"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainzalbumid"))
@@ -891,7 +891,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (ParameterNotNull(parameterObject, "rating"))
     song.rating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "userrating"))
-    song.userrating = parameterObject["userrating"].asInteger();
+    song.userrating = static_cast<int>(parameterObject["userrating"].asInteger());
   if (ParameterNotNull(parameterObject, "track"))
     song.iTrack = (song.iTrack & 0xffff0000) | ((int)parameterObject["track"].asInteger() & 0xffff);
   if (ParameterNotNull(parameterObject, "disc"))

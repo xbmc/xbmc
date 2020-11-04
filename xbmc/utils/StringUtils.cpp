@@ -702,7 +702,9 @@ std::vector<std::string> StringUtils::Split(const std::string& input, const std:
   return result;
 }
 
-std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string> &input, const std::vector<std::string> &delimiters, unsigned int iMaxStrings /* = 0 */)
+std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string>& input,
+                                                 const std::vector<std::string>& delimiters,
+                                                 size_t iMaxStrings /* = 0 */)
 {
   if (input.empty())
     return std::vector<std::string>();
@@ -731,7 +733,7 @@ std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string> 
 
   // Control the number of strings input is split into, keeping the original strings.
   // Note iMaxStrings > input.size()
-  int iNew = iMaxStrings - results.size();
+  int64_t iNew = iMaxStrings - results.size();
   for (size_t di = 0; di < delimiters.size(); di++)
   {
     for (size_t i = 0; i < results.size(); i++)
@@ -1236,7 +1238,7 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
       // do we have numbers?
       if (lnum != rnum)
       { // yes - and they're different!
-        return lnum - rnum;
+        return static_cast<int>(lnum - rnum);
       }
       // Advance to after digits
       i = ld;

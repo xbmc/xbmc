@@ -685,7 +685,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
     AddAlbumArtist(artistCredit->idArtist,
                    album.idAlbum,
                    artistCredit->GetArtist(),
-                   std::distance(album.artistCredits.begin(), artistCredit));
+                   static_cast<int>(std::distance(album.artistCredits.begin(), artistCredit)));
   }
 
   for (auto song = album.songs.begin(); song != album.songs.end(); ++song)
@@ -724,7 +724,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                     song->idSong,
                     ROLE_ARTIST,
                     artistCredit->GetArtist(), // we don't have song artist breakdowns from scrapers, yet
-                    std::distance(song->artistCredits.begin(), artistCredit));
+                    static_cast<int>(std::distance(song->artistCredits.begin(), artistCredit)));
     }
     // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
@@ -883,7 +883,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
       AddAlbumArtist(artistCredit->idArtist,
         album.idAlbum,
         artistCredit->GetArtist(),
-        std::distance(album.artistCredits.begin(), artistCredit));
+        static_cast<int>(std::distance(album.artistCredits.begin(), artistCredit)));
     }
     /* Replace the songs with those scraped or imported, but if new songs is empty
        (such as when called from JSON) do not remove the original ones
@@ -1169,7 +1169,7 @@ bool CMusicDatabase::UpdateSong(CSong& song,
         song.idSong,
         ROLE_ARTIST,
         artistCredit->GetArtist(),
-        std::distance(song.artistCredits.begin(), artistCredit));
+        static_cast<int>(std::distance(song.artistCredits.begin(), artistCredit)));
     }
     // Having added artist credits (maybe with MBID) add the other contributing artists (MBID unknown)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
@@ -6306,7 +6306,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
     // Adjust where in the results record the join fields are allowing for the
     // inline view fields (Quicker than finding field by name every time)
     // idArtist + other artist fields    
-    joinLayout.AdjustRecordNumbers(1 + dbfieldindex.size());
+    joinLayout.AdjustRecordNumbers(static_cast<int>(1 + dbfieldindex.size()));
 
     // Build full query
     // When have multiple value joins e.g. song genres, use inline view
@@ -6828,7 +6828,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
     // Adjust where in the results record the join fields are allowing for the
     // inline view fields (Quicker than finding field by name every time)
     // idAlbum + other album fields    
-    joinLayout.AdjustRecordNumbers(1 + dbfieldindex.size());
+    joinLayout.AdjustRecordNumbers(static_cast<int>(1 + dbfieldindex.size()));
     
     // Build full query
     // When have multiple value joins (artists or song genres) use inline view
@@ -7391,7 +7391,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
     // Adjust where in the results record the join fields are allowing for the
     // inline view fields (Quicker than finding field by name every time)
     // idSong + other song fields
-    joinLayout.AdjustRecordNumbers(1 + dbfieldindex.size());
+    joinLayout.AdjustRecordNumbers(static_cast<int>(1 + dbfieldindex.size()));
 
     // Build full query
     // When have multiple value joins use inline view
@@ -8789,7 +8789,7 @@ unsigned int CMusicDatabase::GetRandomSongIDs(const Filter &filter, std::vector<
       m_pDS->next();
     }    // cleanup
     m_pDS->close();
-    return songIDs.size();
+    return static_cast<unsigned int>(songIDs.size());
   }
   catch (...)
   {
