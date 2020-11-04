@@ -634,8 +634,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
     {
       case LISTITEM_DATE:
       {
-        CDateTime lastExecLocal;
-        lastExecLocal.SetFromUTCDateTime(filter->GetLastExecutedDateTime());
+        CDateTime lastExecLocal = filter->GetLastExecutedDateTime();
         strValue = GetAsLocalizedDateTimeString(lastExecLocal);
         if (strValue.empty())
           strValue = g_localizeStrings.Get(10006); // "N/A"

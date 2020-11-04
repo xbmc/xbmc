@@ -89,9 +89,7 @@ public:
   static CDateTime FromDBDate(const std::string &date);
   static CDateTime FromDBTime(const std::string &time);
   static CDateTime FromW3CDate(const std::string &date);
-  static CDateTime FromW3CDateTime(const std::string &date, bool ignoreTimezone = false);
-  static CDateTime FromUTCDateTime(const CDateTime &dateTime);
-  static CDateTime FromUTCDateTime(const time_t &dateTime);
+  static CDateTime FromW3CDateTime(const std::string& date, bool ignoreTimezone = false);
   static CDateTime FromRFC1123DateTime(const std::string &dateTime);
 
   const CDateTime& operator =(const time_t& right);
@@ -155,9 +153,7 @@ public:
   bool SetFromDBDate(const std::string &date);
   bool SetFromDBTime(const std::string &time);
   bool SetFromW3CDate(const std::string &date);
-  bool SetFromW3CDateTime(const std::string &date, bool ignoreTimezone = false);
-  bool SetFromUTCDateTime(const CDateTime &dateTime);
-  bool SetFromUTCDateTime(const time_t &dateTime);
+  bool SetFromW3CDateTime(const std::string& date, bool ignoreTimezone = false);
   bool SetFromRFC1123DateTime(const std::string &dateTime);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
