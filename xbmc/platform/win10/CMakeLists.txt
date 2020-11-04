@@ -3,6 +3,7 @@ set(SOURCES CPUInfoWin10.cpp
             Environment.cpp
             Win10App.cpp
             MessagePrinter.cpp
+            PlatformWin10.cpp
             ../win32/CharsetConverter.cpp
             ../win32/dxerr.cpp
             ../win32/Filesystem.cpp
@@ -15,6 +16,7 @@ set(HEADERS AsyncHelpers.h
             CPUInfoWin10.h
             input/RemoteControlXbox.h
             Win10App.h
+            PlatformWin10.h
             ../win32/CharsetConverter.h
             ../win32/dirent.h
             ../win32/dxerr.h

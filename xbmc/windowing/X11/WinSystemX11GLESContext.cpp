@@ -25,8 +25,6 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
-#include "platform/linux/OptionalsReg.h"
-
 using namespace KODI;
 using namespace KODI::WINDOWING::X11;
 
@@ -38,44 +36,6 @@ void CWinSystemX11GLESContext::Register()
 std::unique_ptr<CWinSystemBase> CWinSystemX11GLESContext::CreateWinSystem()
 {
   return std::make_unique<CWinSystemX11GLESContext>();
-}
-
-CWinSystemX11GLESContext::CWinSystemX11GLESContext()
-{
-  std::string envSink;
-  if (getenv("KODI_AE_SINK"))
-    envSink = getenv("KODI_AE_SINK");
-  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
-  {
-    OPTIONALS::ALSARegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
-  {
-    OPTIONALS::PulseAudioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
-  {
-    OPTIONALS::OSSRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
-  {
-    OPTIONALS::SndioRegister();
-  }
-  else
-  {
-    if (!OPTIONALS::PulseAudioRegister())
-    {
-      if (!OPTIONALS::ALSARegister())
-      {
-        if (!OPTIONALS::SndioRegister())
-        {
-          OPTIONALS::OSSRegister();
-        }
-      }
-    }
-  }
-
-  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 CWinSystemX11GLESContext::~CWinSystemX11GLESContext()

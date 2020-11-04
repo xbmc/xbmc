@@ -8,7 +8,10 @@
 
 #pragma once
 
+#include "platform/linux/OptionalsReg.h"
 #include "platform/posix/PlatformPosix.h"
+
+#include <memory>
 
 class CPlatformFreebsd : public CPlatformPosix
 {
@@ -17,4 +20,7 @@ public:
   ~CPlatformFreebsd() override = default;
 
   bool Init() override;
+
+private:
+  std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };

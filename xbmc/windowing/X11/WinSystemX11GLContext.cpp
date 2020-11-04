@@ -27,9 +27,6 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
-#include "platform/freebsd/OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
-
 #include <vector>
 
 #include <X11/Xlib.h>
@@ -47,49 +44,6 @@ void CWinSystemX11GLContext::Register()
 std::unique_ptr<CWinSystemBase> CWinSystemX11GLContext::CreateWinSystem()
 {
   return std::make_unique<CWinSystemX11GLContext>();
-}
-
-CWinSystemX11GLContext::CWinSystemX11GLContext()
-{
-  std::string envSink;
-  if (getenv("KODI_AE_SINK"))
-    envSink = getenv("KODI_AE_SINK");
-  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
-  {
-    OPTIONALS::ALSARegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
-  {
-    OPTIONALS::PulseAudioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
-  {
-    OPTIONALS::OSSRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
-  {
-    OPTIONALS::SndioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
-  {
-    OPTIONALS::ALSARegister();
-    OPTIONALS::PulseAudioRegister();
-  }
-  else
-  {
-    if (!OPTIONALS::PulseAudioRegister())
-    {
-      if (!OPTIONALS::ALSARegister())
-      {
-        if (!OPTIONALS::SndioRegister())
-        {
-          OPTIONALS::OSSRegister();
-        }
-      }
-    }
-  }
-
-  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 CWinSystemX11GLContext::~CWinSystemX11GLContext()

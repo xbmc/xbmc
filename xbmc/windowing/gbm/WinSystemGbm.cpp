@@ -23,9 +23,6 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
-#include "platform/freebsd/OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
-
 #include <string.h>
 
 using namespace KODI::WINDOWING::GBM;
@@ -35,46 +32,7 @@ CWinSystemGbm::CWinSystemGbm() :
   m_GBM(new CGBMUtils),
   m_libinput(new CLibInputHandler)
 {
-  std::string envSink;
-  if (getenv("KODI_AE_SINK"))
-    envSink = getenv("KODI_AE_SINK");
-  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
-  {
-    OPTIONALS::ALSARegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
-  {
-    OPTIONALS::PulseAudioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
-  {
-    OPTIONALS::OSSRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
-  {
-    OPTIONALS::SndioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
-  {
-    OPTIONALS::ALSARegister();
-    OPTIONALS::PulseAudioRegister();
-  }
-  else
-  {
-    if (!OPTIONALS::PulseAudioRegister())
-    {
-      if (!OPTIONALS::ALSARegister())
-      {
-        if (!OPTIONALS::SndioRegister())
-        {
-          OPTIONALS::OSSRegister();
-        }
-      }
-    }
-  }
-
   m_dpms = std::make_shared<CGBMDPMSSupport>();
-  m_lirc.reset(OPTIONALS::LircRegister());
   m_libinput->Start();
 }
 

@@ -12,9 +12,6 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "system_egl.h"
 
-#include "platform/freebsd/OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
-
 #include <memory>
 
 class CGLContext;
@@ -31,7 +28,7 @@ class CVaapiProxy;
 class CWinSystemX11GLContext : public CWinSystemX11, public CRenderSystemGL
 {
 public:
-  CWinSystemX11GLContext();
+  CWinSystemX11GLContext() = default;
   ~CWinSystemX11GLContext() override;
 
   static void Register();
@@ -75,8 +72,6 @@ protected:
     void operator()(CVaapiProxy *p) const;
   };
   std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
-
-  std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };
 
 }
