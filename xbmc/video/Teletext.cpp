@@ -1285,7 +1285,6 @@ void CTeletextDecoder::RenderPage()
         else
         {
           SetPosX(33+i);
-          m_RenderInfo.PageChar[32+i] = m_RenderInfo.PageChar[32+i];
         }
       }
 
