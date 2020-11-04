@@ -11901,6 +11901,36 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
   }
 }
 
+void CMusicDatabase::SetItemUpdated(int mediaId, const std::string& mediaType)
+{
+  std::string strSQL;
+  try
+  {
+    if (mediaType != MediaTypeArtist && mediaType != MediaTypeAlbum && mediaType != MediaTypeSong)
+      return;
+    if (nullptr == m_pDB)
+      return;
+    if (nullptr == m_pDS)
+      return;
+
+    // Fire AFTER UPDATE db trigger on artist, album or song table to set datemodified field
+    // e.g. when artwork for item is changed from info dialog but not item details.
+    // Use SQL UPDATE that does not change record data.
+    if (mediaType == MediaTypeArtist)
+      strSQL = PrepareSQL("UPDATE artist SET strArtist = strArtist WHERE idArtist = %i", mediaId);
+    else if (mediaType == MediaTypeAlbum)
+      strSQL = PrepareSQL("UPDATE album SET strAlbum = strAlbum WHERE idAlbum = %i", mediaId);
+    else // MediaTypeSong
+      strSQL = PrepareSQL("UPDATE song SET strTitle = strTitle WHERE idSong = %i", mediaId);
+    m_pDS->exec(strSQL);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::{0} ({1}, {2}) - failed to execute {3}", __FUNCTION__,
+              mediaId, mediaType.c_str(), strSQL.c_str());
+  }
+}
+
 void CMusicDatabase::SetArtForItem(int mediaId, const std::string &mediaType, const std::map<std::string, std::string> &art)
 {
   for (const auto &i : art)
