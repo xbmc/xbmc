@@ -406,11 +406,17 @@ void CGUIDialogVideoSettings::InitializeSettings()
   // tone mapping
   if (g_application.GetAppPlayer().Supports(RENDERFEATURE_TONEMAP))
   {
+    bool visible = !(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                         CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
+                     CServiceBroker::GetWinSystem()->IsHDRDisplay());
     entries.clear();
     entries.push_back(TranslatableIntegerSettingOption(36554, VS_TONEMAPMETHOD_OFF));
     entries.push_back(TranslatableIntegerSettingOption(36555, VS_TONEMAPMETHOD_REINHARD));
-    AddSpinner(groupVideo, SETTING_VIDEO_TONEMAP_METHOD, 36553, SettingLevel::Basic, videoSettings.m_ToneMapMethod, entries);
-    AddSlider(groupVideo, SETTING_VIDEO_TONEMAP_PARAM, 36556, SettingLevel::Basic, videoSettings.m_ToneMapParam, "%2.2f", 0.1f, 0.1f, 5.0f, 36556, usePopup);
+    AddSpinner(groupVideo, SETTING_VIDEO_TONEMAP_METHOD, 36553, SettingLevel::Basic,
+               videoSettings.m_ToneMapMethod, entries, false, visible);
+    AddSlider(groupVideo, SETTING_VIDEO_TONEMAP_PARAM, 36556, SettingLevel::Basic,
+              videoSettings.m_ToneMapParam, "%2.2f", 0.1f, 0.1f, 5.0f, 36556, usePopup, false,
+              visible);
   }
 
   // stereoscopic settings
