@@ -1610,7 +1610,7 @@ size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
     }
     else
       ++s;
-    while (*s && *s == ' ') s++;
+    while (s && *s == ' ') s++;
 
     // and repeat until we're done
   } while (*s);
