@@ -11,7 +11,7 @@
 //-----------------------------------------------------------------------------
 // VAAPI
 //-----------------------------------------------------------------------------
-#if defined (HAVE_LIBVA) && defined(HAVE_EGL)
+#if defined(HAVE_LIBVA) && defined(HAS_EGL)
 #include <va/va_wayland.h>
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGL.h"
