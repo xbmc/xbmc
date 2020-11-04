@@ -6,22 +6,22 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import "PeripheralBusDarwinEmbeddedManager.h"
+#import "PeripheralBusGCControllerManager.h"
 
 #include "peripherals/PeripheralTypes.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include "platform/darwin/ios-common/peripherals/InputKey.h"
-#import "platform/darwin/ios-common/peripherals/Input_Gamecontroller.h"
-#include "platform/darwin/ios-common/peripherals/PeripheralBusDarwinEmbedded.h"
+#include "platform/darwin/peripherals/InputKey.h"
+#import "platform/darwin/peripherals/Input_Gamecontroller.h"
+#include "platform/darwin/peripherals/PeripheralBusGCController.h"
 
 #pragma mark - objc implementation
 
-@implementation CBPeripheralBusDarwinEmbeddedManager
+@implementation CBPeripheralBusGCControllerManager
 {
-  PERIPHERALS::CPeripheralBusDarwinEmbedded* parentClass;
+  PERIPHERALS::CPeripheralBusGCController* parentClass;
   std::vector<kodi::addon::PeripheralEvent> m_digitalEvents;
   std::vector<kodi::addon::PeripheralEvent> m_axisEvents;
   CCriticalSection m_eventMutex;
@@ -52,13 +52,13 @@
 
 #pragma mark - init
 
-- (instancetype)initWithName:(PERIPHERALS::CPeripheralBusDarwinEmbedded*)initClass
+- (instancetype)initWithName:(PERIPHERALS::CPeripheralBusGCController*)initClass
 {
   self = [super init];
 
   parentClass = initClass;
 
-  _input_GC = [[Input_IOSGamecontroller alloc] initWithName:self];
+  _input_GC = [[Input_GCController alloc] initWithName:self];
 
   return self;
 }
@@ -175,7 +175,7 @@
   // Only log if message has any data
   if (message)
   {
-    CLog::Log(LOGDEBUG, "CBPeripheralBusDarwinEmbeddedManager: inputhandler - ID {} - Action {}",
+    CLog::Log(LOGDEBUG, "CBPeripheralBusGCControllerManager: inputhandler - ID {} - Action {}",
               controllerID, message.UTF8String);
   }
 }

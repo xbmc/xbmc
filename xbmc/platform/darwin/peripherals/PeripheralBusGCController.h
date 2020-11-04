@@ -18,15 +18,15 @@
 #include <utility>
 #include <vector>
 
-struct PeripheralBusDarwinEmbeddedWrapper;
+struct PeripheralBusGCControllerWrapper;
 
 namespace PERIPHERALS
 {
-class CPeripheralBusDarwinEmbedded : public CPeripheralBus
+class CPeripheralBusGCController : public CPeripheralBus
 {
 public:
-  explicit CPeripheralBusDarwinEmbedded(CPeripherals& manager);
-  ~CPeripheralBusDarwinEmbedded() override;
+  explicit CPeripheralBusGCController(CPeripherals& manager);
+  ~CPeripheralBusGCController() override;
 
   // specialisation of CPeripheralBus
   bool InitializeProperties(CPeripheral& peripheral) override;
@@ -44,14 +44,14 @@ public:
   const std::string& getDeviceLocationPrefix()
   {
     // Initialize the static variable
-    static std::string DeviceLocationPrefix("darwinembedded/inputdevice/");
+    static std::string DeviceLocationPrefix("darwin/inputdevice/");
     return DeviceLocationPrefix;
   }
 
 
 private:
   void GetEvents(std::vector<kodi::addon::PeripheralEvent>& events);
-  std::unique_ptr<PeripheralBusDarwinEmbeddedWrapper> m_peripheralDarwinEmbedded;
+  std::unique_ptr<PeripheralBusGCControllerWrapper> m_peripheralGCController;
   std::string GetDeviceLocation(int deviceId);
   bool GetDeviceId(const std::string& deviceLocation, int& deviceId);
 

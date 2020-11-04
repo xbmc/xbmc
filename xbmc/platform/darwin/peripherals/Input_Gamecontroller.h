@@ -12,11 +12,11 @@
 #import <Foundation/Foundation.h>
 
 enum class GCCONTROLLER_TYPE;
-@class CBPeripheralBusDarwinEmbeddedManager;
+@class CBPeripheralBusGCControllerManager;
 
-@interface Input_IOSGamecontroller : NSObject
+@interface Input_GCController : NSObject
 
-- (instancetype)initWithName:(CBPeripheralBusDarwinEmbeddedManager*)callbackManager;
+- (instancetype)initWithName:(CBPeripheralBusGCControllerManager*)callbackManager;
 - (PERIPHERALS::PeripheralScanResults)GetGCDevices;
 - (GCCONTROLLER_TYPE)GetGCControllerType:(int)deviceID;
 - (int)checkOptionalButtons:(int)deviceID;

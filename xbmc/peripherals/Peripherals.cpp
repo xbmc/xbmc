@@ -20,8 +20,8 @@
 #include <utility>
 #if defined(TARGET_ANDROID)
 #include "platform/android/peripherals/PeripheralBusAndroid.h"
-#elif defined(TARGET_DARWIN_EMBEDDED)
-#include "platform/darwin/ios-common/peripherals/PeripheralBusDarwinEmbedded.h"
+#elif defined(TARGET_DARWIN)
+#include "platform/darwin/peripherals/PeripheralBusGCController.h"
 #endif
 #include "FileItem.h"
 #include "GUIUserMessages.h"
@@ -100,7 +100,6 @@ void CPeripherals::Initialise()
 {
   Clear();
 
-#if !defined(TARGET_DARWIN_TVOS)
   CDirectory::Create("special://profile/peripheral_data");
 
   /* load mappings from peripherals.xml */
@@ -117,8 +116,8 @@ void CPeripherals::Initialise()
   busses.push_back(std::make_shared<CPeripheralBusAddon>(*this));
 #if defined(TARGET_ANDROID)
   busses.push_back(std::make_shared<CPeripheralBusAndroid>(*this));
-#elif defined(TARGET_DARWIN_EMBEDDED)
-  busses.push_back(std::make_shared<CPeripheralBusDarwinEmbedded>(*this));
+#elif defined(TARGET_DARWIN)
+  busses.push_back(std::make_shared<CPeripheralBusGCController>(*this));
 #endif
   busses.push_back(std::make_shared<CPeripheralBusApplication>(*this));
 
@@ -135,7 +134,6 @@ void CPeripherals::Initialise()
 
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
-#endif
 }
 
 void CPeripherals::Clear()
