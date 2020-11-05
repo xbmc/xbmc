@@ -9,557 +9,822 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/kodi-main/language/ms_MY/)\n"
+"Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/kodi-"
+"main/language/ms_MY/)\n"
+"Language: ms_MY\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ms_MY\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Kini dimainkan"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Gelintar..."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Tunjuk seni peminat media sebagai latar belakang"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Mod wayang"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Ubah mod"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Tonton sebagai 2D"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "Cereka rawak"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Cereka belum ditonton"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31008"
 msgid "Enable category widgets"
 msgstr "Mengaktifkan widget kategori"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Muat turun ikon"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Cereka masih bersiaran"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "Album paling banyak dimainkan"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Album rawak"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "Artis rawak"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Album belum dimainkan"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Rakaman baru-baru ini"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Saluran dimainkan baru-baru ini"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "Ditarafkan"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Saluran dimainkan baru-baru ini"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ramalan"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "Tindakan"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Pilihan lain"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Isih mengikut"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Jenis paparan"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
 msgstr "Memilih rating untuk paparan item-item media"
 
+#: /xml/DialogFavourites.xml
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Tiada kegemaran ditemui. Anda boleh tambah apa-apa item dari paparan media ke senarai ini menggunakan menu konteks."
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+"Tiada kegemaran ditemui. Anda boleh tambah apa-apa item dari paparan media "
+"ke senarai ini menggunakan menu konteks."
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Anjak Masa"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Tunjuk seni peminat"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Daftar masuk terakhir"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "Penggunaan ingatan sistem"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Maklumat versi"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "Tertib"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Penarafan anda"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Halaman"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "item"
 
+#: /xml/Includes.xml
+#, fuzzy
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Pilih Program"
+
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Undur"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Maju pantas"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Pengilang kamera"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Pilihan senarai main"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
-msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Tetapkan jenis dan tambah peraturan untuk cipta senarai main pintar. Senarai main ini adalah dinamik dan sertakan semua item media dari pangkalan data anda yang laksanakan mengikut peraturan yang anda tetapkan."
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+"Tetapkan jenis dan tambah peraturan untuk cipta senarai main pintar. Senarai "
+"main ini adalah dinamik dan sertakan semua item media dari pangkalan data "
+"anda yang laksanakan mengikut peraturan yang anda tetapkan."
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "Tambah kumpulan"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "Namakan semula kumpulan"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "Padam kumpulan"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "Tersedia"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Teka [B]OK[/B] untuk henti"
-
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "ditapis"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Berasaskan Arial"
 
+#: /xml/Variables.xml
+#, fuzzy
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "Tekan [B]Kiri[/B] untuk mandir, atau [B]Kanan[/B] untuk maju-pantas"
 
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Pergi ke senarai main"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "Tunjuk skrin daftar masuk ketika permulaan"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Daftar masuk automatik ketika permulaan"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Item menu utama"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "Pilih pek cuaca seni peminat"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Seksyen"
 
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Senarai main video"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "Senarai main muzik"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Log peristiwa"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31068"
 msgid "Choose presets"
 msgstr "Pilih praset"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Kemaskini Terakhir"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "oleh"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opsyen Kuasa"
 
+#: /xml/MyPlaylist.xml
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Tempoh keseluruhan"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Set cereka"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "Barisan pelakon tidak tersedia"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Tamat pada"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Tambahan lirik"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "Tetapan tambahan lirik"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Tetapan pengvisualan"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Kumpulan tersedia"
 
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Menu video"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Tunjuk maklumat cuaca pada palang atas"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Guna animasi leret"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Sarikata setempat tersedia"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Pilihan saluran"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Pilih Profil pengguna Kodi anda[CR]untuk daftar masuk dan teruskan"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "DindingIkon"
 
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "DindingInfo"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Dinding"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Masukkan teks di sini..."
 
+#: /xml/Home.xml
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Pustaka anda buat masa ini masih kosong. Untuk mengisinya dengan media persendirian anda, masuk ke seksyen \"Fail\", tambah sumber media dan konfigurkannya. Selepas sumber telah ditambah dan diindekskan anda dapat melayari pustaka anda."
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+"Pustaka anda buat masa ini masih kosong. Untuk mengisinya dengan media "
+"persendirian anda, masuk ke seksyen \"Fail\", tambah sumber media dan "
+"konfigurkannya. Selepas sumber telah ditambah dan diindekskan anda dapat "
+"melayari pustaka anda."
 
+#: /xml/Home.xml
 msgctxt "#31105"
-msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Tambah sumber video dan tetapkan jenis kandungan yang sesuai untuk mengisi pustaka video anda."
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
+msgstr ""
+"Tambah sumber video dan tetapkan jenis kandungan yang sesuai untuk mengisi "
+"pustaka video anda."
 
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teleteks"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr "SenaraiLebar"
 
+#: /xml/Home.xml
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Masukkan seksyen fail"
 
+#: /xml/Home.xml
 msgctxt "#31111"
-msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Lihat gambar peribadi anda atau muat turun salah satu tambahan imej dari repositori rasmi."
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
+msgstr ""
+"Lihat gambar peribadi anda atau muat turun salah satu tambahan imej dari "
+"repositori rasmi."
 
+#: /xml/VideoOSD.xml
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "Togol strim audio"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31113"
 msgid "Search local library"
 msgstr "Gelintar pustaka setempat"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Gelintar YouTube"
 
+#: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Buang item menu utama ini"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Sunting nod"
 
+#: /xml/Home.xml
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Masukkan pelayar tambahan"
 
+#: /xml/Home.xml
 msgctxt "#31119"
-msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Anda belum lagi mempunyai tambahan yang terpasang. Lawati pelayar tambahan untuk melayari koleksi kami dan tambah baik Kodi anda."
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+"Anda belum lagi mempunyai tambahan yang terpasang. Lawati pelayar tambahan "
+"untuk melayari koleksi kami dan tambah baik Kodi anda."
 
+#: /xml/Home.xml
 msgctxt "#31120"
-msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Anda belum lagi menetapkan penyedia cuaca. Untuk dapat melihat maklumat cuaca, pilih satu penyedia cuaca dan tetapkan lokasi anda."
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
+msgstr ""
+"Anda belum lagi menetapkan penyedia cuaca. Untuk dapat melihat maklumat "
+"cuaca, pilih satu penyedia cuaca dan tetapkan lokasi anda."
 
+#: /xml/Home.xml
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "Tetapkan penyedia cuaca"
 
+#: /xml/Home.xml
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Rancangan TV Belum Ditonton"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Pengarah yang sama"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Tekan ke atas untuk maklumat pelakon"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Tekan OK untuk baca plot"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Tunjuk ikon"
 
+#: /xml/Variables.xml
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Penyumbang"
 
+#: /xml/Variables.xml
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "Tetapan am dilaksanakan ke semua kawasan kulit."
 
+#: /xml/Variables.xml
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Tetapan berkaitan-menu utama: Konfigur skrin rumah mengikut citarasa anda."
+msgstr ""
+"Tetapan berkaitan-menu utama: Konfigur skrin rumah mengikut citarasa anda."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Pilih pek kulit seni peminat"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Pilih Program"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "Pilih Resolusi"
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Berbaki"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Klik di sini untuk melihat perubahan terkini..."
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "Maklumat PVR"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Maklumat proses pemain"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Penyahkod video"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "Format piksel"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr "Perubahan bagi versi"
 
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Kelajuan main"
 
+#: /xml/Home.xml
 msgctxt "#31143"
-msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Anda belum lagi menetapkan PVR. Supaya dapat gunakan PVR, pilih satu tambahan klien PVR dan konfigur ia. Sila lawati http://kodi.wiki/view/PVR untuk ketahui lebih lanjut."
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+"Anda belum lagi menetapkan PVR. Supaya dapat gunakan PVR, pilih satu "
+"tambahan klien PVR dan konfigur ia. Sila lawati http://kodi.wiki/view/PVR "
+"untuk ketahui lebih lanjut."
 
+#: /xml/Home.xml
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Masukkan pelayar tambahan"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Gelintar tambahan"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategori"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Pilih pek seni peminat genre"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Repositori"
+msgid "Origin"
+msgstr ""
 
+#: /xml/Home.xml
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Video muzik belum ditonton"
 
+#: /xml/Home.xml
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Video muzik rawak"
 
+#: /xml/Includes.xml
 msgctxt "#31153"
-msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Anda belum lagi mempunyai apa-apa tambahan jenis ini yang terpasang. Pergi ke pelayar tambahan untuk memuat turun tambahan yang dihasilkan oleh komuniti kami."
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+"Anda belum lagi mempunyai apa-apa tambahan jenis ini yang terpasang. Pergi "
+"ke pelayar tambahan untuk memuat turun tambahan yang dihasilkan oleh "
+"komuniti kami."
 
+#: /xml/MyWeather.xml
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr "Tekan OK untuk tukar diantara lokasi"
 
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "Tiada tanda buku dicipta lagi"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31156"
 msgid "Choose background pattern"
 msgstr "Pilih pola latar belakang"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "Sunting kategori"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Mod sentuh"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31159"
 msgid "Artwork"
 msgstr "Kerja seni"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31160"
 msgid "Show media flags"
 msgstr "Tunjuk bendera media"
 
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Pad numerik"
 
+#: /xml/Home.xml
 msgctxt "#31162"
-msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Main game sendiri ataupun muat turun salah satu add-on game daripada repositori rasmi."
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
+msgstr ""
+"Main game sendiri ataupun muat turun salah satu add-on game daripada "
+"repositori rasmi."
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Menunjuk latar balakang seni peminat"
 
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Pilih jenis pengenalpastian profil"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nama profil"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar profil"
 
+#. Label of a setting
+#: /xml/SkinSettings.xml
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animasikan latar belakang"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Teka [B]OK[/B] untuk henti"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Repositori"

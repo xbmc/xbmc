@@ -9,565 +9,806 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-main/language/zh_TW/)\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-"
+"main/language/zh_TW/)\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "現正播放"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "搜尋..."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "以背景圖的方式顯示劇照"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "劇院模式"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "更改設定"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "以 2D 模式觀賞"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "隨機選擇電影"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "還沒看過的電影"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31008"
 msgid "Enable category widgets"
 msgstr "啟用類別小工具"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "下載圖示"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "還沒看完的電影"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "最常播放的專輯"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "隨機選擇專輯"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "隨機選擇演出者"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "還沒聽過的專輯"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "最近的錄影"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "最近收看的頻道"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "已評分"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "最近收聽的頻道"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "預報"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "動作"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "其他選項"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "排序以"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "檢視模式"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
 msgstr "選擇欲顯示的評等類型"
 
+#: /xml/DialogFavourites.xml
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "沒有找到最愛項目。你可以使用快捷選單來將媒體檔檢視器中的物件加入此列表。"
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+"沒有找到最愛項目。你可以使用快捷選單來將媒體檔檢視器中的物件加入此列表。"
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "時間平移"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "顯示劇照"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "上次登入在"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "系統記憶體用量"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "版本資訊"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "排序"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "你的評分"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "頁"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "項目"
 
+#: /xml/Includes.xml
 msgctxt "#31037"
 msgid "Selected track"
 msgstr "選中的曲目"
 
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "倒轉"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "快轉"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "攝影機製造商"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "播放清單選項"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
-msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "設定類型及規則來產生一個智慧型播放列表。這些播放列表是動態的，並且會包含資料庫中所有符合條件的媒體檔案。"
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+"設定類型及規則來產生一個智慧型播放列表。這些播放列表是動態的，並且會包含資料"
+"庫中所有符合條件的媒體檔案。"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "新增群組"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "重新命名群組"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "刪除群組"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "可用"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "按[B]OK[/B]停止"
-
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "經篩選過的"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "基於 Arial"
 
+#: /xml/Variables.xml
+#, fuzzy
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "按[B]左[/B]倒退，或[B]右[/B]快轉"
 
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "移至播放列表"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "啟動時顯示登入畫面"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "啟動時自動登入"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+#, fuzzy
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "選中的曲目"
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "主選單項目"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "選擇天氣劇照合輯"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
 msgstr "區"
 
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "視訊播放列表"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "音樂播放列表"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "事件記錄"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31068"
 msgid "Choose presets"
 msgstr "選擇預設值"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "最後更新"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "以"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "電源選項"
 
+#: /xml/MyPlaylist.xml
 msgctxt "#31073"
 msgid "Total length"
 msgstr "總計長度"
 
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "總計時間"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "電影集"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "無法取得串流"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "結束於"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "歌詞附加元件"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "歌詞附加元件設定"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "視覺效果設定"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "可用的群組"
 
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "視訊選單"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "在置頂列顯示天氣資訊"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "使用滑動效果"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "有本地語言的字幕可選用"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "頻道選項"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "選擇您的 Kodi 使用者設定檔[CR]登入並繼續"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "圖示牆"
 
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "橫列海報"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "資訊牆"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "海報牆"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "在此輸入文字"
 
+#: /xml/Home.xml
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "你的資料庫現在是空的。若要將你收藏的影音檔拉進來這裡，請到\"檔案\"區，加入一個媒體來源並且做些設定，針對該來源內容完成清點及索引後，你即可瀏覽你的資料庫。"
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+"你的資料庫現在是空的。若要將你收藏的影音檔拉進來這裡，請到\"檔案\"區，加入一"
+"個媒體來源並且做些設定，針對該來源內容完成清點及索引後，你即可瀏覽你的資料"
+"庫。"
 
+#: /xml/Home.xml
 msgctxt "#31105"
-msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
 msgstr "加入視訊來源並且設定合適的內容類型，以豐富你的視訊資料庫。"
 
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "電傳聞訊"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr "寬版面列表"
 
+#: /xml/Home.xml
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "進入檔案區"
 
+#: /xml/Home.xml
 msgctxt "#31111"
-msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
 msgstr "檢視你的個人圖片，或下載官方的眾多影像附加元件"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "切換聲道"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31113"
 msgid "Search local library"
 msgstr "搜尋本地資料庫"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "搜尋YouTube"
 
+#: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "移除這個主選單項目"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "編輯節點"
 
+#: /xml/Home.xml
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "進入附加元件瀏覽器"
 
+#: /xml/Home.xml
 msgctxt "#31119"
-msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "你還沒安裝任何附加元件。請到我們的附加元件瀏覽器逛逛，讓你的Kodi更好用。"
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+"你還沒安裝任何附加元件。請到我們的附加元件瀏覽器逛逛，讓你的Kodi更好用。"
 
+#: /xml/Home.xml
 msgctxt "#31120"
-msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
 msgstr "你還沒設定天氣資訊提供者。請選取一個並設定你的位置來取得天氣資訊。"
 
+#: /xml/Home.xml
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "設定天氣資訊提供者"
 
+#: /xml/Home.xml
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "還沒看過的電視劇集"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31123"
 msgid "Same director"
 msgstr "同一位導演的作品"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "按上鍵查看演員資料"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "按OK鍵查看劇情簡介"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "顯示圖示"
 
+#: /xml/Variables.xml
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "發行單位"
 
+#: /xml/Variables.xml
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "適用於佈景主題所有區塊的通用設定"
 
+#: /xml/Variables.xml
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "主選單相關設定：將首頁依照您的喜好做規劃"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "選擇佈景主題粉絲自製圖集"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "選擇程式"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "選擇解析度"
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "後結束"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "按這裡以檢視最新的更新項目..."
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR 資訊"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "播放器運作資料"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "影像解碼器"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "畫面格式"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr "版本更新之變動"
 
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "播放速度"
 
+#: /xml/Home.xml
 msgctxt "#31143"
-msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "您尚未設置 PVR。欲使用 PVR，請選取並設置 PVR 客戶端附加元件。請參考 http://kodi.wiki/view/PVR。"
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+"您尚未設置 PVR。欲使用 PVR，請選取並設置 PVR 客戶端附加元件。請參考 http://"
+"kodi.wiki/view/PVR。"
 
+#: /xml/Home.xml
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "進入附加元件瀏覽器"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "搜尋附加元件"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31148"
 msgid "Categories"
 msgstr "分類"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "選擇影音類型的粉絲自製圖集"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
-msgid "Repository"
-msgstr "來源處"
+msgid "Origin"
+msgstr ""
 
+#: /xml/Home.xml
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "還沒看過的音樂影片"
 
+#: /xml/Home.xml
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "隨機音樂影片"
 
+#: /xml/Includes.xml
 msgctxt "#31153"
-msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "您尚未安裝本類型的任何附加元件。請到附加元件區下載本社群所製作的附加元件。"
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+"您尚未安裝本類型的任何附加元件。請到附加元件區下載本社群所製作的附加元件。"
 
+#: /xml/MyWeather.xml
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr "按下OK以切換地區"
 
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "尚未建立任何書籤。"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31156"
 msgid "Choose background pattern"
 msgstr "選擇背景貼圖樣式"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "編輯分類"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "觸控模式"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31159"
 msgid "Artwork"
 msgstr "美術作品"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31160"
 msgid "Show media flags"
 msgstr "顯示媒體內容標籤"
 
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "數字鍵盤"
 
+#: /xml/Home.xml
 msgctxt "#31162"
-msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
 msgstr "執行您收藏的遊戲，或下載官方的眾多遊戲附加元件"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "顯示劇照背景"
 
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "選擇設定檔案的標識類型"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "設定檔名稱"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "個人資料圖像"
 
+#. Label of a setting
+#: /xml/SkinSettings.xml
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "動畫背景"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "按[B]OK[/B]停止"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "來源處"

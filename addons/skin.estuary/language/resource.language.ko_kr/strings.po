@@ -9,565 +9,816 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/"
+"language/ko_KR/)\n"
+"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "지금 재생 중"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "검색..."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "미디어 팬아트를 배경화면으로 표시"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "시네마 모드"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "모드 변경"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "2D로 감상"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "무작위 영화"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "시청하지 않은 영화"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31008"
 msgid "Enable category widgets"
 msgstr "카테고리 위젯 사용"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "다운로드 아이콘"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "감상 중인 영화"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "많이 재생한 앨범"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "무작위 앨범"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "무작위 아티스트"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "재생하지 않은 앨범"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "최근 녹화"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "최근 시청한 채널"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "등급"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "최근 시청한 채널"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "예보"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "동작"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "기타 옵션"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "정렬 기준"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "보기 형식"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
 msgstr "미디어 항목에서 보는 평점 선택"
 
+#: /xml/DialogFavourites.xml
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "즐겨찾기가 없습니다. 미디어 보기에서 컨텐스트 메뉴를 사용하여 항목을 추가할 수 있습니다."
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+"즐겨찾기가 없습니다. 미디어 보기에서 컨텐스트 메뉴를 사용하여 항목을 추가할 "
+"수 있습니다."
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "타임시프트"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "팬아트 표시"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "마지막 로그인"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "시스템 메모리 사용량"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "버전 정보"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "순서"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "내 평점"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "페이지"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "항목"
 
+#: /xml/Includes.xml
 msgctxt "#31037"
 msgid "Selected track"
 msgstr "선택된 트랙"
 
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "되감기"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "빨리감기"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "카메라 제조사"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "재생목록 옵션"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
-msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "스마트 재생목록을 만들려면 형식과 규칙을 설정합니다. 이 재생목록은 데이터베이스 에서 규칙에 해당되는 모든 미디어를 유동적으로 가져옵니다."
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+"스마트 재생목록을 만들려면 형식과 규칙을 설정합니다. 이 재생목록은 데이터베이"
+"스 에서 규칙에 해당되는 모든 미디어를 유동적으로 가져옵니다."
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "그룹 추가"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "그룸 이름 변경"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "그룹 삭제"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "사용 가능"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "[B]OK[/B]: 중지"
-
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "필터 설정됨"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial based"
 
+#: /xml/Variables.xml
+#, fuzzy
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "[B]Left[/B]: 되감기, [B]Right[/B]: 빨리 감기"
 
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "재생목록 가기"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "시작할 때 로그인 화면 표시"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "시작할 때 자동 로그인"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+#, fuzzy
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "선택된 트랙"
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "메인 메뉴 항목"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "날씨 팬아트 팩 선택"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
 msgstr "섹션"
 
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "비디오 재생목록"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "음악 재생목록"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "이벤트 로그"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31068"
 msgid "Choose presets"
 msgstr "프리셋 선택"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "마지막 업데이트"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "-"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "전원 옵션"
 
+#: /xml/MyPlaylist.xml
 msgctxt "#31073"
 msgid "Total length"
 msgstr "총 길이"
 
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "총 재생시간"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "시리즈 영화"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "배역 정보 사용할 수 없음"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "종료"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "가사 애드온"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "가사 애드온 설정"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "시각화 설정"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "사용 가능한 그룹"
 
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "비디오 메뉴"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "상단 막대에 날씨 정보 표시"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "슬라이드 애니메이션 사용"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "로컬 자막 있음"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "채널 옵션"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세요"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "IconWall"
 
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "InfoWall"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Wall"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "여기에 문자열 입력..."
 
+#: /xml/Home.xml
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "라이브러리가 비어있습니다. 미디어를 표시하려면 \"파일\" 섹션에서 미디어 소스를 추가하고 설정하여야 합니다. 소스를 추가하여 인덱싱을 한 후 라이브러리를 탐색할 수 있습니다."
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+"라이브러리가 비어있습니다. 미디어를 표시하려면 \"파일\" 섹션에서 미디어 소스"
+"를 추가하고 설정하여야 합니다. 소스를 추가하여 인덱싱을 한 후 라이브러리를 탐"
+"색할 수 있습니다."
 
+#: /xml/Home.xml
 msgctxt "#31105"
-msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "비디오 라이브러리에 표시하려면 비디오 소스를 추가하고 적합한 콘텐츠 종류를 설정하세요."
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
+msgstr ""
+"비디오 라이브러리에 표시하려면 비디오 소스를 추가하고 적합한 콘텐츠 종류를 설"
+"정하세요."
 
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "문자다중방송"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
 
+#: /xml/Home.xml
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "파일 섹션 가기"
 
+#: /xml/Home.xml
 msgctxt "#31111"
-msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "개인 사진을 보거나 공식 저장소의 수많은 이미지 애드온에서 사진을 다운로드합니다."
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
+msgstr ""
+"개인 사진을 보거나 공식 저장소의 수많은 이미지 애드온에서 사진을 다운로드합니"
+"다."
 
+#: /xml/VideoOSD.xml
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "오디오 스트림 전환"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31113"
 msgid "Search local library"
 msgstr "로컬 라이브러리 찾기"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "YouTube 검색"
 
+#: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "이 메인 메뉴 항목 삭제"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "노드 편집"
 
+#: /xml/Home.xml
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "애드온 탐색기 들어가기"
 
+#: /xml/Home.xml
 msgctxt "#31119"
-msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "설치한 애드온이 없습니다. 애드온 탐색기에서 Kodi 사용 환경을 향상시키는 애드온을 둘러보세요."
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+"설치한 애드온이 없습니다. 애드온 탐색기에서 Kodi 사용 환경을 향상시키는 애드"
+"온을 둘러보세요."
 
+#: /xml/Home.xml
 msgctxt "#31120"
-msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "날씨 정보 제공자를 설정하지 않았습니다. 날씨 정보를 보려면 날씨 정보 제공자를 선택하고 사용자의 위치를 설정하여야 합니다."
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
+msgstr ""
+"날씨 정보 제공자를 설정하지 않았습니다. 날씨 정보를 보려면 날씨 정보 제공자"
+"를 선택하고 사용자의 위치를 설정하여야 합니다."
 
+#: /xml/Home.xml
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "날씨 제공자 선택"
 
+#: /xml/Home.xml
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "시청하지 않은 TV 쇼"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31123"
 msgid "Same director"
 msgstr "같은 감독"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "배우 정보를 보려면 UP을(를) 누르세요"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "줄거리를 보려면 OK을(를) 누르세요"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "아이콘 표시"
 
+#: /xml/Variables.xml
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "공헌자"
 
+#: /xml/Variables.xml
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "모든 스킨 영역에 적용되는 일반 설정입니다."
 
+#: /xml/Variables.xml
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "메인 메뉴 관련 설정: 원하는 대로 홈 화면을 설정합니다."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "스킨 팬아트 팩 선택"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "프로그램 선택"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "해상도 선택"
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "남음"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "변경 사항을 보려면 클릭하세요..."
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR 정보"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "플레이어 프로세스 정보"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "비디오 디코더"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "픽셀 형식"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr "버전 변경 사항"
 
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "재생 속도"
 
+#: /xml/Home.xml
 msgctxt "#31143"
-msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "아직 PVR을 설정하지 않았습니다. PVR을 사용하려면 PVR 클라이언트 애드온을 선택하고 구성하세요. 자세한 정보: http://kodi.wiki/view/PVR "
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+"아직 PVR을 설정하지 않았습니다. PVR을 사용하려면 PVR 클라이언트 애드온을 선택"
+"하고 구성하세요. 자세한 정보: http://kodi.wiki/view/PVR "
 
+#: /xml/Home.xml
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "애드온 탐색기 들어가기"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "애드온 검색"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31148"
 msgid "Categories"
 msgstr "카테고리"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "장르 팬아트 팩 선택"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
-msgid "Repository"
-msgstr "저장소"
+msgid "Origin"
+msgstr ""
 
+#: /xml/Home.xml
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "시청하지 않은 뮤직 비디오"
 
+#: /xml/Home.xml
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "무작위 뮤직 비디오"
 
+#: /xml/Includes.xml
 msgctxt "#31153"
-msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "이 형식의 애드온이 설치되지 않았습니다. 애드온을 다운로드하려면 애드온 탐색기를 사용하세요."
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+"이 형식의 애드온이 설치되지 않았습니다. 애드온을 다운로드하려면 애드온 탐색기"
+"를 사용하세요."
 
+#: /xml/MyWeather.xml
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr "위치를 변경하려면 OK를 누르세요"
 
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "생성된 북마크가 없습니다"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31156"
 msgid "Choose background pattern"
 msgstr "배경 패던 선택"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "카테고리 편집"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "터치 모드"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31159"
 msgid "Artwork"
 msgstr "아트워크"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31160"
 msgid "Show media flags"
 msgstr "미디어 플래그 표시"
 
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "숫자 패드"
 
+#: /xml/Home.xml
 msgctxt "#31162"
-msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "개인 게임을 실행하거나 공식 저장소의 많은 게임 애드온에서 내려 받습니다."
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
+msgstr ""
+"개인 게임을 실행하거나 공식 저장소의 많은 게임 애드온에서 내려 받습니다."
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "팬아트 배경 보기"
 
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "프로파일 확인 선택"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "프로파일 이름"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "프로파일 아바타"
 
+#. Label of a setting
+#: /xml/SkinSettings.xml
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "움직이는 배경"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "[B]OK[/B]: 중지"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "저장소"

@@ -9,545 +9,823 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: Basque (Spain) (http://www.transifex.com/projects/p/kodi-main/language/eu_ES/)\n"
+"Language-Team: Basque (Spain) (http://www.transifex.com/projects/p/kodi-main/"
+"language/eu_ES/)\n"
+"Language: eu_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: eu_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Orain erreproduzitzen"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Bilatu..."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Erakutsi multimediaren fanart-a atzeko plano bezala"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Zinema modua"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Aldatu modua"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Ikusi 2D bezala"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "Ausazko pelikulak"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Ikusi gabeko pelikulak"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31008"
 msgid "Enable category widgets"
 msgstr "Gaitu kategoria widgetak"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Deskargatu ikonoak"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Hasitako pelikulak"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "Gehien erreproduzitutako albumak"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Ausazko albumak"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "Ausazko artistak"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Erreproduzitu gabeko albumak"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Grabazio berriak"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Orain dela gutxi erreproduzitutako kanalak"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "Klasifikatuta"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Orain dela gutxi erreproduzitutako kanalak"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Iragarpena"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "Ekintzak"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Bestelako aukerak"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Ordenatu honen baitan"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Ikusteko modua"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
 msgstr "Aukeratu klasifikazioa ikusteko multimedia elementuak"
 
+#: /xml/DialogFavourites.xml
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Ez da gogokorik aurkitu. Elementuak gehitu ditzakezu edozein multimedia ikuspegitik zerrenda honetara laster-menua erabiliz."
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+"Ez da gogokorik aurkitu. Elementuak gehitu ditzakezu edozein multimedia "
+"ikuspegitik zerrenda honetara laster-menua erabiliz."
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Denbora aldaketa"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Irakutsi fanart-a"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Azken saio hasiera"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "Sistemaren memoria erabilera"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Bertsioaren informazioa"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "Ordenatu"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Zure balorazioa"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Orriak"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "elementu"
 
+#: /xml/Includes.xml
+#, fuzzy
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Hautatu Programa"
+
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Birbobinatu"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Bizkor aurreratu"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Kameraren egilea"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Erreprodukzio zerrenda aukerak"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
-msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Ezarri mota eta gehitu arauak erreprodukzio-zerrenda adimentsu bat sortzeko. Erreprodukzio-zerrenda hauek dinamikoak dira eta zuk aukeratutako arauekin bat datozen datu-baseko multimedia elementu guztiak biltzen dituzte."
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+"Ezarri mota eta gehitu arauak erreprodukzio-zerrenda adimentsu bat sortzeko. "
+"Erreprodukzio-zerrenda hauek dinamikoak dira eta zuk aukeratutako arauekin "
+"bat datozen datu-baseko multimedia elementu guztiak biltzen dituzte."
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "Gehitu taldea"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "Berrizendatu taldea"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "Ezabatu taldea"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "Eskuragarri"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Sakatu [B]Ados[/B] gelditzeko"
-
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "iragazita"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-en oinarritua"
 
+#: /xml/Variables.xml
+#, fuzzy
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Sakatu [B]Left[/B] birbobinatzeko, edo [B]Right[/B] bizkor aurreratzeko."
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+"Sakatu [B]Left[/B] birbobinatzeko, edo [B]Right[/B] bizkor aurreratzeko."
 
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Joan erreprodukzio zerrendara"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "Erakutsi saio hasierako pantaila abioan"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Hasi saioa automatikoki abioan"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Menuko elementu nagusiak"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "Aukeratu eguraldiaren fanart paketea"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sekzioak"
 
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Bideo erreprodukzio zerrenda"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "Musika erreprodukzio zerrenda"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Gertaeren erregistroa"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31068"
 msgid "Choose presets"
 msgstr "Aukeratu aurrezarpenak"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Azken eguneraketa"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "norena"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energia-aukerak"
 
+#: /xml/MyPlaylist.xml
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Iraupen osoa"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Pelikula sortak"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "Aktoreen zerrenda ez dago eskuragarri"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Amaiera ordua"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Letren gehigarria"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "Letren gehigarriaren aukerak"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Bistaratze-aukerak"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Eskuragarri dauden taldeak"
 
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Bideoaren menua"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Erakutsi eguraldiaren informazioa goiko barran"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Erabili diapositiba animazioak"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Azpititulu lokala erabilgarri"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Kanalaren aukerak"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Hautatu zure Kodi profila[CR] saioa hasi eta jarraitzeko"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Ikono horma"
 
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Maius"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Informazio horma"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Horma"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Idatzi testua hemen..."
 
+#: /xml/Home.xml
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Zure liburutegia hutsik dago. Zure multimediarekin betetzeko, joan \"Fitxategiak\" sekziora, gehitu multimedia iturburua eta konfiguratu. Iturburua gehitu eta indexatutakoan zure liburutegia arakatu ahalko duzu."
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+"Zure liburutegia hutsik dago. Zure multimediarekin betetzeko, joan "
+"\"Fitxategiak\" sekziora, gehitu multimedia iturburua eta konfiguratu. "
+"Iturburua gehitu eta indexatutakoan zure liburutegia arakatu ahalko duzu."
 
+#: /xml/Home.xml
 msgctxt "#31105"
-msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Gehitu bideo iturriak eta ezarri eduki mota zure bideo biltegia betetzeko."
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
+msgstr ""
+"Gehitu bideo iturriak eta ezarri eduki mota zure bideo biltegia betetzeko."
 
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletestua"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Zerrenda zabala"
 
+#: /xml/Home.xml
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Sartu fitxategiak sekziora"
 
+#: /xml/Home.xml
 msgctxt "#31111"
-msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Ikusi zure irudi pertsonalak edo deskargatu biltegi ofizialeko irudi gehigarri ugarietako bat."
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
+msgstr ""
+"Ikusi zure irudi pertsonalak edo deskargatu biltegi ofizialeko irudi "
+"gehigarri ugarietako bat."
 
+#: /xml/VideoOSD.xml
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "Txandakatu audio korrontea"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31113"
 msgid "Search local library"
 msgstr "Bilatu liburutegi lokalean"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Bilatu YouTube"
 
+#: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Kendu menu nagusiko elementu hau"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Editatu nodoak"
 
+#: /xml/Home.xml
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Sartu gehigarri arakatzailera"
 
+#: /xml/Home.xml
 msgctxt "#31119"
-msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Ez daukazu gehigarririk instalatuta oraindik. Sartu gehigarri arakatzailean zure bilduma arakatu eta zure Kodi esperientzia hobetzeko."
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+"Ez daukazu gehigarririk instalatuta oraindik. Sartu gehigarri arakatzailean "
+"zure bilduma arakatu eta zure Kodi esperientzia hobetzeko."
 
+#: /xml/Home.xml
 msgctxt "#31120"
-msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Ez duzu eguraldi hornitzailerik konfiguratu oraindik. Eguraldiaren informazioa ikusteko, aukeratu hornitzaile bat eta zure kokapena konfiguratu."
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
+msgstr ""
+"Ez duzu eguraldi hornitzailerik konfiguratu oraindik. Eguraldiaren "
+"informazioa ikusteko, aukeratu hornitzaile bat eta zure kokapena konfiguratu."
 
+#: /xml/Home.xml
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "Ezarri eguraldi hornitzailea"
 
+#: /xml/Home.xml
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Ikusi gabeko TB saioak"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Zuzendari bera"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Sakatu gora aktorearen informazioa ikusteko"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Sakatu Ados argumentua irakurtzeko"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Erakutsi ikonoak"
 
+#: /xml/Variables.xml
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Kolaboratzaileak"
 
+#: /xml/Variables.xml
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "Ezarpen orokorrak azalaren zati guztietan aplikatzen dira."
 
+#: /xml/Variables.xml
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Menu nagusiarekin erlazionatutako ezarpenak: Konfiguratu etxeko pantaila nahi duzun bezala."
+msgstr ""
+"Menu nagusiarekin erlazionatutako ezarpenak: Konfiguratu etxeko pantaila "
+"nahi duzun bezala."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Aukeratu azalaren fanart paketea"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Hautatu Programa"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "Hautatu Bereizmena"
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Geratzen dena"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Klikatu hemen azken aldaketak ikusteko..."
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR informazioa"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Erreproduzigailuaren prozesuaren informazioa"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Bideo deskodetzailea"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "Pixel formatua"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr "Aldaketak bertsiorako"
 
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Erreprodukzio abiadura"
 
+#: /xml/Home.xml
 msgctxt "#31143"
-msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Ez duzu PVR konfiguratu oraindik. PVR erabiltzeko, aukeratu PVR bezero gehigarri bat eta konfiguratu. Joan http://kodi.wiki/view/PVR orrira informazio gehiagorako. "
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+"Ez duzu PVR konfiguratu oraindik. PVR erabiltzeko, aukeratu PVR bezero "
+"gehigarri bat eta konfiguratu. Joan http://kodi.wiki/view/PVR orrira "
+"informazio gehiagorako. "
 
+#: /xml/Home.xml
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Sartu gehigarri arakatzailera"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Bilatu gehigarriak"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategoriak"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Hautatu generoaren fanart paketea"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Biltegia"
+msgid "Origin"
+msgstr ""
 
+#: /xml/Home.xml
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Ikusi gabeko musika bideoak"
 
+#: /xml/Home.xml
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Ausazko musika bideoak"
 
+#: /xml/Includes.xml
 msgctxt "#31153"
-msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Ez daukazu mota honetako gehigarririk instalatuta. Sartu gehigarri-arakatzailean komunitateak sortutako gehigarriak deskargatzeko."
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+"Ez daukazu mota honetako gehigarririk instalatuta. Sartu gehigarri-"
+"arakatzailean komunitateak sortutako gehigarriak deskargatzeko."
 
+#: /xml/MyWeather.xml
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr "Sakatu Ados kokalekuen artean aldatzeko."
 
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "Laster-markarik ez dago oraindik."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31156"
 msgid "Choose background pattern"
 msgstr "Aukeratu atzeko planoko eredua"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "Editatu kategoriak"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Ukipen modua"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31159"
 msgid "Artwork"
 msgstr "Artea"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31160"
 msgid "Show media flags"
 msgstr "Erakutsi multimedia banderak"
 
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Zenbakizko teklatua"
 
+#: /xml/Home.xml
 msgctxt "#31162"
-msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Jokatu zure joko pertsonaletan edo deskargatu biltegi ofizialeko joko gehigarri ugarietako bat."
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
+msgstr ""
+"Jokatu zure joko pertsonaletan edo deskargatu biltegi ofizialeko joko "
+"gehigarri ugarietako bat."
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Irakutsi fanart atzean"
 
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilaren izena"
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
+#, fuzzy
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profilaren izena"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+#, fuzzy
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Irakutsi fanart atzean"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Sakatu [B]Ados[/B] gelditzeko"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Biltegia"

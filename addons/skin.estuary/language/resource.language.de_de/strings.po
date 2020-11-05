@@ -9,557 +9,822 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: German (Germany) (http://www.transifex.com/projects/p/kodi-main/language/de_DE/)\n"
+"Language-Team: German (Germany) (http://www.transifex.com/projects/p/kodi-"
+"main/language/de_DE/)\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Es läuft"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Suche..."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Medien-Fanart als Hintergrund nutzen (wenn verfügbar)"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Kinomodus"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Modus ändern"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "In 2D ansehen"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "Zufällige Filme"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Ungesehene Filme"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31008"
 msgid "Enable category widgets"
 msgstr "Kategorie-Widgets aktivieren"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Icons herunterladen"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Begonnene Filme"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "Meistgespielte Alben"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Zufällige Alben"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "Zufällige Interpreten"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Ungespielte Alben"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Zuletzt gemachte Aufnahmen"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Zuletzt gesehene Kanäle"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "Bewertung"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Zuletzt gehörte Kanäle"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Vorhersage"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "Aktionen"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Sonstige Einstellungen"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Sortieren nach"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Ansicht"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
 msgstr "Bewertung, die für Medien-Inhalte angezeigt werden soll"
 
+#: /xml/DialogFavourites.xml
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Keine Favoriten gespeichert. Es kann jedes beliebige Element aus den Medienansichten via Rechtsklick zu den Favoriten hinzugefügt werden."
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+"Keine Favoriten gespeichert. Es kann jedes beliebige Element aus den "
+"Medienansichten via Rechtsklick zu den Favoriten hinzugefügt werden."
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Fanart zeigen"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Zuletzt angemeldet"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "System Speicher-Auslastung"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Versionsinfos"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "Reihenfolge"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Persönliche Bewertung"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Seiten"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "Einträge"
 
+#: /xml/Includes.xml
+#, fuzzy
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Programm auswählen"
+
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Rücklauf"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Schneller Vorlauf"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Kamerahersteller"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Wiedergabelisten-Einstellungen"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
-msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Typ einstellen und Regeln für die intelligente Wiedergabeliste hinzufügen. Diese Art von Wiedergabeliste ist dynamisch und beinhaltet alle Medien aus der Bibliothek, die die gesetzten Regeln erfüllen."
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+"Typ einstellen und Regeln für die intelligente Wiedergabeliste hinzufügen. "
+"Diese Art von Wiedergabeliste ist dynamisch und beinhaltet alle Medien aus "
+"der Bibliothek, die die gesetzten Regeln erfüllen."
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "Gruppe hinzufügen"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "Gruppe umbenennen"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "Gruppe löschen"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "Verfügbar"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "[B]OK[/B] zum Stoppen drücken"
-
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "gefiltert"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-basiert"
 
+#: /xml/Variables.xml
+#, fuzzy
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "[B]Links[/B] zum Zurückspulen, [B]Rechts[/B] zum Vorspulen drücken"
 
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Zur Wiedergabeliste..."
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "Login-Screen beim Programmstart anzeigen"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatischer Login beim Programmstart"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Hauptmenüeinträge"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "Fanart-Sammlung für Wetterbildschirm wählen"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sektionen"
 
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Video-Wiedergabeliste"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "Musik-Wiedergabeliste"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Ereignisse"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31068"
 msgid "Choose presets"
 msgstr "Presets wählen"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Zuletzt aktualisiert"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "von"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Ausschalten"
 
+#: /xml/MyPlaylist.xml
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Gesamtdauer"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmkollektionen"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "Besetzung nicht verfügbar"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Endet um"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Liedtexte-Addon"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "Liedtexte-Addon-Einstellungen"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Visualisierungs-Einstellungen"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Verfügbare Gruppen"
 
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Videomenü"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Wetterinformationen in Kopfleiste anzeigen"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Slide-Animationen benutzen"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Lokaler Untertitel verfügbar"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Kanal-Einstellungen"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Bitte Kodi-Benutzerprofil zum[CR]Anmelden und Fortfahren auswählen"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "IconWall"
 
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "InfoWall"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Wall"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Text hier eingeben..."
 
+#: /xml/Home.xml
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Die persönliche Bibliothek ist derzeit leer. Um sie mit Inhalten zu füllen, zu \"Dateien\" wechseln, eine Medienquelle hinzufügen und diese dann konfigurieren. Nachdem die Quelle hinzugefügt und indiziert wurde, kann die Bibliothek durchstöbert werden."
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+"Die persönliche Bibliothek ist derzeit leer. Um sie mit Inhalten zu füllen, "
+"zu \"Dateien\" wechseln, eine Medienquelle hinzufügen und diese dann "
+"konfigurieren. Nachdem die Quelle hinzugefügt und indiziert wurde, kann die "
+"Bibliothek durchstöbert werden."
 
+#: /xml/Home.xml
 msgctxt "#31105"
-msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Videoquellen hinzufügen und den korrekten Inhaltstyp auswählen, um die persönlichen Bibliotheken zu befüllen."
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
+msgstr ""
+"Videoquellen hinzufügen und den korrekten Inhaltstyp auswählen, um die "
+"persönlichen Bibliotheken zu befüllen."
 
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
 
+#: /xml/Home.xml
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Zu \"Dateien\"..."
 
+#: /xml/Home.xml
 msgctxt "#31111"
-msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Persönliche Fotos anschauen oder eines der vielen Bilder-Addons aus dem offiziellen Repository ausprobieren."
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
+msgstr ""
+"Persönliche Fotos anschauen oder eines der vielen Bilder-Addons aus dem "
+"offiziellen Repository ausprobieren."
 
+#: /xml/VideoOSD.xml
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "Tonspur wechseln"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31113"
 msgid "Search local library"
 msgstr "Lokale Bibliothek durchsuchen"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "YouTube durchsuchen"
 
+#: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Diesen Hauptmenüeintrag entfernen"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Menü editieren"
 
+#: /xml/Home.xml
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Zum Addon-Browser..."
 
+#: /xml/Home.xml
 msgctxt "#31119"
-msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Es sind noch keine Addons installiert. Den Addon-Browser öffnen, um in der Addon-Sammlung zu stöbern."
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+"Es sind noch keine Addons installiert. Den Addon-Browser öffnen, um in der "
+"Addon-Sammlung zu stöbern."
 
+#: /xml/Home.xml
 msgctxt "#31120"
-msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Es ist noch kein Wetterprovider eingerichtet. Um Wetterinformationen zu erhalten, einen Wetterprovider auswählen und Orte einrichten."
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
+msgstr ""
+"Es ist noch kein Wetterprovider eingerichtet. Um Wetterinformationen zu "
+"erhalten, einen Wetterprovider auswählen und Orte einrichten."
 
+#: /xml/Home.xml
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "Wetterprovider wählen"
 
+#: /xml/Home.xml
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Ungesehene Serien"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Filme dieses Regisseurs"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "[B]Hoch[/B] für Schauspieler-Infos drücken"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "[B]OK[/B] zum Lesen der Handlung drücken"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Icons zeigen"
 
+#: /xml/Variables.xml
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Mitwirkende"
 
+#: /xml/Variables.xml
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "Allgemeine Einstellungen, die für den gesamten Skin gelten."
 
+#: /xml/Variables.xml
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Einstellungen für das Hauptmenü: Der Hauptbildschirm kann nach Belieben angepaßt werden."
+msgstr ""
+"Einstellungen für das Hauptmenü: Der Hauptbildschirm kann nach Belieben "
+"angepaßt werden."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Fanart-Sammlung für Skin wählen"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Programm auswählen"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "Auflösung auswählen"
 
+#: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restzeit"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Hier klicken, um die letzten Änderungen zu sehen..."
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR-Info"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Player-Info"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Video-Decoder"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "Pixel-Format"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr "Änderungen für Version"
 
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Wiedergabe-Geschwindigkeit"
 
+#: /xml/Home.xml
 msgctxt "#31143"
-msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muß ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR"
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+"Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen "
+"zu können, muß ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr "
+"Informationen unter http://kodi.wiki/view/PVR"
 
+#: /xml/Home.xml
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Zum Addon-Browser..."
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Addons durchsuchen"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategorien"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Genre Fanart Pack auswählen"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Repository"
+msgid "Origin"
+msgstr ""
 
+#: /xml/Home.xml
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Ungesehene Musikvideos"
 
+#: /xml/Home.xml
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Zufällige Musikvideos"
 
+#: /xml/Includes.xml
 msgctxt "#31153"
-msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein von der Community bereitgestelltes Addon herunterladen und installieren."
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+"Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein von "
+"der Community bereitgestelltes Addon herunterladen und installieren."
 
+#: /xml/MyWeather.xml
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr "[B]OK[/B] zum Wechseln des Ortes drücken"
 
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "Es wurden noch keine Lesezeichen angelegt."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31156"
 msgid "Choose background pattern"
 msgstr "Hintergrund-Muster auswählen"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "Kategorien editieren"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Touch-Modus"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31159"
 msgid "Artwork"
 msgstr "Artwork"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31160"
 msgid "Show media flags"
 msgstr "Medien-Flags anzeigen"
 
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Ziffern-Eingabe"
 
+#: /xml/Home.xml
 msgctxt "#31162"
-msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository herunterladen."
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
+msgstr ""
+"Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository "
+"herunterladen."
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Fanart-Hintergrund anzeigen"
 
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Art der Profil-Identifikation auswählen"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profil-Name"
 
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profil-Avatar"
 
+#. Label of a setting
+#: /xml/SkinSettings.xml
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Hintergrund animieren"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "[B]OK[/B] zum Stoppen drücken"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Repository"

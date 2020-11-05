@@ -9,493 +9,830 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/kodi-main/language/el_GR/)\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/kodi-main/"
+"language/el_GR/)\n"
+"Language: el_GR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el_GR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Σε αναπαραγωγή"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Αναζήτηση..."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Εμφάνιση μέσων fanart ως φόντο"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Λειτουργία σινεμά"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Αλλαγή λειτουργίας"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Προβολή ως 2D"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "Τυχαίες ταινίες"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Μη προβληθείσες ταινίες"
 
+#: /xml/SkinSettings.xml
+#, fuzzy
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Επεξεργασία κατηγοριών"
+
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Λήψη εικονιδίων"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Ταινίες σε εξέλιξη"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "Τα πιο παιγμένα άλμπουμ"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Τυχαία άλμπουμ"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "Τυχαίοι καλλιτέχνες"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Μη παιγμένα άλμπουμ"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Πρόσφατες εγγραφές"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Πρόσφατα παιγμένα κανάλια"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "Αξιολογημένο/α"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Πρόσφατα παιγμένα κανάλια"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Πρόγνωση"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "Ενέργειες"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Διάφορες επιλογές"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Ταξινόμηση κατά"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Τύπος προβολής"
 
-msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Δεν βρέθηκαν αγαπημένα. Μπορείτε να προσθέσετε οποιοδήποτε αντικείμενο από την προβολή πολυμέσων σε αυτή τη λίστα χρησιμοποιώντας το κεντρικό μενού."
+#: /xml/SkinSettings.xml
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
 
+#: /xml/DialogFavourites.xml
+msgctxt "#31025"
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+"Δεν βρέθηκαν αγαπημένα. Μπορείτε να προσθέσετε οποιοδήποτε αντικείμενο από "
+"την προβολή πολυμέσων σε αυτή τη λίστα χρησιμοποιώντας το κεντρικό μενού."
+
+#: /xml/DialogSeekBar.xml
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Εμφάνιση fanart"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Τελευταία σύνδεση"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "Χρήση μνήμης συστήματος"
 
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Πληροφορίες εκδοσης"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "Σειρά"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Αξιολόγηση"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Σελίδες"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "Αντικείμενα"
 
+#: /xml/Includes.xml
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
+
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Επαναφορά"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Γρήγορη Προώθηση"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Κατασκευαστής κάμερας"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Επιλογές λίστας αναπ/γής"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31043"
-msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Ορίστε τον τύπο και προσθέστε κανόνες για τη δημιουργία μιας έξυπνης λίστας αναπαραγωγής. Αυτές οι λίστες αναπαραγωγής είναι δυναμικές και περιέχουν όλα τα αντικείμενα πολυμέσων από τη βάση δεδομένων σας, που ταιριάζουν με τους επιλεγμένους κανόνες σας."
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+"Ορίστε τον τύπο και προσθέστε κανόνες για τη δημιουργία μιας έξυπνης λίστας "
+"αναπαραγωγής. Αυτές οι λίστες αναπαραγωγής είναι δυναμικές και περιέχουν όλα "
+"τα αντικείμενα πολυμέσων από τη βάση δεδομένων σας, που ταιριάζουν με τους "
+"επιλεγμένους κανόνες σας."
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "Προσθήκη ομάδας"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "Μετονομασία ομάδας"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "Διαγραφή ομάδας"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "Διαθέσιμος"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Πατήστε το [B]OK[/B] για να διακοπή"
-
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "φιλτραρισμένο"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Βασισμένη στην Arial"
 
+#: /xml/Variables.xml
+#, fuzzy
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Πατήστε το [B]Αριστερό[/B] βέλος για επαναφορά, ή το [B]Δεξί[/B] για γρήγορη προώθηση"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+"Πατήστε το [B]Αριστερό[/B] βέλος για επαναφορά, ή το [B]Δεξί[/B] για γρήγορη "
+"προώθηση"
 
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Μετάβαση στη λίστα αναπαραγωγής"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "Προβολή οθόνης εισόδου κατά την έναρξη"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Αυτόματη είσοδος κατά την έναρξη"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Αντικείμενα βασικού μενού"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "Επιλογή fanart πακέτου καιρού"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Τμήματα"
 
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Λίστα αναπαραγωγής βίντεο"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "Λίστα αναπαραγωγής μουσικής"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Καταγραφή συμβάντων"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31068"
 msgid "Choose presets"
 msgstr "Επέλεξε προρυθμίσεις"
 
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Τελευταία Ενημέρωση"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "ανά"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Επιλογές Ενέργειας"
 
+#: /xml/MyPlaylist.xml
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Συνολική διάρκεια"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Ομάδες ταινιών"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31079"
 msgid "Cast not available"
 msgstr "Μη διαθέσιμο cast"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Τελειώνει στις"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Πρόσθετο στίχων"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
 msgstr "Ρυθμίσεις προσθέτου στίχων"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Ρυθμίσεις οπτικοποίησης"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Διαθέσιμες ομάδες"
 
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Μενού βίντεο"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Εμφάνιση πληροφοριών καιρού στην επάνω γραμμή"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Χρήση εφέ κύλισης"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Τοπικός υπότιτλος διαθέσιμος"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Επιλογές καναλιού"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
+msgstr ""
+"Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
+#, fuzzy
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Τοίχος πληροφοριών"
+
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Τοίχος πληροφοριών"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Τοίχος"
 
+#: /xml/SmartPlaylistRule.xml
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Εισαγωγή κειμένου εδώ..."
 
+#: /xml/Home.xml
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Η βιβλιοθήκη σας είναι προς το παρόν άδεια. Για να τη συμπληρώσετε με τα προσωπικά σας αρχεία πολυμέσων, πηγαίνετε στην ενότητα \"Αρχεία\", προσθέστε μια πηγή πολυμέσων και ρυθμίστε την. Μετά την προσθήκη της πηγής, θα είστε σε θέση να περιηγηθείτε στη βιβλιοθήκη σας."
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+"Η βιβλιοθήκη σας είναι προς το παρόν άδεια. Για να τη συμπληρώσετε με τα "
+"προσωπικά σας αρχεία πολυμέσων, πηγαίνετε στην ενότητα \"Αρχεία\", προσθέστε "
+"μια πηγή πολυμέσων και ρυθμίστε την. Μετά την προσθήκη της πηγής, θα είστε "
+"σε θέση να περιηγηθείτε στη βιβλιοθήκη σας."
 
+#: /xml/Home.xml
 msgctxt "#31105"
-msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Προσθέστε πηγές βίντεο και ορίστε το κατάλληλο είδος περιεχομένου, ώστε να συμπληρώσετε τις βιβλιοθήκες βίντεο."
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
+msgstr ""
+"Προσθέστε πηγές βίντεο και ορίστε το κατάλληλο είδος περιεχομένου, ώστε να "
+"συμπληρώσετε τις βιβλιοθήκες βίντεο."
 
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Ευρεία λίστα"
 
+#: /xml/Home.xml
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Μετάβαση στην ενότητα Αρχεία"
 
+#: /xml/Home.xml
 msgctxt "#31111"
-msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Δείτε τις προσωπικές σας εικόνες ή κατεβάστε ένα από τα πολλά πρόσθετα εικόνας από το επίσημο αποθετήριο."
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
+msgstr ""
+"Δείτε τις προσωπικές σας εικόνες ή κατεβάστε ένα από τα πολλά πρόσθετα "
+"εικόνας από το επίσημο αποθετήριο."
 
+#: /xml/VideoOSD.xml
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "Εναλλαγή ηχητικής ροής"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31113"
 msgid "Search local library"
 msgstr "Αναζήτηση στην τοπική βιβλιοθήκη"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Αναζήτηση στο Youtube"
 
+#: /xml/Includes_Home.xml
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Αφαίρεση αυτού του αντικειμένου"
 
+#: /xml/MyVideoNav.xml
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Επεξεργασία κόμβων"
 
+#: /xml/Home.xml
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Εισαγωγή Περιηγητή πρόσθετων"
 
+#: /xml/Home.xml
 msgctxt "#31119"
-msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Δεν έχετε εγκαταστήσει κανένα πρόσθετο ακόμα. Επισκεφθείτε  τον περιηγητή προσθέτων μας για να περιηγηθείτε στη συλλογή μας και να βελτιώσετε την εμπειρία σας στο Kodi."
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+"Δεν έχετε εγκαταστήσει κανένα πρόσθετο ακόμα. Επισκεφθείτε  τον περιηγητή "
+"προσθέτων μας για να περιηγηθείτε στη συλλογή μας και να βελτιώσετε την "
+"εμπειρία σας στο Kodi."
 
+#: /xml/Home.xml
 msgctxt "#31120"
-msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Δεν έχετε ορίσει έναν πάροχο καιρού ακόμα. Για να δείτε πληροφορίες για τον καιρό, επιλέξτε έναν πάροχο καιρού και ρυθμίστε την τοποθεσία σας."
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
+msgstr ""
+"Δεν έχετε ορίσει έναν πάροχο καιρού ακόμα. Για να δείτε πληροφορίες για τον "
+"καιρό, επιλέξτε έναν πάροχο καιρού και ρυθμίστε την τοποθεσία σας."
 
+#: /xml/Home.xml
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "Ορισμός παρόχου καιρού"
 
+#: /xml/Home.xml
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Μη προβληθείσες Τηλ. Σειρές"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Ίδιος σκηνοθέτης"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr "Πατήστε το Επάνω βέλος για πληροφορίες ηθοποιού"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Πατήστε ΟΚ για ανάγνωση πλοκής"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Εμφάνιση εικονιδίων"
 
+#: /xml/Variables.xml
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Συντελεστές"
 
+#: /xml/Variables.xml
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "Γενικές ρυθμίσεις που εφαρμόζονται σε όλες τις περιοχές του κελύφους"
 
+#: /xml/Variables.xml
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Ρυθμίσεις βασικού μενού: Ρυθμίστε την αρχική οθόνη βάσει των προτιμήσεών σας."
+msgstr ""
+"Ρυθμίσεις βασικού μενού: Ρυθμίστε την αρχική οθόνη βάσει των προτιμήσεών σας."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Επιλογή πακέτου fanart "
 
+#: /xml/Custom_1101_SettingsList.xml
+msgctxt "#31132"
+msgid "Select Program"
+msgstr ""
+
+#: /xml/Custom_1101_SettingsList.xml
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
+
+#: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Απομένουν"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Πατήστε εδώ για να δείτε τις πρόσφατες αλλαγές..."
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "Πληροφορίες PVR"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Πληροφορίες διεργασίας αναπαραγωγής"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Αποκωδικοποιητής βίντεο"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "Μορφή εικονοστοιχείων"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr "Αλλαγές έκδοσης"
 
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Ταχύτητα αναπαραγωγής"
 
+#: /xml/Home.xml
+msgctxt "#31143"
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Εισαγωγή Περιηγητή πρόσθετων"
 
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Αναζήτηση προσθέτων"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Κατηγορίες"
 
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Αποθετήριο"
+#: /xml/SkinSettings.xml
+#, fuzzy
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Επιλογή fanart πακέτου καιρού"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
+#: /xml/Home.xml
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Μη προβληθέντα βίντεο"
 
+#: /xml/Home.xml
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Τυχαία μουσικά βίντεο"
 
+#: /xml/Includes.xml
+#, fuzzy
+msgctxt "#31153"
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+"Δεν έχετε εγκαταστήσει κανένα πρόσθετο ακόμα. Επισκεφθείτε  τον περιηγητή "
+"προσθέτων μας για να περιηγηθείτε στη συλλογή μας και να βελτιώσετε την "
+"εμπειρία σας στο Kodi."
+
+#: /xml/MyWeather.xml
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr ""
+
+#: /xml/VideoOSDBookmarks.xml
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "Δεν έχουν δημιουργηθεί σελιδοδείκτες ακόμη."
 
+#: /xml/SkinSettings.xml
 msgctxt "#31156"
 msgid "Choose background pattern"
 msgstr "Επιλέξτε μοτίβο υποβάθρου"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "Επεξεργασία κατηγοριών"
 
+#: /xml/SkinSettings.xml
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Λειτουργία αφής"
 
+#: /xml/SkinSettings.xml
+msgctxt "#31159"
+msgid "Artwork"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr ""
+
+#: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Αριθμητικό πληκτρολόγιο"
 
+#: /xml/Home.xml
+#, fuzzy
+msgctxt "#31162"
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
+msgstr ""
+"Δείτε τις προσωπικές σας εικόνες ή κατεβάστε ένα από τα πολλά πρόσθετα "
+"εικόνας από το επίσημο αποθετήριο."
+
+#: /xml/Custom_1105_MusicOSDSettings.xml
+#, fuzzy
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Εμφάνιση μέσων fanart ως φόντο"
+
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Όνομα προφίλ"
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
+#, fuzzy
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Όνομα προφίλ"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Πατήστε το [B]OK[/B] για να διακοπή"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Αποθετήριο"

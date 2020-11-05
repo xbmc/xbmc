@@ -9,285 +9,804 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
-"Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/kodi-main/language/lv_LV/)\n"
+"Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/kodi-"
+"main/language/lv_LV/)\n"
+"Language: lv_LV\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lv_LV\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
 
+#: /xml/Home.xml /xml/DialogSeekBar.xml
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Pašreiz atskaņo"
 
+#: /xml/Home.xml
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Meklē..."
 
+#: /xml/SkinSettings.xml
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr ""
+
+#: /xml/DialogVideoInfo.xml
+#, fuzzy
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Mainīt režīmu"
+
+#: /xml/VideoOSD.xml
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Mainīt režīmu"
 
+#: /xml/VideoOSD.xml
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Skatīties 2D"
 
+#: /xml/Home.xml
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "Nejaušas filmas"
 
+#: /xml/Home.xml
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Neskatītās filmas"
 
+#: /xml/SkinSettings.xml
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
+
+#: /xml/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Lejupielādē ikonas"
 
+#: /xml/Home.xml
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Notiek filmas"
 
+#: /xml/Home.xml
 msgctxt "#31011"
 msgid "Most played albums"
 msgstr "Visvairāk atskaņotie albumi"
 
+#: /xml/Home.xml
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Nejauši albumi"
 
+#: /xml/Home.xml
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "Nejauši izpildītāji"
 
+#: /xml/Home.xml
 msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Neatskaņotie albumi"
 
+#. home screen recordings widget: recent tv / radio recordings
+#: /xml/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nesenie ieraksti"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Nesen atskaņotie kanāli"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31017"
 msgid "Rated"
 msgstr "Novērtēts"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /xml/Home.xml
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Nesen atskaņotie kanāli"
 
+#: /xml/Home.xml /xml/MyWeather.xml
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Prognoze"
 
+#: /xml/MyMusicNav.xml /xml/MyPics.xml /xml/MyVideoNav.xml
 msgctxt "#31020"
 msgid "Actions"
 msgstr "Darbības"
 
+#: /xml/AddonBrowser.xml /xml/DialogPVRChannelManager.xml
+#: /xml/Includes_MediaMenu.xml /xml/EventLog.xml
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Dažādas opcijas"
 
+#: /xml/Includes_MediaMenu.xml /xml/Includes.xml
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Kārtot pēc"
 
+#: /xml/Includes_MediaMenu.xml
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Skata veids"
 
+#: /xml/SkinSettings.xml
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
+
+#: /xml/DialogFavourites.xml
+msgctxt "#31025"
+msgid ""
+"No favourites found. You can add any item from media views to this list by "
+"using the context menu."
+msgstr ""
+
+#: /xml/DialogSeekBar.xml
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr ""
+
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+#: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Rādīt fanumākslu"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Pēdējoreiz pieslēdzies"
 
+#: /xml/SettingsSystemInfo.xml
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr ""
+
+#: /xml/SettingsSystemInfo.xml
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Versijas info"
 
+#: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"
 msgid "Order"
 msgstr "Kārtība"
 
+#: /xml/DialogVideoInfo.xml /xml/DialogSongInfo.xml
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Tavs vērtējums"
 
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /xml/DialogPVRChannelManager.xml /xml/DialogPVRChannelsOSD.xml
+#: /xml/DialogPVRGuideOSD.xml /xml/Variables.xml /xml/FileBrowser.xml
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Lapas"
 
+#: /xml/FileBrowser.xml /xml/Variables.xml /xml/MyPVRRecordings.xml
 msgctxt "#31036"
 msgid "items"
 msgstr "ieraksti"
 
+#: /xml/Includes.xml
+#, fuzzy
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Programmas izvēle"
+
+#: /xml/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Attīt atpakaļ"
 
+#: /xml/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Patīt uz priekšu"
 
+#: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Kameras ražotājs"
 
+#: /xml/SmartPlaylistEditor.xml
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Spēļsaraksta opcijas"
 
+#: /xml/SmartPlaylistEditor.xml
+msgctxt "#31043"
+msgid ""
+"Set the type and add rules to create a smart playlist. These playlists are "
+"dynamic and include all media items from your database which apply to your "
+"chosen rules."
+msgstr ""
+
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31044"
 msgid "Add group"
 msgstr "Pievienot grupu"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31045"
 msgid "Rename group"
 msgstr "Pārsaukt grupu"
 
+#: /xml/DialogPVRGroupManager.xml
 msgctxt "#31046"
 msgid "Delete group"
 msgstr "Dzēst grupu"
 
+#: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr "Pieejams"
 
+#: /xml/Includes.xml
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrēts"
 
+#: /xml/Font.xml
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Balstīts uz Arial"
 
+#: /xml/Variables.xml
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+#: /xml/Variables.xml
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
+#: /xml/MyMusicNav.xml /xml/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Iet uz spēļsarakstu"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "Rādīt pieteikšanās logu uzsākot"
 
+#: /xml/SettingsProfile.xml
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatiski pieteikties uzsākot"
 
+#: /xml/GameOSD.xml
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+#: /xml/GameOSD.xml
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
+#: /xml/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Galvenās izvēlnes ieraksti"
 
+#: /xml/SkinSettings.xml
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr ""
+
+#: /xml/Includes_MediaMenu.xml
+#, fuzzy
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Darbības"
+
+#: /xml/MyVideoPlaylist.xml
 msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Video spēļsaraksts"
 
+#: /xml/MyMusicPlaylist.xml
 msgctxt "#31066"
 msgid "Music playlist"
 msgstr "Mūzikas spēļsaraksts"
 
+#: /xml/EventLog.xml
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Notikumu žurnāls"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr ""
+
+#: /xml/AddonBrowser.xml
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Pēdējie jaunumi"
 
+#: /xml/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
 msgstr "veidoja"
 
+#: /xml/DialogButtonMenu.xml /xml/LoginScreen.xml
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Enerģijas opcijas"
 
+#: /xml/MyPlaylist.xml
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
+#: /xml/MyPlaylist.xml
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Kopējais ilgums"
 
+#: /xml/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmu kopumi"
 
+#: /xml/DialogVideoInfo.xml
+#, fuzzy
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Pieejami lokālie subtitri"
+
+#: /xml/VideoOSD.xml
+msgctxt "#31080"
+msgid "Ends at"
+msgstr ""
+
+#: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Dziesmu vārdu pielikums"
 
+#: /xml/Custom_1105_MusicOSDSettings.xml
+#, fuzzy
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Dziesmu vārdu pielikums"
+
+#: /xml/Custom_1105_MusicOSDSettings.xml
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr ""
+
+#: /xml/DialogPVRGroupManager.xml
+#, fuzzy
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Pieejams"
+
+#: /xml/VideoOSD.xml /xml/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Video izvēlne"
 
+#: /xml/SkinSettings.xml
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr ""
+
+#: /xml/SkinSettings.xml
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Izmantot slīdes animāciju"
 
+#: /xml/DialogSubtitles.xml
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Pieejami lokālie subtitri"
 
+#: /xml/DialogPVRChannelManager.xml
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Kanāla opcijas"
 
+#: /xml/LoginScreen.xml
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Atlasiet savu Kodi lietotāja profilu,[CR]lai pieslēgtos un turpinātu"
 
+#. viewtype name
+#: /xml/View_52_IconWall.xml
+#, fuzzy
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "InfoSiena"
+
+#. viewtype name
+#: /xml/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
+#: /xml/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "InfoSiena"
 
+#. viewtype name
+#: /xml/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Siena"
 
+#: /xml/SmartPlaylistRule.xml
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31104"
+msgid ""
+"Your library is currently empty. In order to populate it with your personal "
+"media, enter \"Files\" section, add a media source and configure it. After "
+"the source has been added and indexed you will be able to browse your "
+"library."
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31105"
+msgid ""
+"Add video sources and set the appropriate content type in order to populate "
+"your video libraries."
+msgstr ""
+
+#: /xml/Variables.xml
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teleteksts"
 
+#. viewtype name
+#: /xml/View_55_WideList.xml
+msgctxt "#31107"
+msgid "WideList"
+msgstr ""
+
+# empty strings from id 31108 to 31109
+#: /xml/Home.xml
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31111"
+msgid ""
+"View your personal pictures or download one of the many image add-ons from "
+"the official repository."
+msgstr ""
+
+#: /xml/VideoOSD.xml
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr ""
+
+#: /xml/Custom_1107_SearchDialog.xml
+msgctxt "#31113"
+msgid "Search local library"
+msgstr ""
+
+#: /xml/Custom_1107_SearchDialog.xml
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Meklēt YouTube"
 
+#: /xml/Includes_Home.xml
+#, fuzzy
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Galvenās izvēlnes ieraksti"
+
+#: /xml/MyVideoNav.xml
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31119"
+msgid ""
+"You do not have any add-ons installed yet. Visit our add-on browser to "
+"browse through our collection and improve your Kodi experience."
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31120"
+msgid ""
+"You did not set up a weather provider yet. In order to view weather "
+"information, choose a weather provider and set up your location."
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr ""
+
+#: /xml/Home.xml
+#, fuzzy
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Neskatītās filmas"
+
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31123"
+msgid "Same director"
+msgstr ""
+
+# empty string with id 31124
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr ""
+
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr ""
+
+#: /xml/Includes_MediaMenu.xml
+#, fuzzy
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Lejupielādē ikonas"
+
+#: /xml/Variables.xml
+msgctxt "#31128"
+msgid "Contributors"
+msgstr ""
+
+#: /xml/Variables.xml
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr ""
+
+#: /xml/Variables.xml
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr ""
+
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Programmas izvēle"
 
+#: /xml/Custom_1101_SettingsList.xml
 msgctxt "#31133"
 msgid "Select Resolution"
 msgstr "Izšķirtspējas izvēle"
 
+#: /xml/DialogSeekBar.xml
+msgctxt "#31134"
+msgid "Remaining"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR info"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Atskaņotāja procesu informācija"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Video dekoders"
 
+#: /xml/DialogPlayerProcessInfo.xml
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "Pikseļu formāts"
 
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr ""
+
+#: /xml/Variables.xml
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Atskaņošanas ātrums"
 
+#: /xml/Home.xml
+msgctxt "#31143"
+msgid ""
+"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
+"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr ""
+
+#: /xml/Custom_1107_SearchDialog.xml
+#, fuzzy
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Dziesmu vārdu pielikums"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31148"
+msgid "Categories"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr ""
+
+#: /xml/DialogAddonInfo.xml
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
+#: /xml/Home.xml
+#, fuzzy
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Neskatītās filmas"
+
+#: /xml/Home.xml
+#, fuzzy
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Nejaušas filmas"
+
+#: /xml/Includes.xml
+msgctxt "#31153"
+msgid ""
+"You do not have any add-ons of this type installed. Enter the add-on browser "
+"to download add-ons created by our community."
+msgstr ""
+
+#: /xml/MyWeather.xml
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr ""
+
+#: /xml/VideoOSDBookmarks.xml
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31159"
+msgid "Artwork"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr ""
+
+#: /xml/DialogNumeric.xml
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31162"
+msgid ""
+"Play your personal games or download one of the many game add-ons from the "
+"official repository."
+msgstr ""
+
+#: /xml/Custom_1105_MusicOSDSettings.xml
+#, fuzzy
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Rādīt fanumākslu"
+
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profila vārds"
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
+#, fuzzy
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profila vārds"
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+#: /xml/SkinSettings.xml
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
