@@ -398,6 +398,7 @@
       <minus mod="ctrl">VolAmpDown</minus>
       <b mod="ctrl">CreateBookmark</b>
       <b mod="alt">CreateEpisodeBookmark</b>
+      <f11 mod="alt">CycleToneMapMethod</f11>
     </keyboard>
   </FullscreenVideo>
   <FullscreenGame>

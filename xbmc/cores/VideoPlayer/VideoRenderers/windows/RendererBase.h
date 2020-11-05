@@ -158,6 +158,7 @@ protected:
   bool m_cmsOn = false;
   bool m_clutLoaded = false;
   bool m_useHLGtoPQ = false;
+  int m_toneMapMethod = 0;
 
   int m_iBufferIndex = 0;
   int m_iNumBuffers = 0;

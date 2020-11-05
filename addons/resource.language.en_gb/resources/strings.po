@@ -20549,7 +20549,19 @@ msgctxt "#36556"
 msgid "Tone mapping parameter"
 msgstr ""
 
-#empty strings from id 36557 to 36559
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36557"
+msgid "ACES Filmic"
+msgstr ""
+
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36558"
+msgid "Hable"
+msgstr ""
+
+#empty string with id 36559
 
 #: system/settings/settings.xml
 msgctxt "#36560"
