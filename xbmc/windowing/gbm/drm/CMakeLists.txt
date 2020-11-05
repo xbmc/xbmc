@@ -6,7 +6,8 @@ set(SOURCES DRMAtomic.cpp
             DRMObject.cpp
             DRMPlane.cpp
             DRMUtils.cpp
-            OffScreenModeSetting.cpp)
+            OffScreenModeSetting.cpp
+            ScreenshotSurfaceDRM.cpp)
 
 set(HEADERS DRMAtomic.h
             DRMConnector.h
@@ -16,6 +17,7 @@ set(HEADERS DRMAtomic.h
             DRMObject.h
             DRMPlane.h
             DRMUtils.h
-            OffScreenModeSetting.h)
+            OffScreenModeSetting.h
+            ScreenshotSurfaceDRM.h)
 
 core_add_library(windowing_gbm_drm)
