@@ -23,6 +23,16 @@ CDRMPlane::CDRMPlane(int fd, uint32_t plane) : CDRMObject(fd), m_plane(drmModeGe
                              std::to_string(m_plane->plane_id));
 }
 
+uint32_t CDRMPlane::GetPlaneFbId() const
+{
+  std::unique_ptr<drmModePlane, DrmModePlaneDeleter> plane(
+      drmModeGetPlane(m_fd, m_plane->plane_id));
+  if (!plane)
+    return 0;
+
+  return plane->fb_id;
+}
+
 bool CDRMPlane::SupportsFormat(uint32_t format)
 {
   for (uint32_t i = 0; i < m_plane->count_formats; i++)
