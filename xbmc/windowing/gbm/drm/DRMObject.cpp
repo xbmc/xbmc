@@ -80,6 +80,21 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
   return true;
 }
 
+uint64_t CDRMObject::GetProperty(const std::string& name) const
+{
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
+    return StringUtils::EqualsNoCase(prop->name, name);
+  });
+
+  if (property == m_propsInfo.end())
+    return 0;
+
+  std::unique_ptr<drmModeObjectProperties, DrmModeObjectPropertiesDeleter> props(
+      drmModeObjectGetProperties(m_fd, m_id, m_type));
+
+  return props->prop_values[std::distance(m_propsInfo.begin(), property)];
+}
+
 //! @todo: improve with c++17
 std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
                                                         const std::string& valueName) const
