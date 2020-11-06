@@ -47,7 +47,7 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
     return;
   }
 
-  if (!surface->CaptureVideo(true))
+  if (!surface->CaptureVideo())
   {
     CLog::Log(LOGERROR, "Screenshot video %s failed", CURL::GetRedacted(filename).c_str());
     return;
