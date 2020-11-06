@@ -62,6 +62,16 @@ public:
   bool HasType(TYPE type) const override { return m_addonInfo->HasType(type); }
 
   /**
+   * @brief To check complete addon (not only this) has a specific type
+   * defined in its first extension point including the provided subcontent
+   * e.g. video or audio
+   *
+   * @param[in] type Type identifier to be checked
+   * @return true in case the wanted type is the main type, false if not
+   */
+  bool HasMainType(TYPE type) const override { return m_addonInfo->HasType(type, true); }
+
+  /**
    * @brief The get for given addon type information and extension data
    *
    * @param[in] type The wanted type data

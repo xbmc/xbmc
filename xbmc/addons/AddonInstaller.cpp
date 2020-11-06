@@ -675,7 +675,7 @@ bool CAddonInstallJob::DoWork()
   {
     origin = ORIGIN_SYSTEM; // keep system add-on origin as ORIGIN_SYSTEM
   }
-  else if (m_addon->HasType(ADDON_REPOSITORY))
+  else if (m_addon->HasMainType(ADDON_REPOSITORY))
   {
     origin = m_addon->ID(); // use own id as origin if repository
     if (m_isUpdate)
