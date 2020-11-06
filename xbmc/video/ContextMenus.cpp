@@ -318,6 +318,12 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
   if (IsActiveRecordingsFolder(item))
     return true;
 
+  // Music nav window has own "Play" context menu button, do not show this one. Playlist files
+  // like .m3u and .strm return IsVideo() true but from music nav window play with paplayer.
+  const int currentWindow = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+  if (currentWindow == WINDOW_MUSIC_NAV)
+    return false;
+
   if (item.m_bIsFolder)
     return false; //! @todo implement
 
