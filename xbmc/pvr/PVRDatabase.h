@@ -46,6 +46,16 @@ namespace PVR
     void Close() override;
 
     /*!
+     * @brief Lock the database.
+     */
+    void Lock();
+
+    /*!
+     * @brief Unlock the database.
+     */
+    void Unlock();
+
+    /*!
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
@@ -109,7 +119,7 @@ namespace PVR
      * @param channel The channel to remove.
      * @return True if the channel was removed, false otherwise.
      */
-    bool Delete(const CPVRChannel& channel);
+    bool QueueDeleteQuery(const CPVRChannel& channel);
 
     /*!
      * @brief Get the list of channels from the database

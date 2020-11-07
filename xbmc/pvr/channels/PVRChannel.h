@@ -50,7 +50,7 @@ namespace PVR
      * @brief Delete this channel from the database and delete the corresponding EPG table if it exists.
      * @return True if it was deleted successfully, false otherwise.
      */
-    bool Delete();
+    bool QueueDelete();
 
     /*!
      * @brief Update this channel tag with the data of the given channel tag.
