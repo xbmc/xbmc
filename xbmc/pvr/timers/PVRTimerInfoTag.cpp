@@ -1123,7 +1123,7 @@ void CPVRTimerInfoTag::SetFirstDayFromLocalTime(const CDateTime& firstDay)
   m_FirstDay = ConvertLocalTimeToUTC(firstDay);
 }
 
-void CPVRTimerInfoTag::GetNotificationText(std::string& strText) const
+std::string CPVRTimerInfoTag::GetNotificationText() const
 {
   CSingleLock lock(m_critSection);
 
@@ -1160,8 +1160,11 @@ void CPVRTimerInfoTag::GetNotificationText(std::string& strText) const
   default:
     break;
   }
+
   if (stringID != 0)
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
+    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
+
+  return {};
 }
 
 std::string CPVRTimerInfoTag::GetDeletedNotificationText() const

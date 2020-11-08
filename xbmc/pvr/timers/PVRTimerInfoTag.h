@@ -250,13 +250,12 @@ namespace PVR
 
     /*!
      * @brief Get the text for the notification.
-     * @param strText The notification.
      */
-    void GetNotificationText(std::string& strText) const;
+    std::string GetNotificationText() const;
 
     /*!
-    * @brief Get the text for the notification when a timer has been deleted
-    */
+     * @brief Get the text for the notification when a timer has been deleted
+     */
     std::string GetDeletedNotificationText() const;
 
     const std::string& Title() const;
