@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.local"
        name="Local information only"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -22,8 +22,12 @@
              language="multi"
              library="local.xml"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Local Infomation only pseudo-scraper</summary>
-    <description lang="en">Use local information only</description>
+    <summary lang="en_GB">Local Infomation only pseudo-scraper</summary>
+    <description lang="en_GB">Use local information only</description>
     <platform>all</platform>
+    <license>GPL-2.0-only</license>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>
 </addon>
