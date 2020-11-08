@@ -12,6 +12,7 @@ set(SOURCES ActorProtocol.cpp
             CharsetConverter.cpp
             CharsetDetection.cpp
             ColorUtils.cpp
+            ContentUtils.cpp
             CPUInfo.cpp
             Crc32.cpp
             CryptThreading.cpp
@@ -89,6 +90,7 @@ set(HEADERS ActorProtocol.h
             CPUInfo.h
             Color.h
             ColorUtils.h
+            ContentUtils.h
             Crc32.h
             CryptThreading.h
             DatabaseUtils.h

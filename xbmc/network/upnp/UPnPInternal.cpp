@@ -24,6 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -579,13 +580,9 @@ BuildObject(CFileItem&                    item,
         if (!thumb_loader.IsNull())
             thumb_loader->LoadItem(&item);
 
-        // finally apply the found artwork
-        // note: movies should use poster as the preferred "thumb" image
-        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_type == MediaTypeMovie &&
-            item.HasArt("poster"))
-          thumb = item.GetArt("poster");
-        else
-          thumb = item.GetArt("thumb");
+        // we have to decide the best art type to serve to the client - use ContentUtils
+        // to get it since it depends on the mediatype of the item being served
+        thumb = ContentUtils::GetPreferredArtImage(item);
 
         if (!thumb.empty()) {
             PLT_AlbumArtInfo art;
