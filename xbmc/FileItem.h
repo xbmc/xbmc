@@ -510,6 +510,14 @@ public:
    */
   void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
 
+  /*! \brief Merge an item with information from another item
+  We take metadata/art information from the given item and supplement the current
+  item with that info. If tags exist in the new item we only merge the missing
+  tag information. Properties are appended, and labels are updated if non-empty
+  in the given item.
+  */
+  void MergeInfo(const CFileItem &item);
+
   bool IsSamePath(const CFileItem *item) const;
 
   bool IsAlbum() const;
