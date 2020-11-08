@@ -96,7 +96,7 @@ private:
   unsigned m_sourceHeight = 0;
   int m_lutSize = 0;
   int m_ditherDepth = 0;
-  int m_toneMappingMethod = VS_TONEMAPMETHOD_REINHARD;
+  int m_toneMappingMethod = 0;
   float m_toneMappingParam = 1.0f;
 
   CRect m_sourceRect = {};

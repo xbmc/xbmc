@@ -4469,12 +4469,6 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_Orientation = m_pDS->fv("Orientation").get_asInt();
       settings.m_CenterMixLevel = m_pDS->fv("CenterMixLevel").get_asInt();
       m_pDS->close();
-
-      if (settings.m_ToneMapParam == 0.0)
-      {
-        settings.m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
-        settings.m_ToneMapParam = 1.0;
-      }
       return true;
     }
     m_pDS->close();

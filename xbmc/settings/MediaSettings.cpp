@@ -114,10 +114,11 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultVideoSettings.m_StereoMode = 0;
     if (!XMLUtils::GetInt(pElement, "centermixlevel", m_defaultVideoSettings.m_CenterMixLevel))
       m_defaultVideoSettings.m_CenterMixLevel = 0;
-
-    m_defaultVideoSettings.m_ToneMapMethod = 1;
-    m_defaultVideoSettings.m_ToneMapParam = 1.0f;
     m_defaultVideoSettings.m_SubtitleCached = false;
+    if (!XMLUtils::GetInt(pElement, "tonemapmethod", m_defaultVideoSettings.m_ToneMapMethod))
+      m_defaultVideoSettings.m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+    if (!XMLUtils::GetFloat(pElement, "tonemapparam", m_defaultVideoSettings.m_ToneMapParam, 0.1f, 5.0f))
+      m_defaultVideoSettings.m_ToneMapParam = 1.0f;
   }
 
   m_defaultGameSettings.Reset();
@@ -220,6 +221,8 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
   XMLUtils::SetInt(pNode, "stereomode", m_defaultVideoSettings.m_StereoMode);
   XMLUtils::SetInt(pNode, "centermixlevel", m_defaultVideoSettings.m_CenterMixLevel);
+  XMLUtils::SetInt(pNode, "tonemapmethod", m_defaultVideoSettings.m_ToneMapMethod);
+  XMLUtils::SetFloat(pNode, "tonemapparam", m_defaultVideoSettings.m_ToneMapParam);
 
   // default audio settings for dsp addons
   TiXmlElement audioSettingsNode("defaultaudiosettings");
