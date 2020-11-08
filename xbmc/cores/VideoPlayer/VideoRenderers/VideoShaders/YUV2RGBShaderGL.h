@@ -31,6 +31,7 @@ public:
   BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
                         AVColorPrimaries dst, AVColorPrimaries src,
                         bool toneMap,
+                        int toneMapMethod,
                         std::shared_ptr<GLSLOutput> output);
   ~BaseYUV2RGBGLSLShader() override;
 
@@ -44,7 +45,8 @@ public:
   void SetNonLinStretch(float stretch) { m_stretch = stretch; }
   void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
                           bool hasLightMetadata, AVContentLightMetadata lightMetadata);
-  void SetToneMapParam(float param) { m_toneMappingParam = param; }
+  void SetToneMapParam(int method, float param);
+  float GetLuminanceValue() const;
 
   void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
 
@@ -73,6 +75,7 @@ protected:
   bool m_hasLightMetadata = false;
   AVContentLightMetadata m_lightMetadata;
   bool m_toneMapping = false;
+  int m_toneMappingMethod = VS_TONEMAPMETHOD_REINHARD;
   float m_toneMappingParam = 1.0;
 
   float m_black;
@@ -100,6 +103,7 @@ protected:
   GLint m_hPrimMat = -1;
   GLint m_hToneP1 = -1;
   GLint m_hCoefsDst = -1;
+  GLint m_hLuminance = -1;
 
   // vertex shader attribute handles
   GLint m_hVertex = -1;
@@ -119,6 +123,7 @@ public:
                            bool stretch,
                            AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                            bool toneMap,
+                           int toneMapMethod,
                            std::shared_ptr<GLSLOutput> output);
 };
 
@@ -130,6 +135,7 @@ public:
                        bool stretch,
                        AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                        bool toneMap,
+                       int toneMapMethod,
                        ESCALINGMETHOD method,
                        std::shared_ptr<GLSLOutput> output);
   ~YUV2RGBFilterShader4() override;
