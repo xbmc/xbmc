@@ -16,19 +16,6 @@ sub get_extras {
     return;
 }
 
-sub get_xbmc_home {
-    my $os = get_os();
-    my $home = get_home();
-    return if !defined $home;
-    if ( $os eq "osx" ) {
-        return $home."/Library/Application Support/XBMC";
-    }
-    elsif ( $os eq "linux" ) {
-        return $home."/.xbmc";
-    }
-    return;
-}
-
 sub get_app_home {
     my $os = get_os();
     my $home = get_home();
@@ -161,16 +148,6 @@ sub first_app_version_run() {
     return;
 }
 
-sub needs_kodi_migration() {
-    my $xbmchome = get_xbmc_home();
-    my $apphome = get_app_home();
-    #check if there is an old XBMC folder to migrate
-    if ( -d "$xbmchome" && ! -d "$apphome" ) {
-        return 1;
-    }
-    return;
-}
-
 sub setup_default_app() {
     my $extras = get_extras();
     my $apphome = get_app_home();
@@ -194,19 +171,6 @@ sub setup_default_app() {
 
 sub setup_version_app() {
     #TODO
-}
-
-#migration from XBMC to Kodi
-sub migrate_to_kodi() {
-    my $xbmchome = get_xbmc_home();
-    my $apphome = get_app_home();
-    print "mv $xbmchome $apphome";
-   `mv "$xbmchome" "$apphome"`;
-   `touch -f "$apphome/.kodi_data_was_migrated"`;
-}
-
-if (needs_kodi_migration()) {
-    migrate_to_kodi();
 }
 
 if (first_app_run()) {
