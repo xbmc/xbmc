@@ -19,7 +19,7 @@
 #include <time.h>
 
 // Increment this level always if you add features which can lead to compile failures in the addon
-#define INPUTSTREAM_VERSION_LEVEL 3
+#define INPUTSTREAM_VERSION_LEVEL 4
 
 #define INPUTSTREAM_MAX_INFO_COUNT 8
 #define INPUTSTREAM_MAX_STREAM_COUNT 256
@@ -219,34 +219,34 @@ extern "C"
   enum INPUTSTREAM_FLAGS
   {
     /// @brief **0000 0000 0000 0000 :** Empty to set if nothing is used
-    INPUTSTREAM_FLAG_NONE = (1 << 0),
+    INPUTSTREAM_FLAG_NONE = 0,
 
     /// @brief **0000 0000 0000 0001 :** Default
-    INPUTSTREAM_FLAG_DEFAULT = (1 << 1),
+    INPUTSTREAM_FLAG_DEFAULT = (1 << 0),
 
     /// @brief **0000 0000 0000 0010 :** Dub
-    INPUTSTREAM_FLAG_DUB = (1 << 2),
+    INPUTSTREAM_FLAG_DUB = (1 << 1),
 
     /// @brief **0000 0000 0000 0100 :** Original
-    INPUTSTREAM_FLAG_ORIGINAL = (1 << 3),
+    INPUTSTREAM_FLAG_ORIGINAL = (1 << 2),
 
     /// @brief **0000 0000 0000 1000 :** Comment
-    INPUTSTREAM_FLAG_COMMENT = (1 << 4),
+    INPUTSTREAM_FLAG_COMMENT = (1 << 3),
 
     /// @brief **0000 0000 0001 0000 :** Lyrics
-    INPUTSTREAM_FLAG_LYRICS = (1 << 5),
+    INPUTSTREAM_FLAG_LYRICS = (1 << 4),
 
     /// @brief **0000 0000 0010 0000 :** Karaoke
-    INPUTSTREAM_FLAG_KARAOKE = (1 << 6),
+    INPUTSTREAM_FLAG_KARAOKE = (1 << 5),
 
     /// @brief **0000 0000 0100 0000 :** Forced
-    INPUTSTREAM_FLAG_FORCED = (1 << 7),
+    INPUTSTREAM_FLAG_FORCED = (1 << 6),
 
     /// @brief **0000 0000 1000 0000 :** Hearing impaired
-    INPUTSTREAM_FLAG_HEARING_IMPAIRED = (1 << 8),
+    INPUTSTREAM_FLAG_HEARING_IMPAIRED = (1 << 7),
 
     /// @brief **0000 0001 0000 0000 :** Visual impaired
-    INPUTSTREAM_FLAG_VISUAL_IMPAIRED = (1 << 9),
+    INPUTSTREAM_FLAG_VISUAL_IMPAIRED = (1 << 8),
   };
   ///@}
   //----------------------------------------------------------------------------
