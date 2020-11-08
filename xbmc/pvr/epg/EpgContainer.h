@@ -86,11 +86,11 @@ namespace PVR
     bool IsStarted() const;
 
     /*!
-     * @brief Delete an EPG table from this container.
+     * @brief Queue the deletion of an EPG table from this container.
      * @param epg The table to delete.
      * @return True on success, false otherwise.
      */
-    bool DeleteEpg(const std::shared_ptr<CPVREpg>& epg);
+    bool QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg);
 
     /*!
      * @brief CEventStream callback for PVR events.

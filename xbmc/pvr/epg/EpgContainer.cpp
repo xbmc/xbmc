@@ -319,7 +319,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
         bReturn &= epg->QueuePersistQuery(database);
 
         size_t queryCount = database->GetInsertQueriesCount() + database->GetDeleteQueriesCount();
-        if (queryCount > 10000)
+        if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
         {
           CLog::LogFC(LOGDEBUG, LOGEPG, "EPG Container: committing {} queries in loop.",
                       queryCount);
@@ -626,7 +626,7 @@ bool CPVREpgContainer::RemoveOldEntries()
   return true;
 }
 
-bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
+bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg)
 {
   if (!epg || epg->EpgID() < 0)
     return false;
@@ -652,11 +652,7 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
       m_channelUidToEpgMap.erase(epgEntry1);
 
     CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table {} ({})", epg->Name(), epg->EpgID());
-
-    database->Lock();
     epgEntry->second->QueueDeleteQueries(database);
-    database->CommitDeleteQueries();
-    database->Unlock();
 
     epgToDelete = epgEntry->second;
     m_epgIdToEpgMap.erase(epgEntry);
@@ -759,8 +755,17 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (bShowProgress && !bOnlyPending)
     progressHandler->DestroyProgress();
 
+  database->Lock();
   for (const auto& epg : invalidTables)
-    DeleteEpg(epg);
+  {
+    QueueDeleteEpg(epg);
+
+    size_t queryCount = database->GetDeleteQueriesCount();
+    if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
+      database->CommitDeleteQueries();
+  }
+  database->CommitDeleteQueries();
+  database->Unlock();
 
   if (bInterrupted)
   {

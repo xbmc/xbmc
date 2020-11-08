@@ -25,6 +25,8 @@ namespace PVR
 
   /** The PVR database */
 
+  static constexpr int CHANNEL_COMMIT_QUERY_COUNT_LIMIT = 10000;
+
   class CPVRDatabase : public CDatabase
   {
   public:
