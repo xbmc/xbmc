@@ -101,7 +101,7 @@ void CPVRChannel::Serialize(CVariant& value) const
 
 /********** XBMC related channel methods **********/
 
-bool CPVRChannel::Delete()
+bool CPVRChannel::QueueDelete()
 {
   bool bReturn = false;
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
@@ -117,7 +117,7 @@ bool CPVRChannel::Delete()
     m_epg.reset();
   }
 
-  bReturn = database->Delete(*this);
+  bReturn = database->QueueDeleteQuery(*this);
   return bReturn;
 }
 

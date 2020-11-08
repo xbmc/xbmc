@@ -274,7 +274,7 @@ bool CPVREpgDatabase::DeleteEpg()
   return bReturn;
 }
 
-bool CPVREpgDatabase::Delete(const CPVREpg& table)
+bool CPVREpgDatabase::QueueDeleteEpgQuery(const CPVREpg& table)
 {
   /* invalid channel */
   if (table.EpgID() <= 0)
@@ -287,7 +287,10 @@ bool CPVREpgDatabase::Delete(const CPVREpg& table)
 
   CSingleLock lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
-  return DeleteValues("epg", filter);
+
+  std::string strQuery;
+  BuildSQL(PrepareSQL("DELETE FROM %s ", "epg"), filter, strQuery);
+  return QueueDeleteQuery(strQuery);
 }
 
 bool CPVREpgDatabase::QueueDeleteTagQuery(const CPVREpgInfoTag& tag)
@@ -1050,6 +1053,18 @@ bool CPVREpgDatabase::DeleteEpgTags(int iEpgId)
   CSingleLock lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u", iEpgId));
   return DeleteValues("epgtags", filter);
+}
+
+bool CPVREpgDatabase::QueueDeleteEpgTags(int iEpgId)
+{
+  Filter filter;
+
+  CSingleLock lock(m_critSection);
+  filter.AppendWhere(PrepareSQL("idEpg = %u", iEpgId));
+
+  std::string strQuery;
+  BuildSQL(PrepareSQL("DELETE FROM %s ", "epg"), filter, strQuery);
+  return QueueDeleteQuery(strQuery);
 }
 
 bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)

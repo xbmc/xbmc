@@ -81,11 +81,11 @@ namespace PVR
     bool DeleteEpg();
 
     /*!
-     * @brief Delete an EPG table.
-     * @param table The table to remove.
-     * @return True if the table was removed successfully, false otherwise.
+     * @brief Queue deletionof an EPG table.
+     * @param tag The table to queue for deletion.
+     * @return True on success, false otherwise.
      */
-    bool Delete(const CPVREpg& table);
+    bool QueueDeleteEpgQuery(const CPVREpg& table);
 
     /*!
      * @brief Write the query to delete the given EPG tag to db query queue.
@@ -256,6 +256,13 @@ namespace PVR
      * @return True if the entries were removed successfully, false otherwise.
      */
     bool DeleteEpgTags(int iEpgId);
+
+    /*!
+     * @brief Queue the erase all EPG tags with the given epg ID.
+     * @param iEpgId The ID of the EPG.
+     * @return True if the entries were queued successfully, false otherwise.
+     */
+    bool QueueDeleteEpgTags(int iEpgId);
 
     /*!
      * @brief Write the query to persist the given EPG tag to db query queue.

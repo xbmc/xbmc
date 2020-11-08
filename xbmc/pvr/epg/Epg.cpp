@@ -330,7 +330,7 @@ bool CPVREpg::QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database
   return true;
 }
 
-bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)
+bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& database)
 {
   if (!database)
   {
@@ -339,10 +339,10 @@ bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)
   }
 
   // delete own epg db entry
-  database->Delete(*this);
+  database->QueueDeleteEpgQuery(*this);
 
   // delete all tags for this epg from db
-  m_tags.Delete();
+  m_tags.QueueDelete();
 
   Clear();
 

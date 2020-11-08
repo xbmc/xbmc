@@ -643,10 +643,10 @@ void CPVREpgTagsContainer::QueuePersistQuery()
   }
 }
 
-void CPVREpgTagsContainer::Delete()
+void CPVREpgTagsContainer::QueueDelete()
 {
   if (m_database)
-    m_database->DeleteEpgTags(m_iEpgID);
+    m_database->QueueDeleteEpgTags(m_iEpgID);
 
   Clear();
 }

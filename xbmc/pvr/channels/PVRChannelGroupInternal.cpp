@@ -282,10 +282,28 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDelete
 {
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels = CPVRChannelGroup::RemoveDeletedChannels(channels);
 
-  for (const auto& channel : removedChannels)
+  bool channelsDeleted = false;
+
+  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+  if (!database)
   {
-    // since channel was not found in the internal group, it was deleted from the backend
-    channel->Delete();
+    CLog::LogF(LOGERROR, "No TV database");
+  }
+  else
+  {
+    // Note: We must lock the db the whole time, otherwise races may occur.
+    database->Lock();
+
+    for (const auto& channel : removedChannels)
+    {
+      // since channel was not found in the internal group, it was deleted from the backend
+      channelsDeleted |= channel->QueueDelete();
+    }
+
+    if (channelsDeleted)
+      database->CommitDeleteQueries();
+
+    database->Unlock();
   }
 
   return removedChannels;

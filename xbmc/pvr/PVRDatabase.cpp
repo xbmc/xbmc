@@ -75,6 +75,16 @@ void CPVRDatabase::Close()
   CDatabase::Close();
 }
 
+void CPVRDatabase::Lock()
+{
+  m_critSection.lock();
+}
+
+void CPVRDatabase::Unlock()
+{
+  m_critSection.unlock();
+}
+
 void CPVRDatabase::CreateTables()
 {
   CSingleLock lock(m_critSection);
@@ -289,19 +299,21 @@ bool CPVRDatabase::DeleteChannels()
   return DeleteValues("channels");
 }
 
-bool CPVRDatabase::Delete(const CPVRChannel& channel)
+bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
     return false;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting channel '{}' from the database", channel.ChannelName());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Queueing delete for channel '{}' from the database",
+              channel.ChannelName());
 
   Filter filter;
   filter.AppendWhere(PrepareSQL("idChannel = %u", channel.ChannelID()));
 
-  CSingleLock lock(m_critSection);
-  return DeleteValues("channels", filter);
+  std::string strQuery;
+  BuildSQL(PrepareSQL("DELETE FROM %s ", "channels"), filter, strQuery);
+  return CDatabase::QueueDeleteQuery(strQuery);
 }
 
 int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)

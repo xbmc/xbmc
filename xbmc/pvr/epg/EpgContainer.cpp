@@ -631,6 +631,13 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
   if (!epg || epg->EpgID() < 0)
     return false;
 
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return false;
+  }
+
   std::shared_ptr<CPVREpg> epgToDelete;
   {
     CSingleLock lock(m_critSection);
@@ -646,7 +653,10 @@ bool CPVREpgContainer::DeleteEpg(const std::shared_ptr<CPVREpg>& epg)
 
     CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting EPG table {} ({})", epg->Name(), epg->EpgID());
 
-    epgEntry->second->Delete(GetEpgDatabase());
+    database->Lock();
+    epgEntry->second->QueueDeleteQueries(database);
+    database->CommitDeleteQueries();
+    database->Unlock();
 
     epgToDelete = epgEntry->second;
     m_epgIdToEpgMap.erase(epgEntry);
