@@ -42,16 +42,15 @@ SamplerState DitherSampler : IMMUTABLE
 };
 #endif
 #if (defined(KODI_TONE_MAPPING_ACES) || defined(KODI_TONE_MAPPING_HABLE) || defined(KODI_HLG_TO_PQ))
-const float ST2084_m1 = 2610.0f / (4096.0f * 4.0f);
-const float ST2084_m2 = (2523.0f / 4096.0f) * 128.0f;
-const float ST2084_c1 = 3424.0f / 4096.0f;
-const float ST2084_c2 = (2413.0f / 4096.0f) * 32.0f;
-const float ST2084_c3 = (2392.0f / 4096.0f) * 32.0f;
+static const float ST2084_m1 = 2610.0f / (4096.0f * 4.0f);
+static const float ST2084_m2 = (2523.0f / 4096.0f) * 128.0f;
+static const float ST2084_c1 = 3424.0f / 4096.0f;
+static const float ST2084_c2 = (2413.0f / 4096.0f) * 32.0f;
+static const float ST2084_c3 = (2392.0f / 4096.0f) * 32.0f;
 #endif
 #if defined(KODI_TONE_MAPPING_REINHARD)
 float g_toneP1;
 float3 g_coefsDst;
-float g_luminance;
 
 float reinhard(float x)
 {
@@ -73,8 +72,8 @@ float3 aces(float3 x)
 }
 #endif
 #if defined(KODI_TONE_MAPPING_HABLE)
-float g_luminance;
 float g_toneP1;
+float g_toneP2;
 
 float3 hable(float3 x)
 {
@@ -136,8 +135,7 @@ float4 output4(float4 color, float2 uv)
 #if defined(KODI_TONE_MAPPING_HABLE)
   color.rgb = inversePQ(color.rgb);
   color.rgb *= g_toneP1;
-  float wp = g_luminance / 100.0f;
-  color.rgb = hable(color.rgb * wp) / hable(wp);
+  color.rgb = hable(color.rgb * g_toneP2) / hable(g_toneP2);
   color.rgb = pow(color.rgb, 1.0f / 2.2f);
 #endif
 #if defined(KODI_HLG_TO_PQ)
