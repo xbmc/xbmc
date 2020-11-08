@@ -81,9 +81,13 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
     pItem->SetProperty("watchedepisodes", watched);
     pItem->SetProperty("unwatchedepisodes", unwatched);
-    if (items.Size() && items[0]->GetVideoInfoTag())
+
+    // @note: the items list contains the (..) upper directory navigation fileitem plus all the
+    // season directory fileitems for a given show. We want to assign the "All Seasons" listitem
+    // the infotag of the tv show - so do not use the first item in the list!
+    if (items.Size() && items[items.Size() - 1]->GetVideoInfoTag())
     {
-      *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
+      *pItem->GetVideoInfoTag() = *items[items.Size() - 1]->GetVideoInfoTag();
       pItem->GetVideoInfoTag()->m_iSeason = -1;
     }
     pItem->GetVideoInfoTag()->m_strTitle = strLabel;
