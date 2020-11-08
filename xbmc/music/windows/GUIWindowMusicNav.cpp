@@ -668,7 +668,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // music videos - artists
       if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/"))
       {
-        long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
+        int idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
         std::string path = StringUtils::Format("musicdb://artists/%ld/", idArtist);
@@ -685,7 +685,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // music videos - albums
       if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/albums/"))
       {
-        long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
+        int idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
         std::string path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);

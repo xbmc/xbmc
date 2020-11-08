@@ -2275,7 +2275,7 @@ bool CFileItemList::IsEmpty() const
   return m_items.empty();
 }
 
-void CFileItemList::Reserve(int iCount)
+void CFileItemList::Reserve(size_t iCount)
 {
   CSingleLock lock(m_lock);
   m_items.reserve(iCount);

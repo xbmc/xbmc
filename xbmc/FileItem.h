@@ -675,7 +675,7 @@ public:
   void Append(const CFileItemList& itemlist);
   void Assign(const CFileItemList& itemlist, bool append = false);
   bool Copy  (const CFileItemList& item, bool copyItems = true);
-  void Reserve(int iCount);
+  void Reserve(size_t iCount);
   void Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute sortAttributes = SortAttributeNone);
   /* \brief Sorts the items based on the given sorting options
 

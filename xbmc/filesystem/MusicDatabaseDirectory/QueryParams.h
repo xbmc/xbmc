@@ -18,24 +18,24 @@ namespace XFILE
     {
     public:
       CQueryParams();
-      long GetArtistId() { return m_idArtist; }
-      long GetAlbumId() { return m_idAlbum; }
-      long GetGenreId() { return m_idGenre; }
-      long GetSongId() { return m_idSong; }
-      long GetYear() { return m_year; }
-      long GetDisc() { return m_disc; }
+      int GetArtistId() { return m_idArtist; }
+      int GetAlbumId() { return m_idAlbum; }
+      int GetGenreId() { return m_idGenre; }
+      int GetSongId() { return m_idSong; }
+      int GetYear() { return m_year; }
+      int GetDisc() { return m_disc; }
 
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName);
 
       friend class CDirectoryNode;
     private:
-      long m_idArtist;
-      long m_idAlbum;
-      long m_idGenre;
-      long m_idSong;
-      long m_year;
-      long m_disc;
+      int m_idArtist;
+      int m_idAlbum;
+      int m_idGenre;
+      int m_idSong;
+      int m_year;
+      int m_disc;
     };
   }
 }

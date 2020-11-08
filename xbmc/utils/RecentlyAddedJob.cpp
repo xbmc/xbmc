@@ -212,7 +212,7 @@ bool CRecentlyAddedJob::UpdateMusic()
 
   if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
   {
-    long idAlbum = -1;
+    int idAlbum = -1;
     std::string strAlbumThumb;
     std::string strAlbumFanart;
     for (; i < musicItems.Size(); ++i)
@@ -340,7 +340,7 @@ bool CRecentlyAddedJob::UpdateTotal()
   musicdatabase.GetArtistsByWhere(musicUrl.ToString(), filter, items, SortDescription(), true);
   int MusArtistTotals = 0;
   if (items.Size() == 1 && items.Get(0)->HasProperty("total"))
-    MusArtistTotals = items.Get(0)->GetProperty("total").asInteger();
+    MusArtistTotals = static_cast<int>(items.Get(0)->GetProperty("total").asInteger());
 
   int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
   int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());

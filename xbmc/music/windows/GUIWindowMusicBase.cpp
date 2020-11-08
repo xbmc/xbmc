@@ -1051,7 +1051,7 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
         if (choice == MUSIC_SELECT_ACTION_RESUME)
         {
           (*itemIt)->SetProperty("audiobook_bookmark", bookmark);
-          return CGUIMediaWindow::OnSelect(itemIt - m_vecItems->cbegin());
+          return CGUIMediaWindow::OnSelect(static_cast<int>(itemIt - m_vecItems->cbegin()));
         }
         else if (choice < 0)
           return true;

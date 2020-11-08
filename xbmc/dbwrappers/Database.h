@@ -130,6 +130,28 @@ public:
   std::string GetSingleValue(const std::string &query, std::unique_ptr<dbiplus::Dataset> &ds);
 
   /*!
+ * @brief Get a single integer value from a table.
+ * @remarks The values of the strWhereClause and strOrderBy parameters have to be FormatSQL'ed when used.
+ * @param strTable The table to get the value from.
+ * @param strColumn The column to get.
+ * @param strWhereClause If set, use this WHERE clause.
+ * @param strOrderBy If set, use this ORDER BY clause.
+ * @return The requested value or 0 if it wasn't found.
+ */
+  int GetSingleValueInt(const std::string& strTable,
+                        const std::string& strColumn,
+                        const std::string& strWhereClause = std::string(),
+                        const std::string& strOrderBy = std::string());
+  int GetSingleValueInt(const std::string& query);
+
+  /*! \brief Get a single integer value from a query on a dataset.
+   \param query the query in question.
+   \param ds the dataset to use for the query.
+   \return the value from the query, 0 on failure.
+   */
+  int GetSingleValueInt(const std::string& query, std::unique_ptr<dbiplus::Dataset>& ds);
+
+  /*!
    * @brief Delete values from a table.
    * @param strTable The table to delete the values from.
    * @param filter The Filter to apply to this query.

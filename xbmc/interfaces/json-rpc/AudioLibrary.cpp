@@ -277,7 +277,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
       for (unsigned int index = 0; index < result["albums"].size(); index++)
       {
         CFileItem item;
-        item.GetMusicInfoTag()->SetDatabaseId(result["albums"][index]["albumid"].asInteger(), MediaTypeAlbum);
+        item.GetMusicInfoTag()->SetDatabaseId(result["albums"][index]["albumid"].asInteger32(), MediaTypeAlbum);
 
         // Could use FillDetails, but it does unnecessary serialization of empty MusiInfoTag
         // CFileItemPtr itemptr(new CFileItem(item));
@@ -432,9 +432,9 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
         CFileItem item;
         // Only needs song and album id (if we have it) set to get art
         // Getting art is quicker if "albumid" has been fetched
-        item.GetMusicInfoTag()->SetDatabaseId(result["songs"][index]["songid"].asInteger(), MediaTypeSong);
+        item.GetMusicInfoTag()->SetDatabaseId(result["songs"][index]["songid"].asInteger32(), MediaTypeSong);
         if (result["songs"][index].isMember("albumid"))
-          item.GetMusicInfoTag()->SetAlbumId(result["songs"][index]["albumid"].asInteger());
+          item.GetMusicInfoTag()->SetAlbumId(result["songs"][index]["albumid"].asInteger32());
         else
           item.GetMusicInfoTag()->SetAlbumId(-1);
 
@@ -796,9 +796,9 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
   if (ParameterNotNull(parameterObject, "rating"))
     album.fRating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "userrating"))
-    album.iUserrating = parameterObject["userrating"].asInteger();
+    album.iUserrating = static_cast<int>(parameterObject["userrating"].asInteger());
   if (ParameterNotNull(parameterObject, "votes"))
-    album.iVotes = parameterObject["votes"].asInteger();
+    album.iVotes = static_cast<int>(parameterObject["votes"].asInteger());
   if (ParameterNotNull(parameterObject, "year"))
     album.strReleaseDate = parameterObject["year"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainzalbumid"))
@@ -891,7 +891,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (ParameterNotNull(parameterObject, "rating"))
     song.rating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "userrating"))
-    song.userrating = parameterObject["userrating"].asInteger();
+    song.userrating = static_cast<int>(parameterObject["userrating"].asInteger());
   if (ParameterNotNull(parameterObject, "track"))
     song.iTrack = (song.iTrack & 0xffff0000) | ((int)parameterObject["track"].asInteger() & 0xffff);
   if (ParameterNotNull(parameterObject, "disc"))

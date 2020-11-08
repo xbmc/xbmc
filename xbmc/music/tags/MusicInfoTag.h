@@ -107,7 +107,7 @@ public:
   void SetYear(int year);
   void SetOriginalDate(const std::string& strOriginalDate);
   void SetReleaseDate(const std::string& strReleaseDate);
-  void SetDatabaseId(long id, const std::string &type);
+  void SetDatabaseId(int id, const std::string &type);
   void SetTrackNumber(int iTrack);
   void SetDiscNumber(int iDiscNumber);
   void SetTrackAndDiscNumber(int iTrackAndDisc);

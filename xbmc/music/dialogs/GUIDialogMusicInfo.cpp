@@ -979,12 +979,12 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
   }
   else if (pItem->HasProperty("artist_musicid"))
   {
-    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger(),
+    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger32(),
                                                MediaTypeArtist);
   }
   else if (pItem->HasProperty("album_musicid"))
   {
-    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger(),
+    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger32(),
                                                MediaTypeAlbum);
   }
   else
