@@ -216,9 +216,10 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
   else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
   {
     float lumin = GetLuminanceValue();
-    float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
-    effect.SetScalar("g_luminance", lumin);
-    effect.SetScalar("g_toneP1", param);
+    float lumin_factor = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
+    float lumin_div100 = lumin / (100.0f * m_toneMappingParam);
+    effect.SetScalar("g_toneP1", lumin_factor);
+    effect.SetScalar("g_toneP2", lumin_div100);
   }
 }
 
