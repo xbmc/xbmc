@@ -196,14 +196,15 @@ bool CAddonInstaller::InstallOrUpdate(const std::string& addonID,
   if (!CAddonInstallJob::GetAddon(addonID, repo, addon))
     return false;
 
-  return DoInstall(addon, repo, background, modal, AutoUpdateJob::NO, DependencyJob::NO);
+  return DoInstall(addon, repo, background, modal, AutoUpdateJob::NO, DependencyJob::NO,
+                   AllowCheckForUpdates::YES);
 }
 
 bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
                                                 const ADDON::RepositoryPtr& repo)
 {
   return DoInstall(dependsId, repo, BackgroundJob::NO, ModalJob::NO, AutoUpdateJob::NO,
-                   DependencyJob::YES);
+                   DependencyJob::YES, AllowCheckForUpdates::YES);
 }
 
 bool CAddonInstaller::Install(const std::string& addonId,
@@ -224,7 +225,7 @@ bool CAddonInstaller::Install(const std::string& addonId,
     return false;
 
   return DoInstall(addon, std::static_pointer_cast<CRepository>(repo), BackgroundJob::YES,
-                   ModalJob::NO, AutoUpdateJob::NO, DependencyJob::NO);
+                   ModalJob::NO, AutoUpdateJob::NO, DependencyJob::NO, AllowCheckForUpdates::YES);
 }
 
 bool CAddonInstaller::DoInstall(const AddonPtr& addon,
@@ -232,7 +233,8 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
                                 BackgroundJob background,
                                 ModalJob modal,
                                 AutoUpdateJob autoUpdate,
-                                DependencyJob dependsInstall)
+                                DependencyJob dependsInstall,
+                                AllowCheckForUpdates allowCheckForUpdates)
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
@@ -256,6 +258,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
   lock.Leave();
 
   installJob->SetDependsInstall(dependsInstall);
+  installJob->SetAllowCheckForUpdates(allowCheckForUpdates);
 
   bool result = false;
   if (modal == ModalJob::YES)
@@ -297,7 +300,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   AddonPtr addon;
   if (CServiceBroker::GetAddonMgr().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr(), BackgroundJob::YES, ModalJob::NO, AutoUpdateJob::NO,
-                     DependencyJob::NO);
+                     DependencyJob::NO, AllowCheckForUpdates::YES);
 
   CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
       StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
@@ -440,7 +443,9 @@ void CAddonInstaller::PrunePackageCache()
   }
 }
 
-void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
+void CAddonInstaller::InstallAddons(const VECADDONS& addons,
+                                    bool wait,
+                                    AllowCheckForUpdates allowCheckForUpdates)
 {
   for (const auto& addon : addons)
   {
@@ -448,7 +453,7 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
     RepositoryPtr repo;
     if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
       DoInstall(toInstall, repo, BackgroundJob::NO, ModalJob::NO, AutoUpdateJob::YES,
-                DependencyJob::NO);
+                DependencyJob::NO, allowCheckForUpdates);
   }
   if (wait)
   {
@@ -678,9 +683,24 @@ bool CAddonInstallJob::DoWork()
   else if (m_addon->HasMainType(ADDON_REPOSITORY))
   {
     origin = m_addon->ID(); // use own id as origin if repository
-    if (m_isUpdate)
-      CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
-          std::static_pointer_cast<CRepository>(m_addon), false);
+
+    // if a repository is updated during the add-on migration process, we need to skip
+    // calling CheckForUpdates() on the repo to prevent deadlock issues during migration
+
+    if (m_allowCheckForUpdates == AllowCheckForUpdates::YES)
+    {
+      if (m_isUpdate)
+      {
+        CLog::Log(LOGDEBUG, "ADDONS: repository [{}] updated. now checking for content updates.",
+                  m_addon->ID());
+        CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
+            std::static_pointer_cast<CRepository>(m_addon), false);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "ADDONS: skipping CheckForUpdates() on repository [{}].", m_addon->ID());
+    }
   }
   else if (m_repo)
   {
