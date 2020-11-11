@@ -17,6 +17,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgDatabase.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -285,24 +286,39 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDelete
   bool channelsDeleted = false;
 
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
-  if (!database)
+  const std::shared_ptr<CPVREpgDatabase> epgDatabase =
+      CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
+  if (!database || !epgDatabase)
   {
-    CLog::LogF(LOGERROR, "No TV database");
+    CLog::LogF(LOGERROR, "No TV or EPG database");
   }
   else
   {
-    // Note: We must lock the db the whole time, otherwise races may occur.
+    // Note: We must lock the dbs the whole time, otherwise races may occur.
     database->Lock();
+    epgDatabase->Lock();
 
     for (const auto& channel : removedChannels)
     {
       // since channel was not found in the internal group, it was deleted from the backend
       channelsDeleted |= channel->QueueDelete();
+
+      size_t queryCount = epgDatabase->GetDeleteQueriesCount();
+      if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
+        epgDatabase->CommitDeleteQueries();
+
+      queryCount = database->GetDeleteQueriesCount();
+      if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
+        database->CommitDeleteQueries();
     }
 
     if (channelsDeleted)
+    {
+      epgDatabase->CommitDeleteQueries();
       database->CommitDeleteQueries();
+    }
 
+    epgDatabase->Unlock();
     database->Unlock();
   }
 

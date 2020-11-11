@@ -25,6 +25,8 @@ namespace PVR
 
   /** The EPG database */
 
+  static constexpr int EPG_COMMIT_QUERY_COUNT_LIMIT = 10000;
+
   class CPVREpgDatabase : public CDatabase, public std::enable_shared_from_this<CPVREpgDatabase>
   {
   public:
