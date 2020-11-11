@@ -250,6 +250,7 @@ void CAdvancedSettings::Initialize()
 
   m_remoteDelay = 3;
   m_bScanIRServer = true;
+  m_grabInputDevice = true;
 
   m_playlistAsFolders = true;
   m_detectAsUdf = false;
@@ -1028,6 +1029,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 0, 20);
   XMLUtils::GetBoolean(pRootElement, "scanirserver", m_bScanIRServer);
+  XMLUtils::GetBoolean(pRootElement, "grabinputdevice", m_grabInputDevice);
 
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 9999);
   XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 9999);

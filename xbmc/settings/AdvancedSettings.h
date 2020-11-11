@@ -213,6 +213,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     bool m_bScanIRServer;
+    bool m_grabInputDevice; ///< \brief grab input device for exclusive access (Linux)
 
     bool m_playlistAsFolders;
     bool m_detectAsUdf;

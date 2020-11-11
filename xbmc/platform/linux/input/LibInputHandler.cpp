@@ -12,6 +12,9 @@
 #include "LibInputPointer.h"
 #include "LibInputSettings.h"
 #include "LibInputTouch.h"
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -33,10 +36,14 @@ static int open_restricted(const char *path, int flags, void __attribute__((unus
     return -errno;
   }
 
-  auto ret = ioctl(fd, EVIOCGRAB, (void*)1);
-  if (ret < 0)
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_grabInputDevice)
   {
-    CLog::Log(LOGDEBUG, "%s - grab requested, but failed for %s (%s)", __FUNCTION__, path, strerror(errno));
+    auto ret = ioctl(fd, EVIOCGRAB, (void*)1);
+    if (ret < 0)
+    {
+      CLog::Log(LOGDEBUG, "%s - grab requested, but failed for %s (%s)", __FUNCTION__, path, strerror(errno));
+    }
   }
 
   return fd;
