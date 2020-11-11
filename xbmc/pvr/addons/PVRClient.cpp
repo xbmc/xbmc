@@ -104,6 +104,8 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strClientPath = CSpecialProtocol::TranslatePath(Path());
   m_bReadyToUse = false;
   m_bBlockAddonCalls = false;
+  m_iAddonCalls = 0;
+  m_allAddonCallsFinished.Set();
   m_connectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient = false;
@@ -156,7 +158,6 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   if (iClientId <= PVR_INVALID_CLIENT_ID)
     return status;
 
-  /* reset all properties to defaults */
   ResetProperties(iClientId);
 
   /* initialise the add-on */
@@ -176,16 +177,18 @@ void CPVRClient::Destroy()
 
   m_bReadyToUse = false;
 
-  /* reset 'ready to use' to false */
   CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '{}'", GetFriendlyName());
 
-  /* destroy the add-on */
+  m_bBlockAddonCalls = true;
+  m_allAddonCallsFinished.Wait();
+
   DestroyInstance();
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR add-on instance '{}' destroyed", GetFriendlyName());
 
   if (m_menuhooks)
     m_menuhooks->Clear();
 
-  /* reset all properties to defaults */
   ResetProperties();
 }
 
@@ -1378,7 +1381,14 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
     return PVR_ERROR_SERVER_ERROR;
 
   // Call.
+  m_allAddonCallsFinished.Reset();
+  m_iAddonCalls++;
+
   const PVR_ERROR error = function(&m_struct);
+
+  m_iAddonCalls--;
+  if (m_iAddonCalls == 0)
+    m_allAddonCallsFinished.Set();
 
   // Log error, if any.
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
