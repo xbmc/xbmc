@@ -979,8 +979,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       m_pkt.pkt.size = 0;
       m_pkt.pkt.data = NULL;
 
-      // timeout reads after 100ms
-      m_timeout.Set(20000);
+      // timeout reads after 1000ms
+      m_timeout.Set(1000);
       m_pkt.result = av_read_frame(m_pFormatContext, &m_pkt.pkt);
       m_timeout.SetInfinite();
     }
@@ -992,10 +992,14 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
     else if (m_pkt.result == AVERROR_EOF)
     {
+      if (m_pInput->IsRealtime())
+        bReturnEmpty = true;
     }
     else if (m_pkt.result < 0)
     {
       Flush();
+      if (m_pInput->IsRealtime())
+        bReturnEmpty = true;
     }
     // check size and stream index for being in a valid range
     else if (m_pkt.pkt.size < 0 ||
