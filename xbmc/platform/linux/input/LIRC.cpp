@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
@@ -42,7 +43,18 @@ void CLirc::Start()
 
 void CLirc::Process()
 {
-  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    throw std::runtime_error("CSettingsComponent needs to exist before starting CLirc");
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    throw std::runtime_error("CSettings needs to exist before starting CLirc");
+
+  while (!settings->IsLoaded())
+    CThread::Sleep(1000);
+
+  m_profileId = settingsComponent->GetProfileManager()->GetCurrentProfileId();
   m_irTranslator.Load("Lircmap.xml");
 
   // make sure work-around (CheckDaemon) uses the same socket path as lirc_init
@@ -85,7 +97,7 @@ void CLirc::Process()
       }
       if (code != nullptr)
       {
-        int profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
+        int profileId = settingsComponent->GetProfileManager()->GetCurrentProfileId();
         if (m_profileId != profileId)
         {
           m_profileId = profileId;
