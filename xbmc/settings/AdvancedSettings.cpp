@@ -258,6 +258,10 @@ void CAdvancedSettings::Initialize()
   m_imageRes = 720;
   m_imageScalingAlgorithm = CPictureScalingAlgorithm::Default;
 
+  m_imageMipMappingGlobal = false;
+  m_imageMipMappingGlobalSharpen = 1.0f;
+  m_imageMipMappingSpecialSharpen = 0.5f;
+
   m_sambaclienttimeout = 30;
   m_sambadoscodepage = "";
   m_sambastatfiles = true;
@@ -1033,6 +1037,11 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 9999);
   if (XMLUtils::GetString(pRootElement, "imagescalingalgorithm", tmp))
     m_imageScalingAlgorithm = CPictureScalingAlgorithm::FromString(tmp);
+
+  XMLUtils::GetBoolean(pRootElement, "imagemipmappingglobal", m_imageMipMappingGlobal);
+  XMLUtils::GetFloat(pRootElement, "imagemipmappingglobalsharpen", m_imageMipMappingGlobalSharpen, 0.0f, 3.0f);
+  XMLUtils::GetFloat(pRootElement, "imagemipmappingspecialsharpen", m_imageMipMappingSpecialSharpen, 0.0f, 3.0f);
+
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "uselocalecollation", m_useLocaleCollation);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);

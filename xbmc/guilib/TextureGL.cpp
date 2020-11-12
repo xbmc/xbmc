@@ -12,6 +12,7 @@
 #include "guilib/TextureManager.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/GLUtils.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
@@ -66,14 +67,17 @@ void CGLTexture::LoadToGPU()
   GLenum filter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_NEAREST : GL_LINEAR);
 
   // Set the texture's stretching properties
-  if (IsMipmapped())
+  if (IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingGlobal)
   {
     GLenum mipmapFilter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmapFilter);
 
 #ifndef HAS_GLES
     // Lower LOD bias equals more sharpness, but less smooth animation
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
+    if (!IsMipmappedSpecial())
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingGlobalSharpen);
+    else
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingSpecialSharpen);
     if (!m_isOglVersion3orNewer)
       glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 #endif
@@ -140,7 +144,7 @@ void CGLTexture::LoadToGPU()
                            GetPitch() * GetRows(), m_pixels);
   }
 
-  if (IsMipmapped() && m_isOglVersion3orNewer)
+  if ((IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingGlobal) && m_isOglVersion3orNewer)
   {
     glGenerateMipmap(GL_TEXTURE_2D);
   }
@@ -193,7 +197,7 @@ void CGLTexture::LoadToGPU()
   glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
     pixelformat, GL_UNSIGNED_BYTE, m_pixels);
 
-  if (IsMipmapped())
+  if (IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingGlobal)
   {
     glGenerateMipmap(GL_TEXTURE_2D);
   }

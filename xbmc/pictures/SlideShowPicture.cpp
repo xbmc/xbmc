@@ -128,7 +128,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
   m_fHeight = (float)pTexture->GetHeight();
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SLIDESHOW_HIGHQUALITYDOWNSCALING))
   { // activate mipmapping when high quality downscaling is 'on'
-    pTexture->SetMipmapping();
+    pTexture->SetMipmapping(true);
   }
   // reset our counter
   m_iCounter = 0;

@@ -26,6 +26,9 @@
 
 #include <d3dcompiler.h>
 
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
@@ -156,8 +159,16 @@ bool CGUIShaderDX::CreateSamplers()
   sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
   sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
   sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-  sampDesc.MinLOD = 0;
+  sampDesc.MinLOD = -D3D11_FLOAT32_MAX;
   sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingGlobal)
+  {
+    sampDesc.MipLODBias = -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingGlobalSharpen;
+  }
+  else
+  {
+    sampDesc.MipLODBias = -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageMipMappingSpecialSharpen;
+  }
 
   if (FAILED(DX::DeviceResources::Get()->GetD3DDevice()->CreateSamplerState(&sampDesc, m_pSampLinear.ReleaseAndGetAddressOf())))
     return false;
