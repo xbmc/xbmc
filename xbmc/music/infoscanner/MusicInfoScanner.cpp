@@ -1931,7 +1931,7 @@ void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
     m_StopEvent.WaitMSec(milliseconds);
   }
   else
-    XbmcThreads::ThreadSleep(milliseconds);
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& artfolder)

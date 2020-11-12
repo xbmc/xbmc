@@ -59,9 +59,4 @@ namespace XbmcThreads
     inline unsigned int GetInitialTimeoutValue(void) const { return totalWaitTime; }
     inline unsigned int GetStartTime(void) const { return startTime; }
   };
-
-  inline void ThreadSleep(unsigned int millis)
-  {
-    std::this_thread::sleep_for(std::chrono::microseconds(millis));
-  }
 }
