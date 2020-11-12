@@ -238,9 +238,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   // open the demuxer
   m_pFormatContext  = avformat_alloc_context();
   m_pFormatContext->interrupt_callback = int_cb;
-
-  // try to abort after 30 seconds
-  m_timeout.Set(30000);
+  unsigned int ffInterruptTimeout = m_pInput->IsRealtime() ? 5000 : 30000;
 
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
@@ -256,6 +254,9 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
       // try mmsh, then mmst
       url.SetProtocol("mmsh");
       url.SetProtocolOptions("");
+
+      // Set a timeout for the open input action
+      m_timeout.Set(ffInterruptTimeout);
       result = avformat_open_input(&m_pFormatContext, url.Get().c_str(), iformat, &options);
       if (result < 0)
       {
@@ -295,6 +296,8 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     if (result < 0)
     {
       m_pFormatContext->flags |= AVFMT_FLAG_PRIV_OPT;
+      // Set a timeout for the open input action
+      m_timeout.Set(ffInterruptTimeout);
       if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0)
       {
         CLog::Log(LOGDEBUG, "Error, could not open file %s", CURL::GetRedacted(strFile).c_str());
@@ -309,6 +312,8 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
       m_pFormatContext->flags &= ~AVFMT_FLAG_PRIV_OPT;
       AVDictionary* options = GetFFMpegOptionsFromInput();
       av_dict_set_int(&options, "load_all_variants", 0, AV_OPT_SEARCH_CHILDREN);
+      // Set a timeout for the open input action
+      m_timeout.Set(ffInterruptTimeout);
       if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0)
       {
         CLog::Log(LOGDEBUG, "Error, could not open file (2) %s", CURL::GetRedacted(strFile).c_str());
@@ -321,6 +326,10 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   }
   else
   {
+    // Set a timeout of 30 seconds
+    // for the next block of ffmpeg calls
+    m_timeout.Set(30000);
+
     bool seekable = true;
     if (m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
     {
