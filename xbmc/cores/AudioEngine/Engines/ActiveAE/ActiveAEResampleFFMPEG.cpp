@@ -30,7 +30,7 @@ CActiveAEResampleFFMPEG::~CActiveAEResampleFFMPEG()
 }
 
 bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfig, bool upmix, bool normalize, double centerMix,
-                                   CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
+                                   CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample, float mixSubLevel)
 {
   m_dst_chan_layout = dstConfig.channel_layout;
   m_dst_channels = dstConfig.channels;
@@ -62,6 +62,9 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
     CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
     return false;
   }
+
+  if (mixSubLevel > 0.0f)
+    av_opt_set_double(m_pContext, "lfe_mix_level", mixSubLevel, 0);
 
   if(quality == AE_QUALITY_HIGH)
   {

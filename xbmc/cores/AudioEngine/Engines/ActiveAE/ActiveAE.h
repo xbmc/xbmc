@@ -59,6 +59,7 @@ struct AudioSettings
   AEQuality resampleQuality;
   double atempoThreshold;
   bool streamNoise;
+  float mixSubLevel;
   int silenceTimeout;
 };
 

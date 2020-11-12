@@ -582,6 +582,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           LoadSettings();
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETNOISETYPE, &m_settings.streamNoise, sizeof(bool));
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETSILENCETIMEOUT, &m_settings.silenceTimeout, sizeof(int));
+          m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETMIXSUBLEVEL, &m_settings.mixSubLevel, sizeof(float));
           ChangeResamplers();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
@@ -1632,7 +1633,7 @@ void CActiveAE::ChangeResamplers()
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
-    (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality);
+    (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality, m_settings.mixSubLevel);
   }
 }
 
@@ -1779,6 +1780,7 @@ bool CActiveAE::InitSink()
   // send message to sink
   m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETNOISETYPE, &m_settings.streamNoise, sizeof(bool));
   m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETSILENCETIMEOUT, &m_settings.silenceTimeout, sizeof(int));
+  m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETMIXSUBLEVEL, &m_settings.mixSubLevel, sizeof(float));
 
   Message *reply;
   if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::CONFIGURE,
@@ -2637,6 +2639,7 @@ void CActiveAE::LoadSettings()
   m_settings.atempoThreshold = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD) / 100.0;
   m_settings.streamNoise = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   m_settings.silenceTimeout = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE) * 60000;
+  m_settings.mixSubLevel = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL) / 100.0;
 }
 
 void CActiveAE::Start()
@@ -3227,7 +3230,8 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   M_SQRT1_2,
                   outChannels.Count() > 0 ? &outChannels : nullptr,
                   m_settings.resampleQuality,
-                  false);
+                  false,
+                  m_settings.mixSubLevel);
 
   dst_samples = resampler->CalcDstSampleCount(sound->GetSound(true)->nb_samples,
                                               m_internalFormat.m_sampleRate,

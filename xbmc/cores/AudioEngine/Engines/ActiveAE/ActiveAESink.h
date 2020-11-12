@@ -57,6 +57,7 @@ public:
     TIMEOUT,
     SETSILENCETIMEOUT,
     SETNOISETYPE,
+    SETMIXSUBLEVEL,
   };
   enum InSignal
   {
@@ -145,6 +146,7 @@ protected:
   CAEBitstreamPacker *m_packer;
   bool m_needIecPack;
   bool m_streamNoise;
+  float m_mixSubLevel;
 };
 
 }
