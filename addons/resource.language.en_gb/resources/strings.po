@@ -15838,7 +15838,27 @@ msgstr ""
 
 #24171-24179 reserved for future use of lifecycle state name (to have continuous chain of GUI)
 
-#empty strings from id 24180 to 24990
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#24180"
+msgid "Minimum: {0:s}"
+msgstr ""
+
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24181"
+msgid " => Install: {0:s}"
+msgstr ""
+
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24182"
+msgid " / Installed: {0:s}"
+msgstr ""
+
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24183"
+msgid " => Update to: {0:s}"
+msgstr ""
+
+#empty strings from id 24184 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp

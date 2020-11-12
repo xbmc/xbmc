@@ -743,7 +743,7 @@ bool CAddonInstallJob::DoWork()
   bool notify = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                      CSettings::SETTING_ADDONS_NOTIFICATIONS) ||
                  m_isAutoUpdate == AutoUpdateJob::NO) &&
-                !IsModal();
+                !IsModal() && m_dependsInstall == DependencyJob::NO;
   CServiceBroker::GetEventLog().Add(
       EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);
 

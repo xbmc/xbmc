@@ -66,9 +66,9 @@
 					</control>
 					<control type="textbox">
 						<left>135</left>
-						<top>52</top>
+						<top>50</top>
 						<right>20</right>
-						<height>65</height>
+						<height>67</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<label>$INFO[ListItem.Label2]</label>
@@ -103,9 +103,9 @@
 					</control>
 					<control type="textbox">
 						<left>135</left>
-						<top>52</top>
+						<top>50</top>
 						<right>20</right>
-						<height>65</height>
+						<height>67</height>
 						<font>font12</font>
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
