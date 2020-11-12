@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/kodi-main/language/es_AR/)\n"
+"Language: es_AR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es_AR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#31000"
@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Películas no vistas"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Descargar íconos"
@@ -72,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Álbumes no escuchados"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Grabaciones recientes"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Canales vistos recientemente"
@@ -84,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Calificación"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Canales vistos recientemente"
@@ -108,6 +115,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Tipo de vista"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No se encontraron favoritos. Puede agregar cualquier elemento desde las vistas de medios usando el menu contextual."
@@ -115,6 +126,10 @@ msgstr "No se encontraron favoritos. Puede agregar cualquier elemento desde las 
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
+
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -140,6 +155,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Su valoración"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Páginas"
@@ -147,6 +166,10 @@ msgstr "Páginas"
 msgctxt "#31036"
 msgid "items"
 msgstr "elementos"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -184,10 +207,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponible"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Presione [B]OK[/B] para detener"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrado"
@@ -197,8 +216,12 @@ msgid "Arial based"
 msgstr "Basada en Arial"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Presione [B]Izquierda[/B] para rebobinar, o [B]Derecha[/B] para adelantar"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -211,6 +234,14 @@ msgstr "Mostrar la pantalla de inicio de sesión al iniciar"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Iniciar sesión automaticamente al iniciar"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -251,6 +282,10 @@ msgstr "por"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opciones de energía"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -308,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "IconWall"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Desplazamiento"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Muro de información"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Muro"
@@ -340,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletexto"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lista amplia"
@@ -424,9 +464,21 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Elegir pack de fanart para skin"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restante"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -468,6 +520,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Buscar add-ons"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Categorías"
@@ -477,8 +537,8 @@ msgid "Select genre fanart pack"
 msgstr "Elegir pack de fanart para género"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Repositorio"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -524,6 +584,52 @@ msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Teclado numérico"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr ""
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr ""
+
+#. Choose profile identifier
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nombre de perfil"
+
+#. Label for the kind of profile identification
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Presione [B]OK[/B] para detener"
+
+#~ msgctxt "#31054"
+#~ msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+#~ msgstr "Presione [B]Izquierda[/B] para rebobinar, o [B]Derecha[/B] para adelantar"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Repositorio"

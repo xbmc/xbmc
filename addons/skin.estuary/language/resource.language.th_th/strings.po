@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Thai (Thailand) (http://www.transifex.com/projects/p/kodi-main/language/th_TH/)\n"
+"Language: th_TH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: th_TH\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#31000"
@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "ภาพยนตร์ที่ยังไม่ได้ดู"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "ดาวน์โหลดไอคอน"
@@ -72,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "อัลบั้มที่ยังไม่ได้เล่น"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "การบันทึกล่าสุด"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "ช่องรายการที่เล่นล่าสุด"
@@ -84,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "เรต"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "ช่องรายการที่เล่นล่าสุด"
@@ -108,9 +115,21 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "แบบมุมมอง"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "ไม่พบรายการที่ชื่นชอบ คุณสามารถเพิ่มรายการใด ๆ จากมุมมองสื่อมายังรายการนี้ โดยใช้เมนูตามเนื้อหา"
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr ""
+
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -136,6 +155,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "เรตติ้งของคุณ"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "หน้า"
@@ -143,6 +166,10 @@ msgstr "หน้า"
 msgctxt "#31036"
 msgid "items"
 msgstr "รายการ"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -180,10 +207,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "ที่มีอยู่"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "กด [B]ตกลง[/B] เพื่อหยุด"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "ที่กรองแล้ว"
@@ -193,8 +216,12 @@ msgid "Arial based"
 msgstr "ใช้ฟ้อนท์ Arial"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "กด [B]ซ้าย[/B] เพื่อกรอกลับ, or [B]ซ้าย[/B] เพื่อไปข้างหน้าอย่างเร็ว"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -207,6 +234,14 @@ msgstr "แสดงหน้าจอลงชื่อเข้าใช้เ
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "เข้าใช้โดยอัตโนมัติเมื่อเริ่มต้น"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -247,6 +282,10 @@ msgstr "โดย"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "ตัวเลือก ด้านพลังงาน"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -304,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของคุณ[CR]เพื่อเข้าสู่ระบบและดำเนินการต่อไป"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "ผนังไอคอน"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "ผนังข้อมูล"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "ผนัง"
@@ -336,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "รายการแบบกว้าง"
@@ -420,9 +464,21 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "เลือกแพ็คแฟนอาร์ตของหน้าตา"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "ที่เหลืออยู่"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -464,6 +520,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "ค้นหาส่วนเสริม"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "หมวดหมู่"
@@ -473,8 +537,8 @@ msgid "Select genre fanart pack"
 msgstr "เลือกแพ็คแฟนอาร์ตประเภท"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "แหล่งโปรแกรม"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -520,6 +584,52 @@ msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "แป้นตัวเลข"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr ""
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr ""
+
+#. Choose profile identifier
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "ชื่อ ข้อมูลส่วนตัว"
+
+#. Label for the kind of profile identification
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "กด [B]ตกลง[/B] เพื่อหยุด"
+
+#~ msgctxt "#31054"
+#~ msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+#~ msgstr "กด [B]ซ้าย[/B] เพื่อกรอกลับ, or [B]ซ้าย[/B] เพื่อไปข้างหน้าอย่างเร็ว"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "แหล่งโปรแกรม"

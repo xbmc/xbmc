@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Lithuanian (Lithuania) (http://www.transifex.com/projects/p/kodi-main/language/lt_LT/)\n"
+"Language: lt_LT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt_LT\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "#31000"
@@ -76,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Neperklausyti albumai"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Naujausi įrašai"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Neseniai žiūrėti kanalai"
@@ -88,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Įvertinta"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Neseniai žiūrėti kanalai"
@@ -124,6 +127,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Laiko poslinkis"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Rodyti Fanart"
@@ -147,6 +154,10 @@ msgstr "Rūšiavimas"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Jūsų reitingas"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
 
 msgctxt "#31035"
 msgid "Pages"
@@ -196,10 +207,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Prieinama"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Paspauskite [B]OK[/B] norėdami sustabdyti"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtruota"
@@ -209,8 +216,12 @@ msgid "Arial based"
 msgstr "Arial pagrindu"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Paspauskite [B]kairėn[/B] norėdami prasukti atgal ar [B]dešinėn[/B], jei norite prasukti į priekį"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -223,6 +234,14 @@ msgstr "Rodyti prisijungimo langą paleidžiant"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatinis prisijungimas paleidžiant"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -324,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Pasirinkite savo Kodi profilį[CR]norėdami prisijungti ir tęsti"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Piktogramų siena"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Postūmis"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infosiena"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Siena"
@@ -356,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekstas"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Platus sąrašas"
@@ -452,6 +476,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Liko"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Paspauskite čia norėdami peržiūrėti naujausius pakeitimus..."
@@ -492,6 +520,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Ieškoti priedų"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategorijos"
@@ -501,8 +537,8 @@ msgid "Select genre fanart pack"
 msgstr "Pasirinkti žanrų Fanart paketą"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Saugykla"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -556,18 +592,44 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Rodyti Fanart fone"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Pasirinkite profilio identifikacijos būdą"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilio vardas"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profilio avataras"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animuoti foną"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Paspauskite [B]OK[/B] norėdami sustabdyti"
+
+#~ msgctxt "#31054"
+#~ msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+#~ msgstr "Paspauskite [B]kairėn[/B] norėdami prasukti atgal ar [B]dešinėn[/B], jei norite prasukti į priekį"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Saugykla"

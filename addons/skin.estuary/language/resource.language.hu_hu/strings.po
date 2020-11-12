@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/kodi-main/language/hu_HU/)\n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#31000"
@@ -76,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Nem játszott albumok"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Friss felvételek"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Mostanában játszott csatornák"
@@ -88,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Értékelés"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Mostanában játszott csatornák"
@@ -124,6 +127,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Csúsztatott felvétel"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Illusztráció megjelenítése"
@@ -148,6 +155,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Értékelés"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Oldalak"
@@ -155,6 +166,10 @@ msgstr "Oldalak"
 msgctxt "#31036"
 msgid "items"
 msgstr "elem"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -192,10 +207,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Elérhető"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Nyomjon [B]OK[/B]-ot a leállításhoz"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "szűrt"
@@ -205,8 +216,12 @@ msgid "Arial based"
 msgstr "Arial betűkészlet"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Nyomja meg a [B]Bal[/B] gombot a vissza-, vagy a [B]Jobb[/B] gombot az előretekeréshez"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -219,6 +234,14 @@ msgstr "Bejelentkezési képernyő megjelenítése indításkor"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatikus bejelentkezés indításkor"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -259,6 +282,10 @@ msgstr "készítette"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Kikapcsolási lehetőségek"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -316,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Válaszd ki a Kodi felhasználói profilod[CR]a belépéshez"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "IkonFal"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "InfóFal"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Fal"
@@ -348,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "SzélesLista"
@@ -444,6 +476,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Hátralévő"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Legfrissebb változtatások..."
@@ -484,6 +520,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Bővítmények keresése"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategóriák"
@@ -493,8 +537,8 @@ msgid "Select genre fanart pack"
 msgstr "Műfaj illusztrációs csomag kiválasztása"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Tároló"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -548,18 +592,44 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Illusztráció háttér megjelenítése"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Válassza ki a profil azonosítását"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profil neve"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profil avatar"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animált háttér"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Nyomjon [B]OK[/B]-ot a leállításhoz"
+
+#~ msgctxt "#31054"
+#~ msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+#~ msgstr "Nyomja meg a [B]Bal[/B] gombot a vissza-, vagy a [B]Jobb[/B] gombot az előretekeréshez"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Tároló"

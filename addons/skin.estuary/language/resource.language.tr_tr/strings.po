@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/kodi-main/language/tr_TR/)\n"
+"Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr_TR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#31000"
@@ -76,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Çalınmamış albümler"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "En son kayıtlar"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Son oynatılan kanallar"
@@ -88,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Derecelendirildi"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Son oynatılan kanallar"
@@ -124,6 +127,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Zaman Kaydırma"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Fanartı göster"
@@ -147,6 +154,10 @@ msgstr "Düzen"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Derecelendirmeniz"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
 
 msgctxt "#31035"
 msgid "Pages"
@@ -196,10 +207,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Mevcut"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Durdurmak için [B]OK[/B] tuşuna basın"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrelendi"
@@ -209,8 +216,12 @@ msgid "Arial based"
 msgstr "Arial tabanlı"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Geri sarmak için [B]Sol[/B] tuşuna, ileri sarmak için [B]Sağ[/B] tuşana basın"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -223,6 +234,14 @@ msgstr "Başlangıçta oturum açma ekranını göster"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Başlangıçta otomatik olarak oturum aç"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -324,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Simge Duvarı"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Kaydır"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Bilgi Duvarı"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Duvar"
@@ -356,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teleteks"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Geniş Liste"
@@ -452,6 +476,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Kalan"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "En son değişiklikleri görmek için tıklayınız..."
@@ -492,6 +520,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Eklentilerde ara"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategoriler"
@@ -501,8 +537,8 @@ msgid "Select genre fanart pack"
 msgstr "Tür fanart paketini seçin"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Depo"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -556,18 +592,44 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Arka plan fanartını göster"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Profil kimliğini görüntüleme türünü seçin"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profil adı"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profil avatarı"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Arka plana animasyon ekle"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Durdurmak için [B]OK[/B] tuşuna basın"
+
+#~ msgctxt "#31054"
+#~ msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+#~ msgstr "Geri sarmak için [B]Sol[/B] tuşuna, ileri sarmak için [B]Sağ[/B] tuşana basın"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Depo"

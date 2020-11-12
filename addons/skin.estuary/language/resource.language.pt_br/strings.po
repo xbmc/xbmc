@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/kodi-main/language/pt_BR/)\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgctxt "#31000"
@@ -76,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Álbuns por ouvir"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Gravações recentes"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Canais assistidos recentemente"
@@ -88,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Avaliado"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Canais assistidos recentemente"
@@ -124,6 +127,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Mudança de horário"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -147,6 +154,10 @@ msgstr "Ordem"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Sua nota"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
 
 msgctxt "#31035"
 msgid "Pages"
@@ -196,10 +207,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponível"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Aperte [B]OK[/B] para parar"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrado"
@@ -209,8 +216,12 @@ msgid "Arial based"
 msgstr "Baseado na Arial"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Pressione [B]Esquerda[/B] para retroceder, ou [B]Direita[/B] para avançar rapidamente"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -223,6 +234,14 @@ msgstr "Mostrar tela de login ao inicializar"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Login automático ao inicializar"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -324,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecione seu perfil de usuário no Kodi[CR]pta logar e continuar"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "IconWall"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "InfoWall"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Parede"
@@ -356,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletexto"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lista Larga"
@@ -452,6 +476,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Remanescente"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Clique aqui para visualizar as últimas alterações..."
@@ -492,6 +520,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Procurar add-ons"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Categorias"
@@ -501,8 +537,8 @@ msgid "Select genre fanart pack"
 msgstr "Selecione o pacote de fanart de gêneros"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Repositório"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -556,18 +592,44 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Mostrar Fanart como pano de fundo"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Escolher o tipo de identificação do perfil"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nome do Perfil"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Imagem do perfil"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Pano de Fundo animado"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
+
+#~ msgctxt "#31050"
+#~ msgid "Press [B]OK[/B] to stop"
+#~ msgstr "Aperte [B]OK[/B] para parar"
+
+#~ msgctxt "#31054"
+#~ msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+#~ msgstr "Pressione [B]Esquerda[/B] para retroceder, ou [B]Direita[/B] para avançar rapidamente"
+
+#~ msgctxt "#31150"
+#~ msgid "Repository"
+#~ msgstr "Repositório"
