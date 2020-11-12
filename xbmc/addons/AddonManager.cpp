@@ -458,7 +458,7 @@ std::vector<AddonInfoPtr> CAddonMgr::MigrateAddons()
   CLog::Log(LOGINFO, "ADDON: waiting for add-ons to update...");
   VECADDONS updates;
   GetAddonUpdateCandidates(updates);
-  InstallAddonUpdates(updates, true);
+  InstallAddonUpdates(updates, true, AllowCheckForUpdates::NO);
 
   // get addons that became incompatible and disable them
   std::vector<AddonInfoPtr> incompatible;
@@ -497,7 +497,7 @@ void CAddonMgr::CheckAndInstallAddonUpdates(bool wait) const
   std::lock_guard<std::mutex> lock(m_installAddonsMutex);
   VECADDONS updates;
   GetAddonUpdateCandidates(updates);
-  InstallAddonUpdates(updates, wait);
+  InstallAddonUpdates(updates, wait, AllowCheckForUpdates::YES);
 }
 
 bool CAddonMgr::GetAddonUpdateCandidates(VECADDONS& updates) const
@@ -556,11 +556,13 @@ void CAddonMgr::SortByDependencies(VECADDONS& updates) const
   updates = sorted;
 }
 
-void CAddonMgr::InstallAddonUpdates(VECADDONS& updates, bool wait) const
+void CAddonMgr::InstallAddonUpdates(VECADDONS& updates,
+                                    bool wait,
+                                    AllowCheckForUpdates allowCheckForUpdates) const
 {
   // sort addons by dependencies (ensure install order) and install all
   SortByDependencies(updates);
-  CAddonInstaller::GetInstance().InstallAddons(updates, wait);
+  CAddonInstaller::GetInstance().InstallAddons(updates, wait, allowCheckForUpdates);
 }
 
 bool CAddonMgr::GetAddon(const std::string& str,

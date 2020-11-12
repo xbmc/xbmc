@@ -26,6 +26,8 @@ namespace ADDON
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
+  enum class AllowCheckForUpdates;
+
   enum class AddonCheckType
   {
     OUTDATED_ADDONS,
@@ -556,8 +558,12 @@ namespace ADDON
      * Install the list of addon updates via AddonInstaller
      * \param[in,out] updates the vector of addons to install (will be sorted)
      * \param wait if the process should wait for all addons to install
+     * \param allowCheckForUpdates indicates if content update checks are allowed
+     *        after installation of a repository addon from the list
      */
-    void InstallAddonUpdates(VECADDONS& updates, bool wait) const;
+    void InstallAddonUpdates(VECADDONS& updates,
+                             bool wait,
+                             AllowCheckForUpdates allowCheckForUpdates) const;
 
     // This guards the addon installation process to make sure
     // addon updates are not installed concurrently
