@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # This is a simple example showing how you can send 2 button events
 # to XBMC in a queued fashion to shut it down.

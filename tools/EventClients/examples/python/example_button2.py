@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # This is a simple example showing how you can send a key press event
 # to XBMC in a non-queued fashion to achieve a button pressed down

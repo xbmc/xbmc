@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # This is a simple example showing how you can show a notification
 # window with a custom icon inside XBMC. It could be used by mail
