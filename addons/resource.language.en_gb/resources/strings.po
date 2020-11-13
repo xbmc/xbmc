@@ -15838,27 +15838,41 @@ msgstr ""
 
 #24171-24179 reserved for future use of lifecycle state name (to have continuous chain of GUI)
 
+#. The minimum version a dependency must meet. This is set in the <requires> tag of the dependee
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24180"
-msgid "Minimum: {0:s}"
+msgid "Minimum: {0:s}{3:s}"
 msgstr ""
 
+#. The minimum version, plus the version going to be installed
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
 #: xbmc/addons/gui/GUIDialogAddonInfo.cpp
 msgctxt "#24181"
-msgid " => Install: {0:s}"
+msgid "Minimum: {0:s} => Install: {2:s}{3:s}"
 msgstr ""
 
+#. The minimum version, plus the currently installed version
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
 #: xbmc/addons/gui/GUIDialogAddonInfo.cpp
 msgctxt "#24182"
-msgid " / Installed: {0:s}"
+msgid "Minimum: {0:s} / Installed: {1:s}{3:s}"
 msgstr ""
 
+#. The minimum version, the currently installed, plus the updated version we're going to install
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
 #: xbmc/addons/gui/GUIDialogAddonInfo.cpp
 msgctxt "#24183"
-msgid " => Update to: {0:s}"
+msgid "Minimum: {0:s} / Installed: {1:s} => Update to: {2:s}{3:s}"
 msgstr ""
 
-#empty strings from id 24184 to 24990
+#. used in #24180 - #24183 as {3:s}
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24184"
+msgid " (optional)"
+msgstr ""
+
+#empty strings from id 24185 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
