@@ -442,6 +442,8 @@
       <d mod="ctrl">Back</d>
       <m>OSD</m>
       <menu>OSD</menu>
+      <return mod="longpress">PlayPause</return>
+      <enter mod="longpress">PlayPause</enter>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
