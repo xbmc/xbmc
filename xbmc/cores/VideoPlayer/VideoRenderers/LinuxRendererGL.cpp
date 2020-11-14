@@ -886,6 +886,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
     EShaderFormat shaderFormat = GetShaderFormat();
     std::shared_ptr<GLSLOutput> out;
+    m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
     if (m_renderQuality == RQ_SINGLEPASS)
     {
       out = std::make_shared<GLSLOutput>(GLSLOutput(4, m_useDithering, m_ditherDepth,
@@ -899,6 +900,7 @@ void CLinuxRendererGL::LoadShaders(int field)
                                                 shaderFormat, m_nonLinStretch,
                                                 AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
                                                 m_toneMap,
+                                                m_toneMapMethod,
                                                 m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -923,7 +925,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     {
       m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
                                                   m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                  AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap, out);
+                                                  AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap, m_toneMapMethod, out);
 
       if (!m_cmsOn)
         m_pYUVShader->SetConvertFullColorRange(m_fullRange);
@@ -1025,26 +1027,11 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
-  if (srcPrim != m_srcPrimaries)
-  {
-    m_srcPrimaries = srcPrim;
-    m_reloadShaders = true;
-  }
-
-  bool toneMap = false;
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
-  {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-      toneMap = true;
-  }
-
-  if (toneMap != m_toneMap)
-    m_reloadShaders = true;
-  m_toneMap = toneMap;
+  CheckVideoParameters(index);
 
   if (m_reloadShaders)
   {
+    m_reloadShaders = 0;
     LoadShaders(field);
   }
 
@@ -1072,7 +1059,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
   m_pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
                                    buf.hasLightMetadata, buf.lightMetadata);
-  m_pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+  m_pYUVShader->SetToneMapParam(m_toneMapMethod, m_videoSettings.m_ToneMapParam);
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
@@ -1195,23 +1182,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
-  if (srcPrim != m_srcPrimaries)
-  {
-    m_srcPrimaries = srcPrim;
-    m_reloadShaders = true;
-  }
-
-  bool toneMap = false;
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
-  {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-      toneMap = true;
-  }
-
-  if (toneMap != m_toneMap)
-    m_reloadShaders = true;
-  m_toneMap = toneMap;
+  CheckVideoParameters(index);
 
   if (m_reloadShaders)
   {
@@ -1272,7 +1243,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
   m_pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
                                    buf.hasLightMetadata, buf.lightMetadata);
-  m_pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+  m_pYUVShader->SetToneMapParam(m_toneMapMethod, m_videoSettings.m_ToneMapParam);
 
   if (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
@@ -2730,6 +2701,35 @@ void CLinuxRendererGL::DeleteCLUT()
     glDeleteTextures(1, &m_tCLUTTex);
     m_tCLUTTex = 0;
   }
+}
+
+void CLinuxRendererGL::CheckVideoParameters(int index)
+{
+  CPictureBuffer &buf = m_buffers[index];
+  int method = m_videoSettings.m_ToneMapMethod;
+
+  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_reloadShaders = true;
+  }
+
+  bool toneMap = false;
+  if (method != VS_TONEMAPMETHOD_OFF)
+  {
+    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    {
+      toneMap = true;
+    }
+  }
+
+  if (toneMap != m_toneMap || (m_toneMapMethod != method))
+  {
+    m_reloadShaders = true;
+  }
+  m_toneMap = toneMap;
+  m_toneMapMethod = method;
 }
 
 AVColorPrimaries CLinuxRendererGL::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height)
