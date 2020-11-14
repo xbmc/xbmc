@@ -616,43 +616,32 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
             (entryPoint == EntryPoint::UPDATE && !it.m_isInstalledUpToDate()))
         {
           const CFileItemPtr item = std::make_shared<CFileItem>(infoAddon->Name());
-          std::stringstream str;
-
-          str << StringUtils::Format(g_localizeStrings.Get(24180).c_str(),
-                                     it.m_depInfo.versionMin.asString().c_str()); // min: x.y.z
+          int messageId = 24180; // minversion only
 
           // dep not installed locally, but it is available from a repo!
           if (!it.m_installed)
           {
             if (entryPoint != EntryPoint::SHOW_DEPENDENCIES)
             {
-              str << StringUtils::Format(
-                  g_localizeStrings.Get(24181).c_str(),
-                  it.m_available->Version().asString().c_str()); // => install
+              messageId = 24181; // => install
             }
           }
           else // dep is installed locally
           {
-            str << StringUtils::Format(
-                g_localizeStrings.Get(24182).c_str(),
-                it.m_installed->Version().asString().c_str()); // => installed
+            messageId = 24182; // => installed
 
             if (!it.m_isInstalledUpToDate())
             {
-              str << StringUtils::Format(
-                  g_localizeStrings.Get(24183).c_str(),
-                  it.m_available->Version().asString().c_str()); // => update to
+              messageId = 24183; // => update to
             }
           }
 
-          if (it.m_depInfo.optional)
-          {
-            str << " "
-                << StringUtils::Format(g_localizeStrings.Get(39022).c_str(),
-                                       g_localizeStrings.Get(39018).c_str()); // (optional)
-          }
+          item->SetLabel2(StringUtils::Format(
+              g_localizeStrings.Get(messageId).c_str(), it.m_depInfo.versionMin.asString().c_str(),
+              it.m_installed ? it.m_installed->Version().asString().c_str() : "",
+              it.m_available ? it.m_available->Version().asString().c_str() : "",
+              it.m_depInfo.optional ? g_localizeStrings.Get(24184).c_str() : ""));
 
-          item->SetLabel2(str.str());
           item->SetArt("icon", infoAddon->Icon());
           item->SetProperty("addon_id", it.m_depInfo.id);
           items.Add(item);
