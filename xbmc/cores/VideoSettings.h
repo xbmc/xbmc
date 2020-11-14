@@ -101,7 +101,6 @@ public:
   int m_SubtitleStream;
   float m_SubtitleDelay;
   bool m_SubtitleOn;
-  bool m_SubtitleCached; // not used -> remove from DB
   float m_Brightness;
   float m_Contrast;
   float m_Gamma;
