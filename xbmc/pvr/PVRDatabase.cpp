@@ -312,8 +312,10 @@ bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
   filter.AppendWhere(PrepareSQL("idChannel = %u", channel.ChannelID()));
 
   std::string strQuery;
-  BuildSQL(PrepareSQL("DELETE FROM %s ", "channels"), filter, strQuery);
-  return CDatabase::QueueDeleteQuery(strQuery);
+  if (BuildSQL(PrepareSQL("DELETE FROM %s ", "channels"), filter, strQuery))
+    return CDatabase::QueueDeleteQuery(strQuery);
+
+  return false;
 }
 
 int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)

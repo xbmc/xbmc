@@ -289,8 +289,10 @@ bool CPVREpgDatabase::QueueDeleteEpgQuery(const CPVREpg& table)
   filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
 
   std::string strQuery;
-  BuildSQL(PrepareSQL("DELETE FROM %s ", "epg"), filter, strQuery);
-  return QueueDeleteQuery(strQuery);
+  if (BuildSQL(PrepareSQL("DELETE FROM %s ", "epg"), filter, strQuery))
+    return QueueDeleteQuery(strQuery);
+
+  return false;
 }
 
 bool CPVREpgDatabase::QueueDeleteTagQuery(const CPVREpgInfoTag& tag)
@@ -944,8 +946,10 @@ bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
                                 static_cast<unsigned int>(maxStart)));
 
   std::string strQuery;
-  BuildSQL("DELETE FROM epgtags", filter, strQuery);
-  return QueueDeleteQuery(strQuery);
+  if (BuildSQL("DELETE FROM epgtags", filter, strQuery))
+    return QueueDeleteQuery(strQuery);
+
+  return false;
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID)
