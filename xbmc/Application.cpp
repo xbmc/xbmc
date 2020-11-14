@@ -93,6 +93,8 @@
 #include "windowing/WinSystem.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <cmath>
+
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #include "filesystem/UPnPDirectory.h"
@@ -4449,7 +4451,7 @@ float CApplication::GetVolumeRatio() const
 void CApplication::VolumeChanged()
 {
   CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = GetVolumePercent();
+  data["volume"] = static_cast<int>(std::lroundf(GetVolumePercent()));
   data["muted"] = m_muted;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Application, "OnVolumeChanged",
                                                      data);
