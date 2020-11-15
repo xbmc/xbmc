@@ -754,6 +754,7 @@ private:
   bool SearchSongs(const std::string& strSearch, CFileItemList &songs);
   int GetSongIDFromPath(const std::string &filePath);
   void NormaliseSongDates(std::string& strRelease, std::string& strOriginal);
+  bool TrimImageURLs(std::string& strImage, const size_t space);
 
   /*! \brief Build SQL  for sort subquery from ignore article token list
   \param strField original name or title field that articles could be removed from

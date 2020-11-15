@@ -1399,6 +1399,14 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
   if (idAlbum < 0)
     return -1;
 
+  // Art URLs limited on MySQL databases to 65535 characters (TEXT field)
+  // Truncate value cleaning up xml when URLs exceeds this
+  std::string strImageURLs = strImage;
+  if (StringUtils::EqualsNoCase(
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
+          "mysql"))
+    TrimImageURLs(strImageURLs, 65535);
+    
   std::string strSQL;
   strSQL = PrepareSQL("UPDATE album SET "
                       " strAlbum = '%s', strArtistDisp = '%s', strGenres = '%s', "
@@ -1411,7 +1419,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                       " lastScraped = '%s', bScrapedMBID = %i",
                       strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strThemes.c_str(),
-                      strReview.c_str(), strImage.c_str(), strLabel.c_str(),
+                      strReview.c_str(), strImageURLs.c_str(), strLabel.c_str(),
                       strType.c_str(), fRating, iUserrating, iVotes,
                       strReleaseDate.c_str(), strOrigReleaseDate.c_str(),
                       bBoxedSet, bCompilation,
@@ -1811,6 +1819,14 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
     isScrapedMBID = false;
   }
 
+  // Art URLs limited on MySQL databases to 65535 characters (TEXT field)
+  // Truncate value cleaning up xml when URLs exceeds this
+  std::string strImageURLs = strImage;
+  if (StringUtils::EqualsNoCase(
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
+    "mysql"))
+    TrimImageURLs(strImageURLs, 65535);
+
   std::string strSQL;
   strSQL = PrepareSQL("UPDATE artist SET "
                       " strArtist = '%s', "
@@ -1827,7 +1843,7 @@ int  CMusicDatabase::UpdateArtist(int idArtist,
                       strBorn.c_str(), strFormed.c_str(), strGenres.c_str(),
                       strMoods.c_str(), strStyles.c_str(), strInstruments.c_str(),
                       strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
-                      strYearsActive.c_str(), strImage.c_str(),
+                      strYearsActive.c_str(), strImageURLs.c_str(),
                       CDateTime::GetUTCDateTime().GetAsDBDateTime().c_str(), isScrapedMBID);
   if (useMBIDNull)
     strSQL += PrepareSQL(", strMusicBrainzArtistID = NULL");
@@ -4230,6 +4246,20 @@ error:
   CreateRemovedLinkTriggers();
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnCleanFinished");
   return ret;
+}
+
+bool CMusicDatabase::TrimImageURLs(std::string& strImage, const size_t space)
+{
+  if (strImage.length() > space)
+  {
+    strImage = strImage.substr(0, space);
+    // Tidy to last </thumb> tag
+    size_t iPos = strImage.rfind("</thumb>");
+    if (iPos == std::string::npos)
+      return false;
+    strImage = strImage.substr(0, iPos + 8);
+  }
+  return true;
 }
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
@@ -8583,6 +8613,42 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("UPDATE artist SET strFanart = REPLACE(strFanart, '</fanart>', '')");
     m_pDS->exec("UPDATE artist SET strFanart = REPLACE(strFanart, 'thumb preview', 'thumb "
                 "aspect=\"fanart\" preview')");
+    // Art URLs limited on MySQL databases to 65535 characters (TEXT field)
+    // Truncate the fanart when total URLs exceeds this
+    bool bisMySQL = StringUtils::EqualsNoCase(
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
+        "mysql");
+    if (bisMySQL)
+    {
+      std::string strSQL = "SELECT idArtist, strFanart, strImage FROM artist "
+                           "WHERE LENGTH(strImage) + LENGTH(strFanart) > 65535";
+      if (m_pDS->query(strSQL))
+      {
+        while (!m_pDS->eof())
+        {
+          int idArtist = m_pDS->fv("idArtist").get_asInt();
+          std::string strFanart = m_pDS->fv("strFanart").get_asString();
+          std::string strImage = m_pDS->fv("strImage").get_asString();
+          size_t space = 65535;
+          // Trim strImage to allow arbitrary half space for fanart
+          if (!TrimImageURLs(strImage, space / 2))
+            strImage.clear(); // </thumb> not found, empty field
+          space = space - strImage.length();
+          // Trim fanart to fit remaining space
+          if (!TrimImageURLs(strFanart, space))
+            strFanart.clear(); // </thumb> not found, empty field
+
+          strSQL = PrepareSQL("UPDATE artist SET strFanart = '%s', strImage = '%s' "
+                              "WHERE idArtist = %i",
+                              strFanart.c_str(), strImage.c_str(), idArtist);
+          m_pDS2->exec(strSQL); // Use other dataset to update while looping result set
+
+          m_pDS->next();
+        }
+        m_pDS->close();
+      }
+    }
+
     // Remove strFanart column from artist table
     m_pDS->exec("CREATE TABLE artist_new (idArtist INTEGER PRIMARY KEY, "
                 "strArtist varchar(256), strMusicBrainzArtistID text, "
