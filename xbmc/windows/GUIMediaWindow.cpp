@@ -1053,7 +1053,8 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     // execute the script
     CURL url(pItem->GetPath());
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
+    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT,
+                                               OnlyEnabled::YES))
     {
       if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
       {
@@ -1156,7 +1157,8 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     {
       CURL url(m_vecItems->GetPath());
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(),addon))
+      if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_UNKNOWN,
+                                                 OnlyEnabled::YES))
       {
         PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO))

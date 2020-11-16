@@ -248,7 +248,8 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon);
+      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON::ADDON_UNKNOWN,
+                                             ADDON::OnlyEnabled::YES);
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
       SetupView();

@@ -60,7 +60,7 @@ void CServiceAddonManager::Start()
 void CServiceAddonManager::Start(const std::string& addonId)
 {
   AddonPtr addon;
-  if (m_addonMgr.GetAddon(addonId, addon, ADDON_SERVICE))
+  if (m_addonMgr.GetAddon(addonId, addon, ADDON_SERVICE, OnlyEnabled::YES))
   {
     Start(addon);
   }

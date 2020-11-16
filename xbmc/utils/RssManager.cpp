@@ -65,7 +65,8 @@ void CRssManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting
   if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSEDIT)
   {
     ADDON::AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon("script.rss.editor", addon))
+    if (!CServiceBroker::GetAddonMgr().GetAddon("script.rss.editor", addon, ADDON::ADDON_UNKNOWN,
+                                                ADDON::OnlyEnabled::YES))
     {
       if (!ADDON::CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon,
                                                               ADDON::InstallModalPrompt::PROMPT))

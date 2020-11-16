@@ -160,7 +160,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
     return false;
 
   // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
-  if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+  if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON_UNKNOWN, OnlyEnabled::NO))
     return false; // addon is installed but disabled, and the user has specifically activated something that needs
                   // the addon - should we enable it?
 
@@ -183,7 +183,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
   if (!InstallOrUpdate(addonID, BackgroundJob::NO, ModalJob::YES))
     return false;
 
-  return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon);
+  return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON_UNKNOWN, OnlyEnabled::YES);
 }
 
 
@@ -221,7 +221,7 @@ bool CAddonInstaller::Install(const std::string& addonId,
     return false;
 
   AddonPtr repo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, ADDON_REPOSITORY))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, ADDON_REPOSITORY, OnlyEnabled::YES))
     return false;
 
   return DoInstall(addon, std::static_pointer_cast<CRepository>(repo), BackgroundJob::YES,
@@ -343,7 +343,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     bool optional = it.optional;
     AddonPtr dep;
     bool haveInstalledAddon =
-        CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, false);
+        CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, OnlyEnabled::NO);
     if ((haveInstalledAddon && !dep->MeetsVersion(versionMin, version)) ||
         (!haveInstalledAddon && !optional))
     {
@@ -495,7 +495,8 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr& addon,
   : m_addon(addon), m_repo(repo), m_isAutoUpdate(isAutoUpdate)
 {
   AddonPtr dummy;
-  m_isUpdate = CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
+  m_isUpdate =
+      CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, OnlyEnabled::NO);
 }
 
 bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
@@ -505,7 +506,8 @@ bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
     return false;
 
   AddonPtr tmp;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->Origin(), tmp, ADDON_REPOSITORY))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->Origin(), tmp, ADDON_REPOSITORY,
+                                              OnlyEnabled::YES))
     return false;
 
   repo = std::static_pointer_cast<CRepository>(tmp);
@@ -661,7 +663,8 @@ bool CAddonInstallJob::DoWork()
   // Load new installed and if successed replace defined m_addon here with new one
   if (!CServiceBroker::GetAddonMgr().LoadAddon(m_addon->ID(), m_addon->Origin(),
                                                m_addon->Version()) ||
-      !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon))
+      !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon, ADDON_UNKNOWN,
+                                              OnlyEnabled::YES))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
     return false;
@@ -885,7 +888,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       const AddonVersion& version = it->version;
       bool optional = it->optional;
       AddonPtr dependency;
-      bool haveInstalledAddon = addonMgr.GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
+      bool haveInstalledAddon =
+          addonMgr.GetAddon(addonID, dependency, ADDON_UNKNOWN, OnlyEnabled::NO);
       if ((haveInstalledAddon && !dependency->MeetsVersion(versionMin, version)) ||
           (!haveInstalledAddon && !optional))
       {
@@ -992,7 +996,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   if (addon != NULL)
   {
     AddonPtr addon2;
-    CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2);
+    CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, ADDON_UNKNOWN, OnlyEnabled::YES);
     if (msg.empty())
       msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
 

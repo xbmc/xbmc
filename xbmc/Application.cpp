@@ -1068,13 +1068,19 @@ void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& settin
   else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
+    if (CServiceBroker::GetAddonMgr().GetAddon(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                CSettings::SETTING_SCREENSAVER_MODE),
+            addon, ADDON_SCREENSAVER, OnlyEnabled::YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon, ADDON_AUDIOENCODER))
+    if (CServiceBroker::GetAddonMgr().GetAddon(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                CSettings::SETTING_AUDIOCDS_ENCODER),
+            addon, ADDON_AUDIOENCODER, OnlyEnabled::YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
@@ -1206,7 +1212,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   SkinPtr skin;
   {
     AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN, OnlyEnabled::YES))
       return false;
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
@@ -2772,7 +2778,8 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
   if (path.GetProtocol() == "game")
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL,
+                                               OnlyEnabled::YES))
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false);
@@ -3735,7 +3742,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     return;
   }
-  else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
+  else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver,
+                                                  ADDON_SCREENSAVER, OnlyEnabled::YES))
   {
     std::string libPath = m_pythonScreenSaver->LibPath();
     if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))

@@ -979,7 +979,8 @@ void CPeripherals::OnSettingAction(const std::shared_ptr<const CSetting>& settin
         !strAddonId.empty())
     {
       ADDON::AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon))
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON::ADDON_UNKNOWN,
+                                                 ADDON::OnlyEnabled::YES))
         CGUIDialogAddonSettings::ShowForAddon(addon);
     }
   }

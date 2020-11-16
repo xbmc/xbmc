@@ -121,7 +121,7 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
   else if (typeid(event) == typeid(AddonEvents::Enabled))
   {
     AddonPtr addon;
-    if (m_addonMgr.GetAddon(event.id, addon, ADDON_CONTEXT_ITEM))
+    if (m_addonMgr.GetAddon(event.id, addon, ADDON_CONTEXT_ITEM, OnlyEnabled::YES))
     {
       CSingleLock lock(m_criticalSection);
       auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();

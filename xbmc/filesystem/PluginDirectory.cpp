@@ -114,8 +114,10 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CURL url(strPath);
 
   // try the plugin type first, and if not found, try an unknown type
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
-      !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN,
+                                              OnlyEnabled::YES) &&
+      !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN,
+                                              OnlyEnabled::YES) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), m_addon,
                                                    InstallModalPrompt::PROMPT))
   {
@@ -458,7 +460,8 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
     return false;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) &&
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+                                              OnlyEnabled::YES) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
                                                    InstallModalPrompt::PROMPT))
   {
@@ -622,7 +625,8 @@ bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content,
   if (url.GetHostName().empty())
     return false;
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+                                              OnlyEnabled::YES))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;

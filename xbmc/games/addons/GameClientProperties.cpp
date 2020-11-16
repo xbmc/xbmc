@@ -112,7 +112,8 @@ const char** CGameClientProperties::GetResourceDirectories(void)
     {
       const std::string& strAddonId = it->id;
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES,
+                                                 OnlyEnabled::YES))
       {
         std::shared_ptr<CGameResource> resource = std::static_pointer_cast<CGameResource>(addon);
 
@@ -202,7 +203,8 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
   for (const auto& dependency : m_parent.GetDependencies())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, ADDON_UNKNOWN, false))
+    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, ADDON_UNKNOWN,
+                                               OnlyEnabled::NO))
     {
       // If add-on is disabled, ask the user to enable it
       if (CServiceBroker::GetAddonMgr().IsAddonDisabled(dependency.id))

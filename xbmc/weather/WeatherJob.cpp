@@ -50,7 +50,10 @@ bool CWeatherJob::DoWork()
     return false;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(
+          CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+              CSettings::SETTING_WEATHER_ADDON),
+          addon, ADDON_SCRIPT_WEATHER, OnlyEnabled::YES))
     return false;
 
   // initialize our sys.argv variables

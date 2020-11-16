@@ -77,7 +77,7 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
   if (it != m_activeSettings.end())
   {
     auto settingValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(it->second);
-    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type);
+    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type, OnlyEnabled::YES);
   }
   return false;
 }

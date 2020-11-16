@@ -453,7 +453,7 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
   // we got the dependency, so now get a repository-pointer to return
 
   std::shared_ptr<IAddon> tmp;
-  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, ADDON_REPOSITORY))
+  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, ADDON_REPOSITORY, OnlyEnabled::YES))
     return false;
 
   repoForDep = std::static_pointer_cast<CRepository>(tmp);

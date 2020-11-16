@@ -90,7 +90,9 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
     if (components.size() <= 1)
       return false;
 
-    if (!CServiceBroker::GetAddonMgr().GetAddon(components.at(1), addon) || addon == NULL)
+    if (!CServiceBroker::GetAddonMgr().GetAddon(components.at(1), addon, ADDON::ADDON_UNKNOWN,
+                                                ADDON::OnlyEnabled::YES) ||
+        addon == NULL)
       return false;
 
     addonPath = addon->Path();

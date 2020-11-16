@@ -154,7 +154,8 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       ADDON::AddonPtr addon;
       if (!info.GetData3().empty())
       {
-        CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN, false);
+        CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN,
+                                               ADDON::OnlyEnabled::YES);
         if (!addon)
           break;
 
@@ -203,7 +204,8 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     {
       value = false;
       ADDON::AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon))
+      if (CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN,
+                                                 ADDON::OnlyEnabled::YES))
         value = !CServiceBroker::GetAddonMgr().IsAddonDisabled(info.GetData3());
       return true;
     }

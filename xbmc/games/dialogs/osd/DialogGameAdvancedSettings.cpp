@@ -35,7 +35,7 @@ bool CDialogGameAdvancedSettings::OnMessage(CGUIMessage& message)
       {
         ADDON::AddonPtr addon;
         if (CServiceBroker::GetAddonMgr().GetAddon(gameSettingsHandle->GameClientID(), addon,
-                                                   ADDON::ADDON_GAMEDLL))
+                                                   ADDON::ADDON_GAMEDLL, ADDON::OnlyEnabled::YES))
         {
           gameSettingsHandle.reset();
           CGUIDialogAddonSettings::ShowForAddon(addon);
