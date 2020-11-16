@@ -733,7 +733,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
 
   m_allDepsInstalled = true;
   m_depsInstalledWithAvailable.clear();
-  m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID());
+  m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(), false);
 
   for (const auto& dep : m_deps)
   {

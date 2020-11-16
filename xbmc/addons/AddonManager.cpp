@@ -1031,11 +1031,11 @@ bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const
   return true;
 }
 
-std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id)
+std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id, bool enabledOnly)
 {
   std::vector<DependencyInfo> added;
   AddonPtr root_addon;
-  if (!FindInstallableById(id, root_addon) && !GetAddon(id, root_addon))
+  if (!FindInstallableById(id, root_addon) && !GetAddon(id, root_addon, ADDON_UNKNOWN, enabledOnly))
     return added;
 
   std::vector<DependencyInfo> toProcess;

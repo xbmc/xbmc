@@ -359,8 +359,10 @@ namespace ADDON
     bool IsCompatible(const AddonInfoPtr& addonInfo) const;
 
     /*! \brief Recursively get dependencies for an add-on
+     *  \param id the id of the root addon
+     *  \param enabledOnly whether look for enabled root add-ons only
      */
-    std::vector<DependencyInfo> GetDepsRecursive(const std::string& id);
+    std::vector<DependencyInfo> GetDepsRecursive(const std::string& id, bool enabledOnly);
 
     /*!
      * @brief Get a list of add-on's with info's for the on system available
