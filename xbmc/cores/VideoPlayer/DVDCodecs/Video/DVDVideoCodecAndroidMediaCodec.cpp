@@ -378,12 +378,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s", "null size, cannot handle");
     goto FAIL;
   }
-  else if (hints.orientation && m_render_surface && CJNIBase::GetSDKVersion() < 23)
-  {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s",
-              "Surface does not support orientation before API 23");
-    goto FAIL;
-  }
   else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
            !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     goto FAIL;
@@ -1251,7 +1245,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
       CJNIMediaFormat::createVideoFormat(m_mime.c_str(), m_hints.width, m_hints.height);
   mediaformat.setInteger(CJNIMediaFormat::KEY_MAX_INPUT_SIZE, 0);
 
-  if (CJNIBase::GetSDKVersion() >= 23 && m_render_surface)
+  if (m_render_surface)
   {
     // Handle rotation
     mediaformat.setInteger(XMEDIAFORMAT_KEY_ROTATION, m_hints.orientation);
@@ -1260,15 +1254,13 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
       mediaformat.setInteger(XMEDIAFORMAT_FEATURE_SECURE_PLAYBACK, 1);
   }
 
-  if (CJNIBase::GetSDKVersion() >= 24)
-  {
-    if (m_hints.colorRange != AVCOL_RANGE_UNSPECIFIED)
-      mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_RANGE, m_hints.colorRange);
+  if (m_hints.colorRange != AVCOL_RANGE_UNSPECIFIED)
+    mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_RANGE, m_hints.colorRange);
 
-    if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
+  if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
+  {
+    switch (m_hints.colorPrimaries)
     {
-      switch (m_hints.colorPrimaries)
-      {
       case AVCOL_PRI_BT709:
         mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_STANDARD, 1);
         break;
@@ -1276,13 +1268,13 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
         mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_STANDARD, 6);
         break;
       default:; // do nothing
-      }
     }
+  }
 
-    if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
+  if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
+  {
+    switch (m_hints.colorTransferCharacteristic)
     {
-      switch (m_hints.colorTransferCharacteristic)
-      {
       case AVCOL_TRC_LINEAR:
         mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_TRANSFER, 1); // COLOR_TRANSFER_LINEAR
         break;
@@ -1296,16 +1288,15 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
         mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_TRANSFER, 7); // COLOR_TRANSFER_HLG
         break;
       default:; // do nothing
-      }
     }
-    std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
-    if (!hdr_static_data.empty())
-    {
-      CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(hdr_static_data.size());
-      void* dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
-      memcpy(dts_ptr, hdr_static_data.data(), hdr_static_data.size());
-      mediaformat.setByteBuffer(XMEDIAFORMAT_KEY_HDR_STATIC_INFO, bytebuffer);
-    }
+  }
+  std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
+  if (!hdr_static_data.empty())
+  {
+    CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(hdr_static_data.size());
+    void* dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
+    memcpy(dts_ptr, hdr_static_data.data(), hdr_static_data.size());
+    mediaformat.setByteBuffer(XMEDIAFORMAT_KEY_HDR_STATIC_INFO, bytebuffer);
   }
 
   // handle codec extradata

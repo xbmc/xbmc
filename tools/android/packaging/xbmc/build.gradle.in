@@ -5,7 +5,7 @@ android {
     buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "@APP_PACKAGE@"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode @APP_VERSION_CODE_ANDROID@
         versionName "@APP_VERSION@"
