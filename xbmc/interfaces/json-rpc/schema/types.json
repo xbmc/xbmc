@@ -25,8 +25,9 @@
   },
   "Global.Time": {
     "type": "object",
+    "description": "A duration.",
     "properties": {
-      "hours": { "type": "integer", "required": true, "minimum": 0, "maximum": 23 },
+      "hours": { "type": "integer", "required": true, "minimum": 0 },
       "minutes": { "type": "integer", "required": true, "minimum": 0, "maximum": 59 },
       "seconds": { "type": "integer", "required": true, "minimum": 0, "maximum": 59 },
       "milliseconds": { "type": "integer", "required": true, "minimum": 0, "maximum": 999 }
@@ -180,9 +181,10 @@
   },
   "Player.Position.Time": {
     "type": "object",
+    "description": "A position in duration.",
     "additionalProperties": false,
     "properties": {
-      "hours": { "type": "integer", "minimum": 0, "maximum": 23, "default": 0 },
+      "hours": { "type": "integer", "minimum": 0, "default": 0 },
       "minutes": { "type": "integer", "minimum": 0, "maximum": 59, "default": 0 },
       "seconds": { "type": "integer", "minimum": 0, "maximum": 59, "default": 0 },
       "milliseconds": { "type": "integer", "minimum": 0, "maximum": 999, "default": 0 }
