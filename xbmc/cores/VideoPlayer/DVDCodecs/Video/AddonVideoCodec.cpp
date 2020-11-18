@@ -136,9 +136,9 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
     default:
       return false;
     }
-    initData.cryptoSession.sessionIdSize = hints.cryptoSession->sessionIdSize;
-    //We assume that we need this sessionid only for the directly following call
-    initData.cryptoSession.sessionId = hints.cryptoSession->sessionId;
+
+    strncpy(initData.cryptoSession.sessionId, hints.cryptoSession->sessionId.c_str(),
+            sizeof(initData.cryptoSession.sessionId) - 1);
   }
 
   initData.extraData = reinterpret_cast<const uint8_t*>(hints.extradata);

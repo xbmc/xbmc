@@ -513,7 +513,11 @@ class ATTRIBUTE_HIDDEN InputstreamInfo : public CStructHdl<InputstreamInfo, INPU
 public:
   /*! \cond PRIVATE */
   InputstreamInfo() = default;
-  InputstreamInfo(const InputstreamInfo& stream) : CStructHdl(stream) { CopyExtraData(); }
+  InputstreamInfo(const InputstreamInfo& stream) : CStructHdl(stream)
+  {
+    SetCryptoSession(stream.GetCryptoSession());
+    CopyExtraData();
+  }
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamInfo_Help Value Help
@@ -797,7 +801,6 @@ public:
   void SetCryptoSession(const kodi::addon::StreamCryptoSession& cryptoSession)
   {
     m_cryptoSession = cryptoSession;
-    m_cryptoSession.SetSessionId(cryptoSession.GetSessionId());
     memcpy(&m_cStructure->m_cryptoSession, m_cryptoSession.GetCStructure(),
            sizeof(STREAM_CRYPTO_SESSION));
   }
@@ -902,8 +905,16 @@ public:
   ///@}
 
 private:
-  InputstreamInfo(const INPUTSTREAM_INFO* stream) : CStructHdl(stream) { CopyExtraData(); }
-  InputstreamInfo(INPUTSTREAM_INFO* stream) : CStructHdl(stream) { CopyExtraData(); }
+  InputstreamInfo(const INPUTSTREAM_INFO* stream) : CStructHdl(stream)
+  {
+    SetCryptoSession(StreamCryptoSession(&stream->m_cryptoSession));
+    CopyExtraData();
+  }
+  InputstreamInfo(INPUTSTREAM_INFO* stream) : CStructHdl(stream)
+  {
+    SetCryptoSession(StreamCryptoSession(&stream->m_cryptoSession));
+    CopyExtraData();
+  }
 
   void CopyExtraData()
   {

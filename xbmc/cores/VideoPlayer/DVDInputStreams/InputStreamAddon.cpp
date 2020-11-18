@@ -533,9 +533,9 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
         CRYPTO_SESSION_SYSTEM_PLAYREADY,
         CRYPTO_SESSION_SYSTEM_WISEPLAY,
     };
-    demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
-        map[stream->m_cryptoSession.keySystem], stream->m_cryptoSession.sessionIdSize,
-        stream->m_cryptoSession.sessionId, stream->m_cryptoSession.flags));
+    demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(
+        new DemuxCryptoSession(map[stream->m_cryptoSession.keySystem],
+                               stream->m_cryptoSession.sessionId, stream->m_cryptoSession.flags));
 
     if ((stream->m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
       demuxStream->externalInterfaces = thisClass->m_subAddonProvider;

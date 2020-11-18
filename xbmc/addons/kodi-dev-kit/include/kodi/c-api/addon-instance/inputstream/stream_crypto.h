@@ -116,14 +116,8 @@ extern "C"
     // Flags to use special conditions, see STREAM_CRYPTO_FLAGS for available flags.
     uint8_t flags;
 
-    // The size of the crypto session key id set in sessionId.
-    uint16_t sessionIdSize;
-
     // The crypto session key id.
-    //
-    // WARNING The data set here is not copied and its pointer must still be
-    // available.
-    const char* sessionId;
+    char sessionId[256];
   };
   ///@}
   //----------------------------------------------------------------------------

@@ -166,7 +166,7 @@
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h" \
                                                       "c-api/addon-instance/visualization.h"
 
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "2.0.1"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "2.0.2"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "2.0.1"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID      "kodi.binary.instance.videocodec"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "c-api/addon-instance/video_codec.h" \
