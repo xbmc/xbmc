@@ -250,7 +250,9 @@ PROCESSDECODER:
       return false;
     }
 
-    m_crypto = new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId, m_hints.cryptoSession->sessionId + m_hints.cryptoSession->sessionIdSize));
+    m_crypto =
+        new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId.begin(),
+                                                    m_hints.cryptoSession->sessionId.end()));
 
     if (xbmc_jnienv()->ExceptionCheck())
     {

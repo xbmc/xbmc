@@ -50,10 +50,7 @@ class ATTRIBUTE_HIDDEN StreamCryptoSession
 public:
   /*! \cond PRIVATE */
   StreamCryptoSession() { memset(m_cStructure, 0, sizeof(STREAM_CRYPTO_SESSION)); }
-  StreamCryptoSession(const StreamCryptoSession& session)
-    : CStructHdl(session), m_sessionId(session.m_sessionId)
-  {
-  }
+  StreamCryptoSession(const StreamCryptoSession& session) : CStructHdl(session) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_inputstream_Defs_Info_StreamCryptoSession_Help Value Help
@@ -85,33 +82,15 @@ public:
   /// @brief To set the crypto session key identifier.
   void SetSessionId(const std::string& sessionId)
   {
-    m_sessionId = sessionId;
-    if (!m_sessionId.empty())
-    {
-      m_cStructure->sessionId = m_sessionId.c_str();
-      m_cStructure->sessionIdSize = m_sessionId.size();
-    }
-    else
-    {
-      m_cStructure->sessionId = nullptr;
-      m_cStructure->sessionIdSize = 0;
-    }
+    strncpy(m_cStructure->sessionId, sessionId.c_str(), sizeof(m_cStructure->sessionId) - 1);
   }
 
   /// @brief To get the crypto session key identifier.
-  std::string GetSessionId() const { return m_sessionId; }
+  std::string GetSessionId() const { return m_cStructure->sessionId; }
 
 private:
-  StreamCryptoSession(const STREAM_CRYPTO_SESSION* session)
-    : CStructHdl(session), m_sessionId(session->sessionId)
-  {
-  }
-  StreamCryptoSession(STREAM_CRYPTO_SESSION* session)
-    : CStructHdl(session), m_sessionId(session->sessionId)
-  {
-  }
-
-  std::string m_sessionId;
+  StreamCryptoSession(const STREAM_CRYPTO_SESSION* session) : CStructHdl(session) {}
+  StreamCryptoSession(STREAM_CRYPTO_SESSION* session) : CStructHdl(session) {}
 };
 
 } /* namespace addon */
