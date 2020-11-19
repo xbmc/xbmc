@@ -12,6 +12,11 @@
 
 using namespace DRMPRIME;
 
+CDRMPRIMETexture::~CDRMPRIMETexture()
+{
+  glDeleteTextures(1, &m_texture);
+}
+
 void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
 {
   m_eglImage.reset(new CEGLImage(eglDisplay));
@@ -83,8 +88,6 @@ void CDRMPRIMETexture::Unmap()
     return;
 
   m_eglImage->DestroyImage();
-
-  glDeleteTextures(1, &m_texture);
 
   m_primebuffer->ReleaseDescriptor();
 
