@@ -111,7 +111,7 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
     if (!buf.fence)
     {
       buf.texture = std::make_unique<CDRMPRIMETexture>(eglDisplay);
-      buf.fence.reset(new CEGLFence(eglDisplay));
+      buf.fence = std::make_unique<CEGLFence>(eglDisplay);
     }
   }
 
