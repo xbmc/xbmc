@@ -203,7 +203,8 @@ bool CDRMUtils::FindPlanes()
           {
             return (plane->GetPlaneId() != videoPlaneId &&
                     (videoPlaneId == 0 || plane->SupportsFormat(DRM_FORMAT_ARGB8888)) &&
-                    plane->SupportsFormat(DRM_FORMAT_XRGB8888));
+                    (plane->SupportsFormat(DRM_FORMAT_XRGB2101010) ||
+                     plane->SupportsFormat(DRM_FORMAT_XRGB8888)));
           }
           return false;
         });
@@ -234,8 +235,19 @@ bool CDRMUtils::FindPlanes()
     CLog::Log(LOGDEBUG, "CDRMUtils::{} - using video plane {}", __FUNCTION__,
               m_video_plane->GetPlaneId());
 
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} - using gui plane {}", __FUNCTION__,
-            m_gui_plane->GetPlaneId());
+  // assume we prefer direct-to-plane rendering support over 10bit gui support for now.
+  if (m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
+  {
+    m_gui_plane->SetFormat(DRM_FORMAT_XRGB2101010);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using 10bit gui plane {}", __FUNCTION__,
+              m_gui_plane->GetPlaneId());
+  }
+  else
+  {
+    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using gui plane {}", __FUNCTION__,
+              m_gui_plane->GetPlaneId());
+  }
 
   return true;
 }
