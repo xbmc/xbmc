@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
@@ -109,7 +110,7 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   {
     if (!buf.fence)
     {
-      buf.texture.Init(eglDisplay);
+      buf.texture = std::make_unique<CDRMPRIMETexture>(eglDisplay);
       buf.fence.reset(new CEGLFence(eglDisplay));
     }
   }
@@ -128,7 +129,7 @@ void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int ind
     CLog::LogF(LOGERROR, "unreleased video buffer");
     if (buf.fence)
       buf.fence->DestroyFence();
-    buf.texture.Unmap();
+    buf.texture->Unmap();
     buf.videoBuffer->Release();
   }
   buf.videoBuffer = picture.videoBuffer;
@@ -151,7 +152,8 @@ void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
   if (buf.fence)
     buf.fence->DestroyFence();
 
-  buf.texture.Unmap();
+  if (buf.texture)
+    buf.texture->Unmap();
 
   if (buf.videoBuffer)
   {
@@ -306,10 +308,10 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   if (!renderSystem)
     return;
 
-  if (!buf.texture.Map(buffer))
+  if (!buf.texture->Map(buffer))
     return;
 
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, buf.texture.GetTexture());
+  glBindTexture(GL_TEXTURE_EXTERNAL_OES, buf.texture->GetTexture());
 
   renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
 
