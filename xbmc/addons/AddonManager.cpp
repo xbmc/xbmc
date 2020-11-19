@@ -497,7 +497,7 @@ void CAddonMgr::CheckAndInstallAddonUpdates(bool wait) const
   std::lock_guard<std::mutex> lock(m_installAddonsMutex);
   VECADDONS updates;
   GetAddonUpdateCandidates(updates);
-  InstallAddonUpdates(updates, wait, AllowCheckForUpdates::YES);
+  InstallAddonUpdates(updates, wait, AllowCheckForUpdates::NO);
 }
 
 bool CAddonMgr::GetAddonUpdateCandidates(VECADDONS& updates) const
