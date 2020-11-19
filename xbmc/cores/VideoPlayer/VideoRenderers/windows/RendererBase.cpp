@@ -40,6 +40,8 @@ void CRenderBuffer::AppendPicture(const VideoPicture& picture)
   displayMetadata = picture.displayMetadata;
   lightMetadata = picture.lightMetadata;
   hasLightMetadata = picture.hasLightMetadata && picture.lightMetadata.MaxCLL;
+  if (hasDisplayMetadata && displayMetadata.has_luminance && !displayMetadata.max_luminance.num)
+    displayMetadata.has_luminance = 0;
 }
 
 void CRenderBuffer::ReleasePicture()
@@ -486,7 +488,7 @@ DXGI_HDR_METADATA_HDR10 CRendererBase::GetDXGIHDR10MetaData(CRenderBuffer* rb)
 {
   DXGI_HDR_METADATA_HDR10 hdr10 = {};
 
-  if (rb->displayMetadata.has_primaries)
+  if (rb->hasDisplayMetadata && rb->displayMetadata.has_primaries)
   {
     hdr10.RedPrimary[0] = static_cast<uint16_t>(rb->displayMetadata.display_primaries[0][0].num);
     hdr10.RedPrimary[1] = static_cast<uint16_t>(rb->displayMetadata.display_primaries[0][1].num);
@@ -497,7 +499,7 @@ DXGI_HDR_METADATA_HDR10 CRendererBase::GetDXGIHDR10MetaData(CRenderBuffer* rb)
     hdr10.WhitePoint[0] = static_cast<uint16_t>(rb->displayMetadata.white_point[0].num);
     hdr10.WhitePoint[1] = static_cast<uint16_t>(rb->displayMetadata.white_point[1].num);
   }
-  if (rb->displayMetadata.has_luminance)
+  if (rb->hasDisplayMetadata && rb->displayMetadata.has_luminance)
   {
     hdr10.MaxMasteringLuminance = static_cast<uint32_t>(rb->displayMetadata.max_luminance.num);
     hdr10.MinMasteringLuminance = static_cast<uint32_t>(rb->displayMetadata.min_luminance.num);
@@ -522,10 +524,11 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
 
   if (!DX::Windowing()->IsHDROutput())
   {
-    if (m_lastHdr10.RedPrimary[0] != 0)
-      m_lastHdr10 = {};
     if (m_HdrType != HDR_TYPE::HDR_NONE_SDR)
+    {
       m_HdrType = HDR_TYPE::HDR_NONE_SDR;
+      m_lastHdr10 = {};
+    }
     return;
   }
 
