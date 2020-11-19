@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <EGL/eglext.h>
 #include <gbm.h>
 
 using namespace KODI::WINDOWING::GBM;

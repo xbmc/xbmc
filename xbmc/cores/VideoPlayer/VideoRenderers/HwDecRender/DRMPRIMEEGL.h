@@ -17,7 +17,8 @@
 class CDRMPRIMETexture
 {
 public:
-  CDRMPRIMETexture() = default;
+  explicit CDRMPRIMETexture(EGLDisplay eglDisplay);
+  CDRMPRIMETexture() = delete;
   ~CDRMPRIMETexture();
 
   bool Map(CVideoBufferDRMPRIME* buffer);
