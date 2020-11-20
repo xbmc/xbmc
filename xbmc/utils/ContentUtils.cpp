@@ -21,7 +21,7 @@ const bool HasPreferredArtType(const CFileItem& item)
                                     item.GetVideoInfoTag()->m_type == MediaTypeVideoCollection);
 }
 
-const std::string GetPreferredArtType(MediaType type)
+const std::string GetPreferredArtType(const MediaType type)
 {
   if (type == MediaTypeMovie || type == MediaTypeTvShow || type == MediaTypeSeason ||
       type == MediaTypeVideoCollection)
