@@ -100,6 +100,18 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Atualizado:"
 
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Selecionar + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Selecionar + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Selecione + Iniciar"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "PAUSADO"
