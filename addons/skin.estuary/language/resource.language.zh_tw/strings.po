@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "時間平移"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "下期上檔"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "顯示劇照"
@@ -223,6 +227,14 @@ msgstr "啟動時顯示登入畫面"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "啟動時自動登入"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "選擇 + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "選擇 + 開始"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "進入附加元件瀏覽器"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "搜尋附加元件"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "上映中"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "即將上映"
 
 msgctxt "#31148"
 msgid "Categories"

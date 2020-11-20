@@ -260,6 +260,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energiebeheer"
 
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Totale lengte"
+
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Totale duur"

@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "타임시프트"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "다음 방송됨"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "팬아트 표시"
@@ -223,6 +227,14 @@ msgstr "시작할 때 로그인 화면 표시"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "시작할 때 자동 로그인"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "애드온 탐색기 들어가기"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "애드온 검색"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "영화에서"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "곧 영화에서"
 
 msgctxt "#31148"
 msgid "Categories"

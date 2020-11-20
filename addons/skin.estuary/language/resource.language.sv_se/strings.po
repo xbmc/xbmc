@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Tidsskifte"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Nästa sändning"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Visa fanart"
@@ -491,6 +495,14 @@ msgstr "Gå till tilläggsutforskaren"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Sök bland tillägg"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "På bio"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "På bio snart"
 
 msgctxt "#31148"
 msgid "Categories"

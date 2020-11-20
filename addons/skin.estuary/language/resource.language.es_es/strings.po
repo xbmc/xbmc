@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Próxima emisión"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -223,6 +227,14 @@ msgstr "Mostrar pantalla de inicio de sesión al arrancar"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Iniciar sesión automáticamente"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -492,6 +504,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Buscar add-ons"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "En cines"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "En cines próximamente"
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Categorías"
@@ -554,7 +574,7 @@ msgstr "Juegue a sus juegos o descargue alguno de los múltiples add-ons del rep
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Mostar fondo fanart"
+msgstr "Mostrar fondo fanart"
 
 msgctxt "#31164"
 msgid "Choose kind of profile identification"

@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Différé"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Diffusion suivante"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Afficher le FanArt"
@@ -223,6 +227,14 @@ msgstr "Afficher l'écran d'identification au démarrage"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Identification auto. au démarrage"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Sélectionner"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Sélectionner + Démarrage"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "Aller au navigateur d'extensions"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Rechercher les extensions"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "À l'affiche"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Bientôt à l'affiche"
 
 msgctxt "#31148"
 msgid "Categories"

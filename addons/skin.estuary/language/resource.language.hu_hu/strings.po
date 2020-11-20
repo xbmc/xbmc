@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Csúsztatott felvétel"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Következő premier"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Illusztráció megjelenítése"
@@ -155,6 +159,10 @@ msgstr "Oldalak"
 msgctxt "#31036"
 msgid "items"
 msgstr "elem"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Kiválasztott sáv"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -220,6 +228,14 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatikus bejelentkezés indításkor"
 
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Kiválasztás + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Kiválasztás + indítás"
+
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Főmenü elemek"
@@ -260,9 +276,13 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Kikapcsolási lehetőségek"
 
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Teljes hossz"
+
 msgctxt "#31074"
 msgid "Total duration"
-msgstr "Teljes időtartam"
+msgstr "Teljes időtartam"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -483,6 +503,14 @@ msgstr "Belépés a kiegészítő böngészőbe"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Bővítmények keresése"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "Mozikban"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Hamarosan a mozikban"
 
 msgctxt "#31148"
 msgid "Categories"

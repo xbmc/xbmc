@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "时光平移"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "下次播出"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "显示同人画"
@@ -223,6 +227,14 @@ msgstr "启动时显示登录界面"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "启动时自动登录"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "进入插件浏览"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "搜索插件"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "在电影院里"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "即将上映"
 
 msgctxt "#31148"
 msgid "Categories"
