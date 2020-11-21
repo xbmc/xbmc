@@ -319,6 +319,14 @@ void CLangInfo::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
   if (setting == NULL)
     return;
 
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_LOCALE_AUDIOLANGUAGE)
     SetAudioLanguage(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
@@ -327,7 +335,16 @@ void CLangInfo::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
   else if (settingId == CSettings::SETTING_LOCALE_LANGUAGE)
   {
     if (!SetLanguage(std::static_pointer_cast<const CSettingString>(setting)->GetValue()))
-      std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE))->Reset();
+    {
+      auto setting = settings->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE);
+      if (!setting)
+      {
+        CLog::Log(LOGERROR, "Failed to load setting for: {}", CSettings::SETTING_LOCALE_LANGUAGE);
+        return;
+      }
+
+      std::static_pointer_cast<CSettingString>(setting)->Reset();
+    }
   }
   else if (settingId == CSettings::SETTING_LOCALE_COUNTRY)
     SetCurrentRegion(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
@@ -342,7 +359,8 @@ void CLangInfo::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
     Set24HourClock(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
 
     // update the time format
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_LOCALE_TIMEFORMAT, PrepareTimeFormat(GetTimeFormat(), m_use24HourClock));
+    settings->SetString(CSettings::SETTING_LOCALE_TIMEFORMAT,
+                        PrepareTimeFormat(GetTimeFormat(), m_use24HourClock));
   }
   else if (settingId == CSettings::SETTING_LOCALE_TEMPERATUREUNIT)
     SetTemperatureUnit(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
