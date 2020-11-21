@@ -124,8 +124,11 @@ void CDarwinEmbedKeyboard::invalidateCallback()
 bool CDarwinEmbedKeyboard::hasExternalKeyboard()
 {
 #if defined(TARGET_DARWIN_IOS)
+  // @todo: use @available after switching to iOS 14 SDK or later
+  if (auto keyboardClassIOS14 = NSClassFromString(@"GCKeyboard"))
+    return [keyboardClassIOS14 performSelector:@selector(coalescedKeyboard)] != nil;
+
   // https://stackoverflow.com/questions/31991873/how-to-reliably-detect-if-an-external-keyboard-is-connected-on-ios-9
-  // @todo: use public API when it appears
   const auto keyboardClassStr = "UIKeyboardImpl";
   auto keyboardClass = NSClassFromString(@(keyboardClassStr));
   if (!keyboardClass)
