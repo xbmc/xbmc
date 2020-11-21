@@ -53,7 +53,7 @@ std::string CDRMObject::GetPropertyName(uint32_t propertyId) const
   return "invalid property";
 }
 
-uint32_t CDRMObject::GetPropertyId(const char* name) const
+uint32_t CDRMObject::GetPropertyId(const std::string& name) const
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
                                [&name](auto& prop) { return prop->name == name; });
@@ -106,7 +106,7 @@ std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
   return std::make_tuple(false, 0);
 }
 
-bool CDRMObject::SetProperty(const char* name, uint64_t value)
+bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
                                [&name](auto& prop) { return prop->name == name; });
@@ -121,7 +121,7 @@ bool CDRMObject::SetProperty(const char* name, uint64_t value)
   return false;
 }
 
-bool CDRMObject::SupportsProperty(const char* name)
+bool CDRMObject::SupportsProperty(const std::string& name)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
                                [&name](auto& prop) { return prop->name == name; });
