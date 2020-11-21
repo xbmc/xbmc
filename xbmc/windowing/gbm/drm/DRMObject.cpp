@@ -8,7 +8,6 @@
 
 #include "DRMObject.h"
 
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -56,9 +55,8 @@ std::string CDRMObject::GetPropertyName(uint32_t propertyId) const
 
 uint32_t CDRMObject::GetPropertyId(const char* name) const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
     return property->get()->prop_id;
@@ -110,9 +108,8 @@ std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
 
 bool CDRMObject::SetProperty(const char* name, uint64_t value)
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
   {
@@ -126,9 +123,8 @@ bool CDRMObject::SetProperty(const char* name, uint64_t value)
 
 bool CDRMObject::SupportsProperty(const char* name)
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
     return true;
