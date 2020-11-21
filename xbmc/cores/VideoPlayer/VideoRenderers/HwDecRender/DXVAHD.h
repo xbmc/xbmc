@@ -43,7 +43,6 @@ public:
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return m_max_back_refs; }
   bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
-  bool HasHDR10Support() const { return m_bSupportHDR10; }
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -69,7 +68,6 @@ protected:
   uint32_t m_procIndex = 0;
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps = {};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
-  bool m_bSupportHDR10 = false;
   bool m_bSupportHLG = false;
 
   struct ProcAmpInfo
