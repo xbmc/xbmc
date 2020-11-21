@@ -135,27 +135,3 @@ bool CDRMObject::SupportsProperty(const char* name)
 
   return false;
 }
-
-bool CDRMObject::SupportsPropertyAndValue(const char* name, uint64_t value)
-{
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
-
-  if (property != m_propsInfo.end())
-  {
-    if (drm_property_type_is(property->get(), DRM_MODE_PROP_ENUM) != 0)
-    {
-      for (int j = 0; j < property->get()->count_enums; j++)
-      {
-        if (property->get()->enums[j].value == value)
-          return true;
-      }
-    }
-
-    CLog::Log(LOGDEBUG, "CDRMObject::{} - property '{}' does not support value '{}'", __FUNCTION__,
-              name, value);
-  }
-
-  return false;
-}

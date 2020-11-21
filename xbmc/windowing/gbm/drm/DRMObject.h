@@ -39,7 +39,6 @@ public:
 
   bool SetProperty(const char* name, uint64_t value);
   bool SupportsProperty(const char* name);
-  bool SupportsPropertyAndValue(const char* name, uint64_t value);
 
 protected:
   explicit CDRMObject(int fd);
