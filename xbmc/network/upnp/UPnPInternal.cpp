@@ -363,6 +363,14 @@ BuildObject(CFileItem&                    item,
 
   logger->debug("Building didl for object '{}'", item.GetPath());
 
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return nullptr;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return nullptr;
+
   EClientQuirks quirks = GetClientQuirks(context);
 
   // get list of ip addresses
@@ -513,7 +521,11 @@ BuildObject(CFileItem&                    item,
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
                   container->m_ObjectClass.type += ".person.videoArtist";
-                  container->m_Creator = StringUtils::Join(tag.m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator).c_str();
+                  container->m_Creator =
+                      StringUtils::Join(
+                          tag.m_artist,
+                          settingsComponent->GetAdvancedSettings()->m_videoItemSeparator)
+                          .c_str();
                   container->m_Title   = tag.m_strTitle.c_str();
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_SEASONS:
@@ -619,8 +631,8 @@ BuildObject(CFileItem&                    item,
     // we are being called by a UPnP player or renderer or the user has chosen
     // to look for external subtitles
     if (upnp_server != NULL && item.IsVideo() &&
-       (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
-        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
+        (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
+         settings->GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
     {
         // find any available external subtitles
         std::vector<std::string> filenames;
@@ -649,20 +661,28 @@ BuildObject(CFileItem&                    item,
         }
         else if (!subtitles.empty())
         {
-            /* trying to find subtitle with prefered language settings */
-            std::string preferredLanguage = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting("locale.subtitlelanguage"))->ToString();
-            std::string preferredLanguageCode;
-            g_LangCodeExpander.ConvertToISO6392B(preferredLanguage, preferredLanguageCode);
+          std::string preferredLanguage{"en"};
 
-            for (unsigned int i = 0; i < subtitles.size(); i++)
+          /* trying to find subtitle with prefered language settings */
+          auto setting = settings->GetSetting("locale.subtitlelanguage");
+          if (!setting)
+            CLog::Log(LOGERROR, "Failed to load setting for: {}", "locale.subtitlelanguage");
+          else
+            preferredLanguage = setting->ToString();
+
+          std::string preferredLanguageCode;
+          g_LangCodeExpander.ConvertToISO6392B(preferredLanguage, preferredLanguageCode);
+
+          for (unsigned int i = 0; i < subtitles.size(); i++)
+          {
+            ExternalStreamInfo info =
+                CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i]);
+
+            if (preferredLanguageCode == info.language)
             {
-                ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i]);
-
-                if (preferredLanguageCode == info.language)
-                {
-                    subtitlePath = subtitles[i];
-                    break;
-                }
+              subtitlePath = subtitles[i];
+              break;
+            }
             }
             /* if not found subtitle with prefered language, get the first one */
             if (subtitlePath.empty())
