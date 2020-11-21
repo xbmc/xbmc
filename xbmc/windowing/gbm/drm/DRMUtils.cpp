@@ -351,8 +351,16 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     PrintDrmDeviceInfo(device);
 
     const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
+
+    if (!renderPath)
+      renderPath = drmGetDeviceNameFromFd2(m_fd);
+
+    if (!renderPath)
+      renderPath = drmGetDeviceNameFromFd(m_fd);
+
     if (renderPath)
     {
+      m_renderDevicePath = renderPath;
       m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
       if (m_renderFd != 0)
         CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
