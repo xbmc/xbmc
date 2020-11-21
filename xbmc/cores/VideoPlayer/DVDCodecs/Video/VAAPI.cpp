@@ -543,8 +543,22 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   auto entry = settings_map.find(avctx->codec_id);
   if (entry != settings_map.end())
   {
-    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    bool enabled = settings->GetBool(entry->second) && settings->GetSetting(entry->second)->IsVisible();
+    auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    if (!settingsComponent)
+      return false;
+
+    auto settings = settingsComponent->GetSettings();
+    if (!settings)
+      return false;
+
+    auto setting = settings->GetSetting(entry->second);
+    if (!setting)
+    {
+      CLog::Log(LOGERROR, "Failed to load setting for: {}", entry->second);
+      return false;
+    }
+
+    bool enabled = setting->IsEnabled() && setting->IsVisible();
     if (!enabled)
       return false;
   }
@@ -1229,14 +1243,31 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
 
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPI)->SetVisible(true);
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIMPEG4)->SetVisible(true);
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVC1)->SetVisible(true);
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIMPEG2)->SetVisible(true);
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVP8)->SetVisible(true);
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVP9)->SetVisible(true);
-  settings->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIHEVC)->SetVisible(true);
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  constexpr std::array<const char*, 8> vaapiSettings = {
+      SETTING_VIDEOPLAYER_USEVAAPI,     SETTING_VIDEOPLAYER_USEVAAPIMPEG4,
+      SETTING_VIDEOPLAYER_USEVAAPIVC1,  SETTING_VIDEOPLAYER_USEVAAPIMPEG2,
+      SETTING_VIDEOPLAYER_USEVAAPIVP8,  SETTING_VIDEOPLAYER_USEVAAPIVP9,
+      SETTING_VIDEOPLAYER_USEVAAPIHEVC, SETTING_VIDEOPLAYER_PREFERVAAPIRENDER};
+
+  for (const auto vaapiSetting : vaapiSettings)
+  {
+    auto setting = settings->GetSetting(vaapiSetting);
+    if (!setting)
+    {
+      CLog::Log(LOGERROR, "Failed to load setting for: {}", vaapiSetting);
+      continue;
+    }
+
+    setting->SetVisible(true);
+  }
 }
 
 //-----------------------------------------------------------------------------
