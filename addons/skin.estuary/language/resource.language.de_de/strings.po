@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "Es läuft"
+msgstr "Gerade läuft"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Suche..."
+msgstr "Suchen ..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -54,7 +54,7 @@ msgstr "Kategorie-Widgets aktivieren"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "Icons herunterladen"
+msgstr "Symbole herunterladen"
 
 msgctxt "#31010"
 msgid "In progress movies"
@@ -114,7 +114,7 @@ msgstr "Ansicht"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "Bewertung, die für Medien-Inhalte angezeigt werden soll"
+msgstr "Bewertung, die für Medieninhalte angezeigt werden soll"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -134,11 +134,11 @@ msgstr "Zuletzt angemeldet"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "System Speicher-Auslastung"
+msgstr "Systemspeicherauslastung"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr "Versionsinfos"
+msgstr "Versionsinformationen"
 
 msgctxt "#31032"
 msgid "Order"
@@ -210,7 +210,7 @@ msgstr "[B]Links[/B] zum Zurückspulen, [B]Rechts[/B] zum Vorspulen drücken"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Zur Wiedergabeliste..."
+msgstr "Zur Wiedergabeliste ..."
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -234,11 +234,11 @@ msgstr "Sektionen"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Video-Wiedergabeliste"
+msgstr "Videowiedergabeliste"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Musik-Wiedergabeliste"
+msgstr "Musikwiedergabeliste"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -259,6 +259,10 @@ msgstr "von"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Ausschalten"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Gesamtlänge"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -286,7 +290,7 @@ msgstr "Liedtexte-Addon-Einstellungen"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "Visualisierungs-Einstellungen"
+msgstr "Visualisierungseinstellungen"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -310,7 +314,7 @@ msgstr "Lokaler Untertitel verfügbar"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanal-Einstellungen"
+msgstr "Kanaleinstellungen"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -334,11 +338,11 @@ msgstr "Wall"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Text hier eingeben..."
+msgstr "Text hier eingeben ..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Die persönliche Bibliothek ist derzeit leer. Um sie mit Inhalten zu füllen, zu \"Dateien\" wechseln, eine Medienquelle hinzufügen und diese dann konfigurieren. Nachdem die Quelle hinzugefügt und indiziert wurde, kann die Bibliothek durchstöbert werden."
+msgstr "Die persönliche Bibliothek ist derzeit leer. Um sie mit Inhalten zu füllen, zu „Dateien“ wechseln, eine Medienquelle hinzufügen und diese dann konfigurieren. Nachdem die Quelle hinzugefügt und indiziert wurde, kann die Bibliothek durchstöbert werden."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -354,7 +358,7 @@ msgstr "WideList"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Zu \"Dateien\"..."
+msgstr "Zu „Dateien“ ..."
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -382,7 +386,7 @@ msgstr "Menü editieren"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Zum Addon-Browser..."
+msgstr "Zum Addon-Browser ..."
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -390,11 +394,11 @@ msgstr "Es sind noch keine Addons installiert. Den Addon-Browser öffnen, um in 
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Es ist noch kein Wetterprovider eingerichtet. Um Wetterinformationen zu erhalten, einen Wetterprovider auswählen und Orte einrichten."
+msgstr "Es ist noch kein Wetterinformationsanbieter eingerichtet. Um Wetterinformationen zu erhalten, einen Wetterinformationsanbieter auswählen und Orte einrichten."
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Wetterprovider wählen"
+msgstr "Wetterinformationsanbieter wählen"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
@@ -406,7 +410,7 @@ msgstr "Filme dieses Regisseurs"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "[B]Hoch[/B] für Schauspieler-Infos drücken"
+msgstr "[B]Hoch[/B] für Darstellerinformationen drücken"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
@@ -426,7 +430,7 @@ msgstr "Allgemeine Einstellungen, die für den gesamten Skin gelten."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Einstellungen für das Hauptmenü: Der Hauptbildschirm kann nach Belieben angepaßt werden."
+msgstr "Einstellungen für das Hauptmenü. Der Hauptbildschirm kann nach Belieben angepaßt werden."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -446,15 +450,15 @@ msgstr "Restzeit"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Hier klicken, um die letzten Änderungen zu sehen..."
+msgstr "Hier klicken, um die letzten Änderungen zu sehen ..."
 
 msgctxt "#31137"
 msgid "PVR info"
-msgstr "PVR-Info"
+msgstr "PVR-Informationen"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "Player-Info"
+msgstr "Player-Informationen"
 
 msgctxt "#31139"
 msgid "Video decoder"
@@ -462,7 +466,7 @@ msgstr "Video-Decoder"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Pixel-Format"
+msgstr "Pixelformat"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -470,15 +474,15 @@ msgstr "Änderungen für Version"
 
 msgctxt "#31142"
 msgid "Play speed"
-msgstr "Wiedergabe-Geschwindigkeit"
+msgstr "Wiedergabegeschwindigkeit"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muß ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR"
+msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muss ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR"
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Zum Addon-Browser..."
+msgstr "Zum Addon-Browser ..."
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -490,7 +494,7 @@ msgstr "Kategorien"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Genre Fanart Pack auswählen"
+msgstr "Genre-Fanart-Pack auswählen"
 
 msgctxt "#31150"
 msgid "Repository"
@@ -518,11 +522,11 @@ msgstr "Es wurden noch keine Lesezeichen angelegt."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "Hintergrund-Muster auswählen"
+msgstr "Hintergrundmuster auswählen"
 
 msgctxt "#31157"
 msgid "Edit categories"
-msgstr "Kategorien editieren"
+msgstr "Kategorien anpassen"
 
 msgctxt "#31158"
 msgid "Touch mode"
@@ -538,7 +542,7 @@ msgstr "Medien-Flags anzeigen"
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr "Ziffern-Eingabe"
+msgstr "Zifferneingabe"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
@@ -550,11 +554,11 @@ msgstr "Fanart-Hintergrund anzeigen"
 
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr "Art der Profil-Identifikation auswählen"
+msgstr "Art der Profilidentifikation auswählen"
 
 msgctxt "#31165"
 msgid "Profile name"
-msgstr "Profil-Name"
+msgstr "Profilname"
 
 msgctxt "#31166"
 msgid "Profile avatar"

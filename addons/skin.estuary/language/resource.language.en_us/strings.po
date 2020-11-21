@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Next aired"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Show fanart"
@@ -155,6 +159,10 @@ msgstr "Pages"
 msgctxt "#31036"
 msgid "items"
 msgstr "items"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Selected track"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -220,6 +228,14 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatic Login on startup"
 
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
+
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Main menu items"
@@ -259,6 +275,10 @@ msgstr "by"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Power Options"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Total length"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -483,6 +503,14 @@ msgstr "Enter add-on browser"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Search add-ons"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "In theaters"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "In theaters soon"
 
 msgctxt "#31148"
 msgid "Categories"

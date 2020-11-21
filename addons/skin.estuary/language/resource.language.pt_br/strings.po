@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Mudança de horário"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Próxima exibição"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -223,6 +227,14 @@ msgstr "Mostrar tela de login ao inicializar"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Login automático ao inicializar"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Selecionar + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Selecione + Iniciar"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "Entrar no navegador de add-ons"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Procurar add-ons"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "Nos cinemas"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Nos cinemas em breve"
 
 msgctxt "#31148"
 msgid "Categories"

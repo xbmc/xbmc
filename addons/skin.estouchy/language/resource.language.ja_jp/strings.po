@@ -100,6 +100,14 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "更新:"
 
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "セレクト + X"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "セレクト + スタート"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "静止中"

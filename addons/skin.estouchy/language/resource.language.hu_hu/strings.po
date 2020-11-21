@@ -100,6 +100,18 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Frissítve:"
 
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Kiválasztás + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Kiválasztás + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Kiválasztás + indítás"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "MEGÁLLÍTVA"

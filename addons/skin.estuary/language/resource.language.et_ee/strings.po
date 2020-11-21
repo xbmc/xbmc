@@ -16,9 +16,21 @@ msgstr ""
 "Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Hetkel eetris"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Otsimine..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Näita taustal fännide loodud pilte"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Kinorežiim"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -26,19 +38,59 @@ msgstr "Muuda režiimi"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Vaata 2Dna"
+msgstr "Vaata 2D-s"
 
 msgctxt "#31006"
 msgid "Random movies"
 msgstr "Juhuslik film"
 
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Vaatamata filmid"
+
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Luba kategooria vidinad"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Lae alla ikoonid"
+
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Vaatamine pooleli"
 
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Enim esitatud albumid"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Juhuslik album"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Juhuslik artist"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Esitamata albumid"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Viimased salvestused"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Viimased vaadatud kanalid"
+
 msgctxt "#31017"
 msgid "Rated"
 msgstr "Vanusepiirang"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Viimased kuulatud kanalid"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -48,6 +100,10 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Tegevused"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Muud suvandid"
+
 msgctxt "#31022"
 msgid "Sort by"
 msgstr "Järjesta"
@@ -56,13 +112,29 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Esitusviis"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Vali meediaüksuste kuvamiseks hinne"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Lemmikuid ei ole. Kontekstimenüüd kasutades saate lisada meediakuvas üksusi sellesse nimekirja."
+
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Ajanihe"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Järgmisena eetris"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Poster"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Viimati sisse logitud"
 
 msgctxt "#31030"
 msgid "System memory usage"
@@ -80,6 +152,18 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Minu hinne"
 
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Lehed"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "üksust"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Valitud lugu"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Tagasi"
@@ -88,33 +172,121 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Edasi"
 
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kaamera valmistaja"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Esitusloendi suvandid"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Nutika esitusloendi loomiseks määra liik ja lisa reeglid. Nutikad esitusloendid on muutuvad ja sisaldavad kõiki määratud reeglitega sobivaid meediaüksusi andmebaasist."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Lisa grupp"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Nimeta grupp ümber"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Kustuta grupp"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Saadaval"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Peatamiseks vajuta [B]OK[/B]"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtreeritud"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-il põhinev"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Tagasi kerimiseks vajuta [B]vasakule[/B] või edasi kerimiseks  [B]paremale[/B]"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Mine esitusloendisse"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Käivitusel kuva logimisaken"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Käivitusel logib ise sisse"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
+
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Peamenüü elemendid"
+msgstr "Peamenüü üksused"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Vali ilmateate fännipiltide pakk"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Rubriigid"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Video esitusloend"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Muusika pleilist"
+msgstr "Muusika esitusloend"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Logimine"
+msgstr "Logiraamat"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Vali eelhäälestused"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Viimati uuendatud"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "autor on"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Toide"
 
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Kogupikkus"
+
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Kogukestvus"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmi kogumikud"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -124,21 +296,129 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Lõpeb"
 
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Laulusõnade lisamoodul"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Laulusõnade lisamooduli seaded"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Visualiseerimise seaded"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Saadaval grupid"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Videomenüü"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Kuva ülaribal ilmateadet"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Kasuta slaidanimatsioone"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Lokaalsed subtiitrid on saadaval"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanali suvandid"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Vali sisse logimiseks Kodi kasutaja profiil[CR]ja jätka"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Ikoonisein"
 
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Riba"
 
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Infosein"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Sein"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Sisesta tekst siia..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Teek on praegu tühi. Selleks, et seda täita oma meediaga minge rubriiki \"Failid\", lisage meediaallikas ja seadistage see."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Lisa videoallikad ja määra videoteegi täitmiseks sisu liik."
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
 
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Lai nimekiri"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Mine failide rubriiki"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Vaata oma pilte või lae ametlikust hoidlast alla piltide lisamoodulid."
+
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "Vaheta heliriba"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Otsi kohalikust teegist"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Otsi YouTube-ist"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Eemalda see peamenüü üksus"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Redigeeri sõlmesid"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Mine lisamoodulite brauserisse"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Te ei ole paigaldanud ühtegi lisamoodulit. Külastage meie lisamoodulite brauserit ja sirvige lisamooduleid ning täiustage Kodit."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Te ei ole määranud ilmateate pakkujat. Ilmateate kuvamiseks valige ilmateate pakkuja ja määrake oma asukoht."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Määra ilmateate pakkuja"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Vaatamata seriaalid"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -152,13 +432,33 @@ msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Sisu täielikuks lugemiseks vajuta OK"
 
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Kuva ikoonid"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Osalejad"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Rüü kõikidele osadele kohalduvad üldseaded"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Peamenüü seaded: Seadista avakuva oma meele järgi."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Vali rüü fännipildi pakk"
+
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Vali programm"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr "Vali lahutus"
+msgstr "Vali ekraanilahutus"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -167,6 +467,10 @@ msgstr "Kestab veel"
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Viimaste muudatuste vaatamiseks kliki siia..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR-i info"
 
 msgctxt "#31138"
 msgid "Player process info"
@@ -180,9 +484,53 @@ msgctxt "#31140"
 msgid "Pixel format"
 msgstr "Piksli vorming"
 
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Muudatused versioonis"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Esitamise kiirus"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "PVR on seadistamata. PVR-i kasutamiseks valige ja seadistage PVR-i klientprogramm. Rohkem infot: http://kodi.wiki/view/PVR "
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Mine lisamoodulite brauserisse"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Otsi lisamooduleid"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "Kinodes"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Varsti kinodes"
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategooriad"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Hoidla"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Vaatamata muusikavideod"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Juhuslik muusikavideo"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Teil ei ole seda sorti lisamooduleid paigaldatud. Meie kasutajate poolt loodud lisamoodulite alla laadimiseks, minge lisamoodulite brauserisse."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -192,10 +540,46 @@ msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "Järjehoidjaid ei ole"
 
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Vali taustapildi muster"
+
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "Redigeeri"
 
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Puutetundlik režiim"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Joonistus"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Kuva meedia andmed"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numbriklahvistik"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Mängi oma mänge või lae ametlikust hoidlast alla mängude lisamoodulid."
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Vali profiili tuvastuse liik"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profiili nimi"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profiili avatar"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Tausta animeerimine"

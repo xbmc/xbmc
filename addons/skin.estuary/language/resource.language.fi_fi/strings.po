@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Ajansiirto"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Seuraava esitys"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Näytä fanitaide"
@@ -223,6 +227,14 @@ msgstr "Näytä kirjautumisruutu käynnistyksen yhteydessä"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automaattinen kirjautuminen"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Valinta + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Valinta + Aloita"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "Avaa lisäosaselain"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Etsi lisäosista"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "Teattereissa"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Tulossa pian teattereihin"
 
 msgctxt "#31148"
 msgid "Categories"

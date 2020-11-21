@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Anjak Masa"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Keudara berikutnya"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Tunjuk seni peminat"
@@ -155,6 +159,10 @@ msgstr "Halaman"
 msgctxt "#31036"
 msgid "items"
 msgstr "item"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Trek terpilih"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -220,6 +228,14 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Daftar masuk automatik ketika permulaan"
 
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
+
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Item menu utama"
@@ -259,6 +275,10 @@ msgstr "oleh"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opsyen Kuasa"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Jumlah tempoh"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -483,6 +503,14 @@ msgstr "Masukkan pelayar tambahan"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Gelintar tambahan"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "Ditayang wayang"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Akan ditayang wayang kelak"
 
 msgctxt "#31148"
 msgid "Categories"

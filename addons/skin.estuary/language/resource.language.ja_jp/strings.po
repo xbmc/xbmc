@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "タイムシフト"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "次回の放送"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "ファンアートを見る"
@@ -223,6 +227,14 @@ msgstr "起動時にログイン画面を表示"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "スタートアップ時に自動ログイン"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "セレクト + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "セレクト + スタート"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -491,6 +503,14 @@ msgstr "アドオンブラウザー"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "アドオン選択"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "映画館にて"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "もうすぐ映画館で"
 
 msgctxt "#31148"
 msgid "Categories"
