@@ -589,9 +589,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                 m_hints.cryptoSession->keySystem);
       goto FAIL;
     }
-    CJNIMediaCrypto crypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId,
-                                                   m_hints.cryptoSession->sessionId +
-                                                       m_hints.cryptoSession->sessionIdSize));
+    CJNIMediaCrypto crypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId.begin(),
+                                                   m_hints.cryptoSession->sessionId.end()));
     m_needSecureDecoder =
         crypto.requiresSecureDecoderComponent(m_mime) &&
         (m_hints.cryptoSession->flags & DemuxCryptoSession::FLAG_SECURE_DECODER) != 0;
@@ -700,9 +699,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Initializing MediaCrypto");
 
     m_crypto =
-        new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId,
-                                                    m_hints.cryptoSession->sessionId +
-                                                        m_hints.cryptoSession->sessionIdSize));
+        new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId.begin(),
+                                                    m_hints.cryptoSession->sessionId.end()));
 
     if (!m_crypto)
     {

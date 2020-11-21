@@ -10,7 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream/stream_crypto.h"
 
-#include <string.h>
+#include <string>
 
 //CryptoSession is usually obtained once per stream, but could change if an key expires
 
@@ -24,30 +24,18 @@ enum CryptoSessionSystem : uint8_t
 
 struct DemuxCryptoSession
 {
-  DemuxCryptoSession(const CryptoSessionSystem sys, const uint16_t sSize, const char *sData, const uint8_t flags)
-    : sessionId(new char[sSize])
-    , sessionIdSize(sSize)
-    , keySystem(sys)
-    , flags(flags)
+  DemuxCryptoSession(const CryptoSessionSystem sys, const char* sData, const uint8_t flags)
+    : sessionId(sData), keySystem(sys), flags(flags)
   {
-    memcpy(sessionId, sData, sSize);
-  };
-
-  ~DemuxCryptoSession()
-  {
-    delete[] sessionId;
   }
 
   bool operator == (const DemuxCryptoSession &other) const
   {
-    return sessionIdSize == other.sessionIdSize &&
-      keySystem == other.keySystem &&
-      memcmp(sessionId, other.sessionId, sessionIdSize) == 0;
+    return keySystem == other.keySystem && sessionId == other.sessionId;
   };
 
   // encryped stream infos
-  char * sessionId;
-  uint16_t sessionIdSize;
+  std::string sessionId;
   CryptoSessionSystem keySystem;
 
   static const uint8_t FLAG_SECURE_DECODER = 1;
