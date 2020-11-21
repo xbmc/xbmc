@@ -19,6 +19,7 @@ public:
   ~CGUIWindowMusicPlaylistEditor(void) override;
 
   bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
   bool OnBack(int actionID) override;
 
 protected:
@@ -27,7 +28,6 @@ protected:
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
   void OnPrepareFileItems(CFileItemList &items) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   void OnQueueItem(int iItem, bool) override;
   std::string GetStartFolder(const std::string &dir) override { return ""; };
 

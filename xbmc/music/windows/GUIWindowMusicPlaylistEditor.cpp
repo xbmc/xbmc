@@ -53,6 +53,19 @@ bool CGUIWindowMusicPlaylistEditor::OnBack(int actionID)
   return CGUIWindowMusicBase::OnBack(actionID);
 }
 
+bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_CONTEXT_MENU)
+  {
+    if (GetFocusedControlID() == CONTROL_PLAYLIST)
+    {
+      OnPlaylistContext();
+      return true;
+    }
+  }
+  return CGUIWindow::OnAction(action);
+}
+
 bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -90,16 +103,9 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
       int control = message.GetSenderId();
       if (control == CONTROL_PLAYLIST)
       {
-        int item = GetCurrentPlaylistItem();
         int action = message.GetParam1();
         if (action == ACTION_CONTEXT_MENU || action == ACTION_MOUSE_RIGHT_CLICK)
           OnPlaylistContext();
-        else if (action == ACTION_QUEUE_ITEM || action == ACTION_DELETE_ITEM || action == ACTION_MOUSE_MIDDLE_CLICK)
-          OnDeletePlaylistItem(item);
-        else if (action == ACTION_MOVE_ITEM_UP)
-          OnMovePlaylistItem(item, -1);
-        else if (action == ACTION_MOVE_ITEM_DOWN)
-          OnMovePlaylistItem(item, 1);
         return true;
       }
       else if (control == CONTROL_LOAD_PLAYLIST)
@@ -129,7 +135,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
   items.Clear();
   if (strDirectory.empty())
   { // root listing - list files:// and musicdb://
-    CFileItemPtr files(new CFileItem("files://", true));
+    CFileItemPtr files(new CFileItem("sources://music/", true));
     files->SetLabel(g_localizeStrings.Get(744));
     files->SetLabelPreformatted(true);
     files->m_bIsShareOrDrive = true;
@@ -294,39 +300,8 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  if (GetFocusedControlID() == CONTROL_PLAYLIST)
-  {
-    int playlistItem = GetCurrentPlaylistItem();
-    if (playlistItem > 0)
-      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
-    if (playlistItem >= 0 && playlistItem < m_playlist->Size())
-      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
-    if (playlistItem >= 0)
-      buttons.Add(CONTEXT_BUTTON_DELETE, 1210);
-  }
-  else if (item && !item->IsParentFolder() && !m_vecItems->IsVirtualDirectoryRoot())
+  if (item && !item->IsParentFolder() && !m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 15019);
-}
-
-bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
-{
-  switch (button)
-  {
-  case CONTEXT_BUTTON_MOVE_ITEM_UP:
-    OnMovePlaylistItem(GetCurrentPlaylistItem(), -1);
-    return true;
-
-  case CONTEXT_BUTTON_MOVE_ITEM_DOWN:
-    OnMovePlaylistItem(GetCurrentPlaylistItem(), 1);
-    return true;
-
-  case CONTEXT_BUTTON_DELETE:
-    OnDeletePlaylistItem(GetCurrentPlaylistItem());
-    return true;
-  default:
-    break;
-  }
-  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
@@ -396,8 +371,19 @@ void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 void CGUIWindowMusicPlaylistEditor::OnPlaylistContext()
 {
   int item = GetCurrentPlaylistItem();
+  CContextButtons buttons;
+  if (item > 0)
+    buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
+  if (item >= 0 && item < m_playlist->Size() - 1)
+    buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
   if (item >= 0)
-    m_playlist->Get(item)->Select(true);
-  if (!OnPopupMenu(-1) && item >= 0 && item < m_playlist->Size())
-    m_playlist->Get(item)->Select(false);
+      buttons.Add(CONTEXT_BUTTON_DELETE, 1210);
+
+  int btnid = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+  if (btnid == CONTEXT_BUTTON_MOVE_ITEM_UP)
+    OnMovePlaylistItem(item, -1);
+  else if (btnid == CONTEXT_BUTTON_MOVE_ITEM_DOWN)
+    OnMovePlaylistItem(item, 1);
+  else if (btnid == CONTEXT_BUTTON_DELETE)
+    OnDeletePlaylistItem(item);
 }
