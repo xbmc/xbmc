@@ -796,7 +796,14 @@ bool CApplication::Initialize()
     CServiceBroker::GetRenderSystem()->ShowSplash("");
     m_confirmSkinChange = true;
 
-    std::string defaultSkin = std::static_pointer_cast<const CSettingString>(settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
+    auto setting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    if (!setting)
+    {
+      CLog::Log(LOGFATAL, "Failed to load setting for: {}", CSettings::SETTING_LOOKANDFEEL_SKIN);
+      return false;
+    }
+
+    std::string defaultSkin = std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
     if (!LoadSkin(settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
       CLog::Log(LOGERROR, "Failed to load skin '%s'", settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
@@ -1158,11 +1165,18 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   else
   {
     // skin failed to load - we revert to the default only if we didn't fail loading the default
-    std::string defaultSkin = std::static_pointer_cast<CSettingString>(settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
+    auto setting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    if (!setting)
+    {
+      CLog::Log(LOGFATAL, "Failed to load setting for: {}", CSettings::SETTING_LOOKANDFEEL_SKIN);
+      return;
+    }
+
+    std::string defaultSkin = std::static_pointer_cast<CSettingString>(setting)->GetDefault();
     if (newSkin != defaultSkin)
     {
       m_confirmSkinChange = false;
-      settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN)->Reset();
+      setting->Reset();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
     }
   }
