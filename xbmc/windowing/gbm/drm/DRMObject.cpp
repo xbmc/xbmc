@@ -82,30 +82,30 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
   return true;
 }
 
-bool CDRMObject::GetPropertyValue(std::string name, const std::string& type, uint64_t& value) const
+//! @todo: improve with c++17
+std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
+                                                        const std::string& valueName) const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property == m_propsInfo.end())
-    return false;
+    return std::make_tuple(false, 0);
 
   auto prop = property->get();
 
-  if (drm_property_type_is(prop, DRM_MODE_PROP_ENUM) != 0)
+  if (!static_cast<bool>(drm_property_type_is(prop, DRM_MODE_PROP_ENUM)))
+    return std::make_tuple(false, 0);
+
+  for (int j = 0; j < prop->count_enums; j++)
   {
-    for (int j = 0; j < prop->count_enums; j++)
-    {
-      if (std::strcmp(prop->enums[j].name, type.c_str()) == 0)
-      {
-        value = prop->enums[j].value;
-        return true;
-      }
-    }
+    if (prop->enums[j].name != valueName)
+      continue;
+
+    return {true, prop->enums[j].value};
   }
 
-  return false;
+  return std::make_tuple(false, 0);
 }
 
 bool CDRMObject::SetProperty(const char* name, uint64_t value)
