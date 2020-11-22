@@ -977,34 +977,49 @@ bool CPVRDatabase::Persist(CPVRTimerInfoTag& timer)
 
   // insert a new entry if this is a new timer, or replace the existing one otherwise
   std::string strQuery;
+  const std::shared_ptr<CPVRTimerType> timerType = timer.GetTimerType();
+  unsigned int timerTypeId = timerType ? timerType->GetTypeId() : PVR_TIMER_TYPE_NONE;
   if (timer.m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
-    strQuery = PrepareSQL("INSERT INTO timers "
-                          "(iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, sSeriesLink, sStartTime,"
-                          " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, iMarginEnd,"
-                          " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, iMaxRecordings, iRecordingGroup) "
-                          "VALUES (%i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', %i, %i, %i, %i, %i, %i);",
-                          timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(), timer.m_state,
-                          timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
-                          timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
-                          timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
-                          timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays, timer.UniqueBroadcastID(),
-                          timer.m_iMarginStart, timer.m_iMarginEnd, timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
-                          timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings, timer.m_iRecordingGroup);
+    strQuery =
+        PrepareSQL("INSERT INTO timers "
+                   "(iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, "
+                   "sSeriesLink, sStartTime,"
+                   " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, "
+                   "iMarginStart, iMarginEnd,"
+                   " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, "
+                   "iLifetime, iMaxRecordings, iRecordingGroup) "
+                   "VALUES (%i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, "
+                   "%i, '%s', %i, %i, %i, %i, %i, %i);",
+                   timer.m_iParentClientIndex, timer.m_iClientId, timerTypeId, timer.m_state,
+                   timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
+                   timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
+                   timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
+                   timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays,
+                   timer.UniqueBroadcastID(), timer.m_iMarginStart, timer.m_iMarginEnd,
+                   timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
+                   timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime,
+                   timer.m_iMaxRecordings, timer.m_iRecordingGroup);
   else
-    strQuery = PrepareSQL("REPLACE INTO timers "
-                          "(iClientIndex,"
-                          " iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, sSeriesLink, sStartTime,"
-                          " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, iMarginEnd,"
-                          " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, iMaxRecordings, iRecordingGroup) "
-                          "VALUES (%i, %i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', %i, %i, %i, %i, %i, %i);",
-                          -timer.m_iClientIndex,
-                          timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(), timer.m_state,
-                          timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
-                          timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
-                          timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
-                          timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays, timer.UniqueBroadcastID(),
-                          timer.m_iMarginStart, timer.m_iMarginEnd, timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
-                          timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings, timer.m_iRecordingGroup);
+    strQuery = PrepareSQL(
+        "REPLACE INTO timers "
+        "(iClientIndex,"
+        " iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, "
+        "sSeriesLink, sStartTime,"
+        " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, "
+        "iMarginEnd,"
+        " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, "
+        "iMaxRecordings, iRecordingGroup) "
+        "VALUES (%i, %i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, "
+        "'%s', %i, %i, %i, %i, %i, %i);",
+        -timer.m_iClientIndex, timer.m_iParentClientIndex, timer.m_iClientId, timerTypeId,
+        timer.m_state, timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
+        timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
+        timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
+        timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays,
+        timer.UniqueBroadcastID(), timer.m_iMarginStart, timer.m_iMarginEnd,
+        timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
+        timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings,
+        timer.m_iRecordingGroup);
 
   bool bReturn = ExecuteQuery(strQuery);
 
