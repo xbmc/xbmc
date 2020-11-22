@@ -30,6 +30,15 @@
  
 --- a/Lib/subprocess.py
 +++ b/Lib/subprocess.py
+@@ -737,6 +737,8 @@
+                  restore_signals=True, start_new_session=False,
+                  pass_fds=(), *, encoding=None, errors=None, text=None):
+         """Create new Popen instance."""
++        raise RuntimeError("Subprocesses are not supported on this platform.")
++
+         _cleanup()
+         # Held while anything is calling waitpid before returncode has been
+         # updated to prevent clobbering returncode if wait() or poll() are
 @@ -936,6 +936,7 @@
          if not self._child_created:
              # We didn't get to successfully create a child process.
@@ -62,6 +71,24 @@
  
              if errpipe_data:
                  try:
+@@ -1721,7 +1724,7 @@
+                 raise SubprocessError("Unknown child exit status!")
+ 
+ 
+-        def _internal_poll(self, _deadstate=None, _waitpid=os.waitpid,
++        def _internal_poll(self, _deadstate=None, _waitpid=None,
+                 _WNOHANG=os.WNOHANG, _ECHILD=errno.ECHILD):
+             """Check if child process has terminated.  Returns returncode
+             attribute.
+@@ -1730,6 +1733,8 @@
+             outside of the local scope (nor can any methods it calls).
+ 
+             """
++            if _waitpid is None:
++                _waitpid = os.waitpid
+             if self.returncode is None:
+                 if not self._waitpid_lock.acquire(False):
+                     # Something else is busy calling waitpid.  Don't allow two
 --- a/Lib/urllib/request.py
 +++ b/Lib/urllib/request.py
 @@ -2616,11 +2616,9 @@
