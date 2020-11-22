@@ -59,7 +59,6 @@ void CProcessorHD::Close()
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
-  m_bSupportHDR10 = false;
 }
 
 bool CProcessorHD::PreInit() const
