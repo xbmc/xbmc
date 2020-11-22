@@ -2586,6 +2586,8 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/PlayListPlayer.cpp
+#: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
 msgctxt "#559"
 msgid "Playlist"
 msgstr ""
@@ -18016,6 +18018,7 @@ msgstr ""
 
 #. Label on emulators with a savestate in the emulator selection dialog
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+#: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
 msgctxt "#35259"
 msgid "Saved"
 msgstr ""

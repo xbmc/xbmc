@@ -901,7 +901,9 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     showLabel = 1026;
   else if (m_vecItems->IsPath("sources://games/"))
     showLabel = 35250; // "Add games..."
-  if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
+   // Add 'Add source ' item
+  if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons()) &&
+      iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR)
   {
     const std::string& strLabel = g_localizeStrings.Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
