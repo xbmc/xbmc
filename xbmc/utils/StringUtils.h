@@ -26,7 +26,7 @@
 #include <sstream>
 #include <locale>
 
-// workaround for broken [[depreciated]] in coverity
+// workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
 #undef FMT_DEPRECATED
 #define FMT_DEPRECATED

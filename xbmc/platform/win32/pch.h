@@ -20,6 +20,11 @@
 #include <string>
 #include <vector>
 
+// workaround for broken [[deprecated]] in coverity
+#if defined(__COVERITY__)
+#undef FMT_DEPRECATED
+#define FMT_DEPRECATED
+#endif
 #include <fmt/core.h>
 #include <fmt/format.h> // 53 seconds
 #include <intrin.h> // 97 seconds
