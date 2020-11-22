@@ -166,24 +166,27 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
       std::string keyStr;
       std::string valueStr;
 
-      auto eglAttr = eglAttributes.find(attrs[i]);
-      if (eglAttr != eglAttributes.end())
+      auto eglAttrKey = eglAttributes.find(attrs[i]);
+      if (eglAttrKey != eglAttributes.end())
       {
-        keyStr = eglAttr->second;
+        keyStr = eglAttrKey->second;
       }
       else
       {
         keyStr = std::to_string(attrs[i]);
       }
 
-      eglAttr = eglAttributes.find(attrs[i + 1]);
-      if (eglAttr != eglAttributes.end())
+      auto eglAttrValue = eglAttributes.find(attrs[i + 1]);
+      if (eglAttrValue != eglAttributes.end())
       {
-        valueStr = eglAttr->second;
+        valueStr = eglAttrValue->second;
       }
       else
       {
-        valueStr = std::to_string(attrs[i + 1]);
+        if (eglAttrKey->first == EGL_LINUX_DRM_FOURCC_EXT)
+          valueStr = FourCCToString(attrs[i + 1]);
+        else
+          valueStr = std::to_string(attrs[i + 1]);
       }
 
       eglString.append(StringUtils::Format("%s: %s\n", keyStr, valueStr));
