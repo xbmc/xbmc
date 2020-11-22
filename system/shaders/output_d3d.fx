@@ -156,8 +156,8 @@ float4 output4(float4 color, float2 uv)
 #if defined(KODI_DITHER)
   half2 ditherpos  = uv * m_ditherParams.xy;
   // scale ditherval to [0,1)
-  float ditherval = m_ditherMatrix.Sample(DitherSampler, ditherpos).r * 16.0;
-  color = floor(color * m_ditherParams.z + ditherval) / m_ditherParams.z;
+  float ditherval = m_ditherMatrix.Sample(DitherSampler, ditherpos).r * 16.0f;
+  color.rgb = floor(color.rgb * m_ditherParams.z + ditherval) / m_ditherParams.z;
 #endif
   return color;
 }
@@ -189,7 +189,7 @@ technique11 OUTPUT_T
   pass P0
   {
     SetVertexShader( VS_SHADER );
-    SetPixelShader( CompileShader( ps_4_0_level_9_1, OUTPUT_PS() ) );
+    SetPixelShader( CompileShader( ps_4_0_level_9_3, OUTPUT_PS() ) );
   }
 };
 #endif

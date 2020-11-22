@@ -493,7 +493,7 @@ void COutputShader::CreateDitherView()
 
   if (FAILED(hr))
   {
-    CLog::LogF(LOGDEBUG, "unable to create 3dlut texture cube.");
+    CLog::LogF(LOGDEBUG, "unable to create dither texture cube.");
     m_useDithering = false;
     return;
   }
@@ -502,7 +502,7 @@ void COutputShader::CreateDitherView()
   hr = pDevice->CreateShaderResourceView(pDitherTex.Get(), &srvDesc, &m_pDitherView);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGDEBUG, "unable to create view for 3dlut texture cube.");
+    CLog::LogF(LOGDEBUG, "unable to create view for dither texture cube.");
     m_useDithering = false;
     return;
   }

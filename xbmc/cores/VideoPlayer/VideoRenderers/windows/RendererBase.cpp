@@ -175,6 +175,9 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
+  m_useDithering = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.dither");
+  m_ditherDepth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.ditherdepth");
+
   m_lastHdr10 = {};
   m_HdrType = HDR_TYPE::HDR_NONE_SDR;
   m_useHLGtoPQ = false;
