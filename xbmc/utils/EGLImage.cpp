@@ -8,6 +8,7 @@
 
 #include "EGLImage.h"
 
+#include "ServiceBroker.h"
 #include "utils/EGLUtils.h"
 #include "utils/log.h"
 
@@ -154,11 +155,8 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
 
   m_image = m_eglCreateImageKHR(m_display, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr, attribs.Get());
 
-  if(!m_image)
+  if (!m_image || CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
-    CLog::Log(LOGERROR, "CEGLImage::{} - failed to import buffer into EGL image: {:#4x}",
-              __FUNCTION__, eglGetError());
-
     const EGLint* attrs = attribs.Get();
 
     std::string eglString;
@@ -192,7 +190,12 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
     }
 
     CLog::Log(LOGDEBUG, "CEGLImage::{} - attributes:\n{}", __FUNCTION__, eglString);
+  }
 
+  if (!m_image)
+  {
+    CLog::Log(LOGERROR, "CEGLImage::{} - failed to import buffer into EGL image: {:#4x}",
+              __FUNCTION__, eglGetError());
     return false;
   }
 
