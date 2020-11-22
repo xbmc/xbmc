@@ -78,7 +78,8 @@ const std::string& CAddonInfo::OriginName() const
   if (!m_originName)
   {
     ADDON::AddonPtr origin;
-    if (CServiceBroker::GetAddonMgr().GetAddon(m_origin, origin, ADDON::ADDON_UNKNOWN, false))
+    if (CServiceBroker::GetAddonMgr().GetAddon(m_origin, origin, ADDON::ADDON_UNKNOWN,
+                                               ADDON::OnlyEnabled::NO))
       m_originName = std::make_unique<std::string>(origin->Name());
     else
       m_originName = std::make_unique<std::string>(); // remember we tried to fetch the name

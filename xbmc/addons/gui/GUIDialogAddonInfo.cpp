@@ -290,7 +290,8 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
       item.SetArt("icon", "DefaultAddonRepository.png");
       dialog->Add(item);
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY))
+    else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY,
+                                                    OnlyEnabled::YES))
     {
       item.SetLabel2(repo->Name());
       item.SetArt("icon", repo->Icon());
@@ -722,7 +723,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   m_item = std::make_shared<CFileItem>(*item);
   m_localAddon.reset();
   CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN,
-                                         false);
+                                         OnlyEnabled::NO);
   return true;
 }
 
@@ -733,7 +734,8 @@ void CGUIDialogAddonInfo::BuildDependencyList()
 
   m_allDepsInstalled = true;
   m_depsInstalledWithAvailable.clear();
-  m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID());
+  m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(),
+                                                          OnlyEnabledRootAddon::NO);
 
   for (const auto& dep : m_deps)
   {
@@ -741,7 +743,8 @@ void CGUIDialogAddonInfo::BuildDependencyList()
     std::shared_ptr<IAddon> addonAvailable;
 
     // Find add-on in local installation
-    if (!CServiceBroker::GetAddonMgr().GetAddon(dep.id, addonInstalled))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(dep.id, addonInstalled, ADDON_UNKNOWN,
+                                                OnlyEnabled::YES))
     {
       addonInstalled = nullptr;
       m_allDepsInstalled = false;

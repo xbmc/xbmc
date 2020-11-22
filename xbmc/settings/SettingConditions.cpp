@@ -41,7 +41,9 @@ bool AddonHasSettings(const std::string& condition,
     return false;
 
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(settingAddon->GetValue(), addon, settingAddon->GetAddonType()) || addon == NULL)
+  if (!CServiceBroker::GetAddonMgr().GetAddon(
+          settingAddon->GetValue(), addon, settingAddon->GetAddonType(), ADDON::OnlyEnabled::YES) ||
+      addon == NULL)
     return false;
 
   if (addon->Type() == ADDON::ADDON_SKIN)

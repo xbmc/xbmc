@@ -136,7 +136,8 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
   std::string addonId = GetAddonId(locale);
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE, true))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE,
+                                              OnlyEnabled::YES))
     return false;
 
   legacyLanguage = addon->Name();

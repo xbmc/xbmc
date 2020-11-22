@@ -420,7 +420,8 @@ std::string CGameClient::GetMissingResource()
     if (StringUtils::StartsWith(strDependencyId, "resource.games"))
     {
       AddonPtr addon;
-      const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(strDependencyId, addon);
+      const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(
+          strDependencyId, addon, ADDON_UNKNOWN, OnlyEnabled::YES);
       if (!bInstalled)
       {
         strAddonId = strDependencyId;

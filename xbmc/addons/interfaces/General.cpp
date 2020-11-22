@@ -131,7 +131,8 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
 
   // show settings dialog
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo, ADDON_UNKNOWN,
+                                              OnlyEnabled::YES))
   {
     CLog::Log(LOGERROR, "Interface_General::{} - Could not get addon information for '{}'",
               __FUNCTION__, addon->ID());
@@ -439,7 +440,7 @@ bool Interface_General::is_addon_avilable(void* kodiBase,
   }
 
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, false))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, OnlyEnabled::NO))
     return false;
 
   *version = strdup(addonInfo->Version().asString().c_str());
