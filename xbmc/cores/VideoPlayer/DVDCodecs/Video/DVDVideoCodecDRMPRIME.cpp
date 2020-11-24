@@ -252,27 +252,16 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 #if defined(HAVE_GBM)
     auto winSystem = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
 
-    if (!winSystem)
-      return false;
+    if (winSystem)
+    {
+      auto drm = winSystem->GetDrm();
 
-    auto drm = winSystem->GetDrm();
+      if (!drm)
+        return false;
 
-    if (!drm)
-      return false;
-
-    int fd = drm->GetFileDescriptor();
-
-    if (fd < 0)
-      return false;
-
-    if (!device)
-      device = drmGetRenderDeviceNameFromFd(fd);
-
-    if (!device)
-      device = drmGetDeviceNameFromFd2(fd);
-
-    if (!device)
-      device = drmGetDeviceNameFromFd(fd);
+      if (!device)
+        device = drm->GetRenderDevicePath();
+    }
 #endif
 
     //! @todo: fix with proper device when dma-hints wayland protocol works
