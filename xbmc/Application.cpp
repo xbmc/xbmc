@@ -2894,9 +2894,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CVideoDatabase dbs;
       dbs.Open();
 
-      std::string path = item.GetDynPath();
+      std::string path = item.GetPath();
       std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.find("removable://") == 0)
+      if (videoInfoTagPath.find("removable://") == 0 || item.IsVideoDb())
         path = videoInfoTagPath;
       dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
 
