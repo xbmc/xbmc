@@ -337,28 +337,62 @@ PrimaryToRGB::PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2]) : P
 
 //------------------------------------------------------------------------------
 
-void CConvertMatrix::SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits)
+CConvertMatrix& CConvertMatrix::SetSourceColorSpace(AVColorSpace colorSpace)
 {
-  if (m_colSpace == colSpace &&
-      m_srcBits == bits &&
-      m_limitedSrc == limited &&
-      m_srcTextureBits == textuteBits &&
-      m_pMat)
-    return;
-
-  m_colSpace = colSpace;
-  m_srcBits = bits;
-  m_limitedSrc = limited;
-  m_srcTextureBits = textuteBits;
-
-  GenMat();
+  m_colSpace = colorSpace;
+  return *this;
 }
 
-void CConvertMatrix::SetColPrimaries(AVColorPrimaries dst, AVColorPrimaries src)
+CConvertMatrix& CConvertMatrix::SetSourceBitDepth(int bits)
+{
+  m_srcBits = bits;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetSourceLimitedRange(bool limited)
+{
+  m_limitedSrc = limited;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetSourceTextureBitDepth(int textureBits)
+{
+  m_srcTextureBits = textureBits;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetSourceColorPrimaries(AVColorPrimaries src)
+{
+  m_colPrimariesSrc = src;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetDestinationColorPrimaries(AVColorPrimaries dst)
 {
   m_colPrimariesDst = dst;
-  m_colPrimariesSrc = src;
+  return *this;
+}
 
+CConvertMatrix& CConvertMatrix::SetDestinationContrast(float contrast)
+{
+  m_contrast = contrast;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetDestinationBlack(float black)
+{
+  m_black = black;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetDestinationLimitedRange(bool limited)
+{
+  m_limitedDst = limited;
+  return *this;
+}
+
+void CConvertMatrix::GenPrimMat()
+{
   if (m_colPrimariesDst != m_colPrimariesSrc)
   {
     Primaries primToRGB;
@@ -421,13 +455,6 @@ void CConvertMatrix::SetColPrimaries(AVColorPrimaries dst, AVColorPrimaries src)
   {
     m_pMatPrim.reset();
   }
-}
-
-void CConvertMatrix::SetParams(float contrast, float black, bool limited)
-{
-  m_contrast = contrast;
-  m_black = black;
-  m_limitedDst = limited;
 }
 
 void CConvertMatrix::GenMat()
@@ -496,6 +523,8 @@ void CConvertMatrix::GenMat()
 
 void CConvertMatrix::GetYuvMat(float (&mat)[4][4])
 {
+  GenMat();
+
   if (!m_pMat)
     return;
 
@@ -529,6 +558,8 @@ void CConvertMatrix::GetYuvMat(float (&mat)[4][4])
 
 bool CConvertMatrix::GetPrimMat(float (&mat)[3][3])
 {
+  GenPrimMat();
+
   if (!m_pMatPrim)
     return false;
 

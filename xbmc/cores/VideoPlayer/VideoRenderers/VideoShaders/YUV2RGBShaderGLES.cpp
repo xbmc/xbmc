@@ -10,7 +10,6 @@
 #include "YUV2RGBShaderGLES.h"
 
 #include "../RenderFlags.h"
-#include "ConversionMatrix.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
@@ -60,8 +59,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
 
   CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines);
 
-  m_pConvMatrix.reset(new CConvertMatrix());
-  m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);
+  m_convMatrix.SetSourceColorPrimaries(srcPrimaries).SetDestinationColorPrimaries(dstPrimaries);
 }
 
 BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
@@ -101,20 +99,23 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   GLfloat yuvMat[4][4];
   // keep video levels
-  m_pConvMatrix->SetParams(m_contrast, m_black, !m_convertFullRange);
-  m_pConvMatrix->GetYuvMat(yuvMat);
 
+  m_convMatrix.SetDestinationContrast(m_contrast)
+      .SetDestinationBlack(m_black)
+      .SetDestinationLimitedRange(!m_convertFullRange);
+
+  m_convMatrix.GetYuvMat(yuvMat);
   glUniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, (GLfloat*)yuvMat);
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
 
   GLfloat primMat[3][3];
-  if (m_pConvMatrix->GetPrimMat(primMat))
+  if (m_convMatrix.GetPrimMat(primMat))
   {
     glUniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, (GLfloat*)primMat);
-    glUniform1f(m_hGammaSrc, m_pConvMatrix->GetGammaSrc());
-    glUniform1f(m_hGammaDstInv, 1/m_pConvMatrix->GetGammaDst());
+    glUniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
+    glUniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
   }
 
   if (m_toneMapping)
@@ -139,7 +140,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     param *= m_toneMappingParam;
 
     float coefs[3];
-    m_pConvMatrix->GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
+    m_convMatrix.GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
     glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
     glUniform1f(m_hToneP1, param);
   }
@@ -167,7 +168,11 @@ void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace, int bits, bool l
     else
       colSpace = AVCOL_SPC_BT470BG;
   }
-  m_pConvMatrix->SetColParams(colSpace, bits, limited, textureBits);
+
+  m_convMatrix.SetSourceColorSpace(colSpace)
+      .SetSourceBitDepth(bits)
+      .SetSourceLimitedRange(limited)
+      .SetSourceTextureBitDepth(textureBits);
 }
 
 void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
