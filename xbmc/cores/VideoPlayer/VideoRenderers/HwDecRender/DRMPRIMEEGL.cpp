@@ -12,6 +12,11 @@
 
 using namespace DRMPRIME;
 
+CDRMPRIMETexture::~CDRMPRIMETexture()
+{
+  glDeleteTextures(1, &m_texture);
+}
+
 void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
 {
   m_eglImage.reset(new CEGLImage(eglDisplay));
@@ -60,7 +65,8 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
       return false;
     }
 
-    glGenTextures(1, &m_texture);
+    if (!glIsTexture(m_texture))
+      glGenTextures(1, &m_texture);
     glBindTexture(m_textureTarget, m_texture);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -82,8 +88,6 @@ void CDRMPRIMETexture::Unmap()
     return;
 
   m_eglImage->DestroyImage();
-
-  glDeleteTextures(1, &m_texture);
 
   m_primebuffer->ReleaseDescriptor();
 
