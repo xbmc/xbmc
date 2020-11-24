@@ -100,6 +100,25 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   InitialiseShaders();
 
+  GLint red;
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE,
+                                        &red);
+
+  GLint green;
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK,
+                                        GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, &green);
+
+  GLint blue;
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK,
+                                        GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, &blue);
+
+  GLint alpha;
+  glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK,
+                                        GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &alpha);
+
+  CLog::Log(LOGDEBUG, "OpenGL(ES): framebuffer size: red: {} green: {} blue: {} alpha: {}", red,
+            green, blue, alpha);
+
   return true;
 }
 
