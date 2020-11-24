@@ -62,6 +62,8 @@ namespace Shaders {
     bool m_toneMapping{false};
     float m_toneMappingParam{1.0};
 
+    bool m_colorConversion{false};
+
     float m_black;
     float m_contrast;
 

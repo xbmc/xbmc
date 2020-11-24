@@ -202,11 +202,10 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
 
     param *= m_toneMappingParam;
 
-    float coefs[3];
-    CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT709, coefs);
+    Matrix3x1 coefs = CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT709);
 
     effect.SetScalar("g_toneP1", param);
-    effect.SetFloatArray("g_coefsDst", coefs, 3);
+    effect.SetFloatArray("g_coefsDst", coefs.data(), coefs.size());
     m_toneMappingDebug = param;
   }
   else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
@@ -589,7 +588,10 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
   }
 
   if (srcPrimaries != dstPrimaries)
+  {
+    m_colorConversion = true;
     defines["XBMC_COL_CONVERSION"] = "";
+  }
 
   if (m_pOutShader)
     m_pOutShader->GetDefines(defines);
@@ -722,19 +724,15 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
   m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetViewCount());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
-  float yuvMat[4][4];
-  m_convMatrix.GetYuvMat(yuvMat);
-  m_effect.SetMatrix("g_ColorMatrix", reinterpret_cast<float*>(yuvMat));
+  Matrix4 yuvMat = m_convMatrix.GetYuvMat();
+  m_effect.SetMatrix("g_ColorMatrix", yuvMat.ToRaw());
 
-  float primMat[3][3];
-  if (m_convMatrix.GetPrimMat(primMat))
+  if (m_colorConversion)
   {
+    Matrix4 primMat(m_convMatrix.GetPrimMat());
+
     // looks like FX11 doesn't like 3x3 matrix, so used 4x4 for its happiness
-    float dxMat[4][4] = {};
-    dxMat[0][0] = primMat[0][0]; dxMat[0][1] = primMat[0][1]; dxMat[0][2] = primMat[0][2];
-    dxMat[1][0] = primMat[1][0]; dxMat[1][1] = primMat[1][1]; dxMat[1][2] = primMat[1][2];
-    dxMat[2][0] = primMat[2][0]; dxMat[2][1] = primMat[2][1]; dxMat[2][2] = primMat[2][2];
-    m_effect.SetMatrix("g_primMat", reinterpret_cast<float*>(dxMat));
+    m_effect.SetMatrix("g_primMat", primMat.ToRaw());
     m_effect.SetScalar("g_gammaSrc", m_convMatrix.GetGammaSrc());
     m_effect.SetScalar("g_gammaDstInv", 1 / m_convMatrix.GetGammaDst());
   }

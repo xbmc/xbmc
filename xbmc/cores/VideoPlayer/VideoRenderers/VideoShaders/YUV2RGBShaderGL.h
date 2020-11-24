@@ -79,6 +79,8 @@ protected:
   int m_toneMappingMethod = VS_TONEMAPMETHOD_REINHARD;
   float m_toneMappingParam = 1.0;
 
+  bool m_colorConversion{false};
+
   float m_black;
   float m_contrast;
   float m_stretch;

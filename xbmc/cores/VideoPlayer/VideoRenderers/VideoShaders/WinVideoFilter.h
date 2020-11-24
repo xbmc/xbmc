@@ -143,6 +143,7 @@ private:
   float m_texSteps[2] = {};
   std::shared_ptr<COutputShader> m_pOutShader = nullptr;
   CConvertMatrix m_convMatrix;
+  bool m_colorConversion{false};
 };
 
 class CConvolutionShader : public CWinShader
