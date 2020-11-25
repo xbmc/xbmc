@@ -25,9 +25,10 @@ protected:
 
   void SelectPSVideoFilter();
   bool HasHQScaler() const;
+  bool IsHQScalingAllowed() const;
 
   ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_AUTO;
-  ESCALINGMETHOD m_scalingMethodGui = VS_SCALINGMETHOD_AUTO;
+  ESCALINGMETHOD m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   std::unique_ptr<CConvolutionShader> m_scalerShader = nullptr;
   bool m_bUseHQScaler = false;
 };

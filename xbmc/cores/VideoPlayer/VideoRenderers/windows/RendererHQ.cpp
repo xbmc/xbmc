@@ -32,14 +32,25 @@ bool CRendererHQ::Supports(ESCALINGMETHOD method)
         method == VS_SCALINGMETHOD_SPLINE36 ||
         method == VS_SCALINGMETHOD_LANCZOS3)
     {
-      // if scaling is below level, avoid hq scaling
-      const float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_viewWidth) / m_sourceWidth) * 100;
-      const float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_viewHeight) / m_sourceHeight) * 100;
-      const int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
-
-      return scaleX >= minScale || scaleY >= minScale;
+      return IsHQScalingAllowed();
     }
   }
+
+  return false;
+}
+
+bool CRendererHQ::IsHQScalingAllowed() const
+{
+  const float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_viewWidth) / m_sourceWidth) * 100;
+  const float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_viewHeight) / m_sourceHeight) * 100;
+  const int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+  const bool scaleUp = m_sourceHeight < m_viewHeight && m_sourceWidth < m_viewWidth;
+  const bool scaleFps = m_fps < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAutoScaleMaxFps + 0.01f;
+  const bool scaleLevel = scaleX >= minScale || scaleY >= minScale;
+
+  if (scaleUp && scaleFps && scaleLevel)
+    return true;
+
   return false;
 }
 
@@ -51,35 +62,43 @@ void CRendererHQ::OnOutputReset()
 
 void CRendererHQ::SelectPSVideoFilter()
 {
+  if (m_renderOrientation)
+  {
+    m_bUseHQScaler = false;
+    return;
+  }
+
+  bool use6x6 = false;
+
   switch (m_scalingMethod)
   {
-  case VS_SCALINGMETHOD_CUBIC_MITCHELL:
-  case VS_SCALINGMETHOD_LANCZOS2:
-  case VS_SCALINGMETHOD_SPLINE36_FAST:
-  case VS_SCALINGMETHOD_LANCZOS3_FAST:
-  case VS_SCALINGMETHOD_SPLINE36:
-  case VS_SCALINGMETHOD_LANCZOS3:
-    m_bUseHQScaler = true;
-    break;
-  default:
-    m_bUseHQScaler = false;
-    break;
+    case VS_SCALINGMETHOD_CUBIC_MITCHELL:
+    case VS_SCALINGMETHOD_LANCZOS2:
+    case VS_SCALINGMETHOD_SPLINE36_FAST:
+    case VS_SCALINGMETHOD_LANCZOS3_FAST:
+      m_bUseHQScaler = Supports(m_scalingMethod);
+      break;
+    case VS_SCALINGMETHOD_SPLINE36:
+    case VS_SCALINGMETHOD_LANCZOS3:
+      use6x6 = true;
+      m_bUseHQScaler = Supports(m_scalingMethod);
+      break;
+    default:
+      m_bUseHQScaler = false;
+      break;
   }
 
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
-    const bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
-    const bool scaleUp = m_sourceHeight < m_viewHeight && m_sourceWidth < m_viewWidth;
-    const bool scaleFps = m_fps < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAutoScaleMaxFps + 0.01f;
-
-    if (scaleSD && scaleUp && scaleFps && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
+    if (IsHQScalingAllowed() && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
     {
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
       m_bUseHQScaler = true;
     }
   }
-  if (m_renderOrientation)
-    m_bUseHQScaler = false;
+
+  if (m_bUseHQScaler)
+    CLog::LogF(LOGINFO, "HQ scaler will be used (Convolution kernel {})", use6x6 ? "6x6" : "4x4");
 }
 
 bool CRendererHQ::HasHQScaler() const
@@ -96,9 +115,12 @@ void CRendererHQ::CheckVideoParameters()
     m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
     m_scalingMethod = m_scalingMethodGui;
 
-    if (!Supports(m_scalingMethod))
+    if (IsHQScalingAllowed() && !Supports(m_scalingMethod))
     {
-      CLog::LogF(LOGWARNING, "chosen scaling method %d is not supported by renderer", static_cast<int>(m_scalingMethod));
+      CLog::LogF(
+          LOGWARNING,
+          "chosen scaling method {} is not supported by renderer, fallback to AUTO scaling method.",
+          static_cast<int>(m_scalingMethod));
       m_scalingMethod = VS_SCALINGMETHOD_AUTO;
     }
 
