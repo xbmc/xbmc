@@ -14,6 +14,10 @@
 
 #include <drm_fourcc.h>
 
+#if !defined(DRM_FORMAT_YUV420_10BIT)
+#define DRM_FORMAT_YUV420_10BIT fourcc_code('Y', 'U', '1', '0')
+#endif
+
 extern "C"
 {
 #include <libavutil/pixfmt.h>
@@ -122,6 +126,8 @@ uint32_t CVideoBufferPoolDMA::TranslateFormat(AVPixelFormat format)
     case AV_PIX_FMT_YUV420P:
     case AV_PIX_FMT_YUVJ420P:
       return DRM_FORMAT_YUV420;
+    case AV_PIX_FMT_YUV420P10:
+      return DRM_FORMAT_YUV420_10BIT;
     default:
       return 0;
   }
