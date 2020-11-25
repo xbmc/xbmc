@@ -14,6 +14,10 @@
 
 #include <drm_fourcc.h>
 
+#if !defined(DRM_FORMAT_YUV420_10BIT)
+#define DRM_FORMAT_YUV420_10BIT fourcc_code('Y', 'U', '1', '0')
+#endif
+
 extern "C"
 {
 #include <libavutil/imgutils.h>
@@ -88,6 +92,9 @@ void CVideoBufferDMA::SetDimensions(int width,
     {
       case DRM_FORMAT_YUV420:
         layerDesc->format = DRM_FORMAT_R8;
+        break;
+      case DRM_FORMAT_YUV420_10BIT:
+        layerDesc->format = DRM_FORMAT_R16;
         break;
       default:
         throw std::runtime_error("unimplemented pixel format");
