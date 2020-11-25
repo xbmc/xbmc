@@ -12,6 +12,8 @@
 #include "utils/BufferObject.h"
 #include "utils/log.h"
 
+#include <drm_fourcc.h>
+
 extern "C"
 {
 #include <libavutil/imgutils.h>
@@ -74,18 +76,35 @@ void CVideoBufferDMA::SetDimensions(int width,
   m_height = height;
 
   AVDRMFrameDescriptor* descriptor = &m_descriptor;
+  descriptor->nb_layers = m_planes;
   descriptor->nb_objects = 1;
-  descriptor->objects[0].fd = m_fd;
-  descriptor->nb_layers = 1;
 
-  AVDRMLayerDescriptor* layer = &descriptor->layers[0];
-  layer->format = m_fourcc;
-  layer->nb_planes = m_planes;
-
-  for (uint32_t i = 0; i < m_planes; i++)
+  for (int layer = 0; layer < descriptor->nb_layers; layer++)
   {
-    layer->planes[i].offset = planeOffsets[i];
-    layer->planes[i].pitch = strides[i];
+    AVDRMLayerDescriptor* layerDesc = &descriptor->layers[layer];
+    layerDesc->nb_planes = 1;
+
+    switch (m_fourcc)
+    {
+      case DRM_FORMAT_YUV420:
+        layerDesc->format = DRM_FORMAT_R8;
+        break;
+      default:
+        throw std::runtime_error("unimplemented pixel format");
+    }
+
+    for (int plane = 0; plane < layerDesc->nb_planes; plane++)
+    {
+      AVDRMPlaneDescriptor* planeDesc = &layerDesc->planes[plane];
+      planeDesc->object_index = 0;
+
+      AVDRMObjectDescriptor* objectDesc = &descriptor->objects[planeDesc->object_index];
+
+      objectDesc->fd = m_fd;
+      objectDesc->format_modifier = DRM_FORMAT_MOD_LINEAR;
+      layerDesc->planes[plane].offset = planeOffsets[layer];
+      layerDesc->planes[plane].pitch = strides[layer];
+    }
   }
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
