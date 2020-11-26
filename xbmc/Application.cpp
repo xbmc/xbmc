@@ -1655,15 +1655,13 @@ bool CApplication::OnAction(const CAction &action)
 
     if (hdrStatus == HDR_STATUS::HDR_OFF)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::eMessageType::Info, "HDR is OFF",
-                                            "Display HDR is Off", TOAST_DISPLAY_TIME, true,
-                                            TOAST_DISPLAY_TIME);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34220),
+                                            g_localizeStrings.Get(34221));
     }
     else if (hdrStatus == HDR_STATUS::HDR_ON)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::eMessageType::Info, "HDR is ON",
-                                            "Display HDR is On", TOAST_DISPLAY_TIME, true,
-                                            TOAST_DISPLAY_TIME);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34222),
+                                            g_localizeStrings.Get(34223));
     }
     return true;
   }
@@ -1677,6 +1675,22 @@ bool CApplication::OnAction(const CAction &action)
       if (vs.m_ToneMapMethod >= VS_TONEMAPMETHOD_MAX)
         vs.m_ToneMapMethod = VS_TONEMAPMETHOD_OFF + 1;
       m_appPlayer.SetVideoSettings(vs);
+
+      int code = 0;
+      switch (vs.m_ToneMapMethod)
+      {
+        case VS_TONEMAPMETHOD_REINHARD:
+          code = 36555;
+          break;
+        case VS_TONEMAPMETHOD_ACES:
+          code = 36557;
+          break;
+        case VS_TONEMAPMETHOD_HABLE:
+          code = 36558;
+          break;
+      }
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34224),
+                                            g_localizeStrings.Get(code), 1000, false, 500);
     }
     return true;
   }
