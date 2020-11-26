@@ -477,13 +477,19 @@ static int PlayMedia(const std::vector<std::string>& params)
       else
         items.Sort(SortByLabel, SortOrderAscending);
 
-      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
-      if (containsMusic && containsVideo) //mixed content found in the folder
+      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
+      // Mixed playlist item played by music player, mixed content folder has music removed
+      if (containsMusic && containsVideo)
       {
-        for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+        if (item.IsPlayList())
+          playlist = PLAYLIST_MUSIC;
+        else
         {
-          if (!items[i]->IsVideo())
-            items.Remove(i);
+          for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+          {
+            if (!items[i]->IsVideo())
+              items.Remove(i);
+          }
         }
       }
 
