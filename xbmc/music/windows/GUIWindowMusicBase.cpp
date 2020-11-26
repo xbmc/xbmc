@@ -565,15 +565,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
-      if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
-          !item->IsPath("add") && !item->IsParentFolder() &&
-          !item->IsPlugin() && !item->IsMusicDb()         &&
-          !item->IsLibraryFolder() &&
-          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
-          (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
-      }
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
       if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA())

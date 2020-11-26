@@ -568,10 +568,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 #endif
-      if (!inPlaylists && !m_vecItems->IsInternetStream() &&
-        !item->IsPath("add") && !item->IsParentFolder() &&
-        !item->IsPlugin() &&
-        !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
+      // Scan button for music sources except  ".." and "Add music source" items
+      if (!item->IsPath("add") && !item->IsParentFolder() &&
         (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
@@ -581,6 +579,22 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
+
+      // Scan button for real folders containing files when navigating within music sources.
+      // Blacklist the bespoke Kodi protocols as to many valid external protocols to whitelist
+      if (m_vecItems->GetContent() == "files" && // Other content not scanned to library
+          !inPlaylists && !m_vecItems->IsInternetStream() && // Not playlists locations or streams
+          !item->IsPath("add") && !item->IsParentFolder() && // Not ".." and "Add items
+          item->m_bIsFolder && // Folders only, but playlists can be folders too
+          !URIUtils::IsLibraryContent(item->GetPath()) && // database folder or .xsp files
+          !URIUtils::IsSpecial(item->GetPath()) && !item->IsPlugin() && !item->IsScript() &&
+          !item->IsPlayList() && // .m3u etc. that as flagged as folders when playlistasfolders
+          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
+          (profileManager->GetCurrentProfile().canWriteDatabases() ||
+           g_passwordManager.bMasterUser))
+      {
+        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
+      }
 
       CMusicDatabaseDirectory dir;
 
