@@ -102,7 +102,7 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 
 # prep @APP_NAME@.app
 mkdir -p $DIRNAME/$PACKAGE/Applications
-cp -r $APP $DIRNAME/$PACKAGE/Applications/
+rsync -a --no-links $APP $DIRNAME/$PACKAGE/Applications/
 find $DIRNAME/$PACKAGE/Applications/ -name '.svn' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.git*' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.DS_Store'  -exec rm -rf {} \;
