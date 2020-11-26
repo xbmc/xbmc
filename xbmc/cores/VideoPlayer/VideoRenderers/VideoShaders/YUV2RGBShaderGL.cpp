@@ -272,7 +272,8 @@ float BaseYUV2RGBGLSLShader::GetLuminanceValue() const //Maybe move this to linu
     lum3 = static_cast<float>(m_lightMetadata.MaxFALL);
     lum1 = (lum1 * 0.5f) + (lum2 * 0.2f) + (lum3 * 0.3f);
   }
-  else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
+  else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance &&
+           m_displayMetadata.max_luminance.num)
   {
     uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
     lum1 = static_cast<float>(lum);
