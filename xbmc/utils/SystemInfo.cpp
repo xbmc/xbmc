@@ -554,7 +554,7 @@ std::string CSysInfo::GetKernelVersionFull(void)
   unsigned long long v4 = (v & 0x000000000000FFFFL);
   kernelVersionFull = StringUtils::Format("%lld.%lld.%lld", v1, v2, v3);
   if (v4)
-    kernelVersionFull += StringUtils::Format(".ll%d", v4);
+    kernelVersionFull += StringUtils::Format(".%lld", v4);
 
 #elif defined(TARGET_POSIX)
   struct utsname un;
