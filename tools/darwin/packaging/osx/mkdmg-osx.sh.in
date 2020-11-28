@@ -2,20 +2,32 @@
 
 # usage: ./mkdmg-osx.sh release/debug (case insensitive)
 # Allows us to run mkdmg-osx.sh from anywhere in the three, rather than the tools/darwin/packaging/osx folder only
-SWITCH="$1"
+
+case "$XCODE_BUILDTYPE" in
+ ".") SWITCH="$1" ;;
+ *) SWITCH="$XCODE_BUILDTYPE" ;;
+esac
+
 DIRNAME=`dirname $0`
 
-if [ ${SWITCH:-""} = "debug" ]; then
-  echo "Packaging Debug target for OSX"
-  APP="$DIRNAME/../../../../build/Debug/@APP_NAME@.app"
-elif [ ${SWITCH:-""} = "release" ]; then
-  echo "Packaging Release target for OSX"
-  APP="$DIRNAME/../../../../build/Release/@APP_NAME@.app"
-  isReleaseBuild=1
-else
-  echo "You need to specify the build target"
-  exit 1
-fi
+# use for case insensitive match. revert to system default after this block
+shopt -s nocasematch
+case "$SWITCH" in
+  "debug" )
+    echo "Packaging Debug target for OSX"
+    APP="$DIRNAME/../../../../build/Debug/@APP_NAME@.app"
+  ;;
+  "release" )
+    echo "Packaging Release target for OSX"
+    APP="$DIRNAME/../../../../build/Release/@APP_NAME@.app"
+    isReleaseBuild=1
+  ;;
+  *)
+    echo "You need to specify the build target"
+    exit 1
+  ;;
+esac
+shopt -u nocasematch
 
 if [ ! -d $APP ]; then
   echo "@APP_NAME@.app not found! are you sure you built $1 target?"
