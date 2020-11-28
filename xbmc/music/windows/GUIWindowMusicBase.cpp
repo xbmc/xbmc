@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -381,6 +382,16 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
 
   if (item->IsRAR() || item->IsZIP())
     return;
+  
+  // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exist
+  if (item->IsSmartPlayList())
+  {
+    const std::shared_ptr<CProfileManager> profileManager =
+      CServiceBroker::GetSettingsComponent()->GetProfileManager();
+    if ((item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
+      !XFILE::CFile::Exists(item->GetPath()))
+      return;
+  }
 
   //  Allow queuing of unqueueable items
   //  when we try to queue them directly
@@ -531,6 +542,16 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (item)
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+
+    // Check for the partymode playlist item. 
+    // When "PartyMode.xsp" not exist, only context menu button is edit
+    if (item->IsSmartPlayList() &&
+        (item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
+        !XFILE::CFile::Exists(item->GetPath()))
+    {
+      buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
+      return;
+    }
 
     if (item && !item->IsParentFolder())
     {
@@ -741,6 +762,16 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     return;
   }
 #endif
+
+  // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exist
+  if (pItem->IsSmartPlayList())
+  {
+    const std::shared_ptr<CProfileManager> profileManager =
+        CServiceBroker::GetSettingsComponent()->GetProfileManager();
+    if ((pItem->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
+        !XFILE::CFile::Exists(pItem->GetPath()))
+      return;
+  }
 
   // if its a folder, build a playlist
   if (pItem->m_bIsFolder && !pItem->IsPlugin())

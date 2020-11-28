@@ -8766,6 +8766,8 @@ msgctxt "#16034"
 msgid "Couldn't get songs from database."
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 msgctxt "#16035"
 msgid "Party mode playlist"
