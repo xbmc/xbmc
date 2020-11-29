@@ -17144,7 +17144,34 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr ""
 
-#empty strings from id 34203 to 34299
+#empty strings from id 34203 to 34219
+
+#: xbmc/Application.cpp
+msgctxt "#34220"
+msgid "HDR is OFF"
+msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#34221"
+msgid "Display HDR is Off"
+msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#34222"
+msgid "HDR is ON"
+msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#34223"
+msgid "Display HDR is On"
+msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#34224"
+msgid "Tone map method is:"
+msgstr ""
+
+#empty strings from id 34225 to 34299
 
 #: xbmc/network/windows/ZeroconfWIN.cpp
 msgctxt "#34300"
