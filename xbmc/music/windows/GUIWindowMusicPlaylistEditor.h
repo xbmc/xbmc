@@ -20,6 +20,7 @@ public:
 
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
+  bool OnClick(int iItem, const std::string &player = "") override;
   bool OnBack(int actionID) override;
 
 protected:
@@ -27,10 +28,10 @@ protected:
   void UpdateButtons() override;
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
   void OnPrepareFileItems(CFileItemList &items) override;
-  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   void OnQueueItem(int iItem, bool) override;
   std::string GetStartFolder(const std::string &dir) override { return ""; };
 
+  void OnSourcesContext();
   void OnPlaylistContext();
   int GetCurrentPlaylistItem();
   void OnDeletePlaylistItem(int item);
