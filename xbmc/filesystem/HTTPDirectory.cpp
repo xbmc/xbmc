@@ -142,9 +142,20 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
         strName = strNameTemp = strLinkTemp;
 
+      /* Per RFC 1808 § 5.3, relative paths containing a colon ":" should be either prefixed with
+       * "./" or escaped (as "%3A"). This handles the prefix case, the escaping should be handled by
+       * the CURL::Decode above
+       * - https://tools.ietf.org/html/rfc1808#section-5.3
+       */
+      auto NameMatchesLink([](const std::string& name, const std::string& link) -> bool
+      {
+        return (name == link) ||
+               ((std::string::npos != name.find(':')) && (std::string{"./"}.append(name) == link));
+      });
+
       // we detect http directory items by its display name and its stripped link
       // if same, we consider it as a valid item.
-      if (strNameTemp == strLinkTemp && strLinkTemp != "..")
+      if (NameMatchesLink(strNameTemp, strLinkTemp) && strLinkTemp != "..")
       {
         CFileItemPtr pItem(new CFileItem(strNameTemp));
         pItem->SetProperty("IsHTTPDirectory", true);
