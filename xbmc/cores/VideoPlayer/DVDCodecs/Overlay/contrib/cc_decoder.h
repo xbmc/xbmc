@@ -37,6 +37,7 @@ typedef struct cc_char_cell_s
   uint8_t c;                   /* character code, not the same as ASCII */
   cc_attribute_t attributes;   /* attributes of this character, if changed */
 			       /* here */
+  uint8_t charset; /* charset type */
   int midrow_attr;             /* true if this cell changes an attribute */
 } cc_char_cell_t;
 
