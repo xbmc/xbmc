@@ -307,12 +307,15 @@ namespace
     {
       if (CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
         return g_localizeStrings.Get(19266); // Parental locked
-      else if (!epgTag->Title().empty() ||
-               CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                   CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+      else if (!epgTag->Title().empty())
         return epgTag->Title();
     }
-    return g_localizeStrings.Get(19055); // no information available
+
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+      return g_localizeStrings.Get(19055); // no information available
+
+    return {};
   }
 
 } // unnamed namespace
