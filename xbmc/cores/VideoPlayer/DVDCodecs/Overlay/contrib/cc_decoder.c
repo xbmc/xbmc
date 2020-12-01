@@ -1,4 +1,6 @@
 /*
+ *  Copyright (C) 2008-2020 Team Kodi
+ *
  *  Copyright (C) 2000-2008 the xine project
  *
  *  Copyright (C) Christian Vogler
@@ -33,25 +35,102 @@ enum { WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA, BLACK };
 
 /* --------------------- misc. EIA 608 definitions -------------------*/
 
-#define TRANSP_SPACE 0x19   /* code for transparent space, essentially
-			                       arbitrary */
-
 /* mapping from PAC row code to actual CC row */
 static int  rowdata[] = {10, -1, 0, 1, 2, 3, 11, 12, 13, 14, 4, 5, 6, 7, 8, 9};
-/* FIXME: do real TM */
-/* must be mapped as a music note in the captioning font */
-
-static unsigned char specialchar[] = {0xAE,0xB0,0xBD,0xBF,0x54,0xA2,0xA3,0xB6,0xA0,
-                                      TRANSP_SPACE,0xA8,0xA2,0xAA,0xAE,0xB4,0xBB};
-
-/* character translation table - EIA 608 codes are not all the same as ASCII */
-static unsigned char chartbl[128];
 
 /* CC codes use odd parity for error detection, since they originally were */
 /* transmitted via noisy video signals */
 static int parity_table[256];
 
 static cc_buffer_t* active_ccbuffer(cc_decoder_t* dec);
+
+/* --------------------- EIA 608 charsets -----------------------------*/
+// for all charsets, CC codes are essentially identical to ASCII apart for a few exceptions
+// see https://en.wikipedia.org/wiki/EIA-608#Characters for reference
+
+// @todo add support to CCSET_EXTENDED_SPANISH_FRENCH_MISC
+// and CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH
+enum cc_charset
+{
+  CCSET_BASIC_AMERICAN = 0,
+  CCSET_SPECIAL_AMERICAN,
+};
+
+char* get_char_override(uint8_t charset, uint8_t c)
+{
+  if (charset == CCSET_BASIC_AMERICAN)
+  {
+    switch (c)
+    {
+      case 0x27:
+        return u8"\u2019";
+      case 0x2a:
+        return u8"\u00e1";
+      case 0x5c:
+        return u8"\u00e9";
+      case 0x5e:
+        return u8"\u00ed";
+      case 0x5f:
+        return u8"\u00f3";
+      case 0x60:
+        return u8"\u00fa";
+      case 0x7b:
+        return u8"\u00e7";
+      case 0x7c:
+        return u8"\u00f7";
+      case 0x7d:
+        return u8"\u00d1";
+      case 0x7e:
+        return u8"\u00f1";
+      case 0x7f:
+        return u8"\u2588";
+      default:
+        break;
+    }
+  }
+  else if (charset == CCSET_SPECIAL_AMERICAN)
+  {
+    switch (c)
+    {
+      case 0x30:
+        return u8"\u00ae";
+      case 0x31:
+        return u8"\u00b0";
+      case 0x32:
+        return u8"\u00bd";
+      case 0x33:
+        return u8"\u00bf";
+      case 0x34:
+        return u8"\u2122";
+      case 0x35:
+        return u8"\u00a2";
+      case 0x36:
+        return u8"\u00a3";
+      case 0x37:
+        return u8"\u266a";
+      case 0x38:
+        return u8"\u00e0";
+      case 0x39:
+        return u8"\u00A0";
+      case 0x3a:
+        return u8"\u00e8";
+      case 0x3b:
+        return u8"\u00e2";
+      case 0x3c:
+        return u8"\u00ea";
+      case 0x3d:
+        return u8"\u00ee";
+      case 0x3e:
+        return u8"\u00f4";
+      case 0x3f:
+        return u8"\u00fb";
+      default:
+        break;
+    }
+  }
+  // regular ascii char
+  return NULL;
+}
 
 /*---------------- general utility functions ---------------------*/
 
@@ -87,26 +166,7 @@ static int good_parity(uint16_t data)
   return ret;
 }
 
-static void build_char_table(void)
-{
-  int i;
-  /* first the normal ASCII codes */
-  for (i = 0; i < 128; i++)
-   chartbl[i] = (char) i;
- /* now the special codes */
- chartbl[0x2a] = 0xA1;
- chartbl[0x5c] = 0xA9;
- chartbl[0x5e] = 0xAD;
- chartbl[0x5f] = 0xB3;
- chartbl[0x60] = 0xAA;
- chartbl[0x7b] = 0xA7;
- chartbl[0x7c] = 0xb7;
- chartbl[0x7d] = 0x91;
- chartbl[0x7e] = 0xB1;
- chartbl[0x7f] = 0xA4;    /* FIXME: this should be a solid block */
-}
-
-static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
+static void ccbuf_add_char(cc_buffer_t* buf, uint8_t c, uint8_t charset)
 {
   cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   int pos = rowbuf->pos;
@@ -127,6 +187,7 @@ static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
   }
 
   rowbuf->cells[pos].c = c;
+  rowbuf->cells[pos].charset = charset;
   rowbuf->cells[pos].midrow_attr = rowbuf->attr_chg;
   rowbuf->pos++;
 
@@ -166,7 +227,7 @@ static void ccbuf_apply_attribute(cc_buffer_t *buf, cc_attribute_t *attr)
   rowbuf->attr_chg = 1;
   rowbuf->cells[pos].attributes = *attr;
   /* A midrow attribute always counts as a space */
-  ccbuf_add_char(buf, chartbl[(unsigned int) ' ']);
+  ccbuf_add_char(buf, (unsigned int)' ', CCSET_BASIC_AMERICAN);
 }
 
 
@@ -250,7 +311,21 @@ void ccmem_tobuf(cc_decoder_t *dec)
         if (buf->rows[i].cells[l].c != ' ')
           break;
       for (j = f; j <= l; j++)
-        dec->text[dec->textlen++] = buf->rows[i].cells[j].c;
+      {
+        char* chbytes = get_char_override(buf->rows[i].cells[j].charset, buf->rows[i].cells[j].c);
+        if (chbytes != NULL)
+        {
+          for (; *chbytes != '\0'; chbytes++)
+          {
+            dec->text[dec->textlen++] = *chbytes;
+          }
+        }
+        else
+        {
+          // ascii char
+          dec->text[dec->textlen++] = (unsigned char)buf->rows[i].cells[j].c;
+        }
+      }
       dec->text[dec->textlen++] = '\n';
     }
   }
@@ -312,10 +387,10 @@ static void cc_decode_standard_char(cc_decoder_t *dec, uint8_t c1, uint8_t c2)
 {
   cc_buffer_t *buf = active_ccbuffer(dec);
   /* c1 always is a valid character */
-  ccbuf_add_char(buf, chartbl[c1]);
+  ccbuf_add_char(buf, c1, CCSET_BASIC_AMERICAN);
   /* c2 might not be a printable character, even if c1 was */
   if (c2 & 0x60)
-    ccbuf_add_char(buf, chartbl[c2]);
+    ccbuf_add_char(buf, c2, CCSET_BASIC_AMERICAN);
 }
 
 
@@ -365,7 +440,7 @@ static void cc_decode_special_char(cc_decoder_t *dec, int channel,
 
   cc_set_channel(dec, channel);
   buf = active_ccbuffer(dec);
-  ccbuf_add_char(buf, specialchar[c2 & 0xf]);
+  ccbuf_add_char(buf, c2, CCSET_SPECIAL_AMERICAN);
 }
 
 static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
@@ -618,7 +693,6 @@ void cc_decoder_close(cc_decoder_t *dec)
 void cc_decoder_init(void)
 {
   build_parity_table();
-  build_char_table();
 }
 
 #ifdef __cplusplus
