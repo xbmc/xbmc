@@ -48,12 +48,12 @@ static cc_buffer_t* active_ccbuffer(cc_decoder_t* dec);
 // for all charsets, CC codes are essentially identical to ASCII apart for a few exceptions
 // see https://en.wikipedia.org/wiki/EIA-608#Characters for reference
 
-// @todo add support to CCSET_EXTENDED_SPANISH_FRENCH_MISC
-// and CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH
 enum cc_charset
 {
   CCSET_BASIC_AMERICAN = 0,
   CCSET_SPECIAL_AMERICAN,
+  CCSET_EXTENDED_SPANISH_FRENCH_MISC,
+  CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH
 };
 
 char* get_char_override(uint8_t charset, uint8_t c)
@@ -124,6 +124,150 @@ char* get_char_override(uint8_t charset, uint8_t c)
         return u8"\u00f4";
       case 0x3f:
         return u8"\u00fb";
+      default:
+        break;
+    }
+  }
+  else if (charset == CCSET_EXTENDED_SPANISH_FRENCH_MISC)
+  {
+    switch (c)
+    {
+      case 0x20:
+        return u8"\u00c1";
+      case 0x21:
+        return u8"\u00c9";
+      case 0x22:
+        return u8"\u00d3";
+      case 0x23:
+        return u8"\u00da";
+      case 0x24:
+        return u8"\u00dc";
+      case 0x25:
+        return u8"\u00fc";
+      case 0x26:
+        return u8"\u00b4";
+      case 0x27:
+        return u8"\u00a1";
+      case 0x28:
+        return u8"*";
+      case 0x29:
+        return u8"\u2018";
+      case 0x2a:
+        return u8"-";
+      case 0x2b:
+        return u8"\u00a9";
+      case 0x2c:
+        return u8"\u2120";
+      case 0x2d:
+        return u8"\u00b7";
+      case 0x2e:
+        return u8"\u201c";
+      case 0x2f:
+        return u8"\u201d";
+      case 0x30:
+        return u8"\u00c0";
+      case 0x31:
+        return u8"\u00c2";
+      case 0x32:
+        return u8"\u00c7";
+      case 0x33:
+        return u8"\u00c8";
+      case 0x34:
+        return u8"\u00ca";
+      case 0x35:
+        return u8"\u00cb";
+      case 0x36:
+        return u8"\u00eb";
+      case 0x37:
+        return u8"\u00ce";
+      case 0x38:
+        return u8"\u00cf";
+      case 0x39:
+        return u8"\u00ef";
+      case 0x3a:
+        return u8"\u00d4";
+      case 0x3b:
+        return u8"\u00d9";
+      case 0x3c:
+        return u8"\u00f9";
+      case 0x3d:
+        return u8"\u00db";
+      case 0x3e:
+        return u8"\u00ab";
+      case 0x3f:
+        return u8"\u00bb";
+      default:
+        break;
+    }
+  }
+  else if (charset == CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH)
+  {
+    switch (c)
+    {
+      case 0x20:
+        return u8"\u00c3";
+      case 0x21:
+        return u8"\u00e3";
+      case 0x22:
+        return u8"\u00cd";
+      case 0x23:
+        return u8"\u00cc";
+      case 0x24:
+        return u8"\u00ec";
+      case 0x25:
+        return u8"\u00d2";
+      case 0x26:
+        return u8"\u00f2";
+      case 0x27:
+        return u8"\u00d5";
+      case 0x28:
+        return u8"\u00f5";
+      case 0x29:
+        return u8"{";
+      case 0x2a:
+        return u8"}";
+      case 0x2b:
+        return u8"\\";
+      case 0x2c:
+        return u8"^";
+      case 0x2d:
+        return u8"_";
+      case 0x2e:
+        return u8"|";
+      case 0x2f:
+        return u8"~";
+      case 0x30:
+        return u8"\u00c4";
+      case 0x31:
+        return u8"\u00e4";
+      case 0x32:
+        return u8"\u00d6";
+      case 0x33:
+        return u8"\u00f6";
+      case 0x34:
+        return u8"\u00df";
+      case 0x35:
+        return u8"\u00a5";
+      case 0x36:
+        return u8"\u00a4";
+      case 0x37:
+        return u8"\u00a6";
+      case 0x38:
+        return u8"\u00c5";
+      case 0x39:
+        return u8"\u00e5";
+      case 0x3a:
+        return u8"\u00d8";
+      case 0x3b:
+        return u8"\u00f8";
+      case 0x3c:
+        return u8"\u250c";
+      case 0x3d:
+        return u8"\u2510";
+      case 0x3e:
+        return u8"\u2514";
+      case 0x3f:
+        return u8"\u2518";
       default:
         break;
     }
@@ -426,25 +570,21 @@ static void cc_decode_PAC(cc_decoder_t *dec, int channel,
   ccbuf_set_cursor(buf, row, column, underline, italics, color);
 }
 
-
-static void cc_decode_ext_attribute(cc_decoder_t *dec, int channel,
-				    uint8_t c1, uint8_t c2)
+static void cc_decode_ext_attribute(cc_decoder_t* dec, int channel)
 {
   cc_set_channel(dec, channel);
 }
 
-static void cc_decode_special_char(cc_decoder_t *dec, int channel,
-				   uint8_t c1, uint8_t c2)
+static void cc_decode_special_char(cc_decoder_t* dec, int channel, uint8_t charset, uint8_t c2)
 {
   cc_buffer_t *buf;
 
   cc_set_channel(dec, channel);
   buf = active_ccbuffer(dec);
-  ccbuf_add_char(buf, c2, CCSET_SPECIAL_AMERICAN);
+  ccbuf_add_char(buf, c2, charset);
 }
 
-static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
-				  uint8_t c1, uint8_t c2)
+static void cc_decode_midrow_attr(cc_decoder_t* dec, int channel, uint8_t c2)
 {
   cc_buffer_t *buf;
   cc_attribute_t attr;
@@ -468,8 +608,7 @@ static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
 }
 
 
-static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
-					uint8_t c1, uint8_t c2)
+static void cc_decode_misc_control_code(cc_decoder_t* dec, int channel, uint8_t c2)
 {
   cc_set_channel(dec, channel);
   cc_buffer_t *buf;
@@ -549,8 +688,7 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
   }
 }
 
-static void cc_decode_tab(cc_decoder_t *dec, int channel,
-			  uint8_t c1, uint8_t c2)
+static void cc_decode_tab(cc_decoder_t* dec, int channel, uint8_t c2)
 {
   cc_buffer_t *buf;
 
@@ -576,8 +714,9 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
     }
   }
   else if (c1 & 0x10)
-  {                            /* control code or special character */
-                               /* 0x10 <= c1 <= 0x1f */
+  {
+    /* control code or special character */
+    /* 0x10 <= c1 <= 0x1f */
     int channel = (c1 & 0x08) >> 3;
     c1 &= ~0x08;
 
@@ -591,41 +730,61 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
       }
       else
       {
-	      switch (c1)
+        switch (c1)
         {
-	    	case 0x10:             /* extended background attribute code */
-	        cc_decode_ext_attribute(dec, channel, c1, c2);
-	        break;
+          case 0x10: /* extended background attribute code */
+            cc_decode_ext_attribute(dec, channel);
+            break;
 
-	      case 0x11:             /* attribute or special character */
-          if (dec->style == CC_NOTSET)
-            return;
-	        if ((c2 & 0x30) == 0x30)
-          { /* special char: 0x30 <= c2 <= 0x3f  */
-	          cc_decode_special_char(dec, channel, c1, c2);
+          case 0x11: /* attribute or special character */
+            if (dec->style == CC_NOTSET)
+              return;
+
+            if ((c2 & 0x30) == 0x30)
+            {
+              /* special char: 0x30 <= c2 <= 0x3f  */
+              /*       CCSET_SPECIAL_AMERICAN      */
+              cc_decode_special_char(dec, channel, CCSET_SPECIAL_AMERICAN, c2);
+              if (dec->style == CC_ROLLUP)
+              {
+                ccmem_tobuf(dec);
+              }
+            }
+            else if (c2 & 0x20)
+            {
+              /* midrow attribute: 0x20 <= c2 <= 0x2f */
+              cc_decode_midrow_attr(dec, channel, c2);
+            }
+            break;
+
+          case 0x12: /* CCSET_EXTENDED_SPANISH_FRENCH_MISC */
+            cc_decode_special_char(dec, channel, CCSET_EXTENDED_SPANISH_FRENCH_MISC, c2);
             if (dec->style == CC_ROLLUP)
             {
               ccmem_tobuf(dec);
             }
-	        }
-	        else if (c2 & 0x20)
-          {     /* midrow attribute: 0x20 <= c2 <= 0x2f */
-	          cc_decode_midrow_attr(dec, channel, c1, c2);
-	        }
-	        break;
+            break;
 
-	      case 0x14:             /* possibly miscellaneous control code */
-	        cc_decode_misc_control_code(dec, channel, c1, c2);
-	        break;
+          case 0x13: /* CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH */
+            cc_decode_special_char(dec, channel, CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH, c2);
+            if (dec->style == CC_ROLLUP)
+            {
+              ccmem_tobuf(dec);
+            }
+            break;
 
-	      case 0x17:            /* possibly misc. control code TAB offset */
-	                            /* 0x21 <= c2 <= 0x23 */
-	        if (c2 >= 0x21 && c2 <= 0x23)
-          {
-	          cc_decode_tab(dec, channel, c1, c2);
-	        }
-	        break;
-	      }
+          case 0x14: /* possibly miscellaneous control code */
+            cc_decode_misc_control_code(dec, channel, c2);
+            break;
+
+          case 0x17: /* possibly misc. control code TAB offset */
+            /* 0x21 <= c2 <= 0x23 */
+            if (c2 >= 0x21 && c2 <= 0x23)
+            {
+              cc_decode_tab(dec, channel, c2);
+            }
+            break;
+        }
       }
     }
   }
