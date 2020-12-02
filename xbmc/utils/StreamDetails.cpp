@@ -566,16 +566,16 @@ std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHe
   else if (iWidth <= 960 && iHeight <= 544)
     return "540";
   // 1280x720
-  else if (iWidth <= 1280 && iHeight <= 720)
+  else if (iWidth <= 1280 && iHeight <= 962)
     return "720";
   // 1920x1080
-  else if (iWidth <= 1920 && iHeight <= 1080)
+  else if (iWidth <= 1920 && iHeight <= 1440)
     return "1080";
   // 4K
-  else if (iWidth <= 4096 && iHeight <= 2160)
+  else if (iWidth <= 4096 && iHeight <= 3072)
     return "4K";
   // 8K
-  else if (iWidth <= 8192 && iHeight <= 4320)
+  else if (iWidth <= 8192 && iHeight <= 6144)
     return "8K";
   else
     return "";
