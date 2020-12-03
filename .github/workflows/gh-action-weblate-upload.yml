@@ -11,6 +11,7 @@ on:
       - ".github/workflows/gh-action-weblate-upload.yml"
 jobs:
   weblate:
+    if: github.repository == 'xbmc/xbmc'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
