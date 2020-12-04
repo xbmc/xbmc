@@ -215,7 +215,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setEnabled(enabled) }
-      /// Set's the control's enabled/disabled state.
+      /// Sets the control's enabled/disabled state.
       ///
       /// @param enabled            bool - True=enabled / False=disabled.
       ///
@@ -238,7 +238,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setVisible(visible) }
-      /// Set's the control's visible/hidden state.
+      /// Sets the control's visible/hidden state.
       /// \anchor python_xbmcgui_control_setVisible
       ///
       /// @param visible            bool - True=visible / False=hidden.
@@ -290,7 +290,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setVisibleCondition(visible[,allowHiddenFocus]) }
-      /// Set's the control's visible condition.
+      /// Sets the control's visible condition.
       ///
       /// Allows Kodi to control the visible status of the control.
       ///
@@ -320,7 +320,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setEnableCondition(enable) }
-      /// Set's the control's enabled condition.
+      /// Sets the control's enabled condition.
       ///
       /// Allows Kodi to control the enabled status of the control.
       ///
@@ -348,7 +348,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setAnimations([(event, attr,)*]) }
-      /// Set's the control's animations.
+      /// Sets the control's animations.
       ///
       /// <b>[(event,attr,)*]</b>: list - A list of tuples consisting of event
       /// and attributes pairs.
@@ -379,7 +379,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setPosition(x, y) }
-      /// Set's the controls position.
+      /// Sets the controls position.
       ///
       /// @param x                  integer - x coordinate of control.
       /// @param y                  integer - y coordinate of control.
@@ -405,7 +405,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setWidth(width) }
-      /// Set's the controls width.
+      /// Sets the controls width.
       ///
       /// @param width                integer - width of control.
       ///
@@ -428,7 +428,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setHeight(height) }
-      /// Set's the controls height.
+      /// Sets the controls height.
       ///
       /// @param height               integer - height of control.
       ///
@@ -451,7 +451,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ setNavigation(up, down, left, right) }
-      /// Set's the controls navigation.
+      /// Sets the controls navigation.
       ///
       /// @param up                 control object - control to navigate to on up.
       /// @param down               control object - control to navigate to on down.
@@ -485,7 +485,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlUp(control) }
-      /// Set's the controls up navigation.
+      /// Sets the controls up navigation.
       ///
       /// @param control            control object - control to navigate to on up.
       /// @throw TypeError              if one of the supplied arguments is not a
@@ -515,7 +515,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlDown(control) }
-      /// Set's the controls down navigation.
+      /// Sets the controls down navigation.
       ///
       /// @param control            control object - control to navigate to on down.
       /// @throw TypeError              if one of the supplied arguments is not a
@@ -545,7 +545,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlLeft(control) }
-      /// Set's the controls left navigation.
+      /// Sets the controls left navigation.
       ///
       /// @param control            control object - control to navigate to on left.
       /// @throw TypeError              if one of the supplied arguments is not a
@@ -575,7 +575,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control
       /// @brief \python_func{ controlRight(control) }
-      /// Set's the controls right navigation.
+      /// Sets the controls right navigation.
       ///
       /// @param control            control object - control to navigate to on right.
       /// @throw TypeError              if one of the supplied arguments is not a
@@ -654,7 +654,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_spin
       /// @brief \python_func{ setTextures(up, down, upFocus, downFocus) }
-      /// Set's textures for this control.
+      /// Sets textures for this control.
       ///
       /// Texture are image files that are used for example in the skin
       ///
@@ -799,7 +799,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_label
       /// @brief \python_func{ setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor, label2]) }
-      /// Set's text for this label.
+      /// Sets text for this label.
       ///
       /// @param label              string or unicode - text string.
       /// @param font               [opt] string - font used for label text.
@@ -923,7 +923,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor, label2]) }
-      /// Set's text heading for this edit control.
+      /// Sets text heading for this edit control.
       ///
       /// @param label              string or unicode - text string.
       /// @param font               [opt] string - font used for label text.
@@ -986,7 +986,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcgui_control_edit
       /// @brief \python_func{ setText(value) }
-      /// Set's text value for this edit control.
+      /// Sets text value for this edit control.
       ///
       /// @param value              string or unicode - text string.
       ///
@@ -1425,7 +1425,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_list
       /// @brief \python_func{ setSpace(space) }
-      /// Set's the space between items.
+      /// Sets the space between items.
       ///
       /// @param space                    [opt] integer - space between items.
       ///
@@ -1831,7 +1831,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_textbox
       /// @brief \python_func{ setText(text) }
-      /// Set's the text for this textbox.
+      /// Sets the text for this textbox.
       /// \anchor python_xbmcgui_control_textbox_settext
       ///
       /// @param text                 string  - text string.
@@ -2313,7 +2313,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_button
       /// @brief \python_func{ setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor, label2]) }
-      /// Set's this buttons text attributes.
+      /// Sets this buttons text attributes.
       ///
       /// @param label                [opt] string or unicode - text string.
       /// @param font                 [opt] string - font used for label text. (e.g. 'font13')
@@ -2354,7 +2354,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_button
       /// @brief \python_func{ setDisabledColor(disabledColor) }
-      /// Set's this buttons disabled color.
+      /// Sets this buttons disabled color.
       ///
       /// @param disabledColor        hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
       ///
@@ -2503,16 +2503,15 @@ namespace XBMCAddon
     /// \defgroup python_xbmcgui_control_radiobutton Subclass - ControlRadioButton
     /// \ingroup python_xbmcgui_control
     /// @{
-    /// @brief **For control a radio button (as used for on/off settings).**
+    /// @brief **A radio button control (as used for on/off settings).**
     ///
     /// \python_class{ ControlRadioButton(x, y, width, height, label[, focusOnTexture, noFocusOnTexture,
-    ///                   focusOffTexture, noFocusOffTexture,
+    ///                   focusOffTexture, noFocusOffTexture, focusTexture, noFocusTexture,
     ///                   textOffsetX, textOffsetY, alignment, font, textColor, disabledColor]) }
     ///
     /// The radio button control is used for creating push button on/off
     /// settings in Kodi. You can choose the position, size, and look of the
-    /// button. When the user clicks on the radio button, the state will change,
-    /// toggling the extra textures (textureradioon and textureradiooff). Used
+    /// button, as well as the focused and unfocused radio textures. Used
     /// for settings controls.
     ///
     /// @note This class include also all calls from \ref python_xbmcgui_control "Control"
@@ -2530,6 +2529,10 @@ namespace XBMCAddon
     ///                             focused texture.
     /// @param noFocusOffTexture    [opt] string - filename for radio OFF
     ///                             not focused texture.
+    /// @param focusTexture         [opt] string - filename for focused button
+    ///                             texture.
+    /// @param noFocusTexture       [opt] string - filename for not focused button
+    ///                             texture.
     /// @param textOffsetX          [opt] integer - horizontal text offset
     /// @param textOffsetY          [opt] integer - vertical text offset
     /// @param alignment            [opt] integer - alignment of label
@@ -2560,8 +2563,6 @@ namespace XBMCAddon
     ///
     ///--------------------------------------------------------------------------
     /// @python_v13 New function added.
-    /// @python_v18 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
-    /// @python_v19 Removed **focusTexture** and **noFocusTexture**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -2576,6 +2577,7 @@ namespace XBMCAddon
       ControlRadioButton(long x, long y, long width, long height, const String& label,
                          const char* focusOnTexture = NULL, const char* noFocusOnTexture = NULL,
                          const char* focusOffTexture = NULL, const char* noFocusOffTexture = NULL,
+                         const char* focusTexture = NULL, const char* noFocusTexture = NULL,
                          long textOffsetX = CONTROL_TEXT_OFFSET_X,
                          long textOffsetY = CONTROL_TEXT_OFFSET_Y,
                          long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y),
@@ -2642,7 +2644,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_control_radiobutton
       /// @brief \python_func{ setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) }
-      /// Set's the radio buttons text attributes.
+      /// Sets the radio buttons text attributes.
       ///
       /// @param label              string or unicode - text string.
       /// @param font               [opt] string - font used for label
