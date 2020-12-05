@@ -34,12 +34,32 @@ namespace
 CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   m_libInputHandler(handler)
 {
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  auto settingsManager = settings->GetSettingsManager();
+  if (!settingsComponent)
+    return;
+
+  auto setting = settings->GetSetting(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}", SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
+    return;
+  }
+
+  setting->SetVisible(true);
+
   std::set<std::string> settingSet;
   settingSet.insert(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  settings->GetSettingsManager()->RegisterCallback(this, settingSet);
-  settings->GetSettingsManager()->RegisterSettingOptionsFiller("libinputkeyboardlayout", SettingOptionsKeyboardLayoutsFiller);
-  settings->GetSetting(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT)->SetVisible(true);
+  settingsManager->RegisterCallback(this, settingSet);
+  settingsManager->RegisterSettingOptionsFiller("libinputkeyboardlayout",
+                                                SettingOptionsKeyboardLayoutsFiller);
 
   /* load the keyboard layouts from xkeyboard-config */
   std::string xkbFile("/usr/share/X11/xkb/rules/base.xml");

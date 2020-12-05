@@ -213,10 +213,27 @@ void CGUIDialogVideoSettings::OnSettingAction(const std::shared_ptr<const CSetti
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-    // launch calibration window
-    if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
-        g_passwordManager.CheckSettingLevelLock(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
+    auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    if (!settingsComponent)
       return;
+
+    auto settings = settingsComponent->GetSettings();
+    if (!settings)
+      return;
+
+    auto setting = settings->GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
+    if (!setting)
+    {
+      CLog::Log(LOGERROR, "Failed to load setting for: {}",
+                CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
+      return;
+    }
+
+    // launch calibration window
+    if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+        g_passwordManager.CheckSettingLevelLock(setting->GetLevel()))
+      return;
+
     CServiceBroker::GetGUI()->GetWindowManager().ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   //! @todo implement

@@ -52,6 +52,14 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
+  auto setting = m_settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}",
+              CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+    return;
+  }
+
   int defaultShutdown = m_settings->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
 
   switch (defaultShutdown)
@@ -91,7 +99,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  std::static_pointer_cast<CSettingInt>(m_settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
+  std::static_pointer_cast<CSettingInt>(setting)->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()

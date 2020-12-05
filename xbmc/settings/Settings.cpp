@@ -725,18 +725,37 @@ void CSettings::InitializeDefaults()
   // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   if (g_sysinfo.IsAeroDisabled())
-    std::static_pointer_cast<CSettingBool>(GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
+  {
+    auto setting = GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
+    if (!setting)
+      CLog::Log(LOGERROR, "Failed to load setting for: {}",
+                CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
+    else
+      std::static_pointer_cast<CSettingBool>(setting)->SetDefault(false);
+  }
 #endif
 
   if (g_application.IsStandAlone())
-    std::static_pointer_cast<CSettingInt>(GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
+  {
+    auto setting =
+        GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+    if (!setting)
+      CLog::Log(LOGERROR, "Failed to load setting for: {}",
+                CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+    else
+      std::static_pointer_cast<CSettingInt>(setting)->SetDefault(POWERSTATE_SHUTDOWN);
+  }
 
   // Initialize deviceUUID if not already set, used in zeroconf advertisements.
   std::shared_ptr<CSettingString> deviceUUID = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID));
   if (deviceUUID->GetValue().empty())
   {
     const std::string& uuid = StringUtils::CreateUUID();
-    std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID))->SetValue(uuid);
+    auto setting = GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID);
+    if (!setting)
+      CLog::Log(LOGERROR, "Failed to load setting for: {}", CSettings::SETTING_SERVICES_DEVICEUUID);
+    else
+      std::static_pointer_cast<CSettingString>(setting)->SetValue(uuid);
   }
 }
 
