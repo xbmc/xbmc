@@ -61,7 +61,15 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 
   double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
   if (pts == DVD_NOPTS_VALUE)
+  {
     pts = 0;
+  }
+  else
+  {
+    // libass only has a precision of msec
+    pts = round(pts / 1000) * 1000;
+  }
+
   uint8_t *data = pPacket->pData;
   int size = pPacket->iSize;
   double duration = pPacket->duration;
