@@ -33,12 +33,12 @@ public:
   std::string GetPropertyName(uint32_t propertyId) const;
 
   uint32_t GetId() const { return m_id; }
-  uint32_t GetPropertyId(const char* name) const;
-  bool GetPropertyValue(std::string name, const std::string& type, uint64_t& value) const;
+  uint32_t GetPropertyId(const std::string& name) const;
+  std::tuple<bool, uint64_t> GetPropertyValue(const std::string& name,
+                                              const std::string& valueName) const;
 
-  bool SetProperty(const char* name, uint64_t value);
-  bool SupportsProperty(const char* name);
-  bool SupportsPropertyAndValue(const char* name, uint64_t value);
+  bool SetProperty(const std::string& name, uint64_t value);
+  bool SupportsProperty(const std::string& name);
 
 protected:
   explicit CDRMObject(int fd);

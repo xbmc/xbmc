@@ -161,11 +161,16 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
   const VideoPicture& picture = buffer->GetPicture();
 
   auto plane = m_DRM->GetVideoPlane();
-  if (plane->SupportsPropertyAndValue("COLOR_ENCODING", GetColorEncoding(picture)))
-    m_DRM->AddProperty(plane, "COLOR_ENCODING", GetColorEncoding(picture));
 
-  if (plane->SupportsPropertyAndValue("COLOR_RANGE", GetColorRange(picture)))
-    m_DRM->AddProperty(plane, "COLOR_RANGE", GetColorRange(picture));
+  bool result;
+  uint64_t value;
+  std::tie(result, value) = plane->GetPropertyValue("COLOR_ENCODING", GetColorEncoding(picture));
+  if (result)
+    m_DRM->AddProperty(plane, "COLOR_ENCODING", value);
+
+  std::tie(result, value) = plane->GetPropertyValue("COLOR_RANGE", GetColorRange(picture));
+  if (result)
+    m_DRM->AddProperty(plane, "COLOR_RANGE", value);
 
   auto connector = m_DRM->GetConnector();
   if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))

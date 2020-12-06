@@ -21,19 +21,6 @@ extern "C"
 namespace DRMPRIME
 {
 
-// Color enums is copied from linux include/drm/drm_color_mgmt.h (strangely not part of uapi)
-enum drm_color_encoding
-{
-  DRM_COLOR_YCBCR_BT601,
-  DRM_COLOR_YCBCR_BT709,
-  DRM_COLOR_YCBCR_BT2020,
-};
-enum drm_color_range
-{
-  DRM_COLOR_YCBCR_LIMITED_RANGE,
-  DRM_COLOR_YCBCR_FULL_RANGE,
-};
-
 // HDR enums is copied from linux include/linux/hdmi.h (strangely not part of uapi)
 enum hdmi_metadata_type
 {
@@ -47,8 +34,8 @@ enum hdmi_eotf
   HDMI_EOTF_BT_2100_HLG,
 };
 
-int GetColorEncoding(const VideoPicture& picture);
-int GetColorRange(const VideoPicture& picture);
+std::string GetColorEncoding(const VideoPicture& picture);
+std::string GetColorRange(const VideoPicture& picture);
 uint8_t GetEOTF(const VideoPicture& picture);
 const AVMasteringDisplayMetadata* GetMasteringDisplayMetadata(const VideoPicture& picture);
 const AVContentLightMetadata* GetContentLightMetadata(const VideoPicture& picture);

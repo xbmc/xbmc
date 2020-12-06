@@ -8,7 +8,6 @@
 
 #include "DRMObject.h"
 
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -54,11 +53,10 @@ std::string CDRMObject::GetPropertyName(uint32_t propertyId) const
   return "invalid property";
 }
 
-uint32_t CDRMObject::GetPropertyId(const char* name) const
+uint32_t CDRMObject::GetPropertyId(const std::string& name) const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
     return property->get()->prop_id;
@@ -82,37 +80,36 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
   return true;
 }
 
-bool CDRMObject::GetPropertyValue(std::string name, const std::string& type, uint64_t& value) const
+//! @todo: improve with c++17
+std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
+                                                        const std::string& valueName) const
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property == m_propsInfo.end())
-    return false;
+    return std::make_tuple(false, 0);
 
   auto prop = property->get();
 
-  if (drm_property_type_is(prop, DRM_MODE_PROP_ENUM) != 0)
+  if (!static_cast<bool>(drm_property_type_is(prop, DRM_MODE_PROP_ENUM)))
+    return std::make_tuple(false, 0);
+
+  for (int j = 0; j < prop->count_enums; j++)
   {
-    for (int j = 0; j < prop->count_enums; j++)
-    {
-      if (std::strcmp(prop->enums[j].name, type.c_str()) == 0)
-      {
-        value = prop->enums[j].value;
-        return true;
-      }
-    }
+    if (prop->enums[j].name != valueName)
+      continue;
+
+    return {true, prop->enums[j].value};
   }
 
-  return false;
+  return std::make_tuple(false, 0);
 }
 
-bool CDRMObject::SetProperty(const char* name, uint64_t value)
+bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
   {
@@ -124,38 +121,13 @@ bool CDRMObject::SetProperty(const char* name, uint64_t value)
   return false;
 }
 
-bool CDRMObject::SupportsProperty(const char* name)
+bool CDRMObject::SupportsProperty(const std::string& name)
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
     return true;
-
-  return false;
-}
-
-bool CDRMObject::SupportsPropertyAndValue(const char* name, uint64_t value)
-{
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [&name](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, name);
-  });
-
-  if (property != m_propsInfo.end())
-  {
-    if (drm_property_type_is(property->get(), DRM_MODE_PROP_ENUM) != 0)
-    {
-      for (int j = 0; j < property->get()->count_enums; j++)
-      {
-        if (property->get()->enums[j].value == value)
-          return true;
-      }
-    }
-
-    CLog::Log(LOGDEBUG, "CDRMObject::{} - property '{}' does not support value '{}'", __FUNCTION__,
-              name, value);
-  }
 
   return false;
 }

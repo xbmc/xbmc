@@ -46,19 +46,21 @@ uint32_t GetScalingFactor(uint32_t srcWidth,
 
 bool CDRMAtomic::SetScalingFilter(CDRMObject* object, const char* name, const char* type)
 {
-  uint64_t filter_type{};
-  if (m_gui_plane->GetPropertyValue(name, type, filter_type))
-  {
-    if (AddProperty(object, name, filter_type))
-    {
-      uint32_t mar_scale_factor =
-          GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
-      AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
-      AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
-      return true;
-    }
-  }
-  return false;
+  bool result;
+  uint64_t value;
+  std::tie(result, value) = m_gui_plane->GetPropertyValue(name, type);
+  if (!result)
+    return false;
+
+  if (!AddProperty(object, name, value))
+    return false;
+
+  uint32_t mar_scale_factor =
+      GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
+  AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
+  AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
+
+  return true;
 }
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
