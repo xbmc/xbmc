@@ -28,6 +28,7 @@
 #include "utils/JSONVariantWriter.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 #ifdef TARGET_WINDOWS
 #include "platform/Environment.h"
@@ -501,10 +502,14 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
     CEnvironment::putenv(buf);
     buf = "PYTHONOPTIMIZE=1";
     CEnvironment::putenv(buf);
-    buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python");
-    CEnvironment::putenv(buf);
     buf = "OS=win32";
     CEnvironment::putenv(buf);
+
+    std::wstring pythonHomeW;
+    CCharsetConverter::utf8ToW(CSpecialProtocol::TranslatePath("special://xbmc/system/python"),
+                           pythonHomeW);
+    Py_SetPythonHome(pythonHomeW.c_str());
+
 #ifdef _DEBUG
     if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
       CEnvironment::putenv("PYTHONCASEOK=1");
