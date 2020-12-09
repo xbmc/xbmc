@@ -471,13 +471,6 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   g_curlInterface.easy_setopt(h, CURLOPT_READDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_READFUNCTION, read_callback);
 
-  // set username and password for current handle
-  if (m_username.length() > 0 && m_password.length() > 0)
-  {
-    std::string userpwd = m_username + ':' + m_password;
-    g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
-  }
-
   // make sure headers are separated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -555,8 +548,10 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   }
 
   // setup requested http authentication method
+  bool bAuthSet = false;
   if(!m_httpauth.empty())
   {
+    bAuthSet = true;
     if( m_httpauth == "any" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
     else if( m_httpauth == "anysafe" )
@@ -565,6 +560,19 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
     else if( m_httpauth == "ntlm" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
+    else
+      bAuthSet = false;
+  }
+
+  // set username and password for current handle
+  if (!m_username.empty())
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
+    if (!m_password.empty())
+      g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
+
+    if (!bAuthSet)
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
   }
 
   // allow passive mode for ftp
