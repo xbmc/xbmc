@@ -541,6 +541,12 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
       // process general properties
       if (setting != nullptr)
       {
+        // set the default level to be Basic
+        if (setting->GetLevel() != SettingLevel::Internal)
+        {
+          setting->SetLevel(SettingLevel::Basic);
+        }
+        
         // use the setting's ID if there's no label
         if (settingLabel < 0)
         {
