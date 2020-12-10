@@ -1514,27 +1514,23 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
-  if(buffer)
+  if (buffer)
   {
-    char *content;
-    result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, &content);
-    if (result != CURLE_OK)
-    {
-      CLog::Log(LOGINFO, "CCurlFile::Stat - Content type failed: %s(%d) for %s",
-                g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-      errno = ENOENT;
-      return -1;
-    }
+    *buffer = {};
+    buffer->st_size = static_cast<int64_t>(length);
+
+    // Note: CURLINFO_CONTENT_TYPE returns the last received content-type response header value.
+    // In case there is authentication required there might be multiple requests involved and if
+    // the last request whch actually returns the data does not return a content-type header, but
+    // one of the preceeding requests, CURLINFO_CONTENT_TYPE returns not the content type of the
+    // actual resource requested! m_state contains only the values of the last request, which is
+    // what we want here.
+    const std::string mimeType = m_state->m_httpheader.GetMimeType();
+    if (mimeType.find("text/html") != std::string::npos) // consider html files directories
+      buffer->st_mode = _S_IFDIR;
     else
-    {
-      memset(buffer, 0, sizeof(struct __stat64));
-      buffer->st_size = (int64_t)length;
-      if(content && strstr(content, "text/html")) //consider html files directories
-        buffer->st_mode = _S_IFDIR;
-      else
-        buffer->st_mode = _S_IFREG;
-    }
+      buffer->st_mode = _S_IFREG;
+
     long filetime;
     result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_FILETIME, &filetime);
     if (result != CURLE_OK)
