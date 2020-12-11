@@ -43,7 +43,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
     return;
 
   auto settingsManager = settings->GetSettingsManager();
-  if (!settingsComponent)
+  if (!settingsManager)
     return;
 
   auto setting = settings->GetSetting(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
