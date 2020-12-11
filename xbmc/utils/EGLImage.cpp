@@ -183,7 +183,7 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
       }
       else
       {
-        if (eglAttrKey->first == EGL_LINUX_DRM_FOURCC_EXT)
+        if (eglAttrKey != eglAttributes.end() && eglAttrKey->first == EGL_LINUX_DRM_FOURCC_EXT)
           valueStr = FourCCToString(attrs[i + 1]);
         else
           valueStr = std::to_string(attrs[i + 1]);
