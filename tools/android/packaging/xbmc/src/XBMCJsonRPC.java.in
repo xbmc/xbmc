@@ -75,12 +75,12 @@ public class XBMCJsonRPC
                   "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
                   + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
                   + "\"limits\": { \"start\" : 0, \"end\": 10}, "
-                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"art\", \"year\", \"runtime\", \"file\", \"plot\"], "
+                  + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"art\", \"year\", \"runtime\", \"file\", \"plot\", \"rating\"], "
                   + "\"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, "
                   + "\"id\": \"1\"}";
 
   private String RECOMMENDATIONS_SHOWS_JSON =
-                 "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},{\"field\":\"plot\",\"operator\":\"isnot\",\"value\":\"\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"art\",\"studio\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
+                 "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},{\"field\":\"plot\",\"operator\":\"isnot\",\"value\":\"\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"art\",\"studio\", \"year\", \"rating\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
 
   private String RECOMMENDATIONS_ALBUMS_JSON =
                  "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": { \"limits\": { \"start\" : 0, \"end\": 3}, \"properties\" : [\"title\", \"displayartist\", \"art\"], \"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, \"id\": \"1\"}";

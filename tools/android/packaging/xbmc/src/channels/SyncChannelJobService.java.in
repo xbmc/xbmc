@@ -126,7 +126,6 @@ public class SyncChannelJobService extends JobService
       playlistsContent.addAll(getFilesFromUrl(uriutils.substitutePath("special://profile/playlists/music/")));
 
       Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.ic_recommendation_80dp);
-      freshsubscriptions.add(sub);
       if (subscriptions.size() == 0)  // First-run: Add default channel
       {
         long channelId = TvUtil.createChannel(mContext, sub);
@@ -135,6 +134,20 @@ public class SyncChannelJobService extends JobService
 
         TvContractCompat.requestChannelBrowsable(mContext, channelId);
       }
+      else
+      {
+        int subidx = subscriptions.indexOf(sub);
+        if (subidx >= 0)
+        {
+          sub = subscriptions.get(subidx);
+          if (sub.getChannelId() == 0)
+          {
+            long channelId = TvUtil.createChannel(mContext, sub);
+            sub.setChannelId(channelId);          
+          }
+        }
+      }
+      freshsubscriptions.add(sub);
 
       for (File file : playlistsContent)
       {
