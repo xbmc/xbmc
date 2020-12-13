@@ -471,13 +471,6 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   g_curlInterface.easy_setopt(h, CURLOPT_READDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_READFUNCTION, read_callback);
 
-  // set username and password for current handle
-  if (m_username.length() > 0 && m_password.length() > 0)
-  {
-    std::string userpwd = m_username + ':' + m_password;
-    g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
-  }
-
   // make sure headers are separated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -555,8 +548,10 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   }
 
   // setup requested http authentication method
+  bool bAuthSet = false;
   if(!m_httpauth.empty())
   {
+    bAuthSet = true;
     if( m_httpauth == "any" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
     else if( m_httpauth == "anysafe" )
@@ -565,6 +560,19 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
     else if( m_httpauth == "ntlm" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
+    else
+      bAuthSet = false;
+  }
+
+  // set username and password for current handle
+  if (!m_username.empty())
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
+    if (!m_password.empty())
+      g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
+
+    if (!bAuthSet)
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
   }
 
   // allow passive mode for ftp
@@ -1506,27 +1514,23 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
-  if(buffer)
+  if (buffer)
   {
-    char *content;
-    result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, &content);
-    if (result != CURLE_OK)
-    {
-      CLog::Log(LOGINFO, "CCurlFile::Stat - Content type failed: %s(%d) for %s",
-                g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-      errno = ENOENT;
-      return -1;
-    }
+    *buffer = {};
+    buffer->st_size = static_cast<int64_t>(length);
+
+    // Note: CURLINFO_CONTENT_TYPE returns the last received content-type response header value.
+    // In case there is authentication required there might be multiple requests involved and if
+    // the last request whch actually returns the data does not return a content-type header, but
+    // one of the preceeding requests, CURLINFO_CONTENT_TYPE returns not the content type of the
+    // actual resource requested! m_state contains only the values of the last request, which is
+    // what we want here.
+    const std::string mimeType = m_state->m_httpheader.GetMimeType();
+    if (mimeType.find("text/html") != std::string::npos) // consider html files directories
+      buffer->st_mode = _S_IFDIR;
     else
-    {
-      memset(buffer, 0, sizeof(struct __stat64));
-      buffer->st_size = (int64_t)length;
-      if(content && strstr(content, "text/html")) //consider html files directories
-        buffer->st_mode = _S_IFDIR;
-      else
-        buffer->st_mode = _S_IFREG;
-    }
+      buffer->st_mode = _S_IFREG;
+
     long filetime;
     result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_FILETIME, &filetime);
     if (result != CURLE_OK)
