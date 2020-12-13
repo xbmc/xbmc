@@ -59,7 +59,8 @@ namespace XBMCAddon
 
       // if we still don't have an id then bail
       if (id.empty())
-        throw AddonException("No valid addon id could be obtained. None was passed and the script wasn't executed in a normal xbmc manner.");
+        throw AddonException("No valid addon id could be obtained. None was passed and the script "
+                             "wasn't executed in a normal Kodi manner.");
 
       if (!CServiceBroker::GetAddonMgr().GetAddon(id.c_str(), pAddon, ADDON_UNKNOWN,
                                                   OnlyEnabled::YES))
