@@ -188,7 +188,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       extern PyThreadState* savestate;
       PyEval_RestoreThread(savestate);
 #else
-      PyThreadState* ts = PyThreadState_New(PyInterpreterState_Main());
+      PyThreadState* ts = PyInterpreterState_ThreadHead(PyInterpreterState_Main());
       PyEval_RestoreThread(ts);
 #endif
       l_threadState = Py_NewInterpreter();
