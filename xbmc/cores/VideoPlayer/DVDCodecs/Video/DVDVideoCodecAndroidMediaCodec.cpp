@@ -482,6 +482,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       break;
     case AV_CODEC_ID_HEVC:
+      if (m_hints.profile == FF_PROFILE_HEVC_REXT)
+      {
+        // No known h/w decoder supporting Hi10P
+        goto FAIL;
+      }
+
       if (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'))
       {
         m_mime = "video/dolby-vision";
