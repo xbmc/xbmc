@@ -82,14 +82,24 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     pItem->SetProperty("watchedepisodes", watched);
     pItem->SetProperty("unwatchedepisodes", unwatched);
 
-    // @note: the items list contains the (..) upper directory navigation fileitem plus all the
-    // season directory fileitems for a given show. We want to assign the "All Seasons" listitem
-    // the infotag of the tv show - so do not use the first item in the list!
-    if (items.Size() && items[items.Size() - 1]->GetVideoInfoTag())
+    // @note: The items list may contain additional items that do not belong to the show.
+    // This is the case of the up directory (..) or movies linked to the tvshow.
+    // Iterate through the list till the first season type is found and the infotag can safely be copied.
+
+    if (items.Size() > 1)
     {
-      *pItem->GetVideoInfoTag() = *items[items.Size() - 1]->GetVideoInfoTag();
-      pItem->GetVideoInfoTag()->m_iSeason = -1;
+      for (int i = 1; i < items.Size(); i++)
+      {
+        if (items[i]->GetVideoInfoTag() && items[i]->GetVideoInfoTag()->m_type == MediaTypeSeason &&
+            items[i]->GetVideoInfoTag()->m_iSeason > 0)
+        {
+          *pItem->GetVideoInfoTag() = *items[i]->GetVideoInfoTag();
+          pItem->GetVideoInfoTag()->m_iSeason = -1;
+          break;
+        }
+      }
     }
+
     pItem->GetVideoInfoTag()->m_strTitle = strLabel;
     pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
     pItem->GetVideoInfoTag()->SetPlayCount((unwatched == 0) ? 1 : 0);
