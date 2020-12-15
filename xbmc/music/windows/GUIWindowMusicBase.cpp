@@ -988,8 +988,10 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       items.SetArt(artmap);
     }
 
-    // add in the "New Playlist" item if we're in the playlists folder
-    if ((items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
+    int iWindow = GetID();
+    // Add "New Playlist" items when in the playlists folder, except on playlist editor screen
+    if ((iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR) &&
+        (items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
     {
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
