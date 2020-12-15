@@ -154,6 +154,13 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_musicNeedsUpdate = 0;
   }
 
+  // Set music playlist player repeat and shuffle from loaded settings
+  if (m_musicPlaylistRepeat)
+    CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ALL);
+  else
+    CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
+  CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_MUSIC, m_musicPlaylistShuffle);
+
   // Read the watchmode settings for the various media views
   pElement = settings->FirstChildElement("myvideos");
   if (pElement != NULL)
@@ -178,15 +185,14 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_videoNeedsUpdate = 0;
   }
 
-  return true;
-}
-
-void CMediaSettings::OnSettingsLoaded()
-{
-  CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, m_musicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_MUSIC, m_musicPlaylistShuffle);
-  CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_VIDEO, m_videoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
+  // Set video playlist player repeat and shuffle from loaded settings
+  if (m_videoPlaylistRepeat)
+    CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_VIDEO, PLAYLIST::REPEAT_ALL);
+  else
+    CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_VIDEO, PLAYLIST::REPEAT_NONE);
   CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_VIDEO, m_videoPlaylistShuffle);
+
+  return true;
 }
 
 bool CMediaSettings::Save(TiXmlNode *settings) const
