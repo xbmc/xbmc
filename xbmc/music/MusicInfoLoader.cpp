@@ -172,7 +172,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
     return false;
 
-  if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())
+  if ((!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded()) && pItem->IsAudio())
   {
     // first check the cached item
     CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];

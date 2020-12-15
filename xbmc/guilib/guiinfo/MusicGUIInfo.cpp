@@ -537,7 +537,7 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) co
     return false;
 
   const CFileItemPtr playlistItem = playlist[index];
-  if (!playlistItem->GetMusicInfoTag()->Loaded())
+  if (playlistItem->HasMusicInfoTag() && !playlistItem->GetMusicInfoTag()->Loaded())
   {
     playlistItem->LoadMusicTag();
     playlistItem->GetMusicInfoTag()->SetLoaded();
