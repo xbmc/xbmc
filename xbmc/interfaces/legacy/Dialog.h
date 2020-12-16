@@ -52,7 +52,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, nolabel, yeslabel, customlabel, autoclose]) }
+      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, nolabel, yeslabel, autoclose]) }
       /// **Yes / no dialog**
       ///
       /// The Yes / No dialog can be used to inform the user about questions and
@@ -62,7 +62,6 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// @param message        string or unicode - message text.
       /// @param nolabel        [opt] label to put on the no button.
       /// @param yeslabel       [opt] label to put on the yes button.
-      /// @param customlabel    [opt] label to put on the custom button.
       /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
       /// @return Returns True if 'Yes' was pressed, else False.
       ///
@@ -73,7 +72,6 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// @python_v19 Renamed option **line1** to **message**.
       /// @python_v19 Removed option **line2**.
       /// @python_v19 Removed option **line3**.
-      /// @python_v19 Added new option **customlabel**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -88,7 +86,6 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       bool yesno(const String& heading, const String& message,
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
-                 const String& customlabel = emptyString,
                  int autoclose = 0);
 #endif
 
