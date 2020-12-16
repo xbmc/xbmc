@@ -93,7 +93,7 @@ python: | xbmc/assets
 	cd xbmc/assets/python@PYTHON_VERSION@/lib/python@PYTHON_VERSION@/; rm -rf test config lib-dynload
 
 res:
-	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
+	mkdir -p xbmc/res xbmc/res/raw images
 	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(CMAKE_SOURCE_DIR)/media/splash.* xbmc/res/drawable/
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
@@ -105,7 +105,7 @@ res:
 	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp -fp $(CMAKE_SOURCE_DIR)/media/icon80x80.png xbmc/res/drawable/ic_recommendation_80dp.png
-	cp xbmc/strings.xml xbmc/res/values/
+	DIR=$(CMAKE_SOURCE_DIR)/tools/android/packaging/language/; for LANGUAGE_FOLDER in $$(ls -a $$DIR | grep values); do mkdir -p xbmc/res/$$LANGUAGE_FOLDER; LANGUAGE_STRINGS=$$(cat $$DIR$$LANGUAGE_FOLDER/strings.xml); sed "s|##LANGUAGE_STRINGS##|$$LANGUAGE_STRINGS|" xbmc/strings.xml > xbmc/res/$$LANGUAGE_FOLDER/strings.xml; done
 	cp xbmc/colors.xml xbmc/res/values/
 	cp xbmc/searchable.xml xbmc/res/xml/
 
