@@ -52,7 +52,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, nolabel, yeslabel, autoclose]) }
+      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, [nolabel, yeslabel, autoclose]) }
       /// **Yes / no dialog**
       ///
       /// The Yes / No dialog can be used to inform the user about questions and
