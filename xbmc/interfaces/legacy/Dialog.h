@@ -92,6 +92,47 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().yesnocustom(heading, message, customlabel, [nolabel, yeslabel, autoclose]) }
+      /// **Yes / no / custom dialog**
+      ///
+      /// The YesNoCustom dialog can be used to inform the user about questions and
+      /// get the answer. The dialog provides a third button appart from yes and no.
+      /// Button labels are fully customizable.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param message        string or unicode - message text.
+      /// @param customlabel    string or unicode - label to put on the custom button.
+      /// @param nolabel        [opt] label to put on the no button.
+      /// @param yeslabel       [opt] label to put on the yes button.
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      /// @return Returns the integer value for the selected button (-1:cancelled, 0:no, 1:yes, 2:custom)
+      ///
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v19 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.yesnocustom('Kodi', 'Question?', 'Maybe')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      yesnocustom(...);
+#else
+      int yesnocustom(const String& heading,
+                      const String& message,
+                      const String& customlabel,
+                      const String& nolabel = emptyString,
+                      const String& yeslabel = emptyString,
+                      int autoclose = 0);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
       /// \python_func{ xbmcgui.Dialog().info(listitem) }
       /// **Info dialog**
       ///
@@ -578,6 +619,17 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
                    int type = INPUT_ALPHANUM,
                    int option = 0,
                    int autoclose = 0);
+#endif
+
+    private:
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+      // used by both yesno() and yesnocustom()
+      int yesNoCustomInternal(const String& heading,
+                              const String& message,
+                              const String& nolabel,
+                              const String& yeslabel,
+                              const String& customlabel,
+                              int autoclose);
 #endif
     };
     //@}

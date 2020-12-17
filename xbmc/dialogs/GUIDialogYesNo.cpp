@@ -179,7 +179,7 @@ int CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
 
   dialog->SetHeading(heading);
   dialog->SetText(text);
-  if (autoCloseTime)
+  if (autoCloseTime > 0)
     dialog->SetAutoClose(autoCloseTime);
   dialog->m_bCanceled = false;
   dialog->m_bCustom = false;
