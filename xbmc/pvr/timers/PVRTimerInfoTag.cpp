@@ -1032,6 +1032,12 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
   time_t time = 0;
   local.GetAsTime(time);
 
+  if (time < 0)
+  {
+    // time_t could be negative which localtime() will not handle
+    time = 0;
+  }
+
   struct tm* tms;
 
   // obtain dst flag for given datetime
