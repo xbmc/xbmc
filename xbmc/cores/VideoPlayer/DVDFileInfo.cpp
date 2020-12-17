@@ -250,7 +250,9 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
               aspect = hint.aspect;
             unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
 
-            uint8_t *pOutBuf = (uint8_t*)av_malloc(nWidth * nHeight * 4);
+            // We pass the buffers to sws_scale uses 16 aligned widths when using intrinsics
+            int sizeNeeded = FFALIGN(nWidth, 16) * nHeight * 4;
+            uint8_t *pOutBuf = static_cast<uint8_t*>(av_malloc(sizeNeeded));
             struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
                   AV_PIX_FMT_YUV420P, nWidth, nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
