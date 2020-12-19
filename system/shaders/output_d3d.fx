@@ -96,16 +96,13 @@ float3 inversePQ(float3 x)
 }
 #endif
 #if defined(KODI_HLG_TO_PQ)
-float inverseHLG(float x)
+float3 inverseHLG(float3 x)
 {
   const float B67_a = 0.17883277f;
   const float B67_b = 0.28466892f;
   const float B67_c = 0.55991073f;
   const float B67_inv_r2 = 4.0f;
-  if (x <= 0.5f)
-    x = x * x * B67_inv_r2;
-  else
-    x = exp((x - B67_c) / B67_a) + B67_b;
+  x = (x <= 0.5f) ? x * x * B67_inv_r2 : exp((x - B67_c) / B67_a) + B67_b;
   return x;
 }
 
@@ -139,9 +136,7 @@ float4 output4(float4 color, float2 uv)
   color.rgb = pow(color.rgb, 1.0f / 2.2f);
 #endif
 #if defined(KODI_HLG_TO_PQ)
-  color.r = inverseHLG(color.r);
-  color.g = inverseHLG(color.g);
-  color.b = inverseHLG(color.b);
+  color.rgb = inverseHLG(color.rgb);
   float3 ootf_2020 = float3(0.2627f, 0.6780f, 0.0593f);
   float ootf_ys = 2000.0f * dot(ootf_2020, color.rgb);
   color.rgb *= pow(ootf_ys, 0.2f);
