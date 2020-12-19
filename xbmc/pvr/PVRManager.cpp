@@ -393,6 +393,7 @@ void CPVRManager::Stop()
 
   m_addons->Stop();
   m_pendingUpdates->Stop();
+  m_timers->Stop();
   m_epgContainer.Stop();
   m_guiInfo->Stop();
 
@@ -508,6 +509,7 @@ void CPVRManager::Process()
 
   m_guiInfo->Start();
   m_epgContainer.Start(true);
+  m_timers->Start();
   m_pendingUpdates->Start();
 
   SetState(ManagerStateStarted);

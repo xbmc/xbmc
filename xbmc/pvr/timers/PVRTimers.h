@@ -69,6 +69,16 @@ namespace PVR
     ~CPVRTimers() override = default;
 
     /**
+     * @brief start the timer update thread.
+     */
+    void Start();
+
+    /**
+     * @brief stop the timer update thread.
+     */
+    void Stop();
+
+    /**
      * @brief (re)load the timers from the clients.
      * @return True if loaded successfully, false otherwise.
      */

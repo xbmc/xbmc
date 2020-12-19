@@ -101,22 +101,31 @@ bool CPVRTimers::Load()
   // load local timers from database
   bool bReturn = LoadFromDatabase();
 
-  Update(); // update from clients
-
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(this, &CPVRTimers::Notify);
-  Create();
+  // update from clients
+  Update();
 
   return bReturn;
 }
 
 void CPVRTimers::Unload()
 {
-  StopThread();
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
-
   // remove all tags
   CSingleLock lock(m_critSection);
   m_tags.clear();
+}
+
+void CPVRTimers::Start()
+{
+  Stop();
+
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(this, &CPVRTimers::Notify);
+  Create();
+}
+
+void CPVRTimers::Stop()
+{
+  StopThread();
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 }
 
 bool CPVRTimers::Update()
