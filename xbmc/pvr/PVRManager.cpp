@@ -311,7 +311,6 @@ void CPVRManager::Clear()
 {
   m_playbackState->Clear();
   m_pendingUpdates->Clear();
-  m_epgContainer.Clear();
 
   CSingleLock lock(m_critSection);
 
@@ -507,8 +506,11 @@ void CPVRManager::Process()
     return;
   }
 
+  // Load EPGs from database.
+  m_epgContainer.Load();
+
   m_guiInfo->Start();
-  m_epgContainer.Start(true);
+  m_epgContainer.Start();
   m_timers->Start();
   m_pendingUpdates->Start();
 
@@ -663,6 +665,7 @@ void CPVRManager::UnloadComponents()
   m_recordings->Unload();
   m_timers->Unload();
   m_channelGroups->Unload();
+  m_epgContainer.Unload();
 }
 
 void CPVRManager::TriggerPlayChannelOnStartup()
