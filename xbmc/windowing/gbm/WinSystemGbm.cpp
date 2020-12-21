@@ -77,14 +77,28 @@ bool CWinSystemGbm::InitWindowSystem()
     return false;
   }
 
-  CServiceBroker::GetSettingsComponent()
-      ->GetSettings()
-      ->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE)
-      ->SetVisible(true);
-  CServiceBroker::GetSettingsComponent()
-      ->GetSettings()
-      ->GetSetting("videoscreen.limitguisize")
-      ->SetVisible(true);
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return false;
+
+  auto setting = settings->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  if (setting)
+    setting->SetVisible(true);
+
+  setting = settings->GetSetting("videoscreen.limitguisize");
+  if (setting)
+    setting->SetVisible(true);
+
+  setting = settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
+  if (setting)
+  {
+    setting->SetVisible(false);
+    settings->SetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK, false);
+  }
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
