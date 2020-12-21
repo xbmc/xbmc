@@ -242,6 +242,8 @@ public:
   }
   bool ReloadSettings() override;
 
+  void ResetSettings() override;
+
   /*! \brief retrieve the running instance of an add-on if it persists while running.
    */
   AddonPtr GetRunningInstance() const override { return AddonPtr(); }
