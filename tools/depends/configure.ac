@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
+AC_INIT([xbmc-depends], [2.00], [https://github.com/xbmc/xbmc])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
@@ -243,9 +243,24 @@ AC_PATH_TOOL([NM], [nm],, $PATH_FOR_HOST)
 AC_PATH_TOOL([OBJDUMP], [objdump],, $PATH_FOR_HOST)
 AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
 AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
-AC_PROG_CPP
 
+case $build in
+  *darwin*)
+    # MacOS 11 requires explicit isysroot for autoconf compiler tests
+    # However we do not want to pollute CFLAGS/CXXFLAGS once compiler tests are complete
+    CFLAGS+=$host_includes
+    CXXFLAGS+=$host_includes
+esac
+
+AC_PROG_CPP
 AX_CXX_COMPILE_STDCXX_14([noext],[mandatory])
+
+case $build in
+  *darwin*)
+    CFLAGS=$(echo "$CFLAGS" | sed "s|$host_includes||")
+    CXXFLAGS=$(echo "$CXXFLAGS" | sed "s|$host_includes||")
+esac
+
 c14_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
 cxx14_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
 
@@ -422,12 +437,10 @@ case $host in
 
     platform_min_version="$target_platform-version-min=$target_minver"
 
-    platform_cflags+=" -arch $use_cpu -m$platform_min_version"
-    platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
-    platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -stdlib=libc++"
-    platform_includes="-isysroot $use_sdk_path"
+    platform_includes="-arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
+    platform_ldflags+=" $platform_includes -stdlib=libc++"
+    platform_cxxflags+=" -stdlib=libc++"
     deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
-    AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
   ;;
   *)
     AC_MSG_ERROR(unsupported host ($use_host))
@@ -451,8 +464,20 @@ esac
 
 XBMC_SETUP_ARCH_DEFINES()
 
+case $build in
+  *darwin*)
+    # MacOS 11 requires explicit isysroot for autoconf link tests
+    # However we do not want to pollute LDFLAGS once lib link tests are complete
+    LDFLAGS="$platform_includes"
+    AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
+esac
 
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
+
+case $build in
+  *darwin*)
+    LDFLAGS=$(echo "$LDFLAGS" | sed "s|$platform_includes||")
+esac
 
 if test "$link_iconv" = "none required"; then
   link_iconv=
@@ -659,16 +684,17 @@ cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
 
 echo -e "\n\n#------- configuration -------#"
 echo -e "ccache:\t\t $use_ccache"
-echo -e "build type:\t $build_type"
-echo -e "toolchain:\t $use_toolchain"
-echo -e "cpu:\t\t $use_cpu"
+echo -e "build type:\t\t $build_type"
+echo -e "toolchain:\t\t $use_toolchain"
+echo -e "cpu:\t\t\t $use_cpu"
 echo -e "host:\t\t $use_host"
 echo -e "cflags:\t\t $platform_cflags"
-echo -e "cxxflags:\t $platform_cxxflags"
-echo -e "ldflags:\t $platform_ldflags"
+echo -e "cxxflags:\t\t $platform_cxxflags"
+echo -e "ldflags:\t\t $platform_ldflags"
+echo -e "platform_includes:\t $platform_includes"
 echo -e "ffmpeg options:\t $ffmpeg_options"
 echo -e "prefix:\t\t $prefix"
-echo -e "depends:\t $prefix/$deps_dir"
+echo -e "depends:\t\t $prefix/$deps_dir"
 if test "$platform_os" == "android"; then
   echo -e "ndk-api-level:\t $use_ndk_api"
   echo -e "build-tools:\t $build_tools_path"
