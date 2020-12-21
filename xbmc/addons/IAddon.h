@@ -82,6 +82,7 @@ namespace ADDON
     virtual bool MeetsVersion(const AddonVersion& versionMin,
                               const AddonVersion& version) const = 0;
     virtual bool ReloadSettings() =0;
+    virtual void ResetSettings() = 0;
     virtual AddonPtr GetRunningInstance() const=0;
     virtual void OnPreInstall() =0;
     virtual void OnPostInstall(bool update, bool modal) =0;

@@ -224,6 +224,9 @@ void CAddonDll::Destroy()
     m_pDll = nullptr;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
+
+  ResetSettings();
+
   m_initialized = false;
 }
 
