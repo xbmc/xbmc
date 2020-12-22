@@ -260,6 +260,17 @@ bool CPVREpg::Update(time_t start,
   bool bGrabSuccess = true;
   bool bUpdate = false;
 
+  if (!m_lastScanTime.IsValid())
+  {
+    database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
+
+    if (!m_lastScanTime.IsValid())
+    {
+      m_lastScanTime.SetFromUTCDateTime(time_t(0));
+      m_bUpdateLastScanTime = true;
+    }
+  }
+
   /* clean up if needed */
   Cleanup(iPastDays);
 
@@ -340,6 +351,9 @@ bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& databas
 
   // delete own epg db entry
   database->QueueDeleteEpgQuery(*this);
+
+  // delete last scan time db entry for this epg
+  database->QueueDeleteLastEpgScanTimeQuery(*this);
 
   // delete all tags for this epg from db
   m_tags.QueueDelete();
@@ -518,7 +532,7 @@ bool CPVREpg::UpdatePending() const
 bool CPVREpg::NeedsSave() const
 {
   CSingleLock lock(m_critSection);
-  return m_bChanged || m_tags.NeedsSave();
+  return m_bChanged || m_bUpdateLastScanTime || m_tags.NeedsSave();
 }
 
 bool CPVREpg::IsValid() const
