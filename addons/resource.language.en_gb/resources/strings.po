@@ -1452,7 +1452,7 @@ msgstr ""
 #. Setting in international settings
 #: system/settings/settings.xml
 msgctxt "#310"
-msgid "Keyboard layouts"
+msgid "Virtual keyboard layouts"
 msgstr ""
 
 #. Keyboard layout name e.g. "English QWERTY"
@@ -1926,7 +1926,11 @@ msgctxt "#406"
 msgid "Humidity"
 msgstr ""
 
-#empty strings from id 407 to 408
+msgctxt "#407"
+msgid "Hardware keyboard layouts"
+msgstr ""
+
+#empty strings from id 408 to 408
 
 msgctxt "#409"
 msgid "Defaults"
@@ -20340,7 +20344,9 @@ msgctxt "#36431"
 msgid "Shows all events in the event log for the current profile with options to only show specific levels."
 msgstr ""
 
-#. Description for setting #310: "Keyboard layouts"
+#. Description for setting #310: "Virtual keyboard layouts"
+#. Setting in Interface -> Regional -> Virtual keyboard layouts
+#. Select the layout of a virtual keyboard
 #: system/settings/settings.xml
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
@@ -20359,10 +20365,13 @@ msgstr ""
 
 #empty string with id 36435
 
-#. Description for setting #310: "Keyboard layouts"
-#: system/settings/settings.xml
+#. Description for setting #407: "Hardware keyboard layouts"
+#. Setting in System -> Input -> Hardware keyboard layouts
+#. Select the layout of a physically attached keyboard
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
 msgctxt "#36436"
-msgid "Select OS keyboard layout."
+msgid "Select hardware keyboard layout."
 msgstr ""
 
 #. Option for setting "System -> Add-ons -> Update official add-ons from"
