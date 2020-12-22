@@ -65,19 +65,24 @@ namespace PVR
 
     /*!
      * @brief Start the EPG update thread.
-     * @param bAsync Should the EPG container starts asynchronously
      */
-    void Start(bool bAsync);
+    void Start();
 
     /*!
      * @brief Stop the EPG update thread.
      */
     void Stop();
 
-    /*!
-     * @brief Clear all EPG entries.
+    /**
+     * @brief (re)load EPG data.
+     * @return True if loaded successfully, false otherwise.
      */
-    void Clear();
+    bool Load();
+
+    /**
+     * @brief unload all EPG data.
+     */
+    void Unload();
 
     /*!
      * @brief Check whether the EpgContainer has fully started.

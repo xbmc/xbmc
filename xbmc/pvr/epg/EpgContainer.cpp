@@ -113,7 +113,7 @@ CPVREpgContainer::CPVREpgContainer() :
 CPVREpgContainer::~CPVREpgContainer()
 {
   Stop();
-  Clear();
+  Unload();
 }
 
 std::shared_ptr<CPVREpgDatabase> CPVREpgContainer::GetEpgDatabase() const
@@ -138,13 +138,43 @@ int CPVREpgContainer::NextEpgId()
   return ++m_iNextEpgId;
 }
 
-void CPVREpgContainer::Clear()
+void CPVREpgContainer::Start()
 {
-  /* make sure the update thread is stopped */
-  bool bThreadRunning = !m_bStop;
-  if (bThreadRunning)
-    Stop();
+  Stop();
 
+  {
+    CSingleLock lock(m_critSection);
+    m_bIsInitialising = true;
+
+    CheckPlayingEvents();
+
+    Create();
+    SetPriority(-1);
+
+    m_bStarted = true;
+  }
+}
+
+void CPVREpgContainer::Stop()
+{
+  StopThread();
+
+  {
+    CSingleLock lock(m_critSection);
+    m_bStarted = false;
+  }
+}
+
+bool CPVREpgContainer::Load()
+{
+  // EPGs must be loaded via PVR Manager -> channel groups -> EPG container to associate the
+  // channels with the right EPG.
+  CServiceBroker::GetPVRManager().TriggerEpgsCreate();
+  return true;
+}
+
+void CPVREpgContainer::Unload()
+{
   std::vector<std::shared_ptr<CPVREpg>> epgs;
   {
     CSingleLock lock(m_critSection);
@@ -155,89 +185,22 @@ void CPVREpgContainer::Clear()
 
     m_epgIdToEpgMap.clear();
     m_channelUidToEpgMap.clear();
+    m_epgTagChanges.clear();
+    m_updateRequests.clear();
+
     m_iNextEpgUpdate = 0;
-    m_bStarted = false;
-    m_bIsInitialising = true;
     m_iNextEpgId = 0;
+    m_iNextEpgActiveTagCheck = 0;
     m_bUpdateNotificationPending = false;
+    m_bLoaded = false;
+
+    m_database->Close();
   }
 
   for (const auto& epg : epgs)
     epg->Events().Unsubscribe(this);
 
   m_events.Publish(PVREvent::EpgContainer);
-
-  if (bThreadRunning)
-    Start(true);
-}
-
-class CPVREpgContainerStartJob : public CJob
-{
-public:
-  CPVREpgContainerStartJob() = default;
-  ~CPVREpgContainerStartJob() override = default;
-
-  bool DoWork() override
-  {
-    CServiceBroker::GetPVRManager().EpgContainer().Start(false);
-    return true;
-  }
-};
-
-void CPVREpgContainer::Start(bool bAsync)
-{
-  if (bAsync)
-  {
-    CPVREpgContainerStartJob* job = new CPVREpgContainerStartJob();
-    CJobManager::GetInstance().AddJob(job, NULL);
-    return;
-  }
-
-  Stop();
-
-  {
-    CSingleLock lock(m_critSection);
-
-    m_bIsInitialising = true;
-    m_bStop = false;
-
-    m_iNextEpgUpdate = 0;
-    m_iNextEpgActiveTagCheck = 0;
-    m_bUpdateNotificationPending = false;
-  }
-
-  LoadFromDB();
-
-  bool bStop = false;
-  {
-    CSingleLock lock(m_critSection);
-    bStop = m_bStop;
-    if (!m_bStop)
-    {
-      CheckPlayingEvents();
-
-      Create();
-      SetPriority(-1);
-
-      m_bStarted = true;
-    }
-  }
-
-  if (!bStop)
-  {
-    CServiceBroker::GetPVRManager().TriggerEpgsCreate();
-    CLog::Log(LOGINFO, "EPG thread started");
-  }
-}
-
-void CPVREpgContainer::Stop()
-{
-  StopThread();
-
-  m_database->Close();
-
-  CSingleLock lock(m_critSection);
-  m_bStarted = false;
 }
 
 void CPVREpgContainer::Notify(const PVREvent& event)
