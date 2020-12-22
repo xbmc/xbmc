@@ -237,6 +237,13 @@ namespace PVR
     bool QueuePersistLastEpgScanTimeQuery(int iEpgId, const CDateTime& lastScanTime);
 
     /*!
+     * @brief Write the query to delete the last scan time for the given EPG to db query queue.
+     * @param iEpgId The table to delete the time for.
+     * @return True on success, false otherwise.
+     */
+    bool QueueDeleteLastEpgScanTimeQuery(const CPVREpg& table);
+
+    /*!
      * @brief Persist an EPG table. It's entries are not persisted.
      * @param epg The table to persist.
      * @param bQueueWrite If true, don't execute the query immediately but queue it.

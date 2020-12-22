@@ -1008,6 +1008,26 @@ bool CPVREpgDatabase::QueuePersistLastEpgScanTimeQuery(int iEpgId, const CDateTi
   return QueueInsertQuery(strQuery);
 }
 
+bool CPVREpgDatabase::QueueDeleteLastEpgScanTimeQuery(const CPVREpg& table)
+{
+  if (table.EpgID() <= 0)
+  {
+    CLog::LogF(LOGERROR, "Invalid EPG id: {}", table.EpgID());
+    return false;
+  }
+
+  Filter filter;
+
+  CSingleLock lock(m_critSection);
+  filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
+
+  std::string strQuery;
+  if (BuildSQL(PrepareSQL("DELETE FROM %s ", "lastepgscan"), filter, strQuery))
+    return QueueDeleteQuery(strQuery);
+
+  return false;
+}
+
 int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
 {
   int iReturn = -1;
