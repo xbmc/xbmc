@@ -1139,7 +1139,7 @@
                 "weekdays", "priority", "startmargin", "endmargin", "state",
                 "file", "directory", "preventduplicateepisodes", "startanytime",
                 "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
-                "maxrecordings", "epguid", "isreadonly", "isreminder", "clientid" ]
+                "maxrecordings", "epguid", "isreadonly", "isreminder", "clientid", "broadcastid" ]
     }
   },
   "PVR.Details.Timer": {
@@ -1177,7 +1177,8 @@
       "epguid": { "type": "integer" },
       "isreadonly": { "type": "boolean" },
       "isreminder": { "type": "boolean" },
-      "clientid": { "$ref": "Library.Id" }
+      "clientid": { "$ref": "Library.Id" },
+      "broadcastid": { "$ref": "Library.Id" }
     }
   },
   "PVR.Fields.Recording": {
