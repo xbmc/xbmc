@@ -306,6 +306,7 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["recordinggroup"]    = m_iRecordingGroup;
   value["maxrecordings"]     = m_iMaxRecordings;
   value["epguid"]            = m_iEpgUid;
+  value["broadcastid"] = m_epgTag ? m_epgTag->DatabaseID() : -1;
   value["serieslink"]        = m_strSeriesLink;
 
   value["clientid"] = m_iClientId;
