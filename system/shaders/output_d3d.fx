@@ -169,6 +169,13 @@ float4 output(float3 color, float2 uv)
 
 #if defined(KODI_OUTPUT_T)
 #include "convolution_d3d.fx"
+
+#if (defined(KODI_TONE_MAPPING_ACES) || defined(KODI_TONE_MAPPING_HABLE) || defined(KODI_HLG_TO_PQ))
+#define PS_PROFILE ps_4_0_level_9_3
+#else
+#define PS_PROFILE ps_4_0_level_9_1
+#endif
+
 float3 m_params; // 0 - range (0 - full, 1 - limited), 1 - contrast, 2 - brightness
 
 float4 OUTPUT_PS(VS_OUTPUT In) : SV_TARGET
@@ -189,7 +196,7 @@ technique11 OUTPUT_T
   pass P0
   {
     SetVertexShader( VS_SHADER );
-    SetPixelShader( CompileShader( ps_4_0_level_9_3, OUTPUT_PS() ) );
+    SetPixelShader( CompileShader( PS_PROFILE, OUTPUT_PS() ) );
   }
 };
 #endif
