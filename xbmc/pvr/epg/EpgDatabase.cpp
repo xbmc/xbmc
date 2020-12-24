@@ -471,6 +471,12 @@ CDateTime ConvertLocalTimeToUTC(const CDateTime& local)
   tms = localtime(&time);
 #endif
 
+  if (!tms)
+  {
+    CLog::LogF(LOGWARNING, "localtime() returned NULL!");
+    return {};
+  }
+
   int isdst = tms->tm_isdst;
 
 #ifdef HAVE_GMTIME_R
@@ -479,6 +485,12 @@ CDateTime ConvertLocalTimeToUTC(const CDateTime& local)
 #else
   tms = gmtime(&time);
 #endif
+
+  if (!tms)
+  {
+    CLog::LogF(LOGWARNING, "gmtime() returned NULL!");
+    return {};
+  }
 
   tms->tm_isdst = isdst;
   return CDateTime(mktime(tms));
