@@ -140,6 +140,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Ваша оцена"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Додатне информације"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Странице"
@@ -184,10 +188,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Доступно"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Притисните [B]У Реду[/B] за заустављање"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "филтерисано"
@@ -195,10 +195,6 @@ msgstr "филтерисано"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Засновано на Arial-у"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Притисните [B]Лево[/B] за премотавање уназад, или [B]Десно[/B] за премотавање унапред"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -475,10 +471,6 @@ msgstr "Категорије"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Изаберите пакет уметности љубитеља жанра"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Спремиште"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

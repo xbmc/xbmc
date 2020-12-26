@@ -140,6 +140,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Αξιολόγηση"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Εκτεταμένες πληροφορίες"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Σελίδες"
@@ -184,10 +188,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Διαθέσιμος"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Πατήστε το [B]OK[/B] για να διακοπή"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "φιλτραρισμένο"
@@ -195,10 +195,6 @@ msgstr "φιλτραρισμένο"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Βασισμένη στην Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Πατήστε το [B]Αριστερό[/B] βέλος για επαναφορά, ή το [B]Δεξί[/B] για γρήγορη προώθηση"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -463,10 +459,6 @@ msgstr "Αναζήτηση προσθέτων"
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Κατηγορίες"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Αποθετήριο"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

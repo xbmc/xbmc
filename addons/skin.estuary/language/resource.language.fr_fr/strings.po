@@ -152,6 +152,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Ma notation"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Infos étendues"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Pages"
@@ -200,10 +204,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponible"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Appuyer sur [B]OK[/B] pour arrêter"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtré"
@@ -213,8 +213,12 @@ msgid "Arial based"
 msgstr "Basée sur Arial"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Appui sur [B]Gauche[/B] pour retour rapide, ou [B]Droite[/B] pour avance rapide"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Appuyer sur [B]Gauche[/B] pour revenir ou [B]Droite[/B] pour avancer"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Appuyer sur [B]Droite[/B] pour avancer"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -374,7 +378,7 @@ msgstr "Liste large"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Section « Fichiers »"
+msgstr "Section des fichiers"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -430,7 +434,7 @@ msgstr "Appuyer pour les infos d'acteur"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Appuyer sur « OK  pour lire l'intrigue"
+msgstr "Appuyer sur OK pour lire l'intrigue"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -463,6 +467,10 @@ msgstr "Sélectionner la résolution"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restant"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binaire"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -518,15 +526,15 @@ msgstr "Catégories"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Sélectionner le paquet de FanArts de genres…"
+msgstr "Choisir le paquet de FanArts de genres"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Dépôt "
+msgid "Origin"
+msgstr "Origine"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "Vidéos musicales sans correspondance"
+msgstr "Vidéos musicales non vues"
 
 msgctxt "#31152"
 msgid "Random music videos"
@@ -534,11 +542,11 @@ msgstr "Vidéos musicales aléatoires"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Aucune extension de ce type n'a encore été installée. Utiliser le navigateur d'extensions pour télécharger des extensions créées par la communauté.."
+msgstr "Aucune extension de ce type n'a encore été installée. Utiliser le navigateur d'extensions pour télécharger des extensions créées par la communauté."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "Presser OK pour changer de lieu"
+msgstr "Appuyer sur OK pour changer de lieu"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -591,3 +599,11 @@ msgstr "Avatar du profil"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animer l'arrière-plan"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Afficher les affiches au lieu des miniatures pour les vidéos musicales"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Paramètres relatifs aux illustrations."

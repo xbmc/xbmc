@@ -152,6 +152,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Értékelés"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Bővített információ"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Oldalak"
@@ -200,10 +204,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Elérhető"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Nyomjon [B]OK[/B]-ot a leállításhoz"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "szűrt"
@@ -211,10 +211,6 @@ msgstr "szűrt"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial betűkészlet"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Nyomja meg a [B]Bal[/B] gombot a vissza-, vagy a [B]Jobb[/B] gombot az előretekeréshez"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -519,10 +515,6 @@ msgstr "Kategóriák"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Műfaj illusztrációs csomag kiválasztása"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Tároló"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

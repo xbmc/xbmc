@@ -118,7 +118,7 @@ msgstr "Vali meediaüksuste kuvamiseks hinne"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Lemmikuid ei ole. Kontekstimenüüd kasutades saate lisada meediakuvas üksusi sellesse nimekirja."
+msgstr "Lemmikuid ei ole. Kontekstimenüüd kasutades saad sellesse nimekirja lisada üksusi meediakuvadest."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -146,7 +146,7 @@ msgstr "Versiooni info"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "Järjekord"
+msgstr "Järjestus"
 
 msgctxt "#31033"
 msgid "Your rating"
@@ -200,10 +200,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Saadaval"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Peatamiseks vajuta [B]OK[/B]"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtreeritud"
@@ -211,10 +207,6 @@ msgstr "filtreeritud"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-il põhinev"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Tagasi kerimiseks vajuta [B]vasakule[/B] või edasi kerimiseks  [B]paremale[/B]"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -406,11 +398,11 @@ msgstr "Mine lisamoodulite brauserisse"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Te ei ole paigaldanud ühtegi lisamoodulit. Külastage meie lisamoodulite brauserit ja sirvige lisamooduleid ning täiustage Kodit."
+msgstr "Ühtegi lisamoodulit pole paigaldatud. Külasta meie lisamoodulite brauserit, sirvi lisamooduleid ning paranda Kodi kasutuskogemust."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Te ei ole määranud ilmateate pakkujat. Ilmateate kuvamiseks valige ilmateate pakkuja ja määrake oma asukoht."
+msgstr "Ilmateate pakkuja pole määratud. Ilmateate kuvamiseks vali ilmateate pakkuja ja määra oma asukoht."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -494,7 +486,7 @@ msgstr "Esitamise kiirus"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "PVR on seadistamata. PVR-i kasutamiseks valige ja seadistage PVR-i klientprogramm. Rohkem infot: http://kodi.wiki/view/PVR "
+msgstr "PVR on seadistamata. PVR-i kasutamiseks vali ja seadista PVR-i klientprogramm. Rohkem infot: http://kodi.wiki/view/PVR "
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -516,9 +508,9 @@ msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategooriad"
 
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Hoidla"
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Vali žanri fännipiltide pakk"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -530,7 +522,7 @@ msgstr "Juhuslik muusikavideo"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Teil ei ole seda sorti lisamooduleid paigaldatud. Meie kasutajate poolt loodud lisamoodulite alla laadimiseks, minge lisamoodulite brauserisse."
+msgstr "Seda tüüpi lisamooduleid pole paigaldatud. Meie kasutajate poolt loodud lisamoodulite alla laadimiseks, mine lisamoodulite brauserisse."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -567,6 +559,10 @@ msgstr "Numbriklahvistik"
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
 msgstr "Mängi oma mänge või lae ametlikust hoidlast alla mängude lisamoodulid."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Näita fännide loodud pilte"
 
 msgctxt "#31164"
 msgid "Choose kind of profile identification"

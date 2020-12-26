@@ -120,6 +120,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Сопствена оцена"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Детално инфо"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Страни"
@@ -160,10 +164,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Достапно"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Притисни [B]OK[/B] за стоп"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "филтрирани"
@@ -171,10 +171,6 @@ msgstr "филтрирани"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Базирано на Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Притисни [B]Left[/B] за премотување назад или [B]Right[/B] за премотување нанапред"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -311,10 +307,6 @@ msgstr "Брзина"
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Категории"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Складиште"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

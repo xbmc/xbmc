@@ -152,6 +152,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Ditt betyg"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Utökad info"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Sidor"
@@ -200,10 +204,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Tillgänglig"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Tryck på [B]OK[/B] för att stoppa"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrerad"
@@ -211,10 +211,6 @@ msgstr "filtrerad"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arialbaserad"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Tryck [B]Vänster[/B] för att spola bakåt eller [B]Höger[/B] för att spola framåt"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -511,10 +507,6 @@ msgstr "Kategorier"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Välj genre-fanart paket"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Förråd"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

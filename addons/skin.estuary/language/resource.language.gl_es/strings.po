@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "A túa valoración"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Información extendida"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Páxinas"
@@ -192,10 +196,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Dispoñible"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Premer [B]Aceptar[/B] para deter"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrado"
@@ -203,10 +203,6 @@ msgstr "filtrado"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Baseado en Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Premer [B]Esquerda[/B] para rebobinar, ou [B]Dereita[/B] para avanzar rápido"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -491,10 +487,6 @@ msgstr "Categorías"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Seleccionar o paquete fanart de xéneros"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Repositorio"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
