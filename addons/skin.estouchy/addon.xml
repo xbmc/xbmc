@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="3.0.3" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="3.0.4" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.15.0"/>
 	</requires>
@@ -69,6 +69,7 @@
 		<description lang="en_US">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
 		<description lang="es_ES">Esta skin está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
 		<description lang="es_MX">Máscara diseñada para ser usada en dispositivos de pantalla táctil como tabletas y teléfonos inteligentes</description>
+		<description lang="et_EE">Rüü on mõeldud kasutamiseks puutetundlike seadmetega nagu tahvelarvutid ja nutitelefonid.</description>
 		<description lang="eu_ES">Ukipen-pantaila duten gailuetan erabiltzeko diseinatutako azala</description>
 		<description lang="fi_FI">Ulkoasu on suunniteltu käytettäväksi kosketusnäyttölaitteissa, esimerkiksi tableteissa ja älypuhelimissa</description>
 		<description lang="fr_CA">Habillage conçu pour être utilisé sur les appareils à écran tactile comme les tablettes et les téléphones intelligents</description>

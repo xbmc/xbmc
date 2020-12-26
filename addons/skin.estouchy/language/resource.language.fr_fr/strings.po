@@ -226,7 +226,7 @@ msgstr "Configuration & gestion des services de partage de média · Configurati
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Configuration de l'affichage · Configuration de l'audio · Configuration de l'accès internet · Configuration de la gestion de l'énergie · Configuration de la journalisation"
+msgstr "Configuration de l'affichage · Configuration de l'audio · Configuration de l'accès Internet · Configuration de la gestion de l'énergie · Configuration de la journalisation"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"

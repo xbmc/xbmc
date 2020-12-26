@@ -100,6 +100,18 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Opgedateer:"
 
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Kies + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Kies + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Kies + Begin"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "GEPOUSEER"
