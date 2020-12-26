@@ -2,9 +2,6 @@
 # Addon Name: Estuary
 # Addon id: skin.estuary
 # Addon Provider: phil65, Ichabod Fletchman
-# Addon Name: Estuary
-# Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -260,7 +257,7 @@ msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty strings with id 31049 to 31051
+#empty strings from id 31049 to 31051
 
 #: /xml/Includes.xml
 msgctxt "#31052"
