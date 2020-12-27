@@ -28,19 +28,19 @@ struct Primaries
   float whitepoint[2];
 };
 
-const ConvYCbCr BT709YCbCr = {0.2126, 0.0722};
-const ConvYCbCr BT601YCbCr = {0.299, 0.114};
-const ConvYCbCr BT2020YCbCr = {0.2627, 0.0593};
-const ConvYCbCr ST240YCbCr = {0.212, 0.087};
+constexpr ConvYCbCr BT709YCbCr = {0.2126, 0.0722};
+constexpr ConvYCbCr BT601YCbCr = {0.299, 0.114};
+constexpr ConvYCbCr BT2020YCbCr = {0.2627, 0.0593};
+constexpr ConvYCbCr ST240YCbCr = {0.212, 0.087};
 
-const Primaries PrimariesBT709 = {{{0.640, 0.330}, {0.300, 0.600}, {0.150, 0.060}},
-  {0.3127, 0.3290} };
-const Primaries PrimariesBT610_525 = {{{0.640, 0.340}, {0.310, 0.595}, {0.155, 0.070}},
-  {0.3127, 0.3290} };
-const Primaries PrimariesBT610_625 = {{{0.640, 0.330}, {0.290, 0.600}, {0.150, 0.060}},
-  {0.3127, 0.3290} };
-const Primaries PrimariesBT2020 = {{{0.708, 0.292}, {0.170, 0.797}, {0.131, 0.046}},
-  {0.3127, 0.3290} };
+constexpr Primaries PrimariesBT709 = {{{0.640, 0.330}, {0.300, 0.600}, {0.150, 0.060}},
+                                      {0.3127, 0.3290}};
+constexpr Primaries PrimariesBT610_525 = {{{0.640, 0.340}, {0.310, 0.595}, {0.155, 0.070}},
+                                          {0.3127, 0.3290}};
+constexpr Primaries PrimariesBT610_625 = {{{0.640, 0.330}, {0.290, 0.600}, {0.150, 0.060}},
+                                          {0.3127, 0.3290}};
+constexpr Primaries PrimariesBT2020 = {{{0.708, 0.292}, {0.170, 0.797}, {0.131, 0.046}},
+                                       {0.3127, 0.3290}};
 
 //------------------------------------------------------------------------------
 // Matrix helpers
