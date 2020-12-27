@@ -32,6 +32,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -737,6 +738,9 @@ void CGUIDialogAddonInfo::BuildDependencyList()
   m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(),
                                                           OnlyEnabledRootAddon::NO);
 
+  const bool showAllDependencies =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showAllDependencies;
+
   for (const auto& dep : m_deps)
   {
     std::shared_ptr<IAddon> addonInstalled;
@@ -756,10 +760,12 @@ void CGUIDialogAddonInfo::BuildDependencyList()
       addonAvailable = nullptr;
     }
 
+    // Depending on advancedsettings.xml <showalldependencies>:
     // AddonType ADDON_SCRIPT_MODULE needs to be filtered as these low-level add-ons
     // should be hidden to the user in the dependency select dialog
 
-    if ((addonInstalled && addonInstalled->MainType() != ADDON_SCRIPT_MODULE) ||
+    if (showAllDependencies ||
+        (addonInstalled && addonInstalled->MainType() != ADDON_SCRIPT_MODULE) ||
         (addonAvailable && addonAvailable->MainType() != ADDON_SCRIPT_MODULE) ||
         (!addonAvailable && !addonInstalled))
     {
