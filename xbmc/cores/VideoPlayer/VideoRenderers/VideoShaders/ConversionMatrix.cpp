@@ -342,36 +342,54 @@ PrimaryToRGB::PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2]) : P
 
 CConvertMatrix& CConvertMatrix::SetSourceColorSpace(AVColorSpace colorSpace)
 {
+  if (m_colSpace != colorSpace)
+    m_mat.reset();
+
   m_colSpace = colorSpace;
   return *this;
 }
 
 CConvertMatrix& CConvertMatrix::SetSourceBitDepth(int bits)
 {
+  if (m_srcBits != bits)
+    m_mat.reset();
+
   m_srcBits = bits;
   return *this;
 }
 
 CConvertMatrix& CConvertMatrix::SetSourceLimitedRange(bool limited)
 {
+  if (m_limitedSrc != limited)
+    m_mat.reset();
+
   m_limitedSrc = limited;
   return *this;
 }
 
 CConvertMatrix& CConvertMatrix::SetSourceTextureBitDepth(int textureBits)
 {
+  if (m_srcTextureBits != textureBits)
+    m_mat.reset();
+
   m_srcTextureBits = textureBits;
   return *this;
 }
 
 CConvertMatrix& CConvertMatrix::SetSourceColorPrimaries(AVColorPrimaries src)
 {
+  if (m_colPrimariesSrc != src)
+    m_matPrim.reset();
+
   m_colPrimariesSrc = src;
   return *this;
 }
 
 CConvertMatrix& CConvertMatrix::SetDestinationColorPrimaries(AVColorPrimaries dst)
 {
+  if (m_colPrimariesDst != dst)
+    m_matPrim.reset();
+
   m_colPrimariesDst = dst;
   return *this;
 }
