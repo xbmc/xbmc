@@ -231,12 +231,6 @@ void CXBMCApp::onStart()
     registerReceiver(*this, intentFilter);
     m_mediaSession.reset(new CJNIXBMCMediaSession());
   }
-  if (g_application.IsInitialized())
-  {
-    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
-    if (syscall)
-      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnResume();
-  }
 }
 
 void CXBMCApp::onResume()
@@ -305,13 +299,6 @@ void CXBMCApp::onStop()
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
     else if (m_playback_state & PLAYBACK_STATE_VIDEO)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
-  }
-
-  if (!g_application.IsStopping())
-  {
-    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
-    if (syscall)
-      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnPause();
   }
 }
 
@@ -1031,7 +1018,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
-  else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
+  else if (action == "android.intent.action.DREAMING_STOPPED")
   {
     if (HasFocus())
       g_application.WakeUpScreenSaverAndDPMS();
@@ -1081,10 +1068,36 @@ void CXBMCApp::onReceive(CJNIIntent intent)
         dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
   }
+  else if (action == "android.intent.action.SCREEN_ON")
+  {
+    // Sent when the device wakes up and becomes interactive.
+    //
+    // For historical reasons, the name of this broadcast action refers to the power state of the
+    // screen but it is actually sent in response to changes in the overall interactive state of
+    // the device.
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+    {
+      CLog::Log(LOGINFO, "Got device wakeup intent");
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetResumed();
+    }
+
+    if (HasFocus())
+      g_application.WakeUpScreenSaverAndDPMS();
+  }
   else if (action == "android.intent.action.SCREEN_OFF")
   {
-    if (m_playback_state & PLAYBACK_STATE_VIDEO)
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+    // Sent when the device goes to sleep and becomes non-interactive.
+    //
+    // For historical reasons, the name of this broadcast action refers to the power state of the
+    // screen but it is actually sent in response to changes in the overall interactive state of
+    // the device.
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+    {
+      CLog::Log(LOGINFO, "Got device sleep intent");
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetSuspended();
+    }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
