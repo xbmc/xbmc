@@ -36,7 +36,7 @@ if(ENABLE_INTERNAL_DAV1D)
   if(DAV1D_URL)
     get_filename_component(DAV1D_URL "${DAV1D_URL}" ABSOLUTE)
   else()
-    set(DAV1D_URL http://mirrors.kodi.tv/build-deps/sources/dav1d-${DAV1D_VER}.tar.gz)
+    set(DAV1D_URL https://mirrors.kodi.tv/build-deps/sources/dav1d-${DAV1D_VER}.tar.gz)
   endif()
 
   if(VERBOSE)

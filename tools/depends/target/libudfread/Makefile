@@ -7,7 +7,7 @@ ifeq ($(CROSS_COMPILING), yes)
 else
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
   TARBALLS_LOCATION ?= $(ROOT_DIR)
-  BASE_URL ?= http://mirrors.kodi.tv/build-deps/sources
+  BASE_URL ?= https://mirrors.kodi.tv/build-deps/sources
   RETRIEVE_TOOL := curl -Ls --retry 10 --retry-delay 3 -o $(ARCHIVE)
   ARCHIVE_TOOL := tar --strip-components=1 -xf
 endif

@@ -1,7 +1,7 @@
 @echo off
 
 REM If KODI_MIRROR is not set externally to this script, set it to the default mirror URL
-IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
+IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=https://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
 
 

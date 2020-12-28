@@ -18,7 +18,7 @@ else
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
-    BASE_URL := http://mirrors.kodi.tv/build-deps/sources
+    BASE_URL := https://mirrors.kodi.tv/build-deps/sources
     RETRIEVE_TOOL := curl -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar --strip-components=1 -xf
   endif

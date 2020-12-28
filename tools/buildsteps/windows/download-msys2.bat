@@ -35,7 +35,7 @@ set usemirror=yes
 set opt=mintty
 
 :: if KODI_MIRROR is not set externally to this script, set it to the default mirror URL
-if "%KODI_MIRROR%"=="" set KODI_MIRROR=http://mirrors.kodi.tv
+if "%KODI_MIRROR%"=="" set KODI_MIRROR=https://mirrors.kodi.tv
 if "%usemirror%"=="yes" (
     echo -------------------------------------------------------------------------------
     echo. Downloading will be performed from mirror %KODI_MIRROR%

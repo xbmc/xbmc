@@ -26,7 +26,7 @@ if(ENABLE_INTERNAL_GTEST)
   if(GTEST_URL)
     get_filename_component(GTEST_URL "${GTEST_URL}" ABSOLUTE)
   else()
-    set(GTEST_URL http://mirrors.kodi.tv/build-deps/sources/googletest-${GTEST_VERSION}.tar.gz)
+    set(GTEST_URL https://mirrors.kodi.tv/build-deps/sources/googletest-${GTEST_VERSION}.tar.gz)
   endif()
 
   if(VERBOSE)

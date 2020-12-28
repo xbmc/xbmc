@@ -37,7 +37,7 @@ if(ENABLE_INTERNAL_UDFREAD)
   if(UDFREAD_URL)
     get_filename_component(UDFREAD_URL "${UDFREAD_URL}" ABSOLUTE)
   else()
-    set(UDFREAD_URL http://mirrors.kodi.tv/build-deps/sources/libudfread-${UDFREAD_VER}.tar.gz)
+    set(UDFREAD_URL https://mirrors.kodi.tv/build-deps/sources/libudfread-${UDFREAD_VER}.tar.gz)
   endif()
 
   if(VERBOSE)

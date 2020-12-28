@@ -4,7 +4,7 @@ core_find_versions()
 
 # in case we need to download something, set KODI_MIRROR to the default if not already set
 if(NOT DEFINED KODI_MIRROR)
-  set(KODI_MIRROR "http://mirrors.kodi.tv")
+  set(KODI_MIRROR "https://mirrors.kodi.tv")
 endif()
 
 ### copy all the addon binding header files to include/kodi
