@@ -1,5 +1,6 @@
 xbmc/addons/test                  test/addons
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
+xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/filesystem/test              test/filesystem
 xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
