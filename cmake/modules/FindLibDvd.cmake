@@ -19,7 +19,7 @@ function(addstep_autoreconf module_name)
   ExternalProject_Add_Step(${module_name} autoreconf
                                   DEPENDEES download update patch
                                   DEPENDERS configure
-                                  COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                  COMMAND ${CMAKE_COMMAND} -E env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                   WORKING_DIRECTORY <SOURCE_DIR>)
 endfunction()
 
