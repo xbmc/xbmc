@@ -4,6 +4,6 @@ if [ -n "$PULSE_START" ]; then
 else
   PULSE_SESSION="$(command -v pulse-session)"
   if [ -n "$PULSE_SESSION" ]; then
-    XBMC="$PULSE_SESSION $XBMC"
+    APP="$PULSE_SESSION $APP"
   fi
 fi
