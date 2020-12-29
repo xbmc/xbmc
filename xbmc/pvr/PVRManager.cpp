@@ -359,7 +359,7 @@ void CPVRManager::Start()
   // StopThread() which can deadlock if the worker thread tries to acquire pvr manager's
   // lock while StopThread() is waiting for the worker to exit. Thus, we introduce another
   // lock here (m_startStopMutex), which only gets hold while starting/restarting pvr manager.
-  Stop();
+  Stop(true);
 
   if (!m_addons->HasCreatedClients())
     return;
@@ -372,7 +372,7 @@ void CPVRManager::Start()
   SetPriority(-1);
 }
 
-void CPVRManager::Stop()
+void CPVRManager::Stop(bool bRestart /* = false */)
 {
   CSingleLock initLock(m_startStopMutex);
 
@@ -381,7 +381,7 @@ void CPVRManager::Stop()
     return;
 
   /* stop playback if needed */
-  if (m_playbackState->IsPlaying())
+  if (!bRestart && m_playbackState->IsPlaying())
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "Stopping PVR playback");
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
