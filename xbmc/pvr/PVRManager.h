@@ -171,7 +171,7 @@ namespace PVR
     /*!
      * @brief Stop PVRManager.
      */
-    void Stop();
+    void Stop(bool bRestart = false);
 
     /*!
      * @brief Stop PVRManager, unload data.
