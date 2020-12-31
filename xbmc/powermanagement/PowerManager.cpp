@@ -185,9 +185,10 @@ void CPowerManager::OnSleep()
 
   CLog::Log(LOGINFO, "%s: Running sleep jobs", __FUNCTION__);
 
-  CServiceBroker::GetPVRManager().OnSleep();
   StorePlayerState();
+
   g_application.StopPlaying();
+  CServiceBroker::GetPVRManager().OnSleep();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
   g_application.CloseNetworkShares();
