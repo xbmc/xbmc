@@ -509,6 +509,9 @@ void CPVRManager::Process()
   // Load EPGs from database.
   m_epgContainer.Load();
 
+  // Reinit playbackstate
+  m_playbackState->ReInit();
+
   m_guiInfo->Start();
   m_epgContainer.Start();
   m_timers->Start();
