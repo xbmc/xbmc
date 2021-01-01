@@ -37,9 +37,14 @@ public:
   virtual ~CPVRPlaybackState();
 
   /*!
-   * @brief clear all data.
+   * @brief clear instances, keep stored UIDs.
    */
   void Clear();
+
+  /*!
+   * @brief re-init using stored UIDs.
+   */
+  void ReInit();
 
   /*!
    * @brief Inform that playback of an item just started.
@@ -228,6 +233,9 @@ private:
   std::string m_strPlayingClientName;
   int m_playingClientId = -1;
   int m_playingChannelUniqueId = -1;
+  std::string m_strPlayingRecordingUniqueId;
+  int m_playingEpgTagChannelUniqueId = -1;
+  unsigned int m_playingEpgTagUniqueId = 0;
 
   class CLastWatchedUpdateTimer;
   std::unique_ptr<CLastWatchedUpdateTimer> m_lastWatchedUpdateTimer;
