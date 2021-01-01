@@ -1330,9 +1330,10 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
         bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsNew();
         return true;
       }
-      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      else if (item->IsPVRChannel())
       {
-        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsNew();
+        const std::shared_ptr<CPVREpgInfoTag> epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
+        bValue = epgNow ? epgNow->IsNew() : false;
         return true;
       }
       break;
@@ -1352,9 +1353,10 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
         bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsPremiere();
         return true;
       }
-      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      else if (item->IsPVRChannel())
       {
-        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsPremiere();
+        const std::shared_ptr<CPVREpgInfoTag> epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
+        bValue = epgNow ? epgNow->IsPremiere() : false;
         return true;
       }
       break;
@@ -1374,9 +1376,10 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
         bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsFinale();
         return true;
       }
-      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      else if (item->IsPVRChannel())
       {
-        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsFinale();
+        const std::shared_ptr<CPVREpgInfoTag> epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
+        bValue = epgNow ? epgNow->IsFinale() : false;
         return true;
       }
       break;
@@ -1396,9 +1399,10 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
         bValue = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->IsLive();
         return true;
       }
-      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+      else if (item->IsPVRChannel())
       {
-        bValue = item->GetPVRChannelInfoTag()->GetEPGNow()->IsLive();
+        const std::shared_ptr<CPVREpgInfoTag> epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
+        bValue = epgNow ? epgNow->IsLive() : false;
         return true;
       }
       break;
