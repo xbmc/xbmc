@@ -38,7 +38,7 @@ PROJECT_NAME           = "Kodi Documentation"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 19.0
+PROJECT_NUMBER         = 20.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -260,6 +260,7 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "python_v17=\xrefitem python_v17 \"v17 Python API changes\" \"\"" \
                          "python_v18=\xrefitem python_v18 \"v18 Python API changes\" \"\"" \
                          "python_v19=\xrefitem python_v19 \"v19 Python API changes\" \"\"" \
+                         "python_v20=\xrefitem python_v20 \"v20 Python API changes\" \"\"" \
                          "skinning_v12=\xrefitem skinning_v12 \"v12 Skinning engine changes\" \"\"" \
                          "skinning_v13=\xrefitem skinning_v13 \"v13 Skinning engine changes\" \"\"" \
                          "skinning_v14=\xrefitem skinning_v14 \"v14 Skinning engine changes\" \"\"" \
@@ -268,6 +269,7 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "skinning_v17=\xrefitem skinning_v17 \"v17 Skinning engine changes\" \"\"" \
                          "skinning_v18=\xrefitem skinning_v18 \"v18 Skinning engine changes\" \"\"" \
                          "skinning_v19=\xrefitem skinning_v19 \"v19 Skinning engine changes\" \"\""
+                         "skinning_v20=\xrefitem skinning_v20 \"v20 Skinning engine changes\" \"\""
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
