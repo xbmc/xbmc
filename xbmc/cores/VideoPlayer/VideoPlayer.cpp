@@ -3245,6 +3245,8 @@ void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible)
 
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream)->EnableSubtitleStream(bVisible);
+
+  CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
 }
 
 std::shared_ptr<TextCacheStruct_t> CVideoPlayer::GetTeletextCache()
@@ -5036,12 +5038,14 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
 {
   CSingleLock lock(m_content.m_section);
 
-  if (index == CURRENT_STREAM)
+  if (index == CURRENT_STREAM && GetSubtitleVisible())
     index = m_content.m_subtitleIndex;
 
   if (index < 0 || index > GetSubtitleCount() - 1)
   {
     info.valid = false;
+    info.language.clear();
+    info.flags = StreamFlags::FLAG_NONE;
     return;
   }
 
