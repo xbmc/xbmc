@@ -72,6 +72,11 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
   UpdateEncryptionName();
 }
 
+CPVRChannel::~CPVRChannel()
+{
+  ResetEPG();
+}
+
 void CPVRChannel::Serialize(CVariant& value) const
 {
   value["channelid"] = m_iChannelId;
@@ -104,8 +109,6 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["clientid"] = m_iClientId;
 }
 
-/********** XBMC related channel methods **********/
-
 bool CPVRChannel::QueueDelete()
 {
   bool bReturn = false;
@@ -117,9 +120,7 @@ bool CPVRChannel::QueueDelete()
   if (epg)
   {
     CServiceBroker::GetPVRManager().EpgContainer().QueueDeleteEpg(epg);
-
-    CSingleLock lock(m_critSection);
-    m_epg.reset();
+    ResetEPG();
   }
 
   bReturn = database->QueueDeleteQuery(*this);
@@ -152,10 +153,37 @@ bool CPVRChannel::CreateEPG()
         m_iEpgId = m_epg->EpgID();
         m_bChanged = true;
       }
+
+      // Subscribe for EPG delete event
+      m_epg->Events().Subscribe(this, &CPVRChannel::Notify);
       return true;
     }
   }
   return false;
+}
+
+void CPVRChannel::Notify(const PVREvent& event)
+{
+  if (event == PVREvent::EpgDeleted)
+  {
+    ResetEPG();
+  }
+}
+
+void CPVRChannel::ResetEPG()
+{
+  std::shared_ptr<CPVREpg> epgToUnsubscribe;
+  {
+    CSingleLock lock(m_critSection);
+    if (m_epg)
+    {
+      epgToUnsubscribe = m_epg;
+      m_epg.reset();
+    }
+  }
+
+  if (epgToUnsubscribe)
+    epgToUnsubscribe->Events().Unsubscribe(this);
 }
 
 bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
