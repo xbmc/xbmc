@@ -138,6 +138,12 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
  */
 bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */, bool startFromBeginning /* = false */)
 {
+  if (!pDir)
+  {
+    CLog::Log(LOGDEBUG, "CAutorun::{}: cannot run disc. is it properly mounted?", __FUNCTION__);
+    return false;
+  }
+
   bool bPlaying(false);
   CFileItemList vecItems;
 
