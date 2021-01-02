@@ -41,7 +41,12 @@ bool CPVRChannel::operator!=(const CPVRChannel& right) const
   return !(*this == right);
 }
 
-CPVRChannel::CPVRChannel(bool bRadio /* = false */)
+CPVRChannel::CPVRChannel()
+{
+  UpdateEncryptionName();
+}
+
+CPVRChannel::CPVRChannel(bool bRadio)
   : m_bIsRadio(bRadio)
 {
   UpdateEncryptionName();

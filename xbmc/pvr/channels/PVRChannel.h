@@ -32,7 +32,7 @@ namespace PVR
     friend class CPVRDatabase;
 
   public:
-    explicit CPVRChannel(bool bRadio = false);
+    explicit CPVRChannel(bool bRadio);
     CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId);
 
     virtual ~CPVRChannel() = default;
@@ -446,6 +446,7 @@ namespace PVR
 
     //@}
   private:
+    CPVRChannel();
     CPVRChannel(const CPVRChannel& tag) = delete;
     CPVRChannel& operator=(const CPVRChannel& channel) = delete;
 
