@@ -47,25 +47,6 @@ namespace XBMCAddon
     /// @{
     /// @brief **Selectable window list item.**
     ///
-    /// The list item control is used for creating item lists in Kodi
-    ///
-    /// \python_class{ ListItem([label, label2, path]) }
-    ///
-    /// @param label                [opt] string
-    /// @param label2               [opt] string
-    /// @param path                 [opt] string
-    ///
-    ///
-    ///-----------------------------------------------------------------------
-    /// @python_v16 **iconImage** and **thumbnailImage** are deprecated. Use **setArt()**.
-    /// @python_v19 Removed **iconImage** and **thumbnailImage**. Use **setArt()**.
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ...
-    /// listitem = xbmcgui.ListItem('Casino Royale')
-    /// ...
-    /// ~~~~~~~~~~~~~
     class ListItem : public AddonClass
     {
     public:
@@ -74,10 +55,52 @@ namespace XBMCAddon
       bool m_offscreen;
 #endif
 
-      ListItem(const String& label = emptyString,
-               const String& label2 = emptyString,
-               const String& path = emptyString,
-               bool offscreen = false);
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui_listitem
+    /// @brief Selectable window list item.
+    ///
+    /// The list item control is used for creating item lists in Kodi
+    ///
+    /// \python_class{ ListItem([label, label2, path, offscreen]) }
+    ///
+    /// @param label                [opt] string (default `""`) - the label to display on the item
+    /// @param label2               [opt] string (default `""`) - the label2 of the item
+    /// @param path                 [opt] string (default `""`) - the path for the item
+    /// @param offscreen            [opt] bool (default `False`) - if GUI based locks should be
+    ///                                          avoided. Most of the times listitems are created
+    ///                                          offscreen and added later to a container
+    ///                                          for display (e.g. plugins) or they are not
+    ///                                          even displayed (e.g. python scrapers).
+    ///                                          In such cases, there is no need to lock the
+    ///                                          GUI when creating the items (increasing your addon
+    ///                                          performance).
+    ///                                          Note however, that if you are creating listitems
+    ///                                          and managing the container itself (e.g using
+    ///                                          WindowXML or WindowXMLDialog classes) subsquent
+    ///                                          modifications to the item will require locking.
+    ///                                          Thus, in such cases, use the default value (`False`).
+    ///
+    ///
+    ///-----------------------------------------------------------------------
+    /// @python_v16 **iconImage** and **thumbnailImage** are deprecated. Use **setArt()**.
+    /// @python_v18 Added **offscreen** argument.
+    /// @python_v19 Removed **iconImage** and **thumbnailImage**. Use **setArt()**.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// listitem = xbmcgui.ListItem('Casino Royale')
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
+    ListItem([label, label2, path, offscreen]);
+#else
+    ListItem(const String& label = emptyString,
+             const String& label2 = emptyString,
+             const String& path = emptyString,
+             bool offscreen = false);
+#endif
 
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       inline explicit ListItem(CFileItemPtr pitem) : item(std::move(pitem)), m_offscreen(false) {}
@@ -90,7 +113,9 @@ namespace XBMCAddon
       }
 #endif
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       ~ListItem() override;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
