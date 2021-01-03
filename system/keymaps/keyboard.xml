@@ -365,6 +365,7 @@
       <i>Info</i>
       <o>PlayerProcessInfo</o>
       <o mod="ctrl,shift">PlayerDebug</o>
+      <o mod="alt">PlayerDebugVideo</o>
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>

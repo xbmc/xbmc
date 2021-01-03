@@ -72,6 +72,7 @@ public:
   bool Flush(bool wait, bool saveBuffers);
   bool IsConfigured() const;
   void ToggleDebug();
+  void ToggleDebugVideo();
 
   unsigned int AllocRenderCapture();
   void ReleaseRenderCapture(unsigned int captureId);
@@ -141,6 +142,7 @@ protected:
   bool m_bRenderGUI = true;
   bool m_renderedOverlay = false;
   bool m_renderDebug = false;
+  bool m_renderDebugVideo = false;
   XbmcThreads::EndTime m_debugTimer;
   std::atomic_bool m_showVideo = {false};
 
