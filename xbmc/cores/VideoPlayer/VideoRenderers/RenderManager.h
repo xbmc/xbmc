@@ -25,6 +25,11 @@
 
 #include "PlatformDefs.h"
 
+extern "C"
+{
+#include <libavutil/mastering_display_metadata.h>
+}
+
 class CRenderCapture;
 struct VideoPicture;
 
@@ -232,4 +237,9 @@ protected:
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool m_hasCaptures = false;
+
+  bool m_hasDisplayMetadata = false;
+  bool m_hasLightMetadata = false;
+  AVMasteringDisplayMetadata m_displayMetadata = {};
+  AVContentLightMetadata m_lightMetadata = {};
 };

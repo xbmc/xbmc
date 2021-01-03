@@ -12,6 +12,13 @@
 
 #include <string>
 
+#define MAX_LINES 6
+
+struct SInfo
+{
+  std::string line[MAX_LINES];
+};
+
 class CDVDOverlayText;
 
 class CDebugRenderer
@@ -19,7 +26,7 @@ class CDebugRenderer
 public:
   CDebugRenderer();
   virtual ~CDebugRenderer();
-  void SetInfo(std::string &info1, std::string &info2, std::string &info3, std::string &info4);
+  void SetInfo(SInfo& info);
   void Render(CRect &src, CRect &dst, CRect &view);
   void Flush();
 
@@ -32,7 +39,7 @@ protected:
     void Render(int idx) override;
   };
 
-  std::string m_strDebug[4];
-  CDVDOverlayText *m_overlay[4];
+  std::string m_strDebug[MAX_LINES];
+  CDVDOverlayText* m_overlay[MAX_LINES];
   CRenderer m_overlayRenderer;
 };

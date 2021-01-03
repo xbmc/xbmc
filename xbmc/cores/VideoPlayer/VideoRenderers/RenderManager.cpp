@@ -720,22 +720,60 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
     if (m_renderDebug)
     {
-      std::string audio, video, player, vsync;
+      SInfo info = {};
 
-      m_playerPort->GetDebugInfo(audio, video, player);
+      m_playerPort->GetDebugInfo(info.line[0], info.line[1], info.line[2]);
 
       double refreshrate, clockspeed;
       int missedvblanks;
-      vsync = StringUtils::Format("VSyncOff: %.1f latency: %.3f  ", m_clockSync.m_syncOffset / 1000, DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f);
+      info.line[3] =
+          StringUtils::Format("VSyncOff: %.1f latency: %.3f  ", m_clockSync.m_syncOffset / 1000,
+                              DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f);
       if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
       {
-        vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%.3f%%",
-                                     refreshrate,
-                                     missedvblanks,
-                                     clockspeed * 100);
+        info.line[3] += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%.3f%%",
+                                            refreshrate, missedvblanks, clockspeed * 100);
       }
 
-      m_debugRenderer.SetInfo(audio, video, player, vsync);
+      if (m_hasDisplayMetadata && m_displayMetadata.has_primaries &&
+          m_displayMetadata.display_primaries[0][0].num)
+      {
+        double prim[3][2];
+        double wp[2];
+
+        for (int i = 0; i < 3; i++)
+        {
+          for (int j = 0; j < 2; j++)
+            prim[i][j] = static_cast<double>(m_displayMetadata.display_primaries[i][j].num) /
+                         static_cast<double>(m_displayMetadata.display_primaries[i][j].den);
+        }
+
+        for (int j = 0; j < 2; j++)
+          wp[j] = static_cast<double>(m_displayMetadata.white_point[j].num) /
+                  static_cast<double>(m_displayMetadata.white_point[j].den);
+
+        info.line[4] = StringUtils::Format(
+            "Primaries: R({:.3f} {:.3f}), G({:.3f} {:.3f}), B({:.3f} {:.3f}), WP({:.3f} {:.3f})",
+            prim[0][0], prim[0][1], prim[1][0], prim[1][1], prim[2][0], prim[2][1], wp[0], wp[1]);
+      }
+
+      if (m_hasDisplayMetadata && m_displayMetadata.has_luminance &&
+          m_displayMetadata.max_luminance.num)
+      {
+        double maxML = static_cast<double>(m_displayMetadata.max_luminance.num) /
+                       static_cast<double>(m_displayMetadata.max_luminance.den);
+        double minML = static_cast<double>(m_displayMetadata.min_luminance.num) /
+                       static_cast<double>(m_displayMetadata.min_luminance.den);
+
+        info.line[5] =
+            StringUtils::Format("HDR metadata: max ML: {:.0f}, min ML: {:.4f}", maxML, minML);
+
+        if (m_hasLightMetadata && m_lightMetadata.MaxCLL)
+          info.line[5].append(StringUtils::Format(", max CLL: {}, max FALL: {}",
+                                                  m_lightMetadata.MaxCLL, m_lightMetadata.MaxFALL));
+      }
+
+      m_debugRenderer.SetInfo(info);
       m_debugRenderer.Render(src, dst, view);
 
       m_debugTimer.Set(1000);
@@ -913,6 +951,15 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     m_pRenderer->AddVideoPicture(picture, index);
   }
 
+  // store video metadata values for render debug
+  if (m_renderDebug)
+  {
+    CSingleLock lock(m_datalock);
+    m_hasDisplayMetadata = picture.hasDisplayMetadata;
+    m_hasLightMetadata = picture.hasLightMetadata;
+    m_displayMetadata = picture.displayMetadata;
+    m_lightMetadata = picture.lightMetadata;
+  }
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC displayField = FS_NONE;
