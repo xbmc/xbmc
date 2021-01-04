@@ -175,6 +175,16 @@ bool CPVREpgContainer::Load()
 
 void CPVREpgContainer::Unload()
 {
+  {
+    CSingleLock lock(m_updateRequestsLock);
+    m_updateRequests.clear();
+  }
+
+  {
+    CSingleLock lock(m_epgTagChangesLock);
+    m_epgTagChanges.clear();
+  }
+
   std::vector<std::shared_ptr<CPVREpg>> epgs;
   {
     CSingleLock lock(m_critSection);
@@ -185,8 +195,6 @@ void CPVREpgContainer::Unload()
 
     m_epgIdToEpgMap.clear();
     m_channelUidToEpgMap.clear();
-    m_epgTagChanges.clear();
-    m_updateRequests.clear();
 
     m_iNextEpgUpdate = 0;
     m_iNextEpgId = 0;
@@ -311,6 +319,7 @@ void CPVREpgContainer::Process()
 {
   time_t iNow = 0;
   time_t iLastSave = 0;
+  time_t iLastEpgCleanup = 0;
   bool bUpdateEpg = true;
   bool bHasPendingUpdates = false;
 
@@ -322,6 +331,7 @@ void CPVREpgContainer::Process()
     {
       CSingleLock lock(m_critSection);
       bUpdateEpg = (iNow >= m_iNextEpgUpdate) && !m_bSuspended;
+      iLastEpgCleanup = m_iLastEpgCleanup;
     }
 
     /* update the EPG */
@@ -330,9 +340,9 @@ void CPVREpgContainer::Process()
 
     /* clean up old entries */
     if (!m_bStop && !m_bSuspended &&
-        iNow >= m_iLastEpgCleanup + CServiceBroker::GetSettingsComponent()
-                                        ->GetAdvancedSettings()
-                                        ->m_iEpgCleanupInterval)
+        iNow >= iLastEpgCleanup + CServiceBroker::GetSettingsComponent()
+                                      ->GetAdvancedSettings()
+                                      ->m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
@@ -492,7 +502,11 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagByDatabaseId(int iDataba
   if (iDatabaseId <= 0)
     return retval;
 
-  for (const auto& epgEntry : m_epgIdToEpgMap)
+  m_critSection.lock();
+  const auto epgs = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  for (const auto& epgEntry : epgs)
   {
     retval = epgEntry.second->GetTagByDatabaseId(iDatabaseId);
     if (retval)
@@ -511,6 +525,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
 
+  CSingleLock lock(m_critSection);
   for (const auto& tag : results)
   {
     const auto& it = m_epgIdToEpgMap.find(tag->EpgID());
@@ -523,6 +538,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
 
 void CPVREpgContainer::InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg)
 {
+  CSingleLock lock(m_critSection);
+
   // table might already have been created when pvr channels were loaded
   std::shared_ptr<CPVREpg> epg = GetById(newEpg->EpgID());
   if (!epg)
@@ -579,8 +596,11 @@ bool CPVREpgContainer::RemoveOldEntries()
 {
   const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(GetPastDaysToDisplay(), 0, 0, 0));
 
-  /* call Cleanup() on all known EPG tables */
-  for (const auto& epgEntry : m_epgIdToEpgMap)
+  m_critSection.lock();
+  const auto epgs = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  for (const auto& epgEntry : epgs)
     epgEntry.second->Cleanup(cleanupTime);
 
   CSingleLock lock(m_critSection);
@@ -683,7 +703,12 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   /* load or update all EPG tables */
   unsigned int iCounter = 0;
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
-  for (const auto& epgEntry : m_epgIdToEpgMap)
+
+  m_critSection.lock();
+  const auto epgsToUpdate = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  for (const auto& epgEntry : epgsToUpdate)
   {
     if (InterruptUpdate())
     {
@@ -697,7 +722,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
     if (bShowProgress && !bOnlyPending)
       progressHandler->UpdateProgress(epg->GetChannelData()->ChannelName(), ++iCounter,
-                                      m_epgIdToEpgMap.size());
+                                      epgsToUpdate.size());
 
     if ((!bOnlyPending || epg->UpdatePending()) &&
         epg->Update(start,
@@ -735,6 +760,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     /* the update has been interrupted. try again later */
     time_t iNow;
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+
+    CSingleLock lock(m_critSection);
     m_iNextEpgUpdate = iNow + advancedSettings->m_iEpgRetryInterruptedUpdateInterval;
   }
   else
@@ -746,7 +773,6 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       m_pendingUpdates = 0;
   }
 
-  /* notify observers */
   if (iUpdatedTables > 0)
     m_events.Publish(PVREvent::EpgContainer);
 
@@ -798,17 +824,16 @@ bool CPVREpgContainer::CheckPlayingEvents()
   bool bReturn = false;
   bool bFoundChanges = false;
 
-  time_t iNextEpgActiveTagCheck;
-  {
-    CSingleLock lock(m_critSection);
-    iNextEpgActiveTagCheck = m_iNextEpgActiveTagCheck;
-  }
+  m_critSection.lock();
+  const auto epgs = m_epgIdToEpgMap;
+  time_t iNextEpgActiveTagCheck = m_iNextEpgActiveTagCheck;
+  m_critSection.unlock();
 
   time_t iNow;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
   if (iNow >= iNextEpgActiveTagCheck)
   {
-    for (const auto& epgEntry : m_epgIdToEpgMap)
+    for (const auto& epgEntry : epgs)
       bFoundChanges = epgEntry.second->CheckPlayingEvent() || bFoundChanges;
 
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);

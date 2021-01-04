@@ -283,7 +283,8 @@ namespace PVR
     std::shared_ptr<CPVREpgDatabase> m_database; /*!< the EPG database */
 
     bool m_bIsUpdating = false; /*!< true while an update is running */
-    bool m_bIsInitialising = true; /*!< true while the epg manager hasn't loaded all tables */
+    std::atomic<bool> m_bIsInitialising = {
+        true}; /*!< true while the epg manager hasn't loaded all tables */
     bool m_bStarted = false; /*!< true if EpgContainer has fully started */
     bool m_bLoaded = false; /*!< true after epg data is initially loaded from the database */
     bool m_bPreventUpdates = false; /*!< true to prevent EPG updates */
