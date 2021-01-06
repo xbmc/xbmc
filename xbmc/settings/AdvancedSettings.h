@@ -288,6 +288,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_curlDisableIPV6;
     bool m_curlDisableHTTP2;
 
+    std::string m_caTrustFile;
+
     bool m_fullScreen;
     bool m_startFullScreen;
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */

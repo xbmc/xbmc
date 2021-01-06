@@ -37,6 +37,7 @@
 #include "music/MusicLibraryQueue.h"
 #include "network/EventServer.h"
 #include "network/Network.h"
+#include "platform/Environment.h"
 #include "playlists/PlayListFactory.h"
 #include "threads/SystemClock.h"
 #include "utils/JobManager.h"
@@ -543,6 +544,23 @@ bool CApplication::Create(const CAppParamParser &params)
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to load keyboard layouts");
     return false;
+  }
+
+  // set user defined CA trust bundle
+  std::string caCert =
+      CSpecialProtocol::TranslatePath(m_pSettingsComponent->GetAdvancedSettings()->m_caTrustFile);
+  if (!caCert.empty())
+  {
+    if (XFILE::CFile::Exists(caCert))
+    {
+      CEnvironment::setenv("SSL_CERT_FILE", caCert.c_str(), 1);
+      CLog::Log(LOGDEBUG, "CApplication::Create - SSL_CERT_FILE: {}", caCert);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CApplication::Create - Error reading SSL_CERT_FILE: {} -> ignored",
+                caCert);
+    }
   }
 
   CUtil::InitRandomSeed();

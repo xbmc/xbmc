@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -645,6 +646,13 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   else
     // enable HTTP2 support. default: CURL_HTTP_VERSION_1_1. Curl >= 7.62.0 defaults to CURL_HTTP_VERSION_2TLS
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+
+  // set CA bundle file
+  std::string caCert = CSpecialProtocol::TranslatePath(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caTrustFile);
+  if (!caCert.empty() && XFILE::CFile::Exists(caCert))
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
+
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)

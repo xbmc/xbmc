@@ -819,6 +819,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement, "disableipv6", m_curlDisableIPV6);
     XMLUtils::GetBoolean(pElement, "disablehttp2", m_curlDisableHTTP2);
+    XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);
   }
 
   pElement = pRootElement->FirstChildElement("cache");
