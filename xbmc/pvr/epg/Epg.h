@@ -14,6 +14,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
@@ -292,15 +293,6 @@ namespace PVR
     bool UpdateFromScraper(time_t start, time_t end, bool bForceUpdate);
 
     /*!
-     * @brief Load all EPG entries from clients into a temporary table and update this table with the contents of that temporary table.
-     * @param start Only get entries after this start time. Use 0 to get all entries before "end".
-     * @param end Only get entries before this end time. Use 0 to get all entries after "begin". If both "begin" and "end" are 0, all entries will be updated.
-     * @param bForceUpdate Force update from client even if it's not the time to
-     * @return True if the update was successful, false otherwise.
-     */
-    bool LoadFromClients(time_t start, time_t end, bool bForceUpdate);
-
-    /*!
      * @brief Update the contents of this table with the contents provided in "epg"
      * @param epg The updated contents.
      * @return True if the update was successful, false otherwise.
@@ -314,7 +306,7 @@ namespace PVR
     void Cleanup(int iPastDays);
 
     bool m_bChanged = false; /*!< true if anything changed that needs to be persisted, false otherwise */
-    bool m_bUpdatePending = false; /*!< true if manual update is pending */
+    std::atomic<bool> m_bUpdatePending = {false}; /*!< true if manual update is pending */
     int m_iEpgID = 0; /*!< the database ID of this table */
     std::string m_strName; /*!< the name of this table */
     std::string m_strScraperName; /*!< the name of the scraper to use */
