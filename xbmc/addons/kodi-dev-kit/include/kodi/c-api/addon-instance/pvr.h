@@ -65,7 +65,8 @@ extern "C"
   {
     const char* strUserPath;
     const char* strClientPath;
-    int iEpgMaxDays;
+    int iEpgMaxFutureDays;
+    int iEpgMaxPastDays;
   } AddonProperties_PVR;
 
   /*!
@@ -208,7 +209,8 @@ extern "C"
                                                        const struct EPG_TAG*,
                                                        struct PVR_NAMED_VALUE*,
                                                        unsigned int*);
-    enum PVR_ERROR(__cdecl* SetEPGTimeFrame)(const struct AddonInstance_PVR*, int);
+    enum PVR_ERROR(__cdecl* SetEPGMaxPastDays)(const struct AddonInstance_PVR*, int);
+    enum PVR_ERROR(__cdecl* SetEPGMaxFutureDays)(const struct AddonInstance_PVR*, int);
     enum PVR_ERROR(__cdecl* CallEPGMenuHook)(const struct AddonInstance_PVR*,
                                              const struct PVR_MENUHOOK*,
                                              const struct EPG_TAG*);
