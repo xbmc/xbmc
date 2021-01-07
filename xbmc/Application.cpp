@@ -3884,6 +3884,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // show info dialog about moved configuration files if needed
         ShowAppMigrationMessage();
 
+        // offer enabling addons at kodi startup that are disabled due to
+        // e.g. os package manager installation on linux
+        ConfigureAndEnableAddons();
+
         m_bInitializing = false;
 
         if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
@@ -4158,6 +4162,53 @@ void CApplication::ShowAppMigrationMessage()
     // create the file which will prevent this dialog from appearing in the future
     tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");
     tmpFile.Close();
+  }
+}
+
+void CApplication::ConfigureAndEnableAddons()
+{
+  std::vector<std::shared_ptr<IAddon>>
+      disabledAddons; /*!< Installed addons, but not auto-enabled via manifest */
+
+  auto& addonMgr = CServiceBroker::GetAddonMgr();
+
+  if (addonMgr.GetDisabledAddons(disabledAddons) && !disabledAddons.empty())
+  {
+    // only look at disabled addons with disabledReason == NONE
+    // usually those are installed from package managers or manually.
+    // also omit addons of type dependency
+
+    for (const auto& addon : disabledAddons)
+    {
+      if (addonMgr.IsAddonDisabledExcept(addon->ID(), ADDON::AddonDisabledReason::NONE) ||
+          CAddonType::IsDependencyType(addon->MainType()))
+      {
+        continue;
+      }
+
+      if (HELPERS::ShowYesNoDialogLines(CVariant{24039}, // Disabled add-ons
+                                        CVariant{24059}, // Would you like to enable this add-on?
+                                        CVariant{addon->Name()}) == DialogResponse::YES)
+      {
+        if (addon->HasSettings())
+        {
+          if (CGUIDialogAddonSettings::ShowForAddon(addon))
+          {
+            // only enable if settings dialog hasn't been cancelled
+            addonMgr.EnableAddon(addon->ID());
+          }
+        }
+        else
+        {
+          addonMgr.EnableAddon(addon->ID());
+        }
+      }
+      else
+      {
+        // user chose not to configure/enable so we're not asking anymore
+        addonMgr.UpdateDisabledReason(addon->ID(), ADDON::AddonDisabledReason::USER);
+      }
+    }
   }
 }
 

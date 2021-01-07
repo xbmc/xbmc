@@ -207,6 +207,7 @@ public:
   void ActivateScreenSaver(bool forceType = false);
   void CloseNetworkShares();
 
+  void ConfigureAndEnableAddons();
   void ShowAppMigrationMessage();
   void Process() override;
   void ProcessSlow();
