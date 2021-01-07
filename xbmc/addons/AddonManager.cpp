@@ -795,6 +795,22 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
   return true;
 }
 
+bool CAddonMgr::UpdateDisabledReason(const std::string& id, AddonDisabledReason newDisabledReason)
+{
+  CSingleLock lock(m_critSection);
+  if (!IsAddonDisabled(id))
+    return false;
+  if (!m_database.DisableAddon(id, newDisabledReason))
+    return false;
+
+  m_disabled[id] = newDisabledReason;
+
+  // success
+  CLog::Log(LOGDEBUG, "CAddonMgr: DisabledReason for {} updated to {}", id,
+            static_cast<int>(newDisabledReason));
+  return true;
+}
+
 bool CAddonMgr::EnableSingle(const std::string& id)
 {
   CSingleLock lock(m_critSection);
@@ -810,6 +826,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   {
     CLog::Log(LOGERROR, "Add-on '%s' is not compatible with Kodi", addon->ID().c_str());
     CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(addon->Name(), 24152, EventLevel::Error)));
+    UpdateDisabledReason(addon->ID(), AddonDisabledReason::INCOMPATIBLE);
     return false;
   }
 
