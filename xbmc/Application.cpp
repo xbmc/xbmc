@@ -4175,11 +4175,23 @@ void CApplication::ConfigureAndEnableAddons()
   if (addonMgr.GetDisabledAddons(disabledAddons) && !disabledAddons.empty())
   {
     // only look at disabled addons with disabledReason == NONE
-    // usually those are installed from package managers or manually.
-    // also omit addons of type dependency
+    // usually those are installed from package managers or manually. omit add-ons of type dependecy
+    // also try to enable add-ons with disabledReason == INCOMPATIBLE at startup
 
     for (const auto& addon : disabledAddons)
     {
+      if (addonMgr.IsAddonDisabledWithReason(addon->ID(), ADDON::AddonDisabledReason::INCOMPATIBLE))
+      {
+        auto addonInfo = addonMgr.GetAddonInfo(addon->ID());
+        if (addonInfo && addonMgr.IsCompatible(addonInfo))
+        {
+          CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",
+                    __FUNCTION__, addon->ID());
+          addonMgr.EnableAddon(addon->ID());
+        }
+        continue;
+      }
+
       if (addonMgr.IsAddonDisabledExcept(addon->ID(), ADDON::AddonDisabledReason::NONE) ||
           CAddonType::IsDependencyType(addon->MainType()))
       {
