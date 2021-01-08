@@ -61,8 +61,6 @@ typedef struct
   uint64_t writePosition;
 } HttpFileDownloadContext;
 
-Logger CWebServer::s_logger;
-
 CWebServer::CWebServer()
   : m_authenticationUsername("kodi"),
     m_authenticationPassword(""),
@@ -82,9 +80,6 @@ CWebServer::CWebServer()
   m_thread_stacksize *= 2;
   m_logger->debug("increasing thread stack to {}", m_thread_stacksize);
 #endif
-
-  if (s_logger == nullptr)
-    s_logger = CServiceBroker::GetLogging().GetLogger("CWebServer");
 }
 
 static MHD_Response* create_response(size_t size, const void* data, int free, int copy)
@@ -163,14 +158,14 @@ MHD_RESULT CWebServer::AnswerToConnection(void* cls,
 {
   if (cls == nullptr || con_cls == nullptr || *con_cls == nullptr)
   {
-    s_logger->error("invalid request received");
+    GetLogger()->error("invalid request received");
     return MHD_NO;
   }
 
   CWebServer* webServer = reinterpret_cast<CWebServer*>(cls);
   if (webServer == nullptr)
   {
-    s_logger->error("invalid request received");
+    GetLogger()->error("invalid request received");
     return MHD_NO;
   }
 
@@ -323,7 +318,7 @@ MHD_RESULT CWebServer::HandlePostField(void* cls,
   if (conHandler == nullptr || conHandler->requestHandler == nullptr || key == nullptr ||
       data == nullptr || size == 0)
   {
-    s_logger->error("unable to handle HTTP POST field");
+    GetLogger()->error("unable to handle HTTP POST field");
     return MHD_NO;
   }
 
@@ -1026,7 +1021,7 @@ void* CWebServer::UriRequestLogger(void* cls, const char* uri)
 
   // log the full URI
   if (webServer == nullptr)
-    s_logger->debug("request received for {}", uri);
+    GetLogger()->debug("request received for {}", uri);
   else
     webServer->LogRequest(uri);
 
@@ -1049,7 +1044,8 @@ ssize_t CWebServer::ContentReaderCallback(void* cls, uint64_t pos, char* buf, si
     return -1;
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWEBSERVER))
-    s_logger->debug("[OUT] write maximum {} bytes from {} ({})", max, context->writePosition, pos);
+    GetLogger()->debug("[OUT] write maximum {} bytes from {} ({})", max, context->writePosition,
+                       pos);
 
   // check if we need to add the end-boundary
   if (context->rangeCountTotal > 1 && context->ranges.IsEmpty())
@@ -1121,8 +1117,8 @@ ssize_t CWebServer::ContentReaderCallback(void* cls, uint64_t pos, char* buf, si
   written += res;
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWEBSERVER))
-    s_logger->debug("[OUT] wrote {} bytes from {} in range ({} - {})", written,
-                    context->writePosition, start, end);
+    GetLogger()->debug("[OUT] wrote {} bytes from {} in range ({} - {})", written,
+                       context->writePosition, start, end);
 
   // update the current write position
   context->writePosition += res;
@@ -1144,14 +1140,12 @@ void CWebServer::ContentReaderFreeCallback(void* cls)
   delete context;
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWEBSERVER))
-    s_logger->debug("[OUT] done");
+    GetLogger()->debug("[OUT] done");
 }
 
-// static logger for libmicrohttpd
 static Logger GetMhdLogger()
 {
-  static Logger s_logger_mhd = CServiceBroker::GetLogging().GetLogger("libmicrohttpd");
-  return s_logger_mhd;
+  return CServiceBroker::GetLogging().GetLogger("libmicrohttpd");
 }
 
 // local helper
@@ -1437,4 +1431,10 @@ MHD_RESULT CWebServer::AddHeader(struct MHD_Response* response,
   }
 #endif
   return MHD_add_response_header(response, name.c_str(), value.c_str());
+}
+
+Logger CWebServer::GetLogger()
+{
+  static Logger s_logger = CServiceBroker::GetLogging().GetLogger("CWebServer");
+  return s_logger;
 }

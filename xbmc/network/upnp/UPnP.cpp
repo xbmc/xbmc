@@ -29,7 +29,6 @@
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StaticLoggerBase.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
@@ -160,13 +159,12 @@ public:
 /*----------------------------------------------------------------------
 |   CMediaBrowser class
 +---------------------------------------------------------------------*/
-class CMediaBrowser : public PLT_SyncMediaBrowser,
-                      public PLT_MediaContainerChangesListener,
-                      protected CStaticLoggerBase
+class CMediaBrowser : public PLT_SyncMediaBrowser, public PLT_MediaContainerChangesListener
 {
 public:
   explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
-    : PLT_SyncMediaBrowser(ctrlPoint, true), CStaticLoggerBase("UPNP::CMediaBrowser")
+    : PLT_SyncMediaBrowser(ctrlPoint, true),
+      m_logger(CServiceBroker::GetLogging().GetLogger("UPNP::CMediaBrowser"))
   {
     SetContainerListener(this);
     }
@@ -203,7 +201,7 @@ public:
             path += id.c_str();
         }
 
-        s_logger->debug("notified container update {}", (const char*)path);
+        m_logger->debug("notified container update {}", (const char*)path);
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
@@ -217,7 +215,7 @@ public:
             return SaveFileState(temp, CBookmark(), watched);
         }
         else {
-          s_logger->debug("Marking video item {} as watched", item.GetPath());
+          m_logger->debug("Marking video item {} as watched", item.GetPath());
           return InvokeUpdateObject(item.GetPath().c_str(), "<upnp:playCount>1</upnp:playCount>",
                                     "<upnp:playCount>0</upnp:playCount>");
         }
@@ -234,7 +232,7 @@ public:
         NPT_String new_value;
 
         if (item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds) {
-          s_logger->debug("Updating resume point for item {}", path);
+          m_logger->debug("Updating resume point for item {}", path);
           long time = (long)bookmark.timeInSeconds;
           if (time < 0)
             time = 0;
@@ -252,7 +250,7 @@ public:
           new_value += "</xbmc:lastPlayerState>";
         }
         if (updatePlayCount) {
-          s_logger->debug("Marking video item {} as watched", path);
+          m_logger->debug("Marking video item {} as watched", path);
           if (!curr_value.IsEmpty())
             curr_value.Append(",");
           if (!new_value.IsEmpty())
@@ -271,7 +269,7 @@ public:
         PLT_Service* cds;
         PLT_ActionReference action;
 
-        s_logger->debug("attempting to invoke UpdateObject for {}", id);
+        m_logger->debug("attempting to invoke UpdateObject for {}", id);
 
         // check this server supports UpdateObject action
         NPT_CHECK_LABEL(FindServer(url.GetHostName().c_str(), device),failed);
@@ -289,13 +287,16 @@ public:
 
         NPT_CHECK_LABEL(m_CtrlPoint->InvokeAction(action, NULL),failed);
 
-        s_logger->debug("invoked UpdateObject successfully");
+        m_logger->debug("invoked UpdateObject successfully");
         return true;
 
     failed:
-      s_logger->info("invoking UpdateObject failed");
+      m_logger->info("invoking UpdateObject failed");
       return false;
     }
+
+  private:
+    Logger m_logger;
 };
 
 
