@@ -43,6 +43,8 @@ public:
   std::string URLEncode(const CURL &url);
 
   DWORD ConvertUnixToNT(int error);
+  static CURL GetResolvedUrl(const CURL& url);
+
 private:
   SMBCCTX *m_context;
   int m_OpenConnections;

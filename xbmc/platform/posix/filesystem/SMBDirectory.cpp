@@ -217,7 +217,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   int fd = -1;
 
   /* make a writeable copy */
-  CURL urlIn(url);
+  CURL urlIn = CSMB::GetResolvedUrl(url);
 
   CPasswordManager::GetInstance().AuthenticateURL(urlIn);
   strAuth = smb.URLEncode(urlIn);
@@ -273,7 +273,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
+  CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
@@ -290,7 +290,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
+  CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
@@ -310,7 +310,7 @@ bool CSMBDirectory::Exists(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
+  CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
