@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "XBPython.h"
 #include "interfaces/legacy/AddonUtils.h"
+#include "utils/log.h"
 
 namespace XBMCAddon
 {
@@ -120,6 +121,11 @@ namespace XBMCAddon
       // Get a reference to the main module
       // and global dictionary
       PyObject* main_module = PyImport_AddModule("__main__");
+      if (!main_module)
+      {
+        CLog::Log(LOGDEBUG, "PythonLanguageHook::{}: __main__ returns null", __FUNCTION__);
+        return "";
+      }
       PyObject* global_dict = PyModule_GetDict(main_module);
       // Extract a reference to the function "func_name"
       // from the global dictionary
@@ -135,6 +141,11 @@ namespace XBMCAddon
       // Get a reference to the main module
       // and global dictionary
       PyObject* main_module = PyImport_AddModule("__main__");
+      if (!main_module)
+      {
+        CLog::Log(LOGDEBUG, "PythonLanguageHook::{}: __main__ returns null", __FUNCTION__);
+        return "";
+      }
       PyObject* global_dict = PyModule_GetDict(main_module);
       // Extract a reference to the function "func_name"
       // from the global dictionary
@@ -151,6 +162,11 @@ namespace XBMCAddon
       // Get a reference to the main module
       // and global dictionary
       PyObject* main_module = PyImport_AddModule("__main__");
+      if (!main_module)
+      {
+        CLog::Log(LOGDEBUG, "PythonLanguageHook::{}: __main__ returns null", __FUNCTION__);
+        return -1;
+      }
       PyObject* global_dict = PyModule_GetDict(main_module);
       // Extract a reference to the function "func_name"
       // from the global dictionary
