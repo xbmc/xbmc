@@ -14,8 +14,12 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-CSettingUpdate::CSettingUpdate() : CStaticLoggerBase("CSettingUpdate")
+Logger CSettingUpdate::s_logger;
+
+CSettingUpdate::CSettingUpdate()
 {
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingUpdate");
 }
 
 bool CSettingUpdate::Deserialize(const TiXmlNode *node)

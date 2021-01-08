@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/StaticLoggerBase.h"
+#include "utils/logtypes.h"
 
 #include <string>
 
@@ -20,7 +20,7 @@ enum class SettingUpdateType {
   Change
 };
 
-class CSettingUpdate : protected CStaticLoggerBase
+class CSettingUpdate
 {
 public:
   CSettingUpdate();
@@ -41,4 +41,6 @@ private:
 
   SettingUpdateType m_type = SettingUpdateType::Unknown;
   std::string m_value;
+
+  static Logger s_logger;
 };

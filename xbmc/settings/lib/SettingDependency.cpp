@@ -21,10 +21,13 @@
 #include <stdlib.h>
 #include <string>
 
+Logger CSettingDependencyCondition::s_logger;
+
 CSettingDependencyCondition::CSettingDependencyCondition(
     CSettingsManager* settingsManager /* = nullptr */)
-  : CSettingConditionItem(settingsManager), CStaticLoggerBase("CSettingDependencyCondition")
-{ }
+  : CSettingDependencyCondition(settingsManager, "", "", "")
+{
+}
 
 CSettingDependencyCondition::CSettingDependencyCondition(
     const std::string& setting,
@@ -32,14 +35,9 @@ CSettingDependencyCondition::CSettingDependencyCondition(
     SettingDependencyOperator op,
     bool negated /* = false */,
     CSettingsManager* settingsManager /* = nullptr */)
-  : CSettingConditionItem(settingsManager),
-    CStaticLoggerBase("CSettingDependencyCondition"),
-    m_target(SettingDependencyTarget::Setting),
-    m_operator(op)
+  : CSettingDependencyCondition(
+        settingsManager, setting, setting, value, SettingDependencyTarget::Setting, op, negated)
 {
-  m_setting = m_name = setting;
-  m_value = value;
-  m_negated = negated;
 }
 
 CSettingDependencyCondition::CSettingDependencyCondition(
@@ -48,13 +46,32 @@ CSettingDependencyCondition::CSettingDependencyCondition(
     const std::string& setting /* = "" */,
     bool negated /* = false */,
     CSettingsManager* settingsManager /* = nullptr */)
-  : CSettingConditionItem(settingsManager),
-    CStaticLoggerBase("CSettingDependencyCondition"),
-    m_target(SettingDependencyTarget::Property)
+  : CSettingDependencyCondition(settingsManager,
+                                strProperty,
+                                setting,
+                                value,
+                                SettingDependencyTarget::Property,
+                                SettingDependencyOperator::Equals,
+                                negated)
 {
+}
+
+CSettingDependencyCondition::CSettingDependencyCondition(
+    CSettingsManager* settingsManager,
+    const std::string& strProperty,
+    const std::string& setting,
+    const std::string& value,
+    SettingDependencyTarget target /* = SettingDependencyTarget::Unknown */,
+    SettingDependencyOperator op /* = SettingDependencyOperator::Equals */,
+    bool negated /* = false */)
+  : CSettingConditionItem(settingsManager), m_target(target), m_operator(op)
+{
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingDependencyCondition");
+
   m_name = strProperty;
+  m_setting = setting;
   m_value = value;
-  m_setting  = setting;
   m_negated = negated;
 }
 
@@ -321,16 +338,20 @@ CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::
   return this;
 }
 
+Logger CSettingDependency::s_logger;
+
 CSettingDependency::CSettingDependency(CSettingsManager* settingsManager /* = nullptr */)
-  : CSettingCondition(settingsManager), CStaticLoggerBase("CSettingDependency")
+  : CSettingDependency(SettingDependencyType::Unknown, settingsManager)
 {
-  m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
 }
 
 CSettingDependency::CSettingDependency(SettingDependencyType type,
                                        CSettingsManager* settingsManager /* = nullptr */)
-  : CSettingCondition(settingsManager), CStaticLoggerBase("CSettingDependency"), m_type(type)
+  : CSettingCondition(settingsManager), m_type(type)
 {
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingDependency");
+
   m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
 }
 
