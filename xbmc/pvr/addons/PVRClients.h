@@ -219,13 +219,34 @@ namespace PVR
     //@{
 
     /*!
-     * Tell all clients the time frame to use when notifying epg events back to Kodi. The clients might push epg events asynchronously
-     * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
-     * clients need to know about the epg time frame Kodi uses.
-     * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
-     * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
+     * @brief Tell all clients the past time frame to use when notifying epg events back to Kodi.
+     *
+     * The clients might push epg events asynchronously to Kodi using the callback function
+     * EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * clients need to know about the future epg time frame Kodi uses.
+     *
+     * @param[in] iPastDays number of days before "now".
+     *                        @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all
+     *                        epg events, regardless of event times.
+     * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
+     *         value otherwise.
      */
-    PVR_ERROR SetEPGTimeFrame(int iDays);
+    PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+
+    /*!
+     * @brief Tell all clients the future time frame to use when notifying epg events back to Kodi.
+     *
+     * The clients might push epg events asynchronously to Kodi using the callback function
+     * EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * clients need to know about the future epg time frame Kodi uses.
+     *
+     * @param[in] iFutureDays number of days from "now".
+     *                        @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all
+     *                        epg events, regardless of event times.
+     * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
+     *         value otherwise.
+     */
+    PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
 
     //@}
 

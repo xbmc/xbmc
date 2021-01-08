@@ -121,7 +121,9 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 
   m_struct.props->strUserPath = m_strUserPath.c_str();
   m_struct.props->strClientPath = m_strClientPath.c_str();
-  m_struct.props->iEpgMaxDays =
+  m_struct.props->iEpgMaxPastDays =
+      CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay();
+  m_struct.props->iEpgMaxFutureDays =
       CServiceBroker::GetPVRManager().EpgContainer().GetFutureDaysToDisplay();
 
   m_struct.toKodi->kodiInstance = this;
@@ -683,11 +685,23 @@ PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t sta
       m_clientCapabilities.SupportsEPG());
 }
 
-PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
+PVR_ERROR CPVRClient::SetEPGMaxPastDays(int iPastDays)
 {
   return DoAddonCall(
       __func__,
-      [iDays](const AddonInstance* addon) { return addon->toAddon->SetEPGTimeFrame(addon, iDays); },
+      [iPastDays](const AddonInstance* addon) {
+        return addon->toAddon->SetEPGMaxPastDays(addon, iPastDays);
+      },
+      m_clientCapabilities.SupportsEPG());
+}
+
+PVR_ERROR CPVRClient::SetEPGMaxFutureDays(int iFutureDays)
+{
+  return DoAddonCall(
+      __func__,
+      [iFutureDays](const AddonInstance* addon) {
+        return addon->toAddon->SetEPGMaxFutureDays(addon, iFutureDays);
+      },
       m_clientCapabilities.SupportsEPG());
 }
 

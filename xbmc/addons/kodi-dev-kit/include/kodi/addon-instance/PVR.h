@@ -1477,22 +1477,39 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief Tell the client the time frame to use when notifying epg events back to Kodi
+  /// @brief Tell the client the past time frame to use when notifying epg events back to Kodi
   ///
   /// The client might push epg events asynchronously to Kodi using the callback function
   /// @ref EpgEventStateChange. To be able to only push events that are actually of
-  /// interest for Kodi, client needs to know about the epg time frame Kodi uses. Kodi
-  /// supplies the current epg time frame value in @ref EpgMaxDays() when creating the
-  /// addon and calls @ref SetEPGTimeFrame later whenever Kodi's epg time frame value
-  /// changes.
+  /// interest for Kodi, client needs to know about the epg time frame Kodi uses. Kodi supplies
+  /// the current epg max past time frame value @ref EpgMaxPastDays() when creating the addon
+  /// and calls @ref SetEPGMaxPastDays later whenever Kodi's epg time frame value changes.
   ///
-  /// @param[in] days number of days from "now". @ref EPG_TIMEFRAME_UNLIMITED means that Kodi
-  ///                 is interested in all epg events, regardless of event times.
+  /// @param[in] pastDays number of days before "now". @ref EPG_TIMEFRAME_UNLIMITED means that Kodi
+  ///                     is interested in all epg events, regardless of event times.
   /// @return @ref PVR_ERROR_NO_ERROR if new value was successfully set.
   ///
   /// @remarks Required if @ref PVRCapabilities::SetSupportsEPG "supportsEPG" is set to true.
   ///
-  virtual PVR_ERROR SetEPGTimeFrame(int days) { return PVR_ERROR_NOT_IMPLEMENTED; }
+  virtual PVR_ERROR SetEPGMaxPastDays(int pastDays) { return PVR_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Tell the client the future time frame to use when notifying epg events back to Kodi
+  ///
+  /// The client might push epg events asynchronously to Kodi using the callback function
+  /// @ref EpgEventStateChange. To be able to only push events that are actually of
+  /// interest for Kodi, client needs to know about the epg time frame Kodi uses. Kodi supplies
+  /// the current epg max future time frame value @ref EpgMaxFutureDays() when creating the addon
+  /// and calls @ref SetEPGMaxFutureDays later whenever Kodi's epg time frame value changes.
+  ///
+  /// @param[in] futureDays number of days from "now". @ref EPG_TIMEFRAME_UNLIMITED means that Kodi
+  ///                       is interested in all epg events, regardless of event times.
+  /// @return @ref PVR_ERROR_NO_ERROR if new value was successfully set.
+  ///
+  /// @remarks Required if @ref PVRCapabilities::SetSupportsEPG "supportsEPG" is set to true.
+  ///
+  virtual PVR_ERROR SetEPGMaxFutureDays(int futureDays) { return PVR_ERROR_NOT_IMPLEMENTED; }
   //----------------------------------------------------------------------------
 
   //==========================================================================
@@ -1518,15 +1535,28 @@ public:
 
   //==========================================================================
   /// @brief **Callback to Kodi Function**\n
-  /// Get the Max days handled by Kodi.
+  /// Get the Max past days handled by Kodi.
   ///
-  /// If > @ref EPG_TIMEFRAME_UNLIMITED, in async epg mode, deliver only events
-  /// in the range from 'end time > now' to 'start time < now + EpgMaxDays().
+  /// If > @ref EPG_TIMEFRAME_UNLIMITED, in async epg mode, deliver only events in the
+  /// range from 'end time > now - EpgMaxPastDays()' to 'start time < now + EpgMaxFutureDays().
   /// @ref EPG_TIMEFRAME_UNLIMITED, notify all events.
   ///
-  /// @return The Max days handled by Kodi
+  /// @return The Max past days handled by Kodi
   ///
-  inline int EpgMaxDays() const { return m_instanceData->props->iEpgMaxDays; }
+  inline int EpgMaxPastDays() const { return m_instanceData->props->iEpgMaxPastDays; }
+  //----------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Get the Max future days handled by Kodi.
+  ///
+  /// If > @ref EPG_TIMEFRAME_UNLIMITED, in async epg mode, deliver only events in the
+  /// range from 'end time > now - EpgMaxPastDays()' to 'start time < now + EpgMaxFutureDays().
+  /// @ref EPG_TIMEFRAME_UNLIMITED, notify all events.
+  ///
+  /// @return The Max future days handled by Kodi
+  ///
+  inline int EpgMaxFutureDays() const { return m_instanceData->props->iEpgMaxFutureDays; }
   //----------------------------------------------------------------------------
 
   //==========================================================================
@@ -2662,7 +2692,8 @@ private:
     m_instanceData->toAddon->IsEPGTagPlayable = ADDON_IsEPGTagPlayable;
     m_instanceData->toAddon->GetEPGTagEdl = ADDON_GetEPGTagEdl;
     m_instanceData->toAddon->GetEPGTagStreamProperties = ADDON_GetEPGTagStreamProperties;
-    m_instanceData->toAddon->SetEPGTimeFrame = ADDON_SetEPGTimeFrame;
+    m_instanceData->toAddon->SetEPGMaxPastDays = ADDON_SetEPGMaxPastDays;
+    m_instanceData->toAddon->SetEPGMaxFutureDays = ADDON_SetEPGMaxFutureDays;
     m_instanceData->toAddon->CallEPGMenuHook = ADDON_CallEPGMenuHook;
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     m_instanceData->toAddon->GetRecordingsAmount = ADDON_GetRecordingsAmount;
@@ -2998,10 +3029,17 @@ private:
     return error;
   }
 
-  inline static PVR_ERROR ADDON_SetEPGTimeFrame(const AddonInstance_PVR* instance, int days)
+  inline static PVR_ERROR ADDON_SetEPGMaxPastDays(const AddonInstance_PVR* instance, int pastDays)
   {
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-        ->SetEPGTimeFrame(days);
+        ->SetEPGMaxPastDays(pastDays);
+  }
+
+  inline static PVR_ERROR ADDON_SetEPGMaxFutureDays(const AddonInstance_PVR* instance,
+                                                    int futureDays)
+  {
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
+        ->SetEPGMaxFutureDays(futureDays);
   }
 
   inline static PVR_ERROR ADDON_CallEPGMenuHook(const AddonInstance_PVR* instance,

@@ -529,10 +529,17 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
   });
 }
 
-PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
+PVR_ERROR CPVRClients::SetEPGMaxPastDays(int iPastDays)
 {
-  return ForCreatedClients(__FUNCTION__, [iDays](const std::shared_ptr<CPVRClient>& client) {
-    return client->SetEPGTimeFrame(iDays);
+  return ForCreatedClients(__FUNCTION__, [iPastDays](const std::shared_ptr<CPVRClient>& client) {
+    return client->SetEPGMaxPastDays(iPastDays);
+  });
+}
+
+PVR_ERROR CPVRClients::SetEPGMaxFutureDays(int iFutureDays)
+{
+  return ForCreatedClients(__FUNCTION__, [iFutureDays](const std::shared_ptr<CPVRClient>& client) {
+    return client->SetEPGMaxFutureDays(iFutureDays);
   });
 }
 
