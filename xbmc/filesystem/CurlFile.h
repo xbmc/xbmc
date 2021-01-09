@@ -185,6 +185,7 @@ namespace XFILE
       bool m_allowRetry;
       bool m_verifyPeer = true;
       bool m_failOnError = true;
+      curl_slist* m_dnsCacheList = nullptr;
 
       CRingBuffer m_buffer; // our ringhold buffer
       char* m_overflowBuffer; // in the rare case we would overflow the above buffer
