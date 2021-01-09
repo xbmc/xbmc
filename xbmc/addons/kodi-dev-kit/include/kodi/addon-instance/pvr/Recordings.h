@@ -164,7 +164,7 @@ public:
 
   /// @brief **optional**\n
   ///
-  /// Directory of this recording on the client.
+  /// Directory of this recording on the client. May be optionally URL-encoded to preserve special characters.
   void SetDirectory(const std::string& directory)
   {
     strncpy(m_cStructure->strDirectory, directory.c_str(), sizeof(m_cStructure->strDirectory) - 1);

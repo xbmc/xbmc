@@ -297,7 +297,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     {
       item.reset(new CFileItem(strCurrent, true));
       item->SetPath(strFilePath);
-      item->SetLabel(strCurrent);
+      item->SetLabel(CURL::Decode(strCurrent));
       item->SetLabelPreformatted(true);
       item->m_dateTime = recording->RecordingTimeAsLocalTime();
       item->SetProperty("totalepisodes", 0);
