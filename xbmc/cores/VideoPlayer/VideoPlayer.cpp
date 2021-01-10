@@ -1771,9 +1771,11 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
 void CVideoPlayer::HandlePlaySpeed()
 {
-  bool isInMenu = IsInMenuInternal();
+  const bool isInMenu = IsInMenuInternal();
+  const bool tolerateStall =
+      isInMenu || (m_CurrentVideo.hint.flags & StreamFlags::FLAG_STILL_IMAGES);
 
-  if (isInMenu && m_caching != CACHESTATE_DONE)
+  if (tolerateStall && m_caching != CACHESTATE_DONE)
     SetCaching(CACHESTATE_DONE);
 
   if (m_caching == CACHESTATE_FULL)
@@ -1833,9 +1835,9 @@ void CVideoPlayer::HandlePlaySpeed()
 
   if (m_caching == CACHESTATE_DONE)
   {
-    if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu)
+    if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !tolerateStall)
     {
-      // take action is audio or video stream is stalled
+      // take action if audio or video stream is stalled
       if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.inited) ||
            (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.inited)) &&
           m_syncTimer.IsTimePast())
