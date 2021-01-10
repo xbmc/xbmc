@@ -547,3 +547,8 @@ bool CPVREpg::IsValid() const
 
   return true;
 }
+
+void CPVREpg::RemovedFromContainer()
+{
+  m_events.Publish(PVREvent::EpgDeleted);
+}

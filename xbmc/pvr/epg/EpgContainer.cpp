@@ -206,7 +206,10 @@ void CPVREpgContainer::Unload()
   }
 
   for (const auto& epg : epgs)
+  {
     epg->Events().Unsubscribe(this);
+    epg->RemovedFromContainer();
+  }
 
   m_events.Publish(PVREvent::EpgContainer);
 }
@@ -642,6 +645,7 @@ bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg)
   }
 
   epgToDelete->Events().Unsubscribe(this);
+  epgToDelete->RemovedFromContainer();
   return true;
 }
 

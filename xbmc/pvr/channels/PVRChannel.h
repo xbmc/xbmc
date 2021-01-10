@@ -23,6 +23,8 @@ class CDateTime;
 
 namespace PVR
 {
+  enum class PVREvent;
+
   class CPVREpg;
   class CPVREpgInfoTag;
   class CPVRRadioRDSInfoTag;
@@ -32,10 +34,10 @@ namespace PVR
     friend class CPVRDatabase;
 
   public:
-    explicit CPVRChannel(bool bRadio = false);
+    explicit CPVRChannel(bool bRadio);
     CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId);
 
-    virtual ~CPVRChannel() = default;
+    virtual ~CPVRChannel();
 
     bool operator ==(const CPVRChannel& right) const;
     bool operator !=(const CPVRChannel& right) const;
@@ -444,8 +446,15 @@ namespace PVR
      */
     void SetClientOrder(int iOrder);
 
+    /*!
+     * @brief CEventStream callback for PVR events.
+     * @param event The event.
+     */
+    void Notify(const PVREvent& event);
+
     //@}
   private:
+    CPVRChannel();
     CPVRChannel(const CPVRChannel& tag) = delete;
     CPVRChannel& operator=(const CPVRChannel& channel) = delete;
 
@@ -453,6 +462,11 @@ namespace PVR
      * @brief Update the encryption name after SetEncryptionSystem() has been called.
      */
     void UpdateEncryptionName();
+
+    /*!
+     * @brief Reset the EPG instance pointer.
+     */
+    void ResetEPG();
 
     /*! @name XBMC related channel data
      */

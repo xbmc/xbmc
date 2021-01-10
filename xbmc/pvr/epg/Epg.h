@@ -277,6 +277,11 @@ namespace PVR
      */
     void Unlock() { m_critSection.unlock(); }
 
+    /*!
+     * @brief Called to inform the EPG that it has been removed from the EPG container.
+     */
+    void RemovedFromContainer();
+
   private:
     CPVREpg() = delete;
     CPVREpg(const CPVREpg&) = delete;
