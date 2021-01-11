@@ -22,6 +22,7 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/SettingUtils.h"
+#include "settings/Settings.h"
 #include "settings/dialogs/GUIDialogSettingsBase.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
@@ -66,9 +67,10 @@ using namespace PVR;
 #define START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX  "visibi.startanytimedep"
 #define END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX    "visibi.endanytimedep"
 
-CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
-  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
-  m_iWeekdays(PVR_WEEKDAY_NONE)
+CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings()
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
+    m_settings({CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME}),
+    m_iWeekdays(PVR_WEEKDAY_NONE)
 {
   m_loadType = LOAD_EVERY_TIME;
 }
@@ -585,9 +587,15 @@ void CGUIDialogPVRTimerSettings::Save()
         }
       }
     }
-    else if (m_endLocalTime < m_startLocalTime) // Assume the user knows what they are doing, but log a warning just in case
+    else if (m_endLocalTime <= m_startLocalTime) // Use a sensible default if end time is invalid
     {
-      CLog::Log(LOGWARNING, "Timer settings dialog: Specified recording end time < start time: expect errors!");
+      int iDefaultDurationMins =
+          m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+      CLog::Log(LOGWARNING,
+                "Timer settings dialog: Specified recording end time < start. Setting "
+                "end time to start time plus instant timer duration of {} minutes.",
+                iDefaultDurationMins);
+      m_endLocalTime = m_startLocalTime + CDateTimeSpan(0, 0, iDefaultDurationMins, 0);
     }
     m_timerInfoTag->SetStartFromLocalTime(m_startLocalTime);
     m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
