@@ -35,10 +35,6 @@ PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
 PYTHON_VERSION=3.8
-PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lutil -lssl -lcrypto"
-PYTHON_CPPFLAGS=-I@prefix@/@deps_dir@/include/python${PYTHON_VERSION}
-PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
-PYTHON_NOVERSIONCHECK=no-check
 NATIVE_ROOT=@prefix@/@tool_dir@
 
 #libomxil-bellagio
@@ -82,10 +78,6 @@ fi
 if test "@platform_os@" = "android"; then
   ac_cv_func_srand=yes
   ac_cv_func_rand=yes
-
-  #python: android doesn't have libutil
-  PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lssl -lcrypto"
-
 fi
 
 if test "@platform_os@" = "darwin_embedded"; then

@@ -11,7 +11,7 @@ NATIVE= m4 gettext heimdal autoconf automake \
         libpng libjpeg-turbo liblzo2 giflib \
         setuptools JsonSchemaBuilder TexturePacker \
         flatbuffers \
-        meson ninja
+        meson ninja openssl
 
 
 ifeq ($(OS),darwin_embedded)
@@ -45,7 +45,7 @@ meson: python3 setuptools
 ninja: meson
 swig: pcre
 tar: xz automake
-python3: $(EXPAT) libffi pkg-config zlib
+python3: $(EXPAT) libffi pkg-config zlib openssl
 setuptools: python3
 wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml

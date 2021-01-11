@@ -7,6 +7,7 @@ SDKROOT=@use_sdk_path@
 CMAKE_SOURCE_DIR=$(abspath $(abs_top_srcdir)/../../)
 TARBALLS_LOCATION=@use_tarballs@
 PLATFORM=@deps_dir@
+BUILD=@use_build@
 HOST=@use_host@
 CPU=@use_cpu@
 MESON_CPU=@meson_cpu@
@@ -98,6 +99,19 @@ NATIVE_LDFLAGS=@host_includes@ -L@prefix@/@tool_dir@/lib
 NATIVE_CPPFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
 NATIVE_CXXFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
 
+VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
+APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
+
+PYTHON_VERSION=3.8
+ifeq (@target_platform@,appletvos)
+  PYTHON_MODULELDFLAGS=-lpython$(PYTHON_VERSION) -lc -ldl -lm -lexpat -lffi -lintl -lutil -lssl -lcrypto -lsqlite3 -lbz2 -lz -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -framework CoreFoundation @link_iconv@
+else ifeq (@platform_os@,android)
+  PYTHON_MODULELDFLAGS=-lpython$(PYTHON_VERSION) -lc -ldl -lm -lexpat -lffi -lintl -lssl -lsqlite3 -lbz2 -lz -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) @link_iconv@
+endif
+PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
+#PYTHON_TARGETENV=$(APP_NAME)targetenv
+# Todo: jenkins aarch64-linux build ends up hitting the shebang limit (127 chars). temp shorten this to get around that
+PYTHON_TARGETENV=$(APP_NAME)
 
 ifeq ($(CPU), arm64)
   export GASPP_FIX_XCODE5=1

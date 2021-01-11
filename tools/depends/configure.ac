@@ -5,6 +5,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
                  target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
+AC_CANONICAL_BUILD
 
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_14.m4])
@@ -141,6 +142,7 @@ else
 fi
 
 use_host=$host_alias
+use_build=$build_cpu-$build_vendor-$build_os
 
 # all configure depends builds are considered cross_compiling
 # cross_compiling!=yes env var is used to allow individual target dependencies to be built
@@ -168,7 +170,6 @@ case $build in
     android_toolchain_name="linux-x86_64"
   ;;
   *darwin*)
-    cross_compiling="yes"
     build_os="osx"
     host_includes=-mmacosx-version-min=`sw_vers | grep ProductVersion | awk '{ print $2}'`
     use_xcodepath=`xcode-select -print-path`
@@ -640,6 +641,7 @@ AC_SUBST(meson_system)
 AC_SUBST(meson_cpu)
 AC_SUBST(use_debug)
 AC_SUBST(use_host)
+AC_SUBST(use_build)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)
 AC_SUBST(use_cpu)
@@ -689,6 +691,7 @@ echo -e "ccache:\t\t $use_ccache"
 echo -e "build type:\t\t $build_type"
 echo -e "toolchain:\t\t $use_toolchain"
 echo -e "cpu:\t\t\t $use_cpu"
+echo -e "build:\t\t $use_build"
 echo -e "host:\t\t $use_host"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t\t $platform_cxxflags"
