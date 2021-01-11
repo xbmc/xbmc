@@ -1109,7 +1109,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
     // try to fetch an input buffer
     if (m_indexInputBuffer < 0)
     {
-      m_indexInputBuffer = m_codec->dequeueInputBuffer(10000 /*timout*/);
+      m_indexInputBuffer = m_codec->dequeueInputBuffer(5000 /*timout*/);
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionClear();
@@ -1370,7 +1370,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 {
   int rtn = 0;
-  int64_t timeout_us = (m_state == MEDIACODEC_STATE_WAIT_ENDOFSTREAM) ? 1000000 : 10000;
+  int64_t timeout_us = (m_state == MEDIACODEC_STATE_WAIT_ENDOFSTREAM) ? 100000 : 10000;
   CJNIMediaCodecBufferInfo bufferInfo;
 
   ssize_t index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
@@ -1379,6 +1379,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     xbmc_jnienv()->ExceptionClear();
     CLog::Log(LOGERROR,
               "CDVDVideoCodecAndroidMediaCodec:GetOutputPicture dequeueOutputBuffer failed");
+    
+    if (m_mime == "video/dolby-vision")
+    {
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
+    m_state = MEDIACODEC_STATE_STOPPED;
+    } 
+    
     return -2;
   }
 
