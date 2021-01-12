@@ -184,22 +184,22 @@ void CGUIDialogSubtitleSettings::OnSettingAction(const std::shared_ptr<const CSe
     Save();
 }
 
-void CGUIDialogSubtitleSettings::Save()
+bool CGUIDialogSubtitleSettings::Save()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
       profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
-    return;
+    return true;
 
   // prompt user if they are sure
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12376}, CVariant{12377}))
-    return;
+    return true;
 
   // reset the settings
   CVideoDatabase db;
   if (!db.Open())
-    return;
+    return true;
 
   db.EraseAllVideoSettings();
   db.Close();
@@ -207,6 +207,8 @@ void CGUIDialogSubtitleSettings::Save()
   CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.GetAppPlayer().GetVideoSettings();
   CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
   CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
+
+  return true;
 }
 
 void CGUIDialogSubtitleSettings::SetupView()

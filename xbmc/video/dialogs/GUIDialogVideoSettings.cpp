@@ -241,20 +241,20 @@ void CGUIDialogVideoSettings::OnSettingAction(const std::shared_ptr<const CSetti
     Save();
 }
 
-void CGUIDialogVideoSettings::Save()
+bool CGUIDialogVideoSettings::Save()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
       !g_passwordManager.CheckSettingLevelLock(::SettingLevel::Expert))
-    return;
+    return true;
 
   // prompt user if they are sure
   if (CGUIDialogYesNo::ShowAndGetInput(CVariant(12376), CVariant(12377)))
   { // reset the settings
     CVideoDatabase db;
     if (!db.Open())
-      return;
+      return true;
     db.EraseAllVideoSettings();
     db.Close();
 
@@ -263,6 +263,8 @@ void CGUIDialogVideoSettings::Save()
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
     CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
   }
+
+  return true;
 }
 
 void CGUIDialogVideoSettings::SetupView()

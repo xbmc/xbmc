@@ -203,10 +203,12 @@ bool CGUIDialogCMSSettings::OnBack(int actionID)
   return CGUIDialogSettingsBase::OnBack(actionID);
 }
 
-void CGUIDialogCMSSettings::Save()
+bool CGUIDialogCMSSettings::Save()
 {
   CLog::Log(LOGINFO, "CGUIDialogCMSSettings: Save() called");
   CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
+
+  return true;
 }
 
 void CGUIDialogCMSSettings::Cms3dLutsFiller(const SettingConstPtr& setting,

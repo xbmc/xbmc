@@ -235,7 +235,7 @@ void CGUIDialogLibExportSettings::OnOK()
   Close();
 }
 
-void CGUIDialogLibExportSettings::Save()
+bool CGUIDialogLibExportSettings::Save()
 {
   CLog::Log(LOGINFO, "CGUIDialogMusicExportSettings: Save() called");
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -247,6 +247,8 @@ void CGUIDialogLibExportSettings::Save()
   settings->SetBool(CSettings::SETTING_MUSICLIBRARY_EXPORT_ARTWORK, m_settings.m_artwork);
   settings->SetBool(CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, m_settings.m_skipnfo);
   settings->Save();
+
+  return true;
 }
 
 void CGUIDialogLibExportSettings::SetupView()

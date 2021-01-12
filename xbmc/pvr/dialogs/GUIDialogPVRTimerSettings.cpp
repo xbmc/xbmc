@@ -526,7 +526,7 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   }
 }
 
-void CGUIDialogPVRTimerSettings::Save()
+bool CGUIDialogPVRTimerSettings::Save()
 {
   // Timer type
   m_timerInfoTag->SetTimerType(m_timerType);
@@ -638,6 +638,8 @@ void CGUIDialogPVRTimerSettings::Save()
 
   // Update summary
   m_timerInfoTag->UpdateSummary();
+
+  return true;
 }
 
 void CGUIDialogPVRTimerSettings::SetButtonLabels()
