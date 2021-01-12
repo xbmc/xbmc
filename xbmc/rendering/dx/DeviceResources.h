@@ -81,8 +81,9 @@ namespace DX
     // HDR display support
     HDR_STATUS ToggleHDR();
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
-    void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
+    void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace);
     bool IsHDROutput() const { return m_IsHDROutput; }
+    bool IsTransferPQ() const { return m_IsTransferPQ; }
 
     // DX resources registration
     void Register(ID3DResource *resource);
@@ -167,6 +168,7 @@ namespace DX
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
     bool m_IsHDROutput;
+    bool m_IsTransferPQ;
     bool m_NV12SharedTexturesSupport{false};
   };
 }

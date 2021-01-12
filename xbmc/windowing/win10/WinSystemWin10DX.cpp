@@ -182,6 +182,11 @@ bool CWinSystemWin10DX::IsHDROutput() const
   return m_deviceResources->IsHDROutput();
 }
 
+bool CWinSystemWin10DX::IsTransferPQ() const
+{
+  return m_deviceResources->IsTransferPQ();
+}
+
 void CWinSystemWin10DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 {
   m_deviceResources->SetHdrMetaData(hdr10);

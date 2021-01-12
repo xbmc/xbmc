@@ -47,7 +47,38 @@ cbuffer cbWorld : register(b0)
   float4x4 worldViewProj;
   float blackLevel;
   float colorRange;
+  int PQ;
 };
+
+inline float3 transferPQ(float3 x)
+{
+  static const float ST2084_m1 = 2610.0f / (4096.0f * 4.0f);
+  static const float ST2084_m2 = (2523.0f / 4096.0f) * 128.0f;
+  static const float ST2084_c1 = 3424.0f / 4096.0f;
+  static const float ST2084_c2 = (2413.0f / 4096.0f) * 32.0f;
+  static const float ST2084_c3 = (2392.0f / 4096.0f) * 32.0f;
+  static const float SDR_peak_lum = 100.0f;
+  static const float3x3 matx =
+  {
+    0.627402, 0.329292, 0.043306,
+    0.069095, 0.919544, 0.011360,
+    0.016394, 0.088028, 0.895578
+  };
+  // REC.709 to linear
+  x = pow(x, 1.0f / 0.45f);
+  // REC.709 to BT.2020
+  x = mul(matx, x);
+  // linear to PQ
+  x = pow(x / SDR_peak_lum, ST2084_m1);
+  x = (ST2084_c1 + ST2084_c2 * x) / (1.0f + ST2084_c3 * x);
+  x = pow(x, ST2084_m2);
+  return x;
+}
+
+inline float4 tonemapHDR(float4 color)
+{
+  return (PQ) ? float4(transferPQ(color.rgb), color.a) : color;
+}
 
 inline float4 adjustColorRange(float4 color)
 {
