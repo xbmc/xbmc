@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
-#include "pvr/settings/PVRSettings.h"
 #include "settings/SettingConditions.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingDependency.h"
@@ -163,8 +162,6 @@ namespace PVR
       }
 
     } ChannelDescriptor;
-
-    CPVRSettings m_settings;
 
     typedef std::map <int, ChannelDescriptor> ChannelEntriesMap;
 
