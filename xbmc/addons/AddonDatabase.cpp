@@ -169,7 +169,7 @@ void CAddonDatabaseSerializer::DeserializeExtensions(const CVariant& variant,
     for (auto content = (*value)["content"].begin_array();
          content != (*value)["content"].end_array(); ++content)
     {
-      extValues.emplace_back((*content)["key"].asString(), (*content)["value"].asString());
+      extValues.emplace_back((*content)["key"].asString(), SExtValue{(*content)["value"].asString()});
     }
 
     addonType.m_values.emplace_back(id, extValues);
