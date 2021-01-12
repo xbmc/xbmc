@@ -3481,12 +3481,14 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 
     BeginTransaction();
 
+    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
+    DeleteStreamDetails(idFile);
+
     // keep the movie table entry, linking to tv shows, and bookmarks
     // so we can update the data in place
     // the ancillary tables are still purged
     if (!bKeepId)
     {
-      int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
@@ -3533,7 +3535,15 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
     std::set<int> paths;
     GetPathsForTvShow(idTvShow, paths);
 
-    std::string strSQL=PrepareSQL("SELECT episode.idEpisode FROM episode WHERE episode.idShow=%i",idTvShow);
+    std::string strSQL=PrepareSQL("SELECT episode.idFile FROM episode WHERE episode.idShow=%i",idTvShow);
+    m_pDS2->query(strSQL);
+    while (!m_pDS2->eof())
+    {
+      DeleteStreamDetails(m_pDS2->fv(0).get_asInt());
+      m_pDS2->next();
+    }
+
+    strSQL=PrepareSQL("SELECT episode.idEpisode FROM episode WHERE episode.idShow=%i",idTvShow);
     m_pDS2->query(strSQL);
     while (!m_pDS2->eof())
     {
@@ -3630,11 +3640,13 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     if (!bKeepId)
       AnnounceRemove(MediaTypeEpisode, idEpisode);
 
+    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
+    DeleteStreamDetails(idFile);
+
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancillary tables are still purged
     if (!bKeepId)
     {
-      int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
@@ -3671,11 +3683,13 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
 
     BeginTransaction();
 
+    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
+    DeleteStreamDetails(idFile);
+
     // keep the music video table entry and bookmarks so we can update data in place
     // the ancillary tables are still purged
     if (!bKeepId)
     {
-      int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
       std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
       if (!path.empty())
         InvalidatePathHash(path);
