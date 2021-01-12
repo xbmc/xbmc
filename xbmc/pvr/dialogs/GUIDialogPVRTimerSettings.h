@@ -52,6 +52,7 @@ namespace PVR
     void InitializeSettings() override;
 
   private:
+    bool Validate();
     void InitializeTypesList();
     void InitializeChannelsList();
     void SetButtonLabels();
