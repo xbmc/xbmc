@@ -1,13 +1,24 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # This is a simple example showing how you can send a key press event
 # to XBMC using the XBMCClient class
 
+import os
+from socket import *
 import sys
-sys.path.append("../../lib/python")
 
-import time
-from xbmcclient import XBMCClient,ACTION_EXECBUILTIN,ACTION_BUTTON
+if os.path.exists("../../lib/python"):
+    # try loading modules from source directory
+    sys.path.append("../../lib/python")
+
+    from xbmcclient import *
+
+    ICON_PATH = "../../icons/"
+else:
+    # fallback to system wide modules
+
+    from kodi.xbmcclient import *
+    from kodi.defs import *
 
 def main():
 
@@ -15,7 +26,7 @@ def main():
     port = 9777
 
     # Create an XBMCClient object and connect
-    xbmc = XBMCClient("Example Remote", "../../icons/bluetooth.png")
+    xbmc = XBMCClient("Example Remote", ICON_PATH + "/bluetooth.png")
     xbmc.connect()
 
     # send a up key press using the xbox gamepad map "XG" and button

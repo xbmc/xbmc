@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#ifdef _WIN32
+#include <Windows.h> // for sleep
+#else
+#include <unistd.h>
+#endif
 
 int main(int argc, char **argv)
 {
@@ -20,6 +25,28 @@ int main(int argc, char **argv)
 
   my_addr.Bind(sockfd);
 
+  std::string sIconFile = "../../icons/mail.png";
+  unsigned short usIconType = ICON_PNG;
+
+  std::ifstream file (sIconFile, std::ios::in|std::ios::binary|std::ios::ate);
+  if (!file.is_open())
+  {
+    sIconFile = "/usr/share/pixmaps/kodi/mail.png";
+    file.open(sIconFile, std::ios::in|std::ios::binary|std::ios::ate);
+
+    if (!file.is_open()) {
+      usIconType = ICON_NONE;
+    }
+    else
+    {
+      file.close();
+    }
+  }
+  else
+  {
+    file.close();
+  }
+
   CPacketHELO HeloPackage("Email Notifier", ICON_NONE);
   HeloPackage.Send(sockfd, my_addr);
 
@@ -27,8 +54,8 @@ int main(int argc, char **argv)
 
   CPacketNOTIFICATION packet("New Mail!",          // caption
                              "RE: Check this out", // message
-                             ICON_PNG,             // optional icon type
-                             "../../icons/mail.png");    // icon file (local)
+                             usIconType,           // optional icon type
+                             sIconFile.c_str());   // icon file (local)
   packet.Send(sockfd, my_addr);
 
   // BYE is not required since XBMC would have shut down
