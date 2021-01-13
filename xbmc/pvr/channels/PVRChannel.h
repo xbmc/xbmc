@@ -452,6 +452,16 @@ namespace PVR
      */
     void Notify(const PVREvent& event);
 
+    /*!
+     * @brief Lock the instance. No other thread gets access to this channel until Unlock was called.
+     */
+    void Lock() { m_critSection.lock(); }
+
+    /*!
+     * @brief Unlock the instance. Other threads may get access to this channel again.
+     */
+    void Unlock() { m_critSection.unlock(); }
+
     //@}
   private:
     CPVRChannel();

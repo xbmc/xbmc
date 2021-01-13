@@ -17,7 +17,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/epg/EpgDatabase.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -287,40 +286,45 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDelete
     bool channelsDeleted = false;
 
     const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
-    const std::shared_ptr<CPVREpgDatabase> epgDatabase =
-        CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
-    if (!database || !epgDatabase)
+    if (!database)
     {
-      CLog::LogF(LOGERROR, "No TV or EPG database");
+      CLog::LogF(LOGERROR, "No TV database");
     }
     else
     {
-      // Note: We must lock the dbs the whole time, otherwise races may occur.
-      database->Lock();
-      epgDatabase->Lock();
+      std::vector<std::shared_ptr<CPVREpg>> epgsToRemove;
 
+      for (const auto& channel : removedChannels)
+      {
+        const auto epg = channel->GetEPG();
+        if (epg)
+          epgsToRemove.emplace_back(epg);
+
+        // Note: We need to obtain a lock for every channel instance before we can lock
+        //       the TV db. This order is important. Otherwise deadlocks may occur.
+        channel->Lock();
+      }
+
+      // Note: We must lock the db the whole time, otherwise races may occur.
+      database->Lock();
       for (const auto& channel : removedChannels)
       {
         // since channel was not found in the internal group, it was deleted from the backend
         channelsDeleted |= channel->QueueDelete();
+        channel->Unlock();
 
-        size_t queryCount = epgDatabase->GetDeleteQueriesCount();
-        if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
-          epgDatabase->CommitDeleteQueries();
-
-        queryCount = database->GetDeleteQueriesCount();
+        size_t queryCount = database->GetDeleteQueriesCount();
         if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
           database->CommitDeleteQueries();
       }
 
       if (channelsDeleted)
-      {
-        epgDatabase->CommitDeleteQueries();
         database->CommitDeleteQueries();
-      }
 
-      epgDatabase->Unlock();
       database->Unlock();
+
+      // delete the EPG data for the removed channels
+      CServiceBroker::GetPVRManager().EpgContainer().QueueDeleteEpgs(epgsToRemove);
     }
   }
   return removedChannels;

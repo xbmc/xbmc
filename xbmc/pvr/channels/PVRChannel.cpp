@@ -118,10 +118,7 @@ bool CPVRChannel::QueueDelete()
 
   const std::shared_ptr<CPVREpg> epg = GetEPG();
   if (epg)
-  {
-    CServiceBroker::GetPVRManager().EpgContainer().QueueDeleteEpg(epg);
     ResetEPG();
-  }
 
   bReturn = database->QueueDeleteQuery(*this);
   return bReturn;
