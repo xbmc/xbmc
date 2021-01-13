@@ -143,9 +143,27 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
   // Channel
   m_channel = ChannelDescriptor();
 
-  if (m_timerInfoTag->m_iClientChannelUid == PVR_CHANNEL_INVALID_UID)
+  bool bChannelSet(false);
+
+  if (m_timerInfoTag->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID)
   {
-    bool bChannelSet(false);
+    // Find matching channel entry
+    for (const auto& channel : m_channelEntries)
+    {
+      if ((channel.second.channelUid == m_timerInfoTag->m_iClientChannelUid) &&
+          (channel.second.clientId == m_timerInfoTag->m_iClientId))
+      {
+        m_channel = channel.second;
+        bChannelSet = true;
+        break;
+      }
+    }
+    if (!bChannelSet)
+      CLog::LogF(LOGERROR, "Unable to map channel uid to channel entry treat, as invalid");
+  }
+
+  if (!bChannelSet)
+  {
     if (m_timerType->SupportsAnyChannel())
     {
       // Select first matching "Any channel" entry.
@@ -156,6 +174,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
         {
           m_channel = channel.second;
           bChannelSet = true;
+          break;
         }
       }
     }
@@ -173,27 +192,8 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
         }
       }
     }
-
     if (!bChannelSet)
-      CLog::LogF(LOGERROR, "Unable to map PVR_CHANNEL_INVALID_UID to channel entry!");
-  }
-  else
-  {
-    // Find matching channel entry
-    bool bChannelSet(false);
-    for (const auto& channel : m_channelEntries)
-    {
-      if ((channel.second.channelUid == m_timerInfoTag->m_iClientChannelUid) &&
-          (channel.second.clientId == m_timerInfoTag->m_iClientId))
-      {
-        m_channel = channel.second;
-        bChannelSet = true;
-        break;
-      }
-    }
-
-    if (!bChannelSet)
-      CLog::LogF(LOGERROR, "Unable to map channel uid to channel entry!");
+      CLog::LogF(LOGERROR, "Unable to map PVR_CHANNEL_INVALID_UID or channel uid to channel entry!");
   }
 }
 
