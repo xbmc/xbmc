@@ -282,46 +282,47 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup& chan
 std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroupInternal::RemoveDeletedChannels(const CPVRChannelGroup& channels)
 {
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels = CPVRChannelGroup::RemoveDeletedChannels(channels);
-
-  bool channelsDeleted = false;
-
-  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
-  const std::shared_ptr<CPVREpgDatabase> epgDatabase =
-      CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
-  if (!database || !epgDatabase)
+  if (!removedChannels.empty())
   {
-    CLog::LogF(LOGERROR, "No TV or EPG database");
-  }
-  else
-  {
-    // Note: We must lock the dbs the whole time, otherwise races may occur.
-    database->Lock();
-    epgDatabase->Lock();
+    bool channelsDeleted = false;
 
-    for (const auto& channel : removedChannels)
+    const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+    const std::shared_ptr<CPVREpgDatabase> epgDatabase =
+        CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
+    if (!database || !epgDatabase)
     {
-      // since channel was not found in the internal group, it was deleted from the backend
-      channelsDeleted |= channel->QueueDelete();
+      CLog::LogF(LOGERROR, "No TV or EPG database");
+    }
+    else
+    {
+      // Note: We must lock the dbs the whole time, otherwise races may occur.
+      database->Lock();
+      epgDatabase->Lock();
 
-      size_t queryCount = epgDatabase->GetDeleteQueriesCount();
-      if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
+      for (const auto& channel : removedChannels)
+      {
+        // since channel was not found in the internal group, it was deleted from the backend
+        channelsDeleted |= channel->QueueDelete();
+
+        size_t queryCount = epgDatabase->GetDeleteQueriesCount();
+        if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
+          epgDatabase->CommitDeleteQueries();
+
+        queryCount = database->GetDeleteQueriesCount();
+        if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
+          database->CommitDeleteQueries();
+      }
+
+      if (channelsDeleted)
+      {
         epgDatabase->CommitDeleteQueries();
-
-      queryCount = database->GetDeleteQueriesCount();
-      if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
         database->CommitDeleteQueries();
-    }
+      }
 
-    if (channelsDeleted)
-    {
-      epgDatabase->CommitDeleteQueries();
-      database->CommitDeleteQueries();
+      epgDatabase->Unlock();
+      database->Unlock();
     }
-
-    epgDatabase->Unlock();
-    database->Unlock();
   }
-
   return removedChannels;
 }
 
