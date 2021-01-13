@@ -503,7 +503,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
         }
       }
       else if (message.GetSenderId() == CONTROL_BTNVIEWASICONS ||
-               message.GetSenderId() == CONTROL_BTNSORTBY)
+               message.GetSenderId() == CONTROL_BTNSORTBY ||
+               message.GetSenderId() == CONTROL_BTNSORTASC)
       {
         RefreshView(message, false);
         bReturn = true;
