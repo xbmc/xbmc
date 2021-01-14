@@ -19,12 +19,12 @@ public:
   ~CGUIDialogSettingsManagerBase() override;
 
 protected:
-  virtual void Save() = 0;
+  virtual bool Save() = 0;
   virtual CSettingsManager* GetSettingsManager() const = 0;
 
   // implementation of CGUIDialogSettingsBase
   std::shared_ptr<CSetting> GetSetting(const std::string &settingId) override;
-  void OnOkay() override;
+  bool OnOkay() override;
 
   std::set<std::string> CreateSettings() override;
   void FreeSettingsControls() override;

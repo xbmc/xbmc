@@ -9597,7 +9597,11 @@ msgctxt "#19071"
 msgid "Update interval"
 msgstr ""
 
-#empty string with id 19072
+#. Dialog warning text for invalid timer setting
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#19072"
+msgid "In order to add/update a timer the end date and time must be greater than the start date and time."
+msgstr ""
 
 #. pvr settings "delay channel switch" setting label
 #: system/settings/settings.xml

@@ -242,10 +242,10 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
   }
 }
 
-void CGUIDialogInfoProviderSettings::Save()
+bool CGUIDialogInfoProviderSettings::Save()
 {
   if (m_showSingleScraper)
-    return;  //Save done by caller of ::Show
+    return true; //Save done by caller of ::Show
 
   // Save default settings for fetching additional information and art
   CLog::Log(LOGINFO, "%s called", __FUNCTION__);
@@ -260,6 +260,8 @@ void CGUIDialogInfoProviderSettings::Save()
   // Save artist information folder
   settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, m_strArtistInfoPath);
   settings->Save();
+
+  return true;
 }
 
 void CGUIDialogInfoProviderSettings::SetupView()

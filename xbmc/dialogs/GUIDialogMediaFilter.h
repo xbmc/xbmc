@@ -59,7 +59,7 @@ protected:
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override { }
+  bool Save() override { return true; }
   unsigned int GetDelayMs() const override { return 500; }
 
   // specialization of CGUIDialogSettingsManualBase

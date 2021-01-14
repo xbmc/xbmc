@@ -28,7 +28,7 @@ namespace PVR
     // specialization of CGUIDialogSettingsBase
     std::string GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting) override;
     bool AllowResettingSettings() const override { return false; }
-    void Save() override;
+    bool Save() override;
     void SetupView() override;
 
     // specialization of CGUIDialogSettingsManualBase

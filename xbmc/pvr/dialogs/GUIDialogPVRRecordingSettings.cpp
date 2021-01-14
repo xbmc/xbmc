@@ -168,7 +168,7 @@ void CGUIDialogPVRRecordingSettings::OnSettingChanged(
   }
 }
 
-void CGUIDialogPVRRecordingSettings::Save()
+bool CGUIDialogPVRRecordingSettings::Save()
 {
   // Name
   m_recording->m_strTitle = m_strTitle;
@@ -178,6 +178,8 @@ void CGUIDialogPVRRecordingSettings::Save()
 
   // Lifetime
   m_recording->m_iLifetime = m_iLifetime;
+
+  return true;
 }
 
 void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& setting,

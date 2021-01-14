@@ -260,9 +260,10 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
     CGUIDialogAddonSettings::ShowForAddon(m_scraper, false);
 }
 
-void CGUIDialogContentSettings::Save()
+bool CGUIDialogContentSettings::Save()
 {
   //Should be saved by caller of ::Show
+  return true;
 }
 
 void CGUIDialogContentSettings::SetupView()

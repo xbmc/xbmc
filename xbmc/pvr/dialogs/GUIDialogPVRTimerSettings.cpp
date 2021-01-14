@@ -12,6 +12,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
@@ -22,7 +23,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/SettingUtils.h"
-#include "settings/Settings.h"
 #include "settings/dialogs/GUIDialogSettingsBase.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
@@ -37,6 +37,7 @@
 #include <vector>
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 #define SETTING_TMR_TYPE          "timer.type"
 #define SETTING_TMR_ACTIVE        "timer.active"
@@ -67,10 +68,9 @@ using namespace PVR;
 #define START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX  "visibi.startanytimedep"
 #define END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX    "visibi.endanytimedep"
 
-CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
-    m_settings({CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME}),
-    m_iWeekdays(PVR_WEEKDAY_NONE)
+CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
+  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
+  m_iWeekdays(PVR_WEEKDAY_NONE)
 {
   m_loadType = LOAD_EVERY_TIME;
 }
@@ -528,8 +528,41 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   }
 }
 
-void CGUIDialogPVRTimerSettings::Save()
+bool CGUIDialogPVRTimerSettings::Validate()
 {
+  bool bStartAnyTime = m_bStartAnyTime;
+  bool bEndAnyTime = m_bEndAnyTime;
+
+  if (!m_timerType->SupportsStartAnyTime() ||
+      !m_timerType->IsEpgBased()) // Start anytime toggle is not displayed
+    bStartAnyTime = false; // Assume start time change needs checking for
+
+  if (!m_timerType->SupportsEndAnyTime() ||
+      !m_timerType->IsEpgBased()) // End anytime toggle is not displayed
+    bEndAnyTime = false; // Assume end time change needs checking for
+
+  // Begin and end time
+  if (!bStartAnyTime && !bEndAnyTime)
+  {
+    if (!(m_timerType->SupportsStartTime() && // has start clock entry
+          m_timerType->SupportsEndTime() && // and end clock entry
+          m_timerType->IsTimerRule()) && // but no associated start/end day spinners
+        m_endLocalTime < m_startLocalTime)
+    {
+      HELPERS::ShowOKDialogText(CVariant{19065}, // "Timer settings"
+                                CVariant{19072}); // In order to add/update a timer
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool CGUIDialogPVRTimerSettings::Save()
+{
+  if (!Validate())
+    return false;
+
   // Timer type
   m_timerInfoTag->SetTimerType(m_timerType);
 
@@ -587,15 +620,9 @@ void CGUIDialogPVRTimerSettings::Save()
         }
       }
     }
-    else if (m_endLocalTime <= m_startLocalTime) // Use a sensible default if end time is invalid
+    else if (m_endLocalTime < m_startLocalTime)
     {
-      int iDefaultDurationMins =
-          m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
-      CLog::Log(LOGWARNING,
-                "Timer settings dialog: Specified recording end time < start. Setting "
-                "end time to start time plus instant timer duration of {} minutes.",
-                iDefaultDurationMins);
-      m_endLocalTime = m_startLocalTime + CDateTimeSpan(0, 0, iDefaultDurationMins, 0);
+      // this case will fail validation so this can't be reached.
     }
     m_timerInfoTag->SetStartFromLocalTime(m_startLocalTime);
     m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
@@ -646,6 +673,8 @@ void CGUIDialogPVRTimerSettings::Save()
 
   // Update summary
   m_timerInfoTag->UpdateSummary();
+
+  return true;
 }
 
 void CGUIDialogPVRTimerSettings::SetButtonLabels()
