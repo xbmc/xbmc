@@ -100,6 +100,14 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Обновено:"
 
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Select + Start"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "НА ПАУЗА"
