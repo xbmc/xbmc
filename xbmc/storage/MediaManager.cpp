@@ -767,22 +767,26 @@ bool CMediaManager::playStubFile(const CFileItem& item)
 {
   // Figure out Lines 1 and 2 of the dialog
   std::string strLine1, strLine2;
+
+  // use generic message by default
+  strLine1 = g_localizeStrings.Get(435).c_str();
+  strLine2 = g_localizeStrings.Get(436).c_str();
+
   CXBMCTinyXML discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
     TiXmlElement* pRootElement = discStubXML.RootElement();
     if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
-      CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
+      CLog::Log(LOGINFO, "No <discstub> node found for %s. Using default info dialog message", item.GetPath().c_str());
     else
     {
       XMLUtils::GetString(pRootElement, "title", strLine1);
       XMLUtils::GetString(pRootElement, "message", strLine2);
+      // no title? use the label of the CFileItem as line 1
+      if (strLine1.empty())
+        strLine1 = item.GetLabel();
     }
   }
-
-  // Use the label for Line 1 if not defined
-  if (strLine1.empty())
-    strLine1 = item.GetLabel();
 
   if (HasOpticalDrive())
   {

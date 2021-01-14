@@ -2039,14 +2039,16 @@ msgctxt "#434"
 msgid "From {0:s} at {1:d} {2:s}"
 msgstr ""
 
+#. Headline of a dialog that pops up when a user tries to play a video that is located on an optical disc (Blu-ray, DVD) but the current KODI device doesn't have the according drive
 #: xbmc/Application.cpp
 msgctxt "#435"
 msgid "No optical disc drive detected"
 msgstr ""
 
-#: xbmc/Application.cpp
+#. Message body of a dialog that pops up when a user tries to play a video that is located on an optical disc (Blu-ray, DVD) but the current KODI device doesn't have the according drive
+#: xbmc/storage/MediaManager.cpp
 msgctxt "#436"
-msgid "You need an optical disc drive to play this video"
+msgid "This video is stored on an optical disc (e.g. DVD, Blu-ray) and cannot be played as your device does not have an appropriate drive."
 msgstr ""
 
 msgctxt "#437"
