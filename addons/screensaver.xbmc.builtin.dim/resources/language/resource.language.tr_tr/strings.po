@@ -16,6 +16,10 @@ msgstr ""
 "Language: tr_TR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Brightness level"
+msgstr "Parlaklık düzeyi"
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Tercihler"

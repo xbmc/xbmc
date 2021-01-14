@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Tímaflakk"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Næst sýnt"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Birta aðdáendamyndir"
@@ -159,6 +163,10 @@ msgstr "Síður"
 msgctxt "#31036"
 msgid "items"
 msgstr "atriði"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Valin rás"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -204,6 +212,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Byggt á Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Ýttu á [B]Vinstri[/B] til að hoppa til baka, eða [B]Hægri[/B] til að hoppa áfram"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Fara í spilunarlista"
@@ -215,6 +227,14 @@ msgstr "Birta innskráningarskjá við ræsingu"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Sjálfvirk innskráning í ræsingu"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Val + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Val + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -255,6 +275,10 @@ msgstr "eftir"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Valkostir orkustýringar"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Heildarlengd"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -479,6 +503,14 @@ msgstr "Fara í viðbóta-skoðara"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Leita að viðbótum"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "Í kvikmyndahúsum"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Bráðlega í kvikmyndahúsum"
 
 msgctxt "#31148"
 msgid "Categories"

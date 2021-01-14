@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "基于 Arial 字体"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "按[B]左[/B]后退，或按[B]右[/B]快进"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "按[B]右[/B]以帧快进"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "进入播放列表"
@@ -516,6 +524,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "选择类型同人画包"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr "原始"
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "未观看音乐电视"
@@ -583,3 +595,11 @@ msgstr "用户配置头像"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "动态背景"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "对于音乐电视，显示海报而不是缩略图"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "艺术图片相关的设置。"

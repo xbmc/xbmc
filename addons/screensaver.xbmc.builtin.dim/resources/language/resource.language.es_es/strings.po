@@ -16,6 +16,14 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Brightness level"
+msgstr "Nivel de brillo"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Nivel en porcentaje de cómo de iluminada se queda la pantalla."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferencias"

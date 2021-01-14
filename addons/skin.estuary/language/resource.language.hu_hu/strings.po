@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial betűkészlet"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Nyomja meg a [B]Bal[/B] gombot a vissza-, vagy a [B]Jobb[/B] gombot az előrelépéshez"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Nyomja meg a [B]Jobb[/B] gombot a képkocka léptetéséhez"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Lejátszólistához"
@@ -460,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Hátralévő"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Bináris"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Legfrissebb változtatások..."
@@ -515,6 +527,10 @@ msgstr "Kategóriák"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Műfaj illusztrációs csomag kiválasztása"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Eredet"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -583,3 +599,11 @@ msgstr "Profil avatar"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animált háttér"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Poszterek megjelenítése bélyegképek helyett a zenei videóknál"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Illusztrációval kapcsolatos beállítások."

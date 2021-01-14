@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-pohjainen"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Paina [B]Vasen[/B] palataksesi takaisinpäin tai [B]Oikea[/B] edetäksesi eteenpäin"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Paina [B]Oikea[/B] edetäksesi kuva kerrallaan"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Avaa toistolista"
@@ -460,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Jäljellä"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binääri"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Valitse nähdäksesi viimeisimmät muutokset..."
@@ -515,6 +527,10 @@ msgstr "Kategoriat"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Valitse lajityyppien taustakuvapaketti"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Alkuperä"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -583,3 +599,11 @@ msgstr "Profiilin kuva"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animoitu taustakuva"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Näytä musiikkivideoille julisteet pienkuvien sijaan"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Mediakuvitukseen liittyvät asetukset."
