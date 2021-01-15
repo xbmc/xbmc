@@ -226,6 +226,9 @@ namespace ADDON
     /*! \brief Disable an addon. Returns true on success, false on failure. */
     bool DisableAddon(const std::string& ID, AddonDisabledReason disabledReason);
 
+    /*! \brief Updates reason for a disabled addon. Returns true on success, false on failure. */
+    bool UpdateDisabledReason(const std::string& id, AddonDisabledReason newDisabledReason);
+
     /*! \brief Enable an addon. Returns true on success, false on failure. */
     bool EnableAddon(const std::string& ID);
 
