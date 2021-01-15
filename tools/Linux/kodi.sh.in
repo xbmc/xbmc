@@ -138,7 +138,11 @@ print_crash_report()
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
   echo >> $FILE
-  if [ -f $KODI_DATA/temp/@APP_NAME_LC@.log ]
+  if [ -f $KODI_TEMP/@APP_NAME_LC@.log ]
+  then
+    cat $KODI_TEMP/@APP_NAME_LC@.log >> $FILE
+    echo >> $FILE
+  elif [ -f $KODI_DATA/temp/@APP_NAME_LC@.log ]
   then
     cat $KODI_DATA/temp/@APP_NAME_LC@.log >> $FILE
     echo >> $FILE
