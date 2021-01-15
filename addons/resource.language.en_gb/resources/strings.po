@@ -17159,27 +17159,27 @@ msgstr ""
 
 #: xbmc/Application.cpp
 msgctxt "#34220"
-msgid "HDR is OFF"
+msgid "HDR OFF"
 msgstr ""
 
 #: xbmc/Application.cpp
 msgctxt "#34221"
-msgid "Display HDR is Off"
+msgid "HDR screen off"
 msgstr ""
 
 #: xbmc/Application.cpp
 msgctxt "#34222"
-msgid "HDR is ON"
+msgid "HDR ON"
 msgstr ""
 
 #: xbmc/Application.cpp
 msgctxt "#34223"
-msgid "Display HDR is On"
+msgid "HDR screen on"
 msgstr ""
 
 #: xbmc/Application.cpp
 msgctxt "#34224"
-msgid "Tone map method is:"
+msgid "Tone mapping method"
 msgstr ""
 
 #empty strings from id 34225 to 34299
