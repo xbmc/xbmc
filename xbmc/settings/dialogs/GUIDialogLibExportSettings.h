@@ -33,7 +33,7 @@ protected:
   // specialization of CGUIDialogSettingsBase
   bool OnMessage(CGUIMessage& message) override;
   bool AllowResettingSettings() const override { return false; }
-  void Save() override;
+  bool Save() override;
   void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase

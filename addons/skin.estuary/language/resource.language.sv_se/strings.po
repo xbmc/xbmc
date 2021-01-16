@@ -54,7 +54,7 @@ msgstr "Aktivera gränssnittskomponenter för kategorier"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "Ladda ner ikoner"
+msgstr "Hämtar ikoner"
 
 msgctxt "#31010"
 msgid "In progress movies"
@@ -82,7 +82,7 @@ msgstr "Nya inspelningar"
 
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "Senast spelade kanaler"
+msgstr "Nyligen spelade kanaler"
 
 msgctxt "#31017"
 msgid "Rated"
@@ -90,7 +90,7 @@ msgstr "Betygsatt"
 
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Senast spelade kanaler"
+msgstr "Nyligen spelade kanaler"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -166,7 +166,7 @@ msgstr "objekt"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr "Valda spår"
+msgstr "Markerat spår"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -198,7 +198,7 @@ msgstr "Byt namn på grupp"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "Radera grupp"
+msgstr "Ta bort grupp"
 
 msgctxt "#31048"
 msgid "Available"
@@ -246,7 +246,7 @@ msgstr "Spellista för musik"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Eventlogg"
+msgstr "Händelselogg"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -286,11 +286,11 @@ msgstr "Slutar"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Sångtexter tillägg"
+msgstr "Tillägg för sångtexter"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Sångtexter tilläggsinställningar"
+msgstr "Inställningar för sångtexttillägg"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -366,7 +366,7 @@ msgstr "Gå till filsektionen"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Visa dina personliga bilder eller ladda ner en av de många bild tilläggen från det officiella förrådet."
+msgstr "Visa dina personliga bilder eller hämta en av de många bild tilläggen från det officiella förrådet."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -394,7 +394,7 @@ msgstr "Gå till tilläggsutforskaren"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Du har inte några tillägg installerade ännu. Besök vår tilläggsutforskare för att bläddra igenom vår samling och förbättra din Kodi upplevelse."
+msgstr "Du har inte några tillägg installerade ännu. Besök vår tilläggsutforskare för att bläddra igenom vår samling och förbättra din Kodi-upplevelse."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -451,6 +451,10 @@ msgstr "Välj upplösning"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Återstående"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binär"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -554,7 +558,7 @@ msgstr "Numerisk knappsats"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Spela dina egna spel eller ladda ned någon av de många speltillägg från det officiella förrådet."
+msgstr "Spela dina egna spel eller hämta någon av de många speltilläggen från det officiella förrådet."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -575,3 +579,7 @@ msgstr "Profil avatar"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animera bakgrund"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Inställningar för omslag."

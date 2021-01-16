@@ -20,12 +20,14 @@ enables network settings.
 \fB\-p\fR or \fB\-\-portable\fR
 Kodi will look for configurations in install folder instead of ~/.kodi
 .TP
-\fB\-\-legacy\-res\fR
-Enables screen resolutions such as PAL, NTSC, etc.
+\fB\-\-version\fR
+Print version information.
 .TP
-\fB\-l\fR or \fB\-\-lircdev\fR
-LircDevice to use. See \-\-help output for the default.
+\fB\-\-test\fR [\fIFILE\fR]
+Enable test mode. \fIFILE\fR must be readable.
 .TP
-\fB\-n\fR or \fB\-\-nolirc\fR
-do not use Lirc, aka no remote input.
-.PP
+\fB\-\-settings=\fR<\fIfilename\fR>
+Loads specified file after advancedsettings.xml replacing any settings specified. The \fIfilename\fR must exist in special://xbmc/system/.
+.TP
+\fB\-\-windowing=\fR<\fIsystem\fR>
+Select which windowing method to use. Available window systems are: x11 wayland gbm

@@ -94,7 +94,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>20</itemgap>
 					<control type="label">
-						<width>90</width>
+						<width>100</width>
 						<height>40</height>
 						<label>$INFO[MusicPlayer.Year]</label>
 						<font>font37</font>

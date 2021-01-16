@@ -234,7 +234,7 @@ msgstr "Identification auto. au démarrage"
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr "Sélectionner"
+msgstr "Sélectionner + X"
 
 msgctxt "#31060"
 msgid "Select + Start"

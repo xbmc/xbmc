@@ -128,6 +128,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial"
 
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Seznam predvajanja glasbe"
+
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Zapisnik dogodkov"

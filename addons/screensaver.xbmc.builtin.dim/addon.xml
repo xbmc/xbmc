@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.62"
+       version="1.0.63"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
@@ -26,7 +26,7 @@
     <summary lang="et_EE">Ekraanisäästja, mis hämardab ekraani</summary>
     <summary lang="eu_ES">Pantaila iluntzen duen pantaila-babeslea</summary>
     <summary lang="fa_IR">محافظ تاریک کننده صفحه نمایش</summary>
-    <summary lang="fi_FI">Ruudun himmennys</summary>
+    <summary lang="fi_FI">Näytönsäästäjä, joka himmentää näytön</summary>
     <summary lang="fr_CA">Un économiseur d’écran qui baisse la luminosité de votre écran</summary>
     <summary lang="fr_FR">Un économiseur qui assombrit l'écran</summary>
     <summary lang="gl_ES">O  protector de pantalla atenúa a súa pantalla</summary>
@@ -36,7 +36,7 @@
     <summary lang="id_ID">Penyelamat layar yang meredupkan layar Anda</summary>
     <summary lang="is_IS">Skjáhvíla sem lækkar birtustigið á skjánum</summary>
     <summary lang="it_IT">Salvaschermo che oscura lo schermo</summary>
-    <summary lang="ja_JP">画面を薄暗くするスクリーンセーバー</summary>
+    <summary lang="ja_JP">スクリーンセーバー モード</summary>
     <summary lang="ko_KR">화면을 어둡게 하는 화면 보호기</summary>
     <summary lang="lt_LT">Ekrano vaizdas pritemdantis foną Jūsų ekrane</summary>
     <summary lang="lv_LV">Ekrānsaudzētājs, kas aptumšo jūsu ekrānu</summary>

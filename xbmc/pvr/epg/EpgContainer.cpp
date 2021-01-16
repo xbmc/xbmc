@@ -206,7 +206,10 @@ void CPVREpgContainer::Unload()
   }
 
   for (const auto& epg : epgs)
+  {
     epg->Events().Unsubscribe(this);
+    epg->RemovedFromContainer();
+  }
 
   m_events.Publish(PVREvent::EpgContainer);
 }
@@ -265,7 +268,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
       if (epg.second && epg.second->NeedsSave())
       {
         // Note: We need to obtain a lock for every epg instance before we can lock
-        //       the epg db. This order is important. Otherwise deadlocks may occure.
+        //       the epg db. This order is important. Otherwise deadlocks may occur.
         epg.second->Lock();
         changedEpgs.emplace_back(epg.second);
       }
@@ -276,7 +279,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
 
   if (!changedEpgs.empty())
   {
-    // Note: We must lock the db the whole time, otherwise races may occure.
+    // Note: We must lock the db the whole time, otherwise races may occur.
     database->Lock();
 
     XbmcThreads::EndTime processTimeslice(iMaxTimeslice);
@@ -609,6 +612,41 @@ bool CPVREpgContainer::RemoveOldEntries()
   return true;
 }
 
+bool CPVREpgContainer::QueueDeleteEpgs(const std::vector<std::shared_ptr<CPVREpg>>& epgs)
+{
+  if (epgs.empty())
+    return true;
+
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return false;
+  }
+
+  for (const auto& epg : epgs)
+  {
+    // Note: We need to obtain a lock for every epg instance before we can lock
+    //       the epg db. This order is important. Otherwise deadlocks may occur.
+    epg->Lock();
+  }
+
+  database->Lock();
+  for (const auto& epg : epgs)
+  {
+    QueueDeleteEpg(epg);
+    epg->Unlock();
+
+    size_t queryCount = database->GetDeleteQueriesCount();
+    if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
+      database->CommitDeleteQueries();
+  }
+  database->CommitDeleteQueries();
+  database->Unlock();
+
+  return true;
+}
+
 bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg)
 {
   if (!epg || epg->EpgID() < 0)
@@ -642,6 +680,7 @@ bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg)
   }
 
   epgToDelete->Events().Unsubscribe(this);
+  epgToDelete->RemovedFromContainer();
   return true;
 }
 
@@ -743,17 +782,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (bShowProgress && !bOnlyPending)
     progressHandler->DestroyProgress();
 
-  database->Lock();
-  for (const auto& epg : invalidTables)
-  {
-    QueueDeleteEpg(epg);
-
-    size_t queryCount = database->GetDeleteQueriesCount();
-    if (queryCount > EPG_COMMIT_QUERY_COUNT_LIMIT)
-      database->CommitDeleteQueries();
-  }
-  database->CommitDeleteQueries();
-  database->Unlock();
+  QueueDeleteEpgs(invalidTables);
 
   if (bInterrupted)
   {

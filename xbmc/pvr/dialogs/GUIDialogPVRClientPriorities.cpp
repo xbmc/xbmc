@@ -89,7 +89,7 @@ void CGUIDialogPVRClientPriorities::OnSettingChanged(const std::shared_ptr<const
   m_changedValues[setting->GetId()] = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
 }
 
-void CGUIDialogPVRClientPriorities::Save()
+bool CGUIDialogPVRClientPriorities::Save()
 {
   for (const auto& changedClient : m_changedValues)
   {
@@ -98,4 +98,6 @@ void CGUIDialogPVRClientPriorities::Save()
     if (clientEntry != m_clients.end())
       clientEntry->second->SetPriority(changedClient.second);
   }
+
+  return true;
 }

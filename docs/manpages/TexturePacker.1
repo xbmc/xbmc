@@ -1,0 +1,24 @@
+.TH TexturePacker 1
+.SH NAME
+TexturePacker \- Compile all images used in a XBMC / Kodi skin into a single file
+.SH SYNOPSIS
+.B TexturePacker
+[\fB\-dupecheck\fR]
+[\fB\-\-input\fR \fIDIRECTORY\fR]
+[\fB\-\-output\fR \fIFILE.xbt\fR]
+.SH DESCRIPTION
+Kodi uses a tool named TexturePacker to compile all images used in a skin into a single file. The benefit of it is that images inside the Textures.xbt will load faster in the skin. This is done by converting all images into a format that take less processing by Kodi when they need to be rendered onto the screen.
+
+A common misconception is that TexturPacker will just compress the images into a single file. This if far from the truth, so don't be surprised if the Textures.xbt file is much larger than the total size of all the individual images.
+
+The optional -dupecheck option is useful if you have included the same image multiple times in your media folder. For example, if your skin includes a lot of studio logos, most likely a lot of them are included multiple times but with a slightly different filename. The '-dupecheck' option will make sure each unique image is included only once in the Textures.xbt file, thus keeping the size of it as small as possible.
+.SH OPTIONS
+.TP
+.BR \-dupecheck
+Check for image duplicates first
+.TP
+.BR \-input
+fully-qualified name of input directory with images
+.TP
+.BR \-output
+fully-qualified name of resulting compressed XBT file

@@ -193,9 +193,13 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_SETTINGS_OKAY_BUTTON)
       {
-        OnOkay();
-        Close();
-        return true;
+        if (OnOkay())
+        {
+          Close();
+          return true;
+        }
+
+        return false;
       }
 
       if (iControl == CONTROL_SETTINGS_CANCEL_BUTTON)

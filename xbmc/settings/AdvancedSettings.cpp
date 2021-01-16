@@ -8,32 +8,33 @@
 
 #include "AdvancedSettings.h"
 
-#include <climits>
-#include <algorithm>
-#include <string>
-#include <vector>
-
 #include "AppParamParser.h"
 #include "Application.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "LangInfo.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
+#include "settings/SettingUtils.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "settings/SettingUtils.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <climits>
+#include <regex>
+#include <string>
+#include <vector>
 
 using namespace ADDON;
 using namespace XFILE;
@@ -521,7 +522,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   printer.SetLineBreak("\n");
   printer.SetIndent("  ");
   advancedXMLCopy.Accept(&printer);
-  CLog::Log(LOGINFO, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
+  // redact User/pass in URLs
+  std::regex redactRe("(\\w+://)\\S+:\\S+@");
+  CLog::Log(LOGINFO, "Contents of {} are...\n{}", file,
+            std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
@@ -819,6 +823,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement, "disableipv6", m_curlDisableIPV6);
     XMLUtils::GetBoolean(pElement, "disablehttp2", m_curlDisableHTTP2);
+    XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);
   }
 
   pElement = pRootElement->FirstChildElement("cache");
@@ -1010,8 +1015,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       if (!strFrom.empty() && !strTo.empty())
       {
         CLog::Log(LOGDEBUG,"  Registering substitution pair:");
-        CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
-        CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
+        CLog::Log(LOGDEBUG, "    From: [{}]", CURL::GetRedacted(strFrom));
+        CLog::Log(LOGDEBUG, "    To:   [{}]", CURL::GetRedacted(strTo));
         m_pathSubstitutions.push_back(std::make_pair(strFrom,strTo));
       }
       else

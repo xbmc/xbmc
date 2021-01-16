@@ -36,7 +36,7 @@ protected:
 
   // implementation of CGUIDialogSettingsManagerBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override {}
+  bool Save() override { return true; }
   CSettingsManager* GetSettingsManager() const override;
 
   // implementation of ISettingCallback

@@ -479,18 +479,36 @@ public:
   PVR_ERROR GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t start, time_t end);
 
   /*!
-   * @brief Tell the client the time frame to use when notifying epg events back
+   * @brief Tell the client the past time frame to use when notifying epg events back
    * to Kodi.
    *
    * The client might push epg events asynchronously to Kodi using the callback
    * function EpgEventStateChange. To be able to only push events that are
-   * actually of interest for Kodi, client needs to know about the epg time
+   * actually of interest for Kodi, client needs to know about the past epg time
    * frame Kodi uses.
    *
-   * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+   * @param[in] iPastDays number of days before "now".
+                @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events,
+                regardless of event times.
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.
    */
-  PVR_ERROR SetEPGTimeFrame(int iDays);
+  PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+
+  /*!
+   * @brief Tell the client the future time frame to use when notifying epg events back
+   * to Kodi.
+   *
+   * The client might push epg events asynchronously to Kodi using the callback
+   * function EpgEventStateChange. To be able to only push events that are
+   * actually of interest for Kodi, client needs to know about the future epg time
+   * frame Kodi uses.
+   *
+   * @param[in] iFutureDays number of days after "now".
+                @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events,
+                regardless of event times.
+   * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+   */
+  PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
 
   //@}
   /** @name PVR channel group methods */

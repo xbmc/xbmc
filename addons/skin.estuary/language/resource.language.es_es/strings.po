@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Basada en Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Presione [B]Izquierda[/B] para retroceder, o [B]Derecha[/B] para avanzar"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Presione [B]Derecha[/B] para avanzar"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Ir a lista de reproducción"
@@ -246,7 +254,7 @@ msgstr "Secciones"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Lista de reproducción de video"
+msgstr "Lista de reproducción de vídeo"
 
 msgctxt "#31066"
 msgid "Music playlist"
@@ -310,7 +318,7 @@ msgstr "Grupos disponibles"
 
 msgctxt "#31092"
 msgid "Video menu"
-msgstr "Menú de video"
+msgstr "Menú de vídeo"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
@@ -330,7 +338,7 @@ msgstr "Opciones de canal"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
+msgstr "Seleccione su perfil de usuario de Kodi[CR]para iniciar sesión y continuar"
 
 msgctxt "#31099"
 msgid "IconWall"
@@ -354,11 +362,11 @@ msgstr "Introduzca el texto aquí..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Su colección se encuentra vacía. Para proveerla de contenidos, entre en la sección \"Archivos\", añada un origen de contenido y configúrelo. Después de que se añada e indexe esta nueva fuente, podrá navegar por su colección."
+msgstr "Su biblioteca está actualmente vacía. Para llenarlo con sus medios personales, ingrese a la sección \"Archivos\", agregue una fuente de medios y configúrelo. Una vez agregada e indexada la fuente, podrá navegar por su biblioteca."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Añada fuentes de vídeo y configure el tipo de contenido apropiado para poblar las colecciones de vídeo."
+msgstr "Agregue fuentes de video y establezca el tipo de contenido apropiado para llenar sus bibliotecas de vídeo."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -460,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restante"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binario"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Pulse aquí para ver los cambios más recientes..."
@@ -516,6 +528,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Elegir pack de fanart para los géneros"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Origen"
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Vídeos musicales no vistos"
@@ -550,11 +566,11 @@ msgstr "Modo táctil"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Grafismo"
+msgstr "Ilustraciones"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Mostrar marcas de contenido"
+msgstr "Mostrar indicadores de contenido"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -583,3 +599,11 @@ msgstr "Avatar de perfil"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animar fondo"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Mostrar carteles en lugar de miniaturas para vídeos musicales"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Ajustes relacionado con ilustraciones"

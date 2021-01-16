@@ -12,6 +12,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/SpecialProtocol.h"
+#include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -450,6 +452,10 @@ void CCurlFile::Close()
   m_opened = false;
   m_forWrite = false;
   m_inError = false;
+
+  if (m_dnsCacheList)
+    g_curlInterface.slist_free_all(m_dnsCacheList);
+  m_dnsCacheList = nullptr;
 }
 
 void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true */)
@@ -470,6 +476,9 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
 
   g_curlInterface.easy_setopt(h, CURLOPT_READDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_READFUNCTION, read_callback);
+
+  // use DNS cache
+  g_curlInterface.easy_setopt(h, CURLOPT_RESOLVE, m_dnsCacheList);
 
   // make sure headers are separated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
@@ -645,6 +654,13 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   else
     // enable HTTP2 support. default: CURL_HTTP_VERSION_1_1. Curl >= 7.62.0 defaults to CURL_HTTP_VERSION_2TLS
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+
+  // set CA bundle file
+  std::string caCert = CSpecialProtocol::TranslatePath(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caTrustFile);
+  if (!caCert.empty() && XFILE::CFile::Exists(caCert))
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
+
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -693,6 +709,33 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 {
   std::string strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
+
+  // lookup host in DNS cache
+  std::string resolvedHost;
+  if (CDNSNameCache::Lookup(url2.GetHostName(), resolvedHost))
+  {
+    struct curl_slist* tempCache;
+    int entryPort = url2.GetPort();
+
+    if (entryPort == 0)
+    {
+      if (strProtocol == "http")
+        entryPort = 80;
+      else if (strProtocol == "https")
+        entryPort = 443;
+      else if (strProtocol == "ftp")
+        entryPort = 21;
+      else if (strProtocol == "ftps")
+        entryPort = 990;
+    }
+
+    std::string entryString =
+        url2.GetHostName() + ":" + std::to_string(entryPort) + ":" + resolvedHost;
+    tempCache = g_curlInterface.slist_append(m_dnsCacheList, entryString.c_str());
+
+    if (tempCache)
+      m_dnsCacheList = tempCache;
+  }
 
   if( url2.IsProtocol("ftp")
    || url2.IsProtocol("ftps") )

@@ -70,7 +70,7 @@ msgstr "Juhuslik album"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Juhuslik artist"
+msgstr "Juhuslik esitaja"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -152,6 +152,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Minu hinne"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Laiendatud info"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Lehed"
@@ -207,6 +211,10 @@ msgstr "filtreeritud"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-il põhinev"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Tagasihüppeks vajuta [B]vasakut[/B] või edasihüppeks [B]paremat[/B] klahvi"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -522,7 +530,7 @@ msgstr "Juhuslik muusikavideo"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Seda tüüpi lisamooduleid pole paigaldatud. Meie kasutajate poolt loodud lisamoodulite alla laadimiseks, mine lisamoodulite brauserisse."
+msgstr "Seda tüüpi lisamooduleid pole paigaldatud. Meie kasutajate poolt loodud lisamoodulite allalaadimiseks mine lisamoodulite brauserisse."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -579,3 +587,7 @@ msgstr "Profiili avatar"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Tausta animeerimine"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Kuva muusikavideote jaoks postereid mitte pisipilte"

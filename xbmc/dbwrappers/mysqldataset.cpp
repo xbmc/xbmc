@@ -6,17 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <iostream>
-#include <string>
-#include <set>
-#include <algorithm>
-
-#include "utils/log.h"
-#include "network/WakeOnAccess.h"
-#include "Util.h"
-#include "utils/StringUtils.h"
-
 #include "mysqldataset.h"
+
+#include "Util.h"
+#include "network/DNSNameCache.h"
+#include "network/WakeOnAccess.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <iostream>
+#include <set>
+#include <string>
 #ifdef HAS_MYSQL
 #include <mysql/errmsg.h>
 #elif defined(HAS_MARIADB)
@@ -145,7 +146,13 @@ int MysqlDatabase::connect(bool create_new) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
-  //CLog::Log(LOGDEBUG, "Connecting to mysql:%s:%s", host.c_str(), db.c_str());
+  std::string resolvedHost;
+  if (CDNSNameCache::Lookup(host, resolvedHost))
+  {
+    CLog::Log(LOGDEBUG, "{} replacing configured host {} with resolved host {}", __FUNCTION__, host,
+              resolvedHost);
+    host = resolvedHost;
+  }
 
   try
   {

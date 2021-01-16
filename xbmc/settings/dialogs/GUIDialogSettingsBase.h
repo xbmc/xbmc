@@ -95,7 +95,11 @@ protected:
   virtual unsigned int GetDelayMs() const { return 1500; }
   virtual std::string GetLocalizedString(uint32_t labelId) const;
 
-  virtual void OnOkay() { m_confirmed = true; }
+  virtual bool OnOkay()
+  {
+    m_confirmed = true;
+    return true;
+  }
   virtual void OnCancel() {}
 
   virtual void SetupView();

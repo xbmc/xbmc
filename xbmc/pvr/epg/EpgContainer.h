@@ -91,11 +91,11 @@ namespace PVR
     bool IsStarted() const;
 
     /*!
-     * @brief Queue the deletion of an EPG table from this container.
-     * @param epg The table to delete.
+     * @brief Queue the deletion of the given EPG tables from this container.
+     * @param epg The tables to delete.
      * @return True on success, false otherwise.
      */
-    bool QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg);
+    bool QueueDeleteEpgs(const std::vector<std::shared_ptr<CPVREpg>>& epgs);
 
     /*!
      * @brief CEventStream callback for PVR events.
@@ -279,6 +279,13 @@ namespace PVR
      * @param newEpg the EPG containing the updated data.
      */
     void InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg);
+
+    /*!
+     * @brief Queue the deletion of an EPG table from this container.
+     * @param epg The table to delete.
+     * @return True on success, false otherwise.
+     */
+    bool QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg);
 
     std::shared_ptr<CPVREpgDatabase> m_database; /*!< the EPG database */
 

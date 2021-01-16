@@ -25,11 +25,15 @@ std::shared_ptr<CSetting> CGUIDialogSettingsManagerBase::GetSetting(const std::s
   return GetSettingsManager()->GetSetting(settingId);
 }
 
-void CGUIDialogSettingsManagerBase::OnOkay()
+bool CGUIDialogSettingsManagerBase::OnOkay()
 {
-  Save();
+  if (Save())
+  {
+    CGUIDialogSettingsBase::OnOkay();
+    return true;
+  }
 
-  CGUIDialogSettingsBase::OnOkay();
+  return false;
 }
 
 std::set<std::string> CGUIDialogSettingsManagerBase::CreateSettings()

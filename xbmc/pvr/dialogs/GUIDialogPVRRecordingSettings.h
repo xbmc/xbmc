@@ -38,7 +38,7 @@ namespace PVR
 
     // specialization of CGUIDialogSettingsBase
     bool AllowResettingSettings() const override { return false; }
-    void Save() override;
+    bool Save() override;
     void SetupView() override;
 
     // specialization of CGUIDialogSettingsManualBase

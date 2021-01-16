@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # This is a simple example showing how you can send a key press event
 # to XBMC in a non-queued fashion to achieve a button pressed down
@@ -10,11 +10,22 @@
 # NOTE: Read the comments in 'example_button1.py' for a more detailed
 # explanation.
 
-import sys
-sys.path.append("../../lib/python")
-
-from xbmcclient import *
+import os
 from socket import *
+import sys
+
+if os.path.exists("../../lib/python"):
+    # try loading modules from source directory
+    sys.path.append("../../lib/python")
+
+    from xbmcclient import *
+
+    ICON_PATH = "../../icons/"
+else:
+    # fallback to system wide modules
+
+    from kodi.xbmcclient import *
+    from kodi.defs import *
 
 def main():
     import time
@@ -28,7 +39,7 @@ def main():
 
     # First packet must be HELO and can contain an icon
     packet = PacketHELO("Example Remote", ICON_PNG,
-                        "../../icons/bluetooth.png")
+                        ICON_PATH + "/bluetooth.png")
     packet.send(sock, addr)
 
     # wait for notification window to close (in XBMC)

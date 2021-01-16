@@ -37,6 +37,7 @@
 #include "music/MusicLibraryQueue.h"
 #include "network/EventServer.h"
 #include "network/Network.h"
+#include "platform/Environment.h"
 #include "playlists/PlayListFactory.h"
 #include "threads/SystemClock.h"
 #include "utils/JobManager.h"
@@ -543,6 +544,23 @@ bool CApplication::Create(const CAppParamParser &params)
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to load keyboard layouts");
     return false;
+  }
+
+  // set user defined CA trust bundle
+  std::string caCert =
+      CSpecialProtocol::TranslatePath(m_pSettingsComponent->GetAdvancedSettings()->m_caTrustFile);
+  if (!caCert.empty())
+  {
+    if (XFILE::CFile::Exists(caCert))
+    {
+      CEnvironment::setenv("SSL_CERT_FILE", caCert.c_str(), 1);
+      CLog::Log(LOGDEBUG, "CApplication::Create - SSL_CERT_FILE: {}", caCert);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CApplication::Create - Error reading SSL_CERT_FILE: {} -> ignored",
+                caCert);
+    }
   }
 
   CUtil::InitRandomSeed();
@@ -3884,6 +3902,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // show info dialog about moved configuration files if needed
         ShowAppMigrationMessage();
 
+        // offer enabling addons at kodi startup that are disabled due to
+        // e.g. os package manager installation on linux
+        ConfigureAndEnableAddons();
+
         m_bInitializing = false;
 
         if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
@@ -4158,6 +4180,65 @@ void CApplication::ShowAppMigrationMessage()
     // create the file which will prevent this dialog from appearing in the future
     tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");
     tmpFile.Close();
+  }
+}
+
+void CApplication::ConfigureAndEnableAddons()
+{
+  std::vector<std::shared_ptr<IAddon>>
+      disabledAddons; /*!< Installed addons, but not auto-enabled via manifest */
+
+  auto& addonMgr = CServiceBroker::GetAddonMgr();
+
+  if (addonMgr.GetDisabledAddons(disabledAddons) && !disabledAddons.empty())
+  {
+    // only look at disabled addons with disabledReason == NONE
+    // usually those are installed from package managers or manually. omit add-ons of type dependecy
+    // also try to enable add-ons with disabledReason == INCOMPATIBLE at startup
+
+    for (const auto& addon : disabledAddons)
+    {
+      if (addonMgr.IsAddonDisabledWithReason(addon->ID(), ADDON::AddonDisabledReason::INCOMPATIBLE))
+      {
+        auto addonInfo = addonMgr.GetAddonInfo(addon->ID());
+        if (addonInfo && addonMgr.IsCompatible(addonInfo))
+        {
+          CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",
+                    __FUNCTION__, addon->ID());
+          addonMgr.EnableAddon(addon->ID());
+        }
+        continue;
+      }
+
+      if (addonMgr.IsAddonDisabledExcept(addon->ID(), ADDON::AddonDisabledReason::NONE) ||
+          CAddonType::IsDependencyType(addon->MainType()))
+      {
+        continue;
+      }
+
+      if (HELPERS::ShowYesNoDialogLines(CVariant{24039}, // Disabled add-ons
+                                        CVariant{24059}, // Would you like to enable this add-on?
+                                        CVariant{addon->Name()}) == DialogResponse::YES)
+      {
+        if (addon->HasSettings())
+        {
+          if (CGUIDialogAddonSettings::ShowForAddon(addon))
+          {
+            // only enable if settings dialog hasn't been cancelled
+            addonMgr.EnableAddon(addon->ID());
+          }
+        }
+        else
+        {
+          addonMgr.EnableAddon(addon->ID());
+        }
+      }
+      else
+      {
+        // user chose not to configure/enable so we're not asking anymore
+        addonMgr.UpdateDisabledReason(addon->ID(), ADDON::AddonDisabledReason::USER);
+      }
+    }
   }
 }
 

@@ -75,6 +75,7 @@ namespace PVR
     EpgContainer,
     EpgItemUpdate,
     EpgUpdatePending,
+    EpgDeleted,
 
     // Item events
     CurrentItem,

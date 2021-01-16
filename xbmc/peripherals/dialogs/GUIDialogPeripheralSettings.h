@@ -31,7 +31,7 @@ protected:
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override;
+  bool Save() override;
   void OnResetSettings() override;
   void SetupView() override;
 
