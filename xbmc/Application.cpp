@@ -1700,6 +1700,12 @@ bool CApplication::OnAction(const CAction &action)
   // Tone Mapping : switch to next tone map method
   if (action.GetID() == ACTION_CYCLE_TONEMAP_METHOD)
   {
+    // Only enables tone mapping switch if display is not HDR capable or HDR is not enabled
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
+        CServiceBroker::GetWinSystem()->IsHDRDisplay())
+      return true;
+
     if (m_appPlayer.IsPlayingVideo())
     {
       CVideoSettings vs = m_appPlayer.GetVideoSettings();
