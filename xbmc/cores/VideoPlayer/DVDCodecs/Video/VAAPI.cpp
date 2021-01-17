@@ -558,7 +558,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       return false;
     }
 
-    bool enabled = setting->IsEnabled() && setting->IsVisible();
+    bool enabled = settings->GetBool(entry->second) && setting->IsVisible();
     if (!enabled)
       return false;
   }
