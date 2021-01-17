@@ -37,7 +37,7 @@ set(INPUTS AddonModuleXbmcaddon.i
            AddonModuleXbmcwsgi.i)
 
 set(GROOVY_DIR ${CMAKE_SOURCE_DIR}/tools/codegenerator/groovy)
-set(GROOVY_VER 2.4.4)
+set(GROOVY_VER 2.4.21)
 set(COMMONS_VER 2.6)
 
 foreach(INPUT IN LISTS INPUTS)
