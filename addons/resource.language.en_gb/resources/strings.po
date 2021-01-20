@@ -4348,8 +4348,13 @@ msgctxt "#1302"
 msgid "Volume control steps"
 msgstr ""
 
-#empty strings from id 1303 to 1374
+#empty strings from id 1303 to 1373
 #strings from 1350 to 1449 are reserved for weather translation
+
+#. Weather token
+msgctxt "#1374"
+msgid "Breezy"
+msgstr ""
 
 #. Weather token
 msgctxt "#1375"
