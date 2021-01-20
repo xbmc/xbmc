@@ -616,6 +616,7 @@
 								<aligny>center</aligny>
 								<height>24</height>
 								<right>60</right>
+								<scroll>true</scroll>
 								<align>right</align>
 								<font>font14</font>
 								<label>$INFO[Weather.Conditions,, ∙ ]$INFO[Weather.Temperature]</label>
