@@ -195,7 +195,7 @@ private:
   std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> m_sinks;
   Logger m_defaultLogger;
 
-  std::shared_ptr<spdlog::sinks::basic_file_sink<std::mutex>> m_fileSink;
+  std::shared_ptr<spdlog::sinks::basic_file_sink<spdlog::details::null_mutex>> m_fileSink;
 
   int m_logLevel;
 

@@ -120,7 +120,7 @@ void CLog::Initialize(const std::string& path)
   }
 
   // create the file sink
-  m_fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+  m_fileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(
       m_platform->GetLogFilename(filePath), false);
   m_fileSink->set_pattern(LogPattern);
 
