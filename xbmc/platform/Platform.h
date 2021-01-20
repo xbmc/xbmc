@@ -34,4 +34,9 @@ public:
    * or initialisation (like setting environment variables for example)
    */
   virtual bool Init();
+
+  /**\brief Flag whether disabled add-ons - installed via packagemanager or manually - should be
+   * offered for configuration and activation on kodi startup for this platform
+   */
+  virtual bool IsConfigureAddonsAtStartupEnabled() { return false; };
 };
