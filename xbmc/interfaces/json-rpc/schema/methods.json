@@ -1962,7 +1962,8 @@
     "permission": "ManageAddon",
     "params": [
       { "name": "addonid", "type": "string", "required": true },
-      { "name": "enabled", "$ref": "Global.Toggle", "required": true }
+      { "name": "enabled", "$ref": "Global.Toggle", "required": true },
+      { "name": "disabledReason", "type": "number", "required": false, "default": 0 }
     ],
     "returns": "string"
   },
