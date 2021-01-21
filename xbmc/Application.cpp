@@ -4192,9 +4192,12 @@ void CApplication::ConfigureAndEnableAddons()
 
   if (addonMgr.GetDisabledAddons(disabledAddons) && !disabledAddons.empty())
   {
-    // only look at disabled addons with disabledReason == NONE
-    // usually those are installed from package managers or manually. omit add-ons of type dependecy
-    // also try to enable add-ons with disabledReason == INCOMPATIBLE at startup
+    // this applies to certain platforms only:
+    // look at disabled addons with disabledReason == NONE, usually those are installed via package managers or manually.
+    // also try to enable add-ons with disabledReason == INCOMPATIBLE at startup for all platforms.
+
+    bool isConfigureAddonsAtStartupEnabled =
+        m_ServiceManager->GetPlatform().IsConfigureAddonsAtStartupEnabled();
 
     for (const auto& addon : disabledAddons)
     {
@@ -4216,27 +4219,30 @@ void CApplication::ConfigureAndEnableAddons()
         continue;
       }
 
-      if (HELPERS::ShowYesNoDialogLines(CVariant{24039}, // Disabled add-ons
-                                        CVariant{24059}, // Would you like to enable this add-on?
-                                        CVariant{addon->Name()}) == DialogResponse::YES)
+      if (isConfigureAddonsAtStartupEnabled)
       {
-        if (addon->HasSettings())
+        if (HELPERS::ShowYesNoDialogLines(CVariant{24039}, // Disabled add-ons
+                                          CVariant{24059}, // Would you like to enable this add-on?
+                                          CVariant{addon->Name()}) == DialogResponse::YES)
         {
-          if (CGUIDialogAddonSettings::ShowForAddon(addon))
+          if (addon->HasSettings())
           {
-            // only enable if settings dialog hasn't been cancelled
+            if (CGUIDialogAddonSettings::ShowForAddon(addon))
+            {
+              // only enable if settings dialog hasn't been cancelled
+              addonMgr.EnableAddon(addon->ID());
+            }
+          }
+          else
+          {
             addonMgr.EnableAddon(addon->ID());
           }
         }
         else
         {
-          addonMgr.EnableAddon(addon->ID());
+          // user chose not to configure/enable so we're not asking anymore
+          addonMgr.UpdateDisabledReason(addon->ID(), ADDON::AddonDisabledReason::USER);
         }
-      }
-      else
-      {
-        // user chose not to configure/enable so we're not asking anymore
-        addonMgr.UpdateDisabledReason(addon->ID(), ADDON::AddonDisabledReason::USER);
       }
     }
   }
