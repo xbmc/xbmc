@@ -131,27 +131,27 @@
 					<right>800</right>
 					<align>justify</align>
 					<orientation>horizontal</orientation>
-					<include content="WeatherIcon">
+					<include content="WeatherIconMyWeather">
 						<param name="label" value="Window(weather).Property(Current.Wind)" />
 						<param name="texture" value="icons/weather/wind.png" />
 						<param name="header" value="$LOCALIZE[404]" />
 					</include>
-					<include content="WeatherIcon">
+					<include content="WeatherIconMyWeather">
 						<param name="label" value="Window(weather).Property(Current.Humidity)" />
 						<param name="texture" value="icons/weather/humidity.png" />
 						<param name="header" value="$LOCALIZE[406]" />
 					</include>
-					<include content="WeatherIcon">
+					<include content="WeatherIconMyWeather">
 						<param name="label" value="Window(weather).Property(Current.Precipitation)" />
 						<param name="texture" value="icons/weather/rain.png" />
 						<param name="header" value="$LOCALIZE[33021]" />
 					</include>
-					<include content="WeatherIcon">
+					<include content="WeatherIconMyWeather">
 						<param name="label" value="Window(weather).Property(Today.Sunrise)" />
 						<param name="texture" value="icons/weather/sunrise.png" />
 						<param name="header" value="$LOCALIZE[405]" />
 					</include>
-					<include content="WeatherIcon">
+					<include content="WeatherIconMyWeather">
 						<param name="label" value="Window(weather).Property(Today.Sunset)" />
 						<param name="texture" value="icons/weather/sunset.png" />
 						<param name="header" value="$LOCALIZE[403]" />
