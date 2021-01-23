@@ -1174,23 +1174,9 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
 
   if (SUCCEEDED(m_swapChain.As(&swapChain3)))
   {
-    DXGI_COLOR_SPACE_TYPE cs = colorSpace;
-    if (DX::Windowing()->UseLimitedColor())
+    if (SUCCEEDED(swapChain3->SetColorSpace1(colorSpace)))
     {
-      switch (cs)
-      {
-        case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
-          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
-          break;
-        case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
-          cs = DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-          break;
-      }
-    }
-    if (SUCCEEDED(swapChain3->SetColorSpace1(cs)))
-    {
-      m_IsTransferPQ = cs == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 ||
-                       cs == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+      m_IsTransferPQ = (colorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
 
       CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
     }
