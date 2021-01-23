@@ -1286,6 +1286,51 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
   if (r == 0)
     return nKey1 - nKey2;
 
+#ifdef TARGET_ANDROID
+  if (!g_langInfo.UseLocaleCollation())
+  {
+    UErrorCode ustatus = U_ZERO_ERROR;
+    try
+    {
+      auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
+          ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus), &ucol_close);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: ucol_open failed.");
+      ucol_setAttribute(ucoll.get(), UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: failed to set UCOL_NUMERIC_COLLATION.");
+
+      std::vector<UChar> uleft(nKey1 + 1);
+      std::vector<UChar> uright(nKey2 + 1);
+
+      int32_t ulsize{0};
+      int32_t ursize{0};
+
+      u_strFromUTF8(&uleft.front(), uleft.size(), &ulsize, (const char*)pKey1, nKey1, &ustatus);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: failed to convert left string to UTF16.");
+      u_strFromUTF8(&uright.front(), uright.size(), &ursize, (const char*)pKey2, nKey2, &ustatus);
+      if (U_FAILURE(ustatus))
+        throw std::runtime_error("StringUtils: failed to convert right string to UTF16.");
+
+      switch (ucol_strcoll(ucoll.get(), &uleft.front(), -1, &uright.front(), -1))
+      {
+        case UCOL_LESS:
+          return -1;
+        case UCOL_GREATER:
+          return 1;
+        case UCOL_EQUAL:
+          return 0;
+      }
+    }
+    catch (std::runtime_error& e)
+    {
+      CLog::Log(LOGERROR, e.what());
+      CLog::Log(LOGERROR, "Error code: {}", ustatus);
+    }
+  }
+#endif
+
   //Not a binary match, so process character at a time
   const unsigned char* zA = static_cast<const unsigned char*>(pKey1);
   const unsigned char* zB = static_cast<const unsigned char*>(pKey2);
