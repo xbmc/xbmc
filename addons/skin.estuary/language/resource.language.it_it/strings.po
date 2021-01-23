@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Basato su Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Premi [B]Sinistra[/B] per andare indietro, o [B]Destra[/B] per andare avanti"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Premi [B]Destra[/B] per avanzare per fotogramma"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Vai a Playlist"
@@ -460,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Rimanenti"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binario"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Clicca qui per vedere gli ultimi cambiamenti..."
@@ -515,6 +527,10 @@ msgstr "Categorie"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Scegli pacchetto fanart genere"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Origine"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -583,3 +599,11 @@ msgstr "Avatar profilo"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Anima background"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Mostra poster anziché anteprime per video musicali"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Impostazioni relative agli Artwork."
