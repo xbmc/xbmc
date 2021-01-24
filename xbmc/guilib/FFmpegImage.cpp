@@ -196,7 +196,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 
   AVInputFormat* inp = nullptr;
   if (is_jpeg)
-    inp = av_find_input_format("jpeg_pipe");
+    inp = av_find_input_format("image2");
   else if (m_strMimeType == "image/apng")
     inp = av_find_input_format("apng");
   else if (is_png)
@@ -209,7 +209,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     inp = av_find_input_format("webp_pipe");
   // brute force parse if above check already failed
   else if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
-    inp = av_find_input_format("jpeg_pipe");
+    inp = av_find_input_format("image2");
   else if (m_strMimeType == "image/png")
     inp = av_find_input_format("png_pipe");
   else if (m_strMimeType == "image/tiff")
