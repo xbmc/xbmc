@@ -4092,7 +4092,14 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         CLog::Log(LOGDEBUG, "DVDNAV_STOP");
         m_dvd.state = DVDSTATE_NORMAL;
-        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026), g_localizeStrings.Get(16029));
+      }
+      break;
+    case DVDNAV_ERROR:
+      {
+        CLog::Log(LOGDEBUG, "DVDNAV_ERROR");
+        m_dvd.state = DVDSTATE_NORMAL;
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026),
+                                              g_localizeStrings.Get(16029));
       }
       break;
     default:

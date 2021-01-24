@@ -296,7 +296,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
       {
         m_bEOF = true;
         CLog::Log(LOGERROR,"CDVDInputStreamNavigator: Stopping playback due to infinite loop, caused by badly authored DVD navigation structure. Try enabling 'Attempt to skip introduction before DVD menu'.");
-        m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_STOP);
+        m_pVideoPlayer->OnDiscNavResult(nullptr, DVDNAV_ERROR);
         return -1; // fail and stop playback.
       }
     }
