@@ -379,7 +379,8 @@ void CVideoPlayerVideo::Process()
             break;
         }
 
-        CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+        CLog::Log(LOGDEBUG, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps",
+                  m_fFrameRate);
         m_stalled = true;
         pts += frametime * 4;
       }
@@ -522,7 +523,7 @@ void CVideoPlayerVideo::Process()
 
       if (m_stalled)
       {
-        CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe left, switching to normal playback");
+        CLog::Log(LOGDEBUG, "CVideoPlayerVideo - Stillframe left, switching to normal playback");
         m_stalled = false;
       }
 
