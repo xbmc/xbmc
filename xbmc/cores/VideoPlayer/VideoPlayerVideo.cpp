@@ -912,6 +912,8 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput, maxWaitTime);
   if (buffer < 0)
   {
+    if (m_speed != DVD_PLAYSPEED_PAUSE)
+      CLog::Log(LOGWARNING, "{} - timeout waiting for buffer", __FUNCTION__);
     return OUTPUT_AGAIN;
   }
 
