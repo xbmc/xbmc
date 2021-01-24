@@ -777,6 +777,22 @@ void CGUIEPGGridContainer::UpdateItems()
       int iBlockIndex = CGUIEPGGridContainerModel::INVALID_INDEX;
       m_gridModel->FindChannelAndBlockIndex(channelUid, broadcastUid, eventOffset, iChannelIndex, iBlockIndex);
 
+      if (iBlockIndex != CGUIEPGGridContainerModel::INVALID_INDEX)
+      {
+        newBlockIndex = iBlockIndex;
+      }
+      else if (newBlockIndex > m_gridModel->GetLastBlock())
+      {
+        // default to now
+        newBlockIndex = m_gridModel->GetNowBlock();
+
+        if (newBlockIndex > m_gridModel->GetLastBlock())
+        {
+          // last block is in the past. default to last block
+          newBlockIndex = m_gridModel->GetLastBlock();
+        }
+      }
+
       if (iChannelIndex != CGUIEPGGridContainerModel::INVALID_INDEX)
       {
         newChannelIndex = iChannelIndex;
@@ -787,16 +803,6 @@ void CGUIEPGGridContainer::UpdateItems()
       {
         // default to first channel
         newChannelIndex = 0;
-      }
-
-      if (iBlockIndex != CGUIEPGGridContainerModel::INVALID_INDEX)
-      {
-        newBlockIndex = iBlockIndex;
-      }
-      else if (newBlockIndex > m_gridModel->GetLastBlock())
-      {
-        // default to now
-        newBlockIndex = m_gridModel->GetNowBlock();
       }
     }
 
