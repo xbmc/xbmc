@@ -131,13 +131,32 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
     // allow resolutions that are exact and have the correct refresh rate
     // allow macroblock alignement / padding errors (e.g. 1080 mod16 == 8)
-    if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
-         (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
+    if ((height == info.iScreenHeight && width == info.iScreenWidth + 8)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
       CLog::Log(LOGDEBUG,
                 "[WHITELIST] Matched an exact resolution with an exact refresh rate {} ({})",
+                info.strMode, i);
+      resolution = i;
+      return;
+    }
+  }
+
+  for (const auto& mode : indexList)
+  {
+    auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
+
+    // allow resolutions that are exact in only one dimension and have the correct refresh rate
+    // allow macroblock alignement / padding errors (e.g. 1080 mod16 == 8)
+    if (((height == info.iScreenHeight && width < info.iScreenWidth + 8) ||
+         (width == info.iScreenWidth && height < info.iScreenHeight + 8)) &&
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
+    {
+      CLog::Log(LOGDEBUG,
+                "[WHITELIST] Matched an exact resolution (1D only) with an exact refresh rate {} ({})",
                 info.strMode, i);
       resolution = i;
       return;
