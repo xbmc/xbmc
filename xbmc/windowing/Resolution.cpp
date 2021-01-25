@@ -130,8 +130,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact and have the correct refresh rate
-    // allow macroblock alignement / padding errors (e.g. 1080 mod16 == 8)
-    if ((height == info.iScreenHeight && width == info.iScreenWidth + 8)) &&
+    // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
+    if ((height == info.iScreenHeight && width == info.iScreenWidth)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
@@ -149,7 +149,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact in only one dimension and have the correct refresh rate
-    // allow macroblock alignement / padding errors (e.g. 1080 mod16 == 8)
+    // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
     if (((height == info.iScreenHeight && width < info.iScreenWidth + 8) ||
          (width == info.iScreenWidth && height < info.iScreenHeight + 8)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
@@ -177,7 +177,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
       // allow resolutions that are exact and have double the refresh rate
-      // allow macroblock alignement / padding errors (e.g. 1080 mod16 == 8)
+      // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
       if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
            (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
@@ -207,7 +207,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
       // allow resolutions that are exact and have 2.5 times the refresh rate
-      // allow macroblock alignement / padding errors (e.g. 1080 mod16 == 8)
+      // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
       if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
            (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
