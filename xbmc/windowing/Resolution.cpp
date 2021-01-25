@@ -149,8 +149,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
     // allow resolutions that are exact in only one dimension and have the correct refresh rate
     // allow macroblock alignment / padding errors (e.g. 1080 mod16 == 8)
-    if (((height == info.iScreenHeight && width < info.iScreenWidth + 8) ||
-         (width == info.iScreenWidth && height < info.iScreenHeight + 8)) &&
+    if (((height == info.iScreenHeight && width <= info.iScreenWidth + 8) ||
+         (width == info.iScreenWidth && height <= info.iScreenHeight + 8)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
