@@ -4198,13 +4198,21 @@ bool CVideoPlayer::OnAction(const CAction &action)
       case ACTION_NEXT_ITEM:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed next in menu, stream will decide");
-        pMenus->OnNext();
+        if (pMenus->CanSeek() && GetChapterCount() > 0 && GetChapter() < GetChapterCount())
+          m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() + 1));
+        else
+          pMenus->OnNext();
+
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       case ACTION_PREV_ITEM:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
-        pMenus->OnPrevious();
+        if (pMenus->CanSeek() && GetChapterCount() > 0 && GetChapter() > 0)
+          m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() - 1));
+        else
+          pMenus->OnPrevious();
+
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       case ACTION_PREVIOUS_MENU:
@@ -4554,9 +4562,11 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   state.startTime = 0;
   state.timeMin = 0;
 
+  std::shared_ptr<CDVDInputStream::IMenus> pMenu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream);
+
   if (m_pDemuxer)
   {
-    if (IsInMenuInternal())
+    if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
       state.chapter = 0;
     else
       state.chapter = m_pDemuxer->GetChapter();
@@ -4588,7 +4598,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     CDVDInputStream::IChapter* pChapter = m_pInputStream->GetIChapter();
     if (pChapter)
     {
-      if (IsInMenuInternal())
+      if (IsInMenuInternal() && pMenu && !pMenu->CanSeek())
         state.chapter = 0;
       else
         state.chapter = pChapter->GetChapter();
@@ -4638,9 +4648,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       state.time_offset = 0;
     }
 
-    if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
+    if (pMenu)
     {
-      if (!ptr->GetState(state.player_state))
+      if (!pMenu->GetState(state.player_state))
         state.player_state = "";
 
       if (m_dvd.state == DVDSTATE_STILL)
@@ -4652,8 +4662,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       else if (IsInMenuInternal())
       {
         state.time = pDisplayTime->GetTime();
-        state.time_offset = 0;
         state.isInMenu = true;
+        if (!pMenu->CanSeek())
+          state.time_offset = 0;
       }
       state.hasMenu = true;
     }
