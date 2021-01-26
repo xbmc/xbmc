@@ -330,7 +330,7 @@ msgstr "Kodi loggan fungerar som en \"HEM\"-knapp. När du trycker på den, komm
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "När du spelar upp ljud eller video, kommer objektets titel visas högst upp på skärmen. Genom att trycka på den kommer det att ta dig till fullskärmsvisualisering eller videofönstret."
+msgstr "När du spelar upp ljud eller video, kommer objektets titel visas högst upp på skärmen. Genom att trycka på den kommer det att ta dig till helskärmsvisualisering eller videofönstret."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

@@ -26,7 +26,7 @@ msgstr "Rechercher…"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Afficher les FanArts des médias en arrière-plan"
+msgstr "Afficher le Fanart des médias en arrière-plan"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -130,7 +130,7 @@ msgstr "Diffusion suivante"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Afficher le FanArt"
+msgstr "Afficher le Fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -246,7 +246,7 @@ msgstr "Menu principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Choisir le paquet de FanArts pour la météo"
+msgstr "Choisir le paquet Fanart pour la météo"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -454,7 +454,7 @@ msgstr "Paramètres relatifs au menu principal : configurer l'écran d'accueil c
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Choisir le paquet de FanArts pour l'habillage"
+msgstr "Choisir le paquet Fanart pour l'habillage"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -526,7 +526,7 @@ msgstr "Catégories"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Choisir le paquet de FanArts de genres"
+msgstr "Choisir le paquet Fanart de genres"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -582,7 +582,7 @@ msgstr "Jouer à vos jeux préférés ou télécharger une extension de jeu parm
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Afficher le FanArt d'arrière-plan"
+msgstr "Afficher le Fanart d'arrière-plan"
 
 msgctxt "#31164"
 msgid "Choose kind of profile identification"

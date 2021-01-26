@@ -21,6 +21,7 @@ public:
   ~CPlatformLinux() override = default;
 
   bool Init() override;
+  bool IsConfigureAddonsAtStartupEnabled() override { return true; };
 
 private:
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;

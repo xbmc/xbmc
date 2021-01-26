@@ -564,7 +564,8 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
     if (m_HdrType != HDR_TYPE::HDR_HLG)
     {
       // Windows 10 doesn't support HLG HDR passthrough
-      // It's used HDR10 with dummy metadata and shaders to convert HLG transfer to PQ transfer
+      // It's used HDR10 with reference metadata and shaders to convert HLG transfer to PQ transfer
+      // Values according BT.2100 recommendations
       DXGI_HDR_METADATA_HDR10 hdr10 = {};
       hdr10.RedPrimary[0] = 34000; // Display P3 primaries
       hdr10.RedPrimary[1] = 16000;
@@ -575,7 +576,7 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
       hdr10.WhitePoint[0] = 15635;
       hdr10.WhitePoint[1] = 16450;
       hdr10.MaxMasteringLuminance = 1000 * 10000; // 1000 nits
-      hdr10.MinMasteringLuminance = 100; // 0.01 nits
+      hdr10.MinMasteringLuminance = 50; // 0.005 nits
       DX::Windowing()->SetHdrMetaData(hdr10);
       CLog::LogF(LOGINFO, "Switching to HDR rendering");
       DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);

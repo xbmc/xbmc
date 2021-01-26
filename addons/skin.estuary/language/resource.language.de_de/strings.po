@@ -154,7 +154,7 @@ msgstr "Persönliche Bewertung"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Erweiterte Infos"
+msgstr "Erweiterte Informationen"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -166,7 +166,7 @@ msgstr "Einträge"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr "Ausgwählter Titel"
+msgstr "Ausgewählter Titel"
 
 msgctxt "#31038"
 msgid "Rewind"

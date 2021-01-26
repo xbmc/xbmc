@@ -214,11 +214,11 @@ msgstr "基于 Arial 字体"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr "按[B]左[/B]后退，或按[B]右[/B]快进"
+msgstr "按 [B]左[/B] 后退，或按 [B]右[/B] 快进"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr "按[B]右[/B]以帧快进"
+msgstr "按 [B]右[/B] 以帧快进"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -467,6 +467,10 @@ msgstr "选择分辨率"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "剩余"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr "二进制"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."

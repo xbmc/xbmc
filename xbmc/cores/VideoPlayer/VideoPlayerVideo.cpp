@@ -379,7 +379,8 @@ void CVideoPlayerVideo::Process()
             break;
         }
 
-        CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+        CLog::Log(LOGDEBUG, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps",
+                  m_fFrameRate);
         m_stalled = true;
         pts += frametime * 4;
       }
@@ -522,7 +523,7 @@ void CVideoPlayerVideo::Process()
 
       if (m_stalled)
       {
-        CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe left, switching to normal playback");
+        CLog::Log(LOGDEBUG, "CVideoPlayerVideo - Stillframe left, switching to normal playback");
         m_stalled = false;
       }
 
@@ -911,6 +912,8 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput, maxWaitTime);
   if (buffer < 0)
   {
+    if (m_speed != DVD_PLAYSPEED_PAUSE)
+      CLog::Log(LOGWARNING, "{} - timeout waiting for buffer", __FUNCTION__);
     return OUTPUT_AGAIN;
   }
 

@@ -465,9 +465,21 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         case FF_PROFILE_H264_HIGH_10:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh10;
           break;
+        case FF_PROFILE_H264_HIGH_422:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh422;
+          break;
+        case FF_PROFILE_H264_HIGH_444:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh444;
+          break;
+        // All currently not supported formats
         case FF_PROFILE_H264_HIGH_10_INTRA:
-          // No known h/w decoder supporting Hi10P
+        case FF_PROFILE_H264_HIGH_422_INTRA:
+        case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+        case FF_PROFILE_H264_HIGH_444_INTRA:
+        case FF_PROFILE_H264_CAVLC_444:
           goto FAIL;
+        default:
+          break;
       }
       m_mime = "video/avc";
       m_formatname = "amc-h264";
