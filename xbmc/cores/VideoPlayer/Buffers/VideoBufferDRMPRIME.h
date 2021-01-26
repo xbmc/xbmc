@@ -24,7 +24,7 @@ namespace DRMPRIME
 // HDR enums is copied from linux include/linux/hdmi.h (strangely not part of uapi)
 enum hdmi_metadata_type
 {
-  HDMI_STATIC_METADATA_TYPE1 = 1,
+  HDMI_STATIC_METADATA_TYPE1 = 0,
 };
 enum hdmi_eotf
 {
