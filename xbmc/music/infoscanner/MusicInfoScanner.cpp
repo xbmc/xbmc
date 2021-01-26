@@ -2185,34 +2185,36 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     // Validate art type name
     size_t last_index = strCandidate.find_last_not_of("0123456789");
     std::string strDigits = strCandidate.substr(last_index + 1);
-    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
-    {
-      // Basic art exact match to whitelist, otherwise whitelist contains art type "families" so
-      // 'fanart' also matches 'fanart1', 'fanart2' etc.
-      strCandidate = strCandidate.substr(0, last_index + 1); // "abc" of "abc16"
-      if (strCandidate.empty())
-        continue;
-    }
+    std::string strFamily = strCandidate.substr(0, last_index + 1); // "abc" of "abc16"
+    if (strFamily.empty())
+      continue;
     if (!MUSIC_UTILS::IsValidArtType(strCandidate))
       continue;
     // Disc specific art from disc subfolder
     // Skip art where digits of filename do not match disc number
     if (discnum > 0 && !strDigits.empty() && (atoi(strDigits.c_str()) != discnum))
       continue;
-    
-    if ((bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strCandidate) !=
-                        whitelistarttypes.end()))
+
+    // Use all art, or check for basic level art in whitelist exactly allowing for disc number,
+    // or for custom art check whitelist contains art type family (strip trailing digits)
+    // e.g. 'fanart', 'fanart1', 'fanart2' etc. all match whitelist entry 'fanart'
+    std::string strCheck = strCandidate;
+    if (discnum > 0 || iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM)
+      strCheck = strFamily;
+    if (bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strCheck) !=
+                       whitelistarttypes.end())
     {
-      // Catch any variants of music thumbs e.g. folder2.jpg as "thumb2"
-      // Used for disc sets when files all in one album folder
-      if (!strDigits.empty() &&
-          std::find(thumbs.begin(), thumbs.end(), strCandidate + strExt) != thumbs.end())
+      if (!strDigits.empty())
       {
-        strCandidate = "thumb" + strDigits;
+        // Catch any variants of music thumbs e.g. folder2.jpg as "thumb2"
+        // Used for disc sets when files all in one album folder
+        if (std::find(thumbs.begin(), thumbs.end(), strFamily + strExt) != thumbs.end())
+          strCandidate = "thumb" + strDigits;
       }
-      // Append disc number when candidate art type (and file) not have it
-      if (discnum > 0 && strDigits.empty())
+      else if (discnum > 0)
+        // Append disc number when candidate art type (and file) not have it
         strCandidate += StringUtils::Format("%i", discnum);
+
       if (art.find(strCandidate) == art.end())
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));
     }
