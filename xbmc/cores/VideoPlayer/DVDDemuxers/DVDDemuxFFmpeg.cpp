@@ -2041,12 +2041,12 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
     if (m_pFormatContext->streams[idx]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
     {
-        CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
-        if (audiostream &&
-            m_pFormatContext->streams[idx]->codecpar->channels != audiostream->iChannels)
-        {
-          return true;
-        }
+      CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
+      if (audiostream &&
+          m_pFormatContext->streams[idx]->codecpar->channels != audiostream->iChannels)
+      {
+        return true;
+      }
     }
     if (m_pFormatContext->streams[idx]->codecpar->extradata_size != static_cast<int>(stream->ExtraSize))
       return true;
