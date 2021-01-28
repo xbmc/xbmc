@@ -82,6 +82,8 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   struct smbc_dirent* dirEnt;
 
   lock.Enter();
+  if (!smb.IsSmbValid())
+    return false;
   while ((dirEnt = smbc_readdir(fd)))
   {
     CachedDirEntry aDir;
@@ -128,6 +130,11 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           const std::string strFullName = strAuth + smb.URLEncode(strFile);
 
           lock.Enter();
+          if (!smb.IsSmbValid())
+          {
+            items.ClearItems();
+            return false;
+          }
 
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
@@ -235,6 +242,8 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url %s", CURL::GetRedacted(s).c_str());
 
   { CSingleLock lock(smb);
+    if (!smb.IsSmbValid())
+      return -1;
     fd = smbc_opendir(s.c_str());
   }
 
