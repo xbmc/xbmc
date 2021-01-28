@@ -68,6 +68,7 @@ ifeq ($(OS),linux)
   DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev wayland waylandpp wayland-protocols linux-system-x11-libs
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
+  LIBDRM = libdrm
 
   ifeq ($(RENDER_SYSTEM),gl)
     WAYLANDPP_DEPS += linux-system-gl-libs
@@ -114,7 +115,7 @@ pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA) $(LIBDRM)
 libcec: p8-platform
 crossguid: $(LIBUUID)
 libdvdnav: libdvdread
