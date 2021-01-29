@@ -121,6 +121,9 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "CRTC_ID", 0);
   }
 
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGWINDOWING))
+    m_req->LogAtomicRequest();
+
   auto ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
   if (ret < 0)
   {
@@ -144,9 +147,6 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
               strerror(errno));
   }
-
-  if (CServiceBroker::GetLogging().CanLogComponent(LOGWINDOWING))
-    m_req->LogAtomicRequest();
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
