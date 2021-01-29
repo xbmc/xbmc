@@ -593,7 +593,7 @@
 							<left>68</left>
 							<right>70</right>
 							<top>102</top>
-							<height>300</height>
+							<height>360</height>
 							<visible>!String.IsEmpty(Weather.plugin)</visible>
 							<control type="image">
 								<bottom>90</bottom>
@@ -618,7 +618,17 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font14</font>
-								<label>$INFO[Weather.Conditions,, ∙ ]$INFO[Weather.Temperature]</label>
+								<label>$INFO[Weather.Conditions]</label>
+							</control>
+							<control type="label">
+								<left>840</left>
+								<top>180</top>
+								<aligny>center</aligny>
+								<height>24</height>
+								<right>60</right>
+								<align>right</align>
+								<font>font14</font>
+								<label>$INFO[Weather.Temperature]</label>
 							</control>
 							<control type="grouplist">
 								<top>50</top>
@@ -627,27 +637,27 @@
 								<orientation>horizontal</orientation>
 								<align>left</align>
 								<itemgap>-110</itemgap>
-								<include content="WeatherIcon" condition="!String.IsEmpty(Weather.Plugin)">
+								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
 									<param name="label" value="Window(weather).Property(Current.Wind)" />
 									<param name="texture" value="icons/weather/wind.png" />
 									<param name="header" value="404" />
 								</include>
-								<include content="WeatherIcon" condition="!String.IsEmpty(Weather.Plugin)">
+								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
 									<param name="label" value="Window(weather).Property(Current.Humidity)" />
 									<param name="texture" value="icons/weather/humidity.png" />
 									<param name="header" value="406" />
 								</include>
-								<include content="WeatherIcon" condition="!String.IsEmpty(Weather.Plugin)">
+								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
 									<param name="label" value="Window(weather).Property(Current.Precipitation)" />
 									<param name="texture" value="icons/weather/rain.png" />
 									<param name="header" value="33021" />
 								</include>
-								<include content="WeatherIcon" condition="!String.IsEmpty(Weather.Plugin)">
+								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
 									<param name="label" value="Window(weather).Property(Today.Sunrise)" />
 									<param name="texture" value="icons/weather/sunrise.png" />
 									<param name="header" value="405" />
 								</include>
-								<include content="WeatherIcon" condition="!String.IsEmpty(Weather.Plugin)">
+								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
 									<param name="label" value="Window(weather).Property(Today.Sunset)" />
 									<param name="texture" value="icons/weather/sunset.png" />
 									<param name="header" value="403" />

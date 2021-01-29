@@ -345,7 +345,28 @@
 			</control>
 		</definition>
 	</include>
-	<include name="WeatherIcon">
+	<include name="WeatherIconHome">
+		<control type="group">
+			<width>268</width>
+			<visible>!String.IsEmpty($PARAM[label])</visible>
+			<control type="image">
+				<left>40</left>
+				<width>80</width>
+				<height>80</height>
+				<texture colordiffuse="D0FFFFFF">$PARAM[texture]</texture>
+			</control>
+			<control type="textbox">
+				<top>110</top>
+				<width>160</width>
+				<height>63</height>
+				<font>font27_narrow</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[$PARAM[label]]</label>
+			</control>
+		</control>
+	</include>
+	<include name="WeatherIconMyWeather">
 		<control type="group">
 			<width>268</width>
 			<visible>!String.IsEmpty($PARAM[label])</visible>
