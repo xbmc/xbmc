@@ -292,7 +292,7 @@
 						<width>540</width>
 						<bottom>70</bottom>
 						<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
-						<label>[COLOR button_focus][B]$LOCALIZE[31037]: [/COLOR]$INFO[Container.CurrentItem,,/]$INFO[Container.NumItems][/B][CR]$VAR[ListBoxInfoVar]</label>
+						<label>$VAR[ListBoxInfoVar]</label>
 						<visible>String.IsEqual(ListItem.DBType,song)</visible>
 					</control>
 				</control>
