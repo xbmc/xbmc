@@ -5,7 +5,7 @@
 	<controls>
 		<control type="group">
 			<centerleft>50%</centerleft>
-			<height>460</height>
+			<height>670</height>
 			<centertop>50%</centertop>
 			<width>700</width>
 			<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
@@ -22,7 +22,7 @@
 				<control type="grouplist" id="11100">
 					<visible>String.IsEqual(window(home).Property(settingslist_content),osd)</visible>
 					<width>700</width>
-					<height>420</height>
+					<height>630</height>
 					<itemgap>0</itemgap>
 					<onup>11100</onup>
 					<ondown>11100</ondown>
@@ -58,6 +58,14 @@
 						<label>$LOCALIZE[31112]</label>
 						<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
 						<onclick>AudioNextLanguage</onclick>
+					</control>
+					<control type="button" id="11108">
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[31115]</label>
+						<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
+						<onclick>NextSubtitle</onclick>
+						<visible>VideoPlayer.HasSubtitles</visible>
 					</control>
 					<control type="button" id="11105">
 						<width>700</width>

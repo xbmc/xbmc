@@ -4233,6 +4233,7 @@ msgctxt "#1222"
 msgid "Music & video & pictures & files"
 msgstr ""
 
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#1223"
 msgid "Disabled"
 msgstr ""

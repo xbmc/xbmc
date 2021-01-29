@@ -520,7 +520,10 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr ""
 
-#empty string with id 31115
+#: /xml/VideoOSD.xml
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 #: /xml/Includes_Home.xml
 msgctxt "#31116"
