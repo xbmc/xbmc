@@ -28,8 +28,7 @@ namespace spdlog
 {
 namespace sinks
 {
-template<typename Mutex>
-class basic_file_sink;
+class sink;
 
 template<typename Mutex>
 class dist_sink;
@@ -195,7 +194,7 @@ private:
   std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> m_sinks;
   Logger m_defaultLogger;
 
-  std::shared_ptr<spdlog::sinks::basic_file_sink<std::mutex>> m_fileSink;
+  std::shared_ptr<spdlog::sinks::sink> m_fileSink;
 
   int m_logLevel;
 

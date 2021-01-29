@@ -11,7 +11,6 @@
 #include "platform/posix/utils/PosixInterfaceForCLog.h"
 
 #include <memory>
-#include <mutex>
 
 #include <spdlog/formatter.h>
 #include <spdlog/sinks/sink.h>
@@ -34,5 +33,4 @@ public:
 
 private:
   std::unique_ptr<spdlog::formatter> m_formatter;
-  std::mutex m_mutex;
 };

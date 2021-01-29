@@ -33,6 +33,7 @@
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/dist_sink.h>
+#include <spdlog/sinks/dup_filter_sink.h>
 
 static constexpr unsigned char Utf8Bom[3] = {0xEF, 0xBB, 0xBF};
 static const std::string LogFileExtension = ".log";
@@ -119,10 +120,14 @@ void CLog::Initialize(const std::string& path)
       file.Write(Utf8Bom, sizeof(Utf8Bom));
   }
 
-  // create the file sink
-  m_fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+  // create the file sink within a duplicate filter sink
+  auto duplicateFilterSink =
+      std::make_shared<spdlog::sinks::dup_filter_sink_st>(std::chrono::seconds(10));
+  auto basicFileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(
       m_platform->GetLogFilename(filePath), false);
-  m_fileSink->set_pattern(LogPattern);
+  basicFileSink->set_pattern(LogPattern);
+  duplicateFilterSink->add_sink(basicFileSink);
+  m_fileSink = duplicateFilterSink;
 
   // add it to the existing sinks
   m_sinks->add_sink(m_fileSink);

@@ -30,5 +30,5 @@ spdlog_filename_t CWin32InterfaceForCLog::GetLogFilename(const std::string& file
 void CWin32InterfaceForCLog::AddSinks(
     std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> distributionSink) const
 {
-  distributionSink->add_sink(std::make_shared<spdlog::sinks::msvc_sink_mt>());
+  distributionSink->add_sink(std::make_shared<spdlog::sinks::msvc_sink_st>());
 }
