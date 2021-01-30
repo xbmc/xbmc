@@ -687,6 +687,7 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
 
   lock.Leave();
   AddonEvents::Unload event(addonId);
+  m_unloadEvents.HandleEvent(event);
 
   return true;
 }
