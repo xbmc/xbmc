@@ -262,6 +262,7 @@ public:
   float GetAVDelay() override;
   bool IsInMenu() const override;
   bool HasMenu() const override;
+  bool IsBlurayTopMenu;
 
   void SetSubTitleDelay(float fValue = 0.0f) override;
   float GetSubTitleDelay() override;

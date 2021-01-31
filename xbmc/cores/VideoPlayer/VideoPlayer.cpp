@@ -3852,9 +3852,31 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     case BD_EVENT_MENU_OVERLAY:
       m_overlayContainer.ProcessAndAddOverlayIfValid(static_cast<CDVDOverlay*>(pData));
       break;
-    case BD_EVENT_PLAYLIST_STOP:
-      m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
-      break;
+      case BD_EVENT_MENU:
+        IsBlurayTopMenu = true;
+        break;
+      case BD_EVENT_TITLE:
+        IsBlurayTopMenu = false;
+        break;
+      case BLURAY_TITLE_FIRST_PLAY:
+        IsBlurayTopMenu = false;
+        break;
+      case BLURAY_UO_TITLE_SEARCH:
+        IsBlurayTopMenu = false;
+        break;
+      case BD_EVENT_SEEK:
+        IsBlurayTopMenu = false;
+        break;
+      case BD_EVENT_END_OF_TITLE:
+        IsBlurayTopMenu = false;
+        break;
+      case BD_EVENT_PLAYLIST_STOP:
+        IsBlurayTopMenu = false;
+        m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+        break;
+      case BLURAY_TITLE_TOP_MENU:
+        IsBlurayTopMenu = true;
+        break;
     case BD_EVENT_AUDIO_STREAM:
       m_dvd.iSelectedAudioStream = *static_cast<int*>(pData);
       break;
@@ -4186,12 +4208,37 @@ bool CVideoPlayer::OnAction(const CAction &action)
       {
       case ACTION_NEXT_ITEM:
         THREAD_ACTION(action);
+#if defined(HAVE_LIBBLURAY)
+          if (!IsBlurayTopMenu && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) &&
+              GetChapter() > 0 && GetChapter() < GetChapterCount())
+          {
+            m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() + 1));
+            CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
+            return true;
+          }
+          else if (SeekScene(true))
+            return true;
+          else
+            break;
+#endif
         CLog::Log(LOGDEBUG, " - pushed next in menu, stream will decide");
         pMenus->OnNext();
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       case ACTION_PREV_ITEM:
         THREAD_ACTION(action);
+#if defined(HAVE_LIBBLURAY)
+          if (!IsBlurayTopMenu && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) && GetChapter() > 0)
+          {
+            m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() - 1));
+            CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
+            return true;
+          }
+          else if (SeekScene(false))
+            return true;
+          else
+            break;
+#endif
         CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
         pMenus->OnPrevious();
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
@@ -4550,6 +4597,11 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     else
       state.chapter = m_pDemuxer->GetChapter();
 
+#if defined(HAVE_LIBBLURAY)
+    if (!IsBlurayTopMenu && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+    state.chapter = m_pDemuxer->GetChapter();
+#endif
+
     state.chapters.clear();
     if (m_pDemuxer->GetChapterCount() > 0)
     {
@@ -4581,6 +4633,11 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         state.chapter = 0;
       else
         state.chapter = pChapter->GetChapter();
+	
+#if defined(HAVE_LIBBLURAY)
+      if (!IsBlurayTopMenu && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+      state.chapter = pChapter->GetChapter();
+#endif	
 
       state.chapters.clear();
       if (pChapter->GetChapterCount() > 0)
@@ -4597,6 +4654,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
     CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
     CDVDInputStream::IDisplayTime* pDisplayTime = m_pInputStream->GetIDisplayTime();
+	
+    double m_state_time_offset;
 
     CDVDInputStream::ITimes::Times times;
     if (pTimes && pTimes->GetTimes(times))
@@ -4641,7 +4700,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       else if (IsInMenuInternal())
       {
         state.time = pDisplayTime->GetTime();
+        m_state_time_offset = state.time_offset;
         state.time_offset = 0;
+
+        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+          state.time_offset = m_state_time_offset;
+
         state.isInMenu = true;
       }
       state.hasMenu = true;
