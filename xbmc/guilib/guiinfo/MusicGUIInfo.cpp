@@ -571,6 +571,12 @@ bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
                                      const CGUIInfo& info,
                                      std::string* fallback)
 {
+  // No fallback for musicplayer "offset" and "position" info labels
+  if (info.GetData1() && ((info.m_info >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
+      info.m_info <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
+      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+    return false;
+
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
   if (tag)
   {
