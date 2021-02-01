@@ -77,6 +77,10 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         result[field] = StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
         return true;
       }
+      else if (field == "uniqueid" && result["channelid"].isNull())
+	  {
+        return false;
+	  }
     }
   }
 
