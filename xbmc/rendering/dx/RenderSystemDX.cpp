@@ -274,7 +274,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
                            ? SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
                            : SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT;
     SetAlphaBlendEnable(true);
-    CD3DTexture::DrawQuad(destRect, 0, &m_rightEyeTex, nullptr, method);
+    CD3DTexture::DrawQuad(destRect, UTILS::Color4f(0), &m_rightEyeTex, nullptr, method);
     CD3DHelper::PSClearShaderResources(m_pContext);
   }
 
@@ -325,13 +325,16 @@ bool CRenderSystemDX::EndRender()
   return true;
 }
 
-bool CRenderSystemDX::ClearBuffers(UTILS::Color color)
+bool CRenderSystemDX::ClearBuffers(UTILS::Color4f color)
 {
   if (!m_bRenderCreated)
     return false;
 
   float fColor[4];
-  CD3DHelper::XMStoreColor(fColor, color);
+  fColor[0] = color.r();
+  fColor[1] = color.g();
+  fColor[2] = color.b();
+  fColor[3] = color.a();
   ID3D11RenderTargetView* pRTView = m_deviceResources->GetBackBuffer().GetRenderTarget();
 
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF

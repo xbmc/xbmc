@@ -133,7 +133,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
 }
 
 void CGUITexture::DrawQuad(const CRect& rect,
-                           UTILS::Color color,
+                           UTILS::Color4f color,
                            CTexture* texture,
                            const CRect* texCoords)
 {
@@ -148,4 +148,12 @@ void CGUITexture::DrawQuad(const CRect& rect,
   }
 
   CD3DTexture::DrawQuad(rect, color, numViews, &views, texCoords, texture ? SHADER_METHOD_RENDER_TEXTURE_BLEND : SHADER_METHOD_RENDER_DEFAULT);
+}
+
+void CGUITexture::DrawQuad(const CRect& rect,
+                           UTILS::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
+{
+  DrawQuad(rect, UTILS::Color4f(color), texture, texCoords);
 }
