@@ -227,7 +227,7 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
-bool CRenderSystemGL::ClearBuffers(UTILS::Color color)
+bool CRenderSystemGL::ClearBuffers(UTILS::Color4f color)
 {
   if (!m_bRenderCreated)
     return false;
@@ -236,12 +236,7 @@ bool CRenderSystemGL::ClearBuffers(UTILS::Color color)
   if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     return true;
 
-  float r = GET_R(color) / 255.0f;
-  float g = GET_G(color) / 255.0f;
-  float b = GET_B(color) / 255.0f;
-  float a = GET_A(color) / 255.0f;
-
-  glClearColor(r, g, b, a);
+  glClearColor(color.r(), color.g(), color.b(), color.a());
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
   glClear(flags);
