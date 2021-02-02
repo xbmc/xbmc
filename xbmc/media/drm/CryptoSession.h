@@ -30,6 +30,7 @@ namespace DRM
 
     // Interface methods
     virtual XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer& init, const std::string& mimeType, bool offlineKey, const std::map<std::string, std::string>& parameters) = 0;
+    virtual XbmcCommons::Buffer GetPropertyByteArray(const std::string& name) = 0;
     virtual std::string GetPropertyString(const std::string& name) = 0;
     virtual std::string ProvideKeyResponse(const XbmcCommons::Buffer& response) = 0;
     virtual void RemoveKeys() = 0;

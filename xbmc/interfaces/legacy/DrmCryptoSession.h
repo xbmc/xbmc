@@ -140,6 +140,26 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcdrm
+      /// @brief \python_func{ GetPropertyByteArray(name) }
+      /// Request a system specific property value of the %DRM system.
+      ///
+      ///\anchor xbmcdrm_GetPropertyByteArray
+      /// @param      Name    string - Name of the property to query
+      ///
+      /// @return     Value of the requested property
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      GetPropertyByteArray(...);
+#else
+      XbmcCommons::Buffer GetPropertyByteArray(const String &name);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcdrm
       /// @brief \python_func{ GetPropertyString(name) }
       /// Request a system specific property value of the %DRM system.
       ///

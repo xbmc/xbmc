@@ -134,6 +134,13 @@ Buffer CMediaDrmCryptoSession::GetKeyRequest(const Buffer& init,
   return Buffer();
 }
 
+Buffer CMediaDrmCryptoSession::GetPropertyByteArray(const std::string& name)
+{
+  if (m_mediaDrm)
+    return CharVecBuffer(m_mediaDrm->getPropertyByteArray(name));
+
+  return Buffer();
+}
 
 std::string CMediaDrmCryptoSession::GetPropertyString(const std::string& name)
 {
