@@ -221,11 +221,19 @@ function(copy_file_to_buildtree file)
   endif()
 
   if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
-    if(VERBOSE)
-      message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
+    if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows" OR NOT IS_SYMLINK "${file}")
+      if(VERBOSE)
+        message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
+      endif()
+      file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+           "file(COPY \"${file}\" DESTINATION \"${CMAKE_BINARY_DIR}/${outdir}\")\n" )
+    else()
+      if(VERBOSE)
+        message(STATUS "copy_file_to_buildtree - copying symlinked file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
+      endif()
+      file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+           "execute_process(COMMAND \"\${CMAKE_COMMAND}\" -E copy_if_different \"${file}\" \"${CMAKE_BINARY_DIR}/${outfile}\")\n")
     endif()
-    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
-         "file(COPY \"${file}\" DESTINATION \"${CMAKE_BINARY_DIR}/${outdir}\")\n")
   endif()
 
   if(NOT arg_NO_INSTALL)
