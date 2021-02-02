@@ -166,3 +166,15 @@ CVariant CGUIOperations::GetStereoModeObjectFromGuiMode(const RENDER_STEREO_MODE
   modeObj["label"] = stereoscopicsManager.GetLabelForStereoMode(mode);
   return modeObj;
 }
+
+JSONRPC_STATUS CGUIOperations::SetWindowProperty(const std::string& method,
+                                                 ITransportLayer* transport,
+                                                 IClient* client,
+                                                 const CVariant& parameterObject,
+                                                 CVariant& result)
+{
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_SETPROPERTY, -1, -1,
+                                               static_cast<void*>(new CVariant(parameterObject)));
+
+  return ACK;
+}

@@ -17,6 +17,7 @@
 #include "utils/Geometry.h"
 #include "utils/Variant.h"
 #include "windowing/WinSystem.h"
+#include "xbmc/Application.h"
 
 #include <iostream>
 
@@ -42,8 +43,12 @@ CGUIWindowTestPattern::~CGUIWindowTestPattern(void) = default;
 
 void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
-  //*TODO* Update only on demand
-  MarkDirtyRegion();
+  if (m_bInvalidated && IsVisible())
+  {
+    // reset screensaver timer when window is updated while active
+    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
+  }
   CGUIWindow::Process(currentTime, dirtyregions);
   m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
                          (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
