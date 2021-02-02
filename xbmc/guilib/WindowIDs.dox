@@ -14,6 +14,7 @@ This page shows the window names, the window definition, the window ID and the s
 | FileManager             | WINDOW_FILES                         | 10003     | FileManager.xml                     |
 | Settings                | WINDOW_SETTINGS_MENU                 | 10004     | Settings.xml                        |
 | SystemInfo              | WINDOW_SYSTEM_INFORMATION            | 10007     | SettingsSystemInfo.xml              |
+| TestPattern             | WINDOW_TEST_PATTERN                  | 10008     | none                                |
 | ScreenCalibration       | WINDOW_SCREEN_CALIBRATION            | 10011     | SettingsScreenCalibration.xml       |
 | SystemSettings          | WINDOW_SETTINGS_SYSTEM               | 10016     | SettingsCategory.xml                |
 | ServiceSettings         | WINDOW_SETTINGS_SERVICE              | 10018     | SettingsCategory.xml                |
