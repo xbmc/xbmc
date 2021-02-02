@@ -1917,6 +1917,18 @@
       }
     }
   },
+  "GUI.SetWindowProperty": {
+    "type" : "method",
+    "description": "Sets a property for the specified window (or for the currently active window if not specified)",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name" : "key", "type" : "string", "required" : true },
+      { "name" : "value",  "type" : [ {"type": "object"}, {"type": ["number", "integer", "boolean", "string", "array", "null"]} ], "required" : true },
+      { "name": "window", "$ref": "GUI.Window", "required": true }
+    ],
+    "returns": "string"
+  },
   "Addons.GetAddons": {
     "type": "method",
     "description": "Gets all available addons",

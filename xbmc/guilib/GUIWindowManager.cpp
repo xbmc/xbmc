@@ -20,6 +20,7 @@
 #include "events/windows/GUIWindowEventLog.h"
 #include "favourites/GUIDialogFavourites.h"
 #include "input/Key.h"
+#include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
@@ -1016,7 +1017,40 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
     }
     pMsg->SetResult(static_cast<int>(dialogOK->IsConfirmed()));
   }
+
+  case TMSG_GUI_SETPROPERTY:
+  {
+
+    if (pMsg->lpVoid)
+    {
+      const CVariant* params = static_cast<const CVariant*>(pMsg->lpVoid);
+      const std::string& key = (*params)["key"].asString();
+      const CVariant& value = (*params)["value"];
+      int iWindowID = CWindowTranslator::TranslateWindow((*params)["window"].asString());
+
+      if (iWindowID == -1)
+      {
+        iWindowID = GetActiveWindowOrDialog();
+      }
+
+      CGUIWindow* pNewWindow = GetWindow(iWindowID);
+      if (pNewWindow)
+      {
+        pNewWindow->SetProperty(key, value);
+        pNewWindow->SetInvalid();
+      }
+      else
+      { // nothing to see here - move along
+        CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files",
+                  iWindowID - WINDOW_HOME);
+      }
+
+      delete params;
+    }
+  }
   break;
+
+    break;
   }
 }
 
