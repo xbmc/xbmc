@@ -152,10 +152,9 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
       }
     }
   }
-  if (found)
-    return;
 
-  CLog::Log(LOGDEBUG, "[WHITELIST] No match for an exact resolution with an exact refresh rate");
+  if (!found)
+    CLog::Log(LOGDEBUG, "[WHITELIST] No match for an exact resolution with an exact refresh rate");
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE))
