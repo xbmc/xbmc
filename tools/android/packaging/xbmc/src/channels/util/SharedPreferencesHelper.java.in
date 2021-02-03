@@ -116,7 +116,7 @@ public final class SharedPreferencesHelper {
         list.add(mGson.fromJson(contactString, clazz));
       }
     } catch (JsonSyntaxException e) {
-      // Log.e(TAG, "Could not parse json.", e);
+      Log.e(TAG, "Could not parse json.", e);
       return Collections.emptyList();
     }
     return list;
