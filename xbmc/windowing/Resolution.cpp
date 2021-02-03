@@ -19,7 +19,7 @@
 #include "utils/log.h"
 
 #include <cstdlib>
-#include <limits>
+#include <math.h>
 
 namespace
 {
@@ -125,8 +125,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   CLog::Log(LOGDEBUG, "[WHITELIST] Searching for an exact resolution with an exact refresh rate");
 
-  unsigned int penalty = std::numeric_limits<unsigned int>::max();
-  bool found = false;
+  float best_fit = 0.0f;
 
   for (const auto& mode : indexList)
   {
@@ -140,20 +139,29 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
+      float fit_percentage =
+          (height == info.iScreenHeight)
+              ? static_cast<float>(width) / static_cast<float>(info.iScreenWidth)
+              : static_cast<float>(height) / static_cast<float>(info.iScreenHeight);
+      if (fit_percentage > 1.0f)
+        fit_percentage = 1.0f / fit_percentage;
+
       CLog::Log(LOGDEBUG,
-                "[WHITELIST] Matched an exact resolution with an exact refresh rate {} ({})",
-                info.strMode, i);
-      unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width);
-      if (pen < penalty)
+                "[WHITELIST] Matched an exact resolution with an exact refresh rate {} ({}), fits {}%",
+          info.strMode, i, round(fit_percentage * 1000.0f) / 10.0f);
+      if (fit_percentage > best_fit)
       {
         resolution = i;
-        found = true;
-        penalty = pen;
+        if (fit_percentage == 1.0f)
+          return; // Ideal resolution found
+
+        best_fit = fit_percentage;
       }
     }
   }
 
-  if (!found)
+
+  if (best_fit == 0.0f)
     CLog::Log(LOGDEBUG, "[WHITELIST] No match for an exact resolution with an exact refresh rate");
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -174,19 +182,27 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
           MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
       {
+        float fit_percentage =
+            (height == info.iScreenHeight)
+                ? static_cast<float>(width) / static_cast<float>(info.iScreenWidth)
+                : static_cast<float>(height) / static_cast<float>(info.iScreenHeight);
+        if (fit_percentage > 1.0f)
+          fit_percentage = 1.0f / fit_percentage;
+
         CLog::Log(LOGDEBUG,
-                  "[WHITELIST] Matched an exact resolution with double the refresh rate {} ({})",
-                  info.strMode, i);
-        unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width);
-        if (pen < penalty)
+                  "[WHITELIST] Matched an exact resolution with double the refresh rate {} ({}), fits {}%",
+                  info.strMode, i, round(fit_percentage * 1000.0f) / 10.0f);
+        if (fit_percentage > best_fit)
         {
           resolution = i;
-          found = true;
-          penalty = pen;
+          if (fit_percentage == 1.0f)
+            return; // Ideal resolution found
+
+          best_fit = fit_percentage;
         }
       }
     }
-    if (found)
+    if (best_fit != 0.0f)
       return;
 
     CLog::Log(LOGDEBUG,
@@ -211,14 +227,29 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
           MathUtils::FloatEquals(info.fRefreshRate, fps * 2.5f, 0.01f))
       {
-        CLog::Log(
-            LOGDEBUG,
-            "[WHITELIST] Matched an exact resolution with a 3:2 pulldown refresh rate {} ({})",
-            info.strMode, i);
-        resolution = i;
-        return;
+        float fit_percentage =
+            (height == info.iScreenHeight)
+                ? static_cast<float>(width) / static_cast<float>(info.iScreenWidth)
+                : static_cast<float>(height) / static_cast<float>(info.iScreenHeight);
+        if (fit_percentage > 1.0f)
+          fit_percentage = 1.0f / fit_percentage;
+
+        CLog::Log(LOGDEBUG,
+                  "[WHITELIST] Matched an exact resolution with a 3:2 pulldown refresh rate {} "
+                  "({}), fits {}%",
+                  info.strMode, i, round(fit_percentage * 1000.0f) / 10.0f);
+        if (fit_percentage > best_fit)
+        {
+          resolution = i;
+          if (fit_percentage == 1.0f)
+            return; // Ideal resolution found
+
+          best_fit = fit_percentage;
+        }
       }
     }
+    if (best_fit != 0.0f)
+      return;
 
     CLog::Log(LOGDEBUG, "[WHITELIST] No match for a resolution with a 3:2 pulldown refresh rate");
   }
