@@ -25,7 +25,7 @@ from __future__ import absolute_import, unicode_literals
 import re, json
 from collections import OrderedDict, namedtuple
 from .utils import safe_get, logger
-from . import settings
+from . import settings, tmdb 
 
 try:
     from typing import Optional, Text, Dict, List, Any  # pylint: disable=unused-import
@@ -35,14 +35,26 @@ except ImportError:
     pass
 
 TAG_RE = re.compile(r'<[^>]+>')
+
+# Regular expressions are listed in order of priority.
+# XML format are preferred than "http links".
+# "TMDB" provider is preferred than other providers (IMDB and TheTVDB),
+# because external providers IDs need to be converted to TMDB_ID.
 SHOW_ID_REGEXPS = (
-    r'(tvmaze)\.com/shows/(\d+)/[\w\-]',
-    r'(thetvdb)\.com/.*?series/(\d+)',
-    r'(thetvdb)\.com[\w=&\?/]+id=(\d+)',
-    r'(imdb)\.com/[\w/\-]+/(tt\d+)',
-    r'(themoviedb)\.org/tv/(\d+).*/episode_group/(.*)',
-    r'(themoviedb)\.org/tv/(\d+)'
-)
+    r'<uniqueid.+(themoviedb).+>\s*(\d+)\s*</uniqueid>',  # TMDB_XML
+    r'<uniqueid.+(tmdb).+>\s*(\d+)\s*</uniqueid>',        # TMDB_XML
+    r'(themoviedb)\.org/tv/(\d+).*/episode_group/(.*)',   # TMDB_http_link
+    r'(themoviedb)\.org/tv/(\d+)',                        # TMDB_http_link
+
+    r'<uniqueid.+(imdb).+>\s*(tt\d+)\s*</uniqueid>',      # IMDB_XML
+    r'<uniqueid.+(thetvdb).+>\s*(\d+)\s*</uniqueid>',     # TheTVDB_XML
+    r'<uniqueid.+(tvdb).+>\s*(\d+)\s*</uniqueid>',        # TheTVDB_XML   
+    
+    r'(imdb)\.com/.+/(tt\d+)',                            # IMDB_http_link
+    r'(thetvdb)\.com.+&id=(\d+)',                         # TheTVDB_http_link 
+    r'(thetvdb)\.com/.*?series/(\d+)',                    # TheTVDB_http_link
+    )
+
 SUPPORTED_ARTWORK_TYPES = {'poster', 'banner'}
 IMAGE_SIZES = ('large', 'original', 'medium')
 CLEAN_PLOT_REPLACEMENTS = (
@@ -300,6 +312,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
 def parse_nfo_url(nfo):
     # type: (Text) -> Optional[UrlParseResult]
     """Extract show ID from NFO file contents"""
+    ep_grouping = None 
     for regexp in SHOW_ID_REGEXPS:
         logger.debug('trying regex to match service from parsing nfo:')
         logger.debug(regexp)
@@ -307,15 +320,17 @@ def parse_nfo_url(nfo):
         if show_id_match:
             logger.debug('match group 1: ' + show_id_match.group(1))
             logger.debug('match group 2: ' + show_id_match.group(2))
-            try:
-                ep_grouping = show_id_match.group(3)
-            except IndexError:
-                ep_grouping = None
-            if ep_grouping is not None:
-                logger.debug('match group 3: ' + ep_grouping)
-            else:
-                logger.debug('match group 3: None')
-            return UrlParseResult(show_id_match.group(1), show_id_match.group(2), ep_grouping)
+            if show_id_match.group(1) == "themoviedb" or show_id_match.group(1) == "tmdb":                
+                try:
+                    ep_grouping = show_id_match.group(3)
+                except IndexError:
+                    pass                
+                tmdb_id = show_id_match.group(2)                
+            else:                              
+                tmdb_id = tmdb._convert_ext_id(show_id_match.group(1), show_id_match.group(2))               
+            if tmdb_id:
+                logger.debug('match group 3: ' + str(ep_grouping))
+                return UrlParseResult('themoviedb', tmdb_id, ep_grouping)            
     return None
 
 

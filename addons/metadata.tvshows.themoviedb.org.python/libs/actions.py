@@ -74,7 +74,7 @@ def get_show_id_from_nfo(nfo):
     parse_result = data_utils.parse_nfo_url(nfo)
     if parse_result:
         if parse_result.provider == 'themoviedb':
-            show_info = tmdb.load_show_info(parse_result.show_id, ep_grouping=parse_result.ep_grouping)
+            show_info = tmdb.load_show_info(show_id = parse_result.show_id, ep_grouping = parse_result.ep_grouping)
         else:
             show_info = None
         if show_info is not None:
