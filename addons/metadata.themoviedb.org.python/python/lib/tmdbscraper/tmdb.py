@@ -1,6 +1,13 @@
 from datetime import datetime, timedelta
 from . import tmdbapi
 
+try: #PY2 / PY3
+    from urllib2 import Request, urlopen
+    from urllib2 import URLError    
+except ImportError:
+    from urllib.request import Request, urlopen
+    from urllib.error import URLError
+
 
 class TMDBMovieScraper(object):
     def __init__(self, url_settings, language, certification_country):
@@ -224,9 +231,29 @@ def _load_base_urls(url_settings):
 
 def _parse_trailer(trailers, fallback):
     if trailers.get('youtube'):
-        return 'plugin://plugin.video.youtube/?action=play_video&videoid='+trailers['youtube'][0]['source']
+        return _trailer_check(trailers.get('youtube'))
     if fallback.get('youtube'):
-        return 'plugin://plugin.video.youtube/?action=play_video&videoid='+fallback['youtube'][0]['source']
+        return _trailer_check(fallback.get('youtube'))
+    return None
+
+def _trailer_check(youtube):
+    sourceBackup = None    
+    for option in youtube:
+        erro = None
+        source = option.get('source')
+        chk_link = "https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v="+source        
+        try:
+            check = urlopen(chk_link)
+        except URLError as e:
+            erro = e.code
+        if erro == 404:   # video NOT available            
+            pass
+        elif option.get('type') == 'Trailer':   # video is available and is defined as "Trailer" by TMDB. Perfect link!            
+            return 'plugin://plugin.video.youtube/?action=play_video&videoid='+source
+        else:             
+            sourceBackup = source      # video is available, but NOT defined as "Trailer" by TMDB. Saving it as backup in case it doesn't find any perfect link
+    if sourceBackup != None:        
+        return 'plugin://plugin.video.youtube/?action=play_video&videoid='+sourceBackup    
     return None
 
 def _get_names(items):
