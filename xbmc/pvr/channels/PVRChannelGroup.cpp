@@ -168,7 +168,9 @@ void CPVRChannelGroup::SetPath(const CPVRChannelsPath& path)
   {
     m_path = path;
     m_bChanged = true;
-    Persist();
+
+    if (m_bLoaded)
+      Persist();
   }
 }
 
@@ -1023,7 +1025,9 @@ void CPVRChannelGroup::SetGroupName(const std::string& strGroupName)
   {
     m_path = CPVRChannelsPath(m_path.IsRadio(), strGroupName);
     m_bChanged = true;
-    Persist();
+
+    if (m_bLoaded)
+      Persist();
   }
 }
 
