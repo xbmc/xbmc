@@ -198,6 +198,7 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
   }
 
   url.m_aspect = XMLUtils::GetAttribute(element, "aspect");
+  url.m_preview = XMLUtils::GetAttribute(element, "preview");
 
   m_urls.push_back(url);
 
@@ -274,6 +275,7 @@ void CScraperUrl::AddParsedUrl(const std::string& url,
   nUrl.m_post = post;
   nUrl.m_isgz = isgz;
   nUrl.m_cache = cache;
+  nUrl.m_preview = preview;
   if (season >= 0)
   {
     nUrl.m_type = UrlType::Season;
