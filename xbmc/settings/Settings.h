@@ -76,6 +76,7 @@ public:
   static constexpr auto SETTING_VIDEOLIBRARY_TVSHOWSINCLUDEALLSEASONSANDSPECIALS =
       "videolibrary.tvshowsincludeallseasonsandspecials";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWALLITEMS = "videolibrary.showallitems";
+  static constexpr auto SETTING_VIDEOLIBRARY_SHOWTRAILERTVSHOWS = "videolibrary.showtrailertvshows";
   static constexpr auto SETTING_VIDEOLIBRARY_GROUPMOVIESETS = "videolibrary.groupmoviesets";
   static constexpr auto SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS =
       "videolibrary.groupsingleitemsets";

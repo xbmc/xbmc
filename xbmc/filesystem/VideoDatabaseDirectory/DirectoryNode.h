@@ -72,14 +72,14 @@ namespace XFILE
       std::string BuildPath() const;
 
       virtual bool CanCache() const;
+      const std::string& GetName() const;
     protected:
       CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
 
       void AddOptions(const std::string &options);
       void CollectQueryParams(CQueryParams& params) const;
-
-      const std::string& GetName() const;
+            
       int GetID() const;
       void RemoveParent();
 

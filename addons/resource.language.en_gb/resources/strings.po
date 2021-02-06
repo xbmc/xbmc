@@ -22485,3 +22485,21 @@ msgstr ""
 msgctxt "#39153"
 msgid "Windowing system:"
 msgstr ""
+
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNode.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeSeasons.cpp
+msgctxt "#39160"
+msgid "* Trailer"
+msgstr ""
+
+#. Setting #39161 "Show Trailer entry on seasons list"
+#: system/settings/settings.xml
+msgctxt "#39161"
+msgid "Show \"Trailer\" entry on seasons list"
+msgstr ""
+
+#. Description of setting "Show TV Show Trailer entry on seasons list"
+#: system/settings/settings.xml
+msgctxt "#39162"
+msgid "If TV Show has Trailer, it will add a \"Trailer\" entry to seasons list"
+msgstr ""
