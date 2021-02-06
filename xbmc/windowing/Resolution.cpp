@@ -215,10 +215,17 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
             LOGDEBUG,
             "[WHITELIST] Matched an exact resolution with a 3:2 pulldown refresh rate {} ({})",
             info.strMode, i);
-        resolution = i;
-        return;
+        unsigned int pen = abs(info.iScreenHeight - height) + abs(info.iScreenWidth - width);
+        if (pen < penalty)
+        {
+          resolution = i;
+          found = true;
+          penalty = pen;
+        }
       }
     }
+    if (found)
+      return;
 
     CLog::Log(LOGDEBUG, "[WHITELIST] No match for a resolution with a 3:2 pulldown refresh rate");
   }
