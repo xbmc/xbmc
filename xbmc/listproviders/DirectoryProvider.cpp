@@ -382,10 +382,18 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
 
-  if (fileItem.HasVideoInfoTag()
-      && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
-      && OnInfo(item))
-    return true;
+  if (fileItem.HasVideoInfoTag())
+  {
+    if (fileItem.GetVideoContentType() == VIDEODB_CONTENT_EPISODES)
+    {
+        if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTEPISODEACTION) == SELECT_ACTION_INFO
+            && OnInfo(item))
+            return true;
+    }        
+    else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
+            && OnInfo(item))
+        return true;
+  }    
 
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());

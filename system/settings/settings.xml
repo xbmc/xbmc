@@ -855,7 +855,21 @@
     </category>
     <category id="video" label="14215" help="38107">
       <group id="1" label="593">
-        <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
+       <setting id="myvideos.selectaction" type="integer" label="39158" help="36177">
+          <level>0</level>
+          <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
+          <constraints>
+            <options>
+              <option label="22080">0</option> <!-- SELECT_ACTION_CHOOSE -->
+              <option label="208">1</option> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
+              <option label="13404">2</option> <!-- SELECT_ACTION_RESUME -->
+              <option label="22081">3</option> <!-- SELECT_ACTION_INFO -->
+              <option label="13347">7</option> <!-- SELECT_ACTION_QUEUE -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="myvideos.selectepisodeaction" type="integer" label="39159" help="36177">
           <level>0</level>
           <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
           <constraints>

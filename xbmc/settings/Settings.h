@@ -130,6 +130,7 @@ public:
   static constexpr auto SETTING_VIDEOPLAYER_LIMITGUIUPDATE = "videoplayer.limitguiupdate";
   static constexpr auto SETTING_VIDEOPLAYER_SUPPORTMVC = "videoplayer.supportmvc";
   static constexpr auto SETTING_MYVIDEOS_SELECTACTION = "myvideos.selectaction";
+  static constexpr auto SETTING_MYVIDEOS_SELECTEPISODEACTION = "myvideos.selectepisodeaction";
   static constexpr auto SETTING_MYVIDEOS_USETAGS = "myvideos.usetags";
   static constexpr auto SETTING_MYVIDEOS_EXTRACTFLAGS = "myvideos.extractflags";
   static constexpr auto SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS = "myvideos.extractchapterthumbs";

@@ -14852,7 +14852,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22079"
-msgid "Default select action"
+msgid "Default select action - EPG"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -22484,4 +22484,14 @@ msgstr ""
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#39153"
 msgid "Windowing system:"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39158"
+msgid "Default select action - Movies & others"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39159"
+msgid "Default select action - Episodes"
 msgstr ""
