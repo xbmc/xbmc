@@ -204,6 +204,11 @@ std::string CPosixTimezone::GetOSConfiguredTimezone()
    // try Slackware approach first
    ssize_t rlrc = readlink("/etc/localtime-copied-from"
                            , timezoneName, sizeof(timezoneName)-1);
+
+   // RHEL and maybe other distros make /etc/localtime a symlink
+   if (rlrc == -1)
+     rlrc = readlink("/etc/localtime", timezoneName, sizeof(timezoneName)-1);
+
    if (rlrc != -1)
    {
      timezoneName[rlrc] = '\0';
