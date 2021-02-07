@@ -1199,8 +1199,6 @@ void CVideoPlayer::Prepare()
   m_offset_pts = 0;
   m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
   m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
-  m_HasAudio = false;
-  m_HasVideo = false;
 
   IPlayerCallback *cb = &m_callback;
   CFileItem fileItem = m_item;
