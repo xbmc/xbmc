@@ -948,7 +948,7 @@
         </setting>
         <setting id="videolibrary.showemptytvshows" type="boolean" label="20471" help="36163">
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videolibrary.tvshowsselectfirstunwatcheditem" type="integer" label="21416" help="21466">
