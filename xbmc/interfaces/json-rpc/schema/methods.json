@@ -2040,7 +2040,8 @@
     "params": [
       { "name": "channelgroupid", "$ref": "PVR.ChannelGroup.Id", "required": true },
       { "name": "properties", "$ref": "PVR.Fields.Channel" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -2134,7 +2135,8 @@
     "permission": "ReadData",
     "params": [
       { "name": "properties", "$ref": "PVR.Fields.Timer" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -2200,7 +2202,8 @@
     "permission": "ReadData",
     "params": [
       { "name": "properties", "$ref": "PVR.Fields.Recording" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
