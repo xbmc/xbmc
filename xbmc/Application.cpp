@@ -1692,8 +1692,8 @@ bool CApplication::OnAction(const CAction &action)
     }
     else if (hdrStatus == HDR_STATUS::HDR_ON)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34222),
-                                            g_localizeStrings.Get(34223));
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34220),
+                                            g_localizeStrings.Get(34222));
     }
     return true;
   }
