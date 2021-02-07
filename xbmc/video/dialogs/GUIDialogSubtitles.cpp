@@ -437,7 +437,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_STORAGEMODE);
 
   // Get (unstacked) path
-  std::string strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
+  std::string strCurrentFile = g_application.CurrentUnstackedItem().GetDynPath();
 
   std::string strDownloadPath = "special://temp";
   std::string strDestPath;
