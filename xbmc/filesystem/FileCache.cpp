@@ -416,7 +416,7 @@ void CFileCache::Process()
     // NOTE: Hysteresis (20-80%) for filling-logic
     const int64_t forward = m_pCache->WaitForData(0, 0);
     const float level =
-        (m_forwardCacheSize == 0) ? 0.0 : static_cast<float>(forward / m_forwardCacheSize);
+        (m_forwardCacheSize == 0) ? 0.0 : static_cast<float>(forward) / m_forwardCacheSize;
 
     if (level > 0.8f)
     {
