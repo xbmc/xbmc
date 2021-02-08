@@ -225,7 +225,6 @@ endif()
 
 # Required dependencies. Keep in alphabetical order please
 set(required_deps ASS>=0.15.0
-                  Cdio
                   CrossGUID
                   Curl
                   Exiv2
@@ -312,6 +311,7 @@ if(ENABLE_UPNP)
 endif()
 
 if(ENABLE_OPTICAL)
+  core_require_dep(Cdio>=0.80)
   list(APPEND DEP_DEFINES -DHAS_OPTICAL_DRIVE -DHAS_CDDA_RIPPER)
 endif()
 
