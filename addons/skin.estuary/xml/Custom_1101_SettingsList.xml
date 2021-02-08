@@ -58,6 +58,7 @@
 						<label>$LOCALIZE[31112]</label>
 						<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
 						<onclick>AudioNextLanguage</onclick>
+						<visible>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</visible>
 					</control>
 					<control type="button" id="11105">
 						<width>700</width>

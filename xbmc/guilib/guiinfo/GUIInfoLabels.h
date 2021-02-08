@@ -267,6 +267,7 @@
 #define VIDEOPLAYER_CAST              292
 #define VIDEOPLAYER_CAST_AND_ROLE     293
 #define VIDEOPLAYER_UNIQUEID          294
+#define VIDEOPLAYER_AUDIOSTREAMCOUNT  295
 
 // Videoplayer infobools
 #define VIDEOPLAYER_HASSUBTITLES      300
