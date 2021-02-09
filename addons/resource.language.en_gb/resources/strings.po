@@ -17162,25 +17162,25 @@ msgstr ""
 
 #empty strings from id 34203 to 34219
 
+#. Manual HDR toggle (ACTION_HDR_TOGGLE) - HDR On/Off toast caption
 #: xbmc/Application.cpp
 msgctxt "#34220"
-msgid "HDR OFF"
+msgid "HDR status"
 msgstr ""
 
+#. Manual HDR toggle (ACTION_HDR_TOGGLE) - HDR Off toast message
 #: xbmc/Application.cpp
 msgctxt "#34221"
-msgid "HDR screen off"
+msgid "Off"
 msgstr ""
 
+#. Manual HDR toggle (ACTION_HDR_TOGGLE) - HDR On toast message
 #: xbmc/Application.cpp
 msgctxt "#34222"
-msgid "HDR ON"
+msgid "On"
 msgstr ""
 
-#: xbmc/Application.cpp
-msgctxt "#34223"
-msgid "HDR screen on"
-msgstr ""
+#empty string with id 34223
 
 #: xbmc/Application.cpp
 msgctxt "#34224"
