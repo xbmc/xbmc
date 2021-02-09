@@ -4889,8 +4889,8 @@ std::vector<CScraperUrl::SUrlEntry> GetBasicItemAvailableArt(
     if (urlEntry.m_aspect.empty())
       urlEntry.m_aspect = tag.m_type == MediaTypeEpisode ? "thumb" : "poster";
     if ((urlEntry.m_aspect == artType ||
-        artType.empty() && !StringUtils::StartsWith(urlEntry.m_aspect, "set.")) &&
-      urlEntry.m_type == CScraperUrl::UrlType::General)
+         (artType.empty() && !StringUtils::StartsWith(urlEntry.m_aspect, "set."))) &&
+        urlEntry.m_type == CScraperUrl::UrlType::General)
     {
       result.push_back(urlEntry);
     }
