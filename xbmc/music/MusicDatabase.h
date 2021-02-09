@@ -670,6 +670,16 @@ public:
   */
   std::vector<std::string> GetAvailableArtTypesForItem(int mediaId, const MediaType& mediaType);
 
+  /*! \brief Fetch the list of available-but-unassigned art URLs held in the
+  database for a specific media item and art type.
+  \param mediaId the id in the media (artist/album) table.
+  \param mediaType corresponds to the table the item resides in (artist/album).
+  \param artType e.g. "thumb", "fanart", etc.
+  \return list of URLs
+  */
+  std::vector<CScraperUrl::SUrlEntry> GetAvailableArtForItem(
+    int mediaId, const MediaType& mediaType, const std::string& artType);
+
   /////////////////////////////////////////////////
   // Tag Scan Version
   /////////////////////////////////////////////////

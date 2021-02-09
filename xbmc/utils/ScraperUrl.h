@@ -38,6 +38,7 @@ public:
     std::string m_url;
     std::string m_cache;
     std::string m_aspect;
+    std::string m_preview;
     UrlType m_type;
     bool m_post;
     bool m_isgz;

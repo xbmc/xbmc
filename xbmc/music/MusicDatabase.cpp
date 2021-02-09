@@ -12228,36 +12228,56 @@ bool CMusicDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
 std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId,
   const MediaType& mediaType)
 {
-  std::vector<std::string> result;
+  CScraperUrl thumbURL;
   if (mediaType == MediaTypeArtist)
   {
     CArtist artist;
     if (GetArtist(mediaId, artist))
-    {
-      for (const auto& urlEntry : artist.thumbURL.GetUrls())
-      {
-        std::string artType = urlEntry.m_aspect;
-        if (artType.empty())
-          artType = "thumb";
-        if (std::find(result.begin(), result.end(), artType) == result.end())
-          result.push_back(artType);
-      }
-    }
+      thumbURL = artist.thumbURL;
   }
   else if (mediaType == MediaTypeAlbum)
   {
     CAlbum album;
     if (GetAlbum(mediaId, album))
-    {
-      for (const auto& urlEntry : album.thumbURL.GetUrls())
-      {
-        std::string artType = urlEntry.m_aspect;
-        if (artType.empty())
-          artType = "thumb";
-        if (std::find(result.begin(), result.end(), artType) == result.end())
-          result.push_back(artType);
-      }
-    }
+      thumbURL = album.thumbURL;
+  }
+
+  std::vector<std::string> result;
+  for (const auto& urlEntry : thumbURL.GetUrls())
+  {
+    std::string artType = urlEntry.m_aspect;
+    if (artType.empty())
+      artType = "thumb";
+    if (std::find(result.begin(), result.end(), artType) == result.end())
+      result.push_back(artType);
+  }
+  return result;
+}
+
+std::vector<CScraperUrl::SUrlEntry> CMusicDatabase::GetAvailableArtForItem(
+  int mediaId, const MediaType& mediaType, const std::string& artType)
+{
+  CScraperUrl thumbURL;
+  if (mediaType == MediaTypeArtist)
+  {
+    CArtist artist;
+    if (GetArtist(mediaId, artist))
+      thumbURL = artist.thumbURL;
+  }
+  else if (mediaType == MediaTypeAlbum)
+  {
+    CAlbum album;
+    if (GetAlbum(mediaId, album))
+      thumbURL = album.thumbURL;
+  }
+
+  std::vector<CScraperUrl::SUrlEntry> result;
+  for (auto urlEntry : thumbURL.GetUrls())
+  {
+    if (urlEntry.m_aspect.empty())
+      urlEntry.m_aspect = "thumb";
+    if (artType.empty() || urlEntry.m_aspect == artType)
+      result.push_back(urlEntry);
   }
   return result;
 }

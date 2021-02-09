@@ -62,6 +62,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 using namespace dbiplus;
 using namespace XFILE;
@@ -4794,6 +4795,7 @@ std::vector<std::string> GetBasicItemAvailableArtTypes(int mediaId,
   CVideoInfoTag tag = db.GetDetailsByTypeAndId(dbType, mediaId);
 
   //! @todo artwork: fanart stored separately, doesn't need to be
+  tag.m_fanart.Unpack();
   if (tag.m_fanart.GetNumFanarts() && std::find(result.cbegin(), result.cend(), "fanart") == result.cend())
     result.emplace_back("fanart");
 
@@ -4863,12 +4865,97 @@ std::vector<std::string> GetMovieSetAvailableArtTypes(int mediaId, CVideoDatabas
   }
   return result;
 }
+
+std::vector<CScraperUrl::SUrlEntry> GetBasicItemAvailableArt(
+  int mediaId, VIDEODB_CONTENT_TYPE dbType, const std::string& artType, CVideoDatabase& db)
+{
+  std::vector<CScraperUrl::SUrlEntry> result;
+  CVideoInfoTag tag = db.GetDetailsByTypeAndId(dbType, mediaId);
+
+  if (artType.empty() || artType == "fanart")
+  {
+    tag.m_fanart.Unpack();
+    for (unsigned int i = 1; i < tag.m_fanart.GetNumFanarts(); i++)
+    {
+      CScraperUrl::SUrlEntry url(tag.m_fanart.GetImageURL(i));
+      url.m_preview = tag.m_fanart.GetPreviewURL(i);
+      url.m_aspect = "fanart";
+      result.push_back(url);
+    }
+  }
+  tag.m_strPictureURL.Parse();
+  for (auto urlEntry : tag.m_strPictureURL.GetUrls())
+  {
+    if (urlEntry.m_aspect.empty())
+      urlEntry.m_aspect = tag.m_type == MediaTypeEpisode ? "thumb" : "poster";
+    if ((urlEntry.m_aspect == artType ||
+        artType.empty() && !StringUtils::StartsWith(urlEntry.m_aspect, "set.")) &&
+      urlEntry.m_type == CScraperUrl::UrlType::General)
+    {
+      result.push_back(urlEntry);
+    }
+  }
+
+  return result;
 }
 
-std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId,
-  const MediaType& mediaType)
+std::vector<CScraperUrl::SUrlEntry> GetSeasonAvailableArt(
+  int mediaId, const std::string& artType, CVideoDatabase& db)
 {
-  VIDEODB_CONTENT_TYPE dbType{VIDEODB_CONTENT_UNKNOWN};
+  CVideoInfoTag tag;
+  db.GetSeasonInfo(mediaId, tag);
+
+  std::vector<CScraperUrl::SUrlEntry> result;
+
+  CVideoInfoTag sourceShow;
+  db.GetTvShowInfo("", sourceShow, tag.m_iIdShow);
+  sourceShow.m_strPictureURL.Parse();
+  for (auto urlEntry : sourceShow.m_strPictureURL.GetUrls())
+  {
+    if (urlEntry.m_aspect.empty())
+      urlEntry.m_aspect = "poster";
+    if ((artType.empty() || urlEntry.m_aspect == artType) &&
+      urlEntry.m_type == CScraperUrl::UrlType::Season &&
+      urlEntry.m_season == tag.m_iSeason)
+    {
+      result.push_back(urlEntry);
+    }
+  }
+  return result;
+}
+
+std::vector<CScraperUrl::SUrlEntry> GetMovieSetAvailableArt(
+  int mediaId, const std::string& artType, CVideoDatabase& db)
+{
+  std::vector<CScraperUrl::SUrlEntry> result;
+  CFileItemList items;
+  std::string baseDir = StringUtils::Format("videodb://movies/sets/%d", mediaId);
+  std::unordered_set<std::string> addedURLs;
+  if (db.GetMoviesNav(baseDir, items))
+  {
+    for (const auto& item : items)
+    {
+      CVideoInfoTag* pTag = item->GetVideoInfoTag();
+      pTag->m_strPictureURL.Parse();
+
+      for (auto urlEntry : pTag->m_strPictureURL.GetUrls())
+      {
+        bool isSetArt = !artType.empty() ? urlEntry.m_aspect == "set." + artType :
+          StringUtils::StartsWith(urlEntry.m_aspect, "set.");
+        if (isSetArt && addedURLs.insert(urlEntry.m_url).second)
+        {
+          urlEntry.m_aspect = urlEntry.m_aspect.substr(4);
+          result.push_back(urlEntry);
+        }
+      }
+    }
+  }
+  return result;
+}
+
+VIDEODB_CONTENT_TYPE CovertMediaTypeToContentType(const MediaType& mediaType)
+{
+  VIDEODB_CONTENT_TYPE dbType{ VIDEODB_CONTENT_UNKNOWN };
   if (mediaType == MediaTypeTvShow)
     dbType = VIDEODB_CONTENT_TVSHOWS;
   else if (mediaType == MediaTypeMovie)
@@ -4877,6 +4964,29 @@ std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId
     dbType = VIDEODB_CONTENT_EPISODES;
   else if (mediaType == MediaTypeMusicVideo)
     dbType = VIDEODB_CONTENT_MUSICVIDEOS;
+
+  return dbType;
+}
+} // namespace
+
+std::vector<CScraperUrl::SUrlEntry> CVideoDatabase::GetAvailableArtForItem(
+  int mediaId, const MediaType& mediaType, const std::string& artType)
+{
+  VIDEODB_CONTENT_TYPE dbType = CovertMediaTypeToContentType(mediaType);
+
+  if (dbType != VIDEODB_CONTENT_UNKNOWN)
+    return GetBasicItemAvailableArt(mediaId, dbType, artType, *this);
+  if (mediaType == MediaTypeSeason)
+    return GetSeasonAvailableArt(mediaId, artType, *this);
+  if (mediaType == MediaTypeVideoCollection)
+    return GetMovieSetAvailableArt(mediaId, artType, *this);
+  return {};
+}
+
+std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId,
+  const MediaType& mediaType)
+{
+  VIDEODB_CONTENT_TYPE dbType = CovertMediaTypeToContentType(mediaType);
 
   if (dbType != VIDEODB_CONTENT_UNKNOWN)
     return GetBasicItemAvailableArtTypes(mediaId, dbType, *this);

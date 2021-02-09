@@ -107,6 +107,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.GetRoles",                        CAudioLibrary::GetRoles },
   { "AudioLibrary.GetSources",                      CAudioLibrary::GetSources },
+  { "AudioLibrary.GetAvailableArtTypes",            CAudioLibrary::GetAvailableArtTypes },
+  { "AudioLibrary.GetAvailableArt",                 CAudioLibrary::GetAvailableArt },
   { "AudioLibrary.SetArtistDetails",                CAudioLibrary::SetArtistDetails },
   { "AudioLibrary.SetAlbumDetails",                 CAudioLibrary::SetAlbumDetails },
   { "AudioLibrary.SetSongDetails",                  CAudioLibrary::SetSongDetails },
@@ -117,6 +119,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Video Library
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
   { "VideoLibrary.GetTags",                         CVideoLibrary::GetTags },
+  { "VideoLibrary.GetAvailableArtTypes",            CVideoLibrary::GetAvailableArtTypes },
+  { "VideoLibrary.GetAvailableArt",                 CVideoLibrary::GetAvailableArt },
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
   { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
   { "VideoLibrary.GetMovieSets",                    CVideoLibrary::GetMovieSets },
