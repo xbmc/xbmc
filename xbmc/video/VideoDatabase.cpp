@@ -3535,15 +3535,7 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
     std::set<int> paths;
     GetPathsForTvShow(idTvShow, paths);
 
-    std::string strSQL=PrepareSQL("SELECT episode.idFile FROM episode WHERE episode.idShow=%i",idTvShow);
-    m_pDS2->query(strSQL);
-    while (!m_pDS2->eof())
-    {
-      DeleteStreamDetails(m_pDS2->fv(0).get_asInt());
-      m_pDS2->next();
-    }
-
-    strSQL=PrepareSQL("SELECT episode.idEpisode FROM episode WHERE episode.idShow=%i",idTvShow);
+    std::string strSQL=PrepareSQL("SELECT episode.idEpisode FROM episode WHERE episode.idShow=%i",idTvShow);
     m_pDS2->query(strSQL);
     while (!m_pDS2->eof())
     {
