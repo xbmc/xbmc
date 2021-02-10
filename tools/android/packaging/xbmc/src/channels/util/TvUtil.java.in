@@ -113,11 +113,21 @@ public class TvUtil
             .setAppLinkIntent(playlistIntent);
 
     Log.d(TAG, "Creating channel: " + subscription.getName());
-    Uri channelUrl =
-            context.getContentResolver()
-                    .insert(
-                            TvContractCompat.Channels.CONTENT_URI,
-                            builder.build().toContentValues());
+    Uri channelUrl = null;
+    try
+    {
+      channelUrl =
+              context.getContentResolver()
+                      .insert(
+                              TvContractCompat.Channels.CONTENT_URI,
+                              builder.build().toContentValues());
+    } catch (IllegalArgumentException e) {
+      Log.e(TAG, "Failed to add channel to the tv provider");
+      e.printStackTrace();
+    }
+
+    if (channelUrl == null)
+      return 0;
 
     Log.d(TAG, "channel insert at " + channelUrl);
     long channelId = ContentUris.parseId(channelUrl);
