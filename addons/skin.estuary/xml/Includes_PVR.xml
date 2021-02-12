@@ -407,7 +407,7 @@
 					<control type="label">
 						<left>2</left>
 						<top>-2</top>
-						<width>75</width>
+						<width>90</width>
 						<height>60</height>
 						<font>font32_title</font>
 						<label>$INFO[ListItem.ChannelNumberLabel]</label>
@@ -415,7 +415,7 @@
 						<aligny>center</aligny>
 					</control>
 					<control type="label" id="1">
-						<left>68</left>
+						<left>83</left>
 						<top>-2</top>
 						<height>60</height>
 						<font>font13</font>
@@ -428,7 +428,7 @@
 					<control type="label">
 						<left>2</left>
 						<top>-2</top>
-						<width>75</width>
+						<width>90</width>
 						<height>60</height>
 						<font>font32_title</font>
 						<label>$INFO[ListItem.ChannelNumberLabel]</label>
@@ -437,7 +437,7 @@
 						<aligny>center</aligny>
 					</control>
 					<control type="label" id="1">
-						<left>68</left>
+						<left>83</left>
 						<top>-2</top>
 						<height>60</height>
 						<font>font13</font>
