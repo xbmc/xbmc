@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<Package IgnorableNamespaces="uap" xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+<Package IgnorableNamespaces="uap rescap" xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
   <Identity Name="@PACKAGE_IDENTITY@" ProcessorArchitecture="@TARGET_ARCHITECTURE@" Publisher="CN=@PACKAGE_PUBLISHER@" Version="@VERSION_CODE@.0" />
   <Properties>
     <DisplayName>@APP_NAME@</DisplayName>
@@ -169,5 +169,6 @@
     <uap:Capability Name="videosLibrary" />
     <uap:Capability Name="removableStorage" />
     <uap:Capability Name="picturesLibrary" />
+    <rescap:Capability Name="expandedResources" />
   </Capabilities>
 </Package>
