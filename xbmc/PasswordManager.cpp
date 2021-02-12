@@ -119,7 +119,13 @@ bool CPasswordManager::IsURLSupported(const CURL &url)
 {
   return url.IsProtocol("smb")
     || url.IsProtocol("nfs")
-    || url.IsProtocol("sftp");
+    || url.IsProtocol("ftp")
+    || url.IsProtocol("ftps")
+    || url.IsProtocol("sftp")
+    || url.IsProtocol("http")
+    || url.IsProtocol("https")
+    || url.IsProtocol("dav")
+    || url.IsProtocol("davs");
 }
 
 void CPasswordManager::Clear()
