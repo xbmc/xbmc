@@ -28,7 +28,6 @@ LIBDIR="@libdir@"
 APP_BINARY=$LIBDIR/${bin_name}/@APP_BINARY@
 CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
 KODI_DATA=${KODI_DATA:-"${HOME}/.${bin_name}"} # mapped to special://home/
-WINDOWING=${WINDOWING:-"auto"}
 
 # Workaround for high CPU load with nvidia GFX
 export __GL_YIELD=USLEEP
