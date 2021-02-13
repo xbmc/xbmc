@@ -13,6 +13,8 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "utils/log.h"
 
+#include <cstddef>
+
 using namespace KODI;
 using namespace RETRO;
 
