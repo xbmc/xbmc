@@ -777,6 +777,14 @@ bool CVideoPlayer::OpenInputStream()
     return false;
   }
 
+  m_clock.Reset();
+  m_dvd.Clear();
+
+  return true;
+}
+
+void CVideoPlayer::ScanExternalSubtitles()
+{
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) &&
       !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
@@ -808,11 +816,6 @@ bool CVideoPlayer::OpenInputStream()
       }
     } // end loop over all subtitle files
   }
-
-  m_clock.Reset();
-  m_dvd.Clear();
-
-  return true;
 }
 
 bool CVideoPlayer::OpenDemuxStream()
@@ -1232,6 +1235,10 @@ void CVideoPlayer::Prepare()
     m_error = true;
     return;
   }
+
+  // scan for external subtitles
+  ScanExternalSubtitles();
+
   // give players a chance to reconsider now codecs are known
   CreatePlayers();
 
@@ -4492,6 +4499,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
         m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename),
         sub->demuxerId, sub->uniqueId);
       SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
+      CLog::Log(LOGDEBUG,"CVideoPlayer::AddSubtitleFile - add subtitle stream %d", index);
 
       if (stream.name.empty())
         stream.name = info.name;
@@ -4528,7 +4536,9 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
 
   m_SelectionStreams.Update(s);
   UpdateContent();
-  return m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, s.source, s.demuxerId, s.id);
+  int subId = m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, s.source, s.demuxerId, s.id);
+  CLog::Log(LOGDEBUG,"CVideoPlayer::AddSubtitleFile - add subtitle stream %d", subId);
+  return subId;
 }
 
 void CVideoPlayer::UpdatePlayState(double timeout)
