@@ -595,7 +595,7 @@ void CSMBFile::Close()
   {
     CLog::Log(LOGDEBUG,"CSMBFile::Close closing fd %d", m_fd);
     CSingleLock lock(smb);
-    if (smb.IsSmbValid())
+    if (!smb.IsSmbValid())
       return;
     smbc_close(m_fd);
   }
