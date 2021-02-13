@@ -9,6 +9,7 @@
 #include "ISO9660File.h"
 
 #include "URL.h"
+#include "utils/log.h"
 
 #include <cmath>
 
@@ -115,7 +116,19 @@ int64_t CISO9660File::GetPosition()
 
 bool CISO9660File::Exists(const CURL& url)
 {
-  return Open(url);
+  if (!m_iso)
+    return false;
+
+  if (!m_iso->open(url.GetHostName().c_str()))
+  {
+    CLog::Log(LOGDEBUG, "{}: ISO 9660 open failed, attempting open_fuzzy", __FUNCTION__);
+    if (!m_iso->open_fuzzy(url.GetHostName().c_str()))
+    {
+      CLog::Log(LOGDEBUG, "{}: ISO 9660 open_fuzzy also failed", __FUNCTION__);
+      return false;
+    }
+  }
+  return true;
 }
 
 int CISO9660File::GetChunkSize()
