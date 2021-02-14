@@ -1250,6 +1250,18 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
     result = event->GetResultData();
     ret = event->GetResultCode();
   }
+
+  // delete from m_activityResultEvents map before deleting the event
+  CSingleLock lock(m_activityResultMutex);
+  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
+  {
+    if ((*it)->GetRequestCode() == requestCode)
+    {
+      m_activityResultEvents.erase(it);
+      break;
+    }
+  }
+
   delete event;
   return ret;
 }
