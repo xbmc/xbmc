@@ -31,10 +31,16 @@ find_library(ISO9660_LIBRARY NAMES libiso9660 iso9660
 
 set(ISO9660PP_VERSION ${PC_ISO9660PP_VERSION})
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Iso9660pp
-                                  REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR CDIOPP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR CDIO_LIBRARY CDIO_INCLUDE_DIR
-                                  VERSION_VAR ISO9660PP_VERSION)
+if(NOT "${CDIO_VERSION}" STREQUAL "" AND NOT "${ISO9660PP_VERSION}" STREQUAL "" AND NOT "${CDIO_VERSION}" VERSION_EQUAL "${ISO9660PP_VERSION}")
+  message(WARNING "Detected libcdio (${CDIO_VERSION}) and iso9660++(${ISO9660PP_VERSION}) vesion mismatch. Iso9660++ will not be used.")
+elseif(NOT "${CDIO_VERSION}" STREQUAL "" AND NOT "${PC_CDIOPP_VERSION}" STREQUAL "" AND NOT "${CDIO_VERSION}" VERSION_EQUAL "${PC_CDIOPP_VERSION}")
+  message(WARNING "Detected libcdio (${CDIO_VERSION}) and libcdio++(${PC_CDIOPP_VERSION}) vesion mismatch. Iso9660++ will not be used.")
+else()
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(Iso9660pp
+                                    REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR CDIOPP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR CDIO_LIBRARY CDIO_INCLUDE_DIR
+                                    VERSION_VAR ISO9660PP_VERSION)
+endif()
 
 if(ISO9660PP_FOUND)
   set(ISO9660PP_LIBRARIES ${ISO9660PP_LIBRARY} ${ISO9660_LIBRARY} ${CDIO_LIBRARY})
