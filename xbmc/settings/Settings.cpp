@@ -108,6 +108,7 @@ constexpr const char* CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHE
 constexpr const char* CSettings::SETTING_VIDEOLIBRARY_TVSHOWSINCLUDEALLSEASONSANDSPECIALS;
 constexpr const char* CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS;
 constexpr const char* CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS;
+constexpr const char* CSettings::SETTING_VIDEOLIBRARY_MOVIESETRATING;
 constexpr const char* CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS;
 constexpr const char* CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP;
 constexpr const char* CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE;
@@ -936,6 +937,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_MOVIESETRATING);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);

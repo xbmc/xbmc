@@ -22454,7 +22454,7 @@ msgctxt "#39147"
 msgid "Episode art types whitelist"
 msgstr ""
 
-#. Description of setting with label #39154 "Episode art types whitelist"
+#. Description of setting with label #39147 "Episode art types whitelist"
 #: system/settings/settings.xml
 msgctxt "#39148"
 msgid "Limit the episode artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
@@ -22465,7 +22465,7 @@ msgctxt "#39149"
 msgid "Music video art types whitelist"
 msgstr ""
 
-#. Description of setting with label #39156 "Music video art types whitelist"
+#. Description of setting with label #39149 "Music video art types whitelist"
 #: system/settings/settings.xml
 msgctxt "#39150"
 msgid "Limit the music video artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
@@ -22484,4 +22484,29 @@ msgstr ""
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#39153"
 msgid "Windowing system:"
+msgstr ""
+
+#. Main label of the setting which selects the "Movie sets rating" calculation method, it can be toggled between [Average] or [Highest]
+#: system/settings/settings.xml
+msgctxt "#39154"
+msgid "Movie set rating"
+msgstr ""
+
+#. Select option for the setting "Movie set rating". When selecting "Average", the "Movie set rating" will be equal to the average rating of the movies in the set
+#: system/settings/settings.xml
+msgctxt "#39155"
+msgid "Average"
+msgstr ""
+
+#. 
+#. Select option for the setting "Movie set rating". When selecting "Highest", the "Movie set rating" will be equal to the movie with the Highest rating in the set
+#: system/settings/settings.xml
+msgctxt "#39156"
+msgid "Highest"
+msgstr ""
+
+#. Description of the setting with label "Movie set rating". It describes what happens when selecting [Average] or [Highest] optionss
+#: system/settings/settings.xml
+msgctxt "#39157"
+msgid "Movie set rating calc method. Toggle between [Average] (the average rating of the movies in the set), or [Highest] (the movie with the Highest rating in the set)."
 msgstr ""

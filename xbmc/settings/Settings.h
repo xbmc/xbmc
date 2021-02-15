@@ -77,6 +77,7 @@ public:
       "videolibrary.tvshowsincludeallseasonsandspecials";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWALLITEMS = "videolibrary.showallitems";
   static constexpr auto SETTING_VIDEOLIBRARY_GROUPMOVIESETS = "videolibrary.groupmoviesets";
+  static constexpr auto SETTING_VIDEOLIBRARY_MOVIESETRATING = "videolibrary.moviesetrating";
   static constexpr auto SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS =
       "videolibrary.groupsingleitemsets";
   static constexpr auto SETTING_VIDEOLIBRARY_UPDATEONSTARTUP = "videolibrary.updateonstartup";
@@ -437,6 +438,11 @@ public:
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES = 0;
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES = 1;
   static const int VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE = 2;
+
+  // values for SETTING_VIDEOLIBRARY_MOVIESETRATING
+  static const int VIDEOLIBRARY_MOVIESETRATING_AVERAGE = 0;
+  static const int VIDEOLIBRARY_MOVIESETRATING_HIGHEST = 1;
+
   // values for SETTING_VIDEOLIBRARY_ARTWORK_LEVEL
   static const int VIDEOLIBRARY_ARTWORK_LEVEL_ALL = 0;
   static const int VIDEOLIBRARY_ARTWORK_LEVEL_BASIC = 1;

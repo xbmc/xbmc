@@ -924,6 +924,20 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.moviesetrating" type="integer" parent="videolibrary.groupmoviesets" label="39154" help="39157">
+          <level>1</level>
+          <default>0</default> <!-- SELECT_MOVIESETRATING_AVERAGE -->
+          <constraints>
+            <options>
+              <option label="39155">0</option> <!-- SELECT_MOVIESETRATING_AVERAGE -->
+              <option label="39156">1</option> <!-- SELECT_MOVIESETRATING_HIGHEST -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videolibrary.groupmoviesets" operator="is">true</dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videolibrary.groupsingleitemsets" type="boolean" label="20470" help="36157">
           <level>1</level>
           <default>false</default>
