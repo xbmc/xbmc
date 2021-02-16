@@ -4867,7 +4867,7 @@ std::vector<CScraperUrl::SUrlEntry> GetBasicItemAvailableArt(
   if (artType.empty() || artType == "fanart")
   {
     tag.m_fanart.Unpack();
-    for (unsigned int i = 1; i < tag.m_fanart.GetNumFanarts(); i++)
+    for (unsigned int i = 0; i < tag.m_fanart.GetNumFanarts(); i++)
     {
       CScraperUrl::SUrlEntry url(tag.m_fanart.GetImageURL(i));
       url.m_preview = tag.m_fanart.GetPreviewURL(i);
