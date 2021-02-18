@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.themoviedb.org.python"
        name="The Movie Database Python"
-       version="1.3.0+matrix.1"
+       version="1.3.1+matrix.1"
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
@@ -11,14 +11,14 @@
              library="python/scraper.py"/>
   <extension point="xbmc.addon.metadata">
     <reuselanguageinvoker>true</reuselanguageinvoker>
-    <news>v1.3.0 (2020-10-04)
+    <news>v1.3.1 (2020-11-02)
+- Change: simplify artwork selection options
+- Fix: strip region to pick correct poster language
+
+v1.3.0 (2020-10-04)
 - Change: removed dependencies on requests, tmdbsimple, and trakt modules
 - Change: images now returned with initial API call instead of during fallback
 - Change: settings language for TMDb now use culture name (i.e. en-US) - required for direct API call
-
-v1.2.1 (2020-08-08)
-- Fix: Prefer movies that exactly match search title and year
-- Fix: Change 'landscape from TMDb' option disabled behavior to keep titled fanart
 </news>
     <summary lang="af_ZA">TMDB Fliek Skraper</summary>
     <summary lang="be_BY">TMDB Movie Scraper</summary>

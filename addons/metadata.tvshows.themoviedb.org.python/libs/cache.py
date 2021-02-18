@@ -23,7 +23,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import os, pickle
-from datetime import datetime, timedelta
 import xbmc, xbmcvfs
 
 from .utils import ADDON, logger
@@ -34,31 +33,18 @@ except ImportError:
     pass
 
 
-CACHING_DURATION = timedelta(hours=3)  # type: timedelta
-
 
 def _get_cache_directory():  # pylint: disable=missing-docstring
     # type: () -> Text
-    profile_dir = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
-    cache_dir = os.path.join(profile_dir, 'cache')
+    temp_dir = xbmcvfs.translatePath('special://temp')
+    cache_dir = os.path.join(temp_dir, 'scrapers', ADDON.getAddonInfo('id'))
     if not xbmcvfs.exists(cache_dir):
         xbmcvfs.mkdir(cache_dir)
+    logger.debug('the cache dir is ' + cache_dir)
     return cache_dir
 
 
 CACHE_DIR = _get_cache_directory()  # type: Text
-
-
-def clean_cache():
-    """
-    delete cache items that have expired
-    """
-    dirs, files = xbmcvfs.listdir(CACHE_DIR)
-    for filename in files:
-        filepath = os.path.join(CACHE_DIR, filename)
-        lastmod = datetime.fromtimestamp(xbmcvfs.Stat(filepath).st_mtime())
-        if datetime.now() - lastmod > CACHING_DURATION:
-            xbmcvfs.delete(filepath)
 
 
 def cache_show_info(show_info):
@@ -68,8 +54,7 @@ def cache_show_info(show_info):
     """
     file_name = str(show_info['id']) + '.pickle'
     cache = {
-        'show_info': show_info,
-        'timestamp': datetime.now(),
+        'show_info': show_info
     }
     with open(os.path.join(CACHE_DIR, file_name), 'wb') as fo:
         pickle.dump(cache, fo, protocol=2)
@@ -89,8 +74,6 @@ def load_show_info_from_cache(show_id):
             load_kwargs = {}
             load_kwargs['encoding'] = 'bytes'
             cache = pickle.load(fo, **load_kwargs)
-        if datetime.now() - cache['timestamp'] > CACHING_DURATION:
-            return None
         return cache['show_info']
     except (IOError, pickle.PickleError) as exc:
         logger.debug('Cache message: {} {}'.format(type(exc), exc))

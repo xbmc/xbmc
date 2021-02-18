@@ -1,3 +1,33 @@
+[B]5.2.6[/B]
+- changed: Updated de and zh language codes to match tmdb - these codes needs to be reset by the users
+
+[B]5.2.4[/B]
+- fixed: trying to workaround the search results issue
+
+[B]5.2.3[/B]
+- fixed: search results
+
+[B]5.2.2[/B]
+- fixed: fr-FR and it-IT language parameter
+
+[B]5.2.1[/B]
+- added: Estonian language option
+
+[B]5.2.0[/B]
+- added: Landscape scraping from tmdb
+
+[B]5.1.11[/B]
+- added: belarusian language option
+
+[B]5.1.10[/B]
+- improved: search results to handle articles and the end of title
+
+[B]5.1.9[/B]
+- fixed: search results
+
+[B]5.1.8[/B]
+- updated: CZ language
+
 [B]5.1.6&5.1.7[/B]
 - changed: fixes for Chinese language 
 

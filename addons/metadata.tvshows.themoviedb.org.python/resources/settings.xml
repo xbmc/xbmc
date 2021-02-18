@@ -141,6 +141,11 @@
 					<default>false</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="cat_landscape" type="boolean" label="30005" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
 			</group>
 		</category>
 		<category id="ratings" label="30300" help="">

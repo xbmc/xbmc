@@ -30,23 +30,8 @@ def configure_tmdb_artwork(details, settings):
 
     return details
 
-_fanarttv_arttypes = ['fanart', 'poster', 'clearlogo', 'clearart', 'discart', 'banner', 'landscape', 'keyart']
-_fanarttv_arttypes += ['set.' + t for t in _fanarttv_arttypes]
-def configure_fanarttv_artwork(details, settings):
-    if 'available_art' not in details:
-        return details
-    art = details['available_art']
-    for arttype in _fanarttv_arttypes:
-        if arttype in art and not settings.getSettingBool('enable_fanarttv_' + arttype):
-            del art[arttype]
-
-    return details
-
 def is_fanarttv_configured(settings):
-    for arttype in _fanarttv_arttypes:
-        if settings.getSettingBool('enable_fanarttv_' + arttype):
-            return True
-    return False
+    return settings.getSettingBool('enable_fanarttv_artwork')
 
 def _configure_rating_prefix(details, settings):
     if details['info'].get('mpaa'):

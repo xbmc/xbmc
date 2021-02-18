@@ -41,7 +41,9 @@ SHOW_ID_REGEXPS = (
     r'(thetvdb)\.com[\w=&\?/]+id=(\d+)',
     r'(imdb)\.com/[\w/\-]+/(tt\d+)',
     r'(themoviedb)\.org/tv/(\d+).*/episode_group/(.*)',
-    r'(themoviedb)\.org/tv/(\d+)'
+    r'(themoviedb)\.org/tv/(\d+)',
+    r'(themoviedb)\.org/./tv/(\d+)',
+    r'(tmdb)\.org/./tv/(\d+)'
 )
 SUPPORTED_ARTWORK_TYPES = {'poster', 'banner'}
 IMAGE_SIZES = ('large', 'original', 'medium')
@@ -74,7 +76,7 @@ def _set_cast(cast_info, list_item):
     for item in cast_info:
         data = {
             'name': item['name'],
-            'role': item['character'],
+            'role': item.get('character', item.get('character_name', '')),
             'order': item['order'],
         }
         thumb = None
@@ -90,13 +92,14 @@ def _set_cast(cast_info, list_item):
 def _get_credits(show_info):
     # type: (InfoType) -> List[Text]
     """Extract show creator(s) and writer(s) from show info"""
-    credits_ = []
+    credits = []
     for item in show_info.get('created_by', []):
-        credits_.append(item['name'])
+        credits.append(item['name'])
     for item in show_info.get('credits', {}).get('crew', []):
-        if item.get('job') == 'Writer' and item.get('name') not in credits_:
-            credits_.append(item['name'])
-    return credits_
+        isWriter = item.get('job', '').lower() == 'writer' or item.get('department', '').lower() == 'writing'
+        if isWriter and item.get('name') not in credits:
+            credits.append(item['name'])
+    return credits
 
 
 def _get_directors(episode_info):
@@ -140,11 +143,8 @@ def _add_season_info(show_info, list_item):
     # type: (InfoType, ListItem) -> ListItem
     """Add info for show seasons"""
     for season in show_info['seasons']:
+        logger.debug('adding information for season %s to list item' % season['season_number'])
         list_item.addSeason(season['season_number'], safe_get(season, 'name', ''))
-#        image = season.get('poster_path', '')
-#        if image:
-#            url = settings.IMAGEROOTURL + image
-#            list_item.addAvailableArtwork(url, 'poster', season=season['season_number'])
         for image_type, image_list in season.get('images', {}).items():
             if image_type == 'posters':
                 destination = 'poster'
@@ -161,6 +161,16 @@ def _add_season_info(show_info, list_item):
     return list_item
 
 
+def get_image_urls( image ):
+    if image.get('type') == 'fanarttv':
+        theurl = image['file_path']
+        previewurl = theurl.replace('.fanart.tv/fanart/', '.fanart.tv/preview/')
+    else:
+        theurl = settings.IMAGEROOTURL + image['file_path']
+        previewurl = settings.PREVIEWROOTURL + image['file_path']
+    return theurl, previewurl
+
+
 def set_show_artwork(show_info, list_item):
     # type: (InfoType, ListItem) -> ListItem
     """Set available images for a show"""
@@ -172,7 +182,11 @@ def set_show_artwork(show_info, list_item):
                     theurl = image['file_path']
                 else:
                     theurl = settings.IMAGEROOTURL + image['file_path']
-                fanart_list.append({'image': theurl})
+                if image.get('iso_639_1') != None and settings.CATLANDSCAPE:
+                    theurl, previewurl = get_image_urls( image )
+                    list_item.addAvailableArtwork(theurl, art_type="landscape", preview=previewurl)
+                else:
+                    fanart_list.append({'image': theurl})
             if fanart_list:
                 list_item.setAvailableFanart(fanart_list)
         else:
@@ -181,12 +195,7 @@ def set_show_artwork(show_info, list_item):
             else:
                 destination = image_type
             for image in image_list:
-                if image.get('type') == 'fanarttv':
-                    theurl = image['file_path']
-                    previewurl = theurl.replace('.fanart.tv/fanart/', '.fanart.tv/preview/')
-                else:
-                    theurl = settings.IMAGEROOTURL + image['file_path']
-                    previewurl = settings.PREVIEWROOTURL + image['file_path']
+                theurl, previewurl = get_image_urls( image )
                 list_item.addAvailableArtwork(theurl, art_type=destination, preview=previewurl)
     return list_item
 
@@ -204,6 +213,7 @@ def add_main_show_info(list_item, show_info, full_info=True):
         'plot': plot,
         'plotoutline': plot,
         'title': showname,
+        'originaltitle': original_name,
         'tvshowtitle': showname,
         'mediatype': 'tvshow',
         # This property is passed as "url" parameter to getepisodelist call
@@ -257,6 +267,7 @@ def add_main_show_info(list_item, show_info, full_info=True):
             theurl = settings.IMAGEROOTURL + image
             previewurl = settings.PREVIEWROOTURL + image
             list_item.addAvailableArtwork(theurl, art_type='poster', preview=previewurl)
+    logger.debug('adding tv show information for %s to list item' % video['tvshowtitle'])
     list_item.setInfo('video', video)
     # This is needed for getting artwork
     list_item = _set_unique_ids(show_info, list_item)
@@ -267,7 +278,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
     # type: (ListItem, InfoType, bool) -> ListItem
     """Add episode info to a list item"""
     video = {
-        'title': episode_info['name'],
+        'title': episode_info.get('name', 'Episode ' + str(episode_info['episode_number'])),
         'season': episode_info['season_number'],
         'episode': episode_info['episode_number'],
         'mediatype': 'episode',
@@ -293,13 +304,18 @@ def add_episode_info(list_item, episode_info, full_info=True):
                 list_item.addAvailableArtwork(theurl, art_type='thumb', preview=previewurl)
         video['credits'] = video['writer'] = _get_credits(episode_info)
         video['director'] = _get_directors(episode_info)
+    logger.debug('adding episode information for S%sE%s - %s to list item' % (video['season'], video['episode'], video['title']))
     list_item.setInfo('video', video)
     return list_item
 
 
 def parse_nfo_url(nfo):
     # type: (Text) -> Optional[UrlParseResult]
-    """Extract show ID from NFO file contents"""
+    """Extract show ID and named seasons from NFO file contents"""
+    # work around for xbmcgui.ListItem.addSeason overwriting named seasons from NFO files
+    ns_regex = r'<namedseason number="(.*)">(.*)</namedseason>'
+    ns_match = re.findall(ns_regex, nfo, re.I)
+    sid_match = None
     for regexp in SHOW_ID_REGEXPS:
         logger.debug('trying regex to match service from parsing nfo:')
         logger.debug(regexp)
@@ -315,8 +331,9 @@ def parse_nfo_url(nfo):
                 logger.debug('match group 3: ' + ep_grouping)
             else:
                 logger.debug('match group 3: None')
-            return UrlParseResult(show_id_match.group(1), show_id_match.group(2), ep_grouping)
-    return None
+            sid_match = UrlParseResult(show_id_match.group(1), show_id_match.group(2), ep_grouping)
+            break
+    return sid_match, ns_match
 
 
 def parse_media_id(title):

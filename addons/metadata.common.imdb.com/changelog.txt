@@ -1,3 +1,6 @@
+[B]3.1.6[/B]
+- fixed: IMDb outline as plot
+
 [B]3.1.5[/B]
 - changed: switch to https
 
