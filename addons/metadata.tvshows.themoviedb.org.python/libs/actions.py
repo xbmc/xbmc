@@ -71,10 +71,10 @@ def get_show_id_from_nfo(nfo):
     if isinstance(nfo, bytes):
         nfo = nfo.decode('utf-8', 'replace')
     logger.debug('Parsing NFO file:\n{}'.format(nfo))
-    parse_result = data_utils.parse_nfo_url(nfo)
+    parse_result, named_seasons = data_utils.parse_nfo_url(nfo)
     if parse_result:
         if parse_result.provider == 'themoviedb':
-            show_info = tmdb.load_show_info(parse_result.show_id, ep_grouping=parse_result.ep_grouping)
+            show_info = tmdb.load_show_info(parse_result.show_id, ep_grouping=parse_result.ep_grouping, named_seasons=named_seasons)
         else:
             show_info = None
         if show_info is not None:
@@ -109,10 +109,10 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
         # Kodi has a bug: when a show directory contains an XML NFO file with
         # episodeguide URL, that URL is always passed here regardless of
         # the actual parsing result in get_show_from_nfo()
-        parse_result = data_utils.parse_nfo_url(show_id)
+        parse_result, named_seasons = data_utils.parse_nfo_url(show_id)
         if not parse_result:
             return
-        if parse_result.provider == 'themoviedb':
+        if parse_result.provider == 'themoviedb' or parse_result.provider == 'tmdb':
             show_info = tmdb.load_show_info(parse_result.show_id)
         else:
             return
@@ -121,7 +121,8 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
     if show_info is not None:
         theindex = 0
         for episode in show_info['episodes']:
-            list_item = xbmcgui.ListItem(episode['name'], offscreen=True)
+            epname = episode.get('name', 'Episode ' + str(episode['episode_number']))
+            list_item = xbmcgui.ListItem(epname, offscreen=True)
             list_item = data_utils.add_episode_info(list_item, episode, full_info=False)
             encoded_ids = urllib.parse.urlencode(
                 {'show_id': str(show_info['id']), 'episode_id': str(theindex)}
@@ -184,16 +185,22 @@ def router(paramstring):
     params = dict(urllib.parse.parse_qsl(paramstring))
     logger.debug('Called addon with params: {}'.format(sys.argv))
     if params['action'] == 'find':
+        logger.debug('performing find action')
         find_show(params['title'], params.get('year'))
     elif params['action'].lower() == 'nfourl':
+        logger.debug('performing nfourl action')
         get_show_id_from_nfo(params['nfo'])
     elif params['action'] == 'getdetails':
+        logger.debug('performing getdetails action')
         get_details(params['url'])
     elif params['action'] == 'getepisodelist':
+        logger.debug('performing getepisodelist action')
         get_episode_list(params['url'])
     elif params['action'] == 'getepisodedetails':
+        logger.debug('performing getepisodedetails action')
         get_episode_details(params['url'])
     elif params['action'] == 'getartwork':
+        logger.debug('performing getartwork action')
         get_artwork(params.get('id'))
     else:
         raise RuntimeError('Invalid addon call: {}'.format(sys.argv))

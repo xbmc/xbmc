@@ -19,23 +19,8 @@
 		<setting id="previewUrl" type="text" default="" visible="false" />
 	</category>
 	<category label="Fanart.tv">
+		<setting label="30102" type="bool" id="enable_fanarttv_artwork" default="true"/>
         <setting id="fanarttv_language" label="30100" type="select" default="en" values="en|fr|de|ja|zh|es|it|pt|sv|ru|nl|ar|ko|no|hu|da|hi|is|pl|he|bg|fi|ml" />
-		<setting label="30102" type="bool" id="enable_fanarttv_fanart" default="false"/>
-		<setting label="30103" type="bool" id="enable_fanarttv_poster" default="false"/>
-		<setting label="30116" type="bool" id="enable_fanarttv_keyart" default="false"/>
-		<setting label="30104" type="bool" id="enable_fanarttv_clearlogo" default="false"/>
-		<setting label="30105" type="bool" id="enable_fanarttv_clearart" default="false"/>
-		<setting label="30106" type="bool" id="enable_fanarttv_discart" default="false"/>
-		<setting label="30107" type="bool" id="enable_fanarttv_banner" default="false"/>
-		<setting label="30108" type="bool" id="enable_fanarttv_landscape" default="false"/>
-		<setting label="30109" type="bool" id="enable_fanarttv_set.fanart" default="false"/>
-		<setting label="30110" type="bool" id="enable_fanarttv_set.poster" default="false"/>
-		<setting label="30117" type="bool" id="enable_fanarttv_set.keyart" default="false"/>
-		<setting label="30111" type="bool" id="enable_fanarttv_set.clearlogo" default="false"/>
-		<setting label="30112" type="bool" id="enable_fanarttv_set.clearart" default="false"/>
-		<setting label="30113" type="bool" id="enable_fanarttv_set.discart" default="false"/>
-		<setting label="30114" type="bool" id="enable_fanarttv_set.banner" default="false"/>
-		<setting label="30115" type="bool" id="enable_fanarttv_set.landscape" default="false"/>
 		<setting label="30101" type="text" id="fanarttv_clientkey" default="" />
 	</category>
 </settings>

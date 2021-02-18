@@ -160,6 +160,9 @@ def _get_moviecollection(collection_id, language=None):
         return response
 
 def _parse_artwork(movie, collection, urlbases, language):
+    if language:
+        # Image languages don't have regional variants
+        language = language.split('-')[0]
     posters = []
     landscape = []
     fanart = []

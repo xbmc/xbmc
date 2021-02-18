@@ -18,8 +18,7 @@
 
 import json, sys, urllib.parse
 from .utils import logger
-from . import api_utils, cache
-from pprint import pformat
+from . import api_utils
 from xbmcaddon import Addon
 from datetime import datetime, timedelta
 
@@ -39,7 +38,6 @@ def _load_base_urls():
     last_updated = ADDON.getSettingString('lastUpdated')
     if not image_root_url or not preview_root_url or not last_updated or \
             float(last_updated) < _get_date_numeric(datetime.now() - timedelta(days=30)):
-        cache.clean_cache()
         conf = _get_configuration()
         if conf:
             image_root_url = conf['images']['secure_base_url'] + 'original'
@@ -74,9 +72,9 @@ try:
 except IndexError:
     source_params = {}
 source_settings = json.loads(source_params.get('pathSettings', {}))
-logger.debug('the source settings are:\n{}'.format(pformat(source_settings)))
 
 KEEPTITLE =source_settings.get('keeporiginaltitle', ADDON.getSettingBool('keeporiginaltitle'))
+CATLANDSCAPE = source_settings.get('cat_landscape', True)
 VERBOSELOG =  source_settings.get('verboselog', ADDON.getSettingBool('verboselog'))
 LANG = source_settings.get('language', ADDON.getSettingString('language'))
 CERT_COUNTRY = source_settings.get('tmdbcertcountry', ADDON.getSettingString('tmdbcertcountry')).lower()

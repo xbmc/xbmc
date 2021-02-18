@@ -36,7 +36,11 @@ msgctxt "#30004"
 msgid "Keep original title"
 msgstr ""
 
-# empty strings from 30007 to 30099
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr ""
+
+# empty strings from 30006 to 30099
 
 msgctxt "#30100"
 msgid "Fanart.tv"

@@ -47,3 +47,7 @@ msgstr ""
 msgctxt "#30007"
 msgid "Add also IMDb ratings"
 msgstr ""
+
+msgctxt "#30008"
+msgid "Enable Landscape"
+msgstr ""
