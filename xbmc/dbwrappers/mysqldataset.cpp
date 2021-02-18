@@ -147,7 +147,7 @@ int MysqlDatabase::connect(bool create_new) {
     return DB_CONNECTION_NONE;
 
   std::string resolvedHost;
-  if (CDNSNameCache::Lookup(host, resolvedHost))
+  if (!StringUtils::EqualsNoCase(host,"localhost") && CDNSNameCache::Lookup(host, resolvedHost))
   {
     CLog::Log(LOGDEBUG, "{} replacing configured host {} with resolved host {}", __FUNCTION__, host,
               resolvedHost);
