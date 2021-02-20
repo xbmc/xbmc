@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.4)
+if(WIN32)
+  # Version 3.15 is required to use "PREPEND" for dependencies
+  cmake_minimum_required(VERSION 3.15)
+endif()
 project(kodi LANGUAGES CXX C ASM)
 
 if(POLICY CMP0069)
