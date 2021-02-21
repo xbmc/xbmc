@@ -270,7 +270,7 @@ case $host in
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
     optimize_flags="-Os"
-    platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
+    platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib"
 
     case $host in
       arm*-*linux-android*)
@@ -303,7 +303,7 @@ case $host in
       esac
 
     platform_cxxflags="$platform_cflags -frtti"
-    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
+    platform_includes="-I$prefix/$deps_dir/include"
     platform_os="android"
     meson_system="android"
     #android builds are always cross
