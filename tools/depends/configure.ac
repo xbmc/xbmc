@@ -142,15 +142,16 @@ fi
 
 use_host=$host_alias
 
+# all configure depends builds are considered cross_compiling
+# cross_compiling!=yes env var is used to allow individual target dependencies to be built
+# for linux platforms without building all dependencies
 cross_compiling="yes"
 if test "x$host" = "x$build"; then
   use_host=$build_cpu-$build_os
-  cross_compiling="no"
 fi
 
 deps_dir=$use_host-$build_type
 tool_dir=$build_cpu-$build_os-native
-cross_compiling="yes"
 
 case $build in
   aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*)
@@ -167,6 +168,7 @@ case $build in
     android_toolchain_name="linux-x86_64"
   ;;
   *darwin*)
+    cross_compiling="yes"
     build_os="osx"
     host_includes=-mmacosx-version-min=`sw_vers | grep ProductVersion | awk '{ print $2}'`
     use_xcodepath=`xcode-select -print-path`
