@@ -221,12 +221,19 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   bool success = false;
   if (m_pGLContext)
   {
+    if (force)
+    {
+      g_application.UnloadSkin();
+      CRenderSystemGL::DestroyRenderSystem();
+    }
     success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
     if (!success)
     {
       success = m_pGLContext->CreatePB();
       m_newGlContext = true;
     }
+    if (force)
+      CRenderSystemGL::InitRenderSystem();
     return success;
   }
 
