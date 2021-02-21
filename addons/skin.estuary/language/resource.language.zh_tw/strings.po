@@ -86,7 +86,7 @@ msgstr "最近收看的頻道"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "已評分"
+msgstr "分級"
 
 msgctxt "#31018"
 msgid "Recently played channels"
@@ -214,7 +214,7 @@ msgstr "基於 Arial"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "移至播放列表"
+msgstr "檢視播放列表"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"

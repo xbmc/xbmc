@@ -16,6 +16,14 @@ msgstr ""
 "Language: sk_SK\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgctxt "#30000"
+msgid "Brightness level"
+msgstr "Úroveň jasu"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Úroveň v percentách, ako silno má zostať obrazovka osvetlená. "
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferencie"

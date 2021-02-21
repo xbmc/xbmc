@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial tabanlı"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Geri atlamak için [B]Sol[/B] tuşuna, ileri atlamak için [B]Sağ[/B] tuşana basın"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "İlerletmek için [B]Sağ[/B] tuşana basın"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Çalma listesine git"
@@ -460,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Kalan"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binary"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "En son değişiklikleri görmek için tıklayınız..."
@@ -514,7 +526,11 @@ msgstr "Kategoriler"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Tür fanart paketini seçin"
+msgstr "Tarz fanart paketini seçin"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Kaynak"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -583,3 +599,11 @@ msgstr "Profil avatarı"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Arka plana animasyon ekle"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Müzik videoları için küçük resimler yerine poster gösterin"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Resimle ilgili ayarlar."

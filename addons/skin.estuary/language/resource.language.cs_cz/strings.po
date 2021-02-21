@@ -488,6 +488,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Hledat doplňky"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "V kinech "
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Brzy v kinech "
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategorie"
@@ -495,6 +503,10 @@ msgstr "Kategorie"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Zvolte balíček fanartů žánru"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Původ"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

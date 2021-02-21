@@ -16,6 +16,14 @@ msgstr ""
 "Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Brightness level"
+msgstr "Nivå för ljusstyrka"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Nivå i procent för hur starkt skärmen ska belysas."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Inställningar"

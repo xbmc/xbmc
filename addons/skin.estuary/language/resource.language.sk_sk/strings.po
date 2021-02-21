@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Písmo založené na Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Stlačte tlačidlo [B]Vľavo[/B] pre krok späť, alebo [B]Vpravo[/B] pre krok vpred "
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Stlačením [B]Doprava[/B] posuniete dopredu "
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Prejsť na zoznam skladieb"
@@ -516,6 +524,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Vyberte fanart balík pre žánre"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Pôvod"
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Nepozreté hudobné videá"
@@ -583,3 +595,11 @@ msgstr "Profilový avatar"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animovať pozadie"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Pre hudobné videá namiesto miniatúr zobrazovať plagáty "
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Nastavenia súvisiace s Artwork"
