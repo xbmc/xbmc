@@ -148,6 +148,7 @@ test-dependencies:
 
 
 distclean::
+	rm -f $(PREFIX)/share/cross-file.meson
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
 
 HOST_LIB_PKGCONFIG := $(firstword $(wildcard /usr/lib64/pkgconfig /usr/lib/$(HOST)/pkgconfig))
