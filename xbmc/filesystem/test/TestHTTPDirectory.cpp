@@ -36,6 +36,7 @@ using namespace XFILE;
 #define TEST_FILE_BASIC_MULTILINE "basic-multiline.html"
 #define TEST_FILE_LIGHTTP_DEFAULT "lighttp-default.html"
 #define TEST_FILE_NGINX_DEFAULT "nginx-default.html"
+#define TEST_FILE_NGINX_FANCYINDEX "nginx-fancyindex.html"
 
 #define SAMPLE_ITEM_COUNT 6
 
@@ -285,6 +286,16 @@ TEST_F(TestHTTPDirectory, NginxDefaultIndex)
 
   ASSERT_TRUE(m_httpDirectory.Exists(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_DEFAULT))));
   ASSERT_TRUE(m_httpDirectory.GetDirectory(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_DEFAULT)), items));
+
+  CheckFileItemsAndMetadata(items);
+}
+
+TEST_F(TestHTTPDirectory, NginxFancyIndex)
+{
+  CFileItemList items;
+
+  ASSERT_TRUE(m_httpDirectory.Exists(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_FANCYINDEX))));
+  ASSERT_TRUE(m_httpDirectory.GetDirectory(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_FANCYINDEX)), items));
 
   CheckFileItemsAndMetadata(items);
 }
