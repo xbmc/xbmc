@@ -147,6 +147,9 @@ web applications or frameworks for the Python programming language.
 */
 
 /*!
+@page python_v20 Python API v20
+*/
+/*!
 @page python_v19 Python API v19
 \python_removed_function{
       onDatabaseUpdated,
@@ -280,6 +283,7 @@ web applications or frameworks for the Python programming language.
 @page python_revisions Python API Changes
 @brief Overview of changes on Python API for Kodi
 
+- @subpage python_v20
 - @subpage python_v19
 - @subpage python_v18
 - @subpage python_v17
@@ -289,4 +293,4 @@ web applications or frameworks for the Python programming language.
 - @subpage python_v13
 - @subpage python_v12
 
-+*/
+*/
