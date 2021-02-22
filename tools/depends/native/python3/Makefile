@@ -4,10 +4,9 @@ DEPS= ../../Makefile.include Makefile distutil.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.8.5
+VERSION=3.8.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc --with-system-ffi
 ifeq ($(OS),linux)
