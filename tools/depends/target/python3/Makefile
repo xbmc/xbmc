@@ -4,10 +4,9 @@ DEPS= ../../Makefile.include Makefile apple.patch crosscompile.patch android.pat
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.8.5
+VERSION=3.8.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   LDFLAGS+= -framework Foundation
