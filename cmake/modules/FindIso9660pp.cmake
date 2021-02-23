@@ -15,8 +15,6 @@ if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_ISO9660 libiso9660>=2.1.0 QUIET)
 endif()
 
-find_package(Cdio)
-
 find_path(ISO9660PP_INCLUDE_DIR NAMES cdio++/iso9660.hpp
                                 PATHS ${PC_ISO9660PP_INCLUDEDIR})
 
@@ -31,18 +29,14 @@ find_library(ISO9660_LIBRARY NAMES libiso9660 iso9660
 
 set(ISO9660PP_VERSION ${PC_ISO9660PP_VERSION})
 
-if(NOT "${CDIO_VERSION}" STREQUAL "" AND NOT "${ISO9660PP_VERSION}" STREQUAL "" AND NOT "${CDIO_VERSION}" VERSION_EQUAL "${ISO9660PP_VERSION}")
-  message(WARNING "Detected libcdio (${CDIO_VERSION}) and iso9660++ (${ISO9660PP_VERSION}) version mismatch. Iso9660++ will not be used.")
-else()
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Iso9660pp
-                                    REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR CDIO_LIBRARY CDIO_INCLUDE_DIR
-                                    VERSION_VAR ISO9660PP_VERSION)
-endif()
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Iso9660pp
+                                  REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR
+                                  VERSION_VAR ISO9660PP_VERSION)
 
 if(ISO9660PP_FOUND)
-  set(ISO9660PP_LIBRARIES ${ISO9660PP_LIBRARY} ${ISO9660_LIBRARY} ${CDIO_LIBRARY})
-  set(ISO9660PP_INCLUDE_DIRS ${CDIO_INCLUDE_DIR} ${ISO9660_INCLUDE_DIR} ${ISO9660PP_INCLUDE_DIR})
+  set(ISO9660PP_LIBRARIES ${ISO9660PP_LIBRARY} ${ISO9660_LIBRARY})
+  set(ISO9660PP_INCLUDE_DIRS ${ISO9660PP_INCLUDE_DIR} ${ISO9660_INCLUDE_DIR})
   set(ISO9660PP_DEFINITIONS -DHAS_ISO9660PP=1)
 endif()
 
