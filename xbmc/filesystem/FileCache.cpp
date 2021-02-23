@@ -420,26 +420,21 @@ void CFileCache::Process()
     // avoid uncertainty at start of caching
     m_writeRateActual = average.Rate(m_writePos, 1000);
 
-    // NOTE: Hysteresis (20-80%) for filling-logic
-    const int64_t forward = m_pCache->WaitForData(0, 0);
-    const float level =
-        (m_forwardCacheSize == 0) ? 0.0 : static_cast<float>(forward) / m_forwardCacheSize;
+   /* NOTE: We can only reliably test for low speed condition, when the cache is *really*
+    * filling. This is because as soon as it's full the average-
+    * rate will become approximately the current-rate which can flag false
+    * low read-rate conditions.
+    */
+    if (m_bFilling && m_forwardCacheSize != 0)
+    { 
+      const int64_t forward = m_pCache->WaitForData(0, 0);
+      if (forward + m_chunkSize >= m_forwardCacheSize)
+      {
+        if (m_writeRateActual < m_writeRate)
+          m_bLowSpeedDetected = true;
 
-    if (level > 0.8f)
-    {
-     /* NOTE: We can only reliably test for low speed condition, when the cache is *really*
-      * filling. This is because as soon as it's full the average-
-      * rate will become approximately the current-rate which can flag false
-      * low read-rate conditions.
-      */
-      if (m_bFilling && m_writeRateActual < m_writeRate)
-        m_bLowSpeedDetected = true;
-
-      m_bFilling = false;
-    }
-    else if (level < 0.2f)
-    {
-      m_bFilling = true;
+        m_bFilling = false;
+      }
     }
   }
 }
