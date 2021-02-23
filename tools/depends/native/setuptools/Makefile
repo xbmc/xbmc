@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=setuptools
-VERSION=41.0.1
+VERSION=53.0.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
 all: .installed-$(PLATFORM)
