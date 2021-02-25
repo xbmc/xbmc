@@ -219,17 +219,26 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   bool bUpdateAllGroups = !bChannelsOnly && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
   bool bReturn(true);
 
-  // sync groups
-  if (bUpdateAllGroups)
-    GetGroupsFromClients();
-
-  // sync channels in groups
   std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
   {
     CSingleLock lock(m_critSection);
+
+    // load groups from the backends if the option is enabled
+    if (bUpdateAllGroups)
+    {
+      size_t numGroups = m_groups.size();
+      GetGroupsFromClients();
+      CLog::LogFC(LOGDEBUG, LOGPVR, "{} new user defined {} channel groups fetched from clients",
+                  (m_groups.size() - numGroups), m_bRadio ? "radio" : "TV");
+    }
+    else
+      CLog::LogFC(LOGDEBUG, LOGPVR,
+                  "'sync channelgroups' is disabled; skipping groups from clients");
+
     groups = m_groups;
   }
 
+  std::vector<std::shared_ptr<CPVRChannelGroup>> emptyGroups;
   for (const auto& group : groups)
   {
     if (bUpdateAllGroups || group->IsInternalGroup())
@@ -248,6 +257,16 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     {
       CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
     }
+
+    // remove empty backend groups when sync is enabled
+    if (bReturn && bUpdateAllGroups && !group->IsInternalGroup() && group->Size() == 0)
+      emptyGroups.push_back(group);
+  }
+
+  for (const auto& emptyGroup : emptyGroups)
+  {
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting empty channel group '{}'", emptyGroup->GroupName());
+    DeleteGroup(*emptyGroup);
   }
 
   // persist changes
