@@ -455,11 +455,11 @@
 						<pagecontrol>13010</pagecontrol>
 						<control type="grouplist" id="13855">
 							<height>390</height>
-							<left>25</left>
+							<left>0</left>
+							<right>0</right>
 							<top>36</top>
 							<orientation>horizontal</orientation>
-							<align>right</align>
-							<width>1360</width>
+							<align>center</align>
 							<visible>PVR.IsRecordingRadio | PVR.HasNonRecordingRadioTimer</visible>
 							<control type="group">
 								<width>680</width>
