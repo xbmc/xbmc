@@ -1208,14 +1208,14 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
 {
   CSingleLock lock(m_activityResultMutex);
-  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
+  for (auto& activityResultEvent : m_activityResultEvents)
   {
-    if ((*it)->GetRequestCode() == requestCode)
+    if (activityResultEvent->GetRequestCode() == requestCode)
     {
-      (*it)->SetResultCode(resultCode);
-      (*it)->SetResultData(resultData);
-      (*it)->Set();
-      m_activityResultEvents.erase(it);
+      activityResultEvent->SetResultCode(resultCode);
+      activityResultEvent->SetResultData(resultData);
+      activityResultEvent->Set();
+      m_activityResultEvents.erase(activityResultEvent);
       break;
     }
   }
@@ -1251,13 +1251,13 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
     ret = event->GetResultCode();
   }
 
-  // delete from m_activityResultEvents map before deleting the event
+  // delete from m_activityResultEvents before deleting the event
   CSingleLock lock(m_activityResultMutex);
-  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
+  for (const auto& activityResultEvent : m_activityResultEvents)
   {
-    if ((*it)->GetRequestCode() == requestCode)
+    if (activityResultEvent->GetRequestCode() == requestCode)
     {
-      m_activityResultEvents.erase(it);
+      m_activityResultEvents.erase(activityResultEvent);
       break;
     }
   }
