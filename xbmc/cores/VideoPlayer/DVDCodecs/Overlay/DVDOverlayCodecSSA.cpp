@@ -41,8 +41,14 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   Dispose();
 
   m_hints  = hints;
-  m_libass = new CDVDSubtitlesLibass();
-  return m_libass->DecodeHeader((char *)hints.extradata, hints.extrasize);
+  return InitLibass();
+}
+
+bool CDVDOverlayCodecSSA::InitLibass()
+{
+  if (!m_libass)
+    m_libass = new CDVDSubtitlesLibass();
+  return m_libass->DecodeHeader(static_cast<char*>(m_hints.extradata), m_hints.extrasize);
 }
 
 void CDVDOverlayCodecSSA::Dispose()
@@ -143,15 +149,14 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 void CDVDOverlayCodecSSA::Reset()
 {
   Dispose();
-  m_order  = 0;
-  m_output = false;
-  m_libass = new CDVDSubtitlesLibass();
-  m_libass->DecodeHeader((char *)m_hints.extradata, m_hints.extrasize);
+  Flush();
 }
 
 void CDVDOverlayCodecSSA::Flush()
 {
-  Reset();
+  m_order = 0;
+  m_output = false;
+  InitLibass();
 }
 
 CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
@@ -163,5 +168,3 @@ CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
   }
   return NULL;
 }
-
-
