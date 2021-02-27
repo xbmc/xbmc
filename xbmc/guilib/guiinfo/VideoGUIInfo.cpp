@@ -685,6 +685,18 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
     }
   }
 
+  switch (info.m_info)
+  {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // VIDEOPLAYER_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case VIDEOPLAYER_AUDIOSTREAMCOUNT:
+      value = g_application.GetAppPlayer().GetAudioStreamCount();
+      return true;
+    default:
+      break;
+  }
+
   return false;
 }
 

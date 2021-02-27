@@ -3691,6 +3691,15 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v19 **[New Infolabel]** \link VideoPlayer_TvShowDBID `VideoPlayer.TvShowDBID`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.AudioStreamCount`</b>,
+///                  \anchor VideoPlayer_AudioStreamCount
+///                  _integer_,
+///     @return The number of audio streams of the currently playing video.
+///     @note If the video contains no audio streams it returns 0.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_AudioStreamCount `VideoPlayer.AudioStreamCount`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3763,6 +3772,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "dbid",             VIDEOPLAYER_DBID },
                                   { "uniqueid",         VIDEOPLAYER_UNIQUEID },
                                   { "tvshowdbid",       VIDEOPLAYER_TVSHOWDBID },
+                                  { "audiostreamcount", VIDEOPLAYER_AUDIOSTREAMCOUNT },
 };
 
 /// \page modules__infolabels_boolean_conditions
