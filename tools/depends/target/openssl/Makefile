@@ -3,26 +3,38 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.1.0h
+VERSION=1.1.1j
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+BASE_URL=https://www.openssl.org/source
+
 # configuration settings
-CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-asm --prefix=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+ifeq ($(OS), linux)
+  TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+  OPENSSLPLATFORM=linux-$(MESON_CPU)
+endif
 ifeq ($(OS), android)
-  CONFIGURE=./Configure no-shared zlib --prefix=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32 -D__ANDROID_API__=$(NDK_LEVEL)
+  TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -D__ANDROID_API__=$(NDK_LEVEL)
+  ifeq ($(MESON_CPU), aarch64)
+    OPENSSLPLATFORM=android-arm64
+  else
+    OPENSSLPLATFORM=android-$(MESON_CPU)
+  endif
 endif
 ifeq ($(OS), darwin_embedded)
+  OPENSSLPLATFORM=darwin64-$(CPU)-cc
   ifeq ($(TARGET_PLATFORM),appletvos)
     # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
-    CONFIGURE=./Configure iphoneos-cross no-shared zlib no-async --prefix=$(PREFIX)
-  else
-    CONFIGURE=./Configure iphoneos-cross no-shared zlib --prefix=$(PREFIX)
+    TARGETOPT=no-async
   endif
 endif
 ifeq ($(OS), osx)
-  CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-shared --prefix=$(PREFIX)
+  OPENSSLPLATFORM=darwin64-$(CPU)-cc
 endif
+
+CONFIGURE=./Configure $(OPENSSLPLATFORM) no-shared zlib no-tests $(TARGETOPT) --prefix=$(PREFIX)
+
 LIBDYLIB=$(PLATFORM)/libssl.a
 
 all: .installed-$(PLATFORM)
@@ -34,16 +46,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); AR="$(AR)" CFLAGS="$(CFLAGS)" CC="$(CC)" RANLIB=$(RANLIB) $(CONFIGURE)
-	if test "$(OS)" = "osx"; then \
-		sed -ie "s|CC= /usr/bin/gcc-4.2|CC= $(CC)|" "$(PLATFORM)/Makefile"; \
-		sed -E -ie "s|^CFLAGS=-|CFLAGS=$(CFLAGS) -|" "$(PLATFORM)/Makefile"; \
-	fi
-	# for iphoneos-cross config a sysroot argument is added
-	# however sysroot already set in Makefile.include, so remove this
 	if test "$(OS)" = "darwin_embedded"; then \
-		sed -E -ie "s|^CFLAGS=-|CFLAGS=$(CFLAGS) -|" "$(PLATFORM)/Makefile"; \
-		sed -ie "s|-isysroot \$$(CROSS_TOP)/SDKs/\$$(CROSS_SDK) ||" "$(PLATFORM)/Makefile"; \
-		sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
+		sed -E -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
 	fi
 	sed -ie "s|PROGRAMS=|PROGRAMS=#|" "$(PLATFORM)/Makefile";
 
