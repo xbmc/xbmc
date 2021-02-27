@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/kodi-main/language/et_EE/)\n"
+"Language: et_EE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#31000"
@@ -76,10 +76,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Esitamata albumid"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Viimased salvestused"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Viimased vaadatud kanalid"
@@ -88,6 +90,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Vanusepiirang"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Viimased kuulatud kanalid"
@@ -216,6 +219,10 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "Tagasihüppeks vajuta [B]vasakut[/B] või edasihüppeks [B]paremat[/B] klahvi"
 
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Mine esitusloendisse"
@@ -336,18 +343,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Vali sisse logimiseks Kodi kasutaja profiil[CR]ja jätka"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Ikoonisein"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Riba"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infosein"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Sein"
@@ -368,6 +379,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lai nimekiri"
@@ -391,6 +403,10 @@ msgstr "Otsi kohalikust teegist"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Otsi YouTube-ist"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -464,6 +480,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Kestab veel"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Viimaste muudatuste vaatamiseks kliki siia..."
@@ -520,6 +540,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Vali žanri fännipiltide pakk"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Vaatamata muusikavideod"
@@ -572,22 +596,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Näita fännide loodud pilte"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Vali profiili tuvastuse liik"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profiili nimi"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profiili avatar"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Tausta animeerimine"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Kuva muusikavideote jaoks postereid mitte pisipilte"
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
