@@ -987,6 +987,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
            (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10||
             m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
     pVideoPicture->colorBits = 10;
+  else if (m_pCodecContext->codec_id == AV_CODEC_ID_VP9 &&
+           (m_pCodecContext->profile == FF_PROFILE_VP9_2 ||
+            m_pCodecContext->profile == FF_PROFILE_VP9_3))
+    pVideoPicture->colorBits = 10;
 
   if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||
     m_pCodecContext->pix_fmt == AV_PIX_FMT_YUVJ420P)
