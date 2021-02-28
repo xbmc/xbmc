@@ -1619,6 +1619,28 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iBitsPerPixel = pStream->codecpar->bits_per_coded_sample;
         st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
 
+        st->colorPrimaries = pStream->codecpar->color_primaries;
+        st->colorSpace = pStream->codecpar->color_space;
+        st->colorTransferCharacteristic = pStream->codecpar->color_trc;
+        st->colorRange = pStream->codecpar->color_range;
+
+        int size = 0;
+        uint8_t* side_data = nullptr;
+
+        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
+        if (side_data && size)
+        {
+          st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
+              *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
+        }
+
+        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, &size);
+        if (side_data && size)
+        {
+          st->contentLightMetaData = std::make_shared<AVContentLightMetadata>(
+              *reinterpret_cast<AVContentLightMetadata*>(side_data));
+        }
+
         AVDictionaryEntry* rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag)
           st->iOrientation = atoi(rtag->value);
