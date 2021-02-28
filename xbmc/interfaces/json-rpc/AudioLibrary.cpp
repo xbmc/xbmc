@@ -9,6 +9,7 @@
 #include "AudioLibrary.h"
 
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "Util.h"
@@ -158,6 +159,29 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
   musicdatabase.SetTranslateBlankArtist(false);
   if (!musicdatabase.GetArtistsByWhereJSON(fields, musicUrl.ToString(), result, total, sorting))
     return InternalError;
+
+  std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
+  std::string artistLabel;
+
+  // loop through all retrieved artists and set an additional 'sortlabel' property
+  // removing articles. i.e. "The Doors" => "Doors", while "My awesome artist" remains unchanged
+
+  for (auto artist = result["artists"].begin_array(); artist != result["artists"].end_array();
+       artist++)
+  {
+    artistLabel = (*artist)["label"].asString();
+
+    std::string sortLabel;
+    for (const auto& token : sortTokens)
+    {
+      if (token.size() < artistLabel.size() && StringUtils::StartsWithNoCase(artistLabel, token))
+      {
+        sortLabel = artistLabel.substr(token.size());
+      }
+    }
+
+    (*artist)["sortlabel"] = sortLabel.empty() ? artistLabel : sortLabel;
+  }
 
   int start, end;
   HandleLimits(parameterObject, result, total, start, end);
