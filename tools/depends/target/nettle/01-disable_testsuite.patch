@@ -1,8 +1,8 @@
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -17,7 +17,7 @@
+@@ -19,7 +19,7 @@
  
- OPT_NETTLE_SOURCES = @OPT_NETTLE_SOURCES@
+ FAT_TEST_LIST = @FAT_TEST_LIST@
  
 -SUBDIRS = tools testsuite examples
 +SUBDIRS = tools examples
