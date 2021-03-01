@@ -1,10 +1,12 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile ID3v2Lookup.patch remove-boost.patch
+DEPS= ../../Makefile.include Makefile
 
 LIBNAME=taglib
-VERSION=1.11.1
+VERSION=1.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+
+BASE_URL=https://taglib.org/releases
 
 LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libtag.a
 all: .installed-$(PLATFORM)
@@ -16,9 +18,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM); patch -p1 -i ../ID3v2Lookup.patch
-	cd $(PLATFORM); patch -p1 -i ../remove-boost.patch
-	cd $(PLATFORM)/build; $(CMAKE) -DCMAKE_LIBRARY_PATH=$(TOOLCHAIN)/lib/$(HOST) -DBUILD_SHARED_LIBS=OFF ..
+	cd $(PLATFORM)/build; $(CMAKE) -DCMAKE_LIBRARY_PATH=$(TOOLCHAIN)/lib/$(HOST) -DCMAKE_CXX_FLAGS="$(CXXFLAGS) -std=c++11" -DBUILD_SHARED_LIBS=OFF ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
