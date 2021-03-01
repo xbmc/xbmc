@@ -3,9 +3,9 @@ DEPS= ../../Makefile.include Makefile tvos-bitcode-fix.patch jit_aarch64.patch i
 
 # lib name, version
 LIBNAME=pcre
-VERSION=8.42
+VERSION=8.45
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; ./configure --prefix=$(PREFIX) \
