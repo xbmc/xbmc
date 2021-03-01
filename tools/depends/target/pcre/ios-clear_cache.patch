@@ -1,6 +1,6 @@
 --- a/sljit/sljitConfigInternal.h
 +++ b/sljit/sljitConfigInternal.h
-@@ -275,12 +275,16 @@
+@@ -279,12 +279,16 @@
  #define SLJIT_API_FUNC_ATTRIBUTE
  #endif /* (defined SLJIT_CONFIG_STATIC && SLJIT_CONFIG_STATIC) */
  
