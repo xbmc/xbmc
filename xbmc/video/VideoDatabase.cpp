@@ -962,7 +962,7 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
   if (idFile < 0 || strFileNameAndPath.empty())
     return;
 
-  CDateTime finalDateAdded = dateAdded;
+  CDateTime finalDateAdded;
   try
   {
     if (nullptr == m_pDB)
@@ -970,22 +970,7 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
     if (nullptr == m_pDS)
       return;
 
-    if (!finalDateAdded.IsValid())
-    {
-      // Supress warnings if we have plugin source
-      if (!URIUtils::IsPlugin(strFileNameAndPath))
-      {
-        // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
-        if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryDateAdded == 1)
-          finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
-        //2 using the newer datetime of the file's mtime and ctime
-        else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryDateAdded == 2)
-          finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
-      }
-      //0 using the current datetime if non of the above matches or one returns an invalid datetime
-      if (!finalDateAdded.IsValid())
-        finalDateAdded = CDateTime::GetCurrentDateTime();
-    }
+    finalDateAdded = GetDateAdded(strFileNameAndPath, dateAdded);
 
     m_pDS->exec(PrepareSQL("UPDATE files SET dateAdded='%s' WHERE idFile=%d", finalDateAdded.GetAsDBDateTime().c_str(), idFile));
   }
@@ -1378,36 +1363,7 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const 
   // Check if this path is already added
   int idPath = GetPathId(path);
   if (idPath < 0)
-  {
-    CDateTime finalDateAdded = dateAdded;
-    // Skip looking at the files ctime/mtime if defined by the user through as.xml
-    if (!finalDateAdded.IsValid() && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryDateAdded > 0)
-    {
-      struct __stat64 buffer;
-      if (XFILE::CFile::Stat(path, &buffer) == 0)
-      {
-        time_t now = time(NULL);
-        // Make sure we have a valid date (i.e. not in the future)
-        if ((time_t)buffer.st_ctime <= now)
-        {
-          struct tm *time;
-#ifdef HAVE_LOCALTIME_R
-          struct tm result = {};
-          time = localtime_r((const time_t*)&buffer.st_ctime, &result);
-#else
-          time = localtime((const time_t*)&buffer.st_ctime);
-#endif
-          if (time)
-            finalDateAdded = *time;
-        }
-      }
-    }
-
-    if (!finalDateAdded.IsValid())
-      finalDateAdded = CDateTime::GetCurrentDateTime();
-
-    idPath = AddPath(path, parentPath, finalDateAdded);
-  }
+    idPath = AddPath(path, parentPath, GetDateAdded(path, dateAdded));
 
   return ExecuteQuery(PrepareSQL("REPLACE INTO tvshowlinkpath(idShow, idPath) VALUES (%i,%i)", idShow, idPath));
 }
@@ -11013,4 +10969,32 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, const MediaType& m
     CLog::Log(LOGERROR, "%s (%i, %s, %i) failed", __FUNCTION__, dbId, mediaType.c_str(), rating);
   }
   return false;
+}
+
+CDateTime CVideoDatabase::GetDateAdded(const std::string& filename,
+                                       CDateTime dateAdded /* = CDateTime() */)
+{
+  if (!dateAdded.IsValid())
+  {
+    // supress warnings if we have plugin source
+    if (!URIUtils::IsPlugin(filename))
+    {
+      const auto dateAddedSetting =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryDateAdded;
+
+      // 1 prefer using the files mtime (if it's valid) and
+      //   only use the file's ctime if mtime isn't valid
+      if (dateAddedSetting == 1)
+        dateAdded = CFileUtils::GetModificationDate(filename, false);
+      // 2 use the newer datetime of the file's mtime and ctime
+      else if (dateAddedSetting == 2)
+        dateAdded = CFileUtils::GetModificationDate(filename, true);
+    }
+
+    // 0 use the current datetime if non of the above match or one returns an invalid datetime
+    if (!dateAdded.IsValid())
+      dateAdded = CDateTime::GetCurrentDateTime();
+    }
+
+  return dateAdded;
 }
