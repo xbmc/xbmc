@@ -3,16 +3,18 @@ DEPS= ../../Makefile.include Makefile sqlite3.c.patch
 
 # lib name, version
 LIBNAME=sqlite
-VERSION=3260000
+VERSION=3340100
 SOURCE=$(LIBNAME)-autoconf-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+
+BASE_URL=https://www.sqlite.org/2021
 
 # configuration settings
 export CXXFLAGS+=-DSQLITE_ENABLE_COLUMN_METADATA=1
 export CFLAGS+=-DSQLITE_TEMP_STORE=3 -DSQLITE_DEFAULT_MMAP_SIZE=0x10000000
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
-  --enable-threadsafe --disable-readline \
+  --enable-threadsafe --disable-readline
 
 LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME)3.a
 

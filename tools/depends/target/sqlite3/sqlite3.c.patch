@@ -1,6 +1,6 @@
 --- a/sqlite3.c
 +++ b/sqlite3.c
-@@ -37359,8 +37359,12 @@
+@@ -38763,8 +38763,12 @@
  #if HAVE_MREMAP
      pNew = osMremap(pOrig, nReuse, nNew, MREMAP_MAYMOVE);
      zErr = "mremap";
@@ -13,7 +13,7 @@
      if( pNew!=MAP_FAILED ){
        if( pNew!=pReq ){
          osMunmap(pNew, nNew - nReuse);
-@@ -37379,7 +37383,11 @@
+@@ -38783,7 +38783,11 @@
  
    /* If pNew is still NULL, try to create an entirely new mapping. */
    if( pNew==0 ){
