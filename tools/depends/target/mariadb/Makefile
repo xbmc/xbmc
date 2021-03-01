@@ -2,8 +2,10 @@ include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile 01-android.patch 02-symbol_rename-gnutls_clash.patch 03-cmake3.20_syntax_fix.patch
 
 LIBNAME=mariadb
-VERSION=3.1.9
+VERSION=3.1.12
 ARCHIVE=$(LIBNAME)-connector-c-$(VERSION)-src.tar.gz
+
+BASE_URL=https://downloads.mariadb.org/interstitial/connector-c-3.1.12
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -11,7 +13,13 @@ LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 PLUGIN_BUILD_FLAGS=-DCLIENT_PLUGIN_DIALOG=STATIC -DAUTH_GSSAPI_PLUGIN_TYPE=OFF
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_SHA256_PASSWORD=STATIC -DCLIENT_PLUGIN_CACHING_SHA2_PASSWORD=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_MYSQL_CLEAR_PASSWORD=STATIC -DCLIENT_PLUGIN_MYSQL_OLD_PASSWORD=STATIC
-PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_CLIENT_ED25519=OFF
+PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_mysql_native_password=STATIC
+PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_CLIENT_ED25519=STATIC
+
+ifeq ($(OS), linux)
+  # OpenSSL now uses pthread_atfork(), and this requires -lpthread on Linux to compile
+  PLUGIN_BUILD_FLAGS+=-DCMAKE_SHARED_LINKER_FLAGS="$(LDFLAGS) -pthread"
+endif
 
 all: .installed-$(PLATFORM)
 
@@ -24,7 +32,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../01-android.patch
 	cd $(PLATFORM); patch -p1 -i ../02-symbol_rename-gnutls_clash.patch
 	cd $(PLATFORM); patch -p1 -i ../03-cmake3.20_syntax_fix.patch
-	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) -DWITH_UNIT_TESTS:BOOL=OFF -DWITH_EXTERNAL_ZLIB:BOOL=ON -DWITH_CURL:BOOL=OFF ..
+	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) -DWITH_SSL=OPENSSL -DWITH_UNIT_TESTS:BOOL=OFF -DWITH_EXTERNAL_ZLIB:BOOL=ON -DWITH_CURL:BOOL=OFF ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
