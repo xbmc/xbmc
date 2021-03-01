@@ -3,8 +3,10 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=nghttp2
-VERSION=1.41.0
+VERSION=1.43.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
+
+BASE_URL=https://github.com/nghttp2/nghttp2/releases/download/v1.43.0
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-lib-only --disable-shared
