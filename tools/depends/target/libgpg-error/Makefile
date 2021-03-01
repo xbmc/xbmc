@@ -1,11 +1,13 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile tvos_remove-fork.patch libgpg-error-1.36-gawk5-support.patch
+DEPS= ../../Makefile.include Makefile tvos_remove-fork.patch
 
 # lib name, version
 LIBNAME=libgpg-error
-VERSION=1.36
+VERSION=1.41
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
+
+BASE_URL=https://gnupg.org/ftp/gcrypt/libgpg-error
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -24,7 +26,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../libgpg-error-1.36-gawk5-support.patch
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p1 -i ../tvos_remove-fork.patch
 endif
