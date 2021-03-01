@@ -1,6 +1,6 @@
 --- a/cmake/CheckIncludeFiles.cmake
 +++ b/cmake/CheckIncludeFiles.cmake
-@@ -50,4 +50,11 @@
+@@ -55,4 +55,11 @@
  CHECK_INCLUDE_FILES (ucontext.h HAVE_FILE_UCONTEXT_H)
  IF(NOT HAVE_FILE_UCONTEXT_H)
    CHECK_INCLUDE_FILES (sys/ucontext.h HAVE_FILE_UCONTEXT_H)
@@ -24,7 +24,7 @@
  CHECK_TYPE_SIZE(uint8 SIZEOF_UINT8)
 --- a/include/ma_config.h.in
 +++ b/include/ma_config.h.in
-@@ -85,6 +85,11 @@
+@@ -88,6 +88,11 @@
  # define HAVE_UINT 1
  #endif
  
@@ -38,7 +38,7 @@
  # define HAVE_ULONG 1
 --- a/include/ma_global.h
 +++ b/include/ma_global.h
-@@ -268,6 +268,8 @@
+@@ -253,6 +253,8 @@
  
  #if defined(__EMX__) || !defined(HAVE_UINT)
  typedef unsigned int uint;
@@ -47,13 +47,3 @@
  typedef unsigned short ushort;
  #endif
  
---- a/libmariadb/CMakeLists.txt
-+++ b/libmariadb/CMakeLists.txt
-@@ -311,7 +311,6 @@
-   IF(ICONV_INCLUDE_DIR)
-      INCLUDE_DIRECTORIES(BEFORE ${ICONV_INCLUDE_DIR}) 
-   ENDIF()
--  ADD_DEFINITIONS(-DLIBICONV_PLUG)
- ENDIF()
- 
- IF(ZLIB_FOUND AND WITH_EXTERNAL_ZLIB)
