@@ -389,6 +389,7 @@ void CUtil::CleanString(const std::string& strFileName,
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   const std::vector<std::string> &regexps = advancedSettings->m_videoCleanStringRegExps;
+  const std::vector<std::string> &exactRegexps = advancedSettings->m_videoExactCleanStringRegExps;
 
   CRegExp reTags(true, CRegExp::autoUtf8);
   CRegExp reYear(false, CRegExp::autoUtf8);
@@ -419,6 +420,27 @@ void CUtil::CleanString(const std::string& strFileName,
     if ((j=reTags.RegFind(strTitleAndYear.c_str())) > 0)
       strTitleAndYear = strTitleAndYear.substr(0, j);
   }
+  
+  for (const auto &regexp : exactRegexps)
+  {
+    if (!reTags.RegComp(regexp.c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "%s: Invalid string clean RegExp:'%s'", __FUNCTION__, regexp.c_str());
+      continue;
+    }
+    int j=0;
+    if ((j=reTags.RegFind(strTitleAndYear.c_str())) >= 0)
+    {
+      if (strTitleAndYear.size() != reTags.GetFindLen())
+      {
+        strTitleAndYear.erase(j, reTags.GetFindLen());
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s: String clean RegExp matches entire string, ignored:'%s'", __FUNCTION__, regexp.c_str());
+      }
+    }
+  }  
 
   // final cleanup - special characters used instead of spaces:
   // all '_' tokens should be replaced by spaces

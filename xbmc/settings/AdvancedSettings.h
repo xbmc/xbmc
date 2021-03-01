@@ -197,6 +197,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_cachePath;
     std::string m_videoCleanDateTimeRegExp;
     std::vector<std::string> m_videoCleanStringRegExps;
+    std::vector<std::string> m_videoExactCleanStringRegExps;	
     std::vector<std::string> m_videoExcludeFromListingRegExps;
     std::vector<std::string> m_allExcludeFromScanRegExps;
     std::vector<std::string> m_moviesExcludeFromScanRegExps;

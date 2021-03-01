@@ -187,6 +187,8 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.clear();
   m_videoCleanStringRegExps.emplace_back("[ _\\,\\.\\(\\)\\[\\]\\-](aka|ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.emplace_back("(\\[.*\\])");
+  
+  m_videoExactCleanStringRegExps.clear();
 
   // this vector will be inserted at the end to
   // m_moviesExcludeFromScanRegExps, m_tvshowExcludeFromScanRegExps and
@@ -608,6 +610,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
+  
+    pVideoExcludes = pElement->FirstChildElement("exactcleanstrings");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, m_videoExactCleanStringRegExps);  
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
@@ -1221,6 +1227,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 void CAdvancedSettings::Clear()
 {
   m_videoCleanStringRegExps.clear();
+  m_videoExactCleanStringRegExps.clear();  
   m_moviesExcludeFromScanRegExps.clear();
   m_tvshowExcludeFromScanRegExps.clear();
   m_videoExcludeFromListingRegExps.clear();
