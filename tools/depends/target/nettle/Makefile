@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-disable_testsuite.patch 02-conftest_exit.patch
+DEPS= ../../Makefile.include Makefile 01-disable_testsuite.patch
 
 # lib name, version
 LIBNAME=nettle
-VERSION=3.6
+VERSION=3.7.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -15,7 +15,7 @@ endif
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --disable-openssl $(CONFIGURE_FLAGS)
+          ./configure --prefix=$(PREFIX) --disable-shared --disable-fat --disable-openssl --disable-documentation $(CONFIGURE_FLAGS)
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME).a
 
@@ -28,7 +28,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-disable_testsuite.patch
-	cd $(PLATFORM); patch -p1 -i ../02-conftest_exit.patch
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE) CCPIC=" "
 
