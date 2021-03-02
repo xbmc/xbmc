@@ -423,8 +423,7 @@ public:
   bool Open() override;
   bool CommitTransaction() override;
 
-  int AddMovie(const CVideoInfoTag& details);
-  int AddEpisode(int idShow, const CVideoInfoTag& details);
+  int AddNewEpisode(int idShow, CVideoInfoTag& details);
 
   // editing functions
   /*! \brief Set the playcount of an item
@@ -909,6 +908,9 @@ public:
   bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
 
 protected:
+  int AddNewMovie(CVideoInfoTag& details);
+  int AddNewMusicVideo(CVideoInfoTag& details);
+
   int GetMovieId(const std::string& strFilenameAndPath);
   int GetMusicVideoId(const std::string& strFilenameAndPath);
 
@@ -940,7 +942,6 @@ protected:
   int AddActor(const std::string& strActor, const std::string& thumbURL, const std::string &thumb = "");
 
   int AddTvShow();
-  int AddMusicVideo(const CVideoInfoTag& details);
 
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.

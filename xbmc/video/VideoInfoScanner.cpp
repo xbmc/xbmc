@@ -1371,7 +1371,7 @@ namespace VIDEO
         // we add episode then set details, as otherwise set details will delete the
         // episode then add, which breaks multi-episode files.
         int idShow = showInfo ? showInfo->m_iDbId : -1;
-        int idEpisode = m_database.AddEpisode(idShow, movieDetails);
+        int idEpisode = m_database.AddNewEpisode(idShow, movieDetails);
         lResult = m_database.SetDetailsForEpisode(movieDetails, art, idShow, idEpisode);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeEpisode;
