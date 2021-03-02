@@ -897,6 +897,13 @@ protected:
    \return id of the file, -1 if it is not in the db.
    */
   int GetFileId(const CFileItem &item);
+  int GetFileId(const CVideoInfoTag& details);
+
+  /*! \brief Get the id of the file of this item and store it in the item
+   \param details CVideoInfoTag for which to get and store the id of the file
+   \return id of the file, -1 if it is not in the db.
+   */
+  int GetAndFillFileId(CVideoInfoTag& details);
 
   /*! \brief Get the id of a file from path
    \param url full path to the file

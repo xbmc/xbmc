@@ -1126,14 +1126,32 @@ int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetFileId(const CFileItem &item)
 {
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-  {
-    if (item.GetVideoInfoTag()->m_iFileId != -1)
-      return item.GetVideoInfoTag()->m_iFileId;
-    else
-      return GetFileId(item.GetVideoInfoTag()->m_strFileNameAndPath);
-  }
-  return GetFileId(item.GetPath());
+  int fileId = -1;
+  if (item.HasVideoInfoTag())
+    fileId = GetFileId(*item.GetVideoInfoTag());
+
+  if (fileId == -1)
+    fileId = GetFileId(item.GetPath());
+
+  return fileId;
+}
+
+int CVideoDatabase::GetFileId(const CVideoInfoTag& details)
+{
+  if (details.m_iFileId > 0)
+    return details.m_iFileId;
+
+  const auto& filePath = details.GetPath();
+  if (filePath.empty())
+    return -1;
+
+  return GetFileId(filePath);
+}
+
+int CVideoDatabase::GetAndFillFileId(CVideoInfoTag& details)
+{
+  details.m_iFileId = GetFileId(details);
+  return details.m_iFileId;
 }
 
 //********************************************************************************************************************************
@@ -2386,12 +2404,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
 
     // update dateadded if it's set
     if (details.m_dateAdded.IsValid())
-    {
-      if (details.m_iFileId <= 0)
-        details.m_iFileId = GetFileId(strFilenameAndPath);
-
-      UpdateFileDateAdded(details.m_iFileId, strFilenameAndPath, details.m_dateAdded);
-    }
+      UpdateFileDateAdded(GetAndFillFileId(details), strFilenameAndPath, details.m_dateAdded);
 
     AddCast(idMovie, "movie", details.m_cast);
     AddLinksToItem(idMovie, MediaTypeMovie, "genre", details.m_genre);
@@ -2424,7 +2437,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     }
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
+      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
@@ -2447,10 +2460,10 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
         CDateTime lastPlayed;
         lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
-        int idFile = GetFileId(strFilenameAndPath);
-
         // update with playCount and lastPlayed
-        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
+        strSQL =
+            PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount,
+                       lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
         m_pDS->exec(strSQL);
       }
 
@@ -2516,12 +2529,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
     if (updatedDetails.find("uniqueid") != updatedDetails.end())
       details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
     if (updatedDetails.find("dateadded") != updatedDetails.end() && details.m_dateAdded.IsValid())
-    {
-      if (details.m_iFileId <= 0)
-        details.m_iFileId = GetFileId(details.GetPath());
-
-      UpdateFileDateAdded(details.m_iFileId, details.GetPath(), details.m_dateAdded);
-    }
+      UpdateFileDateAdded(GetAndFillFileId(details), details.GetPath(), details.m_dateAdded);
 
     // track if the set was updated
     int idSet = 0;
@@ -2806,12 +2814,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
 
     // update dateadded if it's set
     if (details.m_dateAdded.IsValid())
-    {
-      if (details.m_iFileId <= 0)
-        details.m_iFileId = GetFileId(strFilenameAndPath);
-
-      UpdateFileDateAdded(details.m_iFileId, strFilenameAndPath, details.m_dateAdded);
-    }
+      UpdateFileDateAdded(GetAndFillFileId(details), strFilenameAndPath, details.m_dateAdded);
 
     AddCast(idEpisode, "episode", details.m_cast);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "director", details.m_director);
@@ -2824,12 +2827,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
     details.m_iIdUniqueID = UpdateUniqueIDs(idEpisode, MediaTypeEpisode, details);
 
     if (details.HasStreamDetails())
-    {
-      if (details.m_iFileId != -1)
-        SetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
-      else
-        SetStreamDetailsForFile(details.m_streamDetails, strFilenameAndPath);
-    }
+      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
 
     // ensure we have this season already added
     int idSeason = AddSeason(idShow, details.m_iSeason);
@@ -2853,10 +2851,10 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
         CDateTime lastPlayed;
         lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
-        int idFile = GetFileId(strFilenameAndPath);
-
         // update with playCount and lastPlayed
-        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
+        strSQL =
+            PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount,
+                       lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
         m_pDS->exec(strSQL);
       }
 
@@ -2930,13 +2928,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const std::string& strFilenameAndPat
 
     // update dateadded if it's set
     if (details.m_dateAdded.IsValid())
-    {
-      int idFile = details.m_iFileId;
-      if (idFile <= 0)
-        idFile = GetFileId(strFilenameAndPath);
-
-      UpdateFileDateAdded(idFile, strFilenameAndPath, details.m_dateAdded);
-    }
+      UpdateFileDateAdded(GetAndFillFileId(details), strFilenameAndPath, details.m_dateAdded);
 
     AddCast(idMVideo, MediaTypeMusicVideo, details.m_cast);
     AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "actor", details.m_artist);
@@ -2946,7 +2938,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const std::string& strFilenameAndPat
     AddLinksToItem(idMVideo, MediaTypeMusicVideo, "tag", details.m_tags);
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
+      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
 
     SetArtForItem(idMVideo, MediaTypeMusicVideo, artwork);
 
