@@ -621,11 +621,21 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
           int messageId = 24180; // minversion only
 
           // dep not installed locally, but it is available from a repo!
+          // make sure only non-optional add-ons that meet minVersion are
+          // announced for installation
+
           if (!it.m_installed)
           {
-            if (entryPoint != EntryPoint::SHOW_DEPENDENCIES)
+            if (entryPoint != EntryPoint::SHOW_DEPENDENCIES && !it.m_depInfo.optional)
             {
-              messageId = 24181; // => install
+              if (it.m_depInfo.versionMin <= it.m_available->Version())
+              {
+                messageId = 24181; // => install
+              }
+              else
+              {
+                messageId = 10005; // => not available
+              }
             }
           }
           else // dep is installed locally
