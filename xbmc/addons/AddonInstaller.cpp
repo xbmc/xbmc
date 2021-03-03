@@ -929,6 +929,19 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
+          else
+          {
+            if (!dependencyToInstall->MeetsVersion(versionMin, version))
+            {
+              CLog::Log(LOGERROR,
+                        "CAddonInstallJob[{}]: found dependency [{}/{}] doesn't meet minimum "
+                        "version [{}]",
+                        m_addon->ID(), addonID, dependencyToInstall->Version().asString(),
+                        versionMin.asString());
+              ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+              return false;
+            }
+          }
 
           if (IsModal())
           {
