@@ -27,6 +27,10 @@ public:
   CDVDOverlay* GetOverlay() override;
 
 private:
+  /*! \brief Initializes the libass handler
+   */
+  bool InitLibass();
+
   CDVDSubtitlesLibass* m_libass;
   CDVDOverlaySSA*      m_pOverlay;
   bool                 m_output;
