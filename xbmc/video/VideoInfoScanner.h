@@ -169,6 +169,13 @@ namespace VIDEO
      */
     bool GetAirDateFromRegExp(CRegExp &reg, EPISODE &episodeInfo);
 
+    /*! \brief Extract episode title from a processed regexp
+     \param reg Regular expression object with at least 1 match
+     \param episodeInfo Episode information to fill in.
+     \return true on success (1 match), false on failure (no matches)
+     */
+    bool GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo);
+
     /*! \brief Fetch thumbs for actors
      Updates each actor with their thumb (local or online)
      \param actors - vector of SActorInfo

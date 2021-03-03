@@ -62,3 +62,13 @@ TEST_P(TestVideoInfoScanner, EnumerateEpisodeItem)
 }
 
 INSTANTIATE_TEST_SUITE_P(VideoInfoScanner, TestVideoInfoScanner, ValuesIn(TestData));
+
+TEST(TestVideoInfoScanner, EnumerateEpisodeItemByTitle)
+{
+  CVideoInfoScanner scanner;
+  CFileItem item("/foo.special.mp4", false);
+  EPISODELIST result;
+  ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));
+  ASSERT_EQ(result.size(), 1);
+  ASSERT_EQ(result[0].strTitle, "foo");
+}
