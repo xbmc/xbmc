@@ -3027,7 +3027,6 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
 
   try
   {
-    BeginTransaction();
     m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
 
     for (int i=1; i<=details.GetVideoStreamCount(); i++)
@@ -3073,12 +3072,9 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
         m_pDS->exec(sql);
       }
     }
-
-    CommitTransaction();
   }
   catch (...)
   {
-    RollbackTransaction();
     CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idFile);
   }
 }

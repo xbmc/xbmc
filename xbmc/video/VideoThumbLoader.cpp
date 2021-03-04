@@ -154,6 +154,8 @@ bool CThumbExtractor::DoWork()
         m_item.SetPath(m_listpath);
       }
 
+      db.BeginTransaction();
+
       if (info->m_iFileId < 0)
         db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
       else
@@ -169,6 +171,7 @@ bool CThumbExtractor::DoWork()
         db.SetDetailsForItem(info->m_iDbId, info->m_type, *info, m_item.GetArt());
       }
 
+      db.CommitTransaction();
       db.Close();
     }
     return true;
