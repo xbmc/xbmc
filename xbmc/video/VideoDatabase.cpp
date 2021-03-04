@@ -1942,13 +1942,6 @@ bool CVideoDatabase::HasMusicVideoInfo(const std::string& strFilenameAndPath)
   return false;
 }
 
-void CVideoDatabase::DeleteDetailsForTvShow(const std::string& strPath)
-{
-  int idTvShow = GetTvShowId(strPath);
-  if (idTvShow >= 0)
-    DeleteDetailsForTvShow(idTvShow);
-}
-
 void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
 {
   try
@@ -3449,13 +3442,6 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::DeleteMovie(const std::string& strFilenameAndPath, bool bKeepId /* = false */)
-{
-  int idMovie = GetMovieId(strFilenameAndPath);
-  if (idMovie > -1)
-    DeleteMovie(idMovie, bKeepId);
-}
-
 void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 {
   if (idMovie < 0)
@@ -3598,13 +3584,6 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteEpisode(const std::string& strFilenameAndPath, bool bKeepId /* = false */)
-{
-  int idEpisode = GetEpisodeId(strFilenameAndPath);
-  if (idEpisode > -1)
-    DeleteEpisode(idEpisode, bKeepId);
-}
-
 void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
 {
   if (idEpisode < 0)
@@ -3641,13 +3620,6 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
   {
     CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idEpisode);
   }
-}
-
-void CVideoDatabase::DeleteMusicVideo(const std::string& strFilenameAndPath, bool bKeepId /* = false */)
-{
-  int idMVideo = GetMusicVideoId(strFilenameAndPath);
-  if (idMVideo > -1)
-    DeleteMusicVideo(idMVideo, bKeepId);
 }
 
 void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
@@ -5085,8 +5057,9 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath, CGUIDialog
         progress->Progress();
       }
 
-      if (HasTvShowInfo(i.second))
-        DeleteTvShow(i.second);
+      const auto tvshowId = GetTvShowId(i.second);
+      if (tvshowId > 0)
+        DeleteTvShow(tvshowId);
       else
       {
         std::string strSQL = PrepareSQL("select files.strFilename from files join movie on movie.idFile=files.idFile where files.idPath=%i", i.first);
@@ -5102,10 +5075,15 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath, CGUIDialog
           std::string strMoviePath;
           std::string strFileName = m_pDS2->fv("files.strFilename").get_asString();
           ConstructPath(strMoviePath, i.second, strFileName);
-          if (HasMovieInfo(strMoviePath))
-            DeleteMovie(strMoviePath);
-          if (HasMusicVideoInfo(strMoviePath))
-            DeleteMusicVideo(strMoviePath);
+          const auto movieId = GetMovieId(strMoviePath);
+          if (movieId > 0)
+            DeleteMovie(movieId);
+          else
+          {
+            const auto musicvideoId = GetMusicVideoId(strMoviePath);
+            if (musicvideoId > 0)
+              DeleteMusicVideo(musicvideoId);
+          }
           m_pDS2->next();
           if (m_pDS2->eof() && !bMvidsChecked)
           {
