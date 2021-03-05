@@ -1,15 +1,20 @@
-#/bin/bash
+#!/bin/bash
 
-releaseversion=${VERSION:-"19.0"}
+releaseversion=${VERSION:-"AUTO"}
 epoch=${EPOCH:-"2"}
 gitrev=${GITREV:-"$(git log -1 --pretty=format:"%h")"}
 tag=${TAG:-${gitrev}}
 tagrev=${tagrev:-"0"}
-dists=${DISTS:-"groovy focal bionic"}
-#debuildopts="--no-lintian -d"
+dists=${DISTS:-"hirsute groovy focal bionic"}
 gpgkey=${GPG_KEY:-"jenkins (jenkins build bot) <jenkins@kodi.tv>"}
 ppa=${PPA:-"nightly"}
-debianrepo="${DEBIAN:-"https://github.com/wsnipex/xbmc-packaging"}"
+debianrepo="${DEBIAN:-"https://github.com/xbmc/xbmc-packaging"}"
+
+if [ "$releaseversion" = "AUTO" ]; then
+  majorversion="$(awk '/VERSION_MAJOR/ {print $2}' version.txt)"
+  minorversion="$(awk '/VERSION_MINOR/ {print $2}' version.txt)"
+  releaseversion="${majorversion}.${minorversion}"
+fi
 
 version="${releaseversion}+git$(date '+%Y%m%d.%H%M')-${tag}"
 debversion="${epoch}:${version}"
