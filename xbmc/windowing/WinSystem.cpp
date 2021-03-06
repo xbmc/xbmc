@@ -41,9 +41,6 @@ bool CWinSystemBase::InitWindowSystem()
 
 bool CWinSystemBase::DestroyWindowSystem()
 {
-#if HAS_GLES
-  CGUIFontTTFGL::DestroyStaticVertexBuffers();
-#endif
   m_screenSaverManager.reset();
   return false;
 }
