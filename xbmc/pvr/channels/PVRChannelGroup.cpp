@@ -1159,7 +1159,7 @@ bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
   return true;
 }
 
-void CPVRChannelGroup::SetHidden(bool bHidden)
+bool CPVRChannelGroup::SetHidden(bool bHidden)
 {
   CSingleLock lock(m_critSection);
 
@@ -1168,6 +1168,8 @@ void CPVRChannelGroup::SetHidden(bool bHidden)
     m_bHidden = bHidden;
     m_bChanged = true;
   }
+
+  return m_bChanged;
 }
 
 bool CPVRChannelGroup::IsHidden() const

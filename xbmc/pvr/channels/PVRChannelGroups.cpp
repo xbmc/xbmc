@@ -597,6 +597,22 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
   return bFound;
 }
 
+bool CPVRChannelGroups::HideGroup(const std::shared_ptr<CPVRChannelGroup>& group, bool bHide)
+{
+  bool bReturn = false;
+
+  if (group)
+  {
+    if (group->SetHidden(bHide))
+    {
+      // state changed
+      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+    }
+    bReturn = true;
+  }
+  return bReturn;
+}
+
 bool CPVRChannelGroups::CreateChannelEpgs()
 {
   bool bReturn(false);
