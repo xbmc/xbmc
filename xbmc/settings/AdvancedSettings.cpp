@@ -370,7 +370,7 @@ void CAdvancedSettings::Initialize()
 #endif
 
   m_iPVRTimeCorrection             = 0;
-  m_iPVRInfoToggleInterval         = 3000;
+  m_iPVRInfoToggleInterval = 5000;
   m_bPVRChannelIconsAutoScan       = true;
   m_bPVRAutoScanIconsUserSet       = false;
   m_iPVRNumericChannelSwitchTimeout = 2000;
