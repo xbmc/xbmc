@@ -218,7 +218,7 @@ msgstr "Gå till spellista"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Visa inloggningsskärm vid uppstart"
+msgstr "Visa inloggningsskärmen vid uppstart"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"

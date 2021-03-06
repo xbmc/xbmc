@@ -468,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Zostáva"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binary"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Kliknite sem, aby ste videli najnovšie zmeny..."
