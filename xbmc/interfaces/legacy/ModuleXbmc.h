@@ -157,6 +157,9 @@ namespace XBMCAddon
     /// Execute a built in Kodi function.
     ///
     /// @param function                string - builtin function to execute.
+    /// @param wait                    [opt] bool - if true wait until execute is
+    ///                                done, if false does it unblocked and
+    ///                                returns direct (defaults to false)
     ///
     ///
     /// \ref page_List_of_built_in_functions "List of builtin functions"
