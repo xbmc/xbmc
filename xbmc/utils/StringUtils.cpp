@@ -1810,3 +1810,24 @@ const std::locale& StringUtils::GetOriginalLocale() noexcept
 {
   return g_langInfo.GetOriginalLocale();
 }
+
+void StringUtils::RemoveBetween(std::pair<char, char> bounderies,
+                                char charToRemove,
+                                std::string& str)
+{
+  if (bounderies.first != bounderies.second)
+  {
+    int remove = 0;
+
+    auto shouldRemove = [&](char c) {
+      if (c == bounderies.first)
+        remove++;
+      else if (c == bounderies.second && remove)
+        remove--;
+
+      return (remove && c == charToRemove);
+    };
+
+    str.erase(std::remove_if(str.begin(), str.end(), shouldRemove), str.end());
+  }
+}

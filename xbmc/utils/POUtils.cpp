@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "filesystem/File.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <stdlib.h>
@@ -123,6 +124,8 @@ void CPODocument::ParseEntry(bool bisSourceLang)
     if (FindLineStart ("\nmsgstr ", m_Entry.msgStr.Pos))
     {
       GetString(m_Entry.msgStr);
+      StringUtils::RemoveBetween({'{', '}'}, ' ', m_Entry.msgStr.Str);
+
       GetString(m_Entry.msgID);
     }
     else

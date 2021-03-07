@@ -388,6 +388,14 @@ public:
    */
   static std::string FormatFileSize(uint64_t bytes);
 
+  /*! \brief Remove certain character from a string inside of given bounderies.
+             Bear in mind bounderies must be a pair of different characters.
+      \param bounderies pair of chars that mark the boundery e.g. {'(',')'}
+      \param charToRemove the character to remove
+      \param str reference to the string
+   */
+  static void RemoveBetween(std::pair<char, char> bounderies, char charToRemove, std::string& str);
+
 private:
   /*!
    * Wrapper for CLangInfo::GetOriginalLocale() which allows us to

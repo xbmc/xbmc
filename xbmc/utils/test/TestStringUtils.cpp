@@ -603,3 +603,24 @@ TEST(TestStringUtils, ToHexadecimal)
   std::string ff{"\xFF", 1};
   EXPECT_STREQ("ff", StringUtils::ToHexadecimal(ff).c_str());
 }
+
+TEST(TestStringUtils, RemoveBetween)
+{
+  std::string refstr = "Teststring: (x)";
+  std::string varstr = "Teststring: ( x )";
+
+  std::string refstr2 = "Teststring: ((y)..)";
+  std::string varstr2 = "Teststring: ( (y )..)";
+
+  std::string refstr3 = "Teststring: / /z /../";
+  std::string varstr3 = "Teststring: / /z /../";
+
+  StringUtils::RemoveBetween({'(', ')'}, ' ', varstr);
+  EXPECT_EQ(refstr, varstr);
+
+  StringUtils::RemoveBetween({'(', ')'}, ' ', varstr2);
+  EXPECT_EQ(refstr2, varstr2);
+
+  StringUtils::RemoveBetween({'/', '/'}, ' ', varstr3);
+  EXPECT_EQ(refstr3, varstr3);
+}
