@@ -14,6 +14,9 @@
 #include "addons/AddonManager.h"
 #include "addons/FontResource.h"
 #include "GUIFontTTF.h"
+#if defined(HAS_GLES) || defined (HAS_GL)
+#include "GUIFontTTFGL.h"
+#endif
 #include "GUIFont.h"
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
@@ -339,6 +342,10 @@ void GUIFontManager::Clear()
   m_vecFonts.clear();
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
+
+#if defined(HAS_GLES) || defined (HAS_GL)
+  CGUIFontTTFGL::DestroyStaticVertexBuffers();
+#endif
 }
 
 void GUIFontManager::LoadFonts(const std::string& fontSet)

@@ -101,6 +101,15 @@ bool CRendererVDPAU::NeedBuffer(int idx)
   return false;
 }
 
+bool CRendererVDPAU::Flush(bool saveBuffers)
+{
+  for (int i = 0; i < NUM_BUFFERS; i++)
+      m_vdpauTextures[i].Unmap();
+
+  return CLinuxRendererGL::Flush(saveBuffers);
+}
+
+
 void CRendererVDPAU::ReleaseBuffer(int idx)
 {
   if (glIsSync(m_fences[idx]))
