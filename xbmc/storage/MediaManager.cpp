@@ -717,28 +717,29 @@ CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
     return info;
 
   // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted
-  std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS");
-  if (CFile::Exists(URIUtils::AddFileToFolder(pathVideoTS, "VIDEO_TS.IFO")))
+  std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS", "VIDEO_TS.IFO");
+  // correct the filename if needed
+  if (StringUtils::StartsWith(mediaPath, "dvd://") ||
+      StringUtils::StartsWith(mediaPath, "iso9660://"))
   {
-    info.type = "DVD";
-    // correct the filename if needed
-    if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
-      StringUtils::StartsWith(pathVideoTS, "iso9660://"))
-      pathVideoTS = CServiceBroker::GetMediaManager().TranslateDevicePath("");
+    pathVideoTS = TranslateDevicePath("");
+  }
 
-
+  if (XFILE::CFile::Exists(pathVideoTS))
+  {
     CFileItem item(pathVideoTS, false);
     CDVDInputStreamNavigator dvdNavigator(nullptr, item);
-
-    if (!dvdNavigator.Open())
+    if (dvdNavigator.Open())
+    {
+      info.type = "DVD";
+      info.name = dvdNavigator.GetDVDTitleString();
+      info.serial = dvdNavigator.GetDVDSerialString();
       return info;
-
-    info.name = dvdNavigator.GetDVDTitleString();
-    info.serial = dvdNavigator.GetDVDSerialString();
+    }
   }
 #ifdef HAVE_LIBBLURAY
   // check for Blu-ray discs
-  else if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
+  if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
   {
     info.type = "Blu-ray";
     CBlurayDirectory bdDir;
