@@ -100,7 +100,7 @@ std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
     if (prop->enums[j].name != valueName)
       continue;
 
-    return {true, prop->enums[j].value};
+    return std::make_tuple(true, prop->enums[j].value);
   }
 
   return std::make_tuple(false, 0);
