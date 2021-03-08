@@ -906,6 +906,7 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
 //********************************************************************************************************************************
 int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
                             const std::string& parentPath /* = "" */,
+                            const CDateTime& dateAdded /* = CDateTime() */,
                             int playcount /* = 0 */,
                             const CDateTime& lastPlayed /* = CDateTime() */)
 {
@@ -918,10 +919,12 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
     if (nullptr == m_pDS)
       return -1;
 
+    const auto finalDateAdded = GetDateAdded(strFileNameAndPath, dateAdded);
+
     std::string strFileName, strPath;
     SplitPath(strFileNameAndPath,strPath,strFileName);
 
-    int idPath = AddPath(strPath, parentPath);
+    int idPath = AddPath(strPath, parentPath, finalDateAdded);
     if (idPath < 0)
       return -1;
 
@@ -943,9 +946,9 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
     if (lastPlayed.IsValid())
       strLastPlayed = "'" + lastPlayed.GetAsDBDateTime() + "'";
 
-    strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed) "
-                        "VALUES(NULL, %i, '%s', " + strPlaycount + ", " + strLastPlayed + ")",
-                        idPath, strFileName.c_str());
+    strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
+                        "VALUES(NULL, %i, '%s', " + strPlaycount + ", " + strLastPlayed + ", '%s')",
+                        idPath, strFileName.c_str(), finalDateAdded.GetAsDBDateTime().c_str());
     m_pDS->exec(strSQL);
     idFile = (int)m_pDS->lastinsertid();
     return idFile;
