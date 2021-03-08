@@ -272,6 +272,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage& message)
     {
       m_selectedGroup->SetHidden(button->IsSelected());
       Update();
+      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
     }
 
     bReturn = true;
