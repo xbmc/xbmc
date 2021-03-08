@@ -81,6 +81,14 @@ CCPUInfoLinux::CCPUInfoLinux()
   if (socPath.Exists())
     m_cpuSoC += " " + socPath.Get<std::string>();
 
+  CSysfsPath revisionPath{"/sys/bus/soc/devices/soc0/revision"};
+  if (revisionPath.Exists())
+    m_cpuRevision += revisionPath.Get<std::string>();
+
+  CSysfsPath serialPath{"/sys/bus/soc/devices/soc0/serial_number"};
+  if (serialPath.Exists())
+    m_cpuSerial += serialPath.Get<std::string>();
+
   const std::string freqStr{"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"};
   CSysfsPath freqPath{freqStr};
   if (freqPath.Exists())
