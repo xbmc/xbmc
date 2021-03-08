@@ -957,9 +957,9 @@ int CVideoDatabase::AddFile(const CFileItem& item)
   return AddFile(item.GetPath());
 }
 
-void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileNameAndPath, const CDateTime& dateAdded /* = CDateTime() */)
+void CVideoDatabase::UpdateFileDateAdded(CVideoInfoTag& details)
 {
-  if (idFile < 0 || strFileNameAndPath.empty())
+  if (details.GetPath().empty() || GetAndFillFileId(details) <= 0)
     return;
 
   CDateTime finalDateAdded;
@@ -970,13 +970,15 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
     if (nullptr == m_pDS)
       return;
 
-    finalDateAdded = GetDateAdded(strFileNameAndPath, dateAdded);
+    finalDateAdded = GetDateAdded(details.GetPath(), details.m_dateAdded);
 
-    m_pDS->exec(PrepareSQL("UPDATE files SET dateAdded='%s' WHERE idFile=%d", finalDateAdded.GetAsDBDateTime().c_str(), idFile));
+    m_pDS->exec(PrepareSQL("UPDATE files SET dateAdded='%s' WHERE idFile=%d",
+                           finalDateAdded.GetAsDBDateTime().c_str(), details.m_iFileId));
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, CURL::GetRedacted(strFileNameAndPath).c_str(), finalDateAdded.GetAsDBDateTime().c_str());
+    CLog::Log(LOGERROR, "{}({}, {}) failed", __FUNCTION__, CURL::GetRedacted(details.GetPath()),
+              finalDateAdded.GetAsDBDateTime());
   }
 }
 
@@ -2404,7 +2406,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
 
     // update dateadded if it's set
     if (details.m_dateAdded.IsValid())
-      UpdateFileDateAdded(GetAndFillFileId(details), strFilenameAndPath, details.m_dateAdded);
+      UpdateFileDateAdded(details);
 
     AddCast(idMovie, "movie", details.m_cast);
     AddLinksToItem(idMovie, MediaTypeMovie, "genre", details.m_genre);
@@ -2529,7 +2531,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
     if (updatedDetails.find("uniqueid") != updatedDetails.end())
       details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
     if (updatedDetails.find("dateadded") != updatedDetails.end() && details.m_dateAdded.IsValid())
-      UpdateFileDateAdded(GetAndFillFileId(details), details.GetPath(), details.m_dateAdded);
+      UpdateFileDateAdded(details);
 
     // track if the set was updated
     int idSet = 0;
@@ -2814,7 +2816,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
 
     // update dateadded if it's set
     if (details.m_dateAdded.IsValid())
-      UpdateFileDateAdded(GetAndFillFileId(details), strFilenameAndPath, details.m_dateAdded);
+      UpdateFileDateAdded(details);
 
     AddCast(idEpisode, "episode", details.m_cast);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "director", details.m_director);
@@ -2928,7 +2930,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const std::string& strFilenameAndPat
 
     // update dateadded if it's set
     if (details.m_dateAdded.IsValid())
-      UpdateFileDateAdded(GetAndFillFileId(details), strFilenameAndPath, details.m_dateAdded);
+      UpdateFileDateAdded(details);
 
     AddCast(idMVideo, MediaTypeMusicVideo, details.m_cast);
     AddActorLinksToItem(idMVideo, MediaTypeMusicVideo, "actor", details.m_artist);

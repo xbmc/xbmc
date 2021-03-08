@@ -780,11 +780,9 @@ public:
 
   /*! \brief Updates the dateAdded field in the files table for the file
    with the given idFile and the given path based on the files modification date
-   \param idFile id of the file in the files table
-   \param strFileNameAndPath path to the file
-   \param dateAdded datetime when the file was added to the filesystem/database
+   \param details details of the video file
    */
-  void UpdateFileDateAdded(int idFile, const std::string& strFileNameAndPath, const CDateTime& dateAdded = CDateTime());
+  void UpdateFileDateAdded(CVideoInfoTag& details);
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
