@@ -772,7 +772,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   std::set<std::string> updatedDetails;
   UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
-  if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) <= 0)
+  if (videodatabase.SetDetailsForEpisode(infos, artwork, tvshowid, id) <= 0)
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeEpisode, removedArtwork))
@@ -823,7 +823,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   // due to scrapers not supporting them
   videodatabase.RemoveTagsFromItem(id, MediaTypeMusicVideo);
 
-  if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
+  if (videodatabase.SetDetailsForMusicVideo(infos, artwork, id) <= 0)
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeMusicVideo, removedArtwork))

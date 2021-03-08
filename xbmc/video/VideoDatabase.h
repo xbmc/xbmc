@@ -423,8 +423,8 @@ public:
   bool Open() override;
   bool CommitTransaction() override;
 
-  int AddMovie(const std::string& strFilenameAndPath);
-  int AddEpisode(int idShow, const std::string& strFilenameAndPath);
+  int AddMovie(const CVideoInfoTag& details);
+  int AddEpisode(int idShow, const CVideoInfoTag& details);
 
   // editing functions
   /*! \brief Set the playcount of an item
@@ -512,7 +512,9 @@ public:
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
 
-  int SetDetailsForMovie(const std::string& strFilenameAndPath, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMovie = -1);
+  int SetDetailsForMovie(CVideoInfoTag& details,
+                         const std::map<std::string, std::string>& artwork,
+                         int idMovie = -1);
   int SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet = -1);
 
   /*! \brief add a tvshow to the library, setting metadata detail
@@ -528,8 +530,13 @@ public:
   int SetDetailsForTvShow(const std::vector< std::pair<std::string, std::string> > &paths, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
   bool UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt);
   int SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason = -1);
-  int SetDetailsForEpisode(const std::string& strFilenameAndPath, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idEpisode=-1);
-  int SetDetailsForMusicVideo(const std::string& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMVideo = -1);
+  int SetDetailsForEpisode(CVideoInfoTag& details,
+                           const std::map<std::string, std::string>& artwork,
+                           int idShow,
+                           int idEpisode = -1);
+  int SetDetailsForMusicVideo(CVideoInfoTag& details,
+                              const std::map<std::string, std::string>& artwork,
+                              int idMVideo = -1);
   void SetStreamDetailsForFile(const CStreamDetails& details, const std::string &strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
@@ -777,6 +784,14 @@ public:
    */
   int AddFile(const CFileItem& item);
 
+  /*! \brief Add a file to the database, if necessary
+   Works for both videodb:// items and normal fileitems
+   \param url full path of the file to add.
+   \param details details of the item to add.
+   \return id of the file, -1 if it could not be added.
+   */
+  int AddFile(const CVideoInfoTag& details, const std::string& parentPath = "");
+
   /*! \brief Add a path to the database, if necessary
    If the path is already in the database, we simply return its id.
    \param strPath the path to add
@@ -925,7 +940,7 @@ protected:
   int AddActor(const std::string& strActor, const std::string& thumbURL, const std::string &thumb = "");
 
   int AddTvShow();
-  int AddMusicVideo(const std::string& strFilenameAndPath);
+  int AddMusicVideo(const CVideoInfoTag& details);
 
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.
