@@ -116,9 +116,13 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 
   std::string strPath;
   if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
+  {
     strPath = CURL(g_application.CurrentFileItem().GetPath()).GetHostName();
-  else
+  }
+  else if (!URIUtils::IsPlugin(g_application.CurrentFileItem().GetPath()))
+  {
     strPath = g_application.CurrentFileItem().GetPath();
+  }
 
   std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.zip";
 
@@ -132,7 +136,10 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   {
     CMediaSource share;
     std::vector<std::string> paths;
-    paths.push_back(URIUtils::GetDirectory(strPath));
+    if (!strPath.empty())
+    {
+      paths.push_back(URIUtils::GetDirectory(strPath));
+    }
     paths.push_back(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
     share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
     shares.push_back(share);
