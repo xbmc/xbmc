@@ -345,7 +345,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (!g_application.GetAppPlayer().IsPlaying())
-        throw PlayerException("XBMC is not playing any file");
+        throw PlayerException("Kodi is not playing any file");
 
       return g_application.CurrentFileItem().GetDynPath();
     }
@@ -364,7 +364,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (!g_application.GetAppPlayer().IsPlayingVideo())
-        throw PlayerException("XBMC is not playing any videofile");
+        throw PlayerException("Kodi is not playing any videofile");
 
       const CVideoInfoTag* movie = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentMovieTag();
       if (movie)
@@ -377,7 +377,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (g_application.GetAppPlayer().IsPlayingVideo() || !g_application.GetAppPlayer().IsPlayingAudio())
-        throw PlayerException("XBMC is not playing any music file");
+        throw PlayerException("Kodi is not playing any music file");
 
       const MUSIC_INFO::CMusicInfoTag* tag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
       if (tag)
@@ -413,7 +413,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (!g_application.GetAppPlayer().IsPlaying())
-        throw PlayerException("XBMC is not playing any media file");
+        throw PlayerException("Kodi is not playing any media file");
 
       return g_application.GetTotalTime();
     }
@@ -422,7 +422,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (!g_application.GetAppPlayer().IsPlaying())
-        throw PlayerException("XBMC is not playing any media file");
+        throw PlayerException("Kodi is not playing any media file");
 
       return g_application.GetTime();
     }
@@ -431,7 +431,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (!g_application.GetAppPlayer().IsPlaying())
-        throw PlayerException("XBMC is not playing any media file");
+        throw PlayerException("Kodi is not playing any media file");
 
       g_application.SeekTime( pTime );
     }
