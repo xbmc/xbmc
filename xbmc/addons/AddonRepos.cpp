@@ -515,6 +515,6 @@ void CAddonRepos::BuildCompatibleVersionsList(
   std::sort(officialVersions.begin(), officialVersions.end(), comparator);
   std::sort(privateVersions.begin(), privateVersions.end(), comparator);
 
-  compatibleVersions = officialVersions;
-  std::copy(privateVersions.begin(), privateVersions.end(), back_inserter(compatibleVersions));
+  compatibleVersions = std::move(officialVersions);
+  std::move(privateVersions.begin(), privateVersions.end(), std::back_inserter(compatibleVersions));
 }
