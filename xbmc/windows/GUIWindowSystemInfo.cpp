@@ -162,12 +162,6 @@ void CGUIWindowSystemInfo::FrameMove()
 #if (!defined(__arm__) && !defined(__aarch64__))
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
 #endif
-#if !(defined(__arm__) && defined(TARGET_LINUX))
-    SetControlLabel(i++, "%s %s", 13271, SYSTEM_CPU_USAGE);
-#endif
-    i++;  // empty line
-    SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
-    SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
 
   else if (m_section == CONTROL_BT_PVR)
