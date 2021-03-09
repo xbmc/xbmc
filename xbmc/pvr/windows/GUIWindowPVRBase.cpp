@@ -349,7 +349,15 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           m_viewControl.SetFocused();
           break;
         }
-
+        case PVREvent::ChannelGroupsInvalidated:
+        {
+          std::shared_ptr<CPVRChannelGroup> group =
+              CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(m_bRadio);
+          m_channelGroupsSelector->Initialize(this, m_bRadio);
+          m_channelGroupsSelector->SelectChannelGroup(group);
+          SetChannelGroup(std::move(group));
+          break;
+        }
         default:
           break;
       }

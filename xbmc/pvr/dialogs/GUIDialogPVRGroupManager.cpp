@@ -270,7 +270,10 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage& message)
     CGUIRadioButtonControl* button = static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
     if (button)
     {
-      m_selectedGroup->SetHidden(button->IsSelected());
+      CServiceBroker::GetPVRManager()
+          .ChannelGroups()
+          ->Get(m_bIsRadio)
+          ->HideGroup(m_selectedGroup, button->IsSelected());
       Update();
     }
 

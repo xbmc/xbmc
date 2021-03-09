@@ -216,8 +216,10 @@ void CPVRChannelGroups::RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& 
 
 bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 {
-  bool bUpdateAllGroups = !bChannelsOnly && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
-  bool bReturn(true);
+  bool bSyncWithBackends = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
+  bool bUpdateAllGroups = !bChannelsOnly && bSyncWithBackends;
+  bool bReturn = true;
 
   // sync groups
   if (bUpdateAllGroups)
@@ -230,6 +232,8 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     groups = m_groups;
   }
 
+  std::vector<std::shared_ptr<CPVRChannelGroup>> emptyGroups;
+
   for (const auto& group : groups)
   {
     if (bUpdateAllGroups || group->IsInternalGroup())
@@ -238,6 +242,10 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
       bReturn = group->Update(channelsToRemove) && bReturn;
       RemoveFromAllGroups(channelsToRemove);
     }
+
+    // remove empty groups when sync with backend is enabled
+    if (bSyncWithBackends && group->Size() == 0)
+      emptyGroups.emplace_back(group);
 
     if (bReturn && group == m_selectedGroup)
       UpdateSelectedGroup();
@@ -249,6 +257,14 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
       CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
     }
   }
+
+  for (const auto& group : emptyGroups)
+  {
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting empty channel group '{}'", group->GroupName());
+    DeleteGroup(*group);
+  }
+
+  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
 
   // persist changes
   return PersistAll() && bReturn;
@@ -544,6 +560,8 @@ bool CPVRChannelGroups::AddGroup(const std::string& strName)
 
       m_groups.push_back(group);
       bPersist = true;
+
+      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
     }
   }
 
@@ -577,6 +595,8 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
 
         it = m_groups.erase(it);
         bFound = true;
+
+        CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
       }
       else
       {
@@ -595,6 +615,22 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
     return database ? database->Delete(group) : false;
   }
   return bFound;
+}
+
+bool CPVRChannelGroups::HideGroup(const std::shared_ptr<CPVRChannelGroup>& group, bool bHide)
+{
+  bool bReturn = false;
+
+  if (group)
+  {
+    if (group->SetHidden(bHide))
+    {
+      // state changed
+      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+    }
+    bReturn = true;
+  }
+  return bReturn;
 }
 
 bool CPVRChannelGroups::CreateChannelEpgs()

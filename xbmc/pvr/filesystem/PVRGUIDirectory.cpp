@@ -476,7 +476,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
     }
     else if (path.IsChannelsRoot())
     {
-      return GetChannelGroupsDirectory(path.IsRadio(), false, results);
+      return GetChannelGroupsDirectory(path.IsRadio(), true, results);
     }
     else if (path.IsChannelGroup())
     {
