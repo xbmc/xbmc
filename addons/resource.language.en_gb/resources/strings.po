@@ -716,7 +716,7 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#168"
 msgid "{0:s}- {1:s}"
 msgstr ""
@@ -4950,12 +4950,14 @@ msgctxt "#10040"
 msgid "Add-on browser"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/peripherals/dialogs/GUIDialogPeripheralSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10041"
 msgid "Reset above settings to default"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/peripherals/dialogs/GUIDialogPeripheralSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr ""
@@ -4968,16 +4970,17 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr ""
 
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10046"
 msgid "No categories available"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
 msgstr ""
