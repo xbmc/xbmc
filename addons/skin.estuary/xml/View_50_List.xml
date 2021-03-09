@@ -126,7 +126,7 @@
 				<right>$PARAM[right]</right>
 				<top>list_y_offset</top>
 				<bottom>list_y_offset</bottom>
-				<movement>5</movement>
+				<movement>4</movement>
 				<focusposition>6</focusposition>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<orientation>vertical</orientation>
