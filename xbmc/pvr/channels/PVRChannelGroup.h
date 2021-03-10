@@ -461,7 +461,7 @@ namespace PVR
     std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id);
     const std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id) const;
 
-    void SetHidden(bool bHidden);
+    bool SetHidden(bool bHidden);
     bool IsHidden() const;
 
     int GetPosition() const;
