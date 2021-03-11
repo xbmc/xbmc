@@ -458,6 +458,8 @@ void CGUIDialogPVRGroupManager::Update()
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_selectedGroup->GroupName());
     SET_CONTROL_SELECTED(GetID(), BUTTON_HIDE_GROUP, m_selectedGroup->IsHidden());
 
+    CONTROL_ENABLE_ON_CONDITION(BUTTON_DELGROUP, !m_selectedGroup->IsInternalGroup());
+
     if (m_selectedGroup->IsInternalGroup())
     {
       std::string strNewLabel = StringUtils::Format("%s %s",
