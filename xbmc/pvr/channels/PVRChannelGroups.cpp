@@ -244,7 +244,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     }
 
     // remove empty groups when sync with backend is enabled
-    if (bSyncWithBackends && group->Size() == 0)
+    if (bSyncWithBackends && !group->IsInternalGroup() && group->Size() == 0)
       emptyGroups.emplace_back(group);
 
     if (bReturn && group == m_selectedGroup)
