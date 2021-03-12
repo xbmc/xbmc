@@ -18,6 +18,6 @@
         PyXBMCGetUnicodeString(key,pykey,false,"${api}","${method.@name}");
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(valtype))} value;
         ${helper.getInConversion(valtype, 'value', 'pyvalue' ,method)}
-        ${api}[key] = value;
+        ${api}.emplace(std::move(key), std::move(value));
       }
     }
