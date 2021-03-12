@@ -830,10 +830,6 @@ namespace XBMCAddon
 
     CVideoInfoTag* ListItem::GetVideoInfoTag()
     {
-      // make sure the playcount is reset to -1
-      if (!item->HasVideoInfoTag())
-        item->GetVideoInfoTag()->ResetPlayCount();
-
       return item->GetVideoInfoTag();
     }
 
