@@ -342,6 +342,9 @@ void CAdvancedSettings::Initialize()
                                   //with ipv6.
   m_curlDisableHTTP2 = false;
 
+#if defined(TARGET_WINDOWS_DESKTOP)
+  m_minimizeToTray = false;
+#endif
 #if defined(TARGET_DARWIN_EMBEDDED)
   m_startFullScreen = true;
 #else
@@ -887,6 +890,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
+#if defined(TARGET_WINDOWS_DESKTOP)
+  XMLUtils::GetBoolean(pRootElement, "minimizetotray", m_minimizeToTray);
+#endif
 #if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif

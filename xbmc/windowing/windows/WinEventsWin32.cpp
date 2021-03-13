@@ -797,6 +797,23 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case BONJOUR_BROWSER_EVENT:
       CZeroconfBrowser::GetInstance()->ProcessResults();
       break;
+    case TRAY_ICON_NOTIFY:
+    {
+      switch (LOWORD(lParam))
+      {
+        case WM_LBUTTONDBLCLK:
+        {
+          DX::Windowing()->SetMinimized(false);
+          if (!g_application.GetRenderGUI())
+          {
+            if (appPort)
+              appPort->SetRenderGUI(true);
+          }
+          break;
+        }
+      }
+      break;
+    }
     default:;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));

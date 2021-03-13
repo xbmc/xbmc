@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "VideoSyncD3D.h"
+#include "WIN32Util.h"
 #include "WinEventsWin32.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDirectSound.h"
@@ -213,6 +214,14 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
   UpdateWindow( m_hWnd );
+  
+  // Configure the tray icon.
+  m_trayIcon.cbSize = sizeof(m_trayIcon);
+  m_trayIcon.hWnd = m_hWnd;
+  m_trayIcon.hIcon = m_hIcon;
+  wcsncpy(m_trayIcon.szTip, nameW.c_str(), sizeof(m_trayIcon.szTip));
+  m_trayIcon.uCallbackMessage = TRAY_ICON_NOTIFY;
+  m_trayIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;  
 
   return true;
 }
@@ -610,6 +619,27 @@ bool CWinSystemWin32::DPIChanged(WORD dpi, RECT windowRect) const
     SWP_NOZORDER | SWP_NOACTIVATE);
 
   return true;
+}
+
+void CWinSystemWin32::SetMinimized(bool minimized)
+{
+  const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  if (advancedSettings->m_minimizeToTray)
+  {
+    if (minimized)
+    {
+      Shell_NotifyIcon(NIM_ADD, &m_trayIcon);
+      ShowWindow(m_hWnd, SW_HIDE);
+    }
+    else
+    {
+      Shell_NotifyIcon(NIM_DELETE, &m_trayIcon);
+      ShowWindow(m_hWnd, SW_RESTORE);
+    }
+  }
+
+  m_bMinimized = minimized;
 }
 
 void CWinSystemWin32::GetConnectedOutputs(std::vector<std::string>* outputs)

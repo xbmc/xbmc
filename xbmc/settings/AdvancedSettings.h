@@ -291,6 +291,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     std::string m_caTrustFile;
 
+    bool m_minimizeToTray; /* win32 only */
     bool m_fullScreen;
     bool m_startFullScreen;
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
