@@ -1359,6 +1359,12 @@ void CXBMCApp::SetupEnv()
   std::string className = CCompileInfo::GetPackage();
 
   std::string cacheDir = getCacheDir().getAbsolutePath();
+  std::string xbmcTemp = CJNISystem::getProperty("xbmc.temp", "");
+  if (!xbmcTemp.empty())
+  {
+    setenv("KODI_TEMP", xbmcTemp.c_str(), 0);
+  }
+
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
   if (xbmcHome.empty())
   {
