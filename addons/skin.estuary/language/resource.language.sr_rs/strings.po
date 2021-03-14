@@ -420,6 +420,14 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Изаберите пакет уметности љубитеља за маску"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Изаберите програм"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Изаберите резолуцију екрана"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Преостало"

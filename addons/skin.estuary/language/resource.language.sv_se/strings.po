@@ -212,6 +212,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arialbaserad"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Tryck på [B]vänster[/B] för att gå tillbaka eller [B]höger[/B] för att gå framåt"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Gå till spellista"
@@ -379,6 +383,10 @@ msgstr "Sök i det lokala biblioteket"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Sök på Youtube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr "Växla undertext"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -579,6 +587,10 @@ msgstr "Profil avatar"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animera bakgrund"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Visa affischer istället för miniatyrbilder för musikvideor"
 
 msgctxt "#31169"
 msgid "Artwork related settings."
