@@ -16,7 +16,7 @@
 class CScriptRunner
 {
 protected:
-  CScriptRunner() = default;
+  CScriptRunner();
   virtual ~CScriptRunner() = default;
 
   virtual bool IsSuccessful() const = 0;
