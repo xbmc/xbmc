@@ -459,7 +459,10 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
 
   if (!m_dateAdded.IsValid())
     m_dateAdded = other.m_dateAdded;
-  // m_type
+
+  if (m_type.empty())
+    m_type = other.m_type;
+
   if (m_relevance == -1)
     m_relevance = other.m_relevance;
   if (!m_parsedDetails)
