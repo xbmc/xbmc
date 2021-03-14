@@ -202,6 +202,8 @@ bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
     m_bHasArchive = channel->HasArchive();
 
     UpdateEncryptionName();
+
+    m_bChanged = true;
   }
 
   // only update the channel name and icon if the user hasn't changed them manually
