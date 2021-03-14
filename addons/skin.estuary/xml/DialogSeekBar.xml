@@ -270,7 +270,7 @@
 			<height>380</height>
 			<control type="label">
 				<left>20</left>
-				<width>220</width>
+				<width>290</width>
 				<top>-80</top>
 				<height>25</height>
 				<label>$INFO[VideoPlayer.ChannelNumberLabel]</label>
