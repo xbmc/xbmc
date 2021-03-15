@@ -18,7 +18,7 @@
 #include "SettingDefinitions.h"
 #include "SettingDependency.h"
 #include "threads/SharedSection.h"
-#include "utils/StaticLoggerBase.h"
+#include "utils/logtypes.h"
 
 #include <map>
 #include <set>
@@ -40,7 +40,6 @@ class TiXmlNode;
  */
 class CSettingsManager : public ISettingCreator,
                          public ISettingControlCreator,
-                         protected CStaticLoggerBase,
                          private ISettingCallback,
                          private ISettingsHandler
 {
@@ -540,4 +539,6 @@ private:
 
   mutable CSharedSection m_critical;
   mutable CSharedSection m_settingsCritical;
+
+  Logger m_logger;
 };

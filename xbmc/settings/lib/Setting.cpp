@@ -66,18 +66,22 @@ bool DeserializeOptionsSort(const TiXmlElement* optionsElement, SettingOptionsSo
   return true;
 }
 
+Logger CSetting::s_logger;
+
 CSetting::CSetting(const std::string& id,
                    CSettingsManager* settingsManager /* = nullptr */,
                    const std::string& name /* = "CSetting" */)
-  : ISetting(id, settingsManager), CStaticLoggerBase(name)
-{ }
+  : ISetting(id, settingsManager)
+{
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger(name);
+}
 
 CSetting::CSetting(const std::string& id,
                    const CSetting& setting,
                    const std::string& name /* = "CSetting" */)
-  : ISetting(id, setting.m_settingsManager), CStaticLoggerBase(name)
+  : CSetting(id, setting.m_settingsManager, name)
 {
-  m_id = id;
   Copy(setting);
 }
 

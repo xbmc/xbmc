@@ -112,6 +112,8 @@ private:
 
   bool LoadCert(std::string &skey, std::string &scert);
 
+  static Logger GetLogger();
+
   uint16_t m_port = 0;
   struct MHD_Daemon *m_daemon_ip6 = nullptr;
   struct MHD_Daemon *m_daemon_ip4 = nullptr;
@@ -126,5 +128,4 @@ private:
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
 
   Logger m_logger;
-  static Logger s_logger;
 };
