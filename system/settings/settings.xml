@@ -2829,6 +2829,9 @@
         <setting id="lookandfeel.soundskin" type="addon" label="24006" help="36110">
           <level>0</level>
           <default>resource.uisounds.kodi</default>
+          <dependencies>
+            <dependency type="enable" setting="audiooutput.guisoundmode" operator="!is">0</dependency>
+          </dependencies>          
           <constraints>
             <addontype>kodi.resource.uisounds</addontype>
             <allowempty>true</allowempty>
