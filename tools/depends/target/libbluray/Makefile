@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile tvos.patch
 
 # lib name, version
 LIBNAME=libbluray
-VERSION=1.1.2
+VERSION=1.2.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
