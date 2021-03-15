@@ -423,8 +423,7 @@ public:
   bool Open() override;
   bool CommitTransaction() override;
 
-  int AddMovie(const std::string& strFilenameAndPath);
-  int AddEpisode(int idShow, const std::string& strFilenameAndPath);
+  int AddNewEpisode(int idShow, CVideoInfoTag& details);
 
   // editing functions
   /*! \brief Set the playcount of an item
@@ -512,7 +511,9 @@ public:
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
 
-  int SetDetailsForMovie(const std::string& strFilenameAndPath, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMovie = -1);
+  int SetDetailsForMovie(CVideoInfoTag& details,
+                         const std::map<std::string, std::string>& artwork,
+                         int idMovie = -1);
   int SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet = -1);
 
   /*! \brief add a tvshow to the library, setting metadata detail
@@ -528,8 +529,13 @@ public:
   int SetDetailsForTvShow(const std::vector< std::pair<std::string, std::string> > &paths, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
   bool UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt);
   int SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason = -1);
-  int SetDetailsForEpisode(const std::string& strFilenameAndPath, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idEpisode=-1);
-  int SetDetailsForMusicVideo(const std::string& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMVideo = -1);
+  int SetDetailsForEpisode(CVideoInfoTag& details,
+                           const std::map<std::string, std::string>& artwork,
+                           int idShow,
+                           int idEpisode = -1);
+  int SetDetailsForMusicVideo(CVideoInfoTag& details,
+                              const std::map<std::string, std::string>& artwork,
+                              int idMVideo = -1);
   void SetStreamDetailsForFile(const CStreamDetails& details, const std::string &strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
@@ -541,16 +547,12 @@ public:
   int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
 
   void DeleteMovie(int idMovie, bool bKeepId = false);
-  void DeleteMovie(const std::string& strFilenameAndPath, bool bKeepId = false);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
   void DeleteEpisode(int idEpisode, bool bKeepId = false);
-  void DeleteEpisode(const std::string& strFilenameAndPath, bool bKeepId = false);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
-  void DeleteMusicVideo(const std::string& strFilenameAndPath, bool bKeepId = false);
   void DeleteDetailsForTvShow(int idTvShow);
-  void DeleteDetailsForTvShow(const std::string& strPath);
   void DeleteStreamDetails(int idFile);
   void RemoveContentForPath(const std::string& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
@@ -758,9 +760,17 @@ public:
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
    \param url - full path of the file to add.
+   \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
+   \param dateAdded datetime when the file was added to the filesystem/database
+   \param playcount the playcount of the file to add.
+   \param lastPlayed the date and time when the file to add was last played.
    \return id of the file, -1 if it could not be added.
    */
-  int AddFile(const std::string& url);
+  int AddFile(const std::string& url,
+              const std::string& parentPath = "",
+              const CDateTime& dateAdded = CDateTime(),
+              int playcount = 0,
+              const CDateTime& lastPlayed = CDateTime());
 
   /*! \brief Add a file to the database, if necessary
    Works for both videodb:// items and normal fileitems
@@ -768,6 +778,14 @@ public:
    \return id of the file, -1 if it could not be added.
    */
   int AddFile(const CFileItem& item);
+
+  /*! \brief Add a file to the database, if necessary
+   Works for both videodb:// items and normal fileitems
+   \param url full path of the file to add.
+   \param details details of the item to add.
+   \return id of the file, -1 if it could not be added.
+   */
+  int AddFile(const CVideoInfoTag& details, const std::string& parentPath = "");
 
   /*! \brief Add a path to the database, if necessary
    If the path is already in the database, we simply return its id.
@@ -780,11 +798,9 @@ public:
 
   /*! \brief Updates the dateAdded field in the files table for the file
    with the given idFile and the given path based on the files modification date
-   \param idFile id of the file in the files table
-   \param strFileNameAndPath path to the file
-   \param dateAdded datetime when the file was added to the filesystem/database
+   \param details details of the video file
    */
-  void UpdateFileDateAdded(int idFile, const std::string& strFileNameAndPath, const CDateTime& dateAdded = CDateTime());
+  void UpdateFileDateAdded(CVideoInfoTag& details);
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
@@ -888,6 +904,9 @@ public:
   bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
 
 protected:
+  int AddNewMovie(CVideoInfoTag& details);
+  int AddNewMusicVideo(CVideoInfoTag& details);
+
   int GetMovieId(const std::string& strFilenameAndPath);
   int GetMusicVideoId(const std::string& strFilenameAndPath);
 
@@ -897,6 +916,13 @@ protected:
    \return id of the file, -1 if it is not in the db.
    */
   int GetFileId(const CFileItem &item);
+  int GetFileId(const CVideoInfoTag& details);
+
+  /*! \brief Get the id of the file of this item and store it in the item
+   \param details CVideoInfoTag for which to get and store the id of the file
+   \return id of the file, -1 if it is not in the db.
+   */
+  int GetAndFillFileId(CVideoInfoTag& details);
 
   /*! \brief Get the id of a file from path
    \param url full path to the file
@@ -912,7 +938,6 @@ protected:
   int AddActor(const std::string& strActor, const std::string& thumbURL, const std::string &thumb = "");
 
   int AddTvShow();
-  int AddMusicVideo(const std::string& strFilenameAndPath);
 
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.
@@ -1026,4 +1051,6 @@ private:
 
   static void AnnounceRemove(const std::string& content, int id, bool scanning = false);
   static void AnnounceUpdate(const std::string& content, int id);
+
+  static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
 };
