@@ -27,6 +27,9 @@ ADDON::AddonPtr CScriptRunner::GetAddon() const
   return m_addon;
 }
 
+CScriptRunner::CScriptRunner() : m_scriptDone(true)
+{ }
+
 bool CScriptRunner::StartScript(ADDON::AddonPtr addon, const std::string& path)
 {
   return RunScriptInternal(addon, path, 0, false);
