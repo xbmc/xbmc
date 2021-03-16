@@ -2430,13 +2430,10 @@ void CFileItemList::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute sortA
 
 void CFileItemList::Sort(SortDescription sortDescription)
 {
-  if (sortDescription.sortBy == SortByFile ||
-      sortDescription.sortBy == SortBySortTitle ||
-      sortDescription.sortBy == SortByDateAdded ||
-      sortDescription.sortBy == SortByRating ||
-      sortDescription.sortBy == SortByYear ||
-      sortDescription.sortBy == SortByPlaylistOrder ||
-      sortDescription.sortBy == SortByLastPlayed ||
+  if (sortDescription.sortBy == SortByFile || sortDescription.sortBy == SortBySortTitle ||
+      sortDescription.sortBy == SortByOriginalTitle || sortDescription.sortBy == SortByDateAdded ||
+      sortDescription.sortBy == SortByRating || sortDescription.sortBy == SortByYear ||
+      sortDescription.sortBy == SortByPlaylistOrder || sortDescription.sortBy == SortByLastPlayed ||
       sortDescription.sortBy == SortByPlaycount)
     sortDescription.sortAttributes = (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
 

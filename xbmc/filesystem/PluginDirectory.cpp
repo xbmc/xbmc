@@ -308,7 +308,18 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
         dir->m_listItems->AddSortMethod(SortBySortTitle, 556, LABEL_MASKS(labelMask, "%M", labelMask, "%M"), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
-    case SORT_METHOD_MPAA_RATING:
+      case SORT_METHOD_VIDEO_ORIGINAL_TITLE:
+      case SORT_METHOD_VIDEO_ORIGINAL_TITLE_IGNORE_THE:
+      {
+        dir->m_listItems->AddSortMethod(
+            SortByOriginalTitle, 20376, LABEL_MASKS(labelMask, "%M", labelMask, "%M"),
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                ? SortAttributeIgnoreArticle
+                : SortAttributeNone);
+        break;
+      }
+      case SORT_METHOD_MPAA_RATING:
       {
         dir->m_listItems->AddSortMethod(SortByMPAA, 20074, LABEL_MASKS(labelMask, "%O", labelMask, "%O"));
         break;
