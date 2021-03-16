@@ -583,6 +583,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
   else if (type == "tvshows")
   {
     orders.push_back(SortBySortTitle);
+    orders.push_back(SortByOriginalTitle);
     orders.push_back(SortByTvShowStatus);
     orders.push_back(SortByVotes);
     orders.push_back(SortByRating);
@@ -601,6 +602,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
   else if (type == "episodes")
   {
     orders.push_back(SortByTitle);
+    orders.push_back(SortByOriginalTitle);
     orders.push_back(SortByTvShowTitle);
     orders.push_back(SortByVotes);
     orders.push_back(SortByRating);
@@ -620,6 +622,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
   else if (type == "movies")
   {
     orders.push_back(SortBySortTitle);
+    orders.push_back(SortByOriginalTitle);
     orders.push_back(SortByVotes);
     orders.push_back(SortByRating);
     orders.push_back(SortByUserRating);
