@@ -2251,6 +2251,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
 {
   if (sortDescription.sortBy == SortByFile ||
       sortDescription.sortBy == SortBySortTitle ||
+      sortDescription.sortBy == SortByOriginalTitle ||
       sortDescription.sortBy == SortByDateAdded ||
       sortDescription.sortBy == SortByRating ||
       sortDescription.sortBy == SortByYear ||

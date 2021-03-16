@@ -670,6 +670,16 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
       sortable[FieldSortTitle] = m_strSortTitle;
     break;
   }
+  case FieldOriginalTitle:
+  {
+    // seasons with a custom name/title need special handling as they should be sorted by season number
+    if (m_type == MediaTypeSeason && !m_strOriginalTitle.empty())
+      sortable[FieldOriginalTitle] =
+          StringUtils::Format(g_localizeStrings.Get(20358).c_str(), m_iSeason);
+    else
+      sortable[FieldOriginalTitle] = m_strOriginalTitle;
+    break;
+  }
   case FieldTvShowStatus:             sortable[FieldTvShowStatus] = m_strStatus; break;
   case FieldProductionCode:           sortable[FieldProductionCode] = m_strProductionCode; break;
   case FieldAirDate:                  sortable[FieldAirDate] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : (m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::Empty); break;
