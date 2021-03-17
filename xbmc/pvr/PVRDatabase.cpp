@@ -390,6 +390,20 @@ int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
 
 /********** Channel group methods **********/
 
+bool CPVRDatabase::QueueDeleteChannelGroupMembersQuery(int iGroupID)
+{
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idGroup = %u", iGroupID));
+
+  CSingleLock lock(m_critSection);
+
+  std::string strQuery;
+  if (BuildSQL(PrepareSQL("DELETE FROM %s ", "map_channelgroups_channels"), filter, strQuery))
+    return CDatabase::QueueDeleteQuery(strQuery);
+
+  return false;
+}
+
 bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup& group)
 {
   Filter filter;
