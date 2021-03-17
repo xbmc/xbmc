@@ -17,7 +17,7 @@
 #include "SettingType.h"
 #include "SettingUpdate.h"
 #include "threads/SharedSection.h"
-#include "utils/StaticLoggerBase.h"
+#include "utils/logtypes.h"
 
 #include <memory>
 #include <set>
@@ -44,8 +44,7 @@ using SettingList = std::vector<SettingPtr>;
  */
 class CSetting : public ISetting,
                  protected ISettingCallback,
-                 public std::enable_shared_from_this<CSetting>,
-                 protected CStaticLoggerBase
+                 public std::enable_shared_from_this<CSetting>
 {
 public:
   CSetting(const std::string& id,
@@ -125,6 +124,8 @@ protected:
   mutable CSharedSection m_critical;
 
   std::string m_referencedId;
+
+  static Logger s_logger;
 };
 
 template<typename TValue, SettingType TSettingType>

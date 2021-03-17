@@ -11,7 +11,7 @@
 #include "ISetting.h"
 #include "Setting.h"
 #include "SettingCategoryAccess.h"
-#include "utils/StaticLoggerBase.h"
+#include "utils/logtypes.h"
 
 #include <string>
 #include <utility>
@@ -25,7 +25,7 @@ class CSettingsManager;
  \sa CSettingCategory
  \sa CSetting
  */
-class CSettingGroup : public ISetting, protected CStaticLoggerBase
+class CSettingGroup : public ISetting
 {
 public:
   /*!
@@ -69,6 +69,8 @@ public:
 private:
   SettingList m_settings;
   std::shared_ptr<ISettingControl> m_control;
+
+  static Logger s_logger;
 };
 
 using SettingGroupPtr = std::shared_ptr<CSettingGroup>;
@@ -80,7 +82,7 @@ using SettingGroupList = std::vector<SettingGroupPtr>;
  \sa CSettingSection
  \sa CSettingGroup
  */
-class CSettingCategory : public ISetting, protected CStaticLoggerBase
+class CSettingCategory : public ISetting
 {
 public:
   /*!
@@ -125,6 +127,8 @@ public:
 private:
   SettingGroupList m_groups;
   CSettingCategoryAccess m_accessCondition;
+
+  static Logger s_logger;
 };
 
 using SettingCategoryPtr = std::shared_ptr<CSettingCategory>;
@@ -136,7 +140,7 @@ using SettingCategoryList = std::vector<SettingCategoryPtr>;
  \sa CSettings
  \sa CSettingCategory
  */
-class CSettingSection : public ISetting, protected CStaticLoggerBase
+class CSettingSection : public ISetting
 {
 public:
   /*!
@@ -173,6 +177,8 @@ public:
 
 private:
   SettingCategoryList m_categories;
+
+  static Logger s_logger;
 };
 
 using SettingSectionPtr = std::shared_ptr<CSettingSection>;
