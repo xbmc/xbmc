@@ -272,6 +272,12 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
           }
+          else if (value == "thumb")
+          {
+            if (elementsAssets->GetText() != nullptr)
+              addon->m_art[value] =
+                  URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
+          }
         }
       }
 
