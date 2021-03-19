@@ -128,6 +128,8 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
     m_strEpisodeName = data.strEpisodeName;
   if (data.strSeriesLink)
     m_strSeriesLink = data.strSeriesLink;
+  if (data.strParentalRatingCode)
+    m_strParentalRatingCode = data.strParentalRatingCode;
 
   UpdatePath();
 }
@@ -167,6 +169,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["broadcastid"] = m_iDatabaseID; // Use DB id here as it is unique across PVR clients
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_iParentalRating;
+  value["parentalratingcode"] = m_strParentalRatingCode;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
@@ -434,6 +437,11 @@ int CPVREpgInfoTag::ParentalRating() const
   return m_iParentalRating;
 }
 
+std::string CPVREpgInfoTag::ParentalRatingCode() const
+{
+  return m_strParentalRatingCode;
+}
+
 int CPVREpgInfoTag::StarRating() const
 {
   return m_iStarRating;
@@ -490,6 +498,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
        m_startTime != tag.m_startTime || m_endTime != tag.m_endTime ||
        m_iGenreType != tag.m_iGenreType || m_iGenreSubType != tag.m_iGenreSubType ||
        m_firstAired != tag.m_firstAired || m_iParentalRating != tag.m_iParentalRating ||
+       m_strParentalRatingCode != tag.m_strParentalRatingCode ||
        m_iStarRating != tag.m_iStarRating || m_iEpisodeNumber != tag.m_iEpisodeNumber ||
        m_iEpisodePart != tag.m_iEpisodePart || m_iSeriesNumber != tag.m_iSeriesNumber ||
        m_strEpisodeName != tag.m_strEpisodeName ||
@@ -534,6 +543,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     }
     m_firstAired = tag.m_firstAired;
     m_iParentalRating = tag.m_iParentalRating;
+    m_strParentalRatingCode = tag.m_strParentalRatingCode;
     m_iStarRating = tag.m_iStarRating;
     m_iEpisodeNumber = tag.m_iEpisodeNumber;
     m_iEpisodePart = tag.m_iEpisodePart;
