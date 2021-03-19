@@ -150,6 +150,13 @@ namespace PVR
     bool Delete(const CPVRChannelGroup& group);
 
     /*!
+     * @brief Remove all channel members of the given group from the database
+     * @param iGroupID The id of the group.
+     * @return True if all channel members were removed, false otherwise.
+     */
+    bool QueueDeleteChannelGroupMembersQuery(int iGroupID);
+
+    /*!
      * @brief Get the channel groups.
      * @param results The container to store the results in.
      * @return True if the list was fetched successfully, false otherwise.
