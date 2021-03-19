@@ -7,328 +7,374 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-02-11 15:28+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
-"Language-Team: Basque (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/eu_es/>\n"
-"Language: eu_es\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ro_md\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n == 1) ? 0 : ((n == 0 || n % 100 >= 2 && "
+"n % 100 <= 19) ? 1 : 2);\n"
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Audioaren ezarpenak"
+msgstr ""
 
 msgctxt "#31003"
 msgid "IP"
-msgstr "IPa"
+msgstr ""
 
 msgctxt "#31004"
 msgid "Caps[CR]Lock"
-msgstr "Blok[CR]maius"
+msgstr ""
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "Bistaratze aukerak"
+msgstr ""
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Bistaratze aurrezarpenak"
+msgstr ""
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Laster-menua"
+msgstr ""
 
+#empty string with id 31008
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Lanean..."
+msgstr ""
 
+#empty string with id 31010
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Duela gutxikoak"
+msgstr ""
 
+#empty string with id 31012
 msgctxt "#31013"
 msgid "Movies"
-msgstr "Filmak"
+msgstr ""
 
 msgctxt "#31014"
 msgid "Episodes"
-msgstr "Atalak"
+msgstr ""
+
+msgctxt "#31015"
+msgid "Player info"
+msgstr ""
 
 msgctxt "#31016"
 msgid "Albums"
-msgstr "Albumak"
+msgstr ""
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr "PVR informazioa"
+msgstr ""
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr "Erreproduzigailuaren prozesuaren informazioa"
+msgstr ""
 
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr "Bideo deskodetzailea"
+msgstr ""
 
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr "Pixel formatua"
+msgstr ""
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Sistemak erabilitako memoria"
+msgstr ""
 
+#empty strings from id 31022 to 31023
 msgctxt "#31024"
 msgid "Page"
-msgstr "Orrialdea"
+msgstr ""
 
+#empty strings from id 31025 to 31029
+#ViewType labels
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Informazio zerrenda"
+msgstr ""
 
+#empty strings from id 31031 to 31037
 msgctxt "#31038"
 msgid "Login"
-msgstr "Hasi saioa"
+msgstr ""
 
 msgctxt "#31039"
 msgid "Updated:"
-msgstr "Eguneratua: "
+msgstr ""
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr ""
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "PAUSATUA"
+msgstr ""
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "BIZKOR AURRERATU"
+msgstr ""
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "BIRBOBINATU"
+msgstr ""
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr "Erreprodukzio abiadura"
+msgstr ""
 
+#empty strings from id 31047 to 31048
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Amaiera ordua"
+msgstr ""
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordenatu: Gorantz"
+msgstr ""
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordenatu: Beherantz"
+msgstr ""
 
+#empty strings from id 31052 to 31054
+#Playlist Editor labels
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Ireki erreprodukzio-zerrenda"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Gorde erreprodukzio-zerrenda"
+msgstr ""
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Itxi erreprodukzio-zerrenda"
+msgstr ""
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Sistemako musika fitxategiak"
+msgstr ""
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Uneko erreprodukzio-zerrenda"
+msgstr ""
 
+#empty strings from id 31060 to 31199
+#Submenu labels
 msgctxt "#31200"
 msgid "Back"
-msgstr "Atzera"
+msgstr ""
 
 msgctxt "#31201"
 msgid "Location"
-msgstr "Kokalekua"
+msgstr ""
 
 msgctxt "#31202"
 msgid "View"
-msgstr "Ikusi"
+msgstr ""
 
+#empty strings from id 31203 to 31299
+#Extra labels
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Uneko tenperatura"
+msgstr ""
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Azken eguneraketa"
+msgstr ""
 
+#empty string with id 31302
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Datu hornitzailea"
+msgstr ""
 
+#empty strings from id 31304 to 31308
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Erabilitako sistemaren memoria:"
+msgstr ""
 
+#empty strings from id 31310 to 31319
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Azken saioa :"
+msgstr ""
 
+#empty string with id 31321
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Aireratua"
+msgstr ""
 
+#empty strings from id 31323 to 31354
+#Video and Music OSD Labels
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Bideo menua"
+msgstr ""
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Deskargatu azpitituluak"
+msgstr ""
 
+#empty string with id 31357
 msgctxt "#31358"
 msgid "Teletext"
-msgstr "Teletestua"
+msgstr ""
 
+#empty strings from id 31359 to 31389
+#Skin Fontsets
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Azal lehenetsia"
+msgstr ""
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Arial-en oinarritua"
+msgstr ""
 
+#empty strings from id 31392 to 31399
+#Description Labels
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Aldatu azala · Ezarri hizkuntza eta eskualdea · Aldatu fitxategiak zerrendatzeko aukerak · Konfiguratu pantaila-babeslea"
+msgstr ""
 
+#empty strings from id 31401 to 31404
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Konfiguratu eta kudeatu multimedia partekatzeko zerbitzuak · Konfiguratu eta kudeatu eguraldi zerbitzua"
+msgstr ""
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Konfiguratu bistaratzea · Konfiguratu audioa · Konfiguratu interneteko sarbidea · Konfiguratu energia aurreztea · Konfiguratu erregistroa"
+msgstr ""
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Kudeatu instalatutako gehigarriak · Arakatu eta instalatu gehigarriak kodi.tv-tik · Aldatu gehigarrien ezarpenak"
+msgstr ""
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Konfiguratu erreproduzitu bitartean erabili daitezkeen ekintzak · Konfiguratu multimedia edukia nola erreproduzitzen den"
+msgstr ""
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Konfiguratu liburutegien iturburuak · Erakutsi multimedia zerrenden bistaratze edukia · Konfiguratu liburutegi zerrendak nola nabigatzen diren"
+msgstr ""
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Konfiguratu azala · Konfiguratu eskualdea · Konfiguratu kontrola · Konfiguratu pantaila-babeslea · Konfiguratu blokeatze nagusia"
+msgstr ""
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Konfiguratu zure profilak · Ezarri blokeatze aukerak · Gaitu saio hasteko pantaila"
+msgstr ""
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Bistaratu sistemaren informazioa · Hardware estatistikak · Egiaztatu biltegiratzearen erabilgarritasuna · Ikusi sareko konfigurazioa"
+msgstr ""
 
+#empty strings from id 31413 to 31420
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Hautatu zure Kodi profila[CR] saioa hasi eta jarraitzeko"
+msgstr ""
 
+#empty strings from id 31422 to 31547
+#Skin Setting Options
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Menu nagusia"
+msgstr ""
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Hasierako gehigarriak"
+msgstr ""
 
 msgctxt "#31550"
 msgid "Backgrounds"
-msgstr "Atzeko planoak"
+msgstr ""
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Gehigarriaren lasterbidea"
+msgstr ""
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr "SINK"
+msgstr ""
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr "Erabili atzeko plano pertsonalizatua"
+msgstr ""
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr "Atzeko planoa:"
+msgstr ""
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Konfiguratu TBaren ezarpenak · Aldatu pantaila osoko informazioa · Kudeatu EPG datuen ezarpenak"
+msgstr ""
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Zuzeneko TB"
+msgstr ""
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "Ezkutatu bideoaren atzeko planoa"
+msgstr ""
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr "Ezkutatu bisualizazioaren atzeko planoa"
+msgstr ""
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Kanalaren ezarpenak"
+msgstr ""
 
 msgctxt "#31560"
 msgid "Available groups"
-msgstr "Eskuragarri dauden taldeak"
+msgstr ""
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Gehitu taldea"
+msgstr ""
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Berrizendatu taldea"
+msgstr ""
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Ezabatu taldea"
+msgstr ""
 
 msgctxt "#31564"
 msgid "Show hidden"
-msgstr "Erakutsi ezkutukoak"
+msgstr ""
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr "Erakutsi ezabatutakoak"
+msgstr ""
 
+#empty strings from id 31566 to 31899
 msgctxt "#31900"
 msgid "First Run"
-msgstr "Lehen abioa"
+msgstr ""
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Estouchy nabigatzeari buruz bi gauza jakin behar dira"
+msgstr ""
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Kodi logoak 'ETXEA' botoi bezala funtzionatzen du. Ukitzen duzunean hasierako pantailara joango zara."
+msgstr ""
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Audio edo bideoa erreproduzitzen ari zarenean, izenburua agertuko da pantailaren goian. Ukituz gero pantaila osoko bisualizazio edo bideo leihora eramango zaitu."
+msgstr ""
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Orain erreproduzitzen izenburua..."
+msgstr ""
