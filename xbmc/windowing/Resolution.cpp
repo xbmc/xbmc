@@ -96,7 +96,9 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
 
-  if (indexList.empty())
+  bool noWhiteList = indexList.empty();
+
+  if (noWhiteList)
   {
     CLog::Log(LOGDEBUG,
               "[WHITELIST] Using the default whitelist because the user whitelist is empty");
@@ -156,7 +158,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
   if (!found)
     CLog::Log(LOGDEBUG, "[WHITELIST] No match for an exact resolution with an exact refresh rate");
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (noWhiteList || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE))
   {
     CLog::Log(LOGDEBUG,
@@ -195,7 +197,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
   else if (found)
     return;
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (noWhiteList || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN))
   {
     CLog::Log(LOGDEBUG,
@@ -257,7 +259,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 
   CLog::Log(LOGDEBUG, "[WHITELIST] No match for a desktop resolution with an exact refresh rate");
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (noWhiteList || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE))
   {
     CLog::Log(LOGDEBUG,
@@ -286,7 +288,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
               "[WHITELIST] No match for a desktop resolution with double the refresh rate");
   }
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (noWhiteList || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN))
   {
     CLog::Log(LOGDEBUG,
