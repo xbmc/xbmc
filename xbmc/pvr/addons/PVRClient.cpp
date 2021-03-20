@@ -1776,7 +1776,7 @@ void CPVRClient::cb_transfer_recording_entry(void* kodiInstance,
 
   /* transfer this entry to the recordings container */
   std::shared_ptr<CPVRRecording> transferRecording(new CPVRRecording(*recording, client->GetID()));
-  kodiRecordings->UpdateFromClient(transferRecording);
+  kodiRecordings->UpdateFromClient(transferRecording, *client);
 }
 
 void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,

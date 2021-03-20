@@ -199,7 +199,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std:
   return retVal;
 }
 
-void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
+void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
+                                      const CPVRClient& client)
 {
   CSingleLock lock(m_critSection);
 
@@ -214,12 +215,12 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
   std::shared_ptr<CPVRRecording> existingTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
   if (existingTag)
   {
-    existingTag->Update(*tag);
+    existingTag->Update(*tag, client);
     existingTag->SetDirty(false);
   }
   else
   {
-    tag->UpdateMetadata(GetVideoDatabase());
+    tag->UpdateMetadata(GetVideoDatabase(), client);
     tag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert({CPVRRecordingUid(tag->m_iClientId, tag->m_strRecordingId), tag});
     if (tag->IsRadio())
