@@ -444,6 +444,11 @@
 		<value condition="Window.IsActive(TVSearch)">$LOCALIZE[19020] / $LOCALIZE[137]</value>
 		<value>$LOCALIZE[19021] / $LOCALIZE[137]</value>
 	</variable>
+	<variable name="BreadcrumbsPVRChannelsOSDVar">
+		<value condition="PVR.IsPlayingTV">$LOCALIZE[19020] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
+		<value condition="PVR.IsPlayingRadio">$LOCALIZE[19021] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
+		<value>$LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
+	</variable>
 	<variable name="BreadcrumbsGameVar">
 		<value>$LOCALIZE[15016]</value>
 	</variable>
