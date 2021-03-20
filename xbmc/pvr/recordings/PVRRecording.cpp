@@ -358,17 +358,15 @@ bool CPVRRecording::UpdateRecordingSize()
   return false;
 }
 
-void CPVRRecording::UpdateMetadata(CVideoDatabase& db)
+void CPVRRecording::UpdateMetadata(CVideoDatabase& db, const CPVRClient& client)
 {
   if (m_bGotMetaData || !db.IsOpen())
     return;
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
-
-  if (!client || !client->GetClientCapabilities().SupportsRecordingsPlayCount())
+  if (!client.GetClientCapabilities().SupportsRecordingsPlayCount())
     CVideoInfoTag::SetPlayCount(db.GetPlayCount(m_strFileNameAndPath));
 
-  if (!client || !client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
+  if (!client.GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
   {
     CBookmark resumePoint;
     if (db.GetResumeBookMark(m_strFileNameAndPath, resumePoint))
@@ -389,7 +387,7 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
   return edls;
 }
 
-void CPVRRecording::Update(const CPVRRecording& tag)
+void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
 {
   m_strRecordingId = tag.m_strRecordingId;
   m_iClientId = tag.m_iClientId;
@@ -420,8 +418,12 @@ void CPVRRecording::Update(const CPVRRecording& tag)
     m_sizeInBytes = tag.m_sizeInBytes;
   }
 
-  CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
-  CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
+  if (client.GetClientCapabilities().SupportsRecordingsPlayCount())
+    CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
+
+  if (client.GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
+    CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
+
   SetDuration(tag.GetDuration());
 
   if (m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING)
