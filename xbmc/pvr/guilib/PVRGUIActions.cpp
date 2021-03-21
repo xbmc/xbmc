@@ -1019,7 +1019,8 @@ namespace PVR
     }
 
     std::shared_ptr<CPVRRecording> origRecording(new CPVRRecording);
-    origRecording->Update(*recording);
+    origRecording->Update(*recording,
+                          *CServiceBroker::GetPVRManager().GetClient(recording->m_iClientId));
 
     if (!ShowRecordingSettings(recording))
       return false;
