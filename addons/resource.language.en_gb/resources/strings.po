@@ -9460,7 +9460,11 @@ msgctxt "#19041"
 msgid "Refresh channel logos"
 msgstr ""
 
-#empty string with id 19042
+#. label for PVR backend number of channel groups in system information's PVR section
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#19042"
+msgid "Channel Groups"
+msgstr ""
 
 #. pvr settings "recording" category label
 #: system/settings/settings.xml
@@ -11226,7 +11230,13 @@ msgctxt "#19333"
 msgid "Switched to channel for auto-closed PVR reminder for channel '{0:s}' at '{1:s}'"
 msgstr ""
 
-#empty strings from id 19334 to 19498
+#. label for PVR backend number of channel providers in system information's PVR section
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#19334"
+msgid "Providers"
+msgstr ""
+
+#empty strings from id 19335 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp

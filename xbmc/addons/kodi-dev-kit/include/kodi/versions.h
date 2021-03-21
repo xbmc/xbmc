@@ -133,6 +133,7 @@
 #define ADDON_INSTANCE_VERSION_PVR_MIN                "7.1.0"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "c-api/addon-instance/pvr.h" \
+                                                      "c-api/addon-instance/pvr/pvr_providers.h" \
                                                       "c-api/addon-instance/pvr/pvr_channel_groups.h" \
                                                       "c-api/addon-instance/pvr/pvr_channels.h" \
                                                       "c-api/addon-instance/pvr/pvr_defines.h" \
