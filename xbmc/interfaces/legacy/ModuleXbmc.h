@@ -616,35 +616,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.translatePath(path)  }
-    /// Returns the translated path.
-    ///
-    /// @param path                  string - Path to format
-    /// @return                      Translated path
-    ///
-    /// @note Only useful if you are coding for both Linux and Windows.
-    ///        e.g. Converts 'special://home' -> '/home/[username]/.kodi'
-    ///        on Linux.
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    /// @python_v19 Deprecated **xbmc.translatePath**. Moved to **xbmcvfs.translatePath**
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// fpath = xbmc.translatePath('special://home')
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    translatePath(...);
-#else
-    String translatePath(const String& path);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCleanMovieTitle(path[, usefoldername]) }
     /// Get clean movie title and year string if available.
     ///

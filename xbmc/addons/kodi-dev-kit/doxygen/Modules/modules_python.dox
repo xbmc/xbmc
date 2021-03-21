@@ -148,8 +148,11 @@ web applications or frameworks for the Python programming language.
 
 /*!
 @page python_v20 Python API v20
-*/
-/*!
+\python_removed_function{
+      translatePath,
+      "",
+      <b>xbmc.translatePath()</b> function was removed completely. Use <b>xbmcvfs.translatePath()</b>.
+}
 @page python_v19 Python API v19
 \python_removed_function{
       onDatabaseUpdated,
