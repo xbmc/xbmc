@@ -42,6 +42,7 @@ struct PVR_RECORDING;
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRClient;
   class CPVRTimerInfoTag;
 
   /*!
@@ -184,14 +185,17 @@ namespace PVR
     /*!
      * @brief Get the resume point and play count from the database if the
      * client doesn't handle it itself.
+     * @param db The database to read the data from.
+     * @param client The client this recording belongs to.
      */
-    void UpdateMetadata(CVideoDatabase& db);
+    void UpdateMetadata(CVideoDatabase& db, const CPVRClient& client);
 
     /*!
      * @brief Update this tag with the contents of the given tag.
      * @param tag The new tag info.
+     * @param client The client this recording belongs to.
      */
-    void Update(const CPVRRecording& tag);
+    void Update(const CPVRRecording& tag, const CPVRClient& client);
 
     /*!
      * @brief Retrieve the recording start as UTC time
