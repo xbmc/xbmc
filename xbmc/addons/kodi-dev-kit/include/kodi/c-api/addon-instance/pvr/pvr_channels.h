@@ -50,6 +50,7 @@ extern "C"
     bool bIsHidden;
     bool bHasArchive;
     int iOrder;
+    int iClientProviderUid;
   } PVR_CHANNEL;
 
   /*!

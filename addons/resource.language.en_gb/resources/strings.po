@@ -9434,7 +9434,17 @@ msgctxt "#19040"
 msgid "Timers"
 msgstr ""
 
-#empty strings from id 19041 to 19042
+#. label for PVR backend number of channel providers in system information's PVR section
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#19041"
+msgid "Providers"
+msgstr ""
+
+#. label for PVR backend number of channel groups in system information's PVR section
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#19042"
+msgid "Channel Groups"
+msgstr ""
 
 #. pvr settings "recording" category label
 #: system/settings/settings.xml

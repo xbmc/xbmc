@@ -135,6 +135,7 @@ public:
   /// | **Supports recordings** | `boolean` | @ref PVRCapabilities::SetSupportsRecordings "SetSupportsRecordings" | @ref PVRCapabilities::GetSupportsRecordings "GetSupportsRecordings"
   /// | **Supports recordings undelete** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingsUndelete "SetSupportsRecordingsUndelete" | @ref PVRCapabilities::GetSupportsRecordingsUndelete "SetSupportsRecordingsUndelete"
   /// | **Supports timers** | `boolean` | @ref PVRCapabilities::SetSupportsTimers "SetSupportsTimers" | @ref PVRCapabilities::GetSupportsTimers "GetSupportsTimers"
+  /// | **Supports providers** | `boolean` | @ref PVRCapabilities::SetSupportsProviders "SetSupportsProviders" | @ref PVRCapabilities::GetSupportsProviders "GetSupportsProviders"
   /// | **Supports channel groups** | `boolean` | @ref PVRCapabilities::SetSupportsChannelGroups "SetSupportsChannelGroups" | @ref PVRCapabilities::GetSupportsChannelGroups "GetSupportsChannelGroups"
   /// | **Supports channel scan** | `boolean` | @ref PVRCapabilities::SetSupportsChannelScan "SetSupportsChannelScan" | @ref PVRCapabilities::GetSupportsChannelScan "GetSupportsChannelScan"
   /// | **Supports channel settings** | `boolean` | @ref PVRCapabilities::SetSupportsChannelSettings "SetSupportsChannelSettings" | @ref PVRCapabilities::GetSupportsChannelSettings "GetSupportsChannelSettings"
@@ -207,6 +208,19 @@ public:
 
   /// @brief To get with @ref SetSupportsTimers changed values.
   bool GetSupportsTimers() const { return m_capabilities->bSupportsTimers; }
+
+  /// @brief Set **true** if this add-on supports providers.
+  ///
+  /// It uses the following functions:
+  /// - @ref kodi::addon::CInstancePVRClient::GetProvidersAmount()
+  /// - @ref kodi::addon::CInstancePVRClient::GetProviders()
+  void SetSupportsProviders(bool supportsProviders)
+  {
+    m_capabilities->bSupportsProviders = supportsProviders;
+  }
+
+  /// @brief To get with @ref SetSupportsProviders changed values.
+  bool GetSupportsProviders() const { return m_capabilities->bSupportsProviders; }
 
   /// @brief Set **true** if this add-on supports channel groups.
   ///

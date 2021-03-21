@@ -72,6 +72,8 @@ void CPVRGUIInfo::ResetProperties()
   m_strBackendTimers            .clear();
   m_strBackendRecordings        .clear();
   m_strBackendDeletedRecordings .clear();
+  m_strBackendProviders.clear();
+  m_strBackendChannelGroups.clear();
   m_strBackendChannels          .clear();
   m_iBackendDiskTotal = 0;
   m_iBackendDiskUsed = 0;
@@ -903,6 +905,12 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::
     case PVR_BACKEND_DISKSPACE:
       CharInfoBackendDiskspace(strValue);
       return true;
+    case PVR_BACKEND_PROVIDERS:
+      CharInfoBackendProviders(strValue);
+      return true;
+    case PVR_BACKEND_CHANNEL_GROUPS:
+      CharInfoBackendChannelGroups(strValue);
+      return true;
     case PVR_BACKEND_CHANNELS:
       CharInfoBackendChannels(strValue);
       return true;
@@ -1665,6 +1673,18 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(std::string& strValue) const
     strValue = g_localizeStrings.Get(13205);
 }
 
+void CPVRGUIInfo::CharInfoBackendProviders(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strBackendProviders;
+}
+
+void CPVRGUIInfo::CharInfoBackendChannelGroups(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strBackendChannelGroups;
+}
+
 void CPVRGUIInfo::CharInfoBackendChannels(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
@@ -1764,6 +1784,8 @@ void CPVRGUIInfo::UpdateBackendCache()
   m_strBackendName = g_localizeStrings.Get(13205);
   m_strBackendVersion = g_localizeStrings.Get(13205);
   m_strBackendHost = g_localizeStrings.Get(13205);
+  m_strBackendProviders = g_localizeStrings.Get(13205);
+  m_strBackendChannelGroups = g_localizeStrings.Get(13205);
   m_strBackendChannels = g_localizeStrings.Get(13205);
   m_strBackendTimers = g_localizeStrings.Get(13205);
   m_strBackendRecordings = g_localizeStrings.Get(13205);
@@ -1779,6 +1801,13 @@ void CPVRGUIInfo::UpdateBackendCache()
     m_strBackendName = backend.name;
     m_strBackendVersion = backend.version;
     m_strBackendHost = backend.host;
+
+    // We always display one extra as the add-on itself counts as a provider
+    if (backend.numProviders >= 0)
+      m_strBackendProviders = StringUtils::Format("%i", backend.numProviders + 1);
+
+    if (backend.numChannelGroups >= 0)
+      m_strBackendChannelGroups = StringUtils::Format("%i", backend.numChannelGroups);
 
     if (backend.numChannels >= 0)
       m_strBackendChannels = std::to_string(backend.numChannels);

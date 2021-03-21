@@ -276,6 +276,7 @@ extern "C"
     bool bSupportsDescrambleInfo;
     bool bSupportsAsyncEPGTransfer;
     bool bSupportsRecordingSize;
+    bool bSupportsProviders;
 
     unsigned int iRecordingsLifetimesSize;
     struct PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
