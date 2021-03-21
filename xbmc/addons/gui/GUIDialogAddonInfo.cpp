@@ -790,8 +790,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
         (addonAvailable && addonAvailable->MainType() != ADDON_SCRIPT_MODULE) ||
         (!addonAvailable && !addonInstalled))
     {
-      m_depsInstalledWithAvailable.emplace_back(
-          CInstalledWithAvailable{dep, addonInstalled, addonAvailable});
+      m_depsInstalledWithAvailable.emplace_back(dep, addonInstalled, addonAvailable);
     }
 
     // sort optional add-ons to top of the list
