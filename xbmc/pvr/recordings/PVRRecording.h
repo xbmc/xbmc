@@ -25,6 +25,7 @@
  */
 
 #include "XBDateTime.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_providers.h"
 #include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -44,6 +45,7 @@ namespace PVR
 {
   class CPVRChannel;
   class CPVRClient;
+  class CPVRProvider;
   class CPVRTimerInfoTag;
 
   /*!
@@ -427,17 +429,50 @@ namespace PVR
     */
    int64_t GetSizeInBytes() const;
 
-    /*!
-     * @brief Mark a recording as dirty/clean.
-     * @param bDirty true to mark as dirty, false to mark as clean.
-     */
-    void SetDirty(bool bDirty) { m_bDirty = bDirty; }
+   /*!
+    * @brief Mark a recording as dirty/clean.
+    * @param bDirty true to mark as dirty, false to mark as clean.
+    */
+   void SetDirty(bool bDirty) { m_bDirty = bDirty; }
 
-    /*!
-     * @brief Return whether the recording is marked dirty.
-     * @return true if dirty, false otherwise.
-     */
-    bool IsDirty() const { return m_bDirty; }
+   /*!
+    * @brief Return whether the recording is marked dirty.
+    * @return true if dirty, false otherwise.
+    */
+   bool IsDirty() const { return m_bDirty; }
+
+   /*!
+    * @brief Get the uid of the provider on the client which this recording is from
+    * @return the client uid of the provider or PVR_PROVIDER_INVALID_UID
+    */
+   int ClientProviderUniqueId() const;
+
+   /*!
+    * @brief Get the client provider name for this recording
+    * @return m_strProviderName The name for this recording provider
+    */
+   std::string ProviderName() const;
+
+   /*!
+    * @brief Get the default provider of this recording. The default
+    *        provider represents the PVR add-on itself.
+    * @return The default provider of this recording
+    */
+   std::shared_ptr<CPVRProvider> GetDefaultProvider() const;
+
+   /*!
+    * @brief Whether or not this recording has a provider set by the client.
+    * @return True if a provider was set by the client, false otherwise.
+    */
+   bool HasClientProvider() const;
+
+   /*!
+    * @brief Get the provider of this recording. This may be the default provider or a
+    *        custom provider set by the client. If @ref "HasClientProvider()" returns true
+    *        the provider will be custom from the client, otherwise the default provider.
+    * @return The provider of this recording
+    */
+   std::shared_ptr<CPVRProvider> GetProvider() const;
 
   private:
     void UpdatePath();
@@ -459,6 +494,9 @@ namespace PVR
     mutable XbmcThreads::EndTime m_recordingSizeRefetchTimeout;
     int64_t m_sizeInBytes = 0; /*!< the size of the recording in bytes */
     bool m_bDirty = false;
+    std::string m_strProviderName; /*!< name of the provider this recording is from */
+    int m_iClientProviderUniqueId =
+        PVR_PROVIDER_INVALID_UID; /*!< provider uid associated with this recording on the client */
 
     mutable CCriticalSection m_critSection;
   };

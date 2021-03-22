@@ -333,6 +333,9 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
   if (xbmcRecording.FirstAired().IsValid())
     strncpy(addonRecording.strFirstAired, xbmcRecording.FirstAired().GetAsW3CDate().c_str(),
             sizeof(addonRecording.strFirstAired) - 1);
+  strncpy(addonRecording.strProviderName, xbmcRecording.ProviderName().c_str(),
+          sizeof(addonRecording.strProviderName) - 1);
+  addonRecording.iClientProviderUid = xbmcRecording.ClientProviderUniqueId();
 }
 
 /*!
