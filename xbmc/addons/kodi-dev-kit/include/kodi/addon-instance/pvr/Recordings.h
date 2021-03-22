@@ -98,6 +98,8 @@ public:
   /// | **First aired** | `std::string` | @ref PVRRecording::SetFirstAired "SetFirstAired" | @ref PVRRecording::GetFirstAired "GetFirstAired" | *optional*
   /// | **Flags** | `std::string` | @ref PVRRecording::SetFlags "SetFlags" | @ref PVRRecording::GetFlags "GetFlags" | *optional*
   /// | **Size in bytes** | `std::string` | @ref PVRRecording::SetSizeInBytes "SetSizeInBytes" | @ref PVRRecording::GetSizeInBytes "GetSizeInBytes" | *optional*
+  /// | **Client provider unique identifier** | `int` | @ref PVRChannel::SetClientProviderUid "SetClientProviderUid" | @ref PVRTimer::GetClientProviderUid "GetClientProviderUid" | *optional*
+  /// | **Provider name** | `std::string` | @ref PVRChannel::SetProviderName "SetProviderlName" | @ref PVRChannel::GetProviderName "GetProviderName" | *optional*
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Recording_PVRRecording
   ///@{
@@ -466,6 +468,29 @@ public:
   /// @brief To get with @ref SetSizeInBytes changed values.
   int64_t GetSizeInBytes() const { return m_cStructure->sizeInBytes; }
   ///@}
+
+  /// @brief **optional**\n
+  /// Unique identifier of the provider this channel belongs to.
+  ///
+  /// @ref PVR_PROVIDER_INVALID_UID denotes that provider uid is not available.
+  void SetClientProviderUid(int iClientProviderUid)
+  {
+    m_cStructure->iClientProviderUid = iClientProviderUid;
+  }
+
+  /// @brief To get with @ref SetClientProviderUid changed values
+  int GetClientProviderUid() const { return m_cStructure->iClientProviderUid; }
+
+  /// @brief **optional**\n
+  /// Name for the provider of this channel.
+  void SetProviderName(const std::string& providerName)
+  {
+    strncpy(m_cStructure->strProviderName, providerName.c_str(),
+            sizeof(m_cStructure->strProviderName) - 1);
+  }
+
+  /// @brief To get with @ref SetProviderName changed values.
+  std::string GetProviderName() const { return m_cStructure->strProviderName; }
 
 private:
   PVRRecording(const PVR_RECORDING* recording) : CStructHdl(recording) {}
