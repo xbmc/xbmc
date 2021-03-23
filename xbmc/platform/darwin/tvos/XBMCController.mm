@@ -33,6 +33,7 @@
 #import "platform/darwin/ios-common/DarwinEmbedNowPlayingInfoManager.h"
 #import "platform/darwin/tvos/TVOSDisplayManager.h"
 #import "platform/darwin/tvos/TVOSEAGLView.h"
+#import "platform/darwin/tvos/TVOSSettingsHandler.h"
 #import "platform/darwin/tvos/TVOSTopShelf.h"
 #import "platform/darwin/tvos/XBMCApplication.h"
 #import "platform/darwin/tvos/input/LibInputHandler.h"
@@ -411,6 +412,9 @@ int KODI_Run(bool renderGUI)
     //CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->Initialize();
     //! @todo
   }
+
+  // Retrieve specific tvOS input settings from user settings
+  CTVOSInputSettings::GetInstance().Initialize();
 
   CAnnounceReceiver::GetInstance()->Initialize();
 
