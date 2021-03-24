@@ -11,12 +11,14 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 
 CRunningScriptObserver::CRunningScriptObserver(int scriptId, CEvent& evt)
-  : m_scriptId(scriptId),
-  m_event(evt),
-  m_thread(this, "ScriptObs"),
-  m_stopEvent(true)
+  : m_scriptId(scriptId), m_event(evt), m_stopEvent(true), m_thread(this, "ScriptObs")
 {
   m_thread.Create();
+}
+
+CRunningScriptObserver::~CRunningScriptObserver()
+{
+  Abort();
 }
 
 void CRunningScriptObserver::Run()
@@ -34,4 +36,5 @@ void CRunningScriptObserver::Run()
 void CRunningScriptObserver::Abort()
 {
   m_stopEvent.Set();
+  m_thread.StopThread();
 }
