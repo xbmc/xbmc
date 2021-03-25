@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_502_FanArt">
+		<param name="top" default="list_y_offset"/>
+		<param name="bottom" default="list_y_offset"/>
+		<definition>
 		<control type="group">
 			<include>OpenClose_Left</include>
 			<visible>Control.IsVisible(502)</visible>
 			<include>Visible_Left</include>
 			<include content="ListContainer">
+				<param name="top" value="$PARAM[top]"/>
+		                <param name="bottom" value="$PARAM[bottom]"/>
 				<param name="left" value="-5" />
 				<param name="right" value="1195" />
 				<param name="list_id" value="502" />
 				<param name="viewtype_label" value="$LOCALIZE[20445]" />
+				<param name="focusposition" value="$PARAM[focusposition]"/>
+				<param name="movement" value="$PARAM[movement]"/>
 			</include>
 		</control>
 		<control type="group">
@@ -50,9 +57,9 @@
 				</control>
 				<control type="scrollbar" id="502600">
 					<left>20</left>
-					<top>list_y_offset</top>
+					<top>$PARAM[top]</top>
 					<width>12</width>
-					<bottom>list_y_offset</bottom>
+					<bottom>$PARAM[bottom]</bottom>
 					<onleft>502</onleft>
 					<onright>502</onright>
 					<orientation>vertical</orientation>
@@ -72,5 +79,6 @@
 				</control>
 			</control>
 		</control>
+		</definition>
 	</include>
 </includes>

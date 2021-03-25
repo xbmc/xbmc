@@ -30,6 +30,9 @@
 		</control>
 	</include>
 	<include name="RightListPanel">
+		<param name="top" default="list_y_offset"/>
+		<param name="bottom" default="list_y_offset"/>
+		<definition>
 		<control type="group">
 			<depth>DepthContentPanel</depth>
 			<control type="group">
@@ -108,26 +111,31 @@
 		</control>
 		<control type="scrollbar" id="$PARAM[list_id]600">
 			<left>20</left>
-			<top>list_y_offset</top>
+			<top>$PARAM[top]</top>
 			<width>12</width>
-			<bottom>list_y_offset</bottom>
+			<bottom>$PARAM[bottom]</bottom>
 			<onleft>$PARAM[list_id]</onleft>
 			<onright>$PARAM[list_id]</onright>
 			<orientation>vertical</orientation>
 			<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus($PARAM[list_id]600)">conditional</animation>
 		</control>
+		</definition>
 	</include>
 	<include name="ListContainer">
 		<param name="left">0</param>
 		<param name="right">0</param>
+		<param name="top">list_y_offset</param>
+		<param name="bottom">list_y_offset</param>
+		<param name="movement">4</param>
+		<param name="focusposition">6</param>
 		<definition>
 			<control type="fixedlist" id="$PARAM[list_id]">
 				<left>$PARAM[left]</left>
 				<right>$PARAM[right]</right>
-				<top>list_y_offset</top>
-				<bottom>list_y_offset</bottom>
-				<movement>4</movement>
-				<focusposition>6</focusposition>
+				<top>$PARAM[top]</top>
+				<bottom>$PARAM[bottom]</bottom>
+				<movement>$PARAM[movement]</movement>
+				<focusposition>$PARAM[focusposition]</focusposition>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<orientation>vertical</orientation>
 				<pagecontrol>$PARAM[list_id]600</pagecontrol>

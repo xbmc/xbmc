@@ -13,10 +13,20 @@
 			<include>View_52_IconWall</include>
 			<include>View_53_Shift</include>
 			<include>View_54_InfoWall</include>
-			<include>View_55_WideList</include>
+			<include content="View_55_WideList">
+				<param name="top">widelist_offset_top</param>
+				<param name="bottom">widelist_offset_bottom</param>
+				<param name="movement">5</param>
+				<param name="focusposition">5</param>
+			</include>
 			<include>View_500_Wall</include>
 			<include>View_501_Banner</include>
-			<include>View_502_FanArt</include>
+			<include content="View_502_FanArt">
+				<param name="top">widelist_offset_top</param>
+				<param name="bottom">widelist_offset_bottom</param>
+				<param name="movement">5</param>
+				<param name="focusposition">5</param>
+			</include>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>

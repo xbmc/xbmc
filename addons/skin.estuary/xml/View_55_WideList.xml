@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_55_WideList">
+		<param name="top" default="list_y_offset"/>
+		<param name="bottom" default="list_y_offset"/>
+		<param name="movement" default="5"/>
+		<param name="focusposition" default="6"/>
+		<definition>
 		<control type="group">
 			<include>OpenClose_Right</include>
 			<visible>Control.IsVisible(55)</visible>
 			<include>Visible_Right</include>
 			<control type="fixedlist" id="55">
 				<left>594</left>
-				<top>list_y_offset</top>
-				<bottom>list_y_offset</bottom>
+				<top>$PARAM[top]</top>
+				<bottom>$PARAM[bottom]</bottom>
 				<right>0</right>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<orientation>vertical</orientation>
 				<pagecontrol>531</pagecontrol>
-				<movement>5</movement>
-				<focusposition>6</focusposition>
+				<movement>$PARAM[movement]</movement>
+				<focusposition>$PARAM[focusposition]</focusposition>
 				<onleft>9000</onleft>
 				<onright>531</onright>
 				<onup>55</onup>
@@ -198,6 +203,7 @@
 				<include>AddonsListLayout</include>
 			</control>
 		</control>
+		</definition>
 	</include>
 	<include name="SongsListLayout">
 		<focusedlayout height="80" condition="Container.Content(songs)">

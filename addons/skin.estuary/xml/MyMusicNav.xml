@@ -12,7 +12,12 @@
 			<include>View_52_IconWall</include>
 			<include>View_53_Shift</include>
 			<include>View_54_InfoWall</include>
-			<include>View_55_WideList</include>
+			<include content="View_55_WideList">
+				<param name="top">widelist_offset_top</param>
+				<param name="bottom">list_y_offset</param>
+				<param name="movement">5</param>
+				<param name="focusposition">5</param>
+			</include>
 			<include>View_500_Wall</include>
 			<include>CommonScrollbars</include>
 			<control type="group">
