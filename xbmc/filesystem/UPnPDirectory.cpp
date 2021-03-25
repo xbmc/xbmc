@@ -41,19 +41,20 @@ static std::string GetContentMapping(NPT_String& objectClass)
         const char* Content;
     };
     static const SClassMapping mapping[] = {
-          { "object.item.videoItem.videoBroadcast", "episodes"      }
-        , { "object.item.videoItem.musicVideoClip", "musicvideos"  }
-        , { "object.item.videoItem"               , "movies"       }
-        , { "object.item.audioItem.musicTrack"    , "songs"        }
-        , { "object.item.audioItem"               , "songs"        }
-        , { "object.item.imageItem.photo"         , "photos"       }
-        , { "object.item.imageItem"               , "photos"       }
-        , { "object.container.album.videoAlbum"   , "tvshows"      }
-        , { "object.container.album.musicAlbum"   , "albums"       }
-        , { "object.container.album.photoAlbum"   , "photos"       }
-        , { "object.container.album"              , "albums"       }
-        , { "object.container.person"             , "artists"      }
-        , { NULL                                  , NULL           }
+          { "object.item.videoItem.videoBroadcast"                  , "episodes"      }
+        , { "object.item.videoItem.musicVideoClip"                  , "musicvideos"  }
+        , { "object.item.videoItem"                                 , "movies"       }
+        , { "object.item.audioItem.musicTrack"                      , "songs"        }
+        , { "object.item.audioItem"                                 , "songs"        }
+        , { "object.item.imageItem.photo"                           , "photos"       }
+        , { "object.item.imageItem"                                 , "photos"       }
+        , { "object.container.album.videoAlbum.videoBroadcastShow"  , "tvshows"      }
+        , { "object.container.album.videoAlbum.videoBroadcastSeason", "seasons"      }
+        , { "object.container.album.musicAlbum"                     , "albums"       }
+        , { "object.container.album.photoAlbum"                     , "photos"       }
+        , { "object.container.album"                                , "albums"       }
+        , { "object.container.person"                               , "artists"      }
+        , { NULL                                                    , NULL           }
     };
     for(const SClassMapping* map = mapping; map->ObjectClass; map++)
     {
