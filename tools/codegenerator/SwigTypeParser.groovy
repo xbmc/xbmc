@@ -270,6 +270,20 @@ public class SwigTypeParser
    }
 
    /**
+    * SwigType_lrtype(const SwigType *ty)
+    *
+    * Create a locally assignable reference type
+    */
+   public static String SwigType_lrtype(String s) {
+      String ltype = SwigType_ltype(s);
+      if (SwigType_ispointer(s)) {
+         return ltype;
+      } else {
+         return "r." + ltype;
+      }
+   }
+   
+   /**
    * This creates the C++ declaration for a valid ltype for the type string
    * given. For example, if the type is a "const char*" which is equivalent
    * to the type string 'p.q(const).char', the return value from this method

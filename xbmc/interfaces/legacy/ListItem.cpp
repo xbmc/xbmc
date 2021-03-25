@@ -102,6 +102,32 @@ namespace XBMCAddon
       }
     }
 
+    String ListItem::getDateTime()
+    {
+      if (!item)
+        return "";
+
+      String ret;
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+        if (item->m_dateTime.IsValid())
+          ret = item->m_dateTime.GetAsW3CDateTime();
+      }
+
+      return ret;
+    }
+
+    void ListItem::setDateTime(const String& dateTime)
+    {
+      if (!item)
+        return;
+      // set datetime
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+        item->m_dateTime.SetFromW3CDateTime(dateTime);
+      }
+    }
+
     void ListItem::setArt(const Properties& dictionary)
     {
       if (!item) return;
@@ -250,6 +276,12 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return item->GetArt(key);
+    }
+
+    bool ListItem::isFolder() const
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      return item->m_bIsFolder;
     }
 
     String ListItem::getUniqueID(const char* key)
@@ -659,7 +691,11 @@ namespace XBMCAddon
           else if (key == "role")
             info.strRole = value;
           else if (key == "thumbnail")
+          {
             info.thumbUrl = CScraperUrl(value);
+            if (!info.thumbUrl.GetFirstThumbUrl().empty())
+              info.thumb = CScraperUrl::GetThumbUrl(info.thumbUrl.GetFirstUrlByType());
+          }
           else if (key == "order")
             info.order = strtol(value.c_str(), nullptr, 10);
         }
