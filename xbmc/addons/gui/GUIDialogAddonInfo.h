@@ -44,14 +44,15 @@ struct CInstalledWithAvailable
   {
   }
 
+  /*!
+   * @brief Returns true if the currently installed dependency version is up to date
+   * or the dependency is not available from a repository
+   */
+  bool IsInstalledUpToDate() const;
+
   ADDON::DependencyInfo m_depInfo;
   std::shared_ptr<ADDON::IAddon> m_installed;
   std::shared_ptr<ADDON::IAddon> m_available;
-  bool m_isInstalledUpToDate() const
-  {
-    return ((m_installed && m_available) && (m_installed->Version() == m_available->Version())) ||
-           (m_installed && !m_available);
-  };
 };
 
 class CGUIDialogAddonInfo : public CGUIDialog
