@@ -18,7 +18,7 @@ class CRunningScriptObserver : public IRunnable
 {
 public:
   CRunningScriptObserver(int scriptId, CEvent& evt);
-  ~CRunningScriptObserver() = default;
+  ~CRunningScriptObserver();
 
   void Abort();
 
@@ -29,6 +29,6 @@ protected:
   int m_scriptId;
   CEvent& m_event;
 
-  CThread m_thread;
   CEvent m_stopEvent;
+  CThread m_thread;
 };
