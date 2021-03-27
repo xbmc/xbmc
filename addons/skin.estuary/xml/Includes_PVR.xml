@@ -1,5 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <includes>
+	<expression name="listitem_has_episode_info">!String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Season)</expression>
+	<expression name="listitem_has_epg_event_info">!String.IsEmpty(ListItem.EpgEventTitle) | $EXP[listitem_has_episode_info]</expression>
+	<include name="PVRListItemLayout">
+		<definition>
+			<control type="label">
+				<left>30</left>
+				<top>0</top>
+				<right>30</right>
+				<font>font36_title</font>
+				<aligny>center</aligny>
+				<visible>$PARAM[only_label_condition]</visible>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="group">
+				<visible>!$PARAM[only_label_condition]</visible>
+				<animation effect="slide" start="0,0" end="0,16" time="0" condition="!$EXP[listitem_has_epg_event_info]">Conditional</animation>
+				<control type="image">
+					<left>29</left>
+					<top>17</top>
+					<width>32</width>
+					<height>32</height>
+					<aspectratio align="center">keep</aspectratio>
+					<visible>$PARAM[has_info_icon]</visible>
+					<texture>$PARAM[info_icon]</texture>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>10</top>
+					<width>90</width>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font32_title</font>
+					<visible>!$PARAM[has_info_icon]</visible>
+					<label>$PARAM[label0]</label>
+				</control>
+				<control type="label">
+					<left>105</left>
+					<right>120</right>
+					<top>10</top>
+					<height>30</height>
+					<aligny>top</aligny>
+					<label>$PARAM[label1]</label>
+				</control>
+				<control type="label">
+					<left>105</left>
+					<right>120</right>
+					<top>10</top>
+					<height>30</height>
+					<align>right</align>
+					<aligny>top</aligny>
+					<label>$PARAM[label2]</label>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!$PARAM[only_label_condition]</visible>
+				<control type="label">
+					<left>105</left>
+					<right>120</right>
+					<top>53</top>
+					<height>30</height>
+					<font>font12</font>
+					<aligny>top</aligny>
+					<label>$PARAM[label3]</label>
+				</control>
+				<control type="label">
+					<left>105</left>
+					<right>120</right>
+					<top>53</top>
+					<height>30</height>
+					<font>font12</font>
+					<align>right</align>
+					<aligny>top</aligny>
+					<label>$PARAM[label4]</label>
+				</control>
+			</control>
+			<control type="image">
+				<right>110</right>
+				<top>0</top>
+				<width>32</width>
+				<aligny>center</aligny>
+				<aspectratio align="center">keep</aspectratio>
+				<texture>$VAR[PVRStatusImageVar]</texture>
+				<visible>$PARAM[has_status_icon]</visible>
+			</control>
+			<control type="image">
+				<right>20</right>
+				<top>0</top>
+				<width>80</width>
+				<aligny>center</aligny>
+				<aspectratio align="center">keep</aspectratio>
+				<visible>!$PARAM[only_label_condition] | ListItem.IsParentFolder</visible>
+				<texture>$INFO[ListItem.ActualIcon]</texture>
+			</control>
+		</definition>
+	</include>
+	<include name="PVRListItemLayouts">
+		<param name="only_label_condition">false</param>
+		<param name="has_info_icon">false</param>
+		<param name="has_status_icon">false</param>
+		<definition>
+			<itemlayout height="100">
+				<control type="progress">
+					<left>20</left>
+					<top>66</top>
+					<width>70</width>
+					<height>12</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<colordiffuse>88FFFFFF</colordiffuse>
+					<visible>ListItem.HasEpg + !$PARAM[has_info_icon]</visible>
+					<info>ListItem.Progress</info>
+				</control>
+				<include content="PVRListItemLayout">
+					<param name="only_label_condition" value="$PARAM[only_label_condition]" />
+					<param name="info_icon" value="$PARAM[info_icon]" />
+					<param name="has_info_icon" value="$PARAM[has_info_icon]" />
+					<param name="has_status_icon" value="$PARAM[has_status_icon]" />
+					<param name="label0" value="[COLOR grey]$INFO[ListItem.ChannelNumberLabel][/COLOR]" />
+					<param name="label1" value="$PARAM[label1]" />
+					<param name="label2" value="$PARAM[label2]" />
+					<param name="label3" value="$VAR[PVRListItemSubLabel]" />
+					<param name="label4" value="[COLOR grey]$INFO[ListItem.Comment][/COLOR]" />
+				</include>
+			</itemlayout>
+			<focusedlayout height="100">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
+					<texture colordiffuse="button_focus">lists/focus.png</texture>
+					<visible>Control.HasFocus($PARAM[list_id])</visible>
+				</control>
+				<control type="progress">
+					<left>20</left>
+					<top>66</top>
+					<width>70</width>
+					<height>12</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<midtexture border="3">progress/texturebg_white.png</midtexture>
+					<visible>ListItem.HasEpg + !$PARAM[has_info_icon]</visible>
+					<info>ListItem.Progress</info>
+				</control>
+				<include content="PVRListItemLayout">
+					<param name="only_label_condition" value="$PARAM[only_label_condition]" />
+					<param name="info_icon" value="$PARAM[info_icon]" />
+					<param name="has_info_icon" value="$PARAM[has_info_icon]" />
+					<param name="has_status_icon" value="$PARAM[has_status_icon]" />
+					<param name="label0" value="$INFO[ListItem.ChannelNumberLabel]" />
+					<param name="label1" value="$PARAM[label1]" />
+					<param name="label2" value="$PARAM[label2]" />
+					<param name="label3" value="$VAR[PVRListItemSubLabelFocused]" />
+					<param name="label4" value="$INFO[ListItem.Comment]" />
+				</include>
+			</focusedlayout>
+		</definition>
+	</include>
 	<include name="ChannelManagerList">
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
@@ -197,8 +356,9 @@
 				<left>630</left>
 				<width>200</width>
 				<height>200</height>
-				<aspectratio align="center" aligny="top">keep</aspectratio>
+				<aspectratio align="center" aligny="center">keep</aspectratio>
 				<texture fallback="DefaultTVShows.png">$VAR[ChannelListEPGIconVar]</texture>
+				<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
 				<fadetime>200</fadetime>
 			</control>
 			<control type="group">
@@ -213,26 +373,14 @@
 				<control type="label">
 					<top>60</top>
 					<height>200</height>
-					<wrapmultiline>true</wrapmultiline>
-					<label>$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[DateDurationLabel]$VAR[ExpirationDateTimeLabel]$VAR[FlagLabel]</label>
+					<label>$VAR[PVRInfoPanelDateDurationLabel]</label>
 				</control>
-				<control type="group">
+				<control type="progress">
+					<top>200</top>
+					<height>12</height>
+					<colordiffuse>88FFFFFF</colordiffuse>
+					<info>ListItem.Progress</info>
 					<visible>Integer.IsGreater(ListItem.Progress,0)</visible>
-					<top>150</top>
-					<height>262</height>
-					<control type="label">
-						<label>$INFO[ListItem.StartTime]</label>
-					</control>
-					<control type="label">
-						<align>right</align>
-						<label>$INFO[ListItem.EndTime]</label>
-					</control>
-					<control type="progress">
-						<top>50</top>
-						<height>12</height>
-						<colordiffuse>88FFFFFF</colordiffuse>
-						<info>ListItem.Progress</info>
-					</control>
 				</control>
 				<control type="progress">
 					<top>200</top>
@@ -243,48 +391,41 @@
 				</control>
 			</control>
 			<control type="label">
-				<top>390</top>
+				<top>365</top>
 				<width>830</width>
 				<height>262</height>
 				<font>font36_title</font>
 				<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-				<visible>!PVR.HasEpg</visible>
+				<scroll>true</scroll>
+				<visible>!ListItem.HasEpg</visible>
 			</control>
 			<control type="label">
-				<top>390</top>
+				<top>365</top>
 				<width>830</width>
 				<height>262</height>
 				<font>font36_title</font>
 				<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-				<visible>PVR.HasEpg</visible>
+				<scroll>true</scroll>
+				<visible>ListItem.HasEpg</visible>
 			</control>
 			<control type="label">
-				<top>435</top>
+				<top>410</top>
 				<width>830</width>
 				<height>70</height>
+				<scroll>true</scroll>
 				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
 			</control>
 			<control type="textbox">
-				<top>490</top>
+				<top>465</top>
 				<width>830</width>
-				<bottom>75</bottom>
-				<label>$INFO[ListItem.Plot]</label>
+				<bottom>80</bottom>
+				<label>$VAR[FlagLabel,,[CR]]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[RecordingSizeLabel]$VAR[ExpirationDateTimeLabel]$INFO[ListItem.Plot,[CR]]</label>
 				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
-			</control>
-			<control type="textbox">
-				<top>530</top>
-				<width>830</width>
-				<height>340</height>
-				<align>center</align>
-				<font>font27</font>
-				<textcolor>80FFFFFF</textcolor>
-				<label>$LOCALIZE[19055]</label>
-				<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Genre)</visible>
 			</control>
 		</control>
 		<control type="group">
 			<visible>ListItem.IsFolder</visible>
-			<top>180</top>
+			<top>100</top>
 			<control type="label">
 				<top>10</top>
 				<width>830</width>
