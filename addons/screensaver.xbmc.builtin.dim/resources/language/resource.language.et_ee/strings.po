@@ -16,6 +16,10 @@ msgstr ""
 "Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Brightness level"
+msgstr "Heleduse tase"
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Eelistused"
