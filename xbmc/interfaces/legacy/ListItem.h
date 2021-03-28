@@ -359,6 +359,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.setUniqueIDs()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -394,6 +395,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.setRating()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -421,6 +423,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       ///
       /// @python_v18 New function added.
+      /// @python_v20 Deprecated. Use **InfoTagVideo.addSeason()** or **InfoTagVideo.addSeasons()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -777,6 +780,7 @@ namespace XBMCAddon
       /// @python_v18 Added new **game** type and associated infolabels.
       /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
+      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -809,6 +813,7 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v17 New function added.
+      /// @python_v20 Deprecated. Use **InfoTagVideo.setCast()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -874,6 +879,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
       /// @python_v19 New param added (preview).
+      /// @python_v20 Deprecated. Use **InfoTagVideo.addAvailableArtwork()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -927,6 +933,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.addVideoStream()**, **InfoTagVideo.addAudioStream()** or **InfoTagVideo.addSubtitleStream()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1002,6 +1009,7 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 OverrideInfotag property added
+      /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.setResumePoint()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1207,7 +1215,13 @@ namespace XBMCAddon
 #endif
 
 private:
-      std::vector<std::string> getStringArray(const InfoLabelValue& alt, const std::string& tag, std::string value = "");
+      std::vector<std::string> getStringArray(const InfoLabelValue& alt,
+                                              const std::string& tag,
+                                              std::string value,
+                                              const std::string& separator);
+      std::vector<std::string> getVideoStringArray(const InfoLabelValue& alt,
+                                                   const std::string& tag,
+                                                   std::string value = "");
 
       CVideoInfoTag* GetVideoInfoTag();
       const CVideoInfoTag* GetVideoInfoTag() const;
