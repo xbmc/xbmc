@@ -54,7 +54,7 @@ namespace PVR
 
     bool GotoBegin();
     bool GotoEnd();
-    bool GotoNow();
+    bool GotoCurrentProgramme();
     bool GotoDate(int deltaHours);
     bool OpenDateSelectionDialog();
     bool Go12HoursBack();
