@@ -811,7 +811,7 @@ namespace XBMCAddon
     xbmc::InfoTagVideo* ListItem::getVideoInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      return new xbmc::InfoTagVideo(GetVideoInfoTag());
+      return new xbmc::InfoTagVideo(GetVideoInfoTag(), m_offscreen);
     }
 
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()

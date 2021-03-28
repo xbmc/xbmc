@@ -22,7 +22,7 @@ namespace XBMCAddon
     /// @{
     /// @brief **Kodi's video info tag class.**
     ///
-    /// \python_class{ xbmc.InfoTagVideo() }
+    /// \python_class{ xbmc.InfoTagVideo([offscreen]) }
     ///
     /// Access and / or modify the video metadata of a ListItem.
     ///
@@ -43,14 +43,50 @@ namespace XBMCAddon
     {
     private:
       CVideoInfoTag* infoTag;
+      bool offscreen;
       bool owned;
 
     public:
 #ifndef SWIG
       explicit InfoTagVideo(const CVideoInfoTag* tag);
-      explicit InfoTagVideo(CVideoInfoTag* tag);
+      explicit InfoTagVideo(CVideoInfoTag* tag, bool offscreen = false);
 #endif
-      InfoTagVideo();
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ xbmc.InfoTagVideo([offscreen]) }
+      /// Create a video info tag.
+      ///
+      /// @param offscreen            [opt] bool (default `False`) - if GUI based locks should be
+      ///                                          avoided. Most of the times listitems are created
+      ///                                          offscreen and added later to a container
+      ///                                          for display (e.g. plugins) or they are not
+      ///                                          even displayed (e.g. python scrapers).
+      ///                                          In such cases, there is no need to lock the
+      ///                                          GUI when creating the items (increasing your addon
+      ///                                          performance).
+      ///                                          Note however, that if you are creating listitems
+      ///                                          and managing the container itself (e.g using
+      ///                                          WindowXML or WindowXMLDialog classes) subsquent
+      ///                                          modifications to the item will require locking.
+      ///                                          Thus, in such cases, use the default value (`False`).
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 Added **offscreen** argument.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// videoinfo = xbmc.InfoTagVideo(offscreen=False)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      InfoTagVideo(...);
+#else
+      explicit InfoTagVideo(bool offscreen = false);
+#endif
       ~InfoTagVideo() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
