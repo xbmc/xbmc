@@ -597,7 +597,7 @@ void CGUIDialogAddonInfo::OnSettings()
 bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint entryPoint)
 {
   if (entryPoint != EntryPoint::INSTALL ||
-      (entryPoint == EntryPoint::INSTALL && !m_allDepsInstalled))
+      (entryPoint == EntryPoint::INSTALL && m_showDepDialogOnInstall))
   {
     auto pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
         WINDOW_DIALOG_SELECT);
@@ -743,7 +743,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
   if (!m_item)
     return;
 
-  m_allDepsInstalled = true;
+  m_showDepDialogOnInstall = false;
   m_depsInstalledWithAvailable.clear();
   m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(),
                                                           OnlyEnabledRootAddon::NO);
@@ -761,7 +761,6 @@ void CGUIDialogAddonInfo::BuildDependencyList()
                                                 OnlyEnabled::YES))
     {
       addonInstalled = nullptr;
-      m_allDepsInstalled = false;
     }
 
     // Find add-on in repositories
@@ -770,7 +769,19 @@ void CGUIDialogAddonInfo::BuildDependencyList()
       addonAvailable = nullptr;
     }
 
-    // Depending on advancedsettings.xml <showalldependencies>:
+    if (!addonInstalled)
+    {
+      // after pushing the install button the dependency install dialog will
+      // pop up only if non-module dependencies are going to be installed or
+      // dependencies are unavailable. the latter is for informational purposes
+
+      if (showAllDependencies || !addonAvailable ||
+          addonAvailable->MainType() != ADDON_SCRIPT_MODULE)
+      {
+        m_showDepDialogOnInstall = true;
+      }
+    }
+
     // AddonType ADDON_SCRIPT_MODULE needs to be filtered as these low-level add-ons
     // should be hidden to the user in the dependency select dialog
 

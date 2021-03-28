@@ -131,7 +131,7 @@ private:
    */
   bool m_silentUninstall = false;
 
-  bool m_allDepsInstalled = true;
+  bool m_showDepDialogOnInstall = false;
   std::vector<ADDON::DependencyInfo> m_deps;
   std::vector<CInstalledWithAvailable> m_depsInstalledWithAvailable;
 };
