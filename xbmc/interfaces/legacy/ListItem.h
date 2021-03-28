@@ -689,7 +689,7 @@ namespace XBMCAddon
       /// | tracknumber   | integer (3)
       /// | rating        | float (6.4) - range is 0..10
       /// | userrating    | integer (9) - range is 1..10 (0 to reset)
-      /// | watched       | depreciated - use playcount instead
+      /// | watched       | deprecated - use playcount instead
       /// | playcount     | integer (2) - number of times this item has been played
       /// | overlay       | integer (2) - range is `0..7`.  See \ref kodi_guilib_listitem_iconoverlay "Overlay icon types" for values
       /// | cast          | list (["Michal C. Hall","Jennifer Carpenter"]) - if provided a list of tuples cast will be interpreted as castandrole
