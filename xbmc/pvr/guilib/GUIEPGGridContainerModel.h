@@ -89,6 +89,7 @@ namespace PVR
     std::shared_ptr<CFileItem> GetGridItem(int iChannel, int iBlock) const;
     int GetGridItemStartBlock(int iChannel, int iBlock) const;
     int GetGridItemEndBlock(int iChannel, int iBlock) const;
+    CDateTime GetGridItemEndTime(int iChannel, int iBlock) const;
     float GetGridItemWidth(int iChannel, int iBlock) const;
     float GetGridItemOriginWidth(int iChannel, int iBlock) const;
     void DecreaseGridItemWidth(int iChannel, int iBlock, float fSize);

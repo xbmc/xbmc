@@ -120,7 +120,7 @@ int EpgGridControl(const std::vector<std::string>& params)
   }
   else if (param == "currentprogramme")
   {
-    guideWindow->GotoNow();
+    guideWindow->GotoCurrentProgramme();
   }
   else if (param == "selectdate")
   {

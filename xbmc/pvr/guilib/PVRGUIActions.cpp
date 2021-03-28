@@ -2218,10 +2218,21 @@ namespace PVR
   {
     if (m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL))
     {
+      CPVRManager& mgr = CServiceBroker::GetPVRManager();
+
       // if preselect playing channel is activated, return the path of the playing channel, if any.
-      const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
+      const std::shared_ptr<CPVRChannel> playingChannel = mgr.PlaybackState()->GetPlayingChannel();
       if (playingChannel && playingChannel->IsRadio() == bRadio)
         return playingChannel->Path();
+
+      const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+      if (playingTag && playingTag->IsRadio() == bRadio)
+      {
+        const std::shared_ptr<CPVRChannel> channel =
+            mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
+        if (channel)
+          return channel->Path();
+      }
     }
 
     CSingleLock lock(m_critSection);
@@ -2324,9 +2335,15 @@ namespace PVR
 
   void CPVRGUIActions::OnPlaybackStarted(const CFileItemPtr& item)
   {
-    if (item->HasPVRChannelInfoTag())
+    std::shared_ptr<CPVRChannel> channel = item->GetPVRChannelInfoTag();
+    if (!channel && item->HasEPGInfoTag())
     {
-      const std::shared_ptr<CPVRChannel> channel = item->GetPVRChannelInfoTag();
+      channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(
+          item->GetEPGInfoTag());
+    }
+
+    if (channel)
+    {
       m_channelNavigator.SetPlayingChannel(channel);
       SetSelectedItemPath(channel->IsRadio(), channel->Path());
     }
@@ -2334,7 +2351,7 @@ namespace PVR
 
   void CPVRGUIActions::OnPlaybackStopped(const CFileItemPtr& item)
   {
-    if (item->HasPVRChannelInfoTag())
+    if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag())
     {
       m_channelNavigator.ClearPlayingChannel();
     }

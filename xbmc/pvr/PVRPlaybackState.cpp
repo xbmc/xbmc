@@ -404,6 +404,20 @@ std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetPlayingGroup(bool bRadio
   return CServiceBroker::GetPVRManager().ChannelGroups()->GetSelectedGroup(bRadio);
 }
 
+CDateTime CPVRPlaybackState::GetPlaybackTime(int iClientID, int iUniqueChannelID) const
+{
+  const std::shared_ptr<CPVREpgInfoTag> epgTag = GetPlayingEpgTag();
+  if (epgTag && iClientID == epgTag->ClientID() && iUniqueChannelID == epgTag->UniqueChannelID())
+  {
+    // playing an epg tag on requested channel
+    return epgTag->StartAsUTC() +
+           CDateTimeSpan(0, 0, 0, CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
+  }
+
+  // not playing / playing live / playing timeshifted
+  return GetChannelPlaybackTime(iClientID, iUniqueChannelID);
+}
+
 CDateTime CPVRPlaybackState::GetChannelPlaybackTime(int iClientID, int iUniqueChannelID) const
 {
   if (IsPlayingChannel(iClientID, iUniqueChannelID))
