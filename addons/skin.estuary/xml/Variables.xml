@@ -4,6 +4,7 @@
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasTimer | ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
+		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 	</variable>
 	<variable name="AutoCompletionContentVar">
 		<value condition="System.AddonIsEnabled(plugin.program.autocompletion) + !System.HasHiddenInput">plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
@@ -399,6 +400,17 @@
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
 		<value condition="Integer.IsGreater(ListItem.Playcount,0)">$INFO[ListItem.Overlay]</value>
 	</variable>
+	<variable name="ListPVRRecordingsIconVar">
+		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
+		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
+		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
+		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
+	</variable>
+	<variable name="ListPVRTimersIconVar">
+		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
+		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
+		<value>icons/pvr/timers/recording.png</value>
+  </variable>
 	<!-- Breadcrumbs -->
 	<variable name="BreadcrumbsVideoVar">
 		<value condition="Container.Content(movies) | String.StartsWith(container.folderpath,library://video/movies/) | String.StartsWith(container.folderpath,videodb://movies)">$LOCALIZE[20342]</value>
@@ -431,6 +443,11 @@
 	<variable name="BreadcrumbsPVRSearchVar">
 		<value condition="Window.IsActive(TVSearch)">$LOCALIZE[19020] / $LOCALIZE[137]</value>
 		<value>$LOCALIZE[19021] / $LOCALIZE[137]</value>
+	</variable>
+	<variable name="BreadcrumbsPVRChannelsOSDVar">
+		<value condition="PVR.IsPlayingTV">$LOCALIZE[19020] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
+		<value condition="PVR.IsPlayingRadio">$LOCALIZE[19021] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
+		<value>$LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
 	</variable>
 	<variable name="BreadcrumbsGameVar">
 		<value>$LOCALIZE[15016]</value>
@@ -520,11 +537,6 @@
 		<value condition="ListItem.IsNew + String.IsEmpty(ListItem.Season) + String.IsEmpty(ListItem.Episode) + String.IsEmpty(ListItem.EpisodeName)">[B][COLOR button_focus]$LOCALIZE[842][/COLOR][/B]</value>
 		<value condition="ListItem.IsNew">[B][COLOR button_focus]$LOCALIZE[842][/COLOR][/B] - </value>
 	</variable>
-	<variable name="DateDurationLabel">
-		<value condition="[Window.IsActive(tvrecordings) | Window.IsActive(radiorecordings)] + Container.SortMethod(3) + String.IsEmpty(ListItem.ExpirationDate)">$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]</value>
-		<value condition="[Window.IsActive(tvrecordings) | Window.IsActive(radiorecordings)] + [Container.SortMethod(3) | Container.SortMethod(9)]">$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]</value>
-		<value>$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]</value>
-	</variable>
 	<variable name="RecordingSizeLabel">
 		<value condition="!String.IsEmpty(ListItem.Size) + !String.IsEqual(ListItem.Size,0 B)">$INFO[ListItem.Size,[COLOR grey]$LOCALIZE[22031]:[/COLOR] ,[CR]]</value>
 	</variable>
@@ -542,9 +554,25 @@
 	<variable name="AddonNewsVar">
 		<value condition="!String.IsEmpty(ListItem.AddonNews)">$LOCALIZE[31136]</value>
 	</variable>
-	<variable name="TimersSubLabel">
-		<value condition="[Window.IsActive(tvtimerrules) | Window.IsActive(radiotimerrules)] + !ListItem.HasTimerSchedule">$INFO[ListItem.Timertype]</value>
-		<value>$INFO[ListItem.EpisodeName]</value>
+	<variable name="PVRNextProgrammeLabel">
+		<value condition="!String.IsEmpty(ListItem.NextStartTime) + !String.IsEmpty(ListItem.NextTitle)">[COLOR grey]$LOCALIZE[19031]:[/COLOR] $INFO[ListItem.NextStartTime]: $INFO[ListItem.NextTitle]</value>
+		<value condition="!String.IsEmpty(ListItem.NextTitle)">[COLOR grey]$LOCALIZE[19031]:[/COLOR] $INFO[ListItem.NextTitle]</value>
+	</variable>
+	<variable name="PVRListItemSubLabel">
+		<value condition="ListItem.IsFolder">[COLOR grey]$INFO[ListItem.Timertype][/COLOR]</value>
+		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] | [COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
+		<value condition="$EXP[listitem_has_episode_info]">[COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
+		<value>$INFO[ListItem.EpgEventTitle]</value>
+	</variable>
+	<variable name="PVRListItemSubLabelFocused">
+		<value condition="ListItem.IsFolder">$INFO[ListItem.Timertype]</value>
+		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] | $VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value condition="$EXP[listitem_has_episode_info]">$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value>$INFO[ListItem.EpgEventTitle]</value>
+	</variable>
+	<variable name="PVRInfoPanelDateDurationLabel">
+		<value condition="!String.IsEmpty(ListItem.StartDate) + !String.IsEmpty(ListItem.StartTime)">$INFO[ListItem.StartDate,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.StartTime,[COLOR grey]$LOCALIZE[555]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ]</value>
+		<value>$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ]</value>
 	</variable>
 	<variable name="BackgroundOverlayTypeVar">
 		<value condition="String.IsEqual(Skin.String(background_overlay),0)">$LOCALIZE[231]</value>
