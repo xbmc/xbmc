@@ -542,6 +542,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.getRating()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

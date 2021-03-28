@@ -302,6 +302,10 @@ namespace XBMCAddon
 
     float ListItem::getRating(const char* key)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.getRating() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.getRating().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return GetVideoInfoTag()->GetRating(key).rating;
     }
