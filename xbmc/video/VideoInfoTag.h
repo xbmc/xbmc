@@ -135,7 +135,7 @@ public:
   void SetRating(CRating rating, const std::string& type = "", bool def = false);
   void SetRating(float rating, const std::string& type = "", bool def = false);
   void RemoveRating(const std::string& type);
-  void SetRatings(RatingMap ratings);
+  void SetRatings(RatingMap ratings, const std::string& defaultRating = "");
   void SetVotes(int votes, const std::string& type = "");
   void SetUniqueIDs(std::map<std::string, std::string> uniqueIDs);
   void SetPremiered(const CDateTime& premiered);
