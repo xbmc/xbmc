@@ -193,5 +193,20 @@ namespace XBMCAddon
     {
       return infoTag->GetDuration();
     }
+
+    double InfoTagVideo::getResumeTime()
+    {
+      return infoTag->GetResumePoint().timeInSeconds;
+    }
+
+    double InfoTagVideo::getResumeTimeTotal()
+    {
+      return infoTag->GetResumePoint().totalTimeInSeconds;
+    }
+
+    String InfoTagVideo::getUniqueID(const char* key)
+    {
+      return infoTag->GetUniqueID(key);
+    }
   }
 }

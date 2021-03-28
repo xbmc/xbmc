@@ -608,6 +608,38 @@ namespace XBMCAddon
 #else
       unsigned int getDuration();
 #endif
+
+      // TODO(Montellese)
+      double getResumeTime();
+      double getResumeTimeTotal();
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getUniqueID(key) }
+      ///-----------------------------------------------------------------------
+      /// Get the unique ID of the given key.
+      /// A unique ID is an identifier used by a (online) video database used to
+      /// identify a video in its database.
+      ///
+      /// @param key            string - uniqueID name.
+      /// - Some default uniqueID values (any string possible):
+      ///  | Label         | Type                                             |
+      ///  |---------------|--------------------------------------------------|
+      ///  | imdb          | string - uniqueid name
+      ///  | tvdb          | string - uniqueid name
+      ///  | tmdb          | string - uniqueid name
+      ///  | anidb         | string - uniqueid name
+      ///
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getUniqueID(key);
+#else
+      String getUniqueID(const char* key);
+#endif
     };
   }
 }

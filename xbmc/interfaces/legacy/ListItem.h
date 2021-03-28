@@ -510,6 +510,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.getUniqueID()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1051,6 +1052,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.getResumeTime()** and **InfoTagVideo.getResumeTimeTotal()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

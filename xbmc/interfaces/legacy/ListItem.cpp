@@ -252,9 +252,23 @@ namespace XBMCAddon
         value = StringUtils::Format("{:f}", CUtil::ConvertMilliSecsToSecs(item->m_lStartOffset));
       }
       else if (lowerKey == "totaltime")
+      {
+        CLog::Log(LOGWARNING,
+                  "\"{}\" in ListItem.getProperty() is deprecated and might be removed in future "
+                  "Kodi versions. Please use InfoTagVideo.getResumeTimeTotal().",
+                  lowerKey);
+
         value = StringUtils::Format("{:f}", GetVideoInfoTag()->GetResumePoint().totalTimeInSeconds);
+      }
       else if (lowerKey == "resumetime")
+      {
+        CLog::Log(LOGWARNING,
+                  "\"{}\" in ListItem.getProperty() is deprecated and might be removed in future "
+                  "Kodi versions. Please use InfoTagVideo.getResumeTime().",
+                  lowerKey);
+
         value = StringUtils::Format("{:f}", GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+      }
       else if (lowerKey == "fanart_image")
         value = item->GetArt("fanart");
       else
@@ -277,6 +291,11 @@ namespace XBMCAddon
 
     String ListItem::getUniqueID(const char* key)
     {
+      CLog::Log(
+          LOGWARNING,
+          "ListItem.getUniqueID() is deprecated and might be removed in future Kodi versions. "
+          "Please use InfoTagVideo.getUniqueID().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return GetVideoInfoTag()->GetUniqueID(key);
     }
