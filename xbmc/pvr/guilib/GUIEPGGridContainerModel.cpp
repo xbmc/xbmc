@@ -450,6 +450,11 @@ int CGUIEPGGridContainerModel::GetGridItemEndBlock(int iChannel, int iBlock) con
   return GetGridItemPtr(iChannel, iBlock)->endBlock;
 }
 
+CDateTime CGUIEPGGridContainerModel::GetGridItemEndTime(int iChannel, int iBlock) const
+{
+  return GetGridItemPtr(iChannel, iBlock)->item->GetEPGInfoTag()->EndAsUTC();
+}
+
 float CGUIEPGGridContainerModel::GetGridItemWidth(int iChannel, int iBlock) const
 {
   return GetGridItemPtr(iChannel, iBlock)->width;

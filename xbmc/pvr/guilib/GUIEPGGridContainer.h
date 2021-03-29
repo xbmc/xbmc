@@ -85,6 +85,7 @@ namespace PVR
     void SetRenderOffset(const CPoint& offset);
 
     void JumpToNow();
+    void JumpToDate(const CDateTime& date);
 
     void GoToBegin();
     void GoToEnd();
