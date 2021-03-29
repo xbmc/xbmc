@@ -1678,6 +1678,12 @@ void CGUIEPGGridContainer::JumpToNow()
   GoToNow();
 }
 
+void CGUIEPGGridContainer::JumpToDate(const CDateTime& date)
+{
+  m_bEnableProgrammeScrolling = false;
+  GoToDate(date);
+}
+
 void CGUIEPGGridContainer::GoToBegin()
 {
   ScrollToBlockOffset(0);
@@ -1692,15 +1698,26 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::GoToNow()
 {
-  ScrollToBlockOffset(m_gridModel->GetNowBlock());
-  SetBlock(m_gridModel->GetPageNowOffset());
+  GoToDate(CDateTime::GetUTCDateTime());
 }
 
 void CGUIEPGGridContainer::GoToDate(const CDateTime& date)
 {
   unsigned int offset = m_gridModel->GetPageNowOffset();
   ScrollToBlockOffset(m_gridModel->GetBlock(date) - offset);
-  SetBlock(offset);
+
+  // ensure we're selecting the active event, not its predecessor.
+  const int iChannel = m_channelOffset + m_channelCursor;
+  const int iBlock = m_blockOffset + offset;
+  if (iChannel >= m_gridModel->ChannelItemsSize() || iBlock >= m_gridModel->GridItemsSize() ||
+      m_gridModel->GetGridItemEndTime(iChannel, iBlock) > date)
+  {
+    SetBlock(offset);
+  }
+  else
+  {
+    SetBlock(offset + 1);
+  }
 }
 
 void CGUIEPGGridContainer::GoToFirstChannel()

@@ -204,6 +204,15 @@ public:
   std::shared_ptr<CPVRChannelGroup> GetPlayingGroup(bool bRadio) const;
 
   /*!
+   * @brief Get current playback time for the given channel, taking timeshifting and playing
+   * epg tags into account.
+   * @param iClientID The client id.
+   * @param iUniqueChannelID The channel uid.
+   * @return The playback time or 'now' if not playing.
+   */
+  CDateTime GetPlaybackTime(int iClientID, int iUniqueChannelID) const;
+
+  /*!
    * @brief Get current playback time for the given channel, taking timeshifting into account.
    * @param iClientID The client id.
    * @param iUniqueChannelID The channel uid.

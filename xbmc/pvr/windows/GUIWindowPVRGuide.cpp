@@ -75,12 +75,26 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
-    m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
-    epgGridContainer->JumpToNow();
-  }
+    CPVRManager& mgr = CServiceBroker::GetPVRManager();
 
-  if (epgGridContainer && !epgGridContainer->HasData())
-    m_bSyncRefreshTimelineItems = true; // force data update on first window open
+    const std::shared_ptr<CPVRChannel> channel =
+        mgr.ChannelGroups()->GetByPath(mgr.GUIActions()->GetSelectedItemPath(m_bRadio));
+
+    if (channel)
+    {
+      m_bChannelSelectionRestored = epgGridContainer->SetChannel(channel);
+      epgGridContainer->JumpToDate(
+          mgr.PlaybackState()->GetPlaybackTime(channel->ClientID(), channel->UniqueID()));
+    }
+    else
+    {
+      m_bChannelSelectionRestored = false;
+      epgGridContainer->JumpToNow();
+    }
+
+    if (!epgGridContainer->HasData())
+      m_bSyncRefreshTimelineItems = true; // force data update on first window open
+  }
 
   StartRefreshTimelineItemsThread();
 }
@@ -548,7 +562,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       break;
     }
     case GUI_MSG_SYSTEM_WAKE:
-      GotoNow();
+      GotoCurrentProgramme();
       bReturn = true;
       break;
   }
@@ -618,13 +632,14 @@ bool CGUIWindowPVRGuideBase::OnContextButtonNavigate(CONTEXT_BUTTON button)
       CContextMenuFunctions<CGUIWindowPVRGuideBase> buttons(this);
       buttons.Add(&CGUIWindowPVRGuideBase::GotoBegin, 19063); // First programme
       buttons.Add(&CGUIWindowPVRGuideBase::Go12HoursBack, 19317); // 12 hours back
-      buttons.Add(&CGUIWindowPVRGuideBase::GotoNow, 19070); // Current programme
+      buttons.Add(&CGUIWindowPVRGuideBase::GotoCurrentProgramme, 19070); // Current programme
       buttons.Add(&CGUIWindowPVRGuideBase::Go12HoursForward, 19318); // 12 hours forward
       buttons.Add(&CGUIWindowPVRGuideBase::GotoEnd, 19064); // Last programme
       buttons.Add(&CGUIWindowPVRGuideBase::OpenDateSelectionDialog, 19288); // Date selector
       buttons.Add(&CGUIWindowPVRGuideBase::GotoFirstChannel, 19322); // First channel
       if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() ||
-          CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
+          CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio() ||
+          CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingEpgTag())
         buttons.Add(&CGUIWindowPVRGuideBase::GotoPlayingChannel, 19323); // Playing channel
       buttons.Add(&CGUIWindowPVRGuideBase::GotoLastChannel, 19324); // Last channel
       buttons.Add(&CGUIWindowPVRBase::ActivatePreviousChannelGroup, 19319); // Previous group
@@ -722,9 +737,24 @@ bool CGUIWindowPVRGuideBase::GotoEnd()
   return true;
 }
 
-bool CGUIWindowPVRGuideBase::GotoNow()
+bool CGUIWindowPVRGuideBase::GotoCurrentProgramme()
 {
-  GetGridControl()->GoToNow();
+  CPVRManager& mgr = CServiceBroker::GetPVRManager();
+  std::shared_ptr<CPVRChannel> channel = mgr.PlaybackState()->GetPlayingChannel();
+
+  if (!channel)
+  {
+    const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+    if (playingTag)
+      channel = mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
+  }
+
+  if (channel)
+    GetGridControl()->GoToDate(
+        mgr.PlaybackState()->GetPlaybackTime(channel->ClientID(), channel->UniqueID()));
+  else
+    GetGridControl()->GoToNow();
+
   return true;
 }
 
@@ -776,7 +806,16 @@ bool CGUIWindowPVRGuideBase::GotoLastChannel()
 
 bool CGUIWindowPVRGuideBase::GotoPlayingChannel()
 {
-  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
+  CPVRManager& mgr = CServiceBroker::GetPVRManager();
+  std::shared_ptr<CPVRChannel> channel = mgr.PlaybackState()->GetPlayingChannel();
+
+  if (!channel)
+  {
+    const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+    if (playingTag)
+      channel = mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
+  }
+
   if (channel)
   {
     GetGridControl()->SetChannel(channel);
