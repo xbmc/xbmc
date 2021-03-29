@@ -32,6 +32,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <arpa/inet.h>
 #include <libsmbclient.h>
 
 struct CachedDirEntry
@@ -55,6 +56,11 @@ CSMBDirectory::~CSMBDirectory(void)
 bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
+
+  if (url.GetHostName().empty())
+  {
+    return GetServerList(items);
+  }
 
   /* samba isn't thread safe with old interface, always lock */
   CSingleLock lock(smb);
@@ -330,3 +336,33 @@ bool CSMBDirectory::Exists(const CURL& url2)
   return S_ISDIR(info.st_mode);
 }
 
+bool CSMBDirectory::GetServerList(CFileItemList& items)
+{
+  char ip[INET6_ADDRSTRLEN];
+  char line[200];
+
+  FILE* fp = popen("nmblookup '*'", "r");
+
+  if (fp)
+  {
+    while (fgets(line, sizeof line, fp))
+    {
+      if (sscanf(line, "%99s *<00>\n", ip))
+      {
+        if (inet_addr(ip) != INADDR_NONE)
+        {
+          CFileItemPtr pItem = std::make_shared<CFileItem>(ip);
+          std::string path("smb://");
+          path.append(ip);
+          URIUtils::AddSlashAtEnd(path);
+          pItem->SetPath(path);
+          pItem->m_bIsFolder = true;
+          items.Add(pItem);
+        }
+      }
+    }
+    pclose(fp);
+  }
+
+  return !items.IsEmpty();
+}
