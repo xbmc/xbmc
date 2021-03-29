@@ -51,7 +51,10 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 
     ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
     if (FAILED(pDevice->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      CLog::LogF(LOGWARNING, "Texture format {} is not supported.", dxgi_format);
       return;
+    }
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
         av_pixel_format == AV_PIX_FMT_P010 ||
