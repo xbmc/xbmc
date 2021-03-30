@@ -316,12 +316,19 @@ bool CWinEventsX11::MessagePump()
       if (rrEvent->subtype == RRNotify_OutputChange)
       {
         XRROutputChangeNotifyEvent* changeEvent = reinterpret_cast<XRROutputChangeNotifyEvent*>(&xevent);
-        if (changeEvent->connection == RR_Connected ||
-            changeEvent->connection == RR_Disconnected)
+        if (changeEvent->connection == RR_Connected || changeEvent->connection == RR_Disconnected)
         {
-          m_winSystem.NotifyXRREvent();
-          CServiceBroker::GetActiveAE()->DeviceChange();
+          if (m_xrrIgnoreConnectTimer.IsTimePast())
+          {
+            m_winSystem.NotifyXRREvent();
+            CServiceBroker::GetActiveAE()->DeviceChange();
+          }
+          else
+          {
+            CLog::Log(LOGDEBUG,"CWinEventsX11 - skip NotifyXRREvent since RR_Connected/RR_Disconnected handled recently");
+          }
           serial = xevent.xgeneric.serial;
+          m_xrrIgnoreConnectTimer.Set(10000);
         }
       }
 

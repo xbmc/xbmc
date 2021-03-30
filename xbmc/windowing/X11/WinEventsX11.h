@@ -51,6 +51,7 @@ protected:
   bool m_structureChanged;
   int m_RREventBase;
   XbmcThreads::EndTime m_xrrFailSafeTimer;
+  XbmcThreads::EndTime m_xrrIgnoreConnectTimer;
   bool m_xrrEventPending;
   CWinSystemX11& m_winSystem;
 };
