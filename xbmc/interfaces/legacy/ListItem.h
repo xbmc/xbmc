@@ -14,6 +14,7 @@
 #include "Dictionary.h"
 #include "FileItem.h"
 #include "InfoTagMusic.h"
+#include "InfoTagPicture.h"
 #include "InfoTagVideo.h"
 #include "ListItem.h"
 #include "Tuple.h"
@@ -780,7 +781,7 @@ namespace XBMCAddon
       /// @python_v18 Added new **game** type and associated infolabels.
       /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
-      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo** instead.
+      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo** or **InfoTagPicture** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1214,6 +1215,23 @@ namespace XBMCAddon
       xbmc::InfoTagMusic* getMusicInfoTag();
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getPictureInfoTag() }
+      /// Returns the InfoTagPicture for this item.
+      ///
+      /// @return     picture info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getPictureInfoTag();
+#else
+      xbmc::InfoTagPicture* getPictureInfoTag();
+#endif
+
 private:
       std::vector<std::string> getStringArray(const InfoLabelValue& alt,
                                               const std::string& tag,
@@ -1226,6 +1244,8 @@ private:
       CVideoInfoTag* GetVideoInfoTag();
       const CVideoInfoTag* GetVideoInfoTag() const;
 
+      void setTitleRaw(std::string title);
+      void setPathRaw(std::string path);
       void setCountRaw(int count);
       void setSizeRaw(int64_t size);
       void setDateTimeRaw(const std::string& dateTime);

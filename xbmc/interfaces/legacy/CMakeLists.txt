@@ -9,6 +9,7 @@ set(SOURCES AddonCallback.cpp
             DrmCryptoSession.cpp
             File.cpp
             InfoTagMusic.cpp
+            InfoTagPicture.cpp
             InfoTagRadioRDS.cpp
             InfoTagVideo.cpp
             Keyboard.cpp
@@ -43,6 +44,7 @@ set(HEADERS Addon.h
             Exception.h
             File.h
             InfoTagMusic.h
+            InfoTagPicture.h
             InfoTagRadioRDS.h
             InfoTagVideo.h
             Keyboard.h

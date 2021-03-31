@@ -349,7 +349,7 @@ namespace XBMCAddon
     void ListItem::setPath(const String& path)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      item->SetPath(path);
+      setPathRaw(path);
     }
 
     void ListItem::setMimeType(const String& mimetype)
@@ -645,12 +645,30 @@ namespace XBMCAddon
             setDateTimeRaw(value);
           else
           {
-            const String& exifkey = key;
-            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
-              continue;
+            hasDeprecatedInfoLabel = true;
 
-            item->GetPictureInfoTag()->SetInfo(StringUtils::Mid(exifkey, 5), value);
+            String exifkey = key;
+            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
+            {
+              CLog::Log(LOGWARNING, "ListItem.setInfo: unknown pictures info key \"{}\"", key);
+              continue;
+            }
+
+            exifkey = StringUtils::Mid(exifkey, 5);
+            if (exifkey == "resolution")
+              xbmc::InfoTagPicture::setResolutionRaw(item->GetPictureInfoTag(), value);
+            else if (exifkey == "exiftime")
+              xbmc::InfoTagPicture::setDateTimeTakenRaw(item->GetPictureInfoTag(), value);
+            else
+              CLog::Log(LOGWARNING, "ListItem.setInfo: unknown pictures info key \"{}\"", key);
           }
+        }
+
+        if (hasDeprecatedInfoLabel)
+        {
+          CLog::Log(LOGWARNING, "Setting most picture properties through ListItem.setInfo() is "
+                                "deprecated and might be removed in future Kodi versions. Please "
+                                "use the respective setter in InfoTagPicture.");
         }
       }
       else if (StringUtils::EqualsNoCase(type, "game"))
@@ -880,6 +898,14 @@ namespace XBMCAddon
       return new xbmc::InfoTagMusic();
     }
 
+    xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      if (item->HasPictureInfoTag())
+        return new xbmc::InfoTagPicture(*item->GetPictureInfoTag(), m_offscreen);
+      return new xbmc::InfoTagPicture();
+    }
+
     std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt,
                                                       const std::string& tag,
                                                       std::string value,
@@ -919,6 +945,16 @@ namespace XBMCAddon
     const CVideoInfoTag* ListItem::GetVideoInfoTag() const
     {
       return item->GetVideoInfoTag();
+    }
+
+    void ListItem::setTitleRaw(std::string title)
+    {
+      item->m_strTitle = std::move(title);
+    }
+
+    void ListItem::setPathRaw(std::string path)
+    {
+      item->SetPath(std::move(path));
     }
 
     void ListItem::setCountRaw(int count)
