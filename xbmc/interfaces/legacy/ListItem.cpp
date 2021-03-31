@@ -673,7 +673,7 @@ namespace XBMCAddon
       }
       else if (StringUtils::EqualsNoCase(type, "game"))
       {
-        auto& gametag = *item->GetGameInfoTag();
+        auto gametag = item->GetGameInfoTag();
         for (const auto& it : infoLabels)
         {
           const auto key = StringUtils::ToLower(it.first);
@@ -683,35 +683,30 @@ namespace XBMCAddon
           if (key == "title")
           {
             setTitleRaw(value);
-            gametag.SetTitle(value);
+            xbmc::InfoTagGame::setTitleRaw(gametag, value);
           }
           else if (key == "platform")
-            gametag.SetPlatform(value);
+            xbmc::InfoTagGame::setPlatformRaw(gametag, value);
           else if (key == "genres")
-          {
-            if (alt.which() != second)
-              throw WrongTypeException("When using \"genres\" you need to supply a list of strings for the value in the dictionary");
-
-            std::vector<std::string> genres;
-
-            for (const auto& genreEntry : alt.later())
-            {
-              const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
-              genres.emplace_back(genre);
-            }
-
-            gametag.SetGenres(genres);
-          }
+            xbmc::InfoTagGame::setGenresRaw(gametag, getStringArray(alt, key, value, ","));
           else if (key == "publisher")
-            gametag.SetPublisher(value);
+            xbmc::InfoTagGame::setPublisherRaw(gametag, value);
           else if (key == "developer")
-            gametag.SetDeveloper(value);
+            xbmc::InfoTagGame::setDeveloperRaw(gametag, value);
           else if (key == "overview")
-            gametag.SetOverview(value);
+            xbmc::InfoTagGame::setOverviewRaw(gametag, value);
           else if (key == "year")
-            gametag.SetYear(strtol(value.c_str(), nullptr, 10));
+            xbmc::InfoTagGame::setYearRaw(gametag, strtoul(value.c_str(), nullptr, 10));
           else if (key == "gameclient")
-            gametag.SetGameClient(value);
+            xbmc::InfoTagGame::setGameClientRaw(gametag, value);
+        }
+
+        if (!infoLabels.empty())
+        {
+          CLog::Log(
+              LOGWARNING,
+              "Setting game properties through ListItem.setInfo() is deprecated and might be "
+              "removed in future Kodi versions. Please use the respective setter in InfoTagGame.");
         }
       }
       else
@@ -902,8 +897,16 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       if (item->HasPictureInfoTag())
-        return new xbmc::InfoTagPicture(*item->GetPictureInfoTag(), m_offscreen);
+        return new xbmc::InfoTagPicture(item->GetPictureInfoTag(), m_offscreen);
       return new xbmc::InfoTagPicture();
+    }
+
+    xbmc::InfoTagGame* ListItem::getGameInfoTag()
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      if (item->HasGameInfoTag())
+        return new xbmc::InfoTagGame(item->GetGameInfoTag(), m_offscreen);
+      return new xbmc::InfoTagGame();
     }
 
     std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt,

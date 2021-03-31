@@ -13,6 +13,7 @@
 #include "Alternative.h"
 #include "Dictionary.h"
 #include "FileItem.h"
+#include "InfoTagGame.h"
 #include "InfoTagMusic.h"
 #include "InfoTagPicture.h"
 #include "InfoTagVideo.h"
@@ -781,7 +782,7 @@ namespace XBMCAddon
       /// @python_v18 Added new **game** type and associated infolabels.
       /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
-      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo** or **InfoTagPicture** instead.
+      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo**, **InfoTagPicture** or **InfoTagGame** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1230,6 +1231,23 @@ namespace XBMCAddon
       getPictureInfoTag();
 #else
       xbmc::InfoTagPicture* getPictureInfoTag();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getGameInfoTag() }
+      /// Returns the InfoTagGame for this item.
+      ///
+      /// @return     game info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getGameInfoTag();
+#else
+      xbmc::InfoTagGame* getGameInfoTag();
 #endif
 
 private:
