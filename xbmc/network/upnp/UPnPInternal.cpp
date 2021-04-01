@@ -824,7 +824,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
 
         int episode;
         int season;
-        if (object.m_Recorded.episode_number >= 0 && object.m_Recorded.episode_season < (NPT_UInt32)-1) {
+        if (object.m_Recorded.episode_number > 0 && object.m_Recorded.episode_season < (NPT_UInt32)-1) {
             tag.m_iEpisode = object.m_Recorded.episode_number;
             tag.m_iSeason = object.m_Recorded.episode_season;
         } else if(sscanf(object.m_Recorded.program_title, "S%2dE%2d", &season, &episode) == 2 && title >= 0) {
