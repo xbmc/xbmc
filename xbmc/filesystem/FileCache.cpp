@@ -325,15 +325,15 @@ void CFileCache::Process()
     ssize_t iRead = 0;
     if (maxSourceRead > 0)
       iRead = m_source.Read(buffer.get(), maxSourceRead);
-    if (iRead == 0)
+    if (iRead <= 0)
     {
       // Check for actual EOF and retry as long as we still have data in our cache
       if (m_writePos < m_fileSize && m_pCache->WaitForData(0, 0) > 0)
       {
-        CLog::Log(LOGDEBUG, "{} - <{}> source read didn't return any data! Will retry", __FUNCTION__, m_sourcePath);
+        CLog::Log(LOGWARNING, "{} - <{}> source read returned {}! Will retry", __FUNCTION__, m_sourcePath, iRead);
 
         // Wait a bit:
-        if (m_seekEvent.WaitMSec(5000))
+        if (m_seekEvent.WaitMSec(2000))
         {
           if (!m_bStop)
             m_seekEvent.Set(); // hack so that later we realize seek is needed
@@ -344,11 +344,14 @@ void CFileCache::Process()
       }
       else
       {
-        if (m_fileSize == 0)
+        if (iRead < 0)
+          CLog::Log(LOGERROR,
+                    "{} - <{}> source read failed with {}!", __FUNCTION__, m_sourcePath, iRead);
+        else if (m_fileSize == 0)
           CLog::Log(LOGDEBUG,
                     "{} - <{}> source read didn't return any data! Hit eof(?)", __FUNCTION__, m_sourcePath);
         else if (m_writePos < m_fileSize)
-          CLog::Log(LOGDEBUG,
+          CLog::Log(LOGERROR,
                     "{} - <{}> source read didn't return any data before eof!", __FUNCTION__, m_sourcePath);
         else
           CLog::Log(LOGDEBUG,
@@ -366,22 +369,6 @@ void CFileCache::Process()
         else
           break; // while (!m_bStop)
       }
-    }
-    else if (iRead < 0) // Fatal error
-    {
-      CLog::Log(LOGDEBUG, "{} - <{}> source read returned a fatal error! Will wait for buffer to empty", __FUNCTION__, m_sourcePath);
-
-      m_pCache->EndOfInput();
-
-      while (m_pCache->WaitForData(0, 0) > 0)
-      {
-        if (m_seekEvent.WaitMSec(100))
-        {
-          break;
-        }
-      }
-
-      break; // while (!m_bStop)
     }
 
     int iTotalWrite = 0;
