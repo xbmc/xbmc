@@ -289,9 +289,9 @@ public:
           lastPlayedNew = details->m_lastPlayed;
 
         values.insert(std::make_pair(
-          NPT_String::Format("<upnp:lastPlaybackTime>%ld</upnp:lastPlaybackTime>",
+          NPT_String::Format("<upnp:lastPlaybackTime>%s</upnp:lastPlaybackTime>",
             lastPlayedOld.GetAsW3CDateTime().c_str()),
-          NPT_String::Format("<upnp:lastPlaybackTime>%ld</upnp:lastPlaybackTime>",
+          NPT_String::Format("<upnp:lastPlaybackTime>%s</upnp:lastPlaybackTime>",
             lastPlayedNew.GetAsW3CDateTime().c_str())));
 
         // handle resume point
