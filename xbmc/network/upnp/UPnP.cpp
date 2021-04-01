@@ -581,7 +581,8 @@ CUPnP::MarkWatched(const CFileItem& item, const bool watched)
     if (upnp && upnp->m_MediaBrowser) {
         // dynamic_cast is safe here, avoids polluting CUPnP.h header file
         CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
-        return browser->MarkWatched(item, watched);
+        if (browser)
+          return browser->MarkWatched(item, watched);
     }
     return false;
 }
@@ -595,7 +596,8 @@ CUPnP::SaveFileState(const CFileItem& item, const CBookmark& bookmark, const boo
     if (upnp && upnp->m_MediaBrowser) {
         // dynamic_cast is safe here, avoids polluting CUPnP.h header file
         CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
-        return browser->SaveFileState(item, bookmark, updatePlayCount);
+        if (browser)
+          return browser->SaveFileState(item, bookmark, updatePlayCount);
     }
     return false;
 }
@@ -638,7 +640,8 @@ CUPnP::UpdateItem(const std::string& path, const CFileItem& item)
   if (upnp && upnp->m_MediaBrowser) {
     // dynamic_cast is safe here, avoids polluting CUPnP.h header file
     CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
-    return browser->UpdateItem(path, item);
+    if (browser)
+      return browser->UpdateItem(path, item);
   }
   return false;
 }
