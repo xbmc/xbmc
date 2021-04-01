@@ -98,6 +98,13 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         result[field] = (timer != nullptr);
         return true;
       }
+      else if (field == "hasreminder")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer && timer->IsReminder());
+        return true;
+      }
       else if (field == "hastimerrule")
       {
         const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
