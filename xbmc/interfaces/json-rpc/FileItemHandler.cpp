@@ -10,6 +10,7 @@
 
 #include "AudioLibrary.h"
 #include "FileOperations.h"
+#include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "Util.h"
 #include "VideoLibrary.h"
@@ -19,10 +20,13 @@
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
+#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
 #include "utils/ISerializable.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
@@ -75,6 +79,53 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       {
         // string -> Array.String
         result[field] = StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+        return true;
+      }
+      else if (field == "isrecording")
+      {
+        result[field] = CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(
+            *item->GetPVRChannelInfoTag());
+        return true;
+      }
+    }
+
+    if (item->HasEPGInfoTag())
+    {
+      if (field == "hastimer")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer != nullptr);
+        return true;
+      }
+      else if (field == "hasreminder")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer && timer->IsReminder());
+        return true;
+      }
+      else if (field == "hastimerrule")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer && (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT));
+        return true;
+      }
+      else if (field == "hasrecording")
+      {
+        const std::shared_ptr<PVR::CPVRRecording> recording =
+            CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
+                item->GetEPGInfoTag());
+        result[field] = (recording != nullptr);
+        return true;
+      }
+      else if (field == "recording")
+      {
+        const std::shared_ptr<PVR::CPVRRecording> recording =
+            CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
+                item->GetEPGInfoTag());
+        result[field] = recording ? recording->m_strFileNameAndPath : "";
         return true;
       }
     }
