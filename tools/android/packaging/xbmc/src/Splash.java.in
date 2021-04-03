@@ -91,6 +91,8 @@ public class Splash extends Activity
   private String sXbmcdata = "";
   private File fPackagePath = null;
   private File fXbmcHome = null;
+  private String sXbmcTemp = "";
+  private File fXbmcTemp = null;
 
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
@@ -592,6 +594,32 @@ public class Splash extends Activity
       {
         sXbmcdata = "";
         System.setProperty("xbmc.data", "");
+      }
+    }
+
+    sXbmcTemp = XBMCProperties.getStringProperty("xbmc.temp", "");
+    if (!sXbmcTemp.isEmpty())
+    {
+      File fXbmcTemp = new File(sXbmcTemp);
+      int loop = 20;
+      while (!fXbmcTemp.exists() && loop > 0)
+      {
+        // Wait a while in case of non-primary sdcard
+        try
+        {
+          Thread.sleep(1000);
+        }
+        catch (InterruptedException e)
+        {
+          continue;
+        }
+        loop--;
+      }
+
+      if (!fXbmcTemp.exists())
+      {
+        sXbmcTemp = "";
+        System.setProperty("xbmc.temp", "");
       }
     }
 
