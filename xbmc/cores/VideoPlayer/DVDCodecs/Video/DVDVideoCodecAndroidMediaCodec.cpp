@@ -213,7 +213,7 @@ void CMediaCodecVideoBuffer::UpdateTexImage()
   // we hook the SurfaceTexture OnFrameAvailable callback
   // using CJNISurfaceTextureOnFrameAvailableListener and wait
   // on a CEvent to fire. 50ms seems to be a good max fallback.
-  WaitForFrame(50);
+  WaitForFrame(250);
 
   m_surfacetexture->updateTexImage();
   if (xbmc_jnienv()->ExceptionCheck())
@@ -506,6 +506,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         m_formatname = "amc-dvhe";
       }
       else if (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'))
+      {
+        m_mime = "video/dolby-vision";
+        m_formatname = "amc-dvh1";
+      }
+      else if (m_hints.codec_tag == MKBETAG('d', 'v', 'v', 'C') ||
+               m_hints.codec_tag == MKBETAG('d', 'v', 'c', 'C'))
       {
         m_mime = "video/dolby-vision";
         m_formatname = "amc-dvh1";
@@ -1115,7 +1121,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
     // try to fetch an input buffer
     if (m_indexInputBuffer < 0)
     {
-      m_indexInputBuffer = m_codec->dequeueInputBuffer(5000 /*timout*/);
+      m_indexInputBuffer = m_codec->dequeueInputBuffer(10000 /*timout*/);
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionClear();
@@ -1385,6 +1391,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     xbmc_jnienv()->ExceptionClear();
     CLog::Log(LOGERROR,
               "CDVDVideoCodecAndroidMediaCodec:GetOutputPicture dequeueOutputBuffer failed");
+    
+    if (m_mime == "video/dolby-vision")
+    {
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
+    m_state = MEDIACODEC_STATE_STOPPED;
+    } 
+    
     return -2;
   }
 
