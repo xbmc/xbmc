@@ -426,6 +426,7 @@ void CAdvancedSettings::Initialize()
   m_userAgent = g_sysinfo.GetUserAgent();
 
   m_nfsTimeout = 5;
+  m_nfsRetries = -1;
 
   m_initialized = true;
 }
@@ -514,6 +515,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 #else
       CLog::Log(LOGWARNING, "nfstimeout unsupported");
 #endif
+    }
+    if (network->FirstChildElement("nfsretries"))
+    {
+      XMLUtils::GetInt(network, "nfsretries", m_nfsRetries, -1, 30);
     }
   }
 

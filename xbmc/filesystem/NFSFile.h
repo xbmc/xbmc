@@ -95,7 +95,7 @@ private:
   void destroyContext(const std::string &exportName);
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
   void keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
-  static void setTimeout(struct nfs_context* context);
+  static void setOptions(struct nfs_context* context);
 };
 
 extern CNfsConnection gNfsConnection;
