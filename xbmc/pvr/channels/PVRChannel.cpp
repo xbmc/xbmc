@@ -104,7 +104,6 @@ void CPVRChannel::Serialize(CVariant& value) const
   if (epg)
     epg->Serialize(value["broadcastnext"]);
 
-  value["isrecording"] = false; // compat
   value["hasarchive"] = m_bHasArchive;
   value["clientid"] = m_iClientId;
 }

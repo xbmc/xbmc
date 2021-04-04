@@ -177,10 +177,6 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["episodename"] = m_strEpisodeName;
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
-  value["hastimer"] = false; // compat
-  value["hastimerrule"] = false; // compat
-  value["hasrecording"] = false; // compat
-  value["recording"] = ""; // compat
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
   value["isseries"] = IsSeries();
