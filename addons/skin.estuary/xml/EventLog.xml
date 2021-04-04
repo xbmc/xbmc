@@ -12,9 +12,9 @@
 				<include>OpenClose_Right</include>
 				<control type="fixedlist" id="50">
 					<left>490</left>
-					<top>list_y_offset</top>
+					<top>list_top_offset</top>
 					<right>0</right>
-					<bottom>list_y_offset</bottom>
+					<bottom>list_bottom</bottom>
 					<onleft>9000</onleft>
 					<onright>60</onright>
 					<onup>50</onup>
@@ -178,9 +178,9 @@
 			</control>
 			<control type="scrollbar" id="60">
 				<right>0</right>
-				<top>80</top>
+				<top>list_top_offset</top>
 				<width>12</width>
-				<bottom>80</bottom>
+				<bottom>list_bottom</bottom>
 				<onleft>50</onleft>
 				<onright>9000</onright>
 				<orientation>vertical</orientation>

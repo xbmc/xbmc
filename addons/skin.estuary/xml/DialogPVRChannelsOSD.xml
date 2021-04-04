@@ -12,9 +12,9 @@
 				</include>
 				<control type="fixedlist" id="11">
 					<left>0</left>
-					<top>100</top>
+					<top>list_top_offset</top>
 					<width>970</width>
-					<bottom>0</bottom>
+					<bottom>list_bottom</bottom>
 					<onleft>PreviousChannelGroup</onleft>
 					<onright>60</onright>
 					<onup>11</onup>
@@ -31,9 +31,9 @@
 				</control>
 				<control type="scrollbar" id="60">
 					<left>970</left>
-					<top>100</top>
+					<top>list_top_offset</top>
 					<width>12</width>
-					<bottom>0</bottom>
+					<bottom>list_bottom</bottom>
 					<onleft>11</onleft>
 					<onright>NextChannelGroup</onright>
 					<texturesliderbackground />
