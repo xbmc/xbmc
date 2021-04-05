@@ -628,16 +628,33 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     // keep the db-only fields intact on rescan...
     if (songsMap != NULL)
     {
-      MAPSONGS::iterator it = songsMap->find(items[i]->GetPath());
-      if (it != songsMap->end())
+      // Match up item to songs in library previously scanned with this path
+      MAPSONGS::iterator songlist = songsMap->find(items[i]->GetPath());
+      if (songlist != songsMap->end())
       {
-        song.idSong = it->second.idSong; // Reuse ID
-        song.dateNew = it->second.dateNew; // Keep date originally created
-        song.iTimesPlayed = it->second.iTimesPlayed;
-        song.lastPlayed = it->second.lastPlayed;
-        if (song.rating == 0)    song.rating = it->second.rating;
-        if (song.userrating == 0)    song.userrating = it->second.userrating;
-        if (song.strThumb.empty()) song.strThumb = it->second.strThumb;
+        VECSONGS::iterator foundsong;
+        if (songlist->second.size() == 1)
+          foundsong = songlist->second.begin();
+        else
+        {
+          // When filename mapped to multiple songs it is from cuesheet, match on disc/track number
+          int disctrack = tag.GetTrackAndDiscNumber();
+          foundsong = std::find_if(songlist->second.begin(), songlist->second.end(),
+                                   [&](const CSong& song) { return disctrack == song.iTrack; });
+        }
+        if (foundsong != songlist->second.end())
+        {
+          song.idSong = foundsong->idSong; // Reuse ID
+          song.dateNew = foundsong->dateNew; // Keep date originally created
+          song.iTimesPlayed = foundsong->iTimesPlayed;
+          song.lastPlayed = foundsong->lastPlayed;
+          if (song.rating == 0)
+            song.rating = foundsong->rating;
+          if (song.userrating == 0)
+            song.userrating = foundsong->userrating;
+          if (song.strThumb.empty())
+            song.strThumb = foundsong->strThumb;
+        }
       }
     }
 

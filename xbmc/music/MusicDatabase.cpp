@@ -3610,7 +3610,7 @@ void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
   }
 }
 
-bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songs, bool bAppendToMap)
+bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songmap, bool bAppendToMap)
 {
   std::string strPath(strPath1);
   try
@@ -3619,15 +3619,21 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songs
       URIUtils::AddSlashAtEnd(strPath);
 
     if (!bAppendToMap)
-      songs.clear();
+      songmap.clear();
 
     if (nullptr == m_pDB)
       return false;
     if (nullptr == m_pDS)
       return false;
 
-    std::string strSQL=PrepareSQL("SELECT * FROM songview WHERE strPath='%s'", strPath.c_str());
-    if (!m_pDS->query(strSQL)) return false;
+    // Filename is not unique for a path as songs from a cuesheet have same filename.
+    // Songs from cuesheets often have consecutive ID but not always e.g. more than one cuesheet
+    // in a folder and some edited and rescanned.
+    // Hence order by filename so these songs can be gathered together.
+    std::string strSQL = PrepareSQL(
+        "SELECT * FROM songview WHERE strPath='%s' ORDER BY strFileName", strPath.c_str());
+    if (!m_pDS->query(strSQL))
+      return false;
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -3635,14 +3641,25 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songs
       m_pDS->close();
       return false;
     }
+
+    // Each file is potentially mapped to a list of songs, gather these and save as list
+    VECSONGS songs;
+    std::string filename;
     while (!m_pDS->eof())
     {
       CSong song = GetSongFromDataset();
-      // For songs from cue sheets strFileName is not unique, so only 1st song gets added to song map
-      songs.insert(std::make_pair(song.strFileName, song));
+      if (!filename.empty() && filename != song.strFileName)
+      {
+        // Save songs for previous filename
+        songmap.insert(std::make_pair(filename, songs));
+        songs.clear();
+      }
+      filename = song.strFileName;
+      songs.emplace_back(song);
       m_pDS->next();
     }
     m_pDS->close(); // cleanup recordset data
+    songmap.insert(std::make_pair(filename, songs)); // Save songs for last filename
     return true;
   }
   catch (...)
@@ -10463,7 +10480,7 @@ bool CMusicDatabase::GetPathHash(const std::string &path, std::string &hash)
   return false;
 }
 
-bool CMusicDatabase::RemoveSongsFromPath(const std::string &path1, MAPSONGS& songs, bool exact)
+bool CMusicDatabase::RemoveSongsFromPath(const std::string &path1, MAPSONGS& songmap, bool exact)
 {
   // We need to remove all songs from this path, as their tags are going
   // to be re-read.  We need to remove all songs from the song table + all links to them
@@ -10503,31 +10520,47 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string &path1, MAPSONGS& son
     if (nullptr == m_pDS)
       return false;
 
+    // Filename is not unique for a path as songs from a cuesheet have same filename.
+    // Songs from cuesheets often have consecutive ID but not always e.g. more than one cuesheet
+    // in a folder and some edited and rescanned.    
+    // Hence order by filename so these songs can be gathered together.
     std::string where;
     if (exact)
       where = PrepareSQL(" where strPath='%s'", path.c_str());
     else
       where = PrepareSQL(" where SUBSTR(strPath,1,%i)='%s'", StringUtils::utf8_strlen(path.c_str()), path.c_str());
-    std::string sql = "select * from songview" + where;
+    std::string sql = "SELECT * FROM songview" + where + " ORDER BY strFileName";
     if (!m_pDS->query(sql)) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound > 0)
     {
+      // Each file is potentially mapped to a list of songs, gather these and save as list
+      VECSONGS songs;
+      std::string filename;
       std::vector<std::string> songIds;
       while (!m_pDS->eof())
       {
         CSong song = GetSongFromDataset();
+        if (!filename.empty() && filename != song.strFileName)
+        {
+          // Save songs for previous filename
+          songmap.insert(std::make_pair(filename, songs));
+          songs.clear();
+        }
         song.strThumb = GetArtForItem(song.idSong, MediaTypeSong, "thumb");
-        songs.insert(std::make_pair(song.strFileName, song));
+        songs.emplace_back(song);
         songIds.push_back(PrepareSQL("%i", song.idSong));
+        filename = song.strFileName;
+
         m_pDS->next();
       }
       m_pDS->close();
+      songmap.insert(std::make_pair(filename, songs)); // Save songs for last filename
 
       //! @todo move this below the m_pDS->exec block, once UPnP doesn't rely on this anymore
-      for (const auto &song : songs)
-        AnnounceRemove(MediaTypeSong, song.second.idSong);
-            
+      for (const auto& id : songIds)
+        AnnounceRemove(MediaTypeSong, atoi(id.c_str()));
+
       // Delete all songs, and anything linked to them via triggers
       std::string strIDs = StringUtils::Join(songIds, ",");
       sql = "DELETE FROM song WHERE idSong in (" + strIDs + ")";
