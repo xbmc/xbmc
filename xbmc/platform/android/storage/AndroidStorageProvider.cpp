@@ -28,7 +28,7 @@
 #include <androidjni/Environment.h>
 #include <androidjni/StorageManager.h>
 
-static const char * typeWL[] = { "vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs" };
+static const char * typeWL[] = { "vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs", "cifs" };
 static const char * mountWL[] = { "/mnt", "/Removable", "/storage" };
 static const char * mountBL[] = {
   "/mnt/secure",
@@ -44,7 +44,8 @@ static const char * mountBL[] = {
 static const char * deviceWL[] = {
   "/dev/block/vold",
   "/dev/fuse",
-  "/mnt/media_rw"
+  "/mnt/media_rw",
+  "//" // SMB
 };
 
 IStorageProvider* IStorageProvider::CreateInstance()
