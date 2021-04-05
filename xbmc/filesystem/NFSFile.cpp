@@ -187,7 +187,7 @@ int CNfsConnection::getContextForExport(const std::string &exportname)
     {
       struct contextTimeout tmp;
       CSingleLock lock(openContextLock);
-      setTimeout(m_pNfsContext);
+      setOptions(m_pNfsContext);
       tmp.pContext = m_pNfsContext;
       tmp.lastAccessedTime = XbmcThreads::SystemClockMillis();
       m_openContextMap[exportname] = tmp; //add context to list of all contexts
@@ -433,7 +433,7 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
 
     if(pTmpContext)
     {
-      setTimeout(pTmpContext);
+      setOptions(pTmpContext);
       //we connect to the directory of the path. This will be the "root" path of this connection then.
       //So all fileoperations are relative to this mountpoint...
       nfsRet = nfs_mount(pTmpContext, m_resolvedHostName.c_str(), exportPath.c_str());
@@ -474,12 +474,14 @@ void CNfsConnection::AddIdleConnection()
 }
 
 
-void CNfsConnection::setTimeout(struct nfs_context* context)
+void CNfsConnection::setOptions(struct nfs_context* context)
 {
 #ifdef HAS_NFS_SET_TIMEOUT
   uint32_t timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsTimeout;
   nfs_set_timeout(context, timeout > 0 ? timeout * 1000 : -1);
 #endif
+  int retries = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsRetries;
+  nfs_set_autoreconnect(context, retries);
 }
 
 CNfsConnection gNfsConnection;
