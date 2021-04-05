@@ -312,6 +312,12 @@ bool CWinEventsX11::MessagePump()
       if (xevent.xgeneric.serial == serial)
         continue;
 
+      if (g_application.IsDPMSActive())
+      {
+        CLog::Log(LOGDEBUG,"CWinEventsX11::MessagePump - skip XRRNotifyEvent since DPMS is active");
+        continue;
+      }
+
       XRRNotifyEvent* rrEvent = reinterpret_cast<XRRNotifyEvent*>(&xevent);
       if (rrEvent->subtype == RRNotify_OutputChange)
       {
