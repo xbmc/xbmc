@@ -194,20 +194,23 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         m_databaseHits++;
       }
 
-      /* Note for songs from embedded or separate cuesheets strFileName is not unique, so only the first song from such a file
-         gets added to the song map. Any such songs from a cuesheet can be identified by having a non-zero offset value.
-         When the item we are looking up has a cue document or is a music file with a cuesheet embedded in the tags, it needs
-         to have the cuesheet fully processed replacing that item with items for every track etc. This is done elsewhere, as
-         changes to the list of items is not possible from here. This method only loads the item with the song from the database
-         when it maps to a single song.
+      /*
+      This only loads the item with the song from the database when it maps to a single song,
+      it can not load song data for items with cuesheets that expand to multiple songs.
+      For songs from embedded or separate cuesheets strFileName is not unique, so the song map for
+      the path will have the list of songs from that file. But items with cuesheets are expanded
+      (replacing each item with items for every track) elsewhere. When the item we are looking up
+      has a cuesheet document or is a music file with a cuesheet embedded in the tags, and it maps
+      to more than one song then we can not fill the tag data and thumb from the database.
       */
-
-      MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath());
-      if (it != m_songsMap.end() && !pItem->HasCueDocument() && it->second.iStartOffset == 0 && it->second.iEndOffset == 0)
-      {  // Have we loaded this item from database before (and it is not a cuesheet nor has an embedded cue sheet)
-        pItem->GetMusicInfoTag()->SetSong(it->second);
-        if (!it->second.strThumb.empty())
-          pItem->SetArt("thumb", it->second.strThumb);
+      MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath()); // Find file in song map
+      if (it != m_songsMap.end() && it->second.size() == 1)
+      {
+        // Have we loaded this item from database before, 
+        // and even if it has a cuesheet it has only one song
+        pItem->GetMusicInfoTag()->SetSong(it->second[0]);
+        if (!it->second[0].strThumb.empty())
+          pItem->SetArt("thumb", it->second[0].strThumb);
       }
       else if (pItem->IsMusicDb())
       { // a music db item that doesn't have tag loaded - grab details from the database

@@ -217,9 +217,9 @@ public:
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
-  bool GetSongsByPath(const std::string& strPath, MAPSONGS& songs, bool bAppendToMap = false);
+  bool GetSongsByPath(const std::string& strPath, MAPSONGS& songmap, bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList &items);
-  bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
+  bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songmap, bool exact=true);
   void CheckArtistLinksChanged();
   bool SetSongUserrating(const std::string &filePath, int userrating);
   bool SetSongUserrating(int idSong, int userrating);
