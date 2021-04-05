@@ -739,6 +739,9 @@ bool CWinSystemOSX::InitWindowSystem()
     name:NSWindowDidChangeScreenNotification object:nil];
   m_impl->m_windowChangedScreen = windowDidChangeScreen;
 
+  // Configure and possible manually start the helper.
+  XBMCHelper::GetInstance().Configure();
+
   return true;
 }
 

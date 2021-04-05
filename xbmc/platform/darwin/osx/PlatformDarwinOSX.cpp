@@ -10,7 +10,6 @@
 
 #include "windowing/osx/WinSystemOSXGL.h"
 
-#include "platform/darwin/osx/XBMCHelper.h"
 #include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 
 CPlatform* CPlatform::CreateInstance()
@@ -22,9 +21,6 @@ bool CPlatformDarwinOSX::Init()
 {
   if (!CPlatformDarwin::Init())
     return false;
-
-  // Configure and possible manually start the helper.
-  XBMCHelper::GetInstance().Configure();
 
   CWinSystemOSXGL::Register();
 
