@@ -84,7 +84,13 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
     resultItem.SetDynPath(newDir.m_fileResult->GetPath());
     resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
     resultItem.SetContentLookup(newDir.m_fileResult->ContentLookup());
-    resultItem.MergeInfo(*newDir.m_fileResult);
+
+    if (resultItem.HasProperty("OverrideInfotag") &&
+        resultItem.GetProperty("OverrideInfotag").asBoolean())
+      resultItem.UpdateInfo(*newDir.m_fileResult);
+    else
+      resultItem.MergeInfo(*newDir.m_fileResult);
+
     if (newDir.m_fileResult->HasVideoInfoTag() && newDir.m_fileResult->GetVideoInfoTag()->GetResumePoint().IsSet())
       resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
   }
