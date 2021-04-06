@@ -164,6 +164,7 @@ set(optional_deps Alsa
                   MDNS
                   MicroHttpd
                   NFS
+                  Pipewire
                   Plist
                   PulseAudio
                   Python
