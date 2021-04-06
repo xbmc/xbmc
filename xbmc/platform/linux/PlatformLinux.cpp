@@ -90,6 +90,10 @@ bool CPlatformLinux::InitStageOne()
   {
     OPTIONALS::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "PIPEWIRE"))
+  {
+    OPTIONALS::PipewireRegister();
+  }
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
     OPTIONALS::SndioRegister();
@@ -103,9 +107,12 @@ bool CPlatformLinux::InitStageOne()
   {
     if (!OPTIONALS::PulseAudioRegister())
     {
-      if (!OPTIONALS::ALSARegister())
+      if (!OPTIONALS::PipewireRegister())
       {
-        OPTIONALS::SndioRegister();
+        if (!OPTIONALS::ALSARegister())
+        {
+          OPTIONALS::SndioRegister();
+        }
       }
     }
   }
