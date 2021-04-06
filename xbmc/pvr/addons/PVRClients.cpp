@@ -678,6 +678,18 @@ bool CPVRClients::AnyClientSupportingRecordings() const
   return bHaveSupportingClient;
 }
 
+bool CPVRClients::AnyClientSupportingRecordingsDelete() const
+{
+  bool bHaveSupportingClient = false;
+  ForCreatedClients(__FUNCTION__,
+                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
+                      if (client->GetClientCapabilities().SupportsRecordingsDelete())
+                        bHaveSupportingClient = true;
+                      return PVR_ERROR_NO_ERROR;
+                    });
+  return bHaveSupportingClient;
+}
+
 void CPVRClients::OnSystemSleep()
 {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {

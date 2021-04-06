@@ -332,6 +332,13 @@ namespace PVR
     bool AnyClientSupportingRecordings() const;
     //@}
 
+    /*!
+     * @brief Get whether or not any client supports recordings delete.
+     * @return True if any client supports recordings delete.
+     */
+    bool AnyClientSupportingRecordingsDelete() const;
+    //@}
+
     /*! @name Power management methods */
     //@{
 

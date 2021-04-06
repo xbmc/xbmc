@@ -149,6 +149,7 @@ public:
   /// | **Supports descramble info** | `boolean` | @ref PVRCapabilities::SetSupportsDescrambleInfo "SetSupportsDescrambleInfo" | @ref PVRCapabilities::GetSupportsDescrambleInfo "GetSupportsDescrambleInfo"
   /// | **Supports async EPG transfer** | `boolean` | @ref PVRCapabilities::SetSupportsAsyncEPGTransfer "SetSupportsAsyncEPGTransfer" | @ref PVRCapabilities::GetSupportsAsyncEPGTransfer "GetSupportsAsyncEPGTransfer"
   /// | **Supports recording size** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingSize "SetSupportsRecordingSize" | @ref PVRCapabilities::GetSupportsRecordingSize "GetSupportsRecordingSize"
+  /// | **Supports recordings delete** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingsDelete "SetSupportsRecordingsDelete" | @ref PVRCapabilities::GetSupportsRecordingsDelete "SetSupportsRecordingsDelete"
   /// | **Recordings lifetime values** | @ref cpp_kodi_addon_pvr_Defs_PVRTypeIntValue "PVRTypeIntValue" | @ref PVRCapabilities::SetRecordingsLifetimeValues "SetRecordingsLifetimeValues" | @ref PVRCapabilities::GetRecordingsLifetimeValues "GetRecordingsLifetimeValues"
   ///
   /// @warning This class can not be used outside of @ref kodi::addon::CInstancePVRClient::GetCapabilities()
@@ -364,6 +365,16 @@ public:
 
   /// @brief To get with @ref SetSupportsRecordingSize changed values.
   bool GetSupportsRecordingSize() const { return m_capabilities->bSupportsRecordingSize; }
+
+  /// @brief Set **true** if this add-on supports delete of recordings stored
+  /// on the backend.
+  void SetSupportsRecordingsDelete(bool supportsRecordingsDelete)
+  {
+    m_capabilities->bSupportsRecordingsDelete = supportsRecordingsDelete;
+  }
+
+  /// @brief To get with @ref SetSupportsRecordingsDelete changed values.
+  bool GetSupportsRecordingsDelete() const { return m_capabilities->bSupportsRecordingsDelete; }
 
   /// @brief **optional**\n
   /// Set array containing the possible values for @ref PVRRecording::SetLifetime().

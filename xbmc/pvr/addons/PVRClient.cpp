@@ -998,7 +998,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording& recording)
         WriteClientRecordingInfo(recording, tag);
         return addon->toAddon->DeleteRecording(addon, &tag);
       },
-      m_clientCapabilities.SupportsRecordings());
+      m_clientCapabilities.SupportsRecordings() && m_clientCapabilities.SupportsRecordingsDelete());
 }
 
 PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording& recording)
