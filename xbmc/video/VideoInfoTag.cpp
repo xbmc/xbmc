@@ -324,151 +324,153 @@ bool CVideoInfoTag::Load(const TiXmlElement *element, bool append, bool prioriti
 
 void CVideoInfoTag::Merge(CVideoInfoTag& other)
 {
-  if (m_director.empty())
+  if (!other.m_director.empty())
     m_director = other.m_director;
-  if (m_writingCredits.empty())
+  if (!other.m_writingCredits.empty())
     m_writingCredits = other.m_writingCredits;
-  if (m_genre.empty())
+  if (!other.m_genre.empty())
     m_genre = other.m_genre;
-  if (m_country.empty())
+  if (!other.m_country.empty())
     m_country = other.m_country;
-  if (m_strTagLine.empty())
+  if (!other.m_strTagLine.empty())
     m_strTagLine = other.m_strTagLine;
-  if (m_strPlotOutline.empty())
+  if (!other.m_strPlotOutline.empty())
     m_strPlotOutline = other.m_strPlotOutline;
-  if (m_strPlot.empty())
+  if (!other.m_strPlot.empty())
     m_strPlot = other.m_strPlot;
-  if (!m_strPictureURL.HasData())
+  if (other.m_strPictureURL.HasData())
     m_strPictureURL = other.m_strPictureURL;
-  if (m_strTitle.empty())
+  if (!other.m_strTitle.empty())
     m_strTitle = other.m_strTitle;
-  if (m_strShowTitle.empty())
+  if (!other.m_strShowTitle.empty())
     m_strShowTitle = other.m_strShowTitle;
-  if (m_strOriginalTitle.empty())
+  if (!other.m_strOriginalTitle.empty())
     m_strOriginalTitle = other.m_strOriginalTitle;
-  if (m_strSortTitle.empty())
+  if (!other.m_strSortTitle.empty())
     m_strSortTitle = other.m_strSortTitle;
-  if (!m_cast.size())
+  if (other.m_cast.size())
     m_cast = other.m_cast;
 
-  if (m_set.title.empty())
+  if (!other.m_set.title.empty())
     m_set.title = other.m_set.title;
-  if (!m_set.id)
+  if (other.m_set.id)
     m_set.id = other.m_set.id;
-  if (m_set.overview.empty())
+  if (!other.m_set.overview.empty())
     m_set.overview = other.m_set.overview;
-  if (m_tags.empty())
+  if (!other.m_tags.empty())
     m_tags = other.m_tags;
 
-  if (m_strFile.empty())
+  if (!other.m_strFile.empty())
     m_strFile = other.m_strFile;
-  if (m_strPath.empty())
+  if (!other.m_strPath.empty())
     m_strPath = other.m_strPath;
 
-  if (m_strMPAARating.empty())
+  if (!other.m_strMPAARating.empty())
     m_strMPAARating = other.m_strMPAARating;
-  if (m_strFileNameAndPath.empty())
+  if (!other.m_strFileNameAndPath.empty())
       m_strFileNameAndPath = other.m_strFileNameAndPath;
 
-  if (!m_premiered.IsValid() && other.m_premiered.IsValid())
+  if (other.m_premiered.IsValid())
     SetPremiered(other.GetPremiered());
 
-  if (m_strStatus.empty())
+  if (!other.m_strStatus.empty())
     m_strStatus = other.m_strStatus;
-  if (m_strProductionCode.empty())
+  if (!other.m_strProductionCode.empty())
     m_strProductionCode = other.m_strProductionCode;
 
-  if (!m_firstAired.IsValid())
+  if (other.m_firstAired.IsValid())
     m_firstAired = other.m_firstAired;
-  if (m_studio.empty())
+  if (!other.m_studio.empty())
     m_studio = other.m_studio;
-  if (m_strAlbum.empty())
+  if (!other.m_strAlbum.empty())
     m_strAlbum = other.m_strAlbum;
-  if (m_artist.empty())
+  if (!other.m_artist.empty())
     m_artist = other.m_artist;
-  if (m_strTrailer.empty())
+  if (!other.m_strTrailer.empty())
     m_strTrailer = other.m_strTrailer;
-  if (!m_iTop250)
+  if (other.m_iTop250)
     m_iTop250 = other.m_iTop250;
-  if (m_iSeason == -1)
+  if (other.m_iSeason != -1)
     m_iSeason = other.m_iSeason;
-  if (m_iEpisode == -1)
+  if (other.m_iEpisode != -1)
     m_iEpisode = other.m_iEpisode;
 
-  if (m_iIdUniqueID == -1)
+  if (other.m_iIdUniqueID != -1)
     m_iIdUniqueID = other.m_iIdUniqueID;
-  if (!m_uniqueIDs.size() && other.m_uniqueIDs.size())
+  if (other.m_uniqueIDs.size())
   {
     m_uniqueIDs = other.m_uniqueIDs;
     m_strDefaultUniqueID = other.m_strDefaultUniqueID;
   };
-  if (m_iSpecialSortSeason == -1)
+  if (other.m_iSpecialSortSeason != -1)
     m_iSpecialSortSeason = other.m_iSpecialSortSeason;
-  if (m_iSpecialSortEpisode == -1)
+  if (other.m_iSpecialSortEpisode != -1)
     m_iSpecialSortEpisode = other.m_iSpecialSortEpisode;
 
-  if (m_ratings.empty() && !other.m_ratings.empty())
+  if (!other.m_ratings.empty())
   {
     m_ratings = other.m_ratings;
     m_strDefaultRating = other.m_strDefaultRating;
   };
-  if (m_iIdRating == -1)
+  if (other.m_iIdRating != -1)
     m_iIdRating = other.m_iIdRating;
-  if (!m_iUserRating)
+  if (other.m_iUserRating)
     m_iUserRating = other.m_iUserRating;
 
-  if (m_iDbId == -1)
+  if (other.m_iDbId != -1)
     m_iDbId = other.m_iDbId;
-  if (m_iFileId == -1)
+  if (other.m_iFileId != -1)
     m_iFileId = other.m_iFileId;
-  if (m_iBookmarkId == -1)
+  if (other.m_iBookmarkId != -1)
     m_iBookmarkId = other.m_iBookmarkId;
-  if (m_iTrack == -1)
+  if (other.m_iTrack != -1)
     m_iTrack = other.m_iTrack;
 
-  if (!m_fanart.GetNumFanarts())
+  if (other.m_fanart.GetNumFanarts())
     m_fanart = other.m_fanart;
 
-  if (!m_duration)
+  if (other.m_duration)
     m_duration = other.m_duration;
-  if (!m_lastPlayed.IsValid())
+  if (other.m_lastPlayed.IsValid())
     m_lastPlayed = other.m_lastPlayed;
 
-  if (m_showLink.empty())
+  if (!other.m_showLink.empty())
     m_showLink = other.m_showLink;
-  if (!m_namedSeasons.size())
+  if (other.m_namedSeasons.size())
     m_namedSeasons = other.m_namedSeasons;
-  if (!m_streamDetails.HasItems())
+  if (other.m_streamDetails.HasItems())
     m_streamDetails = other.m_streamDetails;
-  if (!IsPlayCountSet() && other.IsPlayCountSet())
+  if (other.IsPlayCountSet())
     SetPlayCount(other.GetPlayCount());
 
-  if (!m_EpBookmark.IsSet() && other.m_EpBookmark.IsSet())
+  if (other.m_EpBookmark.IsSet())
     m_EpBookmark = other.m_EpBookmark;
 
-  if (m_basePath.empty())
+  if (!other.m_basePath.empty())
     m_basePath = other.m_basePath;
-  if (m_parentPathID == -1)
+  if (other.m_parentPathID != -1)
     m_parentPathID = other.m_parentPathID;
-  if (!GetResumePoint().IsSet() && other.GetResumePoint().IsSet())
+  if (other.GetResumePoint().IsSet())
     SetResumePoint(other.GetResumePoint());
-  if (m_iIdShow == -1)
+  if (other.m_iIdShow != -1)
     m_iIdShow = other.m_iIdShow;
-  if (m_iIdSeason == -1)
+  if (other.m_iIdSeason != -1)
     m_iIdSeason = other.m_iIdSeason;
 
-  if (!m_dateAdded.IsValid())
+  if (other.m_dateAdded.IsValid())
     m_dateAdded = other.m_dateAdded;
 
-  if (m_type.empty())
+  if (!other.m_type.empty())
     m_type = other.m_type;
 
-  if (m_relevance == -1)
+  if (other.m_relevance != -1)
     m_relevance = other.m_relevance;
-  if (!m_parsedDetails)
+  if (other.m_parsedDetails)
     m_parsedDetails = other.m_parsedDetails;
-  if (!m_coverArt.size())
+  if (other.m_coverArt.size())
     m_coverArt = other.m_coverArt;
+  if (other.m_year != -1)
+    m_year = other.m_year;
 }
 
 void CVideoInfoTag::Archive(CArchive& ar)
