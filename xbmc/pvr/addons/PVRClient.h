@@ -256,6 +256,16 @@ public:
            m_addonCapabilities->bSupportsRecordingSize;
   }
 
+  /*!
+   * @brief Check whether this add-on supports deleting recordings.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsRecordingsDelete() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings &&
+           m_addonCapabilities->bSupportsRecordingsDelete;
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Streams
