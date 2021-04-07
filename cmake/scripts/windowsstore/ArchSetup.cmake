@@ -91,8 +91,7 @@ set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 link_directories(${MINGW_LIBS_DIR}/lib
                  ${DEPENDENCIES_DIR}/lib)
 
-list(APPEND DEPLIBS bcrypt.lib d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib WindowsApp.lib
-                    Mfplat.lib Mfuuid.lib Strmiids.lib)
+list(APPEND DEPLIBS bcrypt.lib d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib WindowsApp.lib)
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /WINMD:NO")
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:msvcrt /DEBUG:FASTLINK /OPT:NOREF /OPT:NOICF")
