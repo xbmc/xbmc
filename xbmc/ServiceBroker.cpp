@@ -84,6 +84,13 @@ XBPython& CServiceBroker::GetXBPython()
 }
 #endif
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+MEDIA_DETECT::CDetectDVDMedia& CServiceBroker::GetDetectDVDMedia()
+{
+  return g_application.m_ServiceManager->GetDetectDVDMedia();
+}
+#endif
+
 PVR::CPVRManager &CServiceBroker::GetPVRManager()
 {
   return g_application.m_ServiceManager->GetPVRManager();

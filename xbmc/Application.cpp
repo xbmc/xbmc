@@ -733,8 +733,6 @@ bool CApplication::Initialize()
   }
   CServiceBroker::GetRenderSystem()->ShowSplash("");
 
-  StartServices();
-
   // GUI depends on seek handler
   m_appPlayer.GetSeekHandler().Configure();
 
@@ -937,25 +935,6 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   settings->Save();
 
   return ret;
-}
-
-void CApplication::StartServices()
-{
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  // Start Thread for DVD Mediatype detection
-  CLog::Log(LOGINFO, "start dvd mediatype detection");
-  m_DetectDVDType.Create(false);
-#endif
-}
-
-void CApplication::StopServices()
-{
-  m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
-
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  CLog::Log(LOGINFO, "stop dvd detect media");
-  m_DetectDVDType.StopThread();
-#endif
 }
 
 void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -2685,7 +2664,7 @@ void CApplication::Stop(int exitCode)
 
     CApplicationMessenger::GetInstance().Cleanup();
 
-    StopServices();
+    m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
 
 #ifdef HAS_ZEROCONF
     if(CZeroconfBrowser::IsInstantiated())

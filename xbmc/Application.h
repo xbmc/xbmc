@@ -28,9 +28,6 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/ISubSettings.h"
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-#include "storage/DetectDVDType.h"
-#endif
 #ifdef TARGET_WINDOWS
 #include "powermanagement/WinIdleTimer.h"
 #endif
@@ -149,8 +146,6 @@ public:
 
   bool CreateGUI();
   bool InitWindow(RESOLUTION res = RES_INVALID);
-  void StartServices();
-  void StopServices();
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
@@ -295,10 +290,6 @@ public:
 
 #ifdef HAS_DVD_DRIVE
   std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
-#endif
-
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
   inline bool IsInScreenSaver() { return m_screensaverActive; };
