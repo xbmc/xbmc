@@ -111,9 +111,6 @@
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
 #endif
-#ifdef HAS_DBUS
-#include <dbus/dbus.h>
-#endif
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
@@ -321,25 +318,6 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
-void CApplication::Preflight()
-{
-#ifdef HAS_DBUS
-  // call 'dbus_threads_init_default' before any other dbus calls in order to
-  // avoid race conditions with other threads using dbus connections
-  dbus_threads_init_default();
-#endif
-
-  // run any platform preflight scripts.
-#if defined(TARGET_DARWIN_OSX)
-  std::string install_path;
-
-  install_path = CUtil::GetHomePath();
-  setenv("KODI_HOME", install_path.c_str(), 0);
-  install_path += "/tools/darwin/runtime/preflight";
-  system(install_path.c_str());
-#endif
-}
-
 bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
@@ -368,8 +346,6 @@ bool CApplication::Create(const CAppParamParser &params)
   {
     return false;
   }
-
-  Preflight();
 
   // here we register all global classes for the CApplicationMessenger,
   // after that we can send messages to the corresponding modules
