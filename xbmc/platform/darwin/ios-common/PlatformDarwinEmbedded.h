@@ -18,4 +18,5 @@ public:
   ~CPlatformDarwinEmbedded() override = default;
 
   bool Init() override;
+  bool InitStageTwo() override;
 };

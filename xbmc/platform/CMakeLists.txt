@@ -1,5 +1,4 @@
 set(SOURCES Environment.cpp
-            Platform.cpp
             xbmc.cpp)
 
 set(HEADERS Environment.h

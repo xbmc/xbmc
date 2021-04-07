@@ -23,12 +23,17 @@ bool CPlatformDarwinOSX::Init()
   if (!CPlatformDarwin::Init())
     return false;
 
-  // Configure and possible manually start the helper.
-  XBMCHelper::GetInstance().Configure();
-
   CWinSystemOSXGL::Register();
 
   CCocoaPowerSyscall::Register();
+
+  return true;
+}
+
+bool CPlatformDarwinOSX::InitStageTwo()
+{
+  // Configure and possible manually start the helper.
+  XBMCHelper::GetInstance().Configure();
 
   return true;
 }

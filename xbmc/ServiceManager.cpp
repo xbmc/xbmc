@@ -148,6 +148,9 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
+  if (!m_Platform->InitStageTwo())
+    return false;
+
   init_level = 2;
   return true;
 }
@@ -170,6 +173,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
     m_PVRManager->Init();
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
+
+  if (!m_Platform->InitStageThree())
+    return false;
 
   init_level = 3;
   return true;

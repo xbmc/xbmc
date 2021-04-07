@@ -18,4 +18,5 @@ public:
   ~CPlatformDarwinOSX() override = default;
 
   bool Init() override;
+  bool InitStageTwo() override;
 };
