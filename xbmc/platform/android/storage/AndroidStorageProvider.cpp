@@ -27,8 +27,9 @@
 #include <androidjni/Context.h>
 #include <androidjni/Environment.h>
 #include <androidjni/StorageManager.h>
+#include <androidjni/StorageVolume.h>
 
-static const char * typeWL[] = { "vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs" };
+static const char * typeWL[] = { "vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs", "cifs" };
 static const char * mountWL[] = { "/mnt", "/Removable", "/storage" };
 static const char * mountBL[] = {
   "/mnt/secure",
@@ -44,7 +45,8 @@ static const char * mountBL[] = {
 static const char * deviceWL[] = {
   "/dev/block/vold",
   "/dev/fuse",
-  "/mnt/media_rw"
+  "/mnt/media_rw",
+  "//" // SMB
 };
 
 IStorageProvider* IStorageProvider::CreateInstance()
@@ -117,13 +119,13 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-  // Uses non-public API: be extra carefull
   bool inError = false;
   VECSOURCES droidDrives;
 
   CJNIStorageManager manager(CJNIContext::getSystemService("storage"));
   if (xbmc_jnienv()->ExceptionCheck())
   {
+    xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
     inError = true;
   }
@@ -133,25 +135,31 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
     CJNIStorageVolumes vols = manager.getStorageVolumes();
     if (xbmc_jnienv()->ExceptionCheck())
     {
+      xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
       inError = true;
     }
 
     if (!inError)
     {
-      for (auto vol : vols)
+      for (int i = 0; i < vols.size(); ++i)
       {
+        CJNIStorageVolume vol = vols.get(i);
 //        CLog::Log(LOGDEBUG, "-- Volume: %s(%s) -- %s", vol.getPath().c_str(), vol.getUserLabel().c_str(), vol.getState().c_str());
+
         bool removable = vol.isRemovable();
         if (xbmc_jnienv()->ExceptionCheck())
         {
+          xbmc_jnienv()->ExceptionDescribe();
           xbmc_jnienv()->ExceptionClear();
           inError = true;
           break;
         }
+
         std::string state = vol.getState();
         if (xbmc_jnienv()->ExceptionCheck())
         {
+          xbmc_jnienv()->ExceptionDescribe();
           xbmc_jnienv()->ExceptionClear();
           inError = true;
           break;
@@ -160,23 +168,29 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
         if (removable && state == CJNIEnvironment::MEDIA_MOUNTED)
         {
           CMediaSource share;
+
           share.strPath = vol.getPath();
           if (xbmc_jnienv()->ExceptionCheck())
           {
+            xbmc_jnienv()->ExceptionDescribe();
             xbmc_jnienv()->ExceptionClear();
             inError = true;
             break;
           }
+
           share.strName = vol.getUserLabel();
           if (xbmc_jnienv()->ExceptionCheck())
           {
+            xbmc_jnienv()->ExceptionDescribe();
             xbmc_jnienv()->ExceptionClear();
             inError = true;
             break;
           }
+
           StringUtils::Trim(share.strName);
           if (share.strName.empty() || share.strName == "?" || StringUtils::EqualsNoCase(share.strName, "null"))
             share.strName = URIUtils::GetFileName(share.strPath);
+
           share.m_ignore = true;
           droidDrives.push_back(share);
         }
