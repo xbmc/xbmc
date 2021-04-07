@@ -18,6 +18,7 @@
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
+#include "platform/win32/network/WSDiscoveryWin32.h"
 
 #include <Windows.h>
 #include <Winnetwk.h>
@@ -50,6 +51,7 @@ static inline bool worthTryToConnect(const DWORD lastErr)
 */
 static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, const std::string& urlPrefixForItems, CFileItemList& items, bool getShares);
 static bool localGetShares(const std::wstring& serverNameToScan, const std::string& urlPrefixForItems, CFileItemList& items);
+static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList& items);
 
 // check for empty string, remove trailing slash if any, convert to win32 form
 inline static std::wstring prepareWin32SMBDirectoryName(const CURL& url)
@@ -392,9 +394,18 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     if (localGetShares(basePathToScanPtr->lpRemoteName, urlPrefixForItems, items))
       return true;
 
-    CLog::LogF(LOGINFO,
-               "Can't read shares for \"%ls\" by localGetShares(), fallback to standard method",
+    CLog::LogF(LOGWARNING,
+               "Can't read shares for \"%ls\" by localGetShares(), fallback to old method",
                FromW(basePathToScanPtr->lpRemoteName));
+  }
+
+  // Get servers using WS-Discovery protocol
+  if (!getShares)
+  {
+    if (localGetServers(urlPrefixForItems, items))
+      return true;
+
+    CLog::LogF(LOGWARNING, "Can't locate servers by localGetServers(), fallback to old method");
   }
 
   HANDLE netEnum;
@@ -616,6 +627,32 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
 
   items.Append(locItems); // all shares loaded, store result
   return true;
+}
+
+// Get servers using WS-Discovery protocol
+static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList& items)
+{
+  auto wsd = CWSDiscoverySupport::Get();
+
+  // Get servers immediately from WSD daemon process
+  if (wsd && wsd->IsInitialized() && wsd->ThereAreServers())
+  {
+    for (const auto& ip : wsd->GetServersIPs())
+    {
+      std::wstring hostname = wsd->ResolveHostName(ip);
+      std::string shareNameUtf8;
+      if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
+      {
+        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
+        pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
+        pItem->m_bIsFolder = true;
+        items.Add(pItem);
+      }
+    }
+    return true;
+  }
+
+  return false;
 }
 
 bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCredential /*= false*/)
