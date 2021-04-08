@@ -52,6 +52,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   //Setting the font directory to the temp dir(where mkv fonts are extracted to)
   std::string strPath = "special://temp/fonts/";
 
+  CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Using libass version {0:x}", ass_library_version());
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library = ass_library_init();
   if(!m_library)
