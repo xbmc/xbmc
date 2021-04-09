@@ -19,7 +19,7 @@ public:
   CPlatformFreebsd() = default;
   ~CPlatformFreebsd() override = default;
 
-  bool Init() override;
+  bool InitStageOne() override;
 
 private:
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;

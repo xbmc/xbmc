@@ -26,9 +26,9 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformDarwinEmbedded();
 }
 
-bool CPlatformDarwinEmbedded::Init()
+bool CPlatformDarwinEmbedded::InitStageOne()
 {
-  if (!CPlatformDarwin::Init())
+  if (!CPlatformDarwin::InitStageOne())
     return false;
 
 #if defined(TARGET_DARWIN_IOS)

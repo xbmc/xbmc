@@ -19,9 +19,9 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformWin32();
 }
 
-bool CPlatformWin32::Init()
+bool CPlatformWin32::InitStageOne()
 {
-  if (!CPlatform::Init())
+  if (!CPlatform::InitStageOne())
     return false;
 
   CEnvironment::setenv("OS", "win32"); // for python scripts that check the OS

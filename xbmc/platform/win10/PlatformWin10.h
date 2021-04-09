@@ -19,5 +19,5 @@ class CPlatformWin10 : public CPlatform
     /**\brief D'tor */
     ~CPlatformWin10() override = default;
 
-    bool Init() override;
+    bool InitStageOne() override;
 };

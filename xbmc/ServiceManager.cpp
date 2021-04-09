@@ -84,7 +84,7 @@ void CServiceManager::DeinitTesting()
 bool CServiceManager::InitStageOne()
 {
   m_Platform.reset(CPlatform::CreateInstance());
-  if (!m_Platform->Init())
+  if (!m_Platform->InitStageOne())
     return false;
 
 #ifdef HAS_PYTHON

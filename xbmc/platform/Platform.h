@@ -33,7 +33,7 @@ public:
    * This method can be used to do platform specific environment preparation
    * or initialisation (like setting environment variables for example)
    */
-  virtual bool Init() { return true; };
+  virtual bool InitStageOne() { return true; };
 
   /**\brief Called at a middle stage of application startup
    *

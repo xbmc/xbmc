@@ -19,10 +19,10 @@
 
 std::atomic_flag CPlatformPosix::ms_signalFlag;
 
-bool CPlatformPosix::Init()
+bool CPlatformPosix::InitStageOne()
 {
 
-  if (!CPlatform::Init())
+  if (!CPlatform::InitStageOne())
     return false;
 
   // Initialize to "set" state

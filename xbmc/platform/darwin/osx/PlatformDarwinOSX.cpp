@@ -22,9 +22,9 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformDarwinOSX();
 }
 
-bool CPlatformDarwinOSX::Init()
+bool CPlatformDarwinOSX::InitStageOne()
 {
-  if (!CPlatformDarwin::Init())
+  if (!CPlatformDarwin::InitStageOne())
     return false;
 
   CWinSystemOSXGL::Register();
