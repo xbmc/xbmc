@@ -28,6 +28,7 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/providers/PVRProvider.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -435,6 +436,18 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
         strValue = recording->m_strChannelName;
+        if (strValue.empty())
+        {
+          if (recording->ProviderName().empty())
+          {
+            const auto& provider = recording->GetProvider();
+            strValue = provider->GetName();
+          }
+          else
+          {
+            strValue = recording->ProviderName();
+          }
+        }
         return true;
       case VIDEOPLAYER_CHANNEL_NUMBER:
       case LISTITEM_CHANNEL_NUMBER:
@@ -448,6 +461,26 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         }
         break;
       }
+      case LISTITEM_ICON:
+        if (!recording->Channel())
+        {
+          auto provider = recording->GetProvider();
+          if (provider->GetIconPath().empty())
+          {
+            provider = recording->GetDefaultProvider();
+            if (!provider->GetIconPath().empty())
+            {
+              strValue = provider->GetIconPath();
+              return true;
+            }
+          }
+          else
+          {
+            strValue = provider->GetIconPath();
+            return true;
+          }
+        }
+        return false;
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
         CSingleLock lock(m_critSection);
