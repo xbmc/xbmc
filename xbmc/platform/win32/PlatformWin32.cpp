@@ -35,3 +35,8 @@ bool CPlatformWin32::InitStageOne()
 
   return true;
 }
+
+void CPlatformWin32::PlatformSyslog()
+{
+  CWIN32Util::PlatformSyslog();
+}

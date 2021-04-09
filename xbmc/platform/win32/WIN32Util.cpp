@@ -1521,3 +1521,19 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 
   return status;
 }
+
+void CWIN32Util::PlatformSyslog()
+{
+  CLog::Log(LOGINFO, "System has {:.1f} GB of RAM installed",
+            GetSystemMemorySize() / static_cast<double>(MB));
+  CLog::Log(LOGINFO, "{}", GetResInfoString());
+  CLog::Log(LOGINFO, "Running with {} rights",
+            (IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
+  CLog::Log(LOGINFO, "Aero is {}", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
+  HDR_STATUS hdrStatus = GetWindowsHDRStatus();
+  if (hdrStatus == HDR_STATUS::HDR_UNSUPPORTED)
+    CLog::Log(LOGINFO, "Display is not HDR capable or cannot be detected");
+  else
+    CLog::Log(LOGINFO, "Display HDR capable is detected and Windows HDR switch is {}",
+              (hdrStatus == HDR_STATUS::HDR_ON) ? "ON" : "OFF");
+}

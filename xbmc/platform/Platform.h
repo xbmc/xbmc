@@ -55,4 +55,10 @@ public:
    * offered for configuration and activation on kodi startup for this platform
    */
   virtual bool IsConfigureAddonsAtStartupEnabled() { return false; };
+
+  /**\brief Print platform specific info to log
+   *
+   * Logs platform specific system info during application creation startup
+   */
+  virtual void PlatformSyslog(){};
 };

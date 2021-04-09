@@ -20,4 +20,5 @@ class CPlatformWin10 : public CPlatform
     ~CPlatformWin10() override = default;
 
     bool InitStageOne() override;
+    void PlatformSyslog() override;
 };

@@ -469,6 +469,8 @@ protected:
       m_incompatibleAddons; /*!< Result of addon migration (incompatible addon infos) */
 
 private:
+  void PrintStartupLog();
+
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
 
   CCriticalSection m_frameMoveGuard;              /*!< critical section for synchronizing GUI actions from inside and outside (python) */

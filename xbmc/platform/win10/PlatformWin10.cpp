@@ -40,3 +40,8 @@ bool CPlatformWin10::InitStageOne()
 
   return true;
 }
+
+void CPlatformWin10::PlatformSyslog()
+{
+  CWIN32Util::PlatformSyslog();
+}
