@@ -11,6 +11,7 @@ set(SOURCES BaseRenderer.cpp
 
 set(HEADERS BaseRenderer.h
             ColorManager.h
+            DebugInfo.h
             OverlayRenderer.h
             OverlayRendererGUI.h
             OverlayRendererUtil.h

@@ -13,6 +13,7 @@
 #include "Resolution.h"
 #include "VideoSync.h"
 #include "WinEvents.h"
+#include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
 #include "guilib/DispResource.h"
 
 #include <memory>
@@ -166,6 +167,9 @@ public:
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; };
 
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+
+  // Gets debug info from video renderer
+  virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; };
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);

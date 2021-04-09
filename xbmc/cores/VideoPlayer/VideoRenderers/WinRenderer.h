@@ -46,6 +46,9 @@ public:
   bool WantsDoublePass() override;
   bool ConfigChanged(const VideoPicture& picture) override;
 
+  // Debug info video
+  DEBUG_INFO_VIDEO GetDebugInfo(int idx) override;
+
 protected:
   void PreInit();
   int NextBuffer() const;

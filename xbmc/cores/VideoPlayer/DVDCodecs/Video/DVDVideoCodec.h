@@ -68,6 +68,8 @@ public:
   bool hasLightMetadata = false;
   AVContentLightMetadata lightMetadata;
 
+  AVPixelFormat pixelFormat; //< source pixel format
+
   unsigned int iWidth;
   unsigned int iHeight;
   unsigned int iDisplayWidth;           //< width of the picture without black bars
