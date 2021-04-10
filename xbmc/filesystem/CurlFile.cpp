@@ -645,6 +645,18 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
 
+  // enable tcp keepalive
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval > 0)
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_TCP_KEEPALIVE, 1L);
+    g_curlInterface.easy_setopt(
+        h, CURLOPT_TCP_KEEPIDLE,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval / 2);
+    g_curlInterface.easy_setopt(
+        h, CURLOPT_TCP_KEEPINTVL,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval);
+  }
+
   // Setup allowed TLS/SSL ciphers. New versions of cURL may deprecate things that are still in use.
   if (!m_cipherlist.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_SSL_CIPHER_LIST, m_cipherlist.c_str());
