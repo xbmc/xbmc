@@ -372,7 +372,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount() * 3 / 2;
       num_threads = std::max(1, std::min(num_threads, 16));
       m_pCodecContext->thread_count = num_threads;
-      m_pCodecContext->thread_safe_callbacks = 1;
       m_decoderState = STATE_SW_MULTI;
       CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - open frame threaded with %d threads", num_threads);
     }
