@@ -368,20 +368,33 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
   if (!packet.pData)
     return true;
 
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  avpkt.data = packet.pData;
-  avpkt.size = packet.iSize;
-  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE)
-                  ? AV_NOPTS_VALUE
-                  : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE)
-                  ? AV_NOPTS_VALUE
-                  : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.side_data = static_cast<AVPacketSideData*>(packet.pSideData);
-  avpkt.side_data_elems = packet.iSideDataElems;
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
 
-  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+  avpkt->data = packet.pData;
+  avpkt->size = packet.iSize;
+  avpkt->dts = (packet.dts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->pts = (packet.pts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
+  avpkt->side_data_elems = packet.iSideDataElems;
+
+  int ret = avcodec_send_packet(m_pCodecContext, avpkt);
+
+  //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+  // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
+  // and storing our own AVPacket. This will require some extensive changes.
+  av_buffer_unref(&avpkt->buf);
+  av_free(avpkt);
+
   if (ret == AVERROR(EAGAIN))
     return false;
   else if (ret)
@@ -427,11 +440,18 @@ void CDVDVideoCodecDRMPRIME::Reset()
 
 void CDVDVideoCodecDRMPRIME::Drain()
 {
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  avpkt.data = nullptr;
-  avpkt.size = 0;
-  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+    return;
+  }
+
+  avpkt->data = nullptr;
+  avpkt->size = 0;
+
+  int ret = avcodec_send_packet(m_pCodecContext, avpkt);
   if (ret && ret != AVERROR_EOF)
   {
     char err[AV_ERROR_MAX_STRING_SIZE] = {};
@@ -439,6 +459,8 @@ void CDVDVideoCodecDRMPRIME::Drain()
     CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - send packet failed: {} ({})", __FUNCTION__,
               err, ret);
   }
+
+  av_packet_free(&avpkt);
 }
 
 void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)

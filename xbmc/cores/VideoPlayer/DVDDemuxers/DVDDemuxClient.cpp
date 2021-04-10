@@ -171,13 +171,19 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       // Allow ffmpeg to transport codec information to stream->m_context
       if (!avcodec_open2(stream->m_context, stream->m_context->codec, nullptr))
       {
-        AVPacket avpkt;
-        av_init_packet(&avpkt);
-        avpkt.data = pkt->pData;
-        avpkt.size = pkt->iSize;
-        avpkt.dts = avpkt.pts = AV_NOPTS_VALUE;
-        avcodec_send_packet(stream->m_context, &avpkt);
+        AVPacket* avpkt = av_packet_alloc();
+        if (!avpkt)
+        {
+          CLog::Log(LOGERROR, "CDVDDemuxClient::{} - av_packet_alloc failed: {}", __FUNCTION__,
+                    strerror(errno));
+          return false;
+        }
+        avpkt->data = pkt->pData;
+        avpkt->size = pkt->iSize;
+        avpkt->dts = avpkt->pts = AV_NOPTS_VALUE;
+        avcodec_send_packet(stream->m_context, avpkt);
         avcodec_close(stream->m_context);
+        av_packet_free(&avpkt);
       }
     }
   }

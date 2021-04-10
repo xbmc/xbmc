@@ -3070,21 +3070,26 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
     config.channel_layout = av_get_default_channel_layout(config.channels);
   dec_ctx->channel_layout = config.channel_layout;
 
-  AVPacket avpkt;
-  AVFrame *decoded_frame = NULL;
-  decoded_frame = av_frame_alloc();
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+    CLog::Log(LOGERROR, "CActiveAE::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+
+  AVFrame* decoded_frame = av_frame_alloc();
+  if (!decoded_frame)
+    CLog::Log(LOGERROR, "CActiveAE::{} - av_frame_alloc failed: {}", __FUNCTION__, strerror(errno));
+
   bool error = false;
 
-  if (avcodec_open2(dec_ctx, dec, nullptr) >= 0)
+  if (avpkt && decoded_frame && avcodec_open2(dec_ctx, dec, nullptr) >= 0)
   {
     bool init = false;
 
     // decode until eof
-    av_init_packet(&avpkt);
     int ret;
-    while (av_read_frame(fmt_ctx, &avpkt) >= 0 && !error)
+    while (av_read_frame(fmt_ctx, avpkt) >= 0 && !error)
     {
-      ret = avcodec_send_packet(dec_ctx, &avpkt);
+      ret = avcodec_send_packet(dec_ctx, avpkt);
       if (ret < 0)
       {
         error = true;
@@ -3104,7 +3109,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
         sound->StoreSound(true, decoded_frame->extended_data,
                           decoded_frame->nb_samples, decoded_frame->linesize[0]);
       }
-      av_packet_unref(&avpkt);
+      av_packet_unref(avpkt);
 
       if (ret < 0 && ret != AVERROR(EAGAIN))
       {
@@ -3128,6 +3133,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
     }
   }
 
+  av_packet_free(&avpkt);
   av_frame_free(&decoded_frame);
   avcodec_free_context(&dec_ctx);
   avformat_close_input(&fmt_ctx);
