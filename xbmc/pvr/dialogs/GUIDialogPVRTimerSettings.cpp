@@ -544,9 +544,10 @@ bool CGUIDialogPVRTimerSettings::Validate()
   // Begin and end time
   if (!bStartAnyTime && !bEndAnyTime)
   {
-    if (!(m_timerType->SupportsStartTime() && // has start clock entry
-          m_timerType->SupportsEndTime() && // and end clock entry
-          m_timerType->IsTimerRule()) && // but no associated start/end day spinners
+    // Not in the set of having neither or both of start clock entry and
+    // end clock entry while also being a timer rule
+    if (!(m_timerType->SupportsStartTime() == m_timerType->SupportsEndTime() &&
+          m_timerType->IsTimerRule()) &&
         m_endLocalTime < m_startLocalTime)
     {
       HELPERS::ShowOKDialogText(CVariant{19065}, // "Timer settings"
