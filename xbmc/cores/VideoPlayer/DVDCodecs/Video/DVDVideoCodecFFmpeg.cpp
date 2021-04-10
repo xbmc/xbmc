@@ -1021,15 +1021,44 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   else
     pVideoPicture->color_range = m_hints.colorRange == AVCOL_RANGE_JPEG ? 1 : 0;
 
-  pVideoPicture->qp_table = av_frame_get_qp_table(m_pFrame,
-                                                  &pVideoPicture->qstride,
-                                                  &pVideoPicture->qscale_type);
+  //! @todo: ffmpeg doesn't seem like they know how they want to handle this.
+  // av_frame_get_qp_table is deprecated but there doesn't seem to be a valid
+  // replacement. the following is basically what av_frame_get_qp_table does
+  // internally so we can avoid the deprecation warning however it may still
+  // break in the future because some definitions are guarded and may be removed.
+
+  pVideoPicture->qp_table = nullptr;
+  pVideoPicture->qstride = 0;
+  pVideoPicture->qscale_type = 0;
+
+  AVFrameSideData* sd;
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_PROPERTIES);
+  if (sd)
+  {
+    struct qp_properties
+    {
+      int stride;
+      int type;
+    };
+
+    auto qp = reinterpret_cast<qp_properties*>(sd->data);
+
+    sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_DATA);
+    if (sd && sd->buf && qp)
+    {
+      // this seems wrong but it's what ffmpeg does internally
+      pVideoPicture->qp_table = reinterpret_cast<int8_t*>(sd->buf->data);
+      pVideoPicture->qstride = qp->stride;
+      pVideoPicture->qscale_type = qp->type;
+    }
+  }
+
   pVideoPicture->pict_type = m_pFrame->pict_type;
 
   // metadata
   pVideoPicture->hasDisplayMetadata = false;
   pVideoPicture->hasLightMetadata = false;
-  AVFrameSideData *sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
   if (sd)
   {
     pVideoPicture->displayMetadata = *(AVMasteringDisplayMetadata *)sd->data;
