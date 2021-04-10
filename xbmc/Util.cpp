@@ -679,7 +679,7 @@ void CUtil::ClearSubtitles()
 
 void CUtil::ClearTempFonts()
 {
-  std::string searchPath = "special://temp/fonts/";
+  const std::string searchPath = "special://home/media/Fonts/";
 
   if (!CDirectory::Exists(searchPath))
     return;
@@ -691,7 +691,9 @@ void CUtil::ClearTempFonts()
   {
     if (item->m_bIsFolder)
       continue;
-    CFile::Delete(item->GetPath());
+
+    if (StringUtils::StartsWithNoCase(URIUtils::GetFileName(item->GetPath()), "tmp.font."))
+      CFile::Delete(item->GetPath());
   }
 }
 
