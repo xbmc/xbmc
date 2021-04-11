@@ -818,6 +818,9 @@ void CVideoBufferCopy::Initialize(CDecoder* decoder)
     // copy decoder surface on decoder device
     m_pDeviceContext->CopySubresourceRegion(m_copyRes.Get(), 0, 0, 0, 0, m_pResource.Get(),
                                             CVideoBuffer::GetIdx(), nullptr);
+
+    if (decoder->m_DVDWorkaround) // DVDs menus/stills need extra Flush()
+      m_pDeviceContext->Flush();
   }
 }
 
@@ -1133,6 +1136,10 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 {
   if (!CheckCompatibility(avctx))
     return false;
+
+  // DVDs menus/stills need extra Flush() after copy texture
+  if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && avctx->height <= 576)
+    m_DVDWorkaround = true;
 
   CSingleLock lock(m_section);
   Close();
