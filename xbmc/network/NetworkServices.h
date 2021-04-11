@@ -41,6 +41,19 @@ public:
   void Start();
   void Stop(bool bWait);
 
+  enum ESERVERS
+  {
+    ES_WEBSERVER = 1,
+    ES_AIRPLAYSERVER,
+    ES_JSONRPCSERVER,
+    ES_UPNPRENDERER,
+    ES_UPNPSERVER,
+    ES_EVENTSERVER,
+    ES_ZEROCONF
+  };
+
+  bool StartServer(enum ESERVERS server, bool start);
+
   bool StartWebserver();
   bool IsWebserverRunning();
   bool StopWebserver();

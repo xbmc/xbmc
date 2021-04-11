@@ -29,6 +29,7 @@
 #include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
+#include "network/NetworkServices.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -466,11 +467,12 @@ namespace XBMCAddon
     }
 
 
-    bool startServer(int iTyp, bool bStart, bool bWait)
+    bool startServer(int iTyp, bool bStart)
     {
       XBMC_TRACE;
       DelayedCallGuard dg;
-      return g_application.StartServer((CApplication::ESERVERS)iTyp, bStart != 0, bWait != 0);
+      return CServiceBroker::GetNetwork().GetServices().StartServer(
+          static_cast<CNetworkServices::ESERVERS>(iTyp), bStart != 0);
     }
 
     void audioSuspend()
@@ -520,13 +522,34 @@ namespace XBMCAddon
       return CSysInfo::GetUserAgent();
     }
 
-    int getSERVER_WEBSERVER() { return CApplication::ES_WEBSERVER; }
-    int getSERVER_AIRPLAYSERVER() { return CApplication::ES_AIRPLAYSERVER; }
-    int getSERVER_UPNPSERVER() { return CApplication::ES_UPNPSERVER; }
-    int getSERVER_UPNPRENDERER() { return CApplication::ES_UPNPRENDERER; }
-    int getSERVER_EVENTSERVER() { return CApplication::ES_EVENTSERVER; }
-    int getSERVER_JSONRPCSERVER() { return CApplication::ES_JSONRPCSERVER; }
-    int getSERVER_ZEROCONF() { return CApplication::ES_ZEROCONF; }
+    int getSERVER_WEBSERVER()
+    {
+      return CNetworkServices::ES_WEBSERVER;
+    }
+    int getSERVER_AIRPLAYSERVER()
+    {
+      return CNetworkServices::ES_AIRPLAYSERVER;
+    }
+    int getSERVER_UPNPSERVER()
+    {
+      return CNetworkServices::ES_UPNPSERVER;
+    }
+    int getSERVER_UPNPRENDERER()
+    {
+      return CNetworkServices::ES_UPNPRENDERER;
+    }
+    int getSERVER_EVENTSERVER()
+    {
+      return CNetworkServices::ES_EVENTSERVER;
+    }
+    int getSERVER_JSONRPCSERVER()
+    {
+      return CNetworkServices::ES_JSONRPCSERVER;
+    }
+    int getSERVER_ZEROCONF()
+    {
+      return CNetworkServices::ES_ZEROCONF;
+    }
 
     int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
     int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }

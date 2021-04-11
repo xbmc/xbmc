@@ -744,11 +744,11 @@ namespace XBMCAddon
     /// | xbmc.SERVER_EVENTSERVER   | [Set eventServer part that accepts remote device input on all platforms](http://kodi.wiki/view/EventServer)
     /// | xbmc.SERVER_ZEROCONF      | [Control Kodi's Avahi Zeroconf](http://kodi.wiki/view/Zeroconf)
     /// @param bStart               bool - start (True) or stop (False) a server
-    /// @param bWait                [opt] bool - wait on stop before returning (not supported by all servers)
     /// @return                     bool - True or False
     ///
     ///
     /// ------------------------------------------------------------------------
+    /// @python_v20 Removed option **bWait**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -759,7 +759,7 @@ namespace XBMCAddon
     ///
     startServer(...);
 #else
-    bool startServer(int iTyp, bool bStart, bool bWait = false);
+    bool startServer(int iTyp, bool bStart);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
