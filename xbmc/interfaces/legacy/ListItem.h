@@ -995,8 +995,10 @@ namespace XBMCAddon
       /// | StartPercent  | float (15.0) - Set the percentage at which to start playback of the item
       /// | StationName   | string ("My Station Name") - Used to enforce/override MusicPlayer.StationName infolabel from addons (e.g. in radio addons)
       /// | TotalTime     | float (7848.0) - Set the total time of the item in seconds
+      /// | OverrideInfotag | string - "true", "false" - When true will override all info from previous listitem
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 OverrideInfotag property added
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1212,5 +1214,3 @@ private:
 #endif
   }
 }
-
-
