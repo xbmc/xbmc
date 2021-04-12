@@ -272,7 +272,7 @@ static int UpdateLibrary(const std::vector<std::string>& params)
   if (StringUtils::EqualsNoCase(params[0], "music"))
   {
     if (g_application.IsMusicScanning())
-      g_application.StopMusicScan();
+      CMusicLibraryQueue::GetInstance().StopLibraryScanning();
     else
       g_application.StartMusicScan(params.size() > 1 ? params[1] : "", userInitiated);
   }

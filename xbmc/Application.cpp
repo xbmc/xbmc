@@ -4863,11 +4863,6 @@ bool CApplication::IsMusicScanning() const
   return CMusicLibraryQueue::GetInstance().IsScanningLibrary();
 }
 
-void CApplication::StopMusicScan()
-{
-  CMusicLibraryQueue::GetInstance().StopLibraryScanning();
-}
-
 void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
                                      const std::string& content /* = "" */,
                                      const std::string& strDirectory /* = "" */)

@@ -1150,7 +1150,7 @@ void CGUIWindowMusicBase::DoScan(const std::string &strPath, bool bRescan /*= fa
 {
   if (g_application.IsMusicScanning())
   {
-    g_application.StopMusicScan();
+    CMusicLibraryQueue::GetInstance().StopLibraryScanning();
     return;
   }
 

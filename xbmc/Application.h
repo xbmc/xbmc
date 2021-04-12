@@ -251,7 +251,6 @@ public:
   void StopShutdownTimer();
   void ResetShutdownTimers();
 
-  void StopMusicScan();
   bool IsMusicScanning() const;
   bool IsVideoScanning() const;
 

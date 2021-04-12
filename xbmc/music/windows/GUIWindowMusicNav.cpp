@@ -169,7 +169,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         if (!g_application.IsMusicScanning())
           g_application.StartMusicScan("");
         else
-          g_application.StopMusicScan();
+          CMusicLibraryQueue::GetInstance().StopLibraryScanning();
         return true;
       }
     }
