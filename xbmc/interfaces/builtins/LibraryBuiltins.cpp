@@ -47,8 +47,45 @@ static int CleanLibrary(const std::vector<std::string>& params)
   {
     if (!CVideoLibraryQueue::GetInstance().IsScanningLibrary())
     {
-      const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
-      g_application.StartVideoCleanup(userInitiated, content, params.size() > 2 ? params[2] : "");
+      if (!(userInitiated && CVideoLibraryQueue::GetInstance().IsRunning()))
+      {
+        const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
+        const std::string directory = params.size() > 2 ? params[2] : "";
+
+        std::set<int> paths;
+        if (!content.empty() || !directory.empty())
+        {
+          CVideoDatabase db;
+          std::set<std::string> contentPaths;
+          if (db.Open())
+          {
+            if (!directory.empty())
+              contentPaths.insert(directory);
+            else
+              db.GetPaths(contentPaths);
+            for (const std::string& path : contentPaths)
+            {
+              if (db.GetContentForPath(path) == content)
+              {
+                paths.insert(db.GetPathId(path));
+                std::vector<std::pair<int, std::string>> sub;
+                if (db.GetSubPaths(path, sub))
+                {
+                  for (const auto& it : sub)
+                    paths.insert(it.first);
+                }
+              }
+            }
+          }
+          if (paths.empty())
+            return 0;
+        }
+
+        if (userInitiated)
+          CVideoLibraryQueue::GetInstance().CleanLibraryModal(paths);
+        else
+          CVideoLibraryQueue::GetInstance().CleanLibrary(paths, true);
+      }
     }
     else
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning or cleaning");
