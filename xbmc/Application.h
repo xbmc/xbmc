@@ -281,7 +281,6 @@ public:
    */
   void StartMusicScan(const std::string &path, bool userInitiated = true, int flags = 0);
   void StartMusicAlbumScan(const std::string& strDirectory, bool refresh = false);
-  void StartMusicArtistScan(const std::string& strDirectory, bool refresh = false);
 
   void UpdateLibraries();
 
