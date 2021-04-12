@@ -24,6 +24,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
@@ -68,7 +69,7 @@ const char* video_containers[] = { "library://video/movies/titles.xml/", "librar
 CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/, int port /*= 0*/)
   : PLT_MediaConnect(friendly_name, false, uuid, port),
     PLT_FileMediaConnectDelegate("/", "/"),
-    m_scanning(g_application.IsMusicScanning() ||
+    m_scanning(CMusicLibraryQueue::GetInstance().IsScanningLibrary() ||
                CVideoLibraryQueue::GetInstance().IsScanningLibrary()),
     m_logger(CServiceBroker::GetLogging().GetLogger(
         StringUtils::Format("CUPnPServer[{}]", friendly_name)))

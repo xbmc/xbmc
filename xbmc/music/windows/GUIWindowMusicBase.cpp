@@ -6,19 +6,21 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
-#include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
-#include "dialogs/GUIDialogMediaSource.h"
+
+#include "Application.h"
+#include "GUIUserMessages.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
+#include "Util.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogMediaSource.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "playlists/PlayListFactory.h"
-#include "Util.h"
 #include "playlists/PlayListM3U.h"
-#include "Application.h"
-#include "PlayListPlayer.h"
-#include "ServiceBroker.h"
+#include "threads/SystemClock.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
@@ -89,7 +91,7 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase () = default;
 
 bool CGUIWindowMusicBase::OnBack(int actionID)
 {
-  if (!g_application.IsMusicScanning())
+  if (!CMusicLibraryQueue::GetInstance().IsScanningLibrary())
   {
     CUtil::RemoveTempFiles();
   }
@@ -525,7 +527,7 @@ void CGUIWindowMusicBase::UpdateButtons()
                               !(m_vecItems->IsVirtualDirectoryRoot() ||
                                 m_vecItems->IsMusicDb()));
 
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   else
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 102); // Scan
@@ -694,7 +696,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SCAN:
     // Check if scanning already and inform user
-    if (g_application.IsMusicScanning())
+    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       HELPERS::ShowOKDialogText(CVariant{ 189 }, CVariant{ 14057 });
     else
       OnScan(itemNumber, true);
@@ -1093,7 +1095,12 @@ void CGUIWindowMusicBase::OnInitWindow()
   // and accomodate any changes to the way some tags are processed
   if (m_musicdatabase.GetMusicNeedsTagScan() != 0)
   {
-    if (CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
+    if (CServiceBroker::GetGUI()
+            ->GetInfoManager()
+            .GetInfoProviders()
+            .GetLibraryInfoProvider()
+            .GetLibraryBool(LIBRARY_HAS_MUSIC) &&
+        !CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     {
       // rescan of music library required
       if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{38060}))
@@ -1148,7 +1155,7 @@ void CGUIWindowMusicBase::OnScan(int iItem, bool bPromptRescan /*= false*/)
 
 void CGUIWindowMusicBase::DoScan(const std::string &strPath, bool bRescan /*= false*/)
 {
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
   {
     CMusicLibraryQueue::GetInstance().StopLibraryScanning();
     return;

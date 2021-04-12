@@ -40,6 +40,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
 #include "network/cddb.h"
@@ -83,7 +84,7 @@ static void AnnounceRemove(const std::string& content, int id)
   CVariant data;
   data["type"] = content;
   data["id"] = id;
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     data["transaction"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnRemove", data);
 }
@@ -93,7 +94,7 @@ static void AnnounceUpdate(const std::string& content, int id, bool added = fals
   CVariant data;
   data["type"] = content;
   data["id"] = id;
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     data["transaction"] = true;
   if (added)
     data["added"] = true;
@@ -4464,7 +4465,7 @@ void CMusicDatabase::Clean()
 {
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{189}, CVariant{14057});
     return;

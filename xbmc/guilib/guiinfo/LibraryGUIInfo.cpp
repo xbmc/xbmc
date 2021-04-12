@@ -15,6 +15,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -268,7 +269,7 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     }
     case LIBRARY_IS_SCANNING:
     {
-      value = (g_application.IsMusicScanning() ||
+      value = (CMusicLibraryQueue::GetInstance().IsScanningLibrary() ||
                CVideoLibraryQueue::GetInstance().IsScanningLibrary());
       return true;
     }
@@ -279,7 +280,7 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     }
     case LIBRARY_IS_SCANNING_MUSIC:
     {
-      value = g_application.IsMusicScanning();
+      value = CMusicLibraryQueue::GetInstance().IsScanningLibrary();
       return true;
     }
   }

@@ -6,11 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include <string>
-#include <vector>
-
 #include "ProfileManager.h"
+
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -31,9 +28,14 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
+#include "music/MusicLibraryQueue.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
+
+#include <algorithm>
+#include <string>
+#include <vector>
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -438,7 +440,7 @@ void CProfileManager::LogOff()
 
   g_application.StopPlaying();
 
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     CMusicLibraryQueue::GetInstance().StopLibraryScanning();
 
   if (CVideoLibraryQueue::GetInstance().IsRunning())

@@ -4853,11 +4853,6 @@ void CApplication::UpdateCurrentPlayArt()
   CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
 }
 
-bool CApplication::IsMusicScanning() const
-{
-  return CMusicLibraryQueue::GetInstance().IsScanningLibrary();
-}
-
 void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
                                      const std::string& content /* = "" */,
                                      const std::string& strDirectory /* = "" */)
@@ -4922,7 +4917,7 @@ void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
 
 void CApplication::StartMusicScan(const std::string &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
 {
-  if (IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     return;
 
   // Setup default flags
@@ -4939,7 +4934,7 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
 
 void CApplication::StartMusicAlbumScan(const std::string& strDirectory, bool refresh)
 {
-  if (IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     return;
 
   CMusicLibraryQueue::GetInstance().StartAlbumScan(strDirectory, refresh);
@@ -4948,7 +4943,7 @@ void CApplication::StartMusicAlbumScan(const std::string& strDirectory, bool ref
 void CApplication::StartMusicArtistScan(const std::string& strDirectory,
                                         bool refresh)
 {
-  if (IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     return;
 
   CMusicLibraryQueue::GetInstance().StartArtistScan(strDirectory, refresh);

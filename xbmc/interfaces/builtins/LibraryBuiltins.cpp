@@ -54,7 +54,7 @@ static int CleanLibrary(const std::vector<std::string>& params)
   }
   else if (StringUtils::EqualsNoCase(params[0], "music"))
   {
-    if (!g_application.IsMusicScanning())
+    if (!CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       g_application.StartMusicCleanup(userInitiated);
     else
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
@@ -271,7 +271,7 @@ static int UpdateLibrary(const std::vector<std::string>& params)
     userInitiated = StringUtils::EqualsNoCase(params[2], "true");
   if (StringUtils::EqualsNoCase(params[0], "music"))
   {
-    if (g_application.IsMusicScanning())
+    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       CMusicLibraryQueue::GetInstance().StopLibraryScanning();
     else
       g_application.StartMusicScan(params.size() > 1 ? params[1] : "", userInitiated);
