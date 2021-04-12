@@ -273,14 +273,6 @@ public:
   */
   void StartMusicCleanup(bool userInitiated = true);
 
-  /*!
-   \brief Starts a music library update.
-   \param path The path to scan or "" (empty string) for a global scan.
-   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
-   \param flags Flags for controlling the scanning process.  See xbmc/music/infoscanner/MusicInfoScanner.h for possible values.
-   */
-  void StartMusicScan(const std::string &path, bool userInitiated = true, int flags = 0);
-
   void UpdateLibraries();
 
   void UpdateCurrentPlayArt();

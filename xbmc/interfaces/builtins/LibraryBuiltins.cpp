@@ -19,6 +19,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicLibraryQueue.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 #include "settings/LibExportSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -274,7 +275,9 @@ static int UpdateLibrary(const std::vector<std::string>& params)
     if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       CMusicLibraryQueue::GetInstance().StopLibraryScanning();
     else
-      g_application.StartMusicScan(params.size() > 1 ? params[1] : "", userInitiated);
+      CMusicLibraryQueue::GetInstance().ScanLibrary(params.size() > 1 ? params[1] : "",
+                                                    MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL,
+                                                    userInitiated);
   }
   else if (StringUtils::EqualsNoCase(params[0], "video"))
   {

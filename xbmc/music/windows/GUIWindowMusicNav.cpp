@@ -168,7 +168,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
         if (!CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-          g_application.StartMusicScan("");
+          CMusicLibraryQueue::GetInstance().ScanLibrary("");
         else
           CMusicLibraryQueue::GetInstance().StopLibraryScanning();
         return true;

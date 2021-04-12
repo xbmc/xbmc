@@ -1121,7 +1121,9 @@ void CGUIWindowMusicBase::OnInitWindow()
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
           if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{38061}))
             flags |= CMusicInfoScanner::SCAN_ONLINE;
-        g_application.StartMusicScan("", true, flags);
+
+        CMusicLibraryQueue::GetInstance().ScanLibrary("", flags, true);
+
         m_musicdatabase.SetMusicTagScanVersion(); // once is enough (user may interrupt, but that's up to them)
       }
     }
@@ -1178,7 +1180,9 @@ void CGUIWindowMusicBase::DoScan(const std::string &strPath, bool bRescan /*= fa
     flags = CMusicInfoScanner::SCAN_RESCAN;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
     flags |= CMusicInfoScanner::SCAN_ONLINE;
-  g_application.StartMusicScan(strPath, true, flags);
+
+  CMusicLibraryQueue::GetInstance().ScanLibrary(strPath, flags, true);
+
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
 }
@@ -1235,7 +1239,7 @@ void CGUIWindowMusicBase::OnAssignContent(const std::string& oldName, const CMed
       CGUIDialogInfoProviderSettings::Show();
   }
   if (rep == DialogResponse::YES)
-    g_application.StartMusicScan(source.strPath, true);
-
+    CMusicLibraryQueue::GetInstance().ScanLibrary(source.strPath,
+                                                  MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL, true);
 }
 

@@ -4837,7 +4837,9 @@ void CApplication::UpdateLibraries()
   if (settings->GetBool(CSettings::SETTING_MUSICLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGINFO, "Starting music library startup scan");
-    StartMusicScan("", !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
+    CMusicLibraryQueue::GetInstance().ScanLibrary(
+        "", MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL,
+        !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
   }
 }
 
@@ -4913,23 +4915,6 @@ void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
     CMusicLibraryQueue::GetInstance().CleanLibrary(true);
   else
     CMusicLibraryQueue::GetInstance().CleanLibrary(false);
-}
-
-void CApplication::StartMusicScan(const std::string &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
-{
-  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-    return;
-
-  // Setup default flags
-  if (!flags)
-  { // Online scraping of additional info during scanning
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
-      flags |= CMusicInfoScanner::SCAN_ONLINE;
-  }
-  if (!userInitiated || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
-    flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-
-  CMusicLibraryQueue::GetInstance().ScanLibrary(strDirectory, flags, !(flags & CMusicInfoScanner::SCAN_BACKGROUND));
 }
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
