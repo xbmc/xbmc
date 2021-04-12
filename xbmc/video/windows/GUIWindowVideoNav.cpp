@@ -230,7 +230,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         if (!g_application.IsVideoScanning())
           OnScan("");
         else
-          g_application.StopVideoScan();
+          CVideoLibraryQueue::GetInstance().StopLibraryScanning();
         return true;
       }
     }

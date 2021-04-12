@@ -26,6 +26,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibraryQueue.h"
 
 using namespace KODI::MESSAGING;
 
@@ -278,7 +279,7 @@ static int UpdateLibrary(const std::vector<std::string>& params)
   else if (StringUtils::EqualsNoCase(params[0], "video"))
   {
     if (g_application.IsVideoScanning())
-      g_application.StopVideoScan();
+      CVideoLibraryQueue::GetInstance().StopLibraryScanning();
     else
       g_application.StartVideoScan(params.size() > 1 ? params[1] : "", userInitiated);
   }
