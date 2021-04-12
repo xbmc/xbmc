@@ -56,7 +56,10 @@ static int CleanLibrary(const std::vector<std::string>& params)
   else if (StringUtils::EqualsNoCase(params[0], "music"))
   {
     if (!CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-      g_application.StartMusicCleanup(userInitiated);
+    {
+      if (!(userInitiated && CMusicLibraryQueue::GetInstance().IsRunning()))
+        CMusicLibraryQueue::GetInstance().CleanLibrary(userInitiated);
+    }
     else
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
   }

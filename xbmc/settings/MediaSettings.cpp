@@ -301,7 +301,10 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   if (settingId == CSettings::SETTING_MUSICLIBRARY_CLEANUP)
   {
     if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
-      g_application.StartMusicCleanup(true);
+    {
+      if (!CMusicLibraryQueue::GetInstance().IsRunning())
+        CMusicLibraryQueue::GetInstance().CleanLibrary(true);
+    }
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT)
   {

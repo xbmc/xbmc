@@ -4901,22 +4901,6 @@ void CApplication::StartVideoScan(const std::string &strDirectory, bool userInit
   CVideoLibraryQueue::GetInstance().ScanLibrary(strDirectory, scanAll, userInitiated);
 }
 
-void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
-{
-  if (userInitiated && CMusicLibraryQueue::GetInstance().IsRunning())
-    return;
-
-  if (userInitiated)
-    /*
-     CMusicLibraryQueue::GetInstance().CleanLibraryModal();
-     As cleaning is non-granular and does not offer many opportunities to update progress
-     dialog rendering, do asynchronously with model dialog
-    */
-    CMusicLibraryQueue::GetInstance().CleanLibrary(true);
-  else
-    CMusicLibraryQueue::GetInstance().CleanLibrary(false);
-}
-
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
   CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
