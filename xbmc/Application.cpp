@@ -4932,14 +4932,6 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
   CMusicLibraryQueue::GetInstance().ScanLibrary(strDirectory, flags, !(flags & CMusicInfoScanner::SCAN_BACKGROUND));
 }
 
-void CApplication::StartMusicAlbumScan(const std::string& strDirectory, bool refresh)
-{
-  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-    return;
-
-  CMusicLibraryQueue::GetInstance().StartAlbumScan(strDirectory, refresh);
-}
-
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
   CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);

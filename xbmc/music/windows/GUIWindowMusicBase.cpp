@@ -269,7 +269,12 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
-    g_application.StartMusicAlbumScan(strPath, refresh);
+  {
+    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
+      return;
+
+    CMusicLibraryQueue::GetInstance().StartAlbumScan(strPath, refresh);
+  }
   else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
   {
     if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())

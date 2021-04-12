@@ -280,7 +280,6 @@ public:
    \param flags Flags for controlling the scanning process.  See xbmc/music/infoscanner/MusicInfoScanner.h for possible values.
    */
   void StartMusicScan(const std::string &path, bool userInitiated = true, int flags = 0);
-  void StartMusicAlbumScan(const std::string& strDirectory, bool refresh = false);
 
   void UpdateLibraries();
 
