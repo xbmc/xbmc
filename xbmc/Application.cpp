@@ -4853,11 +4853,6 @@ void CApplication::UpdateCurrentPlayArt()
   CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
 }
 
-bool CApplication::IsVideoScanning() const
-{
-  return CVideoLibraryQueue::GetInstance().IsScanningLibrary();
-}
-
 bool CApplication::IsMusicScanning() const
 {
   return CMusicLibraryQueue::GetInstance().IsScanningLibrary();

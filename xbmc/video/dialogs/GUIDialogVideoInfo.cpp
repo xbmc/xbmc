@@ -51,6 +51,7 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/tags/VideoTagLoaderFFmpeg.h"
 #include "video/windows/GUIWindowVideoNav.h"
@@ -1402,7 +1403,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
     return false;
 
   // dont allow update while scanning
-  if (g_application.IsVideoScanning())
+  if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
@@ -1494,7 +1495,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
     return false;
 
   // dont allow update while scanning
-  if (g_application.IsVideoScanning())
+  if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
@@ -2244,7 +2245,7 @@ std::string CGUIDialogVideoInfo::GetLocalizedVideoType(const std::string &strTyp
 bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
 {
   // dont allow update while scanning
-  if (g_application.IsVideoScanning())
+  if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;

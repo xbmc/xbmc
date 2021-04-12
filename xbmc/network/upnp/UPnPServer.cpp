@@ -37,6 +37,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "view/GUIViewState.h"
 #include "xbmc/interfaces/AnnouncementManager.h"
@@ -67,7 +68,8 @@ const char* video_containers[] = { "library://video/movies/titles.xml/", "librar
 CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/, int port /*= 0*/)
   : PLT_MediaConnect(friendly_name, false, uuid, port),
     PLT_FileMediaConnectDelegate("/", "/"),
-    m_scanning(g_application.IsMusicScanning() || g_application.IsVideoScanning()),
+    m_scanning(g_application.IsMusicScanning() ||
+               CVideoLibraryQueue::GetInstance().IsScanningLibrary()),
     m_logger(CServiceBroker::GetLogging().GetLogger(
         StringUtils::Format("CUPnPServer[{}]", friendly_name)))
 {

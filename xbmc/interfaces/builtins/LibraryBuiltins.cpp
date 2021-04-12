@@ -44,7 +44,7 @@ static int CleanLibrary(const std::vector<std::string>& params)
                      || StringUtils::EqualsNoCase(params[0], "tvshows")
                      || StringUtils::EqualsNoCase(params[0], "musicvideos"))
   {
-    if (!g_application.IsVideoScanning())
+    if (!CVideoLibraryQueue::GetInstance().IsScanningLibrary())
     {
       const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
       g_application.StartVideoCleanup(userInitiated, content, params.size() > 2 ? params[2] : "");
@@ -278,7 +278,7 @@ static int UpdateLibrary(const std::vector<std::string>& params)
   }
   else if (StringUtils::EqualsNoCase(params[0], "video"))
   {
-    if (g_application.IsVideoScanning())
+    if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
       CVideoLibraryQueue::GetInstance().StopLibraryScanning();
     else
       g_application.StartVideoScan(params.size() > 1 ? params[1] : "", userInitiated);

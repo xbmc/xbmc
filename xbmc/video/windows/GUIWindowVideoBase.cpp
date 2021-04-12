@@ -408,7 +408,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   if (!info)
     return false;
 
-  if (g_application.IsVideoScanning())
+  if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{14057});
     return false;

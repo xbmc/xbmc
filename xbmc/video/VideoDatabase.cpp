@@ -55,6 +55,7 @@
 #include "utils/log.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
 #include <algorithm>
@@ -6007,7 +6008,7 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateT
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
     {
       CVariant data;
-      if (g_application.IsVideoScanning())
+      if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
         data["transaction"] = true;
       // Only provide the "playcount" value if it has actually changed
       if (item.GetVideoInfoTag()->GetPlayCount() != count)
