@@ -287,7 +287,8 @@ static int UpdateLibrary(const std::vector<std::string>& params)
     if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
       CVideoLibraryQueue::GetInstance().StopLibraryScanning();
     else
-      g_application.StartVideoScan(params.size() > 1 ? params[1] : "", userInitiated);
+      CVideoLibraryQueue::GetInstance().ScanLibrary(params.size() > 1 ? params[1] : "", false,
+                                                    userInitiated);
   }
 
   return 0;

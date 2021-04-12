@@ -259,14 +259,6 @@ public:
    */
   void StartVideoCleanup(bool userInitiated = true, const std::string& content = "", const std::string& strDirectory = "");
 
-  /*!
-   \brief Starts a video library update.
-   \param path The path to scan or "" (empty string) for a global scan.
-   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
-   \param scanAll Whether to scan everything not already scanned (regardless of whether the user normally doesn't want a folder scanned).
-   */
-  void StartVideoScan(const std::string &path, bool userInitiated = true, bool scanAll = false);
-
   void UpdateLibraries();
 
   void UpdateCurrentPlayArt();

@@ -4831,7 +4831,8 @@ void CApplication::UpdateLibraries()
   if (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGINFO, "Starting video library startup scan");
-    StartVideoScan("", !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
+    CVideoLibraryQueue::GetInstance().ScanLibrary(
+        "", false, !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
   }
 
   if (settings->GetBool(CSettings::SETTING_MUSICLIBRARY_UPDATEONSTARTUP))
@@ -4894,11 +4895,6 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
     CVideoLibraryQueue::GetInstance().CleanLibraryModal(paths);
   else
     CVideoLibraryQueue::GetInstance().CleanLibrary(paths, true);
-}
-
-void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
-{
-  CVideoLibraryQueue::GetInstance().ScanLibrary(strDirectory, scanAll, userInitiated);
 }
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
