@@ -974,7 +974,7 @@ void CApplication::StartServices()
 
 void CApplication::StopServices()
 {
-  m_ServiceManager->GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+  m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   CLog::Log(LOGINFO, "stop dvd detect media");
@@ -2201,7 +2201,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_NETWORKMESSAGE:
-    m_ServiceManager->GetNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
+    m_ServiceManager->GetNetwork().NetworkMessage(static_cast<CNetworkBase::EMESSAGE>(pMsg->param1),
+                                                  pMsg->param2);
     break;
 
   case TMSG_SETLANGUAGE:

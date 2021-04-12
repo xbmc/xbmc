@@ -73,5 +73,3 @@ protected:
   std::vector<CNetworkInterface*> m_oldInterfaces;
   CCriticalSection m_refreshMutex;
 };
-
-using CNetwork = CNetworkAndroid;

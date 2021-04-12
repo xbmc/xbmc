@@ -134,6 +134,11 @@ bool CNetworkInterfaceFreebsd::GetHostMacAddress(unsigned long host_ip, std::str
   return ret;
 }
 
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkFreebsd>();
+}
+
 CNetworkFreebsd::CNetworkFreebsd() : CNetworkPosix()
 {
   queryInterfaceList();

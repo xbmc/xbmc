@@ -228,6 +228,11 @@ std::string CNetworkInterfaceAndroid::GetHostName()
 
 /*************************/
 
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkAndroid>();
+}
+
 CNetworkAndroid::CNetworkAndroid()
  : CNetworkBase()
 {

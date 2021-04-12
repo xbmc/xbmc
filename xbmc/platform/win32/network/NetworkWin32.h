@@ -72,5 +72,3 @@ private:
    CCriticalSection m_critSection;
 };
 
-using CNetwork = CNetworkWin32;
-

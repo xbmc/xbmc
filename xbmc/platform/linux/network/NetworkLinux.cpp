@@ -116,6 +116,11 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
   return false;
 }
 
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkLinux>();
+}
+
 CNetworkLinux::CNetworkLinux() : CNetworkPosix()
 {
   queryInterfaceList();
