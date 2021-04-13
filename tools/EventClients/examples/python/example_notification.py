@@ -34,7 +34,7 @@ def main():
     packet.send(sock, addr)
 
     # wait for 5 seconds
-    time.sleep (5)
+    time.sleep(5)
 
     packet = PacketNOTIFICATION("New Mail!",             # caption
                                 "RE: Check this out",    # message

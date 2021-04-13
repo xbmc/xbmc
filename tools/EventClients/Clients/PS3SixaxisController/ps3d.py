@@ -67,7 +67,7 @@ event_threads = []
 def printerr():
 	trace = ""
 	exception = ""
-	exc_list = traceback.format_exception_only (sys.exc_type, sys.exc_value)
+	exc_list = traceback.format_exception_only(sys.exc_type, sys.exc_value)
 	for entry in exc_list:
 		exception += entry
 	tb_list = traceback.format_tb(sys.exc_info()[2])
@@ -76,7 +76,7 @@ def printerr():
 	print("%s\n%s" % (exception, trace), "Script Error")
 
 
-class StoppableThread ( threading.Thread ):
+class StoppableThread (threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self._stop = False
@@ -119,7 +119,7 @@ class StoppableThread ( threading.Thread ):
             return False
 
 
-class PS3SixaxisThread ( StoppableThread ):
+class PS3SixaxisThread (StoppableThread):
     def __init__(self, csock, isock, ipaddr="127.0.0.1"):
         StoppableThread.__init__(self)
         self.csock = csock
@@ -151,7 +151,7 @@ class PS3SixaxisThread ( StoppableThread ):
         self.close_sockets()
 
 
-class PS3RemoteThread ( StoppableThread ):
+class PS3RemoteThread (StoppableThread):
     def __init__(self, csock, isock, ipaddr="127.0.0.1"):
         StoppableThread.__init__(self)
         self.csock = csock
@@ -201,7 +201,7 @@ class PS3RemoteThread ( StoppableThread ):
         """
         Connect to the next XBMC instance
         """
-        self.current_xbmc = (self.current_xbmc + 1) % len( self.services )
+        self.current_xbmc = (self.current_xbmc + 1) % len(self.services)
         self.reconnect()
         return
 
@@ -210,8 +210,8 @@ class PS3RemoteThread ( StoppableThread ):
         Connect to the previous XBMC instance
         """
         self.current_xbmc -= 1
-        if self.current_xbmc < 0 :
-            self.current_xbmc = len( self.services ) - 1
+        if self.current_xbmc < 0:
+            self.current_xbmc = len(self.services) - 1
         self.reconnect()
         return
 
@@ -220,9 +220,9 @@ class PS3RemoteThread ( StoppableThread ):
         Reconnect to an XBMC instance based on self.current_xbmc
         """
         try:
-            service = self.services[ self.current_xbmc ]
+            service = self.services[self.current_xbmc]
             print("Connecting to %s" % service['name'])
-            self.xbmc.connect( service['address'], service['port'] )
+            self.xbmc.connect(service['address'], service['port'])
             self.xbmc.send_notification("PS3 Blu-Ray Remote", "New Connection", None)
         except Exception as e:
             print(str(e))
@@ -232,7 +232,7 @@ class PS3RemoteThread ( StoppableThread ):
         Zeroconf event handler
         """
         if event == zeroconf.SERVICE_FOUND:  # new xbmc service detected
-            self.services.append( service )
+            self.services.append(service)
 
         elif event == zeroconf.SERVICE_LOST: # xbmc service lost
             try:
@@ -259,7 +259,7 @@ class SixWatch(threading.Thread):
         except Exception as e:
             print("Exception caught in sixwatch, restarting: " + str(e))
 
-class ZeroconfThread ( threading.Thread ):
+class ZeroconfThread (threading.Thread):
     """
 
     """
@@ -275,7 +275,7 @@ class ZeroconfThread ( threading.Thread ):
 
             # add the requested services
             for service in self._services:
-                self._zbrowser.add_service( service[0], service[1] )
+                self._zbrowser.add_service(service[0], service[1])
 
             # run the event loop
             self._zbrowser.run()
@@ -298,7 +298,7 @@ class ZeroconfThread ( threading.Thread ):
         Add a new service to search for.
         NOTE: Services must be added before thread starts.
         """
-        self._services.append( [ type, handler ] )
+        self._services.append([type, handler])
 
 
 def usage():
@@ -314,8 +314,8 @@ Usage: ps3.py [bdaddress] [XBMC host]
 """)
 
 def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
-    devices = [ 'PLAYSTATION(R)3 Controller',
-                'BD Remote Control' ]
+    devices = ['PLAYSTATION(R)3 Controller',
+                'BD Remote Control']
     hid = HID(bdaddr)
     watch = None
     if sixwatch:
@@ -371,7 +371,7 @@ def main():
         for addr in sys.argv[1:]:
             try:
                 # ensure that the addr is of the format 'aa:bb:cc:dd:ee:ff'
-                if "".join([ str(len(a)) for a in addr.split(":") ]) != "222222":
+                if "".join([str(len(a)) for a in addr.split(":")]) != "222222":
                     raise Exception("Invalid format")
                 bdaddr = addr
                 print("Connecting to Bluetooth device: %s" % bdaddr)

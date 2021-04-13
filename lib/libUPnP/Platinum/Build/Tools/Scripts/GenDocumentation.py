@@ -14,7 +14,7 @@ import tarfile
 #############################################################
 # ZIP support
 #############################################################
-def ZipDir(top, archive, dir) :
+def ZipDir(top, archive, dir):
     entries = os.listdir(top)
     for entry in entries: 
         path = os.path.join(top, entry)
@@ -24,7 +24,7 @@ def ZipDir(top, archive, dir) :
             zip_name = os.path.join(dir, entry)
             archive.write(path, zip_name)
 
-def ZipIt(root, dir) :
+def ZipIt(root, dir):
     zip_filename = root+'/'+dir+'.zip'
    
     if os.path.exists(zip_filename):
@@ -34,7 +34,7 @@ def ZipIt(root, dir) :
     ZipDir(root+'/'+dir, archive, dir)
     archive.close()
 
-def TarIt(root, dir) :
+def TarIt(root, dir):
     tar_filename = root+'/'+dir+'.tgz'
    
     if os.path.exists(tar_filename):
@@ -53,10 +53,10 @@ if not os.environ.has_key('PLATINUM_KIT_HOME'):
     sys.exit(1)
 PLATINUM_KIT_HOME = os.environ['PLATINUM_KIT_HOME']
     
-if not os.path.exists(PLATINUM_KIT_HOME) :
+if not os.path.exists(PLATINUM_KIT_HOME):
     print 'ERROR: PLATINUM_KIT_HOME ('+PLATINUM_KIT_HOME+') does not exist'
     sys.exit(1)
-else :
+else:
     print 'PLATINUM_KIT_HOME = ' + PLATINUM_KIT_HOME
     
 # compute paths

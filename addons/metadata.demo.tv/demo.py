@@ -74,9 +74,9 @@ elif action == 'getdetails':
                      'episodeguide': '/path/to/show/guide',
                      'tag': ['Family', 'Mom <3']
                     })
-        liz.setRating("imdb", 9, 100000, True )
+        liz.setRating("imdb", 9, 100000, True)
         liz.setRating("tvdb", 8.9, 1000)
-        liz.setUniqueIDs({ 'imdb': 'tt8938399', 'tvdb' : '9837493' }, 'tvdb')
+        liz.setUniqueIDs({'imdb': 'tt8938399', 'tvdb': '9837493'}, 'tvdb')
         liz.addSeason(1, 'Horrible')
         liz.addSeason(2, 'Crap')
         liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
@@ -136,9 +136,9 @@ elif action == 'getepisodedetails':
                      'aired': '2007-01-01',
                      'tag': ['Family', 'Dad <3']
                     })
-        liz.setRating("imdb", 9, 100000, True )
+        liz.setRating("imdb", 9, 100000, True)
         liz.setRating("tvdb", 8.9, 1000)
-        liz.setUniqueIDs({ 'tvdb': '3894', 'imdb' : 'tt384940' }, 'tvdb')
+        liz.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, 'tvdb')
         liz.addSeason(1, 'Horrible')
         liz.addSeason(2, 'Crap')
         liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
@@ -173,9 +173,9 @@ elif action == 'getepisodedetails':
                      'aired': '2007-01-01',
                      'tag': ['Something', 'Else']
                     })
-        liz.setRating("imdb", 7, 25457, True )
+        liz.setRating("imdb", 7, 25457, True)
         liz.setRating("tvdb", 8.1, 5478)
-        liz.setUniqueIDs({ 'tvdb': '3894', 'imdb' : 'tt384940' })
+        liz.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'})
         liz.addSeason(1, 'Horrible')
         liz.addSeason(2, 'Crap')
         liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},

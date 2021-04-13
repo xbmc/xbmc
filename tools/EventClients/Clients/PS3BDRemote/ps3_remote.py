@@ -77,8 +77,8 @@ def get_remote_address(remote, target_name="BD Remote Control"):
                 continue
 
             for bdaddr in nearby_devices:
-                bname = bt_lookup_name( bdaddr )
-                addr = bt_lookup_addr ( bdaddr )
+                bname = bt_lookup_name(bdaddr)
+                addr = bt_lookup_addr(bdaddr)
                 print("%s (%s) in range" % (bname,addr))
                 if target_name == bname:
                     target_address = addr

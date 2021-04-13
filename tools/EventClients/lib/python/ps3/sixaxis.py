@@ -49,34 +49,34 @@ SX_RSTICK_Y  = 3
 
 # (map, key, amount index, axis)
 keymap_sixaxis = {
-    SX_X        : ('XG', 'A', 0, 0),
-    SX_CIRCLE   : ('XG', 'B', 0, 0),
-    SX_SQUARE   : ('XG', 'X', 0, 0),
-    SX_TRIANGLE : ('XG', 'Y', 0, 0),
+    SX_X: ('XG', 'A', 0, 0),
+    SX_CIRCLE: ('XG', 'B', 0, 0),
+    SX_SQUARE: ('XG', 'X', 0, 0),
+    SX_TRIANGLE: ('XG', 'Y', 0, 0),
 
-    SX_DUP      : ('XG', 'dpadup', 0, 0),
-    SX_DDOWN    : ('XG', 'dpaddown', 0, 0),
-    SX_DLEFT    : ('XG', 'dpadleft', 0, 0),
-    SX_DRIGHT   : ('XG', 'dpadright', 0, 0),
+    SX_DUP: ('XG', 'dpadup', 0, 0),
+    SX_DDOWN: ('XG', 'dpaddown', 0, 0),
+    SX_DLEFT: ('XG', 'dpadleft', 0, 0),
+    SX_DRIGHT: ('XG', 'dpadright', 0, 0),
 
-    SX_START    : ('XG', 'start', 0, 0),
-    SX_SELECT   : ('XG', 'back', 0, 0),
+    SX_START: ('XG', 'start', 0, 0),
+    SX_SELECT: ('XG', 'back', 0, 0),
 
-    SX_R1       : ('XG', 'white', 0, 0),
-    SX_R2       : ('XG', 'rightanalogtrigger', 6, 1),
-    SX_L2       : ('XG', 'leftanalogtrigger', 5, 1),
-    SX_L1       : ('XG', 'black', 0, 0),
+    SX_R1: ('XG', 'white', 0, 0),
+    SX_R2: ('XG', 'rightanalogtrigger', 6, 1),
+    SX_L2: ('XG', 'leftanalogtrigger', 5, 1),
+    SX_L1: ('XG', 'black', 0, 0),
 
-    SX_L3       : ('XG', 'leftthumbbutton', 0, 0),
-    SX_R3       : ('XG', 'rightthumbbutton', 0, 0),
+    SX_L3: ('XG', 'leftthumbbutton', 0, 0),
+    SX_R3: ('XG', 'rightthumbbutton', 0, 0),
 }
 
 # (data index, left map, left action, right map, right action)
 axismap_sixaxis = {
-    SX_LSTICK_X : ('XG', 'leftthumbstickleft' , 'leftthumbstickright'),
-    SX_LSTICK_Y : ('XG', 'leftthumbstickup'   , 'leftthumbstickdown'),
-    SX_RSTICK_X : ('XG', 'rightthumbstickleft', 'rightthumbstickright'),
-    SX_RSTICK_Y : ('XG', 'rightthumbstickup'  , 'rightthumbstickdown'),
+    SX_LSTICK_X: ('XG', 'leftthumbstickleft', 'leftthumbstickright'),
+    SX_LSTICK_Y: ('XG', 'leftthumbstickup', 'leftthumbstickdown'),
+    SX_RSTICK_X: ('XG', 'rightthumbstickleft', 'rightthumbstickright'),
+    SX_RSTICK_Y: ('XG', 'rightthumbstickup', 'rightthumbstickdown'),
 }
 
 # to make sure all combination keys are checked first
@@ -158,12 +158,12 @@ def set_l2cap_mtu2(sock, mtu):
   SOL_L2CAP = 6
   L2CAP_OPTIONS = 1
 
-  s = sock.getsockopt (SOL_L2CAP, L2CAP_OPTIONS, 12)
-  o = list( struct.unpack ("HHHBBBH", s) )
+  s = sock.getsockopt(SOL_L2CAP, L2CAP_OPTIONS, 12)
+  o = list(struct.unpack("HHHBBBH", s))
   o[0] = o[1] = mtu
-  s = struct.pack ("HHHBBBH", *o)
+  s = struct.pack("HHHBBBH", *o)
   try:
-    sock.setsockopt (SOL_L2CAP, L2CAP_OPTIONS, s)
+    sock.setsockopt(SOL_L2CAP, L2CAP_OPTIONS, s)
   except:
     print("Warning: Unable to set mtu")
 

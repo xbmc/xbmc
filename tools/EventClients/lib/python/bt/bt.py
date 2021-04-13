@@ -39,7 +39,7 @@ def bt_create_socket():
 
 def bt_create_rfcomm_socket():
     if BLUEZ:
-        sock = bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+        sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
         sock.bind(("",bluetooth.PORT_ANY))
     else:
         sock = lightblue.socket(lightblue.RFCOMM)
@@ -55,7 +55,7 @@ def bt_discover_devices():
 
 def bt_lookup_name(bdaddr):
     if BLUEZ:
-        bname = bluetooth.lookup_name( bdaddr )
+        bname = bluetooth.lookup_name(bdaddr)
     else:
         bname = bdaddr[1]
     return bname
@@ -68,10 +68,10 @@ def bt_lookup_addr(bdaddr):
 
 def bt_advertise(name, uuid, socket):
     if BLUEZ:
-        bluetooth.advertise_service( socket, name,
+        bluetooth.advertise_service(socket, name,
                            service_id=uuid,
-                           service_classes=[ uuid, bluetooth.SERIAL_PORT_CLASS ],
-                           profiles=[ bluetooth.SERIAL_PORT_PROFILE ] )
+                           service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
+                           profiles=[bluetooth.SERIAL_PORT_PROFILE])
     else:
         lightblue.advertise(name, socket, lightblue.RFCOMM)
 

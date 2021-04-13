@@ -219,7 +219,7 @@ class Scraper():
             scraper = musicbrainz_artistfind
         # musicbrainz
         if site == 'discogs':
-            url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(artist), DISCOGSKEY , DISCOGSSECRET))
+            url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(artist), DISCOGSKEY, DISCOGSSECRET))
             scraper = discogs_artistfind
         result = get_data(url, json)
         if not result:
@@ -245,7 +245,7 @@ class Scraper():
         elif site == 'discogs':
             # search by artistname if we do not have an url
             if 'artist' in param:
-                url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(param['artist']), DISCOGSKEY , DISCOGSSECRET))
+                url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(param['artist']), DISCOGSKEY, DISCOGSSECRET))
                 artistresult = get_data(url, json)
                 if artistresult:
                     artists = discogs_artistfind(artistresult, param['artist'])

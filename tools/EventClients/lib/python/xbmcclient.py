@@ -105,7 +105,7 @@ def format_string(msg):
 
 def format_uint32(num):
     """ """
-    return pack ("!I", num)
+    return pack("!I", num)
 
 def format_uint16(num):
     """ """
@@ -113,7 +113,7 @@ def format_uint16(num):
         num = 0
     elif num>65535:
         num = 65535
-    return pack ("!H", num)
+    return pack("!H", num)
 
 
 ######################################################################
@@ -241,9 +241,9 @@ class Packet:
             header = self.get_header(PT_BLOB, packetnum, self.maxseq,
                                      self.get_payload_size(packetnum))
 
-        payload = self.payload[ (packetnum-1) * MAX_PAYLOAD_SIZE :
+        payload = self.payload[(packetnum-1) * MAX_PAYLOAD_SIZE:
                                 (packetnum-1) * MAX_PAYLOAD_SIZE+
-                                self.get_payload_size(packetnum) ]
+                                self.get_payload_size(packetnum)]
         return header + payload
 
     def send(self, sock, addr, uid=UNIQUE_IDENTIFICATION):
@@ -255,7 +255,7 @@ class Packet:
         uid  -- unique identification
         """
         self.uid = uid
-        for a in range ( 0, self.num_packets() ):
+        for a in range(0, self.num_packets()):
             sock.sendto(self.get_udp_message(a+1), addr)
 
 
@@ -276,11 +276,11 @@ class PacketHELO (Packet):
         Packet.__init__(self)
         self.packettype = PT_HELO
         self.icontype = icon_type
-        self.set_payload ( format_string(devicename)[0:128] )
-        self.append_payload( chr (icon_type) )
-        self.append_payload( format_uint16 (0) ) # port no
-        self.append_payload( format_uint32 (0) ) # reserved1
-        self.append_payload( format_uint32 (0) ) # reserved2
+        self.set_payload(format_string(devicename)[0:128])
+        self.append_payload(chr(icon_type))
+        self.append_payload(format_uint16(0)) # port no
+        self.append_payload(format_uint32(0)) # reserved1
+        self.append_payload(format_uint32(0)) # reserved2
         if icon_type != ICON_NONE and icon_file:
             with open(icon_file, 'rb') as f:
                 self.append_payload(f.read())
@@ -305,10 +305,10 @@ class PacketNOTIFICATION (Packet):
         self.packettype = PT_NOTIFICATION
         self.title = title
         self.message = message
-        self.set_payload ( format_string(title) )
-        self.append_payload( format_string(message) )
-        self.append_payload( chr (icon_type) )
-        self.append_payload( format_uint32 (0) ) # reserved
+        self.set_payload(format_string(title))
+        self.append_payload(format_string(message))
+        self.append_payload(chr(icon_type))
+        self.append_payload(format_uint32(0)) # reserved
         if icon_type != ICON_NONE and icon_file:
             with open(icon_file, 'rb') as f:
                 self.append_payload(f.read())
@@ -352,7 +352,7 @@ class PacketBUTTON (Packet):
         Packet.__init__(self)
         self.flags = 0
         self.packettype = PT_BUTTON
-        if type (code ) == str:
+        if type(code) == str:
             code = ord(code)
 
         # assign code only if we don't have a map and button name
@@ -380,11 +380,11 @@ class PacketBUTTON (Packet):
         elif axis == 2:
             self.flags |= BT_AXIS
 
-        self.set_payload ( format_uint16(self.code) )
-        self.append_payload( format_uint16(self.flags) )
-        self.append_payload( format_uint16(self.amount) )
-        self.append_payload( format_string (map_name) )
-        self.append_payload( format_string (button_name) )
+        self.set_payload(format_uint16(self.code))
+        self.append_payload(format_uint16(self.flags))
+        self.append_payload(format_uint16(self.amount))
+        self.append_payload(format_string(map_name))
+        self.append_payload(format_string(button_name))
 
 class PacketMOUSE (Packet):
     """A MOUSE packet
@@ -402,9 +402,9 @@ class PacketMOUSE (Packet):
         Packet.__init__(self)
         self.packettype = PT_MOUSE
         self.flags = MS_ABSOLUTE
-        self.append_payload( chr (self.flags) )
-        self.append_payload( format_uint16(x) )
-        self.append_payload( format_uint16(y) )
+        self.append_payload(chr(self.flags))
+        self.append_payload(format_uint16(x))
+        self.append_payload(format_uint16(y))
 
 class PacketBYE (Packet):
     """A BYE packet
@@ -441,8 +441,8 @@ class PacketLOG (Packet):
         """
         Packet.__init__(self)
         self.packettype = PT_LOG
-        self.append_payload( chr (loglevel) )
-        self.append_payload( format_string(logmessage) )
+        self.append_payload(chr(loglevel))
+        self.append_payload(format_string(logmessage))
         if (autoprint):
             print(logmessage)
 
@@ -461,8 +461,8 @@ class PacketACTION (Packet):
         """
         Packet.__init__(self)
         self.packettype = PT_ACTION
-        self.append_payload( chr (actiontype) )
-        self.append_payload( format_string(actionmessage) )
+        self.append_payload(chr(actiontype))
+        self.append_payload(format_string(actionmessage))
 
 ######################################################################
 # XBMC Client Class

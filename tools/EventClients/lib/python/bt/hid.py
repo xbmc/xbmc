@@ -31,14 +31,14 @@ class HID:
             self.address = bdaddress
 
         # create the HID control socket
-        self.csock = BluetoothSocket( L2CAP )
+        self.csock = BluetoothSocket(L2CAP)
         self.csock.bind((self.address, self.cport))
         set_l2cap_mtu(self.csock, 64)
         self.csock.settimeout(2)
         self.csock.listen(self.backlog)
 
         # create the HID interrupt socket
-        self.isock = BluetoothSocket( L2CAP )
+        self.isock = BluetoothSocket(L2CAP)
         self.isock.bind((self.address, self.iport))
         set_l2cap_mtu(self.isock, 64)
         self.isock.settimeout(2)
@@ -60,7 +60,7 @@ class HID:
             return False
 
     def get_local_address(self):
-        hci = BluetoothSocket( HCI )
+        hci = BluetoothSocket(HCI)
         fd  = hci.fileno()
         buf = array.array('B', [0] * 96)
         fcntl.ioctl(fd, _bt.HCIGETDEVINFO, buf, 1)

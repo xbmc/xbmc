@@ -42,22 +42,22 @@ SERVICE_LOST   = 2
 class Browser:
     """ Simple Zeroconf Browser """
 
-    def __init__( self, service_types={} ):
+    def __init__(self, service_types={}):
         """
         service_types - dictionary of services => handlers
         """
         self._stop = False
         self.loop = DBusGMainLoop()
-        self.bus = dbus.SystemBus( mainloop=self.loop )
-        self.server = dbus.Interface( self.bus.get_object( avahi.DBUS_NAME, '/' ),
+        self.bus = dbus.SystemBus(mainloop=self.loop)
+        self.server = dbus.Interface(self.bus.get_object(avahi.DBUS_NAME, '/'),
                                  'org.freedesktop.Avahi.Server')
         self.handlers = {}
 
         for type in service_types.keys():
-            self.add_service( type, service_types[ type ] )
+            self.add_service(type, service_types[type])
 
 
-    def add_service( self, type, handler=None ):
+    def add_service(self, type, handler=None):
         """
         Add a service that the browser should watch for
         """
@@ -73,7 +73,7 @@ class Browser:
                     )
                 ),
             avahi.DBUS_INTERFACE_SERVICE_BROWSER)
-        self.handlers[ type ] = handler
+        self.handlers[type] = handler
         self.sbrowser.connect_to_signal("ItemNew", self._new_item_handler)
         self.sbrowser.connect_to_signal("ItemRemove", self._remove_item_handler)
 
@@ -87,7 +87,7 @@ class Browser:
         context = loop.get_context()
         while not self._stop:
             if context.pending():
-                context.iteration( True )
+                context.iteration(True)
             else:
                 time.sleep(1)
 
@@ -118,44 +118,44 @@ class Browser:
 
 
     def _remove_item_handler(self, interface, protocol, name, stype, domain, flags):
-        if self.handlers[ stype ]:
+        if self.handlers[stype]:
             # FIXME: more details needed here
             try:
-                self.handlers[ stype ]( SERVICE_LOST, { 'type' : stype, 'name' : name } )
+                self.handlers[stype](SERVICE_LOST, {'type': stype, 'name': name})
             except:
                 pass
 
 
-    def _service_resolved_handler( self, *args ):
+    def _service_resolved_handler(self, *args):
         service = {}
-        service['type']     = str( args[3] )
-        service['name']     = str( args[2] )
-        service['address']  = str( args[7] )
-        service['hostname'] = str( args[5] )
-        service['port']     = int( args[8] )
+        service['type']     = str(args[3])
+        service['name']     = str(args[2])
+        service['address']  = str(args[7])
+        service['hostname'] = str(args[5])
+        service['port']     = int(args[8])
 
         # if the service type has a handler call it
         try:
-            if self.handlers[ args[3] ]:
-                self.handlers[ args[3] ]( SERVICE_FOUND, service )
+            if self.handlers[args[3]]:
+                self.handlers[args[3]](SERVICE_FOUND, service)
         except:
             pass
 
 
-    def _error_handler( self, *args ):
-        print('ERROR: %s ' % str( args[0] ))
+    def _error_handler(self, *args):
+        print('ERROR: %s ' % str(args[0]))
 
 
 if __name__ == "__main__":
-    def service_handler( found, service ):
+    def service_handler(found, service):
         print("---------------------")
         print(['Found Service', 'Lost Service'][found-1])
         for key in service.keys():
-            print(key+" : "+str( service[key] ))
+            print(key+" : "+str(service[key]))
 
-    browser = Browser( {
-            '_xbmc-events._udp' : service_handler,
-            '_xbmc-web._tcp'    : service_handler
-            } )
+    browser = Browser({
+            '_xbmc-events._udp': service_handler,
+            '_xbmc-web._tcp': service_handler
+            })
     browser.run()
 

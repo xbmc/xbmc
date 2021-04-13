@@ -54,8 +54,7 @@ def set_pair(dev, mac):
 
   handle.claimInterface(itf.interfaceNumber)
   try:
-    handle.controlMsg(usb.ENDPOINT_OUT | usb.TYPE_CLASS | usb.RECIP_INTERFACE
-                    , usb.REQ_SET_CONFIGURATION, msg, passed_value, itf.interfaceNumber, timeout)
+    handle.controlMsg(usb.ENDPOINT_OUT | usb.TYPE_CLASS | usb.RECIP_INTERFACE, usb.REQ_SET_CONFIGURATION, msg, passed_value, itf.interfaceNumber, timeout)
   finally:
     handle.releaseInterface()
 
@@ -71,8 +70,7 @@ def get_pair(dev):
 
   handle.claimInterface(itf.interfaceNumber)
   try:
-    msg = handle.controlMsg(usb.ENDPOINT_IN | usb.TYPE_CLASS | usb.RECIP_INTERFACE
-                          , usb.REQ_CLEAR_FEATURE, 8, passed_value, itf.interfaceNumber, timeout)
+    msg = handle.controlMsg(usb.ENDPOINT_IN | usb.TYPE_CLASS | usb.RECIP_INTERFACE, usb.REQ_CLEAR_FEATURE, 8, passed_value, itf.interfaceNumber, timeout)
   finally:
     handle.releaseInterface()
   return msg[2:8]

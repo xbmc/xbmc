@@ -348,7 +348,7 @@ def trim_artwork(show_info):
     if backdrops_total > settings.MAXIMAGES:
         logger.error('there are %s fanart images' % str(backdrops_total))
         logger.error('that is more than the max of %s, image results will be trimmed to the max' % str(settings.MAXIMAGES))
-        reduce = -1 * (backdrops_total - settings.MAXIMAGES )
+        reduce = -1 * (backdrops_total - settings.MAXIMAGES)
         del show_info['images']['backdrops'][reduce:]
     if image_total > settings.MAXIMAGES:
         reduction = (image_total - settings.MAXIMAGES)/image_total

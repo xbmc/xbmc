@@ -55,7 +55,7 @@ TMDB_CLOWNCAR = 'af3a53eb387d57fc935e9128468b1899'
 FANARTTV_CLOWNCAR = 'b018086af0e1478479adfc55634db97d'
 TRAKT_CLOWNCAR = '90901c6be3b2de5a4fa0edf9ab5c75e9a5a0fef2b4ee7373d8b63dcf61f95697'
 MAXIMAGES = 350
-FANARTTV_MAPPING = { 'showbackground': 'backdrops',
+FANARTTV_MAPPING = {'showbackground': 'backdrops',
                      'tvposter': 'posters',
                      'tvbanner': 'banner',
                      'hdtvlogo': 'clearlogo',

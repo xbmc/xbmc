@@ -13,10 +13,10 @@ if not os.environ.has_key('PLATINUM_KIT_HOME'):
 PLATINUM_KIT_HOME = os.environ['PLATINUM_KIT_HOME']
     
 # ensure that PLATINUM_KIT_HOME has been set and exists
-if not os.path.exists(PLATINUM_KIT_HOME) :
+if not os.path.exists(PLATINUM_KIT_HOME):
     print 'ERROR: PLATINUM_KIT_HOME ('+PLATINUM_KIT_HOME+') does not exist'
     sys.exit(1)
-else :
+else:
     print 'PLATINUM_KIT_HOME = ' + PLATINUM_KIT_HOME
     
 # get the SVN repo version

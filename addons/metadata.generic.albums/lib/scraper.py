@@ -211,7 +211,7 @@ class Scraper():
             scraper = musicbrainz_albumfind
         # discogs
         elif site == 'discogs':
-            url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(album), urllib.parse.quote_plus(artist), DISCOGSKEY , DISCOGSSECRET))
+            url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(album), urllib.parse.quote_plus(artist), DISCOGSKEY, DISCOGSSECRET))
             scraper = discogs_albumfind
         result = get_data(url, json)
         if not result:
@@ -250,7 +250,7 @@ class Scraper():
         elif site == 'discogs':
             # musicbrainz provides a link to the master release, but we need the main release
             if 'masterurl' in param:
-                masterdata = get_data(DISCOGSURL % (DISCOGSMASTER % (param['masterurl'], DISCOGSKEY , DISCOGSSECRET)), True)
+                masterdata = get_data(DISCOGSURL % (DISCOGSMASTER % (param['masterurl'], DISCOGSKEY, DISCOGSSECRET)), True)
                 if masterdata:
                     url = discogs_albummain(masterdata)
                     if url:
@@ -261,7 +261,7 @@ class Scraper():
                     return
             # search by artistname and albumtitle if we do not have an url
             if not 'url' in param:
-                url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(param['album']), urllib.parse.quote_plus(param['artist']), DISCOGSKEY , DISCOGSSECRET))
+                url = DISCOGSURL % (DISCOGSSEARCH % (urllib.parse.quote_plus(param['album']), urllib.parse.quote_plus(param['artist']), DISCOGSKEY, DISCOGSSECRET))
                 albumresult = get_data(url, json)
                 if albumresult:
                     albums = discogs_albumfind(albumresult, param['artist'], param['album'])

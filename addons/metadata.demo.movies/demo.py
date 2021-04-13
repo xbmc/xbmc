@@ -75,9 +75,9 @@ elif action == 'getdetails':
                      'showlink': ['Demo show 1']
                     })
                     #todo: missing actor thumb aspect
-        liz.setRating("imdb", 9, 100000, True )
+        liz.setRating("imdb", 9, 100000, True)
         liz.setRating("themoviedb", 8.9, 1000)
-        liz.setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' }, 'imdb')
+        liz.setUniqueIDs({'imdb': 'tt8938399', 'tmdb': '9837493'}, 'imdb')
         liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
                     {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
         liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
