@@ -113,7 +113,3 @@ if __name__ == "__main__":
         update_pair(dev, mac)
       else:
         print("Found sixaxis paired to: " + mac_to_string(get_pair(dev)))
-
-
-
-

@@ -29,10 +29,10 @@ class LogRecord:
             key, value = line.split(":", 1)
             self.headers[key] = value.strip()
         self.body = data[offset:]
-        
+
     def __getitem__(self, index):
         return self.headers[index]
-        
+
     def format(self, sender_index, keys):
         parts = ['[' + str(sender_index) + ']']
         if 'Level' in keys:
@@ -52,14 +52,14 @@ class LogRecord:
             parts.append(self.headers['Source-Function'])
         parts.append(self.body)
         return ' '.join(parts)
-    
+
 
 class Listener:
     def __init__(self, format='standard', port=UDP_PORT):
         self.socket = socket(AF_INET, SOCK_DGRAM)
         self.socket.bind((UDP_ADDR, port))
         self.format_keys = HEADER_KEYS[format]
-        
+
     def listen(self):
         while True:
             data, addr = self.socket.recvfrom(BUFFER_SIZE)
@@ -69,10 +69,10 @@ class Listener:
             else:
                 print "### NEW SENDER:", addr
                 Senders[addr] = sender_index
-            
+
             record = LogRecord(data)
             print record.format(sender_index, self.format_keys)
-        
+
 
 ### main
 parser = OptionParser(usage="%prog [options]")

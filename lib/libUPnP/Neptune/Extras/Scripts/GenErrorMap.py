@@ -86,8 +86,8 @@ def ResolveErrors():
                     second = int(elements[1])
                     Errors[key] = first - second
                     keep_going = True
-            
-    
+
+
 def AnalyzeErrorCodes(file):
     input = open(file)
     for line in input.readlines():
@@ -95,16 +95,16 @@ def AnalyzeErrorCodes(file):
         if m:
             Errors[m.group(1)] = m.group(2)
     input.close()
-    
+
 
 def ScanErrorCodes(top):
     print ERROR_MAP_HEADER
-    
+
     for root, dirs, files in os.walk(top):
         for file in files:
             if FilePatternH.match(file):
                  AnalyzeErrorCodes(os.path.join(root, file))
-        
+
     ResolveErrors()
     for key in Errors:
         #print key,"==>",Errors[key]
@@ -113,19 +113,19 @@ def ScanErrorCodes(top):
         if Codes.has_key(Errors[key]):
             raise "duplicate error code: " + str(key) + " --> " + str(Errors[key]) + "=" + Codes[Errors[key]]
         Codes[Errors[key]] = key
-        
+
     sorted_keys = Codes.keys()
     sorted_keys.sort()
     sorted_keys.reverse()
     last = 0
     for code in sorted_keys:
         #if code != last-1:
-        #    print 
+        #    print
         print '        case %s: return "%s";' % (Codes[code], Codes[code])
         last = code
-    
+
     print ERROR_MAP_FOOTER
-    
+
 
 ####################################################
 # main
@@ -146,5 +146,3 @@ if top is None:
     sys.exit(1)
 
 ScanErrorCodes(top)
-    
-    

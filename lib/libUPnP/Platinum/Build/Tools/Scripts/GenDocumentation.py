@@ -18,7 +18,7 @@ import tarfile
 
 def ZipDir(top, archive, dir):
     entries = os.listdir(top)
-    for entry in entries: 
+    for entry in entries:
         path = os.path.join(top, entry)
         if os.path.isdir(path):
             ZipDir(path, archive, os.path.join(dir, entry))
@@ -29,7 +29,7 @@ def ZipDir(top, archive, dir):
 
 def ZipIt(root, dir):
     zip_filename = root + '/' + dir + '.zip'
-   
+
     if os.path.exists(zip_filename):
         os.remove(zip_filename)
 
@@ -40,7 +40,7 @@ def ZipIt(root, dir):
 
 def TarIt(root, dir):
     tar_filename = root + '/' + dir + '.tgz'
-   
+
     if os.path.exists(tar_filename):
         os.remove(tar_filename)
 
@@ -57,13 +57,13 @@ if not os.environ.has_key('PLATINUM_KIT_HOME'):
     print 'ERROR: PLATINUM_KIT_HOME not set'
     sys.exit(1)
 PLATINUM_KIT_HOME = os.environ['PLATINUM_KIT_HOME']
-    
+
 if not os.path.exists(PLATINUM_KIT_HOME):
     print 'ERROR: PLATINUM_KIT_HOME (' + PLATINUM_KIT_HOME + ') does not exist'
     sys.exit(1)
 else:
     print 'PLATINUM_KIT_HOME = ' + PLATINUM_KIT_HOME
-    
+
 # compute paths
 SDK_DOC_NAME = 'Platinum-HTML'
 SDK_DOC_ROOT = PLATINUM_KIT_HOME + '/Platinum/Docs/Doxygen'
@@ -74,7 +74,7 @@ retcode = subprocess.call(['doxygen'], cwd=SDK_DOC_ROOT)
 if retcode != 0:
     print 'ERROR: doxygen failed'
     sys.exit(1)
-    
+
 # zip documentation
 ZipIt(SDK_DOC_ROOT, SDK_DOC_NAME)
 

@@ -4,26 +4,26 @@ import os
 def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=None, gcc_extra_options=''):
     if gcc_stop_on_warning == None:
         gcc_stop_on_warning = env['stop_on_warning']
- 
+
     ### compiler flags
     if gcc_strict:
         env.AppendUnique(CCFLAGS=['-pedantic', '-Wall', '-W', '-Wundef', '-Wno-long-long'])
         env.AppendUnique(CFLAGS=['-Wmissing-prototypes', '-Wmissing-declarations'])
     else:
         env.AppendUnique(CCFLAGS=['-Wall'])
-    
+
     compiler_defines = ['-D_REENTRANT']
     env.AppendUnique(CCFLAGS=compiler_defines)
     env.AppendUnique(CPPFLAGS=compiler_defines)
-    
+
     if env['build_config'] == 'Debug':
         env.AppendUnique(CCFLAGS='-g')
     else:
         env.AppendUnique(CCFLAGS='-O3')
-    
+
     if gcc_stop_on_warning:
         env.AppendUnique(CCFLAGS=['-Werror'])
-        
+
     env['STRIP'] = 'strip'
 
     if gcc_cross_prefix:
@@ -34,5 +34,3 @@ def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=No
         env['CXX'] = gcc_cross_prefix + '-g++ ' + gcc_extra_options
         env['LINK'] = gcc_cross_prefix + '-g++ ' + gcc_extra_options
         env['STRIP'] = gcc_cross_prefix + '-strip'
-
-    

@@ -84,7 +84,7 @@ elif action == 'getdetails':
                     {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
         liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
         liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
+        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'getepisodelist':
@@ -146,7 +146,7 @@ elif action == 'getepisodedetails':
                     {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
         liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
         liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
+        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
     elif url == '/path/to/episode2':
@@ -183,14 +183,14 @@ elif action == 'getepisodedetails':
                     {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
         liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
         liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
+        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
-elif action == 'nfourl': 
-    nfo = urllib.unquote_plus(params["nfo"]) 
-    print 'Find url from nfo file' 
-    liz = xbmcgui.ListItem('Demo show 1', offscreen=True) 
-    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True) 
- 
+elif action == 'nfourl':
+    nfo = urllib.unquote_plus(params["nfo"])
+    print 'Find url from nfo file'
+    liz = xbmcgui.ListItem('Demo show 1', offscreen=True)
+    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True)
+
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

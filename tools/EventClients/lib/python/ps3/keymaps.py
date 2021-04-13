@@ -78,4 +78,3 @@ keymap_remote = {
     "38": 'stop',#STOP
     "39": 'pause',#PAUSE
     }
-

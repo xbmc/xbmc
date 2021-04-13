@@ -34,8 +34,8 @@ def ResolveErrors():
                     second = int(elements[1])
                     Errors[key] = first - second
                     keep_going = True
-            
-    
+
+
 def AnalyzeErrorCodes(file):
     input = open(file)
     for line in input.readlines():
@@ -43,14 +43,14 @@ def AnalyzeErrorCodes(file):
         if m:
             Errors[m.group(1)] = m.group(2)
     input.close()
-    
+
 
 def ScanErrorCodes(top):
     for root, dirs, files in os.walk(top):
         for file in files:
             if FilePatternH.match(file):
                  AnalyzeErrorCodes(os.path.join(root, file))
-        
+
     ResolveErrors()
     for key in Errors:
         #print key,"==>",Errors[key]
@@ -59,7 +59,7 @@ def ScanErrorCodes(top):
         if Codes.has_key(Errors[key]):
             raise Exception("duplicate error code: " + str(key) + " --> " + str(Errors[key]) + "=" + Codes[Errors[key]])
         Codes[Errors[key]] = key
-        
+
     sorted_keys = Codes.keys()
     sorted_keys.sort()
     sorted_keys.reverse()
@@ -68,7 +68,7 @@ def ScanErrorCodes(top):
         if type(code) != int:
         	continue
         if code != last - 1:
-            print 
+            print
         print code, "==>", Codes[code]
         last = code
 
@@ -81,14 +81,14 @@ def AnalyzeLoggers(file):
             if m.group(1) not in Loggers:
                 Loggers.append(m.group(1))
     input.close()
-            
+
 
 def ScanLoggers(top):
     for root, dirs, files in os.walk(top):
         for file in files:
             if FilePatternC.match(file):
                  AnalyzeLoggers(os.path.join(root, file))
-        
+
     Loggers.sort()
     for logger in Loggers:
         print logger
@@ -120,14 +120,14 @@ def FindTabsInFile(file):
             input.close()
             return
     input.close()
-    
+
 
 def FindTabs(top):
     for root, dirs, files in os.walk(top):
         for file in files:
             if FilePatternC.match(file) or FilePatternH.match(file):
                  FindTabsInFile(os.path.join(root, file))
-    
+
 
 ####################################################
 # main
@@ -156,5 +156,3 @@ if not action or not top:
     sys.exit(1)
 
 action(top)
-    
-    

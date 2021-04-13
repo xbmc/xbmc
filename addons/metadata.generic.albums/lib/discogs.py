@@ -6,7 +6,7 @@ def discogs_albumfind(data, artist, album):
     albums = []
     masters = []
     # sort results by lowest release id (first version of a release)
-    releases = sorted(data.get('results', []), key=lambda k: k['id']) 
+    releases = sorted(data.get('results', []), key=lambda k: k['id'])
     for item in releases:
         masterid = item['master_id']
         # we are not interested in multiple versions that belong to the same master release

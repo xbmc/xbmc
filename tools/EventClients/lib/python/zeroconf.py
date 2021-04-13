@@ -153,4 +153,3 @@ if __name__ == "__main__":
             '_xbmc-web._tcp': service_handler
             })
     browser.run()
-
