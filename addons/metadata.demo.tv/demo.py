@@ -9,6 +9,7 @@ import os
 import sys
 import urllib
 
+
 def get_params():
         param = []
         paramstring = sys.argv[2]
@@ -191,7 +192,5 @@ elif action == 'nfourl':
     liz = xbmcgui.ListItem('Demo show 1', offscreen=True) 
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True) 
  
-
-
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

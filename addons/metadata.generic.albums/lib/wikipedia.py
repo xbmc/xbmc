@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
+
 def wikipedia_albumdetails(data):
     albumdata = {}
     # check in case musicbrainz did not provide a direct link

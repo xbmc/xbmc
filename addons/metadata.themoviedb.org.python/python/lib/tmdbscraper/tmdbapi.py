@@ -77,7 +77,6 @@ def find_movie_by_external_id(external_id, language=None):
     return api_utils.load_info(theurl, params=params)
 
 
-
 def get_movie(mid, language=None, append_to_response=None):
     # type: (Text) -> List[InfoType]
     """

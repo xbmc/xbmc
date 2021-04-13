@@ -35,7 +35,6 @@ except ImportError:
     pass
 
 
-
 def _get_cache_directory():  # pylint: disable=missing-docstring
     # type: () -> Text
     temp_dir = xbmcvfs.translatePath('special://temp')

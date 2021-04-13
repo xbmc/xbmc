@@ -278,6 +278,7 @@ def load_ratings(the_info, show_imdb_id=''):
     logger.debug('returning ratings of\n{}'.format(pformat(ratings)))
     return ratings
 
+
 def load_fanarttv_art(show_info):
     # type: (Text) -> Optional[InfoType]
     """

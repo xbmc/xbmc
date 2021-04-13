@@ -15,6 +15,7 @@ Errors = {}
 Codes = {}
 Loggers = []
 
+
 def ResolveErrors():
     keep_going = True
     while keep_going:
@@ -43,6 +44,7 @@ def AnalyzeErrorCodes(file):
             Errors[m.group(1)] = m.group(2)
     input.close()
     
+
 def ScanErrorCodes(top):
     for root, dirs, files in os.walk(top):
         for file in files:
@@ -70,6 +72,7 @@ def ScanErrorCodes(top):
         print code, "==>", Codes[code]
         last = code
 
+
 def AnalyzeLoggers(file):
     input = open(file)
     for line in input.readlines():
@@ -79,6 +82,7 @@ def AnalyzeLoggers(file):
                 Loggers.append(m.group(1))
     input.close()
             
+
 def ScanLoggers(top):
     for root, dirs, files in os.walk(top):
         for file in files:
@@ -88,6 +92,7 @@ def ScanLoggers(top):
     Loggers.sort()
     for logger in Loggers:
         print logger
+
 
 def AnalyzeNakedErrors(file, prefix):
     line_number = 0
@@ -99,11 +104,13 @@ def AnalyzeNakedErrors(file, prefix):
             print file[len(prefix):], line_number, " --> ", line,
     input.close()
 
+
 def ScanNakedErrors(top):
     for root, dirs, files in os.walk(top):
         for file in files:
             if FilePatternC.match(file):
                  AnalyzeNakedErrors(os.path.join(root, file), top)
+
 
 def FindTabsInFile(file):
     input = open(file)
@@ -114,12 +121,14 @@ def FindTabsInFile(file):
             return
     input.close()
     
+
 def FindTabs(top):
     for root, dirs, files in os.walk(top):
         for file in files:
             if FilePatternC.match(file) or FilePatternH.match(file):
                  FindTabsInFile(os.path.join(root, file))
     
+
 ####################################################
 # main
 ####################################################

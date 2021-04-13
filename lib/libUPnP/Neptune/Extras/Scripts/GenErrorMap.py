@@ -67,6 +67,7 @@ ERROR_MAP_FOOTER = """
 }
 """
 
+
 def ResolveErrors():
     keep_going = True
     while keep_going:
@@ -95,6 +96,7 @@ def AnalyzeErrorCodes(file):
             Errors[m.group(1)] = m.group(2)
     input.close()
     
+
 def ScanErrorCodes(top):
     print ERROR_MAP_HEADER
     
@@ -124,6 +126,7 @@ def ScanErrorCodes(top):
     
     print ERROR_MAP_FOOTER
     
+
 ####################################################
 # main
 ####################################################

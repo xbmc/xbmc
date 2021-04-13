@@ -21,6 +21,7 @@ else:
     from kodi.xbmcclient import *
     from kodi.defs import *
 
+
 def main():
     import time
     import sys
@@ -44,6 +45,7 @@ def main():
 
     packet = PacketBYE()
     packet.send(sock, addr)
+
 
 if __name__ == "__main__":
     main()

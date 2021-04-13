@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def fanarttv_artistart(data):
     artistdata = {}
     extras = []

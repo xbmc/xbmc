@@ -8,6 +8,7 @@ from subprocess import call
 assetCatalogPath = sys.argv[1]
 brandAssetsDir = sys.argv[2] + '.brandassets'
 
+
 def generateImage(contentsRelativeDir, isBaseImage1x, newWidth, newHeight):
     contentsDir = os.path.join(assetCatalogPath, contentsRelativeDir)
     if isBaseImage1x:

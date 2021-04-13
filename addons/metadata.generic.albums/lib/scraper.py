@@ -38,6 +38,7 @@ def log(txt):
     message = '%s: %s' % (ADDONID, txt)
     xbmc.log(msg=message, level=xbmc.LOGDEBUG)
 
+
 def get_data(url, jsonformat, retry=True):
     try:
         if url.startswith('https://musicbrainz.org/'):
@@ -75,6 +76,7 @@ def get_data(url, jsonformat, retry=True):
     if jsonformat:
         respdata = json.loads(respdata)
     return respdata
+
 
 def api_timeout(scraper):
     currenttime = round(time.time() * 1000)

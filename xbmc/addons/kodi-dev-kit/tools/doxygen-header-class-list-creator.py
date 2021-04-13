@@ -7,6 +7,7 @@ import os
 import re
 import sys
 
+
 def read_file(name, normalize=True):
   """ Read a file. """
   try:
@@ -22,6 +23,7 @@ def read_file(name, normalize=True):
     sys.stderr.write('Failed to read file ' + name + ': ' + strerror)
     raise
 
+
 def write_file(name, data):
   """ Write a file. """
   try:
@@ -35,6 +37,7 @@ def write_file(name, data):
     (errno, strerror) = e.args
     sys.stderr.write('Failed to write file ' + name + ': ' + strerror)
     raise
+
 
 def auto_check_header(file):
   groups_to_check = []
@@ -54,6 +57,7 @@ def auto_check_header(file):
       groups_to_check.append(line.group(1))
 
   return groups_to_check
+
 
 def parse_header(file, group, new_path=''):
   header_sources = ''
@@ -136,8 +140,10 @@ def parse_header(file, group, new_path=''):
 
   return header_addon + source_addon
 
+
 def print_error(msg):
   print('Error: %s\nSee --help for usage.' % msg)
+
 
 # cannot be loaded as a module
 if __name__ != "__main__":

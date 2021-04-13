@@ -5,6 +5,8 @@ except ImportError: # py2 / py3
     from urllib.parse import parse_qsl
 
 # get addon params from the plugin path querystring
+
+
 def get_params(argv):
     result = {'handle': int(argv[0])}
     if len(argv) < 2 or not argv[1]:
@@ -12,6 +14,7 @@ def get_params(argv):
 
     result.update(parse_qsl(argv[1].lstrip('?')))
     return result
+
 
 def combine_scraped_details_info_and_ratings(original_details, additional_details):
     def update_or_set(details, key, value):
@@ -27,6 +30,7 @@ def combine_scraped_details_info_and_ratings(original_details, additional_detail
             update_or_set(original_details, 'ratings', additional_details['ratings'])
     return original_details
 
+
 def combine_scraped_details_available_artwork(original_details, additional_details):
     if additional_details and additional_details.get('available_art'):
         available_art = additional_details['available_art']
@@ -38,6 +42,7 @@ def combine_scraped_details_available_artwork(original_details, additional_detai
                     artlist + original_details['available_art'].get(arttype, [])
 
     return original_details
+
 
 def find_uniqueids_in_text(input_text):
     result = {}

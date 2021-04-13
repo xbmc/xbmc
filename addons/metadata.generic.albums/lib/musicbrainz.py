@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def musicbrainz_albumfind(data, artist, album):
     albums = []
     # count how often each releasegroup occurs in the release results
@@ -76,6 +77,7 @@ def musicbrainz_albumfind(data, artist, album):
         albums.append(albumdata)
     return albums
 
+
 def musicbrainz_albumlinks(data):
     albumlinks = {}
     if 'relations' in data and data['relations']:
@@ -89,6 +91,7 @@ def musicbrainz_albumlinks(data):
             elif item['type'] == 'wikidata':
                 albumlinks['wikidata'] = item['url']['resource'].rsplit('/', 1)[1]
     return albumlinks
+
 
 def musicbrainz_albumdetails(data):
     albumdata = {}
@@ -127,6 +130,7 @@ def musicbrainz_albumdetails(data):
         albumdata['artist'] = artists
         albumdata['artist_description'] = artistdisp
     return albumdata
+
 
 def musicbrainz_albumart(data):
     albumdata = {}

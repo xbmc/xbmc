@@ -20,6 +20,7 @@ import fcntl
 import bluetooth._bluetooth as _bt
 import array
 
+
 class HID:
     def __init__(self, bdaddress=None):
         self.cport = 0x11  # HID's control PSM
@@ -46,7 +47,6 @@ class HID:
 
         self.connected = False
 
-
     def listen(self):
         try:
             (self.client_csock, self.caddress) = self.csock.accept()
@@ -72,7 +72,6 @@ class HID:
             return (self.client_csock, self.caddress)
         else:
             return None
-
 
     def get_interrupt_socket(self):
         if self.connected:

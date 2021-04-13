@@ -30,12 +30,14 @@ except:
         print("- LightBlue (Mac OS X / Linux) http://lightblue.sourceforge.net/")
         exit()
 
+
 def bt_create_socket():
     if BLUEZ:
         sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
     else:
         sock = lightblue.socket(lightblue.L2CAP)
     return sock
+
 
 def bt_create_rfcomm_socket():
     if BLUEZ:
@@ -46,12 +48,14 @@ def bt_create_rfcomm_socket():
         sock.bind(("", 0))
     return sock
 
+
 def bt_discover_devices():
     if BLUEZ:
         nearby = bluetooth.discover_devices()
     else:
         nearby = lightblue.finddevices()
     return nearby
+
 
 def bt_lookup_name(bdaddr):
     if BLUEZ:
@@ -60,11 +64,13 @@ def bt_lookup_name(bdaddr):
         bname = bdaddr[1]
     return bname
 
+
 def bt_lookup_addr(bdaddr):
     if BLUEZ:
         return bdaddr
     else:
         return bdaddr[0]
+
 
 def bt_advertise(name, uuid, socket):
     if BLUEZ:
@@ -74,6 +80,7 @@ def bt_advertise(name, uuid, socket):
                            profiles=[bluetooth.SERIAL_PORT_PROFILE])
     else:
         lightblue.advertise(name, socket, lightblue.RFCOMM)
+
 
 def bt_stop_advertising(socket):
     if BLUEZ:

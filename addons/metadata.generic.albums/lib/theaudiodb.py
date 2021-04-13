@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def theaudiodb_albumdetails(data):
     if data.get('album'):
         item = data['album'][0]

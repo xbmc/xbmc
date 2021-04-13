@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def theaudiodb_artistdetails(data):
     if data.get('artists', []):
         item = data['artists'][0]
@@ -110,6 +111,7 @@ def theaudiodb_artistdetails(data):
         if extras:
             artistdata['extras'] = extras
         return artistdata
+
 
 def theaudiodb_artistalbums(data):
     albums = []

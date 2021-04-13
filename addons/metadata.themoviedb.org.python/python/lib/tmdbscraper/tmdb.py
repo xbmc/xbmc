@@ -127,6 +127,7 @@ class TMDBMovieScraper(object):
         return {'info': info, 'ratings': ratings, 'uniqueids': uniqueids, 'cast': cast,
             'available_art': available_art, '_info': _info}
 
+
 def _parse_media_id(title):
     if title.startswith('tt') and title[2:].isdigit():
         return {'type': 'imdb', 'id': title} # IMDB ID works alone because it is clear
@@ -136,6 +137,7 @@ def _parse_media_id(title):
     elif title.startswith('imdb/tt') and title[7:].isdigit(): # IMDB ID with prefix to match
         return {'type': 'imdb', 'id': title[5:]}
     return None
+
 
 def _get_movie(mid, language=None, search=False):
     details = None if search else \
@@ -148,6 +150,7 @@ def _get_movie(mid, language=None, search=False):
     else:
         return response
 
+
 def _get_moviecollection(collection_id, language=None):
     if not collection_id:
         return None
@@ -158,6 +161,7 @@ def _get_moviecollection(collection_id, language=None):
         return 'error: {}'.format(theerror)
     else:
         return response
+
 
 def _parse_artwork(movie, collection, urlbases, language):
     if language:
@@ -182,6 +186,7 @@ def _parse_artwork(movie, collection, urlbases, language):
     return {'poster': posters, 'landscape': landscape, 'fanart': fanart,
         'set.poster': setposters, 'set.landscape': setlandscape, 'set.fanart': setfanart}
 
+
 def _get_images_with_fallback(imagelist, urlbases, language, language_fallback='en'):
     images = _get_images(imagelist, urlbases, language)
 
@@ -195,6 +200,7 @@ def _get_images_with_fallback(imagelist, urlbases, language, language_fallback='
 
     return images
 
+
 def _get_images(imagelist, urlbases, language='_any'):
     result = []
     for img in imagelist:
@@ -206,8 +212,10 @@ def _get_images(imagelist, urlbases, language='_any'):
         })
     return result
 
+
 def _get_date_numeric(datetime_):
     return (datetime_ - datetime(1970, 1, 1)).total_seconds()
+
 
 def _load_base_urls(url_settings):
     urls = {}
@@ -225,6 +233,7 @@ def _load_base_urls(url_settings):
             url_settings.setSetting('lastUpdated', str(_get_date_numeric(datetime.now())))
     return urls
 
+
 def _parse_trailer(trailers, fallback):
     if trailers.get('youtube'):
         return 'plugin://plugin.video.youtube/?action=play_video&videoid=' + trailers['youtube'][0]['source']
@@ -232,8 +241,10 @@ def _parse_trailer(trailers, fallback):
         return 'plugin://plugin.video.youtube/?action=play_video&videoid=' + fallback['youtube'][0]['source']
     return None
 
+
 def _get_names(items):
     return [item['name'] for item in items] if items else []
+
 
 def _get_cast_members(casts, casttype, department, jobs):
     result = []

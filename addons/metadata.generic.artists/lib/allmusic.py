@@ -2,6 +2,7 @@
 import difflib
 import re
 
+
 def allmusic_artistfind(data, artist):
     data = data.decode('utf-8')
     artists = []
@@ -25,6 +26,7 @@ def allmusic_artistfind(data, artist):
             # we are only interested in the top result
             break
     return artists
+
 
 def allmusic_artistdetails(data):
     data = data.decode('utf-8')
@@ -85,6 +87,7 @@ def allmusic_artistdetails(data):
         thumbs.append(thumbdata)
         artistdata['thumb'] = thumbs
     return artistdata
+
 
 def allmusic_artistalbums(data):
     data = data.decode('utf-8')

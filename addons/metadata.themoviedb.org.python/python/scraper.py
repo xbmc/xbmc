@@ -17,13 +17,16 @@ from scraper_config import configure_scraped_details, PathSpecificSettings, \
 ADDON_SETTINGS = xbmcaddon.Addon()
 ID = ADDON_SETTINGS.getAddonInfo('id')
 
+
 def log(msg, level=xbmc.LOGDEBUG):
     xbmc.log(msg='[{addon}]: {msg}'.format(addon=ID, msg=msg), level=level)
+
 
 def get_tmdb_scraper(settings):
     language = settings.getSettingString('language')
     certcountry = settings.getSettingString('tmdbcertcountry')
     return TMDBMovieScraper(ADDON_SETTINGS, language, certcountry)
+
 
 def search_for_movie(title, year, handle, settings):
     log("Find movie with title '{title}' from year '{year}'".format(title=title, year=year), xbmc.LOGINFO)
@@ -43,13 +46,17 @@ def search_for_movie(title, year, handle, settings):
         xbmcplugin.addDirectoryItem(handle=handle, url=build_lookup_string(uniqueids),
             listitem=listitem, isFolder=True)
 
+
 _articles = [prefix + article for prefix in (', ', ' ') for article in ("the", "a", "an")]
+
+
 def _strip_trailing_article(title):
     title = title.lower()
     for article in _articles:
         if title.endswith(article):
             return title[:-len(article)]
     return title
+
 
 def _searchresult_to_listitem(movie):
     movie_info = {'title': movie['title']}
@@ -68,10 +75,12 @@ def _searchresult_to_listitem(movie):
 
     return listitem
 
+
 # Low limit because a big list of artwork can cause trouble in some cases
 # (a column can be too large for the MySQL integration),
 # and how useful is a big list anyway? Not exactly rhetorical, this is an experiment.
 IMAGE_LIMIT = 10
+
 
 def add_artworks(listitem, artworks):
     for arttype, artlist in artworks.items():
@@ -83,6 +92,7 @@ def add_artworks(listitem, artworks):
     fanart_to_set = [{'image': image['url'], 'preview': image['preview']}
         for image in artworks['fanart'][:IMAGE_LIMIT]]
     listitem.setAvailableFanart(fanart_to_set)
+
 
 def get_details(input_uniqueids, handle, settings):
     if not input_uniqueids:
@@ -134,6 +144,7 @@ def get_details(input_uniqueids, handle, settings):
     xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=listitem)
     return True
 
+
 def find_uniqueids_in_nfo(nfo, handle):
     uniqueids = find_uniqueids_in_text(nfo)
     if uniqueids:
@@ -141,8 +152,10 @@ def find_uniqueids_in_nfo(nfo, handle):
         xbmcplugin.addDirectoryItem(
             handle=handle, url=build_lookup_string(uniqueids), listitem=listitem, isFolder=True)
 
+
 def build_lookup_string(uniqueids):
     return json.dumps(uniqueids)
+
 
 def parse_lookup_string(uniqueids):
     try:
@@ -150,6 +163,7 @@ def parse_lookup_string(uniqueids):
     except ValueError:
         log("Can't parse this lookup string, is it from another add-on?\n" + uniqueids, xbmc.LOGWARNING)
         return None
+
 
 def run():
     params = get_params(sys.argv[1:])
@@ -170,6 +184,7 @@ def run():
         log("No action in 'params' to act on", xbmc.LOGWARNING)
     if enddir:
         xbmcplugin.endOfDirectory(params['handle'])
+
 
 if __name__ == '__main__':
     run()

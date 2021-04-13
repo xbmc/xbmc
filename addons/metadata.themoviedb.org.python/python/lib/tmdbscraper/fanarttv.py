@@ -19,6 +19,7 @@ ARTMAP = {
     'movieposter': 'poster'
 }
 
+
 def get_details(uniqueids, clientkey, language, set_tmdbid):
     media_id = _get_mediaid(uniqueids)
     if not media_id:
@@ -42,10 +43,12 @@ def get_details(uniqueids, clientkey, language, set_tmdbid):
 
     return {'available_art': available_art}
 
+
 def _get_mediaid(uniqueids):
     for source in ('tmdb', 'imdb', 'unknown'):
         if source in uniqueids:
             return uniqueids[source]
+
 
 def _get_data(media_id, clientkey):
     headers = {'api-key': API_KEY}
@@ -54,6 +57,7 @@ def _get_data(media_id, clientkey):
     api_utils.set_headers(headers)
     fanarttv_url = API_URL.format(media_id)
     return api_utils.load_info(fanarttv_url, default={})
+
 
 def _parse_data(data, language):
     result = {}
@@ -76,6 +80,7 @@ def _parse_data(data, language):
             result[generaltype].append(resultimage)
 
     return result
+
 
 def _get_imagelanguage(arttype, image):
     if 'lang' not in image or arttype == 'moviebackground':

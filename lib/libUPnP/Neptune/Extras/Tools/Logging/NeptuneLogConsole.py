@@ -17,6 +17,7 @@ HEADER_KEYS = {
 
 Senders = {}
 
+
 class LogRecord:
     def __init__(self, data):
         offset = 0
@@ -52,6 +53,7 @@ class LogRecord:
         parts.append(self.body)
         return ' '.join(parts)
     
+
 class Listener:
     def __init__(self, format='standard', port=UDP_PORT):
         self.socket = socket(AF_INET, SOCK_DGRAM)

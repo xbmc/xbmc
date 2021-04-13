@@ -39,6 +39,7 @@ except Exception as e:
 SERVICE_FOUND = 1
 SERVICE_LOST = 2
 
+
 class Browser:
     """ Simple Zeroconf Browser """
 
@@ -55,7 +56,6 @@ class Browser:
 
         for type in service_types.keys():
             self.add_service(type, service_types[type])
-
 
     def add_service(self, type, handler=None):
         """
@@ -77,7 +77,6 @@ class Browser:
         self.sbrowser.connect_to_signal("ItemNew", self._new_item_handler)
         self.sbrowser.connect_to_signal("ItemRemove", self._remove_item_handler)
 
-
     def run(self):
         """
         Run the GLib event loop
@@ -97,7 +96,6 @@ class Browser:
         """
         self._stop = True
 
-
     def _new_item_handler(self, interface, protocol, name, stype, domain, flags):
         if flags & avahi.LOOKUP_RESULT_LOCAL:
             # local service, skip
@@ -116,7 +114,6 @@ class Browser:
             )
         return
 
-
     def _remove_item_handler(self, interface, protocol, name, stype, domain, flags):
         if self.handlers[stype]:
             # FIXME: more details needed here
@@ -124,7 +121,6 @@ class Browser:
                 self.handlers[stype](SERVICE_LOST, {'type': stype, 'name': name})
             except:
                 pass
-
 
     def _service_resolved_handler(self, *args):
         service = {}
@@ -140,7 +136,6 @@ class Browser:
                 self.handlers[args[3]](SERVICE_FOUND, service)
         except:
             pass
-
 
     def _error_handler(self, *args):
         print('ERROR: %s ' % str(args[0]))

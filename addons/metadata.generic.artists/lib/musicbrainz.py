@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def musicbrainz_artistfind(data, artist):
     artists = []
     for item in data.get('artists', []):
@@ -19,6 +20,7 @@ def musicbrainz_artistfind(data, artist):
             artistdata['relevance'] = str(item['score'] / 100.00)
         artists.append(artistdata)
     return artists
+
 
 def musicbrainz_artistdetails(data):
     artistdata = {}

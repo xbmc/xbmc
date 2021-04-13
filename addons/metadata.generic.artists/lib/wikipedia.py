@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
+
 def wikipedia_artistdetails(data):
     artistdata = {}
     # check in case musicbrainz did not provide a direct link

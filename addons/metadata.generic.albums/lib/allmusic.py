@@ -5,6 +5,7 @@ import difflib
 import time
 import re
 
+
 def allmusic_albumfind(data, artist, album):
     data = data.decode('utf-8')
     albums = []
@@ -34,6 +35,7 @@ def allmusic_albumfind(data, artist, album):
             # we are only interested in the top result
             break
     return albums
+
 
 def allmusic_albumdetails(data):
     data = data.decode('utf-8')

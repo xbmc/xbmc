@@ -60,7 +60,6 @@ VALIDEXTIDS = ['tmdb_id', 'imdb_id', 'tvdb_id']
 UrlParseResult = namedtuple('UrlParseResult', ['provider', 'show_id', 'ep_grouping'])
 
 
-
 def _clean_plot(plot):
     # type: (Text) -> Text
     """Replace HTML tags with Kodi skin tags"""

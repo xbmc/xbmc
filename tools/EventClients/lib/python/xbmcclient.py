@@ -99,13 +99,16 @@ ACTION_BUTTON = 0x02
 # Helper Functions
 ######################################################################
 
+
 def format_string(msg):
     """ """
     return msg.encode('utf-8') + b"\0"
 
+
 def format_uint32(num):
     """ """
     return pack("!I", num)
+
 
 def format_uint16(num):
     """ """
@@ -143,6 +146,7 @@ class Packet:
          | -P1 payload               | -
          -----------------------------
     """
+
     def __init__(self):
         self.sig = b"XBMC"
         self.minver = 0
@@ -164,7 +168,6 @@ class Packet:
             blob = blob.encode()
         self.set_payload(self.payload + blob)
 
-
     def set_payload(self, payload):
         """Set the payload for this packet
 
@@ -176,7 +179,6 @@ class Packet:
         self.payload = payload
         self.payloadsize = len(self.payload)
         self.maxseq = int((self.payloadsize + (MAX_PAYLOAD_SIZE - 1)) / MAX_PAYLOAD_SIZE)
-
 
     def num_packets(self):
         """ Return the number of packets required for payload """
@@ -222,7 +224,6 @@ class Packet:
 
         return self.payloadsize % MAX_PAYLOAD_SIZE
 
-
     def get_udp_message(self, packetnum=1):
         """Construct the UDP message for the specified packetnum and return
         as string
@@ -265,6 +266,7 @@ class PacketHELO (Packet):
     A HELO packet establishes a valid connection to XBMC. It is the
     first packet that should be sent.
     """
+
     def __init__(self, devicename=None, icon_type=ICON_NONE, icon_file=None):
         """
         Keyword arguments:
@@ -292,6 +294,7 @@ class PacketNOTIFICATION (Packet):
     This packet displays a notification window in XBMC. It can contain
     a caption, a message and an icon.
     """
+
     def __init__(self, title, message, icon_type=ICON_NONE, icon_file=None):
         """
         Keyword arguments:
@@ -313,11 +316,13 @@ class PacketNOTIFICATION (Packet):
             with open(icon_file, 'rb') as f:
                 self.append_payload(f.read())
 
+
 class PacketBUTTON (Packet):
     """A BUTTON packet
 
     A button packet send a key press or release event to XBMC
     """
+
     def __init__(self, code=0, repeat=1, down=1, queue=0,
                  map_name="", button_name="", amount=0, axis=0):
         """
@@ -386,11 +391,13 @@ class PacketBUTTON (Packet):
         self.append_payload(format_string(map_name))
         self.append_payload(format_string(button_name))
 
+
 class PacketMOUSE (Packet):
     """A MOUSE packet
 
     A MOUSE packets sets the mouse position in XBMC
     """
+
     def __init__(self, x, y):
         """
         Arguments:
@@ -406,11 +413,13 @@ class PacketMOUSE (Packet):
         self.append_payload(format_uint16(x))
         self.append_payload(format_uint16(y))
 
+
 class PacketBYE (Packet):
     """A BYE packet
 
     A BYE packet terminates the connection to XBMC.
     """
+
     def __init__(self):
         Packet.__init__(self)
         self.packettype = PT_BYE
@@ -423,15 +432,18 @@ class PacketPING (Packet):
     packets act as ping (not just this one). A client needs to ping
     XBMC at least once in 60 seconds or it will time out.
     """
+
     def __init__(self):
         Packet.__init__(self)
         self.packettype = PT_PING
+
 
 class PacketLOG (Packet):
     """A LOG packet
 
     A LOG packet tells XBMC to log the message to xbmc.log with the loglevel as specified.
     """
+
     def __init__(self, loglevel=0, logmessage="", autoprint=True):
         """
         Keyword arguments:
@@ -446,12 +458,14 @@ class PacketLOG (Packet):
         if (autoprint):
             print(logmessage)
 
+
 class PacketACTION (Packet):
     """An ACTION packet
 
     An ACTION packet tells XBMC to do the action specified, based on the type it knows were it needs to be sent.
     The idea is that this will be as in scripting/skining and keymapping, just triggered from afar.
     """
+
     def __init__(self, actionmessage="", actiontype=ACTION_EXECBUILTIN):
         """
         Keyword arguments:
@@ -467,6 +481,7 @@ class PacketACTION (Packet):
 ######################################################################
 # XBMC Client Class
 ######################################################################
+
 
 class XBMCClient:
     """An XBMC event client"""
@@ -489,7 +504,6 @@ class XBMCClient:
             self.sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.uid = uid
 
-
     def connect(self, ip=None, port=None):
         """Initialize connection to XBMC
         ip -- IP Address of XBMC
@@ -503,18 +517,15 @@ class XBMCClient:
         packet = PacketHELO(self.name, self.icon_type, self.icon_file)
         packet.send(self.sock, self.addr, self.uid)
 
-
     def close(self):
         """Close the current connection"""
         packet = PacketBYE()
         packet.send(self.sock, self.addr, self.uid)
 
-
     def ping(self):
         """Send a PING packet"""
         packet = PacketPING()
         packet.send(self.sock, self.addr, self.uid)
-
 
     def send_notification(self, title="", message="", icon_file=None):
         """Send a notification to the connected XBMC
@@ -529,7 +540,6 @@ class XBMCClient:
                                     icon_file)
         packet.send(self.sock, self.addr, self.uid)
 
-
     def send_keyboard_button(self, button=None):
         """Send a keyboard event to XBMC
         Keyword Arguments:
@@ -538,7 +548,6 @@ class XBMCClient:
         if not button:
             return
         self.send_button(map="KB", button=button)
-
 
     def send_remote_button(self, button=None):
         """Send a remote control event to XBMC
@@ -549,12 +558,10 @@ class XBMCClient:
             return
         self.send_button(map="R1", button=button)
 
-
     def release_button(self):
         """Release all buttons"""
         packet = PacketBUTTON(code=0x01, down=0)
         packet.send(self.sock, self.addr, self.uid)
-
 
     def send_button(self, map="", button="", amount=0):
         """Send a button event to XBMC

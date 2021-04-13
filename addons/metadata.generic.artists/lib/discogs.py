@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import difflib
 
+
 def discogs_artistfind(data, artist):
     artists = []
     for item in data.get('results', []):
@@ -19,6 +20,7 @@ def discogs_artistfind(data, artist):
             artists.append(artistdata)
     return artists
 
+
 def discogs_artistdetails(data):
     artistdata = {}
     artistdata['artist'] = data['name']
@@ -33,6 +35,7 @@ def discogs_artistdetails(data):
             thumbs.append(thumbdata)
         artistdata['thumb'] = thumbs
     return artistdata
+
 
 def discogs_artistalbums(data):
     albums = []

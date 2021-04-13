@@ -37,6 +37,7 @@ else:
     from kodi.xbmcclient import *
     from kodi.defs import *
 
+
 def main():
     import time
     import sys
@@ -85,6 +86,7 @@ def main():
     # BYE is not required since XBMC would have shut down
     packet = PacketBYE()    # PacketPING if you want to ping
     packet.send(sock, addr)
+
 
 if __name__ == "__main__":
     main()

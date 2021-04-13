@@ -21,6 +21,7 @@ else:
     from kodi.xbmcclient import *
     from kodi.defs import *
 
+
 def main():
 
     host = "localhost"
@@ -55,6 +56,7 @@ def main():
     # active. So in this example, the actual release button event above
     # need not have been sent.
     xbmc.close()
+
 
 if __name__ == "__main__":
     main()

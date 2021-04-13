@@ -87,6 +87,7 @@ keymap_sixaxis_keys = keymap_sixaxis.keys()
 keymap_sixaxis_keys.sort()
 keymap_sixaxis_keys.reverse()
 
+
 def getkeys(bflags):
     keys = []
     for k in keymap_sixaxis_keys:
@@ -117,6 +118,7 @@ def normalize(val):
         val = 1
     return val
 
+
 def normalize_axis(val, deadzone):
 
     val = float(val) - 127.5
@@ -132,6 +134,7 @@ def normalize_axis(val, deadzone):
 
     return 65536.0 * val
 
+
 def normalize_angle(val, valrange):
     valrange *= 2
 
@@ -142,17 +145,20 @@ def normalize_angle(val, valrange):
         val = -1.0
     return (val + 0.5) * 65535.0
 
+
 def average(array):
     val = 0
     for i in array:
       val += i
     return val / len(array)
 
+
 def smooth(arr, val):
     cnt = len(arr)
     arr.insert(0, val)
     arr.pop(cnt)
     return average(arr)
+
 
 def set_l2cap_mtu2(sock, mtu):
   SOL_L2CAP = 6
@@ -166,6 +172,7 @@ def set_l2cap_mtu2(sock, mtu):
     sock.setsockopt(SOL_L2CAP, L2CAP_OPTIONS, s)
   except:
     print("Warning: Unable to set mtu")
+
 
 class sixaxis():
 
@@ -233,13 +240,11 @@ class sixaxis():
     self.held = set()
     self.pressed = set()
 
-
   def process_socket(self, isock):
     data = isock.recv(50)
     if data == None:
       return False
     return self.process_data(data)
-
 
   def process_data(self, data):
     if len(data) < 3:
@@ -282,7 +287,6 @@ class sixaxis():
 
     xpos = normalize_angle(roll, math.radians(30))
     ypos = normalize_angle(pitch, math.radians(30))
-
 
     axis = struct.unpack("BBBB", data[7:11])
     return self.process_input(bflags, pressure, axis, xpos, ypos)
@@ -345,7 +349,6 @@ class sixaxis():
       return True
     else:
       return False
-
 
   def send_singleaxis(self, axis, last_amount, mapname, action_min, action_pos):
     amount = normalize_axis(axis, 0.30)

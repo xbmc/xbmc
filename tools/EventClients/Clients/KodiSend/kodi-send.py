@@ -34,6 +34,7 @@ TYPE_ACTION = 'action'
 TYPE_BUTTON = 'button'
 TYPE_DELAY = 'delay'
 
+
 def usage():
     print("Usage")
     print("\tkodi-send [OPTION] --action=ACTION")
@@ -49,6 +50,7 @@ def usage():
     print('\t-a ACTION, --action=ACTION\tSends an action to XBMC, this option can be added multiple times to create a macro')
     print('\t-d T, --delay=T\t\t\tWaits for T ms, this option can be added multiple times to create a macro')
     pass
+
 
 def main():
     try:
@@ -99,6 +101,7 @@ def main():
             time.sleep(action['content'] / 1000.0)
             continue
         packet.send(sock, addr, uid=0)
+
 
 if __name__ == "__main__":
     main()

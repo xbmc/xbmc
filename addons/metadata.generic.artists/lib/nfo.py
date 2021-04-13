@@ -2,6 +2,7 @@
 
 import re
 
+
 def nfo_geturl(data):
     result = re.search('https://musicbrainz.org/(ws/2/)?artist/([0-9a-z\-]*)', data)
     if result:

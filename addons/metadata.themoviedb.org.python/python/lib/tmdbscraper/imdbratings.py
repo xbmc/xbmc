@@ -27,6 +27,7 @@ IMDB_RATING_REGEX = re.compile(r'itemprop="ratingValue".*?>.*?([\d.]+).*?<')
 IMDB_VOTES_REGEX = re.compile(r'itemprop="ratingCount".*?>.*?([\d,]+).*?<')
 IMDB_TOP250_REGEX = re.compile(r'Top Rated Movies #(\d+)')
 
+
 def get_details(uniqueids):
     imdb_id = get_imdb_id(uniqueids)
     if not imdb_id:
@@ -34,9 +35,11 @@ def get_details(uniqueids):
     votes, rating, top250 = _get_ratinginfo(imdb_id)
     return _assemble_imdb_result(votes, rating, top250)
 
+
 def _get_ratinginfo(imdb_id):
     response = api_utils.load_info(IMDB_RATINGS_URL.format(imdb_id), default='', resp_type='text')
     return _parse_imdb_result(response)
+
 
 def _assemble_imdb_result(votes, rating, top250):
     result = {}
@@ -46,6 +49,7 @@ def _assemble_imdb_result(votes, rating, top250):
         result['ratings'] = {'imdb': {'votes': votes, 'rating': rating}}
     return result
 
+
 def _parse_imdb_result(input_html):
     rating = _parse_imdb_rating(input_html)
     votes = _parse_imdb_votes(input_html)
@@ -53,17 +57,20 @@ def _parse_imdb_result(input_html):
 
     return votes, rating, top250
 
+
 def _parse_imdb_rating(input_html):
     match = re.search(IMDB_RATING_REGEX, input_html)
     if (match):
         return float(match.group(1))
     return None
 
+
 def _parse_imdb_votes(input_html):
     match = re.search(IMDB_VOTES_REGEX, input_html)
     if (match):
         return int(match.group(1).replace(',', ''))
     return None
+
 
 def _parse_imdb_top250(input_html):
     match = re.search(IMDB_TOP250_REGEX, input_html)

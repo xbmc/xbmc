@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 def fanarttv_albumart(data):
     if 'albums' in data:
         albumdata = {}

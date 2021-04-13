@@ -14,6 +14,8 @@ import tarfile
 #############################################################
 # ZIP support
 #############################################################
+
+
 def ZipDir(top, archive, dir):
     entries = os.listdir(top)
     for entry in entries: 
@@ -23,6 +25,7 @@ def ZipDir(top, archive, dir):
         else:
             zip_name = os.path.join(dir, entry)
             archive.write(path, zip_name)
+
 
 def ZipIt(root, dir):
     zip_filename = root + '/' + dir + '.zip'
@@ -34,6 +37,7 @@ def ZipIt(root, dir):
     ZipDir(root + '/' + dir, archive, dir)
     archive.close()
 
+
 def TarIt(root, dir):
     tar_filename = root + '/' + dir + '.tgz'
    
@@ -43,6 +47,7 @@ def TarIt(root, dir):
     archive = tarfile.TarFileCompat(tar_filename, "w", tarfile.TAR_GZIPPED)
     ZipDir(root + '/' + dir, archive, dir)
     archive.close()
+
 
 #############################################################
 # Main

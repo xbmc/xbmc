@@ -26,6 +26,7 @@ def CallVsMake(sln, cfg):
     if retVal != 0:
         sys.exit(retVal)  
       
+
 for sln in solutions:
     if 'config' not in locals() and 'config' not in globals():
         print '************ Building all configurations **************'

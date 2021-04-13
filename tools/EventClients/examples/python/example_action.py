@@ -20,6 +20,7 @@ else:
     from kodi.xbmcclient import *
     from kodi.defs import *
 
+
 def main():
 
     host = "localhost"
@@ -40,12 +41,12 @@ def main():
             print(str(e))
             xbmc.send_action("ActivateWindow(ShutdownMenu)")
 
-
     # ok we're done, close the connection
     # Note that closing the connection clears any repeat key that is
     # active. So in this example, the actual release button event above
     # need not have been sent.
     xbmc.close()
+
 
 if __name__ == "__main__":
     main()

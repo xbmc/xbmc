@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import difflib
 
+
 def discogs_albumfind(data, artist, album):
     albums = []
     masters = []
@@ -28,11 +29,13 @@ def discogs_albumfind(data, artist, album):
                 albums.append(albumdata)
     return albums
 
+
 def discogs_albummain(data):
     if data:
         if 'main_release_url' in data:
             url = data['main_release_url'].rsplit('/', 1)[1]
             return url
+
 
 def discogs_albumdetails(data):
     albumdata = {}

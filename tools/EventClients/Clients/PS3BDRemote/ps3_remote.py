@@ -54,6 +54,7 @@ import time
 xbmc = None
 bticon = ICON_PATH + "/bluetooth.png"
 
+
 def get_remote_address(remote, target_name="BD Remote Control"):
     global xbmc
     target_connected = False
@@ -128,6 +129,7 @@ Usage: ps3_remote.py <address> [port]
              (default 9777)
 """)
 
+
 def process_keys(remote, xbmc):
     """
     Return codes:
@@ -182,6 +184,7 @@ def process_keys(remote, xbmc):
             print("Unknown data: %s" % str(e))
     return done
 
+
 def main():
     global xbmc, bticon
 
@@ -214,6 +217,7 @@ def main():
             remote.close()
         except:
             print("Cannot close.")
+
 
 if __name__ == "__main__":
     main()
