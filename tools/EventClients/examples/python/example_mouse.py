@@ -31,7 +31,7 @@ def main():
     port = 9777
     addr = (host, port)
 
-    sock = socket(AF_INET,SOCK_DGRAM)
+    sock = socket(AF_INET, SOCK_DGRAM)
 
     # First packet must be HELO and can contain an icon
     packet = PacketHELO("Example Mouse", ICON_PNG,
@@ -45,7 +45,7 @@ def main():
     # here 0 to 65535 will map to XBMC's screen width and height.
     # Specifying absolute mouse coordinates is unsupported currently.
     for i in range(0, 65535, 2):
-        packet = PacketMOUSE(i,i)
+        packet = PacketMOUSE(i, i)
         packet.send(sock, addr)
 
     # ok we're done, close the connection

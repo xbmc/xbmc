@@ -129,12 +129,12 @@ class TMDBMovieScraper(object):
 
 def _parse_media_id(title):
     if title.startswith('tt') and title[2:].isdigit():
-        return {'type': 'imdb', 'id':title} # IMDB ID works alone because it is clear
+        return {'type': 'imdb', 'id': title} # IMDB ID works alone because it is clear
     title = title.lower()
     if title.startswith('tmdb/') and title[5:].isdigit(): # TMDB ID
-        return {'type': 'tmdb', 'id':title[5:]}
+        return {'type': 'tmdb', 'id': title[5:]}
     elif title.startswith('imdb/tt') and title[7:].isdigit(): # IMDB ID with prefix to match
-        return {'type': 'imdb', 'id':title[5:]}
+        return {'type': 'imdb', 'id': title[5:]}
     return None
 
 def _get_movie(mid, language=None, search=False):

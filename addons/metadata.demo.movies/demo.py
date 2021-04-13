@@ -14,7 +14,7 @@ def get_params():
         paramstring = sys.argv[2]
         if len(paramstring) >= 2:
                 params = sys.argv[2]
-                cleanedparams = params.replace('?','')
+                cleanedparams = params.replace('?', '')
                 if (params[len(params) - 1] == '/'):
                         params = params[0:len(params) - 2]
                 pairsofparams = cleanedparams.split('&')

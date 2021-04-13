@@ -436,7 +436,7 @@ class Scraper():
                 listitem.setProperty('artist.gender', item['gender'])
             if 'disambiguation' in item:
                 listitem.setProperty('artist.disambiguation', item['disambiguation'])
-            url = {'artist':item['artist']}
+            url = {'artist': item['artist']}
             if 'mbartistid' in item:
                 url['mbartistid'] = item['mbartistid']
             if 'dcid' in item:

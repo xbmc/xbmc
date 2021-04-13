@@ -14,7 +14,7 @@ def get_params():
         paramstring = sys.argv[2]
         if len(paramstring) >= 2:
                 params = sys.argv[2]
-                cleanedparams = params.replace('?','')
+                cleanedparams = params.replace('?', '')
                 if (params[len(params) - 1] == '/'):
                         params = params[0:len(params) - 2]
                 pairsofparams = cleanedparams.split('&')
@@ -97,7 +97,7 @@ elif action == 'getepisodelist':
                      'episode': 1,
                      'aired': '2015-01-01'
                      })
-        liz.addAvailableArtwork('/path/to/episode1','banner')
+        liz.addAvailableArtwork('/path/to/episode1', 'banner')
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/episode1", listitem=liz, isFolder=False)
         liz = xbmcgui.ListItem('Demo Episode 2x2', offscreen=True)
         liz.setInfo('video',
@@ -106,7 +106,7 @@ elif action == 'getepisodelist':
                      'episode': 2,
                      'aired': '2014-01-01'
                      })
-        liz.addAvailableArtwork('/path/to/episode2','banner')
+        liz.addAvailableArtwork('/path/to/episode2', 'banner')
         #liz.setProperty('video.sub_episode', '1')
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/episode2", listitem=liz, isFolder=False)
 elif action == 'getepisodedetails':
@@ -180,8 +180,8 @@ elif action == 'getepisodedetails':
         liz.addSeason(2, 'Crap')
         liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
                     {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
-        liz.addAvailableArtwork('DefaultBackFanart.png','banner')
-        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png','poster')
+        liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
+        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
         liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)

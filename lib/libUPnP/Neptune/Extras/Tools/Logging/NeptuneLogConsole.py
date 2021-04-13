@@ -25,7 +25,7 @@ class LogRecord:
             offset += len(line) + 2
             if ':' not in line:
                 break
-            key,value = line.split(":",1)
+            key, value = line.split(":", 1)
             self.headers[key] = value.strip()
         self.body = data[offset:]
         
@@ -54,13 +54,13 @@ class LogRecord:
     
 class Listener:
     def __init__(self, format='standard', port=UDP_PORT):
-        self.socket = socket(AF_INET,SOCK_DGRAM)
+        self.socket = socket(AF_INET, SOCK_DGRAM)
         self.socket.bind((UDP_ADDR, port))
         self.format_keys = HEADER_KEYS[format]
         
     def listen(self):
         while True:
-            data,addr = self.socket.recvfrom(BUFFER_SIZE)
+            data, addr = self.socket.recvfrom(BUFFER_SIZE)
             sender_index = len(Senders.keys())
             if addr in Senders:
                 sender_index = Senders[addr]

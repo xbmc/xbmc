@@ -28,7 +28,7 @@ def main():
     host = "localhost"
     port = 9777
     addr = (host, port)
-    sock = socket(AF_INET,SOCK_DGRAM)
+    sock = socket(AF_INET, SOCK_DGRAM)
 
     packet = PacketHELO("Email Notifier", ICON_NONE)
     packet.send(sock, addr)

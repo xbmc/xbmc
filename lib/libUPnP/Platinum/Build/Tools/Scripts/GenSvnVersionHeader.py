@@ -21,7 +21,7 @@ else:
     
 # get the SVN repo version
 version = os.popen('svnversion -n').readlines()[0]
-print 'current VERSION =',version
+print 'current VERSION =', version
 if version.endswith('P'):
      version = version[0:-1]
 if version.endswith('MP'):

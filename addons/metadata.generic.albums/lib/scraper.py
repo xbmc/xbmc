@@ -417,12 +417,12 @@ class Scraper():
             listitem = xbmcgui.ListItem(item['album'], offscreen=True)
             listitem.setArt({'thumb': item['thumb']})
             listitem.setProperty('album.artist', item['artist_description'])
-            listitem.setProperty('album.year', item.get('year',''))
-            listitem.setProperty('album.type', item.get('type',''))
-            listitem.setProperty('album.releasestatus', item.get('releasestatus',''))
-            listitem.setProperty('album.label', item.get('label',''))
+            listitem.setProperty('album.year', item.get('year', ''))
+            listitem.setProperty('album.type', item.get('type', ''))
+            listitem.setProperty('album.releasestatus', item.get('releasestatus', ''))
+            listitem.setProperty('album.label', item.get('label', ''))
             listitem.setProperty('relevance', item['relevance'])
-            url = {'artist':item['artist_description'], 'album':item['album']}
+            url = {'artist': item['artist_description'], 'album': item['album']}
             if 'mbalbumid' in item:
                 url['mbalbumid'] = item['mbalbumid']
                 url['mbreleasegroupid'] = item['mbreleasegroupid']

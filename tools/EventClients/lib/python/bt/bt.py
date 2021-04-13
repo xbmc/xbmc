@@ -40,10 +40,10 @@ def bt_create_socket():
 def bt_create_rfcomm_socket():
     if BLUEZ:
         sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        sock.bind(("",bluetooth.PORT_ANY))
+        sock.bind(("", bluetooth.PORT_ANY))
     else:
         sock = lightblue.socket(lightblue.RFCOMM)
-        sock.bind(("",0))
+        sock.bind(("", 0))
     return sock
 
 def bt_discover_devices():

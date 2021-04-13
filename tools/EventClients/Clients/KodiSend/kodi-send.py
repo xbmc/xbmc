@@ -83,7 +83,7 @@ def main():
             assert False, "unhandled option"
 
     addr = (ip, port)
-    sock = socket(AF_INET,SOCK_DGRAM)
+    sock = socket(AF_INET, SOCK_DGRAM)
 
     if len(actions) == 0:
         usage()

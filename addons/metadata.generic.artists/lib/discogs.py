@@ -3,7 +3,7 @@ import difflib
 
 def discogs_artistfind(data, artist):
     artists = []
-    for item in data.get('results',[]):
+    for item in data.get('results', []):
         artistdata = {}
         artistdata['artist'] = item['title']
         # filter inaccurate results

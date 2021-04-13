@@ -48,7 +48,7 @@ def main():
     host = "localhost"
     port = 9777
     addr = (host, port)
-    sock = socket(AF_INET,SOCK_DGRAM)
+    sock = socket(AF_INET, SOCK_DGRAM)
 
     # First packet must be HELO (no it's not a typo) and can contain an icon
     # 'icon_type' can be one of ICON_NONE, ICON_PNG, ICON_JPG or ICON_GIF

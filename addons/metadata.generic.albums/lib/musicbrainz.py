@@ -10,7 +10,7 @@ def musicbrainz_albumfind(data, artist, album):
         score = item.get('score', 0)
         releasegroup = item['release-group']['id']
         if 'date' in item and item['date']:
-            date = item['date'].replace('-','')
+            date = item['date'].replace('-', '')
             if len(date) == 4:
                 date = date + '9999'
         else:
@@ -49,15 +49,15 @@ def musicbrainz_albumfind(data, artist, album):
                 artists.append(artistdata)
             albumdata['artist'] = artists
             albumdata['artist_description'] = artistdisp
-        if item.get('label-info','') and item['label-info'][0].get('label','') and item['label-info'][0]['label'].get('name',''):
+        if item.get('label-info', '') and item['label-info'][0].get('label', '') and item['label-info'][0]['label'].get('name', ''):
             albumdata['label'] = item['label-info'][0]['label']['name']
         albumdata['album'] = item['title']
-        if item.get('date',''):
+        if item.get('date', ''):
             albumdata['year'] = item['date'][:4]
         albumdata['thumb'] = 'https://coverartarchive.org/release-group/%s/front-250' % item['release-group']['id']
-        if item.get('label-info','') and item['label-info'][0].get('label','') and item['label-info'][0]['label'].get('name',''):
+        if item.get('label-info', '') and item['label-info'][0].get('label', '') and item['label-info'][0]['label'].get('name', ''):
             albumdata['label'] = item['label-info'][0]['label']['name']
-        if item.get('status',''):
+        if item.get('status', ''):
             albumdata['releasestatus'] = item['status']
         albumdata['type'] = item['release-group'].get('primary-type')
         albumdata['mbalbumid'] = item['id']
@@ -94,7 +94,7 @@ def musicbrainz_albumdetails(data):
     albumdata = {}
     albumdata['album'] = data['title']
     albumdata['mbalbumid'] = data['id']
-    if data.get('release-group',''):
+    if data.get('release-group', ''):
         albumdata['mbreleasegroupid'] = data['release-group']['id']
         if data['release-group']['rating'] and data['release-group']['rating']['value']:
             albumdata['rating'] = str(int((float(data['release-group']['rating']['value']) * 2) + 0.5))
@@ -104,14 +104,14 @@ def musicbrainz_albumdetails(data):
             albumdata['type'] = ' / '.join(albumtypes)
             if 'Compilation' in albumtypes:
                 albumdata['compilation'] = 'true'
-        if data['release-group'].get('first-release-date',''):
+        if data['release-group'].get('first-release-date', ''):
             albumdata['originaldate'] = data['release-group']['first-release-date']
-    if data.get('release-events',''):
+    if data.get('release-events', ''):
         albumdata['year'] = data['release-events'][0]['date'][:4]
         albumdata['releasedate'] = data['release-events'][0]['date']
-    if data.get('label-info','') and data['label-info'][0].get('label','') and data['label-info'][0]['label'].get('name',''):
+    if data.get('label-info', '') and data['label-info'][0].get('label', '') and data['label-info'][0]['label'].get('name', ''):
         albumdata['label'] = data['label-info'][0]['label']['name']
-    if data.get('status',''):
+    if data.get('status', ''):
         albumdata['releasestatus'] = data['status']
     if data.get('artist-credit'):
         artists = []

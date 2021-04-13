@@ -67,7 +67,7 @@ def ScanErrorCodes(top):
         	continue
         if code != last - 1:
             print 
-        print code,"==>", Codes[code]
+        print code, "==>", Codes[code]
         last = code
 
 def AnalyzeLoggers(file):
@@ -96,7 +96,7 @@ def AnalyzeNakedErrors(file, prefix):
         line_number += 1
         m = NakedErrorPattern.search(line)
         if m:
-            print file[len(prefix):],line_number," --> ", line,
+            print file[len(prefix):], line_number, " --> ", line,
     input.close()
 
 def ScanNakedErrors(top):

@@ -35,7 +35,7 @@ def main():
     port = 9777
     addr = (host, port)
 
-    sock = socket(AF_INET,SOCK_DGRAM)
+    sock = socket(AF_INET, SOCK_DGRAM)
 
     # First packet must be HELO and can contain an icon
     packet = PacketHELO("Example Remote", ICON_PNG,

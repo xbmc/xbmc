@@ -64,8 +64,8 @@ FANARTTV_MAPPING = {'showbackground': 'backdrops',
                      'clearart': 'clearart',
                      'tvthumb': 'landscape',
                      'characterart': 'characterart',
-                     'seasonposter':'seasonposters',
-                     'seasonbanner':'seasonbanner',
+                     'seasonposter': 'seasonposters',
+                     'seasonbanner': 'seasonbanner',
                      'seasonthumb': 'seasonlandscape'
                    }
 

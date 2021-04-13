@@ -313,9 +313,9 @@ def load_fanarttv_art(show_info):
                             if not show_info['seasons'][s]['images'].get(image_type):
                                 show_info['seasons'][s]['images'][image_type] = []
                             if artseason == '' or artseason == str(season_num):
-                                show_info['seasons'][s]['images'][image_type].append({'file_path':filepath, 'type':'fanarttv', 'iso_639_1': lang})
+                                show_info['seasons'][s]['images'][image_type].append({'file_path': filepath, 'type': 'fanarttv', 'iso_639_1': lang})
                     else:
-                        show_info['images'][tmdb_type].append({'file_path':filepath, 'type':'fanarttv', 'iso_639_1': lang})
+                        show_info['images'][tmdb_type].append({'file_path': filepath, 'type': 'fanarttv', 'iso_639_1': lang})
     return show_info
 
 
@@ -335,13 +335,13 @@ def trim_artwork(show_info):
         if image_type == 'backdrops':
             backdrops_total = backdrops_total + total
         else:
-            image_counts[image_type] = {'total':total}
+            image_counts[image_type] = {'total': total}
             image_total = image_total + total
     for season in show_info.get('seasons', []):
         for image_type, image_list in season.get('images', {}).items():
             total = len(image_list)
             thetype = '%s_%s' % (str(season['season_number']), image_type)
-            image_counts[thetype] = {'total':total}
+            image_counts[thetype] = {'total': total}
             image_total = image_total + total
     if image_total <= settings.MAXIMAGES and backdrops_total <= settings.MAXIMAGES:
         return show_info

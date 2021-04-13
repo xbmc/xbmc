@@ -79,7 +79,7 @@ def get_remote_address(remote, target_name="BD Remote Control"):
             for bdaddr in nearby_devices:
                 bname = bt_lookup_name(bdaddr)
                 addr = bt_lookup_addr(bdaddr)
-                print("%s (%s) in range" % (bname,addr))
+                print("%s (%s) in range" % (bname, addr))
                 if target_name == bname:
                     target_address = addr
                     break
@@ -92,7 +92,7 @@ def get_remote_address(remote, target_name="BD Remote Control"):
             print("Attempting to pair with remote")
 
             try:
-                remote.connect((target_address,19))
+                remote.connect((target_address, 19))
                 target_connected = True
                 print("Remote Paired.\a")
                 xbmc.send_notification("Pairing Successful",
@@ -112,7 +112,7 @@ def get_remote_address(remote, target_name="BD Remote Control"):
             xbmc.send_notification("Error", "No remotes were found.", bticon)
             print("Could not find BD Remote Control. Trying again...")
             time.sleep(2)
-    return (remote,target_address)
+    return (remote, target_address)
 
 
 def usage():
@@ -205,7 +205,7 @@ def main():
         target_connected = False
         remote = bt_create_socket()
         xbmc.connect(host, port)
-        (remote,target_address) = get_remote_address(remote)
+        (remote, target_address) = get_remote_address(remote)
         while True:
             if process_keys(remote, xbmc):
                 break

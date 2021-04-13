@@ -484,7 +484,7 @@ class XBMCClient:
         self.icon_type = self._get_icon_type(icon_file)
         self.ip = ip
         self.port = 9777
-        self.sock = socket(AF_INET,SOCK_DGRAM)
+        self.sock = socket(AF_INET, SOCK_DGRAM)
         if broadcast:
             self.sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.uid = uid

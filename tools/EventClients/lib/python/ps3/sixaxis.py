@@ -254,14 +254,14 @@ class sixaxis():
         v2 = struct.unpack("h", data[44:46])
         v3 = struct.unpack("h", data[46:48])
     else:
-        v1 = [0,0]
-        v2 = [0,0]
-        v3 = [0,0]
+        v1 = [0, 0]
+        v2 = [0, 0]
+        v3 = [0, 0]
 
     if len(data) >= 50:
         v4 = struct.unpack("h", data[48:50])
     else:
-        v4 = [0,0]
+        v4 = [0, 0]
 
     ax = float(v1[0])
     ay = float(v2[0])
@@ -273,7 +273,7 @@ class sixaxis():
     if len(data) > 27:
         pressure = struct.unpack("BBBBBBBBBBBB", data[15:27])
     else:
-        pressure = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+        pressure = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     roll = -math.atan2(ax, math.sqrt(ay * ay + az * az))
     pitch = math.atan2(ay, math.sqrt(ax * ax + az * az))

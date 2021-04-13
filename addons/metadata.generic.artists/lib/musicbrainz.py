@@ -2,7 +2,7 @@
 
 def musicbrainz_artistfind(data, artist):
     artists = []
-    for item in data.get('artists',[]):
+    for item in data.get('artists', []):
         artistdata = {}
         artistdata['artist'] = item['name']
         artistdata['thumb'] = ''
@@ -15,7 +15,7 @@ def musicbrainz_artistfind(data, artist):
         if 'disambiguation' in item:
             artistdata['disambiguation'] = item['disambiguation']
         artistdata['mbartistid'] = item['id']
-        if item.get('score',1):
+        if item.get('score', 1):
             artistdata['relevance'] = str(item['score'] / 100.00)
         artists.append(artistdata)
     return artists
@@ -27,7 +27,7 @@ def musicbrainz_artistdetails(data):
     artistdata['type'] = data['type']
     artistdata['gender'] = data['gender']
     artistdata['disambiguation'] = data['disambiguation']
-    if data.get('life-span','') and data.get('type',''):
+    if data.get('life-span', '') and data.get('type', ''):
         begin = data['life-span'].get('begin', '')
         end = data['life-span'].get('end', '')
         if data['type'] in ['Group', 'Orchestra', 'Choir']:
@@ -37,11 +37,11 @@ def musicbrainz_artistdetails(data):
             artistdata['born'] = begin
             artistdata['died'] = end
     albums = []
-    for item in data.get('release-groups',[]):
+    for item in data.get('release-groups', []):
         albumdata = {}
-        albumdata['title'] = item.get('title','')
-        albumdata['year'] = item.get('first-release-date','')
-        albumdata['musicbrainzreleasegroupid'] = item.get('id','')
+        albumdata['title'] = item.get('title', '')
+        albumdata['year'] = item.get('first-release-date', '')
+        albumdata['musicbrainzreleasegroupid'] = item.get('id', '')
         albums.append(albumdata)
     if albums:
         artistdata['albums'] = albums

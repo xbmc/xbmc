@@ -119,7 +119,7 @@ def ScanErrorCodes(top):
     for code in sorted_keys:
         #if code != last-1:
         #    print 
-        print '        case %s: return "%s";' % (Codes[code],Codes[code])
+        print '        case %s: return "%s";' % (Codes[code], Codes[code])
         last = code
     
     print ERROR_MAP_FOOTER
