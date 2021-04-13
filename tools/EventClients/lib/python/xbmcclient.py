@@ -471,7 +471,7 @@ class PacketACTION (Packet):
 class XBMCClient:
     """An XBMC event client"""
 
-    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION,
+    def __init__(self, name="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION,
                  ip="127.0.0.1"):
         """
         Keyword arguments:

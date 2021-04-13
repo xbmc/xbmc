@@ -54,7 +54,7 @@ import time
 xbmc = None
 bticon = ICON_PATH + "/bluetooth.png"
 
-def get_remote_address(remote, target_name = "BD Remote Control"):
+def get_remote_address(remote, target_name="BD Remote Control"):
     global xbmc
     target_connected = False
     target_address = None

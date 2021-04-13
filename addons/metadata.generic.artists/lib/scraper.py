@@ -121,11 +121,11 @@ class Scraper():
             if mbartistid:
                 scrapers = [[mbartistid, 'musicbrainz'], [mbartistid, 'theaudiodb'], [mbartistid, 'fanarttv']]
                 for item in scrapers:
-                    thread = Thread(target = self.get_details, args = (item[0], item[1], details))
+                    thread = Thread(target=self.get_details, args=(item[0], item[1], details))
                     threads.append(thread)
                     thread.start()
                 # theaudiodb discograhy
-                thread = Thread(target = self.get_discography, args = (mbartistid, 'theaudiodb', discography))
+                thread = Thread(target=self.get_discography, args=(mbartistid, 'theaudiodb', discography))
                 threads.append(thread)
                 thread.start()
                 # wait for musicbrainz to finish
@@ -156,20 +156,20 @@ class Scraper():
                     elif self.inaccurate and artist:
                         extrascrapers.append([{'artist': artist}, 'discogs'])
                     for item in extrascrapers:
-                        thread = Thread(target = self.get_details, args = (item[0], item[1], details))
+                        thread = Thread(target=self.get_details, args=(item[0], item[1], details))
                         threads.append(thread)
                         thread.start()
                     # get allmusic / discogs discography if we have an url
                     for item in discographyscrapers:
-                        thread = Thread(target = self.get_discography, args = (item[0], item[1], discography))
+                        thread = Thread(target=self.get_discography, args=(item[0], item[1], discography))
                         threads.append(thread)
                         thread.start()
             # we have a discogs id
             else:
-                thread = Thread(target = self.get_details, args = ({'url': dcid}, 'discogs', details))
+                thread = Thread(target=self.get_details, args=({'url': dcid}, 'discogs', details))
                 threads.append(thread)
                 thread.start()
-                thread = Thread(target = self.get_discography, args = ({'url': dcid}, 'discogs', discography))
+                thread = Thread(target=self.get_discography, args=({'url': dcid}, 'discogs', discography))
                 threads.append(thread)
                 thread.start()
             if threads:

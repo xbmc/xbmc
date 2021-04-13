@@ -42,7 +42,7 @@ SERVICE_LOST   = 2
 class Browser:
     """ Simple Zeroconf Browser """
 
-    def __init__( self, service_types = {} ):
+    def __init__( self, service_types={} ):
         """
         service_types - dictionary of services => handlers
         """
@@ -57,7 +57,7 @@ class Browser:
             self.add_service( type, service_types[ type ] )
 
 
-    def add_service( self, type, handler = None ):
+    def add_service( self, type, handler=None ):
         """
         Add a service that the browser should watch for
         """
@@ -111,8 +111,8 @@ class Browser:
             domain,
             avahi.PROTO_UNSPEC,
             dbus.UInt32(0),
-            reply_handler = self._service_resolved_handler,
-            error_handler = self._error_handler
+            reply_handler=self._service_resolved_handler,
+            error_handler=self._error_handler
             )
         return
 

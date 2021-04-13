@@ -43,7 +43,7 @@ def set_headers(headers):
     HEADERS.update(headers)
 
 
-def load_info(url, params=None, default=None, resp_type = 'json'):
+def load_info(url, params=None, default=None, resp_type='json'):
     # type: (Text, Optional[Dict[Text, Union[Text, List[Text]]]]) -> Union[dict, list]
     """
     Load info from external api

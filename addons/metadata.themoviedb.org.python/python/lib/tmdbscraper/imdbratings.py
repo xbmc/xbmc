@@ -35,7 +35,7 @@ def get_details(uniqueids):
     return _assemble_imdb_result(votes, rating, top250)
 
 def _get_ratinginfo(imdb_id):
-    response = api_utils.load_info(IMDB_RATINGS_URL.format(imdb_id), default = '', resp_type='text')
+    response = api_utils.load_info(IMDB_RATINGS_URL.format(imdb_id), default='', resp_type='text')
     return _parse_imdb_result(response)
 
 def _assemble_imdb_result(votes, rating, top250):

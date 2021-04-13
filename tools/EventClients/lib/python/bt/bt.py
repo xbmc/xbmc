@@ -69,9 +69,9 @@ def bt_lookup_addr(bdaddr):
 def bt_advertise(name, uuid, socket):
     if BLUEZ:
         bluetooth.advertise_service( socket, name,
-                           service_id = uuid,
-                           service_classes = [ uuid, bluetooth.SERIAL_PORT_CLASS ],
-                           profiles = [ bluetooth.SERIAL_PORT_PROFILE ] )
+                           service_id=uuid,
+                           service_classes=[ uuid, bluetooth.SERIAL_PORT_CLASS ],
+                           profiles=[ bluetooth.SERIAL_PORT_PROFILE ] )
     else:
         lightblue.advertise(name, socket, lightblue.RFCOMM)
 

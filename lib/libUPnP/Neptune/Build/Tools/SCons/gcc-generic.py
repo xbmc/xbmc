@@ -6,22 +6,22 @@ def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=No
 
     ### compiler flags
     if gcc_strict:
-        env.AppendUnique(CCFLAGS = ['-pedantic', '-Wall',  '-W',  '-Wundef', '-Wno-long-long'])
-        env.AppendUnique(CFLAGS  = ['-Wmissing-prototypes', '-Wmissing-declarations'])
+        env.AppendUnique(CCFLAGS=['-pedantic', '-Wall',  '-W',  '-Wundef', '-Wno-long-long'])
+        env.AppendUnique(CFLAGS=['-Wmissing-prototypes', '-Wmissing-declarations'])
     else:
-        env.AppendUnique(CCFLAGS = ['-Wall'])
+        env.AppendUnique(CCFLAGS=['-Wall'])
 
     compiler_defines = ['-D_REENTRANT']
-    env.AppendUnique(CCFLAGS  = compiler_defines)
+    env.AppendUnique(CCFLAGS=compiler_defines)
     #env.AppendUnique(CPPFLAGS = compiler_defines)
 
     if env['build_config'] == 'Debug':
-        env.AppendUnique(CCFLAGS = '-g')
+        env.AppendUnique(CCFLAGS='-g')
     else:
-        env.AppendUnique(CCFLAGS = '-O3')
+        env.AppendUnique(CCFLAGS='-O3')
 
     if gcc_stop_on_warning:
-        env.AppendUnique(CCFLAGS = ['-Werror'])
+        env.AppendUnique(CCFLAGS=['-Werror'])
 
     if gcc_cross_prefix:
         env['ENV']['PATH'] += os.environ['PATH']

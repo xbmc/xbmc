@@ -133,10 +133,10 @@ class Scraper():
                 else:
                     scrapers = [[mbalbumid, 'musicbrainz'], [mbreleasegroupid, 'theaudiodb'], [mbreleasegroupid, 'fanarttv'], [mbreleasegroupid, 'coverarchive']]
                 # get musicbrainz links to other metadata sites
-                lthread = Thread(target = self.get_links, args = (mbreleasegroupid, links))
+                lthread = Thread(target=self.get_links, args=(mbreleasegroupid, links))
                 lthread.start()
                 for item in scrapers:
-                    thread = Thread(target = self.get_details, args = (item[0], item[1], details))
+                    thread = Thread(target=self.get_details, args=(item[0], item[1], details))
                     threads.append(thread)
                     thread.start()
                 # wait for the musicbrainz links to return
@@ -160,12 +160,12 @@ class Scraper():
                     elif 'wikidata' in links['musicbrainz']:
                         extrascrapers.append([links['musicbrainz']['wikidata'], 'wikidata'])
                 for item in extrascrapers:
-                    thread = Thread(target = self.get_details, args = (item[0], item[1], details))
+                    thread = Thread(target=self.get_details, args=(item[0], item[1], details))
                     threads.append(thread)
                     thread.start()
             # we have a discogs id
             else:
-                thread = Thread(target = self.get_details, args = ({'url': dcid}, 'discogs', details))
+                thread = Thread(target=self.get_details, args=({'url': dcid}, 'discogs', details))
                 threads.append(thread)
                 thread.start()
             for thread in threads:
