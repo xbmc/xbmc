@@ -67,6 +67,14 @@ public:
   void ActivateWindow(int iWindowID, const std::vector<std::string>& params, bool swappingWindows = false, bool force = false);
   void PreviousWindow();
 
+  /**
+   * \brief Switch window to fullscreen
+   *
+   * \param force enforce fullscreen switch
+   * \return True if switch is made to fullscreen, otherwise False
+   */
+  bool SwitchToFullScreen(bool force = false);
+
   void CloseDialogs(bool forceClose = false) const;
   void CloseInternalModalDialogs(bool forceClose = false) const;
 

@@ -14,6 +14,7 @@
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "GUITexture.h"
+#include "WindowIDs.h"
 #include "addons/Skin.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/interfaces/gui/Window.h"
@@ -881,6 +882,66 @@ void CGUIWindowManager::CloseInternalModalDialogs(bool forceClose) const
     if (window->IsModalDialog() && !IsAddonWindow(window->GetID()) && !IsPythonWindow(window->GetID()))
       window->Close(forceClose);
   }
+}
+
+// SwitchToFullScreen() returns true if a switch is made, else returns false
+bool CGUIWindowManager::SwitchToFullScreen(bool force /* = false */)
+{
+  // don't switch if the slideshow is active
+  if (IsWindowActive(WINDOW_SLIDESHOW))
+    return false;
+
+  // if playing from the video info window, close it first!
+  if (IsModalDialogTopmost(WINDOW_DIALOG_VIDEO_INFO))
+  {
+    CGUIDialogVideoInfo* pDialog = GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
+    if (pDialog)
+      pDialog->Close(true);
+  }
+
+  // if playing from the album info window, close it first!
+  if (IsModalDialogTopmost(WINDOW_DIALOG_MUSIC_INFO))
+  {
+    CGUIDialogVideoInfo* pDialog = GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_MUSIC_INFO);
+    if (pDialog)
+      pDialog->Close(true);
+  }
+
+  // if playing from the song info window, close it first!
+  if (IsModalDialogTopmost(WINDOW_DIALOG_SONG_INFO))
+  {
+    CGUIDialogVideoInfo* pDialog = GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_SONG_INFO);
+    if (pDialog)
+      pDialog->Close(true);
+  }
+
+  const int activeWindowID = GetActiveWindow();
+  int windowID = WINDOW_INVALID;
+
+  // See if we're playing a game
+  if (activeWindowID != WINDOW_FULLSCREEN_GAME && g_application.GetAppPlayer().IsPlayingGame())
+    windowID = WINDOW_FULLSCREEN_GAME;
+
+  // See if we're playing a video
+  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO &&
+           g_application.GetAppPlayer().IsPlayingVideo())
+    windowID = WINDOW_FULLSCREEN_VIDEO;
+
+  // See if we're playing an audio song
+  if (activeWindowID != WINDOW_VISUALISATION && g_application.GetAppPlayer().IsPlayingAudio())
+    windowID = WINDOW_VISUALISATION;
+
+  if (windowID != WINDOW_INVALID && (force || windowID != activeWindowID))
+  {
+    if (force)
+      ForceActivateWindow(windowID);
+    else
+      ActivateWindow(windowID);
+
+    return true;
+  }
+
+  return false;
 }
 
 void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
