@@ -151,7 +151,7 @@ def process_keys(remote, xbmc):
         data = remote.recv(1024)
         datalen = len(data)
     except Exception as e:
-        if str(e)=="timed out":
+        if str(e) == "timed out":
             return 2
         time.sleep(2)
 
@@ -188,7 +188,7 @@ def main():
     host = "127.0.0.1"
     port = 9777
 
-    if len(sys.argv)>1:
+    if len(sys.argv) > 1:
         try:
             host = sys.argv[1]
             port = sys.argv[2]
@@ -215,5 +215,5 @@ def main():
         except:
             print("Cannot close.")
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

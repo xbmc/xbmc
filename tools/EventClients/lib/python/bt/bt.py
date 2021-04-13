@@ -15,11 +15,11 @@
 #   with this program; if not, write to the Free Software Foundation, Inc.,
 #   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-BLUEZ=0
+BLUEZ = 0
 
 try:
     import bluetooth
-    BLUEZ=1
+    BLUEZ = 1
 except:
     try:
         import lightblue

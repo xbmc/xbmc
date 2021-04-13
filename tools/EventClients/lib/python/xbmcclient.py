@@ -39,7 +39,7 @@ PacketPING or XBMCClient.ping(). See the documentation for details.
 
 from __future__ import unicode_literals, print_function, absolute_import, division
 
-__author__  = "d4rk@xbmc.org"
+__author__ = "d4rk@xbmc.org"
 __version__ = "0.1.0"
 
 import sys
@@ -49,51 +49,51 @@ from struct import pack
 from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST
 import time
 
-MAX_PACKET_SIZE  = 1024
-HEADER_SIZE      = 32
+MAX_PACKET_SIZE = 1024
+HEADER_SIZE = 32
 MAX_PAYLOAD_SIZE = MAX_PACKET_SIZE - HEADER_SIZE
 UNIQUE_IDENTIFICATION = (int)(time.time())
 
-PT_HELO          = 0x01
-PT_BYE           = 0x02
-PT_BUTTON        = 0x03
-PT_MOUSE         = 0x04
-PT_PING          = 0x05
-PT_BROADCAST     = 0x06
-PT_NOTIFICATION  = 0x07
-PT_BLOB          = 0x08
-PT_LOG           = 0x09
-PT_ACTION        = 0x0A
-PT_DEBUG         = 0xFF
+PT_HELO = 0x01
+PT_BYE = 0x02
+PT_BUTTON = 0x03
+PT_MOUSE = 0x04
+PT_PING = 0x05
+PT_BROADCAST = 0x06
+PT_NOTIFICATION = 0x07
+PT_BLOB = 0x08
+PT_LOG = 0x09
+PT_ACTION = 0x0A
+PT_DEBUG = 0xFF
 
 ICON_NONE = 0x00
 ICON_JPEG = 0x01
-ICON_PNG  = 0x02
-ICON_GIF  = 0x03
+ICON_PNG = 0x02
+ICON_GIF = 0x03
 
-BT_USE_NAME   = 0x01
-BT_DOWN       = 0x02
-BT_UP         = 0x04
+BT_USE_NAME = 0x01
+BT_DOWN = 0x02
+BT_UP = 0x04
 BT_USE_AMOUNT = 0x08
-BT_QUEUE      = 0x10
-BT_NO_REPEAT  = 0x20
-BT_VKEY       = 0x40
-BT_AXIS       = 0x80
+BT_QUEUE = 0x10
+BT_NO_REPEAT = 0x20
+BT_VKEY = 0x40
+BT_AXIS = 0x80
 BT_AXISSINGLE = 0x100
 
 MS_ABSOLUTE = 0x01
 
-LOGDEBUG   = 0x00
-LOGINFO    = 0x01
-LOGNOTICE  = 0x02
+LOGDEBUG = 0x00
+LOGINFO = 0x01
+LOGNOTICE = 0x02
 LOGWARNING = 0x03
-LOGERROR   = 0x04
-LOGSEVERE  = 0x05
-LOGFATAL   = 0x06
-LOGNONE    = 0x07
+LOGERROR = 0x04
+LOGSEVERE = 0x05
+LOGFATAL = 0x06
+LOGNONE = 0x07
 
 ACTION_EXECBUILTIN = 0x01
-ACTION_BUTTON      = 0x02
+ACTION_BUTTON = 0x02
 
 ######################################################################
 # Helper Functions
@@ -109,9 +109,9 @@ def format_uint32(num):
 
 def format_uint16(num):
     """ """
-    if num<0:
+    if num < 0:
         num = 0
-    elif num>65535:
+    elif num > 65535:
         num = 65535
     return pack("!H", num)
 
@@ -234,15 +234,15 @@ class Packet:
         if packetnum > self.num_packets() or packetnum < 1:
             return b""
         header = b""
-        if packetnum==1:
+        if packetnum == 1:
             header = self.get_header(self.packettype, packetnum, self.maxseq,
                                      self.get_payload_size(packetnum))
         else:
             header = self.get_header(PT_BLOB, packetnum, self.maxseq,
                                      self.get_payload_size(packetnum))
 
-        payload = self.payload[(packetnum-1) * MAX_PAYLOAD_SIZE:
-                                (packetnum-1) * MAX_PAYLOAD_SIZE+
+        payload = self.payload[(packetnum - 1) * MAX_PAYLOAD_SIZE:
+                                (packetnum - 1) * MAX_PAYLOAD_SIZE +
                                 self.get_payload_size(packetnum)]
         return header + payload
 
@@ -256,7 +256,7 @@ class Packet:
         """
         self.uid = uid
         for a in range(0, self.num_packets()):
-            sock.sendto(self.get_udp_message(a+1), addr)
+            sock.sendto(self.get_udp_message(a + 1), addr)
 
 
 class PacketHELO (Packet):

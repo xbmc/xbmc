@@ -21,7 +21,7 @@
 Simple wrapper around Avahi
 """
 
-__author__  = "d4rk@xbmc.org"
+__author__ = "d4rk@xbmc.org"
 __version__ = "0.1"
 
 try:
@@ -36,8 +36,8 @@ except Exception as e:
     print("    dbus, gi, avahi")
     pass
 
-SERVICE_FOUND  = 1
-SERVICE_LOST   = 2
+SERVICE_FOUND = 1
+SERVICE_LOST = 2
 
 class Browser:
     """ Simple Zeroconf Browser """
@@ -128,11 +128,11 @@ class Browser:
 
     def _service_resolved_handler(self, *args):
         service = {}
-        service['type']     = str(args[3])
-        service['name']     = str(args[2])
-        service['address']  = str(args[7])
+        service['type'] = str(args[3])
+        service['name'] = str(args[2])
+        service['address'] = str(args[7])
         service['hostname'] = str(args[5])
-        service['port']     = int(args[8])
+        service['port'] = int(args[8])
 
         # if the service type has a handler call it
         try:
@@ -149,9 +149,9 @@ class Browser:
 if __name__ == "__main__":
     def service_handler(found, service):
         print("---------------------")
-        print(['Found Service', 'Lost Service'][found-1])
+        print(['Found Service', 'Lost Service'][found - 1])
         for key in service.keys():
-            print(key+" : "+str(service[key]))
+            print(key + " : " + str(service[key]))
 
     browser = Browser({
             '_xbmc-events._udp': service_handler,

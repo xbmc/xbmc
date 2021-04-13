@@ -47,5 +47,5 @@ def main():
     # need not have been sent.
     xbmc.close()
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

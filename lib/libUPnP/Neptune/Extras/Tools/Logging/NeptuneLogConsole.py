@@ -22,10 +22,10 @@ class LogRecord:
         offset = 0
         self.headers = {}
         for line in data.split("\r\n"):
-            offset += len(line)+2
+            offset += len(line) + 2
             if ':' not in line:
                 break
-            key,value=line.split(":",1)
+            key,value = line.split(":",1)
             self.headers[key] = value.strip()
         self.body = data[offset:]
         
@@ -33,16 +33,16 @@ class LogRecord:
         return self.headers[index]
         
     def format(self, sender_index, keys):
-        parts = ['['+str(sender_index)+']']
+        parts = ['[' + str(sender_index) + ']']
         if 'Level' in keys:
-            parts.append('['+self.headers['Level']+']')
+            parts.append('[' + self.headers['Level'] + ']')
         if 'Logger' in keys:
             parts.append(self.headers['Logger'])
         if 'TimeStamp' in keys:
             parts.append(self.headers['TimeStamp'])
         if 'Source-File' in keys:
             if 'Source-Line' in keys:
-                parts.append(self.headers['Source-File']+':'+self.headers['Source-Line'])
+                parts.append(self.headers['Source-File'] + ':' + self.headers['Source-Line'])
             else:
                 parts.append(self.headers['Source-File'])
         if 'TimeStamp' in keys:

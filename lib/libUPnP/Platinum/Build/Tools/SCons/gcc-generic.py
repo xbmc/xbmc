@@ -6,7 +6,7 @@ def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=No
  
     ### compiler flags
     if gcc_strict:
-        env.AppendUnique(CCFLAGS=['-pedantic', '-Wall',  '-W',  '-Wundef', '-Wno-long-long'])
+        env.AppendUnique(CCFLAGS=['-pedantic', '-Wall', '-W', '-Wundef', '-Wno-long-long'])
         env.AppendUnique(CFLAGS=['-Wmissing-prototypes', '-Wmissing-declarations'])
     else:
         env.AppendUnique(CCFLAGS=['-Wall'])
@@ -23,15 +23,15 @@ def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=No
     if gcc_stop_on_warning:
         env.AppendUnique(CCFLAGS=['-Werror'])
         
-    env['STRIP']  = 'strip'
+    env['STRIP'] = 'strip'
 
     if gcc_cross_prefix:
         env['ENV']['PATH'] += os.environ['PATH']
-        env['AR']     = gcc_cross_prefix+'-ar'
-        env['RANLIB'] = gcc_cross_prefix+'-ranlib'
-        env['CC']     = gcc_cross_prefix+'-gcc ' + gcc_extra_options
-        env['CXX']    = gcc_cross_prefix+'-g++ ' + gcc_extra_options
-        env['LINK']   = gcc_cross_prefix+'-g++ ' + gcc_extra_options
-        env['STRIP']  = gcc_cross_prefix+'-strip'
+        env['AR'] = gcc_cross_prefix + '-ar'
+        env['RANLIB'] = gcc_cross_prefix + '-ranlib'
+        env['CC'] = gcc_cross_prefix + '-gcc ' + gcc_extra_options
+        env['CXX'] = gcc_cross_prefix + '-g++ ' + gcc_extra_options
+        env['LINK'] = gcc_cross_prefix + '-g++ ' + gcc_extra_options
+        env['STRIP'] = gcc_cross_prefix + '-strip'
 
     

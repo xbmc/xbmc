@@ -24,28 +24,28 @@ import math
 import binascii
 from bluetooth import set_l2cap_mtu
 
-SX_SELECT   = 1 << 0
-SX_L3       = 1 << 1
-SX_R3       = 1 << 2
-SX_START    = 1 << 3
-SX_DUP      = 1 << 4
-SX_DRIGHT   = 1 << 5
-SX_DDOWN    = 1 << 6
-SX_DLEFT    = 1 << 7
-SX_L2       = 1 << 8
-SX_R2       = 1 << 9
-SX_L1       = 1 << 10
-SX_R1       = 1 << 11
+SX_SELECT = 1 << 0
+SX_L3 = 1 << 1
+SX_R3 = 1 << 2
+SX_START = 1 << 3
+SX_DUP = 1 << 4
+SX_DRIGHT = 1 << 5
+SX_DDOWN = 1 << 6
+SX_DLEFT = 1 << 7
+SX_L2 = 1 << 8
+SX_R2 = 1 << 9
+SX_L1 = 1 << 10
+SX_R1 = 1 << 11
 SX_TRIANGLE = 1 << 12
-SX_CIRCLE   = 1 << 13
-SX_X        = 1 << 14
-SX_SQUARE   = 1 << 15
-SX_POWER    = 1 << 16
+SX_CIRCLE = 1 << 13
+SX_X = 1 << 14
+SX_SQUARE = 1 << 15
+SX_POWER = 1 << 16
 
-SX_LSTICK_X  = 0
-SX_LSTICK_Y  = 1
-SX_RSTICK_X  = 2
-SX_RSTICK_Y  = 3
+SX_LSTICK_X = 0
+SX_LSTICK_Y = 1
+SX_RSTICK_X = 2
+SX_RSTICK_Y = 3
 
 # (map, key, amount index, axis)
 keymap_sixaxis = {
@@ -179,11 +179,11 @@ class sixaxis():
     self.axis_amount = [0, 0, 0, 0]
 
     self.released = set()
-    self.pressed  = set()
-    self.pending  = set()
-    self.held     = set()
-    self.psflags  = 0
-    self.psdown   = 0
+    self.pressed = set()
+    self.pending = set()
+    self.held = set()
+    self.psflags = 0
+    self.psdown = 0
     self.mouse_enabled = 0
 
     set_l2cap_mtu2(control_sock, 64)
@@ -230,7 +230,7 @@ class sixaxis():
     for key in (self.held | self.pressed):
         (mapname, action, amount, axis) = keymap_sixaxis[key]
         self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
-    self.held    = set()
+    self.held = set()
     self.pressed = set()
 
 
@@ -267,7 +267,7 @@ class sixaxis():
     ay = float(v2[0])
     az = float(v3[0])
     rz = float(v4[0])
-    at = math.sqrt(ax*ax + ay*ay + az*az)
+    at = math.sqrt(ax * ax + ay * ay + az * az)
 
     bflags = struct.unpack("<I", data[3:7])[0]
     if len(data) > 27:
@@ -275,8 +275,8 @@ class sixaxis():
     else:
         pressure = [0,0,0,0,0,0,0,0,0,0,0,0,0]
 
-    roll  = -math.atan2(ax, math.sqrt(ay*ay + az*az))
-    pitch = math.atan2(ay, math.sqrt(ax*ax + az*az))
+    roll = -math.atan2(ax, math.sqrt(ay * ay + az * az))
+    pitch = math.atan2(ay, math.sqrt(ax * ax + az * az))
 
     pitch -= math.radians(20)
 
@@ -319,11 +319,11 @@ class sixaxis():
             self.mouse_enabled = 1 - self.mouse_enabled
         self.psdown = 0
 
-    keys     = set(getkeys(bflags))
+    keys = set(getkeys(bflags))
     self.released = (self.pressed | self.held) - keys
-    self.held     = (self.pressed | self.held) - self.released
-    self.pressed  = (keys - self.held) & self.pending
-    self.pending  = (keys - self.held)
+    self.held = (self.pressed | self.held) - self.released
+    self.pressed = (keys - self.held) & self.pending
+    self.pending = (keys - self.held)
 
     for key in self.released:
         (mapname, action, amount, axis) = keymap_sixaxis[key]
@@ -332,13 +332,13 @@ class sixaxis():
     for key in self.held:
         (mapname, action, amount, axis) = keymap_sixaxis[key]
         if amount > 0:
-            amount = pressure[amount-1] * 256
+            amount = pressure[amount - 1] * 256
             self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
 
     for key in self.pressed:
         (mapname, action, amount, axis) = keymap_sixaxis[key]
         if amount > 0:
-            amount = pressure[amount-1] * 256
+            amount = pressure[amount - 1] * 256
         self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
 
     if analog or keys or self.mouse_enabled:

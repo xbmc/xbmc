@@ -75,9 +75,9 @@ except IndexError:
     source_params = {}
 source_settings = json.loads(source_params.get('pathSettings', {}))
 
-KEEPTITLE =source_settings.get('keeporiginaltitle', ADDON.getSettingBool('keeporiginaltitle'))
+KEEPTITLE = source_settings.get('keeporiginaltitle', ADDON.getSettingBool('keeporiginaltitle'))
 CATLANDSCAPE = source_settings.get('cat_landscape', True)
-VERBOSELOG =  source_settings.get('verboselog', ADDON.getSettingBool('verboselog'))
+VERBOSELOG = source_settings.get('verboselog', ADDON.getSettingBool('verboselog'))
 LANG = source_settings.get('language', ADDON.getSettingString('language'))
 CERT_COUNTRY = source_settings.get('tmdbcertcountry', ADDON.getSettingString('tmdbcertcountry')).lower()
 IMAGEROOTURL, PREVIEWROOTURL = _load_base_urls()

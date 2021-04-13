@@ -227,9 +227,9 @@ def _load_base_urls(url_settings):
 
 def _parse_trailer(trailers, fallback):
     if trailers.get('youtube'):
-        return 'plugin://plugin.video.youtube/?action=play_video&videoid='+trailers['youtube'][0]['source']
+        return 'plugin://plugin.video.youtube/?action=play_video&videoid=' + trailers['youtube'][0]['source']
     if fallback.get('youtube'):
-        return 'plugin://plugin.video.youtube/?action=play_video&videoid='+fallback['youtube'][0]['source']
+        return 'plugin://plugin.video.youtube/?action=play_video&videoid=' + fallback['youtube'][0]['source']
     return None
 
 def _get_names(items):

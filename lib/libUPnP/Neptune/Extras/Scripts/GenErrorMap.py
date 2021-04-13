@@ -83,7 +83,7 @@ def ResolveErrors():
                     first = Errors[first]
                 if not type(first) is str:
                     second = int(elements[1])
-                    Errors[key] = first-second
+                    Errors[key] = first - second
                     keep_going = True
             
     
@@ -109,7 +109,7 @@ def ScanErrorCodes(top):
         if (key.find("ERROR_BASE") > 1):
             continue
         if Codes.has_key(Errors[key]):
-            raise "duplicate error code: "+ str(key) +" --> " + str(Errors[key]) + "=" + Codes[Errors[key]]
+            raise "duplicate error code: " + str(key) + " --> " + str(Errors[key]) + "=" + Codes[Errors[key]]
         Codes[Errors[key]] = key
         
     sorted_keys = Codes.keys()

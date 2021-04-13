@@ -5,7 +5,7 @@ import pyudev
 import sixpair
 import threading
 
-vendor  = 0x054c
+vendor = 0x054c
 product = 0x0268
 
 
@@ -26,6 +26,6 @@ def main(mac):
 
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main((0,0,0,0,0,0))
 

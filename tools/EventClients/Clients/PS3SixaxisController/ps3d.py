@@ -363,7 +363,7 @@ def add_thread(thread):
     event_threads.append(thread)
 
 def main():
-    if len(sys.argv)>3:
+    if len(sys.argv) > 3:
         return usage()
     bdaddr = ""
     ipaddr = "127.0.0.1"
@@ -388,17 +388,17 @@ def main():
     print("Starting HID daemon")
     start_hidd(bdaddr, ipaddr)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     try:
         main()
     finally:
         for t in event_threads:
             try:
-                print("Waiting for thread "+str(t)+" to terminate")
+                print("Waiting for thread " + str(t) + " to terminate")
                 t.stop_thread()
                 if t.isAlive():
                     t.join()
-                print("Thread "+str(t)+" terminated")
+                print("Thread " + str(t) + " terminated")
 
             except Exception as e:
                 print(str(e))

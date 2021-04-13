@@ -61,7 +61,7 @@ class HID:
 
     def get_local_address(self):
         hci = BluetoothSocket(HCI)
-        fd  = hci.fileno()
+        fd = hci.fileno()
         buf = array.array('B', [0] * 96)
         fcntl.ioctl(fd, _bt.HCIGETDEVINFO, buf, 1)
         data = struct.unpack_from("H8s6B", buf.tostring())

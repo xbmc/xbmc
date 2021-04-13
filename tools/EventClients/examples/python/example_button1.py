@@ -86,5 +86,5 @@ def main():
     packet = PacketBYE()    # PacketPING if you want to ping
     packet.send(sock, addr)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

@@ -45,5 +45,5 @@ def main():
     packet = PacketBYE()
     packet.send(sock, addr)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

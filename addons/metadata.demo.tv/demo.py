@@ -10,47 +10,47 @@ import sys
 import urllib
 
 def get_params():
-        param=[]
-        paramstring=sys.argv[2]
-        if len(paramstring)>=2:
-                params=sys.argv[2]
-                cleanedparams=params.replace('?','')
-                if (params[len(params)-1]=='/'):
-                        params=params[0:len(params)-2]
-                pairsofparams=cleanedparams.split('&')
-                param={}
+        param = []
+        paramstring = sys.argv[2]
+        if len(paramstring) >= 2:
+                params = sys.argv[2]
+                cleanedparams = params.replace('?','')
+                if (params[len(params) - 1] == '/'):
+                        params = params[0:len(params) - 2]
+                pairsofparams = cleanedparams.split('&')
+                param = {}
                 for i in range(len(pairsofparams)):
-                        splitparams={}
-                        splitparams=pairsofparams[i].split('=')
-                        if (len(splitparams))==2:
-                                param[splitparams[0]]=splitparams[1]
+                        splitparams = {}
+                        splitparams = pairsofparams[i].split('=')
+                        if (len(splitparams)) == 2:
+                                param[splitparams[0]] = splitparams[1]
 
         return param
 
 
-params=get_params()
+params = get_params()
 
-action=urllib.unquote_plus(params["action"])
+action = urllib.unquote_plus(params["action"])
 
 if action == 'find':
     year = 0
-    title=urllib.unquote_plus(params["title"])
+    title = urllib.unquote_plus(params["title"])
     try:
-        year=int(urllib.unquote_plus(params["year"]))
+        year = int(urllib.unquote_plus(params["year"]))
     except:
         pass
 
-    print('Find TV show with title %s from year %i' %(title, int(year)))
-    liz=xbmcgui.ListItem('Demo show 1', thumbnailImage='DefaultVideo.png', offscreen=True)
+    print('Find TV show with title %s from year %i' % (title, int(year)))
+    liz = xbmcgui.ListItem('Demo show 1', thumbnailImage='DefaultVideo.png', offscreen=True)
     liz.setProperty('relevance', '0.5')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True)
-    liz=xbmcgui.ListItem('Demo show 2', thumbnailImage='DefaultVideo.png', offscreen=True)
+    liz = xbmcgui.ListItem('Demo show 2', thumbnailImage='DefaultVideo.png', offscreen=True)
     liz.setProperty('relevance', '0.3')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show2", listitem=liz, isFolder=True)
 elif action == 'getdetails':
-    url=urllib.unquote_plus(params["url"])
+    url = urllib.unquote_plus(params["url"])
     if url == '/path/to/show':
-        liz=xbmcgui.ListItem('Demo show 1', offscreen=True)
+        liz = xbmcgui.ListItem('Demo show 1', offscreen=True)
         liz.setInfo('video',
                     {'title': 'Demo show 1',
                      'originaltitle': 'Demo shåvv 1',
@@ -87,10 +87,10 @@ elif action == 'getdetails':
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'getepisodelist':
-    url=urllib.unquote_plus(params["url"])
+    url = urllib.unquote_plus(params["url"])
     print('in here yo ' + url)
     if url == '/path/to/show/guide':
-        liz=xbmcgui.ListItem('Demo Episode 1x1', offscreen=True)
+        liz = xbmcgui.ListItem('Demo Episode 1x1', offscreen=True)
         liz.setInfo('video',
                     {'title': 'Demo Episode 1',
                      'season': 1,
@@ -99,7 +99,7 @@ elif action == 'getepisodelist':
                      })
         liz.addAvailableArtwork('/path/to/episode1','banner')
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/episode1", listitem=liz, isFolder=False)
-        liz=xbmcgui.ListItem('Demo Episode 2x2', offscreen=True)
+        liz = xbmcgui.ListItem('Demo Episode 2x2', offscreen=True)
         liz.setInfo('video',
                     {'title': 'Demo Episode 2',
                      'season': 2,
@@ -110,9 +110,9 @@ elif action == 'getepisodelist':
         #liz.setProperty('video.sub_episode', '1')
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/episode2", listitem=liz, isFolder=False)
 elif action == 'getepisodedetails':
-    url=urllib.unquote_plus(params["url"])
+    url = urllib.unquote_plus(params["url"])
     if url == '/path/to/episode1':
-        liz=xbmcgui.ListItem('Demo Episode 1', offscreen=True)
+        liz = xbmcgui.ListItem('Demo Episode 1', offscreen=True)
         liz.setInfo('video',
                     {'title': 'Demo Episode 1',
                      'originaltitle': 'Demo æpisod 1x1',
@@ -149,7 +149,7 @@ elif action == 'getepisodedetails':
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
     elif url == '/path/to/episode2':
-        liz=xbmcgui.ListItem('Demo Episode 2', offscreen=True)
+        liz = xbmcgui.ListItem('Demo Episode 2', offscreen=True)
         liz.setInfo('video',
                     {'title': 'Demo Episode 2',
                      'originaltitle': 'Demo æpisod 2x2',
@@ -186,9 +186,9 @@ elif action == 'getepisodedetails':
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'nfourl': 
-    nfo=urllib.unquote_plus(params["nfo"]) 
+    nfo = urllib.unquote_plus(params["nfo"]) 
     print 'Find url from nfo file' 
-    liz=xbmcgui.ListItem('Demo show 1', offscreen=True) 
+    liz = xbmcgui.ListItem('Demo show 1', offscreen=True) 
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True) 
  
 

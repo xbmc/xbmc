@@ -4,7 +4,7 @@
 import sys
 import usb
 
-vendor  = 0x054c
+vendor = 0x054c
 product = 0x0268
 timeout = 5000
 passed_value = 0x03f5
@@ -86,7 +86,7 @@ def update_pair(dev, mac):
         print("Re-pairing sixaxis from:" + mac_to_string(old) + " to:" + mac_to_string(mac))
     set_pair(dev, mac)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     devs = find_sixaxes()
 
     mac = None

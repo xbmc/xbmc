@@ -261,7 +261,7 @@ def add_main_show_info(list_item, show_info, full_info=True):
         list_item = _set_rating(show_info, list_item)
         ext_ids = {'tmdb_id': show_info['id']}
         ext_ids.update(show_info.get('external_ids', {}))
-        list_item =  _set_unique_ids(ext_ids, list_item)
+        list_item = _set_unique_ids(ext_ids, list_item)
     else:
         image = safe_get(show_info, 'poster_path', '')
         if image:

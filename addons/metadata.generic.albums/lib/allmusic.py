@@ -61,17 +61,17 @@ def allmusic_albumdetails(data):
     if styledata:
         stylelist = re.findall('">(.*?)<', styledata.group(1))
         if stylelist:
-            albumdata['styles'] =  ' / '.join(stylelist)
+            albumdata['styles'] = ' / '.join(stylelist)
     mooddata = re.search('class="moods">.*?div>\s*(.*?)\s*</div', data, re.S)
     if mooddata:
         moodlist = re.findall('">(.*?)<', mooddata.group(1))
         if moodlist:
-            albumdata['moods'] =  ' / '.join(moodlist)
+            albumdata['moods'] = ' / '.join(moodlist)
     themedata = re.search('class="themes">.*?div>\s*(.*?)\s*</div', data, re.S)
     if themedata:
         themelist = re.findall('">(.*?)<', themedata.group(1))
         if themelist:
-            albumdata['themes'] =  ' / '.join(themelist)
+            albumdata['themes'] = ' / '.join(themelist)
     ratingdata = re.search('itemprop="ratingValue">\s*(.*?)\s*</div', data)
     if ratingdata:
         albumdata['rating'] = ratingdata.group(1)

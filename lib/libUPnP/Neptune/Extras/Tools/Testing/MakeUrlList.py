@@ -5,7 +5,7 @@ import simplejson
 words = open('/usr/share/dict/words').readlines()
 for word in words:
 	word = word.rstrip()
-	url = ('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q='+word+'+https&userip=67.169.84.240')
+	url = ('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + word + '+https&userip=67.169.84.240')
 	#print url
 	#print word.rstrip()
 	request = urllib2.Request(url, None, {'Referer': 'http://test.com'})
