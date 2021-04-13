@@ -19,7 +19,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-import sys, os
+import sys
+import os
 import getopt
 from socket import *
 from time import sleep

@@ -22,8 +22,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import os, pickle
-import xbmc, xbmcvfs
+import os
+import pickle
+import xbmc
+import xbmcvfs
 
 from .utils import ADDON, logger
 

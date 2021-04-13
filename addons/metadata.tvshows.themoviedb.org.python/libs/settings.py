@@ -16,7 +16,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # pylint: disable=missing-docstring
 
-import json, sys, urllib.parse
+import json
+import sys
+import urllib.parse
 from .utils import logger
 from . import api_utils
 from xbmcaddon import Addon

@@ -19,7 +19,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import json, xbmc
+import json
+import xbmc
 # from pprint import pformat
 try: #PY2 / PY3
     from urllib2 import Request, urlopen

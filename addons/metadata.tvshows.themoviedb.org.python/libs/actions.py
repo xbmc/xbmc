@@ -22,8 +22,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import sys, urllib.parse
-import xbmcgui, xbmcplugin
+import sys
+import urllib.parse
+import xbmcgui
+import xbmcplugin
 from . import tmdb, data_utils
 from .utils import logger, safe_get
 try:

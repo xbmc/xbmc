@@ -26,7 +26,8 @@ __version__ = "0.1"
 
 try:
     import time
-    import dbus, avahi
+    import dbus
+    import avahi
     from dbus import DBusException
     from dbus.mainloop.glib import DBusGMainLoop
     from gi.repository import GLib

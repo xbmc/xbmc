@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-import sys, os, json
+import sys
+import os
+import json
 from subprocess import call
 
 assetCatalogPath = sys.argv[1]

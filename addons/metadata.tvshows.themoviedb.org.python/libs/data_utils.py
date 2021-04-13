@@ -22,7 +22,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import re, json
+import re
+import json
 from collections import OrderedDict, namedtuple
 from .utils import safe_get, logger
 from . import settings
