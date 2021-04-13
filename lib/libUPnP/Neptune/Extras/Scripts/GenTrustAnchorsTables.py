@@ -67,9 +67,9 @@ for line in open(sys.argv[1]).readlines():
     if line.startswith('-----BEGIN CERTIFICATE-----'):
         in_cert = True
         b64 = ''
-        continue;
+        continue
     if line.startswith('-----END CERTIFICATE-----'):
-        cert = base64.decodestring(b64);
+        cert = base64.decodestring(b64)
         if not digest_oid_pattern in cert:
             sys.stderr.write("-------- skipping cert (digest not supported) -------\n")
             continue

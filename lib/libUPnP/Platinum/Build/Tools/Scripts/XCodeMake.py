@@ -66,7 +66,8 @@ for opt, arg in opts:
 
 try:
     buildSwitch = 'build'
-    if makeClean: buildSwitch = 'clean'
+    if makeClean:
+        buildSwitch = 'clean'
         
     cmd_list = ['xcodebuild', '-project', '%s' % projectFile, '-target', '%s' % targetName, '-sdk', '%s' % sdk, '-configuration', '%s' % buildName, '%s' % buildSwitch]
     cmd = " ".join(cmd_list)

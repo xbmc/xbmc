@@ -45,7 +45,7 @@ def set_pair(dev, mac):
   itf = find_interface(dev)
   handle = dev.open()
 
-  msg = (0x01, 0x00) + mac;
+  msg = (0x01, 0x00) + mac
 
   try:
     handle.detachKernelDriver(itf.interfaceNumber)

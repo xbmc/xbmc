@@ -52,7 +52,8 @@ def ScanErrorCodes(top):
     ResolveErrors()
     for key in Errors:
         #print key,"==>",Errors[key]
-        if (key.find("ERROR_BASE") > 1): continue
+        if (key.find("ERROR_BASE") > 1):
+            continue
         if Codes.has_key(Errors[key]):
             raise Exception("duplicate error code: "+ str(key) +" --> " + str(Errors[key]) + "=" + Codes[Errors[key]])
         Codes[Errors[key]] = key

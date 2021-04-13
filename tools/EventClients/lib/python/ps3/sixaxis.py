@@ -88,12 +88,12 @@ keymap_sixaxis_keys.sort()
 keymap_sixaxis_keys.reverse()
 
 def getkeys(bflags):
-    keys = [];
+    keys = []
     for k in keymap_sixaxis_keys:
         if (k & bflags) == k:
             keys.append(k)
             bflags = bflags & ~k
-    return keys;
+    return keys
 
 
 def normalize(val):
@@ -278,7 +278,7 @@ class sixaxis():
     roll  = -math.atan2(ax, math.sqrt(ay*ay + az*az))
     pitch = math.atan2(ay, math.sqrt(ax*ax + az*az))
 
-    pitch -= math.radians(20);
+    pitch -= math.radians(20)
 
     xpos = normalize_angle(roll, math.radians(30))
     ypos = normalize_angle(pitch, math.radians(30))

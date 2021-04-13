@@ -23,7 +23,8 @@ class LogRecord:
         self.headers = {}
         for line in data.split("\r\n"):
             offset += len(line)+2
-            if ':' not in line: break
+            if ':' not in line:
+                break
             key,value=line.split(":",1)
             self.headers[key] = value.strip()
         self.body = data[offset:]

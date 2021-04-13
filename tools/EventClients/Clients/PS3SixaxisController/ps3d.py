@@ -179,7 +179,7 @@ class PS3RemoteThread ( StoppableThread ):
 
                 if status == 2:   # 2 = socket read timeout
                     if self.timed_out():
-                        raise Exception("PS3 Blu-Ray Remote powering off, "\
+                        raise Exception("PS3 Blu-Ray Remote powering off, "
                                             "timed out")
                 elif status == 3: # 3 = ps and skip +
                     self.next_xbmc()

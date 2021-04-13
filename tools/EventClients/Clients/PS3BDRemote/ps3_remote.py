@@ -96,7 +96,7 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
                 target_connected = True
                 print("Remote Paired.\a")
                 xbmc.send_notification("Pairing Successful",
-                                       "Your remote was successfully "\
+                                       "Your remote was successfully "
                                            "paired and is ready to be used.",
                                        bticon)
             except:
@@ -104,7 +104,7 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
                 remote = bt_create_socket()
                 target_address = None
                 xbmc.send_notification("Pairing Failed",
-                                       "An error occurred while attempting to "\
+                                       "An error occurred while attempting to "
                                            "pair.", bticon)
                 print("ERROR - Could Not Connect. Trying again...")
                 time.sleep(2)

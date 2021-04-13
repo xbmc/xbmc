@@ -79,8 +79,10 @@ if rebuildAll and makeClean:
 
 try:
     buildSwitch = 'build'
-    if rebuildAll: buildSwitch = 'rebuild'
-    elif makeClean: buildSwitch = 'clean'
+    if rebuildAll:
+        buildSwitch = 'rebuild'
+    elif makeClean:
+        buildSwitch = 'clean'
         
     cmd_list = ['%s/devenv.com' % VSBINDIR, '/%s' % buildSwitch, buildName, solutionFile]
     cmd = " ".join(cmd_list)
