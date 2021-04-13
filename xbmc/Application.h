@@ -318,7 +318,6 @@ public:
 
   bool IsAppFocused() const { return m_AppFocused; }
 
-  void Minimize();
   bool ToggleDPMS(bool manual);
 
   bool SwitchToFullScreen(bool force = false);
