@@ -1708,7 +1708,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (pStream->codecpar->codec_id == AV_CODEC_ID_TTF ||
             pStream->codecpar->codec_id == AV_CODEC_ID_OTF || AttachmentIsFont(attachmentMimetype))
         {
-          std::string fileName = "special://temp/fonts/";
+          std::string fileName = "special://home/media/Fonts/";
           XFILE::CDirectory::Create(fileName);
           AVDictionaryEntry* nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);
           if (!nameTag)
@@ -1717,7 +1717,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           }
           else
           {
-            fileName += CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
+            // Note: libass only supports a single font directory to look for aditional fonts
+            // (c.f. ass_set_fonts_dir). To support both user defined fonts (those placed in
+            // special://home/media/Fonts/) and fonts extracted by the demuxer, make it extract
+            // fonts to the user directory with a known, easy to identify, prefix (tmp.font.*).
+            fileName += "tmp.font." + CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
             XFILE::CFile file;
             if (pStream->codecpar->extradata && file.OpenForWrite(fileName))
             {
