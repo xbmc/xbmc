@@ -22,6 +22,7 @@ namespace XbmcThreads
    *
    * Of course, on windows it just calls timeGetTime, so you're on your own.
    */
+
   unsigned int SystemClockMillis();
 
   /**
@@ -32,31 +33,29 @@ namespace XbmcThreads
    */
   class EndTime
   {
-    unsigned int startTime = 0;
-    unsigned int totalWaitTime = 0;
   public:
-    static const unsigned int InfiniteValue;
-    inline EndTime() = default;
-    inline explicit EndTime(unsigned int millisecondsIntoTheFuture) : startTime(SystemClockMillis()), totalWaitTime(millisecondsIntoTheFuture) {}
+    EndTime();
+    explicit EndTime(unsigned int millisecondsIntoTheFuture);
+    EndTime(const EndTime& right) = delete;
+    ~EndTime() = default;
 
-    inline void Set(unsigned int millisecondsIntoTheFuture) { startTime = SystemClockMillis(); totalWaitTime = millisecondsIntoTheFuture; }
+    void Set(unsigned int millisecondsIntoTheFuture);
 
-    inline bool IsTimePast() const { return totalWaitTime == InfiniteValue ? false : (totalWaitTime == 0 ? true : (SystemClockMillis() - startTime) >= totalWaitTime); }
+    bool IsTimePast() const;
 
-    inline unsigned int MillisLeft() const
-    {
-      if (totalWaitTime == InfiniteValue)
-        return InfiniteValue;
-      if (totalWaitTime == 0)
-        return 0;
-      unsigned int timeWaitedAlready = (SystemClockMillis() - startTime);
-      return (timeWaitedAlready >= totalWaitTime) ? 0 : (totalWaitTime - timeWaitedAlready);
-    }
+    unsigned int MillisLeft() const;
 
-    inline void SetExpired() { totalWaitTime = 0; }
-    inline void SetInfinite() { totalWaitTime = InfiniteValue; }
-    inline bool IsInfinite(void) const { return (totalWaitTime == InfiniteValue); }
-    inline unsigned int GetInitialTimeoutValue(void) const { return totalWaitTime; }
-    inline unsigned int GetStartTime(void) const { return startTime; }
+    void SetExpired() { m_totalWaitTime = std::chrono::milliseconds(0); }
+    void SetInfinite() { m_totalWaitTime = InfiniteValue; }
+    bool IsInfinite() const { return (m_totalWaitTime == InfiniteValue); }
+
+    unsigned int GetInitialTimeoutValue() const;
+    unsigned int GetStartTime() const;
+
+    static const std::chrono::milliseconds InfiniteValue;
+
+  private:
+    std::chrono::system_clock::time_point m_startTime;
+    std::chrono::milliseconds m_totalWaitTime;
   };
 }
