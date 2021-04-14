@@ -2235,7 +2235,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_MINIMIZE:
-    Minimize();
+    CServiceBroker::GetWinSystem()->Minimize();
     break;
 
   case TMSG_EXECUTE_OS:
@@ -4803,11 +4803,6 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
   }
 
   return false;
-}
-
-void CApplication::Minimize()
-{
-  CServiceBroker::GetWinSystem()->Minimize();
 }
 
 std::string CApplication::GetCurrentPlayer()
