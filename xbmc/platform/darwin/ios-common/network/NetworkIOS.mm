@@ -264,6 +264,10 @@ std::string CNetworkInterfaceIOS::GetCurrentDefaultGateway() const
   return gateway;
 }
 
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkIOS>();
+}
 
 CNetworkIOS::CNetworkIOS() : CNetworkBase()
 {

@@ -50,7 +50,7 @@ CServiceManager::~CServiceManager()
 
 bool CServiceManager::InitForTesting()
 {
-  m_network.reset(new CNetwork());
+  m_network = CNetworkBase::GetNetwork();
 
   m_databaseManager.reset(new CDatabaseManager);
 
@@ -91,7 +91,7 @@ bool CServiceManager::InitStageOne()
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
-  m_network.reset(new CNetwork());
+  m_network = CNetworkBase::GetNetwork();
 
   init_level = 1;
   return true;

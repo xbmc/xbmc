@@ -267,7 +267,7 @@ void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
   pvrManager.Stop();
 
   if (profileIndex != 0 || !IsMasterProfile())
-    networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+    networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
 }
 
 bool CProfileManager::LoadProfile(unsigned int index)
@@ -447,7 +447,7 @@ void CProfileManager::LogOff()
   // Stop PVR services
   CServiceBroker::GetPVRManager().Stop();
 
-  networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+  networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
 
   LoadMasterProfileForLogin();
 

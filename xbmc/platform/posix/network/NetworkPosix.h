@@ -43,7 +43,6 @@ private:
 class CNetworkPosix : public CNetworkBase
 {
 public:
-  CNetworkPosix();
   virtual ~CNetworkPosix() override;
 
   std::vector<CNetworkInterface*>& GetInterfaceList() override;
@@ -52,6 +51,7 @@ public:
   int GetSocket() { return m_sock; }
 
 protected:
+  CNetworkPosix();
   std::vector<CNetworkInterface*> m_interfaces;
 
 private:
@@ -59,11 +59,3 @@ private:
   virtual void queryInterfaceList() = 0;
   int m_sock;
 };
-
-#if defined(HAS_LINUX_NETWORK)
-#include "platform/linux/network/NetworkLinux.h"
-#elif defined(HAS_FREEBSD_NETWORK)
-#include "platform/freebsd/network/NetworkFreebsd.h"
-#elif defined(HAS_OSX_NETWORK)
-#include "platform/darwin/osx/network/NetworkOsx.h"
-#endif
