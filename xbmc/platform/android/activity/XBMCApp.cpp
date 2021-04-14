@@ -74,6 +74,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/VideoDatabaseFile.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
 #include "input/mouse/MouseStat.h"
@@ -283,7 +284,13 @@ void CXBMCApp::onPause()
   }
 
   if (m_hasReqVisible)
-    g_application.SwitchToFullScreen(true);
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+    {
+      gui->GetWindowManager().SwitchToFullScreen(true);
+    }
+  }
 
   EnableWakeLock(false);
   m_hasReqVisible = false;
