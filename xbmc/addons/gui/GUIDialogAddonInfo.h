@@ -38,8 +38,8 @@ enum class EntryPoint
 struct CInstalledWithAvailable
 {
   CInstalledWithAvailable(const ADDON::DependencyInfo& depInfo,
-                          std::shared_ptr<ADDON::IAddon> installed,
-                          std::shared_ptr<ADDON::IAddon> available)
+                          const std::shared_ptr<ADDON::IAddon>& installed,
+                          const std::shared_ptr<ADDON::IAddon>& available)
     : m_depInfo(depInfo), m_installed(installed), m_available(available)
   {
   }
