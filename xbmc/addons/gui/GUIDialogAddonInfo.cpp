@@ -615,7 +615,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
       if (infoAddon)
       {
         if (entryPoint != EntryPoint::UPDATE ||
-            (entryPoint == EntryPoint::UPDATE && !it.m_isInstalledUpToDate()))
+            (entryPoint == EntryPoint::UPDATE && !it.IsInstalledUpToDate()))
         {
           const CFileItemPtr item = std::make_shared<CFileItem>(infoAddon->Name());
           int messageId = 24180; // minversion only
@@ -642,7 +642,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
           {
             messageId = 24182; // => installed
 
-            if (!it.m_isInstalledUpToDate())
+            if (!it.IsInstalledUpToDate())
             {
               messageId = 24183; // => update to
             }
@@ -790,8 +790,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
         (addonAvailable && addonAvailable->MainType() != ADDON_SCRIPT_MODULE) ||
         (!addonAvailable && !addonInstalled))
     {
-      m_depsInstalledWithAvailable.emplace_back(
-          CInstalledWithAvailable{dep, addonInstalled, addonAvailable});
+      m_depsInstalledWithAvailable.emplace_back(dep, addonInstalled, addonAvailable);
     }
 
     // sort optional add-ons to top of the list
@@ -800,4 +799,17 @@ void CGUIDialogAddonInfo::BuildDependencyList()
         m_depsInstalledWithAvailable.begin(), m_depsInstalledWithAvailable.end(),
         [](const auto& a, const auto& b) { return a.m_depInfo.optional > b.m_depInfo.optional; });
   }
+}
+
+bool CInstalledWithAvailable::IsInstalledUpToDate() const
+{
+  if (m_installed)
+  {
+    if (!m_available || m_available->Version() == m_installed->Version())
+    {
+      return true;
+    }
+  }
+
+  return false;
 }

@@ -47,7 +47,8 @@ struct CAddonWithUpdate
 class CAddonRepos
 {
 public:
-  CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){};
+  CAddonRepos() = delete;
+  explicit CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){};
 
   /*!
    * \brief Load the map of all available addon versions in any installed repository
