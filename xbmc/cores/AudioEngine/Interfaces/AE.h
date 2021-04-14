@@ -184,6 +184,12 @@ public:
   virtual bool SupportsSilenceTimeout() { return false; }
 
   /**
+   * Returns true if the AudioEngine is currently configured to extract the DTS Core from DTS-HD streams
+   * @returns true if the AudioEngine is currently configured to extract the DTS Core from DTS-HD streams
+   */
+  virtual bool UsesDtsCoreFallback() { return false; }
+
+  /**
    * Returns true if the AudioEngine is currently configured for stereo audio
    * @returns true if the AudioEngine is currently configured for stereo audio
    */

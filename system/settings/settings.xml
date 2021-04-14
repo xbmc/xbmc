@@ -2956,6 +2956,25 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.dtshdcorefallback" type="boolean" parent="audiooutput.dtshdpassthrough" label="2203" help="2204">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.dtshdpassthrough" operator="is">false</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.dtshdpassthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.dtshdpassthrough</condition>
+              </and>
+            </dependency>
+            <dependency type="enable">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="input" label="14125" help="36374">
