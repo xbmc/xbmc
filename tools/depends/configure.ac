@@ -8,7 +8,7 @@ AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 
 m4_include([m4/xbmc_arch.m4])
-m4_include([m4/ax_cxx_compile_stdcxx_14.m4])
+m4_include([m4/ax_cxx_compile_stdcxx.m4])
 m4_include([m4/ax_compare_version.m4])
 
 # check for not same cpu value
@@ -263,17 +263,12 @@ case $build in
 esac
 
 AC_PROG_CPP
-AX_CXX_COMPILE_STDCXX_14([noext],[mandatory])
 
 case $build in
   *darwin*)
     CFLAGS=$(echo "$CFLAGS" | sed "s|$host_includes||")
     CXXFLAGS=$(echo "$CXXFLAGS" | sed "s|$host_includes||")
 esac
-
-c14_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
-cxx14_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
-
 
 case $host in
   *-*linux-android*)
@@ -608,8 +603,8 @@ if [ ! `mkdir -p $use_tarballs` ]; then
 fi
 
 # remove unwanted optimization flags
-tmp_cflags=$(echo $c14_flags $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
-tmp_cxxflags=$(echo $cxx14_flags $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
+tmp_cflags=$(echo $CFLAGS $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
+tmp_cxxflags=$(echo $CXXFLAGS $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
 
 release_cflags="-DNDEBUG=1"
 
@@ -638,6 +633,12 @@ else
   platform_cflags="$platform_cflags_release"
   platform_cxxflags="$platform_cxxflags_release"
 fi
+
+CXXFLAGS="$platform_cxxflags $platform_includes"
+CXX_CACHED="$CXX"
+AX_CXX_COMPILE_STDCXX([17], [noext], [mandatory])
+CXX="$CXX_CACHED"
+platform_cxxflags+=" -std=c++17"
 
 if test "$ffmpeg_options" == "default"; then
   ffmpeg_options="$ffmpeg_options_default"
@@ -710,6 +711,8 @@ echo -e "build includes:\t $host_includes"
 echo -e "toolchain:\t\t $use_toolchain"
 echo -e "cpu:\t\t\t $use_cpu"
 echo -e "host:\t\t $use_host"
+echo -e "CC:\t\t $CC"
+echo -e "CXX:\t\t $CXX"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t\t $platform_cxxflags"
 echo -e "ldflags:\t\t $platform_ldflags"
