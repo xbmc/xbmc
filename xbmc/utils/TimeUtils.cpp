@@ -52,7 +52,7 @@ int64_t CurrentHostFrequency(void)
 #endif
 }
 
-unsigned int CTimeUtils::frameTime = 0;
+unsigned int CTimeUtils::frameTime = XbmcThreads::SystemClockMillis();
 
 void CTimeUtils::UpdateFrameTime(bool flip)
 {
