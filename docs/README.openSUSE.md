@@ -72,7 +72,7 @@ sudo zypper ref
 
 If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
-**NOTE:** Kodi requires a compiler with C++14 support, i.e. gcc >= 4.9 or clang >= 3.4
+**NOTE:** Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
 
 Install build dependencies:
 ```

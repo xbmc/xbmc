@@ -9,7 +9,19 @@
 #pragma once
 
 // spdlog specific defines
-#define SPDLOG_LEVEL_NAMES {"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "FATAL", "OFF"};
+// clang-format off
+#include <string_view>
+#define SPDLOG_LEVEL_NAMES \
+{ \
+  std::string_view{"TRACE"}, \
+  std::string_view{"DEBUG"}, \
+  std::string_view{"INFO"}, \
+  std::string_view{"WARNING"}, \
+  std::string_view{"ERROR"}, \
+  std::string_view{"FATAL"}, \
+  std::string_view{"OFF"} \
+};
+// clang-format on
 
 #include "commons/ilog.h"
 #include "settings/lib/ISettingCallback.h"
