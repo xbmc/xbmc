@@ -1,0 +1,29 @@
+# This GitHub action updates the translation (msgmrge) based on the changed source language file
+
+name: Update Weblate translations
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "addons/resource.language.en_gb/resources/strings.po"
+      - ".github/workflows/gh-action-weblate-upload.yml"
+jobs:
+  weblate:
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.2
+        with:
+          fetch-depth: 0
+      - name: Update Weblate
+        env:
+          TOKEN: "${{ secrets.WEBLATE_TOKEN }}"
+        run: | 
+          curl \
+            --form file=@addons/resource.language.en_gb/resources/strings.po \
+            --form method=source \
+            -H "Authorization: Token $TOKEN" \
+            https://kodi.weblate.cloud/api/translations/kodi-core/kodi-main/en_gb/file/

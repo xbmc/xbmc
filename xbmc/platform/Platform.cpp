@@ -10,23 +10,12 @@
 
 #include "ServiceBroker.h"
 
-// Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
-
-CPlatform* CPlatform::CreateInstance()
-{
-  return new CPlatform();
-}
-
-#endif
-
-// base class definitions
-
 CPlatform::CPlatform() = default;
 
 CPlatform::~CPlatform() = default;
 
-void CPlatform::Init()
+bool CPlatform::Init()
 {
+  return true;
 }
 

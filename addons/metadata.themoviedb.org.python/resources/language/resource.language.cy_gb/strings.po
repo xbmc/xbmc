@@ -1,0 +1,45 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Welsh (http://www.transifex.com/projects/p/xbmc-addons/language/cy/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cy\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
+
+msgctxt "#30000"
+msgid "Enable Fanart"
+msgstr "Galluogi Celf"
+
+msgctxt "#30001"
+msgid "Prefer Trailer from HD-Trailers.net"
+msgstr "Dewis Cyflwyniadau o HD-Trailers.net"
+
+msgctxt "#30002"
+msgid "Preferred Language"
+msgstr "Dewis Iaith"
+
+msgctxt "#30003"
+msgid "Get Rating from"
+msgstr "Graddio gan"
+
+msgctxt "#30004"
+msgid "Enable Trailer (YouTube)"
+msgstr "Galluogi Cyflwyniadau (YouTube)"
+
+msgctxt "#30005"
+msgid "Keep Original Title"
+msgstr "Cadw'r Teitl Gwreiddiol"
+
+msgctxt "#30006"
+msgid "Preferred Certification Country"
+msgstr "Gwlad Tysytysgrifo Dewisol"

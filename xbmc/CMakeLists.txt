@@ -86,6 +86,7 @@ set(HEADERS AppParamParser.h
             XBApplicationEx.h
             XBDateTime.h
             system.h
+            system_egl.h
             system_gl.h)
 
 if(ENABLE_OPTICAL)

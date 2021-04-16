@@ -33,6 +33,7 @@
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/dist_sink.h>
+#include <spdlog/sinks/dup_filter_sink.h>
 
 static constexpr unsigned char Utf8Bom[3] = {0xEF, 0xBB, 0xBF};
 static const std::string LogFileExtension = ".log";
@@ -69,7 +70,7 @@ void CLog::OnSettingsLoaded()
   SetComponentLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
 }
 
-void CLog::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CLog::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -119,10 +120,14 @@ void CLog::Initialize(const std::string& path)
       file.Write(Utf8Bom, sizeof(Utf8Bom));
   }
 
-  // create the file sink
-  m_fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+  // create the file sink within a duplicate filter sink
+  auto duplicateFilterSink =
+      std::make_shared<spdlog::sinks::dup_filter_sink_st>(std::chrono::seconds(10));
+  auto basicFileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(
       m_platform->GetLogFilename(filePath), false);
-  m_fileSink->set_pattern(LogPattern);
+  basicFileSink->set_pattern(LogPattern);
+  duplicateFilterSink->add_sink(basicFileSink);
+  m_fileSink = duplicateFilterSink;
 
   // add it to the existing sinks
   m_sinks->add_sink(m_fileSink);
@@ -141,7 +146,7 @@ void CLog::Uninitialize()
   settingsManager->UnregisterCallback(this);
 
   // flush all loggers
-  spdlog::apply_all([](std::shared_ptr<spdlog::logger> logger) { logger->flush(); });
+  spdlog::apply_all([](const std::shared_ptr<spdlog::logger>& logger) { logger->flush(); });
 
   // flush the file sink
   m_fileSink->flush();
@@ -190,7 +195,7 @@ bool CLog::CanLogComponent(uint32_t component) const
   return ((m_componentLogLevels & component) == component);
 }
 
-void CLog::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting,
+void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
                                                  int& current,
                                                  void* data)

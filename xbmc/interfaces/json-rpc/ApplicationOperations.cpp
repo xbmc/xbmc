@@ -20,6 +20,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <cmath>
 #include <string.h>
 
 using namespace JSONRPC;
@@ -104,7 +105,7 @@ JSONRPC_STATUS CApplicationOperations::Quit(const std::string &method, ITranspor
 JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
   if (property == "volume")
-    result = static_cast<int>(g_application.GetVolumePercent());
+    result = static_cast<int>(std::lroundf(g_application.GetVolumePercent()));
   else if (property == "muted")
     result = g_application.IsMuted();
   else if (property == "name")

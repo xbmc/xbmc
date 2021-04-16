@@ -71,7 +71,7 @@ public:
     m_strMediaSourcePath = strMediaSourcePath;
   }
 
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
   bool bMasterUser;
   int iMasterLockRetriesLeft;

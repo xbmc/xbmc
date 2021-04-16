@@ -34,12 +34,14 @@ const CoreInfo CCPUInfo::GetCoreInfo(int coreId)
   return coreInfo;
 }
 
-std::string CCPUInfo::GetCoresUsageString() const
+std::string CCPUInfo::GetCoresUsageString()
 {
   std::string strCores;
 
   if (SupportsCPUUsage())
   {
+    GetUsedPercentage(); // must call it to recalculate pct values
+
     if (!m_cores.empty())
     {
       for (const auto& core : m_cores)

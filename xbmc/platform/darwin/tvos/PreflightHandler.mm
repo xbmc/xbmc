@@ -25,7 +25,7 @@
 #include "utils/log.h"
 
 #import "platform/darwin/NSLogDebugHelpers.h"
-#import "platform/darwin/ios-common/DarwinNSUserDefaults.h"
+#import "platform/darwin/tvos/TVOSNSUserDefaults.h"
 #import "platform/darwin/tvos/filesystem/TVOSFile.h"
 #import "platform/darwin/tvos/filesystem/TVOSFileUtils.h"
 #include "platform/posix/filesystem/PosixFile.h"

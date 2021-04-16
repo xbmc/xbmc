@@ -1,0 +1,130 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr ""
+
+# empty strings from 30006 to 30099
+
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr ""
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr ""
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr ""
+
+# empty strings from 30110 to 30149
+
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr ""
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr ""
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr ""
+
+# empty strings from 30153 to 30200
+
+msgctxt "#30200"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr ""
+
+# emptry strings from 30202 to 30299
+
+msgctxt "#30300"
+msgid "Ratings"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr ""
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr ""
+

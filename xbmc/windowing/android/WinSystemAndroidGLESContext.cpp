@@ -15,16 +15,20 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "windowing/WindowSystemFactory.h"
 
 #include "platform/android/activity/XBMCApp.h"
 
 #include <EGL/eglext.h>
 
-
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemAndroidGLESContext::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemAndroidGLESContext());
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemAndroidGLESContext::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemAndroidGLESContext>();
 }
 
 bool CWinSystemAndroidGLESContext::InitWindowSystem()

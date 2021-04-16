@@ -105,7 +105,7 @@ public:
 
    \param[in] item Item to reset the resume point for
    */
-  void ResetResumePoint(const CFileItemPtr item);
+  void ResetResumePoint(const CFileItemPtr& item);
 
   /*!
    \brief Adds the given job to the queue.

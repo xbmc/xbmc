@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Zure balorazioa"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Informazio zabaldua"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Orriak"
@@ -192,10 +196,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Eskuragarri"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Sakatu [B]Ados[/B] gelditzeko"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "iragazita"
@@ -203,10 +203,6 @@ msgstr "iragazita"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-en oinarritua"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Sakatu [B]Left[/B] birbobinatzeko, edo [B]Right[/B] bizkor aurreratzeko."
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -491,10 +487,6 @@ msgstr "Kategoriak"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Hautatu generoaren fanart paketea"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Biltegia"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

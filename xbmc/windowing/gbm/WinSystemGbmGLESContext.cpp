@@ -27,9 +27,8 @@
 #include "utils/UDMABufferObject.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+#include "windowing/WindowSystemFactory.h"
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
 #include <gbm.h>
 
 using namespace KODI::WINDOWING::GBM;
@@ -38,10 +37,14 @@ CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
 {}
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemGbmGLESContext::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemGbmGLESContext());
-  return winSystem;
+  CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem, "gbm");
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemGbmGLESContext::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemGbmGLESContext>();
 }
 
 bool CWinSystemGbmGLESContext::InitWindowSystem()

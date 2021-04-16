@@ -62,13 +62,24 @@ void CBinaryAddonManager::ReleaseAddonBase(const BinaryAddonBasePtr& addonBase,
   m_runningAddons.erase(addon);
 }
 
+BinaryAddonBasePtr CBinaryAddonManager::GetRunningAddonBase(const std::string& addonId) const
+{
+  CSingleLock lock(m_critSection);
+
+  const auto& addonInstances = m_runningAddons.find(addonId);
+  if (addonInstances != m_runningAddons.end())
+    return addonInstances->second;
+
+  return nullptr;
+}
+
 AddonPtr CBinaryAddonManager::GetRunningAddon(const std::string& addonId) const
 {
   CSingleLock lock(m_critSection);
 
-  auto addon = m_runningAddons.find(addonId);
-  if (addon != m_runningAddons.end())
-    return addon->second->GetActiveAddon();
+  const BinaryAddonBasePtr base = GetRunningAddonBase(addonId);
+  if (base)
+    return base->GetActiveAddon();
 
   return nullptr;
 }

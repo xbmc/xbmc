@@ -29,7 +29,7 @@ Default font lacks support for all characters
       <row>0123456789</row>
       <row>абвгґдеєжзиі</row>
       <row>їйклмнопрст</row>
-      <row>уфхцчшцьюя'</row>
+      <row>уфхцчшщьюя'</row>
     </keyboard>
     <keyboard modifiers="shift">
       <row>0123456789</row>

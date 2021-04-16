@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import sys, os, json
 from subprocess import call
@@ -25,5 +25,5 @@ generateImage(sys.argv[3] + '.launchimage', True, 3840, 2160)
 generateImage(os.path.join(brandAssetsDir, 'topshelf_wide.imageset'), True, 4640, 1440)
 
 appIconSmall = os.path.join(brandAssetsDir, 'icon.imagestack')
-for i in xrange(1, 5):
+for i in range(1, 5):
     generateImage(os.path.join(appIconSmall, 'Layer{}.imagestacklayer'.format(i), 'Content.imageset'), False, 400, 240)

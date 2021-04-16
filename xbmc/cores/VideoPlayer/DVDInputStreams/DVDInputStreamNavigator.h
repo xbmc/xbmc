@@ -28,6 +28,8 @@
 #define LIBDVDNAV_BUTTON_NORMAL 0
 #define LIBDVDNAV_BUTTON_CLICKED 1
 
+#define DVDNAV_ERROR -1
+
 class CDVDDemuxSPU;
 class CSPUInfo;
 class CDVDOverlayPicture;

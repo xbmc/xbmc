@@ -194,7 +194,7 @@ void CGUIDialogProfileSettings::OnWindowLoaded()
   CGUIDialogSettingsManualBase::OnWindowLoaded();
 }
 
-void CGUIDialogProfileSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogProfileSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -214,7 +214,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(std::shared_ptr<const CSetting>
   m_needsSaving = true;
 }
 
-void CGUIDialogProfileSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

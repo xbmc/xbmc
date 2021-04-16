@@ -34,6 +34,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -340,7 +341,35 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       if (!thumb.empty())
         item->SetArt("thumb", thumb);
       item->SetArt("icon", "DefaultArtist.png");
+      item->SetLabel2(g_localizeStrings.Get(29904));
       m_castList->Add(item);
+    }
+    // get performers in the music video (added as actors)
+    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin();
+         it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
+    {
+      // Check to see if we have already added this performer as the artist and skip adding if so
+      auto haveArtist = std::find(std::begin(artists), std::end(artists), it->strName);
+      if (haveArtist == artists.end()) // artist or performer not already in the list
+      {
+        CFileItemPtr item(new CFileItem(it->strName));
+        if (!it->thumb.empty())
+          item->SetArt("thumb", it->thumb);
+        else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                     CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
+        { // backward compatibility
+          std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
+          if (!thumb.empty())
+          {
+            item->SetArt("thumb", thumb);
+            CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+          }
+        }
+        item->SetArt("icon", "DefaultActor.png");
+        item->SetLabel(it->strName);
+        item->SetLabel2(it->strRole);
+        m_castList->Add(item);
+      }
     }
   }
   else if (type == MediaTypeVideoCollection)
@@ -599,6 +628,23 @@ void CGUIDialogVideoInfo::DoSearch(std::string& strSearch, CFileItemList& items)
   }
   CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20391) + "] ", items);
   db.Close();
+
+  // Search for music albums by artist with name matching search string
+  CMusicDatabase music_database;
+  if (!music_database.Open())
+    return;
+
+  if (music_database.SearchAlbumsByArtistName(strSearch, movies))
+  {
+    for (int i = 0; i < movies.Size(); ++i)
+    {
+      // Set type so that video thumbloader handles album art
+      movies[i]->GetVideoInfoTag()->m_type = MediaTypeAlbum;
+    }
+    CGUIWindowVideoBase::AppendAndClearSearchItems(
+        movies, "[" + g_localizeStrings.Get(36918) + "] ", items);
+  }
+  music_database.Close();
 }
 
 void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
@@ -619,6 +665,12 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
     db.GetMusicVideoInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   db.Close();
+  if (type == VIDEODB_CONTENT_MUSICALBUMS)
+  {
+    Close();
+    CGUIDialogMusicInfo::ShowFor(const_cast<CFileItem*>(pItem));
+    return; // No video info to refresh so just close the window and go back to the fileitem list
+  }
 
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;
@@ -1421,6 +1473,9 @@ bool CGUIDialogVideoInfo::CanDeleteVideoItem(const CFileItemPtr &item)
   if (item == nullptr || !item->HasVideoInfoTag())
     return false;
 
+  if (item->GetVideoInfoTag()->m_type == "tag")
+    return true;
+
   CQueryParams params;
   CVideoDatabaseDirectory::GetQueryParams(item->GetPath(), params);
 
@@ -1451,26 +1506,34 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
 
   int heading = -1;
   VIDEODB_CONTENT_TYPE type = static_cast<VIDEODB_CONTENT_TYPE>(item->GetVideoContentType());
-  switch (type)
+  std::string& subtype = item->GetVideoInfoTag()->m_type;
+  if (subtype != "tag")
   {
-    case VIDEODB_CONTENT_MOVIES:
-      heading = 432;
-      break;
-    case VIDEODB_CONTENT_EPISODES:
-      heading = 20362;
-      break;
-    case VIDEODB_CONTENT_TVSHOWS:
-      heading = 20363;
-      break;
-    case VIDEODB_CONTENT_MUSICVIDEOS:
-      heading = 20392;
-      break;
-    case VIDEODB_CONTENT_MOVIE_SETS:
-      heading = 646;
-      break;
+    switch (type)
+    {
+      case VIDEODB_CONTENT_MOVIES:
+        heading = 432;
+        break;
+      case VIDEODB_CONTENT_EPISODES:
+        heading = 20362;
+        break;
+      case VIDEODB_CONTENT_TVSHOWS:
+        heading = 20363;
+        break;
+      case VIDEODB_CONTENT_MUSICVIDEOS:
+        heading = 20392;
+        break;
+      case VIDEODB_CONTENT_MOVIE_SETS:
+        heading = 646;
+        break;
 
-    default:
-      return false;
+      default:
+        return false;
+    }
+  }
+  else
+  {
+    heading = 10058;
   }
 
   pDialog->SetHeading(CVariant{heading});
@@ -1496,6 +1559,12 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
 
   if (item->GetVideoInfoTag()->m_iDbId < 0)
     return false;
+
+  if (subtype == "tag")
+  {
+    database.DeleteTag(item->GetVideoInfoTag()->m_iDbId, type);
+    return true;
+  }
 
   switch (type)
   {

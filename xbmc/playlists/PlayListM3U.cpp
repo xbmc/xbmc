@@ -88,8 +88,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     if (StringUtils::StartsWith(strLine, InfoMarker))
     {
       // start of info
-      size_t iColon = strLine.find(":");
-      size_t iComma = strLine.find(",");
+      size_t iColon = strLine.find(':');
+      size_t iComma = strLine.find(',');
       if (iColon != std::string::npos &&
           iComma != std::string::npos &&
           iComma > iColon)
@@ -105,8 +105,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     }
     else if (StringUtils::StartsWith(strLine, OffsetMarker))
     {
-      size_t iColon = strLine.find(":");
-      size_t iComma = strLine.find(",");
+      size_t iColon = strLine.find(':');
+      size_t iComma = strLine.find(',');
       if (iColon != std::string::npos &&
         iComma != std::string::npos &&
         iComma > iColon)
@@ -121,8 +121,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     else if (StringUtils::StartsWith(strLine, PropertyMarker)
     || StringUtils::StartsWith(strLine, VLCOptMarker))
     {
-      size_t iColon = strLine.find(":");
-      size_t iEqualSign = strLine.find("=");
+      size_t iColon = strLine.find(':');
+      size_t iEqualSign = strLine.find('=');
       if (iColon != std::string::npos &&
         iEqualSign != std::string::npos &&
         iEqualSign > iColon)

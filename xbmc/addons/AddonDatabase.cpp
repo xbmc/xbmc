@@ -169,7 +169,7 @@ void CAddonDatabaseSerializer::DeserializeExtensions(const CVariant& variant,
     for (auto content = (*value)["content"].begin_array();
          content != (*value)["content"].end_array(); ++content)
     {
-      extValues.emplace_back((*content)["key"].asString(), (*content)["value"].asString());
+      extValues.emplace_back((*content)["key"].asString(), SExtValue{(*content)["value"].asString()});
     }
 
     addonType.m_values.emplace_back(id, extValues);
@@ -702,12 +702,17 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     if (!m_pDS2)
       return false;
 
-    m_pDS2->query(PrepareSQL("SELECT * FROM addons WHERE id=%i", id));
+    m_pDS2->query(PrepareSQL("SELECT addons.*, repo.addonID as origin FROM addons "
+                             "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addons.id "
+                             "JOIN repo ON repo.id=addonlinkrepo.idRepo "
+                             "WHERE addons.id=%i",
+                             id));
     if (m_pDS2->eof())
       return false;
 
     CAddonInfoBuilder::CFromDB builder;
     builder.SetId(m_pDS2->fv("addonID").get_asString());
+    builder.SetOrigin(m_pDS2->fv("origin").get_asString());
     builder.SetVersion(AddonVersion(m_pDS2->fv("version").get_asString()));
     builder.SetName(m_pDS2->fv("name").get_asString());
     builder.SetSummary(m_pDS2->fv("summary").get_asString());

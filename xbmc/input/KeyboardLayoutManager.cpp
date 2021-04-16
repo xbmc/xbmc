@@ -138,7 +138,7 @@ inline bool LayoutSort(const StringSettingOption& i, const StringSettingOption& 
 } // namespace
 
 void CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller(
-    SettingConstPtr setting,
+    const SettingConstPtr& setting,
     std::vector<StringSettingOption>& list,
     std::string& current,
     void* data)

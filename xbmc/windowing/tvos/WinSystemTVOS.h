@@ -30,6 +30,9 @@ public:
   CWinSystemTVOS();
   virtual ~CWinSystemTVOS();
 
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   // ITimerCallback interface
   virtual void OnTimeout() override {}
 

@@ -60,11 +60,7 @@ CPVREpg::~CPVREpg()
 
 void CPVREpg::ForceUpdate()
 {
-  {
-    CSingleLock lock(m_critSection);
-    m_bUpdatePending = true;
-  }
-
+  m_bUpdatePending = true;
   m_events.Publish(PVREvent::EpgUpdatePending);
 }
 
@@ -123,6 +119,12 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByBroadcastId(unsigned int iUniqu
 {
   CSingleLock lock(m_critSection);
   return m_tags.GetTag(iUniqueBroadcastId);
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByDatabaseId(int iDatabaseId) const
+{
+  CSingleLock lock(m_critSection);
+  return m_tags.GetTagByDatabaseID(iDatabaseId);
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTime, const CDateTime& endTime, bool bUpdateFromClient /* = false */)
@@ -210,6 +212,7 @@ bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_
 
   if (newState == EPG_EVENT_CREATED || newState == EPG_EVENT_UPDATED)
   {
+    CSingleLock lock(m_critSection);
     bRet = !IsTagExpired(tag) && m_tags.UpdateEntry(tag);
   }
   else if (newState == EPG_EVENT_DELETED)
@@ -251,37 +254,66 @@ bool CPVREpg::Update(time_t start,
                      const std::shared_ptr<CPVREpgDatabase>& database,
                      bool bForceUpdate /* = false */)
 {
-  bool bGrabSuccess = true;
   bool bUpdate = false;
+  std::shared_ptr<CPVREpg> tmpEpg;
 
-  /* clean up if needed */
+  {
+    CSingleLock lock(m_critSection);
+
+    if (!m_lastScanTime.IsValid())
+    {
+      database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
+
+      if (!m_lastScanTime.IsValid())
+      {
+        m_lastScanTime.SetFromUTCDateTime(time_t(0));
+        m_bUpdateLastScanTime = true;
+      }
+    }
+
+    // enforce advanced settings update interval override for channels with no EPG data
+    if (m_tags.IsEmpty() && m_channelData->ChannelId() > 0) //! @todo why the channelid check?
+      iUpdateTime = CServiceBroker::GetSettingsComponent()
+                        ->GetAdvancedSettings()
+                        ->m_iEpgUpdateEmptyTagsInterval;
+
+    if (bForceUpdate)
+    {
+      bUpdate = true;
+    }
+    else
+    {
+      // check if we have to update
+      time_t iNow = 0;
+      CDateTime::GetUTCDateTime().GetAsTime(iNow);
+
+      time_t iLastUpdate = 0;
+      m_lastScanTime.GetAsTime(iLastUpdate);
+
+      bUpdate = (iNow > iLastUpdate + iUpdateTime);
+    }
+
+    if (bUpdate)
+    {
+      tmpEpg = std::make_shared<CPVREpg>(m_iEpgID, m_strName, m_strScraperName, m_channelData,
+                                         std::shared_ptr<CPVREpgDatabase>());
+    }
+  }
+
+  // remove obsolete tags
   Cleanup(iPastDays);
 
-  /* enforce advanced settings update interval override for channels with no EPG data */
-  if (m_tags.IsEmpty() && !bUpdate && ChannelID() > 0)
-    iUpdateTime = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEpgUpdateEmptyTagsInterval;
-
-  if (!bForceUpdate)
-  {
-    /* check if we have to update */
-    time_t iNow = 0;
-    time_t iLastUpdate = 0;
-    CDateTime::GetUTCDateTime().GetAsTime(iNow);
-    m_lastScanTime.GetAsTime(iLastUpdate);
-    bUpdate = (iNow > iLastUpdate + iUpdateTime);
-  }
-  else
-    bUpdate = true;
+  bool bGrabSuccess = true;
 
   if (bUpdate)
-    bGrabSuccess = LoadFromClients(start, end, bForceUpdate);
+  {
+    bGrabSuccess = tmpEpg->UpdateFromScraper(start, end, bForceUpdate) && UpdateEntries(*tmpEpg);
 
-  if (!bGrabSuccess)
-    CLog::LogF(LOGERROR, "Failed to update table '{}'", Name());
+    if (!bGrabSuccess)
+      CLog::LogF(LOGERROR, "Failed to update table '{}'", Name());
+  }
 
-  CSingleLock lock(m_critSection);
   m_bUpdatePending = false;
-
   return bGrabSuccess;
 }
 
@@ -324,7 +356,7 @@ bool CPVREpg::QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database
   return true;
 }
 
-bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)
+bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& database)
 {
   if (!database)
   {
@@ -332,11 +364,16 @@ bool CPVREpg::Delete(const std::shared_ptr<CPVREpgDatabase>& database)
     return false;
   }
 
+  CSingleLock lock(m_critSection);
+
   // delete own epg db entry
-  database->Delete(*this);
+  database->QueueDeleteEpgQuery(*this);
+
+  // delete last scan time db entry for this epg
+  database->QueueDeleteLastEpgScanTimeQuery(*this);
 
   // delete all tags for this epg from db
-  m_tags.Delete();
+  m_tags.QueueDelete();
 
   Clear();
 
@@ -454,18 +491,6 @@ const std::string& CPVREpg::ConvertGenreIdToString(int iID, int iSubID)
   return g_localizeStrings.Get(iLabelId);
 }
 
-bool CPVREpg::LoadFromClients(time_t start, time_t end, bool bForceUpdate)
-{
-  bool bReturn = false;
-
-  const std::shared_ptr<CPVREpg> tmpEpg = std::make_shared<CPVREpg>(
-      m_iEpgID, m_strName, m_strScraperName, m_channelData, std::shared_ptr<CPVREpgDatabase>());
-  if (tmpEpg->UpdateFromScraper(start, end, bForceUpdate))
-    bReturn = UpdateEntries(*tmpEpg);
-
-  return bReturn;
-}
-
 std::shared_ptr<CPVREpgChannelData> CPVREpg::GetChannelData() const
 {
   CSingleLock lock(m_critSection);
@@ -505,14 +530,13 @@ int CPVREpg::EpgID() const
 
 bool CPVREpg::UpdatePending() const
 {
-  CSingleLock lock(m_critSection);
   return m_bUpdatePending;
 }
 
 bool CPVREpg::NeedsSave() const
 {
   CSingleLock lock(m_critSection);
-  return m_bChanged || m_tags.NeedsSave();
+  return m_bChanged || m_bUpdateLastScanTime || m_tags.NeedsSave();
 }
 
 bool CPVREpg::IsValid() const
@@ -522,4 +546,9 @@ bool CPVREpg::IsValid() const
     return m_channelData->ClientId() != -1 && m_channelData->UniqueClientChannelId() != PVR_CHANNEL_INVALID_UID;
 
   return true;
+}
+
+void CPVREpg::RemovedFromContainer()
+{
+  m_events.Publish(PVREvent::EpgDeleted);
 }

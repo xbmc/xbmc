@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Birtustilling"
+msgid "Brightness level"
+msgstr "Birtustig"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Styrkur í prósentum hve skjár verður með mikla birtu."
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "Kjörstillingar"

@@ -196,6 +196,11 @@
 			<visible>!String.IsEmpty(ListItem.TrackNumber)</visible>
 		</item>
 		<item>
+			<label>$LOCALIZE[427]:</label>
+			<label2>$INFO[ListItem.DiscNumber]$INFO[ListItem.DiscTitle, - ]</label2>
+			<visible>Integer.IsGreater(ListItem.TotalDiscs,1)</visible>
+		</item>
+		<item>
 			<label>$LOCALIZE[38080]:</label>
 			<label2>$INFO[ListItem.Bpm]</label2>
 			<visible>!String.IsEmpty(ListItem.Bpm)</visible>

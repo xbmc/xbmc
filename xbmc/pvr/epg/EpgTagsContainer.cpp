@@ -96,7 +96,7 @@ bool FixOverlap(const std::shared_ptr<CPVREpgInfoTag>& previousTag,
   if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
   {
     // delete the current tag. it's completely overlapped
-    CLog::LogF(LOGWARNING,
+    CLog::LogF(LOGDEBUG,
                "Erasing completely overlapped event from EPG timeline "
                "({} - {} - {} - {}) "
                "({} - {} - {} - {}).",
@@ -111,7 +111,7 @@ bool FixOverlap(const std::shared_ptr<CPVREpgInfoTag>& previousTag,
   else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
   {
     // fix the end time of the predecessor of the event
-    CLog::LogF(LOGWARNING,
+    CLog::LogF(LOGDEBUG,
                "Fixing partly overlapped event in EPG timeline "
                "({} - {} - {} - {}) "
                "({} - {} - {} - {}).",
@@ -364,6 +364,23 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTag(unsigned int iUniqu
 
   if (m_database)
     return CreateEntry(m_database->GetEpgTagByUniqueBroadcastID(m_iEpgID, iUniqueBroadcastID));
+
+  return {};
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTagByDatabaseID(int iDatabaseID) const
+{
+  if (iDatabaseID <= 0)
+    return {};
+
+  for (const auto& tag : m_changedTags)
+  {
+    if (tag.second->DatabaseID() == iDatabaseID)
+      return tag.second;
+  }
+
+  if (m_database)
+    return CreateEntry(m_database->GetEpgTagByDatabaseID(m_iEpgID, iDatabaseID));
 
   return {};
 }
@@ -626,10 +643,10 @@ void CPVREpgTagsContainer::QueuePersistQuery()
   }
 }
 
-void CPVREpgTagsContainer::Delete()
+void CPVREpgTagsContainer::QueueDelete()
 {
   if (m_database)
-    m_database->DeleteEpgTags(m_iEpgID);
+    m_database->QueueDeleteEpgTags(m_iEpgID);
 
   Clear();
 }

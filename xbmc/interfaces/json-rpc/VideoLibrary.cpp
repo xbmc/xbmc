@@ -508,6 +508,86 @@ JSONRPC_STATUS CVideoLibrary::GetTags(const std::string &method, ITransportLayer
   return OK;
 }
 
+namespace
+{
+  const std::map<std::string, std::string> mediaIDTypes = {
+    {"episodeid", MediaTypeEpisode},
+    {"tvshowid", MediaTypeTvShow},
+    {"seasonid", MediaTypeSeason},
+    {"movieid", MediaTypeMovie},
+    {"setid", MediaTypeVideoCollection},
+    {"musicvideoid", MediaTypeMusicVideo},
+  };
+}
+
+JSONRPC_STATUS CVideoLibrary::GetAvailableArtTypes(const std::string& method, ITransportLayer* transport, IClient* client, const CVariant& parameterObject, CVariant& result)
+{
+  std::string mediaType;
+  int mediaID = -1;
+  for (const auto& mediaIDType : mediaIDTypes) {
+    if (parameterObject["item"].isMember(mediaIDType.first))
+    {
+      mediaType = mediaIDType.second;
+      mediaID = parameterObject["item"][mediaIDType.first].asInteger32();
+      break;
+    }
+  }
+  if (mediaID == -1)
+    return InternalError;
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVariant availablearttypes = CVariant(CVariant::VariantTypeArray);
+  for (const auto& artType : videodatabase.GetAvailableArtTypesForItem(mediaID, mediaType))
+  {
+    availablearttypes.append(artType);
+  }
+  result = CVariant(CVariant::VariantTypeObject);
+  result["availablearttypes"] = availablearttypes;
+
+  return OK;
+}
+
+JSONRPC_STATUS CVideoLibrary::GetAvailableArt(const std::string& method, ITransportLayer* transport, IClient* client, const CVariant& parameterObject, CVariant& result)
+{
+  std::string mediaType;
+  int mediaID = -1;
+  for (const auto& mediaIDType : mediaIDTypes) {
+    if (parameterObject["item"].isMember(mediaIDType.first))
+    {
+      mediaType = mediaIDType.second;
+      mediaID = parameterObject["item"][mediaIDType.first].asInteger32();
+      break;
+    }
+  }
+  if (mediaID == -1)
+    return InternalError;
+
+  std::string artType = parameterObject["arttype"].asString();
+  StringUtils::ToLower(artType);
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVariant availableart = CVariant(CVariant::VariantTypeArray);
+  for (const auto& artentry : videodatabase.GetAvailableArtForItem(mediaID, mediaType, artType))
+  {
+    CVariant item = CVariant(CVariant::VariantTypeObject);
+    item["url"] = CTextureUtils::GetWrappedImageURL(artentry.m_url);
+    item["arttype"] = artentry.m_aspect;
+    if (!artentry.m_preview.empty())
+      item["previewurl"] = CTextureUtils::GetWrappedImageURL(artentry.m_preview);
+    availableart.append(item);
+  }
+  result = CVariant(CVariant::VariantTypeObject);
+  result["availableart"] = availableart;
+
+  return OK;
+}
+
 JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int id = (int)parameterObject["movieid"].asInteger();
@@ -692,7 +772,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   std::set<std::string> updatedDetails;
   UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
-  if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) <= 0)
+  if (videodatabase.SetDetailsForEpisode(infos, artwork, tvshowid, id) <= 0)
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeEpisode, removedArtwork))
@@ -743,7 +823,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   // due to scrapers not supporting them
   videodatabase.RemoveTagsFromItem(id, MediaTypeMusicVideo);
 
-  if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
+  if (videodatabase.SetDetailsForMusicVideo(infos, artwork, id) <= 0)
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeMusicVideo, removedArtwork))

@@ -138,11 +138,11 @@ void CPVRGUITimerInfo::UpdateNextTimer()
     strNextRecordingChannelIcon = StringUtils::Format("%s", timer->ChannelIcon().c_str());
     strNextRecordingTime = StringUtils::Format("%s", timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
-    strNextTimerInfo = StringUtils::Format("%s %s %s %s",
-        g_localizeStrings.Get(19106).c_str(),
-        timer->StartAsLocalTime().GetAsLocalizedDate(true).c_str(),
-        g_localizeStrings.Get(19107).c_str(),
-        timer->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false).c_str());
+    strNextTimerInfo =
+        StringUtils::Format("%s %s %s %s", g_localizeStrings.Get(19106).c_str(),
+                            timer->StartAsLocalTime().GetAsLocalizedDate(true).c_str(),
+                            g_localizeStrings.Get(19107).c_str(),
+                            timer->StartAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
 
   CSingleLock lock(m_critSection);

@@ -68,7 +68,7 @@ namespace audioengine
 ///
 /// ------------------------------------------------------------------------
 ///
-/// It has the header \ref AudioEngine.h "#include <kodi/AudioEngine.h>" be included
+/// It has the header @ref AudioEngine.h "#include <kodi/AudioEngine.h>" be included
 /// to enjoy it.
 ///
 //------------------------------------------------------------------------------
@@ -262,8 +262,8 @@ public:
   /// @brief Contructs new class to an Kodi IAEStream in the format specified.
   ///
   /// @param[in] format       The data format the incoming audio will be in
-  ///                         (e.g. \ref AUDIOENGINE_FMT_S16LE)
-  /// @param[in] options      [opt] A bit field of stream options (see: enum \ref AudioEngineStreamOptions)
+  ///                         (e.g. @ref AUDIOENGINE_FMT_S16LE)
+  /// @param[in] options      [opt] A bit field of stream options (see: enum @ref AudioEngineStreamOptions)
   ///
   ///
   /// ------------------------------------------------------------------------

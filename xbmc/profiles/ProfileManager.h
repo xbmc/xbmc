@@ -191,7 +191,7 @@ public:
 
 protected:
   // implementation of ISettingCallback
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
   /*! \brief Set the current profile id and update the special://profile path

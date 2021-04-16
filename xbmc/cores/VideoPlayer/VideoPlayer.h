@@ -18,7 +18,7 @@
 #include "VideoPlayerTeletext.h"
 #include "VideoPlayerVideo.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
@@ -192,6 +192,7 @@ struct SelectionStream
   int height = 0;
   CRect SrcRect;
   CRect DestRect;
+  CRect VideoRect;
   std::string stereo_mode;
   float aspect_ratio = 0.0f;
 };
@@ -207,10 +208,12 @@ public:
   SelectionStream& Get(StreamType type, int index);
   bool Get(StreamType type, StreamFlags flag, SelectionStream& out);
   void Clear(StreamType type, StreamSource source);
-  int Source(StreamSource source, std::string filename);
+  int Source(StreamSource source, const std::string& filename);
   void Update(SelectionStream& s);
-  void Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux* demuxer);
-  void Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux* demuxer, std::string filename2);
+  void Update(const std::shared_ptr<CDVDInputStream>& input, CDVDDemux* demuxer);
+  void Update(const std::shared_ptr<CDVDInputStream>& input,
+              CDVDDemux* demuxer,
+              const std::string& filename2);
 
   std::vector<SelectionStream> Get(StreamType type);
   template<typename Compare> std::vector<SelectionStream> Get(StreamType type, Compare compare)

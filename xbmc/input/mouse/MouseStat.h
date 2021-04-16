@@ -146,12 +146,15 @@ private:
     BUTTON_ACTION Update(unsigned int time, int x, int y, bool down);
 
   private:
-    static const unsigned int click_confines = 5; ///< number of pixels that the pointer may move
-                                                  ///< while the button is down to trigger a click
-    static const unsigned int short_click_time =
-        1000; ///< time for mouse down/up to trigger a short click rather than a long click
-    static const unsigned int double_click_time =
-        500; ///< time for mouse down following a short click to trigger a double click
+    //! number of pixels that the pointer may move while the button is down to
+    //! trigger a click
+    static const unsigned int click_confines = 5;
+
+    //! Time for mouse down/up to trigger a short click rather than a long click
+    static const unsigned int short_click_time = 1000;
+
+    //! Time for mouse down following a short click to trigger a double click
+    static const unsigned int double_click_time = 500;
 
     bool InClickRange(int x, int y) const;
 

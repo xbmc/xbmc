@@ -442,7 +442,7 @@ void CMusicInfoTag::SetYear(int year)
     m_strReleaseDate.clear();
 }
 
-void CMusicInfoTag::SetDatabaseId(long id, const std::string &type)
+void CMusicInfoTag::SetDatabaseId(int id, const std::string &type)
 {
   m_iDbId = id;
   m_type = type;
@@ -758,7 +758,7 @@ void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
   m_albumReleaseType = releaseType;
 }
 
-void CMusicInfoTag::SetType(const MediaType mediaType)
+void CMusicInfoTag::SetType(const MediaType& mediaType)
 {
   m_type = mediaType;
 }
@@ -1107,7 +1107,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     for (int i = 0; i < iMusicRolesSize; ++i)
     {
       int idRole;
-      long idArtist;
+      int idArtist;
       std::string strArtist;
       std::string strRole;
       ar >> idRole;

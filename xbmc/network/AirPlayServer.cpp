@@ -157,10 +157,13 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                               const std::string& message,
                               const CVariant& data)
 {
+  // We are only interested in player changes
+  if ((flag & ANNOUNCEMENT::Player) == 0)
+    return;
+
   CSingleLock lock(ServerInstanceLock);
 
-  if ((flag & ANNOUNCEMENT::Player) &&
-      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
+  if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
   {
     if (message == "OnStop")
     {

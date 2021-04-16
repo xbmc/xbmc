@@ -18,6 +18,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <utility>
+
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {
   m_effect = effect;
@@ -695,7 +697,7 @@ CScroller::CScroller(unsigned int duration /* = 200 */, std::shared_ptr<Tweener>
   m_startPosition = 0;
   m_hasResumePoint = false;
   m_duration = duration > 0 ? duration : 1;
-  m_pTweener = tweener;
+  m_pTweener = std::move(tweener);
 }
 
 CScroller::CScroller(const CScroller& right)

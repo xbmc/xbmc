@@ -14,17 +14,20 @@
 
 #if defined(HAS_DX)
 #include "guilib/GUIShaderDX.h"
+#include "guilib/TextureDX.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
+#endif
+
+#if defined(HAS_GL) || defined(HAS_GLES)
+#include "system_gl.h"
 #endif
 
 #include <cstddef>
 
 using namespace KODI;
 using namespace RETRO;
-
-#define BUFFER_OFFSET(i) (static_cast<char*>(NULL) + (i))
 
 // --- CRendererFactoryGuiTexture ----------------------------------------------
 
@@ -126,7 +129,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
     pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
     // Set state to render the image
-    CTexture* dxTexture = renderBuffer->GetTexture();
+    auto dxTexture = static_cast<CDXTexture*>(renderBuffer->GetTexture());
     ID3D11ShaderResourceView* shaderRes = dxTexture->GetShaderResource();
     pGUIShader->SetShaderViews(1, &shaderRes);
     pGUIShader->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
@@ -185,9 +188,9 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, x)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(tex0Loc);

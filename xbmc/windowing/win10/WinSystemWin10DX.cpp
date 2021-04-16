@@ -13,10 +13,16 @@
 #include "rendering/dx/DirectXHelper.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+#include "windowing/WindowSystemFactory.h"
 
 #include "platform/win32/WIN32Util.h"
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemWin10DX::Register()
+{
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemWin10DX::CreateWinSystem()
 {
   return std::make_unique<CWinSystemWin10DX>();
 }
@@ -176,6 +182,11 @@ bool CWinSystemWin10DX::IsHDROutput() const
   return m_deviceResources->IsHDROutput();
 }
 
+bool CWinSystemWin10DX::IsTransferPQ() const
+{
+  return m_deviceResources->IsTransferPQ();
+}
+
 void CWinSystemWin10DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 {
   m_deviceResources->SetHdrMetaData(hdr10);
@@ -184,4 +195,9 @@ void CWinSystemWin10DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 void CWinSystemWin10DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
 {
   m_deviceResources->SetHdrColorSpace(colorSpace);
+}
+
+DEBUG_INFO_RENDER CWinSystemWin10DX::GetDebugInfo()
+{
+  return m_deviceResources->GetDebugInfo();
 }

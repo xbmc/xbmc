@@ -114,6 +114,7 @@ public:
     virtual double GetTimeStampCorrection() { return 0.0; };
     virtual bool GetState(std::string &xmlstate) = 0;
     virtual bool SetState(const std::string &xmlstate) = 0;
+    virtual bool CanSeek() { return !IsInMenu(); };
   };
 
   class IDemux
@@ -186,7 +187,7 @@ public:
   virtual ITimes* GetITimes() { return nullptr; }
   virtual IChapter* GetIChapter() { return nullptr; }
 
-  const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
+  const CVariant& GetProperty(const std::string& key) { return m_item.GetProperty(key); }
 
 protected:
   DVDStreamType m_streamType;

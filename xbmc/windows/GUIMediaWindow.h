@@ -154,7 +154,7 @@ protected:
   void SetHistoryForPath(const std::string& strDirectory);
   virtual void LoadPlayList(const std::string& strFileName) {}
   virtual bool OnPlayMedia(int iItem, const std::string &player = "");
-  virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player = "");
+  virtual bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "");
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);

@@ -16,18 +16,29 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#include <cstddef>
 
-CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
-: CGUITextureBase(posX, posY, width, height, texture)
+CGUITexture* CGUITexture::CreateTexture(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
 {
-  memset(m_col, 0, sizeof(m_col));
+  return new CGUITextureGL(posX, posY, width, height, texture);
+}
+
+CGUITextureGL::CGUITextureGL(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+  : CGUITexture(posX, posY, width, height, texture)
+{
   m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+}
+
+CGUITextureGL* CGUITextureGL::Clone() const
+{
+  return new CGUITextureGL(*this);
 }
 
 void CGUITextureGL::Begin(UTILS::Color color)
 {
-  CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
+  CTexture* texture = m_texture.m_textures[m_currentFrame];
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
@@ -105,13 +116,16 @@ void CGUITextureGL::End()
 
     if (m_diffuse.size())
     {
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u2)));
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u2)));
       glEnableVertexAttribArray(tex1Loc);
     }
 
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
     glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
     glEnableVertexAttribArray(tex0Loc);
 
     glGenBuffers(1, &IndexVBO);
@@ -231,7 +245,10 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   }
 }
 
-void CGUITextureGL::DrawQuad(const CRect &rect, UTILS::Color color, CBaseTexture *texture, const CRect *texCoords)
+void CGUITexture::DrawQuad(const CRect& rect,
+                           UTILS::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
 {
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (texture)
@@ -306,12 +323,14 @@ void CGUITextureGL::DrawQuad(const CRect &rect, UTILS::Color color, CBaseTexture
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
   glEnableVertexAttribArray(posLoc);
 
   if (texture)
   {
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
     glEnableVertexAttribArray(tex0Loc);
   }
 

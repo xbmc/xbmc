@@ -31,7 +31,7 @@ extern "C" {
 class CRenderCapture;
 class CRenderSystemGL;
 
-class CBaseTexture;
+class CTexture;
 namespace Shaders { class BaseYUV2RGBGLSLShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 
@@ -103,6 +103,7 @@ protected:
   virtual void LoadShaders(int field=FIELD_FULL);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+  void CheckVideoParameters(int index);
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
   // textures
@@ -185,7 +186,7 @@ protected:
   struct CPictureBuffer
   {
     CPictureBuffer();
-   ~CPictureBuffer();
+    ~CPictureBuffer() = default;
 
     CYuvPlane fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
@@ -219,6 +220,7 @@ protected:
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
   bool m_toneMap = false;
+  int m_toneMapMethod = 0;
   float m_clearColour = 0.0f;
   bool m_pboSupported = true;
   bool m_pboUsed = false;

@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Ваш рейтинг"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Додаткові відомості"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Стор."
@@ -192,10 +196,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Доступно"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Натисніть [B]OK[/B] для зупинки"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "відібрано"
@@ -203,10 +203,6 @@ msgstr "відібрано"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Стиль Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Натисніть стрілку [B]ліворуч[/B] для перемотування назад або [B]праворуч[/B] для перемотування вперед"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -487,10 +483,6 @@ msgstr "Категорії"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Вибрати набір фанартів жанрів"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Репозиторій"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

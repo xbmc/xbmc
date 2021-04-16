@@ -153,7 +153,7 @@ bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
 void CPVREpgInfoTag::Serialize(CVariant& value) const
 {
   CSingleLock lock(m_critSection);
-  value["broadcastid"] = m_iUniqueBroadcastID;
+  value["broadcastid"] = m_iDatabaseID; // Use DB id here as it is unique across PVR clients
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_iParentalRating;
   value["rating"] = m_iStarRating;
@@ -177,14 +177,11 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["episodename"] = m_strEpisodeName;
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
-  value["hastimer"] = false; // compat
-  value["hastimerrule"] = false; // compat
-  value["hasrecording"] = false; // compat
-  value["recording"] = ""; // compat
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
   value["isseries"] = IsSeries();
   value["serieslink"] = m_strSeriesLink;
+  value["clientid"] = m_channelData->ClientId();
 }
 
 int CPVREpgInfoTag::ClientID() const

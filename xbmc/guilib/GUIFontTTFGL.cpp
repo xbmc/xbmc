@@ -32,10 +32,13 @@
 #include FT_OUTLINE_H
 
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
-: CGUIFontTTFBase(strFileName)
+CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fileName)
+{
+  return new CGUIFontTTFGL(fileName);
+}
+
+CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName) : CGUIFontTTF(strFileName)
 {
   m_updateY1 = 0;
   m_updateY2 = 0;
@@ -155,9 +158,12 @@ void CGUIFontTTFGL::LastEnd()
     glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
 
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, x)));
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, r)));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex), BUFFER_OFFSET(offsetof(SVertex, u)));
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
+    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
 
@@ -318,11 +324,11 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
   }
 }
 
-CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
+CTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
-  newHeight = CBaseTexture::PadPow2(newHeight);
+  newHeight = CTexture::PadPow2(newHeight);
 
-  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
+  CTexture* newTexture = CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
   if (!newTexture || newTexture->GetPixels() == NULL)
   {

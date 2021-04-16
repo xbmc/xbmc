@@ -12,16 +12,21 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "tags/MusicInfoTag.h"
 
+#include <utility>
 
 namespace CONTEXTMENU
 {
 
 CMusicInfo::CMusicInfo(MediaType mediaType)
-      : CStaticContextMenuAction(19033), m_mediaType(mediaType) {}
+  : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
+{
+}
 
 bool CMusicInfo::IsVisible(const CFileItem& item) const
 {
-  return item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == m_mediaType;
+  return (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == m_mediaType) ||
+         (m_mediaType == MediaTypeArtist && item.IsVideoDb() && item.HasProperty("artist_musicid")) ||
+         (m_mediaType == MediaTypeAlbum && item.IsVideoDb() && item.HasProperty("album_musicid"));
 }
 
 bool CMusicInfo::Execute(const CFileItemPtr& item) const

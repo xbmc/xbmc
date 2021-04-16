@@ -82,7 +82,7 @@ private:
 
   static std::string GetHtmlEncodingFromHead(const std::string& htmlContent);
   static size_t GetHtmlAttribute(const std::string& htmlContent, size_t pos, std::string& atrName, std::string& strValue);
-  static std::string ExtractEncodingFromHtmlMeta(std::string metaContent, size_t pos = 0);
+  static std::string ExtractEncodingFromHtmlMeta(const std::string& metaContent, size_t pos = 0);
 
   static bool checkConversion(const std::string& srcCharset, const std::string& src, std::string& dst);
   static void appendCharAsAsciiUpperCase(std::string& str, const char chr);

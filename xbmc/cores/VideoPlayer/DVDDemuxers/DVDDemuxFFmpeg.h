@@ -83,7 +83,7 @@ public:
   CDVDDemuxFFmpeg();
   ~CDVDDemuxFFmpeg() override;
 
-  bool Open(std::shared_ptr<CDVDInputStream> pInput, bool fileinfo);
+  bool Open(const std::shared_ptr<CDVDInputStream>& pInput, bool fileinfo);
   void Dispose();
   bool Reset() override ;
   void Flush() override;

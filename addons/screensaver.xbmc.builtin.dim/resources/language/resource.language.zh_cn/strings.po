@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "变暗级别"
+msgid "Brightness level"
+msgstr "亮度等级"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "等级，以百分比表示屏幕保持照明的强度。"
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "偏好设置"

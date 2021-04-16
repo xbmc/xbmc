@@ -36,9 +36,23 @@ CPVRRecordings::~CPVRRecordings()
 void CPVRRecordings::UpdateFromClients()
 {
   CSingleLock lock(m_critSection);
-  Unload();
-  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false);
-  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true);
+
+  for (const auto& recording : m_recordings)
+    recording.second->SetDirty(true);
+
+  std::vector<int> failedClients;
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true, failedClients);
+
+  // remove recordings that were deleted at the backend
+  for (auto it = m_recordings.begin(); it != m_recordings.end();)
+  {
+    if ((*it).second->IsDirty() && std::find(failedClients.begin(), failedClients.end(),
+                                             (*it).second->ClientID()) == failedClients.end())
+      it = m_recordings.erase(it);
+    else
+      ++it;
+  }
 }
 
 int CPVRRecordings::Load()
@@ -185,7 +199,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std:
   return retVal;
 }
 
-void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
+void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
+                                      const CPVRClient& client)
 {
   CSingleLock lock(m_critSection);
 
@@ -200,11 +215,12 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag)
   std::shared_ptr<CPVRRecording> existingTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
   if (existingTag)
   {
-    existingTag->Update(*tag);
+    existingTag->Update(*tag, client);
+    existingTag->SetDirty(false);
   }
   else
   {
-    tag->UpdateMetadata(GetVideoDatabase());
+    tag->UpdateMetadata(GetVideoDatabase(), client);
     tag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert({CPVRRecordingUid(tag->m_iClientId, tag->m_strRecordingId), tag});
     if (tag->IsRadio())

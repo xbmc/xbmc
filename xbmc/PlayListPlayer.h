@@ -63,14 +63,17 @@ public:
   /*! \brief Creates a new playlist for an item and starts playing it
    \param pItem The item to play.
    */
-  bool Play(const CFileItemPtr &pItem, std::string player);
+  bool Play(const CFileItemPtr& pItem, const std::string& player);
 
   /*! \brief Start playing a particular entry in the current playlist
    \param index the index of the item to play. This value is modified to ensure it lies within the current playlist.
    \param replace whether this item should replace the currently playing item. See CApplication::PlayFile (defaults to false).
    \param playPreviousOnFail whether to go back to the previous item if playback fails (default to false)
    */
-  bool Play(int index, std::string player, bool replace = false, bool playPreviousOnFail = false);
+  bool Play(int index,
+            const std::string& player,
+            bool replace = false,
+            bool playPreviousOnFail = false);
 
   /*! \brief Returns the index of the current item in active playlist.
    \return Current item in the active playlist.

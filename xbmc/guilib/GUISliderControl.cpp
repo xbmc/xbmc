@@ -23,13 +23,23 @@ static const SliderAction actions[] = {
   {"volume",   "SetVolume(%2f)",                     PLAYER_VOLUME,                   true}
  };
 
-CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType, ORIENTATION orientation)
-    : CGUIControl(parentID, controlID, posX, posY, width, height)
-    , m_guiBackground(posX, posY, width, height, backGroundTexture)
-    , m_guiSelectorLower(posX, posY, width, height, nibTexture)
-    , m_guiSelectorUpper(posX, posY, width, height, nibTexture)
-    , m_guiSelectorLowerFocus(posX, posY, width, height, nibTextureFocus)
-    , m_guiSelectorUpperFocus(posX, posY, width, height, nibTextureFocus)
+CGUISliderControl::CGUISliderControl(int parentID,
+                                     int controlID,
+                                     float posX,
+                                     float posY,
+                                     float width,
+                                     float height,
+                                     const CTextureInfo& backGroundTexture,
+                                     const CTextureInfo& nibTexture,
+                                     const CTextureInfo& nibTextureFocus,
+                                     int iType,
+                                     ORIENTATION orientation)
+  : CGUIControl(parentID, controlID, posX, posY, width, height),
+    m_guiBackground(CGUITexture::CreateTexture(posX, posY, width, height, backGroundTexture)),
+    m_guiSelectorLower(CGUITexture::CreateTexture(posX, posY, width, height, nibTexture)),
+    m_guiSelectorUpper(CGUITexture::CreateTexture(posX, posY, width, height, nibTexture)),
+    m_guiSelectorLowerFocus(CGUITexture::CreateTexture(posX, posY, width, height, nibTextureFocus)),
+    m_guiSelectorUpperFocus(CGUITexture::CreateTexture(posX, posY, width, height, nibTextureFocus))
 {
   m_iType = iType;
   m_rangeSelection = false;
@@ -53,13 +63,38 @@ CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, fl
   m_action = NULL;
 }
 
-CGUISliderControl::~CGUISliderControl(void) = default;
+CGUISliderControl::CGUISliderControl(const CGUISliderControl& control)
+  : CGUIControl(control),
+    m_guiBackground(control.m_guiBackground->Clone()),
+    m_guiSelectorLower(control.m_guiSelectorLower->Clone()),
+    m_guiSelectorUpper(control.m_guiSelectorUpper->Clone()),
+    m_guiSelectorLowerFocus(control.m_guiSelectorLowerFocus->Clone()),
+    m_guiSelectorUpperFocus(control.m_guiSelectorUpperFocus->Clone()),
+    m_iType(control.m_iType),
+    m_rangeSelection(control.m_rangeSelection),
+    m_currentSelector(control.m_currentSelector),
+    m_percentValues(control.m_percentValues),
+    m_intValues(control.m_intValues),
+    m_iStart(control.m_iStart),
+    m_iInterval(control.m_iInterval),
+    m_iEnd(control.m_iEnd),
+    m_floatValues(control.m_floatValues),
+    m_fStart(control.m_fStart),
+    m_fInterval(control.m_fInterval),
+    m_fEnd(control.m_fEnd),
+    m_iInfoCode(control.m_iInfoCode),
+    m_textValue(control.m_textValue),
+    m_action(control.m_action),
+    m_dragging(control.m_dragging),
+    m_orientation(control.m_orientation)
+{
+}
 
 void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   bool dirty = false;
 
-  dirty |= m_guiBackground.SetPosition( m_posX, m_posY );
+  dirty |= m_guiBackground->SetPosition(m_posX, m_posY);
   int infoCode = m_iInfoCode;
   if (m_action && (!m_dragging || m_action->fireOnDrag))
     infoCode = m_action->infoCode;
@@ -70,27 +105,33 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
       SetIntValue(val);
   }
 
-  dirty |= m_guiBackground.SetHeight(m_height);
-  dirty |= m_guiBackground.SetWidth(m_width);
-  dirty |= m_guiBackground.Process(currentTime);
+  dirty |= m_guiBackground->SetHeight(m_height);
+  dirty |= m_guiBackground->SetWidth(m_width);
+  dirty |= m_guiBackground->Process(currentTime);
 
-  CGUITexture &nibLower = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
+  CGUITexture* nibLower =
+      (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower)
+          ? m_guiSelectorLowerFocus.get()
+          : m_guiSelectorLower.get();
 
   float fScale = 1.0f;
 
-  if (m_orientation == HORIZONTAL && m_guiBackground.GetTextureHeight() != 0)
-    fScale = m_height / m_guiBackground.GetTextureHeight();
-  else if (m_width != 0 && nibLower.GetTextureWidth() != 0)
-    fScale = m_width / nibLower.GetTextureWidth();
+  if (m_orientation == HORIZONTAL && m_guiBackground->GetTextureHeight() != 0)
+    fScale = m_height / m_guiBackground->GetTextureHeight();
+  else if (m_width != 0 && nibLower->GetTextureWidth() != 0)
+    fScale = m_width / nibLower->GetTextureWidth();
   dirty |= ProcessSelector(nibLower, currentTime, fScale, RangeSelectorLower);
   if (m_rangeSelection)
   {
-    CGUITexture &nibUpper = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
+    CGUITexture* nibUpper =
+        (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper)
+            ? m_guiSelectorUpperFocus.get()
+            : m_guiSelectorUpper.get();
 
-    if (m_orientation == HORIZONTAL && m_guiBackground.GetTextureHeight() != 0)
-      fScale = m_height / m_guiBackground.GetTextureHeight();
-    else if (m_width != 0 && nibUpper.GetTextureWidth() != 0)
-      fScale = m_width / nibUpper.GetTextureWidth();
+    if (m_orientation == HORIZONTAL && m_guiBackground->GetTextureHeight() != 0)
+      fScale = m_height / m_guiBackground->GetTextureHeight();
+    else if (m_width != 0 && nibUpper->GetTextureWidth() != 0)
+      fScale = m_width / nibUpper->GetTextureWidth();
 
     dirty |= ProcessSelector(nibUpper, currentTime, fScale, RangeSelectorUpper);
   }
@@ -101,26 +142,29 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
-bool CGUISliderControl::ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScale, RangeSelector selector)
+bool CGUISliderControl::ProcessSelector(CGUITexture* nib,
+                                        unsigned int currentTime,
+                                        float fScale,
+                                        RangeSelector selector)
 {
   bool dirty = false;
   // we render the nib centered at the appropriate percentage, except where the nib
   // would overflow the background image
   if (m_orientation == HORIZONTAL)
   {
-    dirty |= nib.SetHeight(nib.GetTextureHeight() * fScale);
-    dirty |= nib.SetWidth(nib.GetHeight() * 2);
+    dirty |= nib->SetHeight(nib->GetTextureHeight() * fScale);
+    dirty |= nib->SetWidth(nib->GetHeight() * 2);
   }
   else
   {
-    dirty |= nib.SetWidth(nib.GetTextureWidth() * fScale);
-    dirty |= nib.SetHeight(nib.GetWidth() * 2);
+    dirty |= nib->SetWidth(nib->GetTextureWidth() * fScale);
+    dirty |= nib->SetHeight(nib->GetWidth() * 2);
   }
   CAspectRatio ratio(CAspectRatio::AR_KEEP);
   ratio.align = ASPECT_ALIGN_LEFT | ASPECT_ALIGNY_CENTER;
-  dirty |= nib.SetAspectRatio(ratio);
-  dirty |= nib.Process(currentTime);
-  CRect rect = nib.GetRenderRect();
+  dirty |= nib->SetAspectRatio(ratio);
+  dirty |= nib->Process(currentTime);
+  CRect rect = nib->GetRenderRect();
 
   float offset;
   if (m_orientation == HORIZONTAL)
@@ -130,7 +174,8 @@ bool CGUISliderControl::ProcessSelector(CGUITexture &nib, unsigned int currentTi
       offset = m_width - rect.Width();
     if (offset < 0)
       offset = 0;
-    dirty |= nib.SetPosition(m_guiBackground.GetXPosition() + offset, m_guiBackground.GetYPosition());
+    dirty |=
+        nib->SetPosition(m_guiBackground->GetXPosition() + offset, m_guiBackground->GetYPosition());
   }
   else
   {
@@ -139,22 +184,31 @@ bool CGUISliderControl::ProcessSelector(CGUITexture &nib, unsigned int currentTi
       offset = m_height - rect.Height();
     if (offset < 0)
       offset = 0;
-    dirty |= nib.SetPosition(m_guiBackground.GetXPosition(), m_guiBackground.GetYPosition() + m_guiBackground.GetHeight() - offset - ((nib.GetHeight() - rect.Height()) / 2 + rect.Height()));
+    dirty |=
+        nib->SetPosition(m_guiBackground->GetXPosition(),
+                         m_guiBackground->GetYPosition() + m_guiBackground->GetHeight() - offset -
+                             ((nib->GetHeight() - rect.Height()) / 2 + rect.Height()));
   }
-  dirty |= nib.Process(currentTime); // need to process again as the position may have changed
+  dirty |= nib->Process(currentTime); // need to process again as the position may have changed
 
   return dirty;
 }
 
 void CGUISliderControl::Render()
 {
-  m_guiBackground.Render();
-  CGUITexture &nibLower = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
-  nibLower.Render();
+  m_guiBackground->Render();
+  CGUITexture* nibLower =
+      (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower)
+          ? m_guiSelectorLowerFocus.get()
+          : m_guiSelectorLower.get();
+  nibLower->Render();
   if (m_rangeSelection)
   {
-    CGUITexture &nibUpper = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
-    nibUpper.Render();
+    CGUITexture* nibUpper =
+        (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper)
+            ? m_guiSelectorUpperFocus.get()
+            : m_guiSelectorUpper.get();
+    nibUpper->Render();
   }
   CGUIControl::Render();
 }
@@ -487,48 +541,51 @@ void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
 void CGUISliderControl::FreeResources(bool immediately)
 {
   CGUIControl::FreeResources(immediately);
-  m_guiBackground.FreeResources(immediately);
-  m_guiSelectorLower.FreeResources(immediately);
-  m_guiSelectorUpper.FreeResources(immediately);
-  m_guiSelectorLowerFocus.FreeResources(immediately);
-  m_guiSelectorUpperFocus.FreeResources(immediately);
+  m_guiBackground->FreeResources(immediately);
+  m_guiSelectorLower->FreeResources(immediately);
+  m_guiSelectorUpper->FreeResources(immediately);
+  m_guiSelectorLowerFocus->FreeResources(immediately);
+  m_guiSelectorUpperFocus->FreeResources(immediately);
 }
 
 void CGUISliderControl::DynamicResourceAlloc(bool bOnOff)
 {
   CGUIControl::DynamicResourceAlloc(bOnOff);
-  m_guiBackground.DynamicResourceAlloc(bOnOff);
-  m_guiSelectorLower.DynamicResourceAlloc(bOnOff);
-  m_guiSelectorUpper.DynamicResourceAlloc(bOnOff);
-  m_guiSelectorLowerFocus.DynamicResourceAlloc(bOnOff);
-  m_guiSelectorUpperFocus.DynamicResourceAlloc(bOnOff);
+  m_guiBackground->DynamicResourceAlloc(bOnOff);
+  m_guiSelectorLower->DynamicResourceAlloc(bOnOff);
+  m_guiSelectorUpper->DynamicResourceAlloc(bOnOff);
+  m_guiSelectorLowerFocus->DynamicResourceAlloc(bOnOff);
+  m_guiSelectorUpperFocus->DynamicResourceAlloc(bOnOff);
 }
 
 void CGUISliderControl::AllocResources()
 {
   CGUIControl::AllocResources();
-  m_guiBackground.AllocResources();
-  m_guiSelectorLower.AllocResources();
-  m_guiSelectorUpper.AllocResources();
-  m_guiSelectorLowerFocus.AllocResources();
-  m_guiSelectorUpperFocus.AllocResources();
+  m_guiBackground->AllocResources();
+  m_guiSelectorLower->AllocResources();
+  m_guiSelectorUpper->AllocResources();
+  m_guiSelectorLowerFocus->AllocResources();
+  m_guiSelectorUpperFocus->AllocResources();
 }
 
 void CGUISliderControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
-  m_guiBackground.SetInvalid();
-  m_guiSelectorLower.SetInvalid();
-  m_guiSelectorUpper.SetInvalid();
-  m_guiSelectorLowerFocus.SetInvalid();
-  m_guiSelectorUpperFocus.SetInvalid();
+  m_guiBackground->SetInvalid();
+  m_guiSelectorLower->SetInvalid();
+  m_guiSelectorUpper->SetInvalid();
+  m_guiSelectorLowerFocus->SetInvalid();
+  m_guiSelectorUpperFocus->SetInvalid();
 }
 
 bool CGUISliderControl::HitTest(const CPoint &point) const
 {
-  if (m_guiBackground.HitTest(point)) return true;
-  if (m_guiSelectorLower.HitTest(point)) return true;
-  if (m_rangeSelection && m_guiSelectorUpper.HitTest(point)) return true;
+  if (m_guiBackground->HitTest(point))
+    return true;
+  if (m_guiSelectorLower->HitTest(point))
+    return true;
+  if (m_rangeSelection && m_guiSelectorUpper->HitTest(point))
+    return true;
   return false;
 }
 
@@ -537,9 +594,10 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
 
   float fPercent;
   if (m_orientation == HORIZONTAL)
-    fPercent = (point.x - m_guiBackground.GetXPosition()) / m_guiBackground.GetWidth();
+    fPercent = (point.x - m_guiBackground->GetXPosition()) / m_guiBackground->GetWidth();
   else
-    fPercent = (m_guiBackground.GetYPosition() + m_guiBackground.GetHeight() - point.y) / m_guiBackground.GetHeight();
+    fPercent = (m_guiBackground->GetYPosition() + m_guiBackground->GetHeight() - point.y) /
+               m_guiBackground->GetHeight();
 
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
@@ -601,14 +659,14 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
     SetFromPosition(point, guessSelector);
     return EVENT_RESULT_HANDLED;
   }
-  else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
+  else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground->HitTest(point))
   {
     SetFromPosition(point, true);
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    if (m_guiBackground.HitTest(point))
+    if (m_guiBackground->HitTest(point))
     {
       Move(10);
       return EVENT_RESULT_HANDLED;
@@ -616,7 +674,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    if (m_guiBackground.HitTest(point))
+    if (m_guiBackground->HitTest(point))
     {
       Move(-10);
       return EVENT_RESULT_HANDLED;
@@ -683,11 +741,11 @@ std::string CGUISliderControl::GetDescription() const
 bool CGUISliderControl::UpdateColors()
 {
   bool changed = CGUIControl::UpdateColors();
-  changed |= m_guiBackground.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiSelectorLower.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiSelectorUpper.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiSelectorLowerFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_guiSelectorUpperFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiBackground->SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiSelectorLower->SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiSelectorUpper->SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiSelectorLowerFocus->SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiSelectorUpperFocus->SetDiffuseColor(m_diffuseColor);
 
   return changed;
 }

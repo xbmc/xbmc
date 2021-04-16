@@ -60,7 +60,7 @@ void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
   m_item = new CFileItem(*item);
 }
 
-void CGUIDialogPeripheralSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -77,16 +77,18 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(std::shared_ptr<const CSetti
   itSetting->second->FromString(setting->ToString());
 }
 
-void CGUIDialogPeripheralSettings::Save()
+bool CGUIDialogPeripheralSettings::Save()
 {
   if (m_item == NULL || m_initialising)
-    return;
+    return true;
 
   PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
   if (!peripheral)
-    return;
+    return true;
 
   peripheral->PersistSettings();
+
+  return true;
 }
 
 void CGUIDialogPeripheralSettings::OnResetSettings()

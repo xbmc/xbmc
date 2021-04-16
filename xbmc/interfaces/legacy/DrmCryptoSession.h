@@ -96,8 +96,7 @@ namespace XBMCAddon
     {
       DRM::CCryptoSession* m_cryptoSession;
     public:
-
-      CryptoSession(String UUID, String cipherAlgorithm, String macAlgorithm);
+      CryptoSession(const String& UUID, const String& cipherAlgorithm, const String& macAlgorithm);
       ~CryptoSession() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -217,7 +216,7 @@ namespace XBMCAddon
       ///
       RestoreKeys(...);
 #else
-      void RestoreKeys(String keySetId);
+      void RestoreKeys(const String& keySetId);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef KODI_VERSIONS_H
+#define KODI_VERSIONS_H
+
 #include <string.h>
 
 #define STR_HELPER(x) #x
@@ -34,7 +37,7 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.2.4"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.3.0"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.2.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
@@ -104,10 +107,21 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "2.3.4"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "2.3.4"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "3.0.1"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "3.0.1"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "addon-instance/Inputstream.h"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "c-api/addon-instance/inputstream.h" \
+                                                      "c-api/addon-instance/inputstream/demux_packet.h" \
+                                                      "c-api/addon-instance/inputstream/stream_codec.h" \
+                                                      "c-api/addon-instance/inputstream/stream_constants.h" \
+                                                      "c-api/addon-instance/inputstream/stream_crypto.h" \
+                                                      "c-api/addon-instance/inputstream/timing_constants.h" \
+                                                      "addon-instance/Inputstream.h" \
+                                                      "addon-instance/inputstream/DemuxPacket.h" \
+                                                      "addon-instance/inputstream/StreamCodec.h" \
+                                                      "addon-instance/inputstream/StreamConstants.h" \
+                                                      "addon-instance/inputstream/StreamCrypto.h" \
+                                                      "addon-instance/inputstream/TimingConstants.h"
 
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "2.0.0"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "2.0.0"
@@ -115,8 +129,8 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
                                                       "addon-instance/PeripheralUtils.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "7.0.1"
-#define ADDON_INSTANCE_VERSION_PVR_MIN                "7.0.0"
+#define ADDON_INSTANCE_VERSION_PVR                    "7.1.0"
+#define ADDON_INSTANCE_VERSION_PVR_MIN                "7.1.0"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "c-api/addon-instance/pvr.h" \
                                                       "c-api/addon-instance/pvr/pvr_channel_groups.h" \
@@ -158,24 +172,30 @@
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h" \
                                                       "c-api/addon-instance/visualization.h"
 
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "1.0.4"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "1.0.4"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "2.0.2"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "2.0.1"
 #define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID      "kodi.binary.instance.videocodec"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "addon-instance/VideoCodec.h" \
-                                                      "StreamCodec.h" \
-                                                      "StreamCrypto.h"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "c-api/addon-instance/video_codec.h" \
+                                                      "c-api/addon-instance/inputstream/stream_codec.h" \
+                                                      "c-api/addon-instance/inputstream/stream_crypto.h" \
+                                                      "addon-instance/VideoCodec.h" \
+                                                      "addon-instance/inputstream/StreamCodec.h" \
+                                                      "addon-instance/inputstream/StreamCrypto.h" \
 // clang-format on
 
 //==============================================================================
-///
-/// @ingroup cpp_kodi_addon_addonbase
-/// The currently available instance types for Kodi add-ons
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_ADDON_TYPE enum ADDON_TYPE
+/// **The currently available instance types for Kodi add-ons**\n
+/// This identifies the associated API part on the interface in Kodi and in the
+/// addon.
 ///
 /// \internal
 /// @note For add of new types take a new number on end. To change
 /// existing numbers can be make problems on already compiled add-ons.
 /// \endinternal
 ///
+///@{
 typedef enum ADDON_TYPE
 {
   /* addon global parts */
@@ -192,39 +212,40 @@ typedef enum ADDON_TYPE
 
   /* addon type instances */
 
-  /// Audio decoder instance, see \ref cpp_kodi_addon_audiodecoder "kodi::addon::CInstanceAudioDecoder"
+  /// Audio decoder instance, see @ref cpp_kodi_addon_audiodecoder "kodi::addon::CInstanceAudioDecoder"
   ADDON_INSTANCE_AUDIODECODER = 102,
 
-  /// Audio encoder instance, see \ref cpp_kodi_addon_audioencoder "kodi::addon::CInstanceAudioEncoder"
+  /// Audio encoder instance, see @ref cpp_kodi_addon_audioencoder "kodi::addon::CInstanceAudioEncoder"
   ADDON_INSTANCE_AUDIOENCODER = 103,
 
-  /// Game instance, see \ref cpp_kodi_addon_game "kodi::addon::CInstanceGame"
+  /// Game instance, see @ref cpp_kodi_addon_game "kodi::addon::CInstanceGame"
   ADDON_INSTANCE_GAME = 104,
 
-  /// Input stream instance, see \ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream"
+  /// Input stream instance, see @ref cpp_kodi_addon_inputstream "kodi::addon::CInstanceInputStream"
   ADDON_INSTANCE_INPUTSTREAM = 105,
 
-  /// Peripheral instance, see \ref cpp_kodi_addon_peripheral "kodi::addon::CInstancePeripheral"
+  /// Peripheral instance, see @ref cpp_kodi_addon_peripheral "kodi::addon::CInstancePeripheral"
   ADDON_INSTANCE_PERIPHERAL = 106,
 
-  /// Game instance, see \ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient"
+  /// Game instance, see @ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient"
   ADDON_INSTANCE_PVR = 107,
 
-  /// PVR client instance, see \ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver"
+  /// PVR client instance, see @ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver"
   ADDON_INSTANCE_SCREENSAVER = 108,
 
-  /// Music visualization instance, see \ref cpp_kodi_addon_visualization "kodi::addon::CInstanceVisualization"
+  /// Music visualization instance, see @ref cpp_kodi_addon_visualization "kodi::addon::CInstanceVisualization"
   ADDON_INSTANCE_VISUALIZATION = 109,
 
-  /// Virtual Filesystem (VFS) instance, see \ref cpp_kodi_addon_vfs "kodi::addon::CInstanceVFS"
+  /// Virtual Filesystem (VFS) instance, see @ref cpp_kodi_addon_vfs "kodi::addon::CInstanceVFS"
   ADDON_INSTANCE_VFS = 110,
 
-  /// Image Decoder instance, see \ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder"
+  /// Image Decoder instance, see @ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder"
   ADDON_INSTANCE_IMAGEDECODER = 111,
 
-  /// Video Decoder instance, see \ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
+  /// Video Decoder instance, see @ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
   ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
+///@}
 //------------------------------------------------------------------------------
 
 #ifdef __cplusplus
@@ -490,3 +511,5 @@ inline int GetTypeId(const char* name)
 } /* namespace kodi */
 } /* extern "C" */
 #endif
+
+#endif /* !KODI_VERSIONS_H */

@@ -81,7 +81,7 @@ void InfoExpression::InfoAssociativeGroup::AddChild(const InfoSubexpressionPtr &
   m_children.push_front(child); // largely undoes the effect of parsing right-associative
 }
 
-void InfoExpression::InfoAssociativeGroup::Merge(std::shared_ptr<InfoAssociativeGroup> other)
+void InfoExpression::InfoAssociativeGroup::Merge(const std::shared_ptr<InfoAssociativeGroup>& other)
 {
   m_children.splice(m_children.end(), other->m_children);
 }

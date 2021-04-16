@@ -49,6 +49,22 @@ public:
   virtual bool GetLabel(std::string &value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const = 0;
 
   /*!
+   * @brief Get a GUIInfoManager label fallback string. Will be called if none of the registered
+   * provider's GetLabel() implementation has returned success.
+   * @param value Will be filled with the requested value.
+   * @param item The item to get the value for. Can be nullptr.
+   * @param contextWindow The context window. Can be 0.
+   * @param info The GUI info (label id + additional data).
+   * @param fallback A fallback value. Can be nullptr.
+   * @return True if the value was filled successfully, false otherwise.
+   */
+  virtual bool GetFallbackLabel(std::string& value,
+                                const CFileItem* item,
+                                int contextWindow,
+                                const CGUIInfo& info,
+                                std::string* fallback) = 0;
+
+  /*!
    * @brief Get a GUIInfoManager integer value.
    * @param value Will be filled with the requested value.
    * @param item The item to get the value for. Can be nullptr.

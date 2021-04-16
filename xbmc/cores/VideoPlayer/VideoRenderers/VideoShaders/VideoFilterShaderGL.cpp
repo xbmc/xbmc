@@ -61,7 +61,11 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
   m_floattex = CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_float");
 
-  if (m_method == VS_SCALINGMETHOD_CUBIC ||
+  if (m_method == VS_SCALINGMETHOD_CUBIC_B_SPLINE ||
+      m_method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
+      m_method == VS_SCALINGMETHOD_CUBIC_CATMULL ||
+      m_method == VS_SCALINGMETHOD_CUBIC_0_075 ||
+      m_method == VS_SCALINGMETHOD_CUBIC_0_1 ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||
       m_method == VS_SCALINGMETHOD_SPLINE36_FAST ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)

@@ -6,8 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
-
 #ifndef C_API_ADDONINSTANCE_PVR_TIMERS_H
 #define C_API_ADDONINSTANCE_PVR_TIMERS_H
 

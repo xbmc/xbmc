@@ -483,7 +483,11 @@ void CBaseRenderer::SetVideoSettings(const CVideoSettings &settings)
   m_videoSettings = settings;
 }
 
-void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CBaseRenderer::SettingOptionsRenderMethodsFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
 {
   list.emplace_back(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
 

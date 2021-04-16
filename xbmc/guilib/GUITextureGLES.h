@@ -11,6 +11,7 @@
 #include "GUITexture.h"
 #include "utils/Color.h"
 
+#include <array>
 #include <vector>
 
 #include "system_gl.h"
@@ -25,17 +26,23 @@ typedef std::vector<PackedVertex> PackedVertices;
 
 class CRenderSystemGLES;
 
-class CGUITextureGLES : public CGUITextureBase
+class CGUITextureGLES : public CGUITexture
 {
 public:
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  static void DrawQuad(const CRect &coords, UTILS::Color color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
+  ~CGUITextureGLES() override = default;
+
+  CGUITextureGLES* Clone() const override;
+
 protected:
   void Begin(UTILS::Color color) override;
   void Draw(float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation) override;
   void End() override;
 
-  GLubyte m_col[4];
+private:
+  CGUITextureGLES(const CGUITextureGLES& texture) = default;
+
+  std::array<GLubyte, 4> m_col;
 
   PackedVertices m_packedVertices;
   std::vector<GLushort> m_idx;

@@ -67,7 +67,7 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
      *   <token>Le</token>
      *   ...
      */
-    for (auto values : sorttokensElement->GetValues())
+    for (const auto& values : sorttokensElement->GetValues())
     {
       /* Second loop goes around the row parts, e.g.
        *   separators = "'"
@@ -136,7 +136,8 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
   std::string addonId = GetAddonId(locale);
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE, true))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE,
+                                              OnlyEnabled::YES))
     return false;
 
   legacyLanguage = addon->Name();

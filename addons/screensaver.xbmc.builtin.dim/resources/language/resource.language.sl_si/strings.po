@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Nivo zatemnitve"
+msgid "Brightness level"
+msgstr "Stopnja svetlosti"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Stopnja jakosti osvetlitve zaslona v procentih."
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "Prednostne Nastavitve"

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using XBMC;
 
@@ -13,11 +14,22 @@ namespace XBMCEventClientDemo
         [STAThread]
         static void Main()
         {
-			EventClient eventClient = new EventClient();
-			eventClient.Connect("127.0.0.1", 9777);
-            eventClient.SendHelo("XBMC Client Demo", IconType.ICON_PNG, "icon.png");
+            EventClient eventClient = new EventClient();
+            eventClient.Connect("127.0.0.1", 9777);
+
+            string iconFile = @"../../icons/icon.png";
+            IconType iconType = IconType.ICON_PNG;
+
+            if !File.Exists(iconFile) {
+                iconFile = @"/usr/share/xbmc/media/icon.png";
+                if !File.Exists(iconFile) {
+                    iconType = IconType.ICON_NONE;
+                }
+            }
+
+            eventClient.SendHelo("XBMC Client Demo", iconType, iconFile);
             System.Threading.Thread.Sleep(1000);
-            eventClient.SendNotification("XBMC Client Demo", "Notification Message", IconType.ICON_PNG, "/usr/share/xbmc/media/icon.png");
+            eventClient.SendNotification("XBMC Client Demo", "Notification Message", iconType, iconFile);
             System.Threading.Thread.Sleep(1000);
             eventClient.SendButton("dpadup", "XG", ButtonFlagsType.BTN_DOWN | ButtonFlagsType.BTN_NO_REPEAT, 0);
             System.Threading.Thread.Sleep(1000);

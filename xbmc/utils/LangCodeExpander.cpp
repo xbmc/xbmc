@@ -83,7 +83,7 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 
 bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
 {
-  int iSplit = code.find("-");
+  int iSplit = code.find('-');
   if (iSplit > 0)
   {
     std::string strLeft, strRight;

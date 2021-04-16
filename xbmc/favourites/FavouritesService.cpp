@@ -16,6 +16,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -156,7 +157,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
       const CFileItemPtr favourite(std::make_shared<CFileItem>(item.GetLabel()));
       if (item.GetLabel().empty())
         favourite->SetLabel(CUtil::GetTitleFromPath(item.GetPath(), item.m_bIsFolder));
-      favourite->SetArt("thumb", item.GetArt("thumb"));
+      favourite->SetArt("thumb", ContentUtils::GetPreferredArtImage(item));
       favourite->SetPath(favUrl);
       m_favourites.Add(favourite);
     }

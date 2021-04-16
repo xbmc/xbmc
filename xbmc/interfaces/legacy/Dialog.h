@@ -52,7 +52,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, nolabel, yeslabel, customlabel, autoclose]) }
+      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, [nolabel, yeslabel, autoclose]) }
       /// **Yes / no dialog**
       ///
       /// The Yes / No dialog can be used to inform the user about questions and
@@ -62,7 +62,6 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// @param message        string or unicode - message text.
       /// @param nolabel        [opt] label to put on the no button.
       /// @param yeslabel       [opt] label to put on the yes button.
-      /// @param customlabel    [opt] label to put on the custom button.
       /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
       /// @return Returns True if 'Yes' was pressed, else False.
       ///
@@ -73,7 +72,6 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// @python_v19 Renamed option **line1** to **message**.
       /// @python_v19 Removed option **line2**.
       /// @python_v19 Removed option **line3**.
-      /// @python_v19 Added new option **customlabel**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -88,8 +86,48 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       bool yesno(const String& heading, const String& message,
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
-                 const String& customlabel = emptyString,
                  int autoclose = 0);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().yesnocustom(heading, message, customlabel, [nolabel, yeslabel, autoclose]) }
+      /// **Yes / no / custom dialog**
+      ///
+      /// The YesNoCustom dialog can be used to inform the user about questions and
+      /// get the answer. The dialog provides a third button appart from yes and no.
+      /// Button labels are fully customizable.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param message        string or unicode - message text.
+      /// @param customlabel    string or unicode - label to put on the custom button.
+      /// @param nolabel        [opt] label to put on the no button.
+      /// @param yeslabel       [opt] label to put on the yes button.
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      /// @return Returns the integer value for the selected button (-1:cancelled, 0:no, 1:yes, 2:custom)
+      ///
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v19 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.yesnocustom('Kodi', 'Question?', 'Maybe')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      yesnocustom(...);
+#else
+      int yesnocustom(const String& heading,
+                      const String& message,
+                      const String& customlabel,
+                      const String& nolabel = emptyString,
+                      const String& yeslabel = emptyString,
+                      int autoclose = 0);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -581,6 +619,17 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
                    int type = INPUT_ALPHANUM,
                    int option = 0,
                    int autoclose = 0);
+#endif
+
+    private:
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+      // used by both yesno() and yesnocustom()
+      int yesNoCustomInternal(const String& heading,
+                              const String& message,
+                              const String& nolabel,
+                              const String& yeslabel,
+                              const String& customlabel,
+                              int autoclose);
 #endif
     };
     //@}

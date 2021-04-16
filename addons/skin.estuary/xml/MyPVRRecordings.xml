@@ -12,80 +12,24 @@
 				<include>OpenClose_Left</include>
 				<control type="fixedlist" id="50">
 					<left>0</left>
-					<top>list_y_offset</top>
+					<top>100</top>
 					<right>918</right>
-					<bottom>list_y_offset</bottom>
+					<bottom>80</bottom>
 					<onleft>9000</onleft>
 					<onright>73</onright>
 					<onup>50</onup>
 					<ondown>50</ondown>
-					<movement>3</movement>
-					<focusposition>5</focusposition>
+					<movement>4</movement>
+					<focusposition>4</focusposition>
 					<pagecontrol>73</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<focusedlayout height="80">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<right>0</right>
-							<height>80</height>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(50)">Conditional</animation>
-						</control>
-						<control type="image">
-							<left>21</left>
-							<top>30</top>
-							<width>32</width>
-							<height>32</height>
-							<texture colordiffuse="white">$VAR[ListWatchedIconVar]</texture>
-						</control>
-						<control type="label">
-							<left>75</left>
-							<top>0</top>
-							<height>80</height>
-							<right>30</right>
-							<aligny>center</aligny>
-							<scroll>true</scroll>
-							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>0</top>
-							<height>80</height>
-							<right>20</right>
-							<align>right</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
-						</control>
-					</focusedlayout>
-					<itemlayout height="80">
-						<control type="image">
-							<left>21</left>
-							<top>30</top>
-							<width>32</width>
-							<height>32</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
-						</control>
-						<control type="label">
-							<left>75</left>
-							<top>0</top>
-							<height>80</height>
-							<right>30</right>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
-						</control>
-						<control type="label">
-							<left>15</left>
-							<top>0</top>
-							<height>80</height>
-							<right>20</right>
-							<align>right</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label2]</label>
-							<textcolor>grey</textcolor>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</itemlayout>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<include content="PVRListItemLayouts">
+						<param name="list_id" value="50" />
+						<param name="info_icon" value="$VAR[ListPVRRecordingsIconVar]" />
+						<param name="has_info_icon" value="true" />
+						<param name="label1" value="$INFO[ListItem.Label]" />
+						<param name="label2" value="$INFO[ListItem.Label2]" />
+					</include>
 				</control>
 			</control>
 			<control type="group">
@@ -101,9 +45,9 @@
 				</include>
 				<control type="scrollbar" id="73">
 					<left>-50</left>
-					<top>list_y_offset</top>
+					<top>100</top>
 					<width>12</width>
-					<bottom>list_y_offset</bottom>
+					<bottom>80</bottom>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>

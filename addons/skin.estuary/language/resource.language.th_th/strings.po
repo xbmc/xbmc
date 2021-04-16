@@ -136,6 +136,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "เรตติ้งของคุณ"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "ข้อมูลเพิ่มเติม"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "หน้า"
@@ -180,10 +184,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "ที่มีอยู่"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "กด [B]ตกลง[/B] เพื่อหยุด"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "ที่กรองแล้ว"
@@ -191,10 +191,6 @@ msgstr "ที่กรองแล้ว"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "ใช้ฟ้อนท์ Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "กด [B]ซ้าย[/B] เพื่อกรอกลับ, or [B]ซ้าย[/B] เพื่อไปข้างหน้าอย่างเร็ว"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -471,10 +467,6 @@ msgstr "หมวดหมู่"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "เลือกแพ็คแฟนอาร์ตประเภท"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "แหล่งโปรแกรม"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

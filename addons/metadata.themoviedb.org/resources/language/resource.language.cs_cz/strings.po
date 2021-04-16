@@ -29,8 +29,8 @@ msgid "Preferred Language"
 msgstr "Upřednostňovaný jazyk"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Získat hodnocení z"
+msgid "Default Rating from"
+msgstr "Výchozí hodnocení z"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
@@ -43,3 +43,7 @@ msgstr "Ponechat původní název"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Upřednostňovaný stát poskytující certifikaci"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Přidat také hodnocení z IMDb"

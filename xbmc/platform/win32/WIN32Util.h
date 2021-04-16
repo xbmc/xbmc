@@ -18,6 +18,7 @@
 
 #define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
 #define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
+#define TRAY_ICON_NOTIFY          ( WM_USER + 0x120 )
 
 class CURL; // forward declaration
 

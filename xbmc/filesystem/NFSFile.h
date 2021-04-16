@@ -64,7 +64,7 @@ public:
   void Deinit();
   //adds the filehandle to the keep alive list or resets
   //the timeout for this filehandle if already in list
-  void resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
+  void resetKeepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
   //removes file handle from keep alive list
   void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);
 
@@ -94,8 +94,8 @@ private:
   void destroyOpenContexts();
   void destroyContext(const std::string &exportName);
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
-  void keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
-  static void setTimeout(struct nfs_context* context);
+  void keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
+  static void setOptions(struct nfs_context* context);
 };
 
 extern CNfsConnection gNfsConnection;

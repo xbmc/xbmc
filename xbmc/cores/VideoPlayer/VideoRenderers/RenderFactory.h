@@ -22,9 +22,9 @@ typedef CBaseRenderer* (*CreateRenderer)(CVideoBuffer *buffer);
 class CRendererFactory
 {
 public:
-  static CBaseRenderer* CreateRenderer(std::string id, CVideoBuffer *buffer);
+  static CBaseRenderer* CreateRenderer(const std::string& id, CVideoBuffer* buffer);
 
-  static void RegisterRenderer(std::string id, VIDEOPLAYER::CreateRenderer createFunc);
+  static void RegisterRenderer(const std::string& id, VIDEOPLAYER::CreateRenderer createFunc);
   static std::vector<std::string> GetRenderers();
   static void ClearRenderer();
 

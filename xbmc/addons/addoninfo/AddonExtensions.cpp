@@ -12,9 +12,9 @@ using namespace ADDON;
 
 const SExtValue CAddonExtensions::GetValue(const std::string& id) const
 {
-  for (auto values : m_values)
+  for (const auto& values : m_values)
   {
-    for (auto value : values.second)
+    for (const auto& value : values.second)
     {
       if (value.first == id)
         return value.second;
@@ -45,7 +45,7 @@ const EXT_ELEMENTS CAddonExtensions::GetElements(const std::string& id) const
     return m_children;
 
   EXT_ELEMENTS children;
-  for (auto child : m_children)
+  for (const auto& child : m_children)
   {
     if (child.first == id)
       children.push_back(std::make_pair(child.first, child.second));

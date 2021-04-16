@@ -6,8 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
-
 #ifndef C_API_FILESYSTEM_H
 #define C_API_FILESYSTEM_H
 
@@ -106,16 +104,15 @@ extern "C"
   /// @brief **CURL message types**\n
   /// Used on kodi::vfs::CFile::CURLAddOption().
   ///
-  //@{
+  ///@{
   typedef enum CURLOptiontype
   {
     /// @brief Set a general option.
     ADDON_CURL_OPTION_OPTION,
 
-    /// @brief Set a protocol option.
-    ///
+    /// @brief Set a protocol option.\n
+    ///\n
     /// The following names for *ADDON_CURL_OPTION_PROTOCOL* are possible:
-    ///
     /// | Option name                         | Description
     /// |------------------------------------:|:--------------------------------
     /// | <b>`accept-charset`</b>             | Set the "accept-charset" header
@@ -140,7 +137,7 @@ extern "C"
     /// @brief Add a Header
     ADDON_CURL_OPTION_HEADER
   } CURLOptiontype;
-  //@}
+  ///@}
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -151,7 +148,7 @@ extern "C"
   ///
   /// Used on kodi::vfs::CFile::GetPropertyValue() and kodi::vfs::CFile::GetPropertyValues().
   ///
-  //@{
+  ///@{
   typedef enum FilePropertyTypes
   {
     /// @brief Get protocol response line.
@@ -167,7 +164,7 @@ extern "C"
     /// @brief Get file effective URL (last one if redirected).
     ADDON_FILE_PROPERTY_EFFECTIVE_URL
   } FilePropertyTypes;
-  //@}
+  ///@}
   //----------------------------------------------------------------------------
 
   //}}}

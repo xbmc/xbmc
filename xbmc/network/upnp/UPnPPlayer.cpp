@@ -24,7 +24,6 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicThumbLoader.h"
 #include "threads/Event.h"
-#include "utils/StaticLoggerBase.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/Variant.h"
@@ -45,19 +44,19 @@ NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 namespace UPNP
 {
 
-class CUPnPPlayerController : public PLT_MediaControllerDelegate, protected CStaticLoggerBase
+class CUPnPPlayerController : public PLT_MediaControllerDelegate
 {
 public:
   CUPnPPlayerController(PLT_MediaController* control,
                         PLT_DeviceDataReference& device,
                         IPlayerCallback& callback)
-    : CStaticLoggerBase("CUPnPPlayerController"),
-      m_control(control),
+    : m_control(control),
       m_transport(NULL),
       m_device(device),
       m_instance(0),
       m_callback(callback),
-      m_postime(0)
+      m_postime(0),
+      m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPPlayerController"))
   {
     m_posinfo = {};
     m_device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", m_transport);
@@ -66,7 +65,7 @@ public:
   void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if(NPT_FAILED(res))
-      s_logger->error("OnSetAVTransportURIResult failed");
+      m_logger->error("OnSetAVTransportURIResult failed");
     m_resstatus = res;
     m_resevent.Set();
   }
@@ -74,7 +73,7 @@ public:
   void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if(NPT_FAILED(res))
-      s_logger->error("OnPlayResult failed");
+      m_logger->error("OnPlayResult failed");
     m_resstatus = res;
     m_resevent.Set();
   }
@@ -82,7 +81,7 @@ public:
   void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if(NPT_FAILED(res))
-      s_logger->error("OnStopResult failed");
+      m_logger->error("OnStopResult failed");
     m_resstatus = res;
     m_resevent.Set();
   }
@@ -90,7 +89,7 @@ public:
   void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata) override
   {
     if(NPT_FAILED(res) || info == NULL)
-      s_logger->error("OnGetMediaInfoResult failed");
+      m_logger->error("OnGetMediaInfoResult failed");
   }
 
   void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata) override
@@ -99,7 +98,7 @@ public:
 
     if(NPT_FAILED(res))
     {
-      s_logger->error("OnGetTransportInfoResult failed");
+      m_logger->error("OnGetTransportInfoResult failed");
       m_trainfo.cur_speed            = "0";
       m_trainfo.cur_transport_state  = "STOPPED";
       m_trainfo.cur_transport_status = "ERROR_OCCURED";
@@ -126,7 +125,7 @@ public:
 
     if(NPT_FAILED(res) || info == NULL)
     {
-      s_logger->error("OnGetMediaInfoResult failed");
+      m_logger->error("OnGetMediaInfoResult failed");
       m_posinfo = PLT_PositionInfo();
     }
     else
@@ -155,6 +154,8 @@ public:
 
   CEvent                   m_traevnt;
   PLT_TransportInfo        m_trainfo;
+
+  Logger m_logger;
 };
 
 CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)

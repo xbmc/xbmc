@@ -19,7 +19,7 @@
 using namespace VIDEO;
 
 IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& item,
-                                                              ADDON::ScraperPtr info,
+                                                              const ADDON::ScraperPtr& info,
                                                               bool lookInFolder,
                                                               bool forceRefresh)
 {

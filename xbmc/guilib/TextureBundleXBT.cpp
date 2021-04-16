@@ -147,8 +147,10 @@ void CTextureBundleXBT::GetTexturesFromPath(const std::string &path, std::vector
   }
 }
 
-bool CTextureBundleXBT::LoadTexture(const std::string& Filename, CBaseTexture** ppTexture,
-                                     int &width, int &height)
+bool CTextureBundleXBT::LoadTexture(const std::string& Filename,
+                                    CTexture** ppTexture,
+                                    int& width,
+                                    int& height)
 {
   std::string name = Normalize(Filename);
 
@@ -171,8 +173,12 @@ bool CTextureBundleXBT::LoadTexture(const std::string& Filename, CBaseTexture** 
   return true;
 }
 
-int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
-                              int &width, int &height, int& nLoops, int** ppDelays)
+int CTextureBundleXBT::LoadAnim(const std::string& Filename,
+                                CTexture*** ppTextures,
+                                int& width,
+                                int& height,
+                                int& nLoops,
+                                int** ppDelays)
 {
   std::string name = Normalize(Filename);
 
@@ -184,7 +190,7 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
     return false;
 
   size_t nTextures = file.GetFrames().size();
-  *ppTextures = new CBaseTexture*[nTextures];
+  *ppTextures = new CTexture*[nTextures];
   *ppDelays = new int[nTextures];
 
   for (size_t i = 0; i < nTextures; i++)
@@ -206,7 +212,9 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
   return nTextures;
 }
 
-bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
+bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
+                                              CXBTFFrame& frame,
+                                              CTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
   unsigned char *buffer = new unsigned char [(size_t)frame.GetPackedSize()];
@@ -248,7 +256,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFram
   }
 
   // create an xbmc texture
-  *ppTexture = new CTexture();
+  *ppTexture = CTexture::CreateTexture();
   (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), frame.HasAlpha(), buffer);
 
   delete[] buffer;

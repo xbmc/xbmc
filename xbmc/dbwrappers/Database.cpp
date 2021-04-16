@@ -299,6 +299,40 @@ std::string CDatabase::GetSingleValue(const std::string &query)
   return GetSingleValue(query, m_pDS);
 }
 
+int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Dataset>& ds)
+{
+  int ret = 0;
+  try
+  {
+    if (!m_pDB || !ds)
+      return ret;
+
+    if (ds->query(query) && ds->num_rows() > 0)
+      ret = ds->fv(0).get_asInt();
+
+    ds->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - failed on query '%s'", __FUNCTION__, query.c_str());
+  }
+  return ret;
+}
+
+int CDatabase::GetSingleValueInt(const std::string& strTable,
+                                 const std::string& strColumn,
+                                 const std::string& strWhereClause /* = std::string() */,
+                                 const std::string& strOrderBy /* = std::string() */)
+{
+  std::string strResult = GetSingleValue(strTable, strColumn, strWhereClause, strOrderBy);
+  return static_cast<int>(strtol(strResult.c_str(), NULL, 10));
+}
+
+int CDatabase::GetSingleValueInt(const std::string& query)
+{
+  return GetSingleValueInt(query, m_pDS);
+}
+
 bool CDatabase::DeleteValues(const std::string &strTable, const Filter &filter /* = Filter() */)
 {
   std::string strQuery;

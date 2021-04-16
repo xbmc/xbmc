@@ -35,7 +35,7 @@ public:
   CGUIColorManager &GetColorManager();
   CGUIAudioManager &GetAudioManager();
 
-  bool ConfirmDelete(std::string path);
+  bool ConfirmDelete(const std::string& path);
 
 protected:
   // members are pointers in order to avoid includes

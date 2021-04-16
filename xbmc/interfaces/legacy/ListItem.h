@@ -20,6 +20,7 @@
 #include "commons/Exception.h"
 
 #include <map>
+#include <utility>
 #include <vector>
 
 
@@ -46,25 +47,6 @@ namespace XBMCAddon
     /// @{
     /// @brief **Selectable window list item.**
     ///
-    /// The list item control is used for creating item lists in Kodi
-    ///
-    /// \python_class{ ListItem([label, label2, path]) }
-    ///
-    /// @param label                [opt] string
-    /// @param label2               [opt] string
-    /// @param path                 [opt] string
-    ///
-    ///
-    ///-----------------------------------------------------------------------
-    /// @python_v16 **iconImage** and **thumbnailImage** are deprecated. Use **setArt()**.
-    /// @python_v19 Removed **iconImage** and **thumbnailImage**. Use **setArt()**.
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ...
-    /// listitem = xbmcgui.ListItem('Casino Royale')
-    /// ...
-    /// ~~~~~~~~~~~~~
     class ListItem : public AddonClass
     {
     public:
@@ -73,15 +55,55 @@ namespace XBMCAddon
       bool m_offscreen;
 #endif
 
-      ListItem(const String& label = emptyString,
-               const String& label2 = emptyString,
-               const String& path = emptyString,
-               bool offscreen = false);
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui_listitem
+    /// @brief Selectable window list item.
+    ///
+    /// The list item control is used for creating item lists in Kodi
+    ///
+    /// \python_class{ ListItem([label, label2, path, offscreen]) }
+    ///
+    /// @param label                [opt] string (default `""`) - the label to display on the item
+    /// @param label2               [opt] string (default `""`) - the label2 of the item
+    /// @param path                 [opt] string (default `""`) - the path for the item
+    /// @param offscreen            [opt] bool (default `False`) - if GUI based locks should be
+    ///                                          avoided. Most of the times listitems are created
+    ///                                          offscreen and added later to a container
+    ///                                          for display (e.g. plugins) or they are not
+    ///                                          even displayed (e.g. python scrapers).
+    ///                                          In such cases, there is no need to lock the
+    ///                                          GUI when creating the items (increasing your addon
+    ///                                          performance).
+    ///                                          Note however, that if you are creating listitems
+    ///                                          and managing the container itself (e.g using
+    ///                                          WindowXML or WindowXMLDialog classes) subsquent
+    ///                                          modifications to the item will require locking.
+    ///                                          Thus, in such cases, use the default value (`False`).
+    ///
+    ///
+    ///-----------------------------------------------------------------------
+    /// @python_v16 **iconImage** and **thumbnailImage** are deprecated. Use **setArt()**.
+    /// @python_v18 Added **offscreen** argument.
+    /// @python_v19 Removed **iconImage** and **thumbnailImage**. Use **setArt()**.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// listitem = xbmcgui.ListItem('Casino Royale')
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
+    ListItem([label, label2, path, offscreen]);
+#else
+    ListItem(const String& label = emptyString,
+             const String& label2 = emptyString,
+             const String& path = emptyString,
+             bool offscreen = false);
+#endif
 
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
-      inline explicit ListItem(CFileItemPtr pitem) :
-        item(pitem), m_offscreen(false)
-      {}
+      inline explicit ListItem(CFileItemPtr pitem) : item(std::move(pitem)), m_offscreen(false) {}
 
       static inline AddonClass::Ref<ListItem> fromString(const String& str)
       {
@@ -91,7 +113,9 @@ namespace XBMCAddon
       }
 #endif
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       ~ListItem() override;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -187,6 +211,68 @@ namespace XBMCAddon
       setLabel2(...);
 #else
       void setLabel2(const String& label);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getDateTime() }
+      ///-----------------------------------------------------------------------
+      /// Returns the list item's datetime in W3C format (YYYY-MM-DDThh:mm:ssTZD).
+      ///
+      /// @return                   string or unicode - datetime string (W3C).
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # getDateTime()
+      /// strDateTime = listitem.getDateTime()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getDateTime();
+#else
+      String getDateTime();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setDateTime(dateTime) }
+      ///-----------------------------------------------------------------------
+      /// Sets the list item's datetime in W3C format.
+      /// The following formats are supported:
+      /// - YYYY
+      /// - YYYY-MM-DD
+      /// - YYYY-MM-DDThh:mm[TZD]
+      /// - YYYY-MM-DDThh:mm:ss[TZD]
+      /// where the timezone (TZD) is always optional and can be in one of the
+      /// following formats:
+      /// - Z (for UTC)
+      /// - +hh:mm
+      /// - -hh:mm
+      ///
+      /// @param label              string or unicode - datetime string (W3C).
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # setDate(dateTime)
+      /// listitem.setDateTime('2021-03-09T12:30:00Z')
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setDateTime(...);
+#else
+      void setDateTime(const String& dateTime);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -319,7 +405,7 @@ namespace XBMCAddon
       ///
       setRating(...);
 #else
-      void setRating(std::string type, float rating, int votes = 0, bool defaultt = false);
+      void setRating(const std::string& type, float rating, int votes = 0, bool defaultt = false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -382,6 +468,28 @@ namespace XBMCAddon
       getArt(key);
 #else
       String getArt(const char* key);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ isFolder() }
+      ///-----------------------------------------------------------------------
+      /// Returns whether the item is a folder or not.
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// isFolder = listitem.isFolder()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      isFolder();
+#else
+      bool isFolder() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -773,7 +881,14 @@ namespace XBMCAddon
       ///
       addAvailableArtwork(...);
 #else
-      void addAvailableArtwork(std::string url, std::string art_type = "", std::string preview = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+      void addAvailableArtwork(const std::string& url,
+                               const std::string& art_type = "",
+                               const std::string& preview = "",
+                               const std::string& referrer = "",
+                               const std::string& cache = "",
+                               bool post = false,
+                               bool isgz = false,
+                               int season = -1);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -880,8 +995,10 @@ namespace XBMCAddon
       /// | StartPercent  | float (15.0) - Set the percentage at which to start playback of the item
       /// | StationName   | string ("My Station Name") - Used to enforce/override MusicPlayer.StationName infolabel from addons (e.g. in radio addons)
       /// | TotalTime     | float (7848.0) - Set the total time of the item in seconds
+      /// | OverrideInfotag | string - "true", "false" - When true will override all info from previous listitem
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 OverrideInfotag property added
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1097,5 +1214,3 @@ private:
 #endif
   }
 }
-
-

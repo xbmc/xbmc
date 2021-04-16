@@ -225,7 +225,7 @@ public:
   /**
    * Instruct AE to re-initialize, e.g. after ELD change event
    */
-  virtual void DeviceCountChange(std::string driver) {}
+  virtual void DeviceCountChange(const std::string& driver) {}
 
   /**
    * Get the current sink data format

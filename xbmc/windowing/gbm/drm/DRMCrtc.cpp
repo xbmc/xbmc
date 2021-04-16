@@ -9,7 +9,9 @@
 #include "DRMCrtc.h"
 
 #include <cstring>
+#include <errno.h>
 #include <stdexcept>
+#include <string>
 
 using namespace KODI::WINDOWING::GBM;
 

@@ -86,7 +86,7 @@ CGUIAudioManager &CGUIComponent::GetAudioManager()
   return *m_guiAudioManager;
 }
 
-bool CGUIComponent::ConfirmDelete(std::string path)
+bool CGUIComponent::ConfirmDelete(const std::string& path)
 {
   CGUIDialogYesNo* pDialog = GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (pDialog)

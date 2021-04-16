@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Himmennystaso"
+msgid "Brightness level"
+msgstr "Kirkkauden taso"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Näytön valaistuksen vahvuuden taso prosenttiarvona."
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "Asetukset"

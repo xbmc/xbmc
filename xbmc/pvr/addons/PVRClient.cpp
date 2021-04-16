@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h" // added for compile test on related sources only!
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -122,7 +121,9 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 
   m_struct.props->strUserPath = m_strUserPath.c_str();
   m_struct.props->strClientPath = m_strClientPath.c_str();
-  m_struct.props->iEpgMaxDays =
+  m_struct.props->iEpgMaxPastDays =
+      CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay();
+  m_struct.props->iEpgMaxFutureDays =
       CServiceBroker::GetPVRManager().EpgContainer().GetFutureDaysToDisplay();
 
   m_struct.toKodi->kodiInstance = this;
@@ -684,11 +685,23 @@ PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t sta
       m_clientCapabilities.SupportsEPG());
 }
 
-PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
+PVR_ERROR CPVRClient::SetEPGMaxPastDays(int iPastDays)
 {
   return DoAddonCall(
       __func__,
-      [iDays](const AddonInstance* addon) { return addon->toAddon->SetEPGTimeFrame(addon, iDays); },
+      [iPastDays](const AddonInstance* addon) {
+        return addon->toAddon->SetEPGMaxPastDays(addon, iPastDays);
+      },
+      m_clientCapabilities.SupportsEPG());
+}
+
+PVR_ERROR CPVRClient::SetEPGMaxFutureDays(int iFutureDays)
+{
+  return DoAddonCall(
+      __func__,
+      [iFutureDays](const AddonInstance* addon) {
+        return addon->toAddon->SetEPGMaxFutureDays(addon, iFutureDays);
+      },
       m_clientCapabilities.SupportsEPG());
 }
 
@@ -702,7 +715,7 @@ class CAddonEpgTag : public EPG_TAG
 {
 public:
   CAddonEpgTag() = delete;
-  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag> kodiTag)
+  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& kodiTag)
     : m_strTitle(kodiTag->Title()),
       m_strPlotOutline(kodiTag->PlotOutline()),
       m_strPlot(kodiTag->Plot()),
@@ -1315,7 +1328,7 @@ PVR_ERROR CPVRClient::DemuxRead(DemuxPacket*& packet)
   return DoAddonCall(
       __func__,
       [&packet](const AddonInstance* addon) {
-        packet = addon->toAddon->DemuxRead(addon);
+        packet = static_cast<DemuxPacket*>(addon->toAddon->DemuxRead(addon));
         return packet ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
       },
       m_clientCapabilities.HandlesDemuxing());
@@ -1350,7 +1363,7 @@ const char* CPVRClient::ToString(const PVR_ERROR error)
 }
 
 PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
-                                  std::function<PVR_ERROR(const AddonInstance*)> function,
+                                  const std::function<PVR_ERROR(const AddonInstance*)>& function,
                                   bool bIsImplemented /* = true */,
                                   bool bCheckReadyToUse /* = true */) const
 {
@@ -1763,7 +1776,7 @@ void CPVRClient::cb_transfer_recording_entry(void* kodiInstance,
 
   /* transfer this entry to the recordings container */
   std::shared_ptr<CPVRRecording> transferRecording(new CPVRRecording(*recording, client->GetID()));
-  kodiRecordings->UpdateFromClient(transferRecording);
+  kodiRecordings->UpdateFromClient(transferRecording, *client);
 }
 
 void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
@@ -1872,12 +1885,12 @@ void CPVRClient::cb_trigger_epg_update(void* kodiInstance, unsigned int iChannel
   CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
 }
 
-void CPVRClient::cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket)
+void CPVRClient::cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket)
 {
-  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  CDVDDemuxUtils::FreeDemuxPacket(static_cast<DemuxPacket*>(pPacket));
 }
 
-DemuxPacket* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
+DEMUX_PACKET* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }

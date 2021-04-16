@@ -51,7 +51,7 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share.
    */
-  const std::string strMovie = fileItem.GetDynPath();
+  const std::string& strMovie = fileItem.GetDynPath();
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
       !URIUtils::IsInternetStream(strMovie))
   {
@@ -147,7 +147,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     int64_t iCutStartEnd[2];
     for (int i = 0; i < 2; i++)
     {
-      if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
+      if (strFields[i].find(':') != std::string::npos) // HH:MM:SS.sss format
       {
         std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms

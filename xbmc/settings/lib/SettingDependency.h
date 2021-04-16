@@ -10,7 +10,7 @@
 
 #include "SettingConditions.h"
 #include "utils/BooleanLogic.h"
-#include "utils/StaticLoggerBase.h"
+#include "utils/logtypes.h"
 
 #include <list>
 #include <set>
@@ -37,7 +37,7 @@ enum class SettingDependencyTarget {
   Property
 };
 
-class CSettingDependencyCondition : public CSettingConditionItem, protected CStaticLoggerBase
+class CSettingDependencyCondition : public CSettingConditionItem
 {
 public:
   explicit CSettingDependencyCondition(CSettingsManager *settingsManager = nullptr);
@@ -58,11 +58,21 @@ public:
   SettingDependencyOperator GetOperator() const { return m_operator; }
 
 private:
+  CSettingDependencyCondition(CSettingsManager* settingsManager,
+                              const std::string& strProperty,
+                              const std::string& setting,
+                              const std::string& value,
+                              SettingDependencyTarget target = SettingDependencyTarget::Unknown,
+                              SettingDependencyOperator op = SettingDependencyOperator::Equals,
+                              bool negated = false);
+
   bool setTarget(const std::string &target);
   bool setOperator(const std::string &op);
 
   SettingDependencyTarget m_target = SettingDependencyTarget::Unknown;
   SettingDependencyOperator m_operator = SettingDependencyOperator::Equals;
+
+  static Logger s_logger;
 };
 
 using CSettingDependencyConditionPtr = std::shared_ptr<CSettingDependencyCondition>;
@@ -87,8 +97,9 @@ public:
 
   const std::set<std::string>& GetSettings() const { return m_settings; }
 
-  CSettingDependencyConditionCombination* Add(CSettingDependencyConditionPtr condition);
-  CSettingDependencyConditionCombination* Add(CSettingDependencyConditionCombinationPtr operation);
+  CSettingDependencyConditionCombination* Add(const CSettingDependencyConditionPtr& condition);
+  CSettingDependencyConditionCombination* Add(
+      const CSettingDependencyConditionCombinationPtr& operation);
 
 private:
   CBooleanLogicOperation* newOperation() override { return new CSettingDependencyConditionCombination(m_settingsManager); }
@@ -97,7 +108,7 @@ private:
   std::set<std::string> m_settings;
 };
 
-class CSettingDependency : public CSettingCondition, protected CStaticLoggerBase
+class CSettingDependency : public CSettingCondition
 {
 public:
   explicit CSettingDependency(CSettingsManager *settingsManager = nullptr);
@@ -116,6 +127,8 @@ private:
   bool setType(const std::string &type);
 
   SettingDependencyType m_type = SettingDependencyType::Unknown;
+
+  static Logger s_logger;
 };
 
 using SettingDependencies = std::list<CSettingDependency>;

@@ -111,7 +111,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
   else if (!bCanceled)  // Password needed and user provided it
   {
     const CVariant &passwordObject = parameterObject["password"];
-    std::string strToVerify = profile->getLockCode();
+    const std::string& strToVerify = profile->getLockCode();
     std::string password = passwordObject["value"].asString();
 
     // Create password hash from the provided password if md5 is not used

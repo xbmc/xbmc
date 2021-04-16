@@ -45,32 +45,37 @@ namespace XBMCAddon
     bool Dialog::yesno(const String& heading, const String& message,
                        const String& nolabel,
                        const String& yeslabel,
-                       const String& customlabel,
                        int autoclose)
     {
+      return yesNoCustomInternal(heading, message, nolabel, yeslabel, emptyString, autoclose) == 1;
+    }
+
+    int Dialog::yesnocustom(const String& heading,
+                            const String& message,
+                            const String& customlabel,
+                            const String& nolabel,
+                            const String& yeslabel,
+                            int autoclose)
+    {
+      return yesNoCustomInternal(heading, message, nolabel, yeslabel, customlabel, autoclose);
+    }
+
+    int Dialog::yesNoCustomInternal(const String& heading,
+                                    const String& message,
+                                    const String& nolabel,
+                                    const String& yeslabel,
+                                    const String& customlabel,
+                                    int autoclose)
+    {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
+      CGUIDialogYesNo* pDialog =
+          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(
+              WINDOW_DIALOG_YES_NO);
+      if (pDialog == nullptr)
+        throw WindowException("Error: Window is null");
 
-      if (!heading.empty())
-        pDialog->SetHeading(CVariant{heading});
-      if (!message.empty())
-        pDialog->SetText(CVariant{message});
-
-      if (!nolabel.empty())
-        pDialog->SetChoice(0, CVariant{nolabel});
-      if (!yeslabel.empty())
-        pDialog->SetChoice(1, CVariant{yeslabel});
-      if (!customlabel.empty())
-        pDialog->SetChoice(2, CVariant{customlabel});
-
-      if (autoclose > 0)
-        pDialog->SetAutoClose(autoclose);
-
-      pDialog->Open();
-
-      return pDialog->IsConfirmed();
+      return pDialog->ShowAndGetInput(CVariant{heading}, CVariant{message}, CVariant{nolabel},
+                                      CVariant{yeslabel}, CVariant{customlabel}, autoclose);
     }
 
     bool Dialog::info(const ListItem* item)
@@ -282,7 +287,7 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 10)
           {
-            std::string sDefault = defaultt;
+            const std::string& sDefault = defaultt;
             timedate.day = atoi(sDefault.substr(0, 2).c_str());
             timedate.month = atoi(sDefault.substr(3, 4).c_str());
             timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
@@ -296,7 +301,7 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 5)
           {
-            std::string sDefault = defaultt;
+            const std::string& sDefault = defaultt;
             timedate.hour = atoi(sDefault.substr(0, 2).c_str());
             timedate.minute = atoi(sDefault.substr(3, 2).c_str());
           }
@@ -375,7 +380,7 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 10)
             {
-              std::string sDefault = defaultt;
+              const std::string& sDefault = defaultt;
               timedate.day = atoi(sDefault.substr(0, 2).c_str());
               timedate.month = atoi(sDefault.substr(3, 4).c_str());
               timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
@@ -391,7 +396,7 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 5)
             {
-              std::string sDefault = defaultt;
+              const std::string& sDefault = defaultt;
               timedate.hour = atoi(sDefault.substr(0, 2).c_str());
               timedate.minute = atoi(sDefault.substr(3, 2).c_str());
             }

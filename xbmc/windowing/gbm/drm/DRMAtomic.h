@@ -10,6 +10,11 @@
 
 #include "DRMUtils.h"
 
+#include <cstdint>
+#include <deque>
+#include <map>
+#include <memory>
+
 namespace KODI
 {
 namespace WINDOWING
@@ -34,11 +39,41 @@ public:
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
-  bool SetScalingFilter(struct CDRMObject* object, const char* name, const char* type);
+  bool SetScalingFilter(CDRMObject* object, const char* name, const char* type);
 
   bool m_need_modeset;
   bool m_active = true;
-  drmModeAtomicReq *m_req = nullptr;
+
+  class CDRMAtomicRequest
+  {
+  public:
+    CDRMAtomicRequest();
+    ~CDRMAtomicRequest() = default;
+    CDRMAtomicRequest(const CDRMAtomicRequest& right) = delete;
+
+    drmModeAtomicReqPtr Get() const { return m_atomicRequest.get(); }
+
+    bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
+    void LogAtomicRequest();
+
+    static void LogAtomicDiff(CDRMAtomicRequest* current, CDRMAtomicRequest* old);
+
+  private:
+    static void LogAtomicRequest(
+        uint8_t logLevel, std::map<CDRMObject*, std::map<uint32_t, uint64_t>>& atomicRequestItems);
+
+    std::map<CDRMObject*, std::map<uint32_t, uint64_t>> m_atomicRequestItems;
+
+    struct DrmModeAtomicReqDeleter
+    {
+      void operator()(drmModeAtomicReqPtr p) const;
+    };
+
+    std::unique_ptr<drmModeAtomicReq, DrmModeAtomicReqDeleter> m_atomicRequest;
+  };
+
+  CDRMAtomicRequest* m_req = nullptr;
+  std::deque<std::unique_ptr<CDRMAtomicRequest>> m_atomicRequestQueue;
 };
 
 }

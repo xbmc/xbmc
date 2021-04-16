@@ -41,11 +41,6 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
     item->LoadMusicTag();
 
     CMusicInfoTag* tag = item->GetMusicInfoTag(); // creates item if not yet set, so no nullptr checks needed
-    if (tag->GetTitle().empty())
-    {
-      // No title in tag, show filename only
-      tag->SetTitle(CUtil::GetTitleFromPath(item->GetPath()));
-    }
     tag->SetLoaded(true);
 
     // find a thumb for this file.
@@ -103,11 +98,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return !value.empty();
       case MUSICPLAYER_TITLE:
         value = tag->GetTitle();
-        if (value.empty())
-          value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return !value.empty();
       case LISTITEM_TITLE:
         value = tag->GetTitle();
         return true;
@@ -122,7 +113,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case MUSICPLAYER_LASTPLAYED:
       case LISTITEM_LASTPLAYED:
       {
-        const CDateTime dateTime = tag->GetLastPlayed();
+        const CDateTime& dateTime = tag->GetLastPlayed();
         if (dateTime.IsValid())
         {
           value = dateTime.GetAsLocalizedDate();
@@ -546,7 +537,7 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) co
     return false;
 
   const CFileItemPtr playlistItem = playlist[index];
-  if (!playlistItem->GetMusicInfoTag()->Loaded())
+  if (playlistItem->HasMusicInfoTag() && !playlistItem->GetMusicInfoTag()->Loaded())
   {
     playlistItem->LoadMusicTag();
     playlistItem->GetMusicInfoTag()->SetLoaded();
@@ -572,6 +563,38 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) co
   }
 
   return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
+}
+
+bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
+                                     const CFileItem* item,
+                                     int contextWindow,
+                                     const CGUIInfo& info,
+                                     std::string* fallback)
+{
+  // No fallback for musicplayer "offset" and "position" info labels
+  if (info.GetData1() && ((info.m_info >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
+      info.m_info <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
+      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+    return false;
+
+  const CMusicInfoTag* tag = item->GetMusicInfoTag();
+  if (tag)
+  {
+    switch (info.m_info)
+    {
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      // MUSICPLAYER_*
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      case MUSICPLAYER_TITLE:
+        value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
+      default:
+        break;
+    }
+  }
+  return false;
 }
 
 bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const

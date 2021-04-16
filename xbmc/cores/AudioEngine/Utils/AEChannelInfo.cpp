@@ -28,8 +28,6 @@ CAEChannelInfo::CAEChannelInfo(const AEStdChLayout rhs)
   *this = rhs;
 }
 
-CAEChannelInfo::~CAEChannelInfo() = default;
-
 void CAEChannelInfo::ResolveChannels(const CAEChannelInfo& rhs)
 {
   /* mono gets upmixed to dual mono */

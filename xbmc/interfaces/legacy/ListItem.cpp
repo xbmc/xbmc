@@ -24,6 +24,7 @@
 
 #include <cstdlib>
 #include <sstream>
+#include <utility>
 
 namespace XBMCAddon
 {
@@ -101,6 +102,32 @@ namespace XBMCAddon
       }
     }
 
+    String ListItem::getDateTime()
+    {
+      if (!item)
+        return "";
+
+      String ret;
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+        if (item->m_dateTime.IsValid())
+          ret = item->m_dateTime.GetAsW3CDateTime();
+      }
+
+      return ret;
+    }
+
+    void ListItem::setDateTime(const String& dateTime)
+    {
+      if (!item)
+        return;
+      // set datetime
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+        item->m_dateTime.SetFromW3CDateTime(dateTime);
+      }
+    }
+
     void ListItem::setArt(const Properties& dictionary)
     {
       if (!item) return;
@@ -135,7 +162,10 @@ namespace XBMCAddon
         vtag.SetUniqueID(it.second, it.first, it.first == defaultrating);
     }
 
-    void ListItem::setRating(std::string type, float rating, int votes /* = 0 */, bool defaultt /* = false */)
+    void ListItem::setRating(const std::string& type,
+                             float rating,
+                             int votes /* = 0 */,
+                             bool defaultt /* = false */)
     {
       if (!item) return;
 
@@ -148,7 +178,7 @@ namespace XBMCAddon
       if (!item) return;
 
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_namedSeasons[number] = name;
+      GetVideoInfoTag()->m_namedSeasons[number] = std::move(name);
     }
 
     void ListItem::select(bool selected)
@@ -246,6 +276,12 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return item->GetArt(key);
+    }
+
+    bool ListItem::isFolder() const
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      return item->m_bIsFolder;
     }
 
     String ListItem::getUniqueID(const char* key)
@@ -493,7 +529,7 @@ namespace XBMCAddon
 
           //! @todo add the rest of the infolabels
           if (key == "dbid" && !type.empty())
-            musictag.SetDatabaseId(strtol(value.c_str(), NULL, 10), type);
+            musictag.SetDatabaseId(static_cast<int>(strtol(value.c_str(), NULL, 10)), type);
           else if (key == "tracknumber")
             musictag.SetTrackNumber(strtol(value.c_str(), NULL, 10));
           else if (key == "discnumber")
@@ -620,7 +656,7 @@ namespace XBMCAddon
             for (const auto& genreEntry: alt.later())
             {
               const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
-              genres.emplace_back(std::move(genre));
+              genres.emplace_back(genre);
             }
 
             gametag.SetGenres(genres);
@@ -655,7 +691,11 @@ namespace XBMCAddon
           else if (key == "role")
             info.strRole = value;
           else if (key == "thumbnail")
+          {
             info.thumbUrl = CScraperUrl(value);
+            if (!info.thumbUrl.GetFirstThumbUrl().empty())
+              info.thumb = CScraperUrl::GetThumbUrl(info.thumbUrl.GetFirstUrlByType());
+          }
           else if (key == "order")
             info.order = strtol(value.c_str(), nullptr, 10);
         }
@@ -688,7 +728,14 @@ namespace XBMCAddon
       GetVideoInfoTag()->m_fanart.Pack();
     }
 
-    void ListItem::addAvailableArtwork(std::string url, std::string art_type, std::string preview, std::string referrer, std::string cache, bool post, bool isgz, int season)
+    void ListItem::addAvailableArtwork(const std::string& url,
+                                       const std::string& art_type,
+                                       const std::string& preview,
+                                       const std::string& referrer,
+                                       const std::string& cache,
+                                       bool post,
+                                       bool isgz,
+                                       int season)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       GetVideoInfoTag()->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post,
@@ -819,10 +866,6 @@ namespace XBMCAddon
 
     CVideoInfoTag* ListItem::GetVideoInfoTag()
     {
-      // make sure the playcount is reset to -1
-      if (!item->HasVideoInfoTag())
-        item->GetVideoInfoTag()->ResetPlayCount();
-
       return item->GetVideoInfoTag();
     }
 

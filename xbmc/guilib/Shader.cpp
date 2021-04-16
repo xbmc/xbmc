@@ -48,7 +48,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   size_t versionPos = m_source.find("#version");
   if (versionPos != std::string::npos)
   {
-    versionPos = m_source.find("\n", versionPos);
+    versionPos = m_source.find('\n', versionPos);
     if (versionPos != std::string::npos)
       pos = versionPos + 1;
   }

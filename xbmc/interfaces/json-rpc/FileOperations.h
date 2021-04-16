@@ -26,7 +26,11 @@ namespace JSONRPC
     static JSONRPC_STATUS PrepareDownload(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Download(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static bool FillFileItem(const CFileItemPtr &originalItem, CFileItemPtr &item, std::string media = "", const CVariant &parameterObject = CVariant(CVariant::VariantTypeArray));
+    static bool FillFileItem(
+        const CFileItemPtr& originalItem,
+        CFileItemPtr& item,
+        const std::string& media = "",
+        const CVariant& parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
   };
 }

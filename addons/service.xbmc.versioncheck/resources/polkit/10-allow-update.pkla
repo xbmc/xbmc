@@ -1,5 +1,5 @@
 [Untrusted Upgrade]
-Identity=unix-user:xbmc
+Identity=unix-user:kodi
 Action=org.debian.apt.upgrade-packages;org.debian.apt.update-cache
 ResultAny=no
 ResultInactive=yes

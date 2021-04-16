@@ -33,6 +33,7 @@ public:
   bool ConfigChanged(const VideoPicture &picture) override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
+  bool Flush(bool saveBuffers) override;
 
   // Feature support
   bool Supports(ERENDERFEATURE feature) override;

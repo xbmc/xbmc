@@ -100,6 +100,18 @@ msgctxt "#31039"
 msgid "Updated:"
 msgstr "Actualizado:"
 
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Select + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Select + Inicio"
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "EN PAUSA"
@@ -198,7 +210,7 @@ msgstr "Teletexto"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Pel por defecto"
+msgstr "Pel predefinida"
 
 msgctxt "#31391"
 msgid "Arial based"

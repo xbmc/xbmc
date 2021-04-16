@@ -12,6 +12,7 @@
 #include "utils/log.h"
 
 #include <errno.h>
+#include <utility>
 
 #include <arpa/inet.h>
 #include <net/if.h>
@@ -22,7 +23,7 @@
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkPosix* network,
                                                std::string interfaceName,
                                                char interfaceMacAddrRaw[6])
-  : CNetworkInterfacePosix(network, interfaceName, interfaceMacAddrRaw)
+  : CNetworkInterfacePosix(network, std::move(interfaceName), interfaceMacAddrRaw)
 {
 }
 
@@ -113,6 +114,11 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
       return true;
 
   return false;
+}
+
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkLinux>();
 }
 
 CNetworkLinux::CNetworkLinux() : CNetworkPosix()

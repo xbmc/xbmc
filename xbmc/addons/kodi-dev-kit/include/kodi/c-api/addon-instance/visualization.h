@@ -6,7 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
+#ifndef C_API_ADDONINSTANCE_VISUALIZATION_H
+#define C_API_ADDONINSTANCE_VISUALIZATION_H
 
 #include "../addon_base.h"
 
@@ -115,3 +116,5 @@ extern "C"
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
+
+#endif /* !C_API_ADDONINSTANCE_VISUALIZATION_H */

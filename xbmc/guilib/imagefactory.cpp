@@ -38,7 +38,7 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
   std::vector<AddonInfoPtr> addonInfos;
   CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_IMAGEDECODER);
-  for (auto addonInfo : addonInfos)
+  for (const auto& addonInfo : addonInfos)
   {
     std::vector<std::string> mime = StringUtils::Split(addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@mimetype").asString(), "|");
     if (std::find(mime.begin(), mime.end(), strMimeType) != mime.end())

@@ -29,12 +29,12 @@ public:
 
   void Reset();
 
-  void Add(CBaseTexture *texture, int delay);
-  void Set(CBaseTexture *texture, int width, int height);
+  void Add(CTexture* texture, int delay);
+  void Set(CTexture* texture, int width, int height);
   void Free();
   unsigned int size() const;
 
-  std::vector<CBaseTexture* > m_textures;
+  std::vector<CTexture*> m_textures;
   std::vector<int> m_delays;
   int m_width;
   int m_height;
@@ -59,7 +59,7 @@ public:
   CTextureMap(const std::string& textureName, int width, int height, int loops);
   virtual ~CTextureMap();
 
-  void Add(CBaseTexture* texture, int delay);
+  void Add(CTexture* texture, int delay);
   bool Release();
 
   const std::string& GetName() const;

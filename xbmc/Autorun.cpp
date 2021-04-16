@@ -138,6 +138,12 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
  */
 bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */, bool startFromBeginning /* = false */)
 {
+  if (!pDir)
+  {
+    CLog::Log(LOGDEBUG, "CAutorun::{}: cannot run disc. is it properly mounted?", __FUNCTION__);
+    return false;
+  }
+
   bool bPlaying(false);
   CFileItemList vecItems;
 
@@ -521,7 +527,10 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
   return false;
 }
 
-void CAutorun::SettingOptionAudioCdActionsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CAutorun::SettingOptionAudioCdActionsFiller(const SettingConstPtr& setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data)
 {
   list.emplace_back(g_localizeStrings.Get(16018), AUTOCD_NONE);
   list.emplace_back(g_localizeStrings.Get(14098), AUTOCD_PLAY);

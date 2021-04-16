@@ -12,7 +12,7 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/log.h"
 
 #include "system.h"

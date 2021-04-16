@@ -3,8 +3,6 @@ set(HEADERS AddonBase.h
             Filesystem.h
             General.h
             Network.h
-            StreamCodec.h
-            StreamCrypto.h
             versions.h)
 
 if(CORE_SYSTEM_NAME STREQUAL android)

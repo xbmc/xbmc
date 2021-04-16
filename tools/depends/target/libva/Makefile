@@ -18,10 +18,7 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	--buildtype=$(MESON_BUILD_TYPE) \
 	-Ddisable_drm=false \
 	-Denable_docs=false \
-	-Denable_va_messaging=true \
-	-Dwith_x11=no \
-	-Dwith_glx=no \
-	-Dwith_wayland=no
+	-Denable_va_messaging=true
 
 ifeq ($(CROSS_COMPILING), yes)
 CONFIGURE += --cross-file $(PREFIX)/share/cross-file.meson
@@ -34,7 +31,7 @@ export CC CXX CFLAGS CXXFLAGS
 endif
 export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
-LIBDYLIB=$(PLATFORM)/build/$(LIBNAME).so
+LIBDYLIB=$(PLATFORM)/build/va/$(LIBNAME).so
 
 all: .installed-$(PLATFORM)
 

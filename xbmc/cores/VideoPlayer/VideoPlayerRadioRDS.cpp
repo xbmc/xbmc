@@ -31,7 +31,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -723,7 +723,7 @@ std::string CDVDRadioRDSData::GetRadioText(unsigned int line)
   return str;
 }
 
-void CDVDRadioRDSData::SetRadioStyle(std::string genre)
+void CDVDRadioRDSData::SetRadioStyle(const std::string& genre)
 {
   g_application.CurrentFileItem().GetMusicInfoTag()->SetGenre(genre);
   m_currentInfoTag->SetProgStyle(genre);

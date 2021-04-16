@@ -193,7 +193,12 @@ CNetworkInterface* CNetworkWin10::GetFirstConnectedInterface()
   }
 
   // fallback to default
-  return CNetwork::GetFirstConnectedInterface();
+  return CNetworkBase::GetFirstConnectedInterface();
+}
+
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkWin10>();
 }
 
 void CNetworkWin10::queryInterfaceList()

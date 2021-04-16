@@ -32,7 +32,7 @@ namespace kodi
 namespace gui
 {
 struct IRenderHelper;
-} // namespace gui
+} /* namespace gui */
 
 //==============================================================================
 /// @ingroup cpp_kodi_Defs
@@ -65,7 +65,8 @@ using HardwareContext = ADDON_HARDWARE_CONTEXT;
 //==============================================================================
 /// @ingroup cpp_kodi_addon_addonbase_Defs
 /// @defgroup cpp_kodi_addon_addonbase_Defs_CSettingValue class CSettingValue
-/// @brief Inside addon main instance used helper class to give settings value.
+/// @brief **Setting value handler**\n
+/// Inside addon main instance used helper class to give settings value.
 ///
 /// This is used on @ref addon::CAddonBase::SetSetting() to inform addon about
 /// settings change by used. This becomes then used to give the related value
@@ -311,23 +312,55 @@ private:
   bool m_owner = false;
 };
 
-/// Add-on main instance class.
+//============================================================================
+/// @addtogroup cpp_kodi_addon_addonbase
+/// @brief **Add-on main instance class**\n
+/// This is the addon main class, similar to an <b>`int main()`</b> in executable and
+/// carries out initial work and later management of it.
+///
 class ATTRIBUTE_HIDDEN CAddonBase
 {
 public:
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Addon base class constructor.
+  ///
   CAddonBase()
   {
     m_interface->toAddon->destroy = ADDONBASE_Destroy;
-    m_interface->toAddon->get_status = ADDONBASE_GetStatus;
     m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
     m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
     m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
   }
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Destructor.
+  ///
   virtual ~CAddonBase() = default;
+  //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @ingroup cpp_kodi_addon_addonbase
+  /// @brief Main addon creation function
+  ///
+  /// With this function addon can carry out necessary work which is required
+  /// at later points or start necessary processes.
+  ///
+  /// This function is optional and necessary work can also be carried out
+  /// using @ref CreateInstance (if it concerns any instance types).
+  ///
+  /// @return @ref ADDON_STATUS_OK if correct, for possible errors see
+  ///         @ref ADDON_STATUS
+  ///
+  /// @note Terminating the add-on must be carried out using the class destructor
+  /// given by child.
+  ///
   virtual ADDON_STATUS Create() { return ADDON_STATUS_OK; }
+  //----------------------------------------------------------------------------
 
+  // obsolete
   virtual ADDON_STATUS GetStatus() { return ADDON_STATUS_OK; }
 
   //============================================================================
@@ -391,7 +424,7 @@ public:
   /// @ingroup cpp_kodi_addon_addonbase
   /// @brief Instance created
   ///
-  /// @param[in] instanceType The requested type of required instance, see \ref ADDON_TYPE.
+  /// @param[in] instanceType The requested type of required instance, see @ref ADDON_TYPE.
   /// @param[in] instanceID An individual identification key string given by Kodi.
   /// @param[in] instance The instance handler used by Kodi must be passed to
   ///                     the classes created here. See in the example.
@@ -401,8 +434,8 @@ public:
   ///                    that it can handle differences.
   /// @param[out] addonInstance The pointer to instance class created in addon.
   ///                           Needed to be able to identify them on calls.
-  /// @return                   \ref ADDON_STATUS_OK if correct, for possible errors
-  ///                           see \ref ADDON_STATUS
+  /// @return                   @ref ADDON_STATUS_OK if correct, for possible errors
+  ///                           see @ref ADDON_STATUS
   ///
   ///
   /// --------------------------------------------------------------------------
@@ -414,8 +447,8 @@ public:
   ///
   /// ...
   ///
-  /// /* If you use only one instance in your add-on, can be instanceType and
-  ///  * instanceID ignored */
+  /// // If you use only one instance in your add-on, can be instanceType and
+  /// // instanceID ignored
   /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
   ///                                       const std::string& instanceID,
   ///                                       KODI_HANDLE instance,
@@ -462,7 +495,7 @@ public:
   /// This function is optional and intended to notify addon that the instance
   /// is terminating.
   ///
-  /// @param[in] instanceType   The requested type of required instance, see \ref ADDON_TYPE.
+  /// @param[in] instanceType   The requested type of required instance, see @ref ADDON_TYPE.
   /// @param[in] instanceID     An individual identification key string given by Kodi.
   /// @param[in] addonInstance  The pointer to instance class created in addon.
   ///
@@ -483,16 +516,11 @@ public:
   static AddonGlobalInterface*
       m_interface; // Interface function table to hold addresses on add-on and from kodi
 
-  /*private:*/ /* Needed public as long the old call functions becomes used! */
+private:
   static inline void ADDONBASE_Destroy()
   {
     delete static_cast<CAddonBase*>(m_interface->addonBase);
     m_interface->addonBase = nullptr;
-  }
-
-  static inline ADDON_STATUS ADDONBASE_GetStatus()
-  {
-    return static_cast<CAddonBase*>(m_interface->addonBase)->GetStatus();
   }
 
   static inline ADDON_STATUS ADDONBASE_SetSetting(const char* settingName, const void* settingValue)
@@ -501,7 +529,6 @@ public:
         ->SetSetting(settingName, CSettingValue(settingValue));
   }
 
-private:
   static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType,
                                                       const char* instanceID,
                                                       KODI_HANDLE instance,
@@ -591,7 +618,7 @@ private:
 } /* namespace addon */
 
 //==============================================================================
-/// @ingroup cpp_kodi_addon
+/// @ingroup cpp_kodi
 /// @brief To get used version inside Kodi itself about asked type.
 ///
 /// This thought to allow a addon a handling of newer addon versions within
@@ -613,6 +640,11 @@ inline std::string ATTRIBUTE_HIDDEN GetKodiTypeVersion(int type)
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @ingroup cpp_kodi
+/// @brief To get the addon system installation folder.
+///
+/// @param[in] append [optional] Path to append to given string
+/// @return Path where addon is installed
 ///
 inline std::string ATTRIBUTE_HIDDEN GetAddonPath(const std::string& append = "")
 {
@@ -637,6 +669,14 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonPath(const std::string& append = "")
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @ingroup cpp_kodi
+/// @brief To get the user-related folder of the addon.
+///
+/// @note This folder is not created automatically and has to be created by the
+/// addon the first time.
+///
+/// @param[in] append [optional] Path to append to given string
+/// @return User path of addon
 ///
 inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = "")
 {
@@ -661,6 +701,19 @@ inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = 
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @ingroup cpp_kodi
+/// @brief This function gives OS associated executable binary path of the addon.
+///
+/// With some systems this can differ from the addon path at @ref GetAddonPath.
+///
+/// As an example on Linux:
+/// - Addon path is at `/usr/share/kodi/addons/YOUR_ADDON_ID`
+/// - Library path is at `/usr/lib/kodi/addons/YOUR_ADDON_ID`
+///
+/// @note In addition, in this function, for a given folder, the add-on path
+/// itself, but its parent.
+///
+/// @return Kodi's sytem library path where related addons are installed.
 ///
 inline std::string ATTRIBUTE_HIDDEN GetLibPath()
 {
@@ -1223,6 +1276,11 @@ inline void ATTRIBUTE_HIDDEN SetSettingEnum(const std::string& settingName, enum
 /*!@}*/
 
 //============================================================================
+/// @ingroup cpp_kodi
+/// @brief Get to related @ref ADDON_STATUS a human readable text.
+///
+/// @param[in] status Status value to get name for
+/// @return Wanted name, as "Unknown" if status not known
 ///
 inline std::string ATTRIBUTE_HIDDEN TranslateAddonStatus(ADDON_STATUS status)
 {
@@ -1279,16 +1337,102 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 
 } /* namespace kodi */
 
-/*! addon creation macro
- * @todo cleanup this stupid big macro
- * This macro includes now all for add-on's needed functions. This becomes a bigger
- * rework after everything is done on Kodi itself, currently is this way needed
- * to have compatibility with not reworked interfaces.
- *
- * Becomes really cleaned up soon :D
- */
+//==============================================================================
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_ADDONCREATORAddonClass macro ADDONCREATOR(AddonClass)
+/// @brief **Addon creation macro**\n
+/// This export the three mandatory "C" functions to have available for Kodi.
+///
+/// @note Only this macro can be used on a C++ addon, everything else is done
+/// automatically.
+///
+/// @param[in] AddonClass Used addon class to be exported with CAddonBase as
+///            parent.
+///
+///
+/// ----------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+///
+/// #include <kodi/AddonBash.h>
+///
+/// class CMyAddon : public kodi::addon::CAddonBase
+/// {
+/// public:
+///   CMyAddon() = default;
+///   ADDON_STATUS Create() override;
+/// };
+///
+/// ADDON_STATUS CMyAddon::Create()
+/// {
+///   // Some work
+///
+///   return ADDON_STATUS_OK;
+/// }
+///
+/// ADDONCREATOR(CMyAddon)
+/// ~~~~~~~~~~~~~
+///
+/// ----------------------------------------------------------------------------
+///
+/// As information, the following functions are exported using this macro:
+/// \table_start
+///   \table_h3{ Function, Use, Description }
+///   \table_row3{   <b>`ADDON_Create(KODI_HANDLE addonInterface\, const char* globalApiVersion\, void* unused)`</b>,
+///                  \anchor ADDON_Create
+///                  _required_,
+///     <b>Addon creation call.</b>
+///     <br>
+///     Like an `int main()` is this the first on addon called place on his start
+///     and create within C++ API related class inside addon.
+///     <br>
+///     @param[in] addonInterface Handle pointer to get Kodi's given table.
+///                               There have addon needed values and functions
+///                               to Kodi and addon must set his functions there
+///                               for Kodi.
+///     @param[in] globalApiVersion This give the main version @ref ADDON_GLOBAL_VERSION_MAIN
+///                                 where currently on Kodi's side.<br>
+///                                 This is unsued on addon as there also other
+///                                 special callback functions for.<br>
+///                                 Only thought for future use if needed earlier.
+///     @param[in] unused This is a not used value\, only there to have in case of
+///                       need no Major API version increase where break current.
+///     @return @ref ADDON_STATUS_OK if correct\, for possible errors see
+///             @ref ADDON_STATUS.
+///     <p>
+///   }
+///   \table_row3{   <b>`const char* ADDON_GetTypeVersion(int type)`</b>,
+///                  \anchor ADDON_GetTypeVersion
+///                  _required_,
+///     <b>Ask addon about version of given type.</b>
+///     <br>
+///     This is used to query its associated version in the addon before work
+///     is carried out in it and the Kodi can adapt to it.
+///     <br>
+///     @param[in] type With @ref ADDON_TYPE defined type to ask.
+///     @return Version as string of asked type.
+///     <p>
+///   }
+///   \table_row3{   <b>`const char* ADDON_GetTypeMinVersion(int type)`</b>,
+///                  \anchor ADDON_GetTypeMinVersion
+///                  _optional_,
+///     <b>Ask addon about minimal version of given type.</b>
+///     <br>
+///     This is used to query its associated min version in the addon before work
+///     is carried out in it and the Kodi can adapt to it.
+///     <br>
+///     @note The minimum version is optional\, if it were not available\, the
+///     major version is used instead.
+///     <br>
+///     @param[in] type With @ref ADDON_TYPE defined type to ask.
+///     @return Min version as string of asked type.
+///     <p>
+///   }
+/// \table_end
+///
 #define ADDONCREATOR(AddonClass) \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create( \
+  extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_Create( \
       KODI_HANDLE addonInterface, const char* /*globalApiVersion*/, void* /*unused*/) \
   { \
     kodi::addon::CAddonBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
@@ -1296,27 +1440,15 @@ inline void* GetInterface(const std::string& name, const std::string& version)
     return static_cast<kodi::addon::CAddonBase*>(kodi::addon::CAddonBase::m_interface->addonBase) \
         ->Create(); \
   } \
-  extern "C" __declspec(dllexport) void ADDON_Destroy() \
-  { \
-    kodi::addon::CAddonBase::ADDONBASE_Destroy(); \
-  } \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_GetStatus() \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_GetStatus(); \
-  } \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_SetSetting(const char* settingName, \
-                                                                 const void* settingValue) \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_SetSetting(settingName, settingValue); \
-  } \
-  extern "C" __declspec(dllexport) const char* ADDON_GetTypeVersion(int type) \
+  extern "C" ATTRIBUTE_DLL_EXPORT const char* ADDON_GetTypeVersion(int type) \
   { \
     return kodi::addon::GetTypeVersion(type); \
   } \
-  extern "C" __declspec(dllexport) const char* ADDON_GetTypeMinVersion(int type) \
+  extern "C" ATTRIBUTE_DLL_EXPORT const char* ADDON_GetTypeMinVersion(int type) \
   { \
     return kodi::addon::GetTypeMinVersion(type); \
   } \
   AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr;
+//------------------------------------------------------------------------------
 
 #endif /* __cplusplus */

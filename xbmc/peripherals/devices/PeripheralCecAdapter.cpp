@@ -97,8 +97,11 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_lastKeypress = 0;
   m_lastChange = VOLUME_CHANGE_NONE;
   m_iExitCode = EXITCODE_QUIT;
-  m_bIsMuted = false; //! @todo fetch the correct initial value when system audiostatus is
-                      //! implemented in libCEC
+
+  //! @todo fetch the correct initial value when system audiostatus is
+  //! implemented in libCEC
+  m_bIsMuted = false;
+
   m_bGoingToStandby = false;
   m_bIsRunning = false;
   m_bDeviceRemoved = false;
@@ -628,10 +631,11 @@ void CPeripheralCecAdapter::OnTvStandby(void)
       KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
       break;
     case LOCALISED_ID_PAUSE:
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PAUSE);
+      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
       break;
     case LOCALISED_ID_STOP:
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
+      if (g_application.GetAppPlayer().IsPlaying())
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
       break;
     case LOCALISED_ID_IGNORE:
       break;

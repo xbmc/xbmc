@@ -79,7 +79,7 @@ void CGUIDialogLibExportSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogLibExportSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogLibExportSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (!setting)
     return;
@@ -136,7 +136,7 @@ void CGUIDialogLibExportSettings::OnSettingChanged(std::shared_ptr<const CSettin
   }
 }
 
-void CGUIDialogLibExportSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -235,7 +235,7 @@ void CGUIDialogLibExportSettings::OnOK()
   Close();
 }
 
-void CGUIDialogLibExportSettings::Save()
+bool CGUIDialogLibExportSettings::Save()
 {
   CLog::Log(LOGINFO, "CGUIDialogMusicExportSettings: Save() called");
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -247,6 +247,8 @@ void CGUIDialogLibExportSettings::Save()
   settings->SetBool(CSettings::SETTING_MUSICLIBRARY_EXPORT_ARTWORK, m_settings.m_artwork);
   settings->SetBool(CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, m_settings.m_skipnfo);
   settings->Save();
+
+  return true;
 }
 
 void CGUIDialogLibExportSettings::SetupView()
@@ -427,7 +429,7 @@ void CGUIDialogLibExportSettings::SetFocus(const std::string &settingid)
     SET_CONTROL_FOCUS(settingControl->GetID(), 0);
 }
 
-int CGUIDialogLibExportSettings::GetExportItemsFromSetting(SettingConstPtr setting)
+int CGUIDialogLibExportSettings::GetExportItemsFromSetting(const SettingConstPtr& setting)
 {
   std::shared_ptr<const CSettingList> settingList = std::static_pointer_cast<const CSettingList>(setting);
   if (settingList->GetElementType() != SettingType::Integer)
@@ -444,7 +446,7 @@ int CGUIDialogLibExportSettings::GetExportItemsFromSetting(SettingConstPtr setti
       CLog::Log(LOGERROR, "CGUIDialogLibExportSettings::%s - wrong items value type", __FUNCTION__);
       return 0;
     }
-    exportitems += value.asInteger();
+    exportitems += static_cast<int>(value.asInteger());
   }
   return exportitems;
 }

@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Verdof vlak"
+msgid "Brightness level"
+msgstr "Helderheid vlak"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Vlak in persent van hoe sterk die skerm verlig bly."
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "Voorkeure"

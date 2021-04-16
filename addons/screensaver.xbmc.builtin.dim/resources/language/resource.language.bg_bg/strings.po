@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Степен на затъмняване"
+msgid "Brightness level"
+msgstr "Ниво на яркост"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Ниво (в проценти) на това колко осветен да остане екранът."
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "Предпочитания"

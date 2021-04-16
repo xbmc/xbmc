@@ -100,9 +100,11 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
                               tag.SetGenre(avtag->value);
                             else if (StringUtils::CompareNoCase(avtag->key, "part_number") == 0 ||
                                      StringUtils::CompareNoCase(avtag->key, "track") == 0)
-                              tag.SetTrackNumber(strtol(avtag->value, nullptr, 10));
+                              tag.SetTrackNumber(
+                                  static_cast<int>(strtol(avtag->value, nullptr, 10)));
                             else if (StringUtils::CompareNoCase(avtag->key, "disc") == 0)
-                              tag.SetDiscNumber(strtol(avtag->value, nullptr, 10));
+                              tag.SetDiscNumber(
+                                  static_cast<int>(strtol(avtag->value, nullptr, 10)));
                             else if (StringUtils::CompareNoCase(avtag->key, "date") == 0)
                               tag.SetReleaseDate(avtag->value);
                             else if (StringUtils::CompareNoCase(avtag->key, "compilation") == 0)
@@ -131,7 +133,7 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
                             else if (StringUtils::CompareNoCase(avtag->key, "TYER") == 0)
                               tag.AddReleaseDate(avtag->value); // YYYY part
                             else if (StringUtils::CompareNoCase(avtag->key, "TBPM") == 0)
-                              tag.SetBPM(strtol(avtag->value, nullptr, 10));
+                              tag.SetBPM(static_cast<int>(strtol(avtag->value, nullptr, 10)));
                             else if (StringUtils::CompareNoCase(avtag->key, "TDTG") == 0) {} // Tagging time
                             else if (StringUtils::CompareNoCase(avtag->key, "language") == 0 ||
                                      StringUtils::CompareNoCase(avtag->key, "TLAN") == 0) {} // Languages

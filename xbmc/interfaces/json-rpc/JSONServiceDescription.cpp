@@ -70,6 +70,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.SetPartymode",                          CPlayerOperations::SetPartymode },
 
   { "Player.SetAudioStream",                        CPlayerOperations::SetAudioStream },
+  { "Player.AddSubtitle",                           CPlayerOperations::AddSubtitle },
   { "Player.SetSubtitle",                           CPlayerOperations::SetSubtitle },
   { "Player.SetVideoStream",                        CPlayerOperations::SetVideoStream },
 
@@ -106,6 +107,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.GetRoles",                        CAudioLibrary::GetRoles },
   { "AudioLibrary.GetSources",                      CAudioLibrary::GetSources },
+  { "AudioLibrary.GetAvailableArtTypes",            CAudioLibrary::GetAvailableArtTypes },
+  { "AudioLibrary.GetAvailableArt",                 CAudioLibrary::GetAvailableArt },
   { "AudioLibrary.SetArtistDetails",                CAudioLibrary::SetArtistDetails },
   { "AudioLibrary.SetAlbumDetails",                 CAudioLibrary::SetAlbumDetails },
   { "AudioLibrary.SetSongDetails",                  CAudioLibrary::SetSongDetails },
@@ -116,6 +119,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Video Library
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
   { "VideoLibrary.GetTags",                         CVideoLibrary::GetTags },
+  { "VideoLibrary.GetAvailableArtTypes",            CVideoLibrary::GetAvailableArtTypes },
+  { "VideoLibrary.GetAvailableArt",                 CVideoLibrary::GetAvailableArt },
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
   { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
   { "VideoLibrary.GetMovieSets",                    CVideoLibrary::GetMovieSets },
@@ -170,8 +175,10 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PVR.GetChannelGroupDetails",                   CPVROperations::GetChannelGroupDetails },
   { "PVR.GetChannels",                              CPVROperations::GetChannels },
   { "PVR.GetChannelDetails",                        CPVROperations::GetChannelDetails },
+  { "PVR.GetClients",                               CPVROperations::GetClients },
   { "PVR.GetBroadcasts",                            CPVROperations::GetBroadcasts },
   { "PVR.GetBroadcastDetails",                      CPVROperations::GetBroadcastDetails },
+  { "PVR.GetBroadcastIsPlayable",                   CPVROperations::GetBroadcastIsPlayable },
   { "PVR.GetTimers",                                CPVROperations::GetTimers },
   { "PVR.GetTimerDetails",                          CPVROperations::GetTimerDetails },
   { "PVR.GetRecordings",                            CPVROperations::GetRecordings },
@@ -954,7 +961,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
   // If we have a string, we need to check the length
   if (HasType(type, StringValue) && value.isString())
   {
-    int size = value.asString().size();
+    int size = static_cast<int>(value.asString().size());
     if (size < minLength)
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet minLength requirements in type %s", name.c_str());
@@ -1145,15 +1152,15 @@ void JSONSchemaTypeDefinition::ResolveReference()
   referencedTypeSet = true;
 
   // Take care of all nested types
-  for (auto it : extends)
+  for (const auto& it : extends)
     it->ResolveReference();
-  for (auto it : unionTypes)
+  for (const auto& it : unionTypes)
     it->ResolveReference();
-  for (auto it : items)
+  for (const auto& it : items)
     it->ResolveReference();
-  for (auto it : additionalItems)
+  for (const auto& it : additionalItems)
     it->ResolveReference();
-  for (auto it : properties)
+  for (const auto& it : properties)
     it.second->ResolveReference();
 
   if (additionalProperties)
@@ -1197,7 +1204,8 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap() :
 {
 }
 
-void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(JSONSchemaTypeDefinitionPtr property)
+void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(
+    const JSONSchemaTypeDefinitionPtr& property)
 {
   std::string name = property->name;
   StringUtils::ToLower(name);
@@ -1221,7 +1229,7 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator
 
 unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 {
-  return m_propertiesmap.size();
+  return static_cast<unsigned int>(m_propertiesmap.size());
 }
 
 JsonRpcMethod::JsonRpcMethod()
@@ -1345,7 +1353,8 @@ JSONRPC_STATUS JsonRpcMethod::Check(const CVariant &requestParameters, ITranspor
   return MethodNotFound;
 }
 
-bool JsonRpcMethod::parseParameter(const CVariant &value, JSONSchemaTypeDefinitionPtr parameter)
+bool JsonRpcMethod::parseParameter(const CVariant& value,
+                                   const JSONSchemaTypeDefinitionPtr& parameter)
 {
   parameter->name = GetString(value["name"], "");
 
@@ -1376,7 +1385,12 @@ bool JsonRpcMethod::parseReturn(const CVariant &value)
   return true;
 }
 
-JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, JSONSchemaTypeDefinitionPtr type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
+JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant& requestParameters,
+                                             const JSONSchemaTypeDefinitionPtr& type,
+                                             unsigned int position,
+                                             CVariant& outputParameters,
+                                             unsigned int& handled,
+                                             CVariant& errorData)
 {
   // Let's check if the parameter has been provided
   if (ParameterExists(requestParameters, type->name, position))
@@ -1410,7 +1424,7 @@ JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, 
 
 void CJSONServiceDescription::ResolveReferences()
 {
-  for (auto it : m_types)
+  for (const auto& it : m_types)
     it.second->ResolveReference();
 }
 
@@ -1708,6 +1722,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<std::string> &values)
 {
   std::vector<CVariant> enums;
+  enums.reserve(values.size());
   for (const auto& it : values)
     enums.emplace_back(it);
 
@@ -1717,6 +1732,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<int> &values)
 {
   std::vector<CVariant> enums;
+  enums.reserve(values.size());
   for (const auto& it : values)
     enums.emplace_back(it);
 
@@ -1964,7 +1980,8 @@ bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::ve
   return false;
 }
 
-void CJSONServiceDescription::addReferenceTypeDefinition(JSONSchemaTypeDefinitionPtr typeDefinition)
+void CJSONServiceDescription::addReferenceTypeDefinition(
+    const JSONSchemaTypeDefinitionPtr& typeDefinition)
 {
   // If the given json value is no object or does not contain an "id" field
   // of type string it is no valid type definition
@@ -2004,7 +2021,8 @@ void CJSONServiceDescription::removeReferenceTypeDefinition(const std::string &t
     m_types.erase(type);
 }
 
-void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionPtr type, std::vector<std::string> &referencedTypes)
+void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionPtr& type,
+                                                 std::vector<std::string>& referencedTypes)
 {
   // If the current type is a referenceable object, we can add it to the list
   if (type->ID.size() > 0)

@@ -108,7 +108,7 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
   if (addonver)
     version = addonver->Version();
 
-  for (auto element : Type(ADDON_REPOSITORY)->GetElements("dir"))
+  for (const auto& element : Type(ADDON_REPOSITORY)->GetElements("dir"))
   {
     DirInfo dir = ParseDirConfiguration(element.second);
     if ((dir.minversion.empty() || version >= dir.minversion) &&

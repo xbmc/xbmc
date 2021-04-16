@@ -16,6 +16,15 @@
       ${api}.put(str, size);
       ${api}.flip(); // prepare the buffer for reading from
     }
+    else if (PyBytes_Check(${slarg}))
+    {
+      Py_ssize_t pysize = PyBytes_GET_SIZE(${slarg});
+      const char* str = PyBytes_AS_STRING(${slarg});
+      size_t size = static_cast<size_t>(pysize);
+      ${api}.allocate(size);
+      ${api}.put(str, size);
+      ${api}.flip(); // prepare the buffer for reading from
+    }
     else if (PyByteArray_Check(${slarg}))
     {
       size_t size = PyByteArray_Size(${slarg});
@@ -24,4 +33,4 @@
       ${api}.flip(); // prepare the buffer for reading from
     }
     else
-      throw XBMCAddon::WrongTypeException("argument \"%s\" for \"%s\" must be a string or a bytearray", "${api}", "${method.@name}");
+      throw XBMCAddon::WrongTypeException("argument \"%s\" for \"%s\" must be a string, bytes or a bytearray", "${api}", "${method.@name}");

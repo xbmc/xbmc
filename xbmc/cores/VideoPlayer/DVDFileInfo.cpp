@@ -132,7 +132,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
   if (pStreamDetails)
   {
 
-    const std::string strPath = item.GetPath();
+    const std::string& strPath = item.GetPath();
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
     //extern subtitles
@@ -250,7 +250,9 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
               aspect = hint.aspect;
             unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
 
-            uint8_t *pOutBuf = (uint8_t*)av_malloc(nWidth * nHeight * 4);
+            // We pass the buffers to sws_scale uses 16 aligned widths when using intrinsics
+            int sizeNeeded = FFALIGN(nWidth, 16) * nHeight * 4;
+            uint8_t *pOutBuf = static_cast<uint8_t*>(av_malloc(sizeNeeded));
             struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
                   AV_PIX_FMT_YUV420P, nWidth, nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
@@ -349,7 +351,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   }
 }
 
-bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInputStream, CDVDDemux *pDemuxer, const std::vector<CStreamDetailSubtitle> &subs, CStreamDetails &details)
+bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
+                                          CDVDDemux* pDemuxer,
+                                          const std::vector<CStreamDetailSubtitle>& subs,
+                                          CStreamDetails& details)
 {
   bool result = DemuxerToStreamDetails(pInputStream, pDemuxer, details);
   for (unsigned int i = 0; i < subs.size(); i++)
@@ -363,7 +368,10 @@ bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInpu
 }
 
 /* returns true if details have been added */
-bool CDVDFileInfo::DemuxerToStreamDetails(std::shared_ptr<CDVDInputStream> pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const std::string &path)
+bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
+                                          CDVDDemux* pDemux,
+                                          CStreamDetails& details,
+                                          const std::string& path)
 {
   bool retVal = false;
   details.Reset();

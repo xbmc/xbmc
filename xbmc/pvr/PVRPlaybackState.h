@@ -37,28 +37,33 @@ public:
   virtual ~CPVRPlaybackState();
 
   /*!
-   * @brief clear all data.
+   * @brief clear instances, keep stored UIDs.
    */
   void Clear();
+
+  /*!
+   * @brief re-init using stored UIDs.
+   */
+  void ReInit();
 
   /*!
    * @brief Inform that playback of an item just started.
    * @param item The item that started to play.
    */
-  void OnPlaybackStarted(const std::shared_ptr<CFileItem> item);
+  void OnPlaybackStarted(const std::shared_ptr<CFileItem>& item);
 
   /*!
    * @brief Inform that playback of an item was stopped due to user interaction.
    * @param item The item that stopped to play.
    * @return True, if the state has changed, false otherwise
    */
-  bool OnPlaybackStopped(const std::shared_ptr<CFileItem> item);
+  bool OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
 
   /*!
    * @brief Inform that playback of an item has stopped without user interaction.
    * @param item The item that ended to play.
    */
-  void OnPlaybackEnded(const std::shared_ptr<CFileItem> item);
+  void OnPlaybackEnded(const std::shared_ptr<CFileItem>& item);
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
@@ -199,6 +204,15 @@ public:
   std::shared_ptr<CPVRChannelGroup> GetPlayingGroup(bool bRadio) const;
 
   /*!
+   * @brief Get current playback time for the given channel, taking timeshifting and playing
+   * epg tags into account.
+   * @param iClientID The client id.
+   * @param iUniqueChannelID The channel uid.
+   * @return The playback time or 'now' if not playing.
+   */
+  CDateTime GetPlaybackTime(int iClientID, int iUniqueChannelID) const;
+
+  /*!
    * @brief Get current playback time for the given channel, taking timeshifting into account.
    * @param iClientID The client id.
    * @param iUniqueChannelID The channel uid.
@@ -228,6 +242,9 @@ private:
   std::string m_strPlayingClientName;
   int m_playingClientId = -1;
   int m_playingChannelUniqueId = -1;
+  std::string m_strPlayingRecordingUniqueId;
+  int m_playingEpgTagChannelUniqueId = -1;
+  unsigned int m_playingEpgTagUniqueId = 0;
 
   class CLastWatchedUpdateTimer;
   std::unique_ptr<CLastWatchedUpdateTimer> m_lastWatchedUpdateTimer;

@@ -859,7 +859,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     // Removable sources
     VECSOURCES removables;
     CServiceBroker::GetMediaManager().GetRemovableDrives(removables);
-    for (auto s : removables)
+    for (const auto& s : removables)
     {
       if (URIUtils::CompareWithoutSlashAtEnd(s.strPath, m_vecItems->GetPath()))
       {
@@ -901,9 +901,11 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     showLabel = 1026;
   else if (m_vecItems->IsPath("sources://games/"))
     showLabel = 35250; // "Add games..."
-  if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
+   // Add 'Add source ' item
+  if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons()) &&
+      iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR)
   {
-    std::string strLabel = g_localizeStrings.Get(showLabel);
+    const std::string& strLabel = g_localizeStrings.Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
     pItem->SetArt("icon", "DefaultAddSource.png");
@@ -1053,7 +1055,8 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     // execute the script
     CURL url(pItem->GetPath());
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
+    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT,
+                                               OnlyEnabled::YES))
     {
       if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
       {
@@ -1156,7 +1159,8 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     {
       CURL url(m_vecItems->GetPath());
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(),addon))
+      if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_UNKNOWN,
+                                                 OnlyEnabled::YES))
       {
         PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO))
@@ -1508,7 +1512,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
  *
  * This function is called by OnClick()
  */
-bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
+bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   //play and add current directory to temporary playlist
   int iPlaylist = m_guiState->GetPlaylist();

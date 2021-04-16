@@ -72,6 +72,14 @@ void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessag
 {
   CSingleLock lock(m_critical);
 
+  if (!m_notifications.empty())
+  {
+    const auto& last = m_notifications.back();
+    if (last.eType == eType && last.imagefile == aImageFile && last.caption == aCaption &&
+        last.description == aDescription)
+      return; // avoid duplicates in a row.
+  }
+
   Notification toast;
   toast.eType = eType;
   toast.imagefile = aImageFile;

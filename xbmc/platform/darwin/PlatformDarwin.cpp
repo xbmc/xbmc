@@ -10,10 +10,15 @@
 
 #include "filesystem/SpecialProtocol.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
-void CPlatformDarwin::Init()
+bool CPlatformDarwin::Init()
 {
-  CPlatformPosix::Init();
+  if (!CPlatformPosix::Init())
+    return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
+
+  setenv("OS", "OS X", true); // for python scripts that check the OS
+
+  return true;
 }

@@ -75,6 +75,16 @@ void CPVRDatabase::Close()
   CDatabase::Close();
 }
 
+void CPVRDatabase::Lock()
+{
+  m_critSection.lock();
+}
+
+void CPVRDatabase::Unlock()
+{
+  m_critSection.unlock();
+}
+
 void CPVRDatabase::CreateTables()
 {
   CSingleLock lock(m_critSection);
@@ -289,19 +299,23 @@ bool CPVRDatabase::DeleteChannels()
   return DeleteValues("channels");
 }
 
-bool CPVRDatabase::Delete(const CPVRChannel& channel)
+bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
     return false;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting channel '{}' from the database", channel.ChannelName());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Queueing delete for channel '{}' from the database",
+              channel.ChannelName());
 
   Filter filter;
   filter.AppendWhere(PrepareSQL("idChannel = %u", channel.ChannelID()));
 
-  CSingleLock lock(m_critSection);
-  return DeleteValues("channels", filter);
+  std::string strQuery;
+  if (BuildSQL(PrepareSQL("DELETE FROM %s ", "channels"), filter, strQuery))
+    return CDatabase::QueueDeleteQuery(strQuery);
+
+  return false;
 }
 
 int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
@@ -375,6 +389,20 @@ int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
 }
 
 /********** Channel group methods **********/
+
+bool CPVRDatabase::QueueDeleteChannelGroupMembersQuery(int iGroupID)
+{
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idGroup = %u", iGroupID));
+
+  CSingleLock lock(m_critSection);
+
+  std::string strQuery;
+  if (BuildSQL(PrepareSQL("DELETE FROM %s ", "map_channelgroups_channels"), filter, strQuery))
+    return CDatabase::QueueDeleteQuery(strQuery);
+
+  return false;
+}
 
 bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup& group)
 {
@@ -513,7 +541,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group)
         if (!group.IsGroupMember(iChannelId))
         {
           int iClientId = GetClientIdByChannelId(iChannelId);
-          if (iClientId == PVR_INVALID_CLIENT_ID || !group.IsMissingChannelsFromClient(iClientId))
+          if (iClientId == PVR_INVALID_CLIENT_ID || group.HasValidDataFromClient(iClientId))
           {
             channelsToDelete.emplace_back(iChannelId);
           }
@@ -561,7 +589,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup& group)
     for (int iChannelId : currentMembers)
     {
       int iClientId = GetClientIdByChannelId(iChannelId);
-      if (iClientId != PVR_INVALID_CLIENT_ID && group.IsMissingChannelGroupMembersFromClient(iClientId))
+      if (iClientId != PVR_INVALID_CLIENT_ID && !group.HasValidDataFromClient(iClientId))
       {
         bIgnoreChannel = true;
         break;
@@ -668,7 +696,7 @@ int CPVRDatabase::Get(CPVRChannelGroup& group, const CPVRChannelGroup& allGroup)
         {
           // remove the channel from the table if it doesn't exist on client (anymore)
           int iClientId = GetClientIdByChannelId(iChannelId);
-          if (iClientId == PVR_INVALID_CLIENT_ID || !allGroup.IsMissingChannelsFromClient(iClientId))
+          if (iClientId == PVR_INVALID_CLIENT_ID || allGroup.HasValidDataFromClient(iClientId))
           {
             Filter filter;
             filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));

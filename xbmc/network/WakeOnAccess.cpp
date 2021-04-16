@@ -449,7 +449,7 @@ CWakeOnAccess &CWakeOnAccess::GetInstance()
 
 bool CWakeOnAccess::WakeUpHost(const CURL& url)
 {
-  std::string hostName = url.GetHostName();
+  const std::string& hostName = url.GetHostName();
 
   if (!hostName.empty())
     return WakeUpHost(hostName, url.Get(), url.IsProtocol("upnp"));
@@ -753,14 +753,14 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
     if (IsEnabled())
     {
-      std::string heading = LOCALIZED(13033);
+      const std::string& heading = LOCALIZED(13033);
       std::string message = StringUtils::Format(LOCALIZED(13036).c_str(), host.c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, 4000, true, 3000);
     }
   }
 }
 
-void CWakeOnAccess::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CWakeOnAccess::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

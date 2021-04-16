@@ -75,6 +75,11 @@ std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const
   return m_adapter.FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstGatewayAddress->Address.lpSockaddr) : "";
 }
 
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkWin32>();
+}
+
 CNetworkWin32::CNetworkWin32()
  : CNetworkBase()
 {

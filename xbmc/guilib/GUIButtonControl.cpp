@@ -11,12 +11,26 @@
 #include "GUIFontManager.h"
 #include "input/Key.h"
 
-CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo, bool wrapMultiline)
-    : CGUIControl(parentID, controlID, posX, posY, width, height)
-    , m_imgFocus(posX, posY, width, height, textureFocus)
-    , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
-    , m_label(posX, posY, width, height, labelInfo, wrapMultiline ? CGUILabel::OVER_FLOW_WRAP : CGUILabel::OVER_FLOW_TRUNCATE)
-    , m_label2(posX, posY, width, height, labelInfo)
+CGUIButtonControl::CGUIButtonControl(int parentID,
+                                     int controlID,
+                                     float posX,
+                                     float posY,
+                                     float width,
+                                     float height,
+                                     const CTextureInfo& textureFocus,
+                                     const CTextureInfo& textureNoFocus,
+                                     const CLabelInfo& labelInfo,
+                                     bool wrapMultiline)
+  : CGUIControl(parentID, controlID, posX, posY, width, height),
+    m_imgFocus(CGUITexture::CreateTexture(posX, posY, width, height, textureFocus)),
+    m_imgNoFocus(CGUITexture::CreateTexture(posX, posY, width, height, textureNoFocus)),
+    m_label(posX,
+            posY,
+            width,
+            height,
+            labelInfo,
+            wrapMultiline ? CGUILabel::OVER_FLOW_WRAP : CGUILabel::OVER_FLOW_TRUNCATE),
+    m_label2(posX, posY, width, height, labelInfo)
 {
   m_bSelected = false;
   m_alpha = 255;
@@ -26,18 +40,35 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
   ControlType = GUICONTROL_BUTTON;
 }
 
-CGUIButtonControl::~CGUIButtonControl(void) = default;
+CGUIButtonControl::CGUIButtonControl(const CGUIButtonControl& control)
+  : CGUIControl(control),
+    m_imgFocus(control.m_imgFocus->Clone()),
+    m_imgNoFocus(control.m_imgNoFocus->Clone()),
+    m_focusCounter(control.m_focusCounter),
+    m_alpha(control.m_alpha),
+    m_minWidth(control.m_minWidth),
+    m_maxWidth(control.m_maxWidth),
+    m_info(control.m_info),
+    m_info2(control.m_info2),
+    m_label(control.m_label),
+    m_label2(control.m_label2),
+    m_clickActions(control.m_clickActions),
+    m_focusActions(control.m_focusActions),
+    m_unfocusActions(control.m_unfocusActions),
+    m_bSelected(control.m_bSelected)
+{
+}
 
 void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   ProcessText(currentTime);
   if (m_bInvalidated)
   {
-    m_imgFocus.SetWidth(GetWidth());
-    m_imgFocus.SetHeight(m_height);
+    m_imgFocus->SetWidth(GetWidth());
+    m_imgFocus->SetHeight(m_height);
 
-    m_imgNoFocus.SetWidth(GetWidth());
-    m_imgNoFocus.SetHeight(m_height);
+    m_imgNoFocus->SetWidth(GetWidth());
+    m_imgNoFocus->SetHeight(m_height);
   }
 
   if (HasFocus())
@@ -54,29 +85,29 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
       alphaChannel += 192;
       alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
     }
-    if (m_imgFocus.SetAlpha((unsigned char)alphaChannel))
+    if (m_imgFocus->SetAlpha((unsigned char)alphaChannel))
       MarkDirtyRegion();
 
-    m_imgFocus.SetVisible(true);
-    m_imgNoFocus.SetVisible(false);
+    m_imgFocus->SetVisible(true);
+    m_imgNoFocus->SetVisible(false);
     m_focusCounter++;
   }
   else
   {
-    m_imgFocus.SetVisible(false);
-    m_imgNoFocus.SetVisible(true);
+    m_imgFocus->SetVisible(false);
+    m_imgNoFocus->SetVisible(true);
   }
 
-  m_imgFocus.Process(currentTime);
-  m_imgNoFocus.Process(currentTime);
+  m_imgFocus->Process(currentTime);
+  m_imgNoFocus->Process(currentTime);
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIButtonControl::Render()
 {
-  m_imgFocus.Render();
-  m_imgNoFocus.Render();
+  m_imgFocus->Render();
+  m_imgNoFocus->Render();
 
   RenderText();
   CGUIControl::Render();
@@ -218,26 +249,26 @@ void CGUIButtonControl::AllocResources()
 {
   CGUIControl::AllocResources();
   m_focusCounter = 0;
-  m_imgFocus.AllocResources();
-  m_imgNoFocus.AllocResources();
+  m_imgFocus->AllocResources();
+  m_imgNoFocus->AllocResources();
   if (!m_width)
-    m_width = m_imgFocus.GetWidth();
+    m_width = m_imgFocus->GetWidth();
   if (!m_height)
-    m_height = m_imgFocus.GetHeight();
+    m_height = m_imgFocus->GetHeight();
 }
 
 void CGUIButtonControl::FreeResources(bool immediately)
 {
   CGUIControl::FreeResources(immediately);
-  m_imgFocus.FreeResources(immediately);
-  m_imgNoFocus.FreeResources(immediately);
+  m_imgFocus->FreeResources(immediately);
+  m_imgNoFocus->FreeResources(immediately);
 }
 
 void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 {
   CGUIControl::DynamicResourceAlloc(bOnOff);
-  m_imgFocus.DynamicResourceAlloc(bOnOff);
-  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+  m_imgFocus->DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus->DynamicResourceAlloc(bOnOff);
 }
 
 void CGUIButtonControl::SetInvalid()
@@ -245,8 +276,8 @@ void CGUIButtonControl::SetInvalid()
   CGUIControl::SetInvalid();
   m_label.SetInvalid();
   m_label2.SetInvalid();
-  m_imgFocus.SetInvalid();
-  m_imgNoFocus.SetInvalid();
+  m_imgFocus->SetInvalid();
+  m_imgNoFocus->SetInvalid();
 }
 
 void CGUIButtonControl::SetLabel(const std::string &label)
@@ -270,8 +301,8 @@ void CGUIButtonControl::SetLabel2(const std::string &label2)
 void CGUIButtonControl::SetPosition(float posX, float posY)
 {
   CGUIControl::SetPosition(posX, posY);
-  m_imgFocus.SetPosition(posX, posY);
-  m_imgNoFocus.SetPosition(posX, posY);
+  m_imgFocus->SetPosition(posX, posY);
+  m_imgNoFocus->SetPosition(posX, posY);
 }
 
 void CGUIButtonControl::SetAlpha(unsigned char alpha)
@@ -286,8 +317,8 @@ bool CGUIButtonControl::UpdateColors()
   bool changed = CGUIControl::UpdateColors();
   changed |= m_label.UpdateColors();
   changed |= m_label2.UpdateColors();
-  changed |= m_imgFocus.SetDiffuseColor(m_diffuseColor);
-  changed |= m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgFocus->SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgNoFocus->SetDiffuseColor(m_diffuseColor);
 
   return changed;
 }

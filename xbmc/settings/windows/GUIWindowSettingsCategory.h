@@ -34,7 +34,7 @@ protected:
   // implementation of CGUIDialogSettingsBase
   int GetSettingLevel() const override;
   std::shared_ptr<CSettingSection> GetSection() override;
-  void Save() override;
+  bool Save() override;
 
   // implementation of CGUIDialogSettingsManagerBase
   CSettingsManager* GetSettingsManager() const override;

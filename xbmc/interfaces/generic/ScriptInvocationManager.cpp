@@ -240,7 +240,7 @@ int CScriptInvocationManager::ExecuteAsync(
 
 int CScriptInvocationManager::ExecuteAsync(
     const std::string& script,
-    LanguageInvokerPtr languageInvoker,
+    const LanguageInvokerPtr& languageInvoker,
     const ADDON::AddonPtr& addon /* = ADDON::AddonPtr() */,
     const std::vector<std::string>& arguments /* = std::vector<std::string>() */,
     bool reuseable /* = false */,
@@ -314,7 +314,7 @@ int CScriptInvocationManager::ExecuteSync(
 
 int CScriptInvocationManager::ExecuteSync(
     const std::string& script,
-    LanguageInvokerPtr languageInvoker,
+    const LanguageInvokerPtr& languageInvoker,
     const ADDON::AddonPtr& addon /* = ADDON::AddonPtr() */,
     const std::vector<std::string>& arguments /* = std::vector<std::string>() */,
     uint32_t timeoutMs /* = 0 */,

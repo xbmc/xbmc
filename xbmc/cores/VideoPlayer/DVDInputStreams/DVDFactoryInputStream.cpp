@@ -24,7 +24,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
+#include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
@@ -36,7 +36,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 {
   using namespace ADDON;
 
-  std::string file = fileitem.GetDynPath();
+  const std::string& file = fileitem.GetDynPath();
   if (scanforextaudio)
   {
     // find any available external audio tracks
@@ -52,7 +52,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   std::vector<AddonInfoPtr> addonInfos;
   CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true /*enabled only*/, ADDON_INPUTSTREAM);
-  for (auto addonInfo : addonInfos)
+  for (const auto& addonInfo : addonInfos)
   {
     if (CInputStreamAddon::Supports(addonInfo, fileitem))
     {

@@ -454,7 +454,6 @@ static CAEChannelInfo PAChannelToAEChannelMap(const pa_channel_map& channels)
   return info;
 }
 
-#if PA_CHECK_VERSION(10,0,0)
 static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, void *userdata)
 {
   ModuleInfoStruct *mis = static_cast<ModuleInfoStruct*>(userdata);
@@ -468,7 +467,7 @@ static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, 
   }
   pa_threaded_mainloop_signal(mis->mainloop, 0);
 }
-#endif
+
 static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
 
@@ -803,8 +802,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-  bool use_pa_mixing = false;
-
   if(m_passthrough)
   {
     map.channels = 2;
@@ -812,42 +809,13 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
   else
   {
-    // version 11 got the new option "remixing-use-all-sink-channels" which
-    // can be set to "no". Therefore we give the choice back to user and let
-    // him configure the soundserver the way he likes - this makes the pre 11
-    // workaround obsolete
-#if PA_CHECK_VERSION(11,0,0)
-    use_pa_mixing = true;
     map = AEChannelMapToPAChannel(format.m_channelLayout);
-#else
-    // as we mix for PA now to avoid default upmixing, we need to care for
-    // channel resolving
-    CAEChannelInfo target_layout = format.m_channelLayout;
-    CAEChannelInfo available_layout = PAChannelToAEChannelMap(sinkStruct.map);
-    target_layout.ResolveChannels(available_layout);
-
-    // if we cannot map all requested channels - tell PA to mix for us
-    if (target_layout.Count() != format.m_channelLayout.Count())
-    {
-      use_pa_mixing = true;
-      map = AEChannelMapToPAChannel(format.m_channelLayout);
-    }
-    else
-    {
-      // use our layout to update AE
-      map = AEChannelMapToPAChannel(target_layout);
-    }
-#endif
     format.m_channelLayout = PAChannelToAEChannelMap(map);
   }
   m_Channels = format.m_channelLayout.Count();
 
-  // Pulse can resample everything between 1 hz and 192000 hz / 384000 hz (starting with 9.0)
-  // Make sure we are in the range that we originally added
-  unsigned int max_pulse_sample_rate = 192000U;
-#if PA_CHECK_VERSION(9,0,0)
-  max_pulse_sample_rate = 384000U;
-#endif
+  // Pulse can resample everything between 5 khz and 384 khz (since 9.0)
+  unsigned int max_pulse_sample_rate = 384000U;
   format.m_sampleRate = std::max(5512U, std::min(format.m_sampleRate, max_pulse_sample_rate));
 
   pa_format_info *info[1];
@@ -941,12 +909,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   buffer_attr.prebuf = (uint32_t) -1;
   buffer_attr.tlength = latency;
   int flags = (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY);
-
-  // by default PA will upmix / remix everything when multi channel layout is configured
-  // if we have enough channels in the target layout ask PA not to remix to related channels
-  // 1:1 remapping is allowed though
-  if (!m_passthrough && !use_pa_mixing)
-    flags |= PA_STREAM_NO_REMIX_CHANNELS;
 
   if (m_passthrough)
     flags |= PA_STREAM_PASSTHROUGH;
@@ -1248,9 +1210,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   ModuleInfoStruct mis;
   mis.mainloop = mainloop;
 
-#if PA_CHECK_VERSION(10,0,0)
   WaitForOperation(pa_context_get_module_info_list(context, ModuleInfoCallback, &mis), mainloop, "Check PA Modules");
-#endif
   if (!mis.hasAllowPT)
   {
     CLog::Log(LOGWARNING, "Pulseaudio module module-allow-passthrough not loaded - opening PT devices might fail");

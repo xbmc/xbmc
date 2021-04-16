@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Изместване във времето"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Следващо излъчване"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Фен-арт"
@@ -147,6 +151,10 @@ msgstr "Ред"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Моята оценка"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Разширена инф."
 
 msgctxt "#31035"
 msgid "Pages"
@@ -196,10 +204,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Налично"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Натиснете клавиша [B]OK[/B] за спиране"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "филтрирани"
@@ -209,8 +213,12 @@ msgid "Arial based"
 msgstr "Основан на Arial"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Натиснете [B]Наляво[/B] за превъртане назад или [B]Надясно[/B] - напред"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Натиснете [B]Наляво[/B] за стъпка назад или [B]Надясно[/B] – за напред"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Натиснете [B]Надясно[/B], за да преминете към следващия кадър"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -223,6 +231,14 @@ msgstr "Показвай екрана за влизане след старти�
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Автоматично влизане след стартиране"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -452,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Остава"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Двоично"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Последни промени…"
@@ -492,6 +512,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Търси в добавките"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "В кината"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Скоро в кината"
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Категории"
@@ -501,8 +529,8 @@ msgid "Select genre fanart pack"
 msgstr "Избор на пакет с фен-арт за категориите "
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Хранилище"
+msgid "Origin"
+msgstr "Произход"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -571,3 +599,11 @@ msgstr "Снимка на профила"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Анимиране на фон"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Показване на плакати вместо миниатюри за музикалните видеа"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Категорията съдържа настройки свързани с изображенията."

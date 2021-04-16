@@ -124,7 +124,7 @@ namespace JSONRPC
     \param permission String representation of the OperationPermission
     \return OperationPermission value of the given string representation
     */
-  inline OperationPermission StringToPermission(std::string permission)
+  inline OperationPermission StringToPermission(const std::string& permission)
   {
     if (permission.compare("ControlPlayback") == 0)
       return ControlPlayback;

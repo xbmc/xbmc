@@ -116,11 +116,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return !value.empty();
       case VIDEOPLAYER_TITLE:
         value = tag->m_strTitle;
-        if (value.empty())
-          value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return !value.empty();
       case LISTITEM_TITLE:
         value = tag->m_strTitle;
         return true;
@@ -637,6 +633,38 @@ bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
   return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
 }
 
+bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
+                                     const CFileItem* item,
+                                     int contextWindow,
+                                     const CGUIInfo& info,
+                                     std::string* fallback)
+{
+  // No fallback for videoplayer "offset" and "position" info labels
+  if (info.GetData1() && ((info.m_info >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
+      info.m_info <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
+      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+    return false;
+
+  const CVideoInfoTag* tag = item->GetVideoInfoTag();
+  if (tag)
+  {
+    switch (info.m_info)
+    {
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      // VIDEOPLAYER_*
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      case VIDEOPLAYER_TITLE:
+        value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
+      default:
+        break;
+    }
+  }
+  return false;
+}
+
 bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   if (!gitem->IsFileItem())
@@ -655,6 +683,18 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
         value = GetPercentPlayed(tag);
         return true;
     }
+  }
+
+  switch (info.m_info)
+  {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // VIDEOPLAYER_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case VIDEOPLAYER_AUDIOSTREAMCOUNT:
+      value = g_application.GetAppPlayer().GetAudioStreamCount();
+      return true;
+    default:
+      break;
   }
 
   return false;

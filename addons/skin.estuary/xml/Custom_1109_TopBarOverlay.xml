@@ -7,7 +7,7 @@
 	<zorder>0</zorder>
 	<controls>
 		<control type="group">
-			<visible>![Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)] + [Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Paused + !Window.IsActive(visualisation)]</visible>
+			<visible>![Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)] + [!String.IsEmpty(Player.SeekNumeric) | Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Paused]</visible>
 			<animation effect="fade" start="0" end="100" time="300">VisibleChange</animation>
 			<animation effect="slide" start="0,0" end="0,-80" time="300" condition="Player.Paused + System.IdleTime(5)">Conditional</animation>
 			<control type="image">
@@ -55,6 +55,16 @@
 				<font>font30_title</font>
 				<label>[COLOR button_focus]$LOCALIZE[31026][/COLOR] $INFO[PVR.TimeshiftCur] (-$INFO[PVR.TimeshiftOffset])</label>
 				<visible>VideoPlayer.Content(LiveTV) + PVR.IsTimeShift</visible>
+			</control>
+			<control type="progress">
+				<left>0</left>
+				<top>55</top>
+				<width>100%</width>
+				<height>16</height>
+				<info>Player.ProgressCache</info>
+				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<midtexture>colors/white50.png</midtexture>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="progress">
 				<left>0</left>
@@ -112,13 +122,33 @@
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
 				<info>PVR.TimeShiftSeekbar</info>
-				<visible>[Player.Seeking | Player.DisplayAfterSeek] + !Player.ChannelPreviewActive</visible>
+				<visible>VideoPlayer.Content(LiveTV) + [Player.Seeking | Player.DisplayAfterSeek] + !Player.ChannelPreviewActive</visible>
+			</control>
+			<control type="ranges">
+				<left>0</left>
+				<top>55</top>
+				<width>100%</width>
+				<height>8</height>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<lefttexture>colors/white.png</lefttexture>
+				<midtexture colordiffuse="FFFF0000">colors/white.png</midtexture>
+				<righttexture>colors/white.png</righttexture>
+				<info>Player.Cutlist</info>
+			</control>
+			<control type="ranges">
+				<left>0</left>
+				<top>67</top>
+				<width>100%</width>
+				<height>4</height>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<righttexture>colors/white.png</righttexture>
+				<info>Player.Chapters</info>
 			</control>
 		</control>
 		<control type="group">
 			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 			<animation effect="slide" start="0,-200" end="0,0" time="300" tween="cubic" easing="out">VisibleChange</animation>
-			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) | ![Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Paused + !Window.IsActive(visualisation)]</visible>
+			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) + ![Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding | Player.Paused]</visible>
 			<depth>DepthBars</depth>
 			<control type="image">
 				<left>0</left>

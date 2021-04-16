@@ -38,7 +38,7 @@ protected:
   std::string GetStartFolder(const std::string &url) override;
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
-  bool ManageInfoProvider(const CFileItemPtr item);
+  bool ManageInfoProvider(const CFileItemPtr& item);
 
   VECSOURCES m_shares;
 

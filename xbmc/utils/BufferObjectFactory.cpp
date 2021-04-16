@@ -12,7 +12,7 @@ std::list<std::function<std::unique_ptr<CBufferObject>()>> CBufferObjectFactory:
 
 std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject(bool needsCreateBySize)
 {
-  for (const auto bufferObject : m_bufferObjects)
+  for (const auto& bufferObject : m_bufferObjects)
   {
     auto bo = bufferObject();
 
@@ -31,7 +31,7 @@ std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject(bool nee
 }
 
 void CBufferObjectFactory::RegisterBufferObject(
-    std::function<std::unique_ptr<CBufferObject>()> createFunc)
+    const std::function<std::unique_ptr<CBufferObject>()>& createFunc)
 {
   m_bufferObjects.emplace_front(createFunc);
 }

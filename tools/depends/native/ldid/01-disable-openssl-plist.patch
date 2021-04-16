@@ -1,0 +1,21 @@
+--- a/Makefile
++++ b/Makefile
+@@ -1,13 +1,14 @@
+ DESTDIR ?= /
+ PREFIX  ?= /usr/local
+-OPENSSL_LDFLAGS := $(shell pkg-config --libs-only-L openssl)
+-OPENSSL_CFLAGS  := $(shell pkg-config --cflags openssl)
+-CFLAGS += $(OPENSSL_CFLAGS) -O2
+-LDFLAGS ?= $(LDID_LIBS) $(OPENSSL_LDFLAGS)
++#OPENSSL_LDFLAGS := $(shell pkg-config --libs-only-L openssl)
++#OPENSSL_CFLAGS  := $(shell pkg-config --cflags openssl)
++#CFLAGS += $(OPENSSL_CFLAGS) -O2 -DLDID_NOSMIME=1 -DLDID_NOPLIST=1
++CFLAGS += -O2 -DLDID_NOSMIME=1 -DLDID_NOPLIST=1
++#LDFLAGS ?= $(LDID_LIBS) $(OPENSSL_LDFLAGS)
+
+ .PHONY: all clean
+ LDID_OBJS = ldid.cpp.o lookup2.c.o
+-LDID_LIBS = -lplist -lcrypto
++#LDID_LIBS = -lplist -lcrypto
+
+ all: ldid

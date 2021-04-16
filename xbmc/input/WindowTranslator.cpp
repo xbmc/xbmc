@@ -118,16 +118,26 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"movieinformation", WINDOW_DIALOG_VIDEO_INFO},
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
     {"fullscreenvideo", WINDOW_FULLSCREEN_VIDEO},
-    {"fullscreenlivetv", WINDOW_FULLSCREEN_LIVETV}, // virtual window for fullscreen radio, uses
-                                                    // WINDOW_FULLSCREEN_VIDEO as fallback
-    {"fullscreenlivetvpreview", WINDOW_FULLSCREEN_LIVETV_PREVIEW}, // Live TV channel preview
-    {"fullscreenlivetvinput",
-     WINDOW_FULLSCREEN_LIVETV_INPUT}, // Livr TV direct channel number input
-    {"fullscreenradio", WINDOW_FULLSCREEN_RADIO}, // virtual window for fullscreen radio, uses
-                                                  // WINDOW_VISUALISATION as fallback
-    {"fullscreenradiopreview", WINDOW_FULLSCREEN_RADIO_PREVIEW}, // PVR Radio channel preview
-    {"fullscreenradioinput",
-     WINDOW_FULLSCREEN_RADIO_INPUT}, // PVR radio direct channel number input
+
+    // Virtual window for fullscreen radio, uses WINDOW_FULLSCREEN_VIDEO as
+    // fallback
+    {"fullscreenlivetv", WINDOW_FULLSCREEN_LIVETV},
+
+    // Live TV channel preview
+    {"fullscreenlivetvpreview", WINDOW_FULLSCREEN_LIVETV_PREVIEW},
+
+    // Live TV direct channel number input
+    {"fullscreenlivetvinput", WINDOW_FULLSCREEN_LIVETV_INPUT},
+
+    // Virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
+    {"fullscreenradio", WINDOW_FULLSCREEN_RADIO},
+
+    // PVR Radio channel preview
+    {"fullscreenradiopreview", WINDOW_FULLSCREEN_RADIO_PREVIEW},
+
+    // PVR radio direct channel number input
+    {"fullscreenradioinput", WINDOW_FULLSCREEN_RADIO_INPUT},
+
     {"fullscreengame", WINDOW_FULLSCREEN_GAME},
     {"visualisation", WINDOW_VISUALISATION},
     {"slideshow", WINDOW_SLIDESHOW},

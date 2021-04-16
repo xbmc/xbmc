@@ -25,8 +25,10 @@
 #elif defined(HAS_GLES)
 #include "rendering/gles/RenderSystemGLES.h"
 #elif defined(TARGET_WINDOWS)
+#include "guilib/TextureDX.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+
 #include <DirectXMath.h>
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -42,8 +44,6 @@ using namespace Microsoft::WRL;
 #define PICTURE_VIEW_BOX_BACKGROUND 0xff000000 // BLACK
 
 #define FPS                                 25
-
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
@@ -101,14 +101,20 @@ bool CSlideShowPic::DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const
   return true;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber,
+                               CTexture* pTexture,
+                               DISPLAY_EFFECT dispEffect,
+                               TRANSITION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
   SetTexture_Internal(iSlideNumber, pTexture, dispEffect, transEffect);
 }
 
-void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
+void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
+                                        CTexture* pTexture,
+                                        DISPLAY_EFFECT dispEffect,
+                                        TRANSITION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   m_bPause = false;
@@ -251,7 +257,7 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture)
+void CSlideShowPic::UpdateTexture(CTexture* pTexture)
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
@@ -782,7 +788,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
 }
 #endif
 
-void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Color color)
+void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::Color color)
 {
 #ifdef HAS_DX
   Vertex vertex[5];
@@ -901,8 +907,10 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Co
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(tex0Loc);

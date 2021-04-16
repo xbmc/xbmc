@@ -936,7 +936,7 @@ void CExifParse::ProcessGpsInfo(
       case TAG_GPS_ALT:
         {
           char temp[18];
-          sprintf(temp,"%dm", Get32(ValuePtr, m_MotorolaOrder));
+          sprintf(temp, "%.2fm", static_cast<float>(ConvertAnyFormat(ValuePtr, Format)));
           strcat(m_ExifInfo->GpsAlt, temp);
         }
       break;

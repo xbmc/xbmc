@@ -10,7 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "settings/Settings.h"

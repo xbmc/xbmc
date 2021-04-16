@@ -38,5 +38,3 @@ private:
   void GetMacAddress(const std::string& interfaceName, char macAddrRaw[6]) override;
   void queryInterfaceList() override;
 };
-
-using CNetwork = CNetworkFreebsd;

@@ -35,7 +35,13 @@ public:
   ~CInputProcessorTouch() noexcept;
   void SetCoordinateScale(std::int32_t scale) { m_coordinateScale = scale; }
 
-  void OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y) override;
+  void OnTouchDown(CSeat* seat,
+                   std::uint32_t serial,
+                   std::uint32_t time,
+                   const wayland::surface_t& surface,
+                   std::int32_t id,
+                   double x,
+                   double y) override;
   void OnTouchUp(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::int32_t id) override;
   void OnTouchMotion(CSeat* seat, std::uint32_t time, std::int32_t id, double x, double y) override;
   void OnTouchCancel(CSeat* seat) override;

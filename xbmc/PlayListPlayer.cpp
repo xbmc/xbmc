@@ -255,7 +255,7 @@ bool CPlayListPlayer::PlaySongId(int songId)
   return Play();
 }
 
-bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
+bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
 {
   int playlist;
   if (pItem->IsAudio())
@@ -276,7 +276,10 @@ bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
   return Play(0, player);
 }
 
-bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+bool CPlayListPlayer::Play(int iSong,
+                           const std::string& player,
+                           bool bAutoPlay /* = false */,
+                           bool bPlayPrevious /* = false */)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;

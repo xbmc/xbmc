@@ -88,7 +88,7 @@ public:
   XMode GetCurrentMode(const std::string& outputName);
   XMode GetPreferredMode(const std::string& outputName);
   XOutput *GetOutput(const std::string& outputName);
-  bool SetMode(XOutput output, XMode mode);
+  bool SetMode(const XOutput& output, const XMode& mode);
   void LoadCustomModeLinesToAllOutputs(void);
   void SaveState();
   void SetNumScreens(unsigned int num);

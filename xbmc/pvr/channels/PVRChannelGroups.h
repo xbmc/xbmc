@@ -181,6 +181,14 @@ namespace PVR
     bool DeleteGroup(const CPVRChannelGroup& group);
 
     /*!
+     * @brief Hide/unhide a group in this container.
+     * @param group The group to hide/unhide.
+     * @param bHide True to hide the group, false to unhide it.
+     * @return True on success, false otherwise.
+     */
+    bool HideGroup(const std::shared_ptr<CPVRChannelGroup>& group, bool bHide);
+
+    /*!
      * @brief Create EPG tags for all channels of the internal group.
      * @return True if EPG tags where created successfully, false if not.
      */

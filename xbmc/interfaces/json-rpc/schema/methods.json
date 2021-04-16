@@ -145,6 +145,11 @@
           },
           { "type": "object", "required": true, "additionalProperties": false,
             "properties": {
+              "broadcastid": { "$ref": "Library.Id", "required": true }
+            }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
               "channelid": { "$ref": "Library.Id", "required": true }
             }
           },
@@ -359,7 +364,7 @@
         "zoom": { "type": "number", "required": true },
         "pixelratio": { "type": "number", "required": true },
         "verticalshift": { "type": "number", "required": true },
-        "nonlinearstretch": { "type": "boolean", "required": true }		
+        "nonlinearstretch": { "type": "boolean", "required": true }
         }
       }
   },
@@ -454,6 +459,17 @@
           { "type": "integer", "minimum": 0, "description": "Index of the video stream to play" }
         ]
       }
+    ],
+    "returns": "string"
+  },
+  "Player.AddSubtitle": {
+    "type": "method",
+    "description": "Add subtitle to the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "subtitle", "type": "string", "required": true, "description": "Local path or remote URL to the subtitle file to load" }
     ],
     "returns": "string"
   },
@@ -1007,6 +1023,60 @@
       }
     }
   },
+  "AudioLibrary.GetAvailableArtTypes": {
+    "type": "method",
+    "description": "Retrieve a list of potential art types for a media item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "item", "required": true,
+        "type": [
+          { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false }
+        ]
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "availablearttypes": { "type": "array", "required": true,
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetAvailableArt": {
+    "type": "method",
+    "description": "Retrieve all potential art URLs for a media item by art type",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "item", "required": true,
+        "type": [
+          { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false }
+        ]
+      },
+      { "name": "arttype", "type": "string" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "availableart": { "type": "array", "required": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "description": "URL to the original image", "required": true },
+              "arttype": { "type": "string", "required": true },
+              "previewurl": { "type": "string", "description": "URL to a preview thumbnail of the image" }
+            }
+          }
+        }
+      }
+    }
+  },
   "AudioLibrary.SetArtistDetails": {
     "type": "method",
     "description": "Update the given artist with the given details",
@@ -1524,6 +1594,68 @@
       }
     }
   },
+  "VideoLibrary.GetAvailableArtTypes": {
+    "type": "method",
+    "description": "Retrieve a list of potential art types for a media item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "item", "required": true,
+        "type": [
+          { "type": "object", "properties": { "episodeid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "tvshowid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "seasonid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "movieid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "setid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "musicvideoid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false }
+        ]
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "availablearttypes": { "type": "array", "required": true,
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "VideoLibrary.GetAvailableArt": {
+    "type": "method",
+    "description": "Retrieve all potential art URLs for a media item by art type",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "item", "required": true,
+        "type": [
+          { "type": "object", "properties": { "episodeid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "tvshowid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "seasonid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "movieid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "setid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "musicvideoid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false }
+        ]
+      },
+      { "name": "arttype", "type": "string" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "availableart": { "type": "array", "required": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "description": "URL to the original image", "required": true },
+              "arttype": { "type": "string", "required": true },
+              "previewurl": { "type": "string", "description": "URL to a preview thumbnail of the image" }
+            }
+          }
+        }
+      }
+    }
+  },
   "VideoLibrary.SetMovieDetails": {
     "type": "method",
     "description": "Update the given movie with the given details",
@@ -2024,7 +2156,8 @@
     "params": [
       { "name": "channelgroupid", "$ref": "PVR.ChannelGroup.Id", "required": true },
       { "name": "properties", "$ref": "PVR.Fields.Channel" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -2047,6 +2180,23 @@
     "returns": { "type": "object",
       "properties": {
         "channeldetails": { "$ref": "PVR.Details.Channel" }
+      }
+    }
+  },
+  "PVR.GetClients": {
+    "type": "method",
+    "description": "Retrieves the enabled PVR clients and their capabilities",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "clients": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Client" }
+        }
       }
     }
   },
@@ -2084,6 +2234,16 @@
       }
     }
   },
+  "PVR.GetBroadcastIsPlayable": {
+    "type": "method",
+    "description": "Retrieves whether or not a broadcast is playable",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the id of the broadcast to to check for playability" }
+    ],
+    "returns":  "boolean"
+  },
   "PVR.GetTimers": {
     "type": "method",
     "description": "Retrieves the timers",
@@ -2091,7 +2251,8 @@
     "permission": "ReadData",
     "params": [
       { "name": "properties", "$ref": "PVR.Fields.Timer" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -2119,12 +2280,13 @@
   },
   "PVR.AddTimer": {
     "type": "method",
-    "description": "Adds a timer to record the given show one times or a timer rule to record all showings of the given show",
+    "description": "Adds a timer to record the given show one times or a timer rule to record all showings of the given show or adds a reminder timer or reminder timer rule",
     "transport": "Response",
     "permission": "ControlPVR",
     "params": [
       { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the broadcast id of the item to record" },
-      { "name": "timerrule", "type": "boolean", "default": false, "description": "controls whether to create a timer rule or a onetime timer" }
+      { "name": "timerrule", "type": "boolean", "default": false, "description": "controls whether to create a timer rule or a onetime timer" },
+      { "name": "reminder", "type": "boolean", "default": false, "description": "controls whether to create a reminder timer or a recording timer" }
     ],
     "returns":  "string"
   },
@@ -2156,7 +2318,8 @@
     "permission": "ReadData",
     "params": [
       { "name": "properties", "$ref": "PVR.Fields.Recording" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -2203,7 +2366,9 @@
     "description": "Starts a channel scan",
     "transport": "Response",
     "permission": "ControlPVR",
-    "params": [ ],
+    "params": [
+      { "name": "clientid", "$ref": "Library.Id", "description": "Specify a PVR client id to avoid UI dialog, optional in kodi 19, required in kodi 20" }
+    ],
     "returns":  "string"
   },
   "Textures.GetTextures": {

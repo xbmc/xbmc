@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Próxima emisión"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -147,6 +151,10 @@ msgstr "Ordenar"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Su puntuación"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Información extendida"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -196,10 +204,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponible"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Pulse [B]OK[/B] para detener"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrado"
@@ -209,8 +213,12 @@ msgid "Arial based"
 msgstr "Basada en Arial"
 
 msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Pulse [B]Izquierda[/B] para rebobinar, o [B]Derecha[/B] para avanzar"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Presione [B]Izquierda[/B] para retroceder, o [B]Derecha[/B] para avanzar"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Presione [B]Derecha[/B] para avanzar"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -223,6 +231,14 @@ msgstr "Mostrar pantalla de inicio de sesión al arrancar"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Iniciar sesión automáticamente"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -238,7 +254,7 @@ msgstr "Secciones"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Lista de reproducción de video"
+msgstr "Lista de reproducción de vídeo"
 
 msgctxt "#31066"
 msgid "Music playlist"
@@ -302,7 +318,7 @@ msgstr "Grupos disponibles"
 
 msgctxt "#31092"
 msgid "Video menu"
-msgstr "Menú de video"
+msgstr "Menú de vídeo"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
@@ -322,7 +338,7 @@ msgstr "Opciones de canal"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
+msgstr "Seleccione su perfil de usuario de Kodi[CR]para iniciar sesión y continuar"
 
 msgctxt "#31099"
 msgid "IconWall"
@@ -346,11 +362,11 @@ msgstr "Introduzca el texto aquí..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Su colección se encuentra vacía. Para proveerla de contenidos, entre en la sección \"Archivos\", añada un origen de contenido y configúrelo. Después de que se añada e indexe esta nueva fuente, podrá navegar por su colección."
+msgstr "Su biblioteca está actualmente vacía. Para llenarlo con sus medios personales, ingrese a la sección \"Archivos\", agregue una fuente de medios y configúrelo. Una vez agregada e indexada la fuente, podrá navegar por su biblioteca."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Añada fuentes de vídeo y configure el tipo de contenido apropiado para poblar las colecciones de vídeo."
+msgstr "Agregue fuentes de video y establezca el tipo de contenido apropiado para llenar sus bibliotecas de vídeo."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -452,6 +468,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restante"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binario"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Pulse aquí para ver los cambios más recientes..."
@@ -482,7 +502,7 @@ msgstr "Velocidad de reproducción"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Todavía no se ha configurado el PVR. Para usar PVR, elija un Add-on cliente de PVR y configurelo. Por favor, visite http://kodi.wiki/view/PVR para saber mas."
+msgstr "Todavía no se ha configurado el PVR. Para usar PVR, elija un Add-on cliente de PVR y configúrelo. Por favor, visite http://kodi.wiki/view/PVR para obtener más información."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -491,6 +511,14 @@ msgstr "Entrar en el navegador de add-ons"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Buscar add-ons"
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "En cines"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "En cines próximamente"
 
 msgctxt "#31148"
 msgid "Categories"
@@ -501,8 +529,8 @@ msgid "Select genre fanart pack"
 msgstr "Elegir pack de fanart para los géneros"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Repositorio"
+msgid "Origin"
+msgstr "Origen"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -538,11 +566,11 @@ msgstr "Modo táctil"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Grafismo"
+msgstr "Ilustraciones"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Mostrar marcas de contenido"
+msgstr "Mostrar indicadores de contenido"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -554,7 +582,7 @@ msgstr "Juegue a sus juegos o descargue alguno de los múltiples add-ons del rep
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Mostar fondo fanart"
+msgstr "Mostrar fondo fanart"
 
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
@@ -571,3 +599,11 @@ msgstr "Avatar de perfil"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animar fondo"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Mostrar carteles en lugar de miniaturas para vídeos musicales"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Ajustes relacionado con ilustraciones"

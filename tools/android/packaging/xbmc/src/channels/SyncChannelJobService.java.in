@@ -29,6 +29,7 @@ import androidx.tvprovider.media.tv.TvContractCompat;
 
 import @APP_PACKAGE@.R;
 import @APP_PACKAGE@.XBMCJsonRPC;
+import @APP_PACKAGE@.XBMCURIUtils;
 import @APP_PACKAGE@.channels.model.Subscription;
 import @APP_PACKAGE@.channels.model.XBMCDatabase;
 import @APP_PACKAGE@.channels.util.TvUtil;
@@ -85,6 +86,28 @@ public class SyncChannelJobService extends JobService
       this.mContext = context;
     }
 
+    List<File> getFilesFromUrl(String url)
+    {
+      List<File> list = new ArrayList<>();
+
+      try (Cursor cursor =
+                   mContext.getContentResolver()
+                           .query(
+                                   XBMCFileContentProvider.buildUri(url),
+                                   null,
+                                   null,
+                                   null,
+                                   null))
+      {
+        if (cursor != null)
+        {
+          while (cursor.moveToNext())
+            list.add(File.fromCursor(cursor));
+        }
+      }
+      return list;
+    }
+
     @Override
     protected Boolean doInBackground(Void... voids)
     {
@@ -96,55 +119,13 @@ public class SyncChannelJobService extends JobService
       List<Subscription> subscriptions = XBMCDatabase.getSubscriptions(mContext);
       List<Subscription> freshsubscriptions = new ArrayList<>();
       List<File> playlistsContent = new ArrayList<>();
+      XBMCURIUtils uriutils = new XBMCURIUtils();
 
-      try (Cursor cursor =
-                   mContext.getContentResolver()
-                           .query(
-                                   XBMCFileContentProvider.buildUri("special://profile/playlists/video/"),
-                                   null,
-                                   null,
-                                   null,
-                                   null))
-      {
-        if (cursor != null)
-        {
-          while (cursor.moveToNext())
-            playlistsContent.add(File.fromCursor(cursor));
-        }
-      }
-      try (Cursor cursor =
-                   mContext.getContentResolver()
-                           .query(
-                                   XBMCFileContentProvider.buildUri("special://profile/playlists/mixed/"),
-                                   null,
-                                   null,
-                                   null,
-                                   null))
-      {
-        if (cursor != null)
-        {
-          while (cursor.moveToNext())
-            playlistsContent.add(File.fromCursor(cursor));
-        }
-      }
-      try (Cursor cursor =
-                   mContext.getContentResolver()
-                           .query(
-                                   XBMCFileContentProvider.buildUri("special://profile/playlists/music/"),
-                                   null,
-                                   null,
-                                   null,
-                                   null))
-      {
-        if (cursor != null)
-        {
-          while (cursor.moveToNext())
-            playlistsContent.add(File.fromCursor(cursor));
-        }
-      }
+      playlistsContent.addAll(getFilesFromUrl(uriutils.substitutePath("special://profile/playlists/video/")));
+      playlistsContent.addAll(getFilesFromUrl(uriutils.substitutePath("special://profile/playlists/mixed/")));
+      playlistsContent.addAll(getFilesFromUrl(uriutils.substitutePath("special://profile/playlists/music/")));
 
       Subscription sub = Subscription.createSubscription(mContext.getString(R.string.suggestion_channel), "", R.drawable.ic_recommendation_80dp);
-      freshsubscriptions.add(sub);
       if (subscriptions.size() == 0)  // First-run: Add default channel
       {
         long channelId = TvUtil.createChannel(mContext, sub);
@@ -153,6 +134,20 @@ public class SyncChannelJobService extends JobService
 
         TvContractCompat.requestChannelBrowsable(mContext, channelId);
       }
+      else
+      {
+        int subidx = subscriptions.indexOf(sub);
+        if (subidx >= 0)
+        {
+          sub = subscriptions.get(subidx);
+          if (sub.getChannelId() == 0)
+          {
+            long channelId = TvUtil.createChannel(mContext, sub);
+            sub.setChannelId(channelId);          
+          }
+        }
+      }
+      freshsubscriptions.add(sub);
 
       for (File file : playlistsContent)
       {

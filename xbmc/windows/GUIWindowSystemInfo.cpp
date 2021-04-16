@@ -135,6 +135,9 @@ void CGUIWindowSystemInfo::FrameMove()
 #ifndef HAS_DX
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
+#if defined(TARGET_LINUX)
+    SetControlLabel(i++, "%s %s", 39153, SYSTEM_PLATFORM_WINDOWING);
+#endif
 #else
     SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
 #endif

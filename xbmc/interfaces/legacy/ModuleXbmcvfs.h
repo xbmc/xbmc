@@ -278,11 +278,15 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmcvfs
-    /// @brief \python_func{ xbmcvfs.rmdir(path) }
+    /// @brief \python_func{ xbmcvfs.rmdir(path, [force]) }
     /// Remove a folder.
     ///
-    /// @param path                  Folder to remove
-    /// @return                      True if successed
+    /// @param path                  string - Folder to remove
+    /// @param force                 [opt] bool - Force directory removal
+    ///                              (default False). This can be useful
+    ///                              if the directory is not empty.
+    /// @return                      bool - True if successful, False
+    ///                              otherwise
     ///
     ///
     /// ------------------------------------------------------------------------

@@ -32,9 +32,11 @@ set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
 set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/${ARCH})
 set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/${ARCH})
 
+# mingw libs
 list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})
 list(APPEND CMAKE_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
-list(APPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
+# dependencies
+list(PREPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
 
 # -------- Compiler options ---------
 
@@ -71,7 +73,7 @@ link_directories(${DEPENDENCIES_DIR}/lib)
 # Additional libraries
 list(APPEND DEPLIBS bcrypt.lib d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
                     PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib version.lib
-                    crypt32.lib Mfplat.lib Mfuuid.lib Strmiids.lib)
+                    crypt32.lib)
 
 # NODEFAULTLIB option
 set(_nodefaultlibs_RELEASE libcmt)

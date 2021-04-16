@@ -48,6 +48,7 @@ CPVRGUIActionListener::CPVRGUIActionListener()
     CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
     CSettings::SETTING_PVRMENU_SEARCHICONS,
     CSettings::SETTING_PVRCLIENT_MENUHOOK,
+    CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
     CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY
   });
 }
@@ -274,7 +275,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
   return false;
 }
 
-void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -293,13 +294,19 @@ void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> set
         std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);
     }
   }
+  else if (settingId == CSettings::SETTING_EPG_PAST_DAYSTODISPLAY)
+  {
+    CServiceBroker::GetPVRManager().Clients()->SetEPGMaxPastDays(
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+  }
   else if (settingId == CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY)
   {
-    CServiceBroker::GetPVRManager().Clients()->SetEPGTimeFrame(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    CServiceBroker::GetPVRManager().Clients()->SetEPGMaxFutureDays(
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   }
 }
 
-void CPVRGUIActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

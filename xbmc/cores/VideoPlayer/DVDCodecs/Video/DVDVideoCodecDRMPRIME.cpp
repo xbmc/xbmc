@@ -96,10 +96,33 @@ CDVDVideoCodec* CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 
 void CDVDVideoCodecDRMPRIME::Register()
 {
-  CServiceBroker::GetSettingsComponent()
-      ->GetSettings()
-      ->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER)
-      ->SetVisible(true);
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  auto setting = settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}",
+              CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER);
+    return;
+  }
+
+  setting->SetVisible(true);
+
+  setting = settings->GetSetting(SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}", SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW);
+    return;
+  }
+
+  setting->SetVisible(true);
+
   CDVDFactoryCodec::RegisterHWVideoCodec("drm_prime", CDVDVideoCodecDRMPRIME::Create);
 }
 
@@ -251,27 +274,16 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 #if defined(HAVE_GBM)
     auto winSystem = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
 
-    if (!winSystem)
-      return false;
+    if (winSystem)
+    {
+      auto drm = winSystem->GetDrm();
 
-    auto drm = winSystem->GetDrm();
+      if (!drm)
+        return false;
 
-    if (!drm)
-      return false;
-
-    int fd = drm->GetFileDescriptor();
-
-    if (fd < 0)
-      return false;
-
-    if (!device)
-      device = drmGetRenderDeviceNameFromFd(fd);
-
-    if (!device)
-      device = drmGetDeviceNameFromFd2(fd);
-
-    if (!device)
-      device = drmGetDeviceNameFromFd(fd);
+      if (!device)
+        device = drm->GetRenderDevicePath();
+    }
 #endif
 
     //! @todo: fix with proper device when dma-hints wayland protocol works
@@ -505,6 +517,12 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iFlags = 0;
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
+  pVideoPicture->iFlags |= m_pFrame->data[0] ? 0 : DVP_FLAG_DROPPED;
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+  {
+    pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+  }
 
   int64_t pts = m_pFrame->best_effort_timestamp;
   pVideoPicture->pts = (pts == AV_NOPTS_VALUE)
@@ -577,4 +595,25 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   }
 
   return VC_PICTURE;
+}
+
+void CDVDVideoCodecDRMPRIME::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
+
+  if (m_pCodecContext)
+  {
+    if ((flags & DVD_CODEC_CTRL_DROP_ANY) != 0)
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_NONREF;
+      m_pCodecContext->skip_idct = AVDISCARD_NONREF;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+    }
+    else
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+    }
+  }
 }

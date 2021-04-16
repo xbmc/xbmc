@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # This is a simple example showing how you can send mouse movement
 # events to XBMC.
@@ -6,11 +6,22 @@
 # NOTE: Read the comments in 'example_button1.py' for a more detailed
 # explanation.
 
-import sys
-sys.path.append("../../lib/python")
-
-from xbmcclient import *
+import os
 from socket import *
+import sys
+
+if os.path.exists("../../lib/python"):
+    # try loading modules from source directory
+    sys.path.append("../../lib/python")
+
+    from xbmcclient import *
+
+    ICON_PATH = "../../icons/"
+else:
+    # fallback to system wide modules
+
+    from kodi.xbmcclient import *
+    from kodi.defs import *
 
 def main():
     import time
@@ -24,7 +35,7 @@ def main():
 
     # First packet must be HELO and can contain an icon
     packet = PacketHELO("Example Mouse", ICON_PNG,
-                        "../../icons/mouse.png")
+                        ICON_PATH + "/mouse.png")
     packet.send(sock, addr)
 
     # wait for notification window to close (in XBMC)

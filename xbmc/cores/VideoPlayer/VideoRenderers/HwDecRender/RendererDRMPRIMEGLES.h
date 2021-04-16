@@ -55,6 +55,7 @@ public:
   bool Supports(ESCALINGMETHOD method) override;
 
 private:
+  void DrawBlackBars();
   void Render(unsigned int flags, int index);
 
   bool m_configured = false;

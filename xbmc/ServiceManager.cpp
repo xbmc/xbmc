@@ -50,7 +50,7 @@ CServiceManager::~CServiceManager()
 
 bool CServiceManager::InitForTesting()
 {
-  m_network.reset(new CNetwork());
+  m_network = CNetworkBase::GetNetwork();
 
   m_databaseManager.reset(new CDatabaseManager);
 
@@ -81,7 +81,8 @@ void CServiceManager::DeinitTesting()
 bool CServiceManager::InitStageOne()
 {
   m_Platform.reset(CPlatform::CreateInstance());
-  m_Platform->Init();
+  if (!m_Platform->Init())
+    return false;
 
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
@@ -90,7 +91,7 @@ bool CServiceManager::InitStageOne()
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
-  m_network.reset(new CNetwork());
+  m_network = CNetworkBase::GetNetwork();
 
   init_level = 1;
   return true;

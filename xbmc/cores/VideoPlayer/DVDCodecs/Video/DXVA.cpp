@@ -10,6 +10,8 @@
 // which we don't use here
 #define FF_API_OLD_SAMPLE_FMT 0
 
+#define LIMIT_VIDEO_MEMORY_4K 2960ull
+
 #include "DXVA.h"
 
 #include "ServiceBroker.h"
@@ -1212,13 +1214,21 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   if (avctx->active_thread_type & FF_THREAD_FRAME)
     m_refs += avctx->thread_count;
 
+  // Limit decoder surfaces to 32 maximum in any case. Since with some 16 cores / 32 threads
+  // new CPU's (Ryzen 5950x) this number may be higher than what the graphics card can handle.
+  if (m_refs > 32)
+  {
+    CLog::LogF(LOGWARNING, "The number of decoder surfaces has been limited from {} to 32.", m_refs);
+    m_refs = 32;
+  }
+
   // Check if available video memory is sufficient for 4K decoding (is need ~3000 MB)
-  if (avctx->width >= 3840 && m_refs > 16 && videoMem < (3000ull * MB))
+  if (avctx->width >= 3840 && m_refs > 16 && videoMem < (LIMIT_VIDEO_MEMORY_4K * MB))
   {
     CLog::LogF(LOGWARNING,
                "Current available video memory ({} MB) is insufficient 4K video decoding (DXVA2) "
-               "using {} surfaces. Fallback to SW decode.", videoMem / MB, m_refs);
-    return false;
+               "using {} surfaces. Decoder surfaces has been limited to 16.", videoMem / MB, m_refs);
+    m_refs = 16;
   }
 
   /* On the Xbox 1/S with limited memory we have to

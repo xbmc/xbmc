@@ -34,11 +34,32 @@ namespace
 CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   m_libInputHandler(handler)
 {
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  auto settingsManager = settings->GetSettingsManager();
+  if (!settingsManager)
+    return;
+
+  auto setting = settings->GetSetting(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}", SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
+    return;
+  }
+
+  setting->SetVisible(true);
+
   std::set<std::string> settingSet;
   settingSet.insert(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  settings->GetSettingsManager()->RegisterCallback(this, settingSet);
-  settings->GetSettingsManager()->RegisterSettingOptionsFiller("libinputkeyboardlayout", SettingOptionsKeyboardLayoutsFiller);
+  settingsManager->RegisterCallback(this, settingSet);
+  settingsManager->RegisterSettingOptionsFiller("libinputkeyboardlayout",
+                                                SettingOptionsKeyboardLayoutsFiller);
 
   /* load the keyboard layouts from xkeyboard-config */
   std::string xkbFile("/usr/share/X11/xkb/rules/base.xml");
@@ -120,12 +141,16 @@ CLibInputSettings::~CLibInputSettings()
   settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
-void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    void* data)
 {
   list = layouts;
 }
 
-void CLibInputSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CLibInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

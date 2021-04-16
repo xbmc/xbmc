@@ -136,7 +136,7 @@ bool CJoystickMapper::DeserializeButton(const TiXmlElement* pButton,
     std::string strHoldTime;
     if (pButton->QueryValueAttribute(JOYSTICK_XML_ATTR_HOLDTIME, &strHoldTime) == TIXML_SUCCESS)
     {
-      std::istringstream ss(std::move(strHoldTime));
+      std::istringstream ss(strHoldTime);
       ss >> holdtimeMs;
     }
 

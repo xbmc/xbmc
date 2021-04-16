@@ -40,8 +40,13 @@ public:
   CInputProcessorKeyboard(IInputHandlerKeyboard& handler);
 
   void OnKeyboardKeymap(CSeat* seat, wayland::keyboard_keymap_format format, std::string const& keymap) override;
-  void OnKeyboardEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, wayland::array_t keys) override;
-  void OnKeyboardLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface) override;
+  void OnKeyboardEnter(CSeat* seat,
+                       std::uint32_t serial,
+                       const wayland::surface_t& surface,
+                       const wayland::array_t& keys) override;
+  void OnKeyboardLeave(CSeat* seat,
+                       std::uint32_t serial,
+                       const wayland::surface_t& surface) override;
   void OnKeyboardKey(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t key, wayland::keyboard_key_state state) override;
   void OnKeyboardModifiers(CSeat* seat, std::uint32_t serial, std::uint32_t modsDepressed, std::uint32_t modsLatched, std::uint32_t modsLocked, std::uint32_t group) override;
   void OnKeyboardRepeatInfo(CSeat* seat, std::int32_t rate, std::int32_t delay) override;

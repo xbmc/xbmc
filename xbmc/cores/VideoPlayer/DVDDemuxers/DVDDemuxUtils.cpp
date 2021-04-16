@@ -7,9 +7,10 @@
  */
 
 #include "DVDDemuxUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
-#include "utils/log.h"
+
+#include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 #include "utils/MemUtils.h"
+#include "utils/log.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>

@@ -3,9 +3,9 @@ DEPS=Makefile
 
 # lib name, version
 LIBNAME=wayland-protocols
-VERSION=1.12
+VERSION=1.20
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
+ARCHIVE=$(SOURCE).tar.gz
 
 ifeq ($(PLATFORM),)
 	# Building stand-alone
@@ -36,10 +36,12 @@ ifeq ($(PREFIX),)
 endif
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
 .installed-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM) install
+	ln -sf $(PREFIX)/share/pkgconfig/wayland-protocols.pc $(PREFIX)/lib/pkgconfig/wayland-protocols.pc
 	touch $@
 
 clean:

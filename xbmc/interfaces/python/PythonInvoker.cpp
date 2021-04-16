@@ -150,7 +150,7 @@ bool CPythonInvoker::Execute(
 bool CPythonInvoker::execute(const std::string& script, const std::vector<std::string>& arguments)
 {
   std::vector<std::wstring> w_arguments;
-  for (auto argument : arguments)
+  for (const auto& argument : arguments)
   {
     std::wstring w_argument;
     g_charsetConverter.utf8ToW(argument, w_argument);
@@ -188,7 +188,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       extern PyThreadState* savestate;
       PyEval_RestoreThread(savestate);
 #else
-      PyThreadState* ts = PyThreadState_New(PyInterpreterState_Main());
+      PyThreadState* ts = PyInterpreterState_ThreadHead(PyInterpreterState_Main());
       PyEval_RestoreThread(ts);
 #endif
       l_threadState = Py_NewInterpreter();
@@ -273,15 +273,8 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
     Py_DECREF(sysMod); // release ref to sysMod
 
-#ifdef TARGET_WINDOWS
-    std::string pyPathUtf8;
-    g_charsetConverter.systemToUtf8(m_pythonPath, pyPathUtf8, false);
-    CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(),
-              m_sourceFile.c_str(), pyPathUtf8.c_str());
-#else // ! TARGET_WINDOWS
     CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(),
               m_sourceFile.c_str(), m_pythonPath.c_str());
-#endif // ! TARGET_WINDOWS
 
     std::wstring pypath;
     g_charsetConverter.utf8ToW(m_pythonPath, pypath);
@@ -321,17 +314,10 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       // We need to have python open the file because on Windows the DLL that python
       //  is linked against may not be the DLL that xbmc is linked against so
       //  passing a FILE* to python from an fopen has the potential to crash.
-      std::string nativeFilename(realFilename); // filename in system encoding
-#ifdef TARGET_WINDOWS
-      if (!g_charsetConverter.utf8ToSystem(nativeFilename, true))
-      {
-        CLog::Log(LOGERROR,
-                  "CPythonInvoker(%d, %s): can't convert filename \"%s\" to system encoding",
-                  GetId(), m_sourceFile.c_str(), realFilename.c_str());
-        return false;
-      }
-#endif
-      FILE* fp = _Py_fopen(nativeFilename.c_str(), "rb");
+
+      PyObject* pyRealFilename = Py_BuildValue("s", realFilename.c_str());
+      FILE* fp = _Py_fopen_obj(pyRealFilename, "rb");
+      Py_DECREF(pyRealFilename);
 
       if (fp != NULL)
       {
@@ -739,7 +725,8 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
   {
     //Check if dependency is a module addon
     ADDON::AddonPtr dependency;
-    if (CServiceBroker::GetAddonMgr().GetAddon(it.id, dependency, ADDON::ADDON_SCRIPT_MODULE))
+    if (CServiceBroker::GetAddonMgr().GetAddon(it.id, dependency, ADDON::ADDON_SCRIPT_MODULE,
+                                               ADDON::OnlyEnabled::YES))
     {
       std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
       if (paths.find(path) == paths.end())

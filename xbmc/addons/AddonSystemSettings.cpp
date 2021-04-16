@@ -45,7 +45,7 @@ CAddonSystemSettings& CAddonSystemSettings::GetInstance()
   return inst;
 }
 
-void CAddonSystemSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CAddonSystemSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting->GetId() == CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES)
   {
@@ -59,7 +59,7 @@ void CAddonSystemSettings::OnSettingAction(std::shared_ptr<const CSetting> setti
   }
 }
 
-void CAddonSystemSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CAddonSystemSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   using namespace KODI::MESSAGING::HELPERS;
 
@@ -77,7 +77,7 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
   if (it != m_activeSettings.end())
   {
     auto settingValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(it->second);
-    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type);
+    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type, OnlyEnabled::YES);
   }
   return false;
 }

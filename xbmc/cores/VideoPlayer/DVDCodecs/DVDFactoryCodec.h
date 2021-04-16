@@ -39,8 +39,10 @@ public:
   static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
                                           CProcessInfo &processInfo);
 
-  static IHardwareDecoder* CreateVideoCodecHWAccel(std::string id, CDVDStreamInfo &hint,
-                                          CProcessInfo &processInfo, AVPixelFormat fmt);
+  static IHardwareDecoder* CreateVideoCodecHWAccel(const std::string& id,
+                                                   CDVDStreamInfo& hint,
+                                                   CProcessInfo& processInfo,
+                                                   AVPixelFormat fmt);
 
   static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
                                           bool allowpassthrough, bool allowdtshddecode,
@@ -48,21 +50,20 @@ public:
 
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint);
 
-  static void RegisterHWVideoCodec(std::string id, CreateHWVideoCodec createFunc);
+  static void RegisterHWVideoCodec(const std::string& id, CreateHWVideoCodec createFunc);
   static void ClearHWVideoCodecs();
 
-  static void RegisterHWAccel(std::string id, CreateHWAccel createFunc);
+  static void RegisterHWAccel(const std::string& id, CreateHWAccel createFunc);
   static std::vector<std::string> GetHWAccels();
   static void ClearHWAccels();
 
-  static void RegisterHWAudioCodec(std::string id, CreateHWAudioCodec createFunc);
+  static void RegisterHWAudioCodec(const std::string& id, CreateHWAudioCodec createFunc);
   static void ClearHWAudioCodecs();
 
 
 protected:
-
-  static CDVDVideoCodec* CreateVideoCodecHW(std::string id, CProcessInfo &processInfo);
-  static CDVDAudioCodec* CreateAudioCodecHW(std::string id, CProcessInfo &processInfo);
+  static CDVDVideoCodec* CreateVideoCodecHW(const std::string& id, CProcessInfo& processInfo);
+  static CDVDAudioCodec* CreateAudioCodecHW(const std::string& id, CProcessInfo& processInfo);
 
   static std::map<std::string, CreateHWVideoCodec> m_hwVideoCodecs;
   static std::map<std::string, CreateHWAccel> m_hwAccels;

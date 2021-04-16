@@ -44,7 +44,7 @@
 			<bottom>0</bottom>
 			<control type="image">
 				<left>0</left>
-				<width>100%</width>
+				<width>120%</width>
 				<height>280</height>
 				<texture colordiffuse="80FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
@@ -94,7 +94,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>20</itemgap>
 					<control type="label">
-						<width>90</width>
+						<width>100</width>
 						<height>40</height>
 						<label>$INFO[MusicPlayer.Year]</label>
 						<font>font37</font>
@@ -138,9 +138,10 @@
 					<width>1450</width>
 					<height>40</height>
 					<aligny>center</aligny>
-					<label>$INFO[MusicPlayer.offset(1).Title,[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] ]$INFO[MusicPlayer.offset(1).Artist, - ]</label>
+					<label>$VAR[OSDNextLabelVar]</label>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
+					<visible>Integer.IsGreater(Playlist.Length(music),1)</visible>
 				</control>
 			</control>
 		</control>

@@ -155,7 +155,7 @@ void CScraperParser::ReplaceBuffers(std::string& strDest)
   iIndex = 0;
   while ((iIndex = strDest.find("$INFO[", iIndex)) != std::string::npos)
   {
-    size_t iEnd = strDest.find("]", iIndex);
+    size_t iEnd = strDest.find(']', iIndex);
     std::string strInfo = strDest.substr(iIndex+6, iEnd - iIndex - 6);
     std::string strReplace;
     if (m_scraper)
@@ -167,7 +167,7 @@ void CScraperParser::ReplaceBuffers(std::string& strDest)
   iIndex = 0;
   while ((iIndex = strDest.find("$LOCALIZE[", iIndex)) != std::string::npos)
   {
-    size_t iEnd = strDest.find("]", iIndex);
+    size_t iEnd = strDest.find(']', iIndex);
     std::string strInfo = strDest.substr(iIndex+10, iEnd - iIndex - 10);
     std::string strReplace;
     if (m_scraper)

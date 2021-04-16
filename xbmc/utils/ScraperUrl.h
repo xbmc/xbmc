@@ -38,6 +38,7 @@ public:
     std::string m_url;
     std::string m_cache;
     std::string m_aspect;
+    std::string m_preview;
     UrlType m_type;
     bool m_post;
     bool m_isgz;
@@ -45,7 +46,7 @@ public:
   };
 
   CScraperUrl();
-  explicit CScraperUrl(std::string strUrl);
+  explicit CScraperUrl(const std::string& strUrl);
   explicit CScraperUrl(const TiXmlElement* element);
   ~CScraperUrl();
 
@@ -87,14 +88,14 @@ public:
                     bool unique = false) const;
 
   bool Parse();
-  bool ParseFromData(std::string data); // copies by intention
+  bool ParseFromData(const std::string& data); // copies by intention
   bool ParseAndAppendUrl(const TiXmlElement* element);
-  bool ParseAndAppendUrlsFromEpisodeGuide(std::string episodeGuide); // copies by intention
-  void AddParsedUrl(std::string url,
-                    std::string aspect = "",
-                    std::string preview = "",
-                    std::string referrer = "",
-                    std::string cache = "",
+  bool ParseAndAppendUrlsFromEpisodeGuide(const std::string& episodeGuide); // copies by intention
+  void AddParsedUrl(const std::string& url,
+                    const std::string& aspect = "",
+                    const std::string& preview = "",
+                    const std::string& referrer = "",
+                    const std::string& cache = "",
                     bool post = false,
                     bool isgz = false,
                     int season = -1);

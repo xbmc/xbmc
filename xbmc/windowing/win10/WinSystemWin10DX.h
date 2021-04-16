@@ -18,6 +18,9 @@ public:
   CWinSystemWin10DX();
   ~CWinSystemWin10DX();
 
+  static void Register();
+  static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
   // Implementation of CWinSystemBase via CWinSystemWin10
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
@@ -70,8 +73,12 @@ public:
 
   // HDR support
   bool IsHDROutput() const;
+  bool IsTransferPQ() const;
   void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
   void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
+
+  // Get debug info from swapchain
+  DEBUG_INFO_RENDER GetDebugInfo() override;
 
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;

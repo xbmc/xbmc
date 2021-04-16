@@ -28,10 +28,10 @@ protected:
   bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
   std::string GetRootPath() const override { return "events://"; }
 
-  bool OnSelect(CFileItemPtr item);
-  bool OnDelete(CFileItemPtr item);
-  bool OnExecute(CFileItemPtr item);
+  bool OnSelect(const CFileItemPtr& item);
+  bool OnDelete(const CFileItemPtr& item);
+  bool OnExecute(const CFileItemPtr& item);
 
-  void OnEventAdded(CFileItemPtr item);
-  void OnEventRemoved(CFileItemPtr item);
+  void OnEventAdded(const CFileItemPtr& item);
+  void OnEventRemoved(const CFileItemPtr& item);
 };

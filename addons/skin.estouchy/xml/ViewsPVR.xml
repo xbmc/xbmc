@@ -182,11 +182,11 @@
 			<width>$PARAM[panel-width]</width>
 			<height>550</height>
 			<onleft>2</onleft>
-			<onright>10</onright>
+			<onright>60</onright>
 			<onup>10</onup>
 			<ondown>10</ondown>
 			<viewtype label="19069">list</viewtype>
-			<pagecontrol>10</pagecontrol>
+			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<timeblocks>40</timeblocks>
 			<rulerunit>6</rulerunit>
@@ -245,7 +245,6 @@
 					<font>font20</font>
 					<aligny>center</aligny>
 					<selectedcolor>blue</selectedcolor>
-					<align>right</align>
 					<label>[B]$INFO[ListItem.ChannelNumberLabel,,.] $INFO[ListItem.ChannelName][/B]</label>
 					<scroll>false</scroll>
 				</control>
@@ -282,7 +281,6 @@
 					<font>font20</font>
 					<aligny>center</aligny>
 					<selectedcolor>blue</selectedcolor>
-					<align>right</align>
 					<label>[B]$INFO[ListItem.ChannelNumberLabel,,.] $INFO[ListItem.ChannelName][/B]</label>
 					<scroll>false</scroll>
 				</control>
@@ -309,26 +307,26 @@
 					<scroll>false</scroll>
 				</control>
 				<control type="image">
-					<posx>5</posx>
+					<posx>7</posx>
 					<posy>45</posy>
-					<width>20</width>
-					<height>20</height>
+					<width>15</width>
+					<height>15</height>
 					<texture>epg_record.png</texture>
 					<visible>ListItem.IsRecording</visible>
 				</control>
 				<control type="image">
-					<posx>5</posx>
+					<posx>7</posx>
 					<posy>45</posy>
-					<width>20</width>
-					<height>20</height>
+					<width>15</width>
+					<height>15</height>
 					<texture>epg_schedule.png</texture>
 					<visible>ListItem.HasTimer</visible>
 				</control>
 				<control type="image">
-					<posx>5</posx>
+					<posx>7</posx>
 					<posy>45</posy>
-					<width>20</width>
-					<height>20</height>
+					<width>15</width>
+					<height>15</height>
 					<texture>epg_archive.png</texture>
 					<visible>![ListItem.IsRecording | ListItem.HasTimer] + ListItem.IsPlayable</visible>
 				</control>
@@ -364,7 +362,7 @@
 				</control>
 				<control type="image">
 					<posx>7</posx>
-					<posy>44</posy>
+					<posy>45</posy>
 					<width>15</width>
 					<height>15</height>
 					<texture>epg_record.png</texture>
@@ -372,7 +370,7 @@
 				</control>
 				<control type="image">
 					<posx>7</posx>
-					<posy>44</posy>
+					<posy>45</posy>
 					<width>15</width>
 					<height>15</height>
 					<texture>epg_schedule.png</texture>
@@ -380,13 +378,27 @@
 				</control>
 				<control type="image">
 					<posx>7</posx>
-					<posy>44</posy>
+					<posy>45</posy>
 					<width>15</width>
 					<height>15</height>
 					<texture>epg_archive.png</texture>
 					<visible>![ListItem.IsRecording | ListItem.HasTimer] + ListItem.IsPlayable</visible>
 				</control>
 			</focusedlayout>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>50r</posx>
+			<posy>105</posy>
+			<width>26</width>
+			<height>550</height>
+			<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
+			<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>
+			<texturesliderbarfocus colordiffuse="blue">white.png</texturesliderbarfocus>
+			<textureslidernib>blank.png</textureslidernib>
+			<textureslidernibfocus>blank.png</textureslidernibfocus>
+			<onleft>10</onleft>
+			<orientation>vertical</orientation>
+			<visible>Control.IsVisible(10)</visible>
 		</control>
 	</include>
 	<include name="PVRInfo">

@@ -14,7 +14,10 @@
 
 #define MILLIS(x) x
 
-inline static void SleepMillis(unsigned int millis) { XbmcThreads::ThreadSleep(millis); }
+inline static void SleepMillis(unsigned int millis)
+{
+  std::this_thread::sleep_for(std::chrono::milliseconds(millis));
+}
 
 template<class E> inline static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
 {

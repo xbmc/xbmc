@@ -13,6 +13,7 @@ xbmc/filesystem/test/data/httpdirectory/basic.html
 xbmc/filesystem/test/data/httpdirectory/basic-multiline.html
 xbmc/filesystem/test/data/httpdirectory/lighttp-default.html
 xbmc/filesystem/test/data/httpdirectory/nginx-default.html
+xbmc/filesystem/test/data/httpdirectory/nginx-fancyindex.html
 xbmc/network/test/data/test.html
 xbmc/network/test/data/test.png
 xbmc/network/test/data/test-ranges.txt

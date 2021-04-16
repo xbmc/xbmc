@@ -52,6 +52,7 @@ add_custom_target(dmg
             "DEV_TEAM=${DEV_TEAM}"
             "EXPANDED_CODE_SIGN_IDENTITY_NAME=${CODE_SIGN_IDENTITY}"
             "PLATFORM_NAME=${PLATFORM}"
+            "XCODE_BUILDTYPE=${CMAKE_CFG_INTDIR}"
             ./mkdmg-osx.sh ${CORE_BUILD_CONFIG_LOWERCASED}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx)
 set_target_properties(dmg PROPERTIES FOLDER "Build Utilities")

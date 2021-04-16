@@ -149,7 +149,7 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   CInfoLoader::OnJobComplete(jobID, success, job);
 }
 
-void CWeatherManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -165,7 +165,7 @@ void CWeatherManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CWeatherManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -174,7 +174,11 @@ void CWeatherManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    if (CServiceBroker::GetAddonMgr().GetAddon(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                CSettings::SETTING_WEATHER_ADDON),
+            addon, ADDON_SCRIPT_WEATHER, OnlyEnabled::YES) &&
+        addon != NULL)
     { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowForAddon(addon);
       Refresh();

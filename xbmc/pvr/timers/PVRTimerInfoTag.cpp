@@ -299,13 +299,17 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["istimerrule"] = m_timerType && m_timerType->IsTimerRule();
   value["ismanual"] = m_timerType && m_timerType->IsManual();
   value["isreadonly"] = m_timerType && m_timerType->IsReadOnly();
+  value["isreminder"] = m_timerType && m_timerType->IsReminder();
 
   value["epgsearchstring"]   = m_strEpgSearchString;
   value["fulltextepgsearch"] = m_bFullTextEpgSearch;
   value["recordinggroup"]    = m_iRecordingGroup;
   value["maxrecordings"]     = m_iMaxRecordings;
   value["epguid"]            = m_iEpgUid;
+  value["broadcastid"] = m_epgTag ? m_epgTag->DatabaseID() : -1;
   value["serieslink"]        = m_strSeriesLink;
+
+  value["clientid"] = m_iClientId;
 }
 
 void CPVRTimerInfoTag::UpdateSummary()
@@ -696,7 +700,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromDate(
   const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
   bool bReadOnly = !!parent; // children of reminder rules are always read-only
-  const std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromDate(parent->Channel(), start, iDuration, true, bReadOnly);
+  std::shared_ptr<CPVRTimerInfoTag> newTimer =
+      CreateFromDate(parent->Channel(), start, iDuration, true, bReadOnly);
   if (newTimer && parent)
   {
     // set parent
@@ -836,7 +841,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromEpg(
   const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
   bool bReadOnly = !!parent; // children of reminder rules are always read-only
-  const std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true, bReadOnly);
+  std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true, bReadOnly);
   if (newTimer && parent)
   {
     // set parent
@@ -856,7 +861,10 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
-  const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule, bool bCreateReminder, bool bReadOnly)
+    const std::shared_ptr<CPVREpgInfoTag>& tag,
+    bool bCreateRule,
+    bool bCreateReminder,
+    bool bReadOnly /* = false */)
 {
   std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
 
@@ -1017,6 +1025,12 @@ CDateTime CPVRTimerInfoTag::ConvertUTCToLocalTime(const CDateTime& utc)
   tms = localtime(&time);
 #endif
 
+  if (!tms)
+  {
+    CLog::LogF(LOGWARNING, "localtime() returned NULL!");
+    return {};
+  }
+
   return CDateTime(mytimegm(tms));
 }
 
@@ -1035,6 +1049,12 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
   tms = localtime(&time);
 #endif
 
+  if (!tms)
+  {
+    CLog::LogF(LOGWARNING, "localtime() returned NULL!");
+    return {};
+  }
+
   int isdst = tms->tm_isdst;
 
 #ifdef HAVE_GMTIME_R
@@ -1043,6 +1063,12 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
 #else
   tms = gmtime(&time);
 #endif
+
+  if (!tms)
+  {
+    CLog::LogF(LOGWARNING, "gmtime() returned NULL!");
+    return {};
+  }
 
   tms->tm_isdst = isdst;
   return CDateTime(mktime(tms));
@@ -1116,7 +1142,7 @@ void CPVRTimerInfoTag::SetFirstDayFromLocalTime(const CDateTime& firstDay)
   m_FirstDay = ConvertLocalTimeToUTC(firstDay);
 }
 
-void CPVRTimerInfoTag::GetNotificationText(std::string& strText) const
+std::string CPVRTimerInfoTag::GetNotificationText() const
 {
   CSingleLock lock(m_critSection);
 
@@ -1153,8 +1179,11 @@ void CPVRTimerInfoTag::GetNotificationText(std::string& strText) const
   default:
     break;
   }
+
   if (stringID != 0)
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
+    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
+
+  return {};
 }
 
 std::string CPVRTimerInfoTag::GetDeletedNotificationText() const

@@ -47,6 +47,7 @@ public:
 
   int GetFileDescriptor() const { return m_fd; }
   int GetRenderNodeFileDescriptor() const { return m_renderFd; }
+  const char* GetRenderDevicePath() const { return m_renderDevicePath; }
   CDRMPlane* GetVideoPlane() const { return m_video_plane; }
   CDRMPlane* GetGuiPlane() const { return m_gui_plane; }
   CDRMCrtc* GetCrtc() const { return m_crtc; }
@@ -89,6 +90,7 @@ private:
   void PrintDrmDeviceInfo(drmDevicePtr device);
 
   int m_renderFd;
+  const char* m_renderDevicePath{nullptr};
 
   std::vector<std::unique_ptr<CDRMConnector>> m_connectors;
   std::vector<std::unique_ptr<CDRMEncoder>> m_encoders;

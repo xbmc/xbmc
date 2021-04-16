@@ -43,16 +43,33 @@ namespace XBMCAddon
       inline void    OnScanStarted(const String &library)
       {
 	XBMC_TRACE;
-	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanStarted,library));
+        invokeCallback(
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onScanStarted, library));
       }
       inline void    OnScanFinished(const String &library)
       {
 	XBMC_TRACE;
-	invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onScanFinished,library));
+        invokeCallback(
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onScanFinished, library));
       }
-      inline void    OnCleanStarted(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanStarted,library)); }
-      inline void    OnCleanFinished(const String &library) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onCleanFinished,library)); }
-      inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
+      inline void OnCleanStarted(const String& library)
+      {
+        XBMC_TRACE;
+        invokeCallback(
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onCleanStarted, library));
+      }
+      inline void OnCleanFinished(const String& library)
+      {
+        XBMC_TRACE;
+        invokeCallback(
+            new CallbackFunction<Monitor, const String>(this, &Monitor::onCleanFinished, library));
+      }
+      inline void OnNotification(const String& sender, const String& method, const String& data)
+      {
+        XBMC_TRACE;
+        invokeCallback(new CallbackFunction<Monitor, const String, const String, const String>(
+            this, &Monitor::onNotification, sender, method, data));
+      }
 
       inline const String& GetId() { return Id; }
       inline long GetInvokerId() { return invokerId; }
@@ -230,7 +247,10 @@ namespace XBMCAddon
       ///
       onNotification(...);
 #else
-      virtual void onNotification(const String sender, const String method, const String data) { XBMC_TRACE; }
+      virtual void onNotification(const String sender, const String method, const String data)
+      {
+        XBMC_TRACE;
+      }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

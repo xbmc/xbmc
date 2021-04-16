@@ -207,16 +207,49 @@
 		<param name="fontcolor">grey</param>
 		<definition>
 			<itemlayout width="$PARAM[width]" height="$PARAM[height]">
-				<control type="label">
-					<left>20</left>
-					<top>0</top>
-					<right>20</right>
-					<bottom>0</bottom>
-					<align>$PARAM[align]</align>
-					<font>$PARAM[font]</font>
-					<aligny>center</aligny>
-					<textcolor>$PARAM[fontcolor]</textcolor>
-					<label>$INFO[ListItem.Label]</label>
+				<control type="group">
+					<visible>ListItem.Property(PVR.IsRecordingTimer) | ListItem.Property(PVR.IsRemindingTimer)</visible>
+					<control type="image">
+						<left>20</left>
+						<width>40</width>
+						<aspectratio align="left">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/recording.png</texture>
+						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
+					</control>
+					<control type="image">
+						<left>20</left>
+						<width>40</width>
+						<aspectratio align="left">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/bell.png</texture>
+						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
+					</control>
+					<control type="label">
+						<left>80</left>
+						<top>0</top>
+						<right>20</right>
+						<bottom>0</bottom>
+						<align>$PARAM[align]</align>
+						<font>$PARAM[font]</font>
+						<aligny>center</aligny>
+						<textcolor>$PARAM[fontcolor]</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</control>
+				<control type="group">
+					<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
+					<control type="label">
+						<left>20</left>
+						<top>0</top>
+						<right>20</right>
+						<bottom>0</bottom>
+						<align>$PARAM[align]</align>
+						<font>$PARAM[font]</font>
+						<aligny>center</aligny>
+						<textcolor>$PARAM[fontcolor]</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
 				</control>
 			</itemlayout>
 			<focusedlayout width="$PARAM[width]" height="$PARAM[height]">
@@ -228,16 +261,49 @@
 					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
-				<control type="label">
-					<left>20</left>
-					<top>0</top>
-					<right>20</right>
-					<bottom>0</bottom>
-					<align>$PARAM[align]</align>
-					<font>$PARAM[font]</font>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
-					<scroll>true</scroll>
+				<control type="group">
+					<visible>ListItem.Property(PVR.IsRecordingTimer) | ListItem.Property(PVR.IsRemindingTimer)</visible>
+					<control type="image">
+						<left>20</left>
+						<width>40</width>
+						<aspectratio align="left">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/recording.png</texture>
+						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
+					</control>
+					<control type="image">
+						<left>20</left>
+						<width>40</width>
+						<aspectratio align="left">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/bell.png</texture>
+						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
+					</control>
+					<control type="label">
+						<left>80</left>
+						<top>0</top>
+						<right>20</right>
+						<bottom>0</bottom>
+						<align>$PARAM[align]</align>
+						<font>$PARAM[font]</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<scroll>true</scroll>
+					</control>
+				</control>
+				<control type="group">
+					<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
+					<control type="label">
+						<left>20</left>
+						<top>0</top>
+						<right>20</right>
+						<bottom>0</bottom>
+						<align>$PARAM[align]</align>
+						<font>$PARAM[font]</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<scroll>true</scroll>
+					</control>
 				</control>
 			</focusedlayout>
 		</definition>
@@ -345,7 +411,28 @@
 			</control>
 		</definition>
 	</include>
-	<include name="WeatherIcon">
+	<include name="WeatherIconHome">
+		<control type="group">
+			<width>268</width>
+			<visible>!String.IsEmpty($PARAM[label])</visible>
+			<control type="image">
+				<left>40</left>
+				<width>80</width>
+				<height>80</height>
+				<texture colordiffuse="D0FFFFFF">$PARAM[texture]</texture>
+			</control>
+			<control type="textbox">
+				<top>110</top>
+				<width>160</width>
+				<height>63</height>
+				<font>font27_narrow</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[$PARAM[label]]</label>
+			</control>
+		</control>
+	</include>
+	<include name="WeatherIconMyWeather">
 		<control type="group">
 			<width>268</width>
 			<visible>!String.IsEmpty($PARAM[label])</visible>
@@ -860,7 +947,7 @@
 						</control>
 						<control type="label" id="7700">
 							<label>$VAR[NowPlayingSublabelVar]</label>
-							<left>-45</left>
+							<left>-44</left>
 							<top>44</top>
 							<font>font12</font>
 							<textcolor>grey</textcolor>
@@ -868,6 +955,7 @@
 							<height>25</height>
 							<width>630</width>
 							<align>right</align>
+							<scroll>true</scroll>
 						</control>
 					</control>
 					<control type="group">

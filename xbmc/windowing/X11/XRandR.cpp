@@ -228,7 +228,7 @@ void CXRandR::SaveState()
   Query(true);
 }
 
-bool CXRandR::SetMode(XOutput output, XMode mode)
+bool CXRandR::SetMode(const XOutput& output, const XMode& mode)
 {
   if ((output.name == "" && mode.id == ""))
     return true;
@@ -480,7 +480,7 @@ int CXRandR::GetCrtc(int x, int y, float &hz)
         (m_outputs[i].y <= y && (m_outputs[i].y+m_outputs[i].h) > y))
     {
       crtc = m_outputs[i].crtc;
-      for (auto mode: m_outputs[i].modes)
+      for (const auto& mode : m_outputs[i].modes)
       {
         if (mode.isCurrent)
         {

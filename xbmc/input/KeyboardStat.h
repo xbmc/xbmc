@@ -33,7 +33,7 @@ class CKeyboardStat
 {
 public:
   CKeyboardStat();
-  ~CKeyboardStat();
+  ~CKeyboardStat() = default;
 
   void Initialize();
 

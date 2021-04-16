@@ -554,7 +554,7 @@ std::string CSysInfo::GetKernelVersionFull(void)
   unsigned long long v4 = (v & 0x000000000000FFFFL);
   kernelVersionFull = StringUtils::Format("%lld.%lld.%lld", v1, v2, v3);
   if (v4)
-    kernelVersionFull += StringUtils::Format(".ll%d", v4);
+    kernelVersionFull += StringUtils::Format(".%lld", v4);
 
 #elif defined(TARGET_POSIX)
   struct utsname un;
@@ -1154,7 +1154,7 @@ std::string CSysInfo::GetUserAgent()
   {
     std::string cpuStr(un.machine);
     if (cpuStr == "x86_64" && GetXbmcBitness() == 32)
-      cpuStr = "i686 (x86_64)";
+      cpuStr = "i686 on x86_64";
     result += un.sysname;
     result += " ";
     result += cpuStr;

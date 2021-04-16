@@ -240,8 +240,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     m_bNameChanged = true;
   path.clear();
 
-  std::string strDevices = g_localizeStrings.Get(33040); //"% Devices"
-
   if (m_type == "music")
   {
     CMediaSource share1;

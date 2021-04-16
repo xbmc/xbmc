@@ -136,7 +136,7 @@ bool CMultiPathDirectory::Remove(const CURL& url)
 
 std::string CMultiPathDirectory::GetFirstPath(const std::string &strPath)
 {
-  size_t pos = strPath.find("/", 12);
+  size_t pos = strPath.find('/', 12);
   if (pos != std::string::npos)
     return CURL::Decode(strPath.substr(12, pos - 12));
   return "";

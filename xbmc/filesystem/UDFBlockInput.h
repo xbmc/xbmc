@@ -21,7 +21,7 @@ public:
   CUDFBlockInput() = default;
   ~CUDFBlockInput() = default;
 
-  udfread_block_input* GetBlockInput(std::string file);
+  udfread_block_input* GetBlockInput(const std::string& file);
 
 private:
   static int Close(udfread_block_input* bi);

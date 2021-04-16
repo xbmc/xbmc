@@ -33,14 +33,14 @@ bool CWinSystemBase::InitWindowSystem()
 {
   UpdateResolutions();
   CDisplaySettings::GetInstance().ApplyCalibrations();
+
+  CResolutionUtils::PrintWhitelist();
+
   return true;
 }
 
 bool CWinSystemBase::DestroyWindowSystem()
 {
-#if HAS_GLES
-  CGUIFontTTFGL::DestroyStaticVertexBuffers();
-#endif
   m_screenSaverManager.reset();
   return false;
 }

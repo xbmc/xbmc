@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -57,6 +58,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/VideoInfoTag.h"
 #include "view/GUIViewState.h"
 
 #include <algorithm>
@@ -262,7 +264,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnItemInfoAll(const std::string strPath, bool refresh )
+void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
     g_application.StartMusicAlbumScan(strPath, refresh);
@@ -277,8 +279,18 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->IsVideo())
-  { // Music video on a mixed current playlist
+  // Match visibility test of CMusicInfo::IsVisible
+  if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+      (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
+  {
+    // Music video artist or album (navigation by music > music video > artist))
+    CGUIDialogMusicInfo::ShowFor(item.get());
+    return;
+  }
+
+  if (item->IsVideo() && item->HasVideoInfoTag() &&
+      item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
+  { // Music video on a mixed current playlist or navigation by music > music video > artist > video
     CGUIDialogVideoInfo::ShowFor(*item);
     return;
   }
@@ -370,6 +382,16 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
 
   if (item->IsRAR() || item->IsZIP())
     return;
+  
+  // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exist
+  if (item->IsSmartPlayList())
+  {
+    const std::shared_ptr<CProfileManager> profileManager =
+      CServiceBroker::GetSettingsComponent()->GetProfileManager();
+    if ((item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
+      !XFILE::CFile::Exists(item->GetPath()))
+      return;
+  }
 
   //  Allow queuing of unqueueable items
   //  when we try to queue them directly
@@ -521,6 +543,16 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
+    // Check for the partymode playlist item. 
+    // When "PartyMode.xsp" not exist, only context menu button is edit
+    if (item->IsSmartPlayList() &&
+        (item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
+        !XFILE::CFile::Exists(item->GetPath()))
+    {
+      buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
+      return;
+    }
+
     if (item && !item->IsParentFolder())
     {
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
@@ -553,15 +585,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
-      }
-      if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
-          !item->IsPath("add") && !item->IsParentFolder() &&
-          !item->IsPlugin() && !item->IsMusicDb()         &&
-          !item->IsLibraryFolder() &&
-          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
-          (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
@@ -740,6 +763,16 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   }
 #endif
 
+  // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exist
+  if (pItem->IsSmartPlayList())
+  {
+    const std::shared_ptr<CProfileManager> profileManager =
+        CServiceBroker::GetSettingsComponent()->GetProfileManager();
+    if ((pItem->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
+        !XFILE::CFile::Exists(pItem->GetPath()))
+      return;
+  }
+
   // if its a folder, build a playlist
   if (pItem->m_bIsFolder && !pItem->IsPlugin())
   {
@@ -853,6 +886,9 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 /// \param items File items to fill
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
+  // No need to attempt to read music file tags for music videos
+  if (items.IsVideoDb())
+    return;
   if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
      (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
   {
@@ -952,8 +988,10 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       items.SetArt(artmap);
     }
 
-    // add in the "New Playlist" item if we're in the playlists folder
-    if ((items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
+    int iWindow = GetID();
+    // Add "New Playlist" items when in the playlists folder, except on playlist editor screen
+    if ((iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR) &&
+        (items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
     {
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -994,7 +1032,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 
 bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
-  std::string content = items.GetContent();
+  const std::string& content = items.GetContent();
   if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "artists") ||
        StringUtils::EqualsNoCase(content, "albums")  ||
@@ -1037,7 +1075,7 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
         if (choice == MUSIC_SELECT_ACTION_RESUME)
         {
           (*itemIt)->SetProperty("audiobook_bookmark", bookmark);
-          return CGUIMediaWindow::OnSelect(itemIt - m_vecItems->cbegin());
+          return CGUIMediaWindow::OnSelect(static_cast<int>(itemIt - m_vecItems->cbegin()));
         }
         else if (choice < 0)
           return true;

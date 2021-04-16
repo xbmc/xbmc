@@ -7,9 +7,10 @@
  */
 #include "Zeroconf.h"
 
-#include <cassert>
-
 #include "ServiceBroker.h"
+#if defined(HAS_MDNS)
+#include "mdns/ZeroconfMDNS.h"
+#endif
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/Atomics.h"
@@ -17,16 +18,17 @@
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 
-#if defined(HAS_AVAHI)
-#include "platform/linux/network/zeroconf/ZeroconfAvahi.h"
+#if defined(TARGET_ANDROID)
+#include "platform/android/network/ZeroconfAndroid.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "platform/darwin/network/ZeroconfDarwin.h"
-#elif defined(TARGET_ANDROID)
-#include "platform/android/network/ZeroconfAndroid.h"
-#elif defined(HAS_MDNS)
-#include "mdns/ZeroconfMDNS.h"
+#elif defined(HAS_AVAHI)
+#include "platform/linux/network/zeroconf/ZeroconfAvahi.h"
 #endif
+
+#include <cassert>
+#include <utility>
 
 #ifndef HAS_ZEROCONF
 //dummy implementation used if no zeroconf is present
@@ -63,7 +65,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
                                std::vector<std::pair<std::string, std::string> > txt /* = std::vector<std::pair<std::string, std::string> >() */)
 {
   CSingleLock lock(*mp_crit_sec);
-  CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port, txt};
+  CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port, std::move(txt)};
   std::pair<tServiceMap::const_iterator, bool> ret = m_service_map.insert(std::make_pair(fcr_identifier, info));
   if(!ret.second) //identifier exists
     return false;

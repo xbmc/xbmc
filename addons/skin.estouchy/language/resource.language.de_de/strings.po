@@ -56,6 +56,10 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Episoden"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr "Spieler-Information"
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Alben"
@@ -95,6 +99,18 @@ msgstr "Anmeldung"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Aktualisiert:"
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Select + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Select + Start"
 
 msgctxt "#31043"
 msgid "PAUSED"

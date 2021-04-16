@@ -12,7 +12,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoSettings.h"
 #include "settings/AdvancedSettings.h"
@@ -969,6 +969,8 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
   }
 
+  pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt;
+
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries == AVCOL_PRI_UNSPECIFIED ? m_hints.colorPrimaries : m_pCodecContext->color_primaries;
   pVideoPicture->color_transfer = m_pCodecContext->color_trc == AVCOL_TRC_UNSPECIFIED ? m_hints.colorTransferCharacteristic : m_pCodecContext->color_trc;
@@ -986,6 +988,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   else if (m_pCodecContext->codec_id == AV_CODEC_ID_H264 &&
            (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10||
             m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
+    pVideoPicture->colorBits = 10;
+  else if (m_pCodecContext->codec_id == AV_CODEC_ID_VP9 &&
+           (m_pCodecContext->profile == FF_PROFILE_VP9_2 ||
+            m_pCodecContext->profile == FF_PROFILE_VP9_3))
     pVideoPicture->colorBits = 10;
 
   if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||

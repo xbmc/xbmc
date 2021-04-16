@@ -25,6 +25,8 @@ namespace PVR
 
   /** The EPG database */
 
+  static constexpr int EPG_COMMIT_QUERY_COUNT_LIMIT = 10000;
+
   class CPVREpgDatabase : public CDatabase, public std::enable_shared_from_this<CPVREpgDatabase>
   {
   public:
@@ -81,11 +83,11 @@ namespace PVR
     bool DeleteEpg();
 
     /*!
-     * @brief Delete an EPG table.
-     * @param table The table to remove.
-     * @return True if the table was removed successfully, false otherwise.
+     * @brief Queue deletionof an EPG table.
+     * @param tag The table to queue for deletion.
+     * @return True on success, false otherwise.
      */
-    bool Delete(const CPVREpg& table);
+    bool QueueDeleteEpgQuery(const CPVREpg& table);
 
     /*!
      * @brief Write the query to delete the given EPG tag to db query queue.
@@ -152,6 +154,14 @@ namespace PVR
      */
     std::shared_ptr<CPVREpgInfoTag> GetEpgTagByUniqueBroadcastID(int iEpgID,
                                                                  unsigned int iUniqueBroadcastId);
+
+    /*!
+     * @brief Get an EPG tag given its EPG id and database ID.
+     * @param iEpgID The ID of the EPG for the tag to get.
+     * @param iDatabaseId The database ID for the tag to get.
+     * @return The tag or nullptr, if not found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetEpgTagByDatabaseID(int iEpgID, int iDatabaseId);
 
     /*!
      * @brief Get an EPG tag given its EPG ID and start time.
@@ -227,6 +237,13 @@ namespace PVR
     bool QueuePersistLastEpgScanTimeQuery(int iEpgId, const CDateTime& lastScanTime);
 
     /*!
+     * @brief Write the query to delete the last scan time for the given EPG to db query queue.
+     * @param iEpgId The table to delete the time for.
+     * @return True on success, false otherwise.
+     */
+    bool QueueDeleteLastEpgScanTimeQuery(const CPVREpg& table);
+
+    /*!
      * @brief Persist an EPG table. It's entries are not persisted.
      * @param epg The table to persist.
      * @param bQueueWrite If true, don't execute the query immediately but queue it.
@@ -248,6 +265,13 @@ namespace PVR
      * @return True if the entries were removed successfully, false otherwise.
      */
     bool DeleteEpgTags(int iEpgId);
+
+    /*!
+     * @brief Queue the erase all EPG tags with the given epg ID.
+     * @param iEpgId The ID of the EPG.
+     * @return True if the entries were queued successfully, false otherwise.
+     */
+    bool QueueDeleteEpgTags(int iEpgId);
 
     /*!
      * @brief Write the query to persist the given EPG tag to db query queue.

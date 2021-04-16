@@ -3,11 +3,11 @@ DEPS=Makefile
 
 # lib name, version
 LIBNAME=waylandpp
-VERSION=0.2.3
+VERSION=0.2.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-LIBDYLIB=$(PLATFORM)/src/libwayland-client++.so
+LIBDYLIB=$(PLATFORM)/build/libwayland-client++.so
 
 ifeq ($(PLATFORM),)
 	# Building stand-alone
@@ -49,6 +49,9 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(BUILDDIR) install
+
+	# We want to use the native wayland-scanner++
+	ln -sf $(NATIVEPREFIX)/lib/pkgconfig/wayland-scanner++.pc $(PREFIX)/lib/pkgconfig/wayland-scanner++.pc
 	touch $@
 
 clean:

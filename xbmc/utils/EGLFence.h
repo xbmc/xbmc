@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include <EGL/egl.h>
+#include "system_egl.h"
+
 #include <EGL/eglext.h>
 
 namespace KODI

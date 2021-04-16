@@ -96,16 +96,13 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 # postinst: nothing for now.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "chown -R mobile:mobile /Applications/@APP_NAME@.app" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
-if [ "@PLATFORM@" != "appletvos" ]; then
-  cat $DIRNAME/migrate_to_kodi.sh            >> $DIRNAME/$PACKAGE/DEBIAN/postinst
-fi
 echo "/usr/bin/uicache"                           >>  $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "echo 'finish:respringing ...'"              >>  $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 
 # prep @APP_NAME@.app
 mkdir -p $DIRNAME/$PACKAGE/Applications
-cp -r $APP $DIRNAME/$PACKAGE/Applications/
+rsync -a --no-links $APP $DIRNAME/$PACKAGE/Applications/
 find $DIRNAME/$PACKAGE/Applications/ -name '.svn' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.git*' -exec rm -rf {} \;
 find $DIRNAME/$PACKAGE/Applications/ -name '.DS_Store'  -exec rm -rf {} \;

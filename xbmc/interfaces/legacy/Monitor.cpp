@@ -36,7 +36,8 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       int timeoutMS = ceil(timeout * 1000);
-      XbmcThreads::EndTime endTime(timeoutMS > 0 ? timeoutMS : XbmcThreads::EndTime::InfiniteValue);
+      XbmcThreads::EndTime endTime(timeoutMS > 0 ? timeoutMS
+                                                 : XbmcThreads::EndTime::InfiniteValue.count());
       while (!endTime.IsTimePast())
       {
         {

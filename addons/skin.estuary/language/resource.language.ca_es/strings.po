@@ -144,6 +144,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "La vostra valoració"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Info estesa"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Pàgines"
@@ -188,10 +192,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponible"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Premeu [B]D'ACORD[/B] per aturar"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrat"
@@ -199,10 +199,6 @@ msgstr "filtrat"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Basat en Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Premeu [B]Esquerra[/B] per rebobinar, o [B]Dreta[/B] per a l'avanç ràpid"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -475,10 +471,6 @@ msgstr "Cerca complements"
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Categories"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Dipòsit"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

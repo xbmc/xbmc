@@ -22,6 +22,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -153,6 +154,8 @@ bool CThumbExtractor::DoWork()
         m_item.SetPath(m_listpath);
       }
 
+      db.BeginTransaction();
+
       if (info->m_iFileId < 0)
         db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
       else
@@ -168,6 +171,7 @@ bool CThumbExtractor::DoWork()
         db.SetDetailsForItem(info->m_iDbId, info->m_type, *info, m_item.GetArt());
       }
 
+      db.CommitTransaction();
       db.Close();
     }
     return true;
@@ -231,7 +235,7 @@ std::vector<std::string> GetSettingListAsString(const std::string& settingID)
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(settingID);
   std::vector<std::string> result;
   std::transform(values.begin(), values.end(), std::back_inserter(result),
-    [](CVariant s) { return s.asString(); });
+                 [](const CVariant& s) { return s.asString(); });
   return result;
 }
 
@@ -520,27 +524,74 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 {
   CVideoInfoTag &tag = *item.GetVideoInfoTag();
+  std::map<std::string, std::string> artwork;
+  // Video item can be an album - either a 
+  // a) search result with full details including music library album id, or 
+  // b) musicvideo album that needs matching to a music album, storing id as well as fetch art.
+  if (tag.m_type == MediaTypeAlbum)
+  {
+    int idAlbum = -1;
+    if (item.HasMusicInfoTag()) // Album is a search result
+      idAlbum = item.GetMusicInfoTag()->GetAlbumId();
+    CMusicDatabase database;
+    database.Open();
+    if (idAlbum < 0 && !tag.m_strAlbum.empty() &&
+        item.GetProperty("musicvideomediatype") == MediaTypeAlbum)
+    {
+      // Musicvideo album - try to match album in music db on artist(s) and album name.
+      // Get review if available and save the matching music library album id.
+      std::string strArtist = StringUtils::Join(
+          tag.m_artist,
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+      std::string strReview;
+      if (database.GetMatchingMusicVideoAlbum(
+          tag.m_strAlbum, strArtist, idAlbum, strReview))
+      {
+        item.SetProperty("album_musicid", idAlbum);
+        item.SetProperty("album_description", strReview);
+      }
+    }
+    // Get album art only (not related artist art)
+    if (database.GetArtForItem(idAlbum, MediaTypeAlbum, artwork))
+      item.SetArt(artwork);
+    database.Close();
+  }
+  else if (tag.m_type == "actor" && !tag.m_artist.empty() &&
+           item.GetProperty("musicvideomediatype") == MediaTypeArtist)
+  {
+    // Try to match artist in music db on name, get bio if available and fetch artist art
+    // Save the matching music library artist id.
+    CMusicDatabase database;
+    database.Open();
+    CArtist artist;
+    int idArtist = database.GetArtistByName(tag.m_artist[0]);
+    if (idArtist > 0)
+    {
+      database.GetArtist(idArtist, artist);
+      tag.m_strPlot = artist.strBiography;
+      item.SetProperty("artist_musicid", idArtist);
+    }
+    if (database.GetArtForItem(idArtist, MediaTypeArtist, artwork))
+      item.SetArt(artwork);
+    database.Close();
+  }
+
   if (tag.m_iDbId > -1 && !tag.m_type.empty())
   {
-    std::map<std::string, std::string> artwork;
     m_videoDatabase->Open();
     if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       item.AppendArt(artwork);
-    else if (tag.m_type == "actor" && !tag.m_artist.empty())
-    { // we retrieve music video art from the music database (no backward compat)
+    else if (tag.m_type == "actor" && !tag.m_artist.empty() &&
+             item.GetProperty("musicvideomediatype") != MediaTypeArtist)
+    {
+      // Fallback to music library for actors without art
+      //! @todo Is m_artist set other than musicvideo? Remove this fallback if not.
       CMusicDatabase database;
       database.Open();
       int idArtist = database.GetArtistByName(item.GetLabel());
       if (database.GetArtForItem(idArtist, MediaTypeArtist, artwork))
         item.SetArt(artwork);
-    }
-    else if (tag.m_type == MediaTypeAlbum)
-    { // we retrieve music video art from the music database (no backward compat)
-      CMusicDatabase database;
-      database.Open();
-      int idAlbum = database.GetAlbumByName(item.GetLabel(), tag.m_artist);
-      if (database.GetArtForItem(idAlbum, MediaTypeAlbum, artwork))
-        item.SetArt(artwork);
+      database.Close();
     }
 
     if (tag.m_type == MediaTypeEpisode || tag.m_type == MediaTypeSeason)

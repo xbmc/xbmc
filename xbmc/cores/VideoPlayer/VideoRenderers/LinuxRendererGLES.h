@@ -28,7 +28,7 @@ extern "C" {
 class CRenderCapture;
 class CRenderSystemGLES;
 
-class CBaseTexture;
+class CTexture;
 namespace Shaders { class BaseYUV2RGBGLSLShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 
@@ -209,4 +209,7 @@ protected:
   // clear colour for "black" bars
   float m_clearColour{0.0f};
   CRect m_viewRect;
+
+private:
+  void DrawBlackBars();
 };

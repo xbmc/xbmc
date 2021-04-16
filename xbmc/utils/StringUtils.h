@@ -26,7 +26,7 @@
 #include <sstream>
 #include <locale>
 
-// workaround for broken [[depreciated]] in coverity
+// workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
 #undef FMT_DEPRECATED
 #define FMT_DEPRECATED
@@ -242,7 +242,9 @@ public:
   \param delimiters Delimiter strings to be used to split the input strings
   \param iMaxStrings (optional) Maximum number of resulting split strings
   */
-  static std::vector<std::string> SplitMulti(const std::vector<std::string> &input, const std::vector<std::string> &delimiters, unsigned int iMaxStrings = 0);
+  static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
+                                             const std::vector<std::string>& delimiters,
+                                             size_t iMaxStrings = 0);
   static int FindNumber(const std::string& strInput, const std::string &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
@@ -374,7 +376,7 @@ public:
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
   static std::vector<std::string> Tokenize(const std::string& input, const char delimiter);
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter);
-  static uint64_t ToUint64(std::string str, uint64_t fallback) noexcept;
+  static uint64_t ToUint64(const std::string& str, uint64_t fallback) noexcept;
 
   /*!
    * Returns bytes in a human readable format using the smallest unit that will fit `bytes` in at

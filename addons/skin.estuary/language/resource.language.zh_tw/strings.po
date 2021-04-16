@@ -86,7 +86,7 @@ msgstr "最近收看的頻道"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "已評分"
+msgstr "分級"
 
 msgctxt "#31018"
 msgid "Recently played channels"
@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "時間平移"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "下期上檔"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "顯示劇照"
@@ -147,6 +151,10 @@ msgstr "排序"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "你的評分"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "延伸資訊"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -196,10 +204,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "可用"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "按[B]OK[/B]停止"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "經篩選過的"
@@ -208,13 +212,9 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "基於 Arial"
 
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "按[B]左[/B]倒退，或[B]右[/B]快轉"
-
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "移至播放列表"
+msgstr "檢視播放列表"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -223,6 +223,14 @@ msgstr "啟動時顯示登入畫面"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "啟動時自動登入"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr "選擇 + X"
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr "選擇 + 開始"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -492,6 +500,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "搜尋附加元件"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "上映中"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "即將上映"
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "分類"
@@ -499,10 +515,6 @@ msgstr "分類"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "選擇影音類型的粉絲自製圖集"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "來源處"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

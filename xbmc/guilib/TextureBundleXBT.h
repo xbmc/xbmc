@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-class CBaseTexture;
+class CTexture;
 class CXBTFReader;
 class CXBTFFrame;
 
@@ -30,19 +30,22 @@ public:
   void GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures);
   static std::string Normalize(const std::string &name);
 
-  bool LoadTexture(const std::string& Filename, CBaseTexture** ppTexture,
-                       int &width, int &height);
+  bool LoadTexture(const std::string& Filename, CTexture** ppTexture, int& width, int& height);
 
-  int LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
-                int &width, int &height, int& nLoops, int** ppDelays);
+  int LoadAnim(const std::string& Filename,
+               CTexture*** ppTextures,
+               int& width,
+               int& height,
+               int& nLoops,
+               int** ppDelays);
 
   static uint8_t* UnpackFrame(const CXBTFReader& reader, const CXBTFFrame& frame);
-  
+
   void CloseBundle();
 
 private:
   bool OpenBundle();
-  bool ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture);
+  bool ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CTexture** ppTexture);
 
   time_t m_TimeStamp;
 

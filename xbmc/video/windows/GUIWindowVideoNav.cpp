@@ -152,7 +152,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           if (url.GetOption("showinfo") == "true")
           {
             // We are here if the item is filtered out in the nav window
-            std::string path = message.GetStringParam(0);
+            const std::string& path = message.GetStringParam(0);
             CFileItem item(path, URIUtils::HasSlashAtEnd(path));
             if (item.IsVideoDb())
             {
@@ -718,9 +718,9 @@ bool CGUIWindowVideoNav::GetFilteredItems(const std::string &filter, CFileItemLi
 void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& items)
 {
   CFileItemList tempItems;
-  std::string strGenre = g_localizeStrings.Get(515); // Genre
-  std::string strActor = g_localizeStrings.Get(20337); // Actor
-  std::string strDirector = g_localizeStrings.Get(20339); // Director
+  const std::string& strGenre = g_localizeStrings.Get(515); // Genre
+  const std::string& strActor = g_localizeStrings.Get(20337); // Actor
+  const std::string& strDirector = g_localizeStrings.Get(20339); // Director
 
   //get matching names
   m_database.GetMoviesByName(strSearch, tempItems);
@@ -807,7 +807,7 @@ void CGUIWindowVideoNav::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr
   CGUIWindowVideoBase::OnItemInfo(fileItem, scraper);
 }
 
-void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
+void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
 {
   if (m_vecItems->IsParentFolder())
     return;
@@ -824,6 +824,10 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
            pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+
+    if (!pDialog)
+      return;
+
     pDialog->SetHeading(CVariant{432});
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
@@ -840,21 +844,6 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       CQueryParams params;
       dir.GetQueryParams(pItem->GetPath(),params);
       m_database.DeleteSet(params.GetSetId());
-    }
-  }
-  else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
-  {
-    CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(CVariant{432});
-    pDialog->SetLine(1, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) });
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-    if (pDialog->IsConfirmed())
-    {
-      CVideoDatabaseDirectory dir;
-      CQueryParams params;
-      dir.GetQueryParams(pItem->GetPath(), params);
-      m_database.DeleteTag(params.GetTagId(), (VIDEODB_CONTENT_TYPE)params.GetContentType());
     }
   }
   else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
@@ -923,20 +912,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     bool inPlaylists = m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
                        m_vecItems->IsPath("special://videoplaylists/");
 
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_artist.empty())
-    {
-      CMusicDatabase database;
-      database.Open();
-      if (database.GetArtistByName(StringUtils::Join(item->GetVideoInfoTag()->m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator)) > -1)
-        buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20396);
-    }
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strAlbum.empty())
-    {
-      CMusicDatabase database;
-      database.Open();
-      if (database.GetAlbumByName(item->GetVideoInfoTag()->m_strAlbum) > -1)
-        buttons.Add(CONTEXT_BUTTON_GO_TO_ALBUM, 20397);
-    }
+    if (item->HasVideoInfoTag() && item->HasProperty("artist_musicid"))
+      buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20396);
+
+    if (item->HasVideoInfoTag() && item->HasProperty("album_musicid"))
+      buttons.Add(CONTEXT_BUTTON_GO_TO_ALBUM, 20397);
+
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strAlbum.empty() &&
         !item->GetVideoInfoTag()->m_artist.empty()                              &&
         !item->GetVideoInfoTag()->m_strTitle.empty())
@@ -1065,21 +1046,17 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
       std::string strPath;
-      CMusicDatabase database;
-      database.Open();
       strPath = StringUtils::Format("musicdb://artists/%i/",
-                                    database.GetArtistByName(StringUtils::Join(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator)));
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV,strPath);
+                                    item->GetProperty("artist_musicid").asInteger());
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, strPath);
       return true;
     }
   case CONTEXT_BUTTON_GO_TO_ALBUM:
     {
       std::string strPath;
-      CMusicDatabase database;
-      database.Open();
       strPath = StringUtils::Format("musicdb://albums/%i/",
-                                    database.GetAlbumByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum));
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV,strPath);
+                                    item->GetProperty("album_musicid").asInteger());
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, strPath);
       return true;
     }
   case CONTEXT_BUTTON_PLAY_OTHER:

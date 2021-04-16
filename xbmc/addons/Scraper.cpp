@@ -337,7 +337,7 @@ std::string CScraper::GetPathSettingsAsJSON()
     return EmptyPathSettings;
 
   CSettingsValueFlatJsonSerializer jsonSerializer;
-  const auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
+  auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
   if (json.empty())
     return EmptyPathSettings;
 
@@ -368,7 +368,8 @@ bool CScraper::Load()
 
       bool bOptional = itr->optional;
 
-      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep))
+      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, ADDON::ADDON_UNKNOWN,
+                                                 ADDON::OnlyEnabled::YES))
       {
         CXBMCTinyXML doc;
         if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
@@ -609,7 +610,7 @@ template<>
 CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
 {
   CMusicAlbumInfo info;
-  std::string sTitle = item.GetLabel();
+  const std::string& sTitle = item.GetLabel();
   std::string sArtist = item.GetProperty("album.artist").asString();
   std::string sAlbumName;
   if (!sArtist.empty())
@@ -641,7 +642,7 @@ template<>
 CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
 {
   CMusicArtistInfo info;
-  std::string sTitle = item.GetLabel();
+  const std::string& sTitle = item.GetLabel();
 
   CScraperUrl url;
   url.AppendUrl(CScraperUrl::SUrlEntry(item.GetDynPath()));
@@ -675,7 +676,7 @@ static std::vector<T> PythonFind(const std::string &ID,
 
   if (XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
   {
-    for (auto it : items)
+    for (const auto& it : items)
       result.emplace_back(std::move(FromFileItem<T>(*it)));
   }
 
@@ -836,7 +837,7 @@ template<>
 void DetailsFromFileItem<CVideoInfoTag>(const CFileItem &item, CVideoInfoTag &tag)
 {
   if (item.HasVideoInfoTag())
-    tag = std::move(*item.GetVideoInfoTag());
+    tag = *item.GetVideoInfoTag();
 }
 
 template<class T>
@@ -1276,7 +1277,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
           XMLUtils::GetString(pxeMovie, "epnum", strEpNum) && !strEpNum.empty())
       {
         CScraperUrl &scurlEp(ep.cScraperUrl);
-        size_t dot = strEpNum.find(".");
+        size_t dot = strEpNum.find('.');
         ep.iEpisode = atoi(strEpNum.c_str());
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         std::string title;

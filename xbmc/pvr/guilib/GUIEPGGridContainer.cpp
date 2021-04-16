@@ -86,7 +86,8 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
     m_gridHeight(0),
     m_blockSize(0),
     m_analogScrollCount(0),
-    m_guiProgressIndicatorTexture(posX, posY, width, height, progressIndicatorTexture),
+    m_guiProgressIndicatorTexture(
+        CGUITexture::CreateTexture(posX, posY, width, height, progressIndicatorTexture)),
     m_scrollTime(scrollTime ? scrollTime : 1),
     m_programmeScrollLastTime(0),
     m_programmeScrollSpeed(0),
@@ -144,7 +145,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer& other)
     m_gridHeight(other.m_gridHeight),
     m_blockSize(other.m_blockSize),
     m_analogScrollCount(other.m_analogScrollCount),
-    m_guiProgressIndicatorTexture(other.m_guiProgressIndicatorTexture),
+    m_guiProgressIndicatorTexture(other.m_guiProgressIndicatorTexture->Clone()),
     m_lastItem(other.m_lastItem),
     m_lastChannel(other.m_lastChannel),
     m_scrollTime(other.m_scrollTime),
@@ -170,12 +171,12 @@ bool CGUIEPGGridContainer::HasData() const
 void CGUIEPGGridContainer::AllocResources()
 {
   IGUIContainer::AllocResources();
-  m_guiProgressIndicatorTexture.AllocResources();
+  m_guiProgressIndicatorTexture->AllocResources();
 }
 
 void CGUIEPGGridContainer::FreeResources(bool immediately)
 {
-  m_guiProgressIndicatorTexture.FreeResources(immediately);
+  m_guiProgressIndicatorTexture->FreeResources(immediately);
   IGUIContainer::FreeResources(immediately);
 }
 
@@ -325,25 +326,26 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
 
   if (width > 0 && height > 0)
   {
-    m_guiProgressIndicatorTexture.SetVisible(true);
-    m_guiProgressIndicatorTexture.SetPosition(m_rulerPosX + m_renderOffset.x, m_rulerPosY + m_renderOffset.y);
-    m_guiProgressIndicatorTexture.SetWidth(width);
-    m_guiProgressIndicatorTexture.SetHeight(height);
+    m_guiProgressIndicatorTexture->SetVisible(true);
+    m_guiProgressIndicatorTexture->SetPosition(m_rulerPosX + m_renderOffset.x,
+                                               m_rulerPosY + m_renderOffset.y);
+    m_guiProgressIndicatorTexture->SetWidth(width);
+    m_guiProgressIndicatorTexture->SetHeight(height);
   }
   else
   {
-    m_guiProgressIndicatorTexture.SetVisible(false);
+    m_guiProgressIndicatorTexture->SetVisible(false);
   }
 
-  m_guiProgressIndicatorTexture.Process(currentTime);
+  m_guiProgressIndicatorTexture->Process(currentTime);
 }
 
 void CGUIEPGGridContainer::RenderProgressIndicator()
 {
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, GetProgressIndicatorWidth(), GetProgressIndicatorHeight()))
   {
-    m_guiProgressIndicatorTexture.SetDiffuseColor(m_diffuseColor);
-    m_guiProgressIndicatorTexture.Render();
+    m_guiProgressIndicatorTexture->SetDiffuseColor(m_diffuseColor);
+    m_guiProgressIndicatorTexture->Render();
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
 }
@@ -775,6 +777,22 @@ void CGUIEPGGridContainer::UpdateItems()
       int iBlockIndex = CGUIEPGGridContainerModel::INVALID_INDEX;
       m_gridModel->FindChannelAndBlockIndex(channelUid, broadcastUid, eventOffset, iChannelIndex, iBlockIndex);
 
+      if (iBlockIndex != CGUIEPGGridContainerModel::INVALID_INDEX)
+      {
+        newBlockIndex = iBlockIndex;
+      }
+      else if (newBlockIndex > m_gridModel->GetLastBlock())
+      {
+        // default to now
+        newBlockIndex = m_gridModel->GetNowBlock();
+
+        if (newBlockIndex > m_gridModel->GetLastBlock())
+        {
+          // last block is in the past. default to last block
+          newBlockIndex = m_gridModel->GetLastBlock();
+        }
+      }
+
       if (iChannelIndex != CGUIEPGGridContainerModel::INVALID_INDEX)
       {
         newChannelIndex = iChannelIndex;
@@ -785,16 +803,6 @@ void CGUIEPGGridContainer::UpdateItems()
       {
         // default to first channel
         newChannelIndex = 0;
-      }
-
-      if (iBlockIndex != CGUIEPGGridContainerModel::INVALID_INDEX)
-      {
-        newBlockIndex = iBlockIndex;
-      }
-      else if (newBlockIndex > m_gridModel->GetLastBlock())
-      {
-        // default to now
-        newBlockIndex = m_gridModel->GetNowBlock();
       }
     }
 
@@ -1670,6 +1678,12 @@ void CGUIEPGGridContainer::JumpToNow()
   GoToNow();
 }
 
+void CGUIEPGGridContainer::JumpToDate(const CDateTime& date)
+{
+  m_bEnableProgrammeScrolling = false;
+  GoToDate(date);
+}
+
 void CGUIEPGGridContainer::GoToBegin()
 {
   ScrollToBlockOffset(0);
@@ -1684,15 +1698,26 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::GoToNow()
 {
-  ScrollToBlockOffset(m_gridModel->GetNowBlock());
-  SetBlock(m_gridModel->GetPageNowOffset());
+  GoToDate(CDateTime::GetUTCDateTime());
 }
 
 void CGUIEPGGridContainer::GoToDate(const CDateTime& date)
 {
   unsigned int offset = m_gridModel->GetPageNowOffset();
   ScrollToBlockOffset(m_gridModel->GetBlock(date) - offset);
-  SetBlock(offset);
+
+  // ensure we're selecting the active event, not its predecessor.
+  const int iChannel = m_channelOffset + m_channelCursor;
+  const int iBlock = m_blockOffset + offset;
+  if (iChannel >= m_gridModel->ChannelItemsSize() || iBlock >= m_gridModel->GridItemsSize() ||
+      m_gridModel->GetGridItemEndTime(iChannel, iBlock) > date)
+  {
+    SetBlock(offset);
+  }
+  else
+  {
+    SetBlock(offset + 1);
+  }
 }
 
 void CGUIEPGGridContainer::GoToFirstChannel()

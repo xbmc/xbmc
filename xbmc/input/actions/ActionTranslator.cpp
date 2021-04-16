@@ -53,6 +53,7 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"browsesubtitle", ACTION_BROWSE_SUBTITLE},
     {"cyclesubtitle", ACTION_CYCLE_SUBTITLE},
     {"playerdebug", ACTION_PLAYER_DEBUG},
+    {"playerdebugvideo", ACTION_PLAYER_DEBUG_VIDEO},
     {"codecinfo", ACTION_PLAYER_PROCESS_INFO},
     {"playerprocessinfo", ACTION_PLAYER_PROCESS_INFO},
     {"playerprogramselect", ACTION_PLAYER_PROGRAM_SELECT},
@@ -203,6 +204,9 @@ static const std::map<ActionName, ActionID> ActionMappings = {
 
     // HDR display support
     {"hdrtoggle", ACTION_HDR_TOGGLE},
+
+    // Tone mapping
+    {"cycletonemapmethod", ACTION_CYCLE_TONEMAP_METHOD},
 
     // PVR actions
     {"channelup", ACTION_CHANNEL_UP},

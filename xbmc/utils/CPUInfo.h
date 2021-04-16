@@ -83,7 +83,7 @@ public:
 
   bool HasCoreId(int coreId) const;
   const CoreInfo GetCoreInfo(int coreId);
-  std::string GetCoresUsageString() const;
+  std::string GetCoresUsageString();
 
   unsigned int GetCPUFeatures() const { return m_cpuFeatures; }
   int GetCPUCount() const { return m_cpuCount; }

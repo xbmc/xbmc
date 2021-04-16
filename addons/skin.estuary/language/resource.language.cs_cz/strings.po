@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Vaše hodnocení"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Rozšířené informace"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Stránky"
@@ -196,10 +200,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Dostupné"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Stiskněte [B]OK[/B] pro zastavení"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrováno"
@@ -207,10 +207,6 @@ msgstr "filtrováno"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Založeno na Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Stiskněte  [B]vlevo[/B] pro přetočení zpět nebo  [B]vpravo[/B] pro přetočení vpřed"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -492,6 +488,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Hledat doplňky"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "V kinech "
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "Brzy v kinech "
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategorie"
@@ -501,8 +505,8 @@ msgid "Select genre fanart pack"
 msgstr "Zvolte balíček fanartů žánru"
 
 msgctxt "#31150"
-msgid "Repository"
-msgstr "Repozitář"
+msgid "Origin"
+msgstr "Původ"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

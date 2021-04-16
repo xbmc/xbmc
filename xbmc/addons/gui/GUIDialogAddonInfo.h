@@ -11,9 +11,49 @@
 #include "addons/IAddon.h"
 #include "guilib/GUIDialog.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+enum class Reactivate
+{
+  YES,
+  NO,
+};
+
+enum class PerformButtonFocus
+{
+  YES,
+  NO,
+};
+
+enum class EntryPoint
+{
+  INSTALL,
+  UPDATE,
+  SHOW_DEPENDENCIES,
+};
+
+struct CInstalledWithAvailable
+{
+  CInstalledWithAvailable(const ADDON::DependencyInfo& depInfo,
+                          const std::shared_ptr<ADDON::IAddon>& installed,
+                          const std::shared_ptr<ADDON::IAddon>& available)
+    : m_depInfo(depInfo), m_installed(installed), m_available(available)
+  {
+  }
+
+  /*!
+   * @brief Returns true if the currently installed dependency version is up to date
+   * or the dependency is not available from a repository
+   */
+  bool IsInstalledUpToDate() const;
+
+  ADDON::DependencyInfo m_depInfo;
+  std::shared_ptr<ADDON::IAddon> m_installed;
+  std::shared_ptr<ADDON::IAddon> m_available;
+};
 
 class CGUIDialogAddonInfo : public CGUIDialog
 {
@@ -38,7 +78,7 @@ private:
    * @return true if we can display information, false otherwise
    */
   bool SetItem(const CFileItemPtr& item);
-  void UpdateControls();
+  void UpdateControls(PerformButtonFocus performButtonFocus);
 
   void OnUpdate();
   void OnSelectVersion();
@@ -78,11 +118,16 @@ private:
   /*!
    * @brief Show a dialog with the addon's dependencies.
    *
-   * @param[in] deps List of dependencies
    * @param[in] reactivate If true, reactivate info dialog when done
+   * @param[in] entryPoint INSTALL, UPDATE or SHOW_DEPENDENCIES
    * @return True if okay was selected, false otherwise
    */
-  bool ShowDependencyList(const std::vector<ADDON::DependencyInfo>& deps, bool reactivate);
+  bool ShowDependencyList(Reactivate reactivate, EntryPoint entryPoint);
+
+  /*!
+   * @brief Used to build up the dependency list shown by @ref ShowDependencyList()
+   */
+  void BuildDependencyList();
 
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
@@ -93,4 +138,8 @@ private:
    *   be removed before installing a new version.
    */
   bool m_silentUninstall = false;
+
+  bool m_showDepDialogOnInstall = false;
+  std::vector<ADDON::DependencyInfo> m_deps;
+  std::vector<CInstalledWithAvailable> m_depsInstalledWithAvailable;
 };

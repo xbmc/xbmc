@@ -20,6 +20,7 @@
 
 #include <sstream>
 #include <string>
+#include <utility>
 
 using namespace Shaders;
 
@@ -30,6 +31,7 @@ using namespace Shaders;
 BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
                                              AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
                                              bool toneMap,
+                                             int toneMapMethod,
                                              std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
@@ -41,7 +43,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
   m_stretch = 0.0f;
 
   // get defines from the output stage if used
-  m_glslOutput = output;
+  m_glslOutput = std::move(output);
   if (m_glslOutput)
   {
     m_defines += m_glslOutput->GetDefines();
@@ -89,7 +91,14 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
   if (toneMap)
   {
     m_toneMapping = true;
+    m_toneMappingMethod = toneMapMethod;
     m_defines += "#define XBMC_TONE_MAPPING\n";
+    if (toneMapMethod == VS_TONEMAPMETHOD_REINHARD)
+      m_defines += "#define KODI_TONE_MAPPING_REINHARD\n";
+    else if (toneMapMethod == VS_TONEMAPMETHOD_ACES)
+      m_defines += "#define KODI_TONE_MAPPING_ACES\n";
+    else if (toneMapMethod == VS_TONEMAPMETHOD_HABLE)
+      m_defines += "#define KODI_TONE_MAPPING_HABLE\n";
   }
 
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
@@ -126,6 +135,7 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hGammaDstInv = glGetUniformLocation(ProgramHandle(), "m_gammaDstInv");
   m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
   m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
+  m_hLuminance = glGetUniformLocation(ProgramHandle(), "m_luminance");
   VerifyGLState();
 
   if (m_glslOutput)
@@ -160,22 +170,37 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   if (m_toneMapping)
   {
-    float param = 0.7;
-    if (m_hasLightMetadata)
-      param = log10(100) / log10(m_lightMetadata.MaxCLL);
-    else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
-      param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
+    if (m_toneMappingMethod == VS_TONEMAPMETHOD_REINHARD)
+    {
+      float param = 0.7;
+      if (m_hasLightMetadata)
+        param = log10(100) / log10(m_lightMetadata.MaxCLL);
+      else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
+        param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
 
-    // Sanity check
-    if (param < 0.1f || param > 5.0f)
-      param = 0.7f;
+      // Sanity check
+      if (param < 0.1f || param > 5.0f)
+        param = 0.7f;
 
-    param *= m_toneMappingParam;
+      param *= m_toneMappingParam;
 
-    float coefs[3];
-    CConvertMatrix::GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
-    glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
-    glUniform1f(m_hToneP1, param);
+      float coefs[3];
+      CConvertMatrix::GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
+      glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
+      glUniform1f(m_hToneP1, param);
+    }
+    else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
+    {
+      glUniform1f(m_hLuminance, GetLuminanceValue());
+      glUniform1f(m_hToneP1, m_toneMappingParam);
+    }
+    else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
+    {
+      float lumin = GetLuminanceValue();
+      float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
+      glUniform1f(m_hLuminance, lumin);
+      glUniform1f(m_hToneP1, param);
+    }
   }
 
   VerifyGLState();
@@ -218,16 +243,60 @@ void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMaster
   m_lightMetadata = lightMetadata;
 }
 
+
+void BaseYUV2RGBGLSLShader::SetToneMapParam(int method, float param)
+{
+  m_toneMappingMethod = method;
+  m_toneMappingParam = param;
+}
+
+float BaseYUV2RGBGLSLShader::GetLuminanceValue() const //Maybe move this to linuxrenderer?! same as in baserenderer
+{
+  float lum1 = 400.0f; // default for bad quality HDR-PQ sources (with no metadata)
+  float lum2 = lum1;
+  float lum3 = lum1;
+
+  if (m_hasLightMetadata)
+  {
+    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
+    if (m_lightMetadata.MaxCLL >= lum)
+    {
+      lum1 = static_cast<float>(lum);
+      lum2 = static_cast<float>(m_lightMetadata.MaxCLL);
+    }
+    else
+    {
+      lum1 = static_cast<float>(m_lightMetadata.MaxCLL);
+      lum2 = static_cast<float>(lum);
+    }
+    lum3 = static_cast<float>(m_lightMetadata.MaxFALL);
+    lum1 = (lum1 * 0.5f) + (lum2 * 0.2f) + (lum3 * 0.3f);
+  }
+  else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance &&
+           m_displayMetadata.max_luminance.num)
+  {
+    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
+    lum1 = static_cast<float>(lum);
+  }
+
+  return lum1;
+}
+
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, EShaderFormat format, bool stretch,
-                                                   AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
+                                                   EShaderFormat format,
+                                                   bool stretch,
+                                                   AVColorPrimaries dstPrimaries,
+                                                   AVColorPrimaries srcPrimaries,
                                                    bool toneMap,
+                                                   int toneMapMethod,
                                                    std::shared_ptr<GLSLOutput> output)
-  : BaseYUV2RGBGLSLShader(rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, output)
+  : BaseYUV2RGBGLSLShader(
+        rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, std::move(output))
 {
   PixelShader()->LoadSource("gl_yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
@@ -242,11 +311,14 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, EShaderFormat form
 YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                                            EShaderFormat format,
                                            bool stretch,
-                                           AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+                                           AVColorPrimaries dstPrimaries,
+                                           AVColorPrimaries srcPrimaries,
                                            bool toneMap,
+                                           int toneMapMethod,
                                            ESCALINGMETHOD method,
                                            std::shared_ptr<GLSLOutput> output)
-: BaseYUV2RGBGLSLShader(rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, output)
+  : BaseYUV2RGBGLSLShader(
+        rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, std::move(output))
 {
   m_scaling = method;
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);
@@ -288,6 +360,7 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
   glBindTexture(GL_TEXTURE_1D, m_kernelTex);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
   GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
   glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);

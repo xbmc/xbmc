@@ -537,7 +537,7 @@ void Xcddb::parseData(const char *buffer)
       addTitle((strKeyword + "=" + strValue).c_str());
     else if (strKeyword == "EXTD")
     {
-      std::string strExtd(strValue);
+      const std::string& strExtd(strValue);
 
       if (m_strYear.empty())
       {
@@ -863,8 +863,8 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   std::string version = CSysInfo::GetVersion();
   std::string lcAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lcAppName);
-  if (version.find(" ") != std::string::npos)
-    version = version.substr(0, version.find(" "));
+  if (version.find(' ') != std::string::npos)
+    version = version.substr(0, version.find(' '));
   std::string strGreeting = "cddb hello " + lcAppName + " kodi.tv " + CCompileInfo::GetAppName() + " " + version;
   if ( ! Send(strGreeting.c_str()) )
   {

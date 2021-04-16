@@ -32,7 +32,10 @@ public:
   void FindSubtitles(const char* strFilename);
   int GetSubtitleCount();
 
-  void UpdateOverlayInfo(std::shared_ptr<CDVDInputStreamNavigator> pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }
+  void UpdateOverlayInfo(const std::shared_ptr<CDVDInputStreamNavigator>& pStream, int iAction)
+  {
+    m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction);
+  }
 
   bool AcceptsData() const override;
   void SendMessage(CDVDMsg* pMsg, int priority = 0) override;

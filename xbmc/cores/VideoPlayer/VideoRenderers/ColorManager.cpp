@@ -311,7 +311,7 @@ struct H3DLUT
   // and by the array 'lutDataxx', of length 'lutCompressedSize'.
 };
 
-bool CColorManager::Probe3dLut(const std::string filename, int *clutSize)
+bool CColorManager::Probe3dLut(const std::string& filename, int* clutSize)
 {
   struct H3DLUT header;
   CFile lutFile;
@@ -362,7 +362,10 @@ bool CColorManager::Probe3dLut(const std::string filename, int *clutSize)
   return true;
 }
 
-bool CColorManager::Load3dLut(const std::string filename, CMS_DATA_FORMAT format, int CLUTsize, uint16_t *clutData)
+bool CColorManager::Load3dLut(const std::string& filename,
+                              CMS_DATA_FORMAT format,
+                              int CLUTsize,
+                              uint16_t* clutData)
 {
   struct H3DLUT header;
   CFile lutFile;
@@ -418,7 +421,7 @@ bool CColorManager::Load3dLut(const std::string filename, CMS_DATA_FORMAT format
 #if defined(HAVE_LCMS2)
 // ICC profile support
 
-cmsHPROFILE CColorManager::LoadIccDisplayProfile(const std::string filename)
+cmsHPROFILE CColorManager::LoadIccDisplayProfile(const std::string& filename)
 {
   cmsHPROFILE hProfile;
 

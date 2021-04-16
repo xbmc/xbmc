@@ -6,8 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
-
 #ifndef C_API_ADDONINSTANCE_PVR_H
 #define C_API_ADDONINSTANCE_PVR_H
 
@@ -67,7 +65,8 @@ extern "C"
   {
     const char* strUserPath;
     const char* strClientPath;
-    int iEpgMaxDays;
+    int iEpgMaxFutureDays;
+    int iEpgMaxPastDays;
   } AddonProperties_PVR;
 
   /*!
@@ -124,8 +123,8 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
-    void (*FreeDemuxPacket)(void* kodiInstance, struct DemuxPacket* pPacket);
-    struct DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
+    void (*FreeDemuxPacket)(void* kodiInstance, struct DEMUX_PACKET* pPacket);
+    struct DEMUX_PACKET* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
     struct PVR_CODEC (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
@@ -210,7 +209,8 @@ extern "C"
                                                        const struct EPG_TAG*,
                                                        struct PVR_NAMED_VALUE*,
                                                        unsigned int*);
-    enum PVR_ERROR(__cdecl* SetEPGTimeFrame)(const struct AddonInstance_PVR*, int);
+    enum PVR_ERROR(__cdecl* SetEPGMaxPastDays)(const struct AddonInstance_PVR*, int);
+    enum PVR_ERROR(__cdecl* SetEPGMaxFutureDays)(const struct AddonInstance_PVR*, int);
     enum PVR_ERROR(__cdecl* CallEPGMenuHook)(const struct AddonInstance_PVR*,
                                              const struct PVR_MENUHOOK*,
                                              const struct EPG_TAG*);
@@ -295,7 +295,7 @@ extern "C"
     // Stream demux interface functions
     enum PVR_ERROR(__cdecl* GetStreamProperties)(const struct AddonInstance_PVR*,
                                                  struct PVR_STREAM_PROPERTIES*);
-    struct DemuxPacket*(__cdecl* DemuxRead)(const struct AddonInstance_PVR*);
+    struct DEMUX_PACKET*(__cdecl* DemuxRead)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxReset)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxAbort)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxFlush)(const struct AddonInstance_PVR*);

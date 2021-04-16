@@ -325,7 +325,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       item.SetArtFallback("fanart", fanartfallback);
 
     // Process specific disc art when we have some
-    for (auto discart : discartmap)
+    for (const auto& discart : discartmap)
     {
       std::map<std::string, std::string>::iterator it;
       if (tag.GetType() == MediaTypeAlbum)

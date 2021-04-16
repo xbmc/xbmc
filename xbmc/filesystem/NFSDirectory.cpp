@@ -56,7 +56,7 @@ bool CNFSDirectory::GetDirectoryFromExportList(const std::string& strPath, CFile
 
   for (const std::string& it : exportList)
   {
-    std::string currentExport(it);
+    const std::string& currentExport(it);
     URIUtils::RemoveSlashAtEnd(nonConstStrPath);
 
     CFileItemPtr pItem(new CFileItem(currentExport));

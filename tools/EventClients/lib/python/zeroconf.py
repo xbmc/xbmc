@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #   Copyright (C) 2008-2013 Team XBMC
@@ -26,12 +26,13 @@ __version__ = "0.1"
 
 try:
     import time
-    import dbus, gobject, avahi
+    import dbus, avahi
     from dbus import DBusException
     from dbus.mainloop.glib import DBusGMainLoop
+    from gi.repository import GLib
 except Exception as e:
     print("Zeroconf support disabled. To enable, install the following Python modules:")
-    print("    dbus, gobject, avahi")
+    print("    dbus, gi, avahi")
     pass
 
 SERVICE_FOUND  = 1
@@ -78,10 +79,10 @@ class Browser:
 
     def run(self):
         """
-        Run the gobject event loop
+        Run the GLib event loop
         """
         # Don't use loop.run() because Python's GIL will block all threads
-        loop = gobject.MainLoop()
+        loop = GLib.MainLoop()
         context = loop.get_context()
         while not self._stop:
             if context.pending():
@@ -91,7 +92,7 @@ class Browser:
 
     def stop(self):
         """
-        Stop the gobject event loop
+        Stop the GLib event loop
         """
         self._stop = True
 

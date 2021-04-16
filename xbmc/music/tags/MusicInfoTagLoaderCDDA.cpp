@@ -66,7 +66,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
       if (cddb.queryCDinfo(pCdInfo))
       {
         // Fill the fileitems music tag with cddb information, if available
-        std::string strTitle = cddb.getTrackTitle(iTrack);
+        const std::string& strTitle = cddb.getTrackTitle(iTrack);
         if (!strTitle.empty())
         {
           // Tracknumber

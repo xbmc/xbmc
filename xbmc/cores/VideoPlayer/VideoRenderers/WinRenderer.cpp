@@ -333,3 +333,11 @@ bool CWinRenderer::NeedBuffer(int idx)
 
   return m_renderer->NeedBuffer(idx);
 }
+
+DEBUG_INFO_VIDEO CWinRenderer::GetDebugInfo(int idx)
+{
+  if (!m_bConfigured)
+    return {};
+
+  return m_renderer->GetDebugInfo(idx);
+}

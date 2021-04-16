@@ -14,8 +14,8 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDStreamInfo.h"
 #include "DVDSubtitles/DVDSubtitleStream.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 
 #include <string.h>
 

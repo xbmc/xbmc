@@ -17,6 +17,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WindowSystemFactory.h"
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
@@ -50,10 +51,14 @@ static PFND3D10DDI_OPENADAPTER s_fnOpenAdapter10_2{ nullptr };
 static PFND3D10DDI_CREATEDEVICE s_fnCreateDeviceOrig{ nullptr };
 static PFND3D10DDI_CREATERESOURCE s_fnCreateResourceOrig{ nullptr };
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemWin32DX::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWin32DX());
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemWin32DX::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemWin32DX>();
 }
 
 CWinSystemWin32DX::CWinSystemWin32DX() : CRenderSystemDX()
@@ -402,6 +407,11 @@ bool CWinSystemWin32DX::IsHDROutput() const
   return m_deviceResources->IsHDROutput();
 }
 
+bool CWinSystemWin32DX::IsTransferPQ() const
+{
+  return m_deviceResources->IsTransferPQ();
+}
+
 void CWinSystemWin32DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 {
   m_deviceResources->SetHdrMetaData(hdr10);
@@ -410,4 +420,9 @@ void CWinSystemWin32DX::SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const
 void CWinSystemWin32DX::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const
 {
   m_deviceResources->SetHdrColorSpace(colorSpace);
+}
+
+DEBUG_INFO_RENDER CWinSystemWin32DX::GetDebugInfo()
+{
+  return m_deviceResources->GetDebugInfo();
 }

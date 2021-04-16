@@ -19,34 +19,34 @@ extern "C"
 namespace DRMPRIME
 {
 
-int GetColorEncoding(const VideoPicture& picture)
+std::string GetColorEncoding(const VideoPicture& picture)
 {
   switch (picture.color_space)
   {
     case AVCOL_SPC_BT2020_CL:
     case AVCOL_SPC_BT2020_NCL:
-      return DRM_COLOR_YCBCR_BT2020;
+      return "ITU-R BT.2020 YCbCr";
     case AVCOL_SPC_SMPTE170M:
     case AVCOL_SPC_BT470BG:
     case AVCOL_SPC_FCC:
-      return DRM_COLOR_YCBCR_BT601;
+      return "ITU-R BT.601 YCbCr";
     case AVCOL_SPC_BT709:
-      return DRM_COLOR_YCBCR_BT709;
+      return "ITU-R BT.709 YCbCr";
     case AVCOL_SPC_RESERVED:
     case AVCOL_SPC_UNSPECIFIED:
     default:
       if (picture.iWidth > 1024 || picture.iHeight >= 600)
-        return DRM_COLOR_YCBCR_BT709;
+        return "ITU-R BT.709 YCbCr";
       else
-        return DRM_COLOR_YCBCR_BT601;
+        return "ITU-R BT.601 YCbCr";
   }
 }
 
-int GetColorRange(const VideoPicture& picture)
+std::string GetColorRange(const VideoPicture& picture)
 {
   if (picture.color_range)
-    return DRM_COLOR_YCBCR_FULL_RANGE;
-  return DRM_COLOR_YCBCR_LIMITED_RANGE;
+    return "YCbCr full range";
+  return "YCbCr limited range";
 }
 
 uint8_t GetEOTF(const VideoPicture& picture)

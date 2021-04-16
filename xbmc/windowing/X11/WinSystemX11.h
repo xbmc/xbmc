@@ -37,6 +37,8 @@ public:
   CWinSystemX11();
   ~CWinSystemX11() override;
 
+  const std::string GetName() override { return "x11"; }
+
   // CWinSystemBase
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
@@ -65,7 +67,7 @@ public:
   int GetScreen() { return m_screen; }
   void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<std::string> *outputs);
-  bool IsCurrentOutput(std::string output);
+  bool IsCurrentOutput(const std::string& output);
   void RecreateWindow();
   int GetCrtc() { return m_crtc; }
 

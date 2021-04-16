@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#ifdef _WIN32
+#include <Windows.h> // for sleep
+#else
+#include <unistd.h>
+#endif
 
 int main(int argc, char **argv)
 {

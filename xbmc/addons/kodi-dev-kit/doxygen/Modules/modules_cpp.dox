@@ -93,6 +93,8 @@ Here is a table of the types currently possible:
     */
   /*!
   \defgroup cpp_kodi_addon_instances Addon type instances
+  \brief **Group of possible processing instances which can be made available by an add-on**\n
+  Kodi enables numerous different ways in which the necessary documentation is included in this group.
   \ingroup cpp_kodi_addon
   */
     /*!

@@ -38,8 +38,8 @@ bool CGUISelectKeyButton::PromptForInput(CEvent& waitEvent)
   {
     case STATE::NEED_KEY:
     {
-      std::string strPrompt = g_localizeStrings.Get(35169); // "Press a key"
-      std::string strWarn = g_localizeStrings.Get(35170); // "Press a key ({1:d})"
+      const std::string& strPrompt = g_localizeStrings.Get(35169); // "Press a key"
+      const std::string& strWarn = g_localizeStrings.Get(35170); // "Press a key ({1:d})"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, "", waitEvent);
 
@@ -49,8 +49,8 @@ bool CGUISelectKeyButton::PromptForInput(CEvent& waitEvent)
     }
     case STATE::NEED_INPUT:
     {
-      std::string strPrompt = g_localizeStrings.Get(35090); // "Press {0:s}"
-      std::string strWarn = g_localizeStrings.Get(35091); // "Press {0:s} ({1:d})"
+      const std::string& strPrompt = g_localizeStrings.Get(35090); // "Press {0:s}"
+      const std::string& strWarn = g_localizeStrings.Get(35091); // "Press {0:s} ({1:d})"
 
       bInterrupted = DoPrompt(strPrompt, strWarn, m_selectedKey.Label(), waitEvent);
 

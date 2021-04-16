@@ -85,7 +85,7 @@ private:
   inline unsigned int DecodeTDC(uint8_t *msgElement, unsigned int len);
 
   void SendTMCSignal(unsigned int flags, uint8_t *data);
-  void SetRadioStyle(std::string genre);
+  void SetRadioStyle(const std::string& genre);
 
   std::shared_ptr<PVR::CPVRRadioRDSInfoTag> m_currentInfoTag;
   std::shared_ptr<PVR::CPVRChannel> m_currentChannel;

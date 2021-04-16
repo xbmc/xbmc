@@ -33,6 +33,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -314,7 +315,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   CGUIDialogVideoInfo* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
 
-  ScraperPtr info(info2); // use this as nfo might change it..
+  const ScraperPtr& info(info2); // use this as nfo might change it..
 
   if (!pDlgProgress) return false;
   if (!pDlgSelect) return false;
@@ -395,22 +396,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
 
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         item->SetPath(item->GetVideoInfoTag()->GetPath());
-    }
-  }
-  
-  if (needsRefresh)
-  {
-    // Delete stream details (=media flags). This allows users to force
-    // a refresh of the stream details by performing a video info refresh
-    const int fileId = item->GetVideoInfoTag()->m_iFileId;
-    if (fileId > 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.DeleteStreamDetails(fileId);
-        db.Close();
-      }
     }
   }
 
@@ -658,7 +643,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   return CGUIMediaWindow::OnSelect(iItem);
 }
 
-bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player)
+bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string& player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
 
@@ -744,6 +729,14 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
     return ShowIMDB(item, nullptr, true);
 
   ADDON::ScraperPtr scraper;
+
+  // Match visibility test of CMusicInfo::IsVisible
+  if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+      (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
+  {
+    CGUIDialogMusicInfo::ShowFor(item.get());
+    return true;
+  }
   if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
     std::string strDir;
@@ -1172,7 +1165,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   return true;
 }
 
-bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
+bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   // Get the current playlist and make sure it is not shuffled
   int iPlaylist = m_guiState->GetPlaylist();
@@ -1208,7 +1201,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
+void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
 {
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
@@ -1410,7 +1403,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 {
-  std::string content = items.GetContent();
+  const std::string& content = items.GetContent();
   if ((items.IsVideoDb() || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "movies")   ||
        StringUtils::EqualsNoCase(content, "tvshows")  ||

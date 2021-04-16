@@ -55,11 +55,11 @@ protected:
   void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override { }
+  bool Save() override { return true; }
   unsigned int GetDelayMs() const override { return 500; }
 
   // specialization of CGUIDialogSettingsManualBase
@@ -79,7 +79,10 @@ protected:
   CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
 
-  static void GetStringListOptions(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, void *data);
+  static void GetStringListOptions(const std::shared_ptr<const CSetting>& setting,
+                                   std::vector<StringSettingOption>& list,
+                                   std::string& current,
+                                   void* data);
 
   CDbUrl* m_dbUrl;
   std::string m_mediaType;

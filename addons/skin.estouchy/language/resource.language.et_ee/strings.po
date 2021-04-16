@@ -38,11 +38,15 @@ msgstr "Visuaalide eelhäälestused"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Menüü"
+msgstr "Kontekstimenüü"
 
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Toimetamine..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Viimati"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -55,6 +59,10 @@ msgstr "Osasid"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumid"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR-i info"
 
 msgctxt "#31018"
 msgid "Player process info"
@@ -84,17 +92,37 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Logi sisse"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Uuendatud:"
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Select + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Select + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Select + Start"
+
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "PAUSIS"
+msgstr "PAUSIL"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "KIIRELT EDASI"
+msgstr "EDASI KERIMINE"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "TAGASI"
+msgstr "TAGASI KERIMINE"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Esitamise kiirus"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -102,11 +130,11 @@ msgstr "Lõpu aeg"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Järjesta: Kasvav"
+msgstr "Järjestus: kasvav"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Järjesta: Kahanev"
+msgstr "Järjestus: Kahanev"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -138,7 +166,7 @@ msgstr "Asukoht"
 
 msgctxt "#31202"
 msgid "View"
-msgstr "Vaata"
+msgstr "Kuva"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -151,6 +179,10 @@ msgstr "Viimati uuendatud"
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Teenusepakkuja"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Süsteemimälu kasutus:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -186,7 +218,15 @@ msgstr "Muuda rüüd · Määra keel ja regioon · Muuda faililoendi valikuid ·
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Vali enda Kodi profiil[CR]ja jätka"
+msgstr "Vali sisse logimiseks enda Kodi profiil[CR]ja jätka"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Peamenüü"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Peamenüü lisamoodulid"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -196,9 +236,25 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Lisamooduli otsetee"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SÜNKRONISEERI"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Kasuta kohandatud taustapilti"
+
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Live TV"
+msgstr "Otse-eeter"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanali seaded"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Saadaval grupid"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -211,3 +267,23 @@ msgstr "Nimeta grupp ümber"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Kustuta grupp"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Kuva peidetud"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Kuva kustutatud"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Esmakasutus"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Estouchy's ringi liikumiseks on vaja teada kahte asja"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi logo on nagu 'KODU' nupp. Ükskõik millal seda puudutada, siis viiakse alati tagasi peamenüüsse."

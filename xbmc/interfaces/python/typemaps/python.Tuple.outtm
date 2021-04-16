@@ -27,7 +27,7 @@
 
       if (vecSize > ${entryIndex})
       {
-        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(curType))}& entry${seq} = ${api}${accessor}${tupleAccess[entryIndex]}();
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_lrtype(curType))} entry${seq} = ${api}${accessor}${tupleAccess[entryIndex]}();
         {
           ${helper.getOutConversion(curType,'result',method,[ 'result' : 'pyentry' + seq, 'api' : 'entry' + seq, 'sequence' : sequence ])}
         }

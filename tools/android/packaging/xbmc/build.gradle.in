@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "@APP_PACKAGE@"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode @APP_VERSION_CODE_ANDROID@
         versionName "@APP_VERSION@"
     }

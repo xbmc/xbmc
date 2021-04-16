@@ -37,12 +37,18 @@ namespace PVR
   {
     PVRChannelGroupMember() = default;
 
-    PVRChannelGroupMember(const std::shared_ptr<CPVRChannel> _channel, const CPVRChannelNumber& _channelNumber, int _iClientPriority, int _iOrder, const CPVRChannelNumber& _clientChannelNumber)
-      : channel(_channel)
-      , channelNumber(_channelNumber)
-      , clientChannelNumber(_clientChannelNumber)
-      , iClientPriority(_iClientPriority)
-      , iOrder(_iOrder) {}
+    PVRChannelGroupMember(const std::shared_ptr<CPVRChannel>& _channel,
+                          const CPVRChannelNumber& _channelNumber,
+                          int _iClientPriority,
+                          int _iOrder,
+                          const CPVRChannelNumber& _clientChannelNumber)
+      : channel(_channel),
+        channelNumber(_channelNumber),
+        clientChannelNumber(_clientChannelNumber),
+        iClientPriority(_iClientPriority),
+        iOrder(_iOrder)
+    {
+    }
 
     std::shared_ptr<CPVRChannel> channel;
     CPVRChannelNumber channelNumber; // the channel number this channel has in the group
@@ -292,7 +298,7 @@ namespace PVR
 
     //@}
 
-    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
     /*!
      * @brief Get a channel given it's EPG ID.
@@ -455,25 +461,19 @@ namespace PVR
     std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id);
     const std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id) const;
 
-    void SetHidden(bool bHidden);
+    bool SetHidden(bool bHidden);
     bool IsHidden() const;
 
     int GetPosition() const;
     void SetPosition(int iPosition);
 
     /*!
-     * @brief Check, whether channel group member data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
+     * @brief Check, whether data for a given pvr client are currently valid. For instance, data
+     * can be invalid because the client's backend was offline when data was last queried.
      * @param iClientId The id of the client.
-     * @return True, if data is currently missing, false otherwise.
+     * @return True, if data is currently valid, false otherwise.
      */
-    bool IsMissingChannelGroupMembersFromClient(int iClientId) const;
-
-    /*!
-     * @brief Check, whether channel data for a given pvr client are currently missing, for instance, because the client was offline when data was last queried.
-     * @param iClientId The id of the client.
-     * @return True, if data is currently missing, false otherwise.
-     */
-    bool IsMissingChannelsFromClient(int iClientId) const;
+    bool HasValidDataFromClient(int iClientId) const;
 
     /*!
      * @brief For each channel and its corresponding epg channel data update the order from the group members
@@ -523,7 +523,7 @@ namespace PVR
     virtual bool UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove);
 
     /*!
-     * @brief Add new channels to this group; updtae data.
+     * @brief Add new channels to this group; update data.
      * @param channels The new channels to use for this group.
      * @param bUseBackendChannelNumbers True, if channel numbers from backends shall be used.
      * @return True if everything went well, false otherwise.
@@ -577,8 +577,7 @@ namespace PVR
     std::vector<std::shared_ptr<PVRChannelGroupMember>> m_sortedMembers; /*!< members sorted by channel number */
     std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> m_members; /*!< members with key clientid+uniqueid */
     mutable CCriticalSection m_critSection;
-    std::vector<int> m_failedClientsForChannels;
-    std::vector<int> m_failedClientsForChannelGroupMembers;
+    std::vector<int> m_failedClients;
     CEventSource<PVREvent> m_events;
     bool m_bIsSelectedGroup = false; /*!< Whether or not this group is currently selected */
     bool m_bStartGroupChannelNumbersFromOne = false; /*!< true if we start group channel numbers from one when not using backend channel numbers, false otherwise */

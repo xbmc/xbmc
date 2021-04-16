@@ -128,7 +128,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       }
       setInfo->m_basePath = XFILE::CMultiPathDirectory::ConstructMultiPath(pathSet);
 
-      if (ratings > 1)
+      if (ratings > 0)
         pItem->GetVideoInfoTag()->SetRating(totalRatings / ratings);
 
       setInfo->SetPlayCount(iWatched >= static_cast<int>(set->second.size()) ? (setInfo->GetPlayCount() / set->second.size()) : 0);

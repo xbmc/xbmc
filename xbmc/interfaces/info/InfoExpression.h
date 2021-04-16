@@ -12,6 +12,7 @@
 
 #include <list>
 #include <stack>
+#include <utility>
 #include <vector>
 
 class CGUIListItem;
@@ -77,7 +78,7 @@ private:
   class InfoLeaf : public InfoSubexpression
   {
   public:
-    InfoLeaf(InfoPtr info, bool invert) : m_info(info), m_invert(invert) {};
+    InfoLeaf(InfoPtr info, bool invert) : m_info(std::move(info)), m_invert(invert){};
     bool Evaluate(const CGUIListItem *item) override;
     node_type_t Type() const override { return NODE_LEAF; };
   private:
@@ -91,7 +92,7 @@ private:
   public:
     InfoAssociativeGroup(node_type_t type, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
     void AddChild(const InfoSubexpressionPtr &child);
-    void Merge(std::shared_ptr<InfoAssociativeGroup> other);
+    void Merge(const std::shared_ptr<InfoAssociativeGroup>& other);
     bool Evaluate(const CGUIListItem *item) override;
     node_type_t Type() const override { return m_type; };
   private:

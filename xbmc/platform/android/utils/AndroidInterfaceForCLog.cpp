@@ -22,5 +22,5 @@ void CAndroidInterfaceForCLog::AddSinks(
     std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> distributionSink) const
 {
   distributionSink->add_sink(
-      std::make_shared<spdlog::sinks::android_sink_mt>(CCompileInfo::GetAppName()));
+      std::make_shared<spdlog::sinks::android_sink_st>(CCompileInfo::GetAppName()));
 }

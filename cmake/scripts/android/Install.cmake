@@ -70,6 +70,7 @@ set(package_files strings.xml
                   src/XBMCProperties.java
                   src/XBMCVideoView.java
                   src/XBMCFile.java
+                  src/XBMCURIUtils.java
                   src/channels/SyncChannelJobService.java
                   src/channels/SyncProgramsJobService.java
                   src/channels/model/XBMCDatabase.java
