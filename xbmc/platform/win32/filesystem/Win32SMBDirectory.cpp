@@ -723,10 +723,20 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   connInfo.dwType = RESOURCETYPE_ANY;
   connInfo.lpRemoteName = (LPWSTR)serverShareNameW.c_str();
   DWORD connRes;
+
   for (int i = 0; i < 3; i++) // make up to three attempts to connect
   {
+    // try with provided user/password or NULL user/password (NULL = current Windows user/password)
     connRes = WNetAddConnection2W(&connInfo, passwordW.empty() ? NULL : (LPWSTR)passwordW.c_str(),
                                   usernameW.empty() ? NULL : (LPWSTR)usernameW.c_str(), CONNECT_TEMPORARY);
+
+    // try with passwordless access (guest user and no password)
+    if (usernameW.empty() && passwordW.empty() &&
+        (connRes == ERROR_ACCESS_DENIED || connRes == ERROR_BAD_USERNAME ||
+         connRes == ERROR_INVALID_PASSWORD || connRes == ERROR_LOGON_FAILURE ||
+         connRes == ERROR_LOGON_TYPE_NOT_GRANTED || connRes == ERROR_LOGON_NOT_GRANTED))
+      connRes = WNetAddConnection2W(&connInfo, L"", L"guest", CONNECT_TEMPORARY);
+
     if (connRes == NO_ERROR)
     {
       CLog::LogF(LOGDEBUG, "Connected to \"%s\" %s", serverShareName.c_str(), loginDescr.c_str());
