@@ -255,6 +255,7 @@ protected:
   unsigned int m_surface_alignment = 0;
   HANDLE m_sharedHandle = INVALID_HANDLE_VALUE;
   D3D11_VIDEO_DECODER_DESC m_format = {};
+  bool m_DVDWorkaround = false;
 };
 
 } // namespace DXVA
