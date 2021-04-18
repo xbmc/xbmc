@@ -28,7 +28,7 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
@@ -705,11 +705,11 @@ void CGUIDialogPVRChannelManager::Update()
   if(!channels)
     return;
 
-  const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = channels->GetMembers();
+  const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers = channels->GetMembers();
   std::shared_ptr<CFileItem> channelFile;
   for (const auto& member : groupMembers)
   {
-    channelFile = std::make_shared<CFileItem>(member->channel);
+    channelFile = std::make_shared<CFileItem>(member->Channel());
     if (!channelFile || !channelFile->HasPVRChannelInfoTag())
       continue;
     const std::shared_ptr<CPVRChannel> channel(channelFile->GetPVRChannelInfoTag());

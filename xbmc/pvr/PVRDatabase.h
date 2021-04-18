@@ -264,6 +264,8 @@ namespace PVR
     bool PersistChannels(CPVRChannelGroup& group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
+    void InsertChannelIntoGroup(const std::shared_ptr<CPVRChannel>& channel,
+                                CPVRChannelGroup& group);
 
     int GetClientIdByChannelId(int iChannelId);
 
