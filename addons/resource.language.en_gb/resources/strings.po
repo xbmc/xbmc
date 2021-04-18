@@ -4783,7 +4783,19 @@ msgctxt "#2104"
 msgid "Check the log for more information."
 msgstr ""
 
-#empty strings from id 2105 to 9999
+#empty strings from id 2105 to 2202
+
+#: system/settings/settings.xml
+msgctxt "#2203"
+msgid "Use DTS Core"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2204"
+msgid "Select this option if you want to passthrough DTS-HD formats as DTS, otherwise, DTS-HD formats will be played via PCM"
+msgstr ""
+
+#empty strings from id 2205 to 9999
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10000"

@@ -371,6 +371,7 @@ constexpr const char* CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH;
+constexpr const char* CSettings::SETTING_AUDIOOUTPUT_DTSHDCOREFALLBACK;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS;
 constexpr const char* CSettings::SETTING_INPUT_PERIPHERALS;
 constexpr const char* CSettings::SETTING_INPUT_PERIPHERALLIBRARIES;

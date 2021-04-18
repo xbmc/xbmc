@@ -2632,6 +2632,8 @@ void CActiveAE::LoadSettings()
   m_settings.truehdpassthrough = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH);
   m_settings.dtspassthrough = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH);
   m_settings.dtshdpassthrough = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
+  m_settings.usesdtscorefallback =
+      settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDCOREFALLBACK);
 
   m_settings.resampleQuality = static_cast<AEQuality>(settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY));
   m_settings.atempoThreshold = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD) / 100.0;
@@ -2706,6 +2708,11 @@ bool CActiveAE::SupportsRaw(AEAudioFormat &format)
     return false;
 
   return true;
+}
+
+bool CActiveAE::UsesDtsCoreFallback()
+{
+  return m_settings.usesdtscorefallback;
 }
 
 bool CActiveAE::SupportsSilenceTimeout()
