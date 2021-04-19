@@ -1,5 +1,4 @@
-set(SOURCES Exception.cpp
-            ilog.cpp)
+set(SOURCES Exception.cpp)
 
 set(HEADERS Buffer.h
             Exception.h

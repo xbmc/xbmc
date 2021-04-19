@@ -201,16 +201,3 @@ private:
   bool m_componentLogEnabled;
   uint32_t m_componentLogLevels;
 };
-
-namespace XbmcUtils
-{
-class LogImplementation : public XbmcCommons::ILogger
-{
-public:
-  ~LogImplementation() override = default;
-  inline void log(int logLevel, IN_STRING const char* message) override
-  {
-    CLog::Log(logLevel, "{0:s}", message);
-  }
-};
-} // namespace XbmcUtils
