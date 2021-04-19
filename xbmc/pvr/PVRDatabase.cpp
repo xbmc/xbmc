@@ -34,6 +34,8 @@ using namespace PVR;
 
 namespace
 {
+// clang-format off
+
   static const std::string sqlCreateTimersTable =
     "CREATE TABLE timers ("
       "iClientIndex       integer primary key, "
@@ -61,6 +63,20 @@ namespace
       "iMaxRecordings     integer,"
       "iRecordingGroup    integer"
   ")";
+
+  static const std::string sqlCreateChannelGroupsTable =
+    "CREATE TABLE channelgroups ("
+      "idGroup         integer primary key,"
+      "bIsRadio        bool, "
+      "iGroupType      integer, "
+      "sName           varchar(64), "
+      "iLastWatched    integer, "
+      "bIsHidden       bool, "
+      "iPosition       integer, "
+      "iLastOpened     bigint unsigned"
+  ")";
+
+// clang-format on
 } // unnamed namespace
 
 bool CPVRDatabase::Open()
@@ -114,16 +130,7 @@ void CPVRDatabase::CreateTables()
   );
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
-  m_pDS->exec("CREATE TABLE channelgroups ("
-              "idGroup         integer primary key,"
-              "bIsRadio        bool, "
-              "iGroupType      integer, "
-              "sName           varchar(64), "
-              "iLastWatched    integer, "
-              "bIsHidden       bool, "
-              "iPosition       integer, "
-              "iLastOpened     integer"
-              ")");
+  m_pDS->exec(sqlCreateChannelGroupsTable);
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'map_channelgroups_channels'");
   m_pDS->exec(
@@ -229,6 +236,22 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 37)
     m_pDS->exec("ALTER TABLE channelgroups ADD iLastOpened integer");
+
+  if (iVersion < 38)
+  {
+    m_pDS->exec("ALTER TABLE channelgroups "
+                "RENAME TO channelgroups_old");
+
+    m_pDS->exec(sqlCreateChannelGroupsTable);
+
+    m_pDS->exec(
+        "INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, bIsHidden, "
+        "iPosition, iLastOpened) "
+        "SELECT bIsRadio, iGroupType, sName, iLastWatched, bIsHidden, iPosition, iLastOpened "
+        "FROM channelgroups_old");
+
+    m_pDS->exec("DROP TABLE channelgroups_old");
+  }
 }
 
 /********** Client methods **********/
