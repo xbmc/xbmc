@@ -25,6 +25,8 @@
 namespace
 {
 std::vector<std::string> availableWindowSystems = CCompileInfo::GetAvailableWindowSystems();
+std::array<std::string, 1> availableLogTargets = {"console"};
+
 } // namespace
 #endif
 
@@ -79,6 +81,12 @@ void CAppParamParser::DisplayHelp()
   for (const auto& windowSystem : availableWindowSystems)
     printf(" %s", windowSystem.c_str());
   printf("\n");
+  printf("  --logging=<target>\tSelect which log target to use (log file will always be used in "
+         "conjunction).\n");
+  printf("  \t\t\t\tAvailable log targets are:");
+  for (const auto& logTarget : availableLogTargets)
+    printf(" %s", logTarget.c_str());
+  printf("\n");
 #endif
   exit(0);
 }
@@ -113,6 +121,23 @@ void CAppParamParser::ParseArg(const std::string &arg)
       std::cout << "    Available window systems:";
       for (const auto& windowSystem : availableWindowSystems)
         std::cout << " " << windowSystem;
+      std::cout << std::endl;
+      exit(0);
+    }
+  }
+  else if (arg.substr(0, 10) == "--logging=")
+  {
+    if (std::find(availableLogTargets.begin(), availableLogTargets.end(), arg.substr(10)) !=
+        availableLogTargets.end())
+    {
+      m_logTarget = arg.substr(10);
+    }
+    else
+    {
+      std::cout << "Selected logging target not available: " << arg << std::endl;
+      std::cout << "    Available log targest:";
+      for (const auto& logTarget : availableLogTargets)
+        std::cout << " " << logTarget;
       std::cout << std::endl;
       exit(0);
     }

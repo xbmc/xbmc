@@ -31,6 +31,7 @@ public:
   bool m_testmode = false;
   bool m_standAlone = false;
   std::string m_windowing;
+  std::string m_logTarget;
 
 private:
   void ParseArg(const std::string &arg);

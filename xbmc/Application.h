@@ -316,6 +316,8 @@ public:
   bool IsStandAlone() { return m_bStandalone; }
   bool IsEnableTestMode() { return m_bTestMode; }
 
+  const std::string& GetLogTarget() const { return m_logTarget; }
+
   bool IsAppFocused() const { return m_AppFocused; }
 
   bool ToggleDPMS(bool manual);
@@ -446,6 +448,7 @@ protected:
   unsigned int m_lastRenderTime = 0;
   bool m_skipGuiRender = false;
 
+  std::string m_logTarget;
   bool m_bStandalone = false;
   bool m_bTestMode = false;
   bool m_bSystemScreenSaverEnable = false;
