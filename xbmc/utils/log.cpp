@@ -12,15 +12,6 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/utils/AndroidInterfaceForCLog.h"
-#elif defined(TARGET_DARWIN)
-#include "platform/darwin/utils/DarwinInterfaceForCLog.h"
-#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
-#include "platform/win32/utils/Win32InterfaceForCLog.h"
-#else
-#include "platform/posix/utils/PosixInterfaceForCLog.h"
-#endif
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
