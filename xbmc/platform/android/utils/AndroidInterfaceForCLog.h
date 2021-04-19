@@ -14,7 +14,7 @@ class CAndroidInterfaceForCLog : public CPosixInterfaceForCLog
 {
 public:
   CAndroidInterfaceForCLog() = default;
-  ~CAndroidInterfaceForCLog() = default;
+  ~CAndroidInterfaceForCLog() override = default;
 
   // specialization of CPosixInterfaceForCLog
   void AddSinks(

@@ -18,7 +18,7 @@ class CWin32InterfaceForCLog : public IPlatformLog
 {
 public:
   CWin32InterfaceForCLog() = default;
-  ~CWin32InterfaceForCLog() = default;
+  ~CWin32InterfaceForCLog() override = default;
 
   spdlog_filename_t GetLogFilename(const std::string& filename) const override;
   void AddSinks(
