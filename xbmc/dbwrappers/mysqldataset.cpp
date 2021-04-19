@@ -1648,6 +1648,15 @@ bool MysqlDataset::query(const std::string &query) {
       switch (fields[i].type)
       {
         case MYSQL_TYPE_LONGLONG:
+          if (row[i] != nullptr)
+          {
+            v.set_asInt64(strtoll(row[i], nullptr, 10));
+          }
+          else
+          {
+            v.set_asInt64(0);
+          }
+          break;
         case MYSQL_TYPE_DECIMAL:
         case MYSQL_TYPE_NEWDECIMAL:
         case MYSQL_TYPE_TINY:
