@@ -64,7 +64,6 @@ private:
 
   unsigned int        m_BufferOffset;
   unsigned int        m_CacheLen;
-  unsigned int        m_LastCacheCheck;
   unsigned int        m_BufferTimeouts;
 
   bool                m_running;

@@ -15,7 +15,6 @@
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -83,7 +82,6 @@ CAESinkDirectSound::CAESinkDirectSound() :
   m_dwBufferLen   (0    ),
   m_BufferOffset  (0    ),
   m_CacheLen      (0    ),
-  m_LastCacheCheck(0    ),
   m_BufferTimeouts(0    ),
   m_running       (false),
   m_initialized   (false),
@@ -268,7 +266,6 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   m_BufferOffset = 0;
   m_CacheLen = 0;
-  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   m_initialized = true;
   m_isDirtyDS = false;
 
