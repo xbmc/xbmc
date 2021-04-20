@@ -27,6 +27,7 @@
 #include "input/Key.h"
 #include "input/XBMC_keyboard.h"
 
+#include <chrono>
 #include <string>
 
 class CKeyboardStat
@@ -48,5 +49,5 @@ private:
   static bool LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint8_t* key, char* unicode);
 
   XBMC_keysym m_lastKeysym;
-  unsigned int m_lastKeyTime;
+  std::chrono::time_point<std::chrono::steady_clock> m_lastKeyTime;
 };
