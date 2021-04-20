@@ -62,7 +62,6 @@ public:
   int GetPriority(void);
   bool SetPriority(const int iPriority);
 
-  int64_t GetAbsoluteUsage();
   // -----------------------------------------------------------------------------------
 
   static CThread* GetCurrentThread();
