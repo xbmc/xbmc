@@ -44,7 +44,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
@@ -97,7 +96,7 @@ void CMusicInfoScanner::Process()
       return;
     }
 
-    unsigned int tick = XbmcThreads::SystemClockMillis();
+    auto tick = std::chrono::steady_clock::now();
     m_musicDatabase.Open();
     m_bCanInterrupt = true;
 
@@ -192,9 +191,11 @@ void CMusicInfoScanner::Process()
 
       m_musicDatabase.EmptyCache();
 
-      tick = XbmcThreads::SystemClockMillis() - tick;
-      CLog::Log(LOGINFO, "My Music: Scanning for music info using worker thread, operation took %s",
-                StringUtils::SecondsToTimeString(tick / 1000).c_str());
+      auto elapsed =
+          std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tick);
+      CLog::Log(LOGINFO,
+                "My Music: Scanning for music info using worker thread, operation took {}s",
+                elapsed.count());
     }
     if (m_scanType == 1) // load album info
     {
