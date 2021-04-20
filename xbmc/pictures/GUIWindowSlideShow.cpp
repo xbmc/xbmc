@@ -33,7 +33,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/Random.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -88,7 +87,7 @@ void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 
 void CBackgroundPicLoader::Process()
 {
-  unsigned int totalTime = 0;
+  auto totalTime = std::chrono::milliseconds(0);
   unsigned int count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
@@ -96,9 +95,13 @@ void CBackgroundPicLoader::Process()
     {
       if (m_pCallback)
       {
-        unsigned int start = XbmcThreads::SystemClockMillis();
+        auto start = std::chrono::steady_clock::now();
         CTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight);
-        totalTime += XbmcThreads::SystemClockMillis() - start;
+
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+        totalTime += duration;
         count++;
         // tell our parent
         bool bFullSize = false;
@@ -122,8 +125,8 @@ void CBackgroundPicLoader::Process()
     }
   }
   if (count > 0)
-    CLog::Log(LOGDEBUG, "Time for loading %u images: %u ms, average %u ms",
-              count, totalTime, totalTime / count);
+    CLog::Log(LOGDEBUG, "Time for loading {} images: {} ms, average {} ms", count,
+              totalTime.count(), totalTime.count() / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight)
