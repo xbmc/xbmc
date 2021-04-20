@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <string>
 
 #include <winrt/Windows.Media.h>
@@ -28,7 +29,7 @@ private:
   int32_t TranslateMediaKey(winrt::Windows::Media::SystemMediaTransportControlsButton mk);
 
   bool m_bInitialized;
-  uint32_t m_firstClickTime;
+  std::chrono::time_point<std::chrono::steady_clock> m_firstClickTime;
   uint32_t m_repeatCount;
   winrt::event_token m_token;
   winrt::event_token m_mediatoken;
