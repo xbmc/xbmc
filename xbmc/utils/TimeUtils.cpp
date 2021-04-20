@@ -8,7 +8,6 @@
 
 #include "TimeUtils.h"
 #include "XBDateTime.h"
-#include "threads/SystemClock.h"
 #include "windowing/GraphicContext.h"
 
 #if   defined(TARGET_DARWIN)
@@ -19,6 +18,11 @@
 #else
 #include <time.h>
 #endif
+
+namespace
+{
+auto startTime = std::chrono::steady_clock::now();
+}
 
 int64_t CurrentHostCounter(void)
 {
@@ -52,11 +56,14 @@ int64_t CurrentHostFrequency(void)
 #endif
 }
 
-unsigned int CTimeUtils::frameTime = XbmcThreads::SystemClockMillis();
+unsigned int CTimeUtils::frameTime = 0;
 
 void CTimeUtils::UpdateFrameTime(bool flip)
 {
-  unsigned int currentTime = XbmcThreads::SystemClockMillis();
+  auto now = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime);
+
+  unsigned int currentTime = duration.count();
   unsigned int last = frameTime;
   while (frameTime < currentTime)
   {
