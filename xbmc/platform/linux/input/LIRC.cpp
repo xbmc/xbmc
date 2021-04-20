@@ -143,7 +143,7 @@ void CLirc::ProcessCode(char *buf)
   if (repeat == 0)
   {
     CLog::Log(LOGDEBUG, "LIRC: - NEW %s %s %s %s (%s)", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0], buttonName);
-    m_firstClickTime = XbmcThreads::SystemClockMillis();
+    m_firstClickTime = std::chrono::steady_clock::now();
 
     XBMC_Event newEvent;
     newEvent.type = XBMC_BUTTON;
@@ -159,7 +159,11 @@ void CLirc::ProcessCode(char *buf)
     XBMC_Event newEvent;
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
-    newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
+
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_firstClickTime);
+
+    newEvent.keybutton.holdtime = duration.count();
     std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
     if (appPort)
       appPort->OnEvent(newEvent);
