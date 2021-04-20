@@ -51,7 +51,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
-#include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/MathUtils.h"
@@ -2000,7 +1999,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
 {
   try
   {
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
     if (nullptr == m_pDB)
       return false;
     if (nullptr == m_pDS)
@@ -2043,8 +2042,13 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
       }
     }
     m_pDS->close(); // cleanup recordset data
+
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
     CLog::Log(LOGDEBUG, LOGDATABASE, "{0}({1}) - took {2} ms", __FUNCTION__, strSQL,
-              XbmcThreads::SystemClockMillis() - time);
+              duration.count());
+
     return true;
   }
   catch (...)
@@ -3519,8 +3523,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (nullptr == m_pDS)
       return false;
 
-    unsigned int querytime = 0;
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
 
     // Get data from album and album_artist tables to fully populate albums
     std::string strSQL =
@@ -3533,11 +3536,15 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
                    "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ",
                    CAlbum::ReleaseTypeToString(CAlbum::Album).c_str(), RECENTLY_PLAYED_LIMIT);
 
-    querytime = XbmcThreads::SystemClockMillis();
+    auto queryStart = std::chrono::steady_clock::now();
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL))
       return false;
-    querytime = XbmcThreads::SystemClockMillis() - querytime;
+
+    auto queryEnd = std::chrono::steady_clock::now();
+    auto queryDuration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(queryEnd - queryStart);
+
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -3563,8 +3570,12 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     }
     m_pDS->close(); // cleanup recordset data
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1}ms query took {2}ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time, querytime);
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1} ms query took {2} ms", __FUNCTION__,
+              duration.count(), queryDuration.count());
+
     return true;
   }
   catch (...)
@@ -3909,24 +3920,27 @@ void CMusicDatabase::EmptyCache()
 
 bool CMusicDatabase::Search(const std::string& search, CFileItemList& items)
 {
-  unsigned int time = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
   // first grab all the artists that match
   SearchArtists(search, items);
-  CLog::Log(LOGDEBUG, "%s Artist search in %i ms", __FUNCTION__,
-            XbmcThreads::SystemClockMillis() - time);
-  time = XbmcThreads::SystemClockMillis();
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "{} Artist search in {} ms", __FUNCTION__, duration.count());
 
+  start = std::chrono::steady_clock::now();
   // then albums that match
   SearchAlbums(search, items);
-  CLog::Log(LOGDEBUG, "%s Album search in %i ms", __FUNCTION__,
-            XbmcThreads::SystemClockMillis() - time);
-  time = XbmcThreads::SystemClockMillis();
+  end = std::chrono::steady_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "{} Album search in {} ms", __FUNCTION__, duration.count());
 
+  start = std::chrono::steady_clock::now();
   // and finally songs
   SearchSongs(search, items);
-  CLog::Log(LOGDEBUG, "%s Songs search in %i ms", __FUNCTION__,
-            XbmcThreads::SystemClockMillis() - time);
-  time = XbmcThreads::SystemClockMillis();
+  end = std::chrono::steady_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "{} Songs search in {} ms", __FUNCTION__, duration.count());
+
   return true;
 }
 
@@ -4382,7 +4396,8 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
     return ERROR_DATABASE;
 
   int ret = ERROR_OK;
-  unsigned int time = XbmcThreads::SystemClockMillis();
+  std::chrono::seconds duration;
+  auto time = std::chrono::steady_clock::now();
   CLog::Log(LOGINFO, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnCleanStarted");
 
@@ -4517,9 +4532,11 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
     progressDialog->SetPercentage(100);
     progressDialog->Close();
   }
-  time = XbmcThreads::SystemClockMillis() - time;
-  CLog::Log(LOGINFO, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__,
-            StringUtils::SecondsToTimeString(time / 1000).c_str());
+
+  duration =
+      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - time);
+  CLog::Log(LOGINFO, "{}: Cleaning musicdatabase done. Operation took {}s", __FUNCTION__,
+            duration.count());
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnCleanFinished");
 
   if (!Compress(false))
@@ -5332,8 +5349,7 @@ bool CMusicDatabase::GetArtistsByWhere(
 
   try
   {
-    unsigned int querytime = 0;
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
     int total = -1;
 
     Filter extFilter = filter;
@@ -5424,7 +5440,7 @@ bool CMusicDatabase::GetArtistsByWhere(
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    querytime = XbmcThreads::SystemClockMillis();
+    auto queryStart = std::chrono::steady_clock::now();
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5433,7 +5449,10 @@ bool CMusicDatabase::GetArtistsByWhere(
       m_pDS->close();
       return true;
     }
-    querytime = XbmcThreads::SystemClockMillis() - querytime;
+
+    auto queryEnd = std::chrono::steady_clock::now();
+    auto queryDuration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(queryEnd - queryStart);
 
     // Store the total number of artists as a property
     if (total < iRowsFound)
@@ -5486,8 +5505,12 @@ bool CMusicDatabase::GetArtistsByWhere(
     // cleanup
     m_pDS->close();
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with artists {1}ms query took {2}ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time, querytime);
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with artists {1} ms query took {2} ms",
+              __FUNCTION__, duration.count(), queryDuration.count());
+
     return true;
   }
   catch (...)
@@ -5566,8 +5589,7 @@ bool CMusicDatabase::GetAlbumsByWhere(
 
   try
   {
-    unsigned int querytime = 0;
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
     int total = -1;
 
     Filter extFilter = filter;
@@ -5653,7 +5675,7 @@ bool CMusicDatabase::GetAlbumsByWhere(
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    querytime = XbmcThreads::SystemClockMillis();
+    auto querytime = std::chrono::steady_clock::now();
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5662,7 +5684,10 @@ bool CMusicDatabase::GetAlbumsByWhere(
       m_pDS->close();
       return true;
     }
-    querytime = XbmcThreads::SystemClockMillis() - querytime;
+
+    auto queryEnd = std::chrono::steady_clock::now();
+    auto queryDuration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(queryEnd - querytime);
 
     // Store the total number of albums as a property
     if (total < iRowsFound)
@@ -5709,8 +5734,12 @@ bool CMusicDatabase::GetAlbumsByWhere(
     // cleanup
     m_pDS->close();
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1}ms query took {2}ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time, querytime);
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1} ms query took {2} ms", __FUNCTION__,
+              duration.count(), queryDuration.count());
+
     return true;
   }
   catch (...)
@@ -5761,8 +5790,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
 
   try
   {
-    unsigned int querytime = 0;
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
     int total = -1;
     std::string strSQL;
 
@@ -5825,7 +5853,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    querytime = XbmcThreads::SystemClockMillis();
+    auto queryStart = std::chrono::steady_clock::now();
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5834,7 +5862,10 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
       m_pDS->close();
       return true;
     }
-    querytime = XbmcThreads::SystemClockMillis() - querytime;
+
+    auto queryEnd = std::chrono::steady_clock::now();
+    auto queryDuration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(queryEnd - queryStart);
 
     // store the total value of items as a property
     if (total < iRowsFound)
@@ -5922,8 +5953,12 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     if (sorting.sortBy != SortByNone && !(limitedInSQL && sorting.sortBy == SortByRandom))
       items.Sort(sorting);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with discs {1}ms query took {2}ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time, querytime);
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with discs {1} ms query took {2} ms", __FUNCTION__,
+              duration.count(), queryDuration.count());
+
     return true;
   }
   catch (...)
@@ -5955,8 +5990,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
 
   try
   {
-    unsigned int querytime = 0;
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
     int total = -1;
 
     Filter extFilter = filter;
@@ -6077,7 +6111,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
       strSQL = "SELECT " + strFields + " FROM songview " + strSQLExtra;
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
-    querytime = XbmcThreads::SystemClockMillis();
+    auto queryStart = std::chrono::steady_clock::now();
     // run query
     if (!m_pDS->query(strSQL))
       return false;
@@ -6088,7 +6122,10 @@ bool CMusicDatabase::GetSongsFullByWhere(
       m_pDS->close();
       return true;
     }
-    querytime = XbmcThreads::SystemClockMillis() - querytime;
+
+    auto queryEnd = std::chrono::steady_clock::now();
+    auto queryDuration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(queryEnd - queryStart);
 
     // Store the total number of songs as a property
     items.SetProperty("total", total);
@@ -6172,8 +6209,12 @@ bool CMusicDatabase::GetSongsFullByWhere(
     if (sorting.sortBy == SortByRandom && artistData)
       items.Sort(sorting);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with songs {1}ms query took {2}ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time, querytime);
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with songs {1} ms query took {2} ms", __FUNCTION__,
+              duration.count(), queryDuration.count());
+
     return true;
   }
   catch (...)
@@ -6771,11 +6812,15 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     // run query
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
+
     if (!m_pDS->query(strSQL))
       return false;
-    CLog::Log(LOGDEBUG, "%s - query took %i ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time);
+
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{} - query took {} ms", __FUNCTION__, duration.count());
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound <= 0)
@@ -7317,11 +7362,15 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     // run query
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
+
     if (!m_pDS->query(strSQL))
       return false;
-    CLog::Log(LOGDEBUG, "%s - query took %i ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time);
+
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{} - query took {} ms", __FUNCTION__, duration.count());
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound <= 0)
@@ -7516,7 +7565,7 @@ static const translateJSONField JSONtoDBSong[] = {
   { "displayconductor",          "string", false, "Role_Conductor",         "song_artist.idRole AS Role_Conductor" },
   { "displayorchestra",          "string", false, "Role_Orchestra",         "song_artist.idRole AS Role_Orchestra" },
   { "displaylyricist",           "string", false, "Role_Lyricist",          "song_artist.idRole AS Role_Lyricist" },
- 
+
   // Scalar subquery fields
   { "year",                     "integer", true,  "iYear",                  "CAST(<datefield> AS INTEGER) AS iYear" }, //From strReleaseDate or strOrigReleaseDate
   { "track",                    "integer", true,  "track",                  "(iTrack & 0xffff) AS track" },
@@ -7897,11 +7946,15 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
 
     // Run query
-    unsigned int time = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
+
     if (!m_pDS->query(strSQL))
       return false;
-    CLog::Log(LOGDEBUG, "%s - query took %i ms", __FUNCTION__,
-              XbmcThreads::SystemClockMillis() - time);
+
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::Log(LOGDEBUG, "{} - query took {} ms", __FUNCTION__, duration.count());
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound <= 0)
