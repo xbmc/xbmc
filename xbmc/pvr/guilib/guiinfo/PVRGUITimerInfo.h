@@ -10,6 +10,7 @@
 
 #include "threads/CriticalSection.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -65,7 +66,7 @@ namespace PVR
     std::string m_strNextRecordingTime;
     std::string m_strNextTimerInfo;
 
-    unsigned int m_iTimerInfoToggleStart;
+    std::chrono::time_point<std::chrono::steady_clock> m_iTimerInfoToggleStart;
     unsigned int m_iTimerInfoToggleCurrent;
 
     mutable CCriticalSection m_critSection;
