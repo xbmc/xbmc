@@ -13,7 +13,6 @@
 #include "PlayListPlayer.h"
 #include "commons/Exception.h"
 #include "messaging/ApplicationMessenger.h"
-#include "threads/SystemClock.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -41,8 +40,8 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
 {
   CLog::Log(LOGINFO, "Running the application...");
 
-  unsigned int lastFrameTime = 0;
-  unsigned int frameTime = 0;
+  std::chrono::time_point<std::chrono::steady_clock> lastFrameTime;
+  std::chrono::milliseconds frameTime;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
   if (params.GetPlaylist().Size() > 0)
@@ -59,7 +58,7 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
     // Animate and render a frame
     //-----------------------------------------
 
-    lastFrameTime = XbmcThreads::SystemClockMillis();
+    lastFrameTime = std::chrono::steady_clock::now();
     Process();
 
     if (!m_bStop)
@@ -73,9 +72,10 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
     }
     else if (!m_renderGUI)
     {
-      frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;
-      if(frameTime < noRenderFrameTime)
-        KODI::TIME::Sleep(noRenderFrameTime - frameTime);
+      auto now = std::chrono::steady_clock::now();
+      frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFrameTime);
+      if (frameTime.count() < noRenderFrameTime)
+        KODI::TIME::Sleep(noRenderFrameTime - frameTime.count());
     }
 
   }
