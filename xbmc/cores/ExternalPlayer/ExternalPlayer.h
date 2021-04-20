@@ -64,7 +64,7 @@ private:
 
   bool m_bAbortRequest;
   bool m_bIsPlaying;
-  int64_t m_playbackStartTime;
+  std::chrono::time_point<std::chrono::steady_clock> m_playbackStartTime;
   float m_speed;
   int m_time;
   std::string m_launchFilename;
