@@ -8,7 +8,6 @@
 
 #include "DVDFileInfo.h"
 #include "ServiceBroker.h"
-#include "threads/SystemClock.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -92,7 +91,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
                                 int64_t pos)
 {
   const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
-  unsigned int nTime = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
 
   CFileItem item(fileItem);
   item.SetMimeTypeForInternetFile();
@@ -297,8 +296,11 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
       file.Close();
   }
 
-  unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
-  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> in %d packets. ", __FUNCTION__, nTotalTime, redactPath.c_str(), packetsTried);
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "{} - measured {} ms to extract thumb from file <{}> in {} packets. ",
+            __FUNCTION__, duration.count(), redactPath, packetsTried);
+
   return bOk;
 }
 
