@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "FileCache.h"
 #include "threads/Thread.h"
 #include "File.h"
@@ -25,6 +24,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <inttypes.h>
 #include <memory>
 
@@ -39,43 +39,43 @@ class CWriteRate
 public:
   CWriteRate()
   {
-    m_stamp = XbmcThreads::SystemClockMillis();
+    m_stamp = std::chrono::steady_clock::now();
     m_pos   = 0;
     m_size = 0;
-    m_time = 0;
+    m_time = std::chrono::milliseconds(0);
   }
 
   void Reset(int64_t pos, bool bResetAll = true)
   {
-    m_stamp = XbmcThreads::SystemClockMillis();
+    m_stamp = std::chrono::steady_clock::now();
     m_pos   = pos;
 
     if (bResetAll)
     {
       m_size  = 0;
-      m_time  = 0;
+      m_time = std::chrono::milliseconds(0);
     }
   }
 
   unsigned Rate(int64_t pos, unsigned int time_bias = 0)
   {
-    const unsigned ts = XbmcThreads::SystemClockMillis();
+    auto ts = std::chrono::steady_clock::now();
 
     m_size += (pos - m_pos);
-    m_time += (ts - m_stamp);
+    m_time += std::chrono::duration_cast<std::chrono::milliseconds>(ts - m_stamp);
     m_pos = pos;
     m_stamp = ts;
 
-    if (m_time == 0)
+    if (m_time == std::chrono::milliseconds(0))
       return 0;
 
-    return (unsigned)(1000 * (m_size / (m_time + time_bias)));
+    return (unsigned)(1000 * (m_size / (m_time.count() + time_bias)));
   }
 
 private:
-  unsigned m_stamp;
+  std::chrono::time_point<std::chrono::steady_clock> m_stamp;
   int64_t  m_pos;
-  unsigned m_time;
+  std::chrono::milliseconds m_time;
   int64_t  m_size;
 };
 
@@ -420,7 +420,7 @@ void CFileCache::Process()
     * low read-rate conditions.
     */
     if (m_bFilling && m_forwardCacheSize != 0)
-    { 
+    {
       const int64_t forward = m_pCache->WaitForData(0, 0);
       if (forward + m_chunkSize >= m_forwardCacheSize)
       {
