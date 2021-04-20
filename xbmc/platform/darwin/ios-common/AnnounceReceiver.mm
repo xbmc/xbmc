@@ -17,6 +17,8 @@
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "utils/Variant.h"
 
 #import "platform/darwin/ios-common/DarwinEmbedNowPlayingInfoManager.h"
@@ -131,18 +133,10 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
   {
     NSMutableDictionary* item = dict[@"item"];
     NSDictionary* player = dict[@"player"];
+
+    // Common properties
     item[@"speed"] = player[@"speed"];
     std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
-    if (!thumb.empty())
-    {
-      bool needsRecaching;
-      std::string cachedThumb(CTextureCache::GetInstance().CheckCachedImage(thumb, needsRecaching));
-      if (!cachedThumb.empty())
-      {
-        std::string thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
-        item[@"thumb"] = @(thumbRealPath.c_str());
-      }
-    }
     double duration = g_application.GetTotalTime();
     if (duration > 0)
       item[@"duration"] = @(duration);
@@ -155,6 +149,8 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
                              .GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist())
                              .size());
     }
+
+    // Music properties
     if (g_application.CurrentFileItem().HasMusicInfoTag())
     {
       const auto& genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
@@ -168,6 +164,36 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
         item[@"genre"] = genreArray;
       }
     }
+
+    // Live TV properties
+    if (g_application.CurrentFileItem().IsPVRChannel())
+    {
+      auto epg_now = g_application.CurrentFileItem().GetPVRChannelInfoTag()->GetEPGNow();
+      auto epg_title = epg_now->Title();
+      if (!epg_title.empty())
+      {
+        // If we have the TV show name then use artist property
+        // to put the channel name and title field for the TV show name.
+        item[@"artist"] = @[item[@"title"]];
+        item[@"title"] = @(epg_title.c_str());
+      }
+      auto epg_icon = epg_now->Icon();
+      if (!epg_icon.empty())
+      {
+        // If we have the TV show icon, use it instead of the channel logo.
+        thumb = epg_icon;
+      }
+    }
+
+    // Thumb cache process
+    bool needsRecaching;
+    std::string cachedIcon(CTextureCache::GetInstance().CheckCachedImage(thumb, needsRecaching));
+    if (cachedIcon.empty())
+    {
+      cachedIcon = CTextureCache::GetInstance().CacheImage(thumb);
+    }
+    std::string iconRealPath = CSpecialProtocol::TranslatePath(cachedIcon);
+    item[@"thumb"] = @(iconRealPath.c_str());
 
     dispatch_async(dispatch_get_main_queue(), ^{
       [g_xbmcController.MPNPInfoManager onPlay:item];
