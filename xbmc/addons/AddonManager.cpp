@@ -235,7 +235,7 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
     AddonCheckType addonCheckType) const
 {
   CSingleLock lock(m_critSection);
-  auto start = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
 
   std::vector<std::shared_ptr<IAddon>> result;
   std::vector<std::shared_ptr<IAddon>> installed;
@@ -247,8 +247,11 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
 
   addonRepos.BuildUpdateOrOutdatedList(installed, result, addonCheckType);
 
-  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesOrOutdatedAddons took %i ms",
-            XbmcThreads::SystemClockMillis() - start);
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesOrOutdatedAddons took {} ms",
+            duration.count());
+
   return result;
 }
 
@@ -256,7 +259,7 @@ bool CAddonMgr::GetAddonsWithAvailableUpdate(
     std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const
 {
   CSingleLock lock(m_critSection);
-  auto start = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
 
   std::vector<std::shared_ptr<IAddon>> installed;
   CAddonRepos addonRepos(*this);
@@ -265,8 +268,9 @@ bool CAddonMgr::GetAddonsWithAvailableUpdate(
   GetAddonsForUpdate(installed);
   addonRepos.BuildAddonsWithUpdateList(installed, addonsWithUpdate);
 
-  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__,
-            XbmcThreads::SystemClockMillis() - start);
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__, duration.count());
 
   return true;
 }
@@ -275,14 +279,15 @@ bool CAddonMgr::GetCompatibleVersions(
     const std::string& addonId, std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const
 {
   CSingleLock lock(m_critSection);
-  auto start = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
 
   CAddonRepos addonRepos(*this);
   addonRepos.LoadAddonsFromDatabase(m_database, addonId);
   addonRepos.BuildCompatibleVersionsList(compatibleVersions);
 
-  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__,
-            XbmcThreads::SystemClockMillis() - start);
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__, duration.count());
 
   return true;
 }
