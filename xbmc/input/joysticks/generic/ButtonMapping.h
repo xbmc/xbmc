@@ -386,7 +386,7 @@ private:
   std::map<XBMCKey, CKeyDetector> m_keys;
   std::map<MOUSE::BUTTON_ID, CMouseButtonDetector> m_mouseButtons;
   std::unique_ptr<CPointerDetector> m_pointer;
-  unsigned int m_lastAction;
+  std::chrono::time_point<std::chrono::steady_clock> m_lastAction;
   uint64_t m_frameCount;
 };
 } // namespace JOYSTICK
