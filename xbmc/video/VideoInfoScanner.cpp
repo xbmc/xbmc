@@ -36,7 +36,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
-#include "threads/SystemClock.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/RegExp.h"
@@ -98,7 +97,7 @@ namespace VIDEO
         return;
       }
 
-      unsigned int tick = XbmcThreads::SystemClockMillis();
+      auto start = std::chrono::steady_clock::now();
 
       m_database.Open();
 
@@ -156,9 +155,11 @@ namespace VIDEO
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
       m_database.Close();
 
-      tick = XbmcThreads::SystemClockMillis() - tick;
-      CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took %s",
-                StringUtils::SecondsToTimeString(tick / 1000).c_str());
+      auto end = std::chrono::steady_clock::now();
+      auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+      CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took {} ms",
+                duration.count());
     }
     catch (...)
     {
