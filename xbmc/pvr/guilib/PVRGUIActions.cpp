@@ -1634,16 +1634,18 @@ namespace PVR
     /* start the channel scan */
     CLog::LogFC(LOGDEBUG, LOGPVR, "Starting to scan for channels on client {}",
                 scanClient->GetFriendlyName());
-    long perfCnt = XbmcThreads::SystemClockMillis();
+    auto start = std::chrono::steady_clock::now();
 
     /* do the scan */
     if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
       HELPERS::ShowOKDialogText(CVariant{257},    // "Error"
                                     CVariant{19193}); // "The channel scan can't be started. Check the log for more information about this message."
 
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Channel scan finished after {}.{} seconds",
-                (XbmcThreads::SystemClockMillis() - perfCnt) / 1000,
-                (XbmcThreads::SystemClockMillis() - perfCnt) % 1000);
+    auto end = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Channel scan finished after {} ms", duration.count());
+
     m_bChannelScanRunning = false;
     return true;
   }
