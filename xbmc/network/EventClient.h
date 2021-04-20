@@ -16,6 +16,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
+#include <chrono>
 #include <list>
 #include <map>
 #include <queue>
@@ -55,7 +56,7 @@ namespace EVENTCLIENT
       m_bActive    = false;
       m_bAxis      = false;
       m_iControllerNumber = 0;
-      m_iNextRepeat = 0;
+      m_iNextRepeat = {};
     }
 
     CEventButtonState(unsigned int iKeyCode,
@@ -74,7 +75,7 @@ namespace EVENTCLIENT
       m_bActive    = true;
       m_bAxis      = isAxis;
       m_iControllerNumber = 0;
-      m_iNextRepeat = 0;
+      m_iNextRepeat = {};
       Load();
     }
 
@@ -102,7 +103,7 @@ namespace EVENTCLIENT
     bool              m_bRepeat;
     bool              m_bActive;
     bool              m_bAxis;
-    unsigned int      m_iNextRepeat;
+    std::chrono::time_point<std::chrono::steady_clock> m_iNextRepeat;
   };
 
 
@@ -147,8 +148,10 @@ namespace EVENTCLIENT
     void RefreshSettings()
     {
       const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      m_iRepeatDelay = settings->GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY);
-      m_iRepeatSpeed = settings->GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
+      m_iRepeatDelay =
+          std::chrono::milliseconds(settings->GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY));
+      m_iRepeatSpeed = std::chrono::milliseconds(
+          settings->GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY));
     }
 
     SOCKETS::CAddress& Address()
@@ -196,7 +199,7 @@ namespace EVENTCLIENT
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketLOG(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketACTION(EVENTPACKET::CEventPacket *packet);
-    bool CheckButtonRepeat(unsigned int &next);
+    bool CheckButtonRepeat(std::chrono::time_point<std::chrono::steady_clock>& next);
 
     // returns true if the client has received the HELO packet
     bool Greeted() { return m_bGreeted; }
@@ -232,8 +235,8 @@ namespace EVENTCLIENT
     time_t            m_lastSeq;
     int               m_iRemotePort;
     bool              m_bGreeted;
-    unsigned int      m_iRepeatDelay;
-    unsigned int      m_iRepeatSpeed;
+    std::chrono::milliseconds m_iRepeatDelay;
+    std::chrono::milliseconds m_iRepeatSpeed;
     unsigned int      m_iMouseX;
     unsigned int      m_iMouseY;
     bool              m_bMouseMoved;
