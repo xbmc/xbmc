@@ -12,6 +12,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "messaging/IMessageTarget.h"
 
+#include <chrono>
 #include <memory>
 
 #define PLAYLIST_NONE    -1
@@ -194,7 +195,7 @@ protected:
   bool m_bPlayedFirstFile;
   bool m_bPlaybackStarted;
   int m_iFailedSongs;
-  unsigned int m_failedSongsStart;
+  std::chrono::time_point<std::chrono::steady_clock> m_failedSongsStart;
   int m_iCurrentSong;
   int m_iCurrentPlayList;
   CPlayList* m_PlaylistMusic;
