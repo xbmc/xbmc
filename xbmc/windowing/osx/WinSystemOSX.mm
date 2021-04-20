@@ -659,7 +659,7 @@ CWinSystemOSX::CWinSystemOSX()
   m_SDLSurface = NULL;
   m_osx_events = NULL;
   m_obscured   = false;
-  m_obscured_timecheck = XbmcThreads::SystemClockMillis() + 1000;
+  m_obscured_timecheck = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000);
   m_lastDisplayNr = -1;
   m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
@@ -1428,11 +1428,11 @@ bool CWinSystemOSX::FlushBuffer(void)
 bool CWinSystemOSX::IsObscured(void)
 {
   // check once a second if we are obscured.
-  unsigned int now_time = XbmcThreads::SystemClockMillis();
+  auto now_time = std::chrono::steady_clock::now();
   if (m_obscured_timecheck > now_time)
     return m_obscured;
   else
-    m_obscured_timecheck = now_time + 1000;
+    m_obscured_timecheck = now_time + std::chrono::milliseconds(1000);
 
   NSOpenGLContext* cur_context = [NSOpenGLContext currentContext];
   NSView* view = [cur_context view];
