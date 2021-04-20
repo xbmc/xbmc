@@ -31,13 +31,14 @@
 #ifdef TARGET_WINDOWS
 #include "powermanagement/WinIdleTimer.h"
 #endif
+#include "ApplicationPlayer.h"
+#include "threads/SystemClock.h"
+#include "threads/Thread.h"
 #include "utils/Stopwatch.h"
 #include "windowing/OSScreenSaver.h"
 #include "windowing/XBMC_events.h"
-#include "threads/SystemClock.h"
-#include "threads/Thread.h"
 
-#include "ApplicationPlayer.h"
+#include <chrono>
 
 class CAction;
 class CFileItem;
@@ -396,7 +397,7 @@ protected:
 
   int m_nextPlaylistItem = -1;
 
-  unsigned int m_lastRenderTime = 0;
+  std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
 
   bool m_bStandalone = false;
