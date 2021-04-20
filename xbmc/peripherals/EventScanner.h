@@ -15,6 +15,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
+#include <chrono>
 #include <set>
 
 namespace PERIPHERALS
@@ -58,7 +59,7 @@ protected:
   void Process() override;
 
 private:
-  double GetScanIntervalMs() const;
+  std::chrono::milliseconds GetScanIntervalMs() const;
 
   // Construction parameters
   IEventScannerCallback& m_callback;
