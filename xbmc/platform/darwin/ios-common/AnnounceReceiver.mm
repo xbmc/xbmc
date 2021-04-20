@@ -169,19 +169,22 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
     if (g_application.CurrentFileItem().IsPVRChannel())
     {
       auto epg_now = g_application.CurrentFileItem().GetPVRChannelInfoTag()->GetEPGNow();
-      auto epg_title = epg_now->Title();
-      if (!epg_title.empty())
+      if (epg_now)
       {
-        // If we have the TV show name then use artist property
-        // to put the channel name and title field for the TV show name.
-        item[@"artist"] = @[item[@"title"]];
-        item[@"title"] = @(epg_title.c_str());
-      }
-      auto epg_icon = epg_now->Icon();
-      if (!epg_icon.empty())
-      {
-        // If we have the TV show icon, use it instead of the channel logo.
-        thumb = epg_icon;
+        auto epg_title = epg_now->Title();
+        if (!epg_title.empty())
+        {
+          // If we have the TV show name then use artist property
+          // to put the channel name and title field for the TV show name.
+          item[@"artist"] = @[item[@"title"]];
+          item[@"title"] = @(epg_title.c_str());
+        }
+        auto epg_icon = epg_now->Icon();
+        if (!epg_icon.empty())
+        {
+          // If we have the TV show icon, use it instead of the channel logo.
+          thumb = epg_icon;
+        }
       }
     }
 
