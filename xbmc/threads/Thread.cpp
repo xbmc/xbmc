@@ -15,7 +15,6 @@
 
 #include "commons/Exception.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include <atomic>
@@ -75,9 +74,7 @@ void CThread::Create(bool bAutoDelete)
       exit(1);
     }
   }
-  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000ULL;
-  m_iLastUsage = 0;
-  m_fLastUsage = 0.0f;
+
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   m_StopEvent.Reset();
@@ -295,24 +292,3 @@ void CThread::Action()
     e.LogThrowMessage("OnExit");
   }
 }
-
-float CThread::GetRelativeUsage()
-{
-  unsigned int iTime = XbmcThreads::SystemClockMillis();
-  iTime *= 10000; // convert into 100ns tics
-
-  // only update every 1 second
-  if (iTime < m_iLastTime + 1000 * 10000)
-    return m_fLastUsage;
-
-  int64_t iUsage = GetAbsoluteUsage();
-
-  if (m_iLastUsage > 0 && m_iLastTime > 0)
-    m_fLastUsage = static_cast<float>(iUsage - m_iLastUsage) / static_cast<float>(iTime - m_iLastTime);
-
-  m_iLastUsage = iUsage;
-  m_iLastTime = iTime;
-
-  return m_fLastUsage;
-}
-
