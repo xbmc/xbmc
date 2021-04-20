@@ -90,8 +90,7 @@ CAxisDetector::CAxisDetector(CButtonMapping* buttonMapping,
     m_type(AXIS_TYPE::UNKNOWN),
     m_initialPositionKnown(false),
     m_initialPosition(0.0f),
-    m_initialPositionChanged(false),
-    m_activationTimeMs(0)
+    m_initialPositionChanged(false)
 {
 }
 
@@ -127,7 +126,7 @@ bool CAxisDetector::OnMotion(float position)
         m_activatedPrimitive =
             CDriverPrimitive(m_axisIndex, m_config.center,
                              CJoystickTranslator::PositionToSemiAxisDirection(position), 1);
-        m_activationTimeMs = SystemClockMillis();
+        m_activationTimeMs = std::chrono::steady_clock::now();
       }
     }
   }
@@ -144,7 +143,9 @@ void CAxisDetector::ProcessMotion()
     bool bIgnore = false;
     if (m_type == AXIS_TYPE::OFFSET)
     {
-      unsigned int elapsedMs = SystemClockMillis() - m_activationTimeMs;
+      unsigned int elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                   std::chrono::steady_clock::now() - m_activationTimeMs)
+                                   .count();
       if (elapsedMs < TRIGGER_DELAY_MS)
         bIgnore = true;
     }
