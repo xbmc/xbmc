@@ -111,10 +111,10 @@ public:
   void ReleaseHwTexture(unsigned int texture);
 protected:
   std::vector<CTextureMap*> m_vecTextures;
-  std::list<std::pair<CTextureMap*, unsigned int> > m_unusedTextures;
+  std::list<std::pair<CTextureMap*, std::chrono::time_point<std::chrono::steady_clock>>>
+      m_unusedTextures;
   std::vector<unsigned int> m_unusedHwTextures;
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
-  typedef std::list<std::pair<CTextureMap*, unsigned int> >::iterator ilistUnused;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];
 

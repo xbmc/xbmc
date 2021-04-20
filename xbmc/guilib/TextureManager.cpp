@@ -16,7 +16,6 @@
 #include "windowing/GraphicContext.h"
 #include "Texture.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -318,10 +317,14 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     return emptyTexture;
   }
 
-  for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
+  for (auto i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
   {
     CTextureMap* pMap = i->first;
-    if (pMap->GetName() == strTextureName && i->second > 0)
+
+    auto timestamp = i->second.time_since_epoch();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(timestamp);
+
+    if (pMap->GetName() == strTextureName && duration.count() > 0)
     {
       m_vecTextures.push_back(pMap);
       m_unusedTextures.erase(i);
@@ -485,7 +488,12 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         // add to our textures to free
-        m_unusedTextures.emplace_back(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis());
+        std::chrono::time_point<std::chrono::steady_clock> timestamp;
+
+        if (!immediately)
+          timestamp = std::chrono::steady_clock::now();
+
+        m_unusedTextures.emplace_back(pMap, timestamp);
         i = m_vecTextures.erase(i);
       }
       return;
@@ -497,11 +505,13 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 {
-  unsigned int currFrameTime = XbmcThreads::SystemClockMillis();
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end();)
+  for (auto i = m_unusedTextures.begin(); i != m_unusedTextures.end();)
   {
-    if (currFrameTime - i->second >= timeDelay)
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - i->second);
+
+    if (duration.count() >= timeDelay)
     {
       delete i->first;
       i = m_unusedTextures.erase(i);
