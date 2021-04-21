@@ -486,10 +486,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       // check for h264-avcC and convert to h264-annex-b
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
-        m_bitstream = new CBitstreamConverter;
+        m_bitstream = std::make_unique<CBitstreamConverter>();
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
-          SAFE_DELETE(m_bitstream);
+          m_bitstream.reset();
         }
       }
       break;
@@ -518,10 +518,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       // check for hevc-hvcC and convert to h265-annex-b
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
-        m_bitstream = new CBitstreamConverter;
+        m_bitstream = std::make_unique<CBitstreamConverter>();
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
-          SAFE_DELETE(m_bitstream);
+          m_bitstream.reset();
         }
       }
       break;
@@ -790,7 +790,7 @@ FAIL:
 
   m_codec = nullptr;
 
-  SAFE_DELETE(m_bitstream);
+  m_bitstream.reset();
 
   return false;
 }
@@ -831,7 +831,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     m_jnivideoview.reset();
   }
 
-  SAFE_DELETE(m_bitstream);
+  m_bitstream.reset();
 
   m_opened = false;
 }
