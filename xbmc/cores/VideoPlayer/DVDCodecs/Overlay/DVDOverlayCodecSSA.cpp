@@ -18,11 +18,12 @@
 
 #include <memory>
 
+#include "system.h"
 
-CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")
+CDVDOverlayCodecSSA::CDVDOverlayCodecSSA()
+  : CDVDOverlayCodec("SSA Subtitle Decoder"), m_libass(std::make_shared<CDVDSubtitlesLibass>())
 {
   m_pOverlay = NULL;
-  m_libass   = NULL;
   m_order    = 0;
   m_output   = false;
 }
@@ -46,16 +47,11 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
 bool CDVDOverlayCodecSSA::InitLibass()
 {
-  if (!m_libass)
-    m_libass = new CDVDSubtitlesLibass();
   return m_libass->DecodeHeader(static_cast<char*>(m_hints.extradata), m_hints.extrasize);
 }
 
 void CDVDOverlayCodecSSA::Dispose()
 {
-  if(m_libass)
-    SAFE_RELEASE(m_libass);
-
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 }

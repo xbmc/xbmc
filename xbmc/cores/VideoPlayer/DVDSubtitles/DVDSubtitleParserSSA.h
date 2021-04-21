@@ -23,5 +23,5 @@ public:
   void Dispose() override;
 
 private:
-  CDVDSubtitlesLibass* m_libass;
+  std::shared_ptr<CDVDSubtitlesLibass> m_libass;
 };
