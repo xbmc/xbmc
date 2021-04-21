@@ -336,14 +336,14 @@ void CLangInfo::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
   {
     if (!SetLanguage(std::static_pointer_cast<const CSettingString>(setting)->GetValue()))
     {
-      auto setting = settings->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE);
-      if (!setting)
+      auto langsetting = settings->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE);
+      if (!langsetting)
       {
         CLog::Log(LOGERROR, "Failed to load setting for: {}", CSettings::SETTING_LOCALE_LANGUAGE);
         return;
       }
 
-      std::static_pointer_cast<CSettingString>(setting)->Reset();
+      std::static_pointer_cast<CSettingString>(langsetting)->Reset();
     }
   }
   else if (settingId == CSettings::SETTING_LOCALE_COUNTRY)
