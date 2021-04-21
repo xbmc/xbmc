@@ -1190,10 +1190,7 @@ std::streamsize CFileStreamBuffer::showmanyc()
   return egptr() - gptr();
 }
 
-CFileStream::CFileStream(int backsize /*= 0*/) :
-    std::istream(&m_buffer),
-    m_buffer(backsize),
-    m_file(NULL)
+CFileStream::CFileStream(int backsize /*= 0*/) : std::istream(&m_buffer), m_buffer(backsize)
 {
 }
 
@@ -1208,7 +1205,7 @@ bool CFileStream::Open(const CURL& filename)
   Close();
 
   CURL url(URIUtils::SubstitutePath(filename));
-  m_file = CFileFactory::CreateLoader(url);
+  m_file.reset(CFileFactory::CreateLoader(url));
 
   CURL authUrl = url;
   if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
@@ -1216,7 +1213,7 @@ bool CFileStream::Open(const CURL& filename)
 
   if(m_file && m_file->Open(authUrl))
   {
-    m_buffer.Attach(m_file);
+    m_buffer.Attach(m_file.get());
     return true;
   }
 
@@ -1235,7 +1232,6 @@ void CFileStream::Close()
     return;
 
   m_buffer.Detach();
-  SAFE_DELETE(m_file);
 }
 
 bool CFileStream::Open(const std::string& filename)

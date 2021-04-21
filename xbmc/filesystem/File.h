@@ -209,7 +209,7 @@ public:
   int64_t GetLength();
 private:
   CFileStreamBuffer m_buffer;
-  IFile*            m_file;
+  std::unique_ptr<IFile> m_file;
 };
 
 }
