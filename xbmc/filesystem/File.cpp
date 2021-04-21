@@ -38,8 +38,6 @@ using namespace XFILE;
 //*********************************************************************************************
 CFile::CFile()
 {
-  m_pFile = nullptr;
-  m_pBuffer = NULL;
   m_flags = 0;
   m_bitStreamStats = NULL;
 }
@@ -48,8 +46,7 @@ CFile::CFile()
 CFile::~CFile()
 {
   Close();
-  if (m_pBuffer)
-    SAFE_DELETE(m_pBuffer);
+
   if (m_bitStreamStats)
     SAFE_DELETE(m_bitStreamStats);
 }
@@ -346,7 +343,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
 
     if (m_pFile->GetChunkSize() && !(m_flags & READ_CHUNKED))
     {
-      m_pBuffer = new CFileStreamBuffer(0);
+      m_pBuffer = std::make_unique<CFileStreamBuffer>(0);
       m_pBuffer->Attach(m_pFile.get());
     }
 
@@ -649,7 +646,7 @@ void CFile::Close()
     if (m_pFile)
       m_pFile->Close();
 
-    SAFE_DELETE(m_pBuffer);
+    m_pBuffer.reset();
     m_pFile.reset();
   }
   XBMCCOMMONS_HANDLE_UNCHECKED

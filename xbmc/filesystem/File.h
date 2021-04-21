@@ -167,7 +167,7 @@ private:
   unsigned int        m_flags;
   CURL                m_curl;
   std::unique_ptr<IFile> m_pFile;
-  CFileStreamBuffer*  m_pBuffer;
+  std::unique_ptr<CFileStreamBuffer> m_pBuffer;
   BitstreamStats*     m_bitStreamStats;
 };
 
