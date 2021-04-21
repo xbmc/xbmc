@@ -24,8 +24,6 @@ CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContain
 : IDVDStreamPlayer(processInfo)
 {
   m_pOverlayContainer = pOverlayContainer;
-
-  m_pOverlayCodec = NULL;
   m_lastPts = DVD_NOPTS_VALUE;
 }
 
@@ -151,7 +149,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   if(hints.codec == AV_CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
+  m_pOverlayCodec.reset(CDVDFactoryCodec::CreateOverlayCodec(hints));
   if(m_pOverlayCodec)
     return true;
 
@@ -164,9 +162,7 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
   CSingleLock lock(m_section);
 
   m_pSubtitleFileParser.reset();
-
-  if(m_pOverlayCodec)
-    SAFE_DELETE(m_pOverlayCodec);
+  m_pOverlayCodec.reset();
 
   m_dvdspus.FlushCurrentPacket();
 

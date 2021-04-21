@@ -50,7 +50,7 @@ private:
   CDVDOverlayContainer* m_pOverlayContainer;
 
   std::unique_ptr<CDVDSubtitleParser> m_pSubtitleFileParser;
-  CDVDOverlayCodec*   m_pOverlayCodec;
+  std::unique_ptr<CDVDOverlayCodec> m_pOverlayCodec;
   CDVDDemuxSPU        m_dvdspus;
 
   CDVDStreamInfo      m_streaminfo;
