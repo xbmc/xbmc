@@ -42,7 +42,10 @@ public:
   bool HasData() const override { return m_messageQueue.GetDataSize() > 0; }
   int  GetLevel() const override { return m_messageQueue.GetLevel(); }
   bool IsInited() const override { return m_messageQueue.IsInited(); }
-  void SendMessage(CDVDMsg* pMsg, int priority = 0) override { m_messageQueue.Put(pMsg, priority); }
+  void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override
+  {
+    m_messageQueue.Put(pMsg, priority);
+  }
   void FlushMessages() override { m_messageQueue.Flush(); }
 
   void SetDynamicRangeCompression(long drc) override { m_audioSink.SetDynamicRangeCompression(drc); }

@@ -129,7 +129,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
       CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
     }
 
-    SendMessage(new CDVDMsgVideoCodecChange(hint, std::move(codec)), 0);
+    SendMessage(std::make_shared<CDVDMsgVideoCodecChange>(hint, std::move(codec)), 0);
   }
   else
   {
@@ -209,7 +209,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVid
     if (!codec)
     {
       CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - could not open video codec");
-      m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_ABORT));
+      m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_ABORT));
       StopThread();
     }
   }
@@ -228,7 +228,7 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0)
   {
-    SendMessage(new CDVDMsg(CDVDMsg::VIDEO_DRAIN), 0);
+    SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::VIDEO_DRAIN), 0);
     m_messageQueue.WaitUntilEmpty();
   }
 
@@ -268,13 +268,13 @@ bool CVideoPlayerVideo::IsInited() const
   return m_messageQueue.IsInited();
 }
 
-inline void CVideoPlayerVideo::SendMessage(CDVDMsg* pMsg, int priority)
+inline void CVideoPlayerVideo::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
   m_messageQueue.Put(pMsg, priority);
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
 }
 
-inline void CVideoPlayerVideo::SendMessageBack(CDVDMsg* pMsg, int priority)
+inline void CVideoPlayerVideo::SendMessageBack(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
   m_messageQueue.PutBack(pMsg, priority);
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
@@ -286,7 +286,9 @@ inline void CVideoPlayerVideo::FlushMessages()
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
 }
 
-inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority)
+inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>& pMsg,
+                                                        unsigned int iTimeoutInMilliSeconds,
+                                                        int& priority)
 {
   MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, iTimeoutInMilliSeconds, priority);
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
@@ -327,8 +329,8 @@ void CVideoPlayerVideo::Process()
       iQueueTimeOut = 1;
     }
 
-    CDVDMsg* pMsg;
-    MsgQueueReturnCode ret = GetMessage(&pMsg, iQueueTimeOut, iPriority);
+    std::shared_ptr<CDVDMsg> pMsg;
+    MsgQueueReturnCode ret = GetMessage(pMsg, iQueueTimeOut, iPriority);
 
     onlyPrioMsgs = false;
 
@@ -395,17 +397,17 @@ void CVideoPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      if (static_cast<CDVDMsgGeneralSynchronize*>(pMsg)->Wait(100, SYNCSOURCE_VIDEO))
+      if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100, SYNCSOURCE_VIDEO))
       {
         CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
       }
       else
-        SendMessage(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
+        SendMessage(pMsg, 1); /* push back as prio message, to process other prio messages */
       m_droppingStats.Reset();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
-      pts = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+      pts = std::static_pointer_cast<CDVDMsgDouble>(pMsg)->m_value;
 
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_droppingStats.Reset();
@@ -417,7 +419,7 @@ void CVideoPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
       CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
-      m_fForcedAspectRatio = static_cast<float>(*static_cast<CDVDMsgDouble*>(pMsg));
+      m_fForcedAspectRatio = static_cast<float>(*std::static_pointer_cast<CDVDMsgDouble>(pMsg));
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -437,7 +439,7 @@ void CVideoPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CVideoPlayerVideo::Flush())
     {
-      bool sync = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      bool sync = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
 
@@ -468,8 +470,7 @@ void CVideoPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
-
+      m_speed = std::static_pointer_cast<CDVDMsgInt>(pMsg)->m_value;
       if (m_pVideoCodec)
         m_pVideoCodec->SetSpeed(m_speed);
 
@@ -477,7 +478,7 @@ void CVideoPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
-      CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
+      auto msg = std::static_pointer_cast<CDVDMsgVideoCodecChange>(pMsg);
 
       while (!m_bStop && m_pVideoCodec)
       {
@@ -507,7 +508,7 @@ void CVideoPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
     {
-      m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      m_paused = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
       CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_PAUSE: {}", m_paused);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_REQUEST_STATE))
@@ -515,12 +516,13 @@ void CVideoPlayerVideo::Process()
       SStateMsg msg;
       msg.player = VideoPlayer_VIDEO;
       msg.syncState = m_syncState;
-      m_messageParent.Put(new CDVDMsgType<SStateMsg>(CDVDMsg::PLAYER_REPORT_STATE, msg));
+      m_messageParent.Put(
+          std::make_shared<CDVDMsgType<SStateMsg>>(CDVDMsg::PLAYER_REPORT_STATE, msg));
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
-      bool bPacketDrop = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacketDrop();
+      DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
+      bool bPacketDrop = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacketDrop();
 
       if (m_stalled)
       {
@@ -581,13 +583,10 @@ void CVideoPlayerVideo::Process()
       }
       else
       {
-        SendMessageBack(pMsg->Acquire());
+        SendMessageBack(pMsg);
         onlyPrioMsgs = true;
       }
     }
-
-    // all data is used by the decoder, we can safely free it now
-    pMsg->Release();
   }
 }
 
@@ -606,7 +605,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder was flushed");
     while (!m_packets.empty())
     {
-      CDVDMsgDemuxerPacket* msg = static_cast<CDVDMsgDemuxerPacket*>(m_packets.front().message->Acquire());
+      auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
       m_packets.pop_front();
 
       SendMessage(msg, 10);
@@ -623,7 +622,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
   {
     while (!m_packets.empty())
     {
-      CDVDMsgDemuxerPacket* msg = static_cast<CDVDMsgDemuxerPacket*>(m_packets.front().message->Acquire());
+      auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
       m_packets.pop_front();
       SendMessage(msg, 10);
     }
@@ -650,7 +649,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       msg.cachetime = DVD_MSEC_TO_TIME(50);
       msg.cachetotal = DVD_MSEC_TO_TIME(100);
       msg.timestamp = DVD_NOPTS_VALUE;
-      m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
+      m_messageParent.Put(std::make_shared<CDVDMsgType<SStartMsg>>(CDVDMsg::PLAYER_STARTED, msg));
     }
     return false;
   }
@@ -754,7 +753,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       msg.cachetime = DVD_MSEC_TO_TIME(50); //! @todo implement
       msg.cachetotal = DVD_MSEC_TO_TIME(100); //! @todo implement
       msg.timestamp = hasTimestamp ? (pts + m_renderManager.GetDelay() * 1000) : DVD_NOPTS_VALUE;
-      m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
+      m_messageParent.Put(std::make_shared<CDVDMsgType<SStartMsg>>(CDVDMsg::PLAYER_STARTED, msg));
     }
 
     frametime = (double)DVD_TIME_BASE / m_fFrameRate;
@@ -771,7 +770,7 @@ void CVideoPlayerVideo::OnExit()
 void CVideoPlayerVideo::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())
-    SendMessage(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1);
+    SendMessage(std::make_shared<CDVDMsgInt>(CDVDMsg::PLAYER_SETSPEED, speed), 1);
   else
     m_speed = speed;
 }
@@ -781,7 +780,7 @@ void CVideoPlayerVideo::Flush(bool sync)
   /* flush using message as this get's called from VideoPlayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
-  SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+  SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_FLUSH, sync), 1);
   m_bAbortOutput = true;
 }
 
@@ -835,7 +834,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   {
     m_processInfo.SetVideoStereoMode(pPicture->stereoMode);
     // signal about changes in video parameters
-    m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
+    m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
   }
 
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;

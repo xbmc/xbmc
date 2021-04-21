@@ -89,7 +89,7 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
   }
 
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put(new CDVDMsgAudioCodecChange(hints, std::move(codec)), 0);
+    m_messageQueue.Put(std::make_shared<CDVDMsgAudioCodecChange>(hints, std::move(codec)), 0);
   else
   {
     OpenStream(hints, std::move(codec));
@@ -137,7 +137,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
 
   m_maxspeedadjust = 5.0;
 
-  m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
+  m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
 }
 
@@ -221,7 +221,7 @@ void CVideoPlayerAudio::Process()
 
   while (!m_bStop)
   {
-    CDVDMsg* pMsg;
+    std::shared_ptr<CDVDMsg> pMsg;
     int timeout = (int)(1000 * m_audioSink.GetCacheTime());
 
     // read next packet and return -1 on error
@@ -245,7 +245,7 @@ void CVideoPlayerAudio::Process()
       timeout = 0;
     }
 
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
+    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, timeout, priority);
 
     onlyPrioMsgs = false;
 
@@ -285,14 +285,14 @@ void CVideoPlayerAudio::Process()
     // handle messages
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      if (static_cast<CDVDMsgGeneralSynchronize*>(pMsg)->Wait(100, SYNCSOURCE_AUDIO))
+      if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100, SYNCSOURCE_AUDIO))
         CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_SYNCHRONIZE");
       else
-        m_messageQueue.Put(pMsg->Acquire(), 1);  // push back as prio message, to process other prio messages
+        m_messageQueue.Put(pMsg, 1); // push back as prio message, to process other prio messages
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
-      double pts = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+      double pts = std::static_pointer_cast<CDVDMsgDouble>(pMsg)->m_value;
       CLog::Log(LOGDEBUG,
                 "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC({:f}), level: {}, cache: {:f}", pts,
                 m_messageQueue.GetLevel(), m_audioSink.GetDelay());
@@ -320,7 +320,7 @@ void CVideoPlayerAudio::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
-      bool sync = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      bool sync = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
       m_audioSink.Flush();
       m_stalled = true;
       m_audioClock = 0;
@@ -341,7 +341,7 @@ void CVideoPlayerAudio::Process()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      double speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      double speed = std::static_pointer_cast<CDVDMsgInt>(pMsg)->m_value;
 
       if (m_processInfo.IsTempoAllowed(static_cast<float>(speed)/DVD_PLAYSPEED_NORMAL))
       {
@@ -362,13 +362,13 @@ void CVideoPlayerAudio::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
-      CDVDMsgAudioCodecChange* msg(static_cast<CDVDMsgAudioCodecChange*>(pMsg));
+      auto msg = std::static_pointer_cast<CDVDMsgAudioCodecChange>(pMsg);
       OpenStream(msg->m_hints, std::move(msg->m_codec));
       msg->m_codec = NULL;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
     {
-      m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      m_paused = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_PAUSE: {}", m_paused);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_REQUEST_STATE))
@@ -376,26 +376,25 @@ void CVideoPlayerAudio::Process()
       SStateMsg msg;
       msg.player = VideoPlayer_AUDIO;
       msg.syncState = m_syncState;
-      m_messageParent.Put(new CDVDMsgType<SStateMsg>(CDVDMsg::PLAYER_REPORT_STATE, msg));
+      m_messageParent.Put(
+          std::make_shared<CDVDMsgType<SStateMsg>>(CDVDMsg::PLAYER_REPORT_STATE, msg));
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
-      bool bPacketDrop  = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacketDrop();
+      DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
+      bool bPacketDrop = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacketDrop();
 
       if (bPacketDrop ||
           (!m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
            m_syncState == IDVDStreamPlayer::SYNC_INSYNC))
       {
-        pMsg->Release();
         continue;
       }
 
       if (!m_pAudioCodec->AddData(*pPacket))
       {
-        m_messageQueue.PutBack(pMsg->Acquire());
+        m_messageQueue.PutBack(pMsg);
         onlyPrioMsgs = true;
-        pMsg->Release();
         continue;
       }
 
@@ -408,8 +407,6 @@ void CVideoPlayerAudio::Process()
       }
 
     } // demuxer packet
-
-    pMsg->Release();
   }
 }
 
@@ -526,14 +523,14 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       msg.cachetotal = m_audioSink.GetMaxDelay() * DVD_TIME_BASE;
       msg.cachetime = m_audioSink.GetDelay();
       msg.timestamp = audioframe.hasTimestamp ? audioframe.pts : DVD_NOPTS_VALUE;
-      m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
+      m_messageParent.Put(std::make_shared<CDVDMsgType<SStartMsg>>(CDVDMsg::PLAYER_STARTED, msg));
 
       m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
       m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
       m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
       m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
       m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
-      m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
+      m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
     }
   }
 
@@ -578,7 +575,7 @@ void CVideoPlayerAudio::OnExit()
 void CVideoPlayerAudio::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
+    m_messageQueue.Put(std::make_shared<CDVDMsgInt>(CDVDMsg::PLAYER_SETSPEED, speed), 1);
   else
     m_speed = speed;
 }
@@ -586,7 +583,7 @@ void CVideoPlayerAudio::SetSpeed(int speed)
 void CVideoPlayerAudio::Flush(bool sync)
 {
   m_messageQueue.Flush();
-  m_messageQueue.Put( new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+  m_messageQueue.Put(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_FLUSH, sync), 1);
 
   m_audioSink.AbortAddPackets();
 }

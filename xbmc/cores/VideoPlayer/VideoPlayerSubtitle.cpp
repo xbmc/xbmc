@@ -35,16 +35,16 @@ CVideoPlayerSubtitle::~CVideoPlayerSubtitle()
 
 void CVideoPlayerSubtitle::Flush()
 {
-  SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 0);
+  SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH), 0);
 }
 
-void CVideoPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
+void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
   CSingleLock lock(m_section);
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
-    CDVDMsgDemuxerPacket* pMsgDemuxerPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg);
+    auto pMsgDemuxerPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg);
     DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
 
     if (m_pOverlayCodec)
@@ -76,7 +76,7 @@ void CVideoPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
   }
   else if( pMsg->IsType(CDVDMsg::SUBTITLE_CLUTCHANGE) )
   {
-    CDVDMsgSubtitleClutChange* pData = static_cast<CDVDMsgSubtitleClutChange*>(pMsg);
+    auto pData = std::static_pointer_cast<CDVDMsgSubtitleClutChange>(pMsg);
     for (int i = 0; i < 16; i++)
     {
       uint8_t* color = m_dvdspus.m_clut[i];
@@ -113,8 +113,6 @@ void CVideoPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
 
     m_lastPts = DVD_NOPTS_VALUE;
   }
-
-  pMsg->Release();
 }
 
 bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filename)
