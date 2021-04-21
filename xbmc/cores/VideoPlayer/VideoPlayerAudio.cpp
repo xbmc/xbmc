@@ -53,7 +53,6 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
 , m_audioSink(pClock)
 {
   m_pClock = pClock;
-  m_pAudioCodec = NULL;
   m_audioClock = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
@@ -108,8 +107,7 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 
 void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 {
-  SAFE_DELETE(m_pAudioCodec);
-  m_pAudioCodec = codec;
+  m_pAudioCodec.reset(codec);
 
   m_processInfo.ResetAudioCodecInfo();
 
@@ -186,8 +184,7 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   if (m_pAudioCodec)
   {
     m_pAudioCodec->Dispose();
-    delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
+    m_pAudioCodec.reset();
   }
 }
 
@@ -623,8 +620,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
     return false;
   }
 
-  delete m_pAudioCodec;
-  m_pAudioCodec = codec;
+  m_pAudioCodec.reset(codec);
 
   return true;
 }

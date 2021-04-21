@@ -80,7 +80,7 @@ protected:
 
   CAudioSinkAE m_audioSink; // audio output device
   CDVDClock* m_pClock; // dvd master clock
-  CDVDAudioCodec* m_pAudioCodec; // audio codec
+  std::unique_ptr<CDVDAudioCodec> m_pAudioCodec; // audio codec
   BitstreamStats m_audioStats;
 
   int m_speed;
