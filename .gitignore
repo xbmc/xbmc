@@ -22,6 +22,10 @@ testMain
 # Created in vs2017 when using open folder with cmake tools
 CMakeSettings.json
 
+# Created in vscode when using cmake-tools
+cmake-variants.yaml
+cmake-kits.json
+
 # generated files etc
 .last_success_revision
 *.d
