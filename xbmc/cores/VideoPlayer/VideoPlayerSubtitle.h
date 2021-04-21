@@ -49,7 +49,7 @@ public:
 private:
   CDVDOverlayContainer* m_pOverlayContainer;
 
-  CDVDSubtitleParser* m_pSubtitleFileParser;
+  std::unique_ptr<CDVDSubtitleParser> m_pSubtitleFileParser;
   CDVDOverlayCodec*   m_pOverlayCodec;
   CDVDDemuxSPU        m_dvdspus;
 
