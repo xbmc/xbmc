@@ -104,7 +104,7 @@ public:
 
   static int DetermineChunkSize(const int srcChunkSize, const int reqChunkSize);
 
-  BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
+  const std::unique_ptr<BitstreamStats>& GetBitstreamStats() const { return m_bitStreamStats; }
 
   int IoControl(EIoControl request, void* param);
 
@@ -168,7 +168,7 @@ private:
   CURL                m_curl;
   std::unique_ptr<IFile> m_pFile;
   std::unique_ptr<CFileStreamBuffer> m_pBuffer;
-  BitstreamStats*     m_bitStreamStats;
+  std::unique_ptr<BitstreamStats> m_bitStreamStats;
 };
 
 // streambuf for file io, only supports buffered input currently

@@ -39,16 +39,12 @@ using namespace XFILE;
 CFile::CFile()
 {
   m_flags = 0;
-  m_bitStreamStats = NULL;
 }
 
 //*********************************************************************************************
 CFile::~CFile()
 {
   Close();
-
-  if (m_bitStreamStats)
-    SAFE_DELETE(m_bitStreamStats);
 }
 
 //*********************************************************************************************
@@ -349,7 +345,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
 
     if (m_flags & READ_BITRATE)
     {
-      m_bitStreamStats = new BitstreamStats();
+      m_bitStreamStats = std::make_unique<BitstreamStats>();
       m_bitStreamStats->Start();
     }
 
