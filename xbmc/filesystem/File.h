@@ -19,6 +19,7 @@
 #include "utils/auto_buffer.h"
 
 #include <iostream>
+#include <memory>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -107,7 +108,7 @@ public:
 
   int IoControl(EIoControl request, void* param);
 
-  IFile *GetImplementation() const { return m_pFile; }
+  IFile* GetImplementation() const { return m_pFile.get(); }
 
   // CURL interface
   static bool Exists(const CURL& file, bool bUseCache = true);
@@ -165,7 +166,7 @@ public:
 private:
   unsigned int        m_flags;
   CURL                m_curl;
-  IFile*              m_pFile;
+  std::unique_ptr<IFile> m_pFile;
   CFileStreamBuffer*  m_pBuffer;
   BitstreamStats*     m_bitStreamStats;
 };
