@@ -26,7 +26,6 @@ CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContain
   m_pOverlayContainer = pOverlayContainer;
 
   m_pSubtitleFileParser = NULL;
-  m_pSubtitleStream = NULL;
   m_pOverlayCodec = NULL;
   m_lastPts = DVD_NOPTS_VALUE;
 }
@@ -165,8 +164,6 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
 {
   CSingleLock lock(m_section);
 
-  if(m_pSubtitleStream)
-    SAFE_DELETE(m_pSubtitleStream);
   if(m_pSubtitleFileParser)
     SAFE_DELETE(m_pSubtitleFileParser);
   if(m_pOverlayCodec)

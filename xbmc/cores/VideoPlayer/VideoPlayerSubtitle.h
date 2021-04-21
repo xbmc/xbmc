@@ -49,7 +49,6 @@ public:
 private:
   CDVDOverlayContainer* m_pOverlayContainer;
 
-  CDVDSubtitleStream* m_pSubtitleStream;
   CDVDSubtitleParser* m_pSubtitleFileParser;
   CDVDOverlayCodec*   m_pOverlayCodec;
   CDVDDemuxSPU        m_dvdspus;
