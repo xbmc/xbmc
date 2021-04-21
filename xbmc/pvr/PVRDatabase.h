@@ -126,10 +126,9 @@ namespace PVR
     /*!
      * @brief Get the list of channels from the database
      * @param results The channel group to store the results in.
-     * @param bCompressDB Compress the DB after getting the list
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup& results, bool bCompressDB);
+    int Get(CPVRChannelGroup& results);
 
     //@}
 

@@ -82,10 +82,9 @@ namespace PVR
   protected:
     /*!
      * @brief Load all channels from the database.
-     * @param bCompress Compress the database after changing anything.
      * @return The amount of channels that were loaded.
      */
-    int LoadFromDb(bool bCompress = false) override;
+    int LoadFromDb() override;
 
     /*!
      * @brief Load all channels from the clients.

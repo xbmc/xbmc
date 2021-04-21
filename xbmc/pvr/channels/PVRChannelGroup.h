@@ -484,10 +484,9 @@ namespace PVR
 
     /*!
      * @brief Load the channels stored in the database.
-     * @param bCompress If true, compress the database after storing the channels.
      * @return The amount of channels that were added.
      */
-    virtual int LoadFromDb(bool bCompress = false);
+    virtual int LoadFromDb();
 
     /*!
      * @brief Update the current channel list with the given list.

@@ -358,7 +358,7 @@ void CPVRDatabase::InsertChannelIntoGroup(const std::shared_ptr<CPVRChannel>& ch
   group.m_members.insert(std::make_pair(channel->StorageId(), newMember));
 }
 
-int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
+int CPVRDatabase::Get(CPVRChannelGroup& results)
 {
   int iReturn = 0;
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
@@ -413,10 +413,6 @@ int CPVRDatabase::Get(CPVRChannelGroup& results, bool bCompressDB)
   }
 
   m_pDS->close();
-
-  if (iReturn > 0 && bCompressDB)
-    Compress(true);
-
   return iReturn;
 }
 

@@ -204,7 +204,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
       Persist();
 }
 
-int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
+int CPVRChannelGroupInternal::LoadFromDb()
 {
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
@@ -212,7 +212,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = Size();
 
-  if (database->Get(*this, bCompress) == 0)
+  if (database->Get(*this) == 0)
     CLog::LogFC(LOGDEBUG, LOGPVR, "No channels in the database");
 
   SortByChannelNumber();

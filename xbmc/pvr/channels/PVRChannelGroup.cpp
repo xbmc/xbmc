@@ -482,7 +482,7 @@ void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumber
   }
 }
 
-int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
+int CPVRChannelGroup::LoadFromDb()
 {
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
