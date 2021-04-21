@@ -267,7 +267,7 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate,
 
   // make sure to have enough buffer as minimum might not be enough to open
   if (!isRaw)
-    minBufferSize *= 4;
+    minBufferSize *= 2;
 
   if (supported)
   {
