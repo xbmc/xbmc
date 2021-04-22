@@ -46,7 +46,10 @@ bool EndTime::IsTimePast() const
 unsigned int EndTime::MillisLeft() const
 {
   if (m_totalWaitTime == InfiniteValue)
-    return static_cast<unsigned int>(InfiniteValue.count());
+  {
+    //! @todo: this is a hack for now
+    return std::numeric_limits<unsigned int>::max();
+  }
 
   if (m_totalWaitTime == std::chrono::milliseconds(0))
     return 0;
@@ -81,7 +84,4 @@ unsigned int SystemClockMillis()
                                        std::chrono::system_clock::now().time_since_epoch())
                                        .count());
 }
-
-const std::chrono::milliseconds EndTime::InfiniteValue =
-    std::numeric_limits<std::chrono::milliseconds>::max();
 }

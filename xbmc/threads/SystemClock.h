@@ -52,10 +52,11 @@ namespace XbmcThreads
     unsigned int GetInitialTimeoutValue() const;
     unsigned int GetStartTime() const;
 
-    static const std::chrono::milliseconds InfiniteValue;
-
   private:
     std::chrono::system_clock::time_point m_startTime;
     std::chrono::milliseconds m_totalWaitTime;
+
+    const std::chrono::milliseconds InfiniteValue =
+        std::chrono::milliseconds(std::numeric_limits<std::chrono::milliseconds::rep>::max());
   };
 }

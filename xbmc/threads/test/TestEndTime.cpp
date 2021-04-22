@@ -27,9 +27,7 @@ void CommonTests(XbmcThreads::EndTime& endTime)
   EXPECT_EQ(static_cast<unsigned int>(0), endTime.MillisLeft());
 
   endTime.SetInfinite();
-  EXPECT_EQ(
-      static_cast<unsigned int>(std::numeric_limits<std::chrono::milliseconds>::max().count()),
-      endTime.GetInitialTimeoutValue());
+  EXPECT_EQ(std::numeric_limits<unsigned int>::max(), endTime.GetInitialTimeoutValue());
   endTime.SetExpired();
   EXPECT_EQ(static_cast<unsigned int>(0), endTime.GetInitialTimeoutValue());
 }
