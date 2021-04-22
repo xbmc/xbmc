@@ -214,39 +214,29 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   SET APP_PDBFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.pdb
   ECHO Creating installer %APP_SETUPFILE%...
   IF EXIST %APP_SETUPFILE% del %APP_SETUPFILE% > NUL
+
+  rem determine if current system is 32 or 64 bits
+  IF %PROCESSOR_ARCHITECTURE% == AMD64 (
+    SET NSIS_REG_KEY=HKLM\Software\Wow6432Node\NSIS
+  ) ELSE (
+    SET NSIS_REG_KEY=HKLM\Software\NSIS
+  )
+
   rem get path to makensis.exe from registry, first try tab delim
-  FOR /F "tokens=2* delims=  " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+  FOR /F "tokens=2* delims=  " %%A IN ('REG QUERY "%NSIS_REG_KEY%" /ve') DO SET NSISExePath=%%B
 
   IF NOT EXIST "%NSISExePath%" (
     rem try with space delim instead of tab
-    FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+    FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "%NSIS_REG_KEY%" /ve') DO SET NSISExePath=%%B
   )
 
   IF NOT EXIST "%NSISExePath%" (
     rem fails on localized windows (Default) becomes (Par D�faut)
-    FOR /F "tokens=3* delims=  " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+    FOR /F "tokens=3* delims=  " %%A IN ('REG QUERY "%NSIS_REG_KEY%" /ve') DO SET NSISExePath=%%B
   )
 
   IF NOT EXIST "%NSISExePath%" (
-    FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
-  )
-
-  rem proper x64 registry checks
-  IF NOT EXIST "%NSISExePath%" (
-    ECHO using x64 registry entries
-    FOR /F "tokens=2* delims=  " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
-  )
-  IF NOT EXIST "%NSISExePath%" (
-    rem try with space delim instead of tab
-    FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
-  )
-  IF NOT EXIST "%NSISExePath%" (
-    rem on win 7 x64, the previous fails
-    FOR /F "tokens=3* delims=  " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
-  )
-  IF NOT EXIST "%NSISExePath%" (
-    rem try with space delim instead of tab
-    FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
+    FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "%NSIS_REG_KEY%" /ve') DO SET NSISExePath=%%B
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
