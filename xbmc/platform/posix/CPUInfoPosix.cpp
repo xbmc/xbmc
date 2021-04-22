@@ -11,6 +11,11 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Temperature.h"
+
+#include <cstdio>
+#include <memory>
+#include <string>
 
 bool CCPUInfoPosix::GetTemperature(CTemperature& temperature)
 {
