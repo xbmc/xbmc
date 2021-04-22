@@ -69,7 +69,6 @@ bool OPTIONALS::SndioRegister()
 
 #ifdef HAS_LIRC
 #include "platform/linux/input/LIRC.h"
-#include "ServiceBroker.h"
 class OPTIONALS::CLircContainer
 {
 public:
