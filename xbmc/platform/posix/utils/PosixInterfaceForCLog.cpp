@@ -8,6 +8,8 @@
 
 #include "PosixInterfaceForCLog.h"
 
+#include <memory>
+
 #if !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN)
 std::unique_ptr<IPlatformLog> IPlatformLog::CreatePlatformLog()
 {
