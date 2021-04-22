@@ -223,9 +223,8 @@ namespace PVR
     /*!
      * @brief Last time group has been watched
      * @param iLastWatched The new value.
-     * @return True if something changed, false otherwise.
      */
-    bool SetLastWatched(time_t iLastWatched);
+    void SetLastWatched(time_t iLastWatched);
 
     /*!
      * @return Time in milliseconds from epoch this group was last opened.
@@ -235,9 +234,8 @@ namespace PVR
     /*!
      * @brief Set the time in milliseconds from epoch this group was last opened.
      * @param iLastOpened The new value.
-     * @return True if something changed, false otherwise.
      */
-    bool SetLastOpened(uint64_t iLastOpened);
+    void SetLastOpened(uint64_t iLastOpened);
 
     /*!
      * @brief Set if sorting and renumbering should happen after adding/updating channels to group.
@@ -367,11 +365,6 @@ namespace PVR
     bool HasChannels() const;
 
     /*!
-     * @return True if there is at least one channel in this group with changes that haven't been persisted, false otherwise.
-     */
-    bool HasChangedChannels() const;
-
-    /*!
      * @return True if there is at least one new channel in this group that hasn't been persisted, false otherwise.
      */
     bool HasNewChannels() const;
@@ -380,6 +373,11 @@ namespace PVR
      * @return True if anything changed in this group that hasn't been persisted, false otherwise.
      */
     bool HasChanges() const;
+
+    /*!
+     * @return True if the group was never persisted, false otherwise.
+     */
+    bool IsNew() const;
 
     /*!
      * @brief Create an EPG table for each channel.

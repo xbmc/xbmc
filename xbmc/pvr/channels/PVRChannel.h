@@ -155,6 +155,13 @@ namespace PVR
     bool HasArchive() const;
 
     /*!
+     * @brief Set the archive support flag for this channel.
+     * @param bHasArchive True to set the flag, false to reset.
+     * @return True if the flag was changed, false otherwise.
+     */
+    bool SetArchive(bool bHasArchive);
+
+    /*!
      * @return The path to the icon for this channel.
      */
     std::string IconPath() const;
@@ -208,6 +215,10 @@ namespace PVR
      */
     bool IsEmpty() const;
 
+    /*!
+     * @brief Check whether this channel has unpersisted data changes.
+     * @return True if this channel has changes to persist, false otherwise
+     */
     bool IsChanged() const;
 
     /*!

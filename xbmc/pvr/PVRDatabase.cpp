@@ -652,11 +652,11 @@ bool CPVRDatabase::Get(CPVRChannelGroups& results)
         CPVRChannelGroup data(CPVRChannelsPath(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("sName").get_asString()),
                               m_pDS->fv("idGroup").get_asInt(),
                               results.GetGroupAll());
-        data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
-        data.SetLastWatched(static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt()));
-        data.SetHidden(m_pDS->fv("bIsHidden").get_asBool());
-        data.SetPosition(m_pDS->fv("iPosition").get_asInt());
-        data.SetLastOpened(static_cast<uint64_t>(m_pDS->fv("iLastOpened").get_asInt64()));
+        data.m_iGroupType = m_pDS->fv("iGroupType").get_asInt();
+        data.m_iLastWatched = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
+        data.m_bHidden = m_pDS->fv("bIsHidden").get_asBool();
+        data.m_iPosition = m_pDS->fv("iPosition").get_asInt();
+        data.m_iLastOpened = static_cast<uint64_t>(m_pDS->fv("iLastOpened").get_asInt64());
         results.Update(data);
 
         CLog::LogFC(LOGDEBUG, LOGPVR, "Group '{}' loaded from PVR database", data.GroupName());
@@ -790,34 +790,47 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup& group)
   {
     for (const auto& groupMember : group.m_sortedMembers)
     {
-      const std::string strWhereClause = PrepareSQL(
-          "idChannel = %u AND idGroup = %u AND iChannelNumber = %u AND iSubChannelNumber = %u AND "
-          "iOrder = %u AND iClientChannelNumber = %u AND iClientSubChannelNumber = %u",
-          groupMember->Channel()->ChannelID(), group.GroupID(),
-          groupMember->ChannelNumber().GetChannelNumber(),
-          groupMember->ChannelNumber().GetSubChannelNumber(), groupMember->Order(),
-          groupMember->ClientChannelNumber().GetChannelNumber(),
-          groupMember->ClientChannelNumber().GetSubChannelNumber());
-
-      const std::string strValue =
-          GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
-      if (strValue.empty())
+      if (groupMember->NeedsSave())
       {
-        strQuery =
-            PrepareSQL("REPLACE INTO map_channelgroups_channels ("
-                       "idGroup, idChannel, iChannelNumber, iSubChannelNumber, iOrder, "
-                       "iClientChannelNumber, iClientSubChannelNumber) "
-                       "VALUES (%i, %i, %i, %i, %i, %i, %i);",
-                       group.GroupID(), groupMember->Channel()->ChannelID(),
+        const std::string strWhereClause =
+            PrepareSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u AND "
+                       "iSubChannelNumber = %u AND "
+                       "iOrder = %u AND iClientChannelNumber = %u AND iClientSubChannelNumber = %u",
+                       groupMember->Channel()->ChannelID(), group.GroupID(),
                        groupMember->ChannelNumber().GetChannelNumber(),
                        groupMember->ChannelNumber().GetSubChannelNumber(), groupMember->Order(),
                        groupMember->ClientChannelNumber().GetChannelNumber(),
                        groupMember->ClientChannelNumber().GetSubChannelNumber());
-        QueueInsertQuery(strQuery);
+
+        const std::string strValue =
+            GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
+        if (strValue.empty())
+        {
+          strQuery =
+              PrepareSQL("REPLACE INTO map_channelgroups_channels ("
+                         "idGroup, idChannel, iChannelNumber, iSubChannelNumber, iOrder, "
+                         "iClientChannelNumber, iClientSubChannelNumber) "
+                         "VALUES (%i, %i, %i, %i, %i, %i, %i);",
+                         group.GroupID(), groupMember->Channel()->ChannelID(),
+                         groupMember->ChannelNumber().GetChannelNumber(),
+                         groupMember->ChannelNumber().GetSubChannelNumber(), groupMember->Order(),
+                         groupMember->ClientChannelNumber().GetChannelNumber(),
+                         groupMember->ClientChannelNumber().GetSubChannelNumber());
+          QueueInsertQuery(strQuery);
+        }
       }
     }
 
     bReturn = CommitInsertQueries();
+
+    if (bReturn)
+    {
+      for (const auto& groupMember : group.m_sortedMembers)
+      {
+        groupMember->SetSaved();
+      }
+    }
+
     bRemoveChannels = RemoveStaleChannelsFromGroup(group);
   }
 
@@ -846,30 +859,32 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
 
   CSingleLock lock(m_critSection);
 
-  /* insert a new entry when this is a new group, or replace the existing one otherwise */
-  if (group.GroupID() <= 0)
-    strQuery =
-        PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, "
-                   "bIsHidden, iPosition, iLastOpened) VALUES (%i, %i, '%s', %u, %i, %i, %llu)",
-                   (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
-                   static_cast<unsigned int>(group.LastWatched()), group.IsHidden(),
-                   group.GetPosition(), group.LastOpened());
-  else
-    strQuery = PrepareSQL(
-        "REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, "
-        "bIsHidden, iPosition, iLastOpened) VALUES (%i, %i, %i, '%s', %u, %i, %i, %llu)",
-        group.GroupID(), (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
-        static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition(),
-        group.LastOpened());
-
-  bReturn = ExecuteQuery(strQuery);
-
-  /* set the group id if it was <= 0 */
-  if (bReturn && group.GroupID() <= 0)
+  if (group.HasChanges() || group.IsNew())
   {
-    CSingleLock lock(group.m_critSection);
-    group.m_iGroupId = static_cast<int>(m_pDS->lastinsertid());
+    /* insert a new entry when this is a new group, or replace the existing one otherwise */
+    if (group.IsNew())
+      strQuery =
+          PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, "
+                     "bIsHidden, iPosition, iLastOpened) VALUES (%i, %i, '%s', %u, %i, %i, %llu)",
+                     (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
+                     static_cast<unsigned int>(group.LastWatched()), group.IsHidden(),
+                     group.GetPosition(), group.LastOpened());
+    else
+      strQuery = PrepareSQL(
+          "REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, "
+          "bIsHidden, iPosition, iLastOpened) VALUES (%i, %i, %i, '%s', %u, %i, %i, %llu)",
+          group.GroupID(), (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
+          static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition(),
+          group.LastOpened());
+
+    bReturn = ExecuteQuery(strQuery);
+
+    // set the group ID for new groups
+    if (bReturn && group.IsNew())
+      group.m_iGroupId = static_cast<int>(m_pDS->lastinsertid());
   }
+  else
+    bReturn = true;
 
   /* only persist the channel data for the internal groups */
   if (group.IsInternalGroup())

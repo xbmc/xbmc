@@ -22,7 +22,7 @@ class CPVRChannelGroupMember
   friend class CPVRDatabase;
 
 public:
-  CPVRChannelGroupMember() = default;
+  CPVRChannelGroupMember() : m_bChanged(false) {}
 
   CPVRChannelGroupMember(const std::shared_ptr<CPVRChannel>& channel,
                          const CPVRChannelNumber& channelNumber,
@@ -53,6 +53,9 @@ public:
   int Order() const { return m_iOrder; }
   void SetOrder(int iOrder);
 
+  bool NeedsSave() const { return m_bChanged; }
+  void SetSaved() { m_bChanged = false; }
+
 private:
   std::shared_ptr<CPVRChannel> m_channel;
   CPVRChannelNumber m_channelNumber; // the channel number this channel has in the group
@@ -60,6 +63,8 @@ private:
       m_clientChannelNumber; // the client channel number this channel has in the group
   int m_iClientPriority = 0;
   int m_iOrder = 0; // The value denoting the order of this member in the group
+
+  bool m_bChanged = true;
 };
 
 } // namespace PVR

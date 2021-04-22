@@ -184,26 +184,17 @@ void CPVRChannel::ResetEPG()
 
 bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
 {
-  SetClientID(channel->ClientID());
-
   CSingleLock lock(m_critSection);
 
-  if (m_clientChannelNumber != channel->m_clientChannelNumber ||
-      m_strMimeType != channel->MimeType() ||
-      m_iClientEncryptionSystem != channel->EncryptionSystem() ||
-      m_strClientChannelName != channel->ClientChannelName() ||
-      m_bHasArchive != channel->HasArchive())
-  {
-    m_clientChannelNumber = channel->m_clientChannelNumber;
-    m_strMimeType = channel->MimeType();
-    m_iClientEncryptionSystem = channel->EncryptionSystem();
-    m_strClientChannelName = channel->ClientChannelName();
-    m_bHasArchive = channel->HasArchive();
+  SetClientID(channel->ClientID());
+  SetArchive(channel->HasArchive());
 
-    UpdateEncryptionName();
+  m_clientChannelNumber = channel->m_clientChannelNumber;
+  m_strMimeType = channel->MimeType();
+  m_iClientEncryptionSystem = channel->EncryptionSystem();
+  m_strClientChannelName = channel->ClientChannelName();
 
-    m_bChanged = true;
-  }
+  UpdateEncryptionName();
 
   // only update the channel name and icon if the user hasn't changed them manually
   if (m_strChannelName.empty() || !IsUserSetName())
@@ -318,6 +309,20 @@ bool CPVRChannel::HasArchive() const
 {
   CSingleLock lock(m_critSection);
   return m_bHasArchive;
+}
+
+bool CPVRChannel::SetArchive(bool bHasArchive)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_bHasArchive != bHasArchive)
+  {
+    m_bHasArchive = bHasArchive;
+    m_bChanged = true;
+    return true;
+  }
+
+  return false;
 }
 
 bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIcon /* = false */)

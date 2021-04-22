@@ -12,20 +12,36 @@ using namespace PVR;
 
 void CPVRChannelGroupMember::SetChannelNumber(const CPVRChannelNumber& channelNumber)
 {
-  m_channelNumber = channelNumber;
+  if (m_channelNumber != channelNumber)
+  {
+    m_channelNumber = channelNumber;
+    m_bChanged = true;
+  }
 }
 
 void CPVRChannelGroupMember::SetClientChannelNumber(const CPVRChannelNumber& clientChannelNumber)
 {
-  m_clientChannelNumber = clientChannelNumber;
+  if (m_clientChannelNumber != clientChannelNumber)
+  {
+    m_clientChannelNumber = clientChannelNumber;
+    m_bChanged = true;
+  }
 }
 
 void CPVRChannelGroupMember::SetClientPriority(int iClientPriority)
 {
-  m_iClientPriority = iClientPriority;
+  if (m_iClientPriority != iClientPriority)
+  {
+    m_iClientPriority = iClientPriority;
+    m_bChanged = true;
+  }
 }
 
 void CPVRChannelGroupMember::SetOrder(int iOrder)
 {
-  m_iOrder = iOrder;
+  if (m_iOrder != iOrder)
+  {
+    m_iOrder = iOrder;
+    m_bChanged = true;
+  }
 }
