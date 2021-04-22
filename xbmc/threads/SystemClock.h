@@ -53,7 +53,7 @@ namespace XbmcThreads
     unsigned int GetStartTime() const;
 
   private:
-    std::chrono::system_clock::time_point m_startTime;
+    std::chrono::steady_clock::time_point m_startTime;
     std::chrono::milliseconds m_totalWaitTime;
 
     const std::chrono::milliseconds InfiniteValue =
