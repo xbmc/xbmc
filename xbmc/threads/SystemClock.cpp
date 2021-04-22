@@ -15,7 +15,8 @@
 namespace XbmcThreads
 {
 
-EndTime::EndTime() : m_startTime(std::chrono::system_clock::now())
+EndTime::EndTime()
+  : m_startTime(std::chrono::system_clock::now()), m_totalWaitTime(std::chrono::milliseconds(0))
 {
 }
 
