@@ -224,7 +224,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   m_trayIcon.cbSize = sizeof(m_trayIcon);
   m_trayIcon.hWnd = m_hWnd;
   m_trayIcon.hIcon = m_hIcon;
-  wcsncpy(m_trayIcon.szTip, nameW.c_str(), sizeof(m_trayIcon.szTip));
+  wcsncpy(m_trayIcon.szTip, nameW.c_str(), sizeof(m_trayIcon.szTip) / sizeof(WCHAR));
   m_trayIcon.uCallbackMessage = TRAY_ICON_NOTIFY;
   m_trayIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;  
 

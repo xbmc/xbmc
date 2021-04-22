@@ -192,8 +192,8 @@ protected:
   bool m_bFirstResChange = true;
   std::unique_ptr<CIRServerSuite> m_irss;
   std::vector<MONITOR_DETAILS> m_displays;
-  
-  NOTIFYICONDATA m_trayIcon;  
+
+  NOTIFYICONDATA m_trayIcon = {};
 };
 
 extern HWND g_hWnd;
