@@ -15,7 +15,6 @@ set(SOURCES ActorProtocol.cpp
             ContentUtils.cpp
             CPUInfo.cpp
             Crc32.cpp
-            CryptThreading.cpp
             DatabaseUtils.cpp
             Digest.cpp
             EndianSwap.cpp
@@ -91,7 +90,6 @@ set(HEADERS ActorProtocol.h
             ColorUtils.h
             ContentUtils.h
             Crc32.h
-            CryptThreading.h
             DatabaseUtils.h
             Digest.h
             EndianSwap.h
