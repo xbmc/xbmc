@@ -283,9 +283,11 @@ namespace PVR
     /*!
      * @brief Queue the deletion of an EPG table from this container.
      * @param epg The table to delete.
+     * @param database The database containing the epg data.
      * @return True on success, false otherwise.
      */
-    bool QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg);
+    bool QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg,
+                        const std::shared_ptr<CPVREpgDatabase>& database);
 
     std::shared_ptr<CPVREpgDatabase> m_database; /*!< the EPG database */
 
