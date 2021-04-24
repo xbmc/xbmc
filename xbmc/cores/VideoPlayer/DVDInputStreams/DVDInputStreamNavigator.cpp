@@ -1040,24 +1040,29 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
   {
   case DVD_AUDIO_FORMAT_AC3:
     info.name += " AC3";
+    info.codecName = "ac3";
     break;
   case DVD_AUDIO_FORMAT_UNKNOWN_1:
     info.name += " UNKNOWN #1";
     break;
   case DVD_AUDIO_FORMAT_MPEG:
     info.name += " MPEG AUDIO";
+    info.codecName = "mp1";
     break;
   case DVD_AUDIO_FORMAT_MPEG2_EXT:
     info.name += " MP2 Ext.";
+    info.codecName = "mp2";
     break;
   case DVD_AUDIO_FORMAT_LPCM:
     info.name += " LPCM";
+    info.codecName = "pcm";
     break;
   case DVD_AUDIO_FORMAT_UNKNOWN_5:
     info.name += " UNKNOWN #5";
     break;
   case DVD_AUDIO_FORMAT_DTS:
     info.name += " DTS";
+    info.codecName = "dts";
     break;
   case DVD_AUDIO_FORMAT_SDDS:
     info.name += " SDDS";
@@ -1602,7 +1607,7 @@ VideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
 
   // Until we add get_video_attr or get_video_codec we can't distinguish MPEG-1 (h261)
   // from MPEG-2 (h262). The latter is far more common, so use this.
-  info.codecName = "h262";
+  info.codecName = "mpeg2";
 
   return info;
 }
