@@ -447,6 +447,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
 
       AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
+      s.codec = info.codecName;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
       s.flags = info.flags;
@@ -524,6 +525,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
         CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
         s.width = vstream->iWidth;
         s.height = vstream->iHeight;
+        s.aspect_ratio = vstream->fAspect;
         s.stereo_mode = vstream->stereo_mode;
         s.bitrate = vstream->iBitRate;
       }
@@ -4906,16 +4908,29 @@ void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
     return;
   m_UpdateStreamDetails = false;
 
-  CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with current streams");
+  CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with available streams");
 
   VideoStreamInfo videoInfo;
   AudioStreamInfo audioInfo;
   SubtitleStreamInfo subtitleInfo;
+  CVideoInfoTag* info = item.GetVideoInfoTag();
   GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
-  GetAudioStreamInfo(CURRENT_STREAM, audioInfo);
-  GetSubtitleStreamInfo(CURRENT_STREAM, subtitleInfo);
+  info->m_streamDetails.SetStreams(videoInfo, m_processInfo->GetMaxTime() / 1000, audioInfo,
+                                   subtitleInfo);
 
-  item.GetVideoInfoTag()->m_streamDetails.SetStreams(videoInfo, m_processInfo->GetMaxTime()/1000, audioInfo, subtitleInfo);
+  //grab all the audio and subtitle info and save it
+
+  for (int i = 0; i < GetAudioStreamCount(); i++)
+  {
+    GetAudioStreamInfo(i, audioInfo);
+    info->m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo));
+  }
+
+  for (int i = 0; i < GetSubtitleCount(); i++)
+  {
+    GetSubtitleStreamInfo(i, subtitleInfo);
+    info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo));
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -4938,6 +4953,20 @@ void CVideoPlayer::UpdateContentState()
                                                       m_CurrentAudio.demuxerId, m_CurrentAudio.id);
   m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, m_CurrentSubtitle.source,
                                                          m_CurrentSubtitle.demuxerId, m_CurrentSubtitle.id);
+
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) && m_content.m_videoIndex == -1 &&
+      m_content.m_audioIndex == -1)
+  {
+    std::shared_ptr<CDVDInputStreamNavigator> nav =
+          std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
+
+    m_content.m_videoIndex = m_SelectionStreams.TypeIndexOf(STREAM_VIDEO, STREAM_SOURCE_NAV, -1,
+                                                            nav->GetActiveAngle());
+    m_content.m_audioIndex = m_SelectionStreams.TypeIndexOf(STREAM_AUDIO, STREAM_SOURCE_NAV, -1,
+                                                            nav->GetActiveAudioStream());
+    m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, STREAM_SOURCE_NAV,
+                                                               -1, nav->GetActiveSubtitleStream());
+  }
 }
 
 void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
