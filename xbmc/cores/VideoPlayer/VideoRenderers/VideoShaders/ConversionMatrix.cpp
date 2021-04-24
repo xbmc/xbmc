@@ -17,6 +17,8 @@
 
 // source: https://www.khronos.org/registry/DataFormat/specs/1.2/dataformat.1.2.html#PRIMARY_CONVERSION
 
+namespace
+{
 struct ConvYCbCr
 {
   float Kr, Kb;
@@ -41,6 +43,7 @@ constexpr Primaries PrimariesBT610_625 = {{{0.640, 0.330}, {0.290, 0.600}, {0.15
                                           {0.3127, 0.3290}};
 constexpr Primaries PrimariesBT2020 = {{{0.708, 0.292}, {0.170, 0.797}, {0.131, 0.046}},
                                        {0.3127, 0.3290}};
+} // namespace
 
 //------------------------------------------------------------------------------
 // Matrix helpers
