@@ -35,6 +35,7 @@
 #include "playlists/PlayListFactory.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -198,6 +199,12 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannel>& channel)
 
   FillMusicInfoTag(channel, epgNow);
   FillInMimeType(false);
+}
+
+CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroupMember)
+  : CFileItem(channelGroupMember->Channel())
+{
+  m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 }
 
 CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
@@ -443,6 +450,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
 
   m_epgInfoTag = item.m_epgInfoTag;
   m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
+  m_pvrChannelGroupMemberInfoTag = item.m_pvrChannelGroupMemberInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
   m_addonInfo = item.m_addonInfo;
@@ -516,6 +524,7 @@ void CFileItem::Reset()
   m_videoInfoTag=NULL;
   m_epgInfoTag.reset();
   m_pvrChannelInfoTag.reset();
+  m_pvrChannelGroupMemberInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
   delete m_pictureInfoTag;
@@ -720,6 +729,9 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 
   if (HasPVRChannelInfoTag())
     GetPVRChannelInfoTag()->ToSortable(sortable, field);
+
+  if (HasPVRChannelGroupMemberInfoTag())
+    GetPVRChannelGroupMemberInfoTag()->ToSortable(sortable, field);
 
   if (HasAddonInfo())
   {
