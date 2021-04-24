@@ -178,7 +178,7 @@ void CGUIDialogPVRChannelsOSD::Update()
           group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
-        m_vecItems->Add(std::make_shared<CFileItem>(groupMember->Channel()));
+        m_vecItems->Add(std::make_shared<CFileItem>(groupMember));
       }
 
       m_viewControl.SetItems(*m_vecItems);
@@ -274,7 +274,7 @@ void CGUIDialogPVRChannelsOSD::OnInputDone()
     int itemIndex = 0;
     for (const CFileItemPtr& channel : *m_vecItems)
     {
-      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
+      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
       {
         m_viewControl.SetSelectedItem(itemIndex);
         return;

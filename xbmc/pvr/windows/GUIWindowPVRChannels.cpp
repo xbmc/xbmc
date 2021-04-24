@@ -25,6 +25,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
@@ -337,7 +338,7 @@ void CGUIWindowPVRChannelsBase::OnInputDone()
     int itemIndex = 0;
     for (const CFileItemPtr& channel : *m_vecItems)
     {
-      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
+      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
       {
         m_viewControl.SetSelectedItem(itemIndex);
         return;

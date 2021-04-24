@@ -339,22 +339,30 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelEpgID(int iEpgID) con
 
 std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 */) const
 {
+  const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+      GetLastPlayedChannelGroupMember(iCurrentChannel);
+  return groupMember ? groupMember->Channel() : std::shared_ptr<CPVRChannel>();
+}
+
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGroupMember(
+    int iCurrentChannel) const
+{
   CSingleLock lock(m_critSection);
 
-  std::shared_ptr<CPVRChannel> returnChannel, channel;
+  std::shared_ptr<CPVRChannelGroupMember> groupMember;
   for (const auto& memberPair : m_members)
   {
-    channel = memberPair.second->Channel();
+    const std::shared_ptr<CPVRChannel> channel = memberPair.second->Channel();
     if (channel->ChannelID() != iCurrentChannel &&
         CServiceBroker::GetPVRManager().Clients()->IsCreatedClient(channel->ClientID()) &&
         channel->LastWatched() > 0 &&
-        (!returnChannel || channel->LastWatched() > returnChannel->LastWatched()))
+        (!groupMember || channel->LastWatched() > groupMember->Channel()->LastWatched()))
     {
-      returnChannel = channel;
+      groupMember = memberPair.second;
     }
   }
 
-  return returnChannel;
+  return groupMember;
 }
 
 CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const
@@ -555,26 +563,6 @@ bool CPVRChannelGroup::HasValidDataFromClient(int iClientId) const
 {
   return std::find(m_failedClients.begin(), m_failedClients.end(), iClientId) ==
          m_failedClients.end();
-}
-
-void CPVRChannelGroup::UpdateClientOrder()
-{
-  CSingleLock lock(m_critSection);
-
-  for (const auto& member : m_sortedMembers)
-    member->Channel()->SetClientOrder(member->Order());
-}
-
-void CPVRChannelGroup::UpdateChannelNumbers()
-{
-  CSingleLock lock(m_critSection);
-
-  for (const auto& member : m_sortedMembers)
-  {
-    member->Channel()->SetChannelNumber(
-        m_bUsingBackendChannelNumbers ? member->ClientChannelNumber() : member->ChannelNumber());
-    member->Channel()->SetClientChannelNumber(member->ClientChannelNumber());
-  }
 }
 
 bool CPVRChannelGroup::UpdateChannelNumbersFromAllChannelsGroup()
@@ -816,8 +804,15 @@ bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
   for (auto& sortedMember : m_sortedMembers)
   {
     currentClientChannelNumber = sortedMember->ClientChannelNumber();
+    if (!currentClientChannelNumber.IsValid())
+      currentClientChannelNumber =
+          m_allChannelsGroup->GetClientChannelNumber(sortedMember->Channel());
 
-    if (sortedMember->Channel()->IsHidden())
+    if (bUsingBackendChannelNumbers)
+    {
+      currentChannelNumber = currentClientChannelNumber;
+    }
+    else if (sortedMember->Channel()->IsHidden())
     {
       currentChannelNumber = CPVRChannelNumber(0, 0);
     }
@@ -833,10 +828,6 @@ bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
           currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
         else
           currentChannelNumber = m_allChannelsGroup->GetChannelNumber(sortedMember->Channel());
-
-        if (!sortedMember->ClientChannelNumber().IsValid())
-          currentClientChannelNumber =
-              m_allChannelsGroup->GetClientChannelNumber(sortedMember->Channel());
       }
     }
 
@@ -934,18 +925,6 @@ void CPVRChannelGroup::OnSettingChanged(const std::shared_ptr<const CSetting>& s
 
       bool bRenumbered = SortAndRenumber();
       Persist();
-
-      if (m_bIsSelectedGroup)
-      {
-        for (const auto& member : m_sortedMembers)
-        {
-          member->Channel()->SetClientOrder(member->Order());
-          member->Channel()->SetChannelNumber(m_bUsingBackendChannelNumbers
-                                                  ? member->ClientChannelNumber()
-                                                  : member->ChannelNumber());
-          member->Channel()->SetClientChannelNumber(member->ClientChannelNumber());
-        }
-      }
 
       m_events.Publish(bRenumbered ? PVREvent::ChannelGroupInvalidated : PVREvent::ChannelGroup);
     }
