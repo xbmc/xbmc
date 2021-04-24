@@ -1099,7 +1099,7 @@ bool CPVREpgDatabase::QueueDeleteEpgTags(int iEpgId)
   filter.AppendWhere(PrepareSQL("idEpg = %u", iEpgId));
 
   std::string strQuery;
-  BuildSQL(PrepareSQL("DELETE FROM %s ", "epg"), filter, strQuery);
+  BuildSQL(PrepareSQL("DELETE FROM %s ", "epgtags"), filter, strQuery);
   return QueueDeleteQuery(strQuery);
 }
 
