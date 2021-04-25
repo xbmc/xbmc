@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "favourites/FavouritesService.h"
 #include "guilib/GUIDialog.h"
+#include "guilib/GUIWindow.h"
 
-class CFileItem;
+class CFavouritesService;
 class CFileItemList;
+class CGUIMessage;
 
 class CGUIDialogFavourites :
       public CGUIDialog
