@@ -8,7 +8,14 @@
 
 #pragma once
 
+#include "dialogs/GUIDialogContextMenu.h"
+#include "guilib/GUIWindow.h"
 #include "windows/GUIMediaWindow.h"
+
+#include <string>
+
+class CFileItemList;
+class CGUIMessage;
 
 class CGUIWindowEventLog : public CGUIMediaWindow
 {

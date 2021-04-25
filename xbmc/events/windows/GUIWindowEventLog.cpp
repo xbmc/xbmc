@@ -11,17 +11,21 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "events/EventLog.h"
+#include "events/IEvent.h"
 #include "filesystem/EventsDirectory.h"
-#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "view/GUIViewControl.h"
 #include "view/ViewStateSettings.h"
+
+#include <memory>
 
 #define CONTROL_BUTTON_CLEAR          20
 #define CONTROL_BUTTON_LEVEL          21
