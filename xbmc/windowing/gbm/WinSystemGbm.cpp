@@ -11,6 +11,7 @@
 #include "GBMDPMSSupport.h"
 #include "OptionalsReg.h"
 #include "ServiceBroker.h"
+#include "VideoSyncGbm.h"
 #include "drm/DRMAtomic.h"
 #include "drm/DRMLegacy.h"
 #include "drm/OffScreenModeSetting.h"
@@ -92,13 +93,6 @@ bool CWinSystemGbm::InitWindowSystem()
   setting = settings->GetSetting("videoscreen.limitguisize");
   if (setting)
     setting->SetVisible(true);
-
-  setting = settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
-  if (setting)
-  {
-    setting->SetVisible(false);
-    settings->SetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK, false);
-  }
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
@@ -270,4 +264,9 @@ void CWinSystemGbm::OnLostDevice()
   CSingleLock lock(m_resourceSection);
   for (auto resource : m_resources)
     resource->OnLostDisplay();
+}
+
+std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(void* clock)
+{
+  return std::make_unique<CVideoSyncGbm>(clock);
 }
