@@ -10,8 +10,9 @@
 
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
+#include "utils/LabelFormatter.h"
+#include "utils/SortUtils.h"
 #include "view/ViewState.h"
-#include "windowing/GraphicContext.h"
 
 CGUIViewStateEventLog::CGUIViewStateEventLog(const CFileItemList& items) : CGUIViewState(items)
 {

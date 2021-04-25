@@ -10,6 +10,10 @@
 
 #include "view/GUIViewState.h"
 
+#include <string>
+
+class CFileItemList;
+
 class CGUIViewStateEventLog : public CGUIViewState
 {
 public:
