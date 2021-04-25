@@ -11,12 +11,19 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "ThumbLoader.h"
+#include "addons/AddonEvents.h"
+#include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
+#include "commons/ilog.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
+#include "filesystem/IDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "listproviders/IListProvider.h"
+#include "media/MediaType.h"
 #include "music/MusicThumbLoader.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "pictures/PictureThumbLoader.h"
@@ -27,18 +34,25 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "utils/EventStream.h"
 #include "utils/JobManager.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
+#include <algorithm>
+#include <cassert>
+#include <cstring>
+#include <map>
 #include <memory>
 #include <utility>
+
+#include <tinyxml.h>
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
