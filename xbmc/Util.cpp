@@ -1572,11 +1572,10 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
 void CUtil::InitRandomSeed()
 {
   // Init random seed
-  int64_t now;
-  now = CurrentHostCounter();
-  unsigned int seed = (unsigned int)now;
-  //  CLog::Log(LOGDEBUG, "{} - Initializing random seed with {}", __FUNCTION__, seed);
-  srand(seed);
+  auto now = std::chrono::steady_clock::now();
+  auto seed = now.time_since_epoch();
+
+  srand(static_cast<unsigned int>(seed.count()));
 }
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN_TVOS)
