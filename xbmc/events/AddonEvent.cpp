@@ -8,6 +8,8 @@
 
 #include "AddonEvent.h"
 
+#include <memory>
+
 CAddonEvent::CAddonEvent(const ADDON::AddonPtr& addon, const CVariant& description)
   : CUniqueEvent(addon->Name(), description, addon->Icon()), m_addon(addon)
 { }
