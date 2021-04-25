@@ -8,7 +8,14 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
 #include "events/AddonEvent.h"
+#include "events/IEvent.h"
+#include "utils/Variant.h"
+
+#include <cstddef>
+#include <memory>
+#include <string>
 
 class CAddonManagementEvent : public CAddonEvent
 {
