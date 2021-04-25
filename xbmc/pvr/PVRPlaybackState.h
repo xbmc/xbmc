@@ -245,6 +245,8 @@ private:
   std::string m_strPlayingRecordingUniqueId;
   int m_playingEpgTagChannelUniqueId = -1;
   unsigned int m_playingEpgTagUniqueId = 0;
+  std::shared_ptr<CPVRChannelGroup> m_playingGroupTV;
+  std::shared_ptr<CPVRChannelGroup> m_playingGroupRadio;
 
   class CLastWatchedUpdateTimer;
   std::unique_ptr<CLastWatchedUpdateTimer> m_lastWatchedUpdateTimer;

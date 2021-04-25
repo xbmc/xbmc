@@ -122,11 +122,6 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByPath(const std::st
   return {};
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) const
-{
-  return Get(bRadio)->GetSelectedGroup();
-}
-
 std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId, int iClientID) const
 {
   std::shared_ptr<CPVRChannel> channel;

@@ -130,13 +130,6 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
     /*!
-     * @brief Get the group that is currently selected in the UI.
-     * @param bRadio True to get the selected radio group, false to get the selected TV group.
-     * @return The selected group.
-     */
-    std::shared_ptr<CPVRChannelGroup> GetSelectedGroup(bool bRadio) const;
-
-    /*!
      * @brief Get a channel given it's channel ID from all containers.
      * @param iUniqueChannelId The unique channel id on the client.
      * @param iClientID The ID of the client.

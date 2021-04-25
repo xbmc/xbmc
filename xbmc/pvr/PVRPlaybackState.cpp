@@ -88,6 +88,18 @@ void CPVRPlaybackState::ReInit()
         m_playingEpgTag = epg->GetTagByBroadcastId(m_playingEpgTagUniqueId);
     }
   }
+
+  const std::shared_ptr<CPVRChannelGroupsContainer> groups =
+      CServiceBroker::GetPVRManager().ChannelGroups();
+  const CPVRChannelGroups* groupsTV = groups->GetTV();
+  const CPVRChannelGroups* groupsRadio = groups->GetRadio();
+
+  m_playingGroupTV = groupsTV->GetLastOpenedGroup();
+  m_playingGroupRadio = groupsRadio->GetLastOpenedGroup();
+  if (!m_playingGroupTV)
+    m_playingGroupTV = groupsTV->GetGroupAll();
+  if (!m_playingGroupRadio)
+    m_playingGroupTV = groupsRadio->GetGroupAll();
 }
 
 void CPVRPlaybackState::Clear()
@@ -98,6 +110,8 @@ void CPVRPlaybackState::Clear()
   m_playingRecording.reset();
   m_playingEpgTag.reset();
   m_lastWatchedUpdateTimer.reset();
+  m_playingGroupTV.reset();
+  m_playingGroupRadio.reset();
 }
 
 void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item)
@@ -382,26 +396,51 @@ bool CPVRPlaybackState::CanRecordOnPlayingChannel() const
 void CPVRPlaybackState::SetPlayingGroup(const std::shared_ptr<CPVRChannelGroup>& group)
 {
   if (group)
-    CServiceBroker::GetPVRManager().ChannelGroups()->Get(group->IsRadio())->SetSelectedGroup(group);
+  {
+    if (group->IsRadio())
+      m_playingGroupRadio = group;
+    else
+      m_playingGroupTV = group;
+
+    auto duration = std::chrono::system_clock::now().time_since_epoch();
+    uint64_t tsMillis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    group->SetLastOpened(tsMillis);
+  }
 }
 
 void CPVRPlaybackState::SetPlayingGroup(const std::shared_ptr<CPVRChannel>& channel)
 {
-  const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().ChannelGroups()->GetSelectedGroup(channel->IsRadio());
+  std::shared_ptr<CPVRChannelGroup> group = GetPlayingGroup(channel->IsRadio());
   if (!group || !group->IsGroupMember(channel))
   {
-    // The channel we'll switch to is not part of the current selected group.
-    // Set the first group as the selected group where the channel is a member.
+    // The channel is not part of the current playing group.
+    // Set the first group as the playing group where the channel is a member.
     CPVRChannelGroups* channelGroups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(channel->IsRadio());
     const std::vector<std::shared_ptr<CPVRChannelGroup>> groups = channelGroups->GetGroupsByChannel(channel, true);
     if (!groups.empty())
-      channelGroups->SetSelectedGroup(groups.front());
+      group = groups.front();
   }
+  SetPlayingGroup(group);
 }
 
 std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetPlayingGroup(bool bRadio) const
 {
-  return CServiceBroker::GetPVRManager().ChannelGroups()->GetSelectedGroup(bRadio);
+  if (bRadio)
+  {
+    if (m_playingGroupRadio && m_playingGroupRadio->IsDeleted())
+      const_cast<CPVRPlaybackState*>(this)->SetPlayingGroup(
+          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio());
+
+    return m_playingGroupRadio;
+  }
+  else
+  {
+    if (m_playingGroupTV && m_playingGroupTV->IsDeleted())
+      const_cast<CPVRPlaybackState*>(this)->SetPlayingGroup(
+          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV());
+
+    return m_playingGroupTV;
+  }
 }
 
 CDateTime CPVRPlaybackState::GetPlaybackTime(int iClientID, int iUniqueChannelID) const
