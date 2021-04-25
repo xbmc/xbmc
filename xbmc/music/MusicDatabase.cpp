@@ -315,7 +315,7 @@ void CMusicDatabase::CreateAnalytics()
 
   /* Maintain date new and last modified for songs, albums and artists using triggers
      MySQL triggers cannot modify a table that is already being used by the statement that invoked
-     the trigger (to avoid recursion), but can set NEW column values before insert or update. 
+     the trigger (to avoid recursion), but can set NEW column values before insert or update.
      Meanwhile SQLite triggers cannot set NEW column values in that way, but can update same table.
      Recursion avoided using WHEN but SQLite has PRAGMA recursive-triggers off by default anyway.
     // ! @todo: once on SQLite v3.31 we could use a generated column for dateModified as real
@@ -810,7 +810,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
   /* Update artist dateAdded values for artists involved in album as song or album artists.
      Dateadded does NOT hold when the artist was added to the library (that is dateNew), but is
      derived from song dateadded values which are usually file dates (or the last scan).
-     It is used to indicate those artists with recent media. 
+     It is used to indicate those artists with recent media.
      For artists that are neither album nor song artists (other roles only) dateadded will be null.
   */
   std::vector<std::string> artistIDs;
@@ -7112,7 +7112,7 @@ static const translateJSONField JSONtoDBAlbum[] = {
    Using albmview, rather than album table, as view has scalar subqueries for
    playcount and lastplayed already defined. Needed as MySQL does
    not support use of scalar subquery field alias names in where clauses (they
-   have to be repeated) and these fields can be used by filter rules. 
+   have to be repeated) and these fields can be used by filter rules.
    Using this view is no slower than the album table as these scalar fields are
    only calculated (slowing query) when field is in field list.
   */
@@ -7483,7 +7483,7 @@ static const translateJSONField JSONtoDBSong[] = {
   { "dateadded",                 "string", true,  "song.dateAdded",         "" },
   { "datenew",                   "string", true,  "song.dateNew",           "" },
   { "datemodified",              "string", true,  "song.dateModified",      "" },
-  { "file",                      "string", true,  "strPathFile",            "CONCAT(path.strPath, strFilename) AS strPathFile" }, 
+  { "file",                      "string", true,  "strPathFile",            "CONCAT(path.strPath, strFilename) AS strPathFile" },
   { "",                          "string", true,  "strPath",                "path.strPath AS strPath" },
   { "album",                     "string", true,  "strAlbum",               "album.strAlbum AS strAlbum" },
   { "albumreleasetype",          "string", true,  "strAlbumReleaseType",    "album.strReleaseType AS strAlbumReleaseType" },
@@ -7496,7 +7496,7 @@ static const translateJSONField JSONtoDBSong[] = {
   { "samplerate",               "integer", true,  "iSampleRate",            "" },
   { "channels",                 "integer", true,  "iChannels",              "" },
 
-  // JOIN fields (multivalue), same order as _JoinToSongFields 
+  // JOIN fields (multivalue), same order as _JoinToSongFields
   { "albumartistid",              "array", false, "idAlbumArtist",          "album_artist.idArtist AS idAlbumArtist" },
   { "albumartist",                "array", false, "strAlbumArtist",         "albumartist.strArtist AS strAlbumArtist" },
   { "musicbrainzalbumartistid",   "array", false, "strAlbumArtistMBID",     "albumartist.strMusicBrainzArtistID AS strAlbumArtistMBID" },
@@ -7516,19 +7516,19 @@ static const translateJSONField JSONtoDBSong[] = {
   { "displayconductor",          "string", false, "Role_Conductor",         "song_artist.idRole AS Role_Conductor" },
   { "displayorchestra",          "string", false, "Role_Orchestra",         "song_artist.idRole AS Role_Orchestra" },
   { "displaylyricist",           "string", false, "Role_Lyricist",          "song_artist.idRole AS Role_Lyricist" },
-  
+ 
   // Scalar subquery fields
   { "year",                     "integer", true,  "iYear",                  "CAST(<datefield> AS INTEGER) AS iYear" }, //From strReleaseDate or strOrigReleaseDate
   { "track",                    "integer", true,  "track",                  "(iTrack & 0xffff) AS track" },
   { "disc",                     "integer", true,  "disc",                   "(iTrack >> 16) AS disc" },
   { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource SEPARATOR '; ') FROM album_source WHERE album_source.idAlbum = song.idAlbum) AS sources" },
-  /* 
+  /*
   Song "thumbnail", "fanart" and "art" fields of JSON schema are fetched using
   thumbloader and separate queries to allow for fallback strategy
   "lyrics"?? Can be set for an item (by addons) but not held in db so
   AudioLibrary.GetSongs() never fills this field despite being in schema
 
-   FROM ( SELECT * FROM song 
+   FROM ( SELECT * FROM song
      JOIN album ON album.idAlbum = song.idAlbum
      JOIN path ON path.idPath = song.idPath) AS sv
    JOIN album_artist ON album_artist.idAlbum = song.idAlbum
@@ -8134,7 +8134,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
 
 std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField)
 {
-  /* 
+  /*
   Make SQL clause from ignore article list.
   Group tokens the same length together, for example :
     WHEN strArtist LIKE 'the ' OR strArtist LIKE 'the.' strArtist LIKE 'the_' ESCAPE '_'
@@ -8190,7 +8190,7 @@ std::string CMusicDatabase::SortnameBuildSQL(const std::string& strAlias,
   /*
   Build SQL for sort name scalar subquery from sort attributes and ignore article list.
   For example :
-  CASE WHEN strArtistSort IS NOT NULL THEN strArtistSort 
+  CASE WHEN strArtistSort IS NOT NULL THEN strArtistSort
   WHEN strField LIKE 'the ' OR strField LIKE 'the_' ESCAPE '_' THEN SUBSTR(strArtist, 5)
   WHEN strField LIKE 'LIKE 'an.' strField LIKE 'an_' ESCAPE '_' THEN SUBSTR(strArtist, 4)
   ELSE strField
@@ -12468,9 +12468,9 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
       }
     }
 
-    /* Update song table using the song ids we have matched. 
+    /* Update song table using the song ids we have matched.
       Use correlated subqueries as SQLite does not support updatable joins.
-      MySQL requires HistSong table not to be defined temporary for this. 
+      MySQL requires HistSong table not to be defined temporary for this.
     */
 
     BeginTransaction();
@@ -13220,7 +13220,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
 
         For artists these rules are combined because they apply via album and song
         and so we need to ensure all criteria are met via the same album or song.
-        1) Some artists may be only album artists, so for all artists (with linked 
+        1) Some artists may be only album artists, so for all artists (with linked
            albums or songs) we need to check both album_artist and song_artist tables.
         2) Role is determined from song_artist table, so even if looking for album artists
            only we find those that also have a specific role e.g. which album artist is a
@@ -13229,7 +13229,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
         b) When not album artists only and a specific role wanted then only the song_artist
            table is checked.
         c) When album artists only and role = 1 (an "artist") then only the album_artist
-           table is checked.      
+           table is checked.
         */
         std::string albumArtistSQL, songArtistSQL;
         ExistsSubQuery albumArtistSub("album_artist",
