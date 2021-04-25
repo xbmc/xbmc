@@ -8,19 +8,21 @@
 
 #include "EventLog.h"
 
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogSelect.h"
 #include "filesystem/EventsDirectory.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 
+#include <algorithm>
+#include <memory>
 #include <utility>
 
 std::string CEventLog::EventLevelToString(EventLevel level)
