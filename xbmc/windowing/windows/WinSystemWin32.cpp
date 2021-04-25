@@ -33,6 +33,7 @@
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/input/IRServerSuite.h"
+#include "platform/win32/network/WSDiscoveryWin32.h"
 
 #include <algorithm>
 
@@ -79,10 +80,14 @@ CWinSystemWin32::CWinSystemWin32()
     m_irss->Initialize();
   }
   m_dpms = std::make_shared<CWin32DPMSSupport>();
+
+  CWSDiscoverySupport::Get()->Initialize();
 }
 
 CWinSystemWin32::~CWinSystemWin32()
 {
+  CWSDiscoverySupport::Get()->Terminate();
+
   if (m_hIcon)
   {
     DestroyIcon(m_hIcon);
