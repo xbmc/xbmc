@@ -72,4 +72,6 @@ public:
   // HDR display support
   static HDR_STATUS ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc);
   static HDR_STATUS GetWindowsHDRStatus();
+
+  static void PlatformSyslog();
 };

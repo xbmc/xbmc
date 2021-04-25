@@ -9,20 +9,24 @@
 #include "PlatformAndroid.h"
 
 #include "filesystem/SpecialProtocol.h"
+#include "utils/log.h"
 #include "windowing/android/WinSystemAndroidGLESContext.h"
 
+#include "platform/android/activity/XBMCApp.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 
 #include <stdlib.h>
+
+#include <androidjni/Build.h>
 
 CPlatform* CPlatform::CreateInstance()
 {
   return new CPlatformAndroid();
 }
 
-bool CPlatformAndroid::Init()
+bool CPlatformAndroid::InitStageOne()
 {
-  if (!CPlatformPosix::Init())
+  if (!CPlatformPosix::InitStageOne())
     return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
 
@@ -33,4 +37,17 @@ bool CPlatformAndroid::Init()
   CAndroidPowerSyscall::Register();
 
   return true;
+}
+
+void CPlatformAndroid::PlatformSyslog()
+{
+  CLog::Log(
+      LOGINFO,
+      "Product: {}, Device: {}, Board: {} - Manufacturer: {}, Brand: {}, Model: {}, Hardware: {}",
+      CJNIBuild::PRODUCT, CJNIBuild::DEVICE, CJNIBuild::BOARD, CJNIBuild::MANUFACTURER,
+      CJNIBuild::BRAND, CJNIBuild::MODEL, CJNIBuild::HARDWARE);
+  std::string extstorage;
+  bool extready = CXBMCApp::GetExternalStorage(extstorage);
+  CLog::Log(LOGINFO, "External storage path = {}; status = {}", extstorage,
+            extready ? "ok" : "nok");
 }

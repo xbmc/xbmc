@@ -45,9 +45,9 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformLinux();
 }
 
-bool CPlatformLinux::Init()
+bool CPlatformLinux::InitStageOne()
 {
-  if (!CPlatformPosix::Init())
+  if (!CPlatformPosix::InitStageOne())
     return false;
 
   setenv("OS", "Linux", true); // for python scripts that check the OS

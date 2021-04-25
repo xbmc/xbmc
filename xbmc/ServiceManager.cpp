@@ -29,6 +29,9 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#include "storage/DetectDVDType.h"
+#endif
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
@@ -81,7 +84,7 @@ void CServiceManager::DeinitTesting()
 bool CServiceManager::InitStageOne()
 {
   m_Platform.reset(CPlatform::CreateInstance());
-  if (!m_Platform->Init())
+  if (!m_Platform->InitStageOne())
     return false;
 
 #ifdef HAS_PYTHON
@@ -148,6 +151,16 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  // Start Thread for DVD Mediatype detection
+  CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
+  m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
+  m_DetectDVDType->Create(false);
+#endif
+
+  if (!m_Platform->InitStageTwo())
+    return false;
+
   init_level = 2;
   return true;
 }
@@ -171,6 +184,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
+  if (!m_Platform->InitStageThree())
+    return false;
+
   init_level = 3;
   return true;
 }
@@ -189,6 +205,11 @@ void CServiceManager::DeinitStageThree()
 void CServiceManager::DeinitStageTwo()
 {
   init_level = 1;
+
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  m_DetectDVDType->StopThread();
+  m_DetectDVDType.reset();
+#endif
 
   m_weatherManager.reset();
   m_powerManager.reset();
@@ -260,6 +281,13 @@ ADDON::CRepositoryUpdater &CServiceManager::GetRepositoryUpdater()
 XBPython& CServiceManager::GetXBPython()
 {
   return *m_XBPython;
+}
+#endif
+
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+MEDIA_DETECT::CDetectDVDMedia& CServiceManager::GetDetectDVDMedia()
+{
+  return *m_DetectDVDType;
 }
 #endif
 

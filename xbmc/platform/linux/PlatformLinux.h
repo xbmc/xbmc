@@ -20,7 +20,7 @@ public:
 
   ~CPlatformLinux() override = default;
 
-  bool Init() override;
+  bool InitStageOne() override;
   bool IsConfigureAddonsAtStartupEnabled() override { return true; };
 
 private:

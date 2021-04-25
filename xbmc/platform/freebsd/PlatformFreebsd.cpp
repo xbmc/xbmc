@@ -46,9 +46,9 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformFreebsd();
 }
 
-bool CPlatformFreebsd::Init()
+bool CPlatformFreebsd::InitStageOne()
 {
-  if (!CPlatformPosix::Init())
+  if (!CPlatformPosix::InitStageOne())
     return false;
 
   setenv("OS", "Linux", true); // for python scripts that check the OS

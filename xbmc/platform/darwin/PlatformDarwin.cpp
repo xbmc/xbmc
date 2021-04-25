@@ -12,9 +12,9 @@
 
 #include <cstdlib>
 
-bool CPlatformDarwin::Init()
+bool CPlatformDarwin::InitStageOne()
 {
-  if (!CPlatformPosix::Init())
+  if (!CPlatformPosix::InitStageOne())
     return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
 

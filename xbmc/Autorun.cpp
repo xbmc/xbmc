@@ -31,6 +31,9 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#ifndef TARGET_WINDOWS
+#include "storage/DetectDVDType.h"
+#endif
 #include "storage/MediaManager.h"
 #include "video/VideoDatabase.h"
 #include "utils/StringUtils.h"
@@ -476,17 +479,19 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
 void CAutorun::HandleAutorun()
 {
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  const CDetectDVDMedia& mediadetect = CServiceBroker::GetDetectDVDMedia();
+
   if (!m_bEnable)
   {
-    CDetectDVDMedia::m_evAutorun.Reset();
+    mediadetect.m_evAutorun.Reset();
     return ;
   }
 
-  if (CDetectDVDMedia::m_evAutorun.WaitMSec(0))
+  if (mediadetect.m_evAutorun.WaitMSec(0))
   {
     ExecuteAutorun();
-    CDetectDVDMedia::m_evAutorun.Reset();
+    mediadetect.m_evAutorun.Reset();
   }
 #endif
 }

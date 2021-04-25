@@ -111,9 +111,6 @@
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
 #endif
-#ifdef HAS_DBUS
-#include <dbus/dbus.h>
-#endif
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
@@ -180,9 +177,7 @@
 #endif
 
 #if defined(TARGET_ANDROID)
-#include <androidjni/Build.h>
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/activity/AndroidFeatures.h"
 #endif
 
 #ifdef TARGET_WINDOWS
@@ -321,25 +316,6 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
-void CApplication::Preflight()
-{
-#ifdef HAS_DBUS
-  // call 'dbus_threads_init_default' before any other dbus calls in order to
-  // avoid race conditions with other threads using dbus connections
-  dbus_threads_init_default();
-#endif
-
-  // run any platform preflight scripts.
-#if defined(TARGET_DARWIN_OSX)
-  std::string install_path;
-
-  install_path = CUtil::GetHomePath();
-  setenv("KODI_HOME", install_path.c_str(), 0);
-  install_path += "/tools/darwin/runtime/preflight";
-  system(install_path.c_str());
-#endif
-}
-
 bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
@@ -369,8 +345,6 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
   }
 
-  Preflight();
-
   // here we register all global classes for the CApplicationMessenger,
   // after that we can send messages to the corresponding modules
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
@@ -396,102 +370,7 @@ bool CApplication::Create(const CAppParamParser &params)
   // Init our DllLoaders emu env
   init_emu_environ();
 
-  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
-  CLog::Log(LOGINFO, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(),
-            CSysInfo::GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
-            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
-
-  std::string buildType;
-#if defined(_DEBUG)
-  buildType = "Debug";
-#elif defined(NDEBUG)
-  buildType = "Release";
-#else
-  buildType = "Unknown";
-#endif
-
-  CLog::Log(LOGINFO, "Using %s %s x%d", buildType.c_str(), CSysInfo::GetAppName().c_str(),
-            g_sysinfo.GetXbmcBitness());
-  CLog::Log(
-      LOGINFO, "%s compiled %s by %s for %s %s %d-bit %s (%s)", CSysInfo::GetAppName().c_str(),
-      CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(),
-      g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
-      g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
-      g_sysinfo.GetBuildTargetPlatformVersion().c_str());
-
-  std::string deviceModel(g_sysinfo.GetModelName());
-  if (!g_sysinfo.GetManufacturerName().empty())
-    deviceModel = g_sysinfo.GetManufacturerName() + " " + (deviceModel.empty() ? std::string("device") : deviceModel);
-  if (!deviceModel.empty())
-    CLog::Log(LOGINFO, "Running on %s with %s, kernel: %s %s %d-bit version %s",
-              deviceModel.c_str(), g_sysinfo.GetOsPrettyNameWithVersion().c_str(),
-              g_sysinfo.GetKernelName().c_str(), g_sysinfo.GetKernelCpuFamily().c_str(),
-              g_sysinfo.GetKernelBitness(), g_sysinfo.GetKernelVersionFull().c_str());
-  else
-    CLog::Log(LOGINFO, "Running on %s, kernel: %s %s %d-bit version %s",
-              g_sysinfo.GetOsPrettyNameWithVersion().c_str(), g_sysinfo.GetKernelName().c_str(),
-              g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(),
-              g_sysinfo.GetKernelVersionFull().c_str());
-
-  CLog::Log(LOGINFO, "FFmpeg version/source: %s", av_version_info());
-
-  std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
-  if (!cpuModel.empty())
-    CLog::Log(LOGINFO, "Host CPU: %s, %d core%s available", cpuModel.c_str(),
-              CServiceBroker::GetCPUInfo()->GetCPUCount(),
-              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
-  else
-    CLog::Log(LOGINFO, "%d CPU core%s available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
-              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
-
-    //! @todo - move to CPlatformXXX ???
-#if defined(TARGET_WINDOWS)
-  CLog::Log(LOGINFO, "System has {:.1f} GB of RAM installed",
-            CWIN32Util::GetSystemMemorySize() / static_cast<double>(MB));
-  CLog::Log(LOGINFO, "%s", CWIN32Util::GetResInfoString().c_str());
-  CLog::Log(LOGINFO, "Running with %s rights",
-            (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator"
-                                                                    : "restricted");
-  CLog::Log(LOGINFO, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
-  HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
-  if (hdrStatus == HDR_STATUS::HDR_UNSUPPORTED)
-    CLog::Log(LOGINFO, "Display is not HDR capable or cannot be detected");
-  else
-    CLog::Log(LOGINFO, "Display HDR capable is detected and Windows HDR switch is %s",
-              (hdrStatus == HDR_STATUS::HDR_ON) ? "ON" : "OFF");
-#endif
-#if defined(TARGET_ANDROID)
-  CLog::Log(
-      LOGINFO,
-      "Product: %s, Device: %s, Board: %s - Manufacturer: %s, Brand: %s, Model: %s, Hardware: %s",
-      CJNIBuild::PRODUCT.c_str(), CJNIBuild::DEVICE.c_str(), CJNIBuild::BOARD.c_str(),
-      CJNIBuild::MANUFACTURER.c_str(), CJNIBuild::BRAND.c_str(), CJNIBuild::MODEL.c_str(),
-      CJNIBuild::HARDWARE.c_str());
-  std::string extstorage;
-  bool extready = CXBMCApp::GetExternalStorage(extstorage);
-  CLog::Log(LOGINFO, "External storage path = %s; status = %s", extstorage.c_str(),
-            extready ? "ok" : "nok");
-#endif
-
-#if defined(__arm__) || defined(__aarch64__)
-  if (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON)
-    CLog::Log(LOGINFO, "ARM Features: Neon enabled");
-  else
-    CLog::Log(LOGINFO, "ARM Features: Neon disabled");
-#endif
-  CSpecialProtocol::LogPaths();
-
-  std::string executable = CUtil::ResolveExecutablePath();
-  CLog::Log(LOGINFO, "The executable running is: %s", executable.c_str());
-  std::string hostname("[unknown]");
-  m_ServiceManager->GetNetwork().GetHostName(hostname);
-  CLog::Log(LOGINFO, "Local hostname: %s", hostname.c_str());
-  std::string lowerAppName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGINFO, "Log File is located: %s.log",
-            CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName).c_str());
-  CRegExp::LogCheckUtf8Support();
-  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
+  PrintStartupLog();
 
   std::string strExecutablePath = CUtil::GetHomePath();
 
@@ -757,8 +636,6 @@ bool CApplication::Initialize()
   }
   CServiceBroker::GetRenderSystem()->ShowSplash("");
 
-  StartServices();
-
   // GUI depends on seek handler
   m_appPlayer.GetSeekHandler().Configure();
 
@@ -961,25 +838,6 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   settings->Save();
 
   return ret;
-}
-
-void CApplication::StartServices()
-{
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  // Start Thread for DVD Mediatype detection
-  CLog::Log(LOGINFO, "start dvd mediatype detection");
-  m_DetectDVDType.Create(false);
-#endif
-}
-
-void CApplication::StopServices()
-{
-  m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
-
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  CLog::Log(LOGINFO, "stop dvd detect media");
-  m_DetectDVDType.StopThread();
-#endif
 }
 
 void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -2709,7 +2567,7 @@ void CApplication::Stop(int exitCode)
 
     CApplicationMessenger::GetInstance().Cleanup();
 
-    StopServices();
+    m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
 
 #ifdef HAS_ZEROCONF
     if(CZeroconfBrowser::IsInstantiated())
@@ -5004,6 +4862,79 @@ void CApplication::SetLoggingIn(bool switchingProfiles)
   // would therefore write the previous skin's settings into the new profile
   // instead of into the previous one
   m_saveSkinOnUnloading = !switchingProfiles;
+}
+
+void CApplication::PrintStartupLog()
+{
+  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
+  CLog::Log(LOGINFO, "Starting {} ({}). Platform: {} {} {}-bit", CSysInfo::GetAppName(),
+            CSysInfo::GetVersion(), g_sysinfo.GetBuildTargetPlatformName(),
+            g_sysinfo.GetBuildTargetCpuFamily(), g_sysinfo.GetXbmcBitness());
+
+  std::string buildType;
+#if defined(_DEBUG)
+  buildType = "Debug";
+#elif defined(NDEBUG)
+  buildType = "Release";
+#else
+  buildType = "Unknown";
+#endif
+
+  CLog::Log(LOGINFO, "Using {} {} x{}", buildType, CSysInfo::GetAppName(),
+            g_sysinfo.GetXbmcBitness());
+  CLog::Log(LOGINFO, "{} compiled {} by {} for {} {} {}-bit {} ({})", CSysInfo::GetAppName(),
+            CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer(),
+            g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetBuildTargetCpuFamily(),
+            g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded(),
+            g_sysinfo.GetBuildTargetPlatformVersion());
+
+  std::string deviceModel(g_sysinfo.GetModelName());
+  if (!g_sysinfo.GetManufacturerName().empty())
+    deviceModel = g_sysinfo.GetManufacturerName() + " " +
+                  (deviceModel.empty() ? std::string("device") : deviceModel);
+  if (!deviceModel.empty())
+    CLog::Log(LOGINFO, "Running on {} with {}, kernel: {} {} {}-bit version {}", deviceModel,
+              g_sysinfo.GetOsPrettyNameWithVersion(), g_sysinfo.GetKernelName(),
+              g_sysinfo.GetKernelCpuFamily(), g_sysinfo.GetKernelBitness(),
+              g_sysinfo.GetKernelVersionFull());
+  else
+    CLog::Log(LOGINFO, "Running on {}, kernel: {} {} {}-bit version {}",
+              g_sysinfo.GetOsPrettyNameWithVersion(), g_sysinfo.GetKernelName(),
+              g_sysinfo.GetKernelCpuFamily(), g_sysinfo.GetKernelBitness(),
+              g_sysinfo.GetKernelVersionFull());
+
+  CLog::Log(LOGINFO, "FFmpeg version/source: {}", av_version_info());
+
+  std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
+  if (!cpuModel.empty())
+    CLog::Log(LOGINFO, "Host CPU: {}, {} core{} available", cpuModel,
+              CServiceBroker::GetCPUInfo()->GetCPUCount(),
+              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
+  else
+    CLog::Log(LOGINFO, "{} CPU core{} available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
+              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
+
+  // Any system info logging that is unique to a platform
+  m_ServiceManager->GetPlatform().PlatformSyslog();
+
+#if defined(__arm__) || defined(__aarch64__)
+  CLog::Log(LOGINFO, "ARM Features: Neon {}",
+            (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON) ? "enabled"
+                                                                                : "disabled");
+#endif
+  CSpecialProtocol::LogPaths();
+
+  std::string executable = CUtil::ResolveExecutablePath();
+  CLog::Log(LOGINFO, "The executable running is: {}", executable);
+  std::string hostname("[unknown]");
+  m_ServiceManager->GetNetwork().GetHostName(hostname);
+  CLog::Log(LOGINFO, "Local hostname: {}", hostname);
+  std::string lowerAppName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(lowerAppName);
+  CLog::Log(LOGINFO, "Log File is located: {}.log",
+            CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName));
+  CRegExp::LogCheckUtf8Support();
+  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
 }
 
 void CApplication::CloseNetworkShares()

@@ -22,9 +22,9 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformWin10();
 }
 
-bool CPlatformWin10::Init()
+bool CPlatformWin10::InitStageOne()
 {
-  if (!CPlatform::Init())
+  if (!CPlatform::InitStageOne())
     return false;
 
   CEnvironment::setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
@@ -39,4 +39,9 @@ bool CPlatformWin10::Init()
   CPowerSyscall::Register();
 
   return true;
+}
+
+void CPlatformWin10::PlatformSyslog()
+{
+  CWIN32Util::PlatformSyslog();
 }

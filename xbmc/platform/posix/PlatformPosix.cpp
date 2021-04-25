@@ -13,12 +13,16 @@
 #include <cstdlib>
 #include <time.h>
 
+#ifdef HAS_DBUS
+#include <dbus/dbus.h>
+#endif
+
 std::atomic_flag CPlatformPosix::ms_signalFlag;
 
-bool CPlatformPosix::Init()
+bool CPlatformPosix::InitStageOne()
 {
 
-  if (!CPlatform::Init())
+  if (!CPlatform::InitStageOne())
     return false;
 
   // Initialize to "set" state
@@ -37,6 +41,12 @@ bool CPlatformPosix::Init()
     fprintf(stderr, "The HOME environment variable is not set!\n");
     return false;
   }
+
+#ifdef HAS_DBUS
+  // call 'dbus_threads_init_default' before any other dbus calls in order to
+  // avoid race conditions with other threads using dbus connections
+  dbus_threads_init_default();
+#endif
 
   return true;
 }
