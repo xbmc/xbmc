@@ -9,7 +9,12 @@
 #pragma once
 
 #include "ContextMenuItem.h"
+#include "guilib/GUIWindow.h"
 
+#include <cstdint>
+
+class CFileItem;
+class CFileItemList;
 
 namespace CONTEXTMENU
 {
