@@ -18,10 +18,8 @@ endif()
 
 if(DBUS_FOUND)
   list(APPEND SOURCES ../linux/DBusMessage.cpp
-                      ../linux/DBusReserve.cpp
                       ../linux/DBusUtil.cpp)
   list(APPEND HEADERS ../linux/DBusMessage.h
-                      ../linux/DBusReserve.h
                       ../linux/DBusUtil.h)
 endif()
 
