@@ -144,6 +144,9 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
 
 bool CDRMUtils::FindPreferredMode()
 {
+  if (m_mode)
+    return true;
+
   for (int i = 0, area = 0; i < m_connector->GetModesCount(); i++)
   {
     drmModeModeInfo* current_mode = m_connector->GetModeForIndex(i);
@@ -534,6 +537,13 @@ bool CDRMUtils::FindCrtc()
       if (m_crtcs[i]->GetCrtcId() == m_encoder->GetCrtcId())
       {
         m_orig_crtc = m_crtcs[i].get();
+        if (m_orig_crtc->GetModeValid())
+        {
+          m_mode = m_orig_crtc->GetMode();
+          CLog::Log(LOGDEBUG, "CDRMUtils::{} - original crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
+                    m_mode->hdisplay, m_mode->vdisplay,
+                    m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
+        }
         return true;
       }
     }
