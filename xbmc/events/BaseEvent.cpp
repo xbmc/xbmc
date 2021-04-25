@@ -9,7 +9,6 @@
 #include "BaseEvent.h"
 
 #include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
 
 #include <chrono>
 #include <inttypes.h>
