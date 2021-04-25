@@ -29,6 +29,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibraryQueue.h"
 
 #include <limits.h>
 #include <string>
@@ -301,7 +302,10 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   if (settingId == CSettings::SETTING_MUSICLIBRARY_CLEANUP)
   {
     if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
-      g_application.StartMusicCleanup(true);
+    {
+      if (!CMusicLibraryQueue::GetInstance().IsRunning())
+        CMusicLibraryQueue::GetInstance().CleanLibrary(true);
+    }
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT)
   {
@@ -329,7 +333,10 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_CLEANUP)
   {
     if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
-      g_application.StartVideoCleanup(true);
+    {
+      if (!CVideoLibraryQueue::GetInstance().IsRunning())
+        CVideoLibraryQueue::GetInstance().CleanLibraryModal();
+    }
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)
     CBuiltins::GetInstance().Execute("exportlibrary(video)");

@@ -4643,13 +4643,16 @@ void CApplication::UpdateLibraries()
   if (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGINFO, "Starting video library startup scan");
-    StartVideoScan("", !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
+    CVideoLibraryQueue::GetInstance().ScanLibrary(
+        "", false, !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
   }
 
   if (settings->GetBool(CSettings::SETTING_MUSICLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGINFO, "Starting music library startup scan");
-    StartMusicScan("", !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
+    CMusicLibraryQueue::GetInstance().ScanLibrary(
+        "", MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL,
+        !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
   }
 }
 
@@ -4663,122 +4666,6 @@ void CApplication::UpdateCurrentPlayArt()
   loader.LoadItem(m_itemCurrentFile.get());
   // Mirror changes to GUI item
   CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
-}
-
-bool CApplication::IsVideoScanning() const
-{
-  return CVideoLibraryQueue::GetInstance().IsScanningLibrary();
-}
-
-bool CApplication::IsMusicScanning() const
-{
-  return CMusicLibraryQueue::GetInstance().IsScanningLibrary();
-}
-
-void CApplication::StopVideoScan()
-{
-  CVideoLibraryQueue::GetInstance().StopLibraryScanning();
-}
-
-void CApplication::StopMusicScan()
-{
-  CMusicLibraryQueue::GetInstance().StopLibraryScanning();
-}
-
-void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
-                                     const std::string& content /* = "" */,
-                                     const std::string& strDirectory /* = "" */)
-{
-  if (userInitiated && CVideoLibraryQueue::GetInstance().IsRunning())
-    return;
-
-  std::set<int> paths;
-  if (!content.empty() || !strDirectory.empty())
-  {
-    CVideoDatabase db;
-    std::set<std::string> contentPaths;
-    if (db.Open())
-    {
-      if (!strDirectory.empty())
-        contentPaths.insert(strDirectory);
-      else
-        db.GetPaths(contentPaths);
-      for (const std::string& path : contentPaths)
-      {
-        if (db.GetContentForPath(path) == content)
-        {
-          paths.insert(db.GetPathId(path));
-          std::vector<std::pair<int, std::string>> sub;
-          if (db.GetSubPaths(path, sub))
-          {
-            for (const auto& it : sub)
-              paths.insert(it.first);
-          }
-        }
-      }
-    }
-    if (paths.empty())
-      return;
-  }
-  if (userInitiated)
-    CVideoLibraryQueue::GetInstance().CleanLibraryModal(paths);
-  else
-    CVideoLibraryQueue::GetInstance().CleanLibrary(paths, true);
-}
-
-void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
-{
-  CVideoLibraryQueue::GetInstance().ScanLibrary(strDirectory, scanAll, userInitiated);
-}
-
-void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
-{
-  if (userInitiated && CMusicLibraryQueue::GetInstance().IsRunning())
-    return;
-
-  if (userInitiated)
-    /*
-     CMusicLibraryQueue::GetInstance().CleanLibraryModal();
-     As cleaning is non-granular and does not offer many opportunities to update progress
-     dialog rendering, do asynchronously with model dialog
-    */
-    CMusicLibraryQueue::GetInstance().CleanLibrary(true);
-  else
-    CMusicLibraryQueue::GetInstance().CleanLibrary(false);
-}
-
-void CApplication::StartMusicScan(const std::string &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
-{
-  if (IsMusicScanning())
-    return;
-
-  // Setup default flags
-  if (!flags)
-  { // Online scraping of additional info during scanning
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
-      flags |= CMusicInfoScanner::SCAN_ONLINE;
-  }
-  if (!userInitiated || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
-    flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-
-  CMusicLibraryQueue::GetInstance().ScanLibrary(strDirectory, flags, !(flags & CMusicInfoScanner::SCAN_BACKGROUND));
-}
-
-void CApplication::StartMusicAlbumScan(const std::string& strDirectory, bool refresh)
-{
-  if (IsMusicScanning())
-    return;
-
-  CMusicLibraryQueue::GetInstance().StartAlbumScan(strDirectory, refresh);
-}
-
-void CApplication::StartMusicArtistScan(const std::string& strDirectory,
-                                        bool refresh)
-{
-  if (IsMusicScanning())
-    return;
-
-  CMusicLibraryQueue::GetInstance().StartArtistScan(strDirectory, refresh);
 }
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)

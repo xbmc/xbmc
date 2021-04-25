@@ -408,7 +408,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   if (!info)
     return false;
 
-  if (g_application.IsVideoScanning())
+  if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{14057});
     return false;
@@ -1550,7 +1550,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
 
 void CGUIWindowVideoBase::OnScan(const std::string& strPath, bool scanAll)
 {
-    g_application.StartVideoScan(strPath, true, scanAll);
+  CVideoLibraryQueue::GetInstance().ScanLibrary(strPath, scanAll, true);
 }
 
 std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
@@ -1631,6 +1631,6 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
 
   if (bScan)
   {
-    g_application.StartVideoScan(path, true, true);
+    CVideoLibraryQueue::GetInstance().ScanLibrary(path, true, true);
   }
 }

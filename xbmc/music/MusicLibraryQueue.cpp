@@ -14,11 +14,14 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 #include "music/jobs/MusicLibraryCleaningJob.h"
 #include "music/jobs/MusicLibraryExportJob.h"
 #include "music/jobs/MusicLibraryImportJob.h"
 #include "music/jobs/MusicLibraryJob.h"
 #include "music/jobs/MusicLibraryScanningJob.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/Variant.h"
 
@@ -117,8 +120,21 @@ void CMusicLibraryQueue::ImportLibrary(const std::string& xmlFile, bool showDial
   }
 }
 
-void CMusicLibraryQueue::ScanLibrary(const std::string& strDirectory, int flags /* = 0 */, bool showProgress /* = true */)
+void CMusicLibraryQueue::ScanLibrary(const std::string& strDirectory,
+                                     int flags /* = 0 */,
+                                     bool showProgress /* = true */)
 {
+  if (flags == MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL)
+  {
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
+      flags |= MUSIC_INFO::CMusicInfoScanner::SCAN_ONLINE;
+  }
+
+  if (!showProgress || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                           CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
+    flags |= MUSIC_INFO::CMusicInfoScanner::SCAN_BACKGROUND;
+
   AddJob(new CMusicLibraryScanningJob(strDirectory, flags, showProgress));
 }
 

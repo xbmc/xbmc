@@ -227,10 +227,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
-        if (!g_application.IsVideoScanning())
+        if (!CVideoLibraryQueue::GetInstance().IsScanningLibrary())
           OnScan("");
         else
-          g_application.StopVideoScan();
+          CVideoLibraryQueue::GetInstance().StopLibraryScanning();
         return true;
       }
     }
@@ -940,14 +940,15 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // can we update the database?
       if (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
-        if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
-           (item->GetVideoInfoTag()->m_type == MediaTypeMovie ||          // movies
-            item->GetVideoInfoTag()->m_type == MediaTypeTvShow ||         // tvshows
-            item->GetVideoInfoTag()->m_type == MediaTypeSeason ||         // seasons
-            item->GetVideoInfoTag()->m_type == MediaTypeEpisode ||        // episodes
-            item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo ||     // musicvideos
-            item->GetVideoInfoTag()->m_type == "tag" ||                   // tags
-            item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)) // sets
+        if (!CVideoLibraryQueue::GetInstance().IsScanningLibrary() && item->IsVideoDb() &&
+            item->HasVideoInfoTag() &&
+            (item->GetVideoInfoTag()->m_type == MediaTypeMovie || // movies
+             item->GetVideoInfoTag()->m_type == MediaTypeTvShow || // tvshows
+             item->GetVideoInfoTag()->m_type == MediaTypeSeason || // seasons
+             item->GetVideoInfoTag()->m_type == MediaTypeEpisode || // episodes
+             item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo || // musicvideos
+             item->GetVideoInfoTag()->m_type == "tag" || // tags
+             item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)) // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
@@ -1116,7 +1117,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
   else if (StringUtils::StartsWithNoCase(item->GetPath(), "newtag://"))
   {
     // dont allow update while scanning
-    if (g_application.IsVideoScanning())
+    if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
     {
       HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
       return true;

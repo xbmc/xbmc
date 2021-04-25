@@ -27,6 +27,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
@@ -576,7 +577,7 @@ void CGUIDialogMusicInfo::RefreshInfo()
     return;
 
   // Check if scanning
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{ 189 }, CVariant{ 14057 });
     return;

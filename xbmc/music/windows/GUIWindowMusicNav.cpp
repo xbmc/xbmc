@@ -29,6 +29,7 @@
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
@@ -166,10 +167,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_UPDATE_LIBRARY)
       {
-        if (!g_application.IsMusicScanning())
-          g_application.StartMusicScan("");
+        if (!CMusicLibraryQueue::GetInstance().IsScanningLibrary())
+          CMusicLibraryQueue::GetInstance().ScanLibrary("");
         else
-          g_application.StopMusicScan();
+          CMusicLibraryQueue::GetInstance().StopLibraryScanning();
         return true;
       }
     }
