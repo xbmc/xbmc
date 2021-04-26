@@ -211,7 +211,7 @@ make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build
 
 Build Kodi:
 ```
-cd $HOME/kodi/build
+cd $HOME/kodi-build
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
