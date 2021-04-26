@@ -125,8 +125,7 @@ void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(
 {
   CSingleLock lock(m_instance->m_cs);
 
-  list.emplace_back(g_localizeStrings.Get(20422),
-                    static_cast<int>(XbmcThreads::EndTime::InfiniteValue.count()));
+  list.emplace_back(g_localizeStrings.Get(20422), std::numeric_limits<int>::max());
   list.emplace_back(g_localizeStrings.Get(13551), 0);
 
   if (m_instance->m_audioEngine.SupportsSilenceTimeout())

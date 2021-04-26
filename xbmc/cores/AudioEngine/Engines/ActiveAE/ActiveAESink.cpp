@@ -1140,7 +1140,7 @@ void CActiveAESink::GenerateNoise()
 void CActiveAESink::SetSilenceTimer()
 {
   if (m_extStreaming)
-    m_extSilenceTimeout = static_cast<unsigned int>(XbmcThreads::EndTime::InfiniteValue.count());
+    m_extSilenceTimeout = std::numeric_limits<unsigned int>::max();
   else if (m_extAppFocused)
     m_extSilenceTimeout = m_silenceTimeOut;
   else

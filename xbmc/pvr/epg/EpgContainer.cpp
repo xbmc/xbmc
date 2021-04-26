@@ -436,7 +436,7 @@ void CPVREpgContainer::Process()
 
   // store data on exit
   CLog::Log(LOGINFO, "EPG Container: Persisting unsaved events...");
-  PersistAll(static_cast<unsigned int>(XbmcThreads::EndTime::InfiniteValue.count()));
+  PersistAll(std::numeric_limits<unsigned int>::max());
   CLog::Log(LOGINFO, "EPG Container: Persisting events done");
 }
 
@@ -523,7 +523,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
     const PVREpgSearchData& searchData) const
 {
   // make sure we have up-to-date data in the database.
-  PersistAll(static_cast<unsigned int>(XbmcThreads::EndTime::InfiniteValue.count()));
+  PersistAll(std::numeric_limits<unsigned int>::max());
 
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
