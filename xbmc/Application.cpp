@@ -4794,9 +4794,12 @@ void CApplication::PrintStartupLog()
 
   std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
   if (!cpuModel.empty())
-    CLog::Log(LOGINFO, "Host CPU: {}, {} core{} available", cpuModel,
+  {
+    // cpuModel must use c_str(), otherwise some cpuid calls provide null bytes in the string
+    CLog::Log(LOGINFO, "Host CPU: {}, {} core{} available", cpuModel.c_str(),
               CServiceBroker::GetCPUInfo()->GetCPUCount(),
               (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
+  }
   else
     CLog::Log(LOGINFO, "{} CPU core{} available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
               (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
