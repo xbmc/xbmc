@@ -275,6 +275,8 @@ CCPUInfoLinux::CCPUInfoLinux()
   }
 #endif
 
+  m_cpuModel = m_cpuModel.substr(0, m_cpuModel.find(char(0))); // remove extra null terminations
+
 #if defined(HAS_NEON) && defined(__arm__)
   if (getauxval(AT_HWCAP) & HWCAP_NEON)
     m_cpuFeatures |= CPU_FEATURE_NEON;
