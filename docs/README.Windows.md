@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Windows build guide
-This guide has been tested with Windows 10 Pro x64, version 1709, build 16299.334. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with Windows 10 Pro x64, version 20H2, build 19042.928. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
@@ -12,7 +12,7 @@ This guide has been tested with Windows 10 Pro x64, version 1709, build 16299.33
 6. **[Build Kodi manually](#6-build-kodi-manually)**
 
 ## 1. Document conventions
-This guide assumes you are using `Developer Command Prompt for VS 2017`, also known as `terminal`, `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
+This guide assumes you are using `Developer Command Prompt for VS 2019`, also known as `terminal`, `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
 
 This is a comment that provides context:
 ```
@@ -31,9 +31,9 @@ Commands that contain strings enclosed in angle brackets denote something you ne
 git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
 ```
 
-**Example:** Clone Kodi's current Krypton branch:
+**Example:** Clone Kodi's current Matrix branch:
 ```
-git clone -b Krypton https://github.com/xbmc/xbmc kodi
+git clone -b Matrix https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
@@ -46,11 +46,11 @@ Several different strategies are used to draw your attention to certain pieces o
 
 ## 2. Prerequisites
 To build Kodi:
-* **[CMake](https://cmake.org/download/)**
+* **[CMake](https://cmake.org/download/)** (version 3.15 or greater is required)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
-* **[Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
+* **[Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)** or **[Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
 
 To run Kodi you need a relatively recent CPU with integrated GPU or discrete GPU with up-to-date graphics device-drivers installed from the manufacturer's website.
 * **[AMD](https://support.amd.com/en-us/download)**
@@ -72,6 +72,18 @@ After install finishes, add java's executable file path to your `PATH` **[enviro
 
 ### NSIS install notes
 Default options are fine.
+
+### Visual Studio 2019 install notes
+Start the VS2019 installer and click **Workloads** select
+* Under **Desktop & Mobile** section select
+  * `Desktop development with C++`
+  * `Universal Windows Platform development` (if compiling for UWP or UWP-ARM)
+
+Click in **Individual components** select
+* Under **Compilers, build tools and runtimes** section select
+  * `MSVC v142 - VS 2019 C++ ARM build tools (Latest)` (if compiling for UWP-ARM)
+* Under **SDKs, libraries, and frameworks** section select
+  * `Windows 10 SDK (10.0.18362.0)` (if compiling for UWP or UWP-ARM)
 
 ### Visual Studio 2017 install notes
 Start the VS2017 installer and click `Individual components`.
@@ -178,6 +190,20 @@ BuildSetup.bat
 
 UWP builds generate `msix`, `appxsym` and `cer` files, located at `%userprofile%\kodi\project\UWPBuildSetup`. You can install them following this **[guide](https://kodi.wiki/view/HOW-TO:Install_Kodi_for_Universal_Windows_Platform)**.
 
+**NOTE:** To generate an exact replica of the official Kodi Windows installer, some additional steps are required:
+
+Build built-in add-ons (peripheral.joystick only) with command line:
+```
+make-addons.bat peripheral.joystick
+```
+
+Build the installer with the command line:
+```
+BuildSetup.bat nobinaryaddons clean
+```
+
+`BuildSetup.bat` without parameters also builds all the Kodi add-ons that are not needed because they are not included in the installer and the process is very time consuming.
+
 **[back to top](#table-of-contents)**
 
 ## 6. Build Kodi manually
@@ -198,30 +224,40 @@ cd kodi-build
 
 Configure build for 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 15 Win64" -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for 32bit:
 ```
-cmake -G "Visual Studio 15" -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 15 Win64" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 15" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP ARM 32bit:
 ```
-cmake -G "Visual Studio 15 ARM" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
-**WARNING:** `-T host=x64` requires CMake version >= 3.8. If your version is older, drop `-T host=x64` from the command.
+**Visual Studio 2017:**
+
+Replace:
+```
+-G "Visual Studio 16 2019"
+```
+
+With:
+```
+-G "Visual Studio 15 2017"
+```
 
 Build Kodi:
 Build a `Debug` binary:
