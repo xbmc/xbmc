@@ -17,8 +17,6 @@ class CDVDOverlaySSA : public CDVDOverlay
 {
 public:
 
-  CDVDSubtitlesLibass* m_libass;
-
   explicit CDVDOverlaySSA(CDVDSubtitlesLibass* libass) : CDVDOverlay(DVDOVERLAY_TYPE_SSA)
   {
     replace = true;
@@ -43,4 +41,13 @@ public:
   {
     return new CDVDOverlaySSA(*this);
   }
+
+  /*!
+   \brief Getter for the libass handler
+   \return The libass handler.
+   */
+  CDVDSubtitlesLibass* GetLibass() const { return m_libass; }
+
+private:
+  CDVDSubtitlesLibass* m_libass;
 };
