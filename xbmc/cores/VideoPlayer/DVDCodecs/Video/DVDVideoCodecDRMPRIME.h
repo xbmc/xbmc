@@ -20,7 +20,7 @@ public:
   explicit CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo);
   ~CDVDVideoCodecDRMPRIME() override;
 
-  static CDVDVideoCodec* Create(CProcessInfo& processInfo);
+  static std::unique_ptr<CDVDVideoCodec> Create(CProcessInfo& processInfo);
   static void Register();
 
   bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;

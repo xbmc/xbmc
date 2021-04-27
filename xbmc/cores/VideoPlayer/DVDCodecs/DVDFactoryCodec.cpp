@@ -38,7 +38,8 @@ std::map<std::string, CreateHWAccel> CDVDFactoryCodec::m_hwAccels;
 
 CCriticalSection videoCodecSection, audioCodecSection;
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo)
+std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo& hint,
+                                                                   CProcessInfo& processInfo)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -54,10 +55,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
     hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
     if (addonInfo && parentInstance)
     {
-      pCodec.reset(new CAddonVideoCodec(processInfo, addonInfo, parentInstance));
-      if (pCodec && pCodec->Open(hint, options))
+      pCodec = std::make_unique<CAddonVideoCodec>(processInfo, addonInfo, parentInstance);
+      if (pCodec->Open(hint, options))
       {
-        return pCodec.release();
+        return pCodec;
       }
     }
     return nullptr;
@@ -68,27 +69,27 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   {
     for (auto &codec : m_hwVideoCodecs)
     {
-      pCodec.reset(CreateVideoCodecHW(codec.first, processInfo));
+      pCodec = CreateVideoCodecHW(codec.first, processInfo);
       if (pCodec && pCodec->Open(hint, options))
       {
-        return pCodec.release();
+        return pCodec;
       }
     }
     if (!(hint.codecOptions & CODEC_ALLOW_FALLBACK))
       return nullptr;
   }
 
-  pCodec.reset(new CDVDVideoCodecFFmpeg(processInfo));
+  pCodec = std::make_unique<CDVDVideoCodecFFmpeg>(processInfo);
   if (pCodec->Open(hint, options))
   {
-    return pCodec.release();
+    return pCodec;
   }
 
   return nullptr;
 }
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(const std::string& id,
-                                                     CProcessInfo& processInfo)
+std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodecHW(const std::string& id,
+                                                                     CProcessInfo& processInfo)
 {
   CSingleLock lock(videoCodecSection);
 

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 #include <map>
 #include <string>
@@ -29,15 +29,15 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
-typedef CDVDVideoCodec* (*CreateHWVideoCodec)(CProcessInfo &processInfo);
+typedef std::unique_ptr<CDVDVideoCodec> (*CreateHWVideoCodec)(CProcessInfo& processInfo);
 typedef IHardwareDecoder* (*CreateHWAccel)(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
 typedef CDVDAudioCodec* (*CreateHWAudioCodec)(CProcessInfo &processInfo);
 
 class CDVDFactoryCodec
 {
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
-                                          CProcessInfo &processInfo);
+  static std::unique_ptr<CDVDVideoCodec> CreateVideoCodec(CDVDStreamInfo& hint,
+                                                          CProcessInfo& processInfo);
 
   static IHardwareDecoder* CreateVideoCodecHWAccel(const std::string& id,
                                                    CDVDStreamInfo& hint,
@@ -62,7 +62,8 @@ public:
 
 
 protected:
-  static CDVDVideoCodec* CreateVideoCodecHW(const std::string& id, CProcessInfo& processInfo);
+  static std::unique_ptr<CDVDVideoCodec> CreateVideoCodecHW(const std::string& id,
+                                                            CProcessInfo& processInfo);
   static CDVDAudioCodec* CreateAudioCodecHW(const std::string& id, CProcessInfo& processInfo);
 
   static std::map<std::string, CreateHWVideoCodec> m_hwVideoCodecs;
