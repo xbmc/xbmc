@@ -132,42 +132,78 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
     SET_CONTROL_LABEL(i++,CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#ifndef HAS_DX
-    SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
-    SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
-#if defined(TARGET_LINUX)
-    SetControlLabel(i++, "%s %s", 39153, SYSTEM_PLATFORM_WINDOWING);
-#endif
+
+    auto renderingSystem = CServiceBroker::GetRenderSystem();
+    if (renderingSystem)
+    {
+      static std::string vendor = renderingSystem->GetRenderVendor();
+      if (!vendor.empty())
+        SET_CONTROL_LABEL(i++, StringUtils::Format("%s %s", g_localizeStrings.Get(22007), vendor));
+
+#if defined(HAS_DX)
+      int renderVersionLabel = 22024;
 #else
-    SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
+      int renderVersionLabel = 22009;
 #endif
-#if !defined(__arm__) && !defined(__aarch64__) && !defined(HAS_DX)
+      static std::string version = renderingSystem->GetRenderVersionString();
+      if (!version.empty())
+        SET_CONTROL_LABEL(
+            i++, StringUtils::Format("%s %s", g_localizeStrings.Get(renderVersionLabel), version));
+    }
+
+    auto windowSystem = CServiceBroker::GetWinSystem();
+    if (windowSystem)
+    {
+      static std::string platform = windowSystem->GetName();
+      if (platform != "platform default")
+        SET_CONTROL_LABEL(i++,
+                          StringUtils::Format("%s %s", g_localizeStrings.Get(39153), platform));
+    }
+
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
-#endif
   }
 
   else if (m_section == CONTROL_BT_HARDWARE)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
-    SET_CONTROL_LABEL(i++, "CPU: " + CServiceBroker::GetCPUInfo()->GetCPUModel());
-#if defined(__arm__) && defined(TARGET_LINUX)
-    SET_CONTROL_LABEL(i++, "BogoMips: " + CServiceBroker::GetCPUInfo()->GetCPUBogoMips());
-    if (!CServiceBroker::GetCPUInfo()->GetCPUSoC().empty())
-      SET_CONTROL_LABEL(i++, "SoC: " + CServiceBroker::GetCPUInfo()->GetCPUSoC());
-    SET_CONTROL_LABEL(i++, "Hardware: " + CServiceBroker::GetCPUInfo()->GetCPUHardware());
-    SET_CONTROL_LABEL(i++, "Revision: " + CServiceBroker::GetCPUInfo()->GetCPURevision());
-    SET_CONTROL_LABEL(i++, "Serial: " + CServiceBroker::GetCPUInfo()->GetCPUSerial());
-#endif
-    SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
-#if (!defined(__arm__) && !defined(__aarch64__))
-    SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
-#endif
-#if !(defined(__arm__) && defined(TARGET_LINUX))
-    SetControlLabel(i++, "%s %s", 13271, SYSTEM_CPU_USAGE);
-#endif
-    i++;  // empty line
-    SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
-    SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
+
+    auto cpuInfo = CServiceBroker::GetCPUInfo();
+    if (cpuInfo)
+    {
+      static std::string model = cpuInfo->GetCPUModel();
+      if (!model.empty())
+        SET_CONTROL_LABEL(i++, "CPU: " + model);
+
+      static std::string mips = cpuInfo->GetCPUBogoMips();
+      if (!mips.empty())
+        SET_CONTROL_LABEL(i++, "BogoMips: " + mips);
+
+      static std::string soc = cpuInfo->GetCPUSoC();
+      if (!soc.empty())
+        SET_CONTROL_LABEL(i++, "SoC: " + soc);
+
+      static std::string hardware = cpuInfo->GetCPUHardware();
+      if (!hardware.empty())
+        SET_CONTROL_LABEL(i++, "Hardware: " + hardware);
+
+      static std::string revision = cpuInfo->GetCPURevision();
+      if (!revision.empty())
+        SET_CONTROL_LABEL(i++, "Revision: " + revision);
+
+      static std::string serial = cpuInfo->GetCPUSerial();
+      if (!serial.empty())
+        SET_CONTROL_LABEL(i++, "Serial: " + serial);
+
+      // temperature can't really be conditional because of localization units
+      SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
+
+      // we can check if the cpufrequency is not 0 (default if not implemented)
+      // but we have to call through CGUIInfoManager -> CSystemGUIInfo -> CSysInfo
+      // to limit the frequency of updates
+      static float cpuFreq = cpuInfo->GetCPUFrequency();
+      if (cpuFreq > 0)
+        SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
+    }
   }
 
   else if (m_section == CONTROL_BT_PVR)

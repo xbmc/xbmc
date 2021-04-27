@@ -349,7 +349,7 @@ int CCPUInfoLinux::GetUsedPercentage()
 float CCPUInfoLinux::GetCPUFrequency()
 {
   if (m_freqPath.empty())
-    return -1;
+    return 0;
 
   CSysfsPath path{m_freqPath};
   return path.Get<float>() / 1000.0;
