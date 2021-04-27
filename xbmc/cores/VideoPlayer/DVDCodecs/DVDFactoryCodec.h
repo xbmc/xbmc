@@ -32,7 +32,8 @@ class CDVDCodecOptions;
 
 using CreateHWVideoCodec =
     std::function<std::unique_ptr<CDVDVideoCodec>(CProcessInfo& processInfo)>;
-typedef IHardwareDecoder* (*CreateHWAccel)(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+using CreateHWAccel = std::function<IHardwareDecoder*(
+    CDVDStreamInfo& hint, CProcessInfo& processInfo, AVPixelFormat fmt)>;
 typedef std::unique_ptr<CDVDAudioCodec> (*CreateHWAudioCodec)(CProcessInfo& processInfo);
 
 class CDVDFactoryCodec
