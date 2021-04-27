@@ -376,6 +376,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     std::string m_userAgent;
     uint32_t m_nfsTimeout;
+    int m_nfsRetries;
 
   private:
     void Initialize();
