@@ -51,7 +51,8 @@ void CPlayerCoreFactory::OnSettingsLoaded()
   LoadConfiguration(m_profileManager.GetUserDataItem(PLAYERCOREFACTORY_XML), false);
 }
 
-IPlayer* CPlayerCoreFactory::CreatePlayer(const std::string& nameId, IPlayerCallback& callback) const
+std::shared_ptr<IPlayer> CPlayerCoreFactory::CreatePlayer(const std::string& nameId,
+                                                          IPlayerCallback& callback) const
 {
   CSingleLock lock(m_section);
   size_t idx = GetPlayerIndex(nameId);

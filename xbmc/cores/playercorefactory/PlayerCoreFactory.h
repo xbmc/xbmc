@@ -37,7 +37,7 @@ public:
 
   void OnSettingsLoaded() override;
 
-  IPlayer* CreatePlayer(const std::string& nameId, IPlayerCallback& callback) const;
+  std::shared_ptr<IPlayer> CreatePlayer(const std::string& nameId, IPlayerCallback& callback) const;
   void GetPlayers(const CFileItem& item, std::vector<std::string>&players) const;   //Players supporting the specified file
   void GetPlayers(std::vector<std::string>&players, bool audio, bool video) const;  //All audio players and/or video players
   void GetPlayers(std::vector<std::string>&players) const;                          //All players
