@@ -43,9 +43,6 @@ CPlayerCoreFactory::CPlayerCoreFactory(const CProfileManager &profileManager) :
 CPlayerCoreFactory::~CPlayerCoreFactory()
 {
   m_settings->GetSettingsManager()->UnregisterSettingsHandler(this);
-
-  for(std::vector<CPlayerSelectionRule *>::iterator it = m_vecCoreSelectionRules.begin(); it != m_vecCoreSelectionRules.end(); ++it)
-    delete *it;
 }
 
 void CPlayerCoreFactory::OnSettingsLoaded()
@@ -104,7 +101,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   GetPlayers(validPlayers);
 
   // Process rules
-  for (auto rule: m_vecCoreSelectionRules)
+  for (auto& rule : m_vecCoreSelectionRules)
     rule->GetPlayers(item, validPlayers, players);
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: matched {0} rules with players", players.size());
@@ -308,9 +305,6 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
   if (clear)
   {
     m_vecPlayerConfigs.clear();
-
-    for (auto rule: m_vecCoreSelectionRules)
-      delete rule;
     m_vecCoreSelectionRules.clear();
 
     // Builtin players
@@ -380,21 +374,21 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     {
       if (StringUtils::CompareNoCase(szAction, "append") == 0)
       {
-        m_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
+        m_vecCoreSelectionRules.emplace_back(std::make_unique<CPlayerSelectionRule>(pRule));
       }
       else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
       {
-        m_vecCoreSelectionRules.insert(m_vecCoreSelectionRules.begin(), 1, new CPlayerSelectionRule(pRule));
+        m_vecCoreSelectionRules.emplace_front(std::make_unique<CPlayerSelectionRule>(pRule));
       }
       else
       {
         m_vecCoreSelectionRules.clear();
-        m_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
+        m_vecCoreSelectionRules.emplace_back(std::make_unique<CPlayerSelectionRule>(pRule));
       }
     }
     else
     {
-      m_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
+      m_vecCoreSelectionRules.emplace_back(std::make_unique<CPlayerSelectionRule>(pRule));
     }
 
     pRule = pRule->NextSiblingElement("rules");
