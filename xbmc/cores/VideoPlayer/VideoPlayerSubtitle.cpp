@@ -149,7 +149,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   if(hints.codec == AV_CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  m_pOverlayCodec.reset(CDVDFactoryCodec::CreateOverlayCodec(hints));
+  m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
   if(m_pOverlayCodec)
     return true;
 

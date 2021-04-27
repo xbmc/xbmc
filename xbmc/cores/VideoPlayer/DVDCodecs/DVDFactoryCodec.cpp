@@ -241,7 +241,7 @@ std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodecHW(const std::
 // Overlay
 //------------------------------------------------------------------------------
 
-CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
+std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStreamInfo& hint)
 {
   std::unique_ptr<CDVDOverlayCodec> pCodec;
   CDVDCodecOptions options;
@@ -250,44 +250,28 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
   {
     case AV_CODEC_ID_TEXT:
     case AV_CODEC_ID_SUBRIP:
-      pCodec.reset(new CDVDOverlayCodecText());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecText>();
       break;
 
     case AV_CODEC_ID_SSA:
     case AV_CODEC_ID_ASS:
-      pCodec.reset(new CDVDOverlayCodecSSA());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
-
-      pCodec.reset(new CDVDOverlayCodecText());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecSSA>();
       break;
 
+      //! @todo: this seems unused?
+      pCodec = std::make_unique<CDVDOverlayCodecText>();
+
     case AV_CODEC_ID_MOV_TEXT:
-      pCodec.reset(new CDVDOverlayCodecTX3G());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecTX3G>();
       break;
 
     default:
-      pCodec.reset(new CDVDOverlayCodecFFmpeg());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecFFmpeg>();
       break;
   }
+
+  if (pCodec->Open(hint, options))
+    return pCodec;
 
   return nullptr;
 }

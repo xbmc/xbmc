@@ -50,7 +50,7 @@ public:
                                                           bool allowdtshddecode,
                                                           CAEStreamInfo::DataType ptStreamType);
 
-  static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint);
+  static std::unique_ptr<CDVDOverlayCodec> CreateOverlayCodec(CDVDStreamInfo& hint);
 
   static void RegisterHWVideoCodec(const std::string& id, CreateHWVideoCodec createFunc);
   static void ClearHWVideoCodecs();
