@@ -848,7 +848,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "soaa")
       SetAlbumArtistSort(tag, StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS")
+    else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS" ||
+             it->first == "----:com.apple.iTunes:albumartists")
       SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "soco")
       SetComposerSort(tag, StringListToVectorString(it->second.toStringList()));
