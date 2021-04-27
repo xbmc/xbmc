@@ -62,7 +62,7 @@ private:
 
   bool LoadConfiguration(const std::string &file, bool clear);
 
-  std::vector<CPlayerCoreConfig *> m_vecPlayerConfigs;
+  std::vector<std::unique_ptr<CPlayerCoreConfig>> m_vecPlayerConfigs;
   std::vector<CPlayerSelectionRule *> m_vecCoreSelectionRules;
   mutable CCriticalSection m_section;
 };
