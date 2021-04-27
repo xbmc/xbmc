@@ -31,7 +31,7 @@ class CDVDCodecOptions;
 
 typedef std::unique_ptr<CDVDVideoCodec> (*CreateHWVideoCodec)(CProcessInfo& processInfo);
 typedef IHardwareDecoder* (*CreateHWAccel)(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
-typedef CDVDAudioCodec* (*CreateHWAudioCodec)(CProcessInfo &processInfo);
+typedef std::unique_ptr<CDVDAudioCodec> (*CreateHWAudioCodec)(CProcessInfo& processInfo);
 
 class CDVDFactoryCodec
 {
@@ -44,9 +44,11 @@ public:
                                                    CProcessInfo& processInfo,
                                                    AVPixelFormat fmt);
 
-  static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
-                                          bool allowpassthrough, bool allowdtshddecode,
-                                          CAEStreamInfo::DataType ptStreamType);
+  static std::unique_ptr<CDVDAudioCodec> CreateAudioCodec(CDVDStreamInfo& hint,
+                                                          CProcessInfo& processInfo,
+                                                          bool allowpassthrough,
+                                                          bool allowdtshddecode,
+                                                          CAEStreamInfo::DataType ptStreamType);
 
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint);
 
@@ -64,7 +66,8 @@ public:
 protected:
   static std::unique_ptr<CDVDVideoCodec> CreateVideoCodecHW(const std::string& id,
                                                             CProcessInfo& processInfo);
-  static CDVDAudioCodec* CreateAudioCodecHW(const std::string& id, CProcessInfo& processInfo);
+  static std::unique_ptr<CDVDAudioCodec> CreateAudioCodecHW(const std::string& id,
+                                                            CProcessInfo& processInfo);
 
   static std::map<std::string, CreateHWVideoCodec> m_hwVideoCodecs;
   static std::map<std::string, CreateHWAccel> m_hwAccels;

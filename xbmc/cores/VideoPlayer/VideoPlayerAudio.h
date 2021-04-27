@@ -64,7 +64,7 @@ protected:
 
   bool ProcessDecoderOutput(DVDAudioFrame &audioframe);
   void UpdatePlayerInfo();
-  void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
+  void OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec);
   //! Switch codec if needed. Called when the sample rate gotten from the
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();

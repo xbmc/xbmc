@@ -164,9 +164,12 @@ void CDVDFactoryCodec::ClearHWAccels()
 // Audio
 //------------------------------------------------------------------------------
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
-                                                   bool allowpassthrough, bool allowdtshddecode,
-                                                   CAEStreamInfo::DataType ptStreamType)
+std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodec(
+    CDVDStreamInfo& hint,
+    CProcessInfo& processInfo,
+    bool allowpassthrough,
+    bool allowdtshddecode,
+    CAEStreamInfo::DataType ptStreamType)
 {
   std::unique_ptr<CDVDAudioCodec> pCodec;
   CDVDCodecOptions options;
@@ -180,27 +183,27 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   // platform specifig audio decoders
   for (auto &codec : m_hwAudioCodecs)
   {
-    pCodec.reset(CreateAudioCodecHW(codec.first, processInfo));
+    pCodec = CreateAudioCodecHW(codec.first, processInfo);
     if (pCodec && pCodec->Open(hint, options))
     {
-      return pCodec.release();
+      return pCodec;
     }
   }
 
   // we don't use passthrough if "sync playback to display" is enabled
   if (allowpassthrough && ptStreamType != CAEStreamInfo::STREAM_TYPE_NULL)
   {
-    pCodec.reset(new CDVDAudioCodecPassthrough(processInfo, ptStreamType));
+    pCodec = std::make_unique<CDVDAudioCodecPassthrough>(processInfo, ptStreamType);
     if (pCodec->Open(hint, options))
     {
-      return pCodec.release();
+      return pCodec;
     }
   }
 
-  pCodec.reset(new CDVDAudioCodecFFmpeg(processInfo));
+  pCodec = std::make_unique<CDVDAudioCodecFFmpeg>(processInfo);
   if (pCodec->Open(hint, options))
   {
-    return pCodec.release();
+    return pCodec;
   }
 
   return nullptr;
@@ -220,8 +223,8 @@ void CDVDFactoryCodec::ClearHWAudioCodecs()
   m_hwAudioCodecs.clear();
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
-                                                     CProcessInfo& processInfo)
+std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
+                                                                     CProcessInfo& processInfo)
 {
   CSingleLock lock(audioCodecSection);
 

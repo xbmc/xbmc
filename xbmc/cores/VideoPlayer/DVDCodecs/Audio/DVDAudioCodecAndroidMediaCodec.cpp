@@ -93,9 +93,9 @@ CDVDAudioCodecAndroidMediaCodec::~CDVDAudioCodecAndroidMediaCodec()
   Dispose();
 }
 
-CDVDAudioCodec* CDVDAudioCodecAndroidMediaCodec::Create(CProcessInfo &processInfo)
+std::unique_ptr<CDVDAudioCodec> CDVDAudioCodecAndroidMediaCodec::Create(CProcessInfo& processInfo)
 {
-  return new CDVDAudioCodecAndroidMediaCodec(processInfo);
+  return std::make_unique<CDVDAudioCodecAndroidMediaCodec>(processInfo);
 }
 
 bool CDVDAudioCodecAndroidMediaCodec::Register()

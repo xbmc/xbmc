@@ -31,7 +31,7 @@ public:
   ~CDVDAudioCodecAndroidMediaCodec() override;
 
   // registration
-  static CDVDAudioCodec* Create(CProcessInfo &processInfo);
+  static std::unique_ptr<CDVDAudioCodec> Create(CProcessInfo& processInfo);
   static bool Register();
 
   // required overrides
