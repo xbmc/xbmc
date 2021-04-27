@@ -11,6 +11,7 @@
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>
@@ -29,7 +30,8 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
-typedef std::unique_ptr<CDVDVideoCodec> (*CreateHWVideoCodec)(CProcessInfo& processInfo);
+using CreateHWVideoCodec =
+    std::function<std::unique_ptr<CDVDVideoCodec>(CProcessInfo& processInfo)>;
 typedef IHardwareDecoder* (*CreateHWAccel)(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
 typedef std::unique_ptr<CDVDAudioCodec> (*CreateHWAudioCodec)(CProcessInfo& processInfo);
 
