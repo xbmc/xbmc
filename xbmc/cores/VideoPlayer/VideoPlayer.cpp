@@ -4969,7 +4969,8 @@ void CVideoPlayer::UpdateContentState()
   m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, m_CurrentSubtitle.source,
                                                          m_CurrentSubtitle.demuxerId, m_CurrentSubtitle.id);
 
-  if (m_content.m_videoIndex == -1 && m_content.m_audioIndex == -1)
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) && m_content.m_videoIndex == -1 &&
+      m_content.m_audioIndex == -1)
   {
     std::shared_ptr<CDVDInputStreamNavigator> nav =
           std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
