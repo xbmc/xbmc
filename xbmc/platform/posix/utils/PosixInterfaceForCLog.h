@@ -14,7 +14,7 @@ class CPosixInterfaceForCLog : public IPlatformLog
 {
 public:
   CPosixInterfaceForCLog() = default;
-  virtual ~CPosixInterfaceForCLog() = default;
+  virtual ~CPosixInterfaceForCLog() override = default;
 
   spdlog_filename_t GetLogFilename(const std::string& filename) const override { return filename; }
   void AddSinks(

@@ -12,15 +12,6 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/utils/AndroidInterfaceForCLog.h"
-#elif defined(TARGET_DARWIN)
-#include "platform/darwin/utils/DarwinInterfaceForCLog.h"
-#elif defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
-#include "platform/win32/utils/Win32InterfaceForCLog.h"
-#else
-#include "platform/posix/utils/PosixInterfaceForCLog.h"
-#endif
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -35,9 +26,12 @@
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/sinks/dup_filter_sink.h>
 
+namespace
+{
 static constexpr unsigned char Utf8Bom[3] = {0xEF, 0xBB, 0xBF};
 static const std::string LogFileExtension = ".log";
 static const std::string LogPattern = "%Y-%m-%d %T.%e T:%-5t %7l <%n>: %v";
+} // namespace
 
 CLog::CLog()
   : m_platform(IPlatformLog::CreatePlatformLog()),

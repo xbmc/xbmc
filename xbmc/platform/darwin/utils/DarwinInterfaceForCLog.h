@@ -19,7 +19,7 @@ class CDarwinInterfaceForCLog : public CPosixInterfaceForCLog, public spdlog::si
 {
 public:
   CDarwinInterfaceForCLog();
-  ~CDarwinInterfaceForCLog() = default;
+  ~CDarwinInterfaceForCLog() override = default;
 
   // specialization of CPosixInterfaceForCLog
   void AddSinks(
