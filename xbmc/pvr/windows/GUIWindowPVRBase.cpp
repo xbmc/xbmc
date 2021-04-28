@@ -352,7 +352,7 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
         case PVREvent::ChannelGroupsInvalidated:
         {
           std::shared_ptr<CPVRChannelGroup> group =
-              CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(m_bRadio);
+              CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(m_bRadio);
           m_channelGroupsSelector->Initialize(this, m_bRadio);
           m_channelGroupsSelector->SelectChannelGroup(group);
           SetChannelGroup(std::move(group));
@@ -450,13 +450,13 @@ bool CGUIWindowPVRBase::InitChannelGroup()
   std::shared_ptr<CPVRChannelGroup> group;
   if (m_channelGroupPath.empty())
   {
-    group = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(m_bRadio);
+    group = CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(m_bRadio);
   }
   else
   {
     group = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupByPath(m_channelGroupPath);
     if (group)
-      CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(group);
+      CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(group);
     else
       CLog::LogF(LOGERROR, "Found no {} channel group with path '{}'!", m_bRadio ? "radio" : "TV",
                  m_vecItems->GetPath());
@@ -505,7 +505,7 @@ void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&grou
 
   if (updateChannelGroup)
   {
-    CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(updateChannelGroup);
+    CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(updateChannelGroup);
     Update(GetDirectoryPath());
   }
 }
