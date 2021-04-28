@@ -62,8 +62,6 @@ public:
   int GetPriority(void);
   bool SetPriority(const int iPriority);
 
-  float GetRelativeUsage();  // returns the relative cpu usage of this thread since last call
-  int64_t GetAbsoluteUsage();
   // -----------------------------------------------------------------------------------
 
   static CThread* GetCurrentThread();
@@ -108,10 +106,6 @@ private:
   CEvent m_StartEvent;
   CCriticalSection m_CriticalSection;
   IRunnable* m_pRunnable;
-
-  uint64_t m_iLastUsage = 0;
-  uint64_t m_iLastTime = 0;
-  float m_fLastUsage = 0.0f;
 
   std::string m_ThreadName;
   std::thread* m_thread = nullptr;
