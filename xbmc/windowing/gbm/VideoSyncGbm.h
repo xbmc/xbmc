@@ -13,10 +13,12 @@
 
 #include <atomic>
 
+class CWinSystemBase;
+
 class CVideoSyncGbm : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncGbm(void* clock) : CVideoSync(clock){};
+  explicit CVideoSyncGbm(void* clock);
   CVideoSyncGbm() = delete;
   ~CVideoSyncGbm() override = default;
   bool Setup(PUPDATECLOCK func) override;
@@ -32,4 +34,6 @@ private:
   uint64_t m_sequence = 0;
   uint64_t m_offset = 0;
   std::atomic<bool> m_abort{false};
+
+  CWinSystemBase* m_winSystem;
 };
