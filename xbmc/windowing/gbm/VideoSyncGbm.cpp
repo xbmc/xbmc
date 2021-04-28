@@ -14,7 +14,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
-#include "xbmc/windowing/gbm/WinSystemGbm.h"
+#include "windowing/gbm/WinSystemGbm.h"
 #include "xf86drm.h"
 #include "xf86drmMode.h"
 
