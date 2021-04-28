@@ -325,6 +325,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
   m_windowing = params.m_windowing;
+  m_logTarget = params.m_logTarget;
 
   CServiceBroker::CreateLogging();
 
