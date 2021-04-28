@@ -10,6 +10,8 @@
 
 #include "utils/CPUInfo.h"
 
+class CTemperature;
+
 class CCPUInfoPosix : public CCPUInfo
 {
 public:

@@ -6,32 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <signal.h>
-#include <sys/resource.h>
 #include <cstdio>
-
 #include <cstring>
+#include <signal.h>
+
+#include <sys/resource.h>
 
 #if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
-  #include "Util.h"
-  // SDL redefines main as SDL_main
-  #ifdef HAS_SDL
-    #include <SDL/SDL.h>
-  #endif
+#include "Util.h"
+// SDL redefines main as SDL_main
+#ifdef HAS_SDL
+#include <SDL/SDL.h>
+#endif
 #endif
 
 #include "AppParamParser.h"
-#include "FileItem.h"
-#include "messaging/ApplicationMessenger.h"
-#include "PlayListPlayer.h"
-#include "platform/MessagePrinter.h"
 #include "platform/xbmc.h"
-#include "PlatformPosix.h"
-#include "utils/log.h"
 
-#ifdef HAS_LIRC
-#include "platform/linux/input/LIRC.h"
-#endif
+#include "platform/posix/PlatformPosix.h"
 
 #include <locale.h>
 
@@ -41,16 +33,15 @@ namespace
 extern "C"
 {
 
-void XBMC_POSIX_HandleSignal(int sig)
-{
-  // Setting an atomic flag is one of the only useful things that is permitted by POSIX
-  // in signal handlers
-  CPlatformPosix::RequestQuit();
+  void XBMC_POSIX_HandleSignal(int sig)
+  {
+    // Setting an atomic flag is one of the only useful things that is permitted by POSIX
+    // in signal handlers
+    CPlatformPosix::RequestQuit();
+  }
 }
 
-}
-
-}
+} // namespace
 
 
 int main(int argc, char* argv[])

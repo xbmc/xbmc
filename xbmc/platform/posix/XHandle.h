@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XHandlePublic.h"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 
@@ -16,7 +15,12 @@
 #include <string>
 #include <vector>
 
-#include "PlatformDefs.h"
+class CCriticalSection;
+
+namespace XbmcThreads
+{
+class ConditionVariable;
+}
 
 struct CXHandle {
 

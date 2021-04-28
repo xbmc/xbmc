@@ -10,6 +10,11 @@
 
 #include "filesystem/IDirectory.h"
 
+#include <string>
+
+class CFileItemList;
+class CURL;
+
 namespace XFILE
 {
 

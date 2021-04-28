@@ -8,8 +8,12 @@
 
 #pragma once
 
+#include "events/IEvent.h"
 #include "events/UniqueEvent.h"
 #include "media/MediaType.h"
+#include "utils/Variant.h"
+
+#include <string>
 
 class CMediaLibraryEvent : public CUniqueEvent
 {

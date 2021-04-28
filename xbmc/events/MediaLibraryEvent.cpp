@@ -15,6 +15,8 @@
 #include "guilib/WindowIDs.h"
 #include "utils/URIUtils.h"
 
+#include <vector>
+
 CMediaLibraryEvent::CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevel::Information */)
   : CUniqueEvent(label, description, level),
     m_mediaType(mediaType),

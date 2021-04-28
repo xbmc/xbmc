@@ -8,6 +8,7 @@
 
 #include "Mmap.h"
 
+#include <errno.h>
 #include <system_error>
 
 using namespace KODI::UTILS::POSIX;

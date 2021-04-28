@@ -9,7 +9,9 @@
 #pragma once
 
 #include "addons/IAddon.h"
+#include "events/IEvent.h"
 #include "events/UniqueEvent.h"
+#include "utils/Variant.h"
 
 class CAddonEvent : public CUniqueEvent
 {

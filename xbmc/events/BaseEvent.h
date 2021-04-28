@@ -10,7 +10,12 @@
 
 #include "XBDateTime.h"
 #include "events/IEvent.h"
+#include "utils/DatabaseUtils.h"
+#include "utils/SortUtils.h"
 #include "utils/Variant.h"
+
+#include <cstdint>
+#include <string>
 
 class CBaseEvent : public IEvent
 {

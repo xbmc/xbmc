@@ -8,6 +8,10 @@
 
 #include "XHandle.h"
 
+#include "platform/posix/PlatformDefs.h"
+#include "platform/posix/XHandlePublic.h"
+#include "threads/Condition.h"
+#include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
