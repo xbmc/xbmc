@@ -21,12 +21,16 @@ public:
   explicit CVideoSyncGbm(void* clock);
   CVideoSyncGbm() = delete;
   ~CVideoSyncGbm() override = default;
+
+  // CVideoSync overrides
   bool Setup(PUPDATECLOCK func) override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;
-  void OnResetDisplay() override;
   void RefreshChanged() override;
+
+  // IDispResource overrides
+  void OnResetDisplay() override;
 
 private:
   int m_fd = -1;
