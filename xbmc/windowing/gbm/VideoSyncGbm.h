@@ -11,6 +11,8 @@
 #include "guilib/DispResource.h"
 #include "windowing/VideoSync.h"
 
+#include <atomic>
+
 class CVideoSyncGbm : public CVideoSync, IDispResource
 {
 public:
@@ -29,5 +31,5 @@ private:
   uint32_t m_crtcId = 0;
   uint64_t m_sequence = 0;
   uint64_t m_offset = 0;
-  volatile bool m_abort;
+  std::atomic<bool> m_abort{false};
 };
