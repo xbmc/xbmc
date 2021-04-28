@@ -341,6 +341,11 @@ void CRenderer::SetStereoMode(const std::string &stereomode)
 
 COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
 {
+  if (!o || !o->GetLibass())
+  {
+    return nullptr;
+  }
+
   // libass render in a target area which named as frame. the frame size may bigger than video size,
   // and including margins between video to frame edge. libass allow to render subtitles into the margins.
   // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
