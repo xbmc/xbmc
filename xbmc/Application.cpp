@@ -791,56 +791,6 @@ bool CApplication::Initialize()
   return true;
 }
 
-bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* = false*/)
-{
-  bool ret = false;
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  switch(eServer)
-  {
-    case ES_WEBSERVER:
-      // the callback will take care of starting/stopping webserver
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_WEBSERVER, bStart);
-      break;
-
-    case ES_AIRPLAYSERVER:
-      // the callback will take care of starting/stopping airplay
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_AIRPLAY, bStart);
-      break;
-
-    case ES_JSONRPCSERVER:
-      // the callback will take care of starting/stopping jsonrpc server
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_ESENABLED, bStart);
-      break;
-
-    case ES_UPNPSERVER:
-      // the callback will take care of starting/stopping upnp server
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_UPNPSERVER, bStart);
-      break;
-
-    case ES_UPNPRENDERER:
-      // the callback will take care of starting/stopping upnp renderer
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_UPNPRENDERER, bStart);
-      break;
-
-    case ES_EVENTSERVER:
-      // the callback will take care of starting/stopping event server
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_ESENABLED, bStart);
-      break;
-
-    case ES_ZEROCONF:
-      // the callback will take care of starting/stopping zeroconf
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, bStart);
-      break;
-
-    default:
-      ret = false;
-      break;
-  }
-  settings->Save();
-
-  return ret;
-}
-
 void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
