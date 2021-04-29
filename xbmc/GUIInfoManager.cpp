@@ -7066,6 +7066,12 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 ///     @skinning_v17 **[New Infolabel]** \link Window_Property_AddonId `Window.Property(Addon.ID)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Window.Property(IsRadio)`</b>,
+///                  \anchor Window_Property_IsRadio
+///                  _string_,
+///     @return "true" if the window is a radio window\, empty string otherwise (for use in the PVR windows).
+///     <p>
+///   }
 ///   \table_row3{   <b>`Window([window]).Property(key)`</b>,
 ///                  \anchor Window_Window_Property_key
 ///                  _string_,
