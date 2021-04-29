@@ -688,36 +688,34 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.frame_input->format = jpg_output ? AV_PIX_FMT_YUVJ420P : AV_PIX_FMT_RGBA;
 
   int got_package = 0;
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  // encoder will allocate memory
-  avpkt.data = nullptr;
-  avpkt.size = 0;
+  AVPacket* avpkt;
+  avpkt = av_packet_alloc();
 
-  int ret = EncodeFFmpegFrame(tdm.avOutctx, &avpkt, &got_package, tdm.frame_input);
+  int ret = EncodeFFmpegFrame(tdm.avOutctx, avpkt, &got_package, tdm.frame_input);
 
   if ((ret < 0) || (got_package == 0))
   {
     CLog::Log(LOGERROR, "Could not encode thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
+    av_packet_free(&avpkt);
     return false;
   }
 
-  bufferoutSize = avpkt.size;
+  bufferoutSize = avpkt->size;
   m_outputBuffer = (uint8_t*) av_malloc(bufferoutSize);
   if (!m_outputBuffer)
   {
     CLog::Log(LOGERROR, "Could not generate allocate memory for thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
-    av_packet_unref(&avpkt);
+    av_packet_free(&avpkt);
     return false;
   }
   // update buffer ptr for caller
   bufferout = m_outputBuffer;
 
   // copy avpkt data into outputbuffer
-  memcpy(m_outputBuffer, avpkt.data, avpkt.size);
-  av_packet_unref(&avpkt);
+  memcpy(m_outputBuffer, avpkt->data, avpkt->size);
+  av_packet_free(&avpkt);
 
   return true;
 }

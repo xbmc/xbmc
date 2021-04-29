@@ -354,7 +354,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
 
   m_pCodecContext->opaque = static_cast<ICallbackHWAccel*>(this);
-  m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
@@ -372,7 +371,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount() * 3 / 2;
       num_threads = std::max(1, std::min(num_threads, 16));
       m_pCodecContext->thread_count = num_threads;
-      m_pCodecContext->thread_safe_callbacks = 1;
       m_decoderState = STATE_SW_MULTI;
       CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - open frame threaded with %d threads", num_threads);
     }
@@ -561,16 +559,32 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
   m_dts = packet.dts;
   m_pCodecContext->reordered_opaque = pts_dtoi(packet.pts);
 
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  avpkt.data = packet.pData;
-  avpkt.size = packet.iSize;
-  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.side_data = static_cast<AVPacketSideData*>(packet.pSideData);
-  avpkt.side_data_elems = packet.iSideDataElems;
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
 
-  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+  avpkt->data = packet.pData;
+  avpkt->size = packet.iSize;
+  avpkt->dts = (packet.dts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->pts = (packet.pts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
+  avpkt->side_data_elems = packet.iSideDataElems;
+
+  int ret = avcodec_send_packet(m_pCodecContext, avpkt);
+
+  //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+  // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
+  // and storing our own AVPacket. This will require some extensive changes.
+  av_buffer_unref(&avpkt->buf);
+  av_free(avpkt);
 
   // try again
   if (ret == AVERROR(EAGAIN))
@@ -649,13 +663,20 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   // process ffmpeg
   if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
   {
-    AVPacket avpkt;
-    av_init_packet(&avpkt);
-    avpkt.data = nullptr;
-    avpkt.size = 0;
-    avpkt.dts = AV_NOPTS_VALUE;
-    avpkt.pts = AV_NOPTS_VALUE;
-    avcodec_send_packet(m_pCodecContext, &avpkt);
+    AVPacket* avpkt = av_packet_alloc();
+    if (!avpkt)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
+                strerror(errno));
+      return VC_ERROR;
+    }
+    avpkt->data = nullptr;
+    avpkt->size = 0;
+    avpkt->dts = AV_NOPTS_VALUE;
+    avpkt->pts = AV_NOPTS_VALUE;
+    avcodec_send_packet(m_pCodecContext, avpkt);
+
+    av_packet_free(&avpkt);
   }
 
   int ret = avcodec_receive_frame(m_pCodecContext, m_pDecodedFrame);
@@ -1000,15 +1021,44 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   else
     pVideoPicture->color_range = m_hints.colorRange == AVCOL_RANGE_JPEG ? 1 : 0;
 
-  pVideoPicture->qp_table = av_frame_get_qp_table(m_pFrame,
-                                                  &pVideoPicture->qstride,
-                                                  &pVideoPicture->qscale_type);
+  //! @todo: ffmpeg doesn't seem like they know how they want to handle this.
+  // av_frame_get_qp_table is deprecated but there doesn't seem to be a valid
+  // replacement. the following is basically what av_frame_get_qp_table does
+  // internally so we can avoid the deprecation warning however it may still
+  // break in the future because some definitions are guarded and may be removed.
+
+  pVideoPicture->qp_table = nullptr;
+  pVideoPicture->qstride = 0;
+  pVideoPicture->qscale_type = 0;
+
+  AVFrameSideData* sd;
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_PROPERTIES);
+  if (sd)
+  {
+    struct qp_properties
+    {
+      int stride;
+      int type;
+    };
+
+    auto qp = reinterpret_cast<qp_properties*>(sd->data);
+
+    sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_DATA);
+    if (sd && sd->buf && qp)
+    {
+      // this seems wrong but it's what ffmpeg does internally
+      pVideoPicture->qp_table = reinterpret_cast<int8_t*>(sd->buf->data);
+      pVideoPicture->qstride = qp->stride;
+      pVideoPicture->qscale_type = qp->type;
+    }
+  }
+
   pVideoPicture->pict_type = m_pFrame->pict_type;
 
   // metadata
   pVideoPicture->hasDisplayMetadata = false;
   pVideoPicture->hasLightMetadata = false;
-  AVFrameSideData *sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
   if (sd)
   {
     pVideoPicture->displayMetadata = *(AVMasteringDisplayMetadata *)sd->data;

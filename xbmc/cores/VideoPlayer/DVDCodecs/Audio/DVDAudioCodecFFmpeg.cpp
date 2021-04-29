@@ -69,7 +69,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (!m_pCodecContext)
     return false;
 
-  m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
 
@@ -143,16 +142,32 @@ bool CDVDAudioCodecFFmpeg::AddData(const DemuxPacket &packet)
     Reset();
   }
 
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  avpkt.data = packet.pData;
-  avpkt.size = packet.iSize;
-  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.side_data = static_cast<AVPacketSideData*>(packet.pSideData);
-  avpkt.side_data_elems = packet.iSideDataElems;
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
 
-  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+  avpkt->data = packet.pData;
+  avpkt->size = packet.iSize;
+  avpkt->dts = (packet.dts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->pts = (packet.pts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
+  avpkt->side_data_elems = packet.iSideDataElems;
+
+  int ret = avcodec_send_packet(m_pCodecContext, avpkt);
+
+  //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+  // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
+  // and storing our own AVPacket. This will require some extensive changes.
+  av_buffer_unref(&avpkt->buf);
+  av_free(avpkt);
 
   // try again
   if (ret == AVERROR(EAGAIN))
