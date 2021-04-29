@@ -14,7 +14,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
-#include "xbmc/windowing/gbm/WinSystemGbm.h"
+#include "windowing/gbm/WinSystemGbm.h"
 #include "xf86drm.h"
 #include "xf86drmMode.h"
 
@@ -22,22 +22,28 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+CVideoSyncGbm::CVideoSyncGbm(void* clock)
+  : CVideoSync(clock), m_winSystem(CServiceBroker::GetWinSystem())
+{
+  if (!m_winSystem)
+    throw std::runtime_error("window system not available");
+}
+
 bool CVideoSyncGbm::Setup(PUPDATECLOCK func)
 {
   UpdateClock = func;
   m_abort = false;
-  CServiceBroker::GetWinSystem()->Register(this);
+  m_winSystem->Register(this);
   CLog::Log(LOGDEBUG, "CVideoSyncGbm::{} setting up", __FUNCTION__);
 
-  auto winSystem =
-      dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-  if (!winSystem)
+  auto winSystemGbm = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(m_winSystem);
+  if (!winSystemGbm)
   {
     CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: failed to get winSystem", __FUNCTION__);
     return false;
   }
 
-  auto drm = winSystem->GetDrm();
+  auto drm = winSystemGbm->GetDrm();
   if (!drm)
   {
     CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: failed to get drm", __FUNCTION__);
@@ -101,12 +107,12 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
 void CVideoSyncGbm::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncGbm::{}: cleaning up", __FUNCTION__);
-  CServiceBroker::GetWinSystem()->Unregister(this);
+  m_winSystem->Unregister(this);
 }
 
 float CVideoSyncGbm::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
+  m_fps = m_winSystem->GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoSyncGbm::{}: fps:{}", __FUNCTION__, m_fps);
   return m_fps;
 }
@@ -118,6 +124,6 @@ void CVideoSyncGbm::OnResetDisplay()
 
 void CVideoSyncGbm::RefreshChanged()
 {
-  if (m_fps != CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS())
+  if (m_fps != m_winSystem->GetGfxContext().GetFPS())
     m_abort = true;
 }
