@@ -62,8 +62,8 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
 
   if (list && address)
   {
-    std::wstring type(list->Next->Element->LocalName);
-    std::wstring addr(address);
+    const std::wstring type(list->Next->Element->LocalName);
+    const std::wstring addr(address);
 
     CLog::Log(LOGDEBUG,
               "[WS-Discovery]: HELLO packet received: device type = '{}', device address = '{}'",
@@ -72,9 +72,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
     // filter Printers and other devices that are not "Computers"
     if (type == L"Computer")
     {
-      std::wstring addr(address);
       const std::wstring ip = addr.substr(0, addr.find(L":", 0));
-
       auto it = std::find(m_serversIPs.begin(), m_serversIPs.end(), ip);
 
       // inserts server IP if not exist in list
@@ -102,7 +100,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
 
   if (address)
   {
-    std::wstring addr(address);
+    const std::wstring addr(address);
 
     CLog::Log(LOGDEBUG, "[WS-Discovery]: BYE packet received: device address = '{}'", FromW(addr));
 
@@ -268,7 +266,7 @@ std::vector<std::wstring> CWSDiscoverySupport::GetServersIPs()
   return m_sink->GetServersIPs();
 }
 
-std::wstring CWSDiscoverySupport::ResolveHostName(const std::wstring serverIP)
+std::wstring CWSDiscoverySupport::ResolveHostName(const std::wstring& serverIP)
 {
   std::wstring hostName = serverIP;
 

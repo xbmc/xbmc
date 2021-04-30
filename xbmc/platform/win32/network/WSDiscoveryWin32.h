@@ -56,7 +56,7 @@ public:
   bool ThereAreServers();
   std::vector<std::wstring> GetServersIPs();
 
-  static std::wstring ResolveHostName(const std::wstring serverIP);
+  static std::wstring ResolveHostName(const std::wstring& serverIP);
 
 private:
   bool m_initialized = false;
