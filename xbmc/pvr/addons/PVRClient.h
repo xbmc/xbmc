@@ -10,6 +10,7 @@
 
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr.h"
+#include "threads/Event.h"
 
 #include <atomic>
 #include <functional>
@@ -1079,6 +1080,18 @@ private:
                         bool bCheckReadyToUse = true) const;
 
   /*!
+   * @brief Wraps an addon callback function call in order to do common pre and post function invocation actions.
+   * @param strFunctionName The function name, for logging purposes.
+   * @param kodiInstance The addon instance pointer.
+   * @param function The function to wrap. It must take one parameter of type CPVRClient*.
+   * @param bForceCall If true, make the call, ignoring client's state.
+   */
+  static void HandleAddonCallback(const char* strFunctionName,
+                                  void* kodiInstance,
+                                  const std::function<void(CPVRClient* client)>& function,
+                                  bool bForceCall = false);
+
+  /*!
    * @brief Callback functions from addon to kodi
    */
   //@{
@@ -1240,6 +1253,8 @@ private:
   std::atomic<bool>
       m_bReadyToUse; /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
   std::atomic<bool> m_bBlockAddonCalls; /*!< true if no add-on API calls are allowed */
+  mutable std::atomic<int> m_iAddonCalls; /*!< number of in-progress addon calls */
+  mutable CEvent m_allAddonCallsFinished; /*!< fires after last in-progress addon call finished */
   PVR_CONNECTION_STATE m_connectionState; /*!< the backend connection state */
   PVR_CONNECTION_STATE m_prevConnectionState; /*!< the previous backend connection state */
   bool
