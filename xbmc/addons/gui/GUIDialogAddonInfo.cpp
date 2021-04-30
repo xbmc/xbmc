@@ -596,8 +596,7 @@ void CGUIDialogAddonInfo::OnSettings()
 
 bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint entryPoint)
 {
-  if (entryPoint != EntryPoint::INSTALL ||
-      (entryPoint == EntryPoint::INSTALL && m_showDepDialogOnInstall))
+  if (entryPoint != EntryPoint::INSTALL || m_showDepDialogOnInstall)
   {
     auto pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
         WINDOW_DIALOG_SELECT);
@@ -614,8 +613,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
 
       if (infoAddon)
       {
-        if (entryPoint != EntryPoint::UPDATE ||
-            (entryPoint == EntryPoint::UPDATE && !it.m_isInstalledUpToDate()))
+        if (entryPoint != EntryPoint::UPDATE || !it.m_isInstalledUpToDate())
         {
           const CFileItemPtr item = std::make_shared<CFileItem>(infoAddon->Name());
           int messageId = 24180; // minversion only
