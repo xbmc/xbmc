@@ -559,6 +559,18 @@ extern "C"
 
     /// @brief __0001 0000__ : This EPG entry will be flagged as live.
     EPG_TAG_FLAG_IS_LIVE = (1 << 4),
+
+    /// @brief __0001 0000 0000 0000 0000 0000 0000 0000__ : This flag is reserved for PVR addons internal usage.
+    EPG_TAG_FLAG_ADDON_FLAG_1 = (1 << 28),
+
+    /// @brief __0010 0000 0000 0000 0000 0000 0000 0000__ : This flag is reserved for PVR addons internal usage.
+    EPG_TAG_FLAG_ADDON_FLAG_2 = (1 << 29),
+
+    /// @brief __0100 0000 0000 0000 0000 0000 0000 0000__ : This flag is reserved for PVR addons internal usage.
+    EPG_TAG_FLAG_ADDON_FLAG_3 = (1 << 30),
+
+    /// @brief __1000 0000 0000 0000 0000 0000 0000 0000__ : This flag is reserved for PVR addons internal usage.
+    EPG_TAG_FLAG_ADDON_FLAG_4 = (1 << 31),
   } EPG_TAG_FLAG;
   ///@}
   //----------------------------------------------------------------------------
