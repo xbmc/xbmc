@@ -332,7 +332,7 @@ uint64_t CWinSystemX11GLContext::GetVblankTiming(uint64_t &msc, uint64_t &interv
   if (m_pGLContext)
   {
     float micros = m_pGLContext->GetVblankTiming(msc, interval);
-    return micros / 1000;
+    return micros;
   }
   msc = 0;
   interval = 0;
