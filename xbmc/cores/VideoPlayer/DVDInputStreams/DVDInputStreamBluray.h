@@ -91,6 +91,7 @@ public:
   void SkipStill() override;
   bool GetState(std::string &xmlstate) override { return false; }
   bool SetState(const std::string &xmlstate) override { return false; }
+  bool CanSeek() override;
 
 
   void UserInput(bd_vk_key_e vk);
@@ -138,6 +139,8 @@ protected:
   BLURAY_CLIP_INFO* m_clip = nullptr;
   uint32_t m_angle = 0;
   bool m_menu = false;
+  bool m_isInMainMenu = false;
+  bool m_hasOverlay = false;
   bool m_navmode = false;
   int m_dispTimeBeforeRead = 0;
 

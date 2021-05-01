@@ -114,6 +114,7 @@ public:
     virtual double GetTimeStampCorrection() { return 0.0; };
     virtual bool GetState(std::string &xmlstate) = 0;
     virtual bool SetState(const std::string &xmlstate) = 0;
+    virtual bool CanSeek() { return !IsInMenu(); };
   };
 
   class IDemux
