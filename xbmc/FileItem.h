@@ -290,11 +290,6 @@ public:
     return m_epgInfoTag;
   }
 
-  inline void SetEPGInfoTag(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag)
-  {
-    m_epgInfoTag = tag;
-  }
-
   inline bool HasPVRChannelInfoTag() const
   {
     return m_pvrChannelInfoTag.get() != NULL;
