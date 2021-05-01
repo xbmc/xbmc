@@ -2342,11 +2342,18 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 }
 
 
+void CApplication::ResetCurrentItem()
+{
+  m_itemCurrentFile->Reset();
+  if (m_pGUI)
+    m_pGUI->GetInfoManager().ResetCurrentItem();
+}
 
 bool CApplication::Cleanup()
 {
   try
   {
+    ResetCurrentItem();
     StopPlaying();
 
     if (m_ServiceManager)
@@ -3866,8 +3873,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STOPPED:
     m_playerEvent.Set();
-    m_itemCurrentFile->Reset();
-    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
+    ResetCurrentItem();
     PlaybackCleanup();
 #ifdef HAS_PYTHON
     CServiceBroker::GetXBPython().OnPlayBackStopped();
@@ -3881,8 +3887,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       PlayFile(m_stackHelper.SetNextStackPartCurrentFileItem(), "", true);
       return true;
     }
-    m_itemCurrentFile->Reset();
-    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
+    ResetCurrentItem();
     if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
       m_appPlayer.ClosePlayer();
 
@@ -3894,8 +3899,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     return true;
 
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    m_itemCurrentFile->Reset();
-    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
+    ResetCurrentItem();
     if (m_appPlayer.IsPlaying())
       StopPlaying();
     PlaybackCleanup();
