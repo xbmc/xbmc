@@ -969,6 +969,8 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
   }
 
+  pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt;
+
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries == AVCOL_PRI_UNSPECIFIED ? m_hints.colorPrimaries : m_pCodecContext->color_primaries;
   pVideoPicture->color_transfer = m_pCodecContext->color_trc == AVCOL_TRC_UNSPECIFIED ? m_hints.colorTransferCharacteristic : m_pCodecContext->color_trc;

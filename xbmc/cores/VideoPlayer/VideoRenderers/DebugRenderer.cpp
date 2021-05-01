@@ -17,7 +17,7 @@ using namespace OVERLAY;
 
 CDebugRenderer::CDebugRenderer()
 {
-  for (int i=0; i<4; i++)
+  for (int i = 0; i < 6; i++)
   {
     m_overlay[i] = nullptr;
     m_strDebug[i] = " ";
@@ -33,50 +33,105 @@ CDebugRenderer::~CDebugRenderer()
   }
 }
 
-void CDebugRenderer::SetInfo(std::string &info1, std::string &info2, std::string &info3, std::string &info4)
+void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
 {
   m_overlayRenderer.Release(0);
 
-  if (info1 != m_strDebug[0])
+  if (info.audio != m_strDebug[0])
   {
-    m_strDebug[0] = info1;
+    m_strDebug[0] = info.audio;
     if (m_overlay[0])
       m_overlay[0]->Release();
     m_overlay[0] = new CDVDOverlayText();
     m_overlay[0]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[0]));
   }
-  if (info2 != m_strDebug[1])
+  if (info.video != m_strDebug[1])
   {
-    m_strDebug[1] = info2;
+    m_strDebug[1] = info.video;
     if (m_overlay[1])
       m_overlay[1]->Release();
     m_overlay[1] = new CDVDOverlayText();
     m_overlay[1]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[1]));
   }
-  if (info3 != m_strDebug[2])
+  if (info.player != m_strDebug[2])
   {
-    m_strDebug[2] = info3;
+    m_strDebug[2] = info.player;
     if (m_overlay[2])
       m_overlay[2]->Release();
     m_overlay[2] = new CDVDOverlayText();
     m_overlay[2]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[2]));
   }
-  if (info4 != m_strDebug[3])
+  if (info.vsync != m_strDebug[3])
   {
-    m_strDebug[3] = info4;
+    m_strDebug[3] = info.vsync;
     if (m_overlay[3])
       m_overlay[3]->Release();
     m_overlay[3] = new CDVDOverlayText();
     m_overlay[3]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[3]));
   }
 
-  m_overlayRenderer.AddOverlay(m_overlay[0], 0, 0);
-  m_overlayRenderer.AddOverlay(m_overlay[1], 0, 0);
-  m_overlayRenderer.AddOverlay(m_overlay[2], 0, 0);
-  m_overlayRenderer.AddOverlay(m_overlay[3], 0, 0);
+  for (int i = 0; i < 4; i++)
+    m_overlayRenderer.AddOverlay(m_overlay[i], 0, 0);
 }
 
-void CDebugRenderer::Render(CRect &src, CRect &dst, CRect &view)
+void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
+{
+  m_overlayRenderer.Release(0);
+
+  if (video.videoSource != m_strDebug[0])
+  {
+    m_strDebug[0] = video.videoSource;
+    if (m_overlay[0])
+      m_overlay[0]->Release();
+    m_overlay[0] = new CDVDOverlayText();
+    m_overlay[0]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[0]));
+  }
+  if (video.metaPrim != m_strDebug[1])
+  {
+    m_strDebug[1] = video.metaPrim;
+    if (m_overlay[1])
+      m_overlay[1]->Release();
+    m_overlay[1] = new CDVDOverlayText();
+    m_overlay[1]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[1]));
+  }
+  if (video.metaLight != m_strDebug[2])
+  {
+    m_strDebug[2] = video.metaLight;
+    if (m_overlay[2])
+      m_overlay[2]->Release();
+    m_overlay[2] = new CDVDOverlayText();
+    m_overlay[2]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[2]));
+  }
+  if (video.shader != m_strDebug[3])
+  {
+    m_strDebug[3] = video.shader;
+    if (m_overlay[3])
+      m_overlay[3]->Release();
+    m_overlay[3] = new CDVDOverlayText();
+    m_overlay[3]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[3]));
+  }
+  if (render.renderFlags != m_strDebug[4])
+  {
+    m_strDebug[4] = render.renderFlags;
+    if (m_overlay[4])
+      m_overlay[4]->Release();
+    m_overlay[4] = new CDVDOverlayText();
+    m_overlay[4]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[4]));
+  }
+  if (render.videoOutput != m_strDebug[5])
+  {
+    m_strDebug[5] = render.videoOutput;
+    if (m_overlay[5])
+      m_overlay[5]->Release();
+    m_overlay[5] = new CDVDOverlayText();
+    m_overlay[5]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[5]));
+  }
+
+  for (int i = 0; i < 6; i++)
+    m_overlayRenderer.AddOverlay(m_overlay[i], 0, 0);
+}
+
+void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
 {
   m_overlayRenderer.SetVideoRect(src, dst, view);
   m_overlayRenderer.Render(0);
@@ -110,7 +165,8 @@ void CDebugRenderer::CRenderer::Render(int idx)
 
     COverlayText *text = dynamic_cast<COverlayText*>(o);
     if (text)
-      text->PrepareRender("arial.ttf", 1, 100, 16, 0, m_font, m_fontBorder, UTILS::COLOR::NONE, m_rv);
+      text->PrepareRender("arial.ttf", 1, 100, 15, 0, m_font, m_fontBorder, UTILS::COLOR::NONE,
+                          m_rv);
 
     RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
 

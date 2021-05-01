@@ -79,6 +79,9 @@ public:
   void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
   void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
 
+  // Get debug info from swapchain
+  DEBUG_INFO_RENDER GetDebugInfo() override;
+
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
   void ReleaseBackBuffer() override;

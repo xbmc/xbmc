@@ -21,6 +21,7 @@
 #include <wrl/client.h>
 
 struct RESOLUTION_INFO;
+struct DEBUG_INFO_RENDER;
 
 namespace DX
 {
@@ -108,6 +109,9 @@ namespace DX
     void SetWindowPos(winrt::Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
     bool IsNV12SharedTexturesSupported() const { return m_NV12SharedTexturesSupport; }
+
+    // Gets debug info from swapchain
+    DEBUG_INFO_RENDER GetDebugInfo() const;
 
   private:
     class CBackBuffer : public CD3DTexture

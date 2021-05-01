@@ -4348,6 +4348,9 @@ bool CVideoPlayer::OnAction(const CAction &action)
     case ACTION_PLAYER_DEBUG:
       m_renderManager.ToggleDebug();
       break;
+    case ACTION_PLAYER_DEBUG_VIDEO:
+      m_renderManager.ToggleDebugVideo();
+      break;
 
     case ACTION_PLAYER_PROCESS_INFO:
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
