@@ -1019,7 +1019,7 @@ bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
     return -1;
   }
 
-  SCacheStatus data = {0};
+  SCacheStatus data = {};
   int ret = static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_STATUS, &data);
   if (ret >= 0)
   {

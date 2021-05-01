@@ -598,7 +598,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
     return -1;
 
 
-  NFSSTAT tmpBuffer = {0};
+  NFSSTAT tmpBuffer = {};
 
   ret = nfs_stat(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
 
@@ -850,7 +850,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   }
   m_url=url;
 
-  struct __stat64 tmpBuffer = {0};
+  struct __stat64 tmpBuffer = {};
 
   //only stat if file was not created
   if(!bOverWrite)

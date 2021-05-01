@@ -62,7 +62,10 @@ bool CDumbBufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
       throw std::runtime_error("CDumbBufferObject: pixel format not implemented");
   }
 
-  struct drm_mode_create_dumb create_dumb = {.height = height, .width = width, .bpp = bpp};
+  struct drm_mode_create_dumb create_dumb{};
+  create_dumb.height = height;
+  create_dumb.width = width;
+  create_dumb.bpp = bpp;
 
   int ret = drmIoctl(m_device, DRM_IOCTL_MODE_CREATE_DUMB, &create_dumb);
   if (ret < 0)
@@ -122,7 +125,8 @@ uint8_t* CDumbBufferObject::GetMemory()
     return nullptr;
   }
 
-  struct drm_mode_map_dumb map_dumb = {.handle = handle};
+  struct drm_mode_map_dumb map_dumb{};
+  map_dumb.handle = handle;
 
   ret = drmIoctl(m_device, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb);
   if (ret < 0)

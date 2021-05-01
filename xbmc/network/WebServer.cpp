@@ -171,8 +171,8 @@ MHD_RESULT CWebServer::AnswerToConnection(void* cls,
 
   ConnectionHandler* connectionHandler = reinterpret_cast<ConnectionHandler*>(*con_cls);
   HTTPMethod methodType = GetHTTPMethod(method);
-  HTTPRequest request = {webServer, connection, connectionHandler->fullUri,
-                         url,       methodType, version};
+  HTTPRequest request = {webServer, connection, connectionHandler->fullUri, url, methodType,
+                         version,   {}};
 
   if (connectionHandler->isNew)
     webServer->LogRequest(request);

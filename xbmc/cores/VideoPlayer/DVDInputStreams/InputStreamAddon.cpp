@@ -58,8 +58,8 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
     StringUtils::Trim(key);
     key = name + "." + key;
   }
-  m_struct = { 0 };
-  m_caps = { 0 };
+  m_struct = {};
+  m_caps = {};
 }
 
 CInputStreamAddon::~CInputStreamAddon()
@@ -140,7 +140,7 @@ bool CInputStreamAddon::Open()
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->open)
     return false;
 
-  INPUTSTREAM_PROPERTY props = {0};
+  INPUTSTREAM_PROPERTY props = {};
   std::map<std::string, std::string> propsMap;
   for (auto &key : m_fileItemProps)
   {
@@ -185,7 +185,7 @@ bool CInputStreamAddon::Open()
   bool ret = m_struct.toAddon->open(&m_struct, &props);
   if (ret)
   {
-    m_caps = { 0 };
+    m_caps = {};
     m_struct.toAddon->get_capabilities(&m_struct, &m_caps);
 
     m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(
@@ -204,7 +204,7 @@ void CInputStreamAddon::Close()
   delete m_struct.toAddon;
   delete m_struct.toKodi;
   delete m_struct.props;
-  m_struct = { 0 };
+  m_struct = {};
 }
 
 bool CInputStreamAddon::IsEOF()
@@ -352,7 +352,7 @@ std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
 
-  INPUTSTREAM_IDS streamIDs = {0};
+  INPUTSTREAM_IDS streamIDs = {};
   bool ret = m_struct.toAddon->get_stream_ids(&m_struct, &streamIDs);
   if (!ret || streamIDs.m_streamCount > INPUTSTREAM_MAX_STREAM_COUNT)
     return streams;

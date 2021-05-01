@@ -218,7 +218,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
   FD_SET(udev_monitor_get_fd(m_udevMon), &readfds);
 
   // non-blocking, check the file descriptor for received data
-  struct timeval tv = {0};
+  struct timeval tv = {};
   int count = select(udev_monitor_get_fd(m_udevMon) + 1, &readfds, nullptr, nullptr, &tv);
   if (count < 0)
     return false;

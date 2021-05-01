@@ -87,7 +87,7 @@ protected:
   CVaapiRenderPicture *m_vaapiPic = nullptr;
   struct GLSurface
   {
-    VAImage vaImage{VA_INVALID_ID};
+    VAImage vaImage;
     VABufferInfo vBufInfo;
     EGLImageKHR eglImage;
     EGLImageKHR eglImageY, eglImageVU;
@@ -114,7 +114,7 @@ private:
   struct MappedTexture
   {
     EGLImageKHR eglImage{EGL_NO_IMAGE_KHR};
-    GLuint glTexture{0};
+    GLuint glTexture{};
   };
 
   InteropInfo m_interop;

@@ -635,7 +635,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       TiXmlElement* pRefreshOverride = pAdjustRefreshrate->FirstChildElement("override");
       while (pRefreshOverride)
       {
-        RefreshOverride override = {0};
+        RefreshOverride override = {};
 
         float fps;
         if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
@@ -682,7 +682,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       TiXmlElement* pRefreshFallback = pAdjustRefreshrate->FirstChildElement("fallback");
       while (pRefreshFallback)
       {
-        RefreshOverride fallback = {0};
+        RefreshOverride fallback = {};
         fallback.fallback = true;
 
         float refresh;
@@ -726,7 +726,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
       while (pRefreshVideoLatency)
       {
-        RefreshVideoLatency videolatency = {0};
+        RefreshVideoLatency videolatency = {};
 
         if (XMLUtils::GetFloat(pRefreshVideoLatency, "rate", refresh))
         {

@@ -262,7 +262,7 @@ int CPVRClient::GetID() const
 void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup& xbmcGroup,
                                       PVR_CHANNEL_GROUP& addonGroup)
 {
-  addonGroup = {{0}};
+  addonGroup = {};
   addonGroup.bIsRadio = xbmcGroup.IsRadio();
   strncpy(addonGroup.strGroupName, xbmcGroup.GroupName().c_str(),
           sizeof(addonGroup.strGroupName) - 1);
@@ -279,7 +279,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
-  addonRecording = {{0}};
+  addonRecording = {};
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(),
           sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(),
@@ -339,7 +339,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIM
   int iPVRTimeCorrection =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
-  addonTimer = {0};
+  addonTimer = {};
   addonTimer.iClientIndex = xbmcTimer.m_iClientIndex;
   addonTimer.iParentClientIndex = xbmcTimer.m_iParentClientIndex;
   addonTimer.state = xbmcTimer.m_state;
@@ -381,7 +381,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIM
 void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmcChannel,
                                         PVR_CHANNEL& addonChannel)
 {
-  addonChannel = {0};
+  addonChannel = {};
   addonChannel.iUniqueId = xbmcChannel->UniqueID();
   addonChannel.iChannelNumber = xbmcChannel->ClientChannelNumber().GetChannelNumber();
   addonChannel.iSubChannelNumber = xbmcChannel->ClientChannelNumber().GetSubChannelNumber();
@@ -398,10 +398,10 @@ void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmc
 
 bool CPVRClient::GetAddonProperties()
 {
-  char strBackendName[PVR_ADDON_NAME_STRING_LENGTH] = {0};
-  char strConnectionString[PVR_ADDON_NAME_STRING_LENGTH] = {0};
-  char strBackendVersion[PVR_ADDON_NAME_STRING_LENGTH] = {0};
-  char strBackendHostname[PVR_ADDON_NAME_STRING_LENGTH] = {0};
+  char strBackendName[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  char strConnectionString[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  char strBackendVersion[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  char strBackendHostname[PVR_ADDON_NAME_STRING_LENGTH] = {};
   std::string strFriendlyName;
   PVR_ADDON_CAPABILITIES addonCapabilities = {};
   std::vector<std::shared_ptr<CPVRTimerType>> timerTypes;
@@ -675,8 +675,9 @@ PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t sta
 {
   return DoAddonCall(
       __func__,
-      [this, iChannelUid, epg, start, end](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {0};
+      [this, iChannelUid, epg, start, end](const AddonInstance* addon)
+      {
+        ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = epg;
 
@@ -879,8 +880,9 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups)
 {
   return DoAddonCall(
       __func__,
-      [this, groups](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {0};
+      [this, groups](const AddonInstance* addon)
+      {
+        ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = groups;
         return addon->toAddon->GetChannelGroups(addon, &handle, groups->IsRadio());
@@ -892,8 +894,9 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup* group)
 {
   return DoAddonCall(
       __func__,
-      [this, group](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {0};
+      [this, group](const AddonInstance* addon)
+      {
+        ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = group;
 
@@ -916,8 +919,9 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup& channels, bool radio)
 {
   return DoAddonCall(
       __func__,
-      [this, &channels, radio](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {0};
+      [this, &channels, radio](const AddonInstance* addon)
+      {
+        ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = &channels;
         return addon->toAddon->GetChannels(addon, &handle, radio);
@@ -942,8 +946,9 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings* results, bool deleted)
 {
   return DoAddonCall(
       __func__,
-      [this, results, deleted](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {0};
+      [this, results, deleted](const AddonInstance* addon)
+      {
+        ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = results;
         return addon->toAddon->GetRecordings(addon, &handle, deleted);
@@ -1099,8 +1104,9 @@ PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer* results)
 {
   return DoAddonCall(
       __func__,
-      [this, results](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {0};
+      [this, results](const AddonInstance* addon)
+      {
+        ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = results;
         return addon->toAddon->GetTimers(addon, &handle);
@@ -1249,7 +1255,7 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<CPVRChann
     if (!CanPlayChannel(channel))
       return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
-    PVR_CHANNEL tag = {0};
+    PVR_CHANNEL tag = {};
     WriteClientChannelInfo(channel, tag);
 
     unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
@@ -1272,7 +1278,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(const std::shared_ptr<CPVRRec
     if (!m_clientCapabilities.SupportsRecordings())
       return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
-    PVR_RECORDING tag = {{0}};
+    PVR_RECORDING tag = {};
     WriteClientRecordingInfo(*recording, tag);
 
     unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;

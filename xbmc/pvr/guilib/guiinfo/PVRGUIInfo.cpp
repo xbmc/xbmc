@@ -100,7 +100,7 @@ void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo)
 
 void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo)
 {
-  descrambleInfo = {0};
+  descrambleInfo = {};
 }
 
 void CPVRGUIInfo::Start()

@@ -885,7 +885,11 @@ namespace PythonBindings
       "${module.@name}",
       "",
       -1,
-      ${module.@name}_methods
+      ${module.@name}_methods,
+      nullptr,
+      nullptr,
+      nullptr,
+      nullptr,
   };
 
   PyObject *PyInit_Module_${module.@name}()

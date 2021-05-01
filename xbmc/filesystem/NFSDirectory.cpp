@@ -119,7 +119,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
 
   if(ret == 0)
   {
-    NFSSTAT tmpBuffer = {0};
+    NFSSTAT tmpBuffer = {};
     fullpath = dirName;
     URIUtils::AddSlashAtEnd(fullpath);
     fullpath.append(resolvedLink);
