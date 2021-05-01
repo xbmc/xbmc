@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libass
-VERSION=0.14.0
+VERSION=0.15.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
