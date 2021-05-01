@@ -423,6 +423,7 @@ protected:
 
 private:
   void PrintStartupLog();
+  void ResetCurrentItem();
 
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
 
