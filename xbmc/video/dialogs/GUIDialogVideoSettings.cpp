@@ -103,9 +103,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
                                                vs.m_CustomNonLinStretch);
 
     m_viewModeChanged = true;
-    GetSettingsManager()->SetNumber(SETTING_VIDEO_ZOOM, vs.m_CustomZoomAmount);
-    GetSettingsManager()->SetNumber(SETTING_VIDEO_PIXEL_RATIO, vs.m_CustomPixelRatio);
-    GetSettingsManager()->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT, vs.m_CustomVerticalShift);
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_ZOOM, static_cast<double>(vs.m_CustomZoomAmount));
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_PIXEL_RATIO,
+                                    static_cast<double>(vs.m_CustomPixelRatio));
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT,
+                                    static_cast<double>(vs.m_CustomVerticalShift));
     GetSettingsManager()->SetBool(SETTING_VIDEO_NONLIN_STRETCH, vs.m_CustomNonLinStretch);
     m_viewModeChanged = false;
   }

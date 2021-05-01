@@ -963,7 +963,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   // do calculations in floats as they can easily overflow otherwise
   // we don't care for having a completely exact timestamp anyway
   double timestamp = (double)pts * num / den;
-  double starttime = 0.0f;
+  double starttime = 0.0;
 
   std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInput);
   if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
@@ -977,7 +977,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
     if (timestamp > starttime || m_checkTransportStream)
       timestamp -= starttime;
     // allow for largest possible difference in pts and dts for a single packet
-    else if (timestamp + 0.5f > starttime)
+    else if (timestamp + 0.5 > starttime)
       timestamp = 0;
   }
 

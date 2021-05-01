@@ -224,9 +224,11 @@ void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList& d
 
   if (m_pageControl)
   {
-    int iItem = (m_orientation == VERTICAL)
-      ? MathUtils::round_int(m_channelScrollOffset / m_channelHeight)
-      : MathUtils::round_int(m_programmeScrollOffset / (m_gridHeight / m_blocksPerPage));
+    int iItem =
+        (m_orientation == VERTICAL)
+            ? MathUtils::round_int(static_cast<double>(m_channelScrollOffset / m_channelHeight))
+            : MathUtils::round_int(
+                  static_cast<double>(m_programmeScrollOffset / (m_gridHeight / m_blocksPerPage)));
 
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, iItem);
     SendWindowMessage(msg);
@@ -542,7 +544,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction& action)
         m_analogScrollCount += action.GetAmount() * action.GetAmount();
         bool handled = false;
 
-        while (m_analogScrollCount > 0.4)
+        while (m_analogScrollCount > 0.4f)
         {
           handled = true;
           m_analogScrollCount -= 0.4f;
@@ -561,7 +563,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction& action)
         m_analogScrollCount += action.GetAmount() * action.GetAmount();
         bool handled = false;
 
-        while (m_analogScrollCount > 0.4)
+        while (m_analogScrollCount > 0.4f)
         {
           handled = true;
           m_analogScrollCount -= 0.4f;
@@ -585,7 +587,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction& action)
         m_analogScrollCount += action.GetAmount() * action.GetAmount();
         bool handled = false;
 
-        while (m_analogScrollCount > 0.4)
+        while (m_analogScrollCount > 0.4f)
         {
           handled = true;
           m_analogScrollCount -= 0.4f;
@@ -606,7 +608,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction& action)
         m_analogScrollCount += action.GetAmount() * action.GetAmount();
         bool handled = false;
 
-        while (m_analogScrollCount > 0.4)
+        while (m_analogScrollCount > 0.4f)
         {
           handled = true;
           m_analogScrollCount -= 0.4f;
@@ -859,7 +861,8 @@ float CGUIEPGGridContainer::GetProgrammeScrollOffsetPos() const
 int CGUIEPGGridContainer::GetChannelScrollOffset(CGUIListItemLayout* layout) const
 {
   if (m_bEnableChannelScrolling)
-    return MathUtils::round_int(m_channelScrollOffset / layout->Size(m_orientation));
+    return MathUtils::round_int(
+        static_cast<double>(m_channelScrollOffset / layout->Size(m_orientation)));
   else
     return m_channelOffset;
 }
@@ -867,7 +870,7 @@ int CGUIEPGGridContainer::GetChannelScrollOffset(CGUIListItemLayout* layout) con
 int CGUIEPGGridContainer::GetProgrammeScrollOffset() const
 {
   if (m_bEnableProgrammeScrolling)
-    return MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+    return MathUtils::round_int(static_cast<double>(m_programmeScrollOffset / m_blockSize));
   else
     return m_blockOffset;
 }
@@ -1269,9 +1272,11 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point, const CMous
       // we're done with exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);
-      ScrollToChannelOffset(MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation)));
+      ScrollToChannelOffset(MathUtils::round_int(
+          static_cast<double>(m_channelScrollOffset / m_channelLayout->Size(m_orientation))));
       SetChannel(m_channelCursor);
-      ScrollToBlockOffset(MathUtils::round_int(m_programmeScrollOffset / m_blockSize));
+      ScrollToBlockOffset(
+          MathUtils::round_int(static_cast<double>(m_programmeScrollOffset / m_blockSize)));
       SetBlock(m_blockCursor);
       return EVENT_RESULT_HANDLED;
     }
@@ -1283,8 +1288,10 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point, const CMous
       {
         CSingleLock lock(m_critSection);
 
-        m_channelOffset = MathUtils::round_int(m_channelScrollOffset / m_channelLayout->Size(m_orientation));
-        m_blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+        m_channelOffset = MathUtils::round_int(
+            static_cast<double>(m_channelScrollOffset / m_channelLayout->Size(m_orientation)));
+        m_blockOffset =
+            MathUtils::round_int(static_cast<double>(m_programmeScrollOffset / m_blockSize));
         ValidateOffset();
       }
       return EVENT_RESULT_HANDLED;
@@ -2506,8 +2513,8 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
         // increment our X position
         posA2 += m_gridModel->GetGridItemWidth(
             channel, block); // assumes focused & unfocused layouts have equal length
-        block +=
-            MathUtils::round_int(m_gridModel->GetGridItemOriginWidth(channel, block) / m_blockSize);
+        block += MathUtils::round_int(
+            static_cast<double>(m_gridModel->GetGridItemOriginWidth(channel, block) / m_blockSize));
       }
     }
 

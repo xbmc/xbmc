@@ -1089,7 +1089,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
   if (albums.size() == 1)
   {
     CFileItem album(path, true);
-    /* 
+    /*
      If we are scanning a directory served over http(s) the root directory for an album will set
      IsInternetStream to true which prevents scanning it for art.  As we can't reach this point
      without having read some tags (and tags are not read from streams) we can safely check for
@@ -1335,7 +1335,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
     bool overridetags = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
     // Remove art accidentally set by the Python scraper, it only provides URLs of possible artwork
     // Art is selected later applying whitelist and other art preferences
-    albumInfo.GetAlbum().art.clear(); 
+    albumInfo.GetAlbum().art.clear();
     album.MergeScrapedAlbum(albumInfo.GetAlbum(), overridetags);
     m_musicDatabase.UpdateAlbum(album);
     albumInfo.SetLoaded(true);
@@ -1553,7 +1553,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
     {
       double bestRelevance = 0;
-      double minRelevance = THRESHOLD;
+      double minRelevance = static_cast<double>(THRESHOLD);
       if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
       {
         //show dialog with all albums found
@@ -1570,7 +1570,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
-          double relevance = info.GetRelevance();
+          double relevance = static_cast<double>(info.GetRelevance());
           if (relevance < 0)
             relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum,
                         info.GetAlbum().GetAlbumArtistString(),
@@ -1606,7 +1606,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
             items.Add(item);
           }
-          if (!pDialog && relevance > .999f) // we're so close, no reason to search further
+          if (!pDialog && relevance > 0.999) // we're so close, no reason to search further
             break;
         }
 
@@ -1649,13 +1649,13 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       else
       {
         CMusicAlbumInfo& info = scraper.GetAlbum(0);
-        double relevance = info.GetRelevance();
+        double relevance = static_cast<double>(info.GetRelevance());
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
                                             album.strAlbum,
                                             info.GetAlbum().GetAlbumArtistString(),
                                             album.GetAlbumArtistString());
-        if (relevance < THRESHOLD)
+        if (relevance < static_cast<double>(THRESHOLD))
           return INFO_NOT_FOUND;
 
         iSelectedAlbum = 0;

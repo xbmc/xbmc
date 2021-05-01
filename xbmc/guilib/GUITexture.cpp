@@ -243,7 +243,7 @@ void CGUITexture::Render(float left,
 
   float x[4], y[4], z[4];
 
-#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+#define ROUND_TO_PIXEL(x) static_cast<float>(MathUtils::round_int(static_cast<double>(x)))
 
   x[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y1));
   y[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y1));

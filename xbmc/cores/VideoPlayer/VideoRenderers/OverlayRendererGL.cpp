@@ -500,10 +500,10 @@ void COverlayTextureGL::Render(SRenderState& state)
   DRAWRECT rd;
   if (m_pos == POSITION_RELATIVE)
   {
-    rd.top     = state.y - state.height * 0.5;
-    rd.bottom  = state.y + state.height * 0.5;
-    rd.left    = state.x - state.width  * 0.5;
-    rd.right   = state.x + state.width  * 0.5;
+    rd.top = state.y - state.height * 0.5f;
+    rd.bottom = state.y + state.height * 0.5f;
+    rd.left = state.x - state.width * 0.5f;
+    rd.right = state.x + state.width * 0.5f;
   }
   else
   {

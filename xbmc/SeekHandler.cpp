@@ -140,7 +140,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     if (totalTime < 0)
       totalTime = 0;
 
-    double seekSize = (amount * amount * speed) * totalTime / 100;
+    double seekSize = static_cast<double>(amount * amount * speed) * totalTime / 100.0;
     if (forward)
       SetSeekSize(m_seekSize + seekSize);
     else

@@ -326,7 +326,7 @@ float PrimaryToXYZ::CalcGy(const float p[3][2], const float w[2], const float By
 
 float PrimaryToXYZ::CalcRy(const float By, const float Gy)
 {
-  return 1.0 - Gy - By;
+  return 1.0f - Gy - By;
 }
 
 PrimaryToRGB::PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2]) : PrimaryToXYZ(primaries, whitepoint)

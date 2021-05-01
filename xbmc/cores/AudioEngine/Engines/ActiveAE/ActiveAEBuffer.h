@@ -103,7 +103,7 @@ protected:
   bool m_remap = false;
   CSampleBuffer *m_procSample = nullptr;
   IAEResample *m_resampler = nullptr;
-  double m_resampleRatio = 1.0f;
+  double m_resampleRatio = 1.0;
   double m_centerMixLevel = M_SQRT1_2;
   bool m_fillPackets = false;
   bool m_normalize = true;

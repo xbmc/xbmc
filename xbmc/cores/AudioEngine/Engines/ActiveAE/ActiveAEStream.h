@@ -37,7 +37,7 @@ public:
 
   void Flush(int interval = 100)
   {
-    m_buffer = 0.0f;
+    m_buffer = 0.0;
     m_lastError = 0.0;
     m_count  = 0;
     m_timer.Set(interval);
@@ -45,7 +45,7 @@ public:
 
   void SetErrorInterval(int interval = 100)
   {
-    m_buffer = 0.0f;
+    m_buffer = 0.0;
     m_count = 0;
     m_timer.Set(interval);
   }

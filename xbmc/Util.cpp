@@ -1411,7 +1411,7 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
   std::string strAlbum = strAlbum1;
   StringUtils::ToLower(strAlbum);
   double fAlbumPercentage = fstrcmp(strAlbumTemp.c_str(), strAlbum.c_str());
-  double fArtistPercentage = 0.0f;
+  double fArtistPercentage = 0.0;
   if (!strArtist1.empty())
   {
     std::string strArtistTemp = strArtistTemp1;
@@ -1420,7 +1420,7 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
     StringUtils::ToLower(strArtist);
     fArtistPercentage = fstrcmp(strArtistTemp.c_str(), strArtist.c_str());
   }
-  double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;
+  double fRelevance = fAlbumPercentage * 0.5 + fArtistPercentage * 0.5;
   return fRelevance;
 }
 

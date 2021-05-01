@@ -221,13 +221,13 @@ namespace XBMCAddon
       else if (lowerKey == "totaltime")
       {
         CBookmark resumePoint(GetVideoInfoTag()->GetResumePoint());
-        resumePoint.totalTimeInSeconds = static_cast<float>(atof(value.c_str()));
+        resumePoint.totalTimeInSeconds = atof(value.c_str());
         GetVideoInfoTag()->SetResumePoint(resumePoint);
       }
       else if (lowerKey == "resumetime")
       {
         CBookmark resumePoint(GetVideoInfoTag()->GetResumePoint());
-        resumePoint.timeInSeconds = static_cast<float>(atof(value.c_str()));
+        resumePoint.timeInSeconds = atof(value.c_str());
         GetVideoInfoTag()->SetResumePoint(resumePoint);
       }
       else if (lowerKey == "specialsort")

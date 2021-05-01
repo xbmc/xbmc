@@ -158,7 +158,8 @@ void CGUIDialogCMSSettings::InitializeSettings()
   settingCmsGammaMode->SetDependencies(depsCmsIcc);
 
   float currentGamma = settings->GetInt(SETTING_VIDEO_CMSGAMMA)/100.0f;
-  if (currentGamma == 0.0) currentGamma = 2.20;
+  if (currentGamma == 0.0f)
+    currentGamma = 2.20f;
   std::shared_ptr<CSettingNumber> settingCmsGamma = AddSlider(groupColorManagement, SETTING_VIDEO_CMSGAMMA, 36574, SettingLevel::Basic, currentGamma, 36597, 1.6, 0.05, 2.8, 36574, usePopup);
   settingCmsGamma->SetDependencies(depsCmsGamma);
 

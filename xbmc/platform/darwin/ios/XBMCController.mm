@@ -867,7 +867,7 @@ public:
       break;
   }
   // reset the rotation of the view
-  view.layer.transform = CATransform3DMakeRotation(angle, 0, 0.0, 1.0);
+  view.layer.transform = CATransform3DMakeRotation(static_cast<double>(angle), 0, 0.0, 1.0);
   view.layer.bounds = view.bounds;
   m_window.screen = screen;
   [view setFrame:m_window.frame];

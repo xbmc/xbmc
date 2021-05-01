@@ -524,7 +524,7 @@ TEST(TestStringUtils, CompareFuzzy)
 {
   double ref, var;
 
-  ref = 6.25f;
+  ref = 6.25;
   var = StringUtils::CompareFuzzy("test string", "string test");
   EXPECT_EQ(ref, var);
 }
@@ -536,7 +536,7 @@ TEST(TestStringUtils, FindBestMatch)
   std::vector<std::string> strarray;
 
   refint = 3;
-  refdouble = 0.5625f;
+  refdouble = 0.5625;
   strarray.emplace_back("");
   strarray.emplace_back("a");
   strarray.emplace_back("e");

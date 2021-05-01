@@ -117,7 +117,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!item.HasVideoInfoTag() ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
           {
-            if (bookmark.timeInSeconds <= 0.0f)
+            if (bookmark.timeInSeconds <= 0.0)
               videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else
               videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark, CBookmark::RESUME);

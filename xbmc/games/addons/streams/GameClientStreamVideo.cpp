@@ -98,7 +98,7 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
 
   // Game API: If aspect_ratio is <= 0.0, an aspect ratio of
   // (nominal_width / nominal_height) is assumed
-  if (properties.aspect_ratio <= 0.0)
+  if (properties.aspect_ratio <= 0.0f)
     pixelAspectRatio = 1.0f;
   else
     pixelAspectRatio = properties.aspect_ratio * nominalHeight / nominalWidth;

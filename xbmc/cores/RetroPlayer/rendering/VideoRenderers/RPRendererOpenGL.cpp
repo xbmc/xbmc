@@ -164,7 +164,7 @@ void CRPRendererOpenGL::DrawBlackBars()
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
   // top quad
-  if (m_rotatedDestCoords[0].y > 0.0)
+  if (m_rotatedDestCoords[0].y > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
@@ -206,7 +206,7 @@ void CRPRendererOpenGL::DrawBlackBars()
   }
 
   // left quad
-  if (m_rotatedDestCoords[0].x > 0.0)
+  if (m_rotatedDestCoords[0].x > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;

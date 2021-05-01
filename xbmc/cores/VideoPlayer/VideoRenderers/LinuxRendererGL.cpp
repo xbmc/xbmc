@@ -557,7 +557,7 @@ void CLinuxRendererGL::DrawBlackBars()
   int osWindowHeight = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
 
   //top quad
-  if (m_destRect.y1 > 0.0)
+  if (m_destRect.y1 > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
@@ -599,7 +599,7 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   // left quad
-  if (m_destRect.x1 > 0.0)
+  if (m_destRect.x1 > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;

@@ -76,7 +76,7 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
     // (and wait for it to respond for 5 secs if we're just starting upnp client)
     NPT_TimeStamp watchdog;
     NPT_System::GetCurrentTimeStamp(watchdog);
-    watchdog += 5.f;
+    watchdog += 5.0;
 
     for (;;) {
         if (NPT_SUCCEEDED(upnp->m_MediaBrowser->FindServer(uuid, device)) && !device.IsNull())

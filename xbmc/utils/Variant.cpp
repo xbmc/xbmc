@@ -464,9 +464,9 @@ float CVariant::asFloat(float fallback) const
     case VariantTypeUnsignedInteger:
       return (float)m_data.unsignedinteger;
     case VariantTypeString:
-      return (float)str2double(*m_data.string, fallback);
+      return (float)str2double(*m_data.string, static_cast<double>(fallback));
     case VariantTypeWideString:
-      return (float)str2double(*m_data.wstring, fallback);
+      return (float)str2double(*m_data.wstring, static_cast<double>(fallback));
     default:
       return fallback;
   }

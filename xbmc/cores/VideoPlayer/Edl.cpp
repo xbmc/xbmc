@@ -326,8 +326,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
     if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Cut cut;
-      cut.start = (int64_t)(dStartFrame / fFrameRate * 1000);
-      cut.end = (int64_t)(dEndFrame / fFrameRate * 1000);
+      cut.start = static_cast<int64_t>(dStartFrame / static_cast<double>(fFrameRate) * 1000.0);
+      cut.end = static_cast<int64_t>(dEndFrame / static_cast<double>(fFrameRate) * 1000.0);
       cut.action = Action::COMM_BREAK;
       bValid = AddCut(cut);
     }

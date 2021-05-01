@@ -443,7 +443,7 @@ bool Interface_Base::set_setting_float(void* kodiBase, const char* id, float val
   if (Interface_Base::UpdateSettingInActiveDialog(addon, id, StringUtils::Format("{:f}", value)))
     return true;
 
-  if (!addon->UpdateSettingNumber(id, value))
+  if (!addon->UpdateSettingNumber(id, static_cast<double>(value)))
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid setting type", __func__);
     return false;

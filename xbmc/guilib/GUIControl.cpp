@@ -170,9 +170,11 @@ void CGUIControl::DoRender()
 {
   if (IsVisible())
   {
-    bool hasStereo = m_stereo != 0.0
-                  && CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_MONO
-                  && CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_OFF;
+    bool hasStereo =
+        m_stereo != 0.0f &&
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() !=
+            RENDER_STEREO_MODE_MONO &&
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_OFF;
 
     CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(m_cachedTransform);
     if (m_hasCamera)

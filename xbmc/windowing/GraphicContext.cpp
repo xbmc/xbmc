@@ -336,7 +336,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
           bTriggerUpdateRes = true;
       }
     }
-    
+
     bool allowResolutionChangeOnStop = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_ON_START;
     RESOLUTION targetResolutionOnStop = RES_DESKTOP;
     if (bTriggerUpdateRes)
@@ -345,7 +345,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
     {
       targetResolutionOnStop = CDisplaySettings::GetInstance().GetCurrentResolution();
     }
-    
+
     if (allowResolutionChangeOnStop && !bTriggerUpdateRes)
     {
       SetVideoResolution(targetResolutionOnStop, false);
@@ -650,7 +650,7 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
   {
     curr.Overscan.right  = info.Overscan.right  * 2 + info.iBlanking;
     if((curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS) == 0)
-      curr.fPixelRatio  /= 2.0;
+      curr.fPixelRatio /= 2.0f;
   }
 
   if(info.dwFlags & D3DPRESENTFLAG_MODE3DTB)
@@ -658,7 +658,7 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
     curr.Overscan.bottom = info.Overscan.bottom * 2 + info.iBlanking;
     curr.iSubtitles      = info.iSubtitles      * 2 + info.iBlanking;
     if((curr.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
-      curr.fPixelRatio  *= 2.0;
+      curr.fPixelRatio *= 2.0f;
   }
 }
 

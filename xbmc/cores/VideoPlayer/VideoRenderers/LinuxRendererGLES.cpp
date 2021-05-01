@@ -223,7 +223,7 @@ void CLinuxRendererGLES::CalculateTextureSourceRects(int source, int num_planes)
         float offset_y = 0.5;
         if(plane != 0)
         {
-          offset_y += 0.5;
+          offset_y += 0.5f;
         }
 
         if(field == FIELD_BOT)

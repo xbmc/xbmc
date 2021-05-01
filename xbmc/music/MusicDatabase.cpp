@@ -1110,12 +1110,12 @@ int CMusicDatabase::AddSong(const int idSong,
         strSQL += PrepareSQL(",%i,%i,%i,'%s', %.1f, %i, %i, '%s','%s', '%s')", //
                              iTimesPlayed, iStartOffset, iEndOffset,
                              dtLastPlayed.GetAsDBDateTime().c_str(), //
-                             rating, userrating, votes, //
+                             static_cast<double>(rating), userrating, votes, //
                              strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
       else
         strSQL += PrepareSQL(",%i,%i,%i,NULL, %.1f, %i, %i,'%s', '%s', '%s')", //
                              iTimesPlayed, iStartOffset, iEndOffset, //
-                             rating, userrating, votes, //
+                             static_cast<double>(rating), userrating, votes, //
                              strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
       m_pDS->exec(strSQL);
       if (idSong <= 0)
@@ -1340,8 +1340,8 @@ int CMusicDatabase::UpdateSong(int idSong,
 
   strSQL += PrepareSQL(", iStartOffset = %i, iEndOffset = %i, rating = %.1f, userrating = %i, "
                        "votes = %i, comment = '%s', mood = '%s', strReplayGain = '%s' ",
-                       iStartOffset, iEndOffset, rating, userrating, votes, strComment.c_str(),
-                       strMood.c_str(), replayGain.Get().c_str());
+                       iStartOffset, iEndOffset, static_cast<double>(rating), userrating, votes,
+                       strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
 
   if (dtLastPlayed.IsValid())
     strSQL += PrepareSQL(", iTimesPlayed = %i, lastplayed = '%s' ", iTimesPlayed,
@@ -1529,7 +1529,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                       strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), //
                       strMoods.c_str(), strStyles.c_str(), strThemes.c_str(), //
                       strReview.c_str(), strImageURLs.c_str(), strLabel.c_str(), //
-                      strType.c_str(), fRating, iUserrating, iVotes, //
+                      strType.c_str(), static_cast<double>(fRating), iUserrating, iVotes, //
                       strReleaseDate.c_str(), strOrigReleaseDate.c_str(), //
                       bBoxedSet, bCompilation, //
                       CAlbum::ReleaseTypeToString(releaseType).c_str(), strReleaseStatus.c_str(), //
@@ -12374,7 +12374,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
             rating *= (10.f / max_rating); // Normalise the value to between 0 and 10
           if (rating > 10.f)
             rating = 10.f;
-          iUserrating = MathUtils::round_int(rating);
+          iUserrating = MathUtils::round_int(static_cast<double>(rating));
         }
 
         strSQLSong = PrepareSQL("(%d, %d, ", current + 1, iTrack);
@@ -12394,7 +12394,8 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
           strSQLSong += PrepareSQL("NULL, ");
         else
           strSQLSong += PrepareSQL("'%s', ", lastplayed.c_str());
-        strSQLSong += PrepareSQL("%.1f, %d, %d, -1, -1)", fRating, iVotes, iUserrating);
+        strSQLSong +=
+            PrepareSQL("%.1f, %d, %d, -1, -1)", static_cast<double>(fRating), iVotes, iUserrating);
 
         if (current > 0)
           strSQLSong = ", " + strSQLSong;

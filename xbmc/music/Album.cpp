@@ -516,7 +516,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       strReleaseDate = StringUtils::Format("{:04}", year);
   }
   XMLUtils::GetString(album, "originalreleasedate", strOrigReleaseDate);
-  
+
   const TiXmlElement* rElement = album->FirstChildElement("rating");
   if (rElement)
   {
@@ -539,7 +539,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10
     if (rating > 10.f)
       rating = 10.f;
-    iUserrating = MathUtils::round_int(rating);
+    iUserrating = MathUtils::round_int(static_cast<double>(rating));
   }
   XMLUtils::GetInt(album, "votes", iVotes);
 
@@ -655,7 +655,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
     userrating->ToElement()->SetAttribute("max", 10);
 
   XMLUtils::SetInt(album,           "votes", iVotes);
-  
+
   for (const auto& artistCredit : artistCredits)
   {
     // add an <albumArtistCredits> tag

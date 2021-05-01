@@ -367,7 +367,7 @@ uint64_t CRetroPlayer::GetTotalTime()
 
 void CRetroPlayer::SetSpeed(float speed)
 {
-  if (m_playback->GetSpeed() != speed)
+  if (m_playback->GetSpeed() != static_cast<double>(speed))
   {
     if (speed == 1.0f)
       m_callback.OnPlayBackResumed();

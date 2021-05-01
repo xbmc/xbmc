@@ -674,9 +674,9 @@ float CActiveAEBufferPoolAtempo::GetDelay()
 
 void CActiveAEBufferPoolAtempo::SetTempo(float tempo)
 {
-  if (tempo > 2.0)
+  if (tempo > 2.0f)
     tempo = 2.0;
-  else if (tempo < 0.5)
+  else if (tempo < 0.5f)
     tempo = 0.5;
 
   if (tempo != m_tempo)

@@ -54,7 +54,7 @@ void CCoreAudioDevice::Close()
     SetMixingSupport((m_MixerRestore ? true : false));
   m_MixerRestore = -1;
 
-  if (m_SampleRateRestore != 0.0f)
+  if (m_SampleRateRestore != 0.0)
     SetNominalSampleRate(m_SampleRateRestore);
 
   if (m_BufferSizeRestore && m_BufferSizeRestore != GetBufferSize())
@@ -702,28 +702,28 @@ bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList) const
 Float64 CCoreAudioDevice::GetNominalSampleRate()
 {
   if (!m_DeviceId)
-    return 0.0f;
+    return 0.0;
 
   AudioObjectPropertyAddress  propertyAddress;
   propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
   propertyAddress.mElement  = 0;
   propertyAddress.mSelector = kAudioDevicePropertyNominalSampleRate;
 
-  Float64 sampleRate = 0.0f;
+  Float64 sampleRate = 0.0;
   UInt32  propertySize = sizeof(Float64);
   OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &sampleRate);
   if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioDevice::GetNominalSampleRate: "
       "Unable to retrieve current device sample rate. Error = %s", GetError(ret).c_str());
-    return 0.0f;
+    return 0.0;
   }
   return sampleRate;
 }
 
 bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
 {
-  if (!m_DeviceId || sampleRate == 0.0f)
+  if (!m_DeviceId || sampleRate == 0.0)
     return false;
 
   Float64 currentRate = GetNominalSampleRate();
@@ -743,7 +743,7 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
       (float)sampleRate, GetError(ret).c_str());
     return false;
   }
-  if (m_SampleRateRestore == 0.0f)
+  if (m_SampleRateRestore == 0.0)
     m_SampleRateRestore = currentRate;
 
   return true;
