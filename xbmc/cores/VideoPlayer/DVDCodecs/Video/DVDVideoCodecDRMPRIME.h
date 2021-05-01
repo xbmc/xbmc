@@ -29,7 +29,7 @@ public:
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   const char* GetName() override { return m_name.c_str(); }
   unsigned GetAllowedReferences() override { return 5; }
-  void SetCodecControl(int flags) override { m_codecControlFlags = flags; }
+  void SetCodecControl(int flags) override;
 
 protected:
   void Drain();

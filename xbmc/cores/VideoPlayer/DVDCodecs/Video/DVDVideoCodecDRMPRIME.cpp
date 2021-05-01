@@ -517,6 +517,12 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iFlags = 0;
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
+  pVideoPicture->iFlags |= m_pFrame->data[0] ? 0 : DVP_FLAG_DROPPED;
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+  {
+    pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+  }
 
   int64_t pts = m_pFrame->best_effort_timestamp;
   pVideoPicture->pts = (pts == AV_NOPTS_VALUE)
@@ -589,4 +595,25 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   }
 
   return VC_PICTURE;
+}
+
+void CDVDVideoCodecDRMPRIME::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
+
+  if (m_pCodecContext)
+  {
+    if ((flags & DVD_CODEC_CTRL_DROP_ANY) != 0)
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_NONREF;
+      m_pCodecContext->skip_idct = AVDISCARD_NONREF;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+    }
+    else
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+    }
+  }
 }
