@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "threads/CriticalSection.h"
 
+#include <chrono>
 #include <list>
 #include <map>
 
@@ -37,7 +38,7 @@ public:
   struct contextTimeout
   {
     struct nfs_context *pContext;
-    uint64_t lastAccessedTime;
+    std::chrono::time_point<std::chrono::steady_clock> lastAccessedTime;
   };
 
   typedef std::map<std::string, struct contextTimeout> tOpenContextMap;
@@ -83,7 +84,8 @@ private:
   unsigned int m_IdleTimeout = 0;//timeout for idle connection close and dyunload
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
-  uint64_t m_lastAccessedTime = 0;//last access time for m_pNfsContext
+  std::chrono::time_point<std::chrono::steady_clock>
+      m_lastAccessedTime; //last access time for m_pNfsContext
   std::list<std::string> m_exportList;//list of exported paths of current connected servers
   CCriticalSection keepAliveLock;
   CCriticalSection openContextLock;

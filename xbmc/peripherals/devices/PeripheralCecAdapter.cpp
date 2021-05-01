@@ -94,7 +94,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bIsReady = false;
   m_bHasConnectedAudioSystem = false;
   m_strMenuLanguage = "???";
-  m_lastKeypress = 0;
+  m_lastKeypress = {};
   m_lastChange = VOLUME_CHANGE_NONE;
   m_iExitCode = EXITCODE_QUIT;
 
@@ -445,6 +445,8 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
   CecVolumeChange pendingVolumeChange = VOLUME_CHANGE_NONE;
   {
     CSingleLock lock(m_critSection);
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastKeypress);
     if (!m_volumeChangeQueue.empty())
     {
       /* get the first change from the queue */
@@ -456,27 +458,28 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
         m_volumeChangeQueue.pop();
 
       /* send another keypress after VOLUME_REFRESH_TIMEOUT ms */
-      bool bRefresh(XbmcThreads::SystemClockMillis() - m_lastKeypress > VOLUME_REFRESH_TIMEOUT);
+
+      bool bRefresh(duration.count() > VOLUME_REFRESH_TIMEOUT);
 
       /* only send the keypress when it hasn't been sent yet */
       if (pendingVolumeChange != m_lastChange)
       {
-        m_lastKeypress = XbmcThreads::SystemClockMillis();
+        m_lastKeypress = std::chrono::steady_clock::now();
         m_lastChange = pendingVolumeChange;
       }
       else if (bRefresh)
       {
-        m_lastKeypress = XbmcThreads::SystemClockMillis();
+        m_lastKeypress = std::chrono::steady_clock::now();
         pendingVolumeChange = m_lastChange;
       }
       else
         pendingVolumeChange = VOLUME_CHANGE_NONE;
     }
-    else if (m_lastKeypress > 0 &&
-             XbmcThreads::SystemClockMillis() - m_lastKeypress > VOLUME_CHANGE_TIMEOUT)
+    else if (m_lastKeypress.time_since_epoch().count() > 0 &&
+             duration.count() > VOLUME_CHANGE_TIMEOUT)
     {
       /* send a key release */
-      m_lastKeypress = 0;
+      m_lastKeypress = {};
       bSendRelease = true;
       m_lastChange = VOLUME_CHANGE_NONE;
     }

@@ -41,6 +41,7 @@ public:
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
+#include <chrono>
 #include <queue>
 #include <vector>
 
@@ -169,7 +170,7 @@ private:
   std::vector<CecButtonPress> m_buttonQueue;
   CecButtonPress m_currentButton;
   std::queue<CecVolumeChange> m_volumeChangeQueue;
-  unsigned int m_lastKeypress;
+  std::chrono::time_point<std::chrono::steady_clock> m_lastKeypress;
   CecVolumeChange m_lastChange;
   int m_iExitCode;
   bool m_bIsMuted;

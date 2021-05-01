@@ -10,7 +10,6 @@
 
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -77,7 +76,7 @@ void CSectionLoader::UnloadDLL(const std::string &dllname)
       if (0 == dll.m_lReferenceCount)
       {
         if (dll.m_bDelayUnload)
-          dll.m_unloadDelayStartTick = XbmcThreads::SystemClockMillis();
+          dll.m_unloadDelayStartTick = std::chrono::steady_clock::now();
         else
         {
           CLog::Log(LOGDEBUG,"SECTION:UnloadDll(%s)", dllname.c_str());
@@ -100,7 +99,10 @@ void CSectionLoader::UnloadDelayed()
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_lReferenceCount == 0 && XbmcThreads::SystemClockMillis() - dll.m_unloadDelayStartTick > UNLOAD_DELAY)
+    auto now = std::chrono::steady_clock::now();
+    auto duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now - dll.m_unloadDelayStartTick);
+    if (dll.m_lReferenceCount == 0 && duration.count() > UNLOAD_DELAY)
     {
       CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
 

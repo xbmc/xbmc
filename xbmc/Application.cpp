@@ -445,7 +445,7 @@ bool CApplication::Create(const CAppParamParser &params)
 
   CUtil::InitRandomSeed();
 
-  m_lastRenderTime = XbmcThreads::SystemClockMillis();
+  m_lastRenderTime = std::chrono::steady_clock::now();
   return true;
 }
 
@@ -1389,7 +1389,7 @@ void CApplication::Render()
     // execute post rendering actions (finalize window closing)
     CServiceBroker::GetGUI()->GetWindowManager().AfterRender();
 
-    m_lastRenderTime = XbmcThreads::SystemClockMillis();
+    m_lastRenderTime = std::chrono::steady_clock::now();
   }
 
   // render video layer
@@ -2315,8 +2315,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback() && m_appPlayer.IsRenderingVideoLayer())
       fps = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
 
-    unsigned int now = XbmcThreads::SystemClockMillis();
-    unsigned int frameTime = now - m_lastRenderTime;
+    auto now = std::chrono::steady_clock::now();
+
+    auto frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastRenderTime).count();
     if (fps > 0 && frameTime * fps < 1000)
       m_skipGuiRender = true;
     */

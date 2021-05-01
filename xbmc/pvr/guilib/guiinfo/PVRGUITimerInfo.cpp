@@ -16,7 +16,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
@@ -44,22 +43,26 @@ void CPVRGUITimerInfo::ResetProperties()
   m_strNextRecordingTime.clear();
   m_iTimerAmount = 0;
   m_iRecordingTimerAmount = 0;
-  m_iTimerInfoToggleStart = 0;
+  m_iTimerInfoToggleStart = {};
   m_iTimerInfoToggleCurrent = 0;
 }
 
 bool CPVRGUITimerInfo::TimerInfoToggle()
 {
   CSingleLock lock(m_critSection);
-  if (m_iTimerInfoToggleStart == 0)
+  if (m_iTimerInfoToggleStart.time_since_epoch().count() == 0)
   {
-    m_iTimerInfoToggleStart = XbmcThreads::SystemClockMillis();
+    m_iTimerInfoToggleStart = std::chrono::steady_clock::now();
     m_iTimerInfoToggleCurrent = 0;
     return true;
   }
 
-  if (static_cast<int>(XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) >
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
+  auto now = std::chrono::steady_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::milliseconds>(now - m_iTimerInfoToggleStart);
+
+  if (duration.count() >
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
@@ -68,7 +71,7 @@ bool CPVRGUITimerInfo::TimerInfoToggle()
 
     if (m_iTimerInfoToggleCurrent != iPrevious)
     {
-      m_iTimerInfoToggleStart = XbmcThreads::SystemClockMillis();
+      m_iTimerInfoToggleStart = std::chrono::steady_clock::now();
       return true;
     }
   }
@@ -116,7 +119,7 @@ void CPVRGUITimerInfo::UpdateTimersCache()
     CSingleLock lock(m_critSection);
     m_iTimerAmount = iTimerAmount;
     m_iRecordingTimerAmount = iRecordingTimerAmount;
-    m_iTimerInfoToggleStart = 0;
+    m_iTimerInfoToggleStart = {};
   }
 
   UpdateTimersToggle();

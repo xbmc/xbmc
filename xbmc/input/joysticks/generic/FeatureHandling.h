@@ -10,6 +10,7 @@
 
 #include "input/joysticks/JoystickTypes.h"
 
+#include <chrono>
 #include <memory>
 
 namespace KODI
@@ -105,7 +106,7 @@ protected:
   const bool m_bEnabled;
 
 private:
-  unsigned int m_motionStartTimeMs = 0;
+  std::chrono::time_point<std::chrono::steady_clock> m_motionStartTimeMs;
 };
 
 class CScalarFeature : public CJoystickFeature

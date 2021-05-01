@@ -10,6 +10,7 @@
 
 #include "threads/CriticalSection.h"
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -25,7 +26,7 @@ public:
     std::string m_strDllName;
     long m_lReferenceCount;
     LibraryLoader *m_pDll;
-    unsigned int m_unloadDelayStartTick;
+    std::chrono::time_point<std::chrono::steady_clock> m_unloadDelayStartTick;
     bool m_bDelayUnload;
   };
   CSectionLoader(void);

@@ -679,7 +679,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
 
     if (!load) {
         // cache anything that takes more than a second to retrieve
-        unsigned int time = XbmcThreads::SystemClockMillis();
+        auto start = std::chrono::steady_clock::now();
 
         if (parent_id.StartsWith("virtualpath://upnproot")) {
             CFileItemPtr item;
@@ -709,9 +709,13 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             DefaultSortItems(items);
         }
 
-        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && (XbmcThreads::SystemClockMillis() - time) > 1000 )) {
-            NPT_AutoLock lock(m_CacheMutex);
-            items.Save();
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && duration.count() > 1000))
+        {
+          NPT_AutoLock lock(m_CacheMutex);
+          items.Save();
         }
     }
 

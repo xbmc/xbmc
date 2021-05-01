@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowFullScreenDefines.h"
 #include "Application.h"
@@ -49,7 +48,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen()
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
   m_viewModeChanged = true;
-  m_dwShowViewModeTimeout = 0;
+  m_dwShowViewModeTimeout = {};
   m_bShowCurrentTime = false;
   m_loadType = KEEP_IN_MEMORY;
   // audio
@@ -136,7 +135,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_ASPECT_RATIO:
     { // toggle the aspect ratio mode (only if the info is onscreen)
-      if (m_dwShowViewModeTimeout)
+      if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0)
       {
         CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
         vs.m_ViewMode = CViewModeSettings::GetNextQuickCycleViewMode(vs.m_ViewMode);
@@ -146,7 +145,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       }
       else
         m_viewModeChanged = true;
-      m_dwShowViewModeTimeout = XbmcThreads::SystemClockMillis();
+      m_dwShowViewModeTimeout = std::chrono::steady_clock::now();
     }
     return true;
     break;
@@ -240,7 +239,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
 
-      m_dwShowViewModeTimeout = 0;
+      m_dwShowViewModeTimeout = {};
       m_viewModeChanged = true;
 
 
@@ -301,13 +300,18 @@ void CGUIWindowFullScreen::FrameMove()
   //----------------------
   // ViewMode Information
   //----------------------
-  if (m_dwShowViewModeTimeout && XbmcThreads::SystemClockMillis() - m_dwShowViewModeTimeout > 2500)
+
+  auto now = std::chrono::steady_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::milliseconds>(now - m_dwShowViewModeTimeout);
+
+  if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0 && duration.count() > 2500)
   {
-    m_dwShowViewModeTimeout = 0;
+    m_dwShowViewModeTimeout = {};
     m_viewModeChanged = true;
   }
 
-  if (m_dwShowViewModeTimeout)
+  if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0)
   {
     RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
 
@@ -368,7 +372,7 @@ void CGUIWindowFullScreen::FrameMove()
 
   if (m_viewModeChanged)
   {
-    if (m_dwShowViewModeTimeout)
+    if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0)
     {
       SET_CONTROL_VISIBLE(LABEL_ROW1);
       SET_CONTROL_VISIBLE(LABEL_ROW2);

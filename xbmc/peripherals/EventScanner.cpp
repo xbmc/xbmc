@@ -10,13 +10,11 @@
 
 #include "IEventScannerCallback.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include <algorithm>
 
 using namespace PERIPHERALS;
-using namespace XbmcThreads;
 
 // Default event scan rate when no polling handles are held
 #define DEFAULT_SCAN_RATE_HZ 60
@@ -128,7 +126,7 @@ void CEventScanner::ReleaseLock(CEventLockHandle& handle)
 
 void CEventScanner::Process()
 {
-  double nextScanMs = static_cast<double>(SystemClockMillis());
+  auto nextScan = std::chrono::steady_clock::now();
 
   while (!m_bStop)
   {
@@ -140,24 +138,24 @@ void CEventScanner::Process()
 
     m_scanFinishedEvent.Set();
 
-    const double nowMs = static_cast<double>(SystemClockMillis());
-    const double scanIntervalMs = GetScanIntervalMs();
+    auto now = std::chrono::steady_clock::now();
+    auto scanIntervalMs = GetScanIntervalMs();
 
     // Handle wrap-around
-    if (nowMs < nextScanMs)
-      nextScanMs = nowMs;
+    if (now < nextScan)
+      nextScan = now;
 
-    while (nextScanMs <= nowMs)
-      nextScanMs += scanIntervalMs;
+    while (nextScan <= now)
+      nextScan += scanIntervalMs;
 
-    unsigned int waitTimeMs = static_cast<unsigned int>(nextScanMs - nowMs);
+    auto waitTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(nextScan - now);
 
-    if (!m_bStop && waitTimeMs > 0)
-      m_scanEvent.WaitMSec(waitTimeMs);
+    if (!m_bStop && waitTimeMs.count() > 0)
+      m_scanEvent.WaitMSec(waitTimeMs.count());
   }
 }
 
-double CEventScanner::GetScanIntervalMs() const
+std::chrono::milliseconds CEventScanner::GetScanIntervalMs() const
 {
   bool bHasActiveHandle;
 
@@ -167,7 +165,10 @@ double CEventScanner::GetScanIntervalMs() const
   }
 
   if (!bHasActiveHandle)
-    return 1000.0 / DEFAULT_SCAN_RATE_HZ;
+  {
+    // this truncates to 16 (from 16.666) should it round up to 17 using std::nearbyint or should we use nanoseconds?
+    return std::chrono::milliseconds(static_cast<uint32_t>(1000.0 / DEFAULT_SCAN_RATE_HZ));
+  }
   else
-    return WATCHDOG_TIMEOUT_MS;
+    return std::chrono::milliseconds(WATCHDOG_TIMEOUT_MS);
 }
