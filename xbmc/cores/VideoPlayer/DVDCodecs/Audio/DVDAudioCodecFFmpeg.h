@@ -59,5 +59,6 @@ protected:
   int m_channels;
   uint64_t m_layout;
   std::string m_codecName;
+  uint64_t m_hint_layout;
 };
 
