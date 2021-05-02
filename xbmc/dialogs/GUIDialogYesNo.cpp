@@ -73,7 +73,7 @@ void CGUIDialogYesNo::OnInitWindow()
   else
     SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
   SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
-  SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
+  SET_CONTROL_FOCUS(m_defaultButtonId, 0);
 
   CGUIDialogBoxBase::OnInitWindow();
 }
@@ -121,6 +121,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
   dialog->SetChoice(1, !yesLabel.empty() ? yesLabel : 107);
   dialog->SetChoice(2, "");
   dialog->m_bCanceled = false;
+  dialog->m_defaultButtonId = CONTROL_NO_BUTTON;
   dialog->Open();
 
   bCanceled = dialog->m_bCanceled;
@@ -138,9 +139,11 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
                                       bool& bCanceled,
                                       const CVariant& noLabel /* = "" */,
                                       const CVariant& yesLabel /* = "" */,
-                                      unsigned int autoCloseTime)
+                                      unsigned int autoCloseTime,
+                                      int defaultButtonId /* = CONTROL_NO_BUTTON */)
 {
-  int result = ShowAndGetInput(heading, text, noLabel, yesLabel, "", autoCloseTime);
+  int result =
+      ShowAndGetInput(heading, text, noLabel, yesLabel, "", autoCloseTime, defaultButtonId);
 
   bCanceled = result == -1;
   return result == 1;
@@ -152,6 +155,7 @@ void CGUIDialogYesNo::Reset()
   m_bCanceled = false;
   m_bCustom = false;
   m_bAutoClosed = false;
+  m_defaultButtonId = CONTROL_NO_BUTTON;
 }
 
 int CGUIDialogYesNo::GetResult() const
@@ -171,7 +175,8 @@ int CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
                                      const CVariant& noLabel,
                                      const CVariant& yesLabel,
                                      const CVariant& customLabel,
-                                     unsigned int autoCloseTime)
+                                     unsigned int autoCloseTime,
+                                     int defaultButtonId /* = CONTROL_NO_BUTTON */)
 {
   CGUIDialogYesNo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!dialog)
@@ -183,10 +188,10 @@ int CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
     dialog->SetAutoClose(autoCloseTime);
   dialog->m_bCanceled = false;
   dialog->m_bCustom = false;
+  dialog->m_defaultButtonId = defaultButtonId;
   dialog->SetChoice(0, !noLabel.empty() ? noLabel : 106);
   dialog->SetChoice(1, !yesLabel.empty() ? yesLabel : 107);
   dialog->SetChoice(2, customLabel);  // Button only visible when label is not empty
-
   dialog->Open();
 
   return dialog->GetResult();
@@ -213,6 +218,7 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
     SetAutoClose(options.autoclose);
   m_bCanceled = false;
   m_bCustom = false;
+  m_defaultButtonId = CONTROL_NO_BUTTON;
 
   for (size_t i = 0; i < 3; ++i)
   {
