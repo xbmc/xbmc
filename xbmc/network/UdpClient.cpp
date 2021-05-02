@@ -233,7 +233,7 @@ bool CUdpClient::DispatchNextCommand()
     CLog::Log(UDPCLIENT_DEBUG_LEVEL,
               "UDPCLIENT TX: {}\t\t-> "
               "<binary payload {} bytes>",
-              timestamp.count(), command.binarySize);
+              timestamp, command.binarySize);
 
     do
     {

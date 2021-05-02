@@ -192,8 +192,8 @@ void CGUIConfigurationWizard::Process(void)
 
     if (bInMotion)
     {
-      CLog::Log(LOGDEBUG, "Configuration wizard: waiting {}ms for axes to neutralize",
-                POST_MAPPING_WAIT_TIME_MS.count());
+      CLog::Log(LOGDEBUG, "Configuration wizard: waiting {} for axes to neutralize",
+                POST_MAPPING_WAIT_TIME_MS);
       m_motionlessEvent.Wait(POST_MAPPING_WAIT_TIME_MS);
     }
   }

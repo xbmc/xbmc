@@ -129,8 +129,8 @@ void CBackgroundPicLoader::Process()
     }
   }
   if (count > 0)
-    CLog::Log(LOGDEBUG, "Time for loading {} images: {} ms, average {} ms", count,
-              totalTime.count(), totalTime.count() / count);
+    CLog::Log(LOGDEBUG, "Time for loading {} images: {}, average {}", count, totalTime,
+              totalTime / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight)

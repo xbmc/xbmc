@@ -2080,8 +2080,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "{0}({1}) - took {2} ms", __FUNCTION__, strSQL,
-              duration.count());
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{0}({1}) - took {2}", __FUNCTION__, strSQL, duration);
 
     return true;
   }
@@ -3614,8 +3613,8 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1}ms query took {2}ms", __FUNCTION__,
-              duration.count(), queryDuration.count());
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1} query took {2}", __FUNCTION__,
+              duration, queryDuration);
 
     return true;
   }
@@ -3966,21 +3965,21 @@ bool CMusicDatabase::Search(const std::string& search, CFileItemList& items)
   SearchArtists(search, items);
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} Artist search in {} ms", __FUNCTION__, duration.count());
+  CLog::Log(LOGDEBUG, "{} Artist search in {}", __FUNCTION__, duration);
 
   start = std::chrono::steady_clock::now();
   // then albums that match
   SearchAlbums(search, items);
   end = std::chrono::steady_clock::now();
   duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} Album search in {} ms", __FUNCTION__, duration.count());
+  CLog::Log(LOGDEBUG, "{} Album search in {}", __FUNCTION__, duration);
 
   start = std::chrono::steady_clock::now();
   // and finally songs
   SearchSongs(search, items);
   end = std::chrono::steady_clock::now();
   duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} Songs search in {} ms", __FUNCTION__, duration.count());
+  CLog::Log(LOGDEBUG, "{} Songs search in {}", __FUNCTION__, duration);
 
   return true;
 }
@@ -4575,8 +4574,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
 
   duration =
       std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - time);
-  CLog::Log(LOGINFO, "{}: Cleaning musicdatabase done. Operation took {}s", __FUNCTION__,
-            duration.count());
+  CLog::Log(LOGINFO, "{}: Cleaning musicdatabase done. Operation took {}", __FUNCTION__, duration);
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnCleanFinished");
 
   if (!Compress(false))
@@ -5546,8 +5544,8 @@ bool CMusicDatabase::GetArtistsByWhere(
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with artists {1} ms query took {2} ms",
-              __FUNCTION__, duration.count(), queryDuration.count());
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with artists {1} query took {2}", __FUNCTION__,
+              duration, queryDuration);
 
     return true;
   }
@@ -5775,8 +5773,8 @@ bool CMusicDatabase::GetAlbumsByWhere(
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1}ms query took {2}ms", __FUNCTION__,
-              duration.count(), queryDuration.count());
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with albums {1} query took {2}", __FUNCTION__,
+              duration, queryDuration);
 
     return true;
   }
@@ -5992,8 +5990,8 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with discs {1}ms query took {2}ms", __FUNCTION__,
-              duration.count(), queryDuration.count());
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with discs {1} query took {2}", __FUNCTION__,
+              duration, queryDuration);
 
     return true;
   }
@@ -6247,8 +6245,8 @@ bool CMusicDatabase::GetSongsFullByWhere(
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{0}: Time to fill list with songs {1}ms query took {2}ms", __FUNCTION__,
-              duration.count(), queryDuration.count());
+    CLog::Log(LOGDEBUG, "{0}: Time to fill list with songs {1} query took {2}", __FUNCTION__,
+              duration, queryDuration);
 
     return true;
   }
@@ -6854,7 +6852,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{} - query took {} ms", __FUNCTION__, duration.count());
+    CLog::Log(LOGDEBUG, "{} - query took {}", __FUNCTION__, duration);
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound <= 0)
@@ -7404,7 +7402,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{} - query took {} ms", __FUNCTION__, duration.count());
+    CLog::Log(LOGDEBUG, "{} - query took {}", __FUNCTION__, duration);
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound <= 0)
@@ -7988,7 +7986,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, "{} - query took {} ms", __FUNCTION__, duration.count());
+    CLog::Log(LOGDEBUG, "{} - query took {}", __FUNCTION__, duration);
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound <= 0)

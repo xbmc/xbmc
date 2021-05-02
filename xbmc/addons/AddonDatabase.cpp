@@ -511,7 +511,7 @@ bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& da
 
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    CLog::Log(LOGDEBUG, "CAddonDatabase::SetLastUsed[{}] took {} ms", addonId, duration.count());
+    CLog::Log(LOGDEBUG, "CAddonDatabase::SetLastUsed[{}] took {}", addonId, duration);
     return true;
   }
   catch (...)
@@ -683,7 +683,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
 
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    CLog::Log(LOGDEBUG, "CAddonDatabase: SELECT repo.id FROM repo .. took {} ms", duration.count());
+    CLog::Log(LOGDEBUG, "CAddonDatabase: SELECT repo.id FROM repo .. took {}", duration);
 
     if (repoIds.empty())
     {
@@ -711,8 +711,8 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
 
       end = std::chrono::steady_clock::now();
       duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-      CLog::Log(LOGDEBUG, "CAddonDatabase: query {} returned {} rows in {} ms", sql,
-                m_pDS->num_rows(), duration.count());
+      CLog::Log(LOGDEBUG, "CAddonDatabase: query {} returned {} rows in {}", sql, m_pDS->num_rows(),
+                duration);
     }
 
     VECADDONS result;
@@ -746,7 +746,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
 
     end = std::chrono::steady_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    CLog::Log(LOGDEBUG, "CAddonDatabase::GetAddons took {} ms", duration.count());
+    CLog::Log(LOGDEBUG, "CAddonDatabase::GetAddons took {}", duration);
 
     return true;
   }

@@ -434,7 +434,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
     condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
     {
-      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout.count());
+      CLog::Log(LOGERROR, "{} engine didn't start in {}!", __FUNCTION__, timeout);
       return INT_MAX;
     }
   }

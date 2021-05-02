@@ -377,7 +377,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took {} ms", duration.count());
+  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took {}", duration);
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing

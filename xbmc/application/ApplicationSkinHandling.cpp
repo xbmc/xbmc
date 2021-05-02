@@ -156,7 +156,7 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
   const auto end = std::chrono::steady_clock::now();
   std::chrono::duration<double, std::milli> duration = end - start;
 
-  CLog::Log(LOGDEBUG, "Load Skin XML: {:.2f} ms", duration.count());
+  CLog::Log(LOGDEBUG, "Load Skin XML: {:.2}", duration);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(m_msgCb);

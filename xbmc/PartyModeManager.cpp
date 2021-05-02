@@ -189,7 +189,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} time for song fetch: {} ms", __FUNCTION__, duration.count());
+  CLog::Log(LOGDEBUG, "{} time for song fetch: {}", __FUNCTION__, duration);
 
   // start playing
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);

@@ -58,7 +58,7 @@ bool CImageLoader::DoWork()
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     if (duration.count() > 100)
-      CLog::Log(LOGDEBUG, "{} - took {} ms to load {}", __FUNCTION__, duration.count(), loadPath);
+      CLog::Log(LOGDEBUG, "{} - took {} to load {}", __FUNCTION__, duration, loadPath);
 
     if (m_texture)
     {

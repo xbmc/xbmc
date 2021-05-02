@@ -730,8 +730,8 @@ int CVideoDatabase::RunQuery(const std::string &sql)
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  CLog::Log(LOGDEBUG, LOGDATABASE, "{} took {} ms for {} items query: {}", __FUNCTION__,
-            duration.count(), rows, sql);
+  CLog::Log(LOGDEBUG, LOGDATABASE, "{} took {} for {} items query: {}", __FUNCTION__, duration,
+            rows, sql);
 
   return rows;
 }
@@ -7010,7 +7010,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "{} -  query took {} ms", __FUNCTION__, duration.count());
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{} -  query took {}", __FUNCTION__, duration);
 
     start = std::chrono::steady_clock::now();
 
@@ -7132,8 +7132,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
     end = std::chrono::steady_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "{} item retrieval took {} ms", __FUNCTION__,
-              duration.count());
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{} item retrieval took {}", __FUNCTION__, duration);
 
     return true;
   }
@@ -9764,8 +9763,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-      CLog::Log(LOGINFO, "{}: Cleaning videodatabase done. Operation took {} ms", __FUNCTION__,
-                duration.count());
+      CLog::Log(LOGINFO, "{}: Cleaning videodatabase done. Operation took {}", __FUNCTION__,
+                duration);
 
       for (const auto& i : movieIDs)
         AnnounceRemove(MediaTypeMovie, i, true);

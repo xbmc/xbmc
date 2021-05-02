@@ -476,8 +476,8 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
   {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAction);
 
-    CLog::Log(LOGDEBUG, "Button mapping: rapid input after {}ms dropped for profile \"{}\"",
-              duration.count(), m_buttonMapper->ControllerID());
+    CLog::Log(LOGDEBUG, "Button mapping: rapid input after {} dropped for profile \"{}\"", duration,
+              m_buttonMapper->ControllerID());
     bHandled = true;
   }
 

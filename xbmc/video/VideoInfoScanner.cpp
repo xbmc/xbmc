@@ -159,8 +159,8 @@ namespace VIDEO
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-      CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took {} ms",
-                duration.count());
+      CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took {}",
+                duration);
     }
     catch (...)
     {

@@ -264,8 +264,7 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesOrOutdatedAddons took {} ms",
-            duration.count());
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdatesOrOutdatedAddons took {}", duration);
 
   return result;
 }
@@ -287,7 +286,7 @@ std::map<std::string, AddonWithUpdate> CAddonMgr::GetAddonsWithAvailableUpdate()
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__, duration.count());
+  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {}", __func__, duration);
 
   return result;
 }
@@ -306,7 +305,7 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetCompatibleVersions(
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {} ms", __func__, duration.count());
+  CLog::Log(LOGDEBUG, "CAddonMgr::{} took {}", __func__, duration);
 
   return result;
 }

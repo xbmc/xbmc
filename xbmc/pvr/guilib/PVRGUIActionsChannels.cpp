@@ -298,7 +298,7 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Channel scan finished after {} ms", duration.count());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Channel scan finished after {}", duration);
 
   m_bChannelScanRunning = false;
   return true;

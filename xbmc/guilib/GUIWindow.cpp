@@ -111,7 +111,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
 #ifdef _DEBUG
     const auto end = std::chrono::steady_clock::now();
     const std::chrono::duration<double, std::milli> duration = end - start;
-    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2f} ms", strPath, duration.count());
+    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2}", strPath, duration);
 #endif
   }
 
@@ -770,12 +770,11 @@ void CGUIWindow::AllocResources(bool forceLoad /*= false */)
   const std::chrono::duration<double, std::milli> duration = end - start;
 
   if (forceLoad)
-    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f} ms ({:.2f} ms skin load)", duration.count(),
-              skinLoadDuration.count());
+    CLog::Log(LOGDEBUG, "Alloc resources: {:.2} ({:.2} skin load)", duration, skinLoadDuration);
   else
   {
     CLog::Log(LOGDEBUG, "Window {} was already loaded", GetProperty("xmlfile").asString());
-    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f} ms", duration.count());
+    CLog::Log(LOGDEBUG, "Alloc resources: {:.2}", duration);
   }
 #endif
   m_bAllocated = true;

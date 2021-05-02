@@ -1103,7 +1103,7 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
 
   if (timer.IsTimePast())
   {
-    CLog::Log(LOGERROR, "Sink Timer expired for more than buffer time: {}s", wait_time.count());
+    CLog::Log(LOGERROR, "Sink Timer expired for more than buffer time: {}", wait_time);
     pa_threaded_mainloop_unlock(m_MainLoop);
     return 0;
   }

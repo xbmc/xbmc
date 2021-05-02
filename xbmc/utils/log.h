@@ -33,6 +33,7 @@
 #include <string>
 #include <vector>
 
+#include <fmt/chrono.h>
 #include <spdlog/spdlog.h>
 
 namespace spdlog

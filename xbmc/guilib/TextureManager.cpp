@@ -452,8 +452,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 #ifdef _DEBUG_TEXTURES
   const auto end = std::chrono::steady_clock::now();
   const std::chrono::duration<double, std::milli> duration = end - start;
-  CLog::Log(LOGDEBUG, "Load {}: {:.3f} ms {}", strPath, duration.count(),
-            (bundle >= 0) ? "(bundled)" : "");
+  CLog::Log(LOGDEBUG, "Load {}: {:.3} {}", strPath, duration, (bundle >= 0) ? "(bundled)" : "");
 #endif
 
   return pMap->GetTexture();

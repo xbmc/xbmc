@@ -194,9 +194,8 @@ void CMusicInfoScanner::Process()
 
       auto elapsed =
           std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tick);
-      CLog::Log(LOGINFO,
-                "My Music: Scanning for music info using worker thread, operation took {}s",
-                elapsed.count());
+      CLog::Log(LOGINFO, "My Music: Scanning for music info using worker thread, operation took {}",
+                elapsed);
     }
     if (m_scanType == 1) // load album info
     {

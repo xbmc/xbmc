@@ -294,8 +294,8 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = {},  took {} ms", items.Size(),
-            duration.count());
+  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = {},  took {}", items.Size(),
+            duration);
 }
 
 bool CMultiPathDirectory::SupportsWriteFileOperations(const std::string &strPath)

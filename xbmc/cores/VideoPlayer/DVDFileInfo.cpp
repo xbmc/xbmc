@@ -300,8 +300,8 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} - measured {} ms to extract thumb from file <{}> in {} packets. ",
-            __FUNCTION__, duration.count(), redactPath, packetsTried);
+  CLog::Log(LOGDEBUG, "{} - measured {} to extract thumb from file <{}> in {} packets. ",
+            __FUNCTION__, duration, redactPath, packetsTried);
 
   return bOk;
 }
