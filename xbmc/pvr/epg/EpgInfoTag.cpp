@@ -595,8 +595,9 @@ bool CPVREpgInfoTag::IsRecordable() const
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR))
   {
-    // event end time based fallback
-    bIsRecordable = EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+    // flag and event end time based fallback
+    bIsRecordable = (m_iFlags & EPG_TAG_FLAG_IS_RECORDABLE) > 0 &&
+                    EndAsLocalTime() > CDateTime::GetCurrentDateTime();
   }
   return bIsRecordable;
 }
@@ -609,8 +610,8 @@ bool CPVREpgInfoTag::IsPlayable() const
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
   {
-    // fallback
-    bIsPlayable = false;
+    // flag based fallback
+    bIsPlayable = (m_iFlags & EPG_TAG_FLAG_IS_PLAYABLE) > 0;
   }
   return bIsPlayable;
 }

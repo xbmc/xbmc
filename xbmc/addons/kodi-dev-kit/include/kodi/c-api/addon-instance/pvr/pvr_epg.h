@@ -559,6 +559,12 @@ extern "C"
 
     /// @brief __0001 0000__ : This EPG entry will be flagged as live.
     EPG_TAG_FLAG_IS_LIVE = (1 << 4),
+
+    /// @brief __0010 0000__ : This EPG entry will be flagged as recordable.
+    EPG_TAG_FLAG_IS_RECORDABLE = (1 << 5),
+
+    /// @brief __0100 0000__ : This EPG entry will be flagged as playable.
+    EPG_TAG_FLAG_IS_PLAYABLE = (1 << 6),
   } EPG_TAG_FLAG;
   ///@}
   //----------------------------------------------------------------------------
