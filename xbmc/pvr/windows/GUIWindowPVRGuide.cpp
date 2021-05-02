@@ -26,6 +26,7 @@
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/EpgChannelData.h"
@@ -702,12 +703,12 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
         endDate = maxFutureDate;
 
       std::unique_ptr<CFileItemList> channels(new CFileItemList);
-      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers =
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
           group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
 
       for (const auto& groupMember : groupMembers)
       {
-        channels->Add(std::make_shared<CFileItem>(groupMember->channel));
+        channels->Add(std::make_shared<CFileItem>(groupMember->Channel()));
       }
 
       if (m_guiState)

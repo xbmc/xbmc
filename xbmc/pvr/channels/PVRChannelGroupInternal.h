@@ -40,12 +40,13 @@ namespace PVR
     /*!
      * @brief Callback for add-ons to update a channel.
      * @param channel The updated channel.
-     * @param channelNumber A new channel number for the channel.
-     * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
      * @param clientChannelNumber The client channel number of the channel to add. (optional)
+     * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
      * @return The new/updated channel.
      */
-    std::shared_ptr<CPVRChannel> UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, const CPVRChannelNumber& clientChannelNumber = {});
+    std::shared_ptr<CPVRChannel> UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel,
+                                                  const CPVRChannelNumber& clientChannelNumber,
+                                                  int iOrder);
 
     /*!
      * @see CPVRChannelGroup::IsGroupMember
@@ -82,10 +83,9 @@ namespace PVR
   protected:
     /*!
      * @brief Load all channels from the database.
-     * @param bCompress Compress the database after changing anything.
      * @return The amount of channels that were loaded.
      */
-    int LoadFromDb(bool bCompress = false) override;
+    int LoadFromDb() override;
 
     /*!
      * @brief Load all channels from the clients.

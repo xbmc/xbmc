@@ -39,7 +39,7 @@
 #include "pvr/addons/PVRClientMenuHooks.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
@@ -1458,10 +1458,12 @@ namespace PVR
       if (channelGroup)
       {
         // try to start playback of first channel in this group
-        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = channelGroup->GetMembers();
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+            channelGroup->GetMembers();
         if (!groupMembers.empty())
         {
-          return SwitchToChannel(std::make_shared<CFileItem>((*groupMembers.begin())->channel), true);
+          return SwitchToChannel(std::make_shared<CFileItem>((*groupMembers.begin())->Channel()),
+                                 true);
         }
       }
     }
@@ -1502,7 +1504,7 @@ namespace PVR
       if (channels.empty())
         return false;
 
-      channel = channels.front()->channel;
+      channel = channels.front()->Channel();
     }
 
     CLog::Log(LOGINFO, "PVR is starting playback of channel '{}'", channel->ChannelName());

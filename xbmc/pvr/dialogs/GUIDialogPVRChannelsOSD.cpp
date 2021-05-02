@@ -19,7 +19,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
@@ -174,10 +174,11 @@ void CGUIDialogPVRChannelsOSD::Update()
     const std::shared_ptr<CPVRChannelGroup> group = pvrMgr.PlaybackState()->GetPlayingGroup(channel->IsRadio());
     if (group)
     {
-      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+          group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
-        m_vecItems->Add(std::make_shared<CFileItem>(groupMember->channel));
+        m_vecItems->Add(std::make_shared<CFileItem>(groupMember->Channel()));
       }
 
       m_viewControl.SetItems(*m_vecItems);

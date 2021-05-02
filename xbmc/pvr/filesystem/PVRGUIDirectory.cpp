@@ -16,7 +16,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
@@ -495,13 +495,14 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 
       if (group)
       {
-        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers();
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+            group->GetMembers();
         for (const auto& groupMember : groupMembers)
         {
-          if (bShowHiddenChannels != groupMember->channel->IsHidden())
+          if (bShowHiddenChannels != groupMember->Channel()->IsHidden())
             continue;
 
-          results.Add(std::make_shared<CFileItem>(groupMember->channel));
+          results.Add(std::make_shared<CFileItem>(groupMember->Channel()));
         }
       }
       else

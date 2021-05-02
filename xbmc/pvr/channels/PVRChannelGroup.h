@@ -31,31 +31,8 @@ namespace PVR
   enum class PVREvent;
 
   class CPVRChannel;
+  class CPVRChannelGroupMember;
   class CPVREpgInfoTag;
-
-  struct PVRChannelGroupMember
-  {
-    PVRChannelGroupMember() = default;
-
-    PVRChannelGroupMember(const std::shared_ptr<CPVRChannel>& _channel,
-                          const CPVRChannelNumber& _channelNumber,
-                          int _iClientPriority,
-                          int _iOrder,
-                          const CPVRChannelNumber& _clientChannelNumber)
-      : channel(_channel),
-        channelNumber(_channelNumber),
-        clientChannelNumber(_clientChannelNumber),
-        iClientPriority(_iClientPriority),
-        iOrder(_iOrder)
-    {
-    }
-
-    std::shared_ptr<CPVRChannel> channel;
-    CPVRChannelNumber channelNumber; // the channel number this channel has in the group
-    CPVRChannelNumber clientChannelNumber; // the client channel number this channel has in the group
-    int iClientPriority = 0;
-    int iOrder = 0; // The value denoting the order of this member in the group
-  };
 
   enum EpgDateType
   {
@@ -102,7 +79,7 @@ namespace PVR
     /**
      * Empty group member
      */
-    static std::shared_ptr<PVRChannelGroupMember> EmptyMember;
+    static std::shared_ptr<CPVRChannelGroupMember> EmptyMember;
 
     /*!
      * @brief Query the events available for CEventStream
@@ -246,9 +223,8 @@ namespace PVR
     /*!
      * @brief Last time group has been watched
      * @param iLastWatched The new value.
-     * @return True if something changed, false otherwise.
      */
-    bool SetLastWatched(time_t iLastWatched);
+    void SetLastWatched(time_t iLastWatched);
 
     /*!
      * @return Time in milliseconds from epoch this group was last opened.
@@ -258,9 +234,8 @@ namespace PVR
     /*!
      * @brief Set the time in milliseconds from epoch this group was last opened.
      * @param iLastOpened The new value.
-     * @return True if something changed, false otherwise.
      */
-    bool SetLastOpened(uint64_t iLastOpened);
+    void SetLastOpened(uint64_t iLastOpened);
 
     /*!
      * @brief Set if sorting and renumbering should happen after adding/updating channels to group.
@@ -368,7 +343,8 @@ namespace PVR
      * @param eFilter A filter to apply.
      * @return The group members
      */
-    std::vector<std::shared_ptr<PVRChannelGroupMember>> GetMembers(Include eFilter = Include::ALL) const;
+    std::vector<std::shared_ptr<CPVRChannelGroupMember>> GetMembers(
+        Include eFilter = Include::ALL) const;
 
     /*!
      * @brief Get the list of active channel numbers in a group.
@@ -389,11 +365,6 @@ namespace PVR
     bool HasChannels() const;
 
     /*!
-     * @return True if there is at least one channel in this group with changes that haven't been persisted, false otherwise.
-     */
-    bool HasChangedChannels() const;
-
-    /*!
      * @return True if there is at least one new channel in this group that hasn't been persisted, false otherwise.
      */
     bool HasNewChannels() const;
@@ -402,6 +373,11 @@ namespace PVR
      * @return True if anything changed in this group that hasn't been persisted, false otherwise.
      */
     bool HasChanges() const;
+
+    /*!
+     * @return True if the group was never persisted, false otherwise.
+     */
+    bool IsNew() const;
 
     /*!
      * @brief Create an EPG table for each channel.
@@ -458,8 +434,9 @@ namespace PVR
      * @param id The storage id (a pair of client id and unique channel id).
      * @return A reference to the group member or an empty group member if it wasn't found.
      */
-    std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id);
-    const std::shared_ptr<PVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id) const;
+    std::shared_ptr<CPVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id);
+    const std::shared_ptr<CPVRChannelGroupMember>& GetByUniqueID(
+        const std::pair<int, int>& id) const;
 
     bool SetHidden(bool bHidden);
     bool IsHidden() const;
@@ -505,10 +482,9 @@ namespace PVR
 
     /*!
      * @brief Load the channels stored in the database.
-     * @param bCompress If true, compress the database after storing the channels.
      * @return The amount of channels that were added.
      */
-    virtual int LoadFromDb(bool bCompress = false);
+    virtual int LoadFromDb();
 
     /*!
      * @brief Update the current channel list with the given list.
@@ -574,8 +550,10 @@ namespace PVR
     uint64_t m_iLastOpened = 0; /*!< time in milliseconds from epoch this group was last opened */
     bool m_bHidden = false; /*!< true if this group is hidden, false otherwise */
     int m_iPosition = 0; /*!< the position of this group within the group list */
-    std::vector<std::shared_ptr<PVRChannelGroupMember>> m_sortedMembers; /*!< members sorted by channel number */
-    std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> m_members; /*!< members with key clientid+uniqueid */
+    std::vector<std::shared_ptr<CPVRChannelGroupMember>>
+        m_sortedMembers; /*!< members sorted by channel number */
+    std::map<std::pair<int, int>, std::shared_ptr<CPVRChannelGroupMember>>
+        m_members; /*!< members with key clientid+uniqueid */
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClients;
     CEventSource<PVREvent> m_events;

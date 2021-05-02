@@ -1767,8 +1767,8 @@ void CPVRClient::cb_transfer_channel_entry(void* kodiInstance,
         std::make_shared<CPVRChannel>(*channel, client->GetID());
     CPVRChannelGroupInternal* channels =
         static_cast<CPVRChannelGroupInternal*>(handle->dataAddress);
-    channels->UpdateFromClient(transferChannel, CPVRChannelNumber(), channel->iOrder,
-                               transferChannel->ClientChannelNumber());
+    channels->UpdateFromClient(transferChannel, transferChannel->ClientChannelNumber(),
+                               channel->iOrder);
   });
 }
 
