@@ -47,6 +47,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   // perform netbios lookup (win32 is handling this via gethostbyname)
   char nmb_ip[100];
   char line[200];
+  std::vector<std::string> addresses;
 
   std::string cmd = "nmblookup " + strHostName;
   FILE* fp = popen(cmd.c_str(), "r");
@@ -57,10 +58,26 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
       if (sscanf(line, "%99s *<00>\n", nmb_ip))
       {
         if (inet_addr(nmb_ip) != INADDR_NONE)
-          strIpAddress = nmb_ip;
+          addresses.emplace_back(nmb_ip);
       }
     }
     pclose(fp);
+  }
+
+  for (auto ip : addresses)
+  {
+    cmd = "nmblookup -A " + ip;
+    fp = popen(cmd.c_str(), "r");
+    if (fp)
+    {
+      while (fgets(line, sizeof line, fp))
+        ;
+      if (pclose(fp) == 0)
+      {
+        strIpAddress = ip;
+        break;
+      }
+    }
   }
 
   if (!strIpAddress.empty())
