@@ -81,6 +81,9 @@ namespace DX
 
     // HDR display support
     HDR_STATUS ToggleHDR();
+#ifdef TARGET_WINDOWS_STORE
+    HDR_STATUS XboxSwitchHDMIMode(bool needPQ);
+#endif
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
     void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace);
     bool IsHDROutput() const { return m_IsHDROutput; }

@@ -29,6 +29,17 @@
 #pragma comment(lib, "dxgi.lib")
 #endif // _DEBUG
 
+#ifdef TARGET_WINDOWS_STORE
+#include "platform/win10/AsyncHelpers.h"
+
+#include <winrt/Windows.Graphics.Display.Core.h>
+
+extern "C"
+{
+#include <libavutil/rational.h>
+}
+#endif
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 using namespace Concurrency;
@@ -169,6 +180,17 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
     }
     else
       mode->ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
+  }
+#elif TARGET_WINDOWS_STORE
+  using namespace winrt::Windows::Graphics::Display::Core;
+
+  auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+  if (hdmiInfo) // Xbox only
+  {
+    auto currentMode = hdmiInfo.GetCurrentDisplayMode();
+    AVRational refresh = av_d2q(currentMode.RefreshRate(), 60000);
+    mode->RefreshRate.Numerator = refresh.num;
+    mode->RefreshRate.Denominator = refresh.den;
   }
 #endif
 }
@@ -1197,7 +1219,11 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   // Toggle display HDR
   DX::Windowing()->SetAlteringWindow(true);
 
+#ifdef TARGET_WINDOWS_DESKTOP
   HDR_STATUS hdrStatus = CWIN32Util::ToggleWindowsHDR(md);
+#else
+  HDR_STATUS hdrStatus = XboxSwitchHDMIMode(false);
+#endif
 
   // Kill swapchain
   if (m_swapChain && hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
@@ -1225,6 +1251,73 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
 
   return hdrStatus;
 }
+
+#ifdef TARGET_WINDOWS_STORE
+HDR_STATUS DX::DeviceResources::XboxSwitchHDMIMode(bool needPQ)
+{
+  using namespace winrt::Windows::UI::Core;
+  using namespace winrt::Windows::Graphics::Display;
+  using namespace winrt::Windows::Graphics::Display::Core;
+
+  HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
+  auto dispatcher = m_coreWindow.Dispatcher();
+
+  DispatchedHandler handler([&]() {
+    auto displayInfo = DisplayInformation::GetForCurrentView();
+    auto advColorInfo = displayInfo.GetAdvancedColorInfo();
+
+    // Check current HDR status
+    bool hdr = (advColorInfo.CurrentAdvancedColorKind() == AdvancedColorKind::HighDynamicRange);
+
+    bool needHDR10 = !hdr;
+
+    auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+
+    if (hdmiInfo != nullptr)
+    {
+      auto curr = hdmiInfo.GetCurrentDisplayMode();
+      auto modes = hdmiInfo.GetSupportedDisplayModes();
+
+      HdmiDisplayMode selected = nullptr;
+
+      for (const auto& mode : modes)
+      {
+        if (mode.ResolutionWidthInRawPixels() == curr.ResolutionWidthInRawPixels() &&
+            mode.ResolutionHeightInRawPixels() == curr.ResolutionHeightInRawPixels() &&
+            fabs(mode.RefreshRate() - curr.RefreshRate()) <= 0.0001 && !mode.StereoEnabled())
+        {
+          if (needHDR10 && mode.IsSmpte2084Supported())
+          {
+            selected = mode;
+            break;
+          }
+          else if (!needHDR10)
+          {
+            selected = mode;
+            break;
+          }
+        }
+      }
+
+      if (selected != nullptr) // Toggle HDR
+      {
+        auto eotf = needHDR10 ? HdmiDisplayHdrOption::EotfSdr : HdmiDisplayHdrOption::None;
+        if (Wait(hdmiInfo.RequestSetCurrentDisplayModeAsync(selected, eotf)))
+        {
+          status = needHDR10 ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF;
+        }
+      }
+    }
+  });
+
+  if (dispatcher.HasThreadAccess())
+    handler();
+  else
+    Wait(dispatcher.RunAsync(CoreDispatcherPriority::High, handler));
+
+  return status;
+}
+#endif //TARGET_WINDOWS_STORE
 
 DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
 {

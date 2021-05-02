@@ -70,7 +70,9 @@ public:
   static bool SetThreadLocalLocale(bool enable = true);
 
   // HDR display support
+#ifdef TARGET_WINDOWS_DESKTOP
   static HDR_STATUS ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc);
+#endif // TARGET_WINDOWS_DESKTOP
   static HDR_STATUS GetWindowsHDRStatus();
 
   static void PlatformSyslog();
