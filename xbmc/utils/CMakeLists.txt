@@ -55,7 +55,6 @@ set(SOURCES ActorProtocol.cpp
             Screenshot.cpp
             SortUtils.cpp
             Speed.cpp
-            Stopwatch.cpp
             StreamDetails.cpp
             StreamUtils.cpp
             StringUtils.cpp

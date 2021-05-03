@@ -8,12 +8,13 @@
 
 #pragma once
 
+#include <chrono>
 #include <stdint.h>
 
 class CStopWatch
 {
 public:
-  explicit CStopWatch(bool useFrameTime=false);
+  CStopWatch() = default;
   ~CStopWatch() = default;
 
   /*!
@@ -31,7 +32,7 @@ public:
   */
   inline void StartZero()
   {
-    m_startTick = GetTicks();
+    m_startTick = std::chrono::steady_clock::now();
     m_isRunning = true;
   }
 
@@ -51,7 +52,7 @@ public:
   {
     if(m_isRunning)
     {
-      m_stopTick = GetTicks();
+      m_stopTick = std::chrono::steady_clock::now();
       m_isRunning = false;
     }
   }
@@ -62,7 +63,7 @@ public:
   void Reset()
   {
     if (m_isRunning)
-      m_startTick = GetTicks();
+      m_startTick = std::chrono::steady_clock::now();
     else
       m_startTick = m_stopTick;
   }
@@ -75,8 +76,14 @@ public:
   */
   float GetElapsedSeconds() const
   {
-    int64_t totalTicks = (m_isRunning ? GetTicks() : m_stopTick) - m_startTick;
-    return (float)totalTicks * m_timerPeriod;
+    std::chrono::duration<float> elapsed;
+
+    if (m_isRunning)
+      elapsed = std::chrono::steady_clock::now() - m_startTick;
+    else
+      elapsed = m_stopTick - m_startTick;
+
+    return elapsed.count();
   }
 
   /*!
@@ -87,14 +94,18 @@ public:
   */
   float GetElapsedMilliseconds() const
   {
-    return GetElapsedSeconds() * 1000.0f;
+    std::chrono::duration<float, std::milli> elapsed;
+
+    if (m_isRunning)
+      elapsed = std::chrono::steady_clock::now() - m_startTick;
+    else
+      elapsed = m_stopTick - m_startTick;
+
+    return elapsed.count();
   }
 
 private:
-  int64_t GetTicks() const;
-  float m_timerPeriod;        // to save division in GetElapsed...()
-  int64_t m_startTick;
-  int64_t m_stopTick;
-  bool m_isRunning;
-  bool m_useFrameTime;
+  std::chrono::time_point<std::chrono::steady_clock> m_startTick;
+  std::chrono::time_point<std::chrono::steady_clock> m_stopTick;
+  bool m_isRunning = false;
 };
