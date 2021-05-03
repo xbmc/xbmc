@@ -661,6 +661,8 @@ PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<CPVRChannel>& channel)
       [channel](const AddonInstance* addon) {
         PVR_CHANNEL addonChannel;
         WriteClientChannelInfo(channel, addonChannel);
+        strncpy(addonChannel.strChannelName, channel->ChannelName().c_str(),
+                sizeof(addonChannel.strChannelName) - 1);
         return addon->toAddon->RenameChannel(addon, &addonChannel);
       },
       m_clientCapabilities.SupportsChannelSettings());
