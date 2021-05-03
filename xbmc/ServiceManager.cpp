@@ -151,13 +151,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  // Start Thread for DVD Mediatype detection
-  CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
-  m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
-  m_DetectDVDType->Create(false);
-#endif
-
   if (!m_Platform->InitStageTwo())
     return false;
 
@@ -168,6 +161,13 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 // stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& profileManager)
 {
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  // Start Thread for DVD Mediatype detection
+  CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
+  m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
+  m_DetectDVDType->Create(false);
+#endif
+
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
@@ -195,6 +195,10 @@ void CServiceManager::DeinitStageThree()
 {
   init_level = 2;
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  m_DetectDVDType->StopThread();
+  m_DetectDVDType.reset();
+#endif
   m_playerCoreFactory.reset();
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();
@@ -205,11 +209,6 @@ void CServiceManager::DeinitStageThree()
 void CServiceManager::DeinitStageTwo()
 {
   init_level = 1;
-
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  m_DetectDVDType->StopThread();
-  m_DetectDVDType.reset();
-#endif
 
   m_weatherManager.reset();
   m_powerManager.reset();
