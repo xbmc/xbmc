@@ -198,7 +198,7 @@ void CGUIDialogAddonSettings::SetupView()
   SetProperty("Addon.ID", m_addon->ID());
 
   // set heading
-  SetHeading(StringUtils::Format("$LOCALIZE[10004] - %s",
+  SetHeading(StringUtils::Format("$LOCALIZE[10004] - {}",
                                  m_addon->Name().c_str())); // "Settings - AddonName"
 
   // set control labels

@@ -60,7 +60,7 @@ CPeripheral::CPeripheral(CPeripherals& manager,
   if (scanResult.m_iSequence > 0)
   {
     m_strFileLocation =
-        StringUtils::Format("peripherals://%s/%s_%d.dev",
+        StringUtils::Format("peripherals://{}/{}_{}.dev",
                             PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
                             scanResult.m_strLocation.c_str(), scanResult.m_iSequence);
   }
@@ -148,7 +148,7 @@ bool CPeripheral::Initialise(void)
   if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
   {
     m_strSettingsFile =
-        StringUtils::Format("special://profile/peripheral_data/%s_%s.xml",
+        StringUtils::Format("special://profile/peripheral_data/{}_{}.xml",
                             PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
                             CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT).c_str());
   }
@@ -156,13 +156,13 @@ bool CPeripheral::Initialise(void)
   {
     // Backwards compatibility - old settings files didn't include the device name
     m_strSettingsFile =
-        StringUtils::Format("special://profile/peripheral_data/%s_%s_%s.xml",
+        StringUtils::Format("special://profile/peripheral_data/{}_{}_{}.xml",
                             PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
                             m_strVendorId.c_str(), m_strProductId.c_str());
 
     if (!XFILE::CFile::Exists(m_strSettingsFile))
       m_strSettingsFile =
-          StringUtils::Format("special://profile/peripheral_data/%s_%s_%s_%s.xml",
+          StringUtils::Format("special://profile/peripheral_data/{}_{}_{}_{}.xml",
                               PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
                               m_strVendorId.c_str(), m_strProductId.c_str(),
                               CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT).c_str());
@@ -499,7 +499,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingInt> intSetting =
             std::static_pointer_cast<CSettingInt>(itr.second.m_setting);
         if (intSetting)
-          strValue = StringUtils::Format("%d", intSetting->GetValue());
+          strValue = StringUtils::Format("{}", intSetting->GetValue());
       }
       break;
       case SettingType::Number:
@@ -507,7 +507,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingNumber> floatSetting =
             std::static_pointer_cast<CSettingNumber>(itr.second.m_setting);
         if (floatSetting)
-          strValue = StringUtils::Format("%.2f", floatSetting->GetValue());
+          strValue = StringUtils::Format("{:.2f}", floatSetting->GetValue());
       }
       break;
       case SettingType::Boolean:
@@ -515,7 +515,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingBool> boolSetting =
             std::static_pointer_cast<CSettingBool>(itr.second.m_setting);
         if (boolSetting)
-          strValue = StringUtils::Format("%d", boolSetting->GetValue() ? 1 : 0);
+          strValue = StringUtils::Format("{}", boolSetting->GetValue() ? 1 : 0);
       }
       break;
       default:

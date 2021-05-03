@@ -1153,7 +1153,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     {
       if(info.Match(PLT_ProtocolInfo("*", "*", type, "*")))
       {
-        std::string prop = StringUtils::Format("subtitle:%d", ++subs);
+        std::string prop = StringUtils::Format("subtitle:{}", ++subs);
         item.SetProperty(prop, (const char*)res.m_Uri);
         break;
       }

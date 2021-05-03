@@ -180,7 +180,7 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
         CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
         if (slideshow && slideshow->NumSlides())
         {
-          value = StringUtils::Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
+          value = StringUtils::Format("{}/{}", slideshow->CurrentSlide(), slideshow->NumSlides());
           return true;
         }
         break;

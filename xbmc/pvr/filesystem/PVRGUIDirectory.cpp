@@ -79,7 +79,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   if (bAnyClientSupportingEPG)
   {
     item.reset(
-        new CFileItem(StringUtils::Format("pvr://guide/%s/", bRadio ? "radio" : "tv"), true));
+        new CFileItem(StringUtils::Format("pvr://guide/{}/", bRadio ? "radio" : "tv"), true));
     item->SetLabel(g_localizeStrings.Get(19069)); // Guide
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
                                                                                : WINDOW_TV_GUIDE));
@@ -122,7 +122,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   if (bAnyClientSupportingEPG)
   {
     item.reset(
-        new CFileItem(StringUtils::Format("pvr://search/%s/", bRadio ? "radio" : "tv"), true));
+        new CFileItem(StringUtils::Format("pvr://search/{}/", bRadio ? "radio" : "tv"), true));
     item->SetLabel(g_localizeStrings.Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
@@ -326,9 +326,9 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     {
       item->IncrementProperty("watchedepisodes", 1);
     }
-    item->SetLabel2(StringUtils::Format("%s / %s",
-        item->GetProperty("watchedepisodes").asString().c_str(),
-        item->GetProperty("totalepisodes").asString().c_str()));
+    item->SetLabel2(StringUtils::Format("{} / {}",
+                                        item->GetProperty("watchedepisodes").asString().c_str(),
+                                        item->GetProperty("totalepisodes").asString().c_str()));
 
     item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
   }

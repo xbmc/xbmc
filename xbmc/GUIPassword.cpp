@@ -160,7 +160,7 @@ bool CGUIPassword::CheckStartUpLock()
         std::string strLabel1;
         strLabel1 = g_localizeStrings.Get(12343); // "retries left"
         int iLeft = g_passwordManager.iMasterLockRetriesLeft-i;
-        std::string strLabel = StringUtils::Format("%i %s", iLeft, strLabel1.c_str());
+        std::string strLabel = StringUtils::Format("{} {}", iLeft, strLabel1.c_str());
 
         // PopUp OK and Display: MasterLock mode has changed but no new Mastercode has been set!
         HELPERS::ShowOKDialogLines(CVariant{12360}, CVariant{12367}, CVariant{strLabel}, CVariant{""});
@@ -323,7 +323,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     }
     std::string dlgLine1 = "";
     if (0 < g_passwordManager.iMasterLockRetriesLeft)
-      dlgLine1 = StringUtils::Format("%d %s", g_passwordManager.iMasterLockRetriesLeft,
+      dlgLine1 = StringUtils::Format("{} {}", g_passwordManager.iMasterLockRetriesLeft,
                                      g_localizeStrings.Get(12343).c_str()); // "retries left"
     // prompt user for master lock code
     HELPERS::ShowOKDialogLines(CVariant{20075}, CVariant{12345}, CVariant{std::move(dlgLine1)}, CVariant{0});

@@ -1315,7 +1315,9 @@ namespace VIDEO
 
     if (showInfo && content == CONTENT_TVSHOWS)
     {
-      strTitle = StringUtils::Format("%s - %ix%i - %s", showInfo->m_strTitle.c_str(), movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
+      strTitle =
+          StringUtils::Format("{} - {}x{} - {}", showInfo->m_strTitle.c_str(),
+                              movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", TranslateContent(content), CURL::GetRedacted(pItem->GetPath()));
@@ -1920,7 +1922,9 @@ namespace VIDEO
         if (pItem->m_dwSize)
           digest.Update(std::to_string(pItem->m_dwSize));
         if (pItem->m_dateTime.IsValid())
-          digest.Update(StringUtils::Format("%02i.%02i.%04i", pItem->m_dateTime.GetDay(), pItem->m_dateTime.GetMonth(), pItem->m_dateTime.GetYear()));
+          digest.Update(StringUtils::Format("{:02}.{:02}.{:04}", pItem->m_dateTime.GetDay(),
+                                            pItem->m_dateTime.GetMonth(),
+                                            pItem->m_dateTime.GetYear()));
       }
       else
       {
@@ -2052,7 +2056,7 @@ namespace VIDEO
         else if (season == 0)
           basePath = "season-specials";
         else
-          basePath = StringUtils::Format("season%02i", season);
+          basePath = StringUtils::Format("season{:02}", season);
 
         AddLocalItemArtwork(art, artTypes,
           URIUtils::AddFileToFolder(show.m_strPath, basePath),

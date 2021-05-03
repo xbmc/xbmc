@@ -379,7 +379,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
       if (versions[i].second == LOCAL_CACHE)
       {
         CAddonInstaller::GetInstance().InstallFromZip(
-            StringUtils::Format("special://home/addons/packages/%s-%s.zip", processAddonId.c_str(),
+            StringUtils::Format("special://home/addons/packages/{}-{}.zip", processAddonId.c_str(),
                                 versions[i].first.asString().c_str()));
       }
       else

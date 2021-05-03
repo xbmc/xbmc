@@ -615,8 +615,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
 
-    const std::string hostport = m_proxyhost +
-      StringUtils::Format(":%d", m_proxyport);
+    const std::string hostport = m_proxyhost + StringUtils::Format(":{}", m_proxyport);
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, hostport.c_str());
 
     std::string userpass;
@@ -1879,7 +1878,7 @@ void CCurlFile::SetRequestHeader(const std::string& header, const std::string& v
 
 void CCurlFile::SetRequestHeader(const std::string& header, long value)
 {
-  m_requestheaders[header] = StringUtils::Format("%ld", value);
+  m_requestheaders[header] = StringUtils::Format("{}", value);
 }
 
 std::string CCurlFile::GetURL(void)

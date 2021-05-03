@@ -41,7 +41,7 @@ TEST(TestStringUtils, Format)
   std::string refstr = "test 25 2.7 ff FF";
 
   std::string varstr =
-      StringUtils::Format("%s %d %.1f %x %02X", "test", 25, 2.743f, 0x00ff, 0x00ff);
+      StringUtils::Format("{} {} {:.1f} {:x} {:02X}", "test", 25, 2.743f, 0x00ff, 0x00ff);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   varstr = StringUtils::Format("", "test", 25, 2.743f, 0x00ff, 0x00ff);
@@ -73,7 +73,7 @@ TEST(TestStringUtils, FormatEnumWidth)
   std::string varstr = StringUtils::Format("{:02d}", ECG::B);
   EXPECT_STREQ(one, varstr.c_str());
 
-  varstr = StringUtils::Format("%02d", EG::D);
+  varstr = StringUtils::Format("{:02}", EG::D);
   EXPECT_STREQ(one, varstr.c_str());
 }
 

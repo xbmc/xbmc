@@ -78,7 +78,8 @@ std::string CNetworkInterfaceWin10::GetMacAddress() const
 {
   std::string result;
   unsigned char* mAddr = m_adapterAddr->PhysicalAddress;
-  result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
+  result = StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", mAddr[0], mAddr[1],
+                               mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 

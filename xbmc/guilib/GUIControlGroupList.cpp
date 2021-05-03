@@ -445,11 +445,11 @@ std::string CGUIControlGroupList::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_CURRENT_ITEM:
-    return StringUtils::Format("%i", GetSelectedItem());
+    return StringUtils::Format("{}", GetSelectedItem());
   case CONTAINER_NUM_ITEMS:
-    return StringUtils::Format("%i", GetNumItems());
+    return StringUtils::Format("{}", GetNumItems());
   case CONTAINER_POSITION:
-    return StringUtils::Format("%i", m_focusedPosition);
+    return StringUtils::Format("{}", m_focusedPosition);
   default:
     break;
   }

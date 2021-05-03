@@ -105,7 +105,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
           }
           else if (info.m_info == CONTAINER_VIEWCOUNT)
           {
-            value = StringUtils::Format("%i", window->GetViewCount());
+            value = StringUtils::Format("{}", window->GetViewCount());
             return true;
           }
         }
@@ -223,7 +223,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
         }
         else if (info.m_info == CONTAINER_TOTALWATCHED || info.m_info == CONTAINER_TOTALUNWATCHED)
         {
-          value = StringUtils::Format("%i", count);
+          value = StringUtils::Format("{}", count);
           return true;
         }
       }
@@ -316,7 +316,9 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       value = g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
       return true;
     case SYSTEM_STARTUP_WINDOW:
-      value = StringUtils::Format("%i", CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
+      value =
+          StringUtils::Format("{}", CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                        CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
       return true;
     case SYSTEM_CURRENT_CONTROL:
     case SYSTEM_CURRENT_CONTROL_ID:
@@ -328,7 +330,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
         if (control)
         {
           if (info.m_info == SYSTEM_CURRENT_CONTROL_ID)
-            value = StringUtils::Format("%i", control->GetID());
+            value = StringUtils::Format("{}", control->GetID());
           else if (info.m_info == SYSTEM_CURRENT_CONTROL)
             value = control->GetDescription();
           return true;
@@ -340,7 +342,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
     {
       CGUIDialogProgress *bar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
       if (bar && bar->IsDialogRunning())
-        value = StringUtils::Format("%i", bar->GetPercentage());
+        value = StringUtils::Format("{}", bar->GetPercentage());
       return true;
     }
 

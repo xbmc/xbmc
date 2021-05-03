@@ -106,7 +106,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_PLAYCOUNT:
         if (tag->GetPlayCount() > 0)
         {
-          value = StringUtils::Format("%i", tag->GetPlayCount());
+          value = StringUtils::Format("{}", tag->GetPlayCount());
           return true;
         }
         break;
@@ -125,7 +125,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_TRACKNUMBER:
         if (tag->Loaded() && tag->GetTrackNumber() > 0)
         {
-          value = StringUtils::Format("%02i", tag->GetTrackNumber());
+          value = StringUtils::Format("{:02}", tag->GetTrackNumber());
           return true;
         }
         break;
@@ -133,13 +133,13 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_DISC_NUMBER:
         if (tag->GetDiscNumber() > 0)
         {
-          value = StringUtils::Format("%i", tag->GetDiscNumber());
+          value = StringUtils::Format("{}", tag->GetDiscNumber());
           return true;
         }
         break;
       case MUSICPLAYER_TOTALDISCS:
       case LISTITEM_TOTALDISCS:
-        value = StringUtils::Format("%i", tag->GetTotalDiscs());
+        value = StringUtils::Format("{}", tag->GetTotalDiscs());
         return true;
       case MUSICPLAYER_DISC_TITLE:
       case LISTITEM_DISC_TITLE:
@@ -216,7 +216,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_USER_RATING:
         if (tag->GetUserrating() > 0)
         {
-          value = StringUtils::Format("%i", tag->GetUserrating());
+          value = StringUtils::Format("{}", tag->GetUserrating());
           return true;
         }
         break;
@@ -237,7 +237,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         int dbId = tag->GetDatabaseId();
         if (dbId > -1)
         {
-          value = StringUtils::Format("%i", dbId);
+          value = StringUtils::Format("{}", dbId);
           return true;
         }
         break;
@@ -264,7 +264,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_BPM:
         if (tag->GetBPM() > 0)
         {
-          value = StringUtils::Format("%i", tag->GetBPM());
+          value = StringUtils::Format("{}", tag->GetBPM());
           return true;
         }
         break;
@@ -317,7 +317,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         int BitRate = tag->GetBitRate();
         if (BitRate > 0)
         {
-          value = StringUtils::Format("%i", BitRate);
+          value = StringUtils::Format("{}", BitRate);
           return true;
         }
         break;
@@ -327,7 +327,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         int sampleRate = tag->GetSampleRate();
         if (sampleRate > 0)
         {
-          value = StringUtils::Format("%.5g", static_cast<double>(sampleRate) / 1000.0);
+          value = StringUtils::Format("{:.5}", static_cast<double>(sampleRate) / 1000.0);
           return true;
         }
         break;
@@ -337,7 +337,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         int channels = tag->GetNoOfChannels();
         if (channels > 0)
         {
-          value = StringUtils::Format("%i", channels);
+          value = StringUtils::Format("{}", channels);
           return true;
         }
         break;
@@ -434,7 +434,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       int iBitrate = m_audioInfo.bitrate;
       if (iBitrate > 0)
       {
-        value = StringUtils::Format("%li", std::lrint(static_cast<double>(iBitrate) / 1000.0));
+        value = StringUtils::Format("{}", std::lrint(static_cast<double>(iBitrate) / 1000.0));
         return true;
       }
       break;
@@ -444,7 +444,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       int iChannels = m_audioInfo.channels;
       if (iChannels > 0)
       {
-        value = StringUtils::Format("%i", iChannels);
+        value = StringUtils::Format("{}", iChannels);
         return true;
       }
       break;
@@ -454,7 +454,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       int iBPS = m_audioInfo.bitspersample;
       if (iBPS > 0)
       {
-        value = StringUtils::Format("%i", iBPS);
+        value = StringUtils::Format("{}", iBPS);
         return true;
       }
       break;
@@ -464,13 +464,13 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       int iSamplerate = m_audioInfo.samplerate;
       if (iSamplerate > 0)
       {
-        value = StringUtils::Format("%.5g", static_cast<double>(iSamplerate) / 1000.0);
+        value = StringUtils::Format("{:.5}", static_cast<double>(iSamplerate) / 1000.0);
         return true;
       }
       break;
     }
     case MUSICPLAYER_CODEC:
-      value = StringUtils::Format("%s", m_audioInfo.codecName.c_str());
+      value = StringUtils::Format("{}", m_audioInfo.codecName.c_str());
       return true;
   }
 
@@ -511,7 +511,7 @@ bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo &info) 
 
   if (iSongs >= 0)
   {
-    value = StringUtils::Format("%i", iSongs);
+    value = StringUtils::Format("{}", iSongs);
     return true;
   }
 
@@ -553,7 +553,7 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) co
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {
-    value = StringUtils::Format("%i", index + 1);
+    value = StringUtils::Format("{}", index + 1);
     return true;
   }
   else if (info.m_info == MUSICPLAYER_COVER)

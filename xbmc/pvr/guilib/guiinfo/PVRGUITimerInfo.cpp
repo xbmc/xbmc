@@ -96,10 +96,11 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
     if (m_iTimerInfoToggleCurrent < activeTags.size())
     {
       const std::shared_ptr<CPVRTimerInfoTag> tag = activeTags.at(m_iTimerInfoToggleCurrent);
-      strActiveTimerTitle = StringUtils::Format("%s", tag->Title().c_str());
-      strActiveTimerChannelName = StringUtils::Format("%s", tag->ChannelName().c_str());
-      strActiveTimerChannelIcon = StringUtils::Format("%s", tag->ChannelIcon().c_str());
-      strActiveTimerTime = StringUtils::Format("%s", tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+      strActiveTimerTitle = StringUtils::Format("{}", tag->Title().c_str());
+      strActiveTimerChannelName = StringUtils::Format("{}", tag->ChannelName().c_str());
+      strActiveTimerChannelIcon = StringUtils::Format("{}", tag->ChannelIcon().c_str());
+      strActiveTimerTime = StringUtils::Format(
+          "{}", tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
     }
   }
 
@@ -136,13 +137,14 @@ void CPVRGUITimerInfo::UpdateNextTimer()
   const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer();
   if (timer)
   {
-    strNextRecordingTitle = StringUtils::Format("%s", timer->Title().c_str());
-    strNextRecordingChannelName = StringUtils::Format("%s", timer->ChannelName().c_str());
-    strNextRecordingChannelIcon = StringUtils::Format("%s", timer->ChannelIcon().c_str());
-    strNextRecordingTime = StringUtils::Format("%s", timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+    strNextRecordingTitle = StringUtils::Format("{}", timer->Title().c_str());
+    strNextRecordingChannelName = StringUtils::Format("{}", timer->ChannelName().c_str());
+    strNextRecordingChannelIcon = StringUtils::Format("{}", timer->ChannelIcon().c_str());
+    strNextRecordingTime = StringUtils::Format(
+        "{}", timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
     strNextTimerInfo =
-        StringUtils::Format("%s %s %s %s", g_localizeStrings.Get(19106).c_str(),
+        StringUtils::Format("{} {} {} {}", g_localizeStrings.Get(19106).c_str(),
                             timer->StartAsLocalTime().GetAsLocalizedDate(true).c_str(),
                             g_localizeStrings.Get(19107).c_str(),
                             timer->StartAsLocalTime().GetAsLocalizedTime("", false).c_str());

@@ -23,7 +23,7 @@ CNetworkInterfacePosix::CNetworkInterfacePosix(CNetworkPosix* network,
                                                std::string interfaceName,
                                                char interfaceMacAddrRaw[6])
   : m_interfaceName(std::move(interfaceName)),
-    m_interfaceMacAdr(StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+    m_interfaceMacAdr(StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
                                           (uint8_t)interfaceMacAddrRaw[0],
                                           (uint8_t)interfaceMacAddrRaw[1],
                                           (uint8_t)interfaceMacAddrRaw[2],

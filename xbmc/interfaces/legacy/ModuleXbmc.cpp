@@ -374,7 +374,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       auto crc = Crc32::ComputeFromLowerCase(path);
-      return StringUtils::Format("%08x.tbn", crc);
+      return StringUtils::Format("{:08x}.tbn", crc);
     }
 
     Tuple<String,String> getCleanMovieTitle(const String& path, bool usefoldername)
@@ -435,7 +435,7 @@ namespace XBMCAddon
         }
         else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
           result =
-              StringUtils::Format("%s/%s", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
+              StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
                                   g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
 
         return result;

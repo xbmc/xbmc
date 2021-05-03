@@ -550,7 +550,7 @@ void CUtil::GetFileAndProtocol(const std::string& strURL, std::string& strDir)
   if (URIUtils::IsDVD(strURL)) return ;
 
   CURL url(strURL);
-  strDir = StringUtils::Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
+  strDir = StringUtils::Format("{}://{}", url.GetProtocol().c_str(), url.GetFileName().c_str());
 }
 
 int CUtil::GetDVDIfoTitle(const std::string& strFile)
@@ -1470,7 +1470,7 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
     iStrInputSize = StrInput.size();
   }
   // replace any additional /../../ with just /../ if necessary
-  std::string replaceDots = StringUtils::Format("..%c..", cDelim);
+  std::string replaceDots = StringUtils::Format("..{}..", cDelim);
   while (StrInput.size() > (unsigned int)iTextMaxLength)
     if (!StringUtils::Replace(StrInput, replaceDots, ".."))
       break;
@@ -2059,7 +2059,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
         {
           for (const auto &lang : TagConv.m_Langclass)
           {
-            std::string strDest = StringUtils::Format("special://temp/subtitle.%s.%zu.smi", lang.Name.c_str(), i);
+            std::string strDest =
+                StringUtils::Format("special://temp/subtitle.{}.{}.smi", lang.Name.c_str(), i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s",

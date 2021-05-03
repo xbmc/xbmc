@@ -34,11 +34,8 @@ CPVRTimersPath::CPVRTimersPath(const std::string& strPath, int iClientId, int iP
   if (Init(strPath))
   {
     // set/replace client and parent id.
-    m_path = StringUtils::Format("pvr://timers/%s/%s/%d/%d",
-                                 m_bRadio      ? "radio" : "tv",
-                                 m_bTimerRules ? "rules" : "timers",
-                                 iClientId,
-                                 iParentId);
+    m_path = StringUtils::Format("pvr://timers/{}/{}/{}/{}", m_bRadio ? "radio" : "tv",
+                                 m_bTimerRules ? "rules" : "timers", iClientId, iParentId);
     m_iClientId = iClientId;
     m_iParentId = iParentId;
     m_bRoot = false;

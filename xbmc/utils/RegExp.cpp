@@ -536,7 +536,7 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   int size = GetSubCount(); // past the subpatterns is junk
   for (int i = 0; i <= size; i++)
   {
-    std::string t = StringUtils::Format("[%i,%i]", m_iOvector[(i*2)], m_iOvector[(i*2)+1]);
+    std::string t = StringUtils::Format("[{},{}]", m_iOvector[(i * 2)], m_iOvector[(i * 2) + 1]);
     if (i != size)
       t += ",";
     str += t;

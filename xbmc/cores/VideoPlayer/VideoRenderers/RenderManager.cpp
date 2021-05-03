@@ -735,12 +735,12 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
         double refreshrate, clockspeed;
         int missedvblanks;
-        info.vsync =
-            StringUtils::Format("VSyncOff: %.1f latency: %.3f  ", m_clockSync.m_syncOffset / 1000,
-                                DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f);
+        info.vsync = StringUtils::Format("VSyncOff: {:.1f} latency: {:.3f}  ",
+                                         m_clockSync.m_syncOffset / 1000,
+                                         DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f);
         if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
         {
-          info.vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%.3f%%",
+          info.vsync += StringUtils::Format("VSync: refresh:{:.3f} missed:{} speed:{:.3f}%",
                                             refreshrate, missedvblanks, clockspeed * 100);
         }
 

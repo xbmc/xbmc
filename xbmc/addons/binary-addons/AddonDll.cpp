@@ -147,7 +147,8 @@ bool CAddonDll::LoadDll()
     delete m_pDll;
     m_pDll = nullptr;
 
-    std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
+    std::string heading = StringUtils::Format(
+        "{}: {}", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
     HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{24070}, CVariant{24071});
 
     return false;
@@ -199,7 +200,8 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
     CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
 
     // @todo currently a copy and paste from other function and becomes improved.
-    std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
+    std::string heading = StringUtils::Format(
+        "{}: {}", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
     HELPERS::ShowOKDialogLines(CVariant{ heading }, CVariant{ 24070 }, CVariant{ 24071 });
   }
 

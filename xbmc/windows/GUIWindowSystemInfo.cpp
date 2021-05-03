@@ -138,7 +138,7 @@ void CGUIWindowSystemInfo::FrameMove()
     {
       static std::string vendor = renderingSystem->GetRenderVendor();
       if (!vendor.empty())
-        SET_CONTROL_LABEL(i++, StringUtils::Format("%s %s", g_localizeStrings.Get(22007), vendor));
+        SET_CONTROL_LABEL(i++, StringUtils::Format("{} {}", g_localizeStrings.Get(22007), vendor));
 
 #if defined(HAS_DX)
       int renderVersionLabel = 22024;
@@ -148,7 +148,7 @@ void CGUIWindowSystemInfo::FrameMove()
       static std::string version = renderingSystem->GetRenderVersionString();
       if (!version.empty())
         SET_CONTROL_LABEL(
-            i++, StringUtils::Format("%s %s", g_localizeStrings.Get(renderVersionLabel), version));
+            i++, StringUtils::Format("{} {}", g_localizeStrings.Get(renderVersionLabel), version));
     }
 
     auto windowSystem = CServiceBroker::GetWinSystem();
@@ -157,7 +157,7 @@ void CGUIWindowSystemInfo::FrameMove()
       static std::string platform = windowSystem->GetName();
       if (platform != "platform default")
         SET_CONTROL_LABEL(i++,
-                          StringUtils::Format("%s %s", g_localizeStrings.Get(39153), platform));
+                          StringUtils::Format("{} {}", g_localizeStrings.Get(39153), platform));
     }
 
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);

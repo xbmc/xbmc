@@ -221,7 +221,8 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   Module.SizeOfStruct = sizeof(Module);
   int seq=0;
 
-  strOutput = StringUtils::Format("Thread %d (process %d)\r\n", GetCurrentThreadId(), GetCurrentProcessId());
+  strOutput = StringUtils::Format("Thread {} (process {})\r\n", GetCurrentThreadId(),
+                                  GetCurrentProcessId());
   WriteFile(hDumpFile, strOutput.c_str(), strOutput.size(), &dwBytes, NULL);
 
   while(pSW(IMAGE_FILE_MACHINE_I386, hCurProc, GetCurrentThread(), &frame, pEp->ContextRecord, NULL, pSFTA, pSGMB, NULL))
@@ -230,15 +231,15 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
     {
       DWORD64 symoffset=0;
       DWORD   lineoffset=0;
-      strOutput = StringUtils::Format("#%2d", seq++);
+      strOutput = StringUtils::Format("#{:2}", seq++);
 
       if(pSGSFA(hCurProc, frame.AddrPC.Offset, &symoffset, pSym))
       {
         if(pUDSN(pSym->Name, cTemp, STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE)>0)
-          strOutput.append(StringUtils::Format(" %s", cTemp));
+          strOutput.append(StringUtils::Format(" {}", cTemp));
       }
       if(pSGLFA(hCurProc, frame.AddrPC.Offset, &lineoffset, &Line))
-        strOutput.append(StringUtils::Format(" at %s:%d", Line.FileName, Line.LineNumber));
+        strOutput.append(StringUtils::Format(" at {}:{}", Line.FileName, Line.LineNumber));
 
       strOutput.append("\r\n");
       WriteFile(hDumpFile, strOutput.c_str(), strOutput.size(), &dwBytes, NULL);

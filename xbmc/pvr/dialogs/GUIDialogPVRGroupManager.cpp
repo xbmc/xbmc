@@ -463,22 +463,23 @@ void CGUIDialogPVRGroupManager::Update()
 
     if (m_selectedGroup->IsInternalGroup())
     {
-      std::string strNewLabel = StringUtils::Format("%s %s",
-                                        g_localizeStrings.Get(19022).c_str(),
-                                        m_bIsRadio ? g_localizeStrings.Get(19024).c_str() : g_localizeStrings.Get(19023).c_str());
+      std::string strNewLabel = StringUtils::Format(
+          "{} {}", g_localizeStrings.Get(19022).c_str(),
+          m_bIsRadio ? g_localizeStrings.Get(19024).c_str() : g_localizeStrings.Get(19023).c_str());
       SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
 
-      strNewLabel = StringUtils::Format("%s %s",
-                                        g_localizeStrings.Get(19218).c_str(),
-                                        m_bIsRadio ? g_localizeStrings.Get(19024).c_str() : g_localizeStrings.Get(19023).c_str());
+      strNewLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19218).c_str(),
+                                        m_bIsRadio ? g_localizeStrings.Get(19024).c_str()
+                                                   : g_localizeStrings.Get(19023).c_str());
       SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
     }
     else
     {
-      std::string strNewLabel = StringUtils::Format("%s", g_localizeStrings.Get(19219).c_str());
+      std::string strNewLabel = StringUtils::Format("{}", g_localizeStrings.Get(19219).c_str());
       SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
 
-      strNewLabel = StringUtils::Format("%s %s", g_localizeStrings.Get(19220).c_str(), m_selectedGroup->GroupName().c_str());
+      strNewLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19220).c_str(),
+                                        m_selectedGroup->GroupName().c_str());
       SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
     }
 

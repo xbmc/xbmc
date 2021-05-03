@@ -891,7 +891,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
           std::string currentTitle = GetSingleValue(strSQL);
           if (currentTitle.empty())
           {
-            currentTitle = StringUtils::Format("%s %i", g_localizeStrings.Get(427), discValue);
+            currentTitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discValue);
             strSQL =
                 PrepareSQL("UPDATE song SET strDiscSubtitle = '%s' WHERE song.idAlbum = %i AND "
                            "song.iTrack >> 16 = %i",
@@ -1063,7 +1063,7 @@ int CMusicDatabase::AddSong(const int idSong,
       if (isBoxset && strDiscSubtitle.empty())
       {
         int discno = iTrack >> 16;
-        strDiscSubtitle = StringUtils::Format("%s %i", g_localizeStrings.Get(427), discno);
+        strDiscSubtitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discno);
       }
 
       // Validate ISO8601 dates and ensure none missing
@@ -3058,7 +3058,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
     std::string strFileName = record->at(song_strFileName).get_asString();
     std::string strExt = URIUtils::GetExtension(strFileName);
     std::string path =
-        StringUtils::Format("%i%s", record->at(song_idSong).get_asInt(), strExt.c_str());
+        StringUtils::Format("{}{}", record->at(song_idSong).get_asInt(), strExt.c_str());
     itemUrl.AppendPath(path);
     item->SetPath(itemUrl.ToString());
     item->SetDynPath(strRealPath);
@@ -3366,13 +3366,13 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList& art
     const std::string& artistLabel(g_localizeStrings.Get(557)); // Artist
     while (!m_pDS->eof())
     {
-      std::string path = StringUtils::Format("musicdb://artists/%i/", m_pDS->fv(0).get_asInt());
+      std::string path = StringUtils::Format("musicdb://artists/{}/", m_pDS->fv(0).get_asInt());
       CFileItemPtr pItem(new CFileItem(path, true));
       std::string label =
-          StringUtils::Format("[%s] %s", artistLabel.c_str(), m_pDS->fv(1).get_asString().c_str());
+          StringUtils::Format("[{}] {}", artistLabel.c_str(), m_pDS->fv(1).get_asString().c_str());
       pItem->SetLabel(label);
       // sort label is stored in the title tag
-      label = StringUtils::Format("A %s", m_pDS->fv(1).get_asString().c_str());
+      label = StringUtils::Format("A {}", m_pDS->fv(1).get_asString().c_str());
       pItem->GetMusicInfoTag()->SetTitle(label);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(0).get_asInt(), MediaTypeArtist);
       artists.Add(pItem);
@@ -4052,13 +4052,13 @@ bool CMusicDatabase::SearchAlbums(const std::string& search, CFileItemList& albu
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
-      std::string path = StringUtils::Format("musicdb://albums/%ld/", album.idAlbum);
+      std::string path = StringUtils::Format("musicdb://albums/{}/", album.idAlbum);
       CFileItemPtr pItem(new CFileItem(path, album));
       std::string label =
-          StringUtils::Format("[%s] %s", albumLabel.c_str(), album.strAlbum.c_str());
+          StringUtils::Format("[{}] {}", albumLabel.c_str(), album.strAlbum.c_str());
       pItem->SetLabel(label);
       // sort label is stored in the title tag
-      label = StringUtils::Format("B %s", album.strAlbum.c_str());
+      label = StringUtils::Format("B {}", album.strAlbum.c_str());
       pItem->GetMusicInfoTag()->SetTitle(label);
       albums.Add(pItem);
       m_pDS->next();
@@ -4626,7 +4626,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/)
   //  Delete old info if any
   if (bRequery)
   {
-    std::string strFile = StringUtils::Format("%x.cddb", pCdInfo->GetCddbDiscId());
+    std::string strFile = StringUtils::Format("{:x}.cddb", pCdInfo->GetCddbDiscId());
     CFile::Delete(URIUtils::AddFileToFolder(m_profileManager.GetCDDBFolder(), strFile));
   }
 
@@ -4706,7 +4706,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/)
         pCdInfo->SetNoCDDBInfo();
         // ..no, an error occurred, display it to the user
         std::string strErrorText =
-            StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
+            StringUtils::Format("[{}] {}", cddb.getLastError(), cddb.getLastErrorText());
         HELPERS::ShowOKDialogLines(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)},
                                    CVariant{0});
       }
@@ -4786,7 +4786,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     {
       if (i.second == strSelectedAlbum)
       {
-        std::string strFile = StringUtils::Format("%x.cddb", (unsigned int)i.first);
+        std::string strFile = StringUtils::Format("{:x}.cddb", (unsigned int)i.first);
         CFile::Delete(URIUtils::AddFileToFolder(m_profileManager.GetCDDBFolder(), strFile));
         break;
       }
@@ -4916,7 +4916,7 @@ bool CMusicDatabase::GetGenresNav(const std::string& strBaseDir,
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("genre.idGenre").get_asInt(), "genre");
 
       CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("%i/", m_pDS->fv("genre.idGenre").get_asInt());
+      std::string strDir = StringUtils::Format("{}/", m_pDS->fv("genre.idGenre").get_asInt());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
@@ -5034,7 +5034,7 @@ bool CMusicDatabase::GetSourcesNav(const std::string& strBaseDir,
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("source.idSource").get_asInt(), "source");
 
       CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("%i/", m_pDS->fv("source.idSource").get_asInt());
+      std::string strDir = StringUtils::Format("{}/", m_pDS->fv("source.idSource").get_asInt());
       itemUrl.AppendPath(strDir);
       itemUrl.AddOption("sourceid", m_pDS->fv("source.idSource").get_asInt());
       pItem->SetPath(itemUrl.ToString());
@@ -5116,7 +5116,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir,
         pItem->GetMusicInfoTag()->SetDatabaseId(-1, "year");
 
       CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
+      std::string strDir = StringUtils::Format("{}/", m_pDS->fv(0).get_asInt());
       itemUrl.AppendPath(strDir);
       if (useOriginalYears)
         itemUrl.AddOption("useoriginalyear", true);
@@ -5183,7 +5183,7 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir,
       pItem->GetMusicInfoTag()->SetTitle(labelValue);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("role.idRole").get_asInt(), "role");
       CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("%i/", m_pDS->fv("role.idRole").get_asInt());
+      std::string strDir = StringUtils::Format("{}/", m_pDS->fv("role.idRole").get_asInt());
       itemUrl.AppendPath(strDir);
       itemUrl.AddOption("roleid", m_pDS->fv("role.idRole").get_asInt());
       pItem->SetPath(itemUrl.ToString());
@@ -5286,7 +5286,7 @@ bool CMusicDatabase::GetCommonNav(const std::string& strBaseDir,
       CFileItemPtr pItem(new CFileItem(labelValue));
 
       CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("%s/", labelValue.c_str());
+      std::string strDir = StringUtils::Format("{}/", labelValue.c_str());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
@@ -5518,7 +5518,7 @@ bool CMusicDatabase::GetArtistsByWhere(
         CFileItemPtr pItem(new CFileItem(artist));
 
         CMusicDbUrl itemUrl = musicUrl;
-        std::string path = StringUtils::Format("%ld/", artist.idArtist);
+        std::string path = StringUtils::Format("{}/", artist.idArtist);
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
 
@@ -5750,7 +5750,7 @@ bool CMusicDatabase::GetAlbumsByWhere(
       try
       {
         CMusicDbUrl itemUrl = musicUrl;
-        std::string path = StringUtils::Format("%i/", record->at(album_idAlbum).get_asInt());
+        std::string path = StringUtils::Format("{}/", record->at(album_idAlbum).get_asInt());
         itemUrl.AppendPath(path);
 
         CFileItemPtr pItem(new CFileItem(itemUrl.ToString(), GetAlbumFromDataset(record)));
@@ -5942,7 +5942,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
         std::string strDiscSubtitle = record->at(1).get_asString();
         if (strDiscSubtitle.empty())
           // Make (fake) disc title from disc number
-          strDiscSubtitle = StringUtils::Format("%s %i", g_localizeStrings.Get(427), discnum);
+          strDiscSubtitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discnum);
         else if (oldDiscTitle == strDiscSubtitle)
         { // When real disc titles are provided (as they ALWAYS are for boxed sets)
           // group discs together by title not number.
@@ -5953,7 +5953,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
           oldDiscTitle = strDiscSubtitle;
 
         CMusicDbUrl itemUrl = musicUrl;
-        std::string path = StringUtils::Format("%i/", discnum);
+        std::string path = StringUtils::Format("{}/", discnum);
         itemUrl.AppendPath(path);
 
         // When disc titles are provided group discs together by title not number.
@@ -10722,10 +10722,10 @@ bool CMusicDatabase::SearchAlbumsByArtistName(const std::string& strArtist, CFil
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
-      std::string path = StringUtils::Format("musicdb://albums/%ld/", album.idAlbum);
+      std::string path = StringUtils::Format("musicdb://albums/{}/", album.idAlbum);
       CFileItemPtr pItem(new CFileItem(path, album));
       std::string label =
-          StringUtils::Format("%s (%i)", album.strAlbum, pItem->GetMusicInfoTag()->GetYear());
+          StringUtils::Format("{} ({})", album.strAlbum, pItem->GetMusicInfoTag()->GetYear());
       pItem->SetLabel(label);
       items.Add(pItem);
       m_pDS->next();
@@ -10983,7 +10983,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
         pItem->GetMusicInfoTag()->SetTitle(strGenre);
         pItem->GetMusicInfoTag()->SetGenre(strGenre);
         pItem->GetMusicInfoTag()->SetDatabaseId(idGenre, "genre");
-        pItem->SetPath(StringUtils::Format("musicdb://genres/%i/", idGenre));
+        pItem->SetPath(StringUtils::Format("musicdb://genres/{}/", idGenre));
         pItem->m_bIsFolder = true;
         items.Add(pItem);
       }
@@ -11026,7 +11026,7 @@ std::string CMusicDatabase::GetAlbumDiscTitle(int idAlbum, int idDisc)
     disctitle = GetSingleValue("song", "strDiscSubtitle",
                                PrepareSQL("idAlbum = %i AND iTrack >> 16 = %i", idAlbum, idDisc));
     if (disctitle.empty())
-      disctitle = StringUtils::Format("%s %i", g_localizeStrings.Get(427), idDisc); // "Disc 1" etc.
+      disctitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), idDisc); // "Disc 1" etc.
     if (albumtitle.empty())
       albumtitle = disctitle;
     else
@@ -11706,7 +11706,7 @@ std::string CMusicDatabase::GetItemById(const std::string& itemType, int id)
   else if (StringUtils::EqualsNoCase(itemType, "sources"))
     return GetSourceById(id);
   else if (StringUtils::EqualsNoCase(itemType, "years"))
-    return StringUtils::Format("%d", id);
+    return StringUtils::Format("{}", id);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistById(id);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))

@@ -649,7 +649,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
   // Let's check the type of the provided parameter
   if (!IsType(value, type))
   {
-    errorMessage = StringUtils::Format("Invalid type %s received", ValueTypeToString(value.type()));
+    errorMessage = StringUtils::Format("Invalid type {} received", ValueTypeToString(value.type()));
     errorData["message"] = errorMessage.c_str();
     return InvalidParams;
   }
@@ -694,7 +694,8 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
       if (status != OK)
       {
         CLog::Log(LOGDEBUG, "JSONRPC: Value does not match extended type %s of type %s", extends.at(extendsIndex)->ID.c_str(), name.c_str());
-        errorMessage = StringUtils::Format("value does not match extended type %s", extends.at(extendsIndex)->ID.c_str());
+        errorMessage = StringUtils::Format("value does not match extended type {}",
+                                           extends.at(extendsIndex)->ID.c_str());
         errorData["message"] = errorMessage.c_str();
         return status;
       }
@@ -712,11 +713,14 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Number of array elements does not match minItems and/or maxItems in type %s", name.c_str());
       if (minItems > 0 && maxItems > 0)
-        errorMessage = StringUtils::Format("Between %d and %d array items expected but %d received", minItems, maxItems, value.size());
+        errorMessage = StringUtils::Format("Between {} and {} array items expected but {} received",
+                                           minItems, maxItems, value.size());
       else if (minItems > 0)
-        errorMessage = StringUtils::Format("At least %d array items expected but only %d received", minItems, value.size());
+        errorMessage = StringUtils::Format("At least {} array items expected but only {} received",
+                                           minItems, value.size());
       else
-        errorMessage = StringUtils::Format("Only %d array items expected but %d received", maxItems, value.size());
+        errorMessage = StringUtils::Format("Only {} array items expected but {} received", maxItems,
+                                           value.size());
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
     }
@@ -736,7 +740,8 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
         if (status != OK)
         {
           CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, name.c_str());
-          errorMessage = StringUtils::Format("array element at index %u does not match", arrayIndex);
+          errorMessage =
+              StringUtils::Format("array element at index {} does not match", arrayIndex);
           errorData["message"] = errorMessage.c_str();
           return status;
         }
@@ -796,7 +801,9 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
           if (!ok)
           {
             CLog::Log(LOGDEBUG, "JSONRPC: Array contains non-conforming additional items in type %s", name.c_str());
-            errorMessage = StringUtils::Format("Array element at index %u does not match the \"additionalItems\" schema", arrayIndex);
+            errorMessage = StringUtils::Format(
+                "Array element at index {} does not match the \"additionalItems\" schema",
+                arrayIndex);
             errorData["message"] = errorMessage.c_str();
             return InvalidParams;
           }
@@ -815,7 +822,9 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
           if (outputValue[checkingIndex] == outputValue[checkedIndex])
           {
             CLog::Log(LOGDEBUG, "JSONRPC: Not unique array element at index %u and %u in type %s", checkingIndex, checkedIndex, name.c_str());
-            errorMessage = StringUtils::Format("Array element at index %u is not unique (same as array element at index %u)", checkingIndex, checkedIndex);
+            errorMessage = StringUtils::Format(
+                "Array element at index {} is not unique (same as array element at index {})",
+                checkingIndex, checkedIndex);
             errorData["message"] = errorMessage.c_str();
             return InvalidParams;
           }
@@ -940,11 +949,15 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Value does not lay between minimum and maximum in type %s", name.c_str());
       if (value.isDouble())
-        errorMessage = StringUtils::Format("Value between %f (%s) and %f (%s) expected but %f received",
-          minimum, exclusiveMinimum ? "exclusive" : "inclusive", maximum, exclusiveMaximum ? "exclusive" : "inclusive", numberValue);
+        errorMessage =
+            StringUtils::Format("Value between {:f} ({}) and {:f} ({}) expected but {:f} received",
+                                minimum, exclusiveMinimum ? "exclusive" : "inclusive", maximum,
+                                exclusiveMaximum ? "exclusive" : "inclusive", numberValue);
       else
-        errorMessage = StringUtils::Format("Value between %d (%s) and %d (%s) expected but %d received",
-          (int)minimum, exclusiveMinimum ? "exclusive" : "inclusive", (int)maximum, exclusiveMaximum ? "exclusive" : "inclusive", (int)numberValue);
+        errorMessage = StringUtils::Format(
+            "Value between {} ({}) and {} ({}) expected but {} received", (int)minimum,
+            exclusiveMinimum ? "exclusive" : "inclusive", (int)maximum,
+            exclusiveMaximum ? "exclusive" : "inclusive", (int)numberValue);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
     }
@@ -952,7 +965,8 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
     if ((HasType(type, IntegerValue) && divisibleBy > 0 && ((int)numberValue % divisibleBy) != 0))
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet divisibleBy requirements in type %s", name.c_str());
-      errorMessage = StringUtils::Format("Value should be divisible by %d but %d received", divisibleBy, (int)numberValue);
+      errorMessage = StringUtils::Format("Value should be divisible by {} but {} received",
+                                         divisibleBy, (int)numberValue);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
     }
@@ -965,7 +979,8 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
     if (size < minLength)
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet minLength requirements in type %s", name.c_str());
-      errorMessage = StringUtils::Format("Value should have a minimum length of %d but has a length of %d", minLength, size);
+      errorMessage = StringUtils::Format(
+          "Value should have a minimum length of {} but has a length of {}", minLength, size);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
     }
@@ -973,7 +988,8 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
     if (maxLength >= 0 && size > maxLength)
     {
       CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet maxLength requirements in type %s", name.c_str());
-      errorMessage = StringUtils::Format("Value should have a maximum length of %d but has a length of %d", maxLength, size);
+      errorMessage = StringUtils::Format(
+          "Value should have a maximum length of {} but has a length of {}", maxLength, size);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
     }

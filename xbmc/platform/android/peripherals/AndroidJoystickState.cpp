@@ -27,7 +27,7 @@ static std::string PrintAxisIds(const std::vector<int>& axisIds)
     return "";
 
   if (axisIds.size() == 1)
-    return StringUtils::Format("%d", axisIds.front());
+    return StringUtils::Format("{}", axisIds.front());
 
   std::string strAxisIds;
   for (const auto& axisId : axisIds)
@@ -37,7 +37,7 @@ static std::string PrintAxisIds(const std::vector<int>& axisIds)
     else
       strAxisIds += " | ";
 
-    strAxisIds += StringUtils::Format("%d", axisId);
+    strAxisIds += StringUtils::Format("{}", axisId);
   }
   strAxisIds += "]";
 

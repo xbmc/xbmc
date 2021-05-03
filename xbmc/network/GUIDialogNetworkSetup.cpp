@@ -255,7 +255,7 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
       return;
     m_protocol = msg.GetParam1();
     // set defaults for the port
-    m_port = StringUtils::Format("%i", m_protocols[m_protocol].defaultPort);
+    m_port = StringUtils::Format("{}", m_protocols[m_protocol].defaultPort);
 
     UpdateButtons();
   }
@@ -413,7 +413,7 @@ bool CGUIDialogNetworkSetup::SetPath(const std::string &path)
   else
     m_username = url.GetUserName();
   m_password = url.GetPassWord();
-  m_port = StringUtils::Format("%i", url.GetPort());
+  m_port = StringUtils::Format("{}", url.GetPort());
   m_server = url.GetHostName();
   m_path = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(m_path);

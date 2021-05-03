@@ -614,7 +614,7 @@ CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
   std::string sArtist = item.GetProperty("album.artist").asString();
   std::string sAlbumName;
   if (!sArtist.empty())
-    sAlbumName = StringUtils::Format("%s - %s", sArtist.c_str(), sTitle.c_str());
+    sAlbumName = StringUtils::Format("{} - {}", sArtist.c_str(), sTitle.c_str());
   else
     sAlbumName = sTitle;
 
@@ -992,11 +992,11 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())
-          title += StringUtils::Format(" (%s)", sCompareYear.c_str());
+          title += StringUtils::Format(" ({})", sCompareYear.c_str());
 
         std::string sLanguage;
         if (XMLUtils::GetString(pxeMovie, "language", sLanguage) && !sLanguage.empty())
-          title += StringUtils::Format(" (%s)", sLanguage.c_str());
+          title += StringUtils::Format(" ({})", sLanguage.c_str());
 
         // filter for dupes from naughty scrapers
         if (stsDupeCheck.insert(scurlMovie.GetFirstThumbUrl() + " " + title).second)
@@ -1083,13 +1083,13 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
         std::string sArtist;
         std::string sAlbumName;
         if (XMLUtils::GetString(pxeAlbum, "artist", sArtist) && !sArtist.empty())
-          sAlbumName = StringUtils::Format("%s - %s", sArtist.c_str(), sTitle.c_str());
+          sAlbumName = StringUtils::Format("{} - {}", sArtist.c_str(), sTitle.c_str());
         else
           sAlbumName = sTitle;
 
         std::string sYear;
         if (XMLUtils::GetString(pxeAlbum, "year", sYear) && !sYear.empty())
-          sAlbumName = StringUtils::Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
+          sAlbumName = StringUtils::Format("{} ({})", sAlbumName.c_str(), sYear.c_str());
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)

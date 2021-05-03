@@ -215,7 +215,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
   {
-    std::string filter = StringUtils::Format("%i", action.GetID() - ACTION_FILTER_SMS2 + 2);
+    std::string filter = StringUtils::Format("{}", action.GetID() - ACTION_FILTER_SMS2 + 2);
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -621,7 +621,8 @@ void CGUIMediaWindow::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
-  std::string items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  std::string items = StringUtils::Format("{} {}", m_vecItems->GetObjectCount(),
+                                          g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
@@ -1386,9 +1387,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
-    strHistoryString = StringUtils::Format("%" PRIi64 "%" PRIi64,
-                                           pItem->m_lStartOffset,
-                                           pItem->m_lEndOffset);
+    strHistoryString = StringUtils::Format("{}{}", pItem->m_lStartOffset, pItem->m_lEndOffset);
     strHistoryString += pItem->GetPath();
   }
   else
@@ -1754,9 +1753,11 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   //Add items from plugin
   {
     int i = 0;
-    while (item->HasProperty(StringUtils::Format("contextmenulabel(%i)", i)))
+    while (item->HasProperty(StringUtils::Format("contextmenulabel({})", i)))
     {
-      buttons.emplace_back(~buttons.size(), item->GetProperty(StringUtils::Format("contextmenulabel(%i)", i)).asString());
+      buttons.emplace_back(
+          ~buttons.size(),
+          item->GetProperty(StringUtils::Format("contextmenulabel({})", i)).asString());
       ++i;
     }
   }
@@ -1790,8 +1791,10 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   {
     bool saveVal = m_backgroundLoad;
     m_backgroundLoad = false;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
-        item->GetProperty(StringUtils::Format("contextmenuaction(%i)", idx - pluginMenuRange.first)).asString());
+    CApplicationMessenger::GetInstance().SendMsg(
+        TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+        item->GetProperty(StringUtils::Format("contextmenuaction({})", idx - pluginMenuRange.first))
+            .asString());
     m_backgroundLoad = saveVal;
     return true;
   }

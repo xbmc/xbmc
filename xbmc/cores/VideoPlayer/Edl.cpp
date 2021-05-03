@@ -767,11 +767,11 @@ std::string CEdl::GetInfo() const
       }
     }
     if (cutCount > 0)
-      strInfo += StringUtils::Format("c%i", cutCount);
+      strInfo += StringUtils::Format("c{}", cutCount);
     if (muteCount > 0)
-      strInfo += StringUtils::Format("m%i", muteCount);
+      strInfo += StringUtils::Format("m{}", muteCount);
     if (commBreakCount > 0)
-      strInfo += StringUtils::Format("b%i", commBreakCount);
+      strInfo += StringUtils::Format("b{}", commBreakCount);
   }
   if (HasSceneMarker())
     strInfo += StringUtils::Format("s{0}", m_vecSceneMarkers.size());
@@ -901,7 +901,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
 {
   std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
-  strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
+  strTimeString += StringUtils::Format(".{:03}", iMilliseconds % 1000);
   return strTimeString;
 }
 

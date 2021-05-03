@@ -326,7 +326,7 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
 
 std::string CPeripheralBusAndroid::GetDeviceLocation(int deviceId)
 {
-  return StringUtils::Format("%s%d", DeviceLocationPrefix.c_str(), deviceId);
+  return StringUtils::Format("{}{}", DeviceLocationPrefix.c_str(), deviceId);
 }
 
 bool CPeripheralBusAndroid::GetDeviceId(const std::string& deviceLocation, int& deviceId)

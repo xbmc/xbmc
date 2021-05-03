@@ -260,7 +260,7 @@ void CScraperUrl::AddParsedUrl(const std::string& url,
     thumb.SetAttribute("gzip", "yes");
   if (season >= 0)
   {
-    thumb.SetAttribute("season", StringUtils::Format("%i", season));
+    thumb.SetAttribute("season", StringUtils::Format("{}", season));
     thumb.SetAttribute("type", "season");
   }
   thumb.SetAttribute("aspect", aspect);

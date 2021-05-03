@@ -25,7 +25,7 @@ IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type,
 {
   // if no special instance ID is given generate one from class pointer (is
   // faster as unique id and also safe enough for them).
-  m_instanceId = !instanceID.empty() ? instanceID : StringUtils::Format("%p", static_cast<void*>(this));
+  m_instanceId = !instanceID.empty() ? instanceID : StringUtils::Format("{}", fmt::ptr(this));
   m_addonBase = CServiceBroker::GetBinaryAddonManager().GetAddonBase(addonInfo, this, m_addon);
 }
 

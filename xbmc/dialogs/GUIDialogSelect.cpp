@@ -354,8 +354,9 @@ void CGUIDialogSelect::OnInitWindow()
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILED_LIST : CONTROL_SIMPLE_LIST);
 
-  SET_CONTROL_LABEL(CONTROL_NUMBER_OF_ITEMS, StringUtils::Format("%i %s",
-      m_vecList->Size(), g_localizeStrings.Get(127).c_str()));
+  SET_CONTROL_LABEL(
+      CONTROL_NUMBER_OF_ITEMS,
+      StringUtils::Format("{} {}", m_vecList->Size(), g_localizeStrings.Get(127).c_str()));
 
   if (m_multiSelection)
     EnableButton(true, 186);

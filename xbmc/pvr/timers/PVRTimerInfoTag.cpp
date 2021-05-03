@@ -78,33 +78,41 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   UpdateSummary();
 }
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer, const std::shared_ptr<CPVRChannel>& channel, unsigned int iClientId) :
-  m_strTitle(timer.strTitle),
-  m_strEpgSearchString(timer.strEpgSearchString),
-  m_bFullTextEpgSearch(timer.bFullTextEpgSearch),
-  m_strDirectory(timer.strDirectory),
-  m_state(timer.state),
-  m_iClientId(iClientId),
-  m_iClientIndex(timer.iClientIndex),
-  m_iParentClientIndex(timer.iParentClientIndex),
-  m_iClientChannelUid(channel ? channel->UniqueID() : (timer.iClientChannelUid > 0) ? timer.iClientChannelUid : PVR_CHANNEL_INVALID_UID),
-  m_bStartAnyTime(timer.bStartAnyTime),
-  m_bEndAnyTime(timer.bEndAnyTime),
-  m_iPriority(timer.iPriority),
-  m_iLifetime(timer.iLifetime),
-  m_iMaxRecordings(timer.iMaxRecordings),
-  m_iWeekdays(timer.iWeekdays),
-  m_iPreventDupEpisodes(timer.iPreventDuplicateEpisodes),
-  m_iRecordingGroup(timer.iRecordingGroup),
-  m_strFileNameAndPath(StringUtils::Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex)),
-  m_bIsRadio(channel && channel->IsRadio()),
-  m_iMarginStart(timer.iMarginStart),
-  m_iMarginEnd(timer.iMarginEnd),
-  m_iEpgUid(timer.iEpgUid),
-  m_strSeriesLink(timer.strSeriesLink),
-  m_StartTime(timer.startTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
-  m_StopTime(timer.endTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
-  m_channel(channel)
+CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
+                                   const std::shared_ptr<CPVRChannel>& channel,
+                                   unsigned int iClientId)
+  : m_strTitle(timer.strTitle),
+    m_strEpgSearchString(timer.strEpgSearchString),
+    m_bFullTextEpgSearch(timer.bFullTextEpgSearch),
+    m_strDirectory(timer.strDirectory),
+    m_state(timer.state),
+    m_iClientId(iClientId),
+    m_iClientIndex(timer.iClientIndex),
+    m_iParentClientIndex(timer.iParentClientIndex),
+    m_iClientChannelUid(channel                         ? channel->UniqueID()
+                        : (timer.iClientChannelUid > 0) ? timer.iClientChannelUid
+                                                        : PVR_CHANNEL_INVALID_UID),
+    m_bStartAnyTime(timer.bStartAnyTime),
+    m_bEndAnyTime(timer.bEndAnyTime),
+    m_iPriority(timer.iPriority),
+    m_iLifetime(timer.iLifetime),
+    m_iMaxRecordings(timer.iMaxRecordings),
+    m_iWeekdays(timer.iWeekdays),
+    m_iPreventDupEpisodes(timer.iPreventDuplicateEpisodes),
+    m_iRecordingGroup(timer.iRecordingGroup),
+    m_strFileNameAndPath(
+        StringUtils::Format("pvr://client{}/timers/{}", m_iClientId, m_iClientIndex)),
+    m_bIsRadio(channel && channel->IsRadio()),
+    m_iMarginStart(timer.iMarginStart),
+    m_iMarginEnd(timer.iMarginEnd),
+    m_iEpgUid(timer.iEpgUid),
+    m_strSeriesLink(timer.strSeriesLink),
+    m_StartTime(
+        timer.startTime +
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
+    m_StopTime(timer.endTime +
+               CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
+    m_channel(channel)
 {
   if (timer.firstDay)
     m_FirstDay = CDateTime(timer.firstDay + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
@@ -322,36 +330,38 @@ void CPVRTimerInfoTag::UpdateSummary()
 
   if (m_bEndAnyTime)
   {
-    m_strSummary = StringUtils::Format("%s %s %s",
-        m_iWeekdays != PVR_WEEKDAY_NONE ?
-          GetWeekdaysString().c_str() : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
+    m_strSummary = StringUtils::Format(
+        "{} {} {}",
+        m_iWeekdays != PVR_WEEKDAY_NONE ? GetWeekdaysString().c_str()
+                                        : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
         g_localizeStrings.Get(19107).c_str(), // "at"
-        m_bStartAnyTime ?
-          g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str());
+        m_bStartAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
+                        : StartAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else if ((m_iWeekdays != PVR_WEEKDAY_NONE) || (startDate == endDate))
   {
-    m_strSummary = StringUtils::Format("%s %s %s %s %s",
-        m_iWeekdays != PVR_WEEKDAY_NONE ?
-          GetWeekdaysString().c_str() : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
+    m_strSummary = StringUtils::Format(
+        "{} {} {} {} {}",
+        m_iWeekdays != PVR_WEEKDAY_NONE ? GetWeekdaysString().c_str()
+                                        : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
         g_localizeStrings.Get(19159).c_str(), // "from"
-        m_bStartAnyTime ?
-          g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
+        m_bStartAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
+                        : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(), // "to"
-        m_bEndAnyTime ?
-          g_localizeStrings.Get(19161).c_str() /* "any time" */ : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
+        m_bEndAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
+                      : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else
   {
-    m_strSummary = StringUtils::Format("%s %s %s %s %s %s",
-        startDate.c_str(),
+    m_strSummary = StringUtils::Format(
+        "{} {} {} {} {} {}", startDate.c_str(),
         g_localizeStrings.Get(19159).c_str(), // "from"
-        m_bStartAnyTime ?
-          g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
+        m_bStartAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
+                        : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(), // "to"
         endDate.c_str(),
-        m_bEndAnyTime ?
-          g_localizeStrings.Get(19161).c_str() /* "any time" */ : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
+        m_bEndAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
+                      : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
 }
 
@@ -681,7 +691,7 @@ std::string CPVRTimerInfoTag::ChannelName() const
   if (channeltag)
     strReturn = channeltag->ChannelName();
   else if (m_timerType && m_timerType->IsEpgBasedTimerRule())
-    strReturn = StringUtils::Format("(%s)", g_localizeStrings.Get(809).c_str()); // "Any channel"
+    strReturn = StringUtils::Format("({})", g_localizeStrings.Get(809).c_str()); // "Any channel"
 
   return strReturn;
 }
@@ -1181,7 +1191,8 @@ std::string CPVRTimerInfoTag::GetNotificationText() const
   }
 
   if (stringID != 0)
-    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
+    return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID).c_str(),
+                               m_strTitle.c_str());
 
   return {};
 }
@@ -1205,7 +1216,8 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
       stringID = 19228; // Timer deleted
   }
 
-  return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
+  return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID).c_str(),
+                             m_strTitle.c_str());
 }
 
 void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)

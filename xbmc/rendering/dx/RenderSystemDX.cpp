@@ -92,7 +92,7 @@ bool CRenderSystemDX::InitRenderSystem()
   uint32_t version = 0;
   for (uint32_t decimal = m_deviceResources->GetDeviceFeatureLevel() >> 8, round = 0; decimal > 0; decimal >>= 4, ++round)
     version += (decimal % 16) * std::pow(10, round);
-  m_RenderVersion = StringUtils::Format("%.1f", static_cast<float>(version) / 10.0f);
+  m_RenderVersion = StringUtils::Format("{:.1f}", static_cast<float>(version) / 10.0f);
 
   return true;
 }

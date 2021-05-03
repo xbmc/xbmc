@@ -321,7 +321,7 @@ namespace MUSIC_UTILS
       dialog->SetHeading(CVariant{ 38023 });
       dialog->Add(g_localizeStrings.Get(38022));
       for (int i = 1; i <= 10; i++)
-        dialog->Add(StringUtils::Format("%s: %i", g_localizeStrings.Get(563).c_str(), i));
+        dialog->Add(StringUtils::Format("{}: {}", g_localizeStrings.Get(563).c_str(), i));
       dialog->SetSelected(iSelected);
       dialog->Open();
 

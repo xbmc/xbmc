@@ -74,7 +74,7 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
       // reset icon before searching for a new one
       channel->SetIconPath("");
 
-      const std::string strChannelUid = StringUtils::Format("%08d", channel->UniqueID());
+      const std::string strChannelUid = StringUtils::Format("{:08}", channel->UniqueID());
       std::string strLegalClientChannelName =
           CUtil::MakeLegalFileName(channel->ClientChannelName());
       StringUtils::ToLower(strLegalClientChannelName);

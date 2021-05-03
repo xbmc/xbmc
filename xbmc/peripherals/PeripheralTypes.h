@@ -311,7 +311,7 @@ public:
     if (iVal > 65536)
       iVal = 65536;
 
-    strHexString = StringUtils::Format("%04X", iVal);
+    strHexString = StringUtils::Format("{:04X}", iVal);
   };
 };
 

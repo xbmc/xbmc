@@ -207,9 +207,9 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
 
   std::string cmd;
   if (params.empty())
-    cmd = StringUtils::Format("RunAddon(%s)", id.c_str());
+    cmd = StringUtils::Format("RunAddon({})", id.c_str());
   else
-    cmd = StringUtils::Format("RunAddon(%s, %s)", id.c_str(), argv.c_str());
+    cmd = StringUtils::Format("RunAddon({}, {})", id.c_str(), argv.c_str());
 
   if (params["wait"].asBoolean())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);

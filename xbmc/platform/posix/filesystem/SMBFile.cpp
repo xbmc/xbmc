@@ -255,7 +255,7 @@ std::string CSMB::URLEncode(const CURL &url)
 
   if (url.HasPort())
   {
-    flat += StringUtils::Format(":%i", url.GetPort());
+    flat += StringUtils::Format(":{}", url.GetPort());
   }
 
   /* okey sadly since a slash is an invalid name we have to tokenize */

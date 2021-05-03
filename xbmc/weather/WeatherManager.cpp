@@ -94,7 +94,7 @@ std::string CWeatherManager::GetLocation(int iLocation)
   CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
   if (window)
   {
-    std::string setting = StringUtils::Format("Location%i", iLocation);
+    std::string setting = StringUtils::Format("Location{}", iLocation);
     return window->GetProperty(setting).asString();
   }
   return "";

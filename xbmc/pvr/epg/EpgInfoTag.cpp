@@ -343,7 +343,7 @@ const std::string CPVREpgInfoTag::GetCastLabel() const
   // Note: see CVideoInfoTag::GetCast for reference implementation.
   std::string strLabel;
   for (const auto& castEntry : m_cast)
-    strLabel += StringUtils::Format("%s\n", castEntry.c_str());
+    strLabel += StringUtils::Format("{}\n", castEntry.c_str());
 
   return StringUtils::TrimRight(strLabel, "\n");
 }
@@ -573,7 +573,8 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
 
 void CPVREpgInfoTag::UpdatePath()
 {
-  m_strFileNameAndPath = StringUtils::Format("pvr://guide/%04i/%s.epg", EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  m_strFileNameAndPath = StringUtils::Format("pvr://guide/{:04}/{}.epg", EpgID(),
+                                             m_startTime.GetAsDBDateTime().c_str());
 }
 
 int CPVREpgInfoTag::EpgID() const

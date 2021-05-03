@@ -220,7 +220,8 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   {
     std::string strAlbum = infoTag.GetAlbum();
     if (strAlbum.empty())
-      strAlbum = StringUtils::Format("Unknown Album %s", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
+      strAlbum = StringUtils::Format(
+          "Unknown Album {}", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
     else
       StringUtils::Replace(strAlbum, '/', '_');
     StringUtils::Replace(strAlbumDir, "%B", strAlbum);
@@ -273,7 +274,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   // grab the label to use it as our ripped filename
   std::string track = destItem.GetLabel();
   if (track.empty())
-    track = StringUtils::Format("%s%02i", "Track-", trackNumber);
+    track = StringUtils::Format("{}{:02}", "Track-", trackNumber);
 
   const std::string encoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);

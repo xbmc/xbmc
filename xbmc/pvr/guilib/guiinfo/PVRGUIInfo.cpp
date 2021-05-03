@@ -456,7 +456,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         }
         else if (recording->HasYear())
         {
-          strValue = StringUtils::Format("%i", recording->GetYear());
+          strValue = StringUtils::Format("{}", recording->GetYear());
           return true;
         }
         return false;
@@ -590,7 +590,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_YEAR:
         if (epgTag->Year() > 0)
         {
-          strValue = StringUtils::Format("%i", epgTag->Year());
+          strValue = StringUtils::Format("{}", epgTag->Year());
           return true;
         }
         return false;
@@ -598,7 +598,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_SEASON:
         if (epgTag->SeriesNumber() >= 0)
         {
-          strValue = StringUtils::Format("%i", epgTag->SeriesNumber());
+          strValue = StringUtils::Format("{}", epgTag->SeriesNumber());
           return true;
         }
         return false;
@@ -606,7 +606,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_EPISODE:
         if (epgTag->EpisodeNumber() >= 0)
         {
-          strValue = StringUtils::Format("%i", epgTag->EpisodeNumber());
+          strValue = StringUtils::Format("{}", epgTag->EpisodeNumber());
           return true;
         }
         return false;
@@ -638,7 +638,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_PARENTAL_RATING:
         if (epgTag->ParentalRating() > 0)
         {
-          strValue = StringUtils::Format("%i", epgTag->ParentalRating());
+          strValue = StringUtils::Format("{}", epgTag->ParentalRating());
           return true;
         }
         return false;
@@ -651,7 +651,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         }
         else if (epgTag->Year() > 0)
         {
-          strValue = StringUtils::Format("%i", epgTag->Year());
+          strValue = StringUtils::Format("{}", epgTag->Year());
           return true;
         }
         return false;
@@ -958,7 +958,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item, const CGUIInfo& info, 
       case RDS_ALBUM_TRACKNUMBER:
         if (tag->GetAlbumTrackNumber() > 0)
         {
-          strValue = StringUtils::Format("%i", tag->GetAlbumTrackNumber());
+          strValue = StringUtils::Format("{}", tag->GetAlbumTrackNumber());
           return true;
         }
         break;
@@ -978,43 +978,43 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item, const CGUIInfo& info, 
         strValue = tag->GetInfoStock();
         return true;
       case RDS_INFO_STOCK_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoStock().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoStock().size()));
         return true;
       case RDS_INFO_SPORT:
         strValue = tag->GetInfoSport();
         return true;
       case RDS_INFO_SPORT_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoSport().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoSport().size()));
         return true;
       case RDS_INFO_LOTTERY:
         strValue = tag->GetInfoLottery();
         return true;
       case RDS_INFO_LOTTERY_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoLottery().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoLottery().size()));
         return true;
       case RDS_INFO_WEATHER:
         strValue = tag->GetInfoWeather();
         return true;
       case RDS_INFO_WEATHER_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoWeather().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoWeather().size()));
         return true;
       case RDS_INFO_HOROSCOPE:
         strValue = tag->GetInfoHoroscope();
         return true;
       case RDS_INFO_HOROSCOPE_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoHoroscope().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoHoroscope().size()));
         return true;
       case RDS_INFO_CINEMA:
         strValue = tag->GetInfoCinema();
         return true;
       case RDS_INFO_CINEMA_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoCinema().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoCinema().size()));
         return true;
       case RDS_INFO_OTHER:
         strValue = tag->GetInfoOther();
         return true;
       case RDS_INFO_OTHER_SIZE:
-        strValue = StringUtils::Format("%i", static_cast<int>(tag->GetInfoOther().size()));
+        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoOther().size()));
         return true;
       case RDS_PROG_HOST:
         strValue = tag->GetProgHost();
@@ -1590,22 +1590,22 @@ void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string& strValue) const
 
 void CPVRGUIInfo::CharInfoSignal(std::string& strValue) const
 {
-  strValue = StringUtils::Format("%d %%", m_qualityInfo.iSignal / 655);
+  strValue = StringUtils::Format("{} %", m_qualityInfo.iSignal / 655);
 }
 
 void CPVRGUIInfo::CharInfoSNR(std::string& strValue) const
 {
-  strValue = StringUtils::Format("%d %%", m_qualityInfo.iSNR / 655);
+  strValue = StringUtils::Format("{} %", m_qualityInfo.iSNR / 655);
 }
 
 void CPVRGUIInfo::CharInfoBER(std::string& strValue) const
 {
-  strValue = StringUtils::Format("%08lX", m_qualityInfo.iBER);
+  strValue = StringUtils::Format("{:08X}", m_qualityInfo.iBER);
 }
 
 void CPVRGUIInfo::CharInfoUNC(std::string& strValue) const
 {
-  strValue = StringUtils::Format("%08lX", m_qualityInfo.iUNC);
+  strValue = StringUtils::Format("{:08X}", m_qualityInfo.iUNC);
 }
 
 void CPVRGUIInfo::CharInfoFrontendName(std::string& strValue) const
@@ -1775,16 +1775,16 @@ void CPVRGUIInfo::UpdateBackendCache()
     m_strBackendHost = backend.host;
 
     if (backend.numChannels >= 0)
-      m_strBackendChannels = StringUtils::Format("%i", backend.numChannels);
+      m_strBackendChannels = StringUtils::Format("{}", backend.numChannels);
 
     if (backend.numTimers >= 0)
-      m_strBackendTimers = StringUtils::Format("%i", backend.numTimers);
+      m_strBackendTimers = StringUtils::Format("{}", backend.numTimers);
 
     if (backend.numRecordings >= 0)
-      m_strBackendRecordings = StringUtils::Format("%i", backend.numRecordings);
+      m_strBackendRecordings = StringUtils::Format("{}", backend.numRecordings);
 
     if (backend.numDeletedRecordings >= 0)
-      m_strBackendDeletedRecordings = StringUtils::Format("%i", backend.numDeletedRecordings);
+      m_strBackendDeletedRecordings = StringUtils::Format("{}", backend.numDeletedRecordings);
 
     m_iBackendDiskTotal = backend.diskTotal;
     m_iBackendDiskUsed = backend.diskUsed;
