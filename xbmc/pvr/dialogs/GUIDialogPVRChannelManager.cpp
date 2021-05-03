@@ -163,6 +163,12 @@ void CGUIDialogPVRChannelManager::OnInitWindow()
   m_bMovingMode = false;
   m_bContainsChanges = false;
   m_bAllowNewChannel = false;
+
+  // prevent resorting channels if backend channel numbers or backend channel order shall be used
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_bAllowRenumber = !settings->GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER) &&
+                     !settings->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
+
   SetProperty("IsRadio", "");
 
   Update();
@@ -594,7 +600,8 @@ bool CGUIDialogPVRChannelManager::OnPopupMenu(int iItem)
   if (!pItem)
     return false;
 
-  buttons.Add(CONTEXT_BUTTON_MOVE, 116); /* Move channel up or down */
+  if (m_bAllowRenumber)
+    buttons.Add(CONTEXT_BUTTON_MOVE, 116); /* Move channel up or down */
 
   if (pItem->GetProperty("SupportsSettings").asBoolean())
   {
@@ -846,6 +853,9 @@ void CGUIDialogPVRChannelManager::SetItemsUnchanged()
 
 void CGUIDialogPVRChannelManager::Renumber()
 {
+  if (!m_bAllowRenumber)
+    return;
+
   int iNextChannelNumber(0);
   std::string strNumber;
   CFileItemPtr pItem;
