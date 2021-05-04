@@ -104,8 +104,10 @@ public:
 
   /*!
    \brief Add a job to the queue
-   On completion of the job (or destruction of the job queue) the CJob object will be destroyed.
+   On completion of the job, destruction of the job queue or in case the job could not be added successfully, the CJob object will be destroyed.
    \param job a pointer to the job to add. The job should be subclassed from CJob.
+   \return True if the job was added successfully, false otherwise.
+   In case of failure, the passed CJob object will be deleted before returning from this method.
    \sa CJob
    */
   bool AddJob(CJob *job);
@@ -233,10 +235,12 @@ public:
 
   /*!
    \brief Add a job to the threaded job manager.
+   On completion or abort of the job or in case the job could not be added successfully, the CJob object will be destroyed.
    \param job a pointer to the job to add. The job should be subclassed from CJob
    \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
    \param priority the priority that this job should run at.
-   \return a unique identifier for this job, to be used with other interaction
+   \return On success, a unique identifier for this job, to be used with other interaction, 0 otherwise.
+   In case of failure, the passed CJob object will be deleted before returning from this method.
    \sa CJob, IJobCallback, CancelJob()
    */
   unsigned int AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW);

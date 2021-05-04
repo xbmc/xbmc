@@ -211,7 +211,10 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
   CSingleLock lock(m_section);
 
   if (!m_running)
+  {
+    delete job;
     return 0;
+  }
 
   // increment the job counter, ensuring 0 (invalid job) is never hit
   m_jobCounter++;
