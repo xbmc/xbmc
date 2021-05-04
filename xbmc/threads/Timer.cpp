@@ -8,16 +8,13 @@
 
 #include "Timer.h"
 
-#include "SystemClock.h"
-
 #include <algorithm>
 
 CTimer::CTimer(std::function<void()> const& callback)
   : CThread("Timer"),
     m_callback(callback),
-    m_timeout(0),
-    m_interval(false),
-    m_endTime(0)
+    m_timeout(std::chrono::milliseconds(0)),
+    m_interval(false)
 { }
 
 CTimer::CTimer(ITimerCallback *callback)
@@ -34,7 +31,7 @@ bool CTimer::Start(uint32_t timeout, bool interval /* = false */)
   if (m_callback == NULL || timeout == 0 || IsRunning())
     return false;
 
-  m_timeout = timeout;
+  m_timeout = std::chrono::milliseconds(timeout);
   m_interval = interval;
 
   Create();
@@ -55,8 +52,8 @@ bool CTimer::Stop(bool wait /* = false */)
 
 void CTimer::RestartAsync(uint32_t timeout)
 {
-  m_timeout = timeout;
-  m_endTime = XbmcThreads::SystemClockMillis() + timeout;
+  m_timeout = std::chrono::milliseconds(timeout);
+  m_endTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);
   m_eventTimeout.Set();
 }
 
@@ -66,7 +63,9 @@ bool CTimer::Restart()
     return false;
 
   Stop(true);
-  return Start(m_timeout, m_interval);
+
+  //! @todo: fix method to use std::chrono::milliseconds
+  return Start(m_timeout.count(), m_interval);
 }
 
 float CTimer::GetElapsedSeconds() const
@@ -79,20 +78,25 @@ float CTimer::GetElapsedMilliseconds() const
   if (!IsRunning())
     return 0.0f;
 
-  return (float)(XbmcThreads::SystemClockMillis() - (m_endTime - m_timeout));
+  auto now = std::chrono::steady_clock::now();
+  std::chrono::duration<float, std::milli> duration = (now - (m_endTime - m_timeout));
+
+  return duration.count();
 }
 
 void CTimer::Process()
 {
   while (!m_bStop)
   {
-    uint32_t currentTime = XbmcThreads::SystemClockMillis();
+    auto currentTime = std::chrono::steady_clock::now();
     m_endTime = currentTime + m_timeout;
 
     // wait the necessary time
-    if (!m_eventTimeout.WaitMSec(m_endTime - currentTime))
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(m_endTime - currentTime);
+
+    if (!m_eventTimeout.WaitMSec(duration.count()))
     {
-      currentTime = XbmcThreads::SystemClockMillis();
+      currentTime = std::chrono::steady_clock::now();
       if (m_endTime <= currentTime)
       {
         // execute OnTimeout() callback

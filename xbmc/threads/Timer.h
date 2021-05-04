@@ -11,6 +11,7 @@
 #include "Event.h"
 #include "Thread.h"
 
+#include <chrono>
 #include <functional>
 
 class ITimerCallback
@@ -43,8 +44,8 @@ protected:
 
 private:
   std::function<void()> m_callback;
-  uint32_t m_timeout;
+  std::chrono::milliseconds m_timeout;
   bool m_interval;
-  uint32_t m_endTime;
+  std::chrono::time_point<std::chrono::steady_clock> m_endTime;
   CEvent m_eventTimeout;
 };
