@@ -75,6 +75,7 @@ namespace PVR
     bool m_bMovingMode = false;
     bool m_bContainsChanges = false;
     bool m_bAllowNewChannel = false;
+    bool m_bAllowRenumber = false;
 
     std::shared_ptr<CFileItem> m_initialSelection;
     int m_iSelected = 0;
