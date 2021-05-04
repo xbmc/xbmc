@@ -103,6 +103,7 @@ public:
    \param iNoLabel Localized label id or string for the no button
    \param iYesLabel Localized label id or string for the yes button
    \param autoCloseTime Time in ms before the dialog becomes automatically closed
+   \param defaultButtonId Specifies the default focused button
    \return true if user selects Yes, otherwise false if user selects No.
    */
   static bool ShowAndGetInput(const CVariant& heading,
@@ -110,7 +111,8 @@ public:
                               bool& bCanceled,
                               const CVariant& noLabel,
                               const CVariant& yesLabel,
-                              unsigned int autoCloseTime);
+                              unsigned int autoCloseTime,
+                              int defaultButtonId = CONTROL_NO_BUTTON);
 
   /*! \brief Show a yes-no dialog with 3rd custom button, then wait for user to dismiss it.
   \param heading Localized label id or string for the heading of the dialog
@@ -119,6 +121,7 @@ public:
   \param yesLabel Localized label id or string for the yes button
   \param customLabel Localized label id or string for the custom button
   \param autoCloseTime Time in ms before the dialog becomes automatically closed
+  \param defaultButtonId Specifies the default focused button
   \return -1 for cancelled, 0 for No, 1 for Yes and 2 for custom button
   */
   static int ShowAndGetInput(const CVariant& heading,
@@ -126,7 +129,8 @@ public:
                              const CVariant& noLabel,
                              const CVariant& yesLabel,
                              const CVariant& customLabel,
-                             unsigned int autoCloseTime);
+                             unsigned int autoCloseTime,
+                             int defaultButtonId = CONTROL_NO_BUTTON);
 
   /*!
     \brief Open a Yes/No dialog and wait for input
@@ -145,4 +149,5 @@ protected:
 
   bool m_bCanceled;
   bool m_bCustom;
+  int m_defaultButtonId;
 };
