@@ -81,6 +81,7 @@ CJobQueue::~CJobQueue()
 void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CSingleLock lock(m_section);
+
   // check if this job is in our processing list
   Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
   if (i != m_processing.end())
@@ -189,12 +190,20 @@ void CJobManager::CancelJobs()
   // clear any pending jobs
   for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED; ++priority)
   {
-    for_each(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), [](CWorkItem& wi) { wi.FreeJob(); });
+    std::for_each(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), [](CWorkItem& wi) {
+      if (wi.m_callback)
+        wi.m_callback->OnJobAbort(wi.m_id, wi.m_job);
+      wi.FreeJob();
+    });
     m_jobQueue[priority].clear();
   }
 
   // cancel any callbacks on jobs still processing
-  for_each(m_processing.begin(), m_processing.end(), [](CWorkItem& wi) { wi.Cancel(); });
+  std::for_each(m_processing.begin(), m_processing.end(), [](CWorkItem& wi) {
+    if (wi.m_callback)
+      wi.m_callback->OnJobAbort(wi.m_id, wi.m_job);
+    wi.Cancel();
+  });
 
   // tell our workers to finish
   while (m_workers.size())
