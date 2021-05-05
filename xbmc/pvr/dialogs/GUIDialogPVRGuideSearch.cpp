@@ -18,6 +18,8 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 
 #include <string>
@@ -60,6 +62,10 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
   std::vector< std::pair<std::string, int> > labels;
   labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
 
+  const bool useBackendChannelNumbers =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
+
   std::shared_ptr<CPVRChannelGroup> group;
   if (iChannelGroup == EPG_SEARCH_UNSET)
     group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_searchFilter->IsRadio());
@@ -79,10 +85,14 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
     if (groupMember->Channel())
     {
       labels.emplace_back(std::make_pair(groupMember->Channel()->ChannelName(), iIndex));
-      m_channelNumbersMap.insert(std::make_pair(iIndex, groupMember->ChannelNumber()));
+
+      CPVRChannelNumber channelNumber = (useBackendChannelNumbers)
+                                            ? groupMember->ClientChannelNumber()
+                                            : groupMember->ChannelNumber();
+      m_channelNumbersMap.insert(std::make_pair(iIndex, channelNumber));
 
       if (iSelectedChannel == EPG_SEARCH_UNSET &&
-          groupMember->ChannelNumber() == m_searchFilter->GetChannelNumber())
+          channelNumber == m_searchFilter->GetChannelNumber())
         iSelectedChannel = iIndex;
 
       ++iIndex;
