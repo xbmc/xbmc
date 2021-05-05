@@ -164,7 +164,7 @@ public:
   double GetDownloadSpeed();
 
 private:
-  unsigned int        m_flags;
+  unsigned int m_flags = 0;
   CURL                m_curl;
   std::unique_ptr<IFile> m_pFile;
   std::unique_ptr<CFileStreamBuffer> m_pBuffer;
