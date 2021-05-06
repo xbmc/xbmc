@@ -147,17 +147,27 @@ public:
   /*!
    \brief The callback used when a job completes.
 
-   OnJobComplete is called at the completion of the CJob::DoWork function, and is used
-   to return information to the caller on the result of the job.  On returning from this function
-   the CJobManager will destroy this job.
+   CJobQueue implementation will cleanup the internal processing queue and then queue the next
+   job at the job manager, if any.
 
-   Subclasses should override this function if they wish to transfer information from the job prior
-   to it's deletion.  They must then call this base class function, which will move on to the next
-   job.
-
-   \sa CJobManager, IJobCallback and  CJob
+   \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param success the result from the DoWork call
+   \param job the job that has been processed.
+   \sa CJobManager, IJobCallback and CJob
    */
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+
+  /*!
+   \brief The callback used when a job will be aborted.
+
+   CJobQueue implementation will cleanup the internal processing queue and then queue the next
+   job at the job manager, if any.
+
+   \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param job the job that has been aborted.
+   \sa CJobManager, IJobCallback and CJob
+   */
+  void OnJobAbort(unsigned int jobID, CJob* job) override;
 
 protected:
   /*!
@@ -167,6 +177,7 @@ protected:
   bool QueueEmpty() const;
 
 private:
+  void OnJobNotify(CJob* job);
   void QueueNextJob();
 
   typedef std::deque<CJobPointer> Queue;

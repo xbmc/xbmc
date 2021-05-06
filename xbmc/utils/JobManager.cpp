@@ -80,14 +80,12 @@ CJobQueue::~CJobQueue()
 
 void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CSingleLock lock(m_section);
+  OnJobNotify(job);
+}
 
-  // check if this job is in our processing list
-  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
-  if (i != m_processing.end())
-    m_processing.erase(i);
-  // request a new job be queued
-  QueueNextJob();
+void CJobQueue::OnJobAbort(unsigned int jobID, CJob* job)
+{
+  OnJobNotify(job);
 }
 
 void CJobQueue::CancelJob(const CJob *job)
@@ -128,14 +126,31 @@ bool CJobQueue::AddJob(CJob *job)
   return true;
 }
 
+void CJobQueue::OnJobNotify(CJob* job)
+{
+  CSingleLock lock(m_section);
+
+  // check if this job is in our processing list
+  const auto it = std::find(m_processing.begin(), m_processing.end(), job);
+  if (it != m_processing.end())
+    m_processing.erase(it);
+  // request a new job be queued
+  QueueNextJob();
+}
+
 void CJobQueue::QueueNextJob()
 {
   CSingleLock lock(m_section);
-  if (m_jobQueue.size() && m_processing.size() < m_jobsAtOnce)
+  while (m_jobQueue.size() && m_processing.size() < m_jobsAtOnce)
   {
     CJobPointer &job = m_jobQueue.back();
     job.m_id = CJobManager::GetInstance().AddJob(job.m_job, this, m_priority);
-    m_processing.push_back(job);
+    if (job.m_id > 0)
+    {
+      m_processing.emplace_back(job);
+      m_jobQueue.pop_back();
+      return;
+    }
     m_jobQueue.pop_back();
   }
 }
