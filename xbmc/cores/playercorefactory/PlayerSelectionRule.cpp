@@ -26,15 +26,6 @@ CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
   Initialize(pRule);
 }
 
-CPlayerSelectionRule::~CPlayerSelectionRule()
-{
-  for (unsigned int i = 0; i < vecSubRules.size(); i++)
-  {
-    delete vecSubRules[i];
-  }
-  vecSubRules.clear();
-}
-
 void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
 {
   m_name = XMLUtils::GetAttribute(pRule, "name");
@@ -84,7 +75,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   TiXmlElement* pSubRule = pRule->FirstChildElement("rule");
   while (pSubRule)
   {
-    vecSubRules.push_back(new CPlayerSelectionRule(pSubRule));
+    vecSubRules.emplace_back(std::make_unique<CPlayerSelectionRule>(pSubRule));
     pSubRule = pSubRule->NextSiblingElement("rule");
   }
 }
@@ -187,8 +178,8 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
 
   CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: matches rule: %s", m_name.c_str());
 
-  for (unsigned int i = 0; i < vecSubRules.size(); i++)
-    vecSubRules[i]->GetPlayers(item, validPlayers, players);
+  for (const auto& rule : vecSubRules)
+    rule->GetPlayers(item, validPlayers, players);
 
   if (std::find(validPlayers.begin(), validPlayers.end(), m_playerName) != validPlayers.end())
   {
