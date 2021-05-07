@@ -310,7 +310,7 @@ void CRenderSystemGLES::Project(float &x, float &y, float &z)
 void CRenderSystemGLES::CalculateMaxTexturesize()
 {
   // GLES cannot do PROXY textures to determine maximum size,
-  CLog::Log(LOGINFO, "GLES: Maximum texture width: %u", m_maxTextureSize);
+  CLog::Log(LOGINFO, "GLES: Maximum texture width: {}", m_maxTextureSize);
 }
 
 void CRenderSystemGLES::GetViewPort(CRect& viewPort)
@@ -545,7 +545,7 @@ void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
   }
   else
   {
-    CLog::Log(LOGERROR, "Invalid GUI Shader selected - %d", method);
+    CLog::Log(LOGERROR, "Invalid GUI Shader selected - {}", method);
   }
 }
 

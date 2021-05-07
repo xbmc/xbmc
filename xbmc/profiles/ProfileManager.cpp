@@ -172,13 +172,14 @@ bool CProfileManager::Load()
       }
       else
       {
-        CLog::Log(LOGERROR, "CProfileManager: error loading %s, no <profiles> node", file.c_str());
+        CLog::Log(LOGERROR, "CProfileManager: error loading {}, no <profiles> node", file.c_str());
         ret = false;
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "CProfileManager: error loading %s, Line %d\n%s", file.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "CProfileManager: error loading {}, Line {}\n{}", file.c_str(),
+                profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
       ret = false;
     }
   }
@@ -314,7 +315,8 @@ bool CProfileManager::LoadProfile(unsigned int index)
   // load the new settings
   if (!settings->Load())
   {
-    CLog::Log(LOGFATAL, "CProfileManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
+    CLog::Log(LOGFATAL, "CProfileManager: unable to load settings for profile \"{}\"",
+              m_profiles.at(index).getName().c_str());
     return false;
   }
   settings->SetLoaded();
@@ -398,7 +400,8 @@ void CProfileManager::FinalizeLoadProfile()
 
   if (!g_application.LoadLanguage(true))
   {
-    CLog::Log(LOGFATAL, "Unable to load language for profile \"%s\"", GetCurrentProfile().getName().c_str());
+    CLog::Log(LOGFATAL, "Unable to load language for profile \"{}\"",
+              GetCurrentProfile().getName().c_str());
     return;
   }
 
@@ -535,7 +538,7 @@ const CProfile& CProfileManager::GetMasterProfile() const
   if (!m_profiles.empty())
     return m_profiles[0];
 
-  CLog::Log(LOGERROR, "%s: master profile doesn't exist", __FUNCTION__);
+  CLog::Log(LOGERROR, "{}: master profile doesn't exist", __FUNCTION__);
   return EmptyProfile;
 }
 

@@ -181,8 +181,9 @@ iconv_t CConverterType::GetConverter(CSingleLock& converterLock)
     m_iconv = iconv_open(m_targetCharset.c_str(), m_sourceCharset.c_str());
 
     if (m_iconv == NO_ICONV)
-      CLog::Log(LOGERROR, "%s: iconv_open() for \"%s\" -> \"%s\" failed, errno = %d (%s)",
-                __FUNCTION__, m_sourceCharset.c_str(), m_targetCharset.c_str(), errno, strerror(errno));
+      CLog::Log(LOGERROR, "{}: iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
+                __FUNCTION__, m_sourceCharset.c_str(), m_targetCharset.c_str(), errno,
+                strerror(errno));
   }
 
   return m_iconv;
@@ -336,7 +337,7 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
   iconv_t conv = iconv_open(targetCharset.c_str(), sourceCharset.c_str());
   if (conv == NO_ICONV)
   {
-    CLog::Log(LOGERROR, "%s: iconv_open() for \"%s\" -> \"%s\" failed, errno = %d (%s)",
+    CLog::Log(LOGERROR, "{}: iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
               __FUNCTION__, sourceCharset.c_str(), targetCharset.c_str(), errno, strerror(errno));
     return false;
   }
@@ -375,7 +376,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   char*       outBuf     = (char*)malloc(outBufSize);
   if (outBuf == NULL)
   {
-    CLog::Log(LOGFATAL, "%s: malloc failed", __FUNCTION__);
+    CLog::Log(LOGFATAL, "{}: malloc failed", __FUNCTION__);
     return false;
   }
 
@@ -402,7 +403,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGFATAL, "%s realloc failed with errno=%d(%s)", __FUNCTION__, errno,
+          CLog::Log(LOGFATAL, "{} realloc failed with errno={}({})", __FUNCTION__, errno,
                     strerror(errno));
           break;
         }
@@ -435,8 +436,8 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
       }
       else //iconv() had some other error
       {
-        CLog::Log(LOGERROR, "%s: iconv() failed, errno=%d (%s)",
-                  __FUNCTION__, errno, strerror(errno));
+        CLog::Log(LOGERROR, "{}: iconv() failed, errno={} ({})", __FUNCTION__, errno,
+                  strerror(errno));
       }
     }
     break;
@@ -444,7 +445,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
 
   //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
   if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
-    CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
+    CLog::Log(LOGERROR, "{} failed cleanup errno={}({})", __FUNCTION__, errno, strerror(errno));
 
   if (returnV == (size_t)-1)
   {
@@ -498,7 +499,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
     if (visual == NULL)
     {
       free(visual);
-      CLog::Log(LOGFATAL, "%s: can't allocate memory", __FUNCTION__);
+      CLog::Log(LOGFATAL, "{}: can't allocate memory", __FUNCTION__);
       return false;
     }
 

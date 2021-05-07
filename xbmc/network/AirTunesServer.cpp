@@ -561,7 +561,7 @@ void shairplay_log(void *cls, int level, const char *msg)
     default:
       break;
   }
-    CLog::Log(xbmcLevel, "AIRTUNES: %s", msg);
+  CLog::Log(xbmcLevel, "AIRTUNES: {}", msg);
 }
 
 bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, const std::string &password/*=""*/)

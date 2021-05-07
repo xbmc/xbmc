@@ -489,9 +489,9 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
       // so point it to frameworks which is where python3.8 is located
       setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
-      CLog::Log(LOGDEBUG, "PYTHONHOME -> %s",
+      CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
                 CSpecialProtocol::TranslatePath("special://frameworks").c_str());
-      CLog::Log(LOGDEBUG, "PYTHONPATH -> %s",
+      CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
                 CSpecialProtocol::TranslatePath("special://frameworks").c_str());
     }
 #elif defined(TARGET_WINDOWS)

@@ -403,7 +403,7 @@ void CAirPlayServer::Process()
 
           if (newconnection.m_socket == INVALID_SOCKET)
           {
-            CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: %d", errno);
+            CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: {}", errno);
             if (EBADF == errno)
             {
               CThread::Sleep(1000);
@@ -597,7 +597,7 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( std::string& reverseHeader
       case EVENT_PAUSED:
       case EVENT_STOPPED:
         reverseBody = StringUtils::Format(EVENT_INFO, m_sessionCounter, eventStrings[state]);
-        CLog::Log(LOGDEBUG, "AIRPLAY: sending event: %s", eventStrings[state]);
+        CLog::Log(LOGDEBUG, "AIRPLAY: sending event: {}", eventStrings[state]);
         break;
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
@@ -711,7 +711,8 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const std::string& authStr,
      if (!StringUtils::EqualsNoCase(theirResponse, ourResponse))
      {
        authValid = false;
-       CLog::Log(LOGDEBUG,"AirAuth: response mismatch - our: %s theirs: %s",ourResponse.c_str(), theirResponse.c_str());
+       CLog::Log(LOGDEBUG, "AirAuth: response mismatch - our: {} theirs: {}", ourResponse.c_str(),
+                 theirResponse.c_str());
      }
      else
      {
@@ -798,7 +799,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       const char* found = strstr(queryString.c_str(), "value=");
       int rate = found ? (int)(atof(found + strlen("value=")) + 0.5) : 0;
 
-      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with rate %i", uri.c_str(), rate);
+      CLog::Log(LOGDEBUG, "AIRPLAY: got request {} with rate {}", uri.c_str(), rate);
 
       if (needAuth && !checkAuthorization(authorization, method, uri))
       {
@@ -829,7 +830,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       const char* found = strstr(queryString.c_str(), "volume=");
       float volume = found ? (float)strtod(found + strlen("volume="), NULL) : 0;
 
-      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
+      CLog::Log(LOGDEBUG, "AIRPLAY: got request {} with volume {:f}", uri.c_str(), volume);
 
       if (needAuth && !checkAuthorization(authorization, method, uri))
       {
@@ -858,7 +859,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     bool startPlayback = true;
     m_lastEvent = EVENT_NONE;
 
-    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request {}", uri.c_str());
 
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
@@ -983,7 +984,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     }
     else if (method == "GET")
     {
-      CLog::Log(LOGDEBUG, "AIRPLAY: got GET request %s", uri.c_str());
+      CLog::Log(LOGDEBUG, "AIRPLAY: got GET request {}", uri.c_str());
 
       if (g_application.GetAppPlayer().GetTotalTime())
       {
@@ -1005,7 +1006,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       {
         int64_t position = (int64_t) (atof(found + strlen("position=")) * 1000.0);
         g_application.GetAppPlayer().SeekTime(position);
-        CLog::Log(LOGDEBUG, "AIRPLAY: got POST request %s with pos %" PRId64, uri.c_str(), position);
+        CLog::Log(LOGDEBUG, "AIRPLAY: got POST request {} with pos {}", uri.c_str(), position);
       }
     }
   }
@@ -1013,7 +1014,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   // Sent when media playback should be stopped
   else if (uri == "/stop")
   {
-    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request {}", uri.c_str());
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
@@ -1036,7 +1037,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   // RAW JPEG data is contained in the request body
   else if (uri == "/photo")
   {
-    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request {}", uri.c_str());
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
@@ -1055,7 +1056,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       {
         receivePhoto = false;
         if (photoCacheId.length())
-          CLog::Log(LOGDEBUG, "AIRPLAY: Trying to show from cache asset: %s", photoCacheId.c_str());
+          CLog::Log(LOGDEBUG, "AIRPLAY: Trying to show from cache asset: {}", photoCacheId.c_str());
       }
 
       if (photoCacheId.length())
@@ -1084,7 +1085,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
           tmpFile.Close();
         }
         if (photoCacheId.length())
-          CLog::Log(LOGDEBUG, "AIRPLAY: Cached asset: %s", photoCacheId.c_str());
+          CLog::Log(LOGDEBUG, "AIRPLAY: Cached asset: {}", photoCacheId.c_str());
       }
 
       if (showPhoto)
@@ -1095,7 +1096,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
           {
             status = AIRPLAY_STATUS_PRECONDITION_FAILED; //image not found in the cache
             if (photoCacheId.length())
-              CLog::Log(LOGWARNING, "AIRPLAY: Asset %s not found in our cache.", photoCacheId.c_str());
+              CLog::Log(LOGWARNING, "AIRPLAY: Asset {} not found in our cache.",
+                        photoCacheId.c_str());
           }
           else
             CApplicationMessenger::GetInstance().PostMsg(TMSG_PICTURE_SHOW, -1, -1, nullptr, tmpFileName);
@@ -1115,7 +1117,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     float cachePosition = 0.0f;
     bool playing = false;
 
-    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request {}", uri.c_str());
 
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
@@ -1148,7 +1150,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
 
   else if (uri == "/server-info")
   {
-    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request {}", uri.c_str());
     responseBody = StringUtils::Format(
         SERVER_INFO, CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetMacAddress());
     responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
@@ -1185,7 +1187,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   }
   else
   {
-    CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [%s]", uri.c_str());
+    CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [{}]", uri.c_str());
     status = AIRPLAY_STATUS_NOT_IMPLEMENTED;
   }
 

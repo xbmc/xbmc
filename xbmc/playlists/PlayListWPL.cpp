@@ -53,7 +53,7 @@ bool CPlayListWPL::LoadData(std::istream& stream)
   stream >> xmlDoc;
   if (xmlDoc.Error())
   {
-    CLog::Log(LOGERROR, "Unable to parse B4S info Error: %s", xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Unable to parse B4S info Error: {}", xmlDoc.ErrorDesc());
     return false;
   }
 
@@ -101,7 +101,7 @@ void CPlayListWPL::Save(const std::string& strFileName) const
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))
   {
-    CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
+    CLog::Log(LOGERROR, "Could not save WPL playlist: [{}]", strPlaylist.c_str());
     return ;
   }
   std::string write;

@@ -30,7 +30,7 @@ bool CGamesGUIInfo::InitCurrentItem(CFileItem *item)
 {
   if (item && item->IsGame())
   {
-    CLog::Log(LOGDEBUG, "CGamesGUIInfo::InitCurrentItem(%s)", item->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "CGamesGUIInfo::InitCurrentItem({})", item->GetPath().c_str());
 
     item->LoadGameTag();
     CGameInfoTag* tag = item->GetGameInfoTag(); // creates item if not yet set, so no nullptr checks needed

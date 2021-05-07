@@ -38,7 +38,8 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 
   if (CFile::Stat(strFile,&m_StatData))
   {
-    CLog::Log(LOGDEBUG,"CZipManager::GetZipList: failed to stat file %s", url.GetRedacted().c_str());
+    CLog::Log(LOGDEBUG, "CZipManager::GetZipList: failed to stat file {}",
+              url.GetRedacted().c_str());
     return false;
   }
 
@@ -59,7 +60,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   CFile mFile;
   if (!mFile.Open(strFile))
   {
-    CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",strFile.c_str());
+    CLog::Log(LOGDEBUG, "ZipManager: unable to open file {}!", strFile.c_str());
     return false;
   }
 
@@ -90,7 +91,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   // we start the search at ECDREC_SIZE-1 from the end of file
   if (fileSize < ECDREC_SIZE - 1)
   {
-    CLog::Log(LOGERROR, "ZipManager: Invalid zip file length: %" PRId64"", fileSize);
+    CLog::Log(LOGERROR, "ZipManager: Invalid zip file length: {}", fileSize);
     return false;
   }
   int searchSize = (int) std::min(static_cast<int64_t>(65557), fileSize-ECDREC_SIZE+1);
@@ -140,7 +141,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 
   if ( !found )
   {
-    CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
+    CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile.c_str());
     mFile.Close();
     return false;
   }
@@ -171,7 +172,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     readCHeader(temp, ze);
     if (ze.header != ZIP_CENTRAL_HEADER)
     {
-      CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
+      CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile.c_str());
       mFile.Close();
       return false;
     }

@@ -338,10 +338,8 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
   catch (const winrt::hresult_error& ex)
   {
     std::string error = FromW(ex.message().c_str());
-    CLog::LogF(LOGERROR, "an exception occurs while openning a file '%s' (mode: %s) : %s"
-                       , url.GetRedacted().c_str()
-                       , mode == FileAccessMode::Read ? "r" : "rw"
-                       , error.c_str());
+    CLog::LogF(LOGERROR, "an exception occurs while openning a file '{}' (mode: {}) : {}",
+               url.GetRedacted().c_str(), mode == FileAccessMode::Read ? "r" : "rw", error.c_str());
     return false;
   }
 
@@ -370,9 +368,8 @@ StorageFile CWinLibraryFile::GetFile(const CURL& url)
     catch (const winrt::hresult_error& ex)
     {
       std::string error = FromW(ex.message().c_str());
-      CLog::LogF(LOGERROR, "unable to get file '%s' with error %s"
-                         , url.GetRedacted().c_str()
-                         , error.c_str());
+      CLog::LogF(LOGERROR, "unable to get file '{}' with error {}", url.GetRedacted().c_str(),
+                 error.c_str());
     }
   }
   else if (url.IsProtocol("file") || url.GetProtocol().empty())

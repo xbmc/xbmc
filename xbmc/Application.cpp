@@ -387,9 +387,14 @@ bool CApplication::Create(const CAppParamParser &params)
   CLog::Log(LOGINFO, "creating subdirectories");
   const std::shared_ptr<CProfileManager> profileManager = m_pSettingsComponent->GetProfileManager();
   const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
-  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(profileManager->GetProfileUserDataFolder()).c_str());
-  CLog::Log(LOGINFO, "recording folder: %s", CURL::GetRedacted(settings->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
-  CLog::Log(LOGINFO, "screenshots folder: %s", CURL::GetRedacted(settings->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
+  CLog::Log(LOGINFO, "userdata folder: {}",
+            CURL::GetRedacted(profileManager->GetProfileUserDataFolder()).c_str());
+  CLog::Log(
+      LOGINFO, "recording folder: {}",
+      CURL::GetRedacted(settings->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
+  CLog::Log(
+      LOGINFO, "screenshots folder: {}",
+      CURL::GetRedacted(settings->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
   CDirectory::Create(profileManager->GetUserDataFolder());
   CDirectory::Create(profileManager->GetProfileUserDataFolder());
   profileManager->CreateProfileFolders();
@@ -501,11 +506,11 @@ bool CApplication::CreateGUI()
   // Retrieve the matching resolution based on GUI settings
   bool sav_res = false;
   CDisplaySettings::GetInstance().SetCurrentResolution(CDisplaySettings::GetInstance().GetDisplayResolution());
-  CLog::Log(LOGINFO, "Checking resolution %i",
+  CLog::Log(LOGINFO, "Checking resolution {}",
             CDisplaySettings::GetInstance().GetCurrentResolution());
   if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsValidResolution(CDisplaySettings::GetInstance().GetCurrentResolution()))
   {
-    CLog::Log(LOGINFO, "Setting safe mode %i", RES_DESKTOP);
+    CLog::Log(LOGINFO, "Setting safe mode {}", RES_DESKTOP);
     // defer saving resolution after window was created
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP);
     sav_res = true;
@@ -563,9 +568,7 @@ bool CApplication::CreateGUI()
     return false;
 
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-  CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
-            info.iWidth,
-            info.iHeight,
+  CLog::Log(LOGINFO, "GUI format {}x{}, Display {}", info.iWidth, info.iHeight,
             info.strMode.c_str());
 
   return true;
@@ -702,10 +705,12 @@ bool CApplication::Initialize()
     std::string defaultSkin = std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
     if (!LoadSkin(settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
-      CLog::Log(LOGERROR, "Failed to load skin '%s'", settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
+      CLog::Log(LOGERROR, "Failed to load skin '{}'",
+                settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
       if (!LoadSkin(defaultSkin))
       {
-        CLog::Log(LOGFATAL, "Default skin '%s' could not be loaded! Terminating..", defaultSkin.c_str());
+        CLog::Log(LOGFATAL, "Default skin '{}' could not be loaded! Terminating..",
+                  defaultSkin.c_str());
         return false;
       }
     }
@@ -1109,11 +1114,11 @@ bool CApplication::LoadSkin(const std::string& skinID)
   // check if the skin has been properly loaded and if it has a Home.xml
   if (!skin->HasSkinFile("Home.xml"))
   {
-    CLog::Log(LOGERROR, "failed to load requested skin '%s'", skin->ID().c_str());
+    CLog::Log(LOGERROR, "failed to load requested skin '{}'", skin->ID().c_str());
     return false;
   }
 
-  CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(),
+  CLog::Log(LOGINFO, "  load skin from: {} (version: {})", skin->Path().c_str(),
             skin->Version().asString().c_str());
   g_SkinInfo = skin;
 
@@ -1146,7 +1151,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
-  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
+  CLog::Log(LOGDEBUG, "Load Skin XML: {:.2f}ms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(this);
@@ -1248,7 +1253,7 @@ bool CApplication::LoadCustomWindows()
 
   for (const auto &skinPath : vecSkinPath)
   {
-    CLog::Log(LOGINFO, "Loading custom window XMLs from skin path %s", skinPath.c_str());
+    CLog::Log(LOGINFO, "Loading custom window XMLs from skin path {}", skinPath.c_str());
 
     CFileItemList items;
     if (CDirectory::GetDirectory(skinPath, items, ".xml", DIR_FLAG_NO_FILE_DIRS))
@@ -1264,7 +1269,8 @@ bool CApplication::LoadCustomWindows()
           CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(item->GetPath()))
           {
-            CLog::Log(LOGERROR, "Unable to load custom window XML %s. Line %d\n%s", item->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}",
+                      item->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -1273,7 +1279,8 @@ bool CApplication::LoadCustomWindows()
           std::string strValue = pRootElement->Value();
           if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
-            CLog::Log(LOGERROR, "No <window> root element found for custom window in %s", skinFile.c_str());
+            CLog::Log(LOGERROR, "No <window> root element found for custom window in {}",
+                      skinFile.c_str());
             continue;
           }
 
@@ -1303,7 +1310,8 @@ bool CApplication::LoadCustomWindows()
           if (id == WINDOW_INVALID || CServiceBroker::GetGUI()->GetWindowManager().GetWindow(windowId))
           {
             // No id specified or id already in use
-            CLog::Log(LOGERROR, "No id specified or id already in use for custom window in %s", skinFile.c_str());
+            CLog::Log(LOGERROR, "No id specified or id already in use for custom window in {}",
+                      skinFile.c_str());
             continue;
           }
 
@@ -1330,7 +1338,7 @@ bool CApplication::LoadCustomWindows()
 
           if (!pWindow)
           {
-            CLog::Log(LOGERROR, "Failed to create custom window from %s", skinFile.c_str());
+            CLog::Log(LOGERROR, "Failed to create custom window from {}", skinFile.c_str());
             continue;
           }
 
@@ -2064,7 +2072,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       if (!audioengine->Suspend())
       {
-        CLog::Log(LOGINFO, "%s: Failed to suspend AudioEngine before launching external program",
+        CLog::Log(LOGINFO, "{}: Failed to suspend AudioEngine before launching external program",
                   __FUNCTION__);
       }
     }
@@ -2080,7 +2088,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       if (!audioengine->Resume())
       {
-        CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player", __FUNCTION__);
+        CLog::Log(LOGFATAL, "{}: Failed to restart AudioEngine after return from external player",
+                  __FUNCTION__);
       }
     }
     break;
@@ -2198,7 +2207,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   default:
-    CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, msg);
+    CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
     break;
   }
 }
@@ -2228,7 +2237,7 @@ void CApplication::HandleShutdownMessage()
     break;
 
   default:
-    CLog::Log(LOGERROR, "%s: No valid shutdownstate matched", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: No valid shutdownstate matched", __FUNCTION__);
     break;
   }
 }
@@ -2640,7 +2649,10 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
       }
       else
       {
-        CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
+        CLog::Log(LOGWARNING,
+                  "CApplication::PlayMedia called to play a playlist {} but no idea which playlist "
+                  "to use, playing first item",
+                  item.GetPath().c_str());
         if(pPlayList->size())
           return PlayFile(*(*pPlayList)[0], "", false);
       }
@@ -2904,7 +2916,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     };
     int dMsgCount = CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(&previousMsgsIgnoredByNewPlaying[0]);
     if (dMsgCount > 0)
-      CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
+      CLog::LogF(LOGDEBUG, "Ignored {} playback thread messages", dMsgCount);
   }
 
   m_appPlayer.OpenFile(item, options, m_ServiceManager->GetPlayerCoreFactory(), player, *this);
@@ -3232,7 +3244,7 @@ void CApplication::RequestVideoSettings(const CFileItem &fileItem)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading settings for %s", CURL::GetRedacted(fileItem.GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "Loading settings for {}", CURL::GetRedacted(fileItem.GetPath()).c_str());
 
     // Load stored settings if they exist, otherwise use default
     CVideoSettings vs;
@@ -3634,7 +3646,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     std::string libPath = m_pythonScreenSaver->LibPath();
     if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
     {
-      CLog::Log(LOGDEBUG, "using python screensaver add-on %s", m_screensaverIdInUse.c_str());
+      CLog::Log(LOGDEBUG, "using python screensaver add-on {}", m_screensaverIdInUse.c_str());
 
       // Don't allow a previously-scheduled alarm to kill our new screensaver
       g_alarmClock.Stop(SCRIPT_ALARM, true);
@@ -3996,7 +4008,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
     {
       //At this point we have given up to translate, so even though
       //there may be insecure information, we log it.
-      CLog::LogF(LOGDEBUG,"Tried translating, but failed to understand %s", in_actionStr.c_str());
+      CLog::LogF(LOGDEBUG, "Tried translating, but failed to understand {}", in_actionStr.c_str());
       return false;
     }
   }
@@ -4628,7 +4640,8 @@ void CApplication::UpdateCurrentPlayArt()
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
-  CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
+  CLog::Log(LOGDEBUG, "CApplication::ProcessAndStartPlaylist({}, {})", strPlayList.c_str(),
+            iPlaylist);
 
   // initial exit conditions
   // no songs in playlist just return

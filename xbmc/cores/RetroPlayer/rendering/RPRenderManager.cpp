@@ -78,7 +78,7 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
                                  unsigned int maxWidth,
                                  unsigned int maxHeight)
 {
-  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format %s, nominal %ux%u, max %ux%u",
+  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format {}, nominal {}x{}, max {}x{}",
             CRenderTranslator::TranslatePixelFormat(format), nominalWidth, nominalHeight, maxWidth,
             maxHeight);
 
@@ -499,7 +499,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   // If buffer pool has no compatible renderers, create one now
   if (!renderer)
   {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating renderer for %s",
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating renderer for {}",
               m_processInfo.GetRenderSystemName(bufferPool).c_str());
 
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));

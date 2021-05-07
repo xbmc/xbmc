@@ -409,7 +409,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (m_bErrorMessage)
   { // we have an error when loading either the current or next picture
     // check to see if we have a picture loaded
-    CLog::Log(LOGDEBUG, "We have an error loading picture %d!", m_pBackgroundLoader->SlideNumber());
+    CLog::Log(LOGDEBUG, "We have an error loading picture {}!", m_pBackgroundLoader->SlideNumber());
     if (m_iCurrentSlide == m_pBackgroundLoader->SlideNumber())
     {
       if (m_Image[m_iCurrentPic].IsLoaded())
@@ -419,11 +419,13 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       }
       else
       {
-        CLog::Log(LOGERROR, "Error loading the current image %d: %s", m_iCurrentSlide, m_slides.at(m_iCurrentSlide)->GetPath().c_str());
+        CLog::Log(LOGERROR, "Error loading the current image {}: {}", m_iCurrentSlide,
+                  m_slides.at(m_iCurrentSlide)->GetPath().c_str());
         if (!m_slides.at(m_iCurrentPic)->IsVideo())
         {
           // try next if we are in slideshow
-          CLog::Log(LOGINFO, "set image %s unplayable", m_slides.at(m_iCurrentSlide)->GetPath().c_str());
+          CLog::Log(LOGINFO, "set image {} unplayable",
+                    m_slides.at(m_iCurrentSlide)->GetPath().c_str());
           m_slides.at(m_iCurrentSlide)->SetProperty("unplayable", true);
         }
         if (m_bLoadNextPic || (bSlideShow && !m_bPause && !m_slides.at(m_iCurrentPic)->IsVideo()))
@@ -438,11 +440,12 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
     else if (m_iNextSlide == m_pBackgroundLoader->SlideNumber())
     {
-      CLog::Log(LOGERROR, "Error loading the next image %d: %s", m_iNextSlide, m_slides.at(m_iNextSlide)->GetPath().c_str());
+      CLog::Log(LOGERROR, "Error loading the next image {}: {}", m_iNextSlide,
+                m_slides.at(m_iNextSlide)->GetPath().c_str());
       // load next image failed, then skip to load next of next if next is not video.
       if (!m_slides.at(m_iNextSlide)->IsVideo())
       {
-        CLog::Log(LOGINFO, "set image %s unplayable", m_slides.at(m_iNextSlide)->GetPath().c_str());
+        CLog::Log(LOGINFO, "set image {} unplayable", m_slides.at(m_iNextSlide)->GetPath().c_str());
         m_slides.at(m_iNextSlide)->SetProperty("unplayable", true);
         // change to next item, wait loading.
         m_iNextSlide = GetNextSlide();
@@ -455,7 +458,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
     else
     { // Non-current and non-next slide, just ignore error.
-      CLog::Log(LOGERROR, "Error loading the non-current non-next image %d/%d: %s", m_iNextSlide, m_pBackgroundLoader->SlideNumber(), m_slides.at(m_iNextSlide)->GetPath().c_str());
+      CLog::Log(LOGERROR, "Error loading the non-current non-next image {}/{}: {}", m_iNextSlide,
+                m_pBackgroundLoader->SlideNumber(), m_slides.at(m_iNextSlide)->GetPath().c_str());
       m_bErrorMessage = false;
     }
   }
@@ -473,9 +477,11 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     if (!picturePath.empty())
     {
       if (item->IsVideo())
-        CLog::Log(LOGDEBUG, "Loading the thumb %s for current video %d: %s", picturePath.c_str(), m_iCurrentSlide, item->GetPath().c_str());
+        CLog::Log(LOGDEBUG, "Loading the thumb {} for current video {}: {}", picturePath.c_str(),
+                  m_iCurrentSlide, item->GetPath().c_str());
       else
-        CLog::Log(LOGDEBUG, "Loading the current image %d: %s", m_iCurrentSlide, item->GetPath().c_str());
+        CLog::Log(LOGDEBUG, "Loading the current image {}: {}", m_iCurrentSlide,
+                  item->GetPath().c_str());
 
       // load using the background loader
       int maxWidth, maxHeight;
@@ -501,9 +507,10 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     if (!picturePath.empty() && (!item->IsVideo() || !m_bSlideShow || m_bPause))
     {
       if (item->IsVideo())
-        CLog::Log(LOGDEBUG, "Loading the thumb %s for next video %d: %s", picturePath.c_str(), m_iNextSlide, item->GetPath().c_str());
+        CLog::Log(LOGDEBUG, "Loading the thumb {} for next video {}: {}", picturePath.c_str(),
+                  m_iNextSlide, item->GetPath().c_str());
       else
-        CLog::Log(LOGDEBUG, "Loading the next image %d: %s", m_iNextSlide, item->GetPath().c_str());
+        CLog::Log(LOGDEBUG, "Loading the next image {}: {}", m_iNextSlide, item->GetPath().c_str());
 
       int maxWidth, maxHeight;
       GetCheckedSize((float)res.iWidth * m_fZoom,
@@ -528,7 +535,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // Check if we should be transitioning immediately
   if (m_bLoadNextPic && m_Image[m_iCurrentPic].IsLoaded())
   {
-    CLog::Log(LOGDEBUG, "Starting immediate transition due to user wanting slide %s", m_slides.at(m_iNextSlide)->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "Starting immediate transition due to user wanting slide {}",
+              m_slides.at(m_iNextSlide)->GetPath().c_str());
     if (m_Image[m_iCurrentPic].StartTransition())
     {
       m_Image[m_iCurrentPic].SetTransitionTime(1, IMMEDIATE_TRANSITION_TIME);
@@ -566,7 +574,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     {
       if (m_pBackgroundLoader->IsLoading())
       {
-//        CLog::Log(LOGDEBUG, "Having to hold the current image (%s) while we load %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
+        //        CLog::Log(LOGDEBUG, "Having to hold the current image ({}) while we load {}", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
         m_Image[m_iCurrentPic].Keep();
       }
     }
@@ -577,10 +585,14 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   {
     m_bLoadNextPic = false;
     if (m_Image[m_iCurrentPic].IsFinished())
-      CLog::Log(LOGDEBUG, "Image %s is finished rendering, switching to %s", m_slides.at(m_iCurrentSlide)->GetPath().c_str(), m_slides.at(m_iNextSlide)->GetPath().c_str());
+      CLog::Log(LOGDEBUG, "Image {} is finished rendering, switching to {}",
+                m_slides.at(m_iCurrentSlide)->GetPath().c_str(),
+                m_slides.at(m_iNextSlide)->GetPath().c_str());
     else
       // what if it's bg loading?
-      CLog::Log(LOGDEBUG, "Image %s is not loaded, switching to %s", m_slides.at(m_iCurrentSlide)->GetPath().c_str(), m_slides.at(m_iNextSlide)->GetPath().c_str());
+      CLog::Log(LOGDEBUG, "Image {} is not loaded, switching to {}",
+                m_slides.at(m_iCurrentSlide)->GetPath().c_str(),
+                m_slides.at(m_iNextSlide)->GetPath().c_str());
 
     if (m_Image[m_iCurrentPic].IsFinished() && m_iCurrentSlide == m_iNextSlide && m_Image[m_iCurrentPic].SlideNumber() == m_iNextSlide)
       m_Image[m_iCurrentPic].Reset(GetDisplayEffect(m_iCurrentSlide));
@@ -1115,7 +1127,7 @@ bool CGUIWindowSlideShow::PlayVideo()
   CFileItemPtr item = m_slides.at(m_iCurrentSlide);
   if (!item || !item->IsVideo())
     return false;
-  CLog::Log(LOGDEBUG, "Playing current video slide %s", item->GetPath().c_str());
+  CLog::Log(LOGDEBUG, "Playing current video slide {}", item->GetPath().c_str());
   m_bPlayingVideo = true;
   m_iVideoSlide = m_iCurrentSlide;
   bool ret = g_application.PlayFile(*item, "");
@@ -1123,7 +1135,7 @@ bool CGUIWindowSlideShow::PlayVideo()
     return true;
   else
   {
-    CLog::Log(LOGINFO, "set video %s unplayable", item->GetPath().c_str());
+    CLog::Log(LOGINFO, "set video {} unplayable", item->GetPath().c_str());
     item->SetProperty("unplayable", true);
   }
   m_bPlayingVideo = false;
@@ -1150,7 +1162,8 @@ void CGUIWindowSlideShow::OnLoadPic(
       delete pTexture;
       return;
     }
-    CLog::Log(LOGDEBUG, "Finished background loading slot %d, %d: %s", iPic, iSlideNumber, m_slides.at(iSlideNumber)->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "Finished background loading slot {}, {}: {}", iPic, iSlideNumber,
+              m_slides.at(iSlideNumber)->GetPath().c_str());
     m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
     m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
 
@@ -1168,10 +1181,14 @@ void CGUIWindowSlideShow::OnLoadPic(
   }
   else if (iSlideNumber >= static_cast<int>(m_slides.size()) || GetPicturePath(m_slides.at(iSlideNumber).get()) != strFileName)
   { // Failed to load image. and not match values calling LoadPic, then something is changed, ignore.
-    CLog::Log(LOGDEBUG, "CGUIWindowSlideShow::OnLoadPic(%d, %d, %s) on failure not match current state (cur %d, next %d, curpic %d, pic[0, 1].slidenumber=%d, %d, %s)",
-              iPic, iSlideNumber, strFileName.c_str(), m_iCurrentSlide,
-              m_iNextSlide, m_iCurrentPic, m_Image[0].SlideNumber(), m_Image[1].SlideNumber(),
-              iSlideNumber >= static_cast<int>(m_slides.size()) ? "" : m_slides.at(iSlideNumber)->GetPath().c_str());
+    CLog::Log(LOGDEBUG,
+              "CGUIWindowSlideShow::OnLoadPic({}, {}, {}) on failure not match current state (cur "
+              "{}, next {}, curpic {}, pic[0, 1].slidenumber={}, {}, {})",
+              iPic, iSlideNumber, strFileName.c_str(), m_iCurrentSlide, m_iNextSlide, m_iCurrentPic,
+              m_Image[0].SlideNumber(), m_Image[1].SlideNumber(),
+              iSlideNumber >= static_cast<int>(m_slides.size())
+                  ? ""
+                  : m_slides.at(iSlideNumber)->GetPath().c_str());
   }
   else
   { // Failed to load image.  What should be done??

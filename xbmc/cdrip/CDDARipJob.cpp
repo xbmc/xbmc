@@ -53,8 +53,7 @@ CCDDARipJob::~CCDDARipJob() = default;
 
 bool CCDDARipJob::DoWork()
 {
-  CLog::Log(LOGINFO, "Start ripping track %s to %s", m_input.c_str(),
-                                                     m_output.c_str());
+  CLog::Log(LOGINFO, "Start ripping track {} to {}", m_input.c_str(), m_output.c_str());
 
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
   CFileItem file(m_output, false);
@@ -111,8 +110,8 @@ bool CCDDARipJob::DoWork()
     // copy the ripped track to the share
     if (!CFile::Copy(m_output, file.GetPath()))
     {
-      CLog::Log(LOGERROR, "CDDARipper: Error copying file from %s to %s",
-                m_output.c_str(), file.GetPath().c_str());
+      CLog::Log(LOGERROR, "CDDARipper: Error copying file from {} to {}", m_output.c_str(),
+                file.GetPath().c_str());
       CFile::Delete(m_output);
       return false;
     }
@@ -126,12 +125,12 @@ bool CCDDARipJob::DoWork()
     CFile::Delete(m_output);
   }
   else if (result == 1)
-    CLog::Log(LOGERROR, "CDDARipper: Error ripping %s", m_input.c_str());
+    CLog::Log(LOGERROR, "CDDARipper: Error ripping {}", m_input.c_str());
   else if (result < 0)
-    CLog::Log(LOGERROR, "CDDARipper: Error encoding %s", m_input.c_str());
+    CLog::Log(LOGERROR, "CDDARipper: Error encoding {}", m_input.c_str());
   else
   {
-    CLog::Log(LOGINFO, "Finished ripping %s", m_input.c_str());
+    CLog::Log(LOGINFO, "Finished ripping {}", m_input.c_str());
     if (m_eject)
     {
       CLog::Log(LOGINFO, "Ejecting CD");

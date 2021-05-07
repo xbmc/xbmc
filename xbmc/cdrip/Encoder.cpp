@@ -59,7 +59,7 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 
   if (!FileCreate(strFile))
   {
-    CLog::Log(LOGERROR, "Error: Cannot open file: %s", strFile);
+    CLog::Log(LOGERROR, "Error: Cannot open file: {}", strFile);
     return false;
   }
 
@@ -173,7 +173,7 @@ int CEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
 
   if (iBytes < 0)
   {
-    CLog::Log(LOGERROR, "Internal encoder error: %i", iBytes);
+    CLog::Log(LOGERROR, "Internal encoder error: {}", iBytes);
     return 0;
   }
   return 1;

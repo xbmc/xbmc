@@ -115,12 +115,13 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     // make sure that the selected part is within the boundaries
     if (selectedFile <= 0)
     {
-      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part 1", selectedFile);
+      CLog::LogF(LOGWARNING, "Selected part {} out of range, playing part 1", selectedFile);
       selectedFile = 1;
     }
     else if (selectedFile > m_currentStack->Size())
     {
-      CLog::LogF(LOGWARNING, "Selected part %d out of range, playing part %d", selectedFile, m_currentStack->Size());
+      CLog::LogF(LOGWARNING, "Selected part {} out of range, playing part {}", selectedFile,
+                 m_currentStack->Size());
       selectedFile = m_currentStack->Size();
     }
 

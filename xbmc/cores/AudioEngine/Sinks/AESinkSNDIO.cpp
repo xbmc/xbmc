@@ -120,7 +120,7 @@ bool CAESinkSNDIO::ParToAudioFormat(AEAudioFormat& format)
 
   if (m_par.pchan > nitems(channelMap))
   {
-    CLog::Log(LOGERROR, "CAESinkSNDIO::ParToAudioFormat - too many channels: %d", m_par.pchan);
+    CLog::Log(LOGERROR, "CAESinkSNDIO::ParToAudioFormat - too many channels: {}", m_par.pchan);
     return false;
   }
 

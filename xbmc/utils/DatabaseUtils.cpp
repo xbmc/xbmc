@@ -373,7 +373,7 @@ bool DatabaseUtils::GetSelectFields(const Fields &fields, const MediaType &media
 
     if (GetField(*it, mediaType, DatabaseQueryPartSelect).empty())
     {
-      CLog::Log(LOGDEBUG, "DatabaseUtils::GetSortFieldList: unknown field %d", *it);
+      CLog::Log(LOGDEBUG, "DatabaseUtils::GetSortFieldList: unknown field {}", *it);
       continue;
     }
     selectFields.push_back(*it);
@@ -475,7 +475,8 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
       std::pair<Field, CVariant> value;
       value.first = *it;
       if (!GetFieldValue(resultSet.records[index]->at(fieldIndex), value.second))
-        CLog::Log(LOGWARNING, "GetDatabaseResults: unable to retrieve value of field %s", resultSet.record_header[fieldIndex].name.c_str());
+        CLog::Log(LOGWARNING, "GetDatabaseResults: unable to retrieve value of field {}",
+                  resultSet.record_header[fieldIndex].name.c_str());
 
       if (value.first == FieldYear &&
          (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode))

@@ -24,7 +24,9 @@ CInputStreamPVRBase::CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem&
     m_client(CServiceBroker::GetPVRManager().GetClient(fileitem))
 {
   if (!m_client)
-    CLog::Log(LOGERROR, "CInputStreamPVRBase - %s - unable to obtain pvr addon instance for item '%s'", __FUNCTION__, fileitem.GetPath().c_str());
+    CLog::Log(LOGERROR,
+              "CInputStreamPVRBase - {} - unable to obtain pvr addon instance for item '{}'",
+              __FUNCTION__, fileitem.GetPath().c_str());
 }
 
 CInputStreamPVRBase::~CInputStreamPVRBase()

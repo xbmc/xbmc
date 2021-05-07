@@ -99,7 +99,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
 
   if (result != 0)
   {
-    //  CLog::Log(LOGERROR, "%s - GetHostMacAddress/ioctl failed with errno (%d)", __FUNCTION__, errno);
+    //  CLog::Log(LOGERROR, "{} - GetHostMacAddress/ioctl failed with errno ({})", __FUNCTION__, errno);
     return false;
   }
 
@@ -217,7 +217,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   // else some error
 
   if (result < 0 || result > 1)
-    CLog::Log(LOGERROR, "Ping fail : status = %d, errno = %d : '%s'", status, errno, cmd_line);
+    CLog::Log(LOGERROR, "Ping fail : status = {}, errno = {} : '{}'", status, errno, cmd_line);
 
   return result == 0;
 }

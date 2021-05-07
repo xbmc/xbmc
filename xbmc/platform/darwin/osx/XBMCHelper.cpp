@@ -153,7 +153,7 @@ void XBMCHelper::Stop()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid != -1)
   {
-    CLog::Log(LOGDEBUG, "XBMCHelper: Sending SIGKILL to %s", XBMC_HELPER_PROGRAM);
+    CLog::Log(LOGDEBUG, "XBMCHelper: Sending SIGKILL to {}", XBMC_HELPER_PROGRAM);
     kill(pid, SIGKILL);
   }
 }
@@ -378,7 +378,7 @@ void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
   std::ofstream out(fileName);
   if (!out)
   {
-    CLog::Log(LOGERROR, "XBMCHelper: Unable to open file '%s'", fileName);
+    CLog::Log(LOGERROR, "XBMCHelper: Unable to open file '{}'", fileName);
   }
   else
   {

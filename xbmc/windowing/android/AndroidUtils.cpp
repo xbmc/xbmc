@@ -45,7 +45,7 @@ static float currentRefreshRate()
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
     if (preferredRate > 20.0f && preferredRate < 70.0f)
     {
-      CLog::Log(LOGINFO, "CAndroidUtils: Preferred refresh rate: %f", preferredRate);
+      CLog::Log(LOGINFO, "CAndroidUtils: Preferred refresh rate: {:f}", preferredRate);
       return preferredRate;
     }
     CJNIView view(window.getDecorView());
@@ -56,7 +56,7 @@ static float currentRefreshRate()
         float reportedRate = display.getRefreshRate();
         if (reportedRate > 20.0f && reportedRate < 70.0f)
         {
-          CLog::Log(LOGINFO, "CAndroidUtils: Current display refresh rate: %f", reportedRate);
+          CLog::Log(LOGINFO, "CAndroidUtils: Current display refresh rate: {:f}", reportedRate);
           return reportedRate;
         }
       }
@@ -82,7 +82,8 @@ static void fetchDisplayModes()
       {
         s_hasModeApi = true;
 
-        CLog::Log(LOGDEBUG, "CAndroidUtils: current mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
+        CLog::Log(LOGDEBUG, "CAndroidUtils: current mode: {}: {}x{}@{:f}", m.getModeId(),
+                  m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
         s_res_cur_displayMode.strId = std::to_string(m.getModeId());
         s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth = m.getPhysicalWidth();
         s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
@@ -99,7 +100,8 @@ static void fetchDisplayModes()
         std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
         for (auto m : modes)
         {
-          CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
+          CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: {}: {}x{}@{:f}", m.getModeId(),
+                    m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
 
           RESOLUTION_INFO res;
           res.strId = std::to_string(m.getModeId());
@@ -153,11 +155,12 @@ CAndroidUtils::CAndroidUtils()
         m_width = StringUtils::IsInteger(aSize[0]) ? atoi(aSize[0].c_str()) : 0;
         m_height = StringUtils::IsInteger(aSize[1]) ? atoi(aSize[1].c_str()) : 0;
       }
-      CLog::Log(LOGDEBUG, "CAndroidUtils: display-size: %s(%dx%d)", displaySize.c_str(), m_width, m_height);
+      CLog::Log(LOGDEBUG, "CAndroidUtils: display-size: {}({}x{})", displaySize.c_str(), m_width,
+                m_height);
     }
   }
 
-  CLog::Log(LOGDEBUG, "CAndroidUtils: maximum/current resolution: %dx%d", m_width, m_height);
+  CLog::Log(LOGDEBUG, "CAndroidUtils: maximum/current resolution: {}x{}", m_width, m_height);
   int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CAndroidUtils::SETTING_LIMITGUI);
   switch (limit)
   {
@@ -185,7 +188,7 @@ CAndroidUtils::CAndroidUtils()
       }
       break;
   }
-  CLog::Log(LOGDEBUG, "CAndroidUtils: selected resolution: %dx%d", m_width, m_height);
+  CLog::Log(LOGDEBUG, "CAndroidUtils: selected resolution: {}x{}", m_width, m_height);
 
   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, {
     CAndroidUtils::SETTING_LIMITGUI
@@ -204,7 +207,7 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
     m_width = ANativeWindow_getWidth(nativeWindow);
     m_height= ANativeWindow_getHeight(nativeWindow);
     ANativeWindow_release(nativeWindow);
-    CLog::Log(LOGINFO, "CAndroidUtils: window resolution: %dx%d", m_width, m_height);
+    CLog::Log(LOGINFO, "CAndroidUtils: window resolution: {}x{}", m_width, m_height);
   }
 
   if (s_hasModeApi)
@@ -229,14 +232,14 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
   res->strMode =
       StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res->iScreenWidth, res->iScreenHeight,
                           res->fRefreshRate, res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-  CLog::Log(LOGINFO, "CAndroidUtils: Current resolution: %dx%d %s", res->iWidth, res->iHeight,
+  CLog::Log(LOGINFO, "CAndroidUtils: Current resolution: {}x{} {}", res->iWidth, res->iHeight,
             res->strMode.c_str());
   return true;
 }
 
 bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO& res)
 {
-  CLog::Log(LOGINFO, "CAndroidUtils: SetNativeResolution: %s: %dx%d %dx%d@%f", res.strId.c_str(),
+  CLog::Log(LOGINFO, "CAndroidUtils: SetNativeResolution: {}: {}x{} {}x{}@{:f}", res.strId.c_str(),
             res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
   if (s_hasModeApi)
@@ -256,7 +259,7 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions)
   RESOLUTION_INFO cur_res;
   bool ret = GetNativeResolution(&cur_res);
 
-  CLog::Log(LOGDEBUG, "CAndroidUtils: ProbeResolutions: %dx%d", m_width, m_height);
+  CLog::Log(LOGDEBUG, "CAndroidUtils: ProbeResolutions: {}x{}", m_width, m_height);
 
   if (s_hasModeApi)
   {
@@ -335,7 +338,7 @@ bool CAndroidUtils::IsHDRDisplay()
         ret = display.isHdr();
     }
   }
-  CLog::Log(LOGDEBUG, "CAndroidUtils: IsHDRDisplay: %s", ret ? "true" : "false");
+  CLog::Log(LOGDEBUG, "CAndroidUtils: IsHDRDisplay: {}", ret ? "true" : "false");
   return ret;
 }
 

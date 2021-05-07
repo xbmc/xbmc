@@ -127,7 +127,7 @@ void CThread::SetThreadInfo()
     // start thread with nice level of application
     int appNice = getpriority(PRIO_PROCESS, getpid());
     if (setpriority(PRIO_PROCESS, m_lwpId, appNice) != 0)
-      CLog::Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));
   }
 #endif
 }
@@ -194,7 +194,7 @@ bool CThread::SetPriority(const int iPriority)
     if (setpriority(PRIO_PROCESS, m_lwpId, newNice) == 0)
       bReturn = true;
     else
-      CLog::Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));
   }
 #endif
 
@@ -214,8 +214,10 @@ int CThread::GetPriority()
 
 void term_handler(int signum)
 {
-  CLog::Log(LOGERROR, "thread 0x%lx (%lu) got signal %d. calling OnException and terminating thread abnormally.", (long unsigned int) pthread_self(),
-      (long unsigned int) pthread_self(), signum);
+  CLog::Log(
+      LOGERROR,
+      "thread 0x{:x} ({}) got signal {}. calling OnException and terminating thread abnormally.",
+      (long unsigned int)pthread_self(), (long unsigned int)pthread_self(), signum);
   CThread* curThread = CThread::GetCurrentThread();
   if (curThread)
   {

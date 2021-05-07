@@ -1094,7 +1094,8 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
-    CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "{} called on '{}' but file doesn't exist", __FUNCTION__,
+              item->GetPath().c_str());
 
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 

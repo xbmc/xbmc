@@ -70,7 +70,7 @@ RETRO::AudioStreamProperties* CGameClientStreamAudio::TranslateProperties(
   const RETRO::PCMFormat pcmFormat = CGameClientTranslator::TranslatePCMFormat(properties.format);
   if (pcmFormat == RETRO::PCMFormat::FMT_UNKNOWN)
   {
-    CLog::Log(LOGERROR, "GAME: Unknown PCM format: %d", static_cast<int>(properties.format));
+    CLog::Log(LOGERROR, "GAME: Unknown PCM format: {}", static_cast<int>(properties.format));
     return nullptr;
   }
 
@@ -84,7 +84,7 @@ RETRO::AudioStreamProperties* CGameClientStreamAudio::TranslateProperties(
       RETRO::AudioChannel channel = CGameClientTranslator::TranslateAudioChannel(*channelPtr);
       if (channel == RETRO::AudioChannel::CH_NULL)
       {
-        CLog::Log(LOGERROR, "GAME: Unknown channel ID: %d", static_cast<int>(*channelPtr));
+        CLog::Log(LOGERROR, "GAME: Unknown channel ID: {}", static_cast<int>(*channelPtr));
         return nullptr;
       }
 

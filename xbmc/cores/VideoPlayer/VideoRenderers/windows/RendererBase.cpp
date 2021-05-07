@@ -341,7 +341,7 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width, unsigned height, bo
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  CLog::LogF(LOGDEBUG, "intermediate target format %i.", format);
+  CLog::LogF(LOGDEBUG, "intermediate target format {}.", format);
 
   if (!m_IntermediateTarget.Create(width, height, 1, dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
   {

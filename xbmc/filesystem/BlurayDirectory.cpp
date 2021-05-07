@@ -154,7 +154,7 @@ void CBlurayDirectory::GetTitles(bool main, CFileItemList &items)
 
       if (!t)
       {
-        CLog::Log(LOGDEBUG, "CBlurayDirectory - unable to get title %d", i);
+        CLog::Log(LOGDEBUG, "CBlurayDirectory - unable to get title {}", i);
         continue;
       }
 
@@ -266,7 +266,8 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
 
   if (!bd_open_files(m_bd, const_cast<std::string*>(&root), CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
-    CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open %s", CURL::GetRedacted(root).c_str());
+    CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open {}",
+              CURL::GetRedacted(root).c_str());
     return false;
   }
   m_blurayInitialized = true;

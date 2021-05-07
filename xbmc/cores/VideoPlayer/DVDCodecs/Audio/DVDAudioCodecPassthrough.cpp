@@ -184,7 +184,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     if (m_dataSize > 2560 - 2)
     {
       CLog::Log(LOGERROR,
-                "CDVDAudioCodecPassthrough::AddData - truncating TrueHD frame of %u bytes",
+                "CDVDAudioCodecPassthrough::AddData - truncating TrueHD frame of {} bytes",
                 m_dataSize);
       m_dataSize = 2560 - 2;
     }

@@ -62,7 +62,7 @@ CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, std
 
   if (websocket == NULL)
   {
-    CLog::Log(LOGINFO, "WebSocket: Unsupported Sec-WebSocket-Version %s", value);
+    CLog::Log(LOGINFO, "WebSocket: Unsupported Sec-WebSocket-Version {}", value);
     CHttpResponse httpResponse(HTTP::Get, HTTP::UpgradeRequired, HTTP::Version1_1);
     httpResponse.AddHeader(WS_HEADER_VERSION, WS_SUPPORTED_VERSIONS);
     response = httpResponse.Create();

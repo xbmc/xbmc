@@ -143,7 +143,7 @@ bool CWin32File::OpenForWrite(const CURL& url, bool bOverWrite /*= false*/)
       }
       if (!hiddenSet)
       {
-        CLog::LogF(LOGWARNING, "Can't set hidden attribute for file \"%ls\"",
+        CLog::LogF(LOGWARNING, "Can't set hidden attribute for file \"{}\"",
                    KODI::PLATFORM::WINDOWS::FromW(pathnameW));
       }
     }

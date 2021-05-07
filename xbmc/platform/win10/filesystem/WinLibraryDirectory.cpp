@@ -186,7 +186,7 @@ bool CWinLibraryDirectory::Remove(const CURL& url)
   catch (const winrt::hresult_error& ex)
   {
     std::string error = FromW(ex.message().c_str());
-    CLog::LogF(LOGERROR, __FUNCTION__, "unable remove folder '%s' with error", url.Get(),
+    CLog::LogF(LOGERROR, __FUNCTION__, "unable remove folder '{}' with error", url.Get(),
                error.c_str());
     exists = false;
   }
@@ -216,7 +216,7 @@ StorageFolder CWinLibraryDirectory::GetFolder(const CURL& url)
     catch (const winrt::hresult_error& ex)
     {
       std::string error = FromW(ex.message().c_str());
-      CLog::LogF(LOGERROR, "unable to get folder '%s' with error", url.GetRedacted().c_str(),
+      CLog::LogF(LOGERROR, "unable to get folder '{}' with error", url.GetRedacted().c_str(),
                  error.c_str());
     }
     return nullptr;

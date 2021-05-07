@@ -138,7 +138,7 @@ void CNetworkWin32::queryInterfaceList()
     }
   }
   else
-    CLog::Log(LOGDEBUG, "%s - GetAdaptersAddresses() failed ...", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - GetAdaptersAddresses() failed ...", __FUNCTION__);
 }
 
 std::vector<std::string> CNetworkWin32::GetNameServers(void)
@@ -213,7 +213,9 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
 
   DWORD lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
-    CLog::Log(LOGERROR, "%s - %s failed - %s", __FUNCTION__, host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2", CWIN32Util::WUSysMsg(lastErr).c_str());
+    CLog::Log(LOGERROR, "{} - {} failed - {}", __FUNCTION__,
+              host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2",
+              CWIN32Util::WUSysMsg(lastErr).c_str());
 
   IcmpCloseHandle (hIcmpFile);
 
@@ -271,10 +273,13 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std:
       return true;
     }
     else
-      CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, neighborIp.PhysicalAddressLength);
+      CLog::Log(
+          LOGERROR,
+          "{} - ResolveIpNetEntry2 completed successfully, but mac address has length != 6 ({})",
+          __FUNCTION__, neighborIp.PhysicalAddressLength);
   }
   else
-    CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 failed with error (%d)", __FUNCTION__, dwRetVal);
+    CLog::Log(LOGERROR, "{} - ResolveIpNetEntry2 failed with error ({})", __FUNCTION__, dwRetVal);
 
   return false;
 }

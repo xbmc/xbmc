@@ -67,7 +67,8 @@ bool CImageLoader::DoWork()
     }
 
     // Fallthrough on failure:
-    CLog::Log(LOGERROR, "%s - Direct texture file loading failed for %s", __FUNCTION__, loadPath.c_str());
+    CLog::Log(LOGERROR, "{} - Direct texture file loading failed for {}", __FUNCTION__,
+              loadPath.c_str());
   }
 
   if (!m_use_cache)

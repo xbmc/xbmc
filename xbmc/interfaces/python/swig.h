@@ -193,7 +193,7 @@ namespace PythonBindings
       }
       catch (const XBMCAddon::WrongTypeException& e)
       {
-        CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+        CLog::Log(LOGERROR, "EXCEPTION: {}", e.GetMessage());
         PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
       }
       return -1;

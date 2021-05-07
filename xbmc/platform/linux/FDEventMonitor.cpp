@@ -76,7 +76,8 @@ void CFDEventMonitor::RemoveFD(int id)
 
   if (m_monitoredFDs.erase(id) != 1)
   {
-    CLog::Log(LOGERROR, "CFDEventMonitor::RemoveFD - Tried to remove non-existing monitoredFD %d", id);
+    CLog::Log(LOGERROR, "CFDEventMonitor::RemoveFD - Tried to remove non-existing monitoredFD {}",
+              id);
   }
 
   UpdatePollDescs();
@@ -91,7 +92,10 @@ void CFDEventMonitor::RemoveFDs(const std::vector<int>& ids)
   {
     if (m_monitoredFDs.erase(ids[i]) != 1)
     {
-      CLog::Log(LOGERROR, "CFDEventMonitor::RemoveFDs - Tried to remove non-existing monitoredFD %d while removing %u FDs", ids[i], (unsigned)ids.size());
+      CLog::Log(LOGERROR,
+                "CFDEventMonitor::RemoveFDs - Tried to remove non-existing monitoredFD {} while "
+                "removing {} FDs",
+                ids[i], (unsigned)ids.size());
     }
   }
 
@@ -120,7 +124,8 @@ void CFDEventMonitor::Process()
 
     if (err < 0 && errno != EINTR)
     {
-      CLog::Log(LOGERROR, "CFDEventMonitor::Process - poll() failed, error %d, stopping monitoring", errno);
+      CLog::Log(LOGERROR, "CFDEventMonitor::Process - poll() failed, error {}, stopping monitoring",
+                errno);
       StopThread(false);
     }
 
@@ -143,7 +148,9 @@ void CFDEventMonitor::Process()
 
         if (pollDesc.revents & (POLLERR | POLLHUP | POLLNVAL))
         {
-          CLog::Log(LOGERROR, "CFDEventMonitor::Process - polled fd %d got revents 0x%x, removing it", pollDesc.fd, pollDesc.revents);
+          CLog::Log(LOGERROR,
+                    "CFDEventMonitor::Process - polled fd {} got revents 0x{:x}, removing it",
+                    pollDesc.fd, pollDesc.revents);
 
           /* Probably would be nice to inform our caller that their FD was
            * dropped, but oh well... */
@@ -207,7 +214,8 @@ void CFDEventMonitor::StartMonitoring()
     m_wakeupfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK);
     if (m_wakeupfd < 0)
     {
-      CLog::Log(LOGERROR, "CFDEventMonitor::StartMonitoring - Failed to create eventfd, error %d", errno);
+      CLog::Log(LOGERROR, "CFDEventMonitor::StartMonitoring - Failed to create eventfd, error {}",
+                errno);
       return;
     }
 

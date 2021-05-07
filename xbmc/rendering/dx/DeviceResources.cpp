@@ -51,7 +51,9 @@ namespace winrt
 #else
 #define breakOnDebug
 #endif
-#define LOG_HR(hr) CLog::LogF(LOGERROR, "function call at line %d ends with error: %s", __LINE__, DX::GetErrorDescription(hr).c_str());
+#define LOG_HR(hr) \
+  CLog::LogF(LOGERROR, "function call at line {} ends with error: {}", __LINE__, \
+             DX::GetErrorDescription(hr).c_str());
 #define CHECK_ERR() if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return; }
 #define RETURN_ERR(ret) if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return (##ret); }
 
@@ -213,9 +215,9 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
   BOOL bFullScreen;
   m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
 
-  CLog::LogF(LOGDEBUG, "switching from %s(%.0f x %.0f) to %s(%d x %d)",
+  CLog::LogF(LOGDEBUG, "switching from {}({:.0f} x {:.0f}) to {}({} x {})",
              bFullScreen ? "fullscreen " : "", m_outputSize.Width, m_outputSize.Height,
-             fullscreen  ? "fullscreen " : "", res.iWidth, res.iHeight);
+             fullscreen ? "fullscreen " : "", res.iWidth, res.iHeight);
 
   bool recreate = m_stereoEnabled != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
   if (!!bFullScreen && !fullscreen)
@@ -246,7 +248,8 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         // some drivers unable to create stereo swapchain if mode does not match @23.976
         || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate,
+        CLog::Log(LOGDEBUG, __FUNCTION__ ": changing display mode to {}x{}@{:0.3f}", res.iWidth,
+                  res.iHeight, res.fRefreshRate,
                   res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
         int refresh = static_cast<int>(res.fRefreshRate);
@@ -758,11 +761,11 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
 #endif
     return;
 
-  CLog::LogF(LOGDEBUG, "receive changing logical size to %f x %f", width, height);
+  CLog::LogF(LOGDEBUG, "receive changing logical size to {:f} x {:f}", width, height);
 
   if (m_logicalSize.Width != width || m_logicalSize.Height != height)
   {
-    CLog::LogF(LOGDEBUG, "change logical size to %f x %f", width, height);
+    CLog::LogF(LOGDEBUG, "change logical size to {:f} x {:f}", width, height);
 
     m_logicalSize = winrt::Size(width, height);
 

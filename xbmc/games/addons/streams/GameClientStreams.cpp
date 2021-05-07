@@ -45,14 +45,14 @@ IGameClientStream* CGameClientStreams::OpenStream(const game_stream_properties& 
   RETRO::StreamType retroStreamType;
   if (!CGameClientTranslator::TranslateStreamType(properties.type, retroStreamType))
   {
-    CLog::Log(LOGERROR, "GAME: Invalid stream type: %d", static_cast<int>(properties.type));
+    CLog::Log(LOGERROR, "GAME: Invalid stream type: {}", static_cast<int>(properties.type));
     return nullptr;
   }
 
   std::unique_ptr<IGameClientStream> gameStream = CreateStream(properties.type);
   if (!gameStream)
   {
-    CLog::Log(LOGERROR, "GAME: No stream implementation for type: %d",
+    CLog::Log(LOGERROR, "GAME: No stream implementation for type: {}",
               static_cast<int>(properties.type));
     return nullptr;
   }
@@ -60,7 +60,7 @@ IGameClientStream* CGameClientStreams::OpenStream(const game_stream_properties& 
   RETRO::StreamPtr retroStream = m_streamManager->CreateStream(retroStreamType);
   if (!retroStream)
   {
-    CLog::Log(LOGERROR, "GAME:  Invalid RetroPlayer stream type: %$d",
+    CLog::Log(LOGERROR, "GAME:  Invalid RetroPlayer stream type: {}",
               static_cast<int>(retroStreamType));
     return nullptr;
   }

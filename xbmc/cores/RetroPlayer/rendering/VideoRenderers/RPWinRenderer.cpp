@@ -216,7 +216,7 @@ void CWinRenderBufferPool::CompileOutputShaders()
     if (outputShader->Create(scalingMethod))
       m_outputShaders[scalingMethod] = std::move(outputShader);
     else
-      CLog::Log(LOGERROR, "RPWinRenderer: Unable to create output shader (%s)",
+      CLog::Log(LOGERROR, "RPWinRenderer: Unable to create output shader ({})",
                 CRenderTranslator::TranslateScalingMethod(scalingMethod));
   }
 }

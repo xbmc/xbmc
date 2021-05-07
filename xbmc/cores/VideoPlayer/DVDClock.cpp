@@ -155,7 +155,7 @@ void CDVDClock::SetSpeed(int iSpeed)
 
 void CDVDClock::SetSpeedAdjust(double adjust)
 {
-  CLog::Log(LOGDEBUG, "CDVDClock::SetSpeedAdjust - adjusted:%f", adjust);
+  CLog::Log(LOGDEBUG, "CDVDClock::SetSpeedAdjust - adjusted:{:f}", adjust);
 
   CSingleLock lock(m_critSection);
   m_speedAdjust = adjust;
@@ -202,8 +202,8 @@ double CDVDClock::ErrorAdjust(double error, const char* log)
 
   Discontinuity(clock+adjustment, absolute);
 
-  CLog::Log(LOGDEBUG, "CDVDClock::ErrorAdjust - %s - error:%f, adjusted:%f",
-                      log, error, adjustment);
+  CLog::Log(LOGDEBUG, "CDVDClock::ErrorAdjust - {} - error:{:f}, adjusted:{:f}", log, error,
+            adjustment);
   return adjustment;
 }
 

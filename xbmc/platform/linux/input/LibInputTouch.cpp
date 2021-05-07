@@ -18,7 +18,7 @@ static inline CPoint GetPos(libinput_event_touch *e)
   const double x = libinput_event_touch_get_x_transformed(e, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth());
   const double y = libinput_event_touch_get_y_transformed(e, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
 
-  CLog::Log(LOGDEBUG, "CLibInputTouch::%s - x: %f y: %f", __FUNCTION__, x, y);
+  CLog::Log(LOGDEBUG, "CLibInputTouch::{} - x: {:f} y: {:f}", __FUNCTION__, x, y);
 
   return CPoint(x, y);
 }
@@ -59,7 +59,7 @@ void CLibInputTouch::ProcessTouchDown(libinput_event_touch *e)
 
   SetPosition(slot, GetPos(e));
   SetEvent(slot, TouchInputDown);
-  CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input down", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CLibInputTouch::{} - touch input down", __FUNCTION__);
 }
 
 void CLibInputTouch::ProcessTouchMotion(libinput_event_touch *e)
@@ -71,7 +71,7 @@ void CLibInputTouch::ProcessTouchMotion(libinput_event_touch *e)
 
   if (GetEvent(slot) != TouchInputDown)
     SetEvent(slot, TouchInputMove);
-  CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input move", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CLibInputTouch::{} - touch input move", __FUNCTION__);
 
   CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(slot, GetX(slot), GetY(slot), nanotime);
 }
@@ -81,7 +81,7 @@ void CLibInputTouch::ProcessTouchUp(libinput_event_touch *e)
   int slot = libinput_event_touch_get_seat_slot(e);
 
   SetEvent(slot, TouchInputUp);
-  CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input up", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CLibInputTouch::{} - touch input up", __FUNCTION__);
 }
 
 void CLibInputTouch::ProcessTouchCancel(libinput_event_touch *e)
@@ -89,7 +89,7 @@ void CLibInputTouch::ProcessTouchCancel(libinput_event_touch *e)
   int slot = libinput_event_touch_get_seat_slot(e);
   uint64_t nanotime = libinput_event_touch_get_time_usec(e) * 1000LL;
 
-  CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input cancel", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CLibInputTouch::{} - touch input cancel", __FUNCTION__);
   CGenericTouchInputHandler::GetInstance().HandleTouchInput(TouchInputAbort, GetX(slot), GetY(slot), nanotime, slot);
 }
 
@@ -99,8 +99,9 @@ void CLibInputTouch::ProcessTouchFrame(libinput_event_touch *e)
 
   for (size_t slot = 0; slot < m_points.size(); ++slot)
   {
-    CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input frame: event %i", __FUNCTION__, GetEvent(slot));
-    CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input frame: slot %i", __FUNCTION__, slot);
+    CLog::Log(LOGDEBUG, "CLibInputTouch::{} - touch input frame: event {}", __FUNCTION__,
+              GetEvent(slot));
+    CLog::Log(LOGDEBUG, "CLibInputTouch::{} - touch input frame: slot {}", __FUNCTION__, slot);
     CGenericTouchInputHandler::GetInstance().HandleTouchInput(GetEvent(slot), GetX(slot), GetY(slot), nanotime, slot);
     SetEvent(slot, TouchInputUnchanged);
   }

@@ -67,27 +67,30 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(xkbFile))
   {
-    CLog::Log(LOGWARNING, "CLibInputSettings: unable to open: %s", xkbFile.c_str());
+    CLog::Log(LOGWARNING, "CLibInputSettings: unable to open: {}", xkbFile.c_str());
     return;
   }
 
   const TiXmlElement* rootElement = xmlDoc.RootElement();
   if (!rootElement)
   {
-    CLog::Log(LOGWARNING, "CLibInputSettings: missing or invalid XML root element in: %s", xkbFile.c_str());
+    CLog::Log(LOGWARNING, "CLibInputSettings: missing or invalid XML root element in: {}",
+              xkbFile.c_str());
     return;
   }
 
   if (rootElement->ValueStr() != "xkbConfigRegistry")
   {
-    CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML root element %s in: %s", rootElement->Value(), xkbFile.c_str());
+    CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML root element {} in: {}",
+              rootElement->Value(), xkbFile.c_str());
     return;
   }
 
   const TiXmlElement* layoutListElement = rootElement->FirstChildElement("layoutList");
   if (!layoutListElement)
   {
-    CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element %s in: %s", layoutListElement->Value(), xkbFile.c_str());
+    CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
+              layoutListElement->Value(), xkbFile.c_str());
     return;
   }
 
@@ -97,21 +100,24 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
     const TiXmlElement* configElement = layoutElement->FirstChildElement("configItem");
     if (!configElement)
     {
-      CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element %s in: %s", layoutListElement->Value(), xkbFile.c_str());
+      CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
+                layoutListElement->Value(), xkbFile.c_str());
       return;
     }
 
     const TiXmlElement* nameElement = configElement->FirstChildElement("name");
     if (!nameElement)
     {
-      CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element %s in: %s", configElement->Value(), xkbFile.c_str());
+      CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
+                configElement->Value(), xkbFile.c_str());
       return;
     }
 
     const TiXmlElement* descriptionElement = configElement->FirstChildElement("description");
     if (!descriptionElement)
     {
-      CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element %s in: %s", configElement->Value(), xkbFile.c_str());
+      CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
+                configElement->Value(), xkbFile.c_str());
       return;
     }
 

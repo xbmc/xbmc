@@ -135,7 +135,7 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
 
   if (info.stride != info.width * 4)
   {
-    CLog::Log(LOGWARNING, "CFileAndroidApp::ReadIcon: Usupported icon format %d", info.format);
+    CLog::Log(LOGWARNING, "CFileAndroidApp::ReadIcon: Usupported icon format {}", info.format);
     return 0;
   }
 

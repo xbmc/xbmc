@@ -85,7 +85,8 @@ bool CTextureCacheJob::CacheTexture(CTexture** out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.empty() ? "Caching" : "Recaching", CURL::GetRedacted(image).c_str(), m_details.file.c_str());
+    CLog::Log(LOGDEBUG, "{} image '{}' to '{}':", m_oldHash.empty() ? "Caching" : "Recaching",
+              CURL::GetRedacted(image).c_str(), m_details.file.c_str());
 
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file), scalingAlgorithm))
     {
@@ -236,7 +237,7 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     // so set an obviously bad hash
     return "BADHASH";
   }
-  CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, CURL::GetRedacted(url).c_str());
+  CLog::Log(LOGDEBUG, "{} - unable to stat url {}", __FUNCTION__, CURL::GetRedacted(url).c_str());
   return "";
 }
 

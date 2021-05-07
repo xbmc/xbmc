@@ -110,7 +110,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   while ((pos = buffer.find_first_of('\n', start)) >= 0)
   {
     if (pos > start)
-      CLog::Log(type, "%s%s", prefix.c_str(), buffer.substr(start, pos - start).c_str());
+      CLog::Log(type, "{}{}", prefix.c_str(), buffer.substr(start, pos - start).c_str());
     start = pos+1;
   }
   buffer.erase(0, start);

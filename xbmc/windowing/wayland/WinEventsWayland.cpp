@@ -196,7 +196,7 @@ private:
       // purpose does not cause termination, the log message will just be slightly different.
 
       // But here, going on would be meaningless, so do a hard exit
-      CLog::Log(LOGFATAL, "Exception in Wayland message pump, exiting: %s", e.what());
+      CLog::Log(LOGFATAL, "Exception in Wayland message pump, exiting: {}", e.what());
       std::terminate();
     }
 

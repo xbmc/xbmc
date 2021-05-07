@@ -434,7 +434,7 @@ int CGUIDialogLibExportSettings::GetExportItemsFromSetting(const SettingConstPtr
   std::shared_ptr<const CSettingList> settingList = std::static_pointer_cast<const CSettingList>(setting);
   if (settingList->GetElementType() != SettingType::Integer)
   {
-    CLog::Log(LOGERROR, "CGUIDialogLibExportSettings::%s - wrong items element type", __FUNCTION__);
+    CLog::Log(LOGERROR, "CGUIDialogLibExportSettings::{} - wrong items element type", __FUNCTION__);
     return 0;
   }
   int exportitems = 0;
@@ -443,7 +443,7 @@ int CGUIDialogLibExportSettings::GetExportItemsFromSetting(const SettingConstPtr
   {
     if (!value.isInteger())
     {
-      CLog::Log(LOGERROR, "CGUIDialogLibExportSettings::%s - wrong items value type", __FUNCTION__);
+      CLog::Log(LOGERROR, "CGUIDialogLibExportSettings::{} - wrong items value type", __FUNCTION__);
       return 0;
     }
     exportitems += static_cast<int>(value.asInteger());

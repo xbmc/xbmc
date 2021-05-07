@@ -124,7 +124,7 @@ bool CNetworkInterfaceAndroid::GetHostMacAddress(unsigned long host_ip, std::str
 
     if (result != 0)
     {
-      //  CLog::Log(LOGERROR, "%s - GetHostMacAddress/ioctl failed with errno (%d)", __FUNCTION__, errno);
+      //  CLog::Log(LOGERROR, "{} - GetHostMacAddress/ioctl failed with errno ({})", __FUNCTION__, errno);
       return false;
     }
   }
@@ -304,7 +304,7 @@ bool CNetworkAndroid::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   // else some error
 
   if (result < 0 || result > 1)
-    CLog::Log(LOGERROR, "Ping fail : status = %d, errno = %d : '%s'", status, errno, cmd_line);
+    CLog::Log(LOGERROR, "Ping fail : status = {}, errno = {} : '{}'", status, errno, cmd_line);
 
   return result == 0;
 }
@@ -331,15 +331,19 @@ void CNetworkAndroid::RetrieveInterfaces()
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get interface by name: %s", lp.getInterfaceName().c_str());
+        CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get interface by name: {}",
+                  lp.getInterfaceName().c_str());
         continue;
       }
       if (intf)
         m_interfaces.push_back(new CNetworkInterfaceAndroid(n, lp, intf));
       else
-        CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get interface by name: %s", lp.getInterfaceName().c_str());
+        CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get interface by name: {}",
+                  lp.getInterfaceName().c_str());
     }
     else
-      CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get link properties for network: %s", n.toString().c_str());
+      CLog::Log(LOGERROR,
+                "CNetworkAndroid::RetrieveInterfaces Cannot get link properties for network: {}",
+                n.toString().c_str());
   }
 }

@@ -24,7 +24,8 @@ extern "C"
 static int iDllDummyOutputCall = 0;
 void dll_dummy_output(char* dllname, char* funcname)
 {
-  CLog::Log(LOGERROR, "%s: Unresolved function called (%s), Count number %d", dllname, funcname, ++iDllDummyOutputCall);
+  CLog::Log(LOGERROR, "{}: Unresolved function called ({}), Count number {}", dllname, funcname,
+            ++iDllDummyOutputCall);
 }
 
 // this piece of asm code only calls dll_dummy_output(s, s) and will return NULL

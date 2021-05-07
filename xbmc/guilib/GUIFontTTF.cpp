@@ -674,12 +674,13 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
   if (nestedBeginCount) End();
   if (!CacheCharacter(letter, style, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
-    CLog::Log(LOGDEBUG, "%s: Unable to cache character.  Clearing character cache of %i characters", __FUNCTION__, m_numChars);
+    CLog::Log(LOGDEBUG, "{}: Unable to cache character.  Clearing character cache of {} characters",
+              __FUNCTION__, m_numChars);
     ClearCharacterCache();
     low = 0;
     if (!CacheCharacter(letter, style, m_char + low))
     {
-      CLog::Log(LOGERROR, "%s: Unable to cache character (out of memory?)", __FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Unable to cache character (out of memory?)", __FUNCTION__);
       if (nestedBeginCount) Begin();
       m_nestedBeginCount = nestedBeginCount;
       return NULL;
@@ -709,7 +710,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
   FT_Glyph glyph = NULL;
   if (FT_Load_Glyph( m_face, glyph_index, FT_LOAD_TARGET_LIGHT ))
   {
-    CLog::Log(LOGDEBUG, "%s Failed to load glyph %x", __FUNCTION__, static_cast<uint32_t>(letter));
+    CLog::Log(LOGDEBUG, "{} Failed to load glyph {:x}", __FUNCTION__,
+              static_cast<uint32_t>(letter));
     return false;
   }
   // make bold if applicable
@@ -724,7 +726,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
-    CLog::Log(LOGDEBUG, "%s Failed to get glyph %x", __FUNCTION__, static_cast<uint32_t>(letter));
+    CLog::Log(LOGDEBUG, "{} Failed to get glyph {:x}", __FUNCTION__, static_cast<uint32_t>(letter));
     return false;
   }
   if (m_stroker)
@@ -732,7 +734,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
   // render the glyph
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
   {
-    CLog::Log(LOGDEBUG, "%s Failed to render glyph %x to a bitmap", __FUNCTION__, static_cast<uint32_t>(letter));
+    CLog::Log(LOGDEBUG, "{} Failed to render glyph {:x} to a bitmap", __FUNCTION__,
+              static_cast<uint32_t>(letter));
     return false;
   }
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
@@ -760,7 +763,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
         // check for max height
         if (newHeight > m_renderSystem->GetMaxTextureSize())
         {
-          CLog::Log(LOGDEBUG, "%s: New cache texture is too large (%u > %u pixels long)", __FUNCTION__, newHeight, m_renderSystem->GetMaxTextureSize());
+          CLog::Log(LOGDEBUG, "{}: New cache texture is too large ({} > {} pixels long)",
+                    __FUNCTION__, newHeight, m_renderSystem->GetMaxTextureSize());
           FT_Done_Glyph(glyph);
           return false;
         }
@@ -770,7 +774,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
         if(newTexture == NULL)
         {
           FT_Done_Glyph(glyph);
-          CLog::Log(LOGDEBUG, "%s: Failed to allocate new texture of height %u", __FUNCTION__, newHeight);
+          CLog::Log(LOGDEBUG, "{}: Failed to allocate new texture of height {}", __FUNCTION__,
+                    newHeight);
           return false;
         }
         m_texture = newTexture;
@@ -780,7 +785,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
     if(m_texture == NULL)
     {
       FT_Done_Glyph(glyph);
-      CLog::Log(LOGDEBUG, "%s: no texture to cache character to", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "{}: no texture to cache character to", __FUNCTION__);
       return false;
     }
   }

@@ -402,7 +402,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
               else
               {
                 /* We have a boo boo ! */
-                CLog::Log(LOGERROR, "ParseRLE: unknown RLE code 0x%.4x", i_code);
+                CLog::Log(LOGERROR, "ParseRLE: unknown RLE code {:#4x}", i_code);
                 pSPU->Release();
                 return NULL;
               }
@@ -413,8 +413,8 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
 
       if ( ( (i_code >> 2) + i_x + i_y * i_width ) > i_height * i_width )
       {
-        CLog::Log(LOGERROR, "ParseRLE: out of bounds, %i at (%i,%i) is out of %ix%i",
-                 i_code >> 2, i_x, i_y, i_width, i_height );
+        CLog::Log(LOGERROR, "ParseRLE: out of bounds, {} at ({},{}) is out of {}x{}", i_code >> 2,
+                  i_x, i_y, i_width, i_height);
         pSPU->Release();
         return NULL;
       }
@@ -435,7 +435,8 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
          where we use around 96k rather than 64k + 20bytes */
       if ((uint8_t *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
-        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((uint8_t *)p_dest - pSPU->result));
+        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need {} bytes",
+                  (long)((uint8_t*)p_dest - pSPU->result));
         pSPU->Release();
         return NULL;
       }
@@ -445,7 +446,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
     /* Check that we didn't go too far */
     if ( i_x > i_width )
     {
-      CLog::Log(LOGERROR, "ParseRLE: i_x overflowed, %i > %i", i_x, i_width );
+      CLog::Log(LOGERROR, "ParseRLE: i_x overflowed, {} > {}", i_x, i_width);
       pSPU->Release();
       return NULL;
     }
@@ -474,7 +475,8 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
          where we use around 96k rather than 64k + 20bytes */
       if ((uint8_t *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
-        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((uint8_t *)p_dest - pSPU->result));
+        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need {} bytes",
+                  (long)((uint8_t*)p_dest - pSPU->result));
         pSPU->Release();
         return NULL;
       }
@@ -499,7 +501,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
     // we only set it if there is a valid i_border color
     if (!pSPU->bHasColor)
     {
-      CLog::Log(LOGINFO, "%s - no color palette found, using default", __FUNCTION__);
+      CLog::Log(LOGINFO, "{} - no color palette found, using default", __FUNCTION__);
       FindSubtitleColor(i_border, stats, pSPU);
     }
 
@@ -511,7 +513,8 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
       // thus if there are no pixels to display, we assume the alphas are incorrect.
       if (!CanDisplayWithAlphas(pSPU->alpha, stats))
       {
-        CLog::Log(LOGINFO, "%s - no  matching color and alpha found, resetting alpha", __FUNCTION__);
+        CLog::Log(LOGINFO, "{} - no  matching color and alpha found, resetting alpha",
+                  __FUNCTION__);
 
         pSPU->alpha[0] = 0x00; // back ground
         pSPU->alpha[1] = 0x0f;
@@ -521,7 +524,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
     }
     else
     {
-      CLog::Log(LOGINFO, "%s - ignoring blank alpha palette, using default", __FUNCTION__);
+      CLog::Log(LOGINFO, "{} - ignoring blank alpha palette, using default", __FUNCTION__);
 
       pSPU->alpha[0] = 0x00; // back ground
       pSPU->alpha[1] = 0x0f;

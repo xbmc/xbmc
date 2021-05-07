@@ -56,7 +56,8 @@ namespace XFILE
       if (tempRE.GetCaptureTotal() == 4)
         RegExps.push_back(tempRE);
       else
-        CLog::Log(LOGERROR, "Invalid video stack RE (%s). Must have exactly 4 captures.", itRegExp->c_str());
+        CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have exactly 4 captures.",
+                  itRegExp->c_str());
       ++itRegExp;
     }
     return GetStackedTitlePath(strPath, RegExps);

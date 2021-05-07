@@ -125,7 +125,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const std::string& st
 
   if (!DoProcess(action, items, strDestFile, fileOperations, totalTime))
   {
-    CLog::Log(LOGERROR,"FileManager: error while processing folder: %s", strPath.c_str());
+    CLog::Log(LOGERROR, "FileManager: error while processing folder: {}", strPath.c_str());
     return false;
   }
 

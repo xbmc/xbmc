@@ -310,7 +310,8 @@ void CLinuxRendererGL::GetPlaneTextureSize(CYuvPlane& plane)
   plane.texheight = height - 2 * border;
   if(plane.texwidth <= 0 || plane.texheight <= 0)
   {
-    CLog::Log(LOGDEBUG, "CLinuxRendererGL::GetPlaneTextureSize - invalid size %dx%d - %d", width, height, border);
+    CLog::Log(LOGDEBUG, "CLinuxRendererGL::GetPlaneTextureSize - invalid size {}x{} - {}", width,
+              height, border);
     /* to something that avoid division by zero */
     plane.texwidth  = 1;
     plane.texheight = 1;
@@ -734,7 +735,10 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   if (!Supports(m_scalingMethod))
   {
-    CLog::Log(LOGWARNING, "CLinuxRendererGL::UpdateVideoFilter - chosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
+    CLog::Log(LOGWARNING,
+              "CLinuxRendererGL::UpdateVideoFilter - chosen scaling method {}, is not supported by "
+              "renderer",
+              (int)m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
@@ -879,7 +883,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   if (!LoadShadersHook())
   {
     int requestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
-    CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
+    CLog::Log(LOGDEBUG, "GL: Requested render method: {}", requestedMethod);
 
     if (m_pYUVShader)
     {

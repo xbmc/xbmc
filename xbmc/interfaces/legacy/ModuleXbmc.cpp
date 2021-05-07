@@ -61,7 +61,7 @@ namespace XBMCAddon
       // check for a valid loglevel
       if (level < LOGDEBUG || level > LOGNONE)
         level = LOGDEBUG;
-      CLog::Log(level, "%s", msg);
+      CLog::Log(level, "{}", msg);
     }
 
     void shutdown()

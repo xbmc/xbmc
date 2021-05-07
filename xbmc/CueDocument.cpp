@@ -481,7 +481,8 @@ bool CCueDocument::ResolvePath(std::string &strPath, const std::string &strBase)
         return true;
       }
     }
-    CLog::Log(LOGERROR,"Could not find '%s' referenced in cue, case sensitivity issue?", strPath.c_str());
+    CLog::Log(LOGERROR, "Could not find '{}' referenced in cue, case sensitivity issue?",
+              strPath.c_str());
     return false;
   }
 

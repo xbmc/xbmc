@@ -18,7 +18,7 @@ using namespace KODI::MESSAGING;
 
 void SendKeyboardText(const char *text)
 {
-//  CLog::Log(LOGDEBUG, "SendKeyboardText(%s)", text);
+  //  CLog::Log(LOGDEBUG, "SendKeyboardText({})", text);
 
   /* Don't post text events for unprintable characters */
   if ((unsigned char)*text < ' ' || *text == 127)
@@ -32,10 +32,10 @@ void SendKeyboardText(const char *text)
 void SendEditingText(const char *text, unsigned int location, unsigned int length)
 {
   //@todo fix this hack
-//  CLog::Log(LOGDEBUG, "SendEditingText(%s, %u, %u)", text, location, length);
-//  CGUIMessage msg(GUI_MSG_INPUT_TEXT_EDIT, 0, 0, location, length);
-//  msg.SetLabel(text);
-//  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
+  //  CLog::Log(LOGDEBUG, "SendEditingText({}, {}, {})", text, location, length);
+  //  CGUIMessage msg(GUI_MSG_INPUT_TEXT_EDIT, 0, 0, location, length);
+  //  msg.SetLabel(text);
+  //  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
 }
 
 @implementation OSXTextInputResponder
@@ -152,9 +152,9 @@ void SendEditingText(const char *text, unsigned int location, unsigned int lengt
   NSRect rect = NSMakeRect(_inputRect.origin.x, windowHeight - _inputRect.origin.y - _inputRect.size.height,
                            _inputRect.size.width, _inputRect.size.height);
 
-//  CLog::Log(LOGDEBUG, "firstRectForCharacterRange: (%lu, %lu): windowHeight = %g, rect = %s",
-//            theRange.location, theRange.length, windowHeight,
-//            [NSStringFromRect(rect) UTF8String]);
+  //  CLog::Log(LOGDEBUG, "firstRectForCharacterRange: ({}, {}): windowHeight = {}, rect = {}",
+  //            theRange.location, theRange.length, windowHeight,
+  //            [NSStringFromRect(rect) UTF8String]);
   rect.origin = [[self window] convertRectToScreen:rect].origin;
 
   return rect;

@@ -34,7 +34,7 @@ bool CSavestateDatabase::AddSavestate(const std::string& gamePath, const ISavest
 
   const std::string savestatePath = CSavestateUtils::MakePath(gamePath);
 
-  CLog::Log(LOGDEBUG, "Saving savestate to %s", CURL::GetRedacted(savestatePath).c_str());
+  CLog::Log(LOGDEBUG, "Saving savestate to {}", CURL::GetRedacted(savestatePath).c_str());
 
   const uint8_t* data = nullptr;
   size_t size = 0;
@@ -46,7 +46,7 @@ bool CSavestateDatabase::AddSavestate(const std::string& gamePath, const ISavest
       const ssize_t written = file.Write(data, size);
       if (written == static_cast<ssize_t>(size))
       {
-        CLog::Log(LOGDEBUG, "Wrote savestate of %u bytes", size);
+        CLog::Log(LOGDEBUG, "Wrote savestate of {} bytes", size);
         bSuccess = true;
       }
     }
@@ -63,7 +63,7 @@ bool CSavestateDatabase::GetSavestate(const std::string& gamePath, ISavestate& s
 
   const std::string savestatePath = CSavestateUtils::MakePath(gamePath);
 
-  CLog::Log(LOGDEBUG, "Loading savestate from %s", CURL::GetRedacted(savestatePath).c_str());
+  CLog::Log(LOGDEBUG, "Loading savestate from {}", CURL::GetRedacted(savestatePath).c_str());
 
   std::vector<uint8_t> savestateData;
 
@@ -78,17 +78,17 @@ bool CSavestateDatabase::GetSavestate(const std::string& gamePath, ISavestate& s
       const ssize_t readLength = savestateFile.Read(savestateData.data(), savestateData.size());
       if (readLength != static_cast<ssize_t>(savestateData.size()))
       {
-        CLog::Log(LOGERROR, "Failed to read savestate %s of size %d bytes",
+        CLog::Log(LOGERROR, "Failed to read savestate {} of size {} bytes",
                   CURL::GetRedacted(savestatePath).c_str(), size);
         savestateData.clear();
       }
     }
     else
-      CLog::Log(LOGERROR, "Failed to get savestate length: %s",
+      CLog::Log(LOGERROR, "Failed to get savestate length: {}",
                 CURL::GetRedacted(savestatePath).c_str());
   }
   else
-    CLog::Log(LOGERROR, "Failed to open savestate file %s",
+    CLog::Log(LOGERROR, "Failed to open savestate file {}",
               CURL::GetRedacted(savestatePath).c_str());
 
   if (!savestateData.empty())

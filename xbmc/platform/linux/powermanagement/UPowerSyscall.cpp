@@ -193,7 +193,8 @@ bool CUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
           callback->OnLowBattery();
       }
       else
-        CLog::Log(LOGDEBUG, "UPower: Received an unknown signal %s", dbus_message_get_member(msg.get()));
+        CLog::Log(LOGDEBUG, "UPower: Received an unknown signal {}",
+                  dbus_message_get_member(msg.get()));
     }
   }
   return result;

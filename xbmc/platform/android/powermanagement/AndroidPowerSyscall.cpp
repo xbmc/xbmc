@@ -33,11 +33,11 @@ bool CAndroidPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   {
     case SUSPENDED:
       callback->OnSleep();
-      CLog::Log(LOGINFO, "%s: OnSleep called", __FUNCTION__);
+      CLog::Log(LOGINFO, "{}: OnSleep called", __FUNCTION__);
       break;
     case RESUMED:
       callback->OnWake();
-      CLog::Log(LOGINFO, "%s: OnWake called", __FUNCTION__);
+      CLog::Log(LOGINFO, "{}: OnWake called", __FUNCTION__);
       break;
     default:
       return false;

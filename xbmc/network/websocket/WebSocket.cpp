@@ -50,13 +50,13 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
   m_opcode = (WebSocketFrameOpcode)(m_data[0] & MASK_OPCODE);
   if (m_opcode >= WebSocketUnknownFrame)
   {
-    CLog::Log(LOGINFO, "WebSocket: Frame with invalid opcode %2X received", m_opcode);
+    CLog::Log(LOGINFO, "WebSocket: Frame with invalid opcode {:2X} received", m_opcode);
     reset();
     return;
   }
   if ((m_opcode & CONTROL_FRAME) == CONTROL_FRAME && !m_final)
   {
-    CLog::Log(LOGINFO, "WebSocket: Fragmented control frame (opcode %2X) received", m_opcode);
+    CLog::Log(LOGINFO, "WebSocket: Fragmented control frame (opcode {:2X}) received", m_opcode);
     reset();
     return;
   }

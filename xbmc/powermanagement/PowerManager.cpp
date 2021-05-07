@@ -183,7 +183,7 @@ void CPowerManager::OnSleep()
   if (dialog)
     dialog->Open();
 
-  CLog::Log(LOGINFO, "%s: Running sleep jobs", __FUNCTION__);
+  CLog::Log(LOGINFO, "{}: Running sleep jobs", __FUNCTION__);
 
   StorePlayerState();
 
@@ -197,7 +197,7 @@ void CPowerManager::OnSleep()
 
 void CPowerManager::OnWake()
 {
-  CLog::Log(LOGINFO, "%s: Running resume jobs", __FUNCTION__);
+  CLog::Log(LOGINFO, "{}: Running resume jobs", __FUNCTION__);
 
   CServiceBroker::GetNetwork().WaitForNet();
 
@@ -230,7 +230,7 @@ void CPowerManager::OnWake()
 
 void CPowerManager::OnLowBattery()
 {
-  CLog::Log(LOGINFO, "%s: Running low battery jobs", __FUNCTION__);
+  CLog::Log(LOGINFO, "{}: Running low battery jobs", __FUNCTION__);
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
@@ -253,7 +253,9 @@ void CPowerManager::StorePlayerState()
     m_lastPlayedFileItem->m_lStartPartNumber = g_application.GetAppStackHelper().IsPlayingISOStack() ? g_application.GetAppStackHelper().GetCurrentPartNumber() + 1 : 1;
     // for iso and iso stacks, keep track of playerstate
     m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer.GetPlayerState());
-    CLog::Log(LOGDEBUG, "CPowerManager::StorePlayerState - store last played item (startOffset: %i ms)", m_lastPlayedFileItem->m_lStartOffset);
+    CLog::Log(LOGDEBUG,
+              "CPowerManager::StorePlayerState - store last played item (startOffset: {} ms)",
+              m_lastPlayedFileItem->m_lStartOffset);
   }
   else
   {
@@ -267,7 +269,9 @@ void CPowerManager::RestorePlayerState()
   if (!m_lastPlayedFileItem)
     return;
 
-  CLog::Log(LOGDEBUG, "CPowerManager::RestorePlayerState - resume last played item (startOffset: %i ms)", m_lastPlayedFileItem->m_lStartOffset);
+  CLog::Log(LOGDEBUG,
+            "CPowerManager::RestorePlayerState - resume last played item (startOffset: {} ms)",
+            m_lastPlayedFileItem->m_lStartOffset);
   g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 

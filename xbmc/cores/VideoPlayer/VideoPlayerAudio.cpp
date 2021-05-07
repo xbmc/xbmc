@@ -73,7 +73,7 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
 
 bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 {
-  CLog::Log(LOGINFO, "Finding audio codec for: %i", hints.codec);
+  CLog::Log(LOGINFO, "Finding audio codec for: {}", hints.codec);
   bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_processInfo.IsRealtimeStream())
     allowpassthrough = false;
@@ -293,8 +293,9 @@ void CVideoPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     { //player asked us to set internal clock
       double pts = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-      CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f), level: %d, cache: %f",
-                pts, m_messageQueue.GetLevel(), m_audioSink.GetDelay());
+      CLog::Log(LOGDEBUG,
+                "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC({:f}), level: {}, cache: {:f}", pts,
+                m_messageQueue.GetLevel(), m_audioSink.GetDelay());
 
       double delay = m_audioSink.GetDelay();
       if (pts > m_audioClock - delay + 0.5 * DVD_TIME_BASE)
@@ -368,7 +369,7 @@ void CVideoPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
     {
       m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
-      CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_PAUSE: %d", m_paused);
+      CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_PAUSE: {}", m_paused);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_REQUEST_STATE))
     {
@@ -474,7 +475,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       m_audioSink.Destroy(false);
 
       if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_synctype == SYNC_RESAMPLE))
-        CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
+        CLog::Log(LOGERROR, "{} - failed to create audio renderer", __FUNCTION__);
 
       m_audioSink.SetDynamicRangeCompression((long)(m_processInfo.GetVideoSettings().m_VolumeAmplification * 100));
 
@@ -555,7 +556,8 @@ void CVideoPlayerAudio::SetSyncType(bool passthrough)
   {
     const char *synctypes[] = {"clock feedback", "resample", "invalid"};
     int synctype = (m_synctype >= 0 && m_synctype <= 1) ? m_synctype : 2;
-    CLog::Log(LOGDEBUG, "CVideoPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
+    CLog::Log(LOGDEBUG, "CVideoPlayerAudio:: synctype set to {}: {}", m_synctype,
+              synctypes[synctype]);
     m_prevsynctype = m_synctype;
     if (m_synctype == SYNC_RESAMPLE)
       m_audioSink.SetResampleMode(1);

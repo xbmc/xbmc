@@ -165,7 +165,10 @@ void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTim
   if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
     int64_t diff = displayTime ? displayTime - CurrentHostCounter() : 0;
-    CLog::Log(LOGDEBUG, "CMediaCodecVideoBuffer::ReleaseOutputBuffer index(%d), render(%d), time:%lld, offset:%lld", m_bufferId, render, displayTime, diff);
+    CLog::Log(
+        LOGDEBUG,
+        "CMediaCodecVideoBuffer::ReleaseOutputBuffer index({}), render({}), time:{}, offset:{}",
+        m_bufferId, render, displayTime, diff);
   }
 
   if (!render || displayTime == 0)
@@ -177,7 +180,7 @@ void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTim
   if (xbmc_jnienv()->ExceptionCheck())
   {
     xbmc_jnienv()->ExceptionClear();
-    CLog::Log(LOGERROR, "CMediaCodecVideoBuffer::ReleaseOutputBuffer error in render(%d)", render);
+    CLog::Log(LOGERROR, "CMediaCodecVideoBuffer::ReleaseOutputBuffer error in render({})", render);
   }
 }
 
@@ -240,8 +243,12 @@ void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect, int64_t display
     if (adjRect != surfRect)
     {
       m_videoview->setSurfaceRect(adjRect);
-      CLog::Log(LOGDEBUG, LOGVIDEO, "CMediaCodecVideoBuffer::RenderUpdate: Dest - %f+%f-%fx%f", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
-      CLog::Log(LOGDEBUG, LOGVIDEO, "CMediaCodecVideoBuffer::RenderUpdate: Adj  - %f+%f-%fx%f", adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "CMediaCodecVideoBuffer::RenderUpdate: Dest - {:f}+{:f}-{:f}x{:f}", DestRect.x1,
+                DestRect.y1, DestRect.Width(), DestRect.Height());
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "CMediaCodecVideoBuffer::RenderUpdate: Adj  - {:f}+{:f}-{:f}x{:f}", adjRect.x1,
+                adjRect.y1, adjRect.Width(), adjRect.Height());
 
       // setVideoViewSurfaceRect is async, so skip rendering this frame
       ReleaseOutputBuffer(false, 0);
@@ -257,7 +264,9 @@ void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect, int64_t display
 /*****************************************************************************/
 CMediaCodecVideoBufferPool::~CMediaCodecVideoBufferPool()
 {
-  CLog::Log(LOGDEBUG, "CMediaCodecVideoBufferPool::~CMediaCodecVideoBufferPool Releasing %u buffers", static_cast<unsigned int>(m_videoBuffers.size()));
+  CLog::Log(LOGDEBUG,
+            "CMediaCodecVideoBufferPool::~CMediaCodecVideoBufferPool Releasing {} buffers",
+            static_cast<unsigned int>(m_videoBuffers.size()));
   for (auto buffer : m_videoBuffers)
     delete buffer;
 }
@@ -375,12 +384,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s", "null size, cannot handle");
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - {}", "null size, cannot handle");
     goto FAIL;
   }
   else if (hints.orientation && m_render_surface && CJNIBase::GetSDKVersion() < 23)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s",
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - {}",
               "Surface does not support orientation before API 23");
     goto FAIL;
   }
@@ -390,8 +399,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   CLog::Log(
       LOGDEBUG,
-      "CDVDVideoCodecAndroidMediaCodec::Open hints: Width %d x Height %d, Fpsrate %d / Fpsscale "
-      "%d, CodecID %d, Level %d, Profile %d, PTS_invalid %d, Tag %d, Extradata-Size: %d",
+      "CDVDVideoCodecAndroidMediaCodec::Open hints: Width {} x Height {}, Fpsrate {} / Fpsscale "
+      "{}, CodecID {}, Level {}, Profile {}, PTS_invalid {}, Tag {}, Extradata-Size: {}",
       hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level,
       hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
 
@@ -582,7 +591,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
     }
     default:
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Unknown hints.codec(%d)", hints.codec);
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Unknown hints.codec({})",
+                hints.codec);
       goto FAIL;
       break;
   }
@@ -603,7 +613,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       uuid = CJNIUUID(0X3D5E6D359B9A41E8LL, 0XB843DD3C6E72C42CLL);
     else
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem %u",
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem {}",
                 m_hints.cryptoSession->keySystem);
       goto FAIL;
     }
@@ -615,7 +625,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     CLog::Log(
         LOGINFO,
-        "CDVDVideoCodecAndroidMediaCodec::Open: Secure decoder requested: %s (stream flags: %d)",
+        "CDVDVideoCodecAndroidMediaCodec::Open: Secure decoder requested: {} (stream flags: {})",
         m_needSecureDecoder ? "true" : "false", m_hints.cryptoSession->flags);
   }
 
@@ -633,7 +643,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     if (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints))
       continue;
 
-    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:%s",
+    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:{}",
               m_codecname.c_str());
 
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
@@ -669,7 +679,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                          return profileLevel.profile() == profile;
                        }) == profileLevels.cend())
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: {}",
+                  profile);
         continue;
       }
     }
@@ -695,8 +706,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
         for (size_t k = 0; k < color_formats.size(); ++k)
         {
-          CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open "
-            "m_codecname(%s), colorFormat(%d)", m_codecname.c_str(), color_formats[k]);
+          CLog::Log(LOGDEBUG,
+                    "CDVDVideoCodecAndroidMediaCodec::Open "
+                    "m_codecname({}), colorFormat({})",
+                    m_codecname.c_str(), color_formats[k]);
           if (IsSupportedColorFormat(color_formats[k]))
             m_colorFormat = color_formats[k]; // Save color format for initial output configuration
         }
@@ -757,8 +770,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   else
     m_invalidPTSValue = 0;
 
-  CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec:: "
-    "Open Android MediaCodec %s", m_codecname.c_str());
+  CLog::Log(LOGINFO,
+            "CDVDVideoCodecAndroidMediaCodec:: "
+            "Open Android MediaCodec {}",
+            m_codecname.c_str());
 
   m_opened = true;
 
@@ -800,7 +815,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   if (!m_opened)
     return;
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s", __func__);
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}", __func__);
 
   // invalidate any inflight outputbuffers
   FlushInternal();
@@ -844,9 +859,12 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
   double pts(packet.pts), dts(packet.dts);
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData dts:%0.2lf pts:%0.2lf sz:%d indexBuffer:%d current state (%d)", dts, pts, packet.iSize, m_indexInputBuffer, m_state);
+    CLog::Log(LOGDEBUG,
+              "CDVDVideoCodecAndroidMediaCodec::AddData dts:{:0.2f} pts:{:0.2f} sz:{} "
+              "indexBuffer:{} current state ({})",
+              dts, pts, packet.iSize, m_indexInputBuffer, m_state);
   else if (m_state != MEDIACODEC_STATE_RUNNING)
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData current state (%d)", m_state);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData current state ({})", m_state);
 
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
@@ -866,7 +884,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
     {
       if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING))
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData: Wrong state (%d)", m_state);
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData: Wrong state ({})", m_state);
         return false;
       }
 
@@ -911,8 +929,8 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       size_t out_size = buffer.capacity();
       if ((size_t)iSize > out_size)
       {
-        CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::AddData: iSize(%d) > size(%d)",
-                  iSize, out_size);
+        CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::AddData: iSize({}) > size({})", iSize,
+                  out_size);
         iSize = out_size;
       }
       uint8_t* dst_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(buffer.get_raw());
@@ -1014,7 +1032,7 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
   if (m_codec)
   {
     // now we can flush the actual MediaCodec object
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state (%d)", m_state);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state ({})", m_state);
     m_codec->flush();
     if (xbmc_jnienv()->ExceptionCheck())
     {
@@ -1089,8 +1107,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
       pVideoPicture->SetParams(m_videobuffer);
       pVideoPicture->videoBuffer = m_videobuffer.videoBuffer;
 
-      CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::GetPicture index: %d, pts:%0.4lf",
-          static_cast<CMediaCodecVideoBuffer*>(m_videobuffer.videoBuffer)->GetBufferId(), pVideoPicture->pts);
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "CDVDVideoCodecAndroidMediaCodec::GetPicture index: {}, pts:{:0.4f}",
+                static_cast<CMediaCodecVideoBuffer*>(m_videobuffer.videoBuffer)->GetBufferId(),
+                pVideoPicture->pts);
 
       m_videobuffer.videoBuffer = nullptr;
 
@@ -1146,7 +1166,8 @@ void CDVDVideoCodecAndroidMediaCodec::SetCodecControl(int flags)
 {
   if (m_codecControlFlags != flags)
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::%s %x->%x",  __func__, m_codecControlFlags, flags);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::{} {:x}->{:x}", __func__,
+              m_codecControlFlags, flags);
     m_codecControlFlags = flags;
   }
 }
@@ -1167,13 +1188,14 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 
 void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
 {
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: state: %d", __func__, m_state);
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}: state: {}", __func__, m_state);
   if (m_codec && (m_state == MEDIACODEC_STATE_RUNNING))
   {
     // Release all mediaodec output buffers to allow drain if we don't get inputbuffer early
     if (m_videoBufferPool)
     {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: ReleaseMediaCodecBuffers", __func__);
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}: ReleaseMediaCodecBuffers",
+                __func__);
       m_videoBufferPool->ReleaseMediaCodecBuffers();
     }
 
@@ -1197,16 +1219,18 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::%s: queueInputBuffer failed");
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::{}: queueInputBuffer failed");
       }
       else
       {
         m_indexInputBuffer = -1;
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s: BUFFER_FLAG_END_OF_STREAM send", __func__);
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}: BUFFER_FLAG_END_OF_STREAM send",
+                  __func__);
       }
     }
     else
-      CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::%s: invalid index: %d", __func__, m_indexInputBuffer);
+      CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::{}: invalid index: {}", __func__,
+                m_indexInputBuffer);
   }
 }
 
@@ -1215,7 +1239,7 @@ void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(CJNIMediaFormat& mediaform
   if (!m_hints.extrasize)
     return;
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::%s", __func__);
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}", __func__);
   size_t size = m_hints.extrasize;
   void* src_ptr = m_hints.extradata;
   if (m_bitstream)
@@ -1458,7 +1482,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   else
   {
     // we should never get here
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture unknown index(%d)", index);
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture unknown index({})",
+              index);
     rtn = -2;
   }
 
@@ -1506,12 +1531,14 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
   if (xbmc_jnienv()->ExceptionCheck())
     xbmc_jnienv()->ExceptionClear();
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
-    "width(%d), height(%d), stride(%d), slice-height(%d), color-format(%d)",
-    width, height, stride, slice_height, color_format);
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
-    "crop-left(%d), crop-top(%d), crop-right(%d), crop-bottom(%d)",
-    crop_left, crop_top, crop_right, crop_bottom);
+  CLog::Log(LOGDEBUG,
+            "CDVDVideoCodecAndroidMediaCodec:: "
+            "width({}), height({}), stride({}), slice-height({}), color-format({})",
+            width, height, stride, slice_height, color_format);
+  CLog::Log(LOGDEBUG,
+            "CDVDVideoCodecAndroidMediaCodec:: "
+            "crop-left({}), crop-top({}), crop-right({}), crop-bottom({})",
+            crop_left, crop_top, crop_right, crop_bottom);
 
   if (m_render_surface)
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Multi-Surface Rendering");
@@ -1612,7 +1639,9 @@ void CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration()
 
   m_processInfo.SetVideoFps(static_cast<float>(m_hints.fpsrate) / m_hints.fpsscale);
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration fpsRate:%u fpsscale:%u, fpsDur:%u", m_hints.fpsrate, m_hints.fpsscale, m_fpsDuration);
+  CLog::Log(LOGDEBUG,
+            "CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration fpsRate:{} fpsscale:{}, fpsDur:{}",
+            m_hints.fpsrate, m_hints.fpsscale, m_fpsDuration);
 }
 
 void CDVDVideoCodecAndroidMediaCodec::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)

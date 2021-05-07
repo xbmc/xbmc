@@ -219,7 +219,7 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
       m_diffPTS = m_diffPTS / m_count;
       if (m_diffPTS > 0)
       {
-        CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %" PRId64,
+        CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: {}",
                   m_diffPTS);
         m_state = CDropControl::VALID;
         m_count = 0;
@@ -342,11 +342,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(pCodec == NULL)
   {
-    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::Open() Unable to find codec {}", hints.codec);
     return false;
   }
 
-  CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::Open() Using codec: %s",
+  CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::Open() Using codec: {}",
             pCodec->long_name ? pCodec->long_name : pCodec->name);
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
@@ -372,7 +372,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       num_threads = std::max(1, std::min(num_threads, 16));
       m_pCodecContext->thread_count = num_threads;
       m_decoderState = STATE_SW_MULTI;
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - open frame threaded with %d threads", num_threads);
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - open frame threaded with {} threads",
+                num_threads);
     }
   }
   else
@@ -524,7 +525,7 @@ void CDVDVideoCodecFFmpeg::UpdateName()
 
   m_processInfo.SetVideoDecoderName(m_name, m_pHardware ? true : false);
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: %s", m_name.c_str());
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: {}", m_name.c_str());
 }
 
 union pts_union
@@ -740,7 +741,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   }
   else if (ret)
   {
-    CLog::Log(LOGERROR, "%s - avcodec_receive_frame returned failure", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} - avcodec_receive_frame returned failure", __FUNCTION__);
     return VC_ERROR;
   }
 
@@ -1222,7 +1223,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     char* graphDump = avfilter_graph_dump(m_pFilterGraph, nullptr);
     if (graphDump)
     {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterOpen - Final filter graph:\n%s", graphDump);
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterOpen - Final filter graph:\n{}", graphDump);
       av_freep(&graphDump);
     }
   }

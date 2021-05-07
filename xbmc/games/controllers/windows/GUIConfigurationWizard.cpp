@@ -138,9 +138,9 @@ void CGUIConfigurationWizard::Process(void)
           CSingleExit exit(m_stateMutex);
 
           if (button->Feature().Type() == FEATURE_TYPE::UNKNOWN)
-            CLog::Log(LOGDEBUG, "%s: Waiting for input", m_strControllerId.c_str());
+            CLog::Log(LOGDEBUG, "{}: Waiting for input", m_strControllerId.c_str());
           else
-            CLog::Log(LOGDEBUG, "%s: Waiting for input for feature \"%s\"",
+            CLog::Log(LOGDEBUG, "{}: Waiting for input for feature \"{}\"",
                       m_strControllerId.c_str(), button->Feature().Name().c_str());
 
           if (!button->PromptForInput(m_inputEvent))
@@ -184,7 +184,7 @@ void CGUIConfigurationWizard::Process(void)
 
     if (bInMotion)
     {
-      CLog::Log(LOGDEBUG, "Configuration wizard: waiting %ums for axes to neutralize",
+      CLog::Log(LOGDEBUG, "Configuration wizard: waiting {}ms for axes to neutralize",
                 POST_MAPPING_WAIT_TIME_MS);
       m_motionlessEvent.WaitMSec(POST_MAPPING_WAIT_TIME_MS);
     }
@@ -282,7 +282,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         }
         else
         {
-          CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s", m_strControllerId.c_str(),
+          CLog::Log(LOGDEBUG, "{}: mapping feature \"{}\" for device {}", m_strControllerId.c_str(),
                     feature.Name().c_str(), buttonMap->DeviceName().c_str());
 
           switch (feature.Type())

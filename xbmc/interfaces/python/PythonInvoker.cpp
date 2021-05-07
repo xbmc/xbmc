@@ -119,7 +119,7 @@ CPythonInvoker::~CPythonInvoker()
     return;
 
   if (GetState() < InvokerStateExecutionDone)
-    CLog::Log(LOGDEBUG, "CPythonInvoker(%d): waiting for python thread \"%s\" to stop", GetId(),
+    CLog::Log(LOGDEBUG, "CPythonInvoker({}): waiting for python thread \"{}\" to stop", GetId(),
               (!m_sourceFile.empty() ? m_sourceFile.c_str() : "unknown script"));
   Stop(true);
   pulseGlobalEvent();
@@ -136,7 +136,7 @@ bool CPythonInvoker::Execute(
 
   if (!CFile::Exists(script))
   {
-    CLog::Log(LOGERROR, "CPythonInvoker(%d): python script \"%s\" does not exist", GetId(),
+    CLog::Log(LOGERROR, "CPythonInvoker({}): python script \"{}\" does not exist", GetId(),
               CSpecialProtocol::TranslatePath(script).c_str());
     return false;
   }
@@ -170,7 +170,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   std::vector<std::vector<wchar_t>> argvStorage = storeArgumentsCCompatible(arguments);
   std::vector<wchar_t*> argv = getCPointersToArguments(argvStorage);
 
-  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
+  CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): start processing", GetId(), m_sourceFile.c_str());
 
   std::string realFilename(CSpecialProtocol::TranslatePath(m_sourceFile));
   std::string scriptDir = URIUtils::GetDirectory(realFilename);
@@ -195,7 +195,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       PyEval_ReleaseThread(l_threadState);
       if (l_threadState == NULL)
       {
-        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): FAILED to get thread m_threadState!", GetId(),
+        CLog::Log(LOGERROR, "CPythonInvoker({}, {}): FAILED to get thread m_threadState!", GetId(),
                   m_sourceFile.c_str());
         return false;
       }
@@ -216,10 +216,10 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     setState(InvokerStateInitialized);
 
     if (realFilename == m_sourceFile)
-      CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is \"%s\"", GetId(),
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): the source file to load is \"{}\"", GetId(),
                 m_sourceFile.c_str(), m_sourceFile.c_str());
     else
-      CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): the source file to load is \"%s\" (\"%s\")",
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): the source file to load is \"{}\" (\"{}\")",
                 GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(), realFilename.c_str());
 
     // get path from script file name and add python path's
@@ -239,7 +239,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       // we don't have any addon so just add all addon modules installed
       CLog::Log(
           LOGWARNING,
-          "CPythonInvoker(%d): Script invoked without an addon. Adding all addon "
+          "CPythonInvoker({}): Script invoked without an addon. Adding all addon "
           "modules installed to python path as fallback. This behaviour will be removed in future "
           "version.",
           GetId());
@@ -273,7 +273,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
     Py_DECREF(sysMod); // release ref to sysMod
 
-    CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(),
+    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): setting the Python path to {}", GetId(),
               m_sourceFile.c_str(), m_pythonPath.c_str());
 
     std::wstring pypath;
@@ -292,7 +292,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   // set current directory and python's path.
   PySys_SetArgv(argc, &argv[0]);
 
-  CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(),
+  CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): entering source directory {}", GetId(),
             m_sourceFile.c_str(), scriptDir.c_str());
   PyObject* module = PyImport_AddModule("__main__");
   PyObject* moduleDict = PyModule_GetDict(module);
@@ -333,7 +333,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
         executeScript(fp, realFilename, moduleDict);
       }
       else
-        CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): %s not found!", GetId(), m_sourceFile.c_str(),
+        CLog::Log(LOGERROR, "CPythonInvoker({}, {}): {} not found!", GetId(), m_sourceFile.c_str(),
                   m_sourceFile.c_str());
     }
     catch (const XbmcCommons::Exception& e)
@@ -345,7 +345,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     catch (...)
     {
       setState(InvokerStateFailed);
-      CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failure in script", GetId(),
+      CLog::Log(LOGERROR, "CPythonInvoker({}, {}): failure in script", GetId(),
                 m_sourceFile.c_str());
       failed = true;
     }
@@ -355,7 +355,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
-    CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script successfully run", GetId(),
+    CLog::Log(LOGINFO, "CPythonInvoker({}, {}): script successfully run", GetId(),
               m_sourceFile.c_str());
     stateToSet = InvokerStateScriptDone;
     onSuccess();
@@ -363,7 +363,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
     m_systemExitThrown = true;
-    CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): script aborted", GetId(), m_sourceFile.c_str());
+    CLog::Log(LOGINFO, "CPythonInvoker({}, {}): script aborted", GetId(), m_sourceFile.c_str());
     stateToSet = InvokerStateFailed;
     onAbort();
   }
@@ -411,7 +411,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
       if (old != s)
       {
-        CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): waiting on thread %" PRIu64, GetId(),
+        CLog::Log(LOGINFO, "CPythonInvoker({}, {}): waiting on thread {}", GetId(),
                   m_sourceFile.c_str(), (uint64_t)s->thread_id);
         old = s;
       }
@@ -485,7 +485,7 @@ bool CPythonInvoker::stop(bool abort)
       //tell xbmc.Monitor to call onAbortRequested()
       if (m_addon)
       {
-        CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): trigger Monitor abort request", GetId(),
+        CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
                   m_sourceFile.c_str());
         AbortNotification();
       }
@@ -502,7 +502,7 @@ bool CPythonInvoker::stop(bool abort)
       if (timeout.IsTimePast())
       {
         CLog::Log(LOGERROR,
-                  "CPythonInvoker(%d, %s): script didn't stop in %d seconds - let's kill it",
+                  "CPythonInvoker({}, {}): script didn't stop in {} seconds - let's kill it",
                   GetId(), m_sourceFile.c_str(), PYTHON_SCRIPT_TIMEOUT / 1000);
         break;
       }
@@ -522,7 +522,7 @@ bool CPythonInvoker::stop(bool abort)
 
     // Useful for add-on performance metrics
     if (!timeout.IsTimePast())
-      CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): script termination took %dms", GetId(),
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script termination took {}ms", GetId(),
                 m_sourceFile.c_str(), PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft());
 
     // Since we released the m_critical it's possible that the state is cleaned up
@@ -565,7 +565,7 @@ void CPythonInvoker::onExecutionDone()
   CSingleLock lock(m_critical);
   if (m_threadState != NULL)
   {
-    CLog::Log(LOGDEBUG, "%s(%d, %s)", __FUNCTION__, GetId(), m_sourceFile.c_str());
+    CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile.c_str());
 
     PyEval_RestoreThread(m_threadState);
 
@@ -581,7 +581,7 @@ void CPythonInvoker::onExecutionDone()
     if (!m_stop && m_languageHook->HasRegisteredAddonClasses() && !m_systemExitThrown &&
         PyRun_SimpleString(GC_SCRIPT) == -1)
       CLog::Log(LOGERROR,
-                "CPythonInvoker(%d, %s): failed to run the gc to clean up after running prior to "
+                "CPythonInvoker({}, {}): failed to run the gc to clean up after running prior to "
                 "shutting down the Interpreter",
                 GetId(), m_sourceFile.c_str());
 
@@ -590,8 +590,8 @@ void CPythonInvoker::onExecutionDone()
     // If we still have objects left around, produce an error message detailing what's been left behind
     if (m_languageHook->HasRegisteredAddonClasses())
       CLog::Log(LOGWARNING,
-                "CPythonInvoker(%d, %s): the python script \"%s\" has left several "
-                "classes in memory that we couldn't clean up. The classes include: %s",
+                "CPythonInvoker({}, {}): the python script \"{}\" has left several "
+                "classes in memory that we couldn't clean up. The classes include: {}",
                 GetId(), m_sourceFile.c_str(), m_sourceFile.c_str(),
                 getListOfAddonClassesAsString(m_languageHook).c_str());
 
@@ -623,7 +623,7 @@ void CPythonInvoker::onExecutionFailed()
   PyEval_SaveThread();
 
   setState(InvokerStateFailed);
-  CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): abnormally terminating python thread", GetId(),
+  CLog::Log(LOGERROR, "CPythonInvoker({}, {}): abnormally terminating python thread", GetId(),
             m_sourceFile.c_str());
 
   CSingleLock lock(m_critical);
@@ -646,7 +646,7 @@ void CPythonInvoker::onInitialization()
   {
     // redirecting default output to debug console
     if (PyRun_SimpleString(runscript) == -1)
-      CLog::Log(LOGFATAL, "CPythonInvoker(%d, %s): initialize error", GetId(),
+      CLog::Log(LOGFATAL, "CPythonInvoker({}, {}): initialize error", GetId(),
                 m_sourceFile.c_str());
   }
 }
@@ -669,8 +669,8 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", pyinvokerid);
 
   CLog::Log(LOGDEBUG,
-            "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" "
-            "dependent on version %s of the xbmc.python api",
+            "CPythonInvoker({}, {}): instantiating addon using automatically obtained id of \"{}\" "
+            "dependent on version {} of the xbmc.python api",
             GetId(), m_sourceFile.c_str(), m_addon->ID().c_str(), version.asString().c_str());
 }
 
@@ -706,7 +706,7 @@ void CPythonInvoker::initializeModules(
   for (const auto& module : modules)
   {
     if (!initializeModule(module.second))
-      CLog::Log(LOGWARNING, "CPythonInvoker(%d, %s): unable to initialize python module \"%s\"",
+      CLog::Log(LOGWARNING, "CPythonInvoker({}, {}): unable to initialize python module \"{}\"",
                 GetId(), m_sourceFile.c_str(), module.first.c_str());
   }
 }

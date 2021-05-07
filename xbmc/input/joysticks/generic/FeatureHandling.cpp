@@ -149,10 +149,10 @@ bool CScalarFeature::OnDigitalMotion(bool bPressed)
     bHandled = m_bInitialPressHandled = m_handler->OnButtonPress(m_name, bPressed);
 
     if (m_bDigitalState)
-      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s pressed (%s)", m_name.c_str(),
+      CLog::Log(LOGDEBUG, "FEATURE [ {} ] on {} pressed ({})", m_name.c_str(),
                 m_handler->ControllerID().c_str(), bHandled ? "handled" : "ignored");
     else
-      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s released", m_name.c_str(),
+      CLog::Log(LOGDEBUG, "FEATURE [ {} ] on {} released", m_name.c_str(),
                 m_handler->ControllerID().c_str());
   }
   else if (m_bDigitalState)
@@ -180,7 +180,7 @@ bool CScalarFeature::OnAnalogMotion(float magnitude)
   if (m_bDigitalState != bActivated)
   {
     m_bDigitalState = bActivated;
-    CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s %s", m_name.c_str(),
+    CLog::Log(LOGDEBUG, "FEATURE [ {} ] on {} {}", m_name.c_str(),
               m_handler->ControllerID().c_str(), bActivated ? "activated" : "deactivated");
   }
 
@@ -248,10 +248,10 @@ void CAxisFeature::ProcessMotions(void)
   const bool bWasActivated = (m_state != 0.0f);
 
   if (!bActivated && bWasActivated)
-    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s deactivated", m_name.c_str());
+    CLog::Log(LOGDEBUG, "Feature [ {} ] on {} deactivated", m_name.c_str());
   else if (bActivated && !bWasActivated)
   {
-    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s activated %s", m_name.c_str(),
+    CLog::Log(LOGDEBUG, "Feature [ {} ] on {} activated {}", m_name.c_str(),
               m_handler->ControllerID().c_str(), newState > 0.0f ? "positive" : "negative");
   }
 
@@ -451,7 +451,7 @@ void CAnalogStick::ProcessMotions(void)
 
   if (bActivated ^ bWasActivated)
   {
-    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(),
+    CLog::Log(LOGDEBUG, "Feature [ {} ] on {} {}", m_name.c_str(),
               m_handler->ControllerID().c_str(), bActivated ? "activated" : "deactivated");
   }
 

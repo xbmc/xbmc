@@ -22,7 +22,7 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
   usb_init();
   usb_find_busses();
   m_busses = usb_get_busses();
-  CLog::Log(LOGDEBUG, "%s - using libusb peripheral scanning", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "{} - using libusb peripheral scanning", __FUNCTION__);
 }
 
 bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)

@@ -142,9 +142,9 @@ void DllLibCurlGlobal::CheckIdle()
 
     if (!it->m_busy && duration.count() > idletime)
     {
-      CLog::Log(LOGDEBUG, "%s - Closing session to %s://%s (easy=%p, multi=%p)", __FUNCTION__,
-                it->m_protocol.c_str(), it->m_hostname.c_str(), static_cast<void*>(it->m_easy),
-                static_cast<void*>(it->m_multi));
+      CLog::Log(LOGDEBUG, "{} - Closing session to {}://{} (easy={}, multi={})", __FUNCTION__,
+                it->m_protocol.c_str(), it->m_hostname.c_str(), fmt::ptr(it->m_easy),
+                fmt::ptr(it->m_multi));
 
       if (it->m_multi && it->m_easy)
         multi_remove_handle(it->m_multi, it->m_easy);
@@ -218,7 +218,7 @@ void DllLibCurlGlobal::easy_acquire(const char* protocol,
 
   m_sessions.push_back(session);
 
-  CLog::Log(LOGDEBUG, "%s - Created session to %s://%s", __FUNCTION__, protocol, hostname);
+  CLog::Log(LOGDEBUG, "{} - Created session to {}://{}", __FUNCTION__, protocol, hostname);
 }
 
 void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle)

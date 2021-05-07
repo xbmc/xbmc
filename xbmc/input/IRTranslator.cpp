@@ -34,17 +34,17 @@ void CIRTranslator::Load(const std::string& irMapName)
   if (XFILE::CFile::Exists(irMapPath))
     success |= LoadIRMap(irMapPath);
   else
-    CLog::Log(LOGDEBUG, "CIRTranslator::Load - no system %s found, skipping", irMapName.c_str());
+    CLog::Log(LOGDEBUG, "CIRTranslator::Load - no system {} found, skipping", irMapName.c_str());
 
   irMapPath =
       CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetUserDataItem(irMapName);
   if (XFILE::CFile::Exists(irMapPath))
     success |= LoadIRMap(irMapPath);
   else
-    CLog::Log(LOGDEBUG, "CIRTranslator::Load - no userdata %s found, skipping", irMapName.c_str());
+    CLog::Log(LOGDEBUG, "CIRTranslator::Load - no userdata {} found, skipping", irMapName.c_str());
 
   if (!success)
-    CLog::Log(LOGERROR, "CIRTranslator::Load - unable to load remote map %s", irMapName.c_str());
+    CLog::Log(LOGERROR, "CIRTranslator::Load - unable to load remote map {}", irMapName.c_str());
 }
 
 bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
@@ -59,10 +59,10 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   CXBMCTinyXML xmlDoc;
 
   // Load the config file
-  CLog::Log(LOGINFO, "Loading %s", irMapPath.c_str());
+  CLog::Log(LOGINFO, "Loading {}", irMapPath.c_str());
   if (!xmlDoc.LoadFile(irMapPath))
   {
-    CLog::Log(LOGERROR, "%s, Line %d\n%s", irMapPath.c_str(), xmlDoc.ErrorRow(),
+    CLog::Log(LOGERROR, "{}, Line {}\n{}", irMapPath.c_str(), xmlDoc.ErrorRow(),
               xmlDoc.ErrorDesc());
     return false;
   }
@@ -71,7 +71,7 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   std::string strValue = pRoot->Value();
   if (strValue != remoteMapTag)
   {
-    CLog::Log(LOGERROR, "%s Doesn't contain <%s>", irMapPath.c_str(), remoteMapTag.c_str());
+    CLog::Log(LOGERROR, "{} Doesn't contain <{}>", irMapPath.c_str(), remoteMapTag.c_str());
     return false;
   }
 
@@ -97,7 +97,7 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
 
 void CIRTranslator::MapRemote(TiXmlNode* pRemote, const std::string& szDevice)
 {
-  CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice.c_str());
+  CLog::Log(LOGINFO, "* Adding remote mapping for device '{}'", szDevice.c_str());
 
   std::vector<std::string> remoteNames;
 
@@ -122,7 +122,7 @@ void CIRTranslator::MapRemote(TiXmlNode* pRemote, const std::string& szDevice)
 
   for (const auto& remoteName : remoteNames)
   {
-    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice.c_str(),
+    CLog::Log(LOGINFO, "* Linking remote mapping for '{}' to '{}'", szDevice.c_str(),
               remoteName.c_str());
     m_irRemotesMap[remoteName] = buttons;
   }
@@ -294,7 +294,7 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
   else if (strButton == "print")
     buttonCode = XINPUT_IR_REMOTE_PRINT;
   else
-    CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
+    CLog::Log(LOGERROR, "Remote Translator: Can't find button {}", strButton.c_str());
   return buttonCode;
 }
 

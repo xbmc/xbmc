@@ -58,7 +58,8 @@ static int SeekPercentage(const std::vector<std::string>& params)
     const float fTimeshiftPercentage = static_cast<float>(std::atof(params.front().c_str()));
     if (fTimeshiftPercentage < 0 || fTimeshiftPercentage > 100)
     {
-      CLog::Log(LOGERROR,"PVR.SeekPercentage(n) - Invalid argument (%f), must be in range 0-100", fTimeshiftPercentage);
+      CLog::Log(LOGERROR, "PVR.SeekPercentage(n) - Invalid argument ({:f}), must be in range 0-100",
+                fTimeshiftPercentage);
     }
     else if (g_application.GetAppPlayer().IsPlaying())
     {

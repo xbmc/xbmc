@@ -379,8 +379,8 @@ void CWinSystemX11::UpdateResolutions()
 
     for (auto mode : out->modes)
     {
-      CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
-                mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
+      CLog::Log(LOGINFO, "ID:{} Name:{} Refresh:{:f} Width:{} Height:{}", mode.id.c_str(),
+                mode.name.c_str(), mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
       res.dwFlags = 0;
 
@@ -407,7 +407,7 @@ void CWinSystemX11::UpdateResolutions()
       else
         res.fPixelRatio = 1.0f;
 
-      CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
+      CLog::Log(LOGINFO, "Pixel Ratio: {:f}", res.fPixelRatio);
 
       res.strMode = StringUtils::Format("{}: {} @ {:.2f}Hz", out->name, mode.name, mode.hz);
       res.strOutput    = out->name;
@@ -555,7 +555,7 @@ bool CWinSystemX11::Show(bool raise)
 
 void CWinSystemX11::NotifyXRREvent()
 {
-  CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "{} - notify display reset event", __FUNCTION__);
 
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
@@ -584,10 +584,10 @@ void CWinSystemX11::RecreateWindow()
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
 
   if (out)
-    CLog::Log(LOGDEBUG, "%s - current output: %s, mode: %s, refresh: %.3f", __FUNCTION__
-             , out->name.c_str(), mode.id.c_str(), mode.hz);
+    CLog::Log(LOGDEBUG, "{} - current output: {}, mode: {}, refresh: {:.3f}", __FUNCTION__,
+              out->name.c_str(), mode.id.c_str(), mode.hz);
   else
-    CLog::Log(LOGWARNING, "%s - output name not set", __FUNCTION__);
+    CLog::Log(LOGWARNING, "{} - output name not set", __FUNCTION__);
 
   RESOLUTION_INFO res;
   unsigned int i;
@@ -616,7 +616,7 @@ void CWinSystemX11::RecreateWindow()
 
 void CWinSystemX11::OnLostDevice()
 {
-  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "{} - notify display change event", __FUNCTION__);
 
   { CSingleLock lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
@@ -644,8 +644,11 @@ int CWinSystemX11::XErrorHandler(Display* dpy, XErrorEvent* error)
 {
   char buf[1024];
   XGetErrorText(error->display, error->error_code, buf, sizeof(buf));
-  CLog::Log(LOGERROR, "CWinSystemX11::XErrorHandler: %s, type:%i, serial:%lu, error_code:%i, request_code:%i minor_code:%i",
-            buf, error->type, error->serial, (int)error->error_code, (int)error->request_code, (int)error->minor_code);
+  CLog::Log(LOGERROR,
+            "CWinSystemX11::XErrorHandler: {}, type:{}, serial:{}, error_code:{}, request_code:{} "
+            "minor_code:{}",
+            buf, error->type, error->serial, (int)error->error_code, (int)error->request_code,
+            (int)error->minor_code);
 
   return 0;
 }
@@ -1038,7 +1041,7 @@ bool CWinSystemX11::HasWindowManager()
 
   if(status == Success && items_read)
   {
-    CLog::Log(LOGDEBUG,"Window Manager Name: %s", data);
+    CLog::Log(LOGDEBUG, "Window Manager Name: {}", data);
   }
   else
     CLog::Log(LOGDEBUG,"Window Manager Name: ");

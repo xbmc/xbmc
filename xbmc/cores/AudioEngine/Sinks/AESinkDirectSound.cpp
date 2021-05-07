@@ -43,7 +43,12 @@ DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
 extern const char *WASAPIErrToStr(HRESULT err);
-#define EXIT_ON_FAILURE(hr, reason) if(FAILED(hr)) {CLog::LogF(LOGERROR, reason " - HRESULT = %li ErrorMessage = %s", hr, WASAPIErrToStr(hr)); goto failed;}
+#define EXIT_ON_FAILURE(hr, reason) \
+  if (FAILED(hr)) \
+  { \
+    CLog::LogF(LOGERROR, reason " - HRESULT = {} ErrorMessage = {}", hr, WASAPIErrToStr(hr)); \
+    goto failed; \
+  }
 
 #define DS_SPEAKER_COUNT 8
 static const unsigned int DSChannelOrder[] = {SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT, SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY, SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT, SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT};
@@ -153,13 +158,13 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   {
     CLog::LogF(
         LOGERROR,
-        "Failed to create the DirectSound device %s with error %s, trying the default device.",
+        "Failed to create the DirectSound device {} with error {}, trying the default device.",
         deviceFriendlyName, dserr2str(hr));
 
     hr = DirectSoundCreate(nullptr, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "Failed to create the default DirectSound device with error %s.",
+      CLog::LogF(LOGERROR, "Failed to create the default DirectSound device with error {}.",
                  dserr2str(hr));
       return false;
     }
@@ -167,14 +172,14 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   /* Dodge the null handle on first init by using desktop handle */
   HWND tmp_hWnd = g_hWnd == nullptr ? GetDesktopWindow() : g_hWnd;
-  CLog::LogF(LOGDEBUG, "Using Window handle: %p", static_cast<void*>(tmp_hWnd));
+  CLog::LogF(LOGDEBUG, "Using Window handle: {}", fmt::ptr(tmp_hWnd));
 
   hr = m_pDSound->SetCooperativeLevel(tmp_hWnd, DSSCL_PRIORITY);
 
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "Failed to create the DirectSound device cooperative level.");
-    CLog::LogF(LOGERROR, "DSErr: %s", dserr2str(hr));
+    CLog::LogF(LOGERROR, "DSErr: {}", dserr2str(hr));
     m_pDSound = nullptr;
     return false;
   }
@@ -237,7 +242,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   {
     if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE)
     {
-      CLog::LogF(LOGDEBUG, "Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.",
+      CLog::LogF(LOGDEBUG, "Couldn't create secondary buffer ({}). Trying without LOCHARDWARE.",
                  dserr2str(res));
       // Try without DSBCAPS_LOCHARDWARE
       dsbdesc.dwFlags &= ~DSBCAPS_LOCHARDWARE;
@@ -246,7 +251,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     if (res != DS_OK)
     {
       m_pBuffer = nullptr;
-      CLog::LogF(LOGERROR, "cannot create secondary buffer (%s)", dserr2str(res));
+      CLog::LogF(LOGERROR, "cannot create secondary buffer ({})", dserr2str(res));
       return false;
     }
   }
@@ -270,20 +275,20 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_isDirtyDS = false;
 
   CLog::LogF(LOGDEBUG, "Initializing DirectSound with the following parameters:");
-  CLog::Log(LOGDEBUG, "  Audio Device    : %s", ((std::string)deviceFriendlyName));
-  CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
-  CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
-  CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
-  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex.Samples.wValidBitsPerSample);
-  CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex.Format.nChannels);
-  CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex.Format.nBlockAlign);
-  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
-  CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
-  CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
-  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout));
-  CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
-  CLog::Log(LOGDEBUG, "  Frames          : %d", format.m_frames);
-  CLog::Log(LOGDEBUG, "  Frame Size      : %d", format.m_frameSize);
+  CLog::Log(LOGDEBUG, "  Audio Device    : {}", ((std::string)deviceFriendlyName));
+  CLog::Log(LOGDEBUG, "  Sample Rate     : {}", wfxex.Format.nSamplesPerSec);
+  CLog::Log(LOGDEBUG, "  Sample Format   : {}", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Bits Per Sample : {}", wfxex.Format.wBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : {}", wfxex.Samples.wValidBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Channel Count   : {}", wfxex.Format.nChannels);
+  CLog::Log(LOGDEBUG, "  Block Align     : {}", wfxex.Format.nBlockAlign);
+  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : {}", wfxex.Format.nAvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "  Samples/Block   : {}", wfxex.Samples.wSamplesPerBlock);
+  CLog::Log(LOGDEBUG, "  Format cBSize   : {}", wfxex.Format.cbSize);
+  CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout));
+  CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
+  CLog::Log(LOGDEBUG, "  Frames          : {}", format.m_frames);
+  CLog::Log(LOGDEBUG, "  Frame Size      : {}", format.m_frameSize);
 
   return true;
 }
@@ -350,7 +355,8 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
     HRESULT res = m_pBuffer->Lock(m_BufferOffset, dwWriteBytes, &start, &size, &startWrap, &sizeWrap, 0);
     if (DS_OK != res)
     {
-      CLog::LogF(LOGERROR, "Unable to lock buffer at offset %u. HRESULT: 0x%08x", m_BufferOffset, res);
+      CLog::LogF(LOGERROR, "Unable to lock buffer at offset {}. HRESULT: {:#08x}", m_BufferOffset,
+                 res);
       m_isDirtyDS = true;
       return INT_MAX;
     }
@@ -395,7 +401,7 @@ void CAESinkDirectSound::Drain()
   if (DS_OK != res)
   {
     CLog::LogF(LOGERROR,
-               "SetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x",
+               "SetCurrentPosition failed. Unable to determine buffer status. HRESULT = {:#08x}",
                res);
     m_isDirtyDS = true;
     return;
@@ -532,7 +538,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     }
     else
     {
-      CLog::LogF(LOGERROR, "Getting DeviceFormat failed (%s)", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "Getting DeviceFormat failed ({})", WASAPIErrToStr(hr));
     }
 
     deviceInfo.m_deviceName       = strDevName;
@@ -559,7 +565,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 failed:
 
   if (FAILED(hr))
-    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices (%s).", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices ({}).", WASAPIErrToStr(hr));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -578,7 +584,7 @@ void CAESinkDirectSound::CheckPlayStatus()
     HRESULT hr = m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
     CLog::LogF(LOGDEBUG, "Resuming Playback");
     if (FAILED(hr))
-      CLog::LogF(LOGERROR, "Failed to play the DirectSound buffer: %s", dserr2str(hr));
+      CLog::LogF(LOGERROR, "Failed to play the DirectSound buffer: {}", dserr2str(hr));
   }
 }
 
@@ -591,7 +597,7 @@ bool CAESinkDirectSound::UpdateCacheStatus()
   if (DS_OK != res)
   {
     CLog::LogF(LOGERROR,
-               "GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x",
+               "GetCurrentPosition failed. Unable to determine buffer status. HRESULT = {:#08x}",
                res);
     m_isDirtyDS = true;
     return false;
@@ -618,7 +624,7 @@ bool CAESinkDirectSound::UpdateCacheStatus()
       (playCursor < m_BufferOffset && m_BufferOffset < writeCursor) || // (2)
       (playCursor > writeCursor && playCursor <  m_BufferOffset))      // (3)
   {
-    CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun - W:%u, P:%u, O:%u.",
+    CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun - W:{}, P:{}, O:{}.",
               writeCursor, playCursor, m_BufferOffset);
     m_BufferOffset = writeCursor; // Catch up
     //m_pBuffer->Stop(); // Wait until someone gives us some data to restart playback (prevents glitches)

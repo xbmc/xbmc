@@ -54,13 +54,14 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
       LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
       if( !pDll)
       {
-        CLog::Log(LOGERROR, "%s - Invalid module in tracker", __FUNCTION__);
+        CLog::Log(LOGERROR, "{} - Invalid module in tracker", __FUNCTION__);
         return;
       }
 
       if (!pDll->IsSystemDll())
       {
-        if (strlen(pDll->GetFileName()) > 0) CLog::Log(LOGDEBUG,"  : %s", pDll->GetFileName());
+        if (strlen(pDll->GetFileName()) > 0)
+          CLog::Log(LOGDEBUG, "  : {}", pDll->GetFileName());
       }
     }
 
@@ -70,7 +71,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
       LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
       if( !pDll)
       {
-        CLog::Log(LOGERROR, "%s - Invalid module in tracker", __FUNCTION__);
+        CLog::Log(LOGERROR, "{} - Invalid module in tracker", __FUNCTION__);
         return;
       }
 

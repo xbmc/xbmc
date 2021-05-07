@@ -236,7 +236,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   }
   g_langInfo.m_originalLocale = std::locale(std::locale::classic(), new custom_numpunct(m_cDecimalSep, m_cThousandsSep, m_strGrouping));
 
-  CLog::Log(LOGDEBUG, "trying to set locale to %s", strLocale.c_str());
+  CLog::Log(LOGDEBUG, "trying to set locale to {}", strLocale.c_str());
 
   // We need to set the locale to only change the collate. Otherwise,
   // decimal separator is changed depending of the current language
@@ -293,7 +293,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
 #endif
 
   g_charsetConverter.resetSystemCharset();
-  CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
+  CLog::Log(LOGINFO, "global locale set to {}", strLocale.c_str());
 
 #ifdef TARGET_ANDROID
   // Force UTF8 for, e.g., vsnprintf
@@ -390,7 +390,8 @@ bool CLangInfo::Load(const std::string& strLanguage)
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(LOGERROR, "unable to load {}: {} at line {}", strFileName.c_str(), xmlDoc.ErrorDesc(),
+              xmlDoc.ErrorRow());
     return false;
   }
 
@@ -398,7 +399,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
   m_languageAddon = GetLanguageAddon(strLanguage);
   if (m_languageAddon == NULL)
   {
-    CLog::Log(LOGERROR, "Unknown language %s", strLanguage.c_str());
+    CLog::Log(LOGERROR, "Unknown language {}", strLanguage.c_str());
     return false;
   }
 
@@ -414,7 +415,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (pRootElement->ValueStr() != "language")
   {
-    CLog::Log(LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
+    CLog::Log(LOGERROR, "{} Doesn't contain <language>", strFileName.c_str());
     return false;
   }
 
@@ -709,17 +710,17 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
     }
   }
 
-  CLog::Log(LOGINFO, "CLangInfo: loading %s language information...", language.c_str());
+  CLog::Log(LOGINFO, "CLangInfo: loading {} language information...", language.c_str());
   if (!Load(language))
   {
-    CLog::LogF(LOGFATAL, "CLangInfo: failed to load %s language information", language.c_str());
+    CLog::LogF(LOGFATAL, "CLangInfo: failed to load {} language information", language.c_str());
     return false;
   }
 
-  CLog::Log(LOGINFO, "CLangInfo: loading %s language strings...", language.c_str());
+  CLog::Log(LOGINFO, "CLangInfo: loading {} language strings...", language.c_str());
   if (!g_localizeStrings.Load(GetLanguagePath(), language))
   {
-    CLog::LogF(LOGFATAL, "CLangInfo: failed to load %s language strings", language.c_str());
+    CLog::LogF(LOGFATAL, "CLangInfo: failed to load {} language strings", language.c_str());
     return false;
   }
 

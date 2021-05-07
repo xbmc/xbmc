@@ -342,7 +342,7 @@ void CWinSystemTVOS::OnAppFocusChange(bool focus)
 {
   CSingleLock lock(m_resourceSection);
   m_bIsBackgrounded = !focus;
-  CLog::Log(LOGDEBUG, "CWinSystemTVOS::OnAppFocusChange: %d", focus ? 1 : 0);
+  CLog::Log(LOGDEBUG, "CWinSystemTVOS::OnAppFocusChange: {}", focus ? 1 : 0);
   for (auto dispResource : m_resources)
     dispResource->OnAppFocusChange(focus);
 }

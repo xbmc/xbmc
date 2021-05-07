@@ -91,8 +91,9 @@ int CSeekHandler::GetSeekStepSize(SeekType type, int step)
 
   if (seekSteps.empty())
   {
-    CLog::Log(LOGERROR, "SeekHandler - %s - No %s %s seek steps configured.", __FUNCTION__,
-              (type == SeekType::SEEK_TYPE_VIDEO ? "video" : "music"), (step > 0 ? "forward" : "backward"));
+    CLog::Log(LOGERROR, "SeekHandler - {} - No {} {} seek steps configured.", __FUNCTION__,
+              (type == SeekType::SEEK_TYPE_VIDEO ? "video" : "music"),
+              (step > 0 ? "forward" : "backward"));
     return 0;
   }
 

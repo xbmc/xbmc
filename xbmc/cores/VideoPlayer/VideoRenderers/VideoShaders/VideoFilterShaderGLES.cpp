@@ -107,7 +107,8 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
     m_internalformat = GL_RGBA;
   }
 
-  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines:\n%s", shadername.c_str(), defines.c_str());
+  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using {} defines:\n{}", shadername.c_str(),
+            defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
 }
 

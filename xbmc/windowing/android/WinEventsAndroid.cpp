@@ -153,7 +153,8 @@ void CWinEventsAndroid::Process()
 
         if (repeatDuration >= holdTimeout)
         {
-          CLog::Log(LOGDEBUG, "hold  ->repeat, size(%d), repeatDuration(%d)", m_lastevent.size(), repeatDuration);
+          CLog::Log(LOGDEBUG, "hold  ->repeat, size({}), repeatDuration({})", m_lastevent.size(),
+                    repeatDuration);
           state = EVENT_STATE_REPEAT;
         }
         break;

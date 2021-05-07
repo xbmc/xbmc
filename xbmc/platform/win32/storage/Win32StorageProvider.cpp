@@ -36,7 +36,7 @@ void CWin32StorageProvider::Initialize()
   if(!vShare.empty())
     CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
   else
-    CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{}: No optical drive found.", __FUNCTION__);
 
 #ifdef HAS_DVD_DRIVE
   // Can be removed once the StorageHandler supports optical media
@@ -365,7 +365,7 @@ CDetectDisc::CDetectDisc(const std::string &strPath, const bool bautorun)
 bool CDetectDisc::DoWork()
 {
 #ifdef HAS_DVD_DRIVE
-  CLog::Log(LOGDEBUG, "%s: Optical media found in drive %s", __FUNCTION__, m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "{}: Optical media found in drive {}", __FUNCTION__, m_strPath.c_str());
   CMediaSource share;
   share.strPath = m_strPath;
   share.strStatus = CServiceBroker::GetMediaManager().GetDiskLabel(share.strPath);

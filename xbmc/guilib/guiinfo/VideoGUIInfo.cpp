@@ -58,7 +58,8 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
     if (item->IsInternetStream() && g_application.GetAppPlayer().IsPlayingAudio())
       return false;
 
-    CLog::Log(LOGDEBUG,"CVideoGUIInfo::InitCurrentItem(%s)", CURL::GetRedacted(item->GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "CVideoGUIInfo::InitCurrentItem({})",
+              CURL::GetRedacted(item->GetPath()).c_str());
 
     // Find a thumb for this file.
     if (!item->HasArt("thumb"))
@@ -72,7 +73,8 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
     {
       if (!g_application.m_strPlayListFile.empty())
       {
-        CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+        CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb",
+                  g_application.m_strPlayListFile.c_str());
         CFileItem thumbItem(g_application.m_strPlayListFile,false);
 
         CVideoThumbLoader loader;

@@ -142,7 +142,7 @@ bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   m_eglext += " ";
 
-  CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:%s", m_eglext.c_str());
+  CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:{}", m_eglext.c_str());
 
   // register platform dependent objects
   CDVDFactoryCodec::ClearHWAccels();
@@ -186,7 +186,7 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
-  CLog::Log(LOGDEBUG, "About to switch to %i x %i",m_nWidth, m_nHeight);
+  CLog::Log(LOGDEBUG, "About to switch to {} x {}", m_nWidth, m_nHeight);
   SwitchToVideoMode(res.iWidth, res.iHeight, static_cast<double>(res.fRefreshRate));
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
@@ -265,7 +265,7 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
     *w = m_internalTouchscreenResolutionWidth;
     *h = m_internalTouchscreenResolutionHeight;
   }
-  CLog::Log(LOGDEBUG,"Current resolution Screen: %i with %i x %i",screenIdx, *w, *h);
+  CLog::Log(LOGDEBUG, "Current resolution Screen: {} with {} x {}", screenIdx, *w, *h);
   return true;
 }
 
@@ -308,7 +308,7 @@ void CWinSystemIOS::FillInVideoModes(int screenIdx)
     h = mode.size.height;
 
     UpdateDesktopResolution(res, screenIdx == 0 ? CONST_TOUCHSCREEN : CONST_EXTERNAL, w, h, refreshrate, 0);
-    CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d", screenIdx, w, h);
+    CLog::Log(LOGINFO, "Found possible resolution for display {} with {} x {}", screenIdx, w, h);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
     CDisplaySettings::GetInstance().AddResolutionInfo(res);
@@ -365,7 +365,7 @@ void CWinSystemIOS::OnAppFocusChange(bool focus)
 {
   CSingleLock lock(m_resourceSection);
   m_bIsBackgrounded = !focus;
-  CLog::Log(LOGDEBUG, "CWinSystemIOS::OnAppFocusChange: %d", focus ? 1 : 0);
+  CLog::Log(LOGDEBUG, "CWinSystemIOS::OnAppFocusChange: {}", focus ? 1 : 0);
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnAppFocusChange(focus);
 }

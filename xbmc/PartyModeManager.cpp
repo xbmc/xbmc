@@ -110,7 +110,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
         strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
       }
 
-      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", strCurrentFilterMusic.c_str());
+      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]",
+                strCurrentFilterMusic.c_str());
       songcount = db.GetRandomSongIDs(CDatabase::Filter(strCurrentFilterMusic), m_songIDCache);
       m_iMatchingSongs = static_cast<int>(songcount);
       if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
@@ -144,7 +145,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
         strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
       }
 
-      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", strCurrentFilterVideo.c_str());
+      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]",
+                strCurrentFilterVideo.c_str());
       videocount = db.GetRandomMusicVideoIDs(strCurrentFilterVideo, songIDs2);
       m_iMatchingSongs += static_cast<int>(videocount);
       if (m_iMatchingSongs < 1)
@@ -240,7 +242,8 @@ void CPartyModeManager::AddUserSongs(CPlayList& tempList, bool bPlay /* = false 
     iAddAt = m_iLastUserSong + 1; // under the last user added song
 
   int iNewUserSongs = tempList.size();
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
+  CLog::Log(LOGINFO, "PARTY MODE MANAGER: Adding {} user selected songs at {}", iNewUserSongs,
+            iAddAt);
 
   int iPlaylist = PLAYLIST_MUSIC;
   if (m_bIsVideo)
@@ -269,7 +272,8 @@ void CPartyModeManager::AddUserSongs(CFileItemList& tempList, bool bPlay /* = fa
     iAddAt = m_iLastUserSong + 1; // under the last user added song
 
   int iNewUserSongs = tempList.Size();
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
+  CLog::Log(LOGINFO, "PARTY MODE MANAGER: Adding {} user selected songs at {}", iNewUserSongs,
+            iAddAt);
 
   int iPlaylist = PLAYLIST_MUSIC;
   if (m_bIsVideo)
@@ -406,7 +410,8 @@ void CPartyModeManager::Add(CFileItemPtr &pItem)
 
   CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist);
   playlist.Add(pItem);
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->GetPath().c_str());
+  CLog::Log(LOGINFO, "PARTY MODE MANAGER: Adding randomly selected song at {}:[{}]",
+            playlist.size() - 1, pItem->GetPath().c_str());
   m_iMatchingSongsPicked++;
 }
 
@@ -442,7 +447,8 @@ bool CPartyModeManager::MovePlaying()
 
   if (iCurrentSong > 0)
   {
-    CLog::Log(LOGINFO,"PARTY MODE MANAGER: Moving currently playing song from %i to 0", iCurrentSong);
+    CLog::Log(LOGINFO, "PARTY MODE MANAGER: Moving currently playing song from {} to 0",
+              iCurrentSong);
     CPlayList &playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist);
     CPlayList playlistTemp;
     playlistTemp.Add(playlist[iCurrentSong]);
@@ -468,14 +474,14 @@ void CPartyModeManager::Play(int iPos)
   // Move current song to the top if its not there. Playlist filled up below by
   // OnSongChange call from application GUI_MSG_PLAYBACK_STARTED processing
   CServiceBroker::GetPlaylistPlayer().Play(iPos, "");
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Playing song at %i", iPos);
+  CLog::Log(LOGINFO, "PARTY MODE MANAGER: Playing song at {}", iPos);
 }
 
 void CPartyModeManager::OnError(int iError, const std::string&  strLogMessage)
 {
   // open error dialog
   HELPERS::ShowOKDialogLines(CVariant{257}, CVariant{16030}, CVariant{iError}, CVariant{0});
-  CLog::Log(LOGERROR, "PARTY MODE MANAGER: %s", strLogMessage.c_str());
+  CLog::Log(LOGERROR, "PARTY MODE MANAGER: {}", strLogMessage.c_str());
   m_bEnabled = false;
   SendUpdateMessage();
 }

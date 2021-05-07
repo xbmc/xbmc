@@ -163,9 +163,9 @@ void CAxisDetector::ProcessMotion()
       if (!MapPrimitive(m_activatedPrimitive))
       {
         if (m_type == AXIS_TYPE::OFFSET)
-          CLog::Log(LOGDEBUG, "Mapping offset axis %u failed", m_axisIndex);
+          CLog::Log(LOGDEBUG, "Mapping offset axis {} failed", m_axisIndex);
         else
-          CLog::Log(LOGDEBUG, "Mapping normal axis %u failed", m_axisIndex);
+          CLog::Log(LOGDEBUG, "Mapping normal axis {} failed", m_axisIndex);
       }
 
       m_state = AXIS_STATE::MAPPED;
@@ -221,20 +221,20 @@ void CAxisDetector::DetectType(float position)
     {
       m_config.center = -1;
       m_type = AXIS_TYPE::OFFSET;
-      CLog::Log(LOGDEBUG, "Anomalous trigger detected on axis %u with center %d", m_axisIndex,
+      CLog::Log(LOGDEBUG, "Anomalous trigger detected on axis {} with center {}", m_axisIndex,
                 m_config.center);
     }
     else if (m_initialPosition > 0.5f)
     {
       m_config.center = 1;
       m_type = AXIS_TYPE::OFFSET;
-      CLog::Log(LOGDEBUG, "Anomalous trigger detected on axis %u with center %d", m_axisIndex,
+      CLog::Log(LOGDEBUG, "Anomalous trigger detected on axis {} with center {}", m_axisIndex,
                 m_config.center);
     }
     else
     {
       m_type = AXIS_TYPE::NORMAL;
-      CLog::Log(LOGDEBUG, "Normal axis detected on axis %u", m_axisIndex);
+      CLog::Log(LOGDEBUG, "Normal axis detected on axis {}", m_axisIndex);
     }
   }
 }
@@ -479,7 +479,7 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
   {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAction);
 
-    CLog::Log(LOGDEBUG, "Button mapping: rapid input after %ums dropped for profile \"%s\"",
+    CLog::Log(LOGDEBUG, "Button mapping: rapid input after {}ms dropped for profile \"{}\"",
               duration.count(), m_buttonMapper->ControllerID().c_str());
     bHandled = true;
   }
@@ -542,8 +542,8 @@ CAxisDetector& CButtonMapping::GetAxis(
     }
 
     // Report axis
-    CLog::Log(LOGDEBUG, "Axis %u discovered at position %.4f after %lu frames", axisIndex, position,
-              static_cast<unsigned long>(m_frameCount));
+    CLog::Log(LOGDEBUG, "Axis {} discovered at position {:.4f} after {} frames", axisIndex,
+              position, static_cast<unsigned long>(m_frameCount));
 
     m_axes.insert(std::make_pair(axisIndex, CAxisDetector(this, axisIndex, config)));
     itAxis = m_axes.find(axisIndex);

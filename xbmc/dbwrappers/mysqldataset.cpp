@@ -139,7 +139,7 @@ void MysqlDatabase::configure_connection() {
     }
   }
   else
-    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '%s' (%d)", db.c_str(), ret);
+    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '{}' ({})", db.c_str(), ret);
 }
 
 int MysqlDatabase::connect(bool create_new) {
@@ -209,8 +209,8 @@ int MysqlDatabase::connect(bool create_new) {
       default_charset = mysql_character_set_name(conn);
       if(mysql_set_character_set(conn, "utf8")) // returns 0 on success
       {
-        CLog::Log(LOGERROR, "Unable to set utf8 charset: %s [%d](%s)",
-                  db.c_str(), mysql_errno(conn), mysql_error(conn));
+        CLog::Log(LOGERROR, "Unable to set utf8 charset: {} [{}]({})", db.c_str(),
+                  mysql_errno(conn), mysql_error(conn));
       }
 
       configure_connection();
@@ -252,15 +252,14 @@ int MysqlDatabase::connect(bool create_new) {
       }
     }
 
-    CLog::Log(LOGERROR, "Unable to open database: %s [%d](%s)",
-              db.c_str(), mysql_errno(conn), mysql_error(conn));
+    CLog::Log(LOGERROR, "Unable to open database: {} [{}]({})", db.c_str(), mysql_errno(conn),
+              mysql_error(conn));
 
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)",
-              db.c_str(), GetLastError());
+    CLog::Log(LOGERROR, "Unable to open database: {} ({})", db.c_str(), GetLastError());
   }
   return DB_CONNECTION_NONE;
 }
@@ -484,7 +483,8 @@ int MysqlDatabase::query_with_reconnect(const char* query) {
           ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST) &&
           (attempts-- > 0) )
   {
-    CLog::Log(LOGINFO,"MYSQL server has gone. Will try %d more attempt(s) to reconnect.", attempts);
+    CLog::Log(LOGINFO, "MYSQL server has gone. Will try {} more attempt(s) to reconnect.",
+              attempts);
     active = false;
     connect(true);
   }
@@ -493,7 +493,7 @@ int MysqlDatabase::query_with_reconnect(const char* query) {
 }
 
 long MysqlDatabase::nextid(const char* sname) {
-  CLog::Log(LOGDEBUG,"MysqlDatabase::nextid for %s",sname);
+  CLog::Log(LOGDEBUG, "MysqlDatabase::nextid for {}", sname);
   if (!active) return DB_UNEXPECTED_RESULT;
   const char* seq_table = "sys_seq";
   int id;/*,nrow,ncol;*/
@@ -524,9 +524,8 @@ long MysqlDatabase::nextid(const char* sname) {
       id = -1;
       unsigned long *lengths;
       lengths = mysql_fetch_lengths(res);
-      CLog::Log(LOGINFO, "Next id is [%.*s] ", (int)lengths[0], row[0]);
-      snprintf(sqlcmd, sizeof(sqlcmd), "UPDATE %s SET nextid=%d WHERE seq_name = '%s'", 
-               seq_table, id, sname);
+      snprintf(sqlcmd, sizeof(sqlcmd), "UPDATE %s SET nextid=%d WHERE seq_name = '%s'", seq_table,
+               id, sname);
       mysql_free_result(res);
       if ((last_err = query_with_reconnect(sqlcmd)) != 0) return DB_UNEXPECTED_RESULT;
       return id;
@@ -1340,7 +1339,9 @@ bool MysqlDatabase::mysqlStrAccumAppend(StrAccum *p, const char *z, int N) {
   std::string testString(z, N);
   if (testString.find("LIKE") != std::string::npos || testString.find("like") != std::string::npos)
   {
-    CLog::Log(LOGDEBUG, "This query part contains a like, we will double backslash in the next field: %s", testString.c_str());
+    CLog::Log(LOGDEBUG,
+              "This query part contains a like, we will double backslash in the next field: {}",
+              testString.c_str());
     isLike = true;
 
   }
@@ -1582,7 +1583,7 @@ int MysqlDataset::exec(const std::string &sql) {
       qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
-  CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
+  CLog::Log(LOGDEBUG, "Mysql execute: {}", qry.c_str());
 
   if (db->setErr( static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) != MYSQL_OK)
   {
@@ -1696,7 +1697,7 @@ bool MysqlDataset::query(const std::string &query) {
           break;
         case MYSQL_TYPE_NULL:
         default:
-          CLog::Log(LOGDEBUG,"MYSQL: Unknown field type: %u", fields[i].type);
+          CLog::Log(LOGDEBUG, "MYSQL: Unknown field type: {}", fields[i].type);
           v.set_asString("");
           v.set_isNull();
           break;

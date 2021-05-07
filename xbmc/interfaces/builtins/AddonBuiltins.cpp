@@ -188,12 +188,15 @@ static int RunAddon(const std::vector<std::string>& params)
 
       if (!g_application.PlayMedia(item, "", PLAYLIST_NONE))
       {
-        CLog::Log(LOGERROR, "RunAddon could not start %s", addonid.c_str());
+        CLog::Log(LOGERROR, "RunAddon could not start {}", addonid.c_str());
         return false;
       }
     }
     else
-      CLog::Log(LOGERROR, "RunAddon: unknown add-on id '%s', or unexpected add-on type (not a script or plugin).", addonid.c_str());
+      CLog::Log(
+          LOGERROR,
+          "RunAddon: unknown add-on id '{}', or unexpected add-on type (not a script or plugin).",
+          addonid.c_str());
   }
   else
   {
@@ -252,7 +255,9 @@ static int RunScript(const std::vector<std::string>& params)
         //Run a random extension point (old behaviour).
         CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN, OnlyEnabled::YES);
         scriptpath = addon->LibPath();
-        CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
+        CLog::Log(LOGWARNING,
+                  "RunScript called for a non-script addon '{}'. This behaviour is deprecated.",
+                  params[0].c_str());
       }
     }
     else

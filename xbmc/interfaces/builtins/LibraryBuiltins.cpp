@@ -101,7 +101,8 @@ static int CleanLibrary(const std::vector<std::string>& params)
       CLog::Log(LOGERROR, "CleanLibrary is not possible while scanning for media info");
   }
   else
-    CLog::Log(LOGERROR, "Unknown content type '%s' passed to CleanLibrary, ignoring", params[0].c_str());
+    CLog::Log(LOGERROR, "Unknown content type '{}' passed to CleanLibrary, ignoring",
+              params[0].c_str());
 
   return 0;
 }

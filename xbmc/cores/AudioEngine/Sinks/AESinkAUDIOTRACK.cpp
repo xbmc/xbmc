@@ -173,7 +173,8 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
   }
   catch (const std::invalid_argument& e)
   {
-    CLog::Log(LOGINFO, "AESinkAUDIOTRACK - AudioTrack creation (channelMask 0x%08x): %s", channelMask, e.what());
+    CLog::Log(LOGINFO, "AESinkAUDIOTRACK - AudioTrack creation (channelMask {:#08x}): {}",
+              channelMask, e.what());
   }
 
   return jniAt;
@@ -286,7 +287,7 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate,
       delete jniAt;
     }
   }
-  CLog::Log(LOGDEBUG, "VerifySinkConfiguration samplerate: %d mask: %d encoding: %d success: %s",
+  CLog::Log(LOGDEBUG, "VerifySinkConfiguration samplerate: {} mask: {} encoding: {} success: {}",
             sampleRate, channelMask, encoding, supported ? "true" : "false");
   return supported;
 }
@@ -316,7 +317,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_timestampPos = 0;
   m_linearmovingaverage.clear();
   m_pause_ms = 0.0;
-  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
+  CLog::Log(LOGDEBUG,
+            "CAESinkAUDIOTRACK::Initialize requested: sampleRate {}; format: {}; channels: {}",
+            format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat),
+            format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
   m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
@@ -331,7 +335,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
      {
        m_sink_sampleRate = s;
        distance = d;
-       CLog::Log(LOGDEBUG, "Updated SampleRate: %u Distance: %u", m_sink_sampleRate, d);
+       CLog::Log(LOGDEBUG, "Updated SampleRate: {} Distance: {}", m_sink_sampleRate, d);
      }
   }
 
@@ -413,7 +417,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   while (!m_at_jni)
   {
-    CLog::Log(LOGINFO, "Trying to open: samplerate: %u, channelMask: %d, encoding: %d",
+    CLog::Log(LOGINFO, "Trying to open: samplerate: {}, channelMask: {}, encoding: {}",
               m_sink_sampleRate, atChannelMask, m_encoding);
     int min_buffer = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate,
                                                          atChannelMask,
@@ -421,12 +425,14 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
     if (min_buffer < 0)
     {
-      CLog::Log(LOGERROR, "Minimum Buffer Size was: %d - disable passthrough (?) your hw does not support it", min_buffer);
+      CLog::Log(LOGERROR,
+                "Minimum Buffer Size was: {} - disable passthrough (?) your hw does not support it",
+                min_buffer);
       return false;
     }
 
     m_min_buffer_size = (unsigned int) min_buffer;
-    CLog::Log(LOGDEBUG, "Minimum size we need for stream: %u", m_min_buffer_size);
+    CLog::Log(LOGDEBUG, "Minimum size we need for stream: {}", m_min_buffer_size);
     double rawlength_in_seconds = 0.0;
     int multiplier = 1;
     unsigned int ac3FrameSize = 1;
@@ -482,7 +488,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           break;
       }
 
-      CLog::Log(LOGDEBUG, "Opening Passthrough RAW Format: %s Sink SampleRate: %u", CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type), m_sink_sampleRate);
+      CLog::Log(LOGDEBUG, "Opening Passthrough RAW Format: {} Sink SampleRate: {}",
+                CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type), m_sink_sampleRate);
       m_format.m_frameSize = 1;
       m_sink_frameSize = m_format.m_frameSize;
     }
@@ -521,8 +528,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       m_audiotrackbuffer_sec = rawlength_in_seconds;
 
 
-    CLog::Log(LOGDEBUG, "Created Audiotrackbuffer with playing time of %lf ms min buffer size: %u bytes",
-                         m_audiotrackbuffer_sec * 1000, m_min_buffer_size);
+    CLog::Log(LOGDEBUG,
+              "Created Audiotrackbuffer with playing time of {:f} ms min buffer size: {} bytes",
+              m_audiotrackbuffer_sec * 1000, m_min_buffer_size);
 
     m_jniAudioFormat = m_encoding;
     m_at_jni = CreateAudioTrack(stream, m_sink_sampleRate, atChannelMask,
@@ -552,8 +560,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     }
     const char* method = m_passthrough ? (m_info.m_wantsIECPassthrough ? "IEC (PT)" : "RAW (PT)") : "PCM";
     CLog::Log(LOGINFO,
-              "CAESinkAUDIOTRACK::Initializing with: m_sampleRate: %u format: %s (AE) method: %s "
-              "stream-type: %s min_buffer_size: %u m_frames: %u m_frameSize: %u channels: %d",
+              "CAESinkAUDIOTRACK::Initializing with: m_sampleRate: {} format: {} (AE) method: {} "
+              "stream-type: {} min_buffer_size: {} m_frames: {} m_frameSize: {} channels: {}",
               m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), method,
               m_passthrough ? CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type) : "PCM-STREAM",
               m_min_buffer_size, m_format.m_frames, m_format.m_frameSize,
@@ -716,7 +724,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   m_delay = d;
   if (usesAdvancedLogging)
   {
-    CLog::Log(LOGINFO, "Delay Current: %lf ms", d * 1000);
+    CLog::Log(LOGINFO, "Delay Current: {:f} ms", d * 1000);
   }
   status.SetDelay(d);
 }
@@ -764,7 +772,8 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
 
       if (loop_written < 0)
       {
-        CLog::Log(LOGERROR, "CAESinkAUDIOTRACK::AddPackets write returned error:  %d", loop_written);
+        CLog::Log(LOGERROR, "CAESinkAUDIOTRACK::AddPackets write returned error:  {}",
+                  loop_written);
         return INT_MAX;
       }
 
@@ -786,7 +795,8 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
             usleep(sleep_time * 1000);
           }
           bool playing = m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING;
-          CLog::Log(LOGDEBUG, "Retried to write onto the sink - slept: %lf playing: %s", sleep_time, playing ? "yes" : "no");
+          CLog::Log(LOGDEBUG, "Retried to write onto the sink - slept: {:f} playing: {}",
+                    sleep_time, playing ? "yes" : "no");
           continue;
         }
         else
@@ -802,7 +812,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
           m_duration_written += m_format.m_streamInfo.GetDuration() / 1000;
         else
         {
-          CLog::Log(LOGDEBUG, "Error writing full package to sink, left: %d", size_left);
+          CLog::Log(LOGDEBUG, "Error writing full package to sink, left: {}", size_left);
           // Let AE wait some ms to come back
           unsigned int written_frames = (unsigned int) (written/m_format.m_frameSize);
           return written_frames;
@@ -1052,7 +1062,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-        CLog::Log(LOGDEBUG, "AESinkAUDIOTrack: Using IEC PT mode: %d",
+        CLog::Log(LOGDEBUG, "AESinkAUDIOTrack: Using IEC PT mode: {}",
                   CJNIAudioFormat::ENCODING_IEC61937);
         CLog::Log(LOGDEBUG, "AC3 and DTS via IEC61937 is supported");
         if (supports_192khz)
@@ -1115,7 +1125,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
     if (IsSupported(test_sample[i], CJNIAudioFormat::CHANNEL_OUT_STEREO, encoding))
     {
       m_sink_sampleRates.insert(test_sample[i]);
-      CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - %d supported", test_sample[i]);
+      CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - {} supported", test_sample[i]);
     }
   }
   std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));

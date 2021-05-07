@@ -41,7 +41,7 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
   {
     CLog::Log(LOGWARNING,
               "CKeyboardLayoutManager: unable to load keyboard layouts from non-existing directory "
-              "\"%s\"",
+              "\"{}\"",
               layoutDirectory.c_str());
     return false;
   }
@@ -51,12 +51,12 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
                                        XFILE::DIR_FLAG_DEFAULTS) ||
       layouts.IsEmpty())
   {
-    CLog::Log(LOGWARNING, "CKeyboardLayoutManager: no keyboard layouts found in %s",
+    CLog::Log(LOGWARNING, "CKeyboardLayoutManager: no keyboard layouts found in {}",
               layoutDirectory.c_str());
     return false;
   }
 
-  CLog::Log(LOGINFO, "CKeyboardLayoutManager: loading keyboard layouts from %s...",
+  CLog::Log(LOGINFO, "CKeyboardLayoutManager: loading keyboard layouts from {}...",
             layoutDirectory.c_str());
   size_t oldLayoutCount = m_layouts.size();
   for (int i = 0; i < layouts.Size(); i++)
@@ -68,21 +68,21 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
     CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(layoutPath))
     {
-      CLog::Log(LOGWARNING, "CKeyboardLayoutManager: unable to open %s", layoutPath.c_str());
+      CLog::Log(LOGWARNING, "CKeyboardLayoutManager: unable to open {}", layoutPath.c_str());
       continue;
     }
 
     const TiXmlElement* rootElement = xmlDoc.RootElement();
     if (rootElement == NULL)
     {
-      CLog::Log(LOGWARNING, "CKeyboardLayoutManager: missing or invalid XML root element in %s",
+      CLog::Log(LOGWARNING, "CKeyboardLayoutManager: missing or invalid XML root element in {}",
                 layoutPath.c_str());
       continue;
     }
 
     if (rootElement->ValueStr() != "keyboardlayouts")
     {
-      CLog::Log(LOGWARNING, "CKeyboardLayoutManager: unexpected XML root element \"%s\" in %s",
+      CLog::Log(LOGWARNING, "CKeyboardLayoutManager: unexpected XML root element \"{}\" in {}",
                 rootElement->Value(), layoutPath.c_str());
       continue;
     }
@@ -92,14 +92,14 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
     {
       CKeyboardLayout layout;
       if (!layout.Load(layoutElement))
-        CLog::Log(LOGWARNING, "CKeyboardLayoutManager: failed to load %s", layoutPath.c_str());
+        CLog::Log(LOGWARNING, "CKeyboardLayoutManager: failed to load {}", layoutPath.c_str());
       else if (m_layouts.find(layout.GetIdentifier()) != m_layouts.end())
         CLog::Log(LOGWARNING,
-                  "CKeyboardLayoutManager: duplicate layout with identifier \"%s\" in %s",
+                  "CKeyboardLayoutManager: duplicate layout with identifier \"{}\" in {}",
                   layout.GetIdentifier().c_str(), layoutPath.c_str());
       else
       {
-        CLog::Log(LOGDEBUG, "CKeyboardLayoutManager: keyboard layout \"%s\" successfully loaded",
+        CLog::Log(LOGDEBUG, "CKeyboardLayoutManager: keyboard layout \"{}\" successfully loaded",
                   layout.GetIdentifier().c_str());
         m_layouts.insert(std::make_pair(layout.GetIdentifier(), layout));
       }

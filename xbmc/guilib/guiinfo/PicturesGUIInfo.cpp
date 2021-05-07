@@ -135,7 +135,9 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
     }
     else
     {
-      CLog::Log(LOGERROR, "CPicturesGUIInfo::GetLabel - cannot map LISTITEM (%d) to SLIDESHOW label!", info.m_info);
+      CLog::Log(LOGERROR,
+                "CPicturesGUIInfo::GetLabel - cannot map LISTITEM ({}) to SLIDESHOW label!",
+                info.m_info);
       return false;
     }
   }

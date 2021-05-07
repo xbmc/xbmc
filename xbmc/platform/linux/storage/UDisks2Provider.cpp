@@ -91,17 +91,17 @@ bool CUDisks2Provider::Filesystem::IsOptical()
 bool CUDisks2Provider::Filesystem::Mount()
 {
   if (m_block->m_isSystem) {
-    CLog::Log(LOGDEBUG, "UDisks2: Skip mount of system device %s", toString());
+    CLog::Log(LOGDEBUG, "UDisks2: Skip mount of system device {}", toString());
     return false;
   }
   else if (m_isMounted)
   {
-    CLog::Log(LOGDEBUG, "UDisks2: Skip mount of already mounted device %s", toString());
+    CLog::Log(LOGDEBUG, "UDisks2: Skip mount of already mounted device {}", toString());
     return false;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "UDisks2: Mounting %s", m_block->m_device);
+    CLog::Log(LOGDEBUG, "UDisks2: Mounting {}", m_block->m_device);
     CDBusMessage message(UDISKS2_SERVICE_UDISKS2, m_object, UDISKS2_INTERFACE_FILESYSTEM, "Mount");
     AppendEmptyOptions(message.GetArgumentIter());
     DBusMessage *reply = message.SendSystem();
@@ -112,17 +112,17 @@ bool CUDisks2Provider::Filesystem::Mount()
 bool CUDisks2Provider::Filesystem::Unmount()
 {
   if (m_block->m_isSystem) {
-    CLog::Log(LOGDEBUG, "UDisks2: Skip unmount of system device %s", toString());
+    CLog::Log(LOGDEBUG, "UDisks2: Skip unmount of system device {}", toString());
     return false;
   }
   else if (!m_isMounted)
   {
-    CLog::Log(LOGDEBUG, "UDisks2: Skip unmount of not mounted device %s", toString());
+    CLog::Log(LOGDEBUG, "UDisks2: Skip unmount of not mounted device {}", toString());
     return false;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "UDisks2: Unmounting %s", m_block->m_device);
+    CLog::Log(LOGDEBUG, "UDisks2: Unmounting {}", m_block->m_device);
     CDBusMessage message(UDISKS2_SERVICE_UDISKS2, m_object, UDISKS2_INTERFACE_FILESYSTEM, "Unmount");
     AppendEmptyOptions(message.GetArgumentIter());
     DBusMessage *reply = message.SendSystem();
@@ -209,7 +209,7 @@ void CUDisks2Provider::Initialize()
   CLog::Log(LOGDEBUG, "Selected UDisks2 as storage provider");
   m_daemonVersion = CDBusUtil::GetVariant(UDISKS2_SERVICE_UDISKS2, UDISKS2_PATH_MANAGER, UDISKS2_INTERFACE_MANAGER,
                                           "Version").asString();
-  CLog::Log(LOGDEBUG, "UDisks2: Daemon version %s", m_daemonVersion);
+  CLog::Log(LOGDEBUG, "UDisks2: Daemon version {}", m_daemonVersion);
 
   CLog::Log(LOGDEBUG, "UDisks2: Querying available devices");
   CDBusMessage message(UDISKS2_SERVICE_UDISKS2, UDISKS2_PATH_UDISKS2, DBUS_INTERFACE_OBJECT_MANAGER,
@@ -231,7 +231,7 @@ bool CUDisks2Provider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
     if (msg)
     {
-      CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Message received (interface: %s, member: %s)",
+      CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Message received (interface: {}, member: {})",
                 dbus_message_get_interface(msg.get()), dbus_message_get_member(msg.get()));
 
       if (dbus_message_is_signal(msg.get(), DBUS_INTERFACE_OBJECT_MANAGER, "InterfacesAdded"))
@@ -293,7 +293,7 @@ void CUDisks2Provider::GetDisks(VECSOURCES &devices, bool enumerateRemovable)
 
 void CUDisks2Provider::DriveAdded(Drive *drive)
 {
-  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Drive added - %s", drive->toString());
+  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Drive added - {}", drive->toString());
 
   if (m_drives[drive->m_object])
   {
@@ -316,7 +316,7 @@ void CUDisks2Provider::DriveAdded(Drive *drive)
 
 bool CUDisks2Provider::DriveRemoved(std::string object)
 {
-  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Drive removed (%s)", object);
+  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Drive removed ({})", object);
 
   if (m_drives.count(object) > 0)
   {
@@ -340,7 +340,7 @@ void CUDisks2Provider::BlockAdded(Block *block, bool isNew)
 {
   if (isNew)
   {
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Block added - %s", block->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Block added - {}", block->toString());
 
     if (m_drives.count(block->m_driveobject) > 0)
       block->m_drive = m_drives[block->m_driveobject];
@@ -365,7 +365,7 @@ void CUDisks2Provider::BlockAdded(Block *block, bool isNew)
 
 bool CUDisks2Provider::BlockRemoved(std::string object)
 {
-  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Block removed (%s)", object);
+  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Block removed ({})", object);
 
   if (m_blocks.count(object) > 0)
   {
@@ -385,7 +385,7 @@ void CUDisks2Provider::FilesystemAdded(Filesystem *fs, bool isNew)
 {
   if (isNew)
   {
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Filesystem added - %s", fs->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Filesystem added - {}", fs->toString());
 
     if (m_blocks.count(fs->m_object) > 0)
       fs->m_block = m_blocks[fs->m_object];
@@ -407,7 +407,7 @@ void CUDisks2Provider::FilesystemAdded(Filesystem *fs, bool isNew)
 
 bool CUDisks2Provider::FilesystemRemoved(const char *object, IStorageEventsCallback *callback)
 {
-  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Filesystem removed (%s)", object);
+  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Filesystem removed ({})", object);
   bool result = false;
   if (m_filesystems.count(object) > 0)
   {
@@ -494,11 +494,11 @@ bool CUDisks2Provider::DrivePropertiesChanged(const char *object, DBusMessageIte
   if (m_drives.count(object) > 0)
   {
     auto drive = m_drives[object];
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Before update: %s", drive->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Before update: {}", drive->toString());
     auto ParseDriveProperty = std::bind(&CUDisks2Provider::ParseDriveProperty, this, std::placeholders::_1,
                                         std::placeholders::_2, std::placeholders::_3);
     ParseProperties(drive, propsIter, ParseDriveProperty);
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: After update: %s", drive->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: After update: {}", drive->toString());
   }
   return false;
 }
@@ -508,11 +508,11 @@ bool CUDisks2Provider::BlockPropertiesChanged(const char *object, DBusMessageIte
   if (m_blocks.count(object) > 0)
   {
     auto block = m_blocks[object];
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Before update: %s", block->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Before update: {}", block->toString());
     auto ParseBlockProperty = std::bind(&CUDisks2Provider::ParseBlockProperty, this, std::placeholders::_1,
                                         std::placeholders::_2, std::placeholders::_3);
     ParseProperties(block, propsIter, ParseBlockProperty);
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: After update: %s", block->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: After update: {}", block->toString());
   }
   return false;
 }
@@ -522,24 +522,24 @@ bool CUDisks2Provider::FilesystemPropertiesChanged(const char *object, DBusMessa
   if (m_filesystems.count(object) > 0)
   {
     auto fs = m_filesystems[object];
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Before update: %s", fs->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Before update: {}", fs->toString());
     bool wasMounted = fs->m_isMounted;
     auto ParseFilesystemProperty = std::bind(&CUDisks2Provider::ParseFilesystemProperty, this,
                                              std::placeholders::_1,
                                              std::placeholders::_2, std::placeholders::_3);
     ParseProperties(fs, propsIter, ParseFilesystemProperty);
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: After update: %s", fs->toString());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: After update: {}", fs->toString());
 
     if (!wasMounted && fs->m_isMounted && fs->IsApproved())
     {
-      CLog::Log(LOGINFO, "UDisks2: Added %s", fs->m_mountPoint);
+      CLog::Log(LOGINFO, "UDisks2: Added {}", fs->m_mountPoint);
       if (callback)
         callback->OnStorageAdded(fs->GetDisplayName(), fs->m_mountPoint);
       return true;
     }
     else if (wasMounted && !fs->m_isMounted)
     {
-      CLog::Log(LOGINFO, "UDisks2: Removed %s", fs->m_block->m_device);
+      CLog::Log(LOGINFO, "UDisks2: Removed {}", fs->m_block->m_device);
       if (callback)
         callback->OnStorageSafelyRemoved(fs->GetDisplayName());
       return true;

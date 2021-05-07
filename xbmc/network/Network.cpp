@@ -214,14 +214,14 @@ void CNetworkBase::NetworkMessage(EMESSAGE message, int param)
   switch( message )
   {
     case SERVICES_UP:
-      CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
+      CLog::Log(LOGDEBUG, "{} - Starting network services", __FUNCTION__);
       m_services->Start();
       break;
 
     case SERVICES_DOWN:
-      CLog::Log(LOGDEBUG, "%s - Signaling network services to stop",__FUNCTION__);
+      CLog::Log(LOGDEBUG, "{} - Signaling network services to stop", __FUNCTION__);
       m_services->Stop(false); // tell network services to stop, but don't wait for them yet
-      CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
+      CLog::Log(LOGDEBUG, "{} - Waiting for network services to stop", __FUNCTION__);
       m_services->Stop(true); // wait for network services to stop
       break;
   }
@@ -237,14 +237,14 @@ bool CNetworkBase::WakeOnLan(const char* mac)
   // Fetch the hardware address
   if (!in_ether(mac, ethaddr))
   {
-    CLog::Log(LOGERROR, "%s - Invalid hardware address specified (%s)", __FUNCTION__, mac);
+    CLog::Log(LOGERROR, "{} - Invalid hardware address specified ({})", __FUNCTION__, mac);
     return false;
   }
 
   // Setup the socket
   if ((packet = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
   {
-    CLog::Log(LOGERROR, "%s - Unable to create socket (%s)", __FUNCTION__, strerror (errno));
+    CLog::Log(LOGERROR, "{} - Unable to create socket ({})", __FUNCTION__, strerror(errno));
     return false;
   }
 
@@ -257,7 +257,7 @@ bool CNetworkBase::WakeOnLan(const char* mac)
   unsigned int value = 1;
   if (setsockopt (packet, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
   {
-    CLog::Log(LOGERROR, "%s - Unable to set socket options (%s)", __FUNCTION__, strerror (errno));
+    CLog::Log(LOGERROR, "{} - Unable to set socket options ({})", __FUNCTION__, strerror(errno));
     closesocket(packet);
     return false;
   }
@@ -274,13 +274,13 @@ bool CNetworkBase::WakeOnLan(const char* mac)
   // Send the magic packet
   if (sendto (packet, (char *)buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
   {
-    CLog::Log(LOGERROR, "%s - Unable to send magic packet (%s)", __FUNCTION__, strerror (errno));
+    CLog::Log(LOGERROR, "{} - Unable to send magic packet ({})", __FUNCTION__, strerror(errno));
     closesocket(packet);
     return false;
   }
 
   closesocket(packet);
-  CLog::Log(LOGINFO, "%s - Magic packet send to '%s'", __FUNCTION__, mac);
+  CLog::Log(LOGINFO, "{} - Magic packet send to '{}'", __FUNCTION__, mac);
   return true;
 }
 
@@ -395,7 +395,8 @@ bool CNetworkBase::PingHost(unsigned long ipaddr, unsigned short port, unsigned 
     std::string sock_err = strerror(errno);
 #endif
 
-    CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
+    CLog::Log(LOGERROR, "{}({}:{}) - {} ({})", __FUNCTION__, inet_ntoa(addr.sin_addr), port,
+              err_msg, sock_err.c_str());
   }
 
   return err_msg == 0;
@@ -437,7 +438,8 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
     if (bind(sock, result->ai_addr, result->ai_addrlen) != 0)
     {
       closesocket(sock);
-      CLog::Log(LOGDEBUG, "%s Server: Failed to bind %s serversocket", callerName, result->ai_family == AF_INET6 ? "IPv6" : "IPv4");
+      CLog::Log(LOGDEBUG, "{} Server: Failed to bind {} serversocket", callerName,
+                result->ai_family == AF_INET6 ? "IPv6" : "IPv4");
       continue;
     }
 
@@ -446,13 +448,13 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
     else
     {
       closesocket(sock);
-      CLog::Log(LOGERROR, "%s Server: Failed to set listen", callerName);
+      CLog::Log(LOGERROR, "{} Server: Failed to set listen", callerName);
     }
   }
   freeaddrinfo(results);
 
   if (sockets.empty())
-    CLog::Log(LOGERROR, "%s Server: Failed to create serversocket(s)", callerName);
+    CLog::Log(LOGERROR, "{} Server: Failed to create serversocket(s)", callerName);
 
   return sockets;
 }
@@ -467,7 +469,7 @@ void CNetworkBase::WaitForNet()
   if (!IsAvailable())
     return;
 
-  CLog::Log(LOGINFO, "%s: Waiting for a network interface to come up (Timeout: %d s)", __FUNCTION__,
+  CLog::Log(LOGINFO, "{}: Waiting for a network interface to come up (Timeout: {} s)", __FUNCTION__,
             timeout);
 
   const static int intervalMs = 200;
@@ -480,13 +482,13 @@ void CNetworkBase::WaitForNet()
 
     if (IsConnected())
     {
-      CLog::Log(LOGINFO, "%s: A network interface is up after waiting %d ms", __FUNCTION__,
+      CLog::Log(LOGINFO, "{}: A network interface is up after waiting {} ms", __FUNCTION__,
                 i * intervalMs);
       return;
     }
   }
 
-  CLog::Log(LOGINFO, "%s: No network interface did come up within %d s... Giving up...",
+  CLog::Log(LOGINFO, "{}: No network interface did come up within {} s... Giving up...",
             __FUNCTION__, timeout);
 }
 

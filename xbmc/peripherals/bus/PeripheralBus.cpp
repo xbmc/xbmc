@@ -94,7 +94,7 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults& resul
         features.size() > 1 || (features.size() == 1 && features.at(0) != FEATURE_UNKNOWN);
     if (peripheral->Type() != PERIPHERAL_UNKNOWN || peripheralHasFeatures)
     {
-      CLog::Log(LOGINFO, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__,
+      CLog::Log(LOGINFO, "{} - device removed from {}/{}: {} ({}:{})", __FUNCTION__,
                 PeripheralTypeTranslator::TypeToString(peripheral->Type()),
                 peripheral->Location().c_str(), peripheral->DeviceName().c_str(),
                 peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
@@ -258,7 +258,7 @@ void CPeripheralBus::Register(const PeripheralPtr& peripheral)
 
   if (bPeripheralAdded)
   {
-    CLog::Log(LOGINFO, "%s - new %s device registered on %s->%s: %s (%s:%s)", __FUNCTION__,
+    CLog::Log(LOGINFO, "{} - new {} device registered on {}->{}: {} ({}:{})", __FUNCTION__,
               PeripheralTypeTranslator::TypeToString(peripheral->Type()),
               PeripheralTypeTranslator::BusTypeToString(m_type), peripheral->Location().c_str(),
               peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(),

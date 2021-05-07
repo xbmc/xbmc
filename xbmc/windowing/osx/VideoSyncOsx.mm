@@ -23,7 +23,7 @@
 
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s setting up OSX", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} setting up OSX", __FUNCTION__);
 
   //init the vblank timestamp
   m_LastVBlankTime = 0;
@@ -59,7 +59,7 @@ void CVideoSyncOsx::Run(CEvent& stopEvent)
 
 void CVideoSyncOsx::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s cleaning up OSX", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} cleaning up OSX", __FUNCTION__);
   m_lostEvent.Set();
   m_LastVBlankTime = 0;
   CServiceBroker::GetWinSystem()->Unregister(this);
@@ -68,7 +68,7 @@ void CVideoSyncOsx::Cleanup()
 float CVideoSyncOsx::GetFps()
 {
   m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
-  CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
+  CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} Detected refreshrate: {:f} hertz", __FUNCTION__, m_fps);
   return m_fps;
 }
 
@@ -129,11 +129,11 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
 bool CVideoSyncOsx::InitDisplayLink()
 {
   bool ret = true;
-  CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s setting up displaylink", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} setting up displaylink", __FUNCTION__);
 
   if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
   {
-    CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s Cocoa_CVDisplayLinkCreate failed", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} Cocoa_CVDisplayLinkCreate failed", __FUNCTION__);
     ret = false;
   }
   return ret;

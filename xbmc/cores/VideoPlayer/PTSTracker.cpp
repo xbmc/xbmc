@@ -80,7 +80,8 @@ void CPtsTracker::Add(double pts)
     {
       m_VFRCounter++;
       m_lastPattern = m_pattern;
-      CLog::Log(LOGDEBUG, "CPtsTracker: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
+      CLog::Log(LOGDEBUG, "CPtsTracker: pattern lost on diff {:f}, number of losses {}", GetDiff(0),
+                m_VFRCounter);
       Flush();
     }
 
@@ -103,7 +104,7 @@ void CPtsTracker::Add(double pts)
       }
 
       double frameduration = CalcFrameDuration();
-      CLog::Log(LOGDEBUG, "CPtsTracker: detected pattern of length %i: %s, frameduration: %f",
+      CLog::Log(LOGDEBUG, "CPtsTracker: detected pattern of length {}: {}, frameduration: {:f}",
                 (int)pattern.size(), GetPatternStr().c_str(), frameduration);
     }
   }

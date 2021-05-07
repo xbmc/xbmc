@@ -63,7 +63,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
   {
 #ifdef TARGET_WINDOWS
     int ierr = WSAGetLastError();
-    CLog::Log(LOGERROR, "UDP: Could not create socket %d", ierr);
+    CLog::Log(LOGERROR, "UDP: Could not create socket {}", ierr);
     // hack for broken third party libs
     if (ierr == WSANOTINITIALISED)
     {
@@ -74,7 +74,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
 #else
     CLog::Log(LOGERROR, "UDP: Could not create socket");
 #endif
-    CLog::Log(LOGERROR, "UDP: %s", strerror(errno));
+    CLog::Log(LOGERROR, "UDP: {}", strerror(errno));
     return false;
   }
 
@@ -87,7 +87,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
   if (setsockopt(m_iSock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
   {
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
-    CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
+    CLog::Log(LOGWARNING, "UDP: {}", strerror(errno));
   }
 
   // bind to any address or localhost
@@ -116,12 +116,13 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
 
     if (bind(m_iSock, (struct sockaddr*)&m_addr.saddr, m_addr.size) != 0)
     {
-      CLog::Log(LOGWARNING, "UDP: Error binding socket on port %d (ipv6 : %s)", m_iPort, m_ipv6Socket ? "true" : "false" );
-      CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
+      CLog::Log(LOGWARNING, "UDP: Error binding socket on port {} (ipv6 : {})", m_iPort,
+                m_ipv6Socket ? "true" : "false");
+      CLog::Log(LOGWARNING, "UDP: {}", strerror(errno));
     }
     else
     {
-      CLog::Log(LOGINFO, "UDP: Listening on port %d (ipv6 : %s)", m_iPort,
+      CLog::Log(LOGINFO, "UDP: Listening on port {} (ipv6 : {})", m_iPort,
                 m_ipv6Socket ? "true" : "false");
       SetBound();
       SetReady();
@@ -153,7 +154,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
 
   if (static_cast<SOCKET>(testSocket) == INVALID_SOCKET)
   {
-    CLog::LogF(LOGDEBUG, "Could not create IPv6 socket: %s", strerror(errno));
+    CLog::LogF(LOGDEBUG, "Could not create IPv6 socket: {}", strerror(errno));
     return false;
   }
 
@@ -166,7 +167,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
   if (setsockopt(static_cast<SOCKET>(testSocket), IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) ==
       -1)
   {
-    CLog::LogF(LOGDEBUG, "Could not disable IPV6_V6ONLY for socket: %s", strerror(errno));
+    CLog::LogF(LOGDEBUG, "Could not disable IPV6_V6ONLY for socket: {}", strerror(errno));
     return false;
   }
 
@@ -182,7 +183,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
     }
     else
     {
-      CLog::LogF(LOGDEBUG, "Could not bind IPv6 socket: %s", strerror(errno));
+      CLog::LogF(LOGDEBUG, "Could not bind IPv6 socket: {}", strerror(errno));
     }
   }
 

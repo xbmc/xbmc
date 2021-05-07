@@ -34,7 +34,8 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
 
   if (!UnpackArchive(archive, newAddonData))
   {
-    CLog::Log(LOGERROR, "Failed to unpack archive '%s' to '%s'", archive.c_str(), newAddonData.c_str());
+    CLog::Log(LOGERROR, "Failed to unpack archive '{}' to '{}'", archive.c_str(),
+              newAddonData.c_str());
     return false;
   }
 
@@ -43,14 +44,16 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   {
     if (!CFile::Rename(addonFolder, oldAddonData))
     {
-      CLog::Log(LOGERROR, "Failed to move old addon files from '%s' to '%s'", addonFolder.c_str(), oldAddonData.c_str());
+      CLog::Log(LOGERROR, "Failed to move old addon files from '{}' to '{}'", addonFolder.c_str(),
+                oldAddonData.c_str());
       return false;
     }
   }
 
   if (!CFile::Rename(newAddonData, addonFolder))
   {
-    CLog::Log(LOGERROR, "Failed to move new addon files from '%s' to '%s'", newAddonData.c_str(), addonFolder.c_str());
+    CLog::Log(LOGERROR, "Failed to move new addon files from '{}' to '{}'", newAddonData.c_str(),
+              addonFolder.c_str());
     return false;
   }
 
@@ -58,7 +61,7 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   {
     if (!CDirectory::RemoveRecursive(oldAddonData))
     {
-      CLog::Log(LOGWARNING, "Failed to delete old addon files in '%s'", oldAddonData.c_str());
+      CLog::Log(LOGWARNING, "Failed to delete old addon files in '{}'", oldAddonData.c_str());
     }
   }
   return true;
@@ -69,13 +72,14 @@ bool CFilesystemInstaller::UnInstallFromFilesystem(const std::string& addonFolde
   auto tempFolder = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
   if (!CFile::Rename(addonFolder, tempFolder))
   {
-    CLog::Log(LOGERROR, "Failed to move old addon files from '%s' to '%s'", addonFolder.c_str(), tempFolder.c_str());
+    CLog::Log(LOGERROR, "Failed to move old addon files from '{}' to '{}'", addonFolder.c_str(),
+              tempFolder.c_str());
     return false;
   }
 
   if (!CDirectory::RemoveRecursive(tempFolder))
   {
-    CLog::Log(LOGWARNING, "Failed to delete old addon files in '%s'", tempFolder.c_str());
+    CLog::Log(LOGWARNING, "Failed to delete old addon files in '{}'", tempFolder.c_str());
   }
   return true;
 }
@@ -96,7 +100,7 @@ bool CFilesystemInstaller::UnpackArchive(std::string path, const std::string& de
     if (!CDirectory::GetDirectory(path, files, "", DIR_FLAG_DEFAULTS))
       return false;
   }
-  CLog::Log(LOGDEBUG, "Unpacking %s to %s", path.c_str(), dest.c_str());
+  CLog::Log(LOGDEBUG, "Unpacking {} to {}", path.c_str(), dest.c_str());
 
   for (auto i = 0; i < files.Size(); ++i)
     files[i]->Select(true);

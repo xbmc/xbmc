@@ -528,7 +528,9 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 
 void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 {
-  CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
+  CLog::Log(LOGDEBUG,
+            "CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: {}",
+            strPlayList.c_str());
   std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if (nullptr != pPlayList)
   {
@@ -554,7 +556,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
     for (int i = 0; i < playlist.size(); ++i)
     {
       CFileItemPtr pItem = playlist[i];
-      //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->GetPath().c_str());
+      //CLog::Log(LOGDEBUG,"-- playlist item: {}", pItem->GetPath().c_str());
       if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBZ() || pItem->IsCBR()))
         pSlideShow->Add(pItem.get());
     }

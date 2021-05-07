@@ -1221,7 +1221,8 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
   CFileStream file;
   if (!file.Open(url))
   {
-    CLog::Log(LOGERROR, "Error loading Smart playlist %s (failed to read file)", url.GetRedacted().c_str());
+    CLog::Log(LOGERROR, "Error loading Smart playlist {} (failed to read file)",
+              url.GetRedacted().c_str());
     return NULL;
   }
 
@@ -1250,7 +1251,8 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
   m_xmlDoc.Clear();
   if (!m_xmlDoc.Parse(xml))
   {
-    CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: %s)", m_xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: {})",
+              m_xmlDoc.ErrorDesc());
     return NULL;
   }
 

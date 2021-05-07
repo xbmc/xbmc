@@ -112,7 +112,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL,
                                                    ADDON::OnlyEnabled::YES))
   {
-    CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't find add-on %s for game file!",
+    CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't find add-on {} for game file!",
               gameClientId.c_str());
   }
   else
@@ -127,7 +127,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       if (!bStandalone)
       {
         std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
-        CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Opening: %s", redactedPath.c_str());
+        CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Opening: {}", redactedPath.c_str());
         bSuccess = m_gameClient->OpenFile(fileCopy, *m_streamManager, m_input.get());
       }
       else
@@ -137,13 +137,13 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       }
 
       if (bSuccess)
-        CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Using game client %s", gameClientId.c_str());
+        CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Using game client {}", gameClientId.c_str());
       else
-        CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to open file using %s",
+        CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to open file using {}",
                   gameClientId.c_str());
     }
     else
-      CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to initialize %s", gameClientId.c_str());
+      CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to initialize {}", gameClientId.c_str());
   }
 
   if (bSuccess && !bStandalone)
@@ -217,7 +217,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   {
     std::string savePath = m_playback->CreateSavestate();
     if (!savePath.empty())
-      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to %s",
+      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to {}",
                 CURL::GetRedacted(savePath).c_str());
     else
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Failed to save state at close");
@@ -381,13 +381,13 @@ void CRetroPlayer::SetSpeed(float speed)
       const int dialogId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
       if (dialogId == WINDOW_FULLSCREEN_GAME)
       {
-        CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Opening OSD via speed change (%f)", speed);
+        CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Opening OSD via speed change ({:f})", speed);
         OpenOSD();
       }
     }
     else
     {
-      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via speed change (%f)", speed);
+      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via speed change ({:f})", speed);
       CloseOSD();
     }
   }
@@ -612,20 +612,20 @@ void CRetroPlayer::PrintGameInfo(const CFileItem& file) const
   {
     CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: ---------------------------------------");
     CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Game tag loaded");
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: URL: %s", tag->GetURL().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Title: %s", tag->GetTitle().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Platform: %s", tag->GetPlatform().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Genres: %s",
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: URL: {}", tag->GetURL().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Title: {}", tag->GetTitle().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Platform: {}", tag->GetPlatform().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Genres: {}",
               StringUtils::Join(tag->GetGenres(), ", ").c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Developer: %s", tag->GetDeveloper().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Developer: {}", tag->GetDeveloper().c_str());
     if (tag->GetYear() > 0)
-      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Year: %u", tag->GetYear());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Game Code: %s", tag->GetID().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Region: %s", tag->GetRegion().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Publisher: %s", tag->GetPublisher().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Format: %s", tag->GetFormat().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Cartridge type: %s", tag->GetCartridgeType().c_str());
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Game client: %s", tag->GetGameClient().c_str());
+      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Year: {}", tag->GetYear());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Game Code: {}", tag->GetID().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Region: {}", tag->GetRegion().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Publisher: {}", tag->GetPublisher().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Format: {}", tag->GetFormat().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Cartridge type: {}", tag->GetCartridgeType().c_str());
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Game client: {}", tag->GetGameClient().c_str());
     CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: ---------------------------------------");
   }
 }

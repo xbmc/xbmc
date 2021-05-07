@@ -106,7 +106,8 @@ bool CThumbExtractor::DoWork()
   bool result=false;
   if (m_thumb)
   {
-    CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, CURL::GetRedacted(m_item.GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "{} - trying to extract thumb from video file {}", __FUNCTION__,
+              CURL::GetRedacted(m_item.GetPath()).c_str());
     // construct the thumb cache file
     CTextureDetails details;
     details.file = CTextureCache::GetCacheFile(m_target) + ".jpg";
@@ -135,7 +136,8 @@ bool CThumbExtractor::DoWork()
            !m_item.GetVideoInfoTag()->HasStreamDetails()))
   {
     // No tag or no details set, so extract them
-    CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, CURL::GetRedacted(m_item.GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "{} - trying to extract filestream details from video file {}",
+              __FUNCTION__, CURL::GetRedacted(m_item.GetPath()).c_str());
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 

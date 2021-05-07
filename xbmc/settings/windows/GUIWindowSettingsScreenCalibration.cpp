@@ -164,7 +164,8 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       }
       if (m_iCurRes==(unsigned int)-1)
       {
-        CLog::Log(LOGERROR, "CALIBRATION: Reported current resolution: %d", (int)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
+        CLog::Log(LOGERROR, "CALIBRATION: Reported current resolution: {}",
+                  (int)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
         CLog::Log(LOGERROR, "CALIBRATION: Could not determine current resolution, falling back to default");
         m_iCurRes = 0;
       }

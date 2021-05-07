@@ -76,7 +76,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   if (URIUtils::IsPlugin(m_item->GetPath()) && !XFILE::CPluginDirectory::IsMediaLibraryScanningAllowed(ADDON::TranslateContent(scraper->Content()), m_item->GetPath()))
   {
     CLog::Log(LOGINFO,
-              "CVideoLibraryRefreshingJob: Plugin '%s' does not support media library scanning and "
+              "CVideoLibraryRefreshingJob: Plugin '{}' does not support media library scanning and "
               "refreshing",
               CURL::GetRedacted(m_item->GetPath()).c_str());
     return false;
@@ -218,7 +218,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               return false;
           }
 
-          CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: user selected item '%s' with URL '%s'",
+          CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: user selected item '{}' with URL '{}'",
                     scraperUrl.GetTitle().c_str(), scraperUrl.GetFirstThumbUrl());
         }
       }
