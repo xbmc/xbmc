@@ -196,7 +196,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     {
       const std::string& strDevices = g_localizeStrings.Get(33040); //"% Devices"
       share.strPath = "upnp://";
-      share.strName = StringUtils::Format(strDevices.c_str(), "UPnP"); //"UPnP Devices"
+      share.strName = StringUtils::Format(strDevices, "UPnP"); //"UPnP Devices"
       locations.push_back(share);
     }
 #endif
@@ -559,8 +559,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
     return "";
   }
 
-  std::string strID =
-      StringUtils::Format("removable://{}_{}", info.name.c_str(), info.serial.c_str());
+  std::string strID = StringUtils::Format("removable://{}_{}", info.name, info.serial);
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for %s with path %s", strID.c_str(), info.type.c_str(), CURL::GetRedacted(mediaPath).c_str());
 
   return strID;

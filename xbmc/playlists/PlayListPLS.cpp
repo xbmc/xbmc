@@ -210,7 +210,7 @@ void CPlayListPLS::Save(const std::string& strFileName) const
   write += StringUtils::Format("{}\n", START_PLAYLIST_MARKER);
   std::string strPlayListName=m_strPlayListName;
   g_charsetConverter.utf8ToStringCharset(strPlayListName);
-  write += StringUtils::Format("PlaylistName={}\n", strPlayListName.c_str());
+  write += StringUtils::Format("PlaylistName={}\n", strPlayListName);
 
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
@@ -219,7 +219,7 @@ void CPlayListPLS::Save(const std::string& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strFileName);
     std::string strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    write += StringUtils::Format("File{}={}\n", i + 1, strFileName.c_str());
+    write += StringUtils::Format("File{}={}\n", i + 1, strFileName);
     write += StringUtils::Format("Title{}={}\n", i + 1, strDescription.c_str());
     write +=
         StringUtils::Format("Length{}={}\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000);

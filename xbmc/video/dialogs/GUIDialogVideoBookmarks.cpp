@@ -213,7 +213,7 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
 
   if (itemPos < m_vecItems->Size())
   {
-    std::string time = StringUtils::Format("chapter://{}/{}", m_filePath.c_str(), chapterIdx);
+    std::string time = StringUtils::Format("chapter://{}/{}", m_filePath, chapterIdx);
     std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(time) + ".jpg");
     if (XFILE::CFile::Exists(cachefile))
     {
@@ -247,13 +247,13 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   {
     std::string bookmarkTime;
     if (m_bookmarks[i].type == CBookmark::EPISODE)
-      bookmarkTime = StringUtils::Format(
-          "{} {} {} {}", g_localizeStrings.Get(20373).c_str(), m_bookmarks[i].seasonNumber,
-          g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
+      bookmarkTime = StringUtils::Format("{} {} {} {}", g_localizeStrings.Get(20373),
+                                         m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359),
+                                         m_bookmarks[i].episodeNumber);
     else
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
 
-    CFileItemPtr item(new CFileItem(StringUtils::Format(g_localizeStrings.Get(299).c_str(), i+1)));
+    CFileItemPtr item(new CFileItem(StringUtils::Format(g_localizeStrings.Get(299), i + 1)));
     item->SetLabel2(bookmarkTime);
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
@@ -274,12 +274,12 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     if (chapterName.empty() ||
         StringUtils::StartsWithNoCase(chapterName, time) ||
         StringUtils::IsNaturalNumber(chapterName))
-      chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
+      chapterName = StringUtils::Format(g_localizeStrings.Get(25010), i);
 
     CFileItemPtr item(new CFileItem(chapterName));
     item->SetLabel2(time);
 
-    std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath.c_str(), i);
+    std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
     std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(chapterPath)+".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
@@ -500,9 +500,9 @@ bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
     CContextButtons choices;
     for (unsigned int i=0; i < episodes.size(); ++i)
     {
-      std::string strButton = StringUtils::Format(
-          "{} {}, {} {}", g_localizeStrings.Get(20373).c_str(), episodes[i].m_iSeason,
-          g_localizeStrings.Get(20359).c_str(), episodes[i].m_iEpisode);
+      std::string strButton =
+          StringUtils::Format("{} {}, {} {}", g_localizeStrings.Get(20373), episodes[i].m_iSeason,
+                              g_localizeStrings.Get(20359), episodes[i].m_iEpisode);
       choices.Add(i, strButton);
     }
 

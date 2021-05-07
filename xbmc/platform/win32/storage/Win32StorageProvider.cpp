@@ -156,9 +156,9 @@ std::vector<std::string > CWin32StorageProvider::GetDiskUsage()
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
         GetDiskFreeSpaceEx( ( strDrive.c_str() ), nullptr, &ULTotal, &ULTotalFree ) )
       {
-        strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(
-            L"{} {} MB {}", strDrive.c_str(), int(ULTotalFree.QuadPart / (1024 * 1024)),
-            KODI::PLATFORM::WINDOWS::ToW(g_localizeStrings.Get(160).c_str())));
+        strRet = KODI::PLATFORM::WINDOWS::FromW(
+            StringUtils::Format(L"{} {} MB {}", strDrive, int(ULTotalFree.QuadPart / (1024 * 1024)),
+                                KODI::PLATFORM::WINDOWS::ToW(g_localizeStrings.Get(160))));
         result.push_back(strRet);
       }
       iPos += (wcslen( pcBuffer.get() + iPos) + 1 );
@@ -242,20 +242,19 @@ void CWin32StorageProvider::GetDrivesByType(VECSOURCES &localDrives, Drive_Types
           switch(uDriveType)
           {
           case DRIVE_CDROM:
-            share.strName = StringUtils::Format("{} ({})", share.strPath.c_str(),
-                                                g_localizeStrings.Get(218).c_str());
+            share.strName =
+                StringUtils::Format("{} ({})", share.strPath, g_localizeStrings.Get(218));
             break;
           case DRIVE_REMOVABLE:
             if(share.strName.empty())
-              share.strName = StringUtils::Format("{} ({})", g_localizeStrings.Get(437).c_str(),
-                                                  share.strPath.c_str());
+              share.strName =
+                  StringUtils::Format("{} ({})", g_localizeStrings.Get(437), share.strPath);
             break;
           default:
             if(share.strName.empty())
               share.strName = share.strPath;
             else
-              share.strName =
-                  StringUtils::Format("{} ({})", share.strPath.c_str(), share.strName.c_str());
+              share.strName = StringUtils::Format("{} ({})", share.strPath, share.strName);
             break;
           }
         }

@@ -184,10 +184,10 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       if (CServiceBroker::GetWinSystem()->IsFullScreen())
         value =
             StringUtils::Format("{}x{}@{:.2f}Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                resInfo.fRefreshRate, g_localizeStrings.Get(244).c_str());
+                                resInfo.fRefreshRate, g_localizeStrings.Get(244));
       else
         value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                    g_localizeStrings.Get(242).c_str());
+                                    g_localizeStrings.Get(242));
       return true;
     }
     case SYSTEM_BUILD_VERSION_SHORT:
@@ -255,10 +255,11 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       {
         double fTime = g_alarmClock.GetRemaining("shutdowntimer");
         if (fTime > 60.0)
-          value = StringUtils::Format(g_localizeStrings.Get(13213).c_str(),
+          value = StringUtils::Format(g_localizeStrings.Get(13213),
                                       g_alarmClock.GetRemaining("shutdowntimer") / 60.0);
         else
-          value = StringUtils::Format(g_localizeStrings.Get(13214).c_str(), g_alarmClock.GetRemaining("shutdowntimer"));
+          value = StringUtils::Format(g_localizeStrings.Get(13214),
+                                      g_alarmClock.GetRemaining("shutdowntimer"));
       }
       return true;
     case SYSTEM_PROFILENAME:
@@ -297,9 +298,9 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     }
     case SYSTEM_GET_CORE_USAGE:
-      value = StringUtils::Format("{:4.2f}", CServiceBroker::GetCPUInfo()
-                                                 ->GetCoreInfo(std::atoi(info.GetData3().c_str()))
-                                                 .m_usagePercent);
+      value = StringUtils::Format(
+          "{:4.2f}",
+          CServiceBroker::GetCPUInfo()->GetCoreInfo(std::stoi(info.GetData3())).m_usagePercent);
       return true;
     case SYSTEM_RENDER_VENDOR:
       value = CServiceBroker::GetRenderSystem()->GetRenderVendor();

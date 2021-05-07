@@ -71,7 +71,7 @@ bool CPlayerController::OnAction(const CAction &action)
           if (info.name.length() == 0)
             sub = lang;
           else
-            sub = StringUtils::Format("{} - {}", lang.c_str(), info.name.c_str());
+            sub = StringUtils::Format("{} - {}", lang, info.name);
         }
         else
           sub = g_localizeStrings.Get(1223);
@@ -118,7 +118,7 @@ bool CPlayerController::OnAction(const CAction &action)
           if (info.name.length() == 0)
             sub = lang;
           else
-            sub = StringUtils::Format("{} - {}", lang.c_str(), info.name.c_str());
+            sub = StringUtils::Format("{} - {}", lang, info.name);
         }
         else
           sub = g_localizeStrings.Get(1223);
@@ -218,7 +218,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (info.name.empty())
           aud = lan;
         else
-          aud = StringUtils::Format("{} - {}", lan.c_str(), info.name.c_str());
+          aud = StringUtils::Format("{} - {}", lan, info.name);
         std::string caption = g_localizeStrings.Get(460);
         caption += StringUtils::Format(" ({}/{})", currentAudio + 1, audioStreamCount);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, aud, DisplTime, false, MsgTime);

@@ -41,8 +41,7 @@ CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
     m_userSettingsPath(),
     m_loadSettingsFailed(false),
     m_hasUserSettings(false),
-    m_profilePath(
-        StringUtils::Format("special://profile/addon_data/{}/", m_addonInfo->ID().c_str())),
+    m_profilePath(StringUtils::Format("special://profile/addon_data/{}/", m_addonInfo->ID())),
     m_settings(nullptr),
     m_type(addonType == ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
 {

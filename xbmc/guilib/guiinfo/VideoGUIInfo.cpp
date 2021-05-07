@@ -178,9 +178,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           if (rating.rating > 0.f && rating.votes == 0)
             value = StringUtils::FormatNumber(rating.rating);
           else if (rating.votes > 0)
-            value = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
-                                        StringUtils::FormatNumber(rating.rating).c_str(),
-                                        StringUtils::FormatNumber(rating.votes).c_str());
+            value = StringUtils::Format(g_localizeStrings.Get(20350),
+                                        StringUtils::FormatNumber(rating.rating),
+                                        StringUtils::FormatNumber(rating.votes));
           else
             break;
           return true;

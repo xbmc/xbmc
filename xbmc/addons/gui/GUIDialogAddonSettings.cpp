@@ -199,7 +199,7 @@ void CGUIDialogAddonSettings::SetupView()
 
   // set heading
   SetHeading(StringUtils::Format("$LOCALIZE[10004] - {}",
-                                 m_addon->Name().c_str())); // "Settings - AddonName"
+                                 m_addon->Name())); // "Settings - AddonName"
 
   // set control labels
   SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);

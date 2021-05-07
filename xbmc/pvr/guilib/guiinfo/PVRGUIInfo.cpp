@@ -1580,7 +1580,8 @@ void CPVRGUIInfo::CharInfoBackendNumber(std::string& strValue) const
   size_t numBackends = m_backendProperties.size();
 
   if (numBackends > 0)
-    strValue = StringUtils::Format("{0} {1} {2}", m_iCurrentActiveClient + 1, g_localizeStrings.Get(20163).c_str(), numBackends);
+    strValue = StringUtils::Format("{0} {1} {2}", m_iCurrentActiveClient + 1,
+                                   g_localizeStrings.Get(20163), numBackends);
   else
     strValue = g_localizeStrings.Get(14023);
 }
@@ -1653,9 +1654,9 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(std::string& strValue) const
 
   if (diskTotal > 0)
   {
-    strValue = StringUtils::Format(g_localizeStrings.Get(802).c_str(),
-        StringUtils::SizeToString(diskTotal - diskUsed).c_str(),
-        StringUtils::SizeToString(diskTotal).c_str());
+    strValue = StringUtils::Format(g_localizeStrings.Get(802),
+                                   StringUtils::SizeToString(diskTotal - diskUsed),
+                                   StringUtils::SizeToString(diskTotal));
   }
   else
     strValue = g_localizeStrings.Get(13205);

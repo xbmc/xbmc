@@ -96,9 +96,9 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
     if (m_iTimerInfoToggleCurrent < activeTags.size())
     {
       const std::shared_ptr<CPVRTimerInfoTag> tag = activeTags.at(m_iTimerInfoToggleCurrent);
-      strActiveTimerTitle = StringUtils::Format("{}", tag->Title().c_str());
+      strActiveTimerTitle = StringUtils::Format("{}", tag->Title());
       strActiveTimerChannelName = StringUtils::Format("{}", tag->ChannelName().c_str());
-      strActiveTimerChannelIcon = StringUtils::Format("{}", tag->ChannelIcon().c_str());
+      strActiveTimerChannelIcon = StringUtils::Format("{}", tag->ChannelIcon());
       strActiveTimerTime = StringUtils::Format(
           "{}", tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
     }
@@ -137,17 +137,16 @@ void CPVRGUITimerInfo::UpdateNextTimer()
   const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer();
   if (timer)
   {
-    strNextRecordingTitle = StringUtils::Format("{}", timer->Title().c_str());
+    strNextRecordingTitle = StringUtils::Format("{}", timer->Title());
     strNextRecordingChannelName = StringUtils::Format("{}", timer->ChannelName().c_str());
-    strNextRecordingChannelIcon = StringUtils::Format("{}", timer->ChannelIcon().c_str());
+    strNextRecordingChannelIcon = StringUtils::Format("{}", timer->ChannelIcon());
     strNextRecordingTime = StringUtils::Format(
         "{}", timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
-    strNextTimerInfo =
-        StringUtils::Format("{} {} {} {}", g_localizeStrings.Get(19106).c_str(),
-                            timer->StartAsLocalTime().GetAsLocalizedDate(true).c_str(),
-                            g_localizeStrings.Get(19107).c_str(),
-                            timer->StartAsLocalTime().GetAsLocalizedTime("", false).c_str());
+    strNextTimerInfo = StringUtils::Format("{} {} {} {}", g_localizeStrings.Get(19106),
+                                           timer->StartAsLocalTime().GetAsLocalizedDate(true),
+                                           g_localizeStrings.Get(19107),
+                                           timer->StartAsLocalTime().GetAsLocalizedTime("", false));
   }
 
   CSingleLock lock(m_critSection);

@@ -291,9 +291,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (!CDirectory::GetDirectory(zipDir, items, "", DIR_FLAG_DEFAULTS) ||
       items.Size() != 1 || !items[0]->m_bIsFolder)
   {
-    CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
-        StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-        "special://xbmc/media/icon256x256.png", EventLevel::Error)));
+    CServiceBroker::GetEventLog().AddWithNotification(EventPtr(
+        new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+                               "special://xbmc/media/icon256x256.png", EventLevel::Error)));
     return false;
   }
 
@@ -302,9 +302,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     return DoInstall(addon, RepositoryPtr(), BackgroundJob::YES, ModalJob::NO, AutoUpdateJob::NO,
                      DependencyJob::NO, AllowCheckForUpdates::YES);
 
-  CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
-      StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-      "special://xbmc/media/icon256x256.png", EventLevel::Error)));
+  CServiceBroker::GetEventLog().AddWithNotification(EventPtr(
+      new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+                             "special://xbmc/media/icon256x256.png", EventLevel::Error)));
   return false;
 }
 
@@ -519,7 +519,7 @@ bool CAddonInstallJob::DoWork()
 {
   m_currentType = CAddonInstallJob::TYPE_DOWNLOAD;
 
-  SetTitle(StringUtils::Format(g_localizeStrings.Get(24057).c_str(), m_addon->Name().c_str()));
+  SetTitle(StringUtils::Format(g_localizeStrings.Get(24057), m_addon->Name()));
   SetProgress(0);
 
   // check whether all the dependencies are available or not
@@ -527,7 +527,8 @@ bool CAddonInstallJob::DoWork()
   std::pair<std::string, std::string> failedDep;
   if (!CAddonInstaller::GetInstance().CheckDependencies(m_addon, failedDep))
   {
-    std::string details = StringUtils::Format(g_localizeStrings.Get(24142).c_str(), failedDep.first.c_str(), failedDep.second.c_str());
+    std::string details =
+        StringUtils::Format(g_localizeStrings.Get(24142), failedDep.first, failedDep.second);
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: %s", m_addon->ID().c_str(), details.c_str());
     ReportInstallError(m_addon->ID(), m_addon->ID(), details);
     return false;
@@ -1019,8 +1020,8 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   }
   else
   {
-    activity = EventPtr(new CNotificationEvent(24045,
-        !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143).c_str(), fileName.c_str()),
+    activity = EventPtr(new CNotificationEvent(
+        24045, !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143), fileName),
         EventLevel::Error));
 
     if (IsModal())

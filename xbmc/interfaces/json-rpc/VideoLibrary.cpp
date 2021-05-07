@@ -954,7 +954,7 @@ JSONRPC_STATUS CVideoLibrary::Scan(const std::string &method, ITransportLayer *t
 {
   std::string directory = parameterObject["directory"].asString();
   std::string cmd =
-      StringUtils::Format("updatelibrary(video, {}, {})", StringUtils::Paramify(directory).c_str(),
+      StringUtils::Format("updatelibrary(video, {}, {})", StringUtils::Paramify(directory),
                           parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
@@ -965,9 +965,8 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
 {
   std::string cmd;
   if (parameterObject["options"].isMember("path"))
-    cmd = StringUtils::Format(
-        "exportlibrary2(video, singlefile, {})",
-        StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
+    cmd = StringUtils::Format("exportlibrary2(video, singlefile, {})",
+                              StringUtils::Paramify(parameterObject["options"]["path"].asString()));
   else
   {
     cmd = "exportlibrary2(video, separate, dummy";
@@ -991,11 +990,11 @@ JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *
   if (parameterObject["content"].empty())
     cmd = StringUtils::Format("cleanlibrary(video, {0}, {1})",
                               parameterObject["showdialogs"].asBoolean() ? "true" : "false",
-                              StringUtils::Paramify(directory).c_str());
+                              StringUtils::Paramify(directory));
   else
     cmd = StringUtils::Format("cleanlibrary({0}, {1}, {2})", parameterObject["content"].asString(),
                               parameterObject["showdialogs"].asBoolean() ? "true" : "false",
-                              StringUtils::Paramify(directory).c_str());
+                              StringUtils::Paramify(directory));
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;

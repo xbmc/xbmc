@@ -332,36 +332,36 @@ void CPVRTimerInfoTag::UpdateSummary()
   {
     m_strSummary = StringUtils::Format(
         "{} {} {}",
-        m_iWeekdays != PVR_WEEKDAY_NONE ? GetWeekdaysString().c_str()
-                                        : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
-        g_localizeStrings.Get(19107).c_str(), // "at"
-        m_bStartAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
-                        : StartAsLocalTime().GetAsLocalizedTime("", false).c_str());
+        m_iWeekdays != PVR_WEEKDAY_NONE ? GetWeekdaysString()
+                                        : startDate, //for "Any day" set PVR_WEEKDAY_ALLDAYS
+        g_localizeStrings.Get(19107), // "at"
+        m_bStartAnyTime ? g_localizeStrings.Get(19161) /* "any time" */
+                        : StartAsLocalTime().GetAsLocalizedTime("", false));
   }
   else if ((m_iWeekdays != PVR_WEEKDAY_NONE) || (startDate == endDate))
   {
     m_strSummary = StringUtils::Format(
         "{} {} {} {} {}",
-        m_iWeekdays != PVR_WEEKDAY_NONE ? GetWeekdaysString().c_str()
-                                        : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
-        g_localizeStrings.Get(19159).c_str(), // "from"
-        m_bStartAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
-                        : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
-        g_localizeStrings.Get(19160).c_str(), // "to"
-        m_bEndAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
-                      : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
+        m_iWeekdays != PVR_WEEKDAY_NONE ? GetWeekdaysString()
+                                        : startDate, //for "Any day" set PVR_WEEKDAY_ALLDAYS
+        g_localizeStrings.Get(19159), // "from"
+        m_bStartAnyTime ? g_localizeStrings.Get(19161) /* "any time" */
+                        : StartAsLocalTime().GetAsLocalizedTime("", false),
+        g_localizeStrings.Get(19160), // "to"
+        m_bEndAnyTime ? g_localizeStrings.Get(19161) /* "any time" */
+                      : EndAsLocalTime().GetAsLocalizedTime("", false));
   }
   else
   {
-    m_strSummary = StringUtils::Format(
-        "{} {} {} {} {} {}", startDate.c_str(),
-        g_localizeStrings.Get(19159).c_str(), // "from"
-        m_bStartAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
-                        : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
-        g_localizeStrings.Get(19160).c_str(), // "to"
-        endDate.c_str(),
-        m_bEndAnyTime ? g_localizeStrings.Get(19161).c_str() /* "any time" */
-                      : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
+    m_strSummary =
+        StringUtils::Format("{} {} {} {} {} {}", startDate,
+                            g_localizeStrings.Get(19159), // "from"
+                            m_bStartAnyTime ? g_localizeStrings.Get(19161) /* "any time" */
+                                            : StartAsLocalTime().GetAsLocalizedTime("", false),
+                            g_localizeStrings.Get(19160), // "to"
+                            endDate,
+                            m_bEndAnyTime ? g_localizeStrings.Get(19161) /* "any time" */
+                                          : EndAsLocalTime().GetAsLocalizedTime("", false));
   }
 }
 
@@ -417,8 +417,9 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
     else if ((m_iTVChildTimersConflictNOK > 0 && !bRadio) || (m_iRadioChildTimersConflictNOK > 0 && bRadio))
       strReturn = g_localizeStrings.Get(19276); // "Conflict error"
     else if ((m_iTVChildTimersActive > 0 && !bRadio) || (m_iRadioChildTimersActive > 0 && bRadio))
-      strReturn = StringUtils::Format(g_localizeStrings.Get(19255).c_str(),
-                                      bRadio ? m_iRadioChildTimersActive : m_iTVChildTimersActive); // "%d scheduled"
+      strReturn = StringUtils::Format(g_localizeStrings.Get(19255),
+                                      bRadio ? m_iRadioChildTimersActive
+                                             : m_iTVChildTimersActive); // "%d scheduled"
   }
 
   return strReturn;
@@ -691,7 +692,7 @@ std::string CPVRTimerInfoTag::ChannelName() const
   if (channeltag)
     strReturn = channeltag->ChannelName();
   else if (m_timerType && m_timerType->IsEpgBasedTimerRule())
-    strReturn = StringUtils::Format("({})", g_localizeStrings.Get(809).c_str()); // "Any channel"
+    strReturn = StringUtils::Format("({})", g_localizeStrings.Get(809)); // "Any channel"
 
   return strReturn;
 }
@@ -831,7 +832,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
   if (bInstantStart)
   {
     // "Instant recording: <summary>
-    newTimer->m_strSummary = StringUtils::Format(g_localizeStrings.Get(19093).c_str(), newTimer->Summary().c_str());
+    newTimer->m_strSummary = StringUtils::Format(g_localizeStrings.Get(19093), newTimer->Summary());
 
     // now that we have a nice summary, we can set the "special" start time value that indicates an instant recording
     newTimer->SetStartFromUTC(start);
@@ -1191,8 +1192,7 @@ std::string CPVRTimerInfoTag::GetNotificationText() const
   }
 
   if (stringID != 0)
-    return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID).c_str(),
-                               m_strTitle.c_str());
+    return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID), m_strTitle);
 
   return {};
 }
@@ -1216,8 +1216,7 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
       stringID = 19228; // Timer deleted
   }
 
-  return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID).c_str(),
-                             m_strTitle.c_str());
+  return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID), m_strTitle);
 }
 
 void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)

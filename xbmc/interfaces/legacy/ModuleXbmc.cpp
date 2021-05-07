@@ -434,9 +434,8 @@ namespace XBMCAddon
           StringUtils::Replace(result, "xx", "%p");
         }
         else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
-          result =
-              StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
-                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
+          result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
+                                       g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
 
         return result;
     }

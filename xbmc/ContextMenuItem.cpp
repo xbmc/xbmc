@@ -78,11 +78,11 @@ bool CContextMenuItem::operator==(const CContextMenuItem& other) const
 std::string CContextMenuItem::ToString() const
 {
   if (IsGroup())
-    return StringUtils::Format("CContextMenuItem[group, id={}, parent={}, addon={}]",
-                               m_groupId.c_str(), m_parent.c_str(), m_addonId.c_str());
+    return StringUtils::Format("CContextMenuItem[group, id={}, parent={}, addon={}]", m_groupId,
+                               m_parent, m_addonId);
   else
-    return StringUtils::Format("CContextMenuItem[item, parent={}, library={}, addon={}]",
-                               m_parent.c_str(), m_library.c_str(), m_addonId.c_str());
+    return StringUtils::Format("CContextMenuItem[item, parent={}, library={}, addon={}]", m_parent,
+                               m_library, m_addonId);
 }
 
 CContextMenuItem CContextMenuItem::CreateGroup(const std::string& label, const std::string& parent,

@@ -212,7 +212,7 @@ void CGUIDialogLockSettings::SetupView()
 
   // set the title
   if (m_getUser)
-    SetHeading(StringUtils::Format(g_localizeStrings.Get(20152).c_str(), CURL::Decode(m_url).c_str()));
+    SetHeading(StringUtils::Format(g_localizeStrings.Get(20152), CURL::Decode(m_url)));
   else
   {
     SetHeading(20066);

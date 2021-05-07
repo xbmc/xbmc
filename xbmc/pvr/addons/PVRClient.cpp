@@ -1843,8 +1843,8 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
       return;
     }
 
-    const std::string strLine1 = StringUtils::Format(
-        g_localizeStrings.Get(bOnOff ? 19197 : 19198).c_str(), client->Name().c_str());
+    const std::string strLine1 =
+        StringUtils::Format(g_localizeStrings.Get(bOnOff ? 19197 : 19198), client->Name());
     std::string strLine2;
     if (strName)
       strLine2 = strName;
@@ -2095,9 +2095,8 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
     // No values given by addon, but lifetime supported. Use default values 1..365
     for (int i = 1; i < 366; ++i)
     {
-      m_recordingsLifetimeValues.emplace_back(
-          StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i),
-          i); // "%s days"
+      m_recordingsLifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
+                                              i); // "%s days"
     }
   }
   else

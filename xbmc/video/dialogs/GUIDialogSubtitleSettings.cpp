@@ -342,7 +342,7 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
     if (info.name.length() == 0)
       strItem = strLanguage;
     else
-      strItem = StringUtils::Format("{} - {}", strLanguage.c_str(), info.name.c_str());
+      strItem = StringUtils::Format("{} - {}", strLanguage, info.name);
 
     strItem += FormatFlags(info.flags);
     strItem += StringUtils::Format(" ({}/{})", i + 1, subtitleStreamCount);
@@ -372,11 +372,11 @@ std::string CGUIDialogSubtitleSettings::SettingFormatterDelay(
   float fStep = step.asFloat();
 
   if (fabs(fValue) < 0.5f * fStep)
-    return StringUtils::Format(g_localizeStrings.Get(22003).c_str(), 0.0);
+    return StringUtils::Format(g_localizeStrings.Get(22003), 0.0);
   if (fValue < 0)
-    return StringUtils::Format(g_localizeStrings.Get(22004).c_str(), fabs(fValue));
+    return StringUtils::Format(g_localizeStrings.Get(22004), fabs(fValue));
 
-  return StringUtils::Format(g_localizeStrings.Get(22005).c_str(), fValue);
+  return StringUtils::Format(g_localizeStrings.Get(22005), fValue);
 }
 
 std::string CGUIDialogSubtitleSettings::FormatFlags(StreamFlags flags)

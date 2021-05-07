@@ -139,24 +139,24 @@ static int RunAddon(const std::vector<std::string>& params)
 
       std::string cmd;
       if (plugin->Provides(CPluginSource::VIDEO))
-        cmd = StringUtils::Format("ActivateWindow(Videos,plugin://{}{},return)", addonid.c_str(),
-                                  urlParameters.c_str());
+        cmd = StringUtils::Format("ActivateWindow(Videos,plugin://{}{},return)", addonid,
+                                  urlParameters);
       else if (plugin->Provides(CPluginSource::AUDIO))
-        cmd = StringUtils::Format("ActivateWindow(Music,plugin://{}{},return)", addonid.c_str(),
-                                  urlParameters.c_str());
+        cmd = StringUtils::Format("ActivateWindow(Music,plugin://{}{},return)", addonid,
+                                  urlParameters);
       else if (plugin->Provides(CPluginSource::EXECUTABLE))
-        cmd = StringUtils::Format("ActivateWindow(Programs,plugin://{}{},return)", addonid.c_str(),
-                                  urlParameters.c_str());
+        cmd = StringUtils::Format("ActivateWindow(Programs,plugin://{}{},return)", addonid,
+                                  urlParameters);
       else if (plugin->Provides(CPluginSource::IMAGE))
-        cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://{}{},return)", addonid.c_str(),
-                                  urlParameters.c_str());
+        cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://{}{},return)", addonid,
+                                  urlParameters);
       else if (plugin->Provides(CPluginSource::GAME))
-        cmd = StringUtils::Format("ActivateWindow(Games,plugin://{}{},return)", addonid.c_str(),
-                                  urlParameters.c_str());
+        cmd = StringUtils::Format("ActivateWindow(Games,plugin://{}{},return)", addonid,
+                                  urlParameters);
       else
         // Pass the script name (addonid) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunPlugin
-        cmd = StringUtils::Format("RunPlugin({})", StringUtils::Join(params, ",").c_str());
+        cmd = StringUtils::Format("RunPlugin({})", StringUtils::Join(params, ","));
       CBuiltins::GetInstance().Execute(cmd);
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_SCRIPT,
@@ -171,7 +171,7 @@ static int RunAddon(const std::vector<std::string>& params)
       // Pass the script name (addonid) and all the parameters
       // (params[1] ... params[x]) separated by a comma to RunScript
       CBuiltins::GetInstance().Execute(
-          StringUtils::Format("RunScript({})", StringUtils::Join(params, ",").c_str()));
+          StringUtils::Format("RunScript({})", StringUtils::Join(params, ",")));
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_GAMEDLL,
                                                     OnlyEnabled::YES))

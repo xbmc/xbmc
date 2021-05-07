@@ -533,14 +533,13 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
     const time_t ltime = time(NULL);
     char *date = asctime(gmtime(&ltime)); //Fri, 17 Dec 2010 11:18:01 GMT;
     date[strlen(date) - 1] = '\0'; // remove \n
-    response = StringUtils::Format("HTTP/1.1 {} {}\nDate: {}\r\n", status, statusMsg.c_str(), date);
+    response = StringUtils::Format("HTTP/1.1 {} {}\nDate: {}\r\n", status, statusMsg, date);
     if (!responseHeader.empty())
     {
       response += responseHeader;
     }
 
-    response =
-        StringUtils::Format("{}Content-Length: {}\r\n\r\n", response.c_str(), responseBody.size());
+    response = StringUtils::Format("{}Content-Length: {}\r\n\r\n", response, responseBody.size());
 
     if (!responseBody.empty())
     {
@@ -603,7 +602,7 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( std::string& reverseHeader
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
     reverseHeader =
-        StringUtils::Format("{}Content-Length: {}\r\n", reverseHeader.c_str(), reverseBody.size());
+        StringUtils::Format("{}Content-Length: {}\r\n", reverseHeader, reverseBody.size());
     reverseHeader = StringUtils::Format("{}x-apple-session-id: {}\r\n", reverseHeader.c_str(),
                                         m_sessionId.c_str());
     m_lastEvent = state;
@@ -615,7 +614,7 @@ void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(std::string& responseH
   int16_t random=rand();
   std::string randomStr = StringUtils::Format("{}", random);
   m_authNonce=CDigest::Calculate(CDigest::Type::MD5, randomStr);
-  responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce.c_str());
+  responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce);
   responseBody.clear();
 }
 
@@ -1150,7 +1149,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   else if (uri == "/server-info")
   {
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
-    responseBody = StringUtils::Format(SERVER_INFO, CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetMacAddress().c_str());
+    responseBody = StringUtils::Format(
+        SERVER_INFO, CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetMacAddress());
     responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
   }
 

@@ -605,9 +605,8 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(std::string& strPassword, const std
   if (iRetries > 0)
   {
     // Show a string telling user they have iRetries retries left
-    strTempHeading = StringUtils::Format("{}. {} {} {}", strHeading.c_str(),
-                                         g_localizeStrings.Get(12342).c_str(), iRetries,
-                                         g_localizeStrings.Get(12343).c_str());
+    strTempHeading = StringUtils::Format("{}. {} {} {}", strHeading, g_localizeStrings.Get(12342),
+                                         iRetries, g_localizeStrings.Get(12343));
   }
 
   // make a copy of strPassword to prevent from overwriting it later

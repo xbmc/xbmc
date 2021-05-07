@@ -291,20 +291,20 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr& item)
   {
     epg->ForceUpdate();
 
-    const std::string strMessage = StringUtils::Format(
-        "{}: '{}'",
-        g_localizeStrings.Get(19253).c_str(), // "Guide update scheduled for channel"
-        channel->ChannelName().c_str());
+    const std::string strMessage =
+        StringUtils::Format("{}: '{}'",
+                            g_localizeStrings.Get(19253), // "Guide update scheduled for channel"
+                            channel->ChannelName());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                           g_localizeStrings.Get(19166), // "PVR information"
                                           strMessage);
   }
   else
   {
-    const std::string strMessage = StringUtils::Format(
-        "{}: '{}'",
-        g_localizeStrings.Get(19254).c_str(), // "Guide update failed for channel"
-        channel->ChannelName().c_str());
+    const std::string strMessage =
+        StringUtils::Format("{}: '{}'",
+                            g_localizeStrings.Get(19254), // "Guide update failed for channel"
+                            channel->ChannelName());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                           g_localizeStrings.Get(19166), // "PVR information"
                                           strMessage);

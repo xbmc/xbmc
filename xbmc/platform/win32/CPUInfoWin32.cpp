@@ -115,9 +115,9 @@ CCPUInfoWin32::CCPUInfoWin32()
     for (size_t i = 0; i < m_cores.size(); i++)
     {
       if (i < m_coreCounters.size() &&
-          PdhAddEnglishCounterW(
-              m_cpuQueryLoad, StringUtils::Format(L"\\Processor({})\\% Idle Time", int(i)).c_str(),
-              0, &m_coreCounters[i]) != ERROR_SUCCESS)
+          PdhAddEnglishCounterW(m_cpuQueryLoad,
+                                StringUtils::Format(L"\\Processor({})\\% Idle Time", int(i)), 0,
+                                &m_coreCounters[i]) != ERROR_SUCCESS)
         m_coreCounters[i] = nullptr;
     }
   }

@@ -401,7 +401,7 @@ std::string CDatabaseQueryRule::FormatWhereClause(const std::string &negate, con
     else if (GetFieldType(m_field) == SECONDS_FIELD)
       fmt = "CAST(%s as INTEGER)";
 
-    query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
+    query = StringUtils::Format(fmt, GetField(m_field, strType));
     query += negate + parameter;
 
     // special case for matching parameters in fields that might be either empty or NULL.

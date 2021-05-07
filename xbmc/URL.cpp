@@ -283,7 +283,7 @@ void CURL::Parse(const std::string& strURL1)
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
-      m_strFileName = StringUtils::Format("{}/{}", m_strHostName.c_str(), m_strFileName.c_str());
+      m_strFileName = StringUtils::Format("{}/{}", m_strHostName, m_strFileName);
       m_strHostName = "";
     }
     else

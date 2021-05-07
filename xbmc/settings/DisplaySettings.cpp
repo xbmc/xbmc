@@ -686,7 +686,7 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
     {
       return StringUtils::Format("{:05}{:05}{:09.5f}{}", info.iScreenWidth, info.iScreenHeight,
                                  refreshrate > 0.0f ? refreshrate : info.fRefreshRate,
-                                 ModeFlagsToString(info.dwFlags, true).c_str());
+                                 ModeFlagsToString(info.dwFlags, true));
     }
   }
 
@@ -725,7 +725,7 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
 
       list.emplace_back(
           StringUtils::Format("{}x{}{} {:0.2f}Hz", mode.iScreenWidth, mode.iScreenHeight,
-                              ModeFlagsToString(mode.dwFlags, false).c_str(), mode.fRefreshRate),
+                              ModeFlagsToString(mode.dwFlags, false), mode.fRefreshRate),
           setting);
     }
   }
@@ -742,7 +742,8 @@ void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(
   list.emplace_back(g_localizeStrings.Get(13551), 0);
 
   for (int i = 1; i <= MAX_REFRESH_CHANGE_DELAY; i++)
-    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13553).c_str(), static_cast<double>(i) / 10.0), i);
+    list.emplace_back(
+        StringUtils::Format(g_localizeStrings.Get(13553), static_cast<double>(i) / 10.0), i);
 }
 
 void CDisplaySettings::SettingOptionsRefreshRatesFiller(const SettingConstPtr& setting,
@@ -799,7 +800,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
       list.emplace_back(StringUtils::Format("{}x{}{}", resolution->width, resolution->height,
-                                            ModeFlagsToString(resolution->flags, false).c_str()),
+                                            ModeFlagsToString(resolution->flags, false)),
                         resolution->ResInfo_Index);
 
       resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::GetInstance().GetResolutionInfo(resolution->ResInfo_Index)));

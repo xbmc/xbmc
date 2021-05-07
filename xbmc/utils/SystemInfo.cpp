@@ -357,19 +357,18 @@ std::string CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   if (iDays > 0)
   {
-    strSystemUptime = StringUtils::Format(
-        "{} {}, {} {}, {} {}", iDays, g_localizeStrings.Get(12393).c_str(), iHours,
-        g_localizeStrings.Get(12392).c_str(), iMinutes, g_localizeStrings.Get(12391).c_str());
+    strSystemUptime =
+        StringUtils::Format("{} {}, {} {}, {} {}", iDays, g_localizeStrings.Get(12393), iHours,
+                            g_localizeStrings.Get(12392), iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours >= 1 )
   {
-    strSystemUptime =
-        StringUtils::Format("{} {}, {} {}", iHours, g_localizeStrings.Get(12392).c_str(), iMinutes,
-                            g_localizeStrings.Get(12391).c_str());
+    strSystemUptime = StringUtils::Format("{} {}, {} {}", iHours, g_localizeStrings.Get(12392),
+                                          iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
-    strSystemUptime = StringUtils::Format("{} {}", iMinutes, g_localizeStrings.Get(12391).c_str());
+    strSystemUptime = StringUtils::Format("{} {}", iMinutes, g_localizeStrings.Get(12391));
   }
   return strSystemUptime;
 }
@@ -1041,19 +1040,19 @@ std::string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       switch(drive)
       {
       case SYSTEM_FREE_SPACE:
-        strRet = StringUtils::Format("{} MB {}", totalFree, g_localizeStrings.Get(160).c_str());
+        strRet = StringUtils::Format("{} MB {}", totalFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE:
-        strRet = StringUtils::Format("{} MB {}", totalUsed, g_localizeStrings.Get(20162).c_str());
+        strRet = StringUtils::Format("{} MB {}", totalUsed, g_localizeStrings.Get(20162));
         break;
       case SYSTEM_TOTAL_SPACE:
-        strRet = StringUtils::Format("{} MB {}", total, g_localizeStrings.Get(20161).c_str());
+        strRet = StringUtils::Format("{} MB {}", total, g_localizeStrings.Get(20161));
         break;
       case SYSTEM_FREE_SPACE_PERCENT:
-        strRet = StringUtils::Format("{} % {}", percentFree, g_localizeStrings.Get(160).c_str());
+        strRet = StringUtils::Format("{} % {}", percentFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE_PERCENT:
-        strRet = StringUtils::Format("{} % {}", percentused, g_localizeStrings.Get(20162).c_str());
+        strRet = StringUtils::Format("{} % {}", percentused, g_localizeStrings.Get(20162));
         break;
       }
     }
@@ -1222,7 +1221,7 @@ std::string CSysInfo::GetDeviceName()
   {
     std::string hostname("[unknown]");
     CServiceBroker::GetNetwork().GetHostName(hostname);
-    return StringUtils::Format("{} ({})", friendlyName.c_str(), hostname.c_str());
+    return StringUtils::Format("{} ({})", friendlyName, hostname);
   }
 
   return friendlyName;

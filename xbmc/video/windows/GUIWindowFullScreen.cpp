@@ -321,7 +321,7 @@ void CGUIWindowFullScreen::FrameMove()
       const auto& vs = g_application.GetAppPlayer().GetVideoSettings();
       int sId = CViewModeSettings::GetViewModeStringIndex(vs.m_ViewMode);
       const std::string& strMode = g_localizeStrings.Get(sId);
-      std::string strInfo = StringUtils::Format("{} : {}", strTitle.c_str(), strMode.c_str());
+      std::string strInfo = StringUtils::Format("{} : {}", strTitle, strMode);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);
       OnMessage(msg);
@@ -334,15 +334,13 @@ void CGUIWindowFullScreen::FrameMove()
       float xscale = (float)res.iScreenWidth  / (float)res.iWidth;
       float yscale = (float)res.iScreenHeight / (float)res.iHeight;
 
-      std::string strSizing = StringUtils::Format(g_localizeStrings.Get(245).c_str(),
-                                                 (int)info.SrcRect.Width(),
-                                                 (int)info.SrcRect.Height(),
-                                                 (int)(info.DestRect.Width() * xscale),
-                                                 (int)(info.DestRect.Height() * yscale),
-                                                 CDisplaySettings::GetInstance().GetZoomAmount(),
-                                                 info.videoAspectRatio*CDisplaySettings::GetInstance().GetPixelRatio(),
-                                                 CDisplaySettings::GetInstance().GetPixelRatio(),
-                                                 CDisplaySettings::GetInstance().GetVerticalShift());
+      std::string strSizing = StringUtils::Format(
+          g_localizeStrings.Get(245), (int)info.SrcRect.Width(), (int)info.SrcRect.Height(),
+          (int)(info.DestRect.Width() * xscale), (int)(info.DestRect.Height() * yscale),
+          CDisplaySettings::GetInstance().GetZoomAmount(),
+          info.videoAspectRatio * CDisplaySettings::GetInstance().GetPixelRatio(),
+          CDisplaySettings::GetInstance().GetPixelRatio(),
+          CDisplaySettings::GetInstance().GetVerticalShift());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
@@ -351,13 +349,13 @@ void CGUIWindowFullScreen::FrameMove()
     {
       std::string strStatus;
       if (CServiceBroker::GetWinSystem()->IsFullScreen())
-        strStatus = StringUtils::Format(
-            "{} {}x{}@{:.2f}Hz - {}", g_localizeStrings.Get(13287).c_str(), res.iScreenWidth,
-            res.iScreenHeight, res.fRefreshRate, g_localizeStrings.Get(244).c_str());
+        strStatus = StringUtils::Format("{} {}x{}@{:.2f}Hz - {}", g_localizeStrings.Get(13287),
+                                        res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
+                                        g_localizeStrings.Get(244));
       else
-        strStatus = StringUtils::Format("{} {}x{} - {}", g_localizeStrings.Get(13287).c_str(),
-                                        res.iScreenWidth, res.iScreenHeight,
-                                        g_localizeStrings.Get(242).c_str());
+        strStatus =
+            StringUtils::Format("{} {}x{} - {}", g_localizeStrings.Get(13287), res.iScreenWidth,
+                                res.iScreenHeight, g_localizeStrings.Get(242));
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);

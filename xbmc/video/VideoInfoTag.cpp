@@ -818,7 +818,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   {
     // seasons with a custom name/title need special handling as they should be sorted by season number
     if (m_type == MediaTypeSeason && !m_strSortTitle.empty())
-      sortable[FieldSortTitle] = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), m_iSeason);
+      sortable[FieldSortTitle] = StringUtils::Format(g_localizeStrings.Get(20358), m_iSeason);
     else
       sortable[FieldSortTitle] = m_strSortTitle;
     break;
@@ -946,10 +946,10 @@ const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   {
     std::string character;
     if (it->strRole.empty() || !bIncludeRole)
-      character = StringUtils::Format("{}\n", it->strName.c_str());
+      character = StringUtils::Format("{}\n", it->strName);
     else
-      character = StringUtils::Format("{} {} {}\n", it->strName.c_str(),
-                                      g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      character =
+          StringUtils::Format("{} {} {}\n", it->strName, g_localizeStrings.Get(20347), it->strRole);
     strLabel += character;
   }
   return StringUtils::TrimRight(strLabel, "\n");
@@ -1629,8 +1629,8 @@ void CVideoInfoTag::SetEpisodeGuide(std::string episodeGuide)
   if (StringUtils::StartsWith(episodeGuide, "<episodeguide"))
     m_strEpisodeGuide = Trim(std::move(episodeGuide));
   else
-    m_strEpisodeGuide = StringUtils::Format("<episodeguide>{}</episodeguide>",
-                                            Trim(std::move(episodeGuide)).c_str());
+    m_strEpisodeGuide =
+        StringUtils::Format("<episodeguide>{}</episodeguide>", Trim(std::move(episodeGuide)));
 }
 
 void CVideoInfoTag::SetStatus(std::string status)

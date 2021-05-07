@@ -259,9 +259,9 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       float speed = g_application.GetAppPlayer().GetPlaySpeed();
       if (speed != 1.0f)
-        value = StringUtils::Format(
-            "{} ({}x)", GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())).c_str(),
-            static_cast<int>(speed));
+        value = StringUtils::Format("{} ({}x)",
+                                    GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())),
+                                    static_cast<int>(speed));
       else
         value = GetCurrentPlayTime(TIME_FORMAT_GUESS);
       return true;

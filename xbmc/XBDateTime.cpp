@@ -1563,8 +1563,7 @@ std::string CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
 
   CDateTimeSpan bias = GetTimezoneBias();
   return result + StringUtils::Format("{}{:02}:{:02}", (bias.GetSecondsTotal() >= 0 ? '+' : '-'),
-                                      abs(bias.GetHours()), abs(bias.GetMinutes()))
-                      .c_str();
+                                      abs(bias.GetHours()), abs(bias.GetMinutes()));
 }
 
 int CDateTime::MonthStringToMonthNum(const std::string& month)

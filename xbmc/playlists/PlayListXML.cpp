@@ -171,22 +171,21 @@ void CPlayListXML::Save(const std::string& strFileName) const
     CFileItemPtr item = m_vecItems[i];
     write += StringUtils::Format("  <stream>\n" );
     write += StringUtils::Format("    <url>{}</url>", item->GetPath().c_str());
-    write += StringUtils::Format("    <name>{}</name>", item->GetLabel().c_str());
+    write += StringUtils::Format("    <name>{}</name>", item->GetLabel());
 
     if ( !item->GetProperty("language").empty() )
-      write += StringUtils::Format("    <lang>{}</lang>", item->GetProperty("language").c_str());
+      write += StringUtils::Format("    <lang>{}</lang>", item->GetProperty("language").asString());
 
     if ( !item->GetProperty("category").empty() )
-      write +=
-          StringUtils::Format("    <category>{}</category>", item->GetProperty("category").c_str());
+      write += StringUtils::Format("    <category>{}</category>",
+                                   item->GetProperty("category").asString());
 
     if ( !item->GetProperty("remotechannel").empty() )
       write += StringUtils::Format("    <channel>{}</channel>",
-                                   item->GetProperty("remotechannel").c_str());
+                                   item->GetProperty("remotechannel").asString());
 
     if (item->m_iHasLock > LOCK_STATE_NO_LOCK)
-      write +=
-          StringUtils::Format("    <lockpassword>{}<lockpassword>", item->m_strLockCode.c_str());
+      write += StringUtils::Format("    <lockpassword>{}<lockpassword>", item->m_strLockCode);
 
     write += StringUtils::Format("  </stream>\n\n" );
   }

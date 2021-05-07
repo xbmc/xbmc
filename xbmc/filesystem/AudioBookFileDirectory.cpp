@@ -72,7 +72,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
     tag=nullptr;
-    std::string chaptitle = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i+1);
+    std::string chaptitle = StringUtils::Format(g_localizeStrings.Get(25010), i + 1);
     std::string chapauthor;
     std::string chapalbum;
     while ((tag=av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
@@ -99,9 +99,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     else
       item->GetMusicInfoTag()->SetArtist(chapauthor);
 
-    item->SetLabel(StringUtils::Format("{0:02}. {1} - {2}",i+1,
-                   item->GetMusicInfoTag()->GetAlbum().c_str(),
-                   item->GetMusicInfoTag()->GetTitle()).c_str());
+    item->SetLabel(StringUtils::Format("{0:02}. {1} - {2}", i + 1,
+                                       item->GetMusicInfoTag()->GetAlbum(),
+                                       item->GetMusicInfoTag()->GetTitle()));
     item->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start*av_q2d(m_fctx->chapters[i]->time_base));
     item->m_lEndOffset = m_fctx->chapters[i]->end*av_q2d(m_fctx->chapters[i]->time_base);
     int compare = m_fctx->duration / (AV_TIME_BASE);

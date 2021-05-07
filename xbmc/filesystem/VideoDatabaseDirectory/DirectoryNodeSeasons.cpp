@@ -43,7 +43,8 @@ std::string CDirectoryNodeSeasons::GetLocalizedName() const
     return "";
   }
   default:
-    std::string season = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), GetID()); // Season <season>
+    std::string season =
+        StringUtils::Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
     return season;
   }
 }

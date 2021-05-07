@@ -848,7 +848,7 @@ std::string CGUIBaseContainer::GetDescription() const
   {
     CGUIListItemPtr pItem = m_items[item];
     if (pItem->m_bIsFolder)
-      strLabel = StringUtils::Format("[{}]", pItem->GetLabel().c_str());
+      strLabel = StringUtils::Format("[{}]", pItem->GetLabel());
     else
       strLabel = pItem->GetLabel();
   }

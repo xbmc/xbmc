@@ -456,11 +456,11 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
       if (m_bShowRange)
       {
         text = StringUtils::Format("({}/{}) {}", m_iValue + 1, (int)m_vecLabels.size(),
-                                   m_vecLabels[m_iValue].c_str());
+                                   m_vecLabels[m_iValue]);
       }
       else
       {
-        text = StringUtils::Format("{}", m_vecLabels[m_iValue].c_str());
+        text = StringUtils::Format("{}", m_vecLabels[m_iValue]);
       }
     }
     else

@@ -485,7 +485,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       s.width = info.width;
       s.height = info.height;
       s.codec = info.codecName;
-      s.name = StringUtils::Format("{} {}", g_localizeStrings.Get(38032).c_str(), i);
+      s.name = StringUtils::Format("{} {}", g_localizeStrings.Get(38032), i);
       Update(s);
     }
   }
@@ -3166,13 +3166,13 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     if (m_State.cache_bytes >= 0)
     {
       strBuf += StringUtils::Format(" forward:{} {:2.0f}%",
-                                    StringUtils::SizeToString(m_State.cache_bytes).c_str(),
+                                    StringUtils::SizeToString(m_State.cache_bytes),
                                     m_State.cache_level * 100);
       if (m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
         strBuf += StringUtils::Format(" {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
     }
 
-    strGeneralInfo = StringUtils::Format("Player: a/v:{: 6.3f}, {}", dDiff, strBuf.c_str());
+    strGeneralInfo = StringUtils::Format("Player: a/v:{: 6.3f}, {}", dDiff, strBuf);
   }
 }
 

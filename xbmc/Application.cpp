@@ -608,9 +608,9 @@ bool CApplication::Initialize()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   profileManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
-    StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
-    StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
-    "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
+      StringUtils::Format(g_localizeStrings.Get(177), g_sysinfo.GetAppName()),
+      StringUtils::Format(g_localizeStrings.Get(178), g_sysinfo.GetAppName()),
+      "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
   m_ServiceManager->GetNetwork().WaitForNet();
 
@@ -3734,7 +3734,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
           // migration (incompatible addons) dialog
           auto addonList = StringUtils::Join(disabledAddonNames, ", ");
-          auto msg = StringUtils::Format(g_localizeStrings.Get(24149).c_str(), addonList.c_str());
+          auto msg = StringUtils::Format(g_localizeStrings.Get(24149), addonList);
           HELPERS::ShowOKDialogText(CVariant{24148}, CVariant{std::move(msg)});
           m_incompatibleAddons.clear();
         }

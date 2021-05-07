@@ -1268,7 +1268,7 @@ const std::string CMusicInfoTag::GetContributorsText() const
   std::string strLabel;
   for (const auto& credit : m_musicRoles)
   {
-    strLabel += StringUtils::Format("{}\n", credit.GetArtist().c_str());
+    strLabel += StringUtils::Format("{}\n", credit.GetArtist());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }
@@ -1278,8 +1278,7 @@ const std::string CMusicInfoTag::GetContributorsAndRolesText() const
   std::string strLabel;
   for (const auto& credit : m_musicRoles)
   {
-    strLabel +=
-        StringUtils::Format("{} - {}\n", credit.GetRoleDesc().c_str(), credit.GetArtist().c_str());
+    strLabel += StringUtils::Format("{} - {}\n", credit.GetRoleDesc(), credit.GetArtist());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }

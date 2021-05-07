@@ -237,8 +237,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
           }
         }
         if (!ttlDeviceFilePath.empty())
-          privateDataRef->result.m_strLocation =
-              StringUtils::Format("{}", ttlDeviceFilePath.c_str());
+          privateDataRef->result.m_strLocation = StringUtils::Format("{}", ttlDeviceFilePath);
         else
           privateDataRef->result.m_strLocation = StringUtils::Format("{}", locationId);
 

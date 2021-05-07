@@ -56,13 +56,13 @@ std::string ByFile(SortAttribute attributes, const SortItem &values)
 {
   CURL url(values.at(FieldPath).asString());
 
-  return StringUtils::Format("{} {}", url.GetFileNameWithoutPath().c_str(),
+  return StringUtils::Format("{} {}", url.GetFileNameWithoutPath(),
                              values.at(FieldStartOffset).asInteger());
 }
 
 std::string ByPath(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{} {}", values.at(FieldPath).asString().c_str(),
+  return StringUtils::Format("{} {}", values.at(FieldPath).asString(),
                              values.at(FieldStartOffset).asInteger());
 }
 
@@ -71,14 +71,14 @@ std::string ByLastPlayed(SortAttribute attributes, const SortItem &values)
   if (attributes & SortAttributeIgnoreLabel)
     return values.at(FieldLastPlayed).asString();
 
-  return StringUtils::Format("{} {}", values.at(FieldLastPlayed).asString().c_str(),
-                             ByLabel(attributes, values).c_str());
+  return StringUtils::Format("{} {}", values.at(FieldLastPlayed).asString(),
+                             ByLabel(attributes, values));
 }
 
 std::string ByPlaycount(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldPlaycount).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByDate(SortAttribute attributes, const SortItem &values)
@@ -88,7 +88,7 @@ std::string ByDate(SortAttribute attributes, const SortItem &values)
 
 std::string ByDateAdded(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{} {}", values.at(FieldDateAdded).asString().c_str(),
+  return StringUtils::Format("{} {}", values.at(FieldDateAdded).asString(),
                              (int)values.at(FieldId).asInteger());
 }
 
@@ -100,7 +100,7 @@ std::string BySize(SortAttribute attributes, const SortItem &values)
 std::string ByDriveType(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldDriveType).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByTitle(SortAttribute attributes, const SortItem &values)
@@ -117,8 +117,8 @@ std::string ByAlbum(SortAttribute attributes, const SortItem &values)
   if (attributes & SortAttributeIgnoreArticle)
     album = SortUtils::RemoveArticles(album);
 
-  std::string label = StringUtils::Format(
-      "{} {}", album.c_str(), ArrayToString(attributes, values.at(FieldArtist)).c_str());
+  std::string label =
+      StringUtils::Format("{} {}", album, ArrayToString(attributes, values.at(FieldArtist)));
 
   const CVariant &track = values.at(FieldTrackNumber);
   if (!track.isNull())
@@ -199,7 +199,7 @@ std::string ByTime(SortAttribute attributes, const SortItem &values)
   if (time.isInteger())
     label = StringUtils::Format("{}", (int)time.asInteger());
   else
-    label = StringUtils::Format("{}", time.asString().c_str());
+    label = StringUtils::Format("{}", time.asString());
   return label;
 }
 
@@ -279,25 +279,25 @@ std::string BySortTitle(SortAttribute attributes, const SortItem &values)
 std::string ByRating(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{:f} {}", values.at(FieldRating).asFloat(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByUserRating(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", static_cast<int>(values.at(FieldUserRating).asInteger()),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByVotes(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldVotes).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByTop250(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldTop250).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByMPAA(SortAttribute attributes, const SortItem &values)
@@ -335,7 +335,7 @@ std::string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
   if (title.empty())
     title = ByLabel(attributes, values);
 
-  return StringUtils::Format("{} {}", num, title.c_str());
+  return StringUtils::Format("{} {}", num, title);
 }
 
 std::string BySeason(SortAttribute attributes, const SortItem &values)
@@ -345,19 +345,19 @@ std::string BySeason(SortAttribute attributes, const SortItem &values)
   if (!specialSeason.isNull())
     season = (int)specialSeason.asInteger();
 
-  return StringUtils::Format("{} {}", season, ByLabel(attributes, values).c_str());
+  return StringUtils::Format("{} {}", season, ByLabel(attributes, values));
 }
 
 std::string ByNumberOfEpisodes(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldNumberOfEpisodes).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByNumberOfWatchedEpisodes(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldNumberOfWatchedEpisodes).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByTvShowStatus(SortAttribute attributes, const SortItem &values)
@@ -378,43 +378,43 @@ std::string ByProductionCode(SortAttribute attributes, const SortItem &values)
 std::string ByVideoResolution(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldVideoResolution).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByVideoCodec(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{} {}", values.at(FieldVideoCodec).asString().c_str(),
-                             ByLabel(attributes, values).c_str());
+  return StringUtils::Format("{} {}", values.at(FieldVideoCodec).asString(),
+                             ByLabel(attributes, values));
 }
 
 std::string ByVideoAspectRatio(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{:.3f} {}", values.at(FieldVideoAspectRatio).asFloat(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByAudioChannels(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{} {}", (int)values.at(FieldAudioChannels).asInteger(),
-                             ByLabel(attributes, values).c_str());
+                             ByLabel(attributes, values));
 }
 
 std::string ByAudioCodec(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{} {}", values.at(FieldAudioCodec).asString().c_str(),
-                             ByLabel(attributes, values).c_str());
+  return StringUtils::Format("{} {}", values.at(FieldAudioCodec).asString(),
+                             ByLabel(attributes, values));
 }
 
 std::string ByAudioLanguage(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{} {}", values.at(FieldAudioLanguage).asString().c_str(),
-                             ByLabel(attributes, values).c_str());
+  return StringUtils::Format("{} {}", values.at(FieldAudioLanguage).asString(),
+                             ByLabel(attributes, values));
 }
 
 std::string BySubtitleLanguage(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{} {}", values.at(FieldSubtitleLanguage).asString().c_str(),
-                             ByLabel(attributes, values).c_str());
+  return StringUtils::Format("{} {}", values.at(FieldSubtitleLanguage).asString(),
+                             ByLabel(attributes, values));
 }
 
 std::string ByBitrate(SortAttribute attributes, const SortItem &values)

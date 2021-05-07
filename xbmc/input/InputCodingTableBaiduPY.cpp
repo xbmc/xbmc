@@ -51,7 +51,7 @@ void CInputCodingTableBaiduPY::Process()
       std::string data;
       XFILE::CCurlFile http;
       std::string strUrl;
-      strUrl = StringUtils::Format(m_url.c_str(), work.c_str(), m_api_begin, m_api_end);
+      strUrl = StringUtils::Format(m_url, work, m_api_begin, m_api_end);
 
       if (http.Get(strUrl, data))
         HandleResponse(work, data);
