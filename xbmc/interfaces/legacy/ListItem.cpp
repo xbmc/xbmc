@@ -236,7 +236,7 @@ namespace XBMCAddon
 
     void ListItem::setProperties(const Properties& dictionary)
     {
-      for (const auto& it: dictionary)
+      for (const auto& it : dictionary)
         setProperty(it.first.c_str(), it.second);
     }
 
@@ -324,11 +324,9 @@ namespace XBMCAddon
       if (StringUtils::CompareNoCase(type, "video") == 0)
       {
         auto& videotag = *GetVideoInfoTag();
-        for (const auto& it: infoLabels)
+        for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
+          const auto key = StringUtils::ToLower(it.first);
           const InfoLabelValue& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
@@ -378,7 +376,7 @@ namespace XBMCAddon
               throw WrongTypeException("When using \"cast\" or \"castandrole\" you need to supply a list of tuples for the value in the dictionary");
 
             videotag.m_cast.clear();
-            for (const auto& castEntry: alt.later())
+            for (const auto& castEntry : alt.later())
             {
               // castEntry can be a string meaning it's the actor or it can be a tuple meaning it's the
               //  actor and the role.
@@ -396,8 +394,7 @@ namespace XBMCAddon
               throw WrongTypeException("When using \"artist\" you need to supply a list of strings for the value in the dictionary");
 
             videotag.m_artist.clear();
-
-            for (const auto& castEntry: alt.later())
+            for (const auto& castEntry : alt.later())
             {
               const String& actor = castEntry.which() == first ? castEntry.former() : castEntry.later().first();
               videotag.m_artist.push_back(actor);
@@ -483,9 +480,8 @@ namespace XBMCAddon
         std::string type;
         for (auto it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
-          String key = it->first;
-          StringUtils::ToLower(key);
-          const InfoLabelValue& alt = it->second;
+          const auto key = StringUtils::ToLower(it->first);
+          const auto& alt = it->second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           if (key == "mediatype")
@@ -502,10 +498,8 @@ namespace XBMCAddon
         auto& musictag = *item->GetMusicInfoTag();
         for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
-          const InfoLabelValue& alt = it.second;
+          const auto key = StringUtils::ToLower(it.first);
+          const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           //! @todo add the rest of the infolabels
@@ -565,12 +559,10 @@ namespace XBMCAddon
       }
       else if (StringUtils::CompareNoCase(type, "pictures") == 0)
       {
-        for (const auto& it: infoLabels)
+        for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
-          const InfoLabelValue& alt = it.second;
+          const auto key = StringUtils::ToLower(it.first);
+          const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           if (key == "count")
@@ -596,12 +588,10 @@ namespace XBMCAddon
       else if (StringUtils::EqualsNoCase(type, "game"))
       {
         auto& gametag = *item->GetGameInfoTag();
-        for (const auto& it: infoLabels)
+        for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
-          const InfoLabelValue& alt = it.second;
+          const auto key = StringUtils::ToLower(it.first);
+          const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           if (key == "title")
@@ -618,7 +608,7 @@ namespace XBMCAddon
 
             std::vector<std::string> genres;
 
-            for (const auto& genreEntry: alt.later())
+            for (const auto& genreEntry : alt.later())
             {
               const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
               genres.emplace_back(genre);
@@ -638,13 +628,15 @@ namespace XBMCAddon
             gametag.SetGameClient(value);
         }
       }
+      else
+        CLog::Log(LOGWARNING, "ListItem.setInfo: unknown \"type\" parameter value: {}", type);
     } // end ListItem::setInfo
 
     void ListItem::setCast(const std::vector<Properties>& actors)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       GetVideoInfoTag()->m_cast.clear();
-      for (const auto& dictionary: actors)
+      for (const auto& dictionary : actors)
       {
         SActorInfo info;
         for (auto it = dictionary.begin(); it != dictionary.end(); ++it)
@@ -677,7 +669,7 @@ namespace XBMCAddon
         std::string image;
         std::string preview;
         std::string colors;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String& value = it.second;
@@ -714,7 +706,7 @@ namespace XBMCAddon
       if (StringUtils::CompareNoCase(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String value(it.second.c_str());
@@ -739,7 +731,7 @@ namespace XBMCAddon
       else if (StringUtils::CompareNoCase(cType, "audio") == 0)
       {
         CStreamDetailAudio* audio = new CStreamDetailAudio;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String& value = it.second;
@@ -756,7 +748,7 @@ namespace XBMCAddon
       else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
       {
         CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String& value = it.second;
