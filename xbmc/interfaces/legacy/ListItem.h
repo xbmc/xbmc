@@ -641,7 +641,7 @@ namespace XBMCAddon
       /// @brief \python_func{ setInfo(type, infoLabels) }
       /// Sets the listitem's infoLabels.
       ///
-      /// @param type               string - type of
+      /// @param type               string - type of info labels
       /// @param infoLabels         dictionary - pairs of `{ label: value }`
       ///
       /// __Available types__
@@ -1207,6 +1207,18 @@ private:
 
       CVideoInfoTag* GetVideoInfoTag();
       const CVideoInfoTag* GetVideoInfoTag() const;
+
+      void setCountRaw(int count);
+      void setSizeRaw(int64_t size);
+      void setDateTimeRaw(const std::string& dateTime);
+      void setIsFolderRaw(bool isFolder);
+      void setStartOffsetRaw(double startOffset);
+      void setMimeTypeRaw(const std::string& mimetype);
+      void setSpecialSortRaw(std::string specialSort);
+      void setContentLookupRaw(bool enable);
+      void addArtRaw(std::string type, std::string url);
+      void addPropertyRaw(std::string type, CVariant value);
+      void addSubtitlesRaw(const std::vector<std::string>& subtitles);
     };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
