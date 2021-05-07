@@ -1025,7 +1025,7 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(StringUtils::Format("{}", current), current));
+      list.insert(it, IntegerSettingOption(std::to_string(current), current));
     }
   }
   else
@@ -1099,7 +1099,7 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(StringUtils::Format("{}", current), current));
+      list.insert(it, IntegerSettingOption(std::to_string(current), current));
     }
   }
   else

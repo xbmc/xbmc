@@ -257,7 +257,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("{}", type.priorities[i].iValue);
+        strDescr = std::to_string(type.priorities[i].iValue);
       }
       m_priorityValues.emplace_back(strDescr, type.priorities[i].iValue);
     }
@@ -268,7 +268,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
   {
     // No values given by addon, but priority supported. Use default values 1..100
     for (int i = 1; i < 101; ++i)
-      m_priorityValues.emplace_back(StringUtils::Format("{}", i), i);
+      m_priorityValues.emplace_back(std::to_string(i), i);
 
     m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
   }
@@ -296,7 +296,7 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("{}", iValue);
+        strDescr = std::to_string(iValue);
       }
       m_lifetimeValues.emplace_back(strDescr, iValue);
     }
@@ -336,7 +336,7 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("{}", type.maxRecordings[i].iValue);
+        strDescr = std::to_string(type.maxRecordings[i].iValue);
       }
       m_maxRecordingsValues.emplace_back(strDescr, type.maxRecordings[i].iValue);
     }
@@ -361,7 +361,7 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("{}", type.preventDuplicateEpisodes[i].iValue);
+        strDescr = std::to_string(type.preventDuplicateEpisodes[i].iValue);
       }
       m_preventDupEpisodesValues.emplace_back(strDescr, type.preventDuplicateEpisodes[i].iValue);
     }

@@ -1878,7 +1878,7 @@ void CCurlFile::SetRequestHeader(const std::string& header, const std::string& v
 
 void CCurlFile::SetRequestHeader(const std::string& header, long value)
 {
-  m_requestheaders[header] = StringUtils::Format("{}", value);
+  m_requestheaders[header] = std::to_string(value);
 }
 
 std::string CCurlFile::GetURL(void)

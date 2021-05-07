@@ -175,7 +175,7 @@ bool CFavouritesService::IsFavourited(const CFileItem& item, int contextWindow) 
 
 std::string CFavouritesService::GetExecutePath(const CFileItem &item, int contextWindow) const
 {
-  return GetExecutePath(item, StringUtils::Format("{}", contextWindow));
+  return GetExecutePath(item, std::to_string(contextWindow));
 }
 
 std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std::string &contextWindow) const

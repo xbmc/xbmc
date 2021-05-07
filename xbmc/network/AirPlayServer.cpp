@@ -612,7 +612,7 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( std::string& reverseHeader
 void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(std::string& responseHeader, std::string& responseBody)
 {
   int16_t random=rand();
-  std::string randomStr = StringUtils::Format("{}", random);
+  std::string randomStr = std::to_string(random);
   m_authNonce=CDigest::Calculate(CDigest::Type::MD5, randomStr);
   responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce);
   responseBody.clear();

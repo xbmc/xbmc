@@ -1237,7 +1237,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
       // Format hour string with the length of the mask
       std::string str;
       if (partLength==1)
-        str = StringUtils::Format("{}", hour);
+        str = std::to_string(hour);
       else
         str = StringUtils::Format("{:02}", hour);
 
@@ -1264,7 +1264,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
       // Format minute string with the length of the mask
       std::string str;
       if (partLength==1)
-        str = StringUtils::Format("{}", dateTime.minute);
+        str = std::to_string(dateTime.minute);
       else
         str = StringUtils::Format("{:02}", dateTime.minute);
 
@@ -1293,7 +1293,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
         // Format seconds string with the length of the mask
         std::string str;
         if (partLength==1)
-          str = StringUtils::Format("{}", dateTime.second);
+          str = std::to_string(dateTime.second);
         else
           str = StringUtils::Format("{:02}", dateTime.second);
 
@@ -1386,7 +1386,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str;
       if (partLength==1) // single-digit number
-        str = StringUtils::Format("{}", dateTime.day);
+        str = std::to_string(dateTime.day);
       else if (partLength==2) // two-digit number
         str = StringUtils::Format("{:02}", dateTime.day);
       else // Day of week string
@@ -1418,7 +1418,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str;
       if (partLength==1) // single-digit number
-        str = StringUtils::Format("{}", dateTime.month);
+        str = std::to_string(dateTime.month);
       else if (partLength==2) // two-digit number
         str = StringUtils::Format("{:02}", dateTime.month);
       else // Month string
@@ -1448,7 +1448,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       }
 
       // Format string with the length of the mask
-      std::string str = StringUtils::Format("{}", dateTime.year); // four-digit number
+      std::string str = std::to_string(dateTime.year); // four-digit number
       if (partLength <= 2)
         str.erase(0, 2); // two-digit number
 

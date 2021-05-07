@@ -288,10 +288,10 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
     std::string buffer;
 
-    buffer = StringUtils::Format("{}", data["volume"].asInteger());
+    buffer = std::to_string(data["volume"].asInteger());
     rct->SetStateVariable("Volume", buffer.c_str());
 
-    buffer = StringUtils::Format("{}", 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+    buffer = std::to_string(256 * (data["volume"].asInteger() * 60 - 60) / 100);
     rct->SetStateVariable("VolumeDb", buffer.c_str());
 
     rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
@@ -350,9 +350,9 @@ CUPnPRenderer::UpdateState()
         if (slideshow)
         {
           std::string index;
-          index = StringUtils::Format("{}", slideshow->NumSlides());
+          index = std::to_string(slideshow->NumSlides());
           avt->SetStateVariable("NumberOfTracks", index.c_str());
-          index = StringUtils::Format("{}", slideshow->CurrentSlide());
+          index = std::to_string(slideshow->CurrentSlide());
           avt->SetStateVariable("CurrentTrack", index.c_str());
 
         }

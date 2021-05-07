@@ -322,7 +322,7 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
   CSingleLock lock(m_critSection);
   if (m_strIconPath != strIconPath)
   {
-    m_strIconPath = StringUtils::Format("{}", strIconPath);
+    m_strIconPath = strIconPath;
 
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
@@ -638,7 +638,7 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
   {
     bool bCleanEPG = !m_strEPGScraper.empty() || strScraper.empty();
 
-    m_strEPGScraper = StringUtils::Format("{}", strScraper);
+    m_strEPGScraper = strScraper;
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */

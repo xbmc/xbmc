@@ -497,7 +497,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingInt> intSetting =
             std::static_pointer_cast<CSettingInt>(itr.second.m_setting);
         if (intSetting)
-          strValue = StringUtils::Format("{}", intSetting->GetValue());
+          strValue = std::to_string(intSetting->GetValue());
       }
       break;
       case SettingType::Number:
@@ -513,7 +513,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingBool> boolSetting =
             std::static_pointer_cast<CSettingBool>(itr.second.m_setting);
         if (boolSetting)
-          strValue = StringUtils::Format("{}", boolSetting->GetValue() ? 1 : 0);
+          strValue = std::to_string(boolSetting->GetValue() ? 1 : 0);
       }
       break;
       default:

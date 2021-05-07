@@ -951,7 +951,7 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
 
     std::string strPlaycount = "NULL";
     if (playcount > 0)
-      strPlaycount = StringUtils::Format("{}", playcount);
+      strPlaycount = std::to_string(playcount);
     std::string strLastPlayed = "NULL";
     if (lastPlayed.IsValid())
       strLastPlayed = "'" + lastPlayed.GetAsDBDateTime() + "'";
@@ -6571,7 +6571,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFile
       if (!isAlbum)
       {
         itemUrl.AddOption("albumid", idMVideo);
-        path += StringUtils::Format("{}", idMVideo);
+        path += std::to_string(idMVideo);
 
         strSQL = PrepareSQL(
             "SELECT type, url FROM art WHERE media_id = %i AND media_type = 'musicvideo'",
@@ -7040,7 +7040,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
           // check path
           if (g_passwordManager.IsDatabasePathUnlocked(m_pDS->fv("path.strPath").get_asString(),*CMediaSourceSettings::GetInstance().GetSources("video")))
           {
-            std::string year = StringUtils::Format("{}", lYear);
+            std::string year = std::to_string(lYear);
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapYears.insert(std::pair<int, std::pair<std::string,int> >(lYear, std::pair<std::string,int>(year,m_pDS->fv(2).get_asInt())));
             else
@@ -7083,7 +7083,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
           if (time.IsValid())
           {
             lYear = time.GetYear();
-            strLabel = StringUtils::Format("{}", lYear);
+            strLabel = std::to_string(lYear);
           }
         }
         if (lYear == 0)
@@ -7404,7 +7404,7 @@ std::string CVideoDatabase::GetItemById(const std::string &itemType, int id)
   if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenreById(id);
   else if (StringUtils::EqualsNoCase(itemType, "years"))
-    return StringUtils::Format("{}", id);
+    return std::to_string(id);
   else if (StringUtils::EqualsNoCase(itemType, "actors") ||
            StringUtils::EqualsNoCase(itemType, "directors") ||
            StringUtils::EqualsNoCase(itemType, "artists"))
@@ -7519,7 +7519,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         CFileItemPtr pItem(new CFileItem(movie));
 
         CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("{}", movie.m_iDbId);
+        std::string path = std::to_string(movie.m_iDbId);
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
         pItem->SetDynPath(movie.m_strFileNameAndPath);
@@ -7765,7 +7765,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
                                      record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt(),
                                      episode.m_iSeason, idEpisode);
         else
-          path = StringUtils::Format("{}", idEpisode);
+          path = std::to_string(idEpisode);
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
         pItem->SetDynPath(episode.m_strFileNameAndPath);
@@ -8532,7 +8532,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const std::string& strSearch, CFi
         }
 
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
-      std::string strDir = StringUtils::Format("{}", m_pDS->fv(1).get_asInt());
+      std::string strDir = std::to_string(m_pDS->fv(1).get_asInt());
       pItem->SetPath("videodb://musicvideos/titles/"+ strDir);
       pItem->m_bIsFolder=false;
       items.Add(pItem);
@@ -8667,7 +8667,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
         CFileItemPtr item(new CFileItem(musicvideo));
 
         CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("{}", record->at(0).get_asInt());
+        std::string path = std::to_string(record->at(0).get_asInt());
         itemUrl.AppendPath(path);
         item->SetPath(itemUrl.ToString());
 

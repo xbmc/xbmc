@@ -239,7 +239,7 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
   if (VKeyFound)
     keyname.append(keytable.keyname);
   else
-    keyname += StringUtils::Format("{}", keyid);
+    keyname += std::to_string(keyid);
 
   // in case this might be an universalremote keyid
   // we also print the possible corresponding obc code

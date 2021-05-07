@@ -42,7 +42,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
                                  GetType(dev->config[0].interface[0].altsetting[0].bInterfaceClass) :
                                  GetType(dev->descriptor.bDeviceClass);
 #ifdef TARGET_FREEBSD
-      result.m_strLocation = StringUtils::Format("{}", dev->filename);
+      result.m_strLocation = std::to_string(dev->filename);
 #else
       result.m_strLocation = StringUtils::Format("/bus{}/dev{}", bus->dirname, dev->filename);
 #endif

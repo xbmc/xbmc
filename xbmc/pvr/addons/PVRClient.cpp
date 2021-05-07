@@ -2085,7 +2085,7 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("{}", iValue);
+        strDescr = std::to_string(iValue);
       }
       m_recordingsLifetimeValues.emplace_back(strDescr, iValue);
     }

@@ -707,7 +707,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
-  value["votes"] = StringUtils::Format("{}", GetRating().votes);
+  value["votes"] = std::to_string(GetRating().votes);
   value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);

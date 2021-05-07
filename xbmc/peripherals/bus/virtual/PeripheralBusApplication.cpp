@@ -79,5 +79,5 @@ void CPeripheralBusApplication::GetDirectory(const std::string& strPath, CFileIt
 
 std::string CPeripheralBusApplication::MakeLocation(unsigned int controllerIndex) const
 {
-  return StringUtils::Format("{}", controllerIndex);
+  return std::to_string(controllerIndex);
 }

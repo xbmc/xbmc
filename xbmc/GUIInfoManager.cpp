@@ -10827,7 +10827,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
           return StringUtils::SizeToString(item->m_dwSize);
         break;
       case LISTITEM_PROGRAM_COUNT:
-        return StringUtils::Format("{}", item->m_iprogramCount);
+        return std::to_string(item->m_iprogramCount);
       case LISTITEM_ACTUAL_ICON:
         return item->GetArt("icon");
       case LISTITEM_ICON:

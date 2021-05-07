@@ -444,7 +444,7 @@ MHD_RESULT CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler
   // add MHD_HTTP_HEADER_CONTENT_LENGTH
   if (responseDetails.totalLength > 0)
     handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
-                               StringUtils::Format("{}", responseDetails.totalLength));
+                               std::to_string(responseDetails.totalLength));
 
   // add all headers set by the request handler
   for (const auto& it : responseDetails.headers)
@@ -768,7 +768,7 @@ MHD_RESULT CWebServer::CreateRangedMemoryDownloadResponse(
 
   // add Content-Length header
   handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
-                             StringUtils::Format("{}", static_cast<uint64_t>(result.size())));
+                             std::to_string(static_cast<uint64_t>(result.size())));
 
   // finally create the response
   return CreateMemoryDownloadResponse(request.connection, result.c_str(), result.size(), false,
@@ -928,8 +928,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
       return MHD_NO;
     }
 
-    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
-                               StringUtils::Format("{}", fileLength));
+    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, std::to_string(fileLength));
   }
 
   // set the Content-Type header

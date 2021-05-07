@@ -204,7 +204,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       if (movie->m_firstAired.IsValid())
         value = movie->m_firstAired.GetAsLocalizedDate();
       else if (movie->HasYear())
-        value = StringUtils::Format("{}", movie->GetYear());
+        value = std::to_string(movie->GetYear());
     }
     break;
   case 'F': // filename
@@ -250,10 +250,10 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::Format("{:.1f}", movie->GetRating().rating);
     break;
   case 'C': // programs count
-    value = StringUtils::Format("{}", item->m_iprogramCount);
+    value = std::to_string(item->m_iprogramCount);
     break;
   case 'c': // relevance
-    value = StringUtils::Format("{}", movie->m_relevance);
+    value = std::to_string(movie->m_relevance);
     break;
   case 'K':
     value = item->m_strTitle;
@@ -299,9 +299,9 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'V': // Playcount
     if (music)
-      value = StringUtils::Format("{}", music->GetPlayCount());
+      value = std::to_string(music->GetPlayCount());
     if (movie)
-      value = StringUtils::Format("{}", movie->GetPlayCount());
+      value = std::to_string(movie->GetPlayCount());
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )
@@ -321,7 +321,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'b': // Total number of discs
     if (music)
-      value = StringUtils::Format("{}", music->GetTotalDiscs());
+      value = std::to_string(music->GetTotalDiscs());
     break;
   case 'e': // Original release date
     if (music)
@@ -343,9 +343,9 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'r': // userrating
     if (movie && movie->m_iUserRating != 0)
-      value = StringUtils::Format("{}", movie->m_iUserRating);
+      value = std::to_string(movie->m_iUserRating);
     if (music && music->GetUserrating() != 0)
-      value = StringUtils::Format("{}", music->GetUserrating());
+      value = std::to_string(music->GetUserrating());
     break;
   case 't': // Date Taken
     if (pic && pic->GetDateTimeTaken().IsValid())
@@ -369,7 +369,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'f': // BPM
     if (music)
-      value = StringUtils::Format("{}", music->GetBPM());
+      value = std::to_string(music->GetBPM());
     break;
   }
   if (!value.empty())

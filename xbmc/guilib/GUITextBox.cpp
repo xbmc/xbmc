@@ -411,10 +411,10 @@ std::string CGUITextBox::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label = StringUtils::Format("{}", GetNumPages());
+    label = std::to_string(GetNumPages());
     break;
   case CONTAINER_CURRENT_PAGE:
-    label = StringUtils::Format("{}", GetCurrentPage());
+    label = std::to_string(GetCurrentPage());
     break;
   default:
     break;

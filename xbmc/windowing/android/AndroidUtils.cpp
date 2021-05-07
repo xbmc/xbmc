@@ -83,7 +83,7 @@ static void fetchDisplayModes()
         s_hasModeApi = true;
 
         CLog::Log(LOGDEBUG, "CAndroidUtils: current mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
-        s_res_cur_displayMode.strId = StringUtils::Format("{}", m.getModeId());
+        s_res_cur_displayMode.strId = std::to_string(m.getModeId());
         s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth = m.getPhysicalWidth();
         s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
         s_res_cur_displayMode.fRefreshRate = m.getRefreshRate();
@@ -102,7 +102,7 @@ static void fetchDisplayModes()
           CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
 
           RESOLUTION_INFO res;
-          res.strId = StringUtils::Format("{}", m.getModeId());
+          res.strId = std::to_string(m.getModeId());
           res.iWidth = res.iScreenWidth = m.getPhysicalWidth();
           res.iHeight = res.iScreenHeight = m.getPhysicalHeight();
           res.fRefreshRate = m.getRefreshRate();

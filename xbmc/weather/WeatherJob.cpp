@@ -60,7 +60,7 @@ bool CWeatherJob::DoWork()
   std::vector<std::string> argv;
   argv.push_back(addon->LibPath());
 
-  std::string strSetting = StringUtils::Format("{}", m_location);
+  std::string strSetting = std::to_string(m_location);
   argv.push_back(strSetting);
 
   // Download our weather

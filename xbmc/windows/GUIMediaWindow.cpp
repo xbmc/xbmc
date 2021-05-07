@@ -215,7 +215,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
   {
-    std::string filter = StringUtils::Format("{}", action.GetID() - ACTION_FILTER_SMS2 + 2);
+    std::string filter = std::to_string(action.GetID() - ACTION_FILTER_SMS2 + 2);
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);

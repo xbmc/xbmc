@@ -11696,7 +11696,7 @@ std::string CMusicDatabase::GetItemById(const std::string& itemType, int id)
   else if (StringUtils::EqualsNoCase(itemType, "sources"))
     return GetSourceById(id);
   else if (StringUtils::EqualsNoCase(itemType, "years"))
-    return StringUtils::Format("{}", id);
+    return std::to_string(id);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistById(id);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))

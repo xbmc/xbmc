@@ -524,7 +524,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   InitSettings(dbSettings);
 
   std::string dbName = dbSettings.name;
-  dbName += StringUtils::Format("{}", GetSchemaVersion());
+  dbName += std::to_string(GetSchemaVersion());
   return Connect(dbName, dbSettings, false);
 }
 

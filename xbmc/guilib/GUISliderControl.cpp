@@ -726,7 +726,7 @@ std::string CGUISliderControl::GetDescription() const
     if (m_rangeSelection)
       description = StringUtils::Format("[{}, {}]", m_intValues[0], m_intValues[1]);
     else
-      description = StringUtils::Format("{}", m_intValues[0]);
+      description = std::to_string(m_intValues[0]);
   }
   else
   {

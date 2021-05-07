@@ -426,7 +426,7 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     }
     else
     {
-      text = StringUtils::Format("{}", m_iValue);
+      text = std::to_string(m_iValue);
     }
   }
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
@@ -460,7 +460,7 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
       }
       else
       {
-        text = StringUtils::Format("{}", m_vecLabels[m_iValue]);
+        text = m_vecLabels[m_iValue];
       }
     }
     else

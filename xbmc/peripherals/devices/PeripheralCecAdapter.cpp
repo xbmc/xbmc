@@ -1587,7 +1587,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     CLog::Log(LOGDEBUG,
               "%s - CEC capable amplifier found (%s). volume will be controlled on the amp",
               __FUNCTION__, ampName.c_str());
-    strAmpName += StringUtils::Format("{}", ampName);
+    strAmpName += ampName;
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);

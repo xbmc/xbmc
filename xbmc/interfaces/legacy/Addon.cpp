@@ -150,7 +150,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
-      if (UpdateSettingInActiveDialog(id, StringUtils::Format("{}", value)))
+      if (UpdateSettingInActiveDialog(id, std::to_string(value)))
         return true;
 
       if (!addon->UpdateSettingInt(id, value))

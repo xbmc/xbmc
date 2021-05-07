@@ -294,7 +294,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_STEREOSCOPIC_MODE:
     {
       int iStereoMode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
-      value = StringUtils::Format("{}", iStereoMode);
+      value = std::to_string(iStereoMode);
       return true;
     }
     case SYSTEM_GET_CORE_USAGE:

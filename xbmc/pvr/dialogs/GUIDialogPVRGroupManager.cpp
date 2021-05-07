@@ -475,7 +475,7 @@ void CGUIDialogPVRGroupManager::Update()
     }
     else
     {
-      std::string strNewLabel = StringUtils::Format("{}", g_localizeStrings.Get(19219));
+      std::string strNewLabel = g_localizeStrings.Get(19219);
       SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
 
       strNewLabel =

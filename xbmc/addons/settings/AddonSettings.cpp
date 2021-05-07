@@ -492,7 +492,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
           category->AddGroup(group);
 
           // and create a new one
-          group.reset(new CSettingGroup(StringUtils::Format("{}", groupId), GetSettingsManager()));
+          group.reset(new CSettingGroup(std::to_string(groupId), GetSettingsManager()));
           groupId += 1;
         }
 

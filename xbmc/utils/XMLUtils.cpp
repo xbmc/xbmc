@@ -287,13 +287,13 @@ TiXmlNode* XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const s
 
 TiXmlNode* XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
 {
-  std::string strValue = StringUtils::Format("{}", value);
+  std::string strValue = std::to_string(value);
   return SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
 {
-  std::string strValue = StringUtils::Format("{}", value);
+  std::string strValue = std::to_string(value);
   SetString(pRootNode, strTag, strValue);
 }
 

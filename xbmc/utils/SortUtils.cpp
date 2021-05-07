@@ -94,7 +94,7 @@ std::string ByDateAdded(SortAttribute attributes, const SortItem &values)
 
 std::string BySize(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", values.at(FieldSize).asInteger());
+  return std::to_string(values.at(FieldSize).asInteger());
 }
 
 std::string ByDriveType(SortAttribute attributes, const SortItem &values)
@@ -184,7 +184,7 @@ std::string ByArtistThenYear(SortAttribute attributes, const SortItem &values)
 
 std::string ByTrackNumber(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", (int)values.at(FieldTrackNumber).asInteger());
+  return std::to_string((int)values.at(FieldTrackNumber).asInteger());
 }
 
 std::string ByTotalDiscs(SortAttribute attributes, const SortItem& values)
@@ -197,15 +197,15 @@ std::string ByTime(SortAttribute attributes, const SortItem &values)
   std::string label;
   const CVariant &time = values.at(FieldTime);
   if (time.isInteger())
-    label = StringUtils::Format("{}", (int)time.asInteger());
+    label = std::to_string((int)time.asInteger());
   else
-    label = StringUtils::Format("{}", time.asString());
+    label = time.asString();
   return label;
 }
 
 std::string ByProgramCount(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", (int)values.at(FieldProgramCount).asInteger());
+  return std::to_string((int)values.at(FieldProgramCount).asInteger());
 }
 
 std::string ByPlaylistOrder(SortAttribute attributes, const SortItem &values)
@@ -231,7 +231,7 @@ std::string ByYear(SortAttribute attributes, const SortItem &values)
   if (!airDate.isNull() && !airDate.asString().empty())
     label = airDate.asString() + " ";
 
-  label += StringUtils::Format("{}", (int)values.at(FieldYear).asInteger());
+  label += std::to_string((int)values.at(FieldYear).asInteger());
 
   const CVariant &album = values.at(FieldAlbum);
   if (!album.isNull())
@@ -419,17 +419,17 @@ std::string BySubtitleLanguage(SortAttribute attributes, const SortItem &values)
 
 std::string ByBitrate(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", values.at(FieldBitrate).asInteger());
+  return std::to_string(values.at(FieldBitrate).asInteger());
 }
 
 std::string ByListeners(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", values.at(FieldListeners).asInteger());
+  return std::to_string(values.at(FieldListeners).asInteger());
 }
 
 std::string ByRandom(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", CUtil::GetRandomNumber());
+  return std::to_string(CUtil::GetRandomNumber());
 }
 
 std::string ByChannel(SortAttribute attributes, const SortItem &values)
@@ -454,7 +454,7 @@ std::string ByDateTaken(SortAttribute attributes, const SortItem &values)
 
 std::string ByRelevance(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("{}", (int)values.at(FieldRelevance).asInteger());
+  return std::to_string((int)values.at(FieldRelevance).asInteger());
 }
 
 std::string ByInstallDate(SortAttribute attributes, const SortItem &values)

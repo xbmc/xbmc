@@ -2229,7 +2229,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
       }
       else if (discnum > 0)
         // Append disc number when candidate art type (and file) not have it
-        strCandidate += StringUtils::Format("{}", discnum);
+        strCandidate += std::to_string(discnum);
 
       if (art.find(strCandidate) == art.end())
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));

@@ -287,7 +287,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       int iLevel = g_application.GetAppPlayer().GetCacheLevel();
       if (iLevel >= 0)
       {
-        value = StringUtils::Format("{}", iLevel);
+        value = std::to_string(iLevel);
         return true;
       }
       break;

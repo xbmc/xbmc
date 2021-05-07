@@ -726,8 +726,8 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
 #elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
   osNameVer = GetOsName() + " " + GetOsVersion();
 #elif defined(TARGET_ANDROID)
-  osNameVer = GetOsName() + " " + GetOsVersion() + " API level " +
-              StringUtils::Format("{}", CJNIBuild::SDK_INT);
+  osNameVer =
+      GetOsName() + " " + GetOsVersion() + " API level " + std::to_string(CJNIBuild::SDK_INT);
 #elif defined(TARGET_LINUX)
   osNameVer = getValueFromOs_release("PRETTY_NAME");
   if (osNameVer.empty())
@@ -1205,7 +1205,7 @@ std::string CSysInfo::GetUserAgent()
   }
 #endif
 
-  result += " App_Bitness/" + StringUtils::Format("{}", GetXbmcBitness());
+  result += " App_Bitness/" + std::to_string(GetXbmcBitness());
 
   std::string fullVer(CSysInfo::GetVersion());
   StringUtils::Replace(fullVer, ' ', '-');
