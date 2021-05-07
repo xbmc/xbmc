@@ -20,10 +20,11 @@ class CJob;
  \ingroup jobs
  \brief Callback interface for asynchronous jobs.
 
- Used by clients of the CJobManager to receive progress and completion notification of jobs.
- Clients of small jobs wishing to perform actions on job completion should implement the
- IJobCallback::OnJobComplete() function.  Clients of larger jobs may choose to implement the
- IJobCallback::OnJobProgress() function in order to be kept informed of progress.
+ Used by clients of the CJobManager to receive progress, abort and completion notification of jobs.
+ Clients of small jobs wishing to perform actions on job completion or abort should implement the
+ IJobCallback::OnJobComplete() and/or IJobCallback::OnJobAbort() function.  Clients of larger jobs
+ may choose to implement the IJobCallback::OnJobProgress() function in order to be kept informed of
+ progress.
 
  \sa CJobManager and CJob
  */
@@ -52,6 +53,19 @@ public:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)=0;
 
   /*!
+   \brief An optional callback function used when a job will be aborted.
+
+   OnJobAbort is called whenever a job gets aborted before or while being executed.
+   Job's DoWork method will not be called, OnJobComplete will not be called.  The job instance will
+   be destroyed by the caller after calling this function.
+
+   \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param job the job that has been aborted.
+   \sa CJobManager and CJob
+   */
+  virtual void OnJobAbort(unsigned int jobID, CJob* job) {}
+
+  /*!
    \brief An optional callback function that a job may call while processing.
 
    OnJobProgress may be called periodically by a job during it's DoWork() function.  It is used
@@ -63,7 +77,12 @@ public:
    \param job the job that has been processed.
    \sa CJobManager and CJob
    */
-  virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) {};
+  virtual void OnJobProgress(unsigned int jobID,
+                             unsigned int progress,
+                             unsigned int total,
+                             const CJob* job)
+  {
+  }
 };
 
 class CJobManager;
@@ -106,9 +125,9 @@ public:
   /*!
    \brief Destructor for job objects.
 
-   Jobs are destroyed by the CJobManager after the OnJobComplete() callback is complete.
-   CJob subclasses  should therefore supply a virtual destructor to cleanup any memory allocated by
-   complete or cancelled jobs.
+   Jobs are destroyed by the CJobManager after the OnJobComplete() or OnJobAbort() callback is
+   complete.  CJob subclasses should therefore supply a virtual destructor to cleanup any memory
+   allocated by complete or cancelled jobs.
 
    \sa CJobManager
    */
