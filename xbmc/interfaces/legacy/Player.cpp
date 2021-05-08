@@ -383,7 +383,7 @@ namespace XBMCAddon
       if (tag)
         return new InfoTagMusic(tag);
 
-      return new InfoTagMusic();
+      return new InfoTagMusic(true);
     }
 
     void Player::updateInfoTag(const XBMCAddon::xbmcgui::ListItem* item)

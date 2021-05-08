@@ -8,6 +8,7 @@
 
 #include "InfoTagMusic.h"
 
+#include "AddonUtils.h"
 #include "ServiceBroker.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
@@ -19,16 +20,18 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    InfoTagMusic::InfoTagMusic() : infoTag(new MUSIC_INFO::CMusicInfoTag()), owned(true)
+    InfoTagMusic::InfoTagMusic(bool offscreen /* = false */)
+      : infoTag(new MUSIC_INFO::CMusicInfoTag()), offscreen(offscreen), owned(true)
     {
     }
 
-    InfoTagMusic::InfoTagMusic(const MUSIC_INFO::CMusicInfoTag* tag) : InfoTagMusic()
+    InfoTagMusic::InfoTagMusic(const MUSIC_INFO::CMusicInfoTag* tag) : InfoTagMusic(true)
     {
       *infoTag = *tag;
     }
 
-    InfoTagMusic::InfoTagMusic(MUSIC_INFO::CMusicInfoTag* tag) : infoTag(tag), owned(false)
+    InfoTagMusic::InfoTagMusic(MUSIC_INFO::CMusicInfoTag* tag, bool offscreen /* = false */)
+      : infoTag(tag), offscreen(offscreen), owned(false)
     {
     }
 
