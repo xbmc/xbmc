@@ -9,7 +9,11 @@
 #pragma once
 
 #include "AddonClass.h"
-#include "music/tags/MusicInfoTag.h"
+
+namespace MUSIC_INFO
+{
+class CMusicInfoTag;
+}
 
 namespace XBMCAddon
 {
@@ -23,7 +27,7 @@ namespace XBMCAddon
     ///
     /// \python_class{ xbmc.InfoTagMusic() }
     ///
-    /// To get music info tag data of a music item.
+    /// Access and / or modify the music metadata of a ListItem.
     ///
     ///
     ///-------------------------------------------------------------------------
@@ -42,10 +46,12 @@ namespace XBMCAddon
     {
     private:
       MUSIC_INFO::CMusicInfoTag* infoTag;
+      bool owned;
 
     public:
 #ifndef SWIG
-      explicit InfoTagMusic(const MUSIC_INFO::CMusicInfoTag& tag);
+      explicit InfoTagMusic(const MUSIC_INFO::CMusicInfoTag* tag);
+      explicit InfoTagMusic(MUSIC_INFO::CMusicInfoTag* tag);
 #endif
       InfoTagMusic();
       ~InfoTagMusic() override;

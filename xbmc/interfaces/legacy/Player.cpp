@@ -381,7 +381,7 @@ namespace XBMCAddon
 
       const MUSIC_INFO::CMusicInfoTag* tag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
       if (tag)
-        return new InfoTagMusic(*tag);
+        return new InfoTagMusic(tag);
 
       return new InfoTagMusic();
     }

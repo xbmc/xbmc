@@ -888,9 +888,7 @@ namespace XBMCAddon
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      if (item->HasMusicInfoTag())
-        return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
-      return new xbmc::InfoTagMusic();
+      return new xbmc::InfoTagMusic(item->GetMusicInfoTag());
     }
 
     xbmc::InfoTagPicture* ListItem::getPictureInfoTag()

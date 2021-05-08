@@ -9,6 +9,7 @@
 #include "InfoTagMusic.h"
 
 #include "ServiceBroker.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -18,20 +19,23 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    InfoTagMusic::InfoTagMusic()
+    InfoTagMusic::InfoTagMusic() : infoTag(new MUSIC_INFO::CMusicInfoTag()), owned(true)
     {
-      infoTag = new MUSIC_INFO::CMusicInfoTag();
     }
 
-    InfoTagMusic::InfoTagMusic(const MUSIC_INFO::CMusicInfoTag& tag)
+    InfoTagMusic::InfoTagMusic(const MUSIC_INFO::CMusicInfoTag* tag) : InfoTagMusic()
     {
-      infoTag = new MUSIC_INFO::CMusicInfoTag();
-      *infoTag = tag;
+      *infoTag = *tag;
+    }
+
+    InfoTagMusic::InfoTagMusic(MUSIC_INFO::CMusicInfoTag* tag) : infoTag(tag), owned(false)
+    {
     }
 
     InfoTagMusic::~InfoTagMusic()
     {
-      delete infoTag;
+      if (owned)
+        delete infoTag;
     }
 
     int InfoTagMusic::getDbId()
