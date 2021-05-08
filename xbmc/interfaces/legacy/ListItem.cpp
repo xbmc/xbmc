@@ -545,25 +545,11 @@ namespace XBMCAddon
       }
       else if (StringUtils::CompareNoCase(type, "music") == 0)
       {
-        std::string type;
-        for (auto it = infoLabels.begin(); it != infoLabels.end(); ++it)
-        {
-          const auto key = StringUtils::ToLower(it->first);
-          const auto& alt = it->second;
-          const String value(alt.which() == first ? alt.former() : emptyString);
+        String mediaType;
+        int dbId = -1;
 
-          if (key == "mediatype")
-          {
-            if (CMediaTypes::IsValidMediaType(value))
-            {
-              type = value;
-              item->GetMusicInfoTag()->SetType(value);
-            }
-            else
-              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value);
-          }
-        }
-        auto& musictag = *item->GetMusicInfoTag();
+        using InfoTagMusic = xbmc::InfoTagMusic;
+        auto musictag = GetMusicInfoTag();
         for (const auto& it : infoLabels)
         {
           const auto key = StringUtils::ToLower(it.first);
@@ -571,58 +557,79 @@ namespace XBMCAddon
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           //! @todo add the rest of the infolabels
-          if (key == "dbid" && !type.empty())
-            musictag.SetDatabaseId(static_cast<int>(strtol(value.c_str(), NULL, 10)), type);
-          else if (key == "tracknumber")
-            musictag.SetTrackNumber(strtol(value.c_str(), NULL, 10));
-          else if (key == "discnumber")
-            musictag.SetDiscNumber(strtol(value.c_str(), nullptr, 10));
-          else if (key == "count")
+          if (key == "count")
             setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
             setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
-          else if (key == "duration")
-            musictag.SetDuration(strtol(value.c_str(), nullptr, 10));
-          else if (key == "year")
-            musictag.SetYear(strtol(value.c_str(), nullptr, 10));
-          else if (key == "listeners")
-            musictag.SetListeners(strtol(value.c_str(), nullptr, 10));
-          else if (key == "playcount")
-            musictag.SetPlayCount(strtol(value.c_str(), nullptr, 10));
-          else if (key == "genre")
-            musictag.SetGenre(value);
-          else if (key == "album")
-            musictag.SetAlbum(value);
-          else if (key == "artist")
-            musictag.SetArtist(value);
-          else if (key == "title")
-            musictag.SetTitle(value);
-          else if (key == "rating")
-            musictag.SetRating(static_cast<float>(strtod(value.c_str(), nullptr)));
-          else if (key == "userrating")
-            musictag.SetUserrating(strtol(value.c_str(), nullptr, 10));
-          else if (key == "lyrics")
-            musictag.SetLyrics(value);
-          else if (key == "lastplayed")
-            musictag.SetLastPlayed(value);
-          else if (key == "musicbrainztrackid")
-            musictag.SetMusicBrainzTrackID(value);
-          else if (key == "musicbrainzartistid")
-            musictag.SetMusicBrainzArtistID(StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
-          else if (key == "musicbrainzalbumid")
-            musictag.SetMusicBrainzAlbumID(value);
-          else if (key == "musicbrainzalbumartistid")
-            musictag.SetMusicBrainzAlbumArtistID(StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
-          else if (key == "comment")
-            musictag.SetComment(value);
           else if (key == "date")
             setDateTimeRaw(value);
-          else if (key != "mediatype")
-            CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key);
+          else
+          {
+            hasDeprecatedInfoLabel = true;
+
+            if (key == "dbid")
+              dbId = static_cast<int>(strtol(value.c_str(), NULL, 10));
+            else if (key == "mediatype")
+              mediaType = value;
+            else if (key == "tracknumber")
+              InfoTagMusic::setTrackRaw(musictag, strtol(value.c_str(), NULL, 10));
+            else if (key == "discnumber")
+              InfoTagMusic::setDiscRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "duration")
+              InfoTagMusic::setDurationRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "year")
+              InfoTagMusic::setYearRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "listeners")
+              InfoTagMusic::setListenersRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "playcount")
+              InfoTagMusic::setPlayCountRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "genre")
+              InfoTagMusic::setGenresRaw(musictag, getMusicStringArray(alt, key, value));
+            else if (key == "album")
+              InfoTagMusic::setAlbumRaw(musictag, value);
+            else if (key == "artist")
+              InfoTagMusic::setArtistRaw(musictag, value);
+            else if (key == "title")
+              InfoTagMusic::setTitleRaw(musictag, value);
+            else if (key == "rating")
+              InfoTagMusic::setRatingRaw(musictag,
+                                         static_cast<float>(strtod(value.c_str(), nullptr)));
+            else if (key == "userrating")
+              InfoTagMusic::setUserRatingRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "lyrics")
+              InfoTagMusic::setLyricsRaw(musictag, value);
+            else if (key == "lastplayed")
+              InfoTagMusic::setLastPlayedRaw(musictag, value);
+            else if (key == "musicbrainztrackid")
+              InfoTagMusic::setMusicBrainzTrackIDRaw(musictag, value);
+            else if (key == "musicbrainzartistid")
+              InfoTagMusic::setMusicBrainzArtistIDRaw(musictag,
+                                                      getMusicStringArray(alt, key, value));
+            else if (key == "musicbrainzalbumid")
+              InfoTagMusic::setMusicBrainzAlbumIDRaw(musictag, value);
+            else if (key == "musicbrainzalbumartistid")
+              InfoTagMusic::setMusicBrainzAlbumArtistIDRaw(musictag,
+                                                           getMusicStringArray(alt, key, value));
+            else if (key == "comment")
+              InfoTagMusic::setCommentRaw(musictag, value);
+            else if (key != "mediatype")
+              CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key);
+          }
 
           // This should probably be set outside of the loop but since the original
           //  implementation set it inside of the loop, I'll leave it that way. - Jim C.
-          musictag.SetLoaded(true);
+          musictag->SetLoaded(true);
+        }
+
+        if (dbId > 0 && !mediaType.empty())
+          InfoTagMusic::setDbIdRaw(musictag, dbId, mediaType);
+
+        if (hasDeprecatedInfoLabel)
+        {
+          CLog::Log(
+              LOGWARNING,
+              "Setting most music properties through ListItem.setInfo() is deprecated and might be "
+              "removed in future Kodi versions. Please use the respective setter in InfoTagMusic.");
         }
       }
       else if (StringUtils::CompareNoCase(type, "pictures") == 0)
@@ -888,7 +895,7 @@ namespace XBMCAddon
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      return new xbmc::InfoTagMusic(item->GetMusicInfoTag(), m_offscreen);
+      return new xbmc::InfoTagMusic(GetMusicInfoTag(), m_offscreen);
     }
 
     xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
@@ -938,6 +945,15 @@ namespace XBMCAddon
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
+    std::vector<std::string> ListItem::getMusicStringArray(const InfoLabelValue& alt,
+                                                           const std::string& tag,
+                                                           std::string value /* = "" */)
+    {
+      return getStringArray(
+          alt, tag, value,
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+    }
+
     CVideoInfoTag* ListItem::GetVideoInfoTag()
     {
       return item->GetVideoInfoTag();
@@ -946,6 +962,16 @@ namespace XBMCAddon
     const CVideoInfoTag* ListItem::GetVideoInfoTag() const
     {
       return item->GetVideoInfoTag();
+    }
+
+    MUSIC_INFO::CMusicInfoTag* ListItem::GetMusicInfoTag()
+    {
+      return item->GetMusicInfoTag();
+    }
+
+    const MUSIC_INFO::CMusicInfoTag* ListItem::GetMusicInfoTag() const
+    {
+      return item->GetMusicInfoTag();
     }
 
     void ListItem::setTitleRaw(std::string title)

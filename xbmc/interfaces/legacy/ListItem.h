@@ -782,7 +782,7 @@ namespace XBMCAddon
       /// @python_v18 Added new **game** type and associated infolabels.
       /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
-      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo**, **InfoTagPicture** or **InfoTagGame** instead.
+      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo**, **InfoTagMusic**, **InfoTagPicture** or **InfoTagGame** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1258,9 +1258,15 @@ private:
       std::vector<std::string> getVideoStringArray(const InfoLabelValue& alt,
                                                    const std::string& tag,
                                                    std::string value = "");
+      std::vector<std::string> getMusicStringArray(const InfoLabelValue& alt,
+                                                   const std::string& tag,
+                                                   std::string value = "");
 
       CVideoInfoTag* GetVideoInfoTag();
       const CVideoInfoTag* GetVideoInfoTag() const;
+
+      MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
+      const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const;
 
       void setTitleRaw(std::string title);
       void setPathRaw(std::string path);
