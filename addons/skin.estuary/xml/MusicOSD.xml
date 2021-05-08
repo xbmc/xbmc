@@ -46,14 +46,14 @@
 						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 					</include>
 					<onclick>PlayerControl(Previous)</onclick>
-					<visible>MusicPlayer.HasPrevious | Player.SeekEnabled</visible>
+					<visible>Player.ChapterCount | MusicPlayer.HasPrevious | [Player.SeekEnabled + MusicPlayer.Content(livetv)]</visible>
 				</control>
 				<control type="radiobutton" id="601">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
 					</include>
 					<onclick>PlayerControl(Rewind)</onclick>
-					<visible>Player.SeekEnabled</visible>
+					<visible>[Player.SeekEnabled + !MusicPlayer.Content(livetv)] + !Player.Paused</visible>
 				</control>
 				<control type="group" id="698">
 					<width>76</width>
@@ -94,14 +94,14 @@
 						<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
 					</include>
 					<onclick>PlayerControl(Forward)</onclick>
-					<visible>Player.SeekEnabled</visible>
+					<visible>[Player.SeekEnabled + !MusicPlayer.Content(livetv)] + !Player.Paused</visible>
 				</control>
 				<control type="radiobutton" id="607">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 					</include>
 					<onclick>PlayerControl(Next)</onclick>
-					<visible>MusicPlayer.HasNext | [MusicPlayer.Content(LiveTV) + Player.SeekEnabled]</visible>
+					<visible>Player.ChapterCount | MusicPlayer.HasNext | PVR.IsTimeShift</visible>
 				</control>
 				<control type="radiobutton" id="608">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
