@@ -12,11 +12,17 @@
 #include "win32util.h"
 #include "windowing/windows/WinSystemWin32DX.h"
 
+#include "platform/win32/network/WSDiscoveryWin32.h"
 #include "platform/win32/powermanagement/Win32PowerSyscall.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
   return new CPlatformWin32();
+}
+
+CPlatformWin32::~CPlatformWin32()
+{
+  CWSDiscoverySupport::Get()->Terminate();
 }
 
 bool CPlatformWin32::InitStageOne()
@@ -32,6 +38,16 @@ bool CPlatformWin32::InitStageOne()
   CWinSystemWin32DX::Register();
 
   CWin32PowerSyscall::Register();
+
+  return true;
+}
+
+bool CPlatformWin32::InitStageThree()
+{
+  if (!CPlatform::InitStageThree())
+    return false;
+
+  CWSDiscoverySupport::Get()->Initialize();
 
   return true;
 }
