@@ -812,7 +812,8 @@ std::string CPVRChannel::EPGScraper() const
 bool CPVRChannel::CanRecord() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
-  return client && client->GetClientCapabilities().SupportsRecordings();
+  return client && client->GetClientCapabilities().SupportsRecordings() &&
+         client->GetClientCapabilities().SupportsTimers();
 }
 
 std::shared_ptr<CPVRProvider> CPVRChannel::GetDefaultProvider() const
