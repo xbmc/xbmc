@@ -314,6 +314,8 @@ void CGUIWindowPVRChannelsBase::ShowChannelManager()
   if (!dialog)
     return;
 
+  dialog->SetRadio(m_bRadio);
+
   const int iItem = m_viewControl.GetSelectedItem();
   dialog->Open(iItem >= 0 && iItem < m_vecItems->Size() ? m_vecItems->Get(iItem) : nullptr);
 }

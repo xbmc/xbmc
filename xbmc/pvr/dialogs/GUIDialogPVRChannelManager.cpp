@@ -66,6 +66,7 @@ CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
     m_channelItems(new CFileItemList)
 {
+  SetRadio(false);
 }
 
 CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager()
@@ -159,7 +160,6 @@ void CGUIDialogPVRChannelManager::OnInitWindow()
   CGUIDialog::OnInitWindow();
 
   m_iSelected = 0;
-  m_bIsRadio = false;
   m_bMovingMode = false;
   m_bContainsChanges = false;
   m_bAllowNewChannel = false;
@@ -168,8 +168,6 @@ void CGUIDialogPVRChannelManager::OnInitWindow()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_bAllowRenumber = !settings->GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER) &&
                      !settings->GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
-
-  SetProperty("IsRadio", "");
 
   Update();
 
@@ -196,6 +194,12 @@ void CGUIDialogPVRChannelManager::OnDeinitWindow(int nextWindowID)
   Clear();
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
+}
+
+void CGUIDialogPVRChannelManager::SetRadio(bool bIsRadio)
+{
+  m_bIsRadio = bIsRadio;
+  SetProperty("IsRadio", m_bIsRadio ? "true" : "");
 }
 
 void CGUIDialogPVRChannelManager::Open(const std::shared_ptr<CFileItem>& initialSelection)

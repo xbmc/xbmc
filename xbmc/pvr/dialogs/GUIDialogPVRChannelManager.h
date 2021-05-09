@@ -37,6 +37,7 @@ namespace PVR
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
     void Open(const std::shared_ptr<CFileItem>& initialSelection);
+    void SetRadio(bool bIsRadio);
 
   protected:
     void OnInitWindow() override;
