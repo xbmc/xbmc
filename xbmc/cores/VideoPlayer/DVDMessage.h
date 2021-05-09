@@ -21,6 +21,7 @@ struct DemuxPacket;
 class CDVDMsg : public IDVDResourceCounted<CDVDMsg>
 {
 public:
+  // clang-format off
   enum Message
   {
     NONE = 1000,
@@ -53,6 +54,7 @@ public:
     PLAYER_ABORT,
     PLAYER_REPORT_STATE,
     PLAYER_FRAME_ADVANCE,
+    PLAYER_DISPLAY_RESET,           // report display reset event
 
     // demuxer related messages
     DEMUXER_PACKET,                 // data packet
@@ -66,6 +68,7 @@ public:
     SUBTITLE_CLUTCHANGE,
     SUBTITLE_ADDFILE
   };
+  // clang-format on
 
   explicit CDVDMsg(Message msg)
   {
