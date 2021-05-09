@@ -720,7 +720,7 @@ void CGUIDialogPVRChannelManager::Update()
   std::shared_ptr<CFileItem> channelFile;
   for (const auto& member : groupMembers)
   {
-    channelFile = std::make_shared<CFileItem>(member->Channel());
+    channelFile = std::make_shared<CFileItem>(member);
     if (!channelFile || !channelFile->HasPVRChannelInfoTag())
       continue;
     const std::shared_ptr<CPVRChannel> channel(channelFile->GetPVRChannelInfoTag());
@@ -731,7 +731,8 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("Icon", channel->IconPath());
     channelFile->SetProperty("EPGSource", 0);
     channelFile->SetProperty("ParentalLocked", channel->IsLocked());
-    channelFile->SetProperty("Number", StringUtils::Format("%i", channel->ChannelNumber().GetChannelNumber()));
+    channelFile->SetProperty("Number",
+                             StringUtils::Format("%i", member->ChannelNumber().GetChannelNumber()));
 
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*channelFile);
     if (client)

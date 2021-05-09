@@ -23,6 +23,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -431,10 +432,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_CHANNEL_NUMBER:
       case LISTITEM_CHANNEL_NUMBER:
       {
-        const std::shared_ptr<CPVRChannel> channel = recording->Channel();
-        if (channel)
+        const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+            CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+        if (groupMember)
         {
-          strValue = channel->ChannelNumber().FormattedChannelNumber();
+          strValue = groupMember->ChannelNumber().FormattedChannelNumber();
           return true;
         }
         break;
@@ -689,8 +691,16 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case MUSICPLAYER_CHANNEL_NUMBER:
       case VIDEOPLAYER_CHANNEL_NUMBER:
       case LISTITEM_CHANNEL_NUMBER:
-        strValue = channel->ChannelNumber().FormattedChannelNumber();
-        return true;
+      {
+        const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+            CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+        if (groupMember)
+        {
+          strValue = groupMember->ChannelNumber().FormattedChannelNumber();
+          return true;
+        }
+        break;
+      }
       case MUSICPLAYER_CHANNEL_GROUP:
       case VIDEOPLAYER_CHANNEL_GROUP:
       {

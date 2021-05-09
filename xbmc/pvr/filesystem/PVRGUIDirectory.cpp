@@ -502,7 +502,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           if (bShowHiddenChannels != groupMember->Channel()->IsHidden())
             continue;
 
-          results.Add(std::make_shared<CFileItem>(groupMember->Channel()));
+          results.Add(std::make_shared<CFileItem>(groupMember));
         }
       }
       else

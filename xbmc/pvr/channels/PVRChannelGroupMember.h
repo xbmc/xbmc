@@ -9,6 +9,8 @@
 #pragma once
 
 #include "pvr/channels/PVRChannelNumber.h"
+#include "utils/ISerializable.h"
+#include "utils/ISortable.h"
 
 #include <memory>
 
@@ -17,7 +19,7 @@ namespace PVR
 
 class CPVRChannel;
 
-class CPVRChannelGroupMember
+class CPVRChannelGroupMember : public ISerializable, public ISortable
 {
   friend class CPVRDatabase;
 
@@ -38,6 +40,12 @@ public:
   }
 
   virtual ~CPVRChannelGroupMember() = default;
+
+  // ISerializable implementation
+  void Serialize(CVariant& value) const override;
+
+  // ISortable implementation
+  void ToSortable(SortItem& sortable, Field field) const override;
 
   std::shared_ptr<CPVRChannel> Channel() const { return m_channel; }
 

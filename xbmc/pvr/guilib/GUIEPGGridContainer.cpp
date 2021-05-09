@@ -19,6 +19,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/GUIEPGGridContainerModel.h"
 #include "utils/MathUtils.h"
@@ -1124,7 +1125,7 @@ bool CGUIEPGGridContainer::SetChannel(const CPVRChannelNumber& channelNumber)
   for (int iIndex = 0; iIndex < m_gridModel->ChannelItemsSize(); iIndex++)
   {
     const CPVRChannelNumber& number =
-        m_gridModel->GetChannelItem(iIndex)->GetPVRChannelInfoTag()->ChannelNumber();
+        m_gridModel->GetChannelItem(iIndex)->GetPVRChannelGroupMemberInfoTag()->ChannelNumber();
     if (number == channelNumber)
     {
       GoToChannel(iIndex);

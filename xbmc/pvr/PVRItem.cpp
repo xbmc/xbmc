@@ -84,6 +84,10 @@ namespace PVR
     {
       return m_item->GetPVRTimerInfoTag()->Channel();
     }
+    else if (m_item->IsPVRRecording())
+    {
+      return m_item->GetPVRRecordingInfoTag()->Channel();
+    }
     else
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");

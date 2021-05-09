@@ -29,6 +29,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
@@ -740,7 +741,13 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (!channel)
       return InvalidParams;
 
-    if (!CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(std::make_shared<CFileItem>(channel)))
+    const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(CFileItem(channel));
+    if (!groupMember || !groupMember->Channel())
+      return InvalidParams;
+
+    if (!CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(
+            std::make_shared<CFileItem>(groupMember)))
       return FailedToExecute;
 
     return ACK;

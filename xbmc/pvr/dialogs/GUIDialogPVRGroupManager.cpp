@@ -490,9 +490,9 @@ void CGUIDialogPVRGroupManager::Update()
       for (const auto& groupMember : groupMembers)
       {
         if (groupMember->Channel()->IsHidden())
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember->Channel()));
+          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
         else
-          m_groupMembers->Add(std::make_shared<CFileItem>(groupMember->Channel()));
+          m_groupMembers->Add(std::make_shared<CFileItem>(groupMember));
       }
     }
     else
@@ -501,7 +501,7 @@ void CGUIDialogPVRGroupManager::Update()
           m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
-        m_groupMembers->Add(std::make_shared<CFileItem>(groupMember->Channel()));
+        m_groupMembers->Add(std::make_shared<CFileItem>(groupMember));
       }
 
       /* for the center part, get all channels of the "all" channels group that are not in this group */
@@ -511,7 +511,7 @@ void CGUIDialogPVRGroupManager::Update()
       for (const auto& groupMember : allGroupMembers)
       {
         if (!m_selectedGroup->IsGroupMember(groupMember->Channel()))
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember->Channel()));
+          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
       }
     }
     m_viewGroupMembers.SetItems(*m_groupMembers);

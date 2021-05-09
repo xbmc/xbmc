@@ -290,6 +290,14 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetLastPlayedChannel(int iCurrentChannel = -1) const;
 
     /*!
+     * @brief Get the channel group member that was played last.
+     * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
+     * @return The requested channel group member or nullptr.
+     */
+    std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember(
+        int iCurrentChannel) const;
+
+    /*!
      * @brief Get a channel given it's active channel number
      * @param channelNumber The channel number.
      * @return The channel or nullptr if it wasn't found.
@@ -453,22 +461,6 @@ namespace PVR
     bool HasValidDataFromClient(int iClientId) const;
 
     /*!
-     * @brief For each channel and its corresponding epg channel data update the order from the group members
-     */
-    void UpdateClientOrder();
-
-    /*!
-     * @brief For each channel and its corresponding epg channel data update the channel number from the group members
-     */
-    void UpdateChannelNumbers();
-
-    /*!
-     * @brief Update whether or not this group is currently selected
-     * @param isSelectedGroup whether or not this group is the currently selected group.
-     */
-    void SetSelectedGroup(bool isSelectedGroup) { m_bIsSelectedGroup = isSelectedGroup; }
-
-    /*!
      * @brief Update the channel numbers according to the all channels group and publish event.
      * @return True, if a channel number was changed, false otherwise.
      */
@@ -557,7 +549,6 @@ namespace PVR
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClients;
     CEventSource<PVREvent> m_events;
-    bool m_bIsSelectedGroup = false; /*!< Whether or not this group is currently selected */
     bool m_bStartGroupChannelNumbersFromOne = false; /*!< true if we start group channel numbers from one when not using backend channel numbers, false otherwise */
     bool m_bSyncChannelGroups = false; /*!< true if channel groups should be synced with the backend, false otherwise */
 

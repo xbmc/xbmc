@@ -22,6 +22,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -453,6 +454,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
 
     if (item->HasPVRChannelInfoTag())
       FillDetails(item->GetPVRChannelInfoTag().get(), item, fields, object, thumbLoader);
+    if (item->HasPVRChannelGroupMemberInfoTag())
+      FillDetails(item->GetPVRChannelGroupMemberInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasEPGInfoTag())
       FillDetails(item->GetEPGInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasPVRRecordingInfoTag())

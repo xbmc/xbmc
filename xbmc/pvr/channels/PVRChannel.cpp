@@ -88,8 +88,6 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["uniqueid"]  = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
-  value["channelnumber"] = m_channelNumber.GetChannelNumber();
-  value["subchannelnumber"] = m_channelNumber.GetSubChannelNumber();
 
   std::shared_ptr<CPVREpgInfoTag> epg = GetEPGNow();
   if (epg)
@@ -243,12 +241,6 @@ bool CPVRChannel::SetChannelID(int iChannelId)
   }
 
   return false;
-}
-
-const CPVRChannelNumber& CPVRChannel::ChannelNumber() const
-{
-  CSingleLock lock(m_critSection);
-  return m_channelNumber;
 }
 
 bool CPVRChannel::SetHidden(bool bIsHidden)
@@ -658,32 +650,11 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
   return false;
 }
 
-void CPVRChannel::SetChannelNumber(const CPVRChannelNumber& channelNumber)
-{
-  CSingleLock lock(m_critSection);
-  m_channelNumber = channelNumber;
-}
-
-void CPVRChannel::SetClientChannelNumber(const CPVRChannelNumber& clientChannelNumber)
-{
-  CSingleLock lock(m_critSection);
-  m_clientChannelNumber = clientChannelNumber;
-}
-
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
 {
   CSingleLock lock(m_critSection);
   if (field == FieldChannelName)
     sortable[FieldChannelName] = m_strChannelName;
-  else if (field == FieldChannelNumber)
-    sortable[FieldChannelNumber] = m_channelNumber.SortableChannelNumber();
-  else if (field == FieldClientChannelOrder)
-  {
-    if (m_iOrder)
-      sortable[FieldClientChannelOrder] = m_iOrder;
-    else
-      sortable[FieldClientChannelOrder] = m_clientChannelNumber.SortableChannelNumber();
-  }
   else if (field == FieldLastPlayed)
   {
     const CDateTime lastWatched(m_iLastWatched);
@@ -832,10 +803,4 @@ bool CPVRChannel::CanRecord() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && client->GetClientCapabilities().SupportsRecordings();
-}
-
-void CPVRChannel::SetClientOrder(int iOrder)
-{
-  CSingleLock lock(m_critSection);
-  m_iOrder = iOrder;
 }

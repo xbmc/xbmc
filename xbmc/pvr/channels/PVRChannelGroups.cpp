@@ -247,9 +247,6 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     if (bSyncWithBackends && !group->IsInternalGroup() && group->Size() == 0)
       emptyGroups.emplace_back(group);
 
-    if (bReturn && group == m_selectedGroup)
-      UpdateSelectedGroup();
-
     if (bReturn &&
         group->IsInternalGroup() &&
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
@@ -277,8 +274,6 @@ bool CPVRChannelGroups::PropagateChannelNumbersAndPersist()
   bool bChanged = false;
   for (auto& group : m_groups)
     bChanged = group->UpdateChannelNumbersFromAllChannelsGroup();
-
-  m_selectedGroup->UpdateChannelNumbers();
 
   return bChanged;
 }
@@ -525,22 +520,10 @@ void CPVRChannelGroups::SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>
 {
   CSingleLock lock(m_critSection);
   m_selectedGroup = selectedGroup;
-  m_selectedGroup->UpdateClientOrder();
-  m_selectedGroup->UpdateChannelNumbers();
-
-  for (auto& group : m_groups)
-    group->SetSelectedGroup(group == m_selectedGroup);
 
   auto duration = std::chrono::system_clock::now().time_since_epoch();
   uint64_t tsMillis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
   m_selectedGroup->SetLastOpened(tsMillis);
-}
-
-void CPVRChannelGroups::UpdateSelectedGroup()
-{
-  CSingleLock lock(m_critSection);
-  m_selectedGroup->UpdateClientOrder();
-  m_selectedGroup->UpdateChannelNumbers();
 }
 
 bool CPVRChannelGroups::AddGroup(const std::string& strName)

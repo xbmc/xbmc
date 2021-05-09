@@ -47,6 +47,7 @@ namespace GAME
 namespace PVR
 {
 class CPVRChannel;
+class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
 class CPVRRecording;
 class CPVRTimerInfoTag;
@@ -112,6 +113,7 @@ public:
   explicit CFileItem(const CVideoInfoTag& movie);
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannel>& channel);
+  explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
   explicit CFileItem(const CMediaSource& share);
@@ -298,6 +300,16 @@ public:
   inline const std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const
   {
     return m_pvrChannelInfoTag;
+  }
+
+  inline bool HasPVRChannelGroupMemberInfoTag() const
+  {
+    return m_pvrChannelGroupMemberInfoTag.get() != nullptr;
+  }
+
+  inline const std::shared_ptr<PVR::CPVRChannelGroupMember> GetPVRChannelGroupMemberInfoTag() const
+  {
+    return m_pvrChannelGroupMemberInfoTag;
   }
 
   inline bool HasPVRRecordingInfoTag() const
@@ -596,6 +608,7 @@ private:
   std::shared_ptr<PVR::CPVRChannel> m_pvrChannelInfoTag;
   std::shared_ptr<PVR::CPVRRecording> m_pvrRecordingInfoTag;
   std::shared_ptr<PVR::CPVRTimerInfoTag> m_pvrTimerInfoTag;
+  std::shared_ptr<PVR::CPVRChannelGroupMember> m_pvrChannelGroupMemberInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
   KODI::GAME::CGameInfoTag* m_gameInfoTag;

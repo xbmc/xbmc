@@ -830,8 +830,9 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   for (const auto& groupMember : groupMembers)
   {
     const std::shared_ptr<CPVRChannel> channel = groupMember->Channel();
-    const std::string channelDescription
-      = StringUtils::Format("%s %s", channel->ChannelNumber().FormattedChannelNumber().c_str(), channel->ChannelName().c_str());
+    const std::string channelDescription =
+        StringUtils::Format("%s %s", groupMember->ChannelNumber().FormattedChannelNumber().c_str(),
+                            channel->ChannelName().c_str());
     m_channelEntries.insert({index, ChannelDescriptor(channel->UniqueID(), channel->ClientID(), channelDescription)});
     ++index;
   }
