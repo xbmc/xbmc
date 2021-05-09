@@ -20,6 +20,12 @@ public:
   CDVDSubtitlesLibass();
   ~CDVDSubtitlesLibass();
 
+  /*!
+  * \brief Configure libass. This method groups any configurations
+  * that might change throughout the lifecycle of libass (e.g. fonts)
+  */
+  void Configure();
+
   ASS_Image* RenderImage(int frameWidth, int frameHeight, int videoWidth, int videoHeight, int sourceWidth, int sourceHeight,
                          double pts, int useMargin = 0, double position = 0.0, int* changes = NULL);
   ASS_Event* GetEvents();

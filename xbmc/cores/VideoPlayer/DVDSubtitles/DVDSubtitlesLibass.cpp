@@ -22,9 +22,15 @@
 
 namespace
 {
+
+// Directory where user defined fonts are located (and where mkv fonts are extracted to)
+constexpr const char* userFontPath = "special://home/media/Fonts/";
+// Directory where Kodi bundled fonts (default ones like Arial or Teletext) are located
+constexpr const char* systemFontPath = "special://xbmc/media/Fonts/";
+
 std::string GetDefaultFontPath(std::string& font)
 {
-  std::string fontSources[]{"special://home/media/Fonts/", "special://xbmc/media/Fonts/"};
+  constexpr std::array<const char*, 2> fontSources{userFontPath, systemFontPath};
 
   for (const auto& path : fontSources)
   {
@@ -49,10 +55,6 @@ static void libass_log(int level, const char *fmt, va_list args, void *data)
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
-  // Setting the font directory to the user font dir. This is the directory
-  // where user defined fonts are located (and where mkv fonts are extracted to)
-  const std::string strPath = "special://home/media/Fonts/";
-
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Using libass version {0:x}", ass_library_version());
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library = ass_library_init();
@@ -61,32 +63,40 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   ass_set_message_cb(m_library, libass_log, this);
 
+  CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS Renderer");
+
+  m_renderer = ass_renderer_init(m_library);
+
+  if (!m_renderer)
+    throw std::runtime_error("Libass render failed to initialize");
+
+  ass_set_margins(m_renderer, 0, 0, 0, 0);
+  ass_set_use_margins(m_renderer, 0);
+}
+
+void CDVDSubtitlesLibass::Configure()
+{
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS library font settings");
+
+  if (!m_renderer)
+  {
+    CLog::Log(LOGERROR, "CDVDSubtitlesLibass: Failed to initialize ASS font settings. ASS renderer "
+                        "not initialized.");
+    return;
+  }
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   bool overrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
   if (!overrideFont)
   {
-    // libass uses fontconfig (system lib) which is not wrapped
-    // so translate the path before calling into libass
-    ass_set_fonts_dir(m_library, CSpecialProtocol::TranslatePath(strPath).c_str());
+    // libass uses fontconfig (system lib) by default in some platforms (e.g. linux/android) or as
+    // a fallback for all platforms. It is not wrapped so translate the path before calling into libass
+    ass_set_fonts_dir(m_library, CSpecialProtocol::TranslatePath(userFontPath).c_str());
     ass_set_extract_fonts(m_library, 1);
     ass_set_style_overrides(m_library, nullptr);
   }
-
-  CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS Renderer");
-
-  m_renderer = ass_renderer_init(m_library);
-
-  if(!m_renderer)
-    return;
-
-  ass_set_margins(m_renderer, 0, 0, 0, 0);
-  ass_set_use_margins(m_renderer, 0);
   ass_set_font_scale(m_renderer, 1);
 
-  // libass uses fontconfig (system lib) which is not wrapped
-  // so translate the path before calling into libass
   std::string forcedFont = settings->GetString(CSettings::SETTING_SUBTITLES_FONT);
   ass_set_fonts(m_renderer, GetDefaultFontPath(forcedFont).c_str(), "Arial", overrideFont ? 0 : 1,
                 nullptr, 1);

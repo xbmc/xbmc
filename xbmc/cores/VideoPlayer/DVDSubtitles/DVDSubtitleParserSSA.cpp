@@ -17,6 +17,7 @@ CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(std::unique_ptr<CDVDSubtitleStream>
   : CDVDSubtitleParserText(std::move(pStream), strFile),
     m_libass(std::make_shared<CDVDSubtitlesLibass>())
 {
+  m_libass->Configure();
 }
 
 CDVDSubtitleParserSSA::~CDVDSubtitleParserSSA()

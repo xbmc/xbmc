@@ -26,6 +26,8 @@ CDVDOverlayCodecSSA::CDVDOverlayCodecSSA()
   m_pOverlay = NULL;
   m_order    = 0;
   m_output   = false;
+
+  m_libass->Configure();
 }
 
 CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
