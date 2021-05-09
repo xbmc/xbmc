@@ -68,6 +68,27 @@ if(PULSEAUDIO_FOUND)
   list(APPEND HEADERS Sinks/AESinkPULSE.h)
 endif()
 
+if(PIPEWIRE_FOUND)
+  list(APPEND SOURCES Sinks/pipewire/AESinkPipewire.cpp
+                      Sinks/pipewire/Pipewire.cpp
+                      Sinks/pipewire/PipewireContext.cpp
+                      Sinks/pipewire/PipewireCore.cpp
+                      Sinks/pipewire/PipewireNode.cpp
+                      Sinks/pipewire/PipewireProxy.cpp
+                      Sinks/pipewire/PipewireRegistry.cpp
+                      Sinks/pipewire/PipewireStream.cpp
+                      Sinks/pipewire/PipewireThreadLoop.cpp)
+  list(APPEND HEADERS Sinks/pipewire/AESinkPipewire.h
+                      Sinks/pipewire/Pipewire.h
+                      Sinks/pipewire/PipewireContext.h
+                      Sinks/pipewire/PipewireCore.h
+                      Sinks/pipewire/PipewireNode.h
+                      Sinks/pipewire/PipewireProxy.h
+                      Sinks/pipewire/PipewireRegistry.h
+                      Sinks/pipewire/PipewireStream.h
+                      Sinks/pipewire/PipewireThreadLoop.h)
+endif()
+
 if(SNDIO_FOUND)
   list(APPEND SOURCES Sinks/AESinkSNDIO.cpp)
   list(APPEND HEADERS Sinks/AESinkSNDIO.h)
