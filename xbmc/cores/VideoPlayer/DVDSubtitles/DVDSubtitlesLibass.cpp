@@ -50,7 +50,7 @@ static void libass_log(int level, const char *fmt, va_list args, void *data)
   if(level >= 5)
     return;
   std::string log = StringUtils::FormatV(fmt, args);
-  CLog::Log(LOGDEBUG, "CDVDSubtitlesLibass: [ass] {}", log.c_str());
+  CLog::Log(LOGDEBUG, "CDVDSubtitlesLibass: [ass] {}", log);
 }
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()

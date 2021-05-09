@@ -152,7 +152,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
               CLog::Log(
                   LOGERROR,
                   "Getting extended attributes for the share: '{}'\nunix_err:'{:x}' error: '{}'",
-                  CURL::GetRedacted(strFullName).c_str(), errno, strerror(errno));
+                  CURL::GetRedacted(strFullName), errno, strerror(errno));
 
             bIsDir = S_ISDIR(info.st_mode);
             lTimeDate = info.st_mtime;
@@ -162,7 +162,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           }
           else
             CLog::Log(LOGERROR, "{} - Failed to stat file {}", __FUNCTION__,
-                      CURL::GetRedacted(strFullName).c_str());
+                      CURL::GetRedacted(strFullName));
 
           lock.Leave();
         }
@@ -243,7 +243,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     s.erase(len - 1, 1);
   }
 
-  CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s).c_str());
+  CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s));
 
   { CSingleLock lock(smb);
     if (!smb.IsSmbValid())
@@ -278,7 +278,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     CLog::Log(
         LOGERROR,
         "SMBDirectory->GetDirectory: Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
-        CURL::GetRedacted(strAuth).c_str(), errno, strerror(errno));
+        CURL::GetRedacted(strAuth), errno, strerror(errno));
   }
 
   return fd;

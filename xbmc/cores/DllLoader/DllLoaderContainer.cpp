@@ -175,7 +175,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     URIUtils::AddSlashAtEnd(strPath);
 
 #ifdef LOGALL
-    CLog::Log(LOGDEBUG, "Searching for the dll {} in directory {}", sName, strPath.c_str());
+    CLog::Log(LOGDEBUG, "Searching for the dll {} in directory {}", sName, strPath);
 #endif
 
     strPath+=sName;

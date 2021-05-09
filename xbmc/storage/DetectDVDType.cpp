@@ -244,12 +244,12 @@ void CDetectDVDMedia::DetectMediaType()
     }
   }
 
-  CLog::Log(LOGINFO, "Using protocol {}", strNewUrl.c_str());
+  CLog::Log(LOGINFO, "Using protocol {}", strNewUrl);
 
   if (m_pCdInfo->IsValidFs())
   {
     if (!m_pCdInfo->IsAudio(1))
-      CLog::Log(LOGINFO, "Disc label: {}", m_pCdInfo->GetDiscLabel().c_str());
+      CLog::Log(LOGINFO, "Disc label: {}", m_pCdInfo->GetDiscLabel());
   }
   else
   {

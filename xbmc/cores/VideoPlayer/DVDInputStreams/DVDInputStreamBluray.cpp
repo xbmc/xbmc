@@ -120,7 +120,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filena
   if(sscanf(filename.c_str(), "%05u.mpls", &playlist) != 1)
   {
     CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected {}",
-              CURL::GetRedacted(filename).c_str());
+              CURL::GetRedacted(filename));
     return nullptr;
   }
 
@@ -221,14 +221,14 @@ bool CDVDInputStreamBluray::Open()
 
   SetupPlayerSettings();
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening {}", CURL::GetRedacted(root).c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening {}", CURL::GetRedacted(root));
 
   if (openStream)
   {
     if (!bd_open_stream(m_bd, m_pstream.get(), read_blocks))
     {
       CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open {} in stream mode",
-                CURL::GetRedacted(root).c_str());
+                CURL::GetRedacted(root));
       return false;
     }
   }
@@ -240,7 +240,7 @@ bool CDVDInputStreamBluray::Open()
     if (!bd_open_disc(m_bd, root.c_str(), nullptr))
     {
       CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open {} in disc mode",
-                CURL::GetRedacted(root).c_str());
+                CURL::GetRedacted(root));
       return false;
     }
   }
@@ -250,7 +250,7 @@ bool CDVDInputStreamBluray::Open()
     if (!bd_open_files(m_bd, &m_rootPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
     {
       CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open {} in files mode",
-                CURL::GetRedacted(root).c_str());
+                CURL::GetRedacted(root));
       return false;
     }
   }
@@ -356,7 +356,7 @@ bool CDVDInputStreamBluray::Open()
     if(bd_play(m_bd) <= 0)
     {
       CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed play disk {}",
-                CURL::GetRedacted(strPath).c_str());
+                CURL::GetRedacted(strPath));
       return false;
     }
     m_hold = HOLD_DATA;
@@ -1233,7 +1233,7 @@ bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 
   if (!m_pstream->Open())
   {
-    CLog::Log(LOGERROR, "Error opening image file {}", CURL::GetRedacted(item.GetPath()).c_str());
+    CLog::Log(LOGERROR, "Error opening image file {}", CURL::GetRedacted(item.GetPath()));
     Close();
     return false;
   }

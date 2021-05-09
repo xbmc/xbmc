@@ -662,7 +662,7 @@ CVideoPlayer::~CVideoPlayer()
 
 bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  CLog::Log(LOGINFO, "VideoPlayer::OpenFile: {}", CURL::GetRedacted(file.GetPath()).c_str());
+  CLog::Log(LOGINFO, "VideoPlayer::OpenFile: {}", CURL::GetRedacted(file.GetPath()));
 
   if (IsRunning())
   {
@@ -770,14 +770,14 @@ bool CVideoPlayer::OpenInputStream()
   if (m_pInputStream == nullptr)
   {
     CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - unable to create input stream for [{}]",
-              CURL::GetRedacted(m_item.GetPath()).c_str());
+              CURL::GetRedacted(m_item.GetPath()));
     return false;
   }
 
   if (!m_pInputStream->Open())
   {
     CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - error opening [{}]",
-              CURL::GetRedacted(m_item.GetPath()).c_str());
+              CURL::GetRedacted(m_item.GetPath()));
     return false;
   }
 
@@ -2327,9 +2327,8 @@ void CVideoPlayer::CheckAutoSceneSkip()
         (m_playSpeed < 0 && clock < cut.start + 1000))
     {
       CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
-                __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
-                CEdl::MillisecondsToTimeString(cut.end).c_str(),
-                CEdl::MillisecondsToTimeString(clock).c_str());
+                __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start),
+                CEdl::MillisecondsToTimeString(cut.end), CEdl::MillisecondsToTimeString(clock));
 
       //Seeking either goes to the start or the end of the cut depending on the play direction.
       int seek = m_playSpeed >= 0 ? cut.end : cut.start;
@@ -2359,9 +2358,8 @@ void CVideoPlayer::CheckAutoSceneSkip()
         CLog::Log(LOGDEBUG,
                   "{} - Clock in commercial break [{} - {}]: {}. Automatically skipping to end of "
                   "commercial break",
-                  __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
-                  CEdl::MillisecondsToTimeString(cut.end).c_str(),
-                  CEdl::MillisecondsToTimeString(clock).c_str());
+                  __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start),
+                  CEdl::MillisecondsToTimeString(cut.end), CEdl::MillisecondsToTimeString(clock));
 
         CDVDMsgPlayerSeek::CMode mode;
         mode.time = cut.end;
@@ -3417,12 +3415,12 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
       return false;
     const SelectionStream& st = m_SelectionStreams.Get(current.type, index);
 
-    CLog::Log(LOGINFO, "Opening Subtitle file: {}", CURL::GetRedacted(st.filename).c_str());
+    CLog::Log(LOGINFO, "Opening Subtitle file: {}", CURL::GetRedacted(st.filename));
     m_pSubtitleDemuxer.reset();
     const auto demux = m_subtitleDemuxerMap.find(demuxerId);
     if (demux == m_subtitleDemuxerMap.end())
     {
-      CLog::Log(LOGINFO, "No demuxer found for file {}", CURL::GetRedacted(st.filename).c_str());
+      CLog::Log(LOGINFO, "No demuxer found for file {}", CURL::GetRedacted(st.filename));
       return false;
     }
 

@@ -119,8 +119,7 @@ bool CController::LoadLayout(void)
   {
     std::string strLayoutXmlPath = LibPath();
 
-    CLog::Log(LOGINFO, "Loading controller layout: {}",
-              CURL::GetRedacted(strLayoutXmlPath).c_str());
+    CLog::Log(LOGINFO, "Loading controller layout: {}", CURL::GetRedacted(strLayoutXmlPath));
 
     CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(strLayoutXmlPath))

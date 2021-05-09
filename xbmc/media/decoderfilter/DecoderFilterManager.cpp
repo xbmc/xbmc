@@ -121,7 +121,7 @@ bool CDecoderFilterManager::Load()
   if (!XFILE::CFile::Exists(fileName))
     return true;
 
-  CLog::Log(LOGINFO, "{}: loading filters from {}", CLASSNAME, fileName.c_str());
+  CLog::Log(LOGINFO, "{}: loading filters from {}", CLASSNAME, fileName);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(fileName))
@@ -134,8 +134,7 @@ bool CDecoderFilterManager::Load()
   const TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (!pRootElement || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), TAG_ROOT))
   {
-    CLog::Log(LOGERROR, "{}: invalid root element ({})", CLASSNAME,
-              pRootElement->ValueStr().c_str());
+    CLog::Log(LOGERROR, "{}: invalid root element ({})", CLASSNAME, pRootElement->ValueStr());
     return false;
   }
 

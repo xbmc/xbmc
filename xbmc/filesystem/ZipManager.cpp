@@ -38,8 +38,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 
   if (CFile::Stat(strFile,&m_StatData))
   {
-    CLog::Log(LOGDEBUG, "CZipManager::GetZipList: failed to stat file {}",
-              url.GetRedacted().c_str());
+    CLog::Log(LOGDEBUG, "CZipManager::GetZipList: failed to stat file {}", url.GetRedacted());
     return false;
   }
 
@@ -60,7 +59,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   CFile mFile;
   if (!mFile.Open(strFile))
   {
-    CLog::Log(LOGDEBUG, "ZipManager: unable to open file {}!", strFile.c_str());
+    CLog::Log(LOGDEBUG, "ZipManager: unable to open file {}!", strFile);
     return false;
   }
 
@@ -141,7 +140,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 
   if ( !found )
   {
-    CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile.c_str());
+    CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile);
     mFile.Close();
     return false;
   }
@@ -172,7 +171,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     readCHeader(temp, ze);
     if (ze.header != ZIP_CENTRAL_HEADER)
     {
-      CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile.c_str());
+      CLog::Log(LOGDEBUG, "ZipManager: broken file {}!", strFile);
       mFile.Close();
       return false;
     }

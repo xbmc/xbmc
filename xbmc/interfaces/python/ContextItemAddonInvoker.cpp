@@ -35,7 +35,7 @@ void CContextItemAddonInvoker::onPythonModuleInitialization(void* moduleDict)
     if (pyItem == Py_None || PySys_SetObject("listitem", pyItem) == -1)
     {
       CLog::Log(LOGERROR, "CPythonInvoker({}, {}): Failed to set sys parameter", GetId(),
-                m_sourceFile.c_str());
+                m_sourceFile);
       //FIXME: we should really abort execution
     }
   }

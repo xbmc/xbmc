@@ -178,7 +178,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
       CLog::Log(
           LOGERROR,
           "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec ({})",
-          m_CodecName.c_str());
+          m_CodecName);
       avcodec_free_context(&m_CodecCtx);
       return false;
     }
@@ -216,7 +216,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
       return false;
     }
   }
-  CLog::Log(LOGINFO, "CAEEncoderFFmpeg::Initialize - {} encoder ready", m_CodecName.c_str());
+  CLog::Log(LOGINFO, "CAEEncoderFFmpeg::Initialize - {} encoder ready", m_CodecName);
   return true;
 }
 

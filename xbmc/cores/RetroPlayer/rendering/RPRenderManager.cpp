@@ -500,7 +500,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   if (!renderer)
   {
     CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating renderer for {}",
-              m_processInfo.GetRenderSystemName(bufferPool).c_str());
+              m_processInfo.GetRenderSystemName(bufferPool));
 
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
     if (renderer && renderer->Configure(m_format))

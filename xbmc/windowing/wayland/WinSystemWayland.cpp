@@ -154,9 +154,8 @@ bool CWinSystemWayland::InitWindowSystem()
     return false;
   }
 
-  wayland::set_log_handler(
-      [](const std::string& message)
-      { CLog::Log(LOGWARNING, "wayland-client log message: {}", message.c_str()); });
+  wayland::set_log_handler([](const std::string& message)
+                           { CLog::Log(LOGWARNING, "wayland-client log message: {}", message); });
 
   VIDEOPLAYER::CProcessInfoWayland::Register();
   RETRO::CRPProcessInfoWayland::Register();
@@ -246,8 +245,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     if (auto output = FindOutputByWaylandOutput(wloutput))
     {
       CLog::Log(LOGDEBUG, "Entering output \"{}\" with scale {} and {:.3f} dpi",
-                UserFriendlyOutputName(output).c_str(), output->GetScale(),
-                output->GetCurrentDpi());
+                UserFriendlyOutputName(output), output->GetScale(), output->GetCurrentDpi());
       CSingleLock lock(m_surfaceOutputsMutex);
       m_surfaceOutputs.emplace(output);
       lock.Leave();
@@ -262,8 +260,8 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   m_surface.on_leave() = [this](const wayland::output_t& wloutput) {
     if (auto output = FindOutputByWaylandOutput(wloutput))
     {
-      CLog::Log(LOGDEBUG, "Leaving output \"{}\" with scale {}",
-                UserFriendlyOutputName(output).c_str(), output->GetScale());
+      CLog::Log(LOGDEBUG, "Leaving output \"{}\" with scale {}", UserFriendlyOutputName(output),
+                output->GetScale());
       CSingleLock lock(m_surfaceOutputsMutex);
       m_surfaceOutputs.erase(output);
       lock.Leave();
@@ -451,8 +449,7 @@ void CWinSystemWayland::UpdateResolutions()
   auto physicalSize = output->GetPhysicalSize();
   CLog::LogF(LOGINFO,
              "User wanted output \"{}\", we now have \"{}\" size {}x{} mm with {} mode(s):",
-             userOutput.c_str(), outputName.c_str(), physicalSize.Width(), physicalSize.Height(),
-             modes.size());
+             userOutput, outputName, physicalSize.Width(), physicalSize.Height(), modes.size());
 
   for (auto const& mode : modes)
   {
@@ -539,7 +536,7 @@ bool CWinSystemWayland::SetResolutionExternal(bool fullScreen, RESOLUTION_INFO c
   bool mustHonorSize{m_waitingForApply || m_shellSurfaceState.test(IShellSurface::STATE_MAXIMIZED) || m_shellSurfaceState.test(IShellSurface::STATE_FULLSCREEN) || fullScreen};
 
   CLog::LogF(LOGINFO, "Kodi asked to switch mode to {}x{} @{:.3f} Hz on output \"{}\" {}",
-             res.iWidth, res.iHeight, res.fRefreshRate, res.strOutput.c_str(),
+             res.iWidth, res.iHeight, res.fRefreshRate, res.strOutput,
              fullScreen ? "full screen" : "windowed");
 
   if (fullScreen)
@@ -555,15 +552,15 @@ bool CWinSystemWayland::SetResolutionExternal(bool fullScreen, RESOLUTION_INFO c
 
       if (output)
       {
-        CLog::LogF(LOGDEBUG, "Resolved output \"{}\" to bound Wayland global {}",
-                   res.strOutput.c_str(), output->GetGlobalName());
+        CLog::LogF(LOGDEBUG, "Resolved output \"{}\" to bound Wayland global {}", res.strOutput,
+                   output->GetGlobalName());
       }
       else
       {
         CLog::LogF(LOGINFO,
                    "Could not match output \"{}\" to a currently available Wayland output, falling "
                    "back to default output",
-                   res.strOutput.c_str());
+                   res.strOutput);
       }
 
       CLog::LogF(LOGDEBUG, "Setting full-screen with refresh rate {:.3f}", res.fRefreshRate);
@@ -737,7 +734,7 @@ void CWinSystemWayland::ProcessMessages()
     auto configure = reinterpret_cast<WinSystemWaylandProtocol::MsgConfigure*> (lastConfigureMessage.Get()->data);
     CLog::LogF(LOGDEBUG, "Configure serial {}: size {}x{} state {}", configure->serial,
                configure->surfaceSize.Width(), configure->surfaceSize.Height(),
-               IShellSurface::StateToString(configure->state).c_str());
+               IShellSurface::StateToString(configure->state));
 
 
     CSizeInt size = configure->surfaceSize;
@@ -785,7 +782,7 @@ void CWinSystemWayland::OnConfigure(std::uint32_t serial, CSizeInt size, IShellS
   if (m_shellSurfaceInitializing)
   {
     CLog::LogF(LOGDEBUG, "Initial configure serial {}: size {}x{} state {}", serial, size.Width(),
-               size.Height(), IShellSurface::StateToString(state).c_str());
+               size.Height(), IShellSurface::StateToString(state));
     m_shellSurfaceState = state;
     if (!size.IsZero())
     {
@@ -837,7 +834,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
   CLog::LogF(LOGDEBUG, "Set size for serial {}: {}x{} {} decoration at scale {} state {}",
              configureSerial, size.Width(), size.Height(),
              sizeIncludesDecoration ? "including" : "excluding", scale,
-             IShellSurface::StateToString(state).c_str());
+             IShellSurface::StateToString(state));
 
   // Get actual frame rate from monitor, take highest frame rate if multiple
   float refreshRate{m_fRefreshRate};
@@ -848,7 +845,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
     {
       refreshRate = (*maxRefreshIt)->GetCurrentMode().GetRefreshInHz();
       CLog::LogF(LOGDEBUG, "Resolved actual (maximum) refresh rate to {:.3f} Hz on output \"{}\"",
-                 refreshRate, UserFriendlyOutputName(*maxRefreshIt).c_str());
+                 refreshRate, UserFriendlyOutputName(*maxRefreshIt));
     }
   }
 
@@ -907,7 +904,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
       m_waitingForApply = true;
       CLog::LogF(LOGDEBUG, "Queued change to resolution {} surface size {}x{} scale {} state {}",
                  res, sizes.surfaceSize.Width(), sizes.surfaceSize.Height(), scale,
-                 IShellSurface::StateToString(state).c_str());
+                 IShellSurface::StateToString(state));
     }
   }
   else
@@ -938,7 +935,7 @@ void CWinSystemWayland::ApplyNextState()
 {
   CLog::LogF(LOGDEBUG, "Applying next state: serial {} configured size {}x{} scale {} state {}",
              m_next.configureSerial, m_next.configuredSize.Width(), m_next.configuredSize.Height(),
-             m_next.scale, IShellSurface::StateToString(m_next.shellSurfaceState).c_str());
+             m_next.scale, IShellSurface::StateToString(m_next.shellSurfaceState));
 
   ApplyShellSurfaceState(m_next.shellSurfaceState);
   auto updateResult = UpdateSizeVariables(m_next.configuredSize, m_next.scale, m_next.shellSurfaceState, true);
@@ -1000,7 +997,7 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
 {
   CLog::LogF(LOGDEBUG, "Set size {}x{} scale {} {} decorations with state {}", size.Width(),
              size.Height(), scale, sizeIncludesDecoration ? "including" : "excluding",
-             IShellSurface::StateToString(state).c_str());
+             IShellSurface::StateToString(state));
 
   auto oldSurfaceSize = m_surfaceSize;
   auto oldBufferSize = m_bufferSize;

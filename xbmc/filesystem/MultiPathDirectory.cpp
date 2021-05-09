@@ -37,7 +37,7 @@ CMultiPathDirectory::~CMultiPathDirectory() = default;
 
 bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  CLog::Log(LOGDEBUG, "CMultiPathDirectory::GetDirectory({})", url.GetRedacted().c_str());
+  CLog::Log(LOGDEBUG, "CMultiPathDirectory::GetDirectory({})", url.GetRedacted());
 
   std::vector<std::string> vecPaths;
   if (!GetPaths(url, vecPaths))
@@ -74,12 +74,12 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
 
     CFileItemList tempItems;
-    CLog::Log(LOGDEBUG, "Getting Directory ({})", CURL::GetRedacted(vecPaths[i]).c_str());
+    CLog::Log(LOGDEBUG, "Getting Directory ({})", CURL::GetRedacted(vecPaths[i]));
     if (CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask, m_flags))
       items.Append(tempItems);
     else
     {
-      CLog::Log(LOGERROR, "Error Getting Directory ({})", CURL::GetRedacted(vecPaths[i]).c_str());
+      CLog::Log(LOGERROR, "Error Getting Directory ({})", CURL::GetRedacted(vecPaths[i]));
       iFailures++;
     }
 
@@ -104,7 +104,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 bool CMultiPathDirectory::Exists(const CURL& url)
 {
-  CLog::Log(LOGDEBUG, "Testing Existence ({})", url.GetRedacted().c_str());
+  CLog::Log(LOGDEBUG, "Testing Existence ({})", url.GetRedacted());
 
   std::vector<std::string> vecPaths;
   if (!GetPaths(url, vecPaths))
@@ -112,7 +112,7 @@ bool CMultiPathDirectory::Exists(const CURL& url)
 
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
-    CLog::Log(LOGDEBUG, "Testing Existence ({})", CURL::GetRedacted(vecPaths[i]).c_str());
+    CLog::Log(LOGDEBUG, "Testing Existence ({})", CURL::GetRedacted(vecPaths[i]));
     if (CDirectory::Exists(vecPaths[i]))
       return true;
   }
@@ -193,18 +193,18 @@ std::string CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, 
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
   std::string newPath = "multipath://";
-  //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath.c_str());
+  //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath);
   for (unsigned int i = 0; i < stack.size(); ++i)
     AddToMultiPath(newPath, items[stack[i]]->GetPath());
 
-  //CLog::Log(LOGDEBUG, "Final path: {}", newPath.c_str());
+  //CLog::Log(LOGDEBUG, "Final path: {}", newPath);
   return newPath;
 }
 
 void CMultiPathDirectory::AddToMultiPath(std::string& strMultiPath, const std::string& strPath)
 {
   URIUtils::AddSlashAtEnd(strMultiPath);
-  //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath.c_str());
+  //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath);
   strMultiPath += CURL::Encode(strPath);
   strMultiPath += "/";
 }
@@ -215,10 +215,10 @@ std::string CMultiPathDirectory::ConstructMultiPath(const std::vector<std::strin
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
   std::string newPath = "multipath://";
-  //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath.c_str());
+  //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath);
   for (std::vector<std::string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
     AddToMultiPath(newPath, *path);
-  //CLog::Log(LOGDEBUG, "Final path: {}", newPath.c_str());
+  //CLog::Log(LOGDEBUG, "Final path: {}", newPath);
   return newPath;
 }
 
@@ -255,8 +255,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
     std::vector<int> stack;
     stack.push_back(i);
-    CLog::Log(LOGDEBUG, "Testing path: [{:03}] {}", i,
-              CURL::GetRedacted(pItem1->GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "Testing path: [{:03}] {}", i, CURL::GetRedacted(pItem1->GetPath()));
 
     int j = i + 1;
     do
@@ -270,8 +269,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       if (!pItem2->IsFileFolder())
       {
         stack.push_back(j);
-        CLog::Log(LOGDEBUG, "  Adding path: [{:03}] {}", j,
-                  CURL::GetRedacted(pItem2->GetPath()).c_str());
+        CLog::Log(LOGDEBUG, "  Adding path: [{:03}] {}", j, CURL::GetRedacted(pItem2->GetPath()));
       }
       j++;
     }
@@ -285,7 +283,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       for (unsigned int k = stack.size() - 1; k > 0; --k)
         items.Remove(stack[k]);
       pItem1->SetPath(newPath);
-      CLog::Log(LOGDEBUG, "  New path: {}", CURL::GetRedacted(pItem1->GetPath()).c_str());
+      CLog::Log(LOGDEBUG, "  New path: {}", CURL::GetRedacted(pItem1->GetPath()));
     }
 
     i++;

@@ -548,14 +548,14 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
 
     if(valid)
     {
-      CLog::Log(LOGDEBUG, "PulseAudio: Found {} with devicestring {}", device.m_displayName.c_str(),
-                device.m_deviceName.c_str());
+      CLog::Log(LOGDEBUG, "PulseAudio: Found {} with devicestring {}", device.m_displayName,
+                device.m_deviceName);
       sinkStruct->list->push_back(device);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "PulseAudio: Skipped {} with devicestring {}",
-                device.m_displayName.c_str(), device.m_deviceName.c_str());
+      CLog::Log(LOGDEBUG, "PulseAudio: Skipped {} with devicestring {}", device.m_displayName,
+                device.m_deviceName);
     }
   }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
@@ -799,7 +799,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   // only check if the device is existing - don't alter the sample rate
   if (!sinkStruct.device_found)
   {
-    CLog::Log(LOGERROR, "PulseAudio: Sink {} not found", device.c_str());
+    CLog::Log(LOGERROR, "PulseAudio: Sink {} not found", device);
     pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return false;
@@ -978,7 +978,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   CLog::Log(LOGINFO,
             "PulseAudio: Opened device {} in {} mode with Buffersize {} ms Periodsize {} ms",
-            device.c_str(), m_passthrough ? "passthrough" : "pcm",
+            device, m_passthrough ? "passthrough" : "pcm",
             static_cast<unsigned int>(1000.0 * m_BufferSize / m_BytesPerSecond),
             static_cast<unsigned int>(1000.0 * m_periodSize / m_BytesPerSecond));
 

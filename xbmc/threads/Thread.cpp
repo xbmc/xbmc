@@ -71,7 +71,7 @@ void CThread::Create(bool bAutoDelete)
     else
     { // otherwise we have a problem.
       CLog::Log(LOGERROR, "{} - fatal error creating thread {} - old thread id not null",
-                __FUNCTION__, m_ThreadName.c_str());
+                __FUNCTION__, m_ThreadName);
       exit(1);
     }
   }
@@ -131,7 +131,7 @@ void CThread::Create(bool bAutoDelete)
 
         pThread->SetThreadInfo();
 
-        CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", name.c_str(),
+        CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", name,
                   (autodelete ? "true" : "false"));
 
         pThread->m_StartEvent.Set();
@@ -146,12 +146,12 @@ void CThread::Create(bool bAutoDelete)
 
         if (autodelete)
         {
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name.c_str(), id.c_str());
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name, id);
           delete pThread;
           pThread = NULL;
         }
         else
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating", name.c_str(), id.c_str());
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating", name, id);
       }
       catch (const std::exception& e)
       {

@@ -135,13 +135,13 @@ snd_hctl_t* CALSAHControlMonitor::GetHandle(const std::string& ctlHandleName)
     if (snd_hctl_open(&hctl, ctlHandleName.c_str(), 0) != 0)
     {
       CLog::Log(LOGWARNING, "CALSAHControlMonitor::GetHandle - snd_hctl_open() failed for \"{}\"",
-                ctlHandleName.c_str());
+                ctlHandleName);
       return NULL;
     }
     if (snd_hctl_load(hctl) != 0)
     {
       CLog::Log(LOGERROR, "CALSAHControlMonitor::GetHandle - snd_hctl_load() failed for \"{}\"",
-                ctlHandleName.c_str());
+                ctlHandleName);
       snd_hctl_close(hctl);
       return NULL;
     }

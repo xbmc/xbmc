@@ -365,7 +365,7 @@ CDetectDisc::CDetectDisc(const std::string &strPath, const bool bautorun)
 bool CDetectDisc::DoWork()
 {
 #ifdef HAS_DVD_DRIVE
-  CLog::Log(LOGDEBUG, "{}: Optical media found in drive {}", __FUNCTION__, m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "{}: Optical media found in drive {}", __FUNCTION__, m_strPath);
   CMediaSource share;
   share.strPath = m_strPath;
   share.strStatus = CServiceBroker::GetMediaManager().GetDiskLabel(share.strPath);

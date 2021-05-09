@@ -379,8 +379,8 @@ void CWinSystemX11::UpdateResolutions()
 
     for (auto mode : out->modes)
     {
-      CLog::Log(LOGINFO, "ID:{} Name:{} Refresh:{:f} Width:{} Height:{}", mode.id.c_str(),
-                mode.name.c_str(), mode.hz, mode.w, mode.h);
+      CLog::Log(LOGINFO, "ID:{} Name:{} Refresh:{:f} Width:{} Height:{}", mode.id, mode.name,
+                mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
       res.dwFlags = 0;
 
@@ -585,7 +585,7 @@ void CWinSystemX11::RecreateWindow()
 
   if (out)
     CLog::Log(LOGDEBUG, "{} - current output: {}, mode: {}, refresh: {:.3f}", __FUNCTION__,
-              out->name.c_str(), mode.id.c_str(), mode.hz);
+              out->name, mode.id, mode.hz);
   else
     CLog::Log(LOGWARNING, "{} - output name not set", __FUNCTION__);
 

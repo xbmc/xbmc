@@ -42,7 +42,7 @@ bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym& keysym, uint8_t* key,
 
   if (!strCommand.empty())
   {
-    CLog::Log(LOGDEBUG, "{} - executing command '{}'", __FUNCTION__, strCommand.c_str());
+    CLog::Log(LOGDEBUG, "{} - executing command '{}'", __FUNCTION__, strCommand);
     if (g_application.ExecuteXBMCAction(strCommand))
     {
       *key = 0;

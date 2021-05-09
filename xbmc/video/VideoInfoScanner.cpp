@@ -134,7 +134,7 @@ namespace VIDEO
            * will still pick up and remove it though.
            */
           CLog::Log(LOGWARNING, "{} directory '{}' does not exist - skipping scan{}.", __FUNCTION__,
-                    CURL::GetRedacted(directory).c_str(), m_bClean ? " and clean" : "");
+                    CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
           m_pathsToScan.erase(m_pathsToScan.begin());
         }
         else if (!DoScan(directory))
@@ -272,7 +272,7 @@ namespace VIDEO
       CLog::Log(
           LOGINFO,
           "VideoInfoScanner: Plugin '{}' does not support media library scanning for '{}' content",
-          CURL::GetRedacted(strDirectory).c_str(), TranslateContent(content));
+          CURL::GetRedacted(strDirectory), TranslateContent(content));
       return true;
     }
 
@@ -309,7 +309,7 @@ namespace VIDEO
       if (StringUtils::EqualsNoCase(hash, dbHash))
       { // hash matches - skipping
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change{}",
-                  CURL::GetRedacted(strDirectory).c_str(), !fastHash.empty() ? " (fasthash)" : "");
+                  CURL::GetRedacted(strDirectory), !fastHash.empty() ? " (fasthash)" : "");
         bSkip = true;
       }
       else if (hash.empty())
@@ -317,7 +317,7 @@ namespace VIDEO
         CLog::Log(LOGDEBUG,
                   "VideoInfoScanner: Skipping dir '{}' as it's empty or doesn't exist - adding to "
                   "clean list",
-                  CURL::GetRedacted(strDirectory).c_str());
+                  CURL::GetRedacted(strDirectory));
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         bSkip = true;
@@ -325,12 +325,12 @@ namespace VIDEO
       else if (dbHash.empty())
       { // new folder - scan
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '{}' as not in the database",
-                  CURL::GetRedacted(strDirectory).c_str());
+                  CURL::GetRedacted(strDirectory));
       }
       else
       { // hash changed - rescan
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change ({} != {})",
-                  CURL::GetRedacted(strDirectory).c_str(), dbHash.c_str(), hash.c_str());
+                  CURL::GetRedacted(strDirectory), dbHash, hash);
       }
     }
     else if (content == CONTENT_TVSHOWS)
@@ -370,7 +370,7 @@ namespace VIDEO
           if (m_bClean)
             m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir {}",
-                    CURL::GetRedacted(strDirectory).c_str());
+                    CURL::GetRedacted(strDirectory));
         }
       }
       else
@@ -378,7 +378,7 @@ namespace VIDEO
         if (m_bClean)
           m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
-                  CURL::GetRedacted(strDirectory).c_str());
+                  CURL::GetRedacted(strDirectory));
       }
     }
     else if (!StringUtils::EqualsNoCase(hash, dbHash) && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
@@ -465,7 +465,7 @@ namespace VIDEO
       else
       {
         CLog::Log(LOGERROR, "VideoInfoScanner: Unknown content type {} ({})", info2->Content(),
-                  CURL::GetRedacted(pItem->GetPath()).c_str());
+                  CURL::GetRedacted(pItem->GetPath()));
         FoundSomeInfo = false;
         break;
       }
@@ -474,7 +474,7 @@ namespace VIDEO
         CLog::Log(LOGWARNING,
                   "VideoInfoScanner: Error {} occurred while retrieving"
                   "information for {}.",
-                  ret, CURL::GetRedacted(pItem->GetPath()).c_str());
+                  ret, CURL::GetRedacted(pItem->GetPath()));
         FoundSomeInfo = false;
         break;
       }
@@ -484,7 +484,7 @@ namespace VIDEO
       {
         CLog::Log(LOGWARNING,
                   "No information found for item '{}', it won't be added to the library.",
-                  CURL::GetRedacted(pItem->GetPath()).c_str());
+                  CURL::GetRedacted(pItem->GetPath()));
 
         MediaType mediaType = MediaTypeMovie;
         if (info2->Content() == CONTENT_TVSHOWS)
@@ -614,8 +614,7 @@ namespace VIDEO
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
-              url.GetFirstThumbUrl(), info2->Name().c_str(),
-              TranslateContent(info2->Content()).c_str());
+              url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
     long lResult = -1;
     if (GetDetails(pItem, url, info2,
@@ -697,8 +696,7 @@ namespace VIDEO
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
-              url.GetFirstThumbUrl(), info2->Name().c_str(),
-              TranslateContent(info2->Content()).c_str());
+              url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
     if (GetDetails(pItem, url, info2,
                    (result == CInfoScanner::COMBINED_NFO ||
@@ -775,8 +773,7 @@ namespace VIDEO
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
-              url.GetFirstThumbUrl(), info2->Name().c_str(),
-              TranslateContent(info2->Content()).c_str());
+              url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
     if (GetDetails(pItem, url, info2,
                    (result == CInfoScanner::COMBINED_NFO ||
@@ -908,7 +905,7 @@ namespace VIDEO
       if (bSkip)
       {
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change",
-                  CURL::GetRedacted(item->GetPath()).c_str());
+                  CURL::GetRedacted(item->GetPath()));
         // update our dialog with our progress
         if (m_handle)
           OnDirectoryScanned(item->GetPath());
@@ -917,10 +914,10 @@ namespace VIDEO
 
       if (dbHash.empty())
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '{}' as not in the database",
-                  CURL::GetRedacted(item->GetPath()).c_str());
+                  CURL::GetRedacted(item->GetPath()));
       else
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change ({} != {})",
-                  CURL::GetRedacted(item->GetPath()).c_str(), dbHash.c_str(), hash.c_str());
+                  CURL::GetRedacted(item->GetPath()), dbHash, hash);
 
       if (m_bClean)
       {
@@ -958,7 +955,7 @@ namespace VIDEO
 
       std::string strPathX, strFileX;
       URIUtils::Split(items[x]->GetPath(), strPathX, strFileX);
-      //CLog::Log(LOGDEBUG,"{}:{}:{}", x, strPathX.c_str(), strFileX.c_str());
+      //CLog::Log(LOGDEBUG,"{}:{}:{}", x, strPathX, strFileX);
 
       const int y = x + 1;
       if (StringUtils::EqualsNoCase(strFileX, "VIDEO_TS.IFO"))
@@ -967,7 +964,7 @@ namespace VIDEO
         {
           std::string strPathY, strFileY;
           URIUtils::Split(items[y]->GetPath(), strPathY, strFileY);
-          //CLog::Log(LOGDEBUG," {}:{}:{}", y, strPathY.c_str(), strFileY.c_str());
+          //CLog::Log(LOGDEBUG," {}:{}:{}", y, strPathY, strFileY);
 
           if (StringUtils::EqualsNoCase(strPathY, strPathX))
             /*
@@ -1043,7 +1040,7 @@ namespace VIDEO
         episode.item = std::make_shared<CFileItem>(*item);
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "{} - found match for: {}. Season {}, Episode {}", __FUNCTION__,
-                CURL::GetRedacted(episode.strPath).c_str(), episode.iSeason, episode.iEpisode);
+                CURL::GetRedacted(episode.strPath), episode.iSeason, episode.iEpisode);
       return true;
     }
 
@@ -1068,9 +1065,9 @@ namespace VIDEO
       episode.cDate = item->GetVideoInfoTag()->m_firstAired;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "{} - found match for: '{}', firstAired: '{}' = '{}', title: '{}'",
-                __FUNCTION__, CURL::GetRedacted(episode.strPath).c_str(),
-                tag->m_firstAired.GetAsDBDateTime().c_str(),
-                episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
+                __FUNCTION__, CURL::GetRedacted(episode.strPath),
+                tag->m_firstAired.GetAsDBDateTime(), episode.cDate.GetAsLocalizedDate(),
+                episode.strTitle);
       return true;
     }
 
@@ -1091,7 +1088,7 @@ namespace VIDEO
       episode.iEpisode = -1;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "{} - found match for: '{}', title: '{}'", __FUNCTION__,
-                CURL::GetRedacted(episode.strPath).c_str(), episode.strTitle.c_str());
+                CURL::GetRedacted(episode.strPath), episode.strTitle);
       return true;
     }
 
@@ -1105,7 +1102,7 @@ namespace VIDEO
       CLog::Log(LOGDEBUG,
                 "{} - found exclusion match for: {}. Both Season and Episode are 0. Item will be "
                 "ignored for scanning.",
-                __FUNCTION__, CURL::GetRedacted(item->GetPath()).c_str());
+                __FUNCTION__, CURL::GetRedacted(item->GetPath()));
       return true;
     }
 
@@ -1137,7 +1134,7 @@ namespace VIDEO
         continue;
 
       int regexppos, regexp2pos;
-      //CLog::Log(LOGDEBUG,"running expression {} on {}",expression[i].regexp.c_str(),strLabel.c_str());
+      //CLog::Log(LOGDEBUG,"running expression {} on {}",expression[i].regexp,strLabel);
       if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
         continue;
 
@@ -1157,8 +1154,8 @@ namespace VIDEO
           continue;
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match {} ({}) [{}]",
-                  CURL::GetRedacted(episode.strPath).c_str(),
-                  episode.cDate.GetAsLocalizedDate().c_str(), expression[i].regexp.c_str());
+                  CURL::GetRedacted(episode.strPath), episode.cDate.GetAsLocalizedDate(),
+                  expression[i].regexp);
       }
       else
       {
@@ -1166,8 +1163,8 @@ namespace VIDEO
           continue;
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match {} (s{}e{}) [{}]",
-                  CURL::GetRedacted(episode.strPath).c_str(), episode.iSeason, episode.iEpisode,
-                  expression[i].regexp.c_str());
+                  CURL::GetRedacted(episode.strPath), episode.iSeason, episode.iEpisode,
+                  expression[i].regexp);
       }
 
       // Grab the remainder from first regexp run
@@ -1221,7 +1218,7 @@ namespace VIDEO
                       episode.iSeason, episode.iEpisode,
                       CServiceBroker::GetSettingsComponent()
                           ->GetAdvancedSettings()
-                          ->m_tvshowMultiPartEnumRegExp.c_str());
+                          ->m_tvshowMultiPartEnumRegExp);
 
             episodeList.push_back(episode);
             remainder = reg.GetMatch(3);
@@ -1235,7 +1232,7 @@ namespace VIDEO
                       episode.iEpisode,
                       CServiceBroker::GetSettingsComponent()
                           ->GetAdvancedSettings()
-                          ->m_tvshowMultiPartEnumRegExp.c_str());
+                          ->m_tvshowMultiPartEnumRegExp);
             episodeList.push_back(episode);
             offset += regexp2pos + reg2.GetFindLen();
           }
@@ -1365,7 +1362,7 @@ namespace VIDEO
           m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
         else
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie {} to show {}",
-                    movieDetails.m_strTitle.c_str(), movieDetails.m_showLink[i].c_str());
+                    movieDetails.m_strTitle, movieDetails.m_showLink[i]);
       }
     }
     else if (content == CONTENT_TVSHOWS)
@@ -1772,7 +1769,7 @@ namespace VIDEO
                   "VideoInfoScanner: Asked to lookup episode {}"
                   " online, but we have no episode guide. Check your tvshow.nfo and make"
                   " sure the <episodeguide> tag is in place.",
-                  CURL::GetRedacted(file->strPath).c_str());
+                  CURL::GetRedacted(file->strPath));
         continue;
       }
 
@@ -1856,8 +1853,8 @@ namespace VIDEO
             CLog::Log(LOGDEBUG,
                       "{} fuzzy title match for show: '{}', title: '{}', match: '{}', score: {:f} "
                       ">= {:f}",
-                      __FUNCTION__, showInfo.m_strTitle.c_str(), file->strTitle.c_str(),
-                      titles[index].c_str(), matchscore, minscore);
+                      __FUNCTION__, showInfo.m_strTitle, file->strTitle, titles[index], matchscore,
+                      minscore);
           }
         }
       }
@@ -1884,8 +1881,8 @@ namespace VIDEO
         CLog::Log(
             LOGDEBUG,
             "{} - no match for show: '{}', season: {}, episode: {}.{}, airdate: '{}', title: '{}'",
-            __FUNCTION__, showInfo.m_strTitle.c_str(), file->iSeason, file->iEpisode,
-            file->iSubepisode, file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
+            __FUNCTION__, showInfo.m_strTitle, file->iSeason, file->iEpisode, file->iSubepisode,
+            file->cDate.GetAsLocalizedDate(), file->strTitle);
       }
     }
     return INFO_ADDED;

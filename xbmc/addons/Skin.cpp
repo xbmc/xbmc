@@ -271,7 +271,7 @@ bool CSkinInfo::HasSkinFile(const std::string &strFile) const
 void CSkinInfo::LoadIncludes()
 {
   std::string includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
-  CLog::Log(LOGINFO, "Loading skin includes from {}", includesPath.c_str());
+  CLog::Log(LOGINFO, "Loading skin includes from {}", includesPath);
   m_includes.Clear();
   m_includes.Load(includesPath);
 }
@@ -454,14 +454,14 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
   {
-    CLog::Log(LOGERROR, "FillInSkinFonts: Couldn't load {}", strPath.c_str());
+    CLog::Log(LOGERROR, "FillInSkinFonts: Couldn't load {}", strPath);
     return;
   }
 
   const TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || pRootElement->ValueStr() != "fonts")
   {
-    CLog::Log(LOGERROR, "FillInSkinFonts: file {} doesn't start with <fonts>", strPath.c_str());
+    CLog::Log(LOGERROR, "FillInSkinFonts: file {} doesn't start with <fonts>", strPath);
     return;
   }
 
@@ -759,7 +759,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
       m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number++, std::dynamic_pointer_cast<CSkinSettingBool>(setting)));
     else
       CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknown type \"{}\"",
-                setting->GetType().c_str());
+                setting->GetType());
   }
 
   return true;
@@ -780,15 +780,13 @@ bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   for (const auto& it : m_bools)
   {
     if (!it.second->Serialize(settingsElement))
-      CLog::Log(LOGWARNING, "CSkinInfo: failed to save string setting \"{}\"",
-                it.second->name.c_str());
+      CLog::Log(LOGWARNING, "CSkinInfo: failed to save string setting \"{}\"", it.second->name);
   }
 
   for (const auto& it : m_strings)
   {
     if (!it.second->Serialize(settingsElement))
-      CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"{}\"",
-                it.second->name.c_str());
+      CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"{}\"", it.second->name);
   }
 
   return true;

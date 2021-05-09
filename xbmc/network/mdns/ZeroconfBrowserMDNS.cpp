@@ -73,7 +73,7 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
       CLog::Log(
           LOGDEBUG,
           "ZeroconfBrowserMDNS::BrowserCallback found service named: {}, type: {}, domain: {}",
-          s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+          s.GetName(), s.GetType(), s.GetDomain());
       p_this->addDiscoveredService(browser, s);
     }
     else
@@ -81,7 +81,7 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
       CLog::Log(LOGDEBUG,
                 "ZeroconfBrowserMDNS::BrowserCallback service named: {}, type: {}, domain: {} "
                 "disappeared",
-                s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+                s.GetName(), s.GetType(), s.GetDomain());
       p_this->removeDiscoveredService(browser, s);
     }
     if(! (flags & kDNSServiceFlagsMoreComing) )
@@ -397,12 +397,12 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
     {
       CLog::Log(LOGWARNING,
                 "ZeroconfBrowserMDNS: Could not resolve hostname {} falling back to CDNSNameCache",
-                fr_service.GetHostname().c_str());
+                fr_service.GetHostname());
       if (CDNSNameCache::Lookup(fr_service.GetHostname(), strIP))
         fr_service.SetIP(strIP);
       else
         CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: Could not resolve hostname {}",
-                  fr_service.GetHostname().c_str());
+                  fr_service.GetHostname());
     }
   }
 

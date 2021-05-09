@@ -262,7 +262,7 @@ bool CGUIDialogSubtitles::SetService(const std::string &service)
   if (service != m_currentService)
   {
     m_currentService = service;
-    CLog::Log(LOGDEBUG, "New Service [{}] ", m_currentService.c_str());
+    CLog::Log(LOGDEBUG, "New Service [{}] ", m_currentService);
 
     CFileItemPtr currentService = GetService();
     // highlight this item in the skin
@@ -372,7 +372,7 @@ void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
   {
     CFileItemPtr item = items->Get(0);
     CLog::Log(LOGDEBUG, "{} - Automatically download first subtitle: {}", __FUNCTION__,
-              item->GetLabel2().c_str());
+              item->GetLabel2());
     m_LastAutoDownloaded = g_application.CurrentFile();
     Download(*item);
   }
@@ -514,8 +514,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     if (!CFile::Copy(strUrl, strDownloadFile))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
-      CLog::Log(LOGERROR, "{} - Saving of subtitle {} to {} failed", __FUNCTION__, strUrl.c_str(),
-                strDownloadFile.c_str());
+      CLog::Log(LOGERROR, "{} - Saving of subtitle {} to {} failed", __FUNCTION__, strUrl,
+                strDownloadFile);
     }
     else
     {
@@ -529,8 +529,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
          * so that all remaining items (including the .idx below) are copied directly to their final destination and thus all
          * items end up in the same folder
          */
-        CLog::Log(LOGDEBUG, "{} - Saving subtitle {} to {}", __FUNCTION__, strDownloadFile.c_str(),
-                  strTryDestFile.c_str());
+        CLog::Log(LOGDEBUG, "{} - Saving subtitle {} to {}", __FUNCTION__, strDownloadFile,
+                  strTryDestFile);
         if (CFile::Copy(strDownloadFile, strTryDestFile))
         {
           CFile::Delete(strDownloadFile);
@@ -540,15 +540,13 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         else
         {
           CLog::Log(LOGWARNING, "{} - Saving of subtitle {} to {} failed. Falling back to {}",
-                    __FUNCTION__, strDownloadFile.c_str(), strTryDestFile.c_str(),
-                    strDownloadPath.c_str());
+                    __FUNCTION__, strDownloadFile, strTryDestFile, strDownloadPath);
           strDestPath = strDownloadPath; // Copy failed, use fallback for the rest of the items
         }
       }
       else
       {
-        CLog::Log(LOGDEBUG, "{} - Saved subtitle {} to {}", __FUNCTION__, strUrl.c_str(),
-                  strDownloadFile.c_str());
+        CLog::Log(LOGDEBUG, "{} - Saved subtitle {} to {}", __FUNCTION__, strUrl, strDownloadFile);
       }
 
       // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well

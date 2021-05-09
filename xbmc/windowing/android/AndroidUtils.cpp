@@ -155,8 +155,7 @@ CAndroidUtils::CAndroidUtils()
         m_width = StringUtils::IsInteger(aSize[0]) ? atoi(aSize[0].c_str()) : 0;
         m_height = StringUtils::IsInteger(aSize[1]) ? atoi(aSize[1].c_str()) : 0;
       }
-      CLog::Log(LOGDEBUG, "CAndroidUtils: display-size: {}({}x{})", displaySize.c_str(), m_width,
-                m_height);
+      CLog::Log(LOGDEBUG, "CAndroidUtils: display-size: {}({}x{})", displaySize, m_width, m_height);
     }
   }
 
@@ -233,13 +232,13 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
       StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res->iScreenWidth, res->iScreenHeight,
                           res->fRefreshRate, res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
   CLog::Log(LOGINFO, "CAndroidUtils: Current resolution: {}x{} {}", res->iWidth, res->iHeight,
-            res->strMode.c_str());
+            res->strMode);
   return true;
 }
 
 bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO& res)
 {
-  CLog::Log(LOGINFO, "CAndroidUtils: SetNativeResolution: {}: {}x{} {}x{}@{:f}", res.strId.c_str(),
+  CLog::Log(LOGINFO, "CAndroidUtils: SetNativeResolution: {}: {}x{} {}x{}@{:f}", res.strId,
             res.iWidth, res.iHeight, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
 
   if (s_hasModeApi)

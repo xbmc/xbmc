@@ -33,7 +33,7 @@ CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral
 {
   if (m_buttonMap->ControllerID() != DEFAULT_CONTROLLER_ID)
     CLog::Log(LOGERROR, "ERROR: Must use default controller profile instead of {}",
-              m_buttonMap->ControllerID().c_str());
+              m_buttonMap->ControllerID());
 }
 
 float CDeadzoneFilter::FilterAxis(unsigned int axisIndex, float axisValue)

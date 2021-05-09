@@ -706,8 +706,8 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t *data, unsigned int size)
       CLog::Log(LOGINFO,
                 "CAEStreamParser::SyncDTS - {} stream detected ({} channels, {}Hz, {}bit {}, "
                 "period: {}, syncword: 0x{:x}, target rate: 0x{:x}, framesize {}))",
-                type.c_str(), m_info.m_channels, m_info.m_sampleRate, bits,
-                m_info.m_dataIsLE ? "LE" : "BE", m_info.m_dtsPeriod, hd_sync, target_rate, m_fsize);
+                type, m_info.m_channels, m_info.m_sampleRate, bits, m_info.m_dataIsLE ? "LE" : "BE",
+                m_info.m_dtsPeriod, hd_sync, target_rate, m_fsize);
     }
 
     return skip;

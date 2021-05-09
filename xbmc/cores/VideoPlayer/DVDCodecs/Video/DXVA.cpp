@@ -385,7 +385,7 @@ void CContext::QueryCaps()
     if (mode)
       CLog::LogFunction(LOGDEBUG, "DXVA", "supports '{}'", mode->name);
     else
-      CLog::LogFunction(LOGDEBUG, "DXVA", "supports {}", GUIDToString(m_input_list[i]).c_str());
+      CLog::LogFunction(LOGDEBUG, "DXVA", "supports {}", GUIDToString(m_input_list[i]));
   }
 }
 

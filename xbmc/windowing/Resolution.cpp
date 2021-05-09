@@ -82,8 +82,7 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
   }
 
   CLog::Log(LOGINFO, "Display resolution ADJUST : {} ({}) (weight: {:.3f})",
-            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode.c_str(), res,
-            weight);
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode, res, weight);
   return res;
 }
 
@@ -355,14 +354,14 @@ bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3
             CLog::Log(
                 LOGDEBUG,
                 "Found Resolution {} ({}) from fallback (refreshmin:{:.3f} refreshmax:{:.3f})",
-                info.strMode.c_str(), resolution, override.refreshmin, override.refreshmax);
+                info.strMode, resolution, override.refreshmin, override.refreshmax);
           }
           else
           {
             CLog::Log(LOGDEBUG,
                       "Found Resolution {} ({}) from override of fps {:.3f} (fpsmin:{:.3f} "
                       "fpsmax:{:.3f} refreshmin:{:.3f} refreshmax:{:.3f})",
-                      info.strMode.c_str(), resolution, fps, override.fpsmin, override.fpsmax,
+                      info.strMode, resolution, fps, override.fpsmin, override.fpsmax,
                       override.refreshmin, override.refreshmax);
           }
 

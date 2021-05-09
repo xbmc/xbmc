@@ -95,13 +95,13 @@ CSeatSelection::CSeatSelection(CConnection& connection, wayland::seat_t const& s
       if (mimeIt != MIME_TYPES_PREFERENCE.cend())
       {
         m_matchedMimeType = *mimeIt;
-        CLog::Log(LOGDEBUG, "Chose selection MIME type {} out of offered {}",
-                  m_matchedMimeType.c_str(), offers.c_str());
+        CLog::Log(LOGDEBUG, "Chose selection MIME type {} out of offered {}", m_matchedMimeType,
+                  offers);
       }
       else
       {
         CLog::Log(LOGDEBUG, "Could not find compatible MIME type for selection data (offered: {})",
-                  offers.c_str());
+                  offers);
       }
     }
   };

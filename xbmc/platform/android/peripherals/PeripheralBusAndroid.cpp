@@ -77,7 +77,7 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   {
     CLog::Log(LOGWARNING,
               "CPeripheralBusAndroid: failed to initialize properties for peripheral \"{}\"",
-              peripheral.Location().c_str());
+              peripheral.Location());
     return false;
   }
 
@@ -94,7 +94,7 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   joystick.SetProvider(JOYSTICK_PROVIDER_ANDROID);
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Initializing device {} \"{}\"", deviceId,
-            peripheral.DeviceName().c_str());
+            peripheral.DeviceName());
 
   // prepare the joystick state
   CAndroidJoystickState state;
@@ -103,7 +103,7 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
     CLog::Log(
         LOGWARNING,
         "CPeripheralBusAndroid: failed to initialize the state for input device \"{}\" with ID {}",
-        joystick.DeviceName().c_str(), deviceId);
+        joystick.DeviceName(), deviceId);
     return false;
   }
 
@@ -231,7 +231,7 @@ void CPeripheralBusAndroid::OnInputDeviceChanged(int deviceId)
           CLog::Log(LOGWARNING,
                     "CPeripheralBusAndroid: failed to update input device \"{}\" with ID {} "
                     "because it couldn't be found",
-                    result->m_strDeviceName.c_str(), deviceId);
+                    result->m_strDeviceName, deviceId);
           return;
         }
 
@@ -239,7 +239,7 @@ void CPeripheralBusAndroid::OnInputDeviceChanged(int deviceId)
           return;
 
         CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"{}\" with ID {} updated",
-                  result->m_strDeviceName.c_str(), deviceId);
+                  result->m_strDeviceName, deviceId);
         changed = true;
         break;
       }
@@ -267,7 +267,7 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
       if (result->m_strLocation == deviceLocation)
       {
         CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"{}\" with ID {} removed",
-                  result->m_strDeviceName.c_str(), deviceId);
+                  result->m_strDeviceName, deviceId);
         m_scanResults.m_results.erase(result);
         removed = true;
         break;
@@ -398,14 +398,14 @@ bool CPeripheralBusAndroid::ConvertToPeripheralScanResult(const CJNIViewInputDev
 void CPeripheralBusAndroid::LogInputDevice(const CJNIViewInputDevice &device)
 {
   // Log device properties
-  CLog::Log(LOGDEBUG, "  Name: \"{}\"", device.getName().c_str());
+  CLog::Log(LOGDEBUG, "  Name: \"{}\"", device.getName());
   CLog::Log(LOGDEBUG, "    ID: {}", device.getId());
   CLog::Log(LOGDEBUG, "    Controller number: {}", device.getControllerNumber());
   std::string descriptor = device.getDescriptor();
   if (descriptor.size() > 14)
-    CLog::Log(LOGDEBUG, "    Descriptor: \"{}...\"", descriptor.substr(0, 14).c_str());
+    CLog::Log(LOGDEBUG, "    Descriptor: \"{}...\"", descriptor.substr(0, 14));
   else
-    CLog::Log(LOGDEBUG, "    Descriptor: \"{}\"", descriptor.c_str());
+    CLog::Log(LOGDEBUG, "    Descriptor: \"{}\"", descriptor);
   CLog::Log(LOGDEBUG, "    Product ID: {:04X}", device.getProductId());
   CLog::Log(LOGDEBUG, "    Vendor ID: {:04X}", device.getVendorId());
   CLog::Log(LOGDEBUG, "    Has microphone: {}", device.hasMicrophone() ? "true" : "false");

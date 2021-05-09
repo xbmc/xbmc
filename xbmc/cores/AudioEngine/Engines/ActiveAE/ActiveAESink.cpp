@@ -355,7 +355,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         std::string portName = port == nullptr ? "timer" : port->portName;
         CLog::Log(LOGWARNING,
                   "CActiveAESink::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName.c_str(), m_state);
+                  __FUNCTION__, signal, portName, m_state);
       }
       return;
 
@@ -724,7 +724,7 @@ void CActiveAESink::PrintSinks(std::string& driver)
     if (!driver.empty() && itt->m_sinkName != driver)
       continue;
 
-    CLog::Log(LOGINFO, "Enumerated {} devices:", itt->m_sinkName.c_str());
+    CLog::Log(LOGINFO, "Enumerated {} devices:", itt->m_sinkName);
     int count = 0;
     for (auto itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
     {
@@ -733,7 +733,7 @@ void CActiveAESink::PrintSinks(std::string& driver)
       std::stringstream ss((std::string)info);
       std::string line;
       while(std::getline(ss, line, '\n'))
-        CLog::Log(LOGINFO, "        {}", line.c_str());
+        CLog::Log(LOGINFO, "        {}", line);
     }
   }
 }
@@ -830,7 +830,7 @@ void CActiveAESink::OpenSink()
 
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
-  CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device {}", device.c_str());
+  CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device {}", device);
   m_sink = CAESinkFactory::Create(device, m_sinkFormat);
 
   // try first device in out list
@@ -842,7 +842,7 @@ void CActiveAESink::OpenSink()
     if (!driver.empty())
       device = driver + ":" + device;
     m_sinkFormat = m_requestedFormat;
-    CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device {}", device.c_str());
+    CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device {}", device);
     m_sink = CAESinkFactory::Create(device, m_sinkFormat);
   }
 
@@ -868,11 +868,11 @@ void CActiveAESink::OpenSink()
 #endif
 
   CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - {} Initialized:", m_sink->GetName());
-  CLog::Log(LOGDEBUG, "  Output Device : {}", m_deviceFriendlyName.c_str());
+  CLog::Log(LOGDEBUG, "  Output Device : {}", m_deviceFriendlyName);
   CLog::Log(LOGDEBUG, "  Sample Rate   : {}", m_sinkFormat.m_sampleRate);
   CLog::Log(LOGDEBUG, "  Sample Format : {}", CAEUtil::DataFormatToStr(m_sinkFormat.m_dataFormat));
   CLog::Log(LOGDEBUG, "  Channel Count : {}", m_sinkFormat.m_channelLayout.Count());
-  CLog::Log(LOGDEBUG, "  Channel Layout: {}", ((std::string)m_sinkFormat.m_channelLayout).c_str());
+  CLog::Log(LOGDEBUG, "  Channel Layout: {}", ((std::string)m_sinkFormat.m_channelLayout));
   CLog::Log(LOGDEBUG, "  Frames        : {}", m_sinkFormat.m_frames);
   CLog::Log(LOGDEBUG, "  Frame Size    : {}", m_sinkFormat.m_frameSize);
 

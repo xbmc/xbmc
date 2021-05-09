@@ -39,12 +39,12 @@ bool SoLoader::Load()
   }
   else
   {
-    CLog::Log(LOGDEBUG, "Loading: {}", strFileName.c_str());
+    CLog::Log(LOGDEBUG, "Loading: {}", strFileName);
     int flags = RTLD_LAZY;
     m_soHandle = dlopen(strFileName.c_str(), flags);
     if (!m_soHandle)
     {
-      CLog::Log(LOGERROR, "Unable to load {}, reason: {}", strFileName.c_str(), dlerror());
+      CLog::Log(LOGERROR, "Unable to load {}, reason: {}", strFileName, dlerror());
       return false;
     }
   }

@@ -1526,7 +1526,7 @@ std::string CDateTime::GetAsRFC1123DateTime() const
     weekDay = 6;
   if (weekDay != time.GetDayOfWeek())
     CLog::Log(LOGWARNING, "Invalid day of week {} in {}", time.GetDayOfWeek(),
-              time.GetAsDBDateTime().c_str());
+              time.GetAsDBDateTime());
 
   int month = time.GetMonth();
   if (month < 1)
@@ -1534,8 +1534,7 @@ std::string CDateTime::GetAsRFC1123DateTime() const
   else if (month > 12)
     month = 12;
   if (month != time.GetMonth())
-    CLog::Log(LOGWARNING, "Invalid month {} in {}", time.GetMonth(),
-              time.GetAsDBDateTime().c_str());
+    CLog::Log(LOGWARNING, "Invalid month {} in {}", time.GetMonth(), time.GetAsDBDateTime());
 
   return StringUtils::Format("{}, {:02} {} {:04} {:02}:{:02}:{:02} GMT", DAY_NAMES[weekDay],
                              time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(),

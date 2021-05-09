@@ -125,7 +125,7 @@ bool CAddonMgr::Init()
     AddonPtr addon;
     if (!GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::YES))
     {
-      CLog::Log(LOGFATAL, "addon '{}' not installed or not enabled.", id.c_str());
+      CLog::Log(LOGFATAL, "addon '{}' not installed or not enabled.", id);
       return false;
     }
   }
@@ -711,15 +711,14 @@ bool CAddonMgr::LoadAddon(const std::string& addonId,
 
   if (!FindAddon(addonId, origin, addonVersion))
   {
-    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on {}. FindAddon failed.",
-              addonId.c_str());
+    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on {}. FindAddon failed.", addonId);
     return false;
   }
 
   if (!GetAddon(addonId, addon, ADDON_UNKNOWN, OnlyEnabled::NO))
   {
     CLog::Log(LOGERROR, "CAddonMgr: could not load add-on {}. No add-on with that ID is installed.",
-              addonId.c_str());
+              addonId);
     return false;
   }
 
@@ -735,7 +734,7 @@ bool CAddonMgr::LoadAddon(const std::string& addonId,
   }
 
   m_events.Publish(AddonEvents::ReInstalled(addon->ID()));
-  CLog::Log(LOGDEBUG, "CAddonMgr: {} successfully loaded", addon->ID().c_str());
+  CLog::Log(LOGDEBUG, "CAddonMgr: {} successfully loaded", addon->ID());
   return true;
 }
 
@@ -792,7 +791,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
     return false;
 
   //success
-  CLog::Log(LOGDEBUG, "CAddonMgr: {} disabled", id.c_str());
+  CLog::Log(LOGDEBUG, "CAddonMgr: {} disabled", id);
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::NO) && addon != NULL)
   {
@@ -832,7 +831,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
 
   if (!IsCompatible(*addon))
   {
-    CLog::Log(LOGERROR, "Add-on '{}' is not compatible with Kodi", addon->ID().c_str());
+    CLog::Log(LOGERROR, "Add-on '{}' is not compatible with Kodi", addon->ID());
     CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(addon->Name(), 24152, EventLevel::Error)));
     UpdateDisabledReason(addon->ID(), AddonDisabledReason::INCOMPATIBLE);
     return false;
@@ -848,7 +847,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
 
   CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
-  CLog::Log(LOGDEBUG, "CAddonMgr: enabled {}", addon->ID().c_str());
+  CLog::Log(LOGDEBUG, "CAddonMgr: enabled {}", addon->ID());
   m_events.Publish(AddonEvents::Enabled(id));
   return true;
 }
@@ -864,7 +863,7 @@ bool CAddonMgr::EnableAddon(const std::string& id)
     CLog::Log(LOGWARNING,
               "CAddonMgr: '{}' required by '{}' is missing. Add-on may not function "
               "correctly",
-              dep.c_str(), id.c_str());
+              dep, id);
   for (auto it = needed.rbegin(); it != needed.rend(); ++it)
     EnableSingle(*it);
 

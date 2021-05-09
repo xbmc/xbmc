@@ -73,8 +73,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
       operation->SetOperation(StringUtils::EqualsNoCase(tag, "and") ? BooleanLogicOperationAnd : BooleanLogicOperationOr);
       if (!operation->Deserialize(operationNode))
       {
-        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition",
-                  tag.c_str());
+        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition", tag);
         return false;
       }
 
@@ -90,16 +89,14 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
       {
         if (!value->Deserialize(operationNode))
         {
-          CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition",
-                    tag.c_str());
+          CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition", tag);
           return false;
         }
 
         m_values.push_back(value);
       }
       else if (operationNode->Type() == TiXmlNode::TINYXML_ELEMENT)
-        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: unknown <{}> definition encountered",
-                  tag.c_str());
+        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: unknown <{}> definition encountered", tag);
     }
 
     operationNode = operationNode->NextSibling();

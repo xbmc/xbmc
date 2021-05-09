@@ -33,7 +33,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->open)
   {
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '{}'",
-              addonInfo->ID().c_str());
+              addonInfo->ID());
     return;
   }
 }

@@ -260,7 +260,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
     CLog::Log(LOGERROR,
               "CCoreAudioStream::SetVirtualFormat: "
               "Unable to set virtual format for stream {:#04x}. Error = {}",
-              (uint)m_StreamId, GetError(ret).c_str());
+              (uint)m_StreamId, GetError(ret));
     return false;
   }
 
@@ -352,7 +352,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
     CLog::Log(LOGERROR,
               "CCoreAudioStream::SetPhysicalFormat: "
               "Unable to set physical format for stream {:#04x}. Error = {}",
-              (uint)m_StreamId, GetError(ret).c_str());
+              (uint)m_StreamId, GetError(ret));
     return false;
   }
 

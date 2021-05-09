@@ -98,13 +98,13 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
   auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
   if (!pInputStream)
   {
-    CLog::Log(LOGERROR, "InputStream: Error creating stream for {}", redactPath.c_str());
+    CLog::Log(LOGERROR, "InputStream: Error creating stream for {}", redactPath);
     return false;
   }
 
   if (!pInputStream->Open())
   {
-    CLog::Log(LOGERROR, "InputStream: Error opening, {}", redactPath.c_str());
+    CLog::Log(LOGERROR, "InputStream: Error opening, {}", redactPath);
     return false;
   }
 
@@ -202,7 +202,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
       int64_t nSeekTo = (pos == -1) ? nTotalLen / 3 : pos;
 
       CLog::Log(LOGDEBUG, "{} - seeking to pos {}ms (total: {}ms) in {}", __FUNCTION__, nSeekTo,
-                nTotalLen, redactPath.c_str());
+                nTotalLen, redactPath);
 
       if (pDemuxer->SeekTime(static_cast<double>(nSeekTo), true))
       {
@@ -282,7 +282,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
         else
         {
           CLog::Log(LOGDEBUG, "{} - decode failed in {} after {} packets.", __FUNCTION__,
-                    redactPath.c_str(), packetsTried);
+                    redactPath, packetsTried);
         }
       }
     }

@@ -305,9 +305,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
-  CLog::Log(LOGDEBUG,"  strMovie  = [{}]", strMovie.c_str());
-  CLog::Log(LOGDEBUG,"  strFile   = [{}]", strFile.c_str());
-  CLog::Log(LOGDEBUG,"  strFolder = [{}]", strFolder.c_str());
+  CLog::Log(LOGDEBUG,"  strMovie  = [{}]", strMovie);
+  CLog::Log(LOGDEBUG,"  strFile   = [{}]", strFile);
+  CLog::Log(LOGDEBUG,"  strFolder = [{}]", strFolder);
   CLog::Log(LOGDEBUG,"  bFolder   = [{}]", ((int)bFolder ? "true" : "false"));
   */
 
@@ -359,7 +359,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
           if (m_database.GetTvShowId(strParentDirectory) < 0)
           {
             CLog::Log(LOGERROR, "{}: could not add episode [{}]. tvshow does not exist yet..",
-                      __FUNCTION__, item->GetPath().c_str());
+                      __FUNCTION__, item->GetPath());
             return false;
           }
         }
@@ -1162,7 +1162,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
     item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
-  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
+  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(item.GetPath()));
 
   PlayMovie(&item, player);
 

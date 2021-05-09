@@ -53,7 +53,7 @@ namespace winrt
 #endif
 #define LOG_HR(hr) \
   CLog::LogF(LOGERROR, "function call at line {} ends with error: {}", __LINE__, \
-             DX::GetErrorDescription(hr).c_str());
+             DX::GetErrorDescription(hr));
 #define CHECK_ERR() if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return; }
 #define RETURN_ERR(ret) if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return (##ret); }
 

@@ -179,7 +179,7 @@ int CNfsConnection::getContextForExport(const std::string &exportname)
 
   if(!m_pNfsContext)
   {
-    CLog::Log(LOGDEBUG, "NFS: Context for {} not open - get a new context.", exportname.c_str());
+    CLog::Log(LOGDEBUG, "NFS: Context for {} not open - get a new context.", exportname);
     m_pNfsContext = nfs_init_context();
 
     if(!m_pNfsContext)
@@ -297,13 +297,13 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
 
       if(nfsRet != 0)
       {
-        CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", exportPath.c_str(),
+        CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", exportPath,
                   nfs_get_error(m_pNfsContext));
         destroyContext(url.GetHostName() + exportPath);
         return false;
       }
-      CLog::Log(LOGDEBUG, "NFS: Connected to server {} and export {}", url.GetHostName().c_str(),
-                exportPath.c_str());
+      CLog::Log(LOGDEBUG, "NFS: Connected to server {} and export {}", url.GetHostName(),
+                exportPath);
     }
     m_exportPath = exportPath;
     m_hostName = url.GetHostName();
@@ -449,13 +449,13 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
       }
       else
       {
-        CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", exportPath.c_str(),
+        CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", exportPath,
                   nfs_get_error(m_pNfsContext));
       }
 
       nfs_destroy_context(pTmpContext);
       CLog::Log(LOGDEBUG, "NFS: Connected to server {} and export {} in tmpContext",
-                url.GetHostName().c_str(), exportPath.c_str());
+                url.GetHostName(), exportPath);
     }
   }
   return nfsRet;
@@ -535,7 +535,7 @@ bool CNFSFile::Open(const CURL& url)
   // if a file matches the if below return false, it can't exist on a nfs share.
   if (!IsValidFile(url.GetFileName()))
   {
-    CLog::Log(LOGINFO, "NFS: Bad URL : '{}'", url.GetFileName().c_str());
+    CLog::Log(LOGINFO, "NFS: Bad URL : '{}'", url.GetFileName());
     return false;
   }
 
@@ -554,13 +554,13 @@ bool CNFSFile::Open(const CURL& url)
   if (ret != 0)
   {
     CLog::Log(LOGINFO, "CNFSFile::Open: Unable to open file : '{}'  error : '{}'",
-              url.GetFileName().c_str(), nfs_get_error(m_pNfsContext));
+              url.GetFileName(), nfs_get_error(m_pNfsContext));
     m_pNfsContext = NULL;
     m_exportPath.clear();
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CNFSFile::Open - opened {}", url.GetFileName().c_str());
+  CLog::Log(LOGDEBUG, "CNFSFile::Open - opened {}", url.GetFileName());
   m_url=url;
 
   struct __stat64 tmpBuffer;
@@ -606,7 +606,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
   if (ret != 0 && buffer != NULL)
   {
-    CLog::Log(LOGERROR, "NFS: Failed to stat({}) {}", url.GetFileName().c_str(),
+    CLog::Log(LOGERROR, "NFS: Failed to stat({}) {}", url.GetFileName(),
               nfs_get_error(gNfsConnection.GetNfsContext()));
     ret = -1;
   }
@@ -704,7 +704,7 @@ void CNFSFile::Close()
   if (m_pFileHandle != NULL && m_pNfsContext != NULL)
   {
     int ret = 0;
-    CLog::Log(LOGDEBUG, "CNFSFile::Close closing file {}", m_url.GetFileName().c_str());
+    CLog::Log(LOGDEBUG, "CNFSFile::Close closing file {}", m_url.GetFileName());
     // remove it from keep alive list before closing
     // so keep alive code doesn't process it anymore
     gNfsConnection.removeFromKeepAliveList(m_pFileHandle);
@@ -712,7 +712,7 @@ void CNFSFile::Close()
 
 	  if (ret < 0)
     {
-      CLog::Log(LOGERROR, "Failed to close({}) - {}", m_url.GetFileName().c_str(),
+      CLog::Log(LOGERROR, "Failed to close({}) - {}", m_url.GetFileName(),
                 nfs_get_error(m_pNfsContext));
     }
     m_pFileHandle = NULL;
@@ -759,7 +759,7 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
     //danger - something went wrong
     if (writtenBytes < 0)
     {
-      CLog::Log(LOGERROR, "Failed to pwrite({}) {}", m_url.GetFileName().c_str(),
+      CLog::Log(LOGERROR, "Failed to pwrite({}) {}", m_url.GetFileName(),
                 nfs_get_error(m_pNfsContext));
       if (numberOfBytesWritten == 0)
         return -1;
@@ -834,7 +834,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - {}",
-              filename.c_str());
+              filename);
     //create file with proper permissions
     ret = nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
     //if file was created the file handle isn't valid ... so close it and open later
@@ -850,7 +850,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (ret || m_pFileHandle == NULL)
   {
     // write error to logfile
-    CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file : '{}' error : '{}'", filename.c_str(),
+    CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file : '{}' error : '{}'", filename,
               nfs_get_error(gNfsConnection.GetNfsContext()));
     m_pNfsContext = NULL;
     m_exportPath.clear();

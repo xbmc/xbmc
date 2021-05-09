@@ -1570,7 +1570,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
       {
         std::string portName = port == NULL ? "timer" : port->portName;
         CLog::Log(LOGWARNING, "COutput::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName.c_str(), m_state);
+                  __FUNCTION__, signal, portName, m_state);
       }
       return;
 

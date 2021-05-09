@@ -403,8 +403,7 @@ bool CGUIDialogNetworkSetup::SetPath(const std::string &path)
   }
   if (m_protocol == -1)
   {
-    CLog::Log(LOGERROR, "__PRETTY_FUNCTION__: Asked to initialize for unknown path {}",
-              path.c_str());
+    CLog::Log(LOGERROR, "__PRETTY_FUNCTION__: Asked to initialize for unknown path {}", path);
     Reset();
     return false;
   }

@@ -106,7 +106,7 @@ bool CPeripheralAddon::CreateAddon(void)
 
   // Initialise the add-on
   CLog::Log(LOGDEBUG, "PERIPHERAL - {} - creating peripheral add-on instance '{}'", __FUNCTION__,
-            Name().c_str());
+            Name());
 
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
     return false;
@@ -154,8 +154,8 @@ bool CPeripheralAddon::GetAddonProperties(void)
         LOGERROR,
         "PERIPHERAL - Add-on '{}': provides_joysticks'({}) in add-on DLL  doesn't match "
         "'provides_joysticks'({}) in addon.xml. Please contact the developer of this add-on: {}",
-        Name().c_str(), addonCapabilities.provides_joysticks ? "true" : "false",
-        m_bProvidesJoysticks ? "true" : "false", Author().c_str());
+        Name(), addonCapabilities.provides_joysticks ? "true" : "false",
+        m_bProvidesJoysticks ? "true" : "false", Author());
     return false;
   }
   if (m_bProvidesButtonMaps != addonCapabilities.provides_buttonmaps)
@@ -164,8 +164,8 @@ bool CPeripheralAddon::GetAddonProperties(void)
         LOGERROR,
         "PERIPHERAL - Add-on '{}': provides_buttonmaps' ({}) in add-on DLL  doesn't match "
         "'provides_buttonmaps' ({}) in addon.xml. Please contact the developer of this add-on: {}",
-        Name().c_str(), addonCapabilities.provides_buttonmaps ? "true" : "false",
-        m_bProvidesButtonMaps ? "true" : "false", Author().c_str());
+        Name(), addonCapabilities.provides_buttonmaps ? "true" : "false",
+        m_bProvidesButtonMaps ? "true" : "false", Author());
     return false;
   }
 
@@ -191,7 +191,7 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPt
       CLog::Log(LOGINFO, "{} - new {} device registered on {}->{}: {}", __FUNCTION__,
                 PeripheralTypeTranslator::TypeToString(peripheral->Type()),
                 PeripheralTypeTranslator::BusTypeToString(PERIPHERAL_BUS_ADDON),
-                peripheral->Location().c_str(), peripheral->DeviceName().c_str());
+                peripheral->Location(), peripheral->DeviceName());
 
       return true;
     }
@@ -224,9 +224,9 @@ void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults& res
     auto it = m_peripherals.find(index);
     const PeripheralPtr& peripheral = it->second;
     CLog::Log(LOGINFO, "{} - device removed from {}/{}: {} ({}:{})", __FUNCTION__,
-              PeripheralTypeTranslator::TypeToString(peripheral->Type()),
-              peripheral->Location().c_str(), peripheral->DeviceName().c_str(),
-              peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+              PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location(),
+              peripheral->DeviceName(), peripheral->VendorIdAsString(),
+              peripheral->ProductIdAsString());
     UnregisterButtonMap(peripheral.get());
     peripheral->OnDeviceRemoved();
     removedPeripherals.push_back(peripheral);
@@ -887,8 +887,8 @@ bool CPeripheralAddon::LogError(const PERIPHERAL_ERROR error, const char* strMet
 {
   if (error != PERIPHERAL_NO_ERROR)
   {
-    CLog::Log(LOGERROR, "PERIPHERAL - {} - addon '{}' returned an error: {}", strMethod,
-              Name().c_str(), CPeripheralAddonTranslator::TranslateError(error));
+    CLog::Log(LOGERROR, "PERIPHERAL - {} - addon '{}' returned an error: {}", strMethod, Name(),
+              CPeripheralAddonTranslator::TranslateError(error));
     return false;
   }
   return true;

@@ -61,7 +61,7 @@ bool PERIPHERALS::CPeripheralBusGCController::InitializeProperties(CPeripheral& 
   {
     CLog::Log(LOGWARNING,
               "CPeripheralBusGCController: failed to initialize properties for peripheral \"{}\"",
-              peripheral.Location().c_str());
+              peripheral.Location());
     return false;
   }
 

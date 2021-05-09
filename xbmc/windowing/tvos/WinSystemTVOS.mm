@@ -183,7 +183,7 @@ bool CWinSystemTVOS::CreateNewWindow(const std::string& name, bool fullScreen, R
     m_eglext += " ";
   }
 
-  CLog::Log(LOGDEBUG, "EGL_EXTENSIONS: {}", m_eglext.c_str());
+  CLog::Log(LOGDEBUG, "EGL_EXTENSIONS: {}", m_eglext);
 
   // register platform dependent objects
   CDVDFactoryCodec::ClearHWAccels();

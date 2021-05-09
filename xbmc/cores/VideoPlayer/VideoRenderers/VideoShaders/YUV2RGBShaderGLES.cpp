@@ -58,7 +58,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
-  CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines.c_str());
+  CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines);
 
   m_pConvMatrix.reset(new CConvertMatrix());
   m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);

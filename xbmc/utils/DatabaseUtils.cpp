@@ -476,7 +476,7 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
       value.first = *it;
       if (!GetFieldValue(resultSet.records[index]->at(fieldIndex), value.second))
         CLog::Log(LOGWARNING, "GetDatabaseResults: unable to retrieve value of field {}",
-                  resultSet.record_header[fieldIndex].name.c_str());
+                  resultSet.record_header[fieldIndex].name);
 
       if (value.first == FieldYear &&
          (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode))

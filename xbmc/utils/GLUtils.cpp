@@ -219,7 +219,7 @@ void LogGraphicsInfo()
   }
 
   if (!extensions.empty())
-    CLog::Log(LOGINFO, "GL_EXTENSIONS = {}", extensions.c_str());
+    CLog::Log(LOGINFO, "GL_EXTENSIONS = {}", extensions);
   else
     CLog::Log(LOGINFO, "GL_EXTENSIONS = NULL");
 

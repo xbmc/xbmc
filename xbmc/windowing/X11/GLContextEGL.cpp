@@ -536,5 +536,5 @@ void CGLContextEGL::QueryExtensions()
   std::string extensions = eglQueryString(m_eglDisplay, EGL_EXTENSIONS);
   m_extensions = std::string(" ") + extensions + " ";
 
-  CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:{}", m_extensions.c_str());
+  CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:{}", m_extensions);
 }

@@ -42,7 +42,7 @@ public:
       m_bPlaysVideo = sVideo && StringUtils::CompareNoCase(sVideo, "true") == 0;
     }
 
-    CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player {}", m_name.c_str());
+    CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player {}", m_name);
   }
 
   ~CPlayerCoreConfig() = default;

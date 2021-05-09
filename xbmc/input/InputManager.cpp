@@ -151,7 +151,7 @@ bool CInputManager::ProcessMouse(int windowId)
 
   // Log mouse actions except for move and noop
   if (mouseaction.GetID() != ACTION_MOUSE_MOVE && mouseaction.GetID() != ACTION_NOOP)
-    CLog::LogF(LOGDEBUG, "trying mouse action {}", mouseaction.GetName().c_str());
+    CLog::LogF(LOGDEBUG, "trying mouse action {}", mouseaction.GetName());
 
   // The action might not be a mouse action. For example wheel moves might
   // be mapped to volume up/down in mouse.xml. In this case we do not want
@@ -229,7 +229,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
         else
         {
           CLog::Log(LOGDEBUG, "ERROR mapping customcontroller action. CustomController: {} {}",
-                    strMapName.c_str(), wKeyID);
+                    strMapName, wKeyID);
         }
       }
     }
@@ -527,8 +527,8 @@ bool CInputManager::HandleKey(const CKey& key)
     // do not wake up the screensaver right after switching off the playing device
     if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState"))
     {
-      CLog::LogF(LOGDEBUG, "action {} [{}], toggling state of playing device",
-                 action.GetName().c_str(), action.GetID());
+      CLog::LogF(LOGDEBUG, "action {} [{}], toggling state of playing device", action.GetName(),
+                 action.GetID());
       bool result;
       CApplicationMessenger::GetInstance().SendMsg(TMSG_CECTOGGLESTATE, 0, 0,
                                                    static_cast<void*>(&result));
@@ -548,7 +548,7 @@ bool CInputManager::HandleKey(const CKey& key)
   if (g_application.WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
     CLog::LogF(LOGDEBUG, "{} pressed, screen saver/dpms woken up",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str());
+               m_Keyboard.GetKeyName((int)key.GetButtonCode()));
     return true;
   }
 
@@ -631,7 +631,7 @@ bool CInputManager::HandleKey(const CKey& key)
       }
 
       CLog::LogF(LOGDEBUG, "{} pressed, trying keyboard action {:x}",
-                 m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetID());
+                 m_Keyboard.GetKeyName((int)key.GetButtonCode()), action.GetID());
 
       if (g_application.OnAction(action))
         return true;
@@ -647,7 +647,7 @@ bool CInputManager::HandleKey(const CKey& key)
   }
   if (!key.IsAnalogButton())
     CLog::LogF(LOGDEBUG, "{} pressed, action is {}",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
+               m_Keyboard.GetKeyName((int)key.GetButtonCode()), action.GetName());
 
   return ExecuteInputAction(action);
 }

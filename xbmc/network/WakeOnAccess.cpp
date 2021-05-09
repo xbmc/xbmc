@@ -208,7 +208,7 @@ bool CMACDiscoveryJob::DoWork()
 
   if (ipAddress == INADDR_NONE)
   {
-    CLog::Log(LOGERROR, "{} - can't determine ip of '{}'", __FUNCTION__, m_host.c_str());
+    CLog::Log(LOGERROR, "{} - can't determine ip of '{}'", __FUNCTION__, m_host);
     return false;
   }
 
@@ -471,8 +471,8 @@ bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& c
 
   if (FindOrTouchHostEntry(hostName, upnpMode, server))
   {
-    CLog::Log(LOGINFO, "WakeOnAccess [{}] trigged by accessing : {}", server.friendlyName.c_str(),
-              customMessage.c_str());
+    CLog::Log(LOGINFO, "WakeOnAccess [{}] trigged by accessing : {}", server.friendlyName,
+              customMessage);
 
     NestDetect nesting ; // detect recursive calls on gui thread..
 
@@ -484,7 +484,7 @@ bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& c
 
     if (!ret) // extra log if we fail for some reason
       CLog::Log(LOGWARNING, "WakeOnAccess failed to bring up [{}] - there may be trouble ahead !",
-                server.friendlyName.c_str());
+                server.friendlyName);
 
     TouchHostEntry(hostName, upnpMode);
 
@@ -643,8 +643,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
     if (URIUtils::IsHostOnLAN(host, true))
       CJobManager::GetInstance().AddJob(new CMACDiscoveryJob(host), this);
     else
-      CLog::Log(LOGINFO, "{} - skip Mac discovery for non-local host '{}'", __FUNCTION__,
-                host.c_str());
+      CLog::Log(LOGINFO, "{} - skip Mac discovery for non-local host '{}'", __FUNCTION__, host);
   }
 }
 
@@ -709,8 +708,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 
 void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::string& mac)
 {
-  CLog::Log(LOGINFO, "{} - Mac discovered for host '{}' -> '{}'", __FUNCTION__, host.c_str(),
-            mac.c_str());
+  CLog::Log(LOGINFO, "{} - Mac discovered for host '{}' -> '{}'", __FUNCTION__, host, mac);
 
   for (auto& i : m_entries)
   {
@@ -751,7 +749,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
   else
   {
-    CLog::Log(LOGERROR, "{} - Mac discovery failed for host '{}'", __FUNCTION__, host.c_str());
+    CLog::Log(LOGERROR, "{} - Mac discovery failed for host '{}'", __FUNCTION__, host);
 
     if (IsEnabled())
     {
@@ -806,7 +804,7 @@ void CWakeOnAccess::LoadFromXML()
   if (!xmlDoc.LoadFile(GetSettingFile()))
   {
     if (enabled)
-      CLog::Log(LOGINFO, "{} - unable to load:{}", __FUNCTION__, GetSettingFile().c_str());
+      CLog::Log(LOGINFO, "{} - unable to load:{}", __FUNCTION__, GetSettingFile());
     return;
   }
 
@@ -814,7 +812,7 @@ void CWakeOnAccess::LoadFromXML()
   if (StringUtils::CompareNoCase(pRootElement->Value(), "onaccesswakeup"))
   {
     CLog::Log(LOGERROR, "{} - XML file {} doesn't contain <onaccesswakeup>", __FUNCTION__,
-              GetSettingFile().c_str());
+              GetSettingFile());
     return;
   }
 
@@ -870,8 +868,8 @@ void CWakeOnAccess::LoadFromXML()
         entry.wait_services_sec = tmp;
 
       CLog::Log(LOGINFO, "  Registering wakeup entry:");
-      CLog::Log(LOGINFO, "    HostName        : {}", entry.host.c_str());
-      CLog::Log(LOGINFO, "    MacAddress      : {}", entry.mac.c_str());
+      CLog::Log(LOGINFO, "    HostName        : {}", entry.host);
+      CLog::Log(LOGINFO, "    MacAddress      : {}", entry.mac);
       CLog::Log(LOGINFO, "    PingPort        : {}", entry.ping_port);
       CLog::Log(LOGINFO, "    PingMode        : {}", entry.ping_mode);
       CLog::Log(LOGINFO, "    Timeout         : {} (sec)", GetTotalSeconds(entry.timeout));
@@ -904,8 +902,8 @@ void CWakeOnAccess::LoadFromXML()
       CLog::Log(LOGERROR, "{} - Missing or empty <upnp_map> entry", __FUNCTION__);
     else
     {
-      CLog::Log(LOGINFO, "  Registering upnp_map entry [{} : {}] -> [{}]", server.m_name.c_str(),
-                server.m_uuid.c_str(), server.m_mac.c_str());
+      CLog::Log(LOGINFO, "  Registering upnp_map entry [{} : {}] -> [{}]", server.m_name,
+                server.m_uuid, server.m_mac);
 
       m_UPnPServers.push_back(server);
     }

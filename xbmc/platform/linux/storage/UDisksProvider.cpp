@@ -76,7 +76,7 @@ bool CUDiskDevice::Mount()
 {
   if (!m_isMounted && !m_isSystemInternal && m_isFileSystem)
   {
-    CLog::Log(LOGDEBUG, "UDisks: Mounting {}", m_DeviceKitUDI.c_str());
+    CLog::Log(LOGDEBUG, "UDisks: Mounting {}", m_DeviceKitUDI);
     CDBusMessage message("org.freedesktop.UDisks", m_DeviceKitUDI.c_str(), "org.freedesktop.UDisks.Device", "FilesystemMount");
     message.AppendArgument("");
     const char *array[] = {};
@@ -89,8 +89,7 @@ bool CUDiskDevice::Mount()
       if (dbus_message_get_args (reply, NULL, DBUS_TYPE_STRING, &mountPoint, DBUS_TYPE_INVALID))
       {
         m_MountPath = mountPoint;
-        CLog::Log(LOGDEBUG, "UDisks: Successfully mounted {} on {}", m_DeviceKitUDI.c_str(),
-                  mountPoint);
+        CLog::Log(LOGDEBUG, "UDisks: Successfully mounted {} on {}", m_DeviceKitUDI, mountPoint);
         m_isMountedByUs = m_isMounted = true;
       }
     }
@@ -98,7 +97,7 @@ bool CUDiskDevice::Mount()
     return m_isMounted;
   }
   else
-    CLog::Log(LOGDEBUG, "UDisks: Is not able to mount {}", toString().c_str());
+    CLog::Log(LOGDEBUG, "UDisks: Is not able to mount {}", toString());
 
   return false;
 }
@@ -119,7 +118,7 @@ bool CUDiskDevice::UnMount()
     return !m_isMounted;
   }
   else
-    CLog::Log(LOGDEBUG, "UDisks: Is not able to unmount {}", toString().c_str());
+    CLog::Log(LOGDEBUG, "UDisks: Is not able to unmount {}", toString());
 
   return false;
 }
@@ -274,11 +273,11 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting)
     device->Mount();
 
-  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceAdded - {}", device->toString().c_str());
+  CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceAdded - {}", device->toString());
 
   if (device->m_isMounted && device->IsApproved())
   {
-    CLog::Log(LOGINFO, "UDisks: Added {}", device->m_MountPath.c_str());
+    CLog::Log(LOGINFO, "UDisks: Added {}", device->m_MountPath);
     if (callback)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);
   }
@@ -323,7 +322,7 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
 
-    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceChanged - {}", device->toString().c_str());
+    CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceChanged - {}", device->toString());
   }
 }
 

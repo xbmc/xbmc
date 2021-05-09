@@ -165,7 +165,7 @@ void CEGLUtils::Log(int logLevel, const std::string& what)
     errorStr = eglError->second;
   }
 
-  CLog::Log(logLevel, "{} ({})", what.c_str(), errorStr);
+  CLog::Log(logLevel, "{} ({})", what, errorStr);
 }
 
 CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platformExtension)

@@ -26,7 +26,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string dirname = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(dirname);
-  CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: {}", dirname.c_str());
+  CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: {}", dirname);
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   std::string className = CCompileInfo::GetPackage();
@@ -56,6 +56,6 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return true;
   }
 
-  CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Failed to open {}", url.Get().c_str());
+  CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Failed to open {}", url.Get());
   return false;
 }

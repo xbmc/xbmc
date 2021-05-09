@@ -182,8 +182,7 @@ iconv_t CConverterType::GetConverter(CSingleLock& converterLock)
 
     if (m_iconv == NO_ICONV)
       CLog::Log(LOGERROR, "{}: iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
-                __FUNCTION__, m_sourceCharset.c_str(), m_targetCharset.c_str(), errno,
-                strerror(errno));
+                __FUNCTION__, m_sourceCharset, m_targetCharset, errno, strerror(errno));
   }
 
   return m_iconv;
@@ -338,7 +337,7 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
   if (conv == NO_ICONV)
   {
     CLog::Log(LOGERROR, "{}: iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
-              __FUNCTION__, sourceCharset.c_str(), targetCharset.c_str(), errno, strerror(errno));
+              __FUNCTION__, sourceCharset, targetCharset, errno, strerror(errno));
     return false;
   }
   const int dstMultp = (targetCharset.compare(0, 5, "UTF-8") == 0) ? CCharsetConverter::m_Utf8CharMaxSize : 1;

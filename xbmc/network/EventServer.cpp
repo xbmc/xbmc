@@ -284,7 +284,7 @@ void CEventServer::RefreshClients()
   {
     if (! (iter->second->Alive()))
     {
-      CLog::Log(LOGINFO, "ES: Client {} from {} timed out", iter->second->Name().c_str(),
+      CLog::Log(LOGINFO, "ES: Client {} from {} timed out", iter->second->Name(),
                 iter->second->Address().Address());
       delete iter->second;
       m_clients.erase(iter);

@@ -36,7 +36,7 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 {
   if (item && (item->IsAudio() || (item->IsInternetStream() && g_application.GetAppPlayer().IsPlayingAudio())))
   {
-    CLog::Log(LOGDEBUG, "CMusicGUIInfo::InitCurrentItem({})", item->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "CMusicGUIInfo::InitCurrentItem({})", item->GetPath());
 
     item->LoadMusicTag();
 
@@ -49,7 +49,7 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
       if (!g_application.m_strPlayListFile.empty())
       {
         CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb",
-                  g_application.m_strPlayListFile.c_str());
+                  g_application.m_strPlayListFile);
         CFileItem streamingItem(g_application.m_strPlayListFile,false);
 
         CMusicThumbLoader loader;

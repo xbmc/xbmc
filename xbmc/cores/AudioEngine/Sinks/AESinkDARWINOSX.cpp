@@ -194,7 +194,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   {
     CCoreAudioHardware::GetOutputDeviceName(device);
     deviceID = CCoreAudioHardware::GetDefaultOutputDevice();
-    CLog::Log(LOGINFO, "{}: Opening default device {}", __PRETTY_FUNCTION__, device.c_str());
+    CLog::Log(LOGINFO, "{}: Opening default device {}", __PRETTY_FUNCTION__, device);
   }
   else
   {
@@ -219,7 +219,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!deviceID)
   {
-    CLog::Log(LOGERROR, "{}: Unable to find device {}", __FUNCTION__, device.c_str());
+    CLog::Log(LOGERROR, "{}: Unable to find device {}", __FUNCTION__, device);
     return false;
   }
 

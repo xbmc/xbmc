@@ -79,13 +79,13 @@ bool CMediaSourceSettings::Load(const std::string &file)
   if (!CFile::Exists(file))
     return false;
 
-  CLog::Log(LOGINFO, "CMediaSourceSettings: loading media sources from {}", file.c_str());
+  CLog::Log(LOGINFO, "CMediaSourceSettings: loading media sources from {}", file);
 
   // load xml file
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "CMediaSourceSettings: error loading {}: Line {}, {}", file.c_str(),
+    CLog::Log(LOGERROR, "CMediaSourceSettings: error loading {}: Line {}, {}", file,
               xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
@@ -269,12 +269,12 @@ bool CMediaSourceSettings::AddShare(const std::string &type, const CMediaSource 
   {
     shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
     if (!share.strPath.empty())
-      CLog::Log(LOGDEBUG, "CMediaSourceSettings: translated ({}) to path ({})", strPath1.c_str(),
-                shareToAdd.strPath.c_str());
+      CLog::Log(LOGDEBUG, "CMediaSourceSettings: translated ({}) to path ({})", strPath1,
+                shareToAdd.strPath);
     else
     {
       CLog::Log(LOGDEBUG, "CMediaSourceSettings: skipping invalid special directory token ({})",
-                strPath1.c_str());
+                strPath1);
       return false;
     }
   }
@@ -344,8 +344,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
         }
       }
       else
-        CLog::Log(LOGERROR, "CMediaSourceSettings:    invalid path type ({}) in source",
-                  strPath.c_str());
+        CLog::Log(LOGERROR, "CMediaSourceSettings:    invalid path type ({}) in source", strPath);
     }
 
     pPathName = pPathName->NextSiblingElement("path");
@@ -431,7 +430,7 @@ void CMediaSourceSettings::GetSources(const TiXmlNode* pRootElement, const std::
   if (pChild == NULL)
   {
     CLog::Log(LOGDEBUG, "CMediaSourceSettings: <{}> tag is missing or sources.xml is malformed",
-              strTagName.c_str());
+              strTagName);
     return;
   }
 
@@ -456,7 +455,7 @@ void CMediaSourceSettings::GetSources(const TiXmlNode* pRootElement, const std::
         if (!pszText.empty())
           strDefault = pszText;
         CLog::Log(LOGDEBUG, "CMediaSourceSettings:    Setting <default> source to : {}",
-                  strDefault.c_str());
+                  strDefault);
       }
     }
 

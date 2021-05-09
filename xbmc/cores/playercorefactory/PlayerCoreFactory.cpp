@@ -86,8 +86,7 @@ void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players, const bool
       if (std::find(players.begin(), players.end(), conf->m_name) != players.end())
         continue;
 
-      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding player: {}",
-                conf->m_name.c_str());
+      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding player: {}", conf->m_name);
       players.emplace_back(conf->m_name);
     }
   }
@@ -97,8 +96,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 {
   CURL url(item.GetDynPath());
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers({})",
-            CURL::GetRedacted(item.GetDynPath()).c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers({})", CURL::GetRedacted(item.GetDynPath()));
 
   std::vector<std::string>validPlayers;
   GetPlayers(validPlayers);
@@ -120,7 +118,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     {
       std::string eVideoDefault = GetPlayerName(idx);
       CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer ({})",
-                eVideoDefault.c_str());
+                eVideoDefault);
       players.push_back(eVideoDefault);
     }
     GetPlayers(players, false, true);  // Video-only players
@@ -136,7 +134,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     {
       std::string eAudioDefault = GetPlayerName(idx);
       CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer ({})",
-                eAudioDefault.c_str());
+                eAudioDefault);
       players.push_back(eAudioDefault);
     }
     GetPlayers(players, true, false); // Audio-only players
@@ -171,8 +169,8 @@ int CPlayerCoreFactory::GetPlayerIndex(const std::string& strCoreName) const
       if (StringUtils::EqualsNoCase(m_vecPlayerConfigs[i]->GetName(), strRealCoreName))
         return i;
     }
-    CLog::Log(LOGWARNING, "CPlayerCoreFactory::GetPlayer({}): no such player: {}",
-              strCoreName.c_str(), strRealCoreName.c_str());
+    CLog::Log(LOGWARNING, "CPlayerCoreFactory::GetPlayer({}): no such player: {}", strCoreName,
+              strRealCoreName);
   }
   return -1;
 }
@@ -287,25 +285,25 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
 {
   CSingleLock lock(m_section);
 
-  CLog::Log(LOGINFO, "Loading player core factory settings from {}.", file.c_str());
+  CLog::Log(LOGINFO, "Loading player core factory settings from {}.", file);
   if (!XFILE::CFile::Exists(file))
   { // tell the user it doesn't exist
-    CLog::Log(LOGINFO, "{} does not exist. Skipping.", file.c_str());
+    CLog::Log(LOGINFO, "{} does not exist. Skipping.", file);
     return false;
   }
 
   CXBMCTinyXML playerCoreFactoryXML;
   if (!playerCoreFactoryXML.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", file.c_str(),
-              playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", file, playerCoreFactoryXML.ErrorRow(),
+              playerCoreFactoryXML.ErrorDesc());
     return false;
   }
 
   TiXmlElement *pConfig = playerCoreFactoryXML.RootElement();
   if (pConfig == NULL)
   {
-    CLog::Log(LOGERROR, "Error loading {}, Bad structure", file.c_str());
+    CLog::Log(LOGERROR, "Error loading {}, Bad structure", file);
     return false;
   }
 

@@ -407,10 +407,10 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     std::set_difference(db.begin(), db.end(), ids.begin(), ids.end(), std::inserter(removed, removed.end()));
 
     for (const auto& id : added)
-      CLog::Log(LOGDEBUG, "CAddonDatabase: {} has been installed.", id.c_str());
+      CLog::Log(LOGDEBUG, "CAddonDatabase: {} has been installed.", id);
 
     for (const auto& id : removed)
-      CLog::Log(LOGDEBUG, "CAddonDatabase: {} has been uninstalled.", id.c_str());
+      CLog::Log(LOGDEBUG, "CAddonDatabase: {} has been uninstalled.", id);
 
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
@@ -471,7 +471,7 @@ bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime&
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonId.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonId);
   }
   return false;
 }
@@ -490,7 +490,7 @@ bool CAddonDatabase::SetOrigin(const std::string& addonId, const std::string& or
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonId.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonId);
   }
   return false;
 }
@@ -515,7 +515,7 @@ bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& da
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonId.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonId);
   }
   return false;
 }
@@ -533,7 +533,7 @@ std::pair<AddonVersion, std::string> CAddonDatabase::GetAddonVersion(const std::
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, id.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, id);
   }
   return std::make_pair(AddonVersion(), "");
 }
@@ -575,7 +575,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       if (addon)
         addons.push_back(std::move(addon));
       else
-        CLog::Log(LOGERROR, "CAddonDatabase: failed to build {}", addonId.c_str());
+        CLog::Log(LOGERROR, "CAddonDatabase: failed to build {}", addonId);
       m_pDS->next();
     }
     m_pDS->close();
@@ -584,7 +584,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonId.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonId);
   }
   return false;
 }
@@ -620,7 +620,7 @@ bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonId.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonId);
   }
   return false;
 }
@@ -649,7 +649,7 @@ bool CAddonDatabase::GetAddon(const std::string& addonID, const AddonVersion& ve
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonID.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonID);
   }
   return false;
 
@@ -689,7 +689,7 @@ bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, id.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, id);
   }
   addon.reset();
   return false;
@@ -774,7 +774,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
 
     if (repoIds.empty())
     {
-      CLog::Log(LOGDEBUG, "CAddonDatabase: no valid repository matching '{}'", id.c_str());
+      CLog::Log(LOGDEBUG, "CAddonDatabase: no valid repository matching '{}'", id);
       return false;
     }
 
@@ -816,7 +816,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
         result.emplace_back(addon);
       }
       else
-        CLog::Log(LOGWARNING, "CAddonDatabase: failed to build {}", addonId.c_str());
+        CLog::Log(LOGWARNING, "CAddonDatabase: failed to build {}", addonId);
       m_pDS->next();
     }
     m_pDS->close();
@@ -874,7 +874,7 @@ void CAddonDatabase::DeleteRepositoryContents(const std::string& id)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id.c_str());
+    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id);
   }
 }
 
@@ -926,7 +926,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository,
       int idAddon = static_cast<int>(m_pDS->lastinsertid());
       if (idAddon <= 0)
       {
-        CLog::Log(LOGERROR, "{} insert failed on addon '{}'", __FUNCTION__, addon->ID().c_str());
+        CLog::Log(LOGERROR, "{} insert failed on addon '{}'", __FUNCTION__, addon->ID());
         RollbackTransaction();
         return false;
       }
@@ -939,7 +939,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, repository.c_str());
+    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, repository);
     RollbackTransaction();
   }
   return false;
@@ -964,7 +964,7 @@ int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id.c_str());
+    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id);
   }
   checksum.clear();
   return -1;
@@ -989,7 +989,7 @@ CAddonDatabase::RepoUpdateData CAddonDatabase::GetRepoUpdateData(const std::stri
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id.c_str());
+    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id);
   }
   return result;
 }
@@ -1032,7 +1032,7 @@ int CAddonDatabase::SetRepoUpdateData(const std::string& id, const RepoUpdateDat
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id.c_str());
+    CLog::Log(LOGERROR, "{} failed on repo '{}'", __FUNCTION__, id);
   }
   return -1;
 }
@@ -1050,7 +1050,7 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
     strSQL = PrepareSQL("SELECT id FROM addons WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' "
                   "OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
     if (!m_pDS->query(strSQL)) return false;
     if (m_pDS->num_rows() == 0) return false;
@@ -1090,7 +1090,7 @@ bool CAddonDatabase::DisableAddon(const std::string& addonID, AddonDisabledReaso
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID);
   }
   return false;
 }
@@ -1111,7 +1111,7 @@ bool CAddonDatabase::EnableAddon(const std::string& addonID)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID);
   }
   return false;
 }
@@ -1189,7 +1189,7 @@ bool CAddonDatabase::AddUpdateRuleForAddon(const std::string& addonID, AddonUpda
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID);
   }
   return false;
 }
@@ -1221,7 +1221,7 @@ bool CAddonDatabase::RemoveUpdateRuleForAddon(const std::string& addonID,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon '{}'", __FUNCTION__, addonID);
   }
   return false;
 }
@@ -1268,7 +1268,7 @@ void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonId.c_str());
+    CLog::Log(LOGERROR, "{} failed on addon {}", __FUNCTION__, addonId);
   }
 }
 

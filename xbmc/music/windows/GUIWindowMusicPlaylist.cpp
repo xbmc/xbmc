@@ -320,7 +320,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
 
       playlist.Add(pItem);
     }
-    CLog::Log(LOGDEBUG, "Saving music playlist: [{}]", strPath.c_str());
+    CLog::Log(LOGDEBUG, "Saving music playlist: [{}]", strPath);
     playlist.Save(strPath);
     Refresh(); // need to update
   }

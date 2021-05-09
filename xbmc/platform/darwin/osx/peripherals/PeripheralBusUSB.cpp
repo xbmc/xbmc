@@ -114,8 +114,8 @@ void CPeripheralBusUSB::DeviceDetachCallback(void *refCon, io_service_t service,
     }
     privateDataRef->refCon->ScanForDevices();
 
-    CLog::Log(LOGDEBUG, "USB Device Detach:{}, {}", privateDataRef->deviceName.c_str(),
-              privateDataRef->result.m_strLocation.c_str());
+    CLog::Log(LOGDEBUG, "USB Device Detach:{}, {}", privateDataRef->deviceName,
+              privateDataRef->result.m_strLocation);
     IOObjectRelease(privateDataRef->notification);
     delete privateDataRef;
     //release the service
@@ -261,7 +261,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
           {
             refCon->m_scan_results.m_results.push_back(privateDataRef->result);
             CLog::Log(LOGDEBUG, "USB Device Attach:{}, {}", deviceName,
-                      privateDataRef->result.m_strLocation.c_str());
+                      privateDataRef->result.m_strLocation);
           }
           else
           {

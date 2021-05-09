@@ -29,8 +29,7 @@ static bool LoadFromFile(const std::string& strPath, CFileItemList& items)
   CXBMCTinyXML doc;
   if (!doc.LoadFile(strPath))
   {
-    CLog::Log(LOGERROR, "Unable to load {} (row {} column {})", strPath.c_str(), doc.Row(),
-              doc.Column());
+    CLog::Log(LOGERROR, "Unable to load {} (row {} column {})", strPath, doc.Row(), doc.Column());
     return false;
   }
   TiXmlElement *root = doc.RootElement();

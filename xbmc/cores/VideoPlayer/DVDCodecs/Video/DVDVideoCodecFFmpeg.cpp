@@ -525,7 +525,7 @@ void CDVDVideoCodecFFmpeg::UpdateName()
 
   m_processInfo.SetVideoDecoderName(m_name, m_pHardware ? true : false);
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: {}", m_name.c_str());
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: {}", m_name);
 }
 
 union pts_union

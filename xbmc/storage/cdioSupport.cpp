@@ -377,7 +377,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   case FS_ISO_9660_INTERACTIVE:
   case FS_ISO_HFS:
   case FS_ISO_UDF:
-    CLog::Log(LOGINFO, "ISO 9660: {} blocks, label {}", m_nIsofsSize, m_strDiscLabel.c_str());
+    CLog::Log(LOGINFO, "ISO 9660: {} blocks, label {}", m_nIsofsSize, m_strDiscLabel);
     break;
   }
 
@@ -856,7 +856,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
                   " ISO 9660 blocks: {:6}",
                   j++, i, m_nStartTrack, m_nIsofsSize);
 
-        CLog::Log(LOGINFO, "ISO 9660: {} blocks, label {}", m_nIsofsSize, m_strDiscLabel.c_str());
+        CLog::Log(LOGINFO, "ISO 9660: {} blocks, label {}", m_nIsofsSize, m_strDiscLabel);
         m_nFs |= MULTISESSION;
         ti.nfsInfo = m_nFs;
       }

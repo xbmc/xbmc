@@ -181,8 +181,7 @@ void CUdpClient::Process()
         auto timestamp =
             std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
 
-        CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: {}\t\t<- '{}'", timestamp.count(),
-                  message.c_str());
+        CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: {}\t\t<- '{}'", timestamp.count(), message);
 
         OnMessage(remoteAddress, message, reinterpret_cast<unsigned char*>(messageBuffer), messageLength);
       }
@@ -248,7 +247,7 @@ bool CUdpClient::DispatchNextCommand()
     auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
 
     CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: {}\t\t-> '{}'", timestamp.count(),
-              command.message.c_str());
+              command.message);
 
     do
     {

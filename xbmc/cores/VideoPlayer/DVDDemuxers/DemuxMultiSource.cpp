@@ -185,7 +185,7 @@ DemuxPacket* CDemuxMultiSource::Read()
       if (input->second->IsEOF())
       {
         CLog::Log(LOGDEBUG, "{} - Demuxer for file {} is at eof, removed it from the queue",
-                  __FUNCTION__, CURL::GetRedacted(currentDemuxer->GetFileName()).c_str());
+                  __FUNCTION__, CURL::GetRedacted(currentDemuxer->GetFileName()));
       }
       else    //maybe add an error counter?
         m_demuxerQueue.push(std::make_pair(-1.0, currentDemuxer));

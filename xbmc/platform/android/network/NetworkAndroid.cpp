@@ -332,18 +332,18 @@ void CNetworkAndroid::RetrieveInterfaces()
       {
         xbmc_jnienv()->ExceptionClear();
         CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get interface by name: {}",
-                  lp.getInterfaceName().c_str());
+                  lp.getInterfaceName());
         continue;
       }
       if (intf)
         m_interfaces.push_back(new CNetworkInterfaceAndroid(n, lp, intf));
       else
         CLog::Log(LOGERROR, "CNetworkAndroid::RetrieveInterfaces Cannot get interface by name: {}",
-                  lp.getInterfaceName().c_str());
+                  lp.getInterfaceName());
     }
     else
       CLog::Log(LOGERROR,
                 "CNetworkAndroid::RetrieveInterfaces Cannot get link properties for network: {}",
-                n.toString().c_str());
+                n.toString());
   }
 }

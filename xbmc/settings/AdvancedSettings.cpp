@@ -53,8 +53,8 @@ void CAdvancedSettings::OnSettingsLoaded()
   Load(*profileManager);
 
   // default players?
-  CLog::Log(LOGINFO, "Default Video Player: {}", m_videoDefaultPlayer.c_str());
-  CLog::Log(LOGINFO, "Default Audio Player: {}", m_audioDefaultPlayer.c_str());
+  CLog::Log(LOGINFO, "Default Video Player: {}", m_videoDefaultPlayer);
+  CLog::Log(LOGINFO, "Default Audio Player: {}", m_audioDefaultPlayer);
 
   // setup any logging...
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -460,13 +460,13 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   CXBMCTinyXML advancedXML;
   if (!CFile::Exists(file))
   {
-    CLog::Log(LOGINFO, "No settings file to load ({})", file.c_str());
+    CLog::Log(LOGINFO, "No settings file to load ({})", file);
     return;
   }
 
   if (!advancedXML.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "Error loading {}, Line {}\n{}", file.c_str(), advancedXML.ErrorRow(),
+    CLog::Log(LOGERROR, "Error loading {}, Line {}\n{}", file, advancedXML.ErrorRow(),
               advancedXML.ErrorDesc());
     return;
   }
@@ -474,12 +474,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   TiXmlElement *pRootElement = advancedXML.RootElement();
   if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "advancedsettings") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading {}, no <advancedsettings> node", file.c_str());
+    CLog::Log(LOGERROR, "Error loading {}, no <advancedsettings> node", file);
     return;
   }
 
   // succeeded - tell the user it worked
-  CLog::Log(LOGINFO, "Loaded settings file from {}", file.c_str());
+  CLog::Log(LOGINFO, "Loaded settings file from {}", file);
 
   //Make a copy of the AS.xml and hide advancedsettings passwords
   CXBMCTinyXML advancedXMLCopy(advancedXML);

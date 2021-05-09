@@ -791,7 +791,7 @@ bool CD3DEffect::CreateEffect()
   {
     std::string error;
     error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
-    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): {}", error.c_str());
+    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): {}", error);
   }
   else
     CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): call to D3DXCreateEffect() failed with {}",

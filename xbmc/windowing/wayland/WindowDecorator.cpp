@@ -574,8 +574,8 @@ void CWindowDecorator::UpdateSeatCursor(SeatState& seatState)
   }
   catch (std::exception const& e)
   {
-    CLog::LogF(LOGERROR, "Could not get required cursor {} from cursor theme: {}",
-               cursorName.c_str(), e.what());
+    CLog::LogF(LOGERROR, "Could not get required cursor {} from cursor theme: {}", cursorName,
+               e.what());
     return;
   }
   auto cursorImage = cursor.image(0);

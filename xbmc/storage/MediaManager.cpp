@@ -557,13 +557,13 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   if (info.empty())
   {
     CLog::Log(LOGDEBUG, "GetDiskUniqueId: Retrieving ID for path {} failed, ID is empty.",
-              CURL::GetRedacted(mediaPath).c_str());
+              CURL::GetRedacted(mediaPath));
     return "";
   }
 
   std::string strID = StringUtils::Format("removable://{}_{}", info.name, info.serial);
-  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID {} for {} with path {}", strID.c_str(),
-            info.type.c_str(), CURL::GetRedacted(mediaPath).c_str());
+  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID {} for {} with path {}", strID, info.type,
+            CURL::GetRedacted(mediaPath));
 
   return strID;
 }
@@ -782,7 +782,7 @@ bool CMediaManager::playStubFile(const CFileItem& item)
     TiXmlElement* pRootElement = discStubXML.RootElement();
     if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGINFO, "No <discstub> node found for {}. Using default info dialog message",
-                item.GetPath().c_str());
+                item.GetPath());
     else
     {
       XMLUtils::GetString(pRootElement, "title", strLine1);

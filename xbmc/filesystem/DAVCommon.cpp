@@ -47,7 +47,7 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string
   else if (tag.size() > 2)
   {
     CLog::Log(LOGERROR, "{} - Splitting {} failed, size(): {}, value: {}", __FUNCTION__,
-              pElement->Value(), (unsigned long int)tag.size(), value.c_str());
+              pElement->Value(), (unsigned long int)tag.size(), value);
   }
 
   return false;

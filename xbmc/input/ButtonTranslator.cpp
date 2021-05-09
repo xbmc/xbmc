@@ -114,8 +114,8 @@ bool CButtonTranslator::Load()
 
   if (!success)
   {
-    CLog::Log(LOGERROR, "Error loading keymaps from: {} or {} or {}", DIRS_TO_CHECK[0].c_str(),
-              DIRS_TO_CHECK[1].c_str(), DIRS_TO_CHECK[2].c_str());
+    CLog::Log(LOGERROR, "Error loading keymaps from: {} or {} or {}", DIRS_TO_CHECK[0],
+              DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
     return false;
   }
 
@@ -127,25 +127,25 @@ bool CButtonTranslator::LoadKeymap(const std::string& keymapPath)
 {
   CXBMCTinyXML xmlDoc;
 
-  CLog::Log(LOGINFO, "Loading {}", keymapPath.c_str());
+  CLog::Log(LOGINFO, "Loading {}", keymapPath);
   if (!xmlDoc.LoadFile(keymapPath))
   {
-    CLog::Log(LOGERROR, "Error loading keymap: {}, Line {}\n{}", keymapPath.c_str(),
-              xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading keymap: {}, Line {}\n{}", keymapPath, xmlDoc.ErrorRow(),
+              xmlDoc.ErrorDesc());
     return false;
   }
 
   TiXmlElement* pRoot = xmlDoc.RootElement();
   if (pRoot == nullptr)
   {
-    CLog::Log(LOGERROR, "Error getting keymap root: {}", keymapPath.c_str());
+    CLog::Log(LOGERROR, "Error getting keymap root: {}", keymapPath);
     return false;
   }
 
   std::string strValue = pRoot->Value();
   if (strValue != "keymap")
   {
-    CLog::Log(LOGERROR, "{} Doesn't contain <keymap>", keymapPath.c_str());
+    CLog::Log(LOGERROR, "{} Doesn't contain <keymap>", keymapPath);
     return false;
   }
 

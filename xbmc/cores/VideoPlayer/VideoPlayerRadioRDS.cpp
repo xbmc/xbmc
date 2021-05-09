@@ -730,7 +730,7 @@ void CDVDRadioRDSData::SetRadioStyle(const std::string& genre)
   m_currentFileUpdate = true;
 
   CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - {} - Stream genre set to {}", __FUNCTION__,
-            genre.c_str());
+            genre);
 }
 
 void CDVDRadioRDSData::ProcessUECP(const unsigned char *data, unsigned int len)

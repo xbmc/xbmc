@@ -145,7 +145,7 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
       for (int i = 0; i < vols.size(); ++i)
       {
         CJNIStorageVolume vol = vols.get(i);
-        //        CLog::Log(LOGDEBUG, "-- Volume: {}({}) -- {}", vol.getPath().c_str(), vol.getUserLabel().c_str(), vol.getState().c_str());
+        //        CLog::Log(LOGDEBUG, "-- Volume: {}({}) -- {}", vol.getPath(), vol.getUserLabel(), vol.getState());
 
         bool removable = vol.isRemovable();
         if (xbmc_jnienv()->ExceptionCheck())

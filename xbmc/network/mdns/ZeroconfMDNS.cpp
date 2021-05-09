@@ -107,15 +107,15 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
   }
 #endif //!HAS_MDNS_EMBEDDED
 
-  CLog::Log(LOGDEBUG, "ZeroconfMDNS: identifier: {} type: {} name:{} port:{}",
-            fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
+  CLog::Log(LOGDEBUG, "ZeroconfMDNS: identifier: {} type: {} name:{} port:{}", fcr_identifier,
+            fcr_type, fcr_name, f_port);
 
   //add txt records
   if(!txt.empty())
   {
     for (const auto& it : txt)
     {
-      CLog::Log(LOGDEBUG, "ZeroconfMDNS: key:{}, value:{}", it.first.c_str(), it.second.c_str());
+      CLog::Log(LOGDEBUG, "ZeroconfMDNS: key:{}, value:{}", it.first, it.second);
       uint8_t txtLen = (uint8_t)strlen(it.second.c_str());
       TXTRecordSetValue(&txtRecord, it.first.c_str(), txtLen, it.second.c_str());
     }
@@ -179,7 +179,7 @@ bool CZeroconfMDNS::doRemoveService(const std::string& fcr_ident)
     DNSServiceRefDeallocate(it->second.serviceRef);
     TXTRecordDeallocate(&it->second.txtRecordRef);
     m_services.erase(it);
-    CLog::Log(LOGDEBUG, "ZeroconfMDNS: Removed service {}", fcr_ident.c_str());
+    CLog::Log(LOGDEBUG, "ZeroconfMDNS: Removed service {}", fcr_ident);
     return true;
   }
   else
@@ -195,7 +195,7 @@ void CZeroconfMDNS::doStop()
     {
       DNSServiceRefDeallocate(it.second.serviceRef);
       TXTRecordDeallocate(&it.second.txtRecordRef);
-      CLog::Log(LOGDEBUG, "ZeroconfMDNS: Removed service {}", it.first.c_str());
+      CLog::Log(LOGDEBUG, "ZeroconfMDNS: Removed service {}", it.first);
     }
     m_services.clear();
   }

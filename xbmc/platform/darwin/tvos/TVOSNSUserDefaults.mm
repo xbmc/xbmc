@@ -181,7 +181,7 @@ bool CTVOSNSUserDefaults::SetKeyData(const std::string& key,
     NSData* nsdata_value = [NSData dataWithBytes:lpBuf length:uiBufSize];
 
     NSData* compressed = [nsdata_value gzippedData];
-    CLog::Log(LOGDEBUG, "NSUSerDefaults: compressed {} from {} to {}", key.c_str(), uiBufSize,
+    CLog::Log(LOGDEBUG, "NSUSerDefaults: compressed {} from {} to {}", key, uiBufSize,
               compressed.length);
 
     [defaults setObject:compressed forKey:nsstring_key];
@@ -227,7 +227,7 @@ bool CTVOSNSUserDefaults::IsKeyFromPath(const std::string& path)
   std::string translated_key;
   if (translatePathIntoKey(path, translated_key) && !translated_key.empty())
   {
-    CLog::Log(LOGDEBUG, "found key {}", translated_key.c_str());
+    CLog::Log(LOGDEBUG, "found key {}", translated_key);
     return true;
   }
 

@@ -161,7 +161,7 @@ bool CZeroconfBrowserAvahi::doResolveService ( CZeroconfBrowser::ZeroconfService
     {
       CLog::Log(LOGERROR,
                 "CZeroconfBrowserAvahi::doResolveService Failed to resolve service '{}': {}\n",
-                it->first.GetName().c_str(), avahi_strerror(avahi_client_errno(mp_client)));
+                it->first.GetName(), avahi_strerror(avahi_client_errno(mp_client)));
       return false;
     }
   } // end of this block releases lock of eventloop
@@ -377,7 +377,7 @@ AvahiServiceBrowser* CZeroconfBrowserAvahi::createServiceBrowser ( const std::st
     CLog::Log(
         LOGERROR,
         "CZeroconfBrowserAvahi::createServiceBrowser Failed to create service ({}) browser: {}",
-        avahi_strerror(avahi_client_errno(fp_client)), fcr_service_type.c_str());
+        avahi_strerror(avahi_client_errno(fp_client)), fcr_service_type);
   }
   return ret;
 }

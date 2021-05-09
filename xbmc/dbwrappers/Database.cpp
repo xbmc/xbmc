@@ -278,7 +278,7 @@ std::string CDatabase::GetSingleValue(const std::string &query, std::unique_ptr<
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query.c_str());
+    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query);
   }
   return ret;
 }
@@ -314,7 +314,7 @@ int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Datas
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query.c_str());
+    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query);
   }
   return ret;
 }
@@ -384,7 +384,7 @@ bool CDatabase::ExecuteQuery(const std::string &strQuery)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery.c_str());
+    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery);
   }
 
   return bReturn;
@@ -407,7 +407,7 @@ bool CDatabase::ResultQuery(const std::string &strQuery)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery.c_str());
+    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery);
   }
 
   return bReturn;
@@ -580,7 +580,7 @@ bool CDatabase::Connect(const std::string &dbName, const DatabaseSettings &dbSet
 #endif
   else
   {
-    CLog::Log(LOGERROR, "Unable to determine database type: {}", dbSettings.type.c_str());
+    CLog::Log(LOGERROR, "Unable to determine database type: {}", dbSettings.type);
     return false;
   }
 

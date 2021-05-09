@@ -114,7 +114,7 @@ namespace XBMCAddon
       {
 #ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
-        CLog::Log(LOGDEBUG, "{}NEWADDON constructing {} 0x{:x}", tg.getSpaces(), classname.c_str(),
+        CLog::Log(LOGDEBUG, "{}NEWADDON constructing {} 0x{:x}", tg.getSpaces(), classname,
                   (long)(((void*)this)));
 #endif
         window.reset(_window);
@@ -128,7 +128,7 @@ namespace XBMCAddon
       {
 #ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
-        CLog::Log(LOGDEBUG, "{}NEWADDON constructing {} 0x{:x}", tg.getSpaces(), classname.c_str(),
+        CLog::Log(LOGDEBUG, "{}NEWADDON constructing {} 0x{:x}", tg.getSpaces(), classname,
                   (long)(((void*)this)));
 #endif
         window.reset(_window);
@@ -139,8 +139,8 @@ namespace XBMCAddon
       ~Interceptor() override
       {
         XBMCAddonUtils::TraceGuard tg;
-        CLog::Log(LOGDEBUG, "{}NEWADDON LIFECYCLE destroying {} 0x{:x}", tg.getSpaces(),
-                  classname.c_str(), (long)(((void*)this)));
+        CLog::Log(LOGDEBUG, "{}NEWADDON LIFECYCLE destroying {} 0x{:x}", tg.getSpaces(), classname,
+                  (long)(((void*)this)));
       }
 #else
       ~Interceptor() override = default;

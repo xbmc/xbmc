@@ -139,7 +139,7 @@ void MysqlDatabase::configure_connection() {
     }
   }
   else
-    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '{}' ({})", db.c_str(), ret);
+    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '{}' ({})", db, ret);
 }
 
 int MysqlDatabase::connect(bool create_new) {
@@ -209,8 +209,8 @@ int MysqlDatabase::connect(bool create_new) {
       default_charset = mysql_character_set_name(conn);
       if(mysql_set_character_set(conn, "utf8")) // returns 0 on success
       {
-        CLog::Log(LOGERROR, "Unable to set utf8 charset: {} [{}]({})", db.c_str(),
-                  mysql_errno(conn), mysql_error(conn));
+        CLog::Log(LOGERROR, "Unable to set utf8 charset: {} [{}]({})", db, mysql_errno(conn),
+                  mysql_error(conn));
       }
 
       configure_connection();
@@ -252,14 +252,14 @@ int MysqlDatabase::connect(bool create_new) {
       }
     }
 
-    CLog::Log(LOGERROR, "Unable to open database: {} [{}]({})", db.c_str(), mysql_errno(conn),
+    CLog::Log(LOGERROR, "Unable to open database: {} [{}]({})", db, mysql_errno(conn),
               mysql_error(conn));
 
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "Unable to open database: {} ({})", db.c_str(), GetLastError());
+    CLog::Log(LOGERROR, "Unable to open database: {} ({})", db, GetLastError());
   }
   return DB_CONNECTION_NONE;
 }
@@ -1341,7 +1341,7 @@ bool MysqlDatabase::mysqlStrAccumAppend(StrAccum *p, const char *z, int N) {
   {
     CLog::Log(LOGDEBUG,
               "This query part contains a like, we will double backslash in the next field: {}",
-              testString.c_str());
+              testString);
     isLike = true;
 
   }
@@ -1583,7 +1583,7 @@ int MysqlDataset::exec(const std::string &sql) {
       qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
-  CLog::Log(LOGDEBUG, "Mysql execute: {}", qry.c_str());
+  CLog::Log(LOGDEBUG, "Mysql execute: {}", qry);
 
   if (db->setErr( static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) != MYSQL_OK)
   {

@@ -216,9 +216,9 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
             "CAESinkALSA::GetChannelLayout - Input Channel Count: {} Output Channel Count: {}",
             format.m_channelLayout.Count(), info.Count());
   CLog::Log(LOGDEBUG, "CAESinkALSA::GetChannelLayout - Requested Layout: {}",
-            std::string(format.m_channelLayout).c_str());
+            std::string(format.m_channelLayout));
   CLog::Log(LOGDEBUG, "CAESinkALSA::GetChannelLayout - Got Layout: {} (ALSA: {})",
-            std::string(info).c_str(), alsaMapStr.c_str());
+            std::string(info), alsaMapStr);
 
   return info;
 }
@@ -449,7 +449,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
 
   if (chmap && CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, "CAESinkALSA::SelectALSAChannelMap - Selected ALSA map \"{}\"",
-              ALSAchmapToString(chmap).c_str());
+              ALSAchmapToString(chmap));
 
   snd_pcm_free_chmaps(supportedMaps);
   return chmap;
@@ -516,7 +516,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   if (m_passthrough || devType == AE_DEVTYPE_HDMI || devType == AE_DEVTYPE_IEC958)
     GetAESParams(format, AESParams);
 
-  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device \"{}\"", device.c_str());
+  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device \"{}\"", device);
 
   /* get the sound config */
   snd_config_t *config;
@@ -524,8 +524,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!OpenPCMDevice(device, AESParams, inconfig.channels, &m_pcm, config))
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"{}\"",
-              device.c_str());
+    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"{}\"", device);
     snd_config_delete(config);
     return false;
   }
@@ -534,7 +533,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   device = snd_pcm_name(m_pcm);
   m_device = device;
 
-  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Opened device \"{}\"", device.c_str());
+  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Opened device \"{}\"", device);
 
   /* free the sound config */
   snd_config_delete(config);
@@ -1005,7 +1004,7 @@ bool CAESinkALSA::TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_confi
   int err = snd_pcm_open_lconf(pcmp, name.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, lconf);
   if (err < 0)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA - Unable to open device \"{}\" for playback", name.c_str());
+    CLog::Log(LOGINFO, "CAESinkALSA - Unable to open device \"{}\" for playback", name);
   }
 
   return err == 0;
@@ -1346,7 +1345,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   int err = snd_pcm_info(pcmhandle, pcminfo);
   if (err < 0)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA - Unable to get pcm_info for \"{}\"", device.c_str());
+    CLog::Log(LOGINFO, "CAESinkALSA - Unable to get pcm_info for \"{}\"", device);
     snd_pcm_close(pcmhandle);
   }
 
@@ -1413,7 +1412,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
               CLog::Log(LOGDEBUG,
                         "CAESinkALSA - Unable to obtain ELD information for device \"{}\" (not "
                         "supported by device, or kernel older than 3.2)",
-                        device.c_str());
+                        device);
 
             /* snd_hctl_close also closes ctlhandle */
             snd_hctl_close(hctl);
@@ -1428,7 +1427,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
                */
               CLog::Log(LOGDEBUG,
                         "CAESinkALSA - HDMI device \"{}\" may be unconnected (no ELD data)",
-                        device.c_str());
+                        device);
             }
           }
           else
@@ -1488,7 +1487,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   if (snd_pcm_hw_params_any(pcmhandle, hwparams) < 0)
   {
     CLog::Log(LOGINFO, "CAESinkALSA - No playback configurations available for device \"{}\"",
-              device.c_str());
+              device);
     snd_pcm_close(pcmhandle);
     return;
   }

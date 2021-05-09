@@ -110,8 +110,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
         strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
       }
 
-      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]",
-                strCurrentFilterMusic.c_str());
+      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]", strCurrentFilterMusic);
       songcount = db.GetRandomSongIDs(CDatabase::Filter(strCurrentFilterMusic), m_songIDCache);
       m_iMatchingSongs = static_cast<int>(songcount);
       if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
@@ -145,8 +144,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
         strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
       }
 
-      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]",
-                strCurrentFilterVideo.c_str());
+      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]", strCurrentFilterVideo);
       videocount = db.GetRandomMusicVideoIDs(strCurrentFilterVideo, songIDs2);
       m_iMatchingSongs += static_cast<int>(videocount);
       if (m_iMatchingSongs < 1)
@@ -411,7 +409,7 @@ void CPartyModeManager::Add(CFileItemPtr &pItem)
   CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist);
   playlist.Add(pItem);
   CLog::Log(LOGINFO, "PARTY MODE MANAGER: Adding randomly selected song at {}:[{}]",
-            playlist.size() - 1, pItem->GetPath().c_str());
+            playlist.size() - 1, pItem->GetPath());
   m_iMatchingSongsPicked++;
 }
 
@@ -481,7 +479,7 @@ void CPartyModeManager::OnError(int iError, const std::string&  strLogMessage)
 {
   // open error dialog
   HELPERS::ShowOKDialogLines(CVariant{257}, CVariant{16030}, CVariant{iError}, CVariant{0});
-  CLog::Log(LOGERROR, "PARTY MODE MANAGER: {}", strLogMessage.c_str());
+  CLog::Log(LOGERROR, "PARTY MODE MANAGER: {}", strLogMessage);
   m_bEnabled = false;
   SendUpdateMessage();
 }

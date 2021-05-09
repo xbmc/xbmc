@@ -145,7 +145,7 @@ bool CViewDatabase::GetViewState(const std::string &path, int window, CViewState
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}, failed on path '{}'", __FUNCTION__, path.c_str());
+    CLog::Log(LOGERROR, "{}, failed on path '{}'", __FUNCTION__, path);
   }
   return false;
 }
@@ -183,7 +183,7 @@ bool CViewDatabase::SetViewState(const std::string &path, int window, const CVie
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on path '{}'", __FUNCTION__, path.c_str());
+    CLog::Log(LOGERROR, "{} failed on path '{}'", __FUNCTION__, path);
   }
   return true;
 }

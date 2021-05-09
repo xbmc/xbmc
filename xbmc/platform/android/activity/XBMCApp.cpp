@@ -879,8 +879,7 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
   startActivity(newIntent);
   if (xbmc_jnienv()->ExceptionCheck())
   {
-    CLog::Log(LOGERROR, "CXBMCApp::StartActivity - ExceptionOccurred launching {}",
-              package.c_str());
+    CLog::Log(LOGERROR, "CXBMCApp::StartActivity - ExceptionOccurred launching {}", package);
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -1023,7 +1022,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     return;
 
   std::string action = intent.getAction();
-  CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: {}", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: {}", action);
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED")
@@ -1161,11 +1160,11 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   }
 
   std::string action = intent.getAction();
-  CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: {}", action.c_str());
+  CLog::Log(LOGDEBUG, "CXBMCApp::onNewIntent - Got intent. Action: {}", action);
   std::string targetFile = GetFilenameFromIntent(intent);
   if (!targetFile.empty() &&  (action == "android.intent.action.VIEW" || action == "android.intent.action.GET_CONTENT"))
   {
-    CLog::Log(LOGDEBUG, "-- targetFile: {}", targetFile.c_str());
+    CLog::Log(LOGDEBUG, "-- targetFile: {}", targetFile);
 
     CURL targeturl(targetFile);
     std::string value;

@@ -54,7 +54,7 @@ bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
   if(avformat_alloc_output_context2(&m_Format,NULL,NULL,filename.c_str()))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file {}",
-              filename.c_str());
+              filename);
     return false;
   }
 

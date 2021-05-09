@@ -54,7 +54,7 @@ void CBackgroundInfoLoader::Run()
         {
           CLog::Log(LOGERROR,
                     "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item {}",
-                    CURL::GetRedacted(pItem->GetPath()).c_str());
+                    CURL::GetRedacted(pItem->GetPath()));
         }
       }
 
@@ -76,7 +76,7 @@ void CBackgroundInfoLoader::Run()
         {
           CLog::Log(LOGERROR,
                     "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item {}",
-                    CURL::GetRedacted(pItem->GetPath()).c_str());
+                    CURL::GetRedacted(pItem->GetPath()));
         }
       }
     }

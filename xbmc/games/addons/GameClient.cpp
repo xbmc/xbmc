@@ -218,7 +218,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
   }
 
   std::string path = translatedUrl.Get();
-  CLog::Log(LOGDEBUG, "GameClient: Loading {}", CURL::GetRedacted(path).c_str());
+  CLog::Log(LOGDEBUG, "GameClient: Loading {}", CURL::GetRedacted(path));
 
   CSingleLock lock(m_critSection);
 
@@ -254,7 +254,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
 bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInputCallback* input)
 {
-  CLog::Log(LOGDEBUG, "GameClient: Loading {} in standalone mode", ID().c_str());
+  CLog::Log(LOGDEBUG, "GameClient: Loading {} in standalone mode", ID());
 
   CSingleLock lock(m_critSection);
 
@@ -553,10 +553,9 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
 void CGameClient::LogAddonProperties(void) const
 {
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
-  CLog::Log(LOGINFO, "GAME: Loaded DLL for {}", ID().c_str());
-  CLog::Log(LOGINFO, "GAME: Client: {} at version {}", Name().c_str(),
-            Version().asString().c_str());
-  CLog::Log(LOGINFO, "GAME: Valid extensions: {}", StringUtils::Join(m_extensions, " ").c_str());
+  CLog::Log(LOGINFO, "GAME: Loaded DLL for {}", ID());
+  CLog::Log(LOGINFO, "GAME: Client: {} at version {}", Name(), Version().asString());
+  CLog::Log(LOGINFO, "GAME: Valid extensions: {}", StringUtils::Join(m_extensions, " "));
   CLog::Log(LOGINFO, "GAME: Supports VFS:                  {}", m_bSupportsVFS ? "yes" : "no");
   CLog::Log(LOGINFO, "GAME: Supports standalone execution: {}",
             m_bSupportsStandalone ? "yes" : "no");
@@ -567,7 +566,7 @@ bool CGameClient::LogError(GAME_ERROR error, const char* strMethod) const
 {
   if (error != GAME_ERROR_NO_ERROR)
   {
-    CLog::Log(LOGERROR, "GAME - {} - addon '{}' returned an error: {}", strMethod, ID().c_str(),
+    CLog::Log(LOGERROR, "GAME - {} - addon '{}' returned an error: {}", strMethod, ID(),
               CGameClientTranslator::ToString(error));
     return false;
   }
@@ -577,8 +576,8 @@ bool CGameClient::LogError(GAME_ERROR error, const char* strMethod) const
 void CGameClient::LogException(const char* strFunctionName) const
 {
   CLog::Log(LOGERROR, "GAME: exception caught while trying to call '{}' on add-on {}",
-            strFunctionName, ID().c_str());
-  CLog::Log(LOGERROR, "Please contact the developer of this add-on: {}", Author().c_str());
+            strFunctionName, ID());
+  CLog::Log(LOGERROR, "Please contact the developer of this add-on: {}", Author());
 }
 
 

@@ -167,10 +167,9 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
 
   if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_3d.c_str()))
   {
-    CLog::Log(LOGERROR, "{}: Invalid RegExp for matching 3d content:'{}'", __FUNCTION__,
-              CServiceBroker::GetSettingsComponent()
-                  ->GetAdvancedSettings()
-                  ->m_stereoscopicregex_3d.c_str());
+    CLog::Log(
+        LOGERROR, "{}: Invalid RegExp for matching 3d content:'{}'", __FUNCTION__,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_3d);
     return stereoMode;
   }
 
@@ -179,10 +178,9 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
 
   if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_sbs.c_str()))
   {
-    CLog::Log(LOGERROR, "{}: Invalid RegExp for matching 3d SBS content:'{}'", __FUNCTION__,
-              CServiceBroker::GetSettingsComponent()
-                  ->GetAdvancedSettings()
-                  ->m_stereoscopicregex_sbs.c_str());
+    CLog::Log(
+        LOGERROR, "{}: Invalid RegExp for matching 3d SBS content:'{}'", __FUNCTION__,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_sbs);
     return stereoMode;
   }
 
@@ -194,10 +192,9 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
 
   if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_tab.c_str()))
   {
-    CLog::Log(LOGERROR, "{}: Invalid RegExp for matching 3d TAB content:'{}'", __FUNCTION__,
-              CServiceBroker::GetSettingsComponent()
-                  ->GetAdvancedSettings()
-                  ->m_stereoscopicregex_tab.c_str());
+    CLog::Log(
+        LOGERROR, "{}: Invalid RegExp for matching 3d TAB content:'{}'", __FUNCTION__,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_tab);
     return stereoMode;
   }
 
@@ -267,7 +264,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void) cons
   }
 
   CLog::Log(LOGDEBUG, "StereoscopicsManager: autodetected stereo mode for movie mode {} is: {}",
-            playerMode.c_str(), ConvertGuiStereoModeToString(mode));
+            playerMode, ConvertGuiStereoModeToString(mode));
   return mode;
 }
 

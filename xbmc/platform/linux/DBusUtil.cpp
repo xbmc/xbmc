@@ -292,5 +292,5 @@ void CDBusError::Log(int level, const std::string& message) const
   {
     throw std::logic_error("Cannot log unset DBus error");
   }
-  CLog::Log(level, "{}: {} - {}", message.c_str(), m_error.name, m_error.message);
+  CLog::Log(level, "{}: {} - {}", message, m_error.name, m_error.message);
 }

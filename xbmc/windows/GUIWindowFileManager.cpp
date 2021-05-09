@@ -1264,13 +1264,13 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
   m_rootDir.SetSources(*CMediaSourceSettings::GetInstance().GetSources("files"));
   if (!strDestination.empty())
   {
-    CLog::Log(LOGINFO, "Attempting to quickpath to: {}", strDestination.c_str());
+    CLog::Log(LOGINFO, "Attempting to quickpath to: {}", strDestination);
   }
   // otherwise, is this the first time accessing this window?
   else if (m_Directory[0]->GetPath() == "?")
   {
     m_Directory[0]->SetPath(strDestination = CMediaSourceSettings::GetInstance().GetDefaultSource("files"));
-    CLog::Log(LOGINFO, "Attempting to default to: {}", strDestination.c_str());
+    CLog::Log(LOGINFO, "Attempting to default to: {}", strDestination);
   }
   // try to open the destination path
   if (!strDestination.empty())
@@ -1304,7 +1304,7 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
           path = strDestination;
         URIUtils::RemoveSlashAtEnd(path);
         m_Directory[0]->SetPath(path);
-        CLog::Log(LOGINFO, "  Success! Opened destination path: {}", strDestination.c_str());
+        CLog::Log(LOGINFO, "  Success! Opened destination path: {}", strDestination);
 
         // outside call: check the share for connectivity
         bCheckShareConnectivity = Update(0, m_Directory[0]->GetPath());
@@ -1314,7 +1314,7 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
       else
       {
         CLog::Log(LOGERROR, "  Failed! Destination parameter ({}) does not match a valid share!",
-                  strDestination.c_str());
+                  strDestination);
       }
     }
   }

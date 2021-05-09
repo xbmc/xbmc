@@ -1157,7 +1157,7 @@ int CMusicDatabase::AddSong(const int idSong,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addsong ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addsong ({})", strSQL);
   }
   return idNew;
 }
@@ -1472,7 +1472,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed with query ({})", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} failed with query ({})", __FUNCTION__, strSQL);
   }
 
   return -1;
@@ -1576,7 +1576,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
                      " ORDER BY albumartistview.iOrder",
                      idAlbum);
 
-    CLog::Log(LOGDEBUG, "{}", sql.c_str());
+    CLog::Log(LOGDEBUG, "{}", sql);
     if (!m_pDS->query(sql))
       return false;
     if (m_pDS->num_rows() == 0)
@@ -1611,7 +1611,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
                        " ORDER BY songview.iTrack, songartistview.idRole, songartistview.iOrder",
                        idAlbum);
 
-      CLog::Log(LOGDEBUG, "{}", sql.c_str());
+      CLog::Log(LOGDEBUG, "{}", sql);
       if (!m_pDS->query(sql))
         return false;
       if (m_pDS->num_rows() == 0) //Album with no songs
@@ -1716,7 +1716,7 @@ int CMusicDatabase::AddGenre(std::string& strGenre)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addgenre ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addgenre ({})", strSQL);
   }
 
   return -1;
@@ -1811,7 +1811,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist,
 
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addartist with sortname ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addartist with sortname ({})", strSQL);
   }
 
   return -1;
@@ -1911,7 +1911,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addartist ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addartist ({})", strSQL);
   }
 
   return -1;
@@ -1948,8 +1948,7 @@ int CMusicDatabase::UpdateArtist(int idArtist,
   if (idArtistMbid > 0 && idArtistMbid != idArtist)
   {
     CLog::Log(LOGDEBUG, "{0}: Updating {4} (Id: {5}) mbid {1} already assigned to {2} (Id: {3})",
-              __FUNCTION__, strMusicBrainzArtistID.c_str(), artistname.c_str(), idArtistMbid,
-              strArtist.c_str(), idArtist);
+              __FUNCTION__, strMusicBrainzArtistID, artistname, idArtistMbid, strArtist, idArtist);
     useMBIDNull = true;
     isScrapedMBID = false;
   }
@@ -2009,7 +2008,7 @@ bool CMusicDatabase::UpdateArtistScrapedMBID(int idArtist,
   if (idArtistMbid > 0 && idArtistMbid != idArtist)
   {
     CLog::Log(LOGDEBUG, "{0}: Artist mbid {1} already assigned to {2} (Id: {3})", __FUNCTION__,
-              strMusicBrainzArtistID.c_str(), artistname.c_str(), idArtistMbid);
+              strMusicBrainzArtistID, artistname, idArtistMbid);
     return false;
   }
 
@@ -2160,8 +2159,7 @@ int CMusicDatabase::GetArtistFromMBID(const std::string& strMusicBrainzArtistID,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase::{0} - failed to execute {1}", __FUNCTION__,
-              strSQL.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase::{0} - failed to execute {1}", __FUNCTION__, strSQL);
   }
   return -1;
 }
@@ -2330,7 +2328,7 @@ int CMusicDatabase::AddRole(const std::string& strRole)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to AddRole ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to AddRole ({})", strSQL);
   }
   return idRole;
 }
@@ -2389,7 +2387,7 @@ int CMusicDatabase::AddSongContributor(int idSong,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to AddSongContributor ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to AddSongContributor ({})", strSQL);
   }
 
   return -1;
@@ -2549,7 +2547,7 @@ bool CMusicDatabase::AddSongGenres(int idSong, const std::vector<std::string>& g
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) {} failed", __FUNCTION__, idSong, strSQL.c_str());
+    CLog::Log(LOGERROR, "{}({}) {} failed", __FUNCTION__, idSong, strSQL);
   }
   return false;
 }
@@ -2926,7 +2924,7 @@ int CMusicDatabase::AddPath(const std::string& strPath1)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addpath ({})", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addpath ({})", strSQL);
   }
 
   return -1;
@@ -3293,7 +3291,7 @@ int CMusicDatabase::GetAlbumIdByPath(const std::string& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, strPath);
   }
 
   return -1;
@@ -3324,8 +3322,7 @@ int CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const std::string& strArtist
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({},{},{}) failed", __FUNCTION__, strArtist.c_str(), strAlbum.c_str(),
-              strTitle.c_str());
+    CLog::Log(LOGERROR, "{} ({},{},{}) failed", __FUNCTION__, strArtist, strAlbum, strTitle);
   }
 
   return -1;
@@ -3404,7 +3401,7 @@ bool CMusicDatabase::GetTop100(const std::string& strBaseDir, CFileItemList& ite
                          "ORDER BY iTimesPlayed DESC "
                          "LIMIT 100";
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -3452,7 +3449,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
                          "ORDER BY albumview.iTimesPlayed DESC LIMIT 100) "
                          "ORDER BY albumview.iTimesPlayed DESC, albumartistview.iOrder";
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -3512,7 +3509,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const std::string& strBaseDir, CFileIte
         "ORDER BY iTimesPlayedSum DESC LIMIT 100) AS _albumlimit "
         "ON (songview.idAlbum = _albumlimit.idAlbum) "
         "ORDER BY _albumlimit.iTimesPlayedSum DESC");
-    CLog::Log(LOGDEBUG, "GetTop100AlbumSongs() query: {}", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "GetTop100AlbumSongs() query: {}", strSQL);
     if (!m_pDS->query(strSQL))
       return false;
 
@@ -3568,7 +3565,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
                    CAlbum::ReleaseTypeToString(CAlbum::Album).c_str(), RECENTLY_PLAYED_LIMIT);
 
     auto queryStart = std::chrono::steady_clock::now();
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
 
@@ -3643,7 +3640,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir,
                    CServiceBroker::GetSettingsComponent()
                        ->GetAdvancedSettings()
                        ->m_iMusicLibraryRecentlyAddedItems);
-    CLog::Log(LOGDEBUG, "GetRecentlyPlayedAlbumSongs() query: {}", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "GetRecentlyPlayedAlbumSongs() query: {}", strSQL);
     if (!m_pDS->query(strSQL))
       return false;
 
@@ -3730,7 +3727,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
                                ->GetAdvancedSettings()
                                ->m_iMusicLibraryRecentlyAddedItems);
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -3797,7 +3794,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const std::string& strBaseDir,
                               : CServiceBroker::GetSettingsComponent()
                                     ->GetAdvancedSettings()
                                     ->m_iMusicLibraryRecentlyAddedItems);
-    CLog::Log(LOGDEBUG, "GetRecentlyAddedAlbumSongs() query: {}", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "GetRecentlyAddedAlbumSongs() query: {}", strSQL);
     if (!m_pDS->query(strSQL))
       return false;
 
@@ -3876,7 +3873,7 @@ void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, item.GetPath().c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, item.GetPath());
   }
 }
 
@@ -3907,7 +3904,7 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1,
                                     strPath.c_str());
     if (!m_pDS->query(strSQL))
       return false;
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -3937,7 +3934,7 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, strPath);
   }
 
   return false;
@@ -4165,7 +4162,7 @@ bool CMusicDatabase::CleanupSongs(CGUIDialogProgress* progressDialog /*= nullptr
       }
       m_pDS->close();
       std::string strSongIds = "(" + StringUtils::Join(songIds, ",") + ")";
-      CLog::Log(LOGDEBUG, "Checking songs from song ID list: {}", strSongIds.c_str());
+      CLog::Log(LOGDEBUG, "Checking songs from song ID list: {}", strSongIds);
       if (progressDialog)
       {
         int percentage = i * 100 / total;
@@ -4880,7 +4877,7 @@ bool CMusicDatabase::GetGenresNav(const std::string& strBaseDir,
              strSQLExtra;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
     if (!m_pDS->query(strSQL))
       return false;
@@ -4997,7 +4994,7 @@ bool CMusicDatabase::GetSourcesNav(const std::string& strBaseDir,
              strSQLExtra;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
     if (!m_pDS->query(strSQL))
       return false;
@@ -5087,7 +5084,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir,
       return false;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5157,7 +5154,7 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir,
       return false;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5250,7 +5247,7 @@ bool CMusicDatabase::GetCommonNav(const std::string& strBaseDir,
       return false;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
 
@@ -5466,7 +5463,7 @@ bool CMusicDatabase::GetArtistsByWhere(
     strSQL = "SELECT " + strFields + " FROM artistview " + strSQLExtra;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     auto queryStart = std::chrono::steady_clock::now();
     if (!m_pDS->query(strSQL))
       return false;
@@ -5701,7 +5698,7 @@ bool CMusicDatabase::GetAlbumsByWhere(
     strSQL = "SELECT " + strFields + " FROM albumview " + strSQLExtra;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     auto querytime = std::chrono::steady_clock::now();
     if (!m_pDS->query(strSQL))
       return false;
@@ -5772,7 +5769,7 @@ bool CMusicDatabase::GetAlbumsByWhere(
   catch (...)
   {
     m_pDS->close();
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filter.where);
   }
   return false;
 }
@@ -5879,7 +5876,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
              strSQLExtra;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     auto queryStart = std::chrono::steady_clock::now();
     if (!m_pDS->query(strSQL))
       return false;
@@ -5990,7 +5987,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
   catch (...)
   {
     m_pDS->close();
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filter.where);
   }
 
   return false;
@@ -6136,7 +6133,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
     else
       strSQL = "SELECT " + strFields + " FROM songview " + strSQLExtra;
 
-    CLog::Log(LOGDEBUG, "{} query = {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query = {}", __FUNCTION__, strSQL);
     auto queryStart = std::chrono::steady_clock::now();
     // run query
     if (!m_pDS->query(strSQL))
@@ -6212,8 +6209,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
       catch (...)
       {
         m_pDS->close();
-        CLog::Log(LOGERROR, "{}: out of memory loading query: {}", __FUNCTION__,
-                  filter.where.c_str());
+        CLog::Log(LOGERROR, "{}: out of memory loading query: {}", __FUNCTION__, filter.where);
         return (items.Size() > 0);
       }
     }
@@ -6247,7 +6243,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
   {
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where);
   }
   return false;
 }
@@ -6298,7 +6294,7 @@ bool CMusicDatabase::GetSongsByWhere(
                                     : "songview.*") +
              strSQLExtra;
 
-    CLog::Log(LOGDEBUG, "{} query = {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query = {}", __FUNCTION__, strSQL);
     // run query
     if (!m_pDS->query(strSQL))
       return false;
@@ -6340,8 +6336,7 @@ bool CMusicDatabase::GetSongsByWhere(
       catch (...)
       {
         m_pDS->close();
-        CLog::Log(LOGERROR, "{}: out of memory loading query: {}", __FUNCTION__,
-                  filter.where.c_str());
+        CLog::Log(LOGERROR, "{}: out of memory loading query: {}", __FUNCTION__, filter.where);
         return (items.Size() > 0);
       }
     }
@@ -6354,7 +6349,7 @@ bool CMusicDatabase::GetSongsByWhere(
   {
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where);
   }
   return false;
 }
@@ -6836,7 +6831,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
       strSQL = "SELECT a1.*, " + joinLayout.GetFields() + " FROM " + strSQL + strSQLJoin;
     }
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     // run query
     auto start = std::chrono::steady_clock::now();
 
@@ -7386,7 +7381,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     else
       StringUtils::Replace(strSQL, "<datefield>", "strOrigReleaseDate");
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     // run query
     auto start = std::chrono::steady_clock::now();
 
@@ -7969,7 +7964,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     else
       StringUtils::Replace(strSQL, "<datefield>", "song.strOrigReleaseDate");
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
     // Run query
     auto start = std::chrono::steady_clock::now();
@@ -9454,7 +9449,7 @@ unsigned int CMusicDatabase::GetRandomSongIDs(const Filter& filter,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where);
   }
   return 0;
 }
@@ -9487,7 +9482,7 @@ int CMusicDatabase::GetSongsCount(const Filter& filter)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, filter.where);
   }
   return 0;
 }
@@ -9555,7 +9550,7 @@ bool CMusicDatabase::GetAlbumPaths(int idAlbum, std::vector<std::pair<std::strin
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL);
   }
 
   return false;
@@ -9587,7 +9582,7 @@ int CMusicDatabase::GetDiscnumberForPathID(int idPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL);
   }
   return result;
 }
@@ -9868,7 +9863,7 @@ int CMusicDatabase::AddSource(const std::string& strName,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed with query ({})", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} failed with query ({})", __FUNCTION__, strSQL);
     RollbackTransaction();
   }
 
@@ -9937,7 +9932,7 @@ int CMusicDatabase::UpdateSource(const std::string& strOldName,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed with query ({})", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} failed with query ({})", __FUNCTION__, strSQL);
     RollbackTransaction();
   }
 
@@ -9989,7 +9984,7 @@ int CMusicDatabase::GetSourceFromPath(const std::string& strPath1)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} path: {} ({}) failed", __FUNCTION__, strSQL.c_str(), strPath1.c_str());
+    CLog::Log(LOGERROR, "{} path: {} ({}) failed", __FUNCTION__, strSQL, strPath1);
   }
 
   return -1;
@@ -10066,7 +10061,7 @@ bool CMusicDatabase::AddAlbumSources(int idAlbum, const std::string& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} path: {} ({}) failed", __FUNCTION__, strSQL.c_str(), strPath.c_str());
+    CLog::Log(LOGERROR, "{} path: {} ({}) failed", __FUNCTION__, strSQL, strPath);
   }
 
   return false;
@@ -10171,7 +10166,7 @@ bool CMusicDatabase::MigrateSources()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
   return false;
 }
@@ -10216,7 +10211,7 @@ bool CMusicDatabase::GetSources(CFileItemList& items)
         "FROM source JOIN source_path ON source.idSource = source_path.idSource "
         "ORDER BY source.idSource, source_path.idPath";
 
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -10547,7 +10542,7 @@ int CMusicDatabase::GetArtistByMatch(const CArtist& artist)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL);
   }
   return -1;
 }
@@ -10773,7 +10768,7 @@ int CMusicDatabase::GetAlbumByMatch(const CAlbum& album)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase::{} - failed to execute {}", __FUNCTION__, strSQL);
   }
   return -1;
 }
@@ -10832,7 +10827,7 @@ bool CMusicDatabase::UpdateArtistSortNames(int idArtist /*=-1*/)
                    "AND album_artist.idAlbum = album.idAlbum)",
                    idArtist);
   ExecuteQuery(strSQL);
-  CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+  CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
   if (bisMySQL)
     strSQL = "(SELECT GROUP_CONCAT("
@@ -10860,7 +10855,7 @@ bool CMusicDatabase::UpdateArtistSortNames(int idArtist /*=-1*/)
                          "AND song_artist.idSong = song.idSong AND song_artist.idRole = 1)",
                          idArtist);
   ExecuteQuery(strSQL);
-  CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+  CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
   if (CommitMultipleExecute())
     return true;
@@ -10939,7 +10934,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
     strSQL = PrepareSQL(strSQL, extFilter.fields.c_str()) + strSQLExtra;
 
     // run query
-    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
     if (!m_pDS->query(strSQL))
       return false;
@@ -10999,7 +10994,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
   return false;
 }
@@ -11092,7 +11087,7 @@ bool CMusicDatabase::SetPathHash(const std::string& path, const std::string& has
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}, {}) failed", __FUNCTION__, path.c_str(), hash.c_str());
+    CLog::Log(LOGERROR, "{} ({}, {}) failed", __FUNCTION__, path, hash);
   }
 
   return false;
@@ -11116,7 +11111,7 @@ bool CMusicDatabase::GetPathHash(const std::string& path, std::string& hash)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, path.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, path);
   }
 
   return false;
@@ -11217,7 +11212,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1, MAPSONGS& son
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, path.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, path);
   }
   return false;
 }
@@ -11287,7 +11282,7 @@ bool CMusicDatabase::SetSongUserrating(const std::string& filePath, int userrati
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({},{}) failed", __FUNCTION__, filePath.c_str(), userrating);
+    CLog::Log(LOGERROR, "{} ({},{}) failed", __FUNCTION__, filePath, userrating);
   }
   return false;
 }
@@ -11358,7 +11353,7 @@ bool CMusicDatabase::SetSongVotes(const std::string& filePath, int votes)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({},{}) failed", __FUNCTION__, filePath.c_str(), votes);
+    CLog::Log(LOGERROR, "{} ({},{}) failed", __FUNCTION__, filePath, votes);
   }
   return false;
 }
@@ -11403,7 +11398,7 @@ int CMusicDatabase::GetSongIDFromPath(const std::string& filePath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filePath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filePath);
   }
   return -1;
 }
@@ -11495,7 +11490,7 @@ bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::S
   catch (...)
   {
     RollbackTransaction();
-    CLog::Log(LOGERROR, "{} - ({}, {}) failed", __FUNCTION__, strBaseDir.c_str(), strSQL.c_str());
+    CLog::Log(LOGERROR, "{} - ({}, {}) failed", __FUNCTION__, strBaseDir, strSQL);
   }
   return false;
 }
@@ -11552,7 +11547,7 @@ bool CMusicDatabase::SetScraper(int id,
   catch (...)
   {
     RollbackTransaction();
-    CLog::Log(LOGERROR, "{} - ({}, {}) failed", __FUNCTION__, id, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} - ({}, {}) failed", __FUNCTION__, id, strSQL);
   }
   return false;
 }
@@ -11615,8 +11610,7 @@ bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE& content, ADDON::Scra
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} -({}, {} {}) failed", __FUNCTION__, id, scraperUUID.c_str(),
-              strSettings.c_str());
+    CLog::Log(LOGERROR, "{} -({}, {} {}) failed", __FUNCTION__, id, scraperUUID, strSettings);
   }
   return false;
 }
@@ -11643,7 +11637,7 @@ bool CMusicDatabase::ScraperInUse(const std::string& scraperID) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, scraperID.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, scraperID);
   }
   return false;
 }
@@ -11783,7 +11777,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                                       CAlbum::ReleaseTypeToString(CAlbum::Album).c_str());
       if (!settings.m_unscraped)
         strSQL += "AND lastScraped IS NOT NULL";
-      CLog::Log(LOGDEBUG, "CMusicDatabase::{} - {}", __FUNCTION__, strSQL.c_str());
+      CLog::Log(LOGDEBUG, "CMusicDatabase::{} - {}", __FUNCTION__, strSQL);
       m_pDS->query(strSQL);
 
       int total = m_pDS->num_rows();
@@ -11822,12 +11816,12 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
             if (strAlbumPath.empty())
               CLog::Log(LOGDEBUG,
                         "CMusicDatabase::{} - Not exporting album {} as unique path not found",
-                        __FUNCTION__, album.strAlbum.c_str());
+                        __FUNCTION__, album.strAlbum);
             else if (!CDirectory::Exists(strAlbumPath))
               CLog::Log(
                   LOGDEBUG,
                   "CMusicDatabase::{} - Not exporting album {} as found path {} does not exist",
-                  __FUNCTION__, album.strAlbum.c_str(), strAlbumPath.c_str());
+                  __FUNCTION__, album.strAlbum, strAlbumPath);
             else
             {
               strPath = strAlbumPath;
@@ -11852,7 +11846,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
             if (!pathfound)
               CLog::Log(LOGDEBUG,
                         "CMusicDatabase::{} - Not exporting album {} as could not create {}",
-                        __FUNCTION__, album.strAlbum.c_str(), strPath.c_str());
+                        __FUNCTION__, album.strAlbum, strPath);
             else
             {
               std::string strAlbumFolder;
@@ -11867,7 +11861,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
               if (!pathfound)
                 CLog::Log(LOGDEBUG,
                           "CMusicDatabase::{} - Not exporting album {} as could not create {}",
-                          __FUNCTION__, album.strAlbum.c_str(), strPath.c_str());
+                          __FUNCTION__, album.strAlbum, strPath);
             }
           }
           if (pathfound)
@@ -11882,7 +11876,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                 if (!xmlDoc.SaveFile(nfoFile))
                 {
                   CLog::Log(LOGERROR, "CMusicDatabase::{}: Album nfo export failed! ('{}')",
-                            __FUNCTION__, nfoFile.c_str());
+                            __FUNCTION__, nfoFile);
                   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                                         g_localizeStrings.Get(20302), nfoFile);
                   iFailCount++;
@@ -11964,7 +11958,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
 
       std::string strSQL = "SELECT idArtist FROM artist";
       BuildSQL(strSQL, filter, strSQL);
-      CLog::Log(LOGDEBUG, "CMusicDatabase::{} - {}", __FUNCTION__, strSQL.c_str());
+      CLog::Log(LOGDEBUG, "CMusicDatabase::{} - {}", __FUNCTION__, strSQL);
 
       m_pDS->query(strSQL);
       int total = m_pDS->num_rows();
@@ -12012,7 +12006,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
           if (!pathfound)
             CLog::Log(LOGDEBUG,
                       "CMusicDatabase::{} - Not exporting artist {} as could not create {}",
-                      __FUNCTION__, artist.strArtist.c_str(), strPath.c_str());
+                      __FUNCTION__, artist.strArtist, strPath);
           else
           {
             if (!artistfoldersonly)
@@ -12026,7 +12020,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                   if (!xmlDoc.SaveFile(nfoFile))
                   {
                     CLog::Log(LOGERROR, "CMusicDatabase::{}: Artist nfo export failed! ('{}')",
-                              __FUNCTION__, nfoFile.c_str());
+                              __FUNCTION__, nfoFile);
                     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                                           g_localizeStrings.Get(20302), nfoFile);
                     iFailCount++;
@@ -12109,7 +12103,7 @@ bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* pro
         "FROM song JOIN album on album.idAlbum = song.idAlbum "
         "WHERE iTimesPlayed > 0 OR rating > 0 or userrating > 0";
 
-    CLog::Log(LOGDEBUG, "{0} - {1}", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGDEBUG, "{0} - {1}", __FUNCTION__, strSQL);
     m_pDS->query(strSQL);
 
     int total = m_pDS->num_rows();
@@ -12224,7 +12218,7 @@ void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgres
         }
         else
           CLog::Log(LOGDEBUG, "{} - Not import additional artist data as {} not found",
-                    __FUNCTION__, importedArtist.strArtist.c_str());
+                    __FUNCTION__, importedArtist.strArtist);
         current++;
       }
       else if (StringUtils::CompareNoCase(entry->Value(), "album", 5) == 0)
@@ -12243,7 +12237,7 @@ void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgres
         }
         else
           CLog::Log(LOGDEBUG, "{} - Not import additional album data as {} not found", __FUNCTION__,
-                    importedAlbum.strAlbum.c_str());
+                    importedAlbum.strAlbum);
 
         current++;
       }
@@ -12734,7 +12728,7 @@ void CMusicDatabase::SetItemUpdated(int mediaId, const std::string& mediaType)
   catch (...)
   {
     CLog::Log(LOGERROR, "CMusicDatabase::{0} ({1}, {2}) - failed to execute {3}", __FUNCTION__,
-              mediaId, mediaType.c_str(), strSQL.c_str());
+              mediaId, mediaType, strSQL);
   }
 }
 
@@ -12784,8 +12778,8 @@ void CMusicDatabase::SetArtForItem(int mediaId,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}, '{}', '{}', '{}') failed", __FUNCTION__, mediaId, mediaType.c_str(),
-              artType.c_str(), url.c_str());
+    CLog::Log(LOGERROR, "{}({}, '{}', '{}', '{}') failed", __FUNCTION__, mediaId, mediaType,
+              artType, url);
   }
 }
 
@@ -12899,7 +12893,7 @@ bool CMusicDatabase::GetArtForItem(
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, strSQL);
   }
   return false;
 }
@@ -12994,7 +12988,7 @@ bool CMusicDatabase::GetArtTypes(const MediaType& mediaType, std::vector<std::st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaType.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaType);
   }
   return false;
 }

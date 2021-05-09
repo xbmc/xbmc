@@ -113,7 +113,7 @@ bool CGUIIncludes::Load_Internal(const std::string &file)
   CXBMCTinyXML doc;
   if (!doc.LoadFile(file))
   {
-    CLog::Log(LOGINFO, "Error loading include file {}: {} (row: {}, col: {})", file.c_str(),
+    CLog::Log(LOGINFO, "Error loading include file {}: {} (row: {}, col: {})", file,
               doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
     return false;
   }
@@ -121,8 +121,7 @@ bool CGUIIncludes::Load_Internal(const std::string &file)
   TiXmlElement *root = doc.RootElement();
   if (!root || !StringUtils::EqualsNoCase(root->Value(), "includes"))
   {
-    CLog::Log(LOGERROR, "Error loading include file {}: Root element <includes> required.",
-              file.c_str());
+    CLog::Log(LOGERROR, "Error loading include file {}: Root element <includes> required.", file);
     return false;
   }
 
@@ -260,8 +259,7 @@ void CGUIIncludes::FlattenExpression(std::string &expression, const std::vector<
   GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(expression, "EXP", [&](const std::string &expressionName) -> std::string {
     if (std::find(resolved.begin(), resolved.end(), expressionName) != resolved.end())
     {
-      CLog::Log(LOGERROR, "Skin has a circular expression \"{}\": {}", resolved.back().c_str(),
-                original.c_str());
+      CLog::Log(LOGERROR, "Skin has a circular expression \"{}\": {}", resolved.back(), original);
       return std::string();
     }
     auto it = m_expressions.find(expressionName);
@@ -489,7 +487,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     }
     else
     { // invalid include
-      CLog::Log(LOGWARNING, "Skin has invalid include: {}", tagName.c_str());
+      CLog::Log(LOGWARNING, "Skin has invalid include: {}", tagName);
       include = include->NextSiblingElement("include");
     }
   }

@@ -326,7 +326,7 @@ void CRenderCaptureDX::BeginRender()
       result = pDevice->CreateQuery(&queryDesc, m_query.ReleaseAndGetAddressOf());
       if (FAILED(result))
       {
-        CLog::LogF(LOGERROR, "CreateQuery failed {}", DX::GetErrorDescription(result).c_str());
+        CLog::LogF(LOGERROR, "CreateQuery failed {}", DX::GetErrorDescription(result));
         m_asyncSupported = false;
         m_query = nullptr;
       }

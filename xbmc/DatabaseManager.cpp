@@ -111,8 +111,7 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "Unable to copy old database {} to new version {}", dbName.c_str(),
-                    latestDb.c_str());
+          CLog::Log(LOGERROR, "Unable to copy old database {} to new version {}", dbName, latestDb);
           copy_fail = true;
         }
 
@@ -123,7 +122,7 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
 
         if (!db.Connect(latestDb, dbSettings, false))
         {
-          CLog::Log(LOGERROR, "Unable to open freshly copied database {}", latestDb.c_str());
+          CLog::Log(LOGERROR, "Unable to open freshly copied database {}", latestDb);
           return false;
         }
       }
@@ -156,13 +155,12 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
 
   if (version < db.GetMinSchemaVersion())
   {
-    CLog::Log(LOGERROR, "Can't update database {} from version {} - it's too old", dbName.c_str(),
-              version);
+    CLog::Log(LOGERROR, "Can't update database {} from version {} - it's too old", dbName, version);
     return false;
   }
   else if (version < db.GetSchemaVersion())
   {
-    CLog::Log(LOGINFO, "Attempting to update the database {} from version {} to {}", dbName.c_str(),
+    CLog::Log(LOGINFO, "Attempting to update the database {} from version {} to {}", dbName,
               version, db.GetSchemaVersion());
     bool success = true;
     db.BeginTransaction();
@@ -176,14 +174,14 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "Exception updating database {} from version {} to {}", dbName.c_str(),
-                version, db.GetSchemaVersion());
+      CLog::Log(LOGERROR, "Exception updating database {} from version {} to {}", dbName, version,
+                db.GetSchemaVersion());
       success = false;
     }
     if (!success)
     {
-      CLog::Log(LOGERROR, "Error updating database {} from version {} to {}", dbName.c_str(),
-                version, db.GetSchemaVersion());
+      CLog::Log(LOGERROR, "Error updating database {} from version {} to {}", dbName, version,
+                db.GetSchemaVersion());
       db.RollbackTransaction();
       return false;
     }
@@ -195,12 +193,12 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
     bReturn = false;
     CLog::Log(LOGERROR,
               "Can't open the database {} as it is a NEWER version than what we were expecting?",
-              dbName.c_str());
+              dbName);
   }
   else
   {
     bReturn = true;
-    CLog::Log(LOGINFO, "Running database version {}", dbName.c_str());
+    CLog::Log(LOGINFO, "Running database version {}", dbName);
   }
 
   return bReturn;

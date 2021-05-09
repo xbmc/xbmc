@@ -36,7 +36,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   if (file.LoadFile(poFileUrl, buf) < 18) // at least a size of a minimalistic header
   {
     CLog::Log(LOGERROR, "{}: can't load file \"{}\" or file is too small", __FUNCTION__,
-              pofilename.c_str());
+              pofilename);
     return false;
   }
 
@@ -57,7 +57,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   if (GetNextEntry() && m_Entry.Type == MSGID_FOUND)
     return true;
 
-  CLog::Log(LOGERROR, "POParser: unable to read PO file header from file: {}", pofilename.c_str());
+  CLog::Log(LOGERROR, "POParser: unable to read PO file header from file: {}", pofilename);
   return false;
 }
 
@@ -129,7 +129,7 @@ void CPODocument::ParseEntry(bool bisSourceLang)
     else
     {
       CLog::Log(LOGERROR, "POParser: missing msgstr line in entry. Failed entry: {}",
-                m_Entry.Content.c_str());
+                m_Entry.Content);
       m_Entry.msgStr.Str.clear();
     }
     return;
@@ -159,7 +159,7 @@ void CPODocument::ParseEntry(bool bisSourceLang)
     CLog::Log(LOGERROR,
               "POParser: msgstr[] plural lines have zero valid strings. "
               "Failed entry: {}",
-              m_Entry.Content.c_str());
+              m_Entry.Content);
     m_Entry.msgStrPlural.resize(1); // Put 1 element with an empty string into the vector
   }
 }
@@ -171,7 +171,7 @@ const std::string& CPODocument::GetPlurMsgstr(size_t plural) const
     CLog::Log(LOGERROR,
               "POParser: msgstr[{}] plural field requested, but not found in PO file. "
               "Failed entry: {}",
-              static_cast<int>(plural), m_Entry.Content.c_str());
+              static_cast<int>(plural), m_Entry.Content);
     plural = m_Entry.msgStrPlural.size()-1;
   }
   return m_Entry.msgStrPlural[plural].Str;
@@ -196,7 +196,7 @@ std::string CPODocument::UnescapeString(const std::string &strInput)
         CLog::Log(LOGERROR,
                   "POParser: warning, unhandled escape character "
                   "at line-end. Problematic entry: {}",
-                  m_Entry.Content.c_str());
+                  m_Entry.Content);
         break;
       }
       switch (*it++)
@@ -218,7 +218,7 @@ std::string CPODocument::UnescapeString(const std::string &strInput)
         {
           CLog::Log(LOGERROR,
                     "POParser: warning, unhandled escape character. Problematic entry: {}",
-                    m_Entry.Content.c_str());
+                    m_Entry.Content);
           continue;
         }
       }
@@ -251,7 +251,7 @@ bool CPODocument::ParseNumID()
 
   CLog::Log(LOGERROR, "POParser: found numeric id descriptor, but no valid id can be read, "
                       "entry was handled as normal msgid entry");
-  CLog::Log(LOGERROR, "POParser: The problematic entry: {}", m_Entry.Content.c_str());
+  CLog::Log(LOGERROR, "POParser: The problematic entry: {}", m_Entry.Content);
   return false;
 }
 
@@ -289,12 +289,12 @@ void CPODocument::ConvertLineEnds(const std::string &filename)
     CLog::Log(LOGDEBUG,
               "POParser: PO file has Mac Style Line Endings. "
               "Converted in memory to Linux LF for file: {}",
-              filename.c_str());
+              filename);
   else
     CLog::Log(LOGDEBUG,
               "POParser: PO file has Win Style Line Endings. "
               "Converted in memory to Linux LF for file: {}",
-              filename.c_str());
+              filename);
 
   std::string strTemp;
   strTemp.reserve(m_strBuffer.size());

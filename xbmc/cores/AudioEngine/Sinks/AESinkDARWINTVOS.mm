@@ -53,8 +53,7 @@ static std::string getAudioRoute()
 static void dumpAVAudioSessionProperties()
 {
   std::string route = getAudioRoute();
-  CLog::Log(LOGINFO, "{} audio route = {}", __PRETTY_FUNCTION__,
-            route.empty() ? "NONE" : route.c_str());
+  CLog::Log(LOGINFO, "{} audio route = {}", __PRETTY_FUNCTION__, route.empty() ? "NONE" : route);
 
   AVAudioSession* mySession = [AVAudioSession sharedInstance];
 
@@ -598,7 +597,7 @@ static void EnumerateDevices(AEDeviceInfoList& list)
   else
     device.m_channels = AE_CH_LAYOUT_5_1;
 
-  CLog::Log(LOGDEBUG, "EnumerateDevices:Device({})", device.m_deviceName.c_str());
+  CLog::Log(LOGDEBUG, "EnumerateDevices:Device({})", device.m_deviceName);
 
   list.push_back(device);
 }

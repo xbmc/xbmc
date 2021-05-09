@@ -115,8 +115,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     m_fd = open(device.c_str(), O_WRONLY, 0);
   if (m_fd == -1)
   {
-    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to open the audio device: {}",
-              device.c_str());
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to open the audio device: {}", device);
     return false;
   }
 

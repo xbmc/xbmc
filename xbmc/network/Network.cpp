@@ -396,7 +396,7 @@ bool CNetworkBase::PingHost(unsigned long ipaddr, unsigned short port, unsigned 
 #endif
 
     CLog::Log(LOGERROR, "{}({}:{}) - {} ({})", __FUNCTION__, inet_ntoa(addr.sin_addr), port,
-              err_msg, sock_err.c_str());
+              err_msg, sock_err);
   }
 
   return err_msg == 0;

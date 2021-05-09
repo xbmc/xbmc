@@ -59,7 +59,7 @@ bool CControllerPort::Deserialize(const TiXmlElement* pElement)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <{}>", pChild->ValueStr().c_str());
+      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <{}>", pChild->ValueStr());
     }
   }
 
@@ -99,7 +99,7 @@ bool CControllerTopology::Deserialize(const TiXmlElement* pElement)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Unknown physical topology tag: <{}>", pChild->ValueStr().c_str());
+      CLog::Log(LOGDEBUG, "Unknown physical topology tag: <{}>", pChild->ValueStr());
     }
   }
 

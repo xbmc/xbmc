@@ -515,7 +515,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
       CLog::Log(LOGWARNING,
                 "CGUIDialogMediaFilter: filter {} of media type {} with unknown control type '{}'",
-                filter.field, filter.mediaType.c_str(), filter.controlType.c_str());
+                filter.field, filter.mediaType, filter.controlType);
       continue;
     }
 
@@ -527,7 +527,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       CLog::Log(LOGWARNING,
                 "CGUIDialogMediaFilter: failed to create filter {} of media type {} with control "
                 "type '{}'",
-                filter.field, filter.mediaType.c_str(), filter.controlType.c_str());
+                filter.field, filter.mediaType, filter.controlType);
       continue;
     }
 
@@ -544,8 +544,7 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 {
   if (path.empty() || m_filter == NULL)
   {
-    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath({}): invalid path or filter",
-              path.c_str());
+    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath({}): invalid path or filter", path);
     return false;
   }
 
@@ -563,7 +562,7 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
     CLog::Log(
         LOGWARNING,
         "CGUIDialogMediaFilter::SetPath({}): invalid path (neither videodb:// nor musicdb://)",
-        path.c_str());
+        path);
     return false;
   }
 
@@ -571,7 +570,7 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
      (video && m_dbUrl->GetType() != "movies" && m_dbUrl->GetType() != "tvshows" && m_dbUrl->GetType() != "episodes" && m_dbUrl->GetType() != "musicvideos") ||
      (!video && m_dbUrl->GetType() != "artists" && m_dbUrl->GetType() != "albums" && m_dbUrl->GetType() != "songs"))
   {
-    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath({}): invalid media type", path.c_str());
+    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath({}): invalid media type", path);
     return false;
   }
 

@@ -318,13 +318,13 @@ bool CColorManager::Probe3dLut(const std::string& filename, int* clutSize)
 
   if (!lutFile.Open(filename))
   {
-    CLog::Log(LOGERROR, "{}: Could not open 3DLUT file: {}", __FUNCTION__, filename.c_str());
+    CLog::Log(LOGERROR, "{}: Could not open 3DLUT file: {}", __FUNCTION__, filename);
     return false;
   }
 
   if (lutFile.Read(&header, sizeof(header)) < static_cast<ssize_t>(sizeof(header)))
   {
-    CLog::Log(LOGERROR, "{}: Could not read 3DLUT header: {}", __FUNCTION__, filename.c_str());
+    CLog::Log(LOGERROR, "{}: Could not read 3DLUT header: {}", __FUNCTION__, filename);
     return false;
   }
 
@@ -333,7 +333,7 @@ bool CColorManager::Probe3dLut(const std::string& filename, int* clutSize)
         && header.signature[2]=='L'
         && header.signature[3]=='T') )
   {
-    CLog::Log(LOGERROR, "{}: Not a 3DLUT file: {}", __FUNCTION__, filename.c_str());
+    CLog::Log(LOGERROR, "{}: Not a 3DLUT file: {}", __FUNCTION__, filename);
     return false;
   }
 
@@ -342,7 +342,7 @@ bool CColorManager::Probe3dLut(const std::string& filename, int* clutSize)
       || header.inputColorEncoding != 0
       || header.outputColorEncoding != 0 )
   {
-    CLog::Log(LOGERROR, "{}: Unsupported 3DLUT file: {}", __FUNCTION__, filename.c_str());
+    CLog::Log(LOGERROR, "{}: Unsupported 3DLUT file: {}", __FUNCTION__, filename);
     return false;
   }
 
@@ -352,7 +352,7 @@ bool CColorManager::Probe3dLut(const std::string& filename, int* clutSize)
   if (rSize != gSize || rSize != bSize)
   {
     CLog::Log(LOGERROR, "{}: Different channel resolutions unsupported: {}", __FUNCTION__,
-              filename.c_str());
+              filename);
     return false;
   }
 
@@ -373,13 +373,13 @@ bool CColorManager::Load3dLut(const std::string& filename,
 
   if (!lutFile.Open(filename))
   {
-    CLog::Log(LOGERROR, "{}: Could not open 3DLUT file: {}", __FUNCTION__, filename.c_str());
+    CLog::Log(LOGERROR, "{}: Could not open 3DLUT file: {}", __FUNCTION__, filename);
     return false;
   }
 
   if (lutFile.Read(&header, sizeof(header)) < static_cast<ssize_t>(sizeof(header)))
   {
-    CLog::Log(LOGERROR, "{}: Could not read 3DLUT header: {}", __FUNCTION__, filename.c_str());
+    CLog::Log(LOGERROR, "{}: Could not read 3DLUT header: {}", __FUNCTION__, filename);
     return false;
   }
 
@@ -390,7 +390,7 @@ bool CColorManager::Load3dLut(const std::string& filename,
   if ( rSize != CLUTsize || rSize != gSize || rSize != bSize)
   {
     CLog::Log(LOGERROR, "{}: Different channel resolutions unsupported: {}", __FUNCTION__,
-              filename.c_str());
+              filename);
     return false;
   }
 

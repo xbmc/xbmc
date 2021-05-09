@@ -228,7 +228,7 @@ bool CWin32SMBDirectory::RealCreate(const CURL& url, bool tryToConnect)
     DWORD dirAttrs = GetFileAttributesW(nameW.c_str());
     if (dirAttrs == INVALID_FILE_ATTRIBUTES || !SetFileAttributesW(nameW.c_str(), dirAttrs | FILE_ATTRIBUTE_HIDDEN))
       CLog::LogF(LOGWARNING, "Can't set hidden attribute for newly created directory \"{}\"",
-                 url.Get().c_str());
+                 url.Get());
   }
 
   return true;
@@ -358,7 +358,7 @@ bool CWin32SMBDirectory::GetNetworkResources(const CURL& basePath, CFileItemList
   if (!basePathStr.empty() && !g_charsetConverter.utf8ToW("\\\\" + basePath.GetHostName(), remoteName, false, false, true))
   {
     CLog::LogF(LOGERROR, "can't convert host name \"{}\" to wide character form",
-               basePath.GetHostName().c_str());
+               basePath.GetHostName());
     return false;
   }
 
@@ -673,8 +673,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   std::wstring serverNameW;
   if (!g_charsetConverter.utf8ToW(url.GetHostName(), serverNameW, false, false, true))
   {
-    CLog::LogF(LOGERROR, "Can't convert server name \"{}\" to wide string",
-               url.GetHostName().c_str());
+    CLog::LogF(LOGERROR, "Can't convert server name \"{}\" to wide string", url.GetHostName());
     return false;
   }
   serverNameW = L"\\\\" + serverNameW;
@@ -686,8 +685,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
     serverShareName = "\\\\" + url.GetHostName() + "\\" + url.GetShareName();
     if (!g_charsetConverter.utf8ToW(serverShareName, serverShareNameW, false, false, true))
     {
-      CLog::LogF(LOGERROR, "Can't convert share name \"{}\" to wide string",
-                 serverShareName.c_str());
+      CLog::LogF(LOGERROR, "Can't convert share name \"{}\" to wide string", serverShareName);
       return false;
     }
   }
@@ -700,14 +698,13 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   std::wstring usernameW;
   if (!url.GetUserName().empty() && !g_charsetConverter.utf8ToW(url.GetUserName(), usernameW, false, false, true))
   {
-    CLog::LogF(LOGERROR, "Can't convert username \"{}\" to wide string", url.GetUserName().c_str());
+    CLog::LogF(LOGERROR, "Can't convert username \"{}\" to wide string", url.GetUserName());
     return false;
   }
   std::wstring domainW;
   if (!url.GetDomain().empty() && !g_charsetConverter.utf8ToW(url.GetDomain(), domainW, false, false, true))
   {
-    CLog::LogF(LOGERROR, "Can't convert domain name \"{}\" to wide string",
-               url.GetDomain().c_str());
+    CLog::LogF(LOGERROR, "Can't convert domain name \"{}\" to wide string", url.GetDomain());
     return false;
   }
   if (!domainW.empty())
@@ -747,7 +744,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
 
     if (connRes == NO_ERROR)
     {
-      CLog::LogF(LOGDEBUG, "Connected to \"{}\" {}", serverShareName.c_str(), loginDescr.c_str());
+      CLog::LogF(LOGDEBUG, "Connected to \"{}\" {}", serverShareName, loginDescr);
       return true;
     }
 
@@ -755,13 +752,13 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
         connRes == ERROR_LOGON_FAILURE || connRes == ERROR_LOGON_TYPE_NOT_GRANTED || connRes == ERROR_LOGON_NOT_GRANTED)
     {
       if (connRes == ERROR_ACCESS_DENIED)
-        CLog::LogF(LOGERROR, "Doesn't have permissions to access \"{}\" {}",
-                   serverShareName.c_str(), loginDescr.c_str());
+        CLog::LogF(LOGERROR, "Doesn't have permissions to access \"{}\" {}", serverShareName,
+                   loginDescr);
       else
         CLog::LogF(
             LOGERROR,
             "Username/password combination was not accepted by \"{}\" when trying to connect {}",
-            serverShareName.c_str(), loginDescr.c_str());
+            serverShareName, loginDescr);
       if (allowPromptForCredential)
         RequireAuthentication(url);
 
@@ -769,24 +766,24 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
     }
     else if (connRes == ERROR_BAD_NET_NAME || connRes == ERROR_NO_NET_OR_BAD_PATH || connRes == ERROR_NO_NETWORK)
     {
-      CLog::LogF(LOGERROR, "Can't find \"{}\"", serverShareName.c_str());
+      CLog::LogF(LOGERROR, "Can't find \"{}\"", serverShareName);
       return false; // don't try any more
     }
     else if (connRes == ERROR_BUSY)
-      CLog::LogF(LOGINFO, "Network is busy for \"{}\"", serverShareName.c_str());
+      CLog::LogF(LOGINFO, "Network is busy for \"{}\"", serverShareName);
     else if (connRes == ERROR_SESSION_CREDENTIAL_CONFLICT)
     {
       CLog::LogF(LOGWARNING,
                  "Can't connect to \"{}\" {} because of conflict of credential. Will try to close "
                  "current connections.",
-                 serverShareName.c_str(), loginDescr.c_str());
+                 serverShareName, loginDescr);
       WNetCancelConnection2W((LPWSTR)serverShareNameW.c_str(), 0, FALSE);
       WNetCancelConnection2W((LPWSTR)(serverNameW + L"\\IPC$").c_str(), 0, FALSE);
       WNetCancelConnection2W((LPWSTR)serverNameW.c_str(), 0, FALSE);
     }
   }
 
-  CLog::LogF(LOGWARNING, "Can't connect to \"{}\" {}. Error code: {}", serverShareName.c_str(),
-             loginDescr.c_str(), (unsigned long)connRes);
+  CLog::LogF(LOGWARNING, "Can't connect to \"{}\" {}. Error code: {}", serverShareName, loginDescr,
+             (unsigned long)connRes);
   return false;
 }

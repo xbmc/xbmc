@@ -643,8 +643,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     if (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints))
       continue;
 
-    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:{}",
-              m_codecname.c_str());
+    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:{}", m_codecname);
 
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
     if (xbmc_jnienv()->ExceptionCheck())
@@ -709,7 +708,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           CLog::Log(LOGDEBUG,
                     "CDVDVideoCodecAndroidMediaCodec::Open "
                     "m_codecname({}), colorFormat({})",
-                    m_codecname.c_str(), color_formats[k]);
+                    m_codecname, color_formats[k]);
           if (IsSupportedColorFormat(color_formats[k]))
             m_colorFormat = color_formats[k]; // Save color format for initial output configuration
         }
@@ -773,7 +772,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   CLog::Log(LOGINFO,
             "CDVDVideoCodecAndroidMediaCodec:: "
             "Open Android MediaCodec {}",
-            m_codecname.c_str());
+            m_codecname);
 
   m_opened = true;
 

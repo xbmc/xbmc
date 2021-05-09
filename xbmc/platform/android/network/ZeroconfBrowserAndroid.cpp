@@ -42,7 +42,7 @@ bool CZeroconfBrowserAndroid::doAddServiceType(const std::string& fcr_service_ty
 //  if (nsdType.compare(nsdType.size() - 1, 1, ".") == 0)
 //    nsdType = nsdType.substr(0, nsdType.size() - 1);
 
-  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroid::doAddServiceType: {}", fcr_service_type.c_str());
+  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroid::doAddServiceType: {}", fcr_service_type);
   m_manager.discoverServices(fcr_service_type,  1 /* PROTOCOL_DNS_SD */, *discover);
 
   //store the browser
@@ -55,7 +55,7 @@ bool CZeroconfBrowserAndroid::doAddServiceType(const std::string& fcr_service_ty
 
 bool CZeroconfBrowserAndroid::doRemoveServiceType(const std::string& fcr_service_type)
 {
-  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroid::doRemoveServiceType: {}", fcr_service_type.c_str());
+  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroid::doRemoveServiceType: {}", fcr_service_type);
 
   CZeroconfBrowserAndroidDiscover* discover;
   //search for this browser and remove it from the map
@@ -138,8 +138,7 @@ bool CZeroconfBrowserAndroid::doResolveService(CZeroconfBrowser::ZeroconfService
     std::vector<char> vv = jni::jcast<std::vector<char>>(v);
     std::string value = std::string(vv.begin(), vv.end());
 
-    CLog::Log(LOGDEBUG, "ZeroconfBrowserAndroid: TXT record {} = {} ({})", key.c_str(),
-              value.c_str(), vv.size());
+    CLog::Log(LOGDEBUG, "ZeroconfBrowserAndroid: TXT record {} = {} ({})", key, value, vv.size());
 
     recordMap.insert(std::make_pair(key, value));
   }
@@ -208,15 +207,13 @@ CZeroconfBrowserAndroidDiscover::CZeroconfBrowserAndroidDiscover(CZeroconfBrowse
 
 void CZeroconfBrowserAndroidDiscover::onDiscoveryStarted(const std::string& serviceType)
 {
-  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onDiscoveryStarted type: {}",
-            serviceType.c_str());
+  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onDiscoveryStarted type: {}", serviceType);
   m_isActive = true;
 }
 
 void CZeroconfBrowserAndroidDiscover::onDiscoveryStopped(const std::string& serviceType)
 {
-  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onDiscoveryStopped type: {}",
-            serviceType.c_str());
+  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onDiscoveryStopped type: {}", serviceType);
   m_isActive = false;
 }
 
@@ -235,14 +232,14 @@ void CZeroconfBrowserAndroidDiscover::onServiceFound(const jni::CJNINsdServiceIn
     std::vector<char> vv = jni::jcast<std::vector<char>>(v);
     std::string value = std::string(vv.begin(), vv.end());
 
-    CLog::Log(LOGDEBUG, "ZeroconfBrowserAndroid::onServiceFound: TXT record {} = {} ({})",
-              key.c_str(), value.c_str(), vv.size());
+    CLog::Log(LOGDEBUG, "ZeroconfBrowserAndroid::onServiceFound: TXT record {} = {} ({})", key,
+              value, vv.size());
   }
 
   CLog::Log(LOGDEBUG,
             "CZeroconfBrowserAndroidDiscover::onServiceFound found service named: {}, type: {}, "
             "domain: {}",
-            s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+            s.GetName(), s.GetType(), s.GetDomain());
   m_browser->addDiscoveredService(this, s);
 
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
@@ -254,20 +251,20 @@ void CZeroconfBrowserAndroidDiscover::onServiceFound(const jni::CJNINsdServiceIn
 void CZeroconfBrowserAndroidDiscover::onServiceLost(const jni::CJNINsdServiceInfo& serviceInfo)
 {
   CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onServiceLost name: {}, type: {}",
-            serviceInfo.getServiceName().c_str(), serviceInfo.getServiceType().c_str());
+            serviceInfo.getServiceName(), serviceInfo.getServiceType());
 }
 
 void CZeroconfBrowserAndroidDiscover::onStartDiscoveryFailed(const std::string& serviceType, int errorCode)
 {
   CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onStartDiscoveryFailed type: {}, error: {}",
-            serviceType.c_str(), errorCode);
+            serviceType, errorCode);
   m_isActive = false;
 }
 
 void CZeroconfBrowserAndroidDiscover::onStopDiscoveryFailed(const std::string& serviceType, int errorCode)
 {
   CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onStopDiscoveryFailed type: {}, error: {}",
-            serviceType.c_str(), errorCode);
+            serviceType, errorCode);
   m_isActive = false;
 }
 
@@ -282,7 +279,7 @@ void CZeroconfBrowserAndroidResolve::onResolveFailed(const jni::CJNINsdServiceIn
 {
   CLog::Log(LOGDEBUG,
             "CZeroconfBrowserAndroidResolve::onResolveFailed name: {}, type: {}, error: {}",
-            serviceInfo.getServiceName().c_str(), serviceInfo.getServiceType().c_str(), errorCode);
+            serviceInfo.getServiceName(), serviceInfo.getServiceType(), errorCode);
   m_errorCode = errorCode;
   m_resolutionDone.Set();
 }
@@ -290,7 +287,7 @@ void CZeroconfBrowserAndroidResolve::onResolveFailed(const jni::CJNINsdServiceIn
 void CZeroconfBrowserAndroidResolve::onServiceResolved(const jni::CJNINsdServiceInfo& serviceInfo)
 {
   CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidResolve::onServiceResolved name: {}, type: {}",
-            serviceInfo.getServiceName().c_str(), serviceInfo.getServiceType().c_str());
+            serviceInfo.getServiceName(), serviceInfo.getServiceType());
   m_errorCode = -1;
   m_retServiceInfo = serviceInfo;
   m_resolutionDone.Set();

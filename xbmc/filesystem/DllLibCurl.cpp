@@ -143,8 +143,7 @@ void DllLibCurlGlobal::CheckIdle()
     if (!it->m_busy && duration.count() > idletime)
     {
       CLog::Log(LOGDEBUG, "{} - Closing session to {}://{} (easy={}, multi={})", __FUNCTION__,
-                it->m_protocol.c_str(), it->m_hostname.c_str(), fmt::ptr(it->m_easy),
-                fmt::ptr(it->m_multi));
+                it->m_protocol, it->m_hostname, fmt::ptr(it->m_easy), fmt::ptr(it->m_multi));
 
       if (it->m_multi && it->m_easy)
         multi_remove_handle(it->m_multi, it->m_easy);

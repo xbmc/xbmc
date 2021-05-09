@@ -799,8 +799,7 @@ void AEDeviceEnumerationOSX::GetAEChannelMap(CAEChannelInfo &channelMap, unsigne
 
   if (logMapping)
   {
-    CLog::Log(LOGDEBUG, "{} Engine requests layout {}", __FUNCTION__,
-              ((std::string)channelMap).c_str());
+    CLog::Log(LOGDEBUG, "{} Engine requests layout {}", __FUNCTION__, ((std::string)channelMap));
 
     if (mapAvailable)
       CLog::Log(LOGDEBUG, "{} trying to map to {} layout: {}", __FUNCTION__,
@@ -834,6 +833,5 @@ void AEDeviceEnumerationOSX::GetAEChannelMap(CAEChannelInfo &channelMap, unsigne
   }
 
   if (logMapping)
-    CLog::Log(LOGDEBUG, "{} mapped channels to layout {}", __FUNCTION__,
-              ((std::string)channelMap).c_str());
+    CLog::Log(LOGDEBUG, "{} mapped channels to layout {}", __FUNCTION__, ((std::string)channelMap));
 }

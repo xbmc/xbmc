@@ -211,8 +211,8 @@ bool CAddonInstaller::Install(const std::string& addonId,
                               const AddonVersion& version,
                               const std::string& repoId)
 {
-  CLog::Log(LOGDEBUG, "CAddonInstaller: installing '{}' version '{}' from repository '{}'",
-            addonId.c_str(), version.asString().c_str(), repoId.c_str());
+  CLog::Log(LOGDEBUG, "CAddonInstaller: installing '{}' version '{}' from repository '{}'", addonId,
+            version.asString(), repoId);
 
   AddonPtr addon;
   CAddonDatabase database;
@@ -281,7 +281,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
-  CLog::Log(LOGDEBUG, "CAddonInstaller: installing from zip '{}'", CURL::GetRedacted(path).c_str());
+  CLog::Log(LOGDEBUG, "CAddonInstaller: installing from zip '{}'", CURL::GetRedacted(path));
 
   // grab the descriptive XML document from the zip, and read it in
   CFileItemList items;
@@ -352,7 +352,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
       {
         // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
         CLog::Log(LOGDEBUG, "CAddonInstallJob[{}]: requires {} version {} which is not available",
-                  addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
+                  addon->ID(), addonID, version.asString());
         database.Close();
 
         // fill in the details of the failed dependency
@@ -530,7 +530,7 @@ bool CAddonInstallJob::DoWork()
   {
     std::string details =
         StringUtils::Format(g_localizeStrings.Get(24142), failedDep.first, failedDep.second);
-    CLog::Log(LOGERROR, "CAddonInstallJob[{}]: {}", m_addon->ID().c_str(), details.c_str());
+    CLog::Log(LOGERROR, "CAddonInstallJob[{}]: {}", m_addon->ID(), details);
     ReportInstallError(m_addon->ID(), m_addon->ID(), details);
     return false;
   }
@@ -557,7 +557,7 @@ bool CAddonInstallJob::DoWork()
         if (path.empty())
         {
           CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to resolve addon install source path",
-                    m_addon->ID().c_str());
+                    m_addon->ID());
           ReportInstallError(m_addon->ID(), m_addon->ID());
           return false;
         }
@@ -566,7 +566,7 @@ bool CAddonInstallJob::DoWork()
       CAddonDatabase db;
       if (!db.Open())
       {
-        CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to open database", m_addon->ID().c_str());
+        CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to open database", m_addon->ID());
         ReportInstallError(m_addon->ID(), m_addon->ID());
         return false;
       }
@@ -604,8 +604,8 @@ bool CAddonInstallJob::DoWork()
         {
           CFile::Delete(package);
 
-          CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to download {}", m_addon->ID().c_str(),
-                    package.c_str());
+          CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to download {}", m_addon->ID(),
+                    package);
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
           return false;
         }
@@ -638,8 +638,7 @@ bool CAddonInstallJob::DoWork()
           archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder ||
           !CServiceBroker::GetAddonMgr().LoadAddonDescription(archivedFiles[0]->GetPath(), temp))
       {
-        CLog::Log(LOGERROR, "CAddonInstallJob[{}]: invalid package {}", m_addon->ID().c_str(),
-                  package.c_str());
+        CLog::Log(LOGERROR, "CAddonInstallJob[{}]: invalid package {}", m_addon->ID(), package);
         db.RemovePackage(package);
         CFile::Delete(package);
         ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
@@ -657,7 +656,7 @@ bool CAddonInstallJob::DoWork()
 
   if (!CServiceBroker::GetAddonMgr().UnloadAddon(m_addon->ID()))
   {
-    CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to unload addon.", m_addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to unload addon.", m_addon->ID());
     return false;
   }
 
@@ -671,7 +670,7 @@ bool CAddonInstallJob::DoWork()
       !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon, ADDON_UNKNOWN,
                                               OnlyEnabled::YES))
   {
-    CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to reload addon", m_addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to reload addon", m_addon->ID());
     return false;
   }
 
@@ -779,14 +778,14 @@ bool CAddonInstallJob::DoWork()
       m_addon->LifecycleState() == AddonLifecycleState::BROKEN)
   {
     CLog::Log(LOGDEBUG, "CAddonInstallJob[{}]: auto-disabling due to being marked as broken",
-              m_addon->ID().c_str());
+              m_addon->ID());
     CServiceBroker::GetAddonMgr().DisableAddon(m_addon->ID(), AddonDisabledReason::USER);
     CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
   }
   else if (m_addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
   {
     CLog::Log(LOGDEBUG, "CAddonInstallJob[{}]: installed addon marked as deprecated",
-              m_addon->ID().c_str());
+              m_addon->ID());
     std::string text =
         StringUtils::Format(g_localizeStrings.Get(24168), m_addon->LifecycleStateDescription());
     CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(m_addon, text)), true,
@@ -912,7 +911,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(addonID))
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to install dependency {}",
-                      m_addon->ID().c_str(), addonID.c_str());
+                      m_addon->ID(), addonID);
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
@@ -1049,15 +1048,14 @@ bool CAddonUnInstallJob::DoWork()
   //to interact with it while we are uninstalling.
   if (!CServiceBroker::GetAddonMgr().UnloadAddon(m_addon->ID()))
   {
-    CLog::Log(LOGERROR, "CAddonUnInstallJob[{}]: failed to unload addon.", m_addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonUnInstallJob[{}]: failed to unload addon.", m_addon->ID());
     return false;
   }
 
   CFilesystemInstaller fsInstaller;
   if (!fsInstaller.UnInstallFromFilesystem(m_addon->Path()))
   {
-    CLog::Log(LOGERROR, "CAddonUnInstallJob[{}]: could not delete addon data.",
-              m_addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonUnInstallJob[{}]: could not delete addon data.", m_addon->ID());
     return false;
   }
 

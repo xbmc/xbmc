@@ -25,14 +25,14 @@ void TryBind(wayland::registry_t& registry, wayland::proxy_t& target, std::uint3
     CLog::Log(LOGWARNING,
               "Not binding Wayland protocol {} because server has only version {} (we need at "
               "least version {})",
-              interface.c_str(), offeredVersion, minVersion);
+              interface, offeredVersion, minVersion);
   }
   else
   {
     // Binding below the offered version is OK
     auto bindVersion = std::min(maxVersion, offeredVersion);
-    CLog::Log(LOGDEBUG, "Binding Wayland protocol {} version {} (server has version {})",
-              interface.c_str(), bindVersion, offeredVersion);
+    CLog::Log(LOGDEBUG, "Binding Wayland protocol {} version {} (server has version {})", interface,
+              bindVersion, offeredVersion);
     registry.bind(name, target, bindVersion);
   }
 }

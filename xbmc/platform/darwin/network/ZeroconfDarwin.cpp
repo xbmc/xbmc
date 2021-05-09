@@ -40,7 +40,7 @@ bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
                       const std::vector<std::pair<std::string, std::string> >& txt)
 {
   CLog::Log(LOGDEBUG, "CZeroconfDarwin::doPublishService identifier: {} type: {} name:{} port:{}",
-            fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
+            fcr_identifier, fcr_type, fcr_name, f_port);
 
   CFStringRef name = CFStringCreateWithCString (NULL,
                                                 fcr_name.c_str(),

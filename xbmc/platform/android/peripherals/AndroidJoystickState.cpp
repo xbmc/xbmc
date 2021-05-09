@@ -99,7 +99,7 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       CLog::Log(LOGDEBUG,
                 "CAndroidJoystickState: ignoring axis {} from source {} for input device \"{}\" "
                 "with ID {}",
-                motionRange.getAxis(), motionRange.getSource(), deviceName.c_str(), m_deviceId);
+                motionRange.getAxis(), motionRange.getSource(), deviceName, m_deviceId);
       continue;
     }
 
@@ -128,7 +128,7 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       {
         CLog::Log(LOGWARNING,
                   "CAndroidJoystickState: duplicate axis {} on input device \"{}\" with ID {}",
-                  PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
+                  PrintAxisIds(axis.ids), deviceName, m_deviceId);
         continue;
       }
 
@@ -141,12 +141,12 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       m_axes.push_back(axis);
       CLog::Log(LOGDEBUG,
                 "CAndroidJoystickState: axis {} on input device \"{}\" with ID {} detected",
-                PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
+                PrintAxisIds(axis.ids), deviceName, m_deviceId);
     }
     else
       CLog::Log(LOGWARNING,
                 "CAndroidJoystickState: ignoring unknown axis {} on input device \"{}\" with ID {}",
-                axisId, deviceName.c_str(), m_deviceId);
+                axisId, deviceName, m_deviceId);
   }
 
   // add the usual suspects
@@ -180,7 +180,7 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
     CLog::Log(LOGWARNING,
               "CAndroidJoystickState: no buttons, hats or axes detected for input device \"{}\" "
               "with ID {}",
-              deviceName.c_str(), m_deviceId);
+              deviceName, m_deviceId);
     return false;
   }
 

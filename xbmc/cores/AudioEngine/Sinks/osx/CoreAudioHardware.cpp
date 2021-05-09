@@ -28,7 +28,7 @@ bool CCoreAudioHardware::GetAutoHogMode()
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::GetAutoHogMode: "
               "Unable to get auto 'hog' mode. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     return false;
   }
   return (val == 1);
@@ -48,7 +48,7 @@ void CCoreAudioHardware::SetAutoHogMode(bool enable)
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::SetAutoHogMode: "
               "Unable to set auto 'hog' mode. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
 }
 
 void CCoreAudioHardware::ResetAudioDevices()
@@ -65,7 +65,7 @@ void CCoreAudioHardware::ResetAudioDevices()
       if (device.GetStreams(&streams))
       {
         CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetAudioDevices {} streams for device {}",
-                  streams.size(), device.GetName().c_str());
+                  streams.size(), device.GetName());
         for (AudioStreamIdList::iterator ait = streams.begin(); ait != streams.end(); ++ait)
           ResetStream(*ait);
       }
@@ -130,7 +130,7 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
   CLog::Log(LOGDEBUG,
             "CCoreAudioHardware::FindAudioDevice: "
             "Searching for device - {}.",
-            searchName.c_str());
+            searchName);
 
   // Obtain a list of all available audio devices
   AudioObjectPropertyAddress propertyAddress;
@@ -145,7 +145,7 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::FindAudioDevice: "
               "Unable to retrieve the size of the list of available devices. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     return 0;
   }
 
@@ -157,7 +157,7 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::FindAudioDevice: "
               "Unable to retrieve the list of available devices. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     delete[] pDevices;
     return 0;
   }
@@ -200,7 +200,7 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::GetDefaultOutputDevice:"
               " Unable to identify default output device. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     // if there was no error and no deviceId was returned
     // return the last known default device
     if (ret == noErr && !deviceId)
@@ -257,7 +257,7 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::GetOutputDevices:"
               " Unable to retrieve the size of the list of available devices. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     return found;
   }
 
@@ -268,7 +268,7 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
     CLog::Log(LOGERROR,
               "CCoreAudioHardware::GetOutputDevices:"
               " Unable to retrieve the list of available devices. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   else
   {
     for (size_t dev = 0; dev < deviceCount; dev++)

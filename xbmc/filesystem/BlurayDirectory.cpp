@@ -267,7 +267,7 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
   if (!bd_open_files(m_bd, const_cast<std::string*>(&root), CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
     CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open {}",
-              CURL::GetRedacted(root).c_str());
+              CURL::GetRedacted(root));
     return false;
   }
   m_blurayInitialized = true;

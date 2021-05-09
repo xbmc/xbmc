@@ -153,7 +153,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Ignoring <{}> tag", pChild->ValueStr().c_str());
+      CLog::Log(LOGDEBUG, "Ignoring <{}> tag", pChild->ValueStr());
     }
   }
 }

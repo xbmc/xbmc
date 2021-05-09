@@ -46,10 +46,10 @@ namespace XBMCAddon
             m_status = static_cast<int>(parsedStatus);
           else
             CLog::Log(LOGWARNING, "WsgiResponse: invalid status number {} in \"{}\" provided",
-                      parsedStatus, status.c_str());
+                      parsedStatus, status);
         }
         else
-          CLog::Log(LOGWARNING, "WsgiResponse: invalid status \"{}\" provided", status.c_str());
+          CLog::Log(LOGWARNING, "WsgiResponse: invalid status \"{}\" provided", status);
       }
       else
         CLog::Log(LOGWARNING, "WsgiResponse: empty status provided");

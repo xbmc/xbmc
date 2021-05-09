@@ -121,7 +121,7 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
                               const std::vector<std::pair<std::string, std::string> >&  txt)
 {
   CLog::Log(LOGDEBUG, "CZeroconfAvahi::doPublishService identifier: {} type: {} name:{} port:{}",
-            fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
+            fcr_identifier, fcr_type, fcr_name, f_port);
 
   ScopedEventLoopBlock l_block(mp_poll);
   tServiceMap::iterator it = m_services.find(fcr_identifier);
@@ -177,7 +177,7 @@ bool CZeroconfAvahi::doForceReAnnounceService(const std::string& fcr_identifier)
 
 bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident)
 {
-  CLog::Log(LOGDEBUG, "CZeroconfAvahi::doRemoveService named: {}", fcr_ident.c_str());
+  CLog::Log(LOGDEBUG, "CZeroconfAvahi::doRemoveService named: {}", fcr_ident);
   ScopedEventLoopBlock l_block(mp_poll);
   tServiceMap::iterator it = m_services.find(fcr_ident);
   if (it == m_services.end())
@@ -302,7 +302,7 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
       it->second->m_name = alt_name;
       avahi_free(alt_name);
       CLog::Log(LOGINFO, "CZeroconfAvahi::groupCallback: Service name collision. Renamed to: {}",
-                it->second->m_name.c_str());
+                it->second->m_name);
       p_instance->addService(it->second, p_instance->mp_client);
     }
     break;
@@ -383,8 +383,7 @@ void CZeroconfAvahi::addService(const tServiceMap::mapped_type& fp_service_info,
 {
   assert(fp_client);
   CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() named: {} type: {} port:{}",
-            fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(),
-            fp_service_info->m_port);
+            fp_service_info->m_name, fp_service_info->m_type, fp_service_info->m_port);
   //create the group if it doesn't exist
   if (!fp_service_info->mp_group)
   {
@@ -412,15 +411,15 @@ void CZeroconfAvahi::addService(const tServiceMap::mapped_type& fp_service_info,
         fp_service_info->m_name = alt_name;
         avahi_free(alt_name);
         CLog::Log(LOGINFO, "CZeroconfAvahi::addService: Service name collision. Renamed to: {}",
-                  fp_service_info->m_name.c_str());
+                  fp_service_info->m_name);
         addService(fp_service_info, fp_client);
         return;
       }
       CLog::Log(LOGERROR,
                 "CZeroconfAvahi::addService(): failed to add service named:{}@$(HOSTNAME) type:{} "
                 "port:{}. Error:{} :/ FIXME!",
-                fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(),
-                fp_service_info->m_port, avahi_strerror(ret));
+                fp_service_info->m_name, fp_service_info->m_type, fp_service_info->m_port,
+                avahi_strerror(ret));
       return;
     }
   }

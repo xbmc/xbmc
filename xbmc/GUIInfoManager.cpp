@@ -9564,7 +9564,7 @@ void CGUIInfoManager::SplitInfoString(const std::string &infoString, std::vector
     else if (infoString[i] == ')')
     {
       if (!parentheses)
-        CLog::Log(LOGERROR, "unmatched parentheses in {}", infoString.c_str());
+        CLog::Log(LOGERROR, "unmatched parentheses in {}", infoString);
       else if (!--parentheses)
         continue;
     }
@@ -9586,7 +9586,7 @@ void CGUIInfoManager::SplitInfoString(const std::string &infoString, std::vector
   }
 
   if (parentheses)
-    CLog::Log(LOGERROR, "unmatched parentheses in {}", infoString.c_str());
+    CLog::Log(LOGERROR, "unmatched parentheses in {}", infoString);
 
   if (!property.empty())
   {
@@ -10702,7 +10702,7 @@ void CGUIInfoManager::Clear()
 
   // log which ones are used - they should all be gone by now
   for (INFOBOOLTYPE::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
-    CLog::Log(LOGDEBUG, "Infobool '{}' still used by {} instances", (*i)->GetExpression().c_str(),
+    CLog::Log(LOGDEBUG, "Infobool '{}' still used by {} instances", (*i)->GetExpression(),
               (unsigned int)i->use_count());
 }
 

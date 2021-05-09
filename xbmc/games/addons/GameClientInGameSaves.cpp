@@ -82,7 +82,7 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "GAME: {}: Exception caught in GetMemory()", m_gameClient->ID().c_str());
+    CLog::Log(LOGERROR, "GAME: {}: Exception caught in GetMemory()", m_gameClient->ID());
   }
 
   const std::string path = GetPath(memoryType);
@@ -95,7 +95,7 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
       if (read == static_cast<ssize_t>(size))
       {
         CLog::Log(LOGINFO, "GAME: In-game saves ({}) loaded from {}",
-                  CGameClientTranslator::ToString(memoryType), path.c_str());
+                  CGameClientTranslator::ToString(memoryType), path);
       }
       else
       {
@@ -106,7 +106,7 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
     else
     {
       CLog::Log(LOGERROR, "GAME: Unable to open in-game saves ({}) from file {}",
-                CGameClientTranslator::ToString(memoryType), path.c_str());
+                CGameClientTranslator::ToString(memoryType), path);
     }
   }
   else
@@ -127,7 +127,7 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "GAME: {}: Exception caught in GetMemory()", m_gameClient->ID().c_str());
+    CLog::Log(LOGERROR, "GAME: {}: Exception caught in GetMemory()", m_gameClient->ID());
   }
 
   if (size > 0)
@@ -142,7 +142,7 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
       if (written == static_cast<ssize_t>(size))
       {
         CLog::Log(LOGINFO, "GAME: In-game saves ({}) written to {}",
-                  CGameClientTranslator::ToString(memoryType), path.c_str());
+                  CGameClientTranslator::ToString(memoryType), path);
       }
       else
       {
@@ -153,7 +153,7 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
     else
     {
       CLog::Log(LOGERROR, "GAME: Unable to open in-game saves ({}) from file {}",
-                CGameClientTranslator::ToString(memoryType), path.c_str());
+                CGameClientTranslator::ToString(memoryType), path);
     }
   }
   else

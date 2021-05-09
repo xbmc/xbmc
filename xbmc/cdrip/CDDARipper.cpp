@@ -181,7 +181,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::
   // Create directory if it doesn't exist
   if (!CUtil::CreateDirectoryEx(strDirectory))
   {
-    CLog::Log(LOGERROR, "Unable to create directory '{}'", strDirectory.c_str());
+    CLog::Log(LOGERROR, "Unable to create directory '{}'", strDirectory);
     return false;
   }
 

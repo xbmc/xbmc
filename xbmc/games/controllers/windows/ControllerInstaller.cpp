@@ -110,7 +110,7 @@ void CControllerInstaller::Process()
     if (!ADDON::CAddonInstaller::GetInstance().InstallOrUpdate(
             addon->ID(), ADDON::BackgroundJob::NO, ADDON::ModalJob::NO))
     {
-      CLog::Log(LOGERROR, "Controller installer: Failed to install {}", addon->ID().c_str());
+      CLog::Log(LOGERROR, "Controller installer: Failed to install {}", addon->ID());
       // "Error"
       // "Failed to install add-on."
       MESSAGING::HELPERS::ShowOKDialogText(257, 35256);

@@ -286,7 +286,7 @@ void CGUIVisualisationControl::UpdateTrack()
   if (m_albumThumb == "DefaultAlbumCover.png")
     m_albumThumb = "";
   else
-    CLog::Log(LOGDEBUG, "Updating visualization albumart: {}", m_albumThumb.c_str());
+    CLog::Log(LOGDEBUG, "Updating visualization albumart: {}", m_albumThumb);
 
   m_instance->UpdateAlbumart(m_albumThumb.c_str());
 

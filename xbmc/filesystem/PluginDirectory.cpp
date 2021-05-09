@@ -53,7 +53,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
                                                    InstallModalPrompt::PROMPT))
   {
-    CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName().c_str());
+    CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
   }
 
@@ -356,7 +356,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
                                                    InstallModalPrompt::PROMPT))
   {
-    CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName().c_str());
+    CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
   }
 
@@ -439,7 +439,7 @@ bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content,
   if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
                                               OnlyEnabled::YES))
   {
-    CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName().c_str());
+    CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
   }
   CPluginSource* plugin = dynamic_cast<CPluginSource*>(addon.get());

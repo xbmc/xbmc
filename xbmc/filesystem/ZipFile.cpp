@@ -69,7 +69,7 @@ bool CZipFile::Open(const CURL&url)
 
   if (!mFile.Open(url.GetHostName())) // this is the zip-file, always open binary
   {
-    CLog::Log(LOGERROR, "FileZip: unable to open zip file {}!", url.GetHostName().c_str());
+    CLog::Log(LOGERROR, "FileZip: unable to open zip file {}!", url.GetHostName());
     return false;
   }
   mFile.Seek(mZipItem.offset,SEEK_SET);

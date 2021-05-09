@@ -36,12 +36,12 @@ bool CInputStreamPVRRecording::OpenPVRStream()
     CLog::Log(
         LOGERROR,
         "CInputStreamPVRRecording - {} - unable to obtain recording instance for recording {}",
-        __FUNCTION__, m_item.GetPath().c_str());
+        __FUNCTION__, m_item.GetPath());
 
   if (recording && m_client && (m_client->OpenRecordedStream(recording) == PVR_ERROR_NO_ERROR))
   {
     CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - {} - opened recording stream {}", __FUNCTION__,
-              m_item.GetPath().c_str());
+              m_item.GetPath());
     return true;
   }
   return false;
@@ -52,7 +52,7 @@ void CInputStreamPVRRecording::ClosePVRStream()
   if (m_client && (m_client->CloseRecordedStream() == PVR_ERROR_NO_ERROR))
   {
     CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - {} - closed recording stream {}", __FUNCTION__,
-              m_item.GetPath().c_str());
+              m_item.GetPath());
   }
 }
 

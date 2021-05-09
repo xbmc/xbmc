@@ -219,7 +219,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 
   if (avformat_open_input(&m_fctx, NULL, inp, NULL) < 0)
   {
-    CLog::Log(LOGERROR, "Could not find suitable input format: {}", m_strMimeType.c_str());
+    CLog::Log(LOGERROR, "Could not find suitable input format: {}", m_strMimeType);
     avformat_close_input(&m_fctx);
     FreeIOCtx(&m_ioctx);
     return false;
@@ -553,7 +553,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
     jpg_output = false;
   else
   {
-    CLog::Log(LOGERROR, "Output Format is not supported: {} is not supported.", destFile.c_str());
+    CLog::Log(LOGERROR, "Output Format is not supported: {} is not supported.", destFile);
     return false;
   }
 
@@ -570,7 +570,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.avOutctx = avcodec_alloc_context3(tdm.codec);
   if (!tdm.avOutctx)
   {
-    CLog::Log(LOGERROR, "Could not allocate context for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not allocate context for thumbnail: {}", destFile);
     return false;
   }
 
@@ -589,7 +589,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   int size = av_image_get_buffer_size(tdm.avOutctx->pix_fmt, tdm.avOutctx->width, tdm.avOutctx->height, 16);
   if (size < 0)
   {
-    CLog::Log(LOGERROR, "Could not compute picture size for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not compute picture size for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
@@ -598,14 +598,14 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.intermediateBuffer = (uint8_t*) av_malloc(internalBufOutSize);
   if (!tdm.intermediateBuffer)
   {
-    CLog::Log(LOGERROR, "Could not allocate memory for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not allocate memory for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
 
   if (avcodec_open2(tdm.avOutctx, tdm.codec, NULL) < 0)
   {
-    CLog::Log(LOGERROR, "Could not open avcodec context thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not open avcodec context thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
@@ -613,7 +613,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.frame_input = av_frame_alloc();
   if (!tdm.frame_input)
   {
-    CLog::Log(LOGERROR, "Could not allocate frame for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not allocate frame for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
@@ -622,14 +622,14 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.frame_temporary = av_frame_alloc();
   if (!tdm.frame_temporary)
   {
-    CLog::Log(LOGERROR, "Could not allocate frame for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not allocate frame for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
 
   if (av_image_fill_arrays(tdm.frame_temporary->data, tdm.frame_temporary->linesize, tdm.intermediateBuffer, jpg_output ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_RGBA, width, height, 16) < 0)
   {
-    CLog::Log(LOGERROR, "Could not fill picture for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not fill picture for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
@@ -641,7 +641,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.sws = sws_getContext(width, height, AV_PIX_FMT_RGB32, width, height, jpg_output ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_RGBA, 0, 0, 0, 0);
   if (!tdm.sws)
   {
-    CLog::Log(LOGERROR, "Could not setup scaling context for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not setup scaling context for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
@@ -655,8 +655,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
 
     if (sws_getColorspaceDetails(tdm.sws, &inv_table, &srcRange, &table, &dstRange, &brightness, &contrast, &saturation) < 0)
     {
-      CLog::Log(LOGERROR, "SWS_SCALE failed to get ColorSpaceDetails for thumbnail: {}",
-                destFile.c_str());
+      CLog::Log(LOGERROR, "SWS_SCALE failed to get ColorSpaceDetails for thumbnail: {}", destFile);
       CleanupLocalOutputBuffer();
       return false;
     }
@@ -664,8 +663,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
     srcRange = 0; // full range RGB32 input
     if (sws_setColorspaceDetails(tdm.sws, inv_table, srcRange, table, dstRange, brightness, contrast, saturation) < 0)
     {
-      CLog::Log(LOGERROR, "SWS_SCALE failed to set ColorSpace Details for thumbnail: {}",
-                destFile.c_str());
+      CLog::Log(LOGERROR, "SWS_SCALE failed to set ColorSpace Details for thumbnail: {}", destFile);
       CleanupLocalOutputBuffer();
       return false;
     }
@@ -673,7 +671,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
 
   if (sws_scale(tdm.sws, src, srcStride, 0, height, tdm.frame_temporary->data, tdm.frame_temporary->linesize) < 0)
   {
-    CLog::Log(LOGERROR, "SWS_SCALE failed for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "SWS_SCALE failed for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     return false;
   }
@@ -698,7 +696,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
 
   if ((ret < 0) || (got_package == 0))
   {
-    CLog::Log(LOGERROR, "Could not encode thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not encode thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     av_packet_free(&avpkt);
     return false;
@@ -708,7 +706,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   m_outputBuffer = (uint8_t*) av_malloc(bufferoutSize);
   if (!m_outputBuffer)
   {
-    CLog::Log(LOGERROR, "Could not generate allocate memory for thumbnail: {}", destFile.c_str());
+    CLog::Log(LOGERROR, "Could not generate allocate memory for thumbnail: {}", destFile);
     CleanupLocalOutputBuffer();
     av_packet_free(&avpkt);
     return false;

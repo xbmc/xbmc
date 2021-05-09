@@ -412,7 +412,7 @@ namespace XBMCAddon
       URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
       m_mediaDir = fallbackMediaPath;
 
-      //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: {}", fallbackMediaPath.c_str());
+      //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: {}", fallbackMediaPath);
       CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->AllocResources(forceLoad);
       CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);

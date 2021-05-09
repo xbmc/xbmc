@@ -388,13 +388,11 @@ bool CApplication::Create(const CAppParamParser &params)
   const std::shared_ptr<CProfileManager> profileManager = m_pSettingsComponent->GetProfileManager();
   const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
   CLog::Log(LOGINFO, "userdata folder: {}",
-            CURL::GetRedacted(profileManager->GetProfileUserDataFolder()).c_str());
-  CLog::Log(
-      LOGINFO, "recording folder: {}",
-      CURL::GetRedacted(settings->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
-  CLog::Log(
-      LOGINFO, "screenshots folder: {}",
-      CURL::GetRedacted(settings->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
+            CURL::GetRedacted(profileManager->GetProfileUserDataFolder()));
+  CLog::Log(LOGINFO, "recording folder: {}",
+            CURL::GetRedacted(settings->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)));
+  CLog::Log(LOGINFO, "screenshots folder: {}",
+            CURL::GetRedacted(settings->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)));
   CDirectory::Create(profileManager->GetUserDataFolder());
   CDirectory::Create(profileManager->GetProfileUserDataFolder());
   profileManager->CreateProfileFolders();
@@ -568,8 +566,7 @@ bool CApplication::CreateGUI()
     return false;
 
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-  CLog::Log(LOGINFO, "GUI format {}x{}, Display {}", info.iWidth, info.iHeight,
-            info.strMode.c_str());
+  CLog::Log(LOGINFO, "GUI format {}x{}, Display {}", info.iWidth, info.iHeight, info.strMode);
 
   return true;
 }
@@ -706,11 +703,10 @@ bool CApplication::Initialize()
     if (!LoadSkin(settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
       CLog::Log(LOGERROR, "Failed to load skin '{}'",
-                settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
+                settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN));
       if (!LoadSkin(defaultSkin))
       {
-        CLog::Log(LOGFATAL, "Default skin '{}' could not be loaded! Terminating..",
-                  defaultSkin.c_str());
+        CLog::Log(LOGFATAL, "Default skin '{}' could not be loaded! Terminating..", defaultSkin);
         return false;
       }
     }
@@ -1114,12 +1110,12 @@ bool CApplication::LoadSkin(const std::string& skinID)
   // check if the skin has been properly loaded and if it has a Home.xml
   if (!skin->HasSkinFile("Home.xml"))
   {
-    CLog::Log(LOGERROR, "failed to load requested skin '{}'", skin->ID().c_str());
+    CLog::Log(LOGERROR, "failed to load requested skin '{}'", skin->ID());
     return false;
   }
 
-  CLog::Log(LOGINFO, "  load skin from: {} (version: {})", skin->Path().c_str(),
-            skin->Version().asString().c_str());
+  CLog::Log(LOGINFO, "  load skin from: {} (version: {})", skin->Path(),
+            skin->Version().asString());
   g_SkinInfo = skin;
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
@@ -1253,7 +1249,7 @@ bool CApplication::LoadCustomWindows()
 
   for (const auto &skinPath : vecSkinPath)
   {
-    CLog::Log(LOGINFO, "Loading custom window XMLs from skin path {}", skinPath.c_str());
+    CLog::Log(LOGINFO, "Loading custom window XMLs from skin path {}", skinPath);
 
     CFileItemList items;
     if (CDirectory::GetDirectory(skinPath, items, ".xml", DIR_FLAG_NO_FILE_DIRS))
@@ -1269,8 +1265,8 @@ bool CApplication::LoadCustomWindows()
           CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(item->GetPath()))
           {
-            CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}",
-                      item->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}", item->GetPath(),
+                      xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -1279,8 +1275,7 @@ bool CApplication::LoadCustomWindows()
           std::string strValue = pRootElement->Value();
           if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
-            CLog::Log(LOGERROR, "No <window> root element found for custom window in {}",
-                      skinFile.c_str());
+            CLog::Log(LOGERROR, "No <window> root element found for custom window in {}", skinFile);
             continue;
           }
 
@@ -1311,7 +1306,7 @@ bool CApplication::LoadCustomWindows()
           {
             // No id specified or id already in use
             CLog::Log(LOGERROR, "No id specified or id already in use for custom window in {}",
-                      skinFile.c_str());
+                      skinFile);
             continue;
           }
 
@@ -1338,7 +1333,7 @@ bool CApplication::LoadCustomWindows()
 
           if (!pWindow)
           {
-            CLog::Log(LOGERROR, "Failed to create custom window from {}", skinFile.c_str());
+            CLog::Log(LOGERROR, "Failed to create custom window from {}", skinFile);
             continue;
           }
 
@@ -2652,7 +2647,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
         CLog::Log(LOGWARNING,
                   "CApplication::PlayMedia called to play a playlist {} but no idea which playlist "
                   "to use, playing first item",
-                  item.GetPath().c_str());
+                  item.GetPath());
         if(pPlayList->size())
           return PlayFile(*(*pPlayList)[0], "", false);
       }
@@ -3244,7 +3239,7 @@ void CApplication::RequestVideoSettings(const CFileItem &fileItem)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading settings for {}", CURL::GetRedacted(fileItem.GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "Loading settings for {}", CURL::GetRedacted(fileItem.GetPath()));
 
     // Load stored settings if they exist, otherwise use default
     CVideoSettings vs;
@@ -3646,7 +3641,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     std::string libPath = m_pythonScreenSaver->LibPath();
     if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
     {
-      CLog::Log(LOGDEBUG, "using python screensaver add-on {}", m_screensaverIdInUse.c_str());
+      CLog::Log(LOGDEBUG, "using python screensaver add-on {}", m_screensaverIdInUse);
 
       // Don't allow a previously-scheduled alarm to kill our new screensaver
       g_alarmClock.Stop(SCRIPT_ALARM, true);
@@ -4008,7 +4003,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
     {
       //At this point we have given up to translate, so even though
       //there may be insecure information, we log it.
-      CLog::LogF(LOGDEBUG, "Tried translating, but failed to understand {}", in_actionStr.c_str());
+      CLog::LogF(LOGDEBUG, "Tried translating, but failed to understand {}", in_actionStr);
       return false;
     }
   }
@@ -4640,8 +4635,7 @@ void CApplication::UpdateCurrentPlayArt()
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
-  CLog::Log(LOGDEBUG, "CApplication::ProcessAndStartPlaylist({}, {})", strPlayList.c_str(),
-            iPlaylist);
+  CLog::Log(LOGDEBUG, "CApplication::ProcessAndStartPlaylist({}, {})", strPlayList, iPlaylist);
 
   // initial exit conditions
   // no songs in playlist just return
@@ -4767,7 +4761,7 @@ void CApplication::PrintStartupLog()
   if (!cpuModel.empty())
   {
     // cpuModel must use c_str(), otherwise some cpuid calls provide null bytes in the string
-    CLog::Log(LOGINFO, "Host CPU: {}, {} core{} available", cpuModel.c_str(),
+    CLog::Log(LOGINFO, "Host CPU: {}, {} core{} available", cpuModel,
               CServiceBroker::GetCPUInfo()->GetCPUCount(),
               (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
   }

@@ -1350,7 +1350,7 @@ void CFileItem::FillInDefaultIcon()
     return;
   }
 
-  //CLog::Log(LOGINFO, "FillInDefaultIcon({})", pItem->GetLabel().c_str());
+  //CLog::Log(LOGINFO, "FillInDefaultIcon({})", pItem->GetLabel());
   // find the default icon for a file or folder item
   // for files this can be the (depending on the file type)
   //   default picture for photo's
@@ -2807,7 +2807,7 @@ void CFileItemList::StackFolders()
         VECCREGEXP::iterator expr = folderRegExps.begin();
         while (!bMatch && expr != folderRegExps.end())
         {
-          //CLog::Log(LOGDEBUG,"{}: Running expression {} on {}", __FUNCTION__, expr->GetPattern().c_str(), item->GetLabel().c_str());
+          //CLog::Log(LOGDEBUG,"{}: Running expression {} on {}", __FUNCTION__, expr->GetPattern(), item->GetLabel());
           bMatch = (expr->RegFind(item->GetLabel().c_str()) != -1);
           if (bMatch)
           {
@@ -3048,7 +3048,7 @@ bool CFileItemList::Load(int windowID)
       CArchive ar(&file, CArchive::load);
       ar >> *this;
       CLog::Log(LOGDEBUG, "Loading items: {}, directory: {} sort method: {}, ascending: {}", Size(),
-                CURL::GetRedacted(GetPath()).c_str(), m_sortDescription.sortBy,
+                CURL::GetRedacted(GetPath()), m_sortDescription.sortBy,
                 m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
       ar.Close();
       file.Close();
@@ -3057,7 +3057,7 @@ bool CFileItemList::Load(int windowID)
   }
   catch(const std::out_of_range&)
   {
-    CLog::Log(LOGERROR, "Corrupt archive: {}", CURL::GetRedacted(path).c_str());
+    CLog::Log(LOGERROR, "Corrupt archive: {}", CURL::GetRedacted(path));
   }
 
   return false;
@@ -3069,7 +3069,7 @@ bool CFileItemList::Save(int windowID)
   if (iSize <= 0)
     return false;
 
-  CLog::Log(LOGDEBUG, "Saving fileitems [{}]", CURL::GetRedacted(GetPath()).c_str());
+  CLog::Log(LOGDEBUG, "Saving fileitems [{}]", CURL::GetRedacted(GetPath()));
 
   CFile file;
   std::string cachefile = GetDiscFileCache(windowID);
@@ -3105,7 +3105,7 @@ void CFileItemList::RemoveDiscCache(const std::string& cacheFile) const
 {
   if (CFile::Exists(cacheFile))
   {
-    CLog::Log(LOGDEBUG, "Clearing cached fileitems [{}]", CURL::GetRedacted(GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "Clearing cached fileitems [{}]", CURL::GetRedacted(GetPath()));
     CFile::Delete(cacheFile);
   }
 }
@@ -3572,7 +3572,7 @@ bool CFileItem::LoadMusicTag()
     musicDatabase.Close();
   }
   // load tag from file
-  CLog::Log(LOGDEBUG, "{}: loading tag information for file: {}", __FUNCTION__, m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "{}: loading tag information for file: {}", __FUNCTION__, m_strPath);
   CMusicInfoTagLoaderFactory factory;
   std::unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(*this));
   if (pLoader)

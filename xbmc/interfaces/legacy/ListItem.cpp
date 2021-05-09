@@ -482,7 +482,7 @@ namespace XBMCAddon
               item->m_dateTime.SetDate(year, month, day);
             }
             else
-              CLog::Log(LOGERROR, "NEWADDON Invalid Date Format \"{}\"", value.c_str());
+              CLog::Log(LOGERROR, "NEWADDON Invalid Date Format \"{}\"", value);
           }
           else if (key == "dateadded")
             videotag.m_dateAdded.SetFromDBDateTime(value.c_str());
@@ -491,10 +491,10 @@ namespace XBMCAddon
             if (CMediaTypes::IsValidMediaType(value))
               videotag.m_type = value;
             else
-              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value.c_str());
+              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value);
           }
           else
-            CLog::Log(LOGERROR, "NEWADDON Unknown Video Info Key \"{}\"", key.c_str());
+            CLog::Log(LOGERROR, "NEWADDON Unknown Video Info Key \"{}\"", key);
         }
       }
       else if (StringUtils::CompareNoCase(type, "music") == 0)
@@ -515,7 +515,7 @@ namespace XBMCAddon
               item->GetMusicInfoTag()->SetType(value);
             }
             else
-              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value.c_str());
+              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value);
           }
         }
         auto& musictag = *item->GetMusicInfoTag();
@@ -583,7 +583,7 @@ namespace XBMCAddon
             }
           }
           else if (key != "mediatype")
-            CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key.c_str());
+            CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key);
 
           // This should probably be set outside of the loop but since the original
           //  implementation set it inside of the loop, I'll leave it that way. - Jim C.

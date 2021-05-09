@@ -235,7 +235,7 @@ std::vector<std::string> CScraper::Run(const std::string &function,
     throw CScraperError();
   }
 
-  CLog::Log(LOGDEBUG, "scraper: {} returned {}", function.c_str(), strXML.c_str());
+  CLog::Log(LOGDEBUG, "scraper: {} returned {}", function, strXML);
 
   CXBMCTinyXML doc;
   /* all data was converted to UTF-8 before being processed by scraper */
@@ -388,7 +388,7 @@ bool CScraper::Load()
   }
 
   if (!result)
-    CLog::Log(LOGWARNING, "failed to load scraper XML from {}", LibPath().c_str());
+    CLog::Log(LOGWARNING, "failed to load scraper XML from {}", LibPath());
   return m_fLoaded = result;
 }
 
@@ -883,8 +883,8 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
   CLog::Log(LOGDEBUG,
             "{}: Searching for '{}' using {} scraper "
             "(path: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, sTitle.c_str(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, sTitle, Name(), Path(), ADDON::TranslateContent(Content()),
+            Version().asString());
 
   std::vector<CScraperUrl> vcscurl;
   if (IsNoop())
@@ -1026,8 +1026,8 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
   CLog::Log(LOGDEBUG,
             "{}: Searching for '{} - {}' using {} scraper "
             "(path: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, sArtist.c_str(), sAlbum.c_str(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, sArtist, sAlbum, Name(), Path(), ADDON::TranslateContent(Content()),
+            Version().asString());
 
   std::vector<CMusicAlbumInfo> vcali;
   if (IsNoop())
@@ -1127,8 +1127,8 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
   CLog::Log(LOGDEBUG,
             "{}: Searching for '{}' using {} scraper "
             "(file: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, sArtist.c_str(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, sArtist, Name(), Path(), ADDON::TranslateContent(Content()),
+            Version().asString());
 
   std::vector<CMusicArtistInfo> vcari;
   if (IsNoop())
@@ -1218,8 +1218,8 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
   CLog::Log(LOGDEBUG,
             "{}: Searching '{}' using {} scraper "
             "(file: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, scurl.GetFirstThumbUrl(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, scurl.GetFirstThumbUrl(), Name(), Path(),
+            ADDON::TranslateContent(Content()), Version().asString());
 
   if (m_isPython)
   {
@@ -1318,8 +1318,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile &fcurl,
             "{}: Reading {} '{}' using {} scraper "
             "(file: '{}', content: '{}', version: '{}')",
             __FUNCTION__, fMovie ? MediaTypeMovie : MediaTypeEpisode, scurl.GetFirstThumbUrl(),
-            Name().c_str(), Path().c_str(), ADDON::TranslateContent(Content()).c_str(),
-            Version().asString().c_str());
+            Name(), Path(), ADDON::TranslateContent(Content()), Version().asString());
 
   video.Reset();
 
@@ -1364,8 +1363,8 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
   CLog::Log(LOGDEBUG,
             "{}: Reading '{}' using {} scraper "
             "(file: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, scurl.GetFirstThumbUrl(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, scurl.GetFirstThumbUrl(), Name(), Path(),
+            ADDON::TranslateContent(Content()), Version().asString());
 
   if (m_isPython)
     return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
@@ -1402,8 +1401,8 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
   CLog::Log(LOGDEBUG,
             "{}: Reading '{}' ('{}') using {} scraper "
             "(file: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, scurl.GetFirstThumbUrl(), sSearch.c_str(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, scurl.GetFirstThumbUrl(), sSearch, Name(), Path(),
+            ADDON::TranslateContent(Content()), Version().asString());
 
   if (m_isPython)
     return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
@@ -1441,8 +1440,8 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
   CLog::Log(LOGDEBUG,
             "{}: Reading artwork for '{}' using {} scraper "
             "(file: '{}', content: '{}', version: '{}')",
-            __FUNCTION__, details.GetUniqueID().c_str(), Name().c_str(), Path().c_str(),
-            ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+            __FUNCTION__, details.GetUniqueID(), Name(), Path(), ADDON::TranslateContent(Content()),
+            Version().asString());
 
   if (m_isPython)
     return PythonDetails(ID(), "id", details.GetUniqueID(),

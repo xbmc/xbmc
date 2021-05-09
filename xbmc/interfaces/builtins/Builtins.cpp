@@ -155,7 +155,7 @@ int CBuiltins::Execute(const std::string& execString)
     else
     {
       CLog::Log(LOGERROR, "{0} called with invalid number of parameters (should be: {1}, is {2})",
-                          execute.c_str(), it->second.parameters, params.size());
+                execute, it->second.parameters, params.size());
       return -1;
     }
   }

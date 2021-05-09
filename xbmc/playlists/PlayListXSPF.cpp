@@ -49,15 +49,15 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
 
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "Error parsing XML file {} ({}, {}): {}", strFileName.c_str(),
-              xmlDoc.ErrorRow(), xmlDoc.ErrorCol(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error parsing XML file {} ({}, {}): {}", strFileName, xmlDoc.ErrorRow(),
+              xmlDoc.ErrorCol(), xmlDoc.ErrorDesc());
     return false;
   }
 
   TiXmlElement* pPlaylist = xmlDoc.FirstChildElement(PLAYLIST_TAGNAME);
   if (!pPlaylist)
   {
-    CLog::Log(LOGERROR, "Error parsing XML file {}: missing root element {}", strFileName.c_str(),
+    CLog::Log(LOGERROR, "Error parsing XML file {}: missing root element {}", strFileName,
               PLAYLIST_TAGNAME);
     return false;
   }
@@ -65,7 +65,7 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
   TiXmlElement* pTracklist = pPlaylist->FirstChildElement(TRACKLIST_TAGNAME);
   if (!pTracklist)
   {
-    CLog::Log(LOGERROR, "Error parsing XML file {}: missing element {}", strFileName.c_str(),
+    CLog::Log(LOGERROR, "Error parsing XML file {}: missing element {}", strFileName,
               TRACKLIST_TAGNAME);
     return false;
   }

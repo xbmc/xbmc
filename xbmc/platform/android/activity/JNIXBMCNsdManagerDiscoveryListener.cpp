@@ -65,8 +65,7 @@ void CJNIXBMCNsdManagerDiscoveryListener::_onDiscoveryStarted(JNIEnv* env, jobje
   (void)thiz;
 
   std::string st = jcast<std::string>(jhstring(serviceType));
-  CLog::Log(LOGDEBUG, "CJNIXBMCNsdManagerDiscoveryListener::onDiscoveryStarted type: {}",
-            st.c_str());
+  CLog::Log(LOGDEBUG, "CJNIXBMCNsdManagerDiscoveryListener::onDiscoveryStarted type: {}", st);
 }
 
 void CJNIXBMCNsdManagerDiscoveryListener::_onDiscoveryStopped(JNIEnv* env, jobject thiz, jstring serviceType)
@@ -75,8 +74,7 @@ void CJNIXBMCNsdManagerDiscoveryListener::_onDiscoveryStopped(JNIEnv* env, jobje
   (void)thiz;
 
   std::string st = jcast<std::string>(jhstring(serviceType));
-  CLog::Log(LOGDEBUG, "CJNIXBMCNsdManagerDiscoveryListener::onDiscoveryStopped type: {}",
-            st.c_str());
+  CLog::Log(LOGDEBUG, "CJNIXBMCNsdManagerDiscoveryListener::onDiscoveryStopped type: {}", st);
 }
 
 void CJNIXBMCNsdManagerDiscoveryListener::_onServiceFound(JNIEnv* env, jobject thiz, jobject serviceInfo)

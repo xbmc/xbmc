@@ -138,10 +138,10 @@ void CGUIConfigurationWizard::Process(void)
           CSingleExit exit(m_stateMutex);
 
           if (button->Feature().Type() == FEATURE_TYPE::UNKNOWN)
-            CLog::Log(LOGDEBUG, "{}: Waiting for input", m_strControllerId.c_str());
+            CLog::Log(LOGDEBUG, "{}: Waiting for input", m_strControllerId);
           else
-            CLog::Log(LOGDEBUG, "{}: Waiting for input for feature \"{}\"",
-                      m_strControllerId.c_str(), button->Feature().Name().c_str());
+            CLog::Log(LOGDEBUG, "{}: Waiting for input for feature \"{}\"", m_strControllerId,
+                      button->Feature().Name());
 
           if (!button->PromptForInput(m_inputEvent))
             Abort(false);
@@ -282,8 +282,8 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         }
         else
         {
-          CLog::Log(LOGDEBUG, "{}: mapping feature \"{}\" for device {}", m_strControllerId.c_str(),
-                    feature.Name().c_str(), buttonMap->DeviceName().c_str());
+          CLog::Log(LOGDEBUG, "{}: mapping feature \"{}\" for device {}", m_strControllerId,
+                    feature.Name(), buttonMap->DeviceName());
 
           switch (feature.Type())
           {

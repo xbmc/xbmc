@@ -157,11 +157,11 @@ bool Win32DllLoader::Load()
     {
       auto strMessage = FromW(lpMsgBuf, strLen);
       CLog::Log(LOGERROR, "{}: Failed to load \"{}\" with error {}: \"{}\"", __FUNCTION__,
-                CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage.c_str());
+                CSpecialProtocol::TranslatePath(strFileName), dw, strMessage);
     }
     else
       CLog::Log(LOGERROR, "{}: Failed to load \"{}\" with error {}", __FUNCTION__,
-                CSpecialProtocol::TranslatePath(strFileName).c_str(), dw);
+                CSpecialProtocol::TranslatePath(strFileName), dw);
 
     LocalFree(lpMsgBuf);
     return false;
@@ -234,7 +234,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
   if (!image_base)
   {
-    CLog::Log(LOGERROR, "{} - unable to GetModuleHandle for dll {}", __FUNCTION__, dll.c_str());
+    CLog::Log(LOGERROR, "{} - unable to GetModuleHandle for dll {}", __FUNCTION__, dll);
     return;
   }
 
@@ -246,8 +246,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
   if (!imp_desc)
   {
-    CLog::Log(LOGERROR, "{} - unable to get import directory for dll {}", __FUNCTION__,
-              dll.c_str());
+    CLog::Log(LOGERROR, "{} - unable to get import directory for dll {}", __FUNCTION__, dll);
     return;
   }
 

@@ -78,7 +78,7 @@ void CCoreAudioDevice::Start()
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::Start: "
               "Unable to start device. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   else
     m_Started = true;
 }
@@ -93,7 +93,7 @@ void CCoreAudioDevice::Stop()
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::Stop: "
               "Unable to stop device. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   m_Started = false;
 }
 
@@ -113,7 +113,7 @@ void CCoreAudioDevice::RemoveObjectListenerProc(AudioObjectPropertyListenerProc 
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::RemoveObjectListenerProc: "
               "Unable to set ObjectListener callback. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   }
   m_ObjectListenerProc = NULL;
 }
@@ -136,7 +136,7 @@ bool CCoreAudioDevice::SetObjectListenerProc(AudioObjectPropertyListenerProc cal
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::SetObjectListenerProc: "
               "Unable to remove ObjectListener callback. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     return false;
   }
 
@@ -155,7 +155,7 @@ bool CCoreAudioDevice::AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData)
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::AddIOProc: "
               "Unable to add IOProc. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     m_IoProc = NULL;
     return false;
   }
@@ -177,7 +177,7 @@ bool CCoreAudioDevice::RemoveIOProc()
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::RemoveIOProc: "
               "Unable to remove IOProc. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
 
   m_IoProc = NULL; // Clear the reference no matter what
 
@@ -207,7 +207,7 @@ std::string CCoreAudioDevice::GetName() const
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetName: "
               "Unable to get device name - id: {:#04x}. Error = {}",
-              (uint)m_DeviceId, GetError(ret).c_str());
+              (uint)m_DeviceId, GetError(ret));
   }
   else
   {
@@ -292,7 +292,7 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels() const
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetTotalOutputChannels: "
               "Unable to get total device output channels - id: {:#04x}. Error = {}",
-              (uint)m_DeviceId, GetError(ret).c_str());
+              (uint)m_DeviceId, GetError(ret));
   }
 
   free(pList);
@@ -329,7 +329,7 @@ UInt32 CCoreAudioDevice::GetNumChannelsOfStream(UInt32 streamIdx) const
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetNumChannelsOfStream: "
               "Unable to get number of stream output channels - id: {:#04x}. Error = {}",
-              (uint)m_DeviceId, GetError(ret).c_str());
+              (uint)m_DeviceId, GetError(ret));
   }
 
   free(pList);
@@ -417,7 +417,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
         CLog::Log(LOGERROR,
                   "CCoreAudioDevice::SetHogStatus: "
                   "Unable to set 'hog' status. Error = {}",
-                  GetError(ret).c_str());
+                  GetError(ret));
         return false;
       }
     }
@@ -434,7 +434,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
         CLog::Log(LOGERROR,
                   "CCoreAudioDevice::SetHogStatus: "
                   "Unable to release 'hog' status. Error = {}",
-                  GetError(ret).c_str());
+                  GetError(ret));
         return false;
       }
       // Reset internal state
@@ -488,7 +488,7 @@ bool CCoreAudioDevice::SetMixingSupport(UInt32 mix)
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::SetMixingSupport: "
               "Unable to set MixingSupport to {}. Error = {}",
-              mix ? "'On'" : "'Off'", GetError(ret).c_str());
+              mix ? "'On'" : "'Off'", GetError(ret));
     return false;
   }
   if (m_MixerRestore == -1)
@@ -518,7 +518,7 @@ bool CCoreAudioDevice::GetMixingSupport()
       CLog::Log(LOGERROR,
                 "CCoreAudioDevice::SupportsMixing: "
                 "Unable to get propertyinfo mixing support. Error = {}",
-                GetError(ret).c_str());
+                GetError(ret));
       writable = false;
     }
 
@@ -554,7 +554,7 @@ bool CCoreAudioDevice::SetCurrentVolume(Float32 vol)
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::SetCurrentVolume: "
               "Unable to set AudioUnit volume. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
     return false;
   }
   return true;
@@ -581,7 +581,7 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetPreferredChannelLayout: "
               "Unable to retrieve preferred channel layout. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   else
   {
     // Copy the result into the caller's instance
@@ -609,7 +609,7 @@ bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayou
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetPreferredChannelLayoutForStereo: "
               "Unable to retrieve preferred channel layout. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   else
   {
     // Copy/generate a layout into the result into the caller's instance
@@ -749,7 +749,8 @@ Float64 CCoreAudioDevice::GetNominalSampleRate()
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetNominalSampleRate: "
               "Unable to retrieve current device sample rate. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
+
     return 0.0;
   }
   return sampleRate;
@@ -775,7 +776,7 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::SetNominalSampleRate: "
               "Unable to set current device sample rate to {:0.0f}. Error = {}",
-              (float)sampleRate, GetError(ret).c_str());
+              (float)sampleRate, GetError(ret));
     return false;
   }
   if (m_SampleRateRestore == 0.0)
@@ -834,7 +835,7 @@ UInt32 CCoreAudioDevice::GetBufferSize()
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::GetBufferSize: "
               "Unable to retrieve buffer size. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   return size;
 }
 
@@ -855,7 +856,7 @@ bool CCoreAudioDevice::SetBufferSize(UInt32 size)
     CLog::Log(LOGERROR,
               "CCoreAudioDevice::SetBufferSize: "
               "Unable to set buffer size. Error = {}",
-              GetError(ret).c_str());
+              GetError(ret));
   }
 
   if (GetBufferSize() != size)

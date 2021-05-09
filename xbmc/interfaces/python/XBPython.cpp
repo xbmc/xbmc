@@ -490,9 +490,9 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
       setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
-                CSpecialProtocol::TranslatePath("special://frameworks").c_str());
+                CSpecialProtocol::TranslatePath("special://frameworks"));
       CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
-                CSpecialProtocol::TranslatePath("special://frameworks").c_str());
+                CSpecialProtocol::TranslatePath("special://frameworks"));
     }
 #elif defined(TARGET_WINDOWS)
     // because the third party build of python is compiled with vs2008 we need

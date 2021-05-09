@@ -39,8 +39,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file {}",
-              filename.c_str());
+    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file {}", filename);
     return false;
   }
   getline(file, m_source, '\0');
@@ -73,7 +72,7 @@ bool CShader::AppendSource(const std::string& filename)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file {}", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file {}", filename);
     return false;
   }
   getline(file, temp, '\0');
@@ -97,7 +96,7 @@ bool CShader::InsertSource(const std::string& filename, const std::string& loc)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CShader::InsertSource - failed to open file {}", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::InsertSource - failed to open file {}", filename);
     return false;
   }
   getline(file, temp, '\0');
@@ -105,7 +104,7 @@ bool CShader::InsertSource(const std::string& filename, const std::string& loc)
   size_t locPos = m_source.find(loc);
   if (locPos == std::string::npos)
   {
-    CLog::Log(LOGERROR, "CShader::InsertSource - could not find location {}", loc.c_str());
+    CLog::Log(LOGERROR, "CShader::InsertSource - could not find location {}", loc);
     return false;
   }
 

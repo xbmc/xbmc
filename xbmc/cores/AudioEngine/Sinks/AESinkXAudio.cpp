@@ -376,10 +376,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA),
-                details.strDescription.c_str());
+      CLog::Log(
+          LOGINFO, __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
+          CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA), details.strDescription);
     }
     else
     {
@@ -408,8 +407,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     {
       CLog::Log(LOGINFO,
                 __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
-                details.strDescription.c_str());
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD), details.strDescription);
     }
     else
     {
@@ -426,10 +424,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD),
-                details.strDescription.c_str());
+      CLog::Log(
+          LOGINFO, __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
+          CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription);
     }
     else
     {
@@ -453,8 +450,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     {
       CLog::Log(LOGINFO,
                 __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3),
-                details.strDescription.c_str());
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription);
     }
     else
     {
@@ -478,7 +474,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     {
       CLog::Log(LOGINFO,
                 __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                "STREAM_TYPE_DTS", details.strDescription.c_str());
+                "STREAM_TYPE_DTS", details.strDescription);
     }
     else
     {
@@ -495,9 +491,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(
-          LOGINFO, __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-          CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription.c_str());
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
+                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription);
     }
     else
     {
@@ -567,7 +563,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
         CLog::Log(LOGINFO,
                   __FUNCTION__ ": sample rate 192khz on device \"{}\" seems to be not supported.",
-                  details.strDescription.c_str());
+                  details.strDescription);
       }
     }
     SafeDestroyVoice(&mSourceVoice);
@@ -811,7 +807,7 @@ initialize:
     CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : {}", wfxex.Format.nAvgBytesPerSec);
     CLog::Log(LOGDEBUG, "  Samples/Block   : {}", wfxex.Samples.wSamplesPerBlock);
     CLog::Log(LOGDEBUG, "  Format cBSize   : {}", wfxex.Format.cbSize);
-    CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout).c_str());
+    CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout));
     CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
     return false;
   }

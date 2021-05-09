@@ -1221,8 +1221,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
   CFileStream file;
   if (!file.Open(url))
   {
-    CLog::Log(LOGERROR, "Error loading Smart playlist {} (failed to read file)",
-              url.GetRedacted().c_str());
+    CLog::Log(LOGERROR, "Error loading Smart playlist {} (failed to read file)", url.GetRedacted());
     return NULL;
   }
 

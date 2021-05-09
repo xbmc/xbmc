@@ -108,7 +108,7 @@ void CPlayListB4S::Save(const std::string& strFileName) const
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))
   {
-    CLog::Log(LOGERROR, "Could not save B4S playlist: [{}]", strPlaylist.c_str());
+    CLog::Log(LOGERROR, "Could not save B4S playlist: [{}]", strPlaylist);
     return ;
   }
   std::string write;

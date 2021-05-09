@@ -103,7 +103,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
 
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
-  CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines.c_str());
+  CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines);
 
   m_pConvMatrix.reset(new CConvertMatrix());
   m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);

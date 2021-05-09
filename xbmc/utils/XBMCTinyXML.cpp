@@ -148,8 +148,8 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
     if (!m_SuggestedCharset.empty())
       CLog::Log(LOGWARNING,
                 "{}: \"{}\" charset was used instead of suggested charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset.c_str(), m_SuggestedCharset.c_str(),
-                (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()));
+                __FUNCTION__, m_UsedCharset, m_SuggestedCharset,
+                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
 
     return true;
   }
@@ -161,12 +161,12 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
     if (!m_SuggestedCharset.empty())
       CLog::Log(LOGWARNING,
                 "{}: \"{}\" charset was used instead of suggested charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset.c_str(), m_SuggestedCharset.c_str(),
-                (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()));
+                __FUNCTION__, m_UsedCharset, m_SuggestedCharset,
+                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     else if (!detectedCharset.empty())
       CLog::Log(LOGWARNING, "{}: \"{}\" charset was used instead of detected charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset.c_str(), detectedCharset.c_str(),
-                (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()));
+                __FUNCTION__, m_UsedCharset, detectedCharset,
+                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     return true;
   }
 
@@ -176,12 +176,12 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
     if (!m_SuggestedCharset.empty())
       CLog::Log(LOGWARNING,
                 "{}: \"{}\" charset was used instead of suggested charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset.c_str(), m_SuggestedCharset.c_str(),
-                (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()));
+                __FUNCTION__, m_UsedCharset, m_SuggestedCharset,
+                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     else if (!detectedCharset.empty())
       CLog::Log(LOGWARNING, "{}: \"{}\" charset was used instead of detected charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset.c_str(), detectedCharset.c_str(),
-                (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()));
+                __FUNCTION__, m_UsedCharset, detectedCharset,
+                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     return true;
   }
 
@@ -190,12 +190,12 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
   {
     if (!m_SuggestedCharset.empty())
       CLog::Log(LOGWARNING, "{}: Processed {} as unknown encoding instead of suggested \"{}\"",
-                __FUNCTION__, (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()),
-                m_SuggestedCharset.c_str());
+                __FUNCTION__, (value.empty() ? "XML data" : ("file \"" + value + "\"")),
+                m_SuggestedCharset);
     else if (!detectedCharset.empty())
       CLog::Log(LOGWARNING, "{}: Processed {} as unknown encoding instead of detected \"{}\"",
-                __FUNCTION__, (value.empty() ? "XML data" : ("file \"" + value + "\"").c_str()),
-                detectedCharset.c_str());
+                __FUNCTION__, (value.empty() ? "XML data" : ("file \"" + value + "\"")),
+                detectedCharset);
     return true;
   }
 

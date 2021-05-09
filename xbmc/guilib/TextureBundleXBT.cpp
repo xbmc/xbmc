@@ -99,7 +99,7 @@ bool CTextureBundleXBT::OpenBundle()
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "{} - Opened bundle {}", __FUNCTION__, m_path.c_str());
+  CLog::Log(LOGDEBUG, "{} - Opened bundle {}", __FUNCTION__, m_path);
 
   m_TimeStamp = m_XBTFReader->GetLastModificationTimestamp();
 
@@ -220,7 +220,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   unsigned char *buffer = new unsigned char [(size_t)frame.GetPackedSize()];
   if (buffer == NULL)
   {
-    CLog::Log(LOGERROR, "Out of memory loading texture: {} (need {} bytes)", name.c_str(),
+    CLog::Log(LOGERROR, "Out of memory loading texture: {} (need {} bytes)", name,
               frame.GetPackedSize());
     return false;
   }
@@ -228,7 +228,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   // load the compressed texture
   if (!m_XBTFReader->Load(frame, buffer))
   {
-    CLog::Log(LOGERROR, "Error loading texture: {}", name.c_str());
+    CLog::Log(LOGERROR, "Error loading texture: {}", name);
     delete[] buffer;
     return false;
   }
@@ -239,7 +239,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
     unsigned char *unpacked = new unsigned char[(size_t)frame.GetUnpackedSize()];
     if (unpacked == NULL)
     {
-      CLog::Log(LOGERROR, "Out of memory unpacking texture: {} (need {} bytes)", name.c_str(),
+      CLog::Log(LOGERROR, "Out of memory unpacking texture: {} (need {} bytes)", name,
                 frame.GetUnpackedSize());
       delete[] buffer;
       return false;
@@ -248,7 +248,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
     if (lzo1x_decompress_safe(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
         s != frame.GetUnpackedSize())
     {
-      CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name.c_str());
+      CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name);
       delete[] buffer;
       delete[] unpacked;
       return false;

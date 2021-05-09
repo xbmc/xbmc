@@ -1198,7 +1198,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
   if (!stream)
   {
-    CLog::Log(LOGERROR, "could not create TagLib VFS stream for: {}", strFileName.c_str());
+    CLog::Log(LOGERROR, "could not create TagLib VFS stream for: {}", strFileName);
     return false;
   }
 
@@ -1281,7 +1281,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   {
     delete file;
     delete stream;
-    CLog::Log(LOGDEBUG, "file {} could not be opened for tag reading", strFileName.c_str());
+    CLog::Log(LOGDEBUG, "file {} could not be opened for tag reading", strFileName);
     return false;
   }
 

@@ -384,7 +384,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
           CLog::Log(
               LOGERROR,
               "PCRE: Bad UTF-8 character at the end of string. Text before bad character: \"{}\"",
-              m_subject.substr(startPos).c_str());
+              m_subject.substr(startPos));
         else
           CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character at the end of string");
         return -1;
@@ -398,7 +398,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
                     "PCRE: Bad UTF-8 character, error code: {}, position: {}. Text before bad "
                     "char: \"{}\"",
                     m_iOvector[1], m_iOvector[0],
-                    m_subject.substr(startPos, m_iOvector[0] - startPos + 1).c_str());
+                    m_subject.substr(startPos, m_iOvector[0] - startPos + 1));
         else
           CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: {}, position: {}",
                     m_iOvector[1], m_iOvector[0]);
@@ -551,7 +551,7 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
     str += t;
   }
   str += "}";
-  CLog::Log(iLog, "regexp ovector={}", str.c_str());
+  CLog::Log(iLog, "regexp ovector={}", str);
 }
 
 void CRegExp::Cleanup()

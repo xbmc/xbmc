@@ -465,7 +465,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (appcmdaction.GetID())
       {
         CLog::LogFC(LOGDEBUG, LOGWINDOWING, "appcommand {}, action {}", appcmd,
-                    appcmdaction.GetName().c_str());
+                    appcmdaction.GetName());
         CServiceBroker::GetInputManager().QueueAction(appcmdaction);
         return true;
       }
@@ -772,12 +772,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                     "{}:", CWIN32Util::FirstDriveFromMask(lpdbv->dbcv_unitmask));
                 if(wParam == DBT_DEVICEARRIVAL)
                 {
-                  CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive.c_str());
+                  CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive);
                   CJobManager::GetInstance().AddJob(new CDetectDisc(strdrive, true), NULL);
                 }
                 else
                 {
-                  CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", strdrive.c_str());
+                  CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", strdrive);
                   CMediaSource share;
                   share.strPath = strdrive;
                   share.strName = share.strPath;

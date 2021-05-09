@@ -215,7 +215,7 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
     CLog::Log(LOGERROR, "{} - {} failed - {}", __FUNCTION__,
               host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2",
-              CWIN32Util::WUSysMsg(lastErr).c_str());
+              CWIN32Util::WUSysMsg(lastErr));
 
   IcmpCloseHandle (hIcmpFile);
 

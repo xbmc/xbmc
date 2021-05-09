@@ -90,7 +90,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     strLoadType = "LOAD_EVERY_TIME";
     break;
   }
-  CLog::Log(LOGINFO, "Loading skin file: {}, load type: {}", strFileName.c_str(), strLoadType);
+  CLog::Log(LOGINFO, "Loading skin file: {}, load type: {}", strFileName, strLoadType);
 
   // Find appropriate skin folder + resolution to load from
   std::string strPath;
@@ -116,8 +116,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     int64_t end, freq;
     end = CurrentHostCounter();
     freq = CurrentHostFrequency();
-    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2f}ms", strPath.c_str(),
-              1000.f * (end - start) / freq);
+    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2f}ms", strPath, 1000.f * (end - start) / freq);
 #endif
   }
 
@@ -134,8 +133,8 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     StringUtils::ToLower(strPathLower);
     if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
     {
-      CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath.c_str(),
-                xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath, xmlDoc.ErrorRow(),
+                xmlDoc.ErrorDesc());
       SetID(WINDOW_INVALID);
       return false;
     }
@@ -152,7 +151,7 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     m_windowXMLRootElement = static_cast<TiXmlElement*>(xmlDoc.RootElement()->Clone());
   }
   else
-    CLog::Log(LOGDEBUG, "Using already stored xml root node for {}", strPath.c_str());
+    CLog::Log(LOGDEBUG, "Using already stored xml root node for {}", strPath);
 
   return Load(Prepare(m_windowXMLRootElement).get());
 }

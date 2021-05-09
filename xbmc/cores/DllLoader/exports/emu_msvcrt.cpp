@@ -1403,7 +1403,7 @@ extern "C"
   int dllvprintf(const char *format, va_list va)
   {
     std::string buffer = StringUtils::FormatV(format, va);
-    CLog::Log(LOGDEBUG, "  msg: {}", buffer.c_str());
+    CLog::Log(LOGDEBUG, "  msg: {}", buffer);
     return buffer.length();
   }
 

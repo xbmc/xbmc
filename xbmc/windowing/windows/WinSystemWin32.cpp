@@ -938,7 +938,7 @@ void CWinSystemWin32::UpdateResolutions()
   UpdateDesktopResolution(info, monitorName, w, h, refreshRate, dwFlags);
   info.strOutput = strOutput;
 
-  CLog::Log(LOGINFO, "Primary mode: {}", info.strMode.c_str());
+  CLog::Log(LOGINFO, "Primary mode: {}", info.strMode);
 
   // erase previous stored modes
   CDisplaySettings::GetInstance().ClearCustomResolutions();
@@ -975,7 +975,7 @@ void CWinSystemWin32::UpdateResolutions()
     res.strOutput = strOutput;
 
     if (AddResolution(res))
-      CLog::Log(LOGINFO, "Additional mode: {}", res.strMode.c_str());
+      CLog::Log(LOGINFO, "Additional mode: {}", res.strMode);
   }
 
   CDisplaySettings::GetInstance().ApplyCalibrations();

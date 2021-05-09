@@ -375,7 +375,7 @@ bool CSMBFile::Open(const CURL& url)
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName()))
   {
-    CLog::Log(LOGINFO, "SMBFile->Open: Bad URL : '{}'", url.GetRedacted().c_str());
+    CLog::Log(LOGINFO, "SMBFile->Open: Bad URL : '{}'", url.GetRedacted());
     return false;
   }
   m_url = url;
@@ -387,12 +387,12 @@ bool CSMBFile::Open(const CURL& url)
   std::string strFileName;
   m_fd = OpenFile(url, strFileName);
 
-  CLog::Log(LOGDEBUG, "CSMBFile::Open - opened {}, fd={}", url.GetRedacted().c_str(), m_fd);
+  CLog::Log(LOGDEBUG, "CSMBFile::Open - opened {}, fd={}", url.GetRedacted(), m_fd);
   if (m_fd == -1)
   {
     // write error to logfile
     CLog::Log(LOGINFO, "SMBFile->Open: Unable to open file : '{}'\nunix_err:'{:x}' error : '{}'",
-              CURL::GetRedacted(strFileName).c_str(), errno, strerror(errno));
+              CURL::GetRedacted(strFileName), errno, strerror(errno));
     return false;
   }
 
@@ -667,7 +667,7 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "SMBFile::OpenForWrite() called with overwriting enabled! - {}",
-              CURL::GetRedacted(strFileName).c_str());
+              CURL::GetRedacted(strFileName));
     m_fd = smbc_creat(strFileName.c_str(), 0);
   }
   else
@@ -679,7 +679,7 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   {
     // write error to logfile
     CLog::Log(LOGERROR, "SMBFile->Open: Unable to open file : '{}'\nunix_err:'{:x}' error : '{}'",
-              CURL::GetRedacted(strFileName).c_str(), errno, strerror(errno));
+              CURL::GetRedacted(strFileName), errno, strerror(errno));
     return false;
   }
 

@@ -63,8 +63,7 @@ void CEventButtonState::Load()
       if (m_iKeyCode == 0)
       {
         Reset();
-        CLog::Log(LOGERROR, "ES: Could not map {} : {} to a key", m_mapName.c_str(),
-                  m_buttonName.c_str());
+        CLog::Log(LOGERROR, "ES: Could not map {} : {} to a key", m_mapName, m_buttonName);
       }
     }
   }
@@ -105,7 +104,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
         CLog::Log(LOGWARNING,
                   "CEventClient::AddPacket - received packet with same sequence number ({}) as "
                   "previous packet from eventclient {}",
-                  packet->Sequence(), m_deviceName.c_str());
+                  packet->Sequence(), m_deviceName);
       m_bSequenceError = true;
       delete m_seqPackets[ packet->Sequence() ];
     }
@@ -254,7 +253,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   if (!ParseString(payload, psize, m_deviceName))
     return false;
 
-  CLog::Log(LOGINFO, "ES: Incoming connection from {}", m_deviceName.c_str());
+  CLog::Log(LOGINFO, "ES: Incoming connection from {}", m_deviceName);
 
   // icon type
   unsigned char ltype;
@@ -373,8 +372,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   bool active = (flags & PTB_DOWN) ? true : false;
 
   if (flags & PTB_USE_NAME)
-    CLog::Log(LOGDEBUG, "EventClient: button name \"{}\" map \"{}\" {}", button.c_str(),
-              map.c_str(), active ? "pressed" : "released");
+    CLog::Log(LOGDEBUG, "EventClient: button name \"{}\" map \"{}\" {}", button, map,
+              active ? "pressed" : "released");
   else
     CLog::Log(LOGDEBUG, "EventClient: button code {} {}", bcode, active ? "pressed" : "released");
 
@@ -607,7 +606,7 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
   if (!ParseString(payload, psize, logmsg))
     return false;
 
-  CLog::Log((int)ltype, "{}", logmsg.c_str());
+  CLog::Log((int)ltype, "{}", logmsg);
   return true;
 }
 
@@ -634,8 +633,7 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
     break;
 
   default:
-    CLog::Log(LOGDEBUG, "ES: Failed - ActionType: {} ActionString: {}", actionType,
-              actionString.c_str());
+    CLog::Log(LOGDEBUG, "ES: Failed - ActionType: {} ActionString: {}", actionType, actionString);
     return false;
     break;
   }

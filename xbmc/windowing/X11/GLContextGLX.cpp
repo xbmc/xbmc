@@ -271,7 +271,7 @@ void CGLContextGLX::QueryExtensions()
   m_extensions += glXQueryExtensionsString(m_dpy, m_nScreen);
   m_extensions += " ";
 
-  CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:{}", m_extensions.c_str());
+  CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:{}", m_extensions);
 
   if (IsExtSupported("GLX_SGI_video_sync"))
     m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");

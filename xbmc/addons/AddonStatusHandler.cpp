@@ -49,7 +49,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATU
 
   CLog::Log(LOGINFO,
             "Called Add-on status handler for '{}' of clientName:{}, clientID:{} (same Thread={})",
-            status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
+            status, m_addon->Name(), m_addon->ID(), sameThread ? "yes" : "no");
 
   m_status  = status;
   m_message = std::move(message);

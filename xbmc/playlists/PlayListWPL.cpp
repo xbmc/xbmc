@@ -101,7 +101,7 @@ void CPlayListWPL::Save(const std::string& strFileName) const
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))
   {
-    CLog::Log(LOGERROR, "Could not save WPL playlist: [{}]", strPlaylist.c_str());
+    CLog::Log(LOGERROR, "Could not save WPL playlist: [{}]", strPlaylist);
     return ;
   }
   std::string write;

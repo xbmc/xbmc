@@ -51,7 +51,7 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& 
   if (bLoaded)
   {
     saveGameClient = save->GameClientID();
-    CLog::Log(LOGDEBUG, "Select game client dialog: Auto-selecting {}", saveGameClient.c_str());
+    CLog::Log(LOGDEBUG, "Select game client dialog: Auto-selecting {}", saveGameClient);
   }
 
   // "Select emulator for {0:s}"
@@ -99,17 +99,16 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& 
       {
         gameClient = items[selectedIndex]->GetPath();
 
-        CLog::Log(LOGDEBUG, "Select game client dialog: User selected emulator {}",
-                  gameClient.c_str());
+        CLog::Log(LOGDEBUG, "Select game client dialog: User selected emulator {}", gameClient);
 
         if (Install(gameClient))
         {
           // If the addon is disabled we need to enable it
           if (!Enable(gameClient))
-            CLog::Log(LOGDEBUG, "Failed to enable game client {}", gameClient.c_str());
+            CLog::Log(LOGDEBUG, "Failed to enable game client {}", gameClient);
         }
         else
-          CLog::Log(LOGDEBUG, "Failed to install game client: {}", gameClient.c_str());
+          CLog::Log(LOGDEBUG, "Failed to install game client: {}", gameClient);
       }
       else
       {
@@ -137,7 +136,7 @@ bool CGUIDialogSelectGameClient::Install(const std::string& gameClient)
         gameClient, installedAddon, ADDON::InstallModalPrompt::NO_PROMPT);
     if (!bInstalled)
     {
-      CLog::Log(LOGERROR, "Select game client dialog: Failed to install {}", gameClient.c_str());
+      CLog::Log(LOGERROR, "Select game client dialog: Failed to install {}", gameClient);
       // "Error"
       // "Failed to install add-on."
       HELPERS::ShowOKDialogText(257, 35256);
@@ -178,13 +177,13 @@ void CGUIDialogSelectGameClient::LogGameClients(const GameClientVector& candidat
   CLog::Log(LOGDEBUG, "Select game client dialog: Found {} candidates",
             static_cast<unsigned int>(candidates.size()));
   for (const auto& gameClient : candidates)
-    CLog::Log(LOGDEBUG, "Adding {} as a candidate", gameClient->ID().c_str());
+    CLog::Log(LOGDEBUG, "Adding {} as a candidate", gameClient->ID());
 
   if (!installable.empty())
   {
     CLog::Log(LOGDEBUG, "Select game client dialog: Found {} installable clients",
               static_cast<unsigned int>(installable.size()));
     for (const auto& gameClient : installable)
-      CLog::Log(LOGDEBUG, "Adding {} as an installable client", gameClient->ID().c_str());
+      CLog::Log(LOGDEBUG, "Adding {} as an installable client", gameClient->ID());
   }
 }

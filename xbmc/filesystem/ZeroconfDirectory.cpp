@@ -190,7 +190,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         CLog::Log(LOGINFO,
                   "CZeroconfDirectory::GetDirectory service ( {} ) could not be resolved in time",
-                  zeroconf_service.GetName().c_str());
+                  zeroconf_service.GetName());
         return false;
       }
       else
@@ -206,7 +206,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         {
           CLog::Log(LOGERROR,
                     "CZeroconfDirectory::GetDirectory Unknown service type ({}), skipping; ",
-                    zeroconf_service.GetType().c_str());
+                    zeroconf_service.GetType());
           return false;
         }
 
@@ -225,7 +225,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     } catch (std::runtime_error& e) {
       CLog::Log(LOGERROR,
                 "CZeroconfDirectory::GetDirectory failed getting directory: '{}'. Error: '{}'",
-                decoded.c_str(), e.what());
+                decoded, e.what());
       return false;
     }
   }

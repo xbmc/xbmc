@@ -155,7 +155,7 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
       CLog::Log(LOGDEBUG,
                 "CZeroconfBrowserDarwin::BrowserCallback service named: {}, type: {}, domain: {} "
                 "disappeared",
-                s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+                s.GetName(), s.GetType(), s.GetDomain());
       p_this->removeDiscoveredService(browser, flags, s);
     }
     else
@@ -163,7 +163,7 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
       CLog::Log(
           LOGDEBUG,
           "CZeroconfBrowserDarwin::BrowserCallback found service named: {}, type: {}, domain: {}",
-          s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+          s.GetName(), s.GetType(), s.GetDomain());
       p_this->addDiscoveredService(browser, flags, s);
     }
     if (! (flags & kCFNetServiceFlagMoreComing) )

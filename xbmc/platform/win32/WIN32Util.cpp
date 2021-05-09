@@ -458,7 +458,7 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
 
   if (!convertResult)
   {
-    CLog::Log(LOGERROR, "Error converting path \"{}\" to Win32 wide string!", pathUtf8.c_str());
+    CLog::Log(LOGERROR, "Error converting path \"{}\" to Win32 wide string!", pathUtf8);
     return L"";
   }
 

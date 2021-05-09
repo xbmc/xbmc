@@ -89,7 +89,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
     m_time = 0;
     m_playbackStartTime = std::chrono::steady_clock::now();
     m_launchFilename = file.GetDynPath();
-    CLog::Log(LOGINFO, "{}: {}", __FUNCTION__, m_launchFilename.c_str());
+    CLog::Log(LOGINFO, "{}: {}", __FUNCTION__, m_launchFilename);
     Create();
 
     return true;
@@ -169,7 +169,7 @@ void CExternalPlayer::Process()
 
       if (!regExp.RegComp(strMatch.c_str()))
       { // invalid regexp - complain in logs
-        CLog::Log(LOGERROR, "{}: Invalid RegExp:'{}'", __FUNCTION__, strMatch.c_str());
+        CLog::Log(LOGERROR, "{}: Invalid RegExp:'{}'", __FUNCTION__, strMatch);
         continue;
       }
 
@@ -180,7 +180,7 @@ void CExternalPlayer::Process()
 
         if (!regExp.RegComp(strPat.c_str()))
         { // invalid regexp - complain in logs
-          CLog::Log(LOGERROR, "{}: Invalid RegExp:'{}'", __FUNCTION__, strPat.c_str());
+          CLog::Log(LOGERROR, "{}: Invalid RegExp:'{}'", __FUNCTION__, strPat);
           continue;
         }
 
@@ -197,16 +197,16 @@ void CExternalPlayer::Process()
             break;
         }
         CLog::Log(LOGINFO, "{}: File matched:'{}' (RE='{}',Rep='{}') new filename:'{}'.",
-                  __FUNCTION__, strMatch.c_str(), strPat.c_str(), strRep.c_str(), mainFile.c_str());
+                  __FUNCTION__, strMatch, strPat, strRep, mainFile);
         if (bStop) break;
       }
     }
   }
 
-  CLog::Log(LOGINFO, "{}: Player : {}", __FUNCTION__, m_filename.c_str());
-  CLog::Log(LOGINFO, "{}: File   : {}", __FUNCTION__, mainFile.c_str());
-  CLog::Log(LOGINFO, "{}: Content: {}", __FUNCTION__, archiveContent.c_str());
-  CLog::Log(LOGINFO, "{}: Args   : {}", __FUNCTION__, m_args.c_str());
+  CLog::Log(LOGINFO, "{}: Player : {}", __FUNCTION__, m_filename);
+  CLog::Log(LOGINFO, "{}: File   : {}", __FUNCTION__, mainFile);
+  CLog::Log(LOGINFO, "{}: Content: {}", __FUNCTION__, archiveContent);
+  CLog::Log(LOGINFO, "{}: Args   : {}", __FUNCTION__, m_args);
   CLog::Log(LOGINFO, "{}: Start", __FUNCTION__);
 
   // make sure we surround the arguments with quotes where necessary
@@ -553,13 +553,13 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   XMLUtils::GetString(pConfig, "filename", m_filename);
   if (m_filename.length() > 0)
   {
-    CLog::Log(LOGINFO, "ExternalPlayer Filename: {}", m_filename.c_str());
+    CLog::Log(LOGINFO, "ExternalPlayer Filename: {}", m_filename);
   }
   else
   {
     std::string xml;
     xml<<*pConfig;
-    CLog::Log(LOGERROR, "ExternalPlayer Error: filename element missing from: {}", xml.c_str());
+    CLog::Log(LOGERROR, "ExternalPlayer Error: filename element missing from: {}", xml);
     return false;
   }
 
@@ -590,7 +590,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
     else
     {
       warpCursor = "none";
-      CLog::Log(LOGWARNING, "ExternalPlayer: invalid value for warpcursor: {}", warpCursor.c_str());
+      CLog::Log(LOGWARNING, "ExternalPlayer: invalid value for warpcursor: {}", warpCursor);
     }
   }
 
@@ -600,7 +600,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
       LOGINFO,
       "ExternalPlayer Tweaks: hideconsole ({}), hidexbmc ({}), islauncher ({}), warpcursor ({})",
       m_hideconsole ? "true" : "false", m_hidexbmc ? "true" : "false",
-      m_islauncher ? "true" : "false", warpCursor.c_str());
+      m_islauncher ? "true" : "false", warpCursor);
 
 #ifdef TARGET_WINDOWS_DESKTOP
   m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
@@ -659,8 +659,8 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
       if (!strPat.empty() && !strRep.empty())
       {
         CLog::Log(LOGDEBUG,"  Registering replacer:");
-        CLog::Log(LOGDEBUG, "    Match:[{}] Pattern:[{}] Replacement:[{}]", strMatch.c_str(),
-                  strPat.c_str(), strRep.c_str());
+        CLog::Log(LOGDEBUG, "    Match:[{}] Pattern:[{}] Replacement:[{}]", strMatch, strPat,
+                  strRep);
         CLog::Log(LOGDEBUG, "    Global:[{}] Stop:[{}]", bGlobal ? "true" : "false",
                   bStop ? "true" : "false");
         // keep literal commas since we use comma as a separator
