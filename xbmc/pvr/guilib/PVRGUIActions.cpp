@@ -2255,7 +2255,7 @@ namespace PVR
       // if preselect playing channel is activated, return the path of the playing channel, if any.
       const std::shared_ptr<CPVRChannel> playingChannel = mgr.PlaybackState()->GetPlayingChannel();
       if (playingChannel && playingChannel->IsRadio() == bRadio)
-        return playingChannel->Path();
+        return GetChannelGroupMember(playingChannel)->Path();
 
       const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
       if (playingTag && playingTag->IsRadio() == bRadio)
@@ -2263,7 +2263,7 @@ namespace PVR
         const std::shared_ptr<CPVRChannel> channel =
             mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
         if (channel)
-          return channel->Path();
+          return GetChannelGroupMember(channel)->Path();
       }
     }
 
@@ -2406,7 +2406,7 @@ namespace PVR
     if (groupMember)
     {
       m_channelNavigator.SetPlayingChannel(groupMember);
-      SetSelectedItemPath(groupMember->Channel()->IsRadio(), groupMember->Channel()->Path());
+      SetSelectedItemPath(groupMember->Channel()->IsRadio(), groupMember->Path());
     }
   }
 

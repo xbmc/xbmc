@@ -344,7 +344,7 @@ bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
 void CPVRDatabase::InsertChannelIntoGroup(const std::shared_ptr<CPVRChannel>& channel,
                                           CPVRChannelGroup& group)
 {
-  auto newMember = std::make_shared<CPVRChannelGroupMember>();
+  const auto newMember = std::make_shared<CPVRChannelGroupMember>();
   newMember->m_channel = channel;
   newMember->m_channelNumber = {
       static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()),
@@ -353,6 +353,7 @@ void CPVRDatabase::InsertChannelIntoGroup(const std::shared_ptr<CPVRChannel>& ch
       static_cast<unsigned int>(m_pDS->fv("iClientChannelNumber").get_asInt()),
       static_cast<unsigned int>(m_pDS->fv("iClientSubChannelNumber").get_asInt())};
   newMember->m_iOrder = static_cast<int>(m_pDS->fv("iOrder").get_asInt());
+  newMember->SetGroupName(group.GroupName());
 
   group.m_sortedMembers.emplace_back(newMember);
   group.m_members.insert(std::make_pair(channel->StorageId(), newMember));

@@ -1355,7 +1355,7 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint& point)
   return true;
 }
 
-std::shared_ptr<CPVRChannel> CGUIEPGGridContainer::GetSelectedChannel() const
+std::shared_ptr<CPVRChannelGroupMember> CGUIEPGGridContainer::GetSelectedChannelGroupMember() const
 {
   CFileItemPtr fileItem;
   {
@@ -1364,10 +1364,10 @@ std::shared_ptr<CPVRChannel> CGUIEPGGridContainer::GetSelectedChannel() const
       fileItem = m_gridModel->GetChannelItem(m_channelCursor + m_channelOffset);
   }
 
-  if (fileItem && fileItem->HasPVRChannelInfoTag())
-    return fileItem->GetPVRChannelInfoTag();
+  if (fileItem)
+    return fileItem->GetPVRChannelGroupMemberInfoTag();
 
-  return std::shared_ptr<CPVRChannel>();
+  return {};
 }
 
 CDateTime CGUIEPGGridContainer::GetSelectedDate() const

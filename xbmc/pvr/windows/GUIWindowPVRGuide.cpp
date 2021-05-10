@@ -26,6 +26,7 @@
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/EpgChannelData.h"
@@ -193,9 +194,11 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
-    std::shared_ptr<CPVRChannel> channel(epgGridContainer->GetSelectedChannel());
-    if (channel)
-      CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio, channel->Path());
+    const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+        epgGridContainer->GetSelectedChannelGroupMember();
+    if (groupMember)
+      CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio,
+                                                                        groupMember->Path());
   }
 }
 

@@ -706,8 +706,8 @@ bool CPVRChannelGroup::AddToGroup(const std::shared_ptr<CPVRChannel>& channel, c
       if (!clientChannelNumber.IsValid())
         clientChannelNumberToUse = realMember->ClientChannelNumber();
 
-      auto newMember = std::make_shared<CPVRChannelGroupMember>(
-          realMember->Channel(),
+      const auto newMember = std::make_shared<CPVRChannelGroupMember>(
+          realMember->Channel(), GroupName(),
           CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber()),
           realMember->ClientPriority(), iOrder, clientChannelNumberToUse);
       m_sortedMembers.emplace_back(newMember);

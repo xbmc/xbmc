@@ -1429,7 +1429,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
     case VIDEOPLAYER_HAS_INFO:
       if (item->IsPVRChannel())
       {
-        bValue = !item->GetPVRChannelInfoTag()->IsEmpty();
+        bValue = !item->GetPVRChannelInfoTag()->ChannelName().empty();
         return true;
       }
       break;
