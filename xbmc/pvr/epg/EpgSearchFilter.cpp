@@ -178,7 +178,7 @@ bool CPVREpgSearchFilter::MatchChannelNumber(const std::shared_ptr<CPVREpgInfoTa
     if (group)
     {
       const std::shared_ptr<CPVRChannelGroupMember>& groupMember =
-          group->GetByUniqueID({tag->UniqueChannelID(), tag->ClientID()});
+          group->GetByUniqueID({tag->ClientID(), tag->UniqueChannelID()});
       bReturn = m_channelNumber == groupMember->ChannelNumber();
     }
   }
