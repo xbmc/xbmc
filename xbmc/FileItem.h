@@ -112,7 +112,6 @@ public:
   explicit CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   explicit CFileItem(const CVideoInfoTag& movie);
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
-  explicit CFileItem(const std::shared_ptr<PVR::CPVRChannel>& channel);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
@@ -292,16 +291,6 @@ public:
     return m_epgInfoTag;
   }
 
-  inline bool HasPVRChannelInfoTag() const
-  {
-    return m_pvrChannelInfoTag.get() != NULL;
-  }
-
-  inline const std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const
-  {
-    return m_pvrChannelInfoTag;
-  }
-
   inline bool HasPVRChannelGroupMemberInfoTag() const
   {
     return m_pvrChannelGroupMemberInfoTag.get() != nullptr;
@@ -311,6 +300,9 @@ public:
   {
     return m_pvrChannelGroupMemberInfoTag;
   }
+
+  bool HasPVRChannelInfoTag() const;
+  const std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const;
 
   inline bool HasPVRRecordingInfoTag() const
   {
@@ -605,7 +597,6 @@ private:
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   std::shared_ptr<PVR::CPVREpgInfoTag> m_epgInfoTag;
-  std::shared_ptr<PVR::CPVRChannel> m_pvrChannelInfoTag;
   std::shared_ptr<PVR::CPVRRecording> m_pvrRecordingInfoTag;
   std::shared_ptr<PVR::CPVRTimerInfoTag> m_pvrTimerInfoTag;
   std::shared_ptr<PVR::CPVRChannelGroupMember> m_pvrChannelGroupMemberInfoTag;

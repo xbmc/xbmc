@@ -295,14 +295,15 @@ namespace PVR
      * @return The requested channel group member or nullptr.
      */
     std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember(
-        int iCurrentChannel) const;
+        int iCurrentChannel = -1) const;
 
     /*!
-     * @brief Get a channel given it's active channel number
+     * @brief Get a channel group member given it's active channel number
      * @param channelNumber The channel number.
-     * @return The channel or nullptr if it wasn't found.
+     * @return The channel group member or nullptr if it wasn't found.
      */
-    std::shared_ptr<CPVRChannel> GetByChannelNumber(const CPVRChannelNumber& channelNumber) const;
+    std::shared_ptr<CPVRChannelGroupMember> GetByChannelNumber(
+        const CPVRChannelNumber& channelNumber) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.
@@ -319,18 +320,20 @@ namespace PVR
     CPVRChannelNumber GetClientChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
-     * @brief Get the next channel in this group.
-     * @param channel The current channel.
-     * @return The channel or nullptr if it wasn't found.
+     * @brief Get the next channel group member in this group.
+     * @param groupMember The current channel group member.
+     * @return The channel group member or nullptr if it wasn't found.
      */
-    std::shared_ptr<CPVRChannel> GetNextChannel(const std::shared_ptr<CPVRChannel>& channel) const;
+    std::shared_ptr<CPVRChannelGroupMember> GetNextChannelGroupMember(
+        const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
 
     /*!
-     * @brief Get the previous channel in this group.
-     * @param channel The current channel.
-     * @return The channel or nullptr if it wasn't found.
+     * @brief Get the previous channel group member in this group.
+     * @param groupMember The current channel group member.
+     * @return The channel group member or nullptr if it wasn't found.
      */
-    std::shared_ptr<CPVRChannel> GetPreviousChannel(const std::shared_ptr<CPVRChannel>& channel) const;
+    std::shared_ptr<CPVRChannelGroupMember> GetPreviousChannelGroupMember(
+        const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
 
     /*!
      * @brief Get a channel given it's channel ID.

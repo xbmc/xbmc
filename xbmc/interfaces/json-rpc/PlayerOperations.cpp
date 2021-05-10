@@ -742,7 +742,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       return InvalidParams;
 
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(CFileItem(channel));
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(channel);
     if (!groupMember || !groupMember->Channel())
       return InvalidParams;
 
