@@ -45,7 +45,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         continue;
       CFileItemPtr pItem(new CFileItem(i.packageName));
       pItem->m_bIsFolder = false;
-      std::string path = StringUtils::Format("androidapp://%s/%s/%s", url.GetHostName().c_str(),
+      std::string path = StringUtils::Format("androidapp://{}/{}/{}", url.GetHostName().c_str(),
                                              dirname.c_str(), i.packageName.c_str());
       pItem->SetPath(path);
       pItem->SetLabel(i.packageLabel);

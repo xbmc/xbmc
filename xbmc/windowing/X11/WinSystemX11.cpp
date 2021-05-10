@@ -409,7 +409,8 @@ void CWinSystemX11::UpdateResolutions()
 
       CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
 
-      res.strMode      = StringUtils::Format("%s: %s @ %.2fHz", out->name.c_str(), mode.name.c_str(), mode.hz);
+      res.strMode =
+          StringUtils::Format("{}: {} @ {:.2f}Hz", out->name.c_str(), mode.name.c_str(), mode.hz);
       res.strOutput    = out->name;
       res.strId        = mode.id;
       res.iSubtitles   = (int)(0.965*mode.h);

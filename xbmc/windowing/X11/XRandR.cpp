@@ -66,7 +66,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   {
     cmd  = getenv("KODI_BIN_HOME");
     cmd += "/" + appname + "-xrandr";
-    cmd = StringUtils::Format("%s -q --screen %d", cmd.c_str(), screennum);
+    cmd = StringUtils::Format("{} -q --screen {}", cmd.c_str(), screennum);
   }
 
   FILE* file = popen(cmd.c_str(),"r");
@@ -156,7 +156,8 @@ bool CXRandR::TurnOffOutput(const std::string& name)
   {
     cmd  = getenv("KODI_BIN_HOME");
     cmd += "/" + appname + "-xrandr";
-    cmd = StringUtils::Format("%s --screen %d --output %s --off", cmd.c_str(), output->screen, name.c_str());
+    cmd = StringUtils::Format("{} --screen {} --output {} --off", cmd.c_str(), output->screen,
+                              name.c_str());
   }
 
   int status = system(cmd.c_str());

@@ -707,7 +707,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
-  value["votes"] = StringUtils::Format("%i", GetRating().votes);
+  value["votes"] = StringUtils::Format("{}", GetRating().votes);
   value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
@@ -946,9 +946,10 @@ const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   {
     std::string character;
     if (it->strRole.empty() || !bIncludeRole)
-      character = StringUtils::Format("%s\n", it->strName.c_str());
+      character = StringUtils::Format("{}\n", it->strName.c_str());
     else
-      character = StringUtils::Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      character = StringUtils::Format("{} {} {}\n", it->strName.c_str(),
+                                      g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
     strLabel += character;
   }
   return StringUtils::TrimRight(strLabel, "\n");
@@ -1628,7 +1629,8 @@ void CVideoInfoTag::SetEpisodeGuide(std::string episodeGuide)
   if (StringUtils::StartsWith(episodeGuide, "<episodeguide"))
     m_strEpisodeGuide = Trim(std::move(episodeGuide));
   else
-    m_strEpisodeGuide = StringUtils::Format("<episodeguide>%s</episodeguide>", Trim(std::move(episodeGuide)).c_str());
+    m_strEpisodeGuide = StringUtils::Format("<episodeguide>{}</episodeguide>",
+                                            Trim(std::move(episodeGuide)).c_str());
 }
 
 void CVideoInfoTag::SetStatus(std::string status)

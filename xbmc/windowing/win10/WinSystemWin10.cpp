@@ -405,8 +405,8 @@ void CWinSystemWin10::UpdateResolutions()
         res.iScreenWidth = res.iWidth;
         res.iScreenHeight = res.iHeight;
         res.iSubtitles = (int)(0.965 * res.iHeight);
-        res.strMode = StringUtils::Format("Default: %dx%d @ %.2fHz",
-                                          res.iWidth, res.iHeight, res.fRefreshRate);
+        res.strMode = StringUtils::Format("Default: {}x{} @ {:.2f}Hz", res.iWidth, res.iHeight,
+                                          res.fRefreshRate);
         GetGfxContext().ResetOverscan(res);
 
         if (AddResolution(res))

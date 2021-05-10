@@ -173,13 +173,15 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
         videoDb.Open();
         fillSharedDicts(
             items, @"tvshows", @(g_localizeStrings.Get(20387).c_str()),
-            [&videoDb](const CFileItemPtr& videoItem) {
+            [&videoDb](const CFileItemPtr& videoItem)
+            {
               int season = videoItem->GetVideoInfoTag()->m_iIdSeason;
               return season > 0 ? videoDb.GetArtForItem(season, MediaTypeSeason, "poster")
                                 : std::string{};
             },
-            [](const CFileItemPtr& videoItem) {
-              return StringUtils::Format("%s s%02de%02d",
+            [](const CFileItemPtr& videoItem)
+            {
+              return StringUtils::Format("{} s{:02}e{:02}",
                                          videoItem->GetVideoInfoTag()->m_strShowTitle.c_str(),
                                          videoItem->GetVideoInfoTag()->m_iSeason,
                                          videoItem->GetVideoInfoTag()->m_iEpisode);
@@ -213,7 +215,7 @@ void CTVOSTopShelf::RunTopShelf()
 
   // its a bit ugly, but only way to get resume window to show
   std::string cmd =
-      StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(url.c_str()).c_str());
+      StringUtils::Format("PlayMedia({})", StringUtils::Paramify(url.c_str()).c_str());
   KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1,
                                                                 nullptr, cmd);
 }

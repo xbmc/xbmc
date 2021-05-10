@@ -205,7 +205,7 @@ std::string CGUIDialogMediaSource::GetUniqueMediaSourceName()
     }
     if (i < pShares->size())
       // found a match -  try next
-      strName = StringUtils::Format("%s (%i)", m_name.c_str(), j++);
+      strName = StringUtils::Format("{} ({})", m_name.c_str(), j++);
     else
       bConfirmed = true;
   }

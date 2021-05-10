@@ -144,7 +144,7 @@ void CScraperParser::ReplaceBuffers(std::string& strDest)
   for (int i=MAX_SCRAPER_BUFFERS-1; i>=0; i--)
   {
     iIndex = 0;
-    std::string temp = StringUtils::Format("$$%i",i+1);
+    std::string temp = StringUtils::Format("$${}", i + 1);
     while ((iIndex = strDest.find(temp,iIndex)) != std::string::npos)
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.size(),m_param[i]);
@@ -548,7 +548,7 @@ void CScraperParser::ConvertJSON(std::string &string)
     int pos = reg.GetSubStart(1);
     std::string szReplace(reg.GetMatch(1));
 
-    std::string replace = StringUtils::Format("&#x%s;", szReplace.c_str());
+    std::string replace = StringUtils::Format("&#x{};", szReplace.c_str());
     string.replace(string.begin()+pos-2, string.begin()+pos+4, replace);
   }
 
@@ -560,7 +560,7 @@ void CScraperParser::ConvertJSON(std::string &string)
     int pos2 = reg2.GetSubStart(2);
     std::string szHexValue(reg2.GetMatch(1));
 
-    std::string replace = StringUtils::Format("%li", strtol(szHexValue.c_str(), NULL, 16));
+    std::string replace = StringUtils::Format("{}", strtol(szHexValue.c_str(), NULL, 16));
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 

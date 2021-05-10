@@ -382,7 +382,7 @@ bool CPeripheralAddon::PerformDeviceScan(PeripheralScanResults& results)
       }
 
       result.m_strDeviceName = peripheral.Name();
-      result.m_strLocation = StringUtils::Format("%s/%d", ID().c_str(), peripheral.Index());
+      result.m_strLocation = StringUtils::Format("{}/{}", ID().c_str(), peripheral.Index());
       result.m_iVendorId = peripheral.VendorID();
       result.m_iProductId = peripheral.ProductID();
       result.m_mappedType = PERIPHERAL_JOYSTICK;

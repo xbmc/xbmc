@@ -115,7 +115,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const st
   std::string chap;
   CFileItemPtr item(new CFileItem("", false));
   CURL path(m_url);
-  buf = StringUtils::Format("BDMV/PLAYLIST/%05d.mpls", title->playlist);
+  buf = StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title->playlist);
   path.SetFileName(buf);
   item->SetPath(path.Get());
   int duration = (int)(title->duration / 90000);

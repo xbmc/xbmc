@@ -156,7 +156,7 @@ namespace ADDON
   {
     std::string out;
     if (mEpoch)
-      out = StringUtils::Format("%i:", mEpoch);
+      out = StringUtils::Format("{}:", mEpoch);
     out += mUpstream;
     if (!mRevision.empty())
       out += "-" + mRevision;

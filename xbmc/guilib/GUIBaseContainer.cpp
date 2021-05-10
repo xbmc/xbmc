@@ -848,7 +848,7 @@ std::string CGUIBaseContainer::GetDescription() const
   {
     CGUIListItemPtr pItem = m_items[item];
     if (pItem->m_bIsFolder)
-      strLabel = StringUtils::Format("[%s]", pItem->GetLabel().c_str());
+      strLabel = StringUtils::Format("[{}]", pItem->GetLabel().c_str());
     else
       strLabel = pItem->GetLabel();
   }
@@ -1337,20 +1337,20 @@ std::string CGUIBaseContainer::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label = StringUtils::Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    label = StringUtils::Format("{}", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
     break;
   case CONTAINER_CURRENT_PAGE:
-    label = StringUtils::Format("%u", GetCurrentPage());
+    label = StringUtils::Format("{}", GetCurrentPage());
     break;
   case CONTAINER_POSITION:
-    label = StringUtils::Format("%i", GetCursor());
+    label = StringUtils::Format("{}", GetCursor());
     break;
   case CONTAINER_CURRENT_ITEM:
     {
       if (m_items.size() && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
-        label = StringUtils::Format("%i", GetSelectedItem());
+        label = StringUtils::Format("{}", GetSelectedItem());
       else
-        label = StringUtils::Format("%i", GetSelectedItem() + 1);
+        label = StringUtils::Format("{}", GetSelectedItem() + 1);
     }
     break;
   case CONTAINER_NUM_ALL_ITEMS:
@@ -1358,9 +1358,9 @@ std::string CGUIBaseContainer::GetLabel(int info) const
     {
       unsigned int numItems = GetNumItems();
       if (info == CONTAINER_NUM_ITEMS && numItems && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
-        label = StringUtils::Format("%u", numItems-1);
+        label = StringUtils::Format("{}", numItems - 1);
       else
-        label = StringUtils::Format("%u", numItems);
+        label = StringUtils::Format("{}", numItems);
     }
     break;
   case CONTAINER_NUM_NONFOLDER_ITEMS:
@@ -1371,7 +1371,7 @@ std::string CGUIBaseContainer::GetLabel(int info) const
         if (!item->m_bIsFolder)
           numItems++;
       }
-      label = StringUtils::Format("%u", numItems);
+      label = StringUtils::Format("{}", numItems);
     }
     break;
   default:

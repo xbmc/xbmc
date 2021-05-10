@@ -1040,7 +1040,8 @@ std::string CLangInfo::GetTemperatureAsString(const CTemperature& temperature) c
     return g_localizeStrings.Get(13205); // "Unknown"
 
   CTemperature::Unit temperatureUnit = GetTemperatureUnit();
-  return StringUtils::Format("%s%s", temperature.ToString(temperatureUnit).c_str(), GetTemperatureUnitString().c_str());
+  return StringUtils::Format("{}{}", temperature.ToString(temperatureUnit).c_str(),
+                             GetTemperatureUnitString().c_str());
 }
 
 // Returns the temperature unit string for the current language
@@ -1088,7 +1089,8 @@ std::string CLangInfo::GetSpeedAsString(const CSpeed& speed) const
   if (!speed.IsValid())
     return g_localizeStrings.Get(13205); // "Unknown"
 
-  return StringUtils::Format("%s%s", speed.ToString(GetSpeedUnit()).c_str(), GetSpeedUnitString().c_str());
+  return StringUtils::Format("{}{}", speed.ToString(GetSpeedUnit()).c_str(),
+                             GetSpeedUnitString().c_str());
 }
 
 // Returns the speed unit string for the current language

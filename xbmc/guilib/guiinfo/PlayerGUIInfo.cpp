@@ -189,19 +189,22 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = std::to_string(std::lrintf(g_application.GetCachePercentage()));
       return true;
     case PLAYER_VOLUME:
-      value = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolumeRatio()));
+      value =
+          StringUtils::Format("{:2.1f} dB", CAEUtil::PercentToGain(g_application.GetVolumeRatio()));
       return true;
     case PLAYER_SUBTITLE_DELAY:
-      value = StringUtils::Format("%2.3f s", g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay);
+      value = StringUtils::Format("{:2.3f} s",
+                                  g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay);
       return true;
     case PLAYER_AUDIO_DELAY:
-      value = StringUtils::Format("%2.3f s", g_application.GetAppPlayer().GetVideoSettings().m_AudioDelay);
+      value = StringUtils::Format("{:2.3f} s",
+                                  g_application.GetAppPlayer().GetVideoSettings().m_AudioDelay);
       return true;
     case PLAYER_CHAPTER:
-      value = StringUtils::Format("%02d", g_application.GetAppPlayer().GetChapter());
+      value = StringUtils::Format("{:02}", g_application.GetAppPlayer().GetChapter());
       return true;
     case PLAYER_CHAPTERCOUNT:
-      value = StringUtils::Format("%02d", g_application.GetAppPlayer().GetChapterCount());
+      value = StringUtils::Format("{:02}", g_application.GetAppPlayer().GetChapterCount());
       return true;
     case PLAYER_CHAPTERNAME:
       g_application.GetAppPlayer().GetChapterName(value);
@@ -222,7 +225,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       float speed = g_application.GetAppPlayer().GetPlaySpeed();
       if (speed == 1.0)
         speed = g_application.GetAppPlayer().GetPlayTempo();
-      value = StringUtils::Format("%.2f", speed);
+      value = StringUtils::Format("{:.2f}", speed);
       return true;
     }
     case PLAYER_TIME:
@@ -256,7 +259,9 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       float speed = g_application.GetAppPlayer().GetPlaySpeed();
       if (speed != 1.0)
-        value = StringUtils::Format("%s (%ix)", GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())).c_str(), static_cast<int>(speed));
+        value = StringUtils::Format(
+            "{} ({}x)", GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())).c_str(),
+            static_cast<int>(speed));
       else
         value = GetCurrentPlayTime(TIME_FORMAT_GUESS);
       return true;
@@ -282,7 +287,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       int iLevel = g_application.GetAppPlayer().GetCacheLevel();
       if (iLevel >= 0)
       {
-        value = StringUtils::Format("%i", iLevel);
+        value = StringUtils::Format("{}", iLevel);
         return true;
       }
       break;
@@ -315,10 +320,10 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
       return true;
     case PLAYER_PROCESS_VIDEOFPS:
-      value = StringUtils::Format("%.3f", CServiceBroker::GetDataCacheCore().GetVideoFps());
+      value = StringUtils::Format("{:.3f}", CServiceBroker::GetDataCacheCore().GetVideoFps());
       return true;
     case PLAYER_PROCESS_VIDEODAR:
-      value = StringUtils::Format("%.2f", CServiceBroker::GetDataCacheCore().GetVideoDAR());
+      value = StringUtils::Format("{:.2f}", CServiceBroker::GetDataCacheCore().GetVideoDAR());
       return true;
     case PLAYER_PROCESS_VIDEOWIDTH:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoWidth());
@@ -626,7 +631,7 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
 
     // create csv string from ranges
     for (const auto& range : ranges)
-      values += StringUtils::Format("%.5f,%.5f,", range.first, range.second);
+      values += StringUtils::Format("{:.5f},{:.5f},", range.first, range.second);
 
     if (!values.empty())
       values.pop_back(); // remove trailing comma

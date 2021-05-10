@@ -83,7 +83,7 @@ namespace DX
     WCHAR buff[2048];
     DXGetErrorDescriptionW(hr, buff, 2048);
 
-    return FromW(StringUtils::Format(L"%X - %s (%s)", hr, DXGetErrorStringW(hr), buff));
+    return FromW(StringUtils::Format(L"{:X} - {} ({})", hr, DXGetErrorStringW(hr), buff));
   }
 
   inline std::string GetFeatureLevelDescription(D3D_FEATURE_LEVEL featureLevel)

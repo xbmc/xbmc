@@ -497,7 +497,8 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup& group, const 
     std::string strChannelsToDelete;
 
     for (unsigned int iChannelPtr = 0; iChannelPtr + iDeletedChannels < channelsToDelete.size() && iChannelPtr < 50; iChannelPtr++)
-      strChannelsToDelete += StringUtils::Format(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
+      strChannelsToDelete +=
+          StringUtils::Format(", {}", channelsToDelete.at(iDeletedChannels + iChannelPtr));
 
     if (!strChannelsToDelete.empty())
     {

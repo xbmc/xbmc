@@ -60,9 +60,9 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std:
   newRes.iHeight = height;
   newRes.iScreenWidth = width;
   newRes.iScreenHeight = height;
-  newRes.strMode = StringUtils::Format("%s: %dx%d", output.c_str(), width, height);
+  newRes.strMode = StringUtils::Format("{}: {}x{}", output.c_str(), width, height);
   if (refreshRate > 1)
-    newRes.strMode += StringUtils::Format(" @ %.2fHz", refreshRate);
+    newRes.strMode += StringUtils::Format(" @ {:.2f}Hz", refreshRate);
   if (dwFlags & D3DPRESENTFLAG_INTERLACED)
     newRes.strMode += "i";
   if (dwFlags & D3DPRESENTFLAG_MODE3DTB)

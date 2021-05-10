@@ -68,12 +68,12 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
     case SYSTEM_GPU_TEMPERATURE:
       return m_gpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_gpuTemp) : g_localizeStrings.Get(10005);
     case SYSTEM_FAN_SPEED:
-      text = StringUtils::Format("%i%%", m_fanSpeed * 2);
+      text = StringUtils::Format("{}%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
       if (CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
 #if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
-        text = StringUtils::Format("%d%%", CServiceBroker::GetCPUInfo()->GetUsedPercentage());
+        text = StringUtils::Format("{}%", CServiceBroker::GetCPUInfo()->GetUsedPercentage());
 #else
         text = CServiceBroker::GetCPUInfo()->GetCoresUsageString();
 #endif
@@ -182,10 +182,11 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       RESOLUTION_INFO& resInfo = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
       if (CServiceBroker::GetWinSystem()->IsFullScreen())
-        value = StringUtils::Format("%ix%i@%.2fHz - %s", resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.fRefreshRate,
-                                    g_localizeStrings.Get(244).c_str());
+        value =
+            StringUtils::Format("{}x{}@{:.2f}Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
+                                resInfo.fRefreshRate, g_localizeStrings.Get(244).c_str());
       else
-        value = StringUtils::Format("%ix%i - %s", resInfo.iScreenWidth, resInfo.iScreenHeight,
+        value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
                                     g_localizeStrings.Get(242).c_str());
       return true;
     }
@@ -216,28 +217,31 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info.m_info == SYSTEM_FREE_MEMORY)
-        value = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.availPhys / MB));
+        value = StringUtils::Format("{}MB", static_cast<unsigned int>(stat.availPhys / MB));
       else if (info.m_info == SYSTEM_FREE_MEMORY_PERCENT)
-        value = StringUtils::Format("%i%%", iMemPercentFree);
+        value = StringUtils::Format("{}%", iMemPercentFree);
       else if (info.m_info == SYSTEM_USED_MEMORY)
-        value = StringUtils::Format("%uMB", static_cast<unsigned int>((stat.totalPhys - stat.availPhys) / MB));
+        value = StringUtils::Format(
+            "{}MB", static_cast<unsigned int>((stat.totalPhys - stat.availPhys) / MB));
       else if (info.m_info == SYSTEM_USED_MEMORY_PERCENT)
-        value = StringUtils::Format("%i%%", iMemPercentUsed);
+        value = StringUtils::Format("{}%", iMemPercentUsed);
       else if (info.m_info == SYSTEM_TOTAL_MEMORY)
-        value = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.totalPhys / MB));
+        value = StringUtils::Format("{}MB", static_cast<unsigned int>(stat.totalPhys / MB));
       return true;
     }
     case SYSTEM_SCREEN_MODE:
       value = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().strMode;
       return true;
     case SYSTEM_SCREEN_WIDTH:
-      value = StringUtils::Format("%i", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenWidth);
+      value = StringUtils::Format(
+          "{}", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenWidth);
       return true;
     case SYSTEM_SCREEN_HEIGHT:
-      value = StringUtils::Format("%i", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenHeight);
+      value = StringUtils::Format(
+          "{}", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenHeight);
       return true;
     case SYSTEM_FPS:
-      value = StringUtils::Format("%02.2f", m_fps);
+      value = StringUtils::Format("{:02.2f}", m_fps);
       return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVD_LABEL:
@@ -288,13 +292,13 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_STEREOSCOPIC_MODE:
     {
       int iStereoMode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
-      value = StringUtils::Format("%i", iStereoMode);
+      value = StringUtils::Format("{}", iStereoMode);
       return true;
     }
     case SYSTEM_GET_CORE_USAGE:
-      value = StringUtils::Format("%4.2f", CServiceBroker::GetCPUInfo()
-                                               ->GetCoreInfo(std::atoi(info.GetData3().c_str()))
-                                               .m_usagePercent);
+      value = StringUtils::Format("{:4.2f}", CServiceBroker::GetCPUInfo()
+                                                 ->GetCoreInfo(std::atoi(info.GetData3().c_str()))
+                                                 .m_usagePercent);
       return true;
     case SYSTEM_RENDER_VENDOR:
       value = CServiceBroker::GetRenderSystem()->GetRenderVendor();

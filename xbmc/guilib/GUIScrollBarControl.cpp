@@ -372,7 +372,7 @@ EVENT_RESULT GUIScrollBarControl::OnMouseEvent(const CPoint &point, const CMouse
 
 std::string GUIScrollBarControl::GetDescription() const
 {
-  return StringUtils::Format("%i/%i", m_offset, m_numItems);
+  return StringUtils::Format("{}/{}", m_offset, m_numItems);
 }
 
 bool GUIScrollBarControl::UpdateColors()

@@ -67,7 +67,8 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
     m_iClientEncryptionSystem(channel.iEncryptionSystem)
 {
   if (m_strChannelName.empty())
-    m_strChannelName = StringUtils::Format("%s %d", g_localizeStrings.Get(19029).c_str(), m_iUniqueId);
+    m_strChannelName =
+        StringUtils::Format("{} {}", g_localizeStrings.Get(19029).c_str(), m_iUniqueId);
 
   UpdateEncryptionName();
 }
@@ -322,7 +323,7 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
   CSingleLock lock(m_critSection);
   if (m_strIconPath != strIconPath)
   {
-    m_strIconPath = StringUtils::Format("%s", strIconPath.c_str());
+    m_strIconPath = StringUtils::Format("{}", strIconPath.c_str());
 
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
@@ -511,7 +512,7 @@ std::string CPVRChannel::GetEncryptionName(int iCaid)
     strName = "Verimatrix";
 
   if (iCaid >= 0)
-    strName += StringUtils::Format(" (%04X)", iCaid);
+    strName += StringUtils::Format(" ({:04X})", iCaid);
 
   return strName;
 }
@@ -637,7 +638,7 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
   {
     bool bCleanEPG = !m_strEPGScraper.empty() || strScraper.empty();
 
-    m_strEPGScraper = StringUtils::Format("%s", strScraper.c_str());
+    m_strEPGScraper = StringUtils::Format("{}", strScraper.c_str());
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */

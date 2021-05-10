@@ -770,7 +770,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   for (unsigned int i = 0; i < remotethumbs.size(); ++i)
   {
     std::string strItemPath;
-    strItemPath = StringUtils::Format("thumb://Remote%i", i);
+    strItemPath = StringUtils::Format("thumb://Remote{}", i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetArt("thumb", remotethumbs[i]);
     item->SetArt("icon", "DefaultPicture.png");
@@ -934,14 +934,14 @@ void CGUIDialogMusicInfo::OnSetUserrating() const
 
 void CGUIDialogMusicInfo::ShowForAlbum(int idAlbum)
 {
-  std::string path = StringUtils::Format("musicdb://albums/%li", idAlbum);
+  std::string path = StringUtils::Format("musicdb://albums/{}", idAlbum);
   CFileItem item(path, true); // An album, but IsAlbum() not set as didn't use SetAlbum()
   ShowFor(&item);
 }
 
 void CGUIDialogMusicInfo::ShowForArtist(int idArtist)
 {
-  std::string path = StringUtils::Format("musicdb://artists/%li", idArtist);
+  std::string path = StringUtils::Format("musicdb://artists/{}", idArtist);
   CFileItem item(path, true);
   ShowFor(&item);
 }

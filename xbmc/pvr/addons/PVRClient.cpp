@@ -441,7 +441,7 @@ bool CPVRClient::GetAddonProperties()
     return false;
 
   /* display name = backend name:connection string */
-  strFriendlyName = StringUtils::Format("%s:%s", strBackendName, strConnectionString);
+  strFriendlyName = StringUtils::Format("{}:{}", strBackendName, strConnectionString);
 
   /* backend version number */
   retVal = DoAddonCall(
@@ -2085,7 +2085,7 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%d", iValue);
+        strDescr = StringUtils::Format("{}", iValue);
       }
       m_recordingsLifetimeValues.emplace_back(strDescr, iValue);
     }

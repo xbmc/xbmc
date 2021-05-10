@@ -220,7 +220,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 
     // invert the order from above so we bracket the text correctly.
     if (bgnColorIndex == charIndex && textColorRGBA != m_textColor)
-      strUTF8 += StringUtils::Format("[COLOR %8x]", textColorRGBA);
+      strUTF8 += StringUtils::Format("[COLOR {:8x}]", textColorRGBA);
     // we do not support underline
     //if (bgnStyles & UNDERLINE)
     //  strUTF8.append("[U]");

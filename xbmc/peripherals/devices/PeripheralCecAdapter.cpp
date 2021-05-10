@@ -278,7 +278,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration& configuration)
 {
   m_strVersionInfo =
-      StringUtils::Format("libCEC %s - firmware v%d",
+      StringUtils::Format("libCEC {} - firmware v{}",
                           m_cecAdapter->VersionToString(configuration.serverVersion).c_str(),
                           configuration.iFirmwareVersion);
 
@@ -286,7 +286,7 @@ void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration& configura
   if (configuration.iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
   {
     CDateTime dt((time_t)configuration.iFirmwareBuildDate);
-    m_strVersionInfo += StringUtils::Format(" (%s)", dt.GetAsDBDate().c_str());
+    m_strVersionInfo += StringUtils::Format(" ({})", dt.GetAsDBDate().c_str());
   }
 }
 
@@ -761,7 +761,7 @@ void CPeripheralCecAdapter::CecAlert(void* cbParam,
   {
     std::string strLog(g_localizeStrings.Get(iAlertString));
     if (data.paramType == CEC_PARAMETER_TYPE_STRING && data.paramData)
-      strLog += StringUtils::Format(" - %s", (const char*)data.paramData);
+      strLog += StringUtils::Format(" - {}", (const char*)data.paramData);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
                                           strLog);
   }
@@ -1298,7 +1298,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
                            m_configuration.iHDMIPort > CEC_MAX_HDMI_PORTNUMBER))
   {
     m_configuration.iPhysicalAddress = config.iPhysicalAddress;
-    strPhysicalAddress = StringUtils::Format("%x", config.iPhysicalAddress);
+    strPhysicalAddress = StringUtils::Format("{:x}", config.iPhysicalAddress);
   }
   bChanged |= SetSetting("physical_address", strPhysicalAddress);
 
@@ -1479,7 +1479,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
     std::string strPowerOffDevices;
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
       if (addresses[iPtr])
-        strPowerOffDevices += StringUtils::Format(" %X", iPtr);
+        strPowerOffDevices += StringUtils::Format(" {:X}", iPtr);
     StringUtils::Trim(strPowerOffDevices);
     bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices);
   }
@@ -1588,7 +1588,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     CLog::Log(LOGDEBUG,
               "%s - CEC capable amplifier found (%s). volume will be controlled on the amp",
               __FUNCTION__, ampName.c_str());
-    strAmpName += StringUtils::Format("%s", ampName.c_str());
+    strAmpName += StringUtils::Format("{}", ampName.c_str());
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
@@ -1629,11 +1629,11 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   std::string strNotification;
   std::string tvName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV));
   strNotification =
-      StringUtils::Format("%s: %s", g_localizeStrings.Get(36016).c_str(), tvName.c_str());
+      StringUtils::Format("{}: {}", g_localizeStrings.Get(36016).c_str(), tvName.c_str());
 
   std::string strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
-    strNotification += StringUtils::Format("- %s", strAmpName.c_str());
+    strNotification += StringUtils::Format("- {}", strAmpName.c_str());
 
   m_adapter->m_bIsReady = true;
 

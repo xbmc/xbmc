@@ -150,7 +150,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
-      if (UpdateSettingInActiveDialog(id, StringUtils::Format("%d", value)))
+      if (UpdateSettingInActiveDialog(id, StringUtils::Format("{}", value)))
         return true;
 
       if (!addon->UpdateSettingInt(id, value))
@@ -165,7 +165,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
-      if (UpdateSettingInActiveDialog(id, StringUtils::Format("%f", value)))
+      if (UpdateSettingInActiveDialog(id, StringUtils::Format("{:f}", value)))
         return true;
 
       if (!addon->UpdateSettingNumber(id, value))

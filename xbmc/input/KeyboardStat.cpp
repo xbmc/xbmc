@@ -239,16 +239,16 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
   if (VKeyFound)
     keyname.append(keytable.keyname);
   else
-    keyname += StringUtils::Format("%i", keyid);
+    keyname += StringUtils::Format("{}", keyid);
 
   // in case this might be an universalremote keyid
   // we also print the possible corresponding obc code
   // so users can easily find it in their universalremote
   // map xml
   if (VKeyFound || keyid > 255)
-    keyname += StringUtils::Format(" (0x%02x)", KeyID);
+    keyname += StringUtils::Format(" ({:#02x})", KeyID);
   else // obc keys are 255 -rawid
-    keyname += StringUtils::Format(" (0x%02x, obc%i)", KeyID, 255 - KeyID);
+    keyname += StringUtils::Format(" ({:#02x}, obc{})", KeyID, 255 - KeyID);
 
   return keyname;
 }

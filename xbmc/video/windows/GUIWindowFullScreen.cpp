@@ -321,7 +321,7 @@ void CGUIWindowFullScreen::FrameMove()
       const auto& vs = g_application.GetAppPlayer().GetVideoSettings();
       int sId = CViewModeSettings::GetViewModeStringIndex(vs.m_ViewMode);
       const std::string& strMode = g_localizeStrings.Get(sId);
-      std::string strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
+      std::string strInfo = StringUtils::Format("{} : {}", strTitle.c_str(), strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);
       OnMessage(msg);
@@ -351,17 +351,12 @@ void CGUIWindowFullScreen::FrameMove()
     {
       std::string strStatus;
       if (CServiceBroker::GetWinSystem()->IsFullScreen())
-        strStatus = StringUtils::Format("%s %ix%i@%.2fHz - %s",
-                                        g_localizeStrings.Get(13287).c_str(),
-                                        res.iScreenWidth,
-                                        res.iScreenHeight,
-                                        res.fRefreshRate,
-                                        g_localizeStrings.Get(244).c_str());
+        strStatus = StringUtils::Format(
+            "{} {}x{}@{:.2f}Hz - {}", g_localizeStrings.Get(13287).c_str(), res.iScreenWidth,
+            res.iScreenHeight, res.fRefreshRate, g_localizeStrings.Get(244).c_str());
       else
-        strStatus = StringUtils::Format("%s %ix%i - %s",
-                                        g_localizeStrings.Get(13287).c_str(),
-                                        res.iScreenWidth,
-                                        res.iScreenHeight,
+        strStatus = StringUtils::Format("{} {}x{} - {}", g_localizeStrings.Get(13287).c_str(),
+                                        res.iScreenWidth, res.iScreenHeight,
                                         g_localizeStrings.Get(242).c_str());
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);

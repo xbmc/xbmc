@@ -151,7 +151,7 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
 
   auto localfolder = ApplicationData::Current().LocalFolder().Path();
   GetDiskFreeSpaceExW(localfolder.c_str(), nullptr, &ULTotal, &ULTotalFree);
-  strRet = StringUtils::Format("%s: %d MB %s", g_localizeStrings.Get(21440),
+  strRet = StringUtils::Format("{}: {} MB {}", g_localizeStrings.Get(21440),
                                (ULTotalFree.QuadPart / (1024 * 1024)),
                                g_localizeStrings.Get(160).c_str());
   result.push_back(strRet);
@@ -173,7 +173,9 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
     if (DRIVE_FIXED == GetDriveTypeA(strDrive.c_str())
       && GetDiskFreeSpaceExA((strDrive.c_str()), nullptr, &ULTotal, &ULTotalFree))
     {
-      strRet = StringUtils::Format("%s %d MB %s", strDrive.c_str(), int(ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str());
+      strRet = StringUtils::Format("{} {} MB {}", strDrive.c_str(),
+                                   int(ULTotalFree.QuadPart / (1024 * 1024)),
+                                   g_localizeStrings.Get(160).c_str());
       result.push_back(strRet);
     }
   }
@@ -242,17 +244,20 @@ void CStorageProvider::GetDrivesByType(VECSOURCES & localDrives, Drive_Types eDr
       switch (uDriveType)
       {
       case DRIVE_CDROM:
-        share.strName = StringUtils::Format("%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(218).c_str());
+        share.strName = StringUtils::Format("{} ({})", share.strPath.c_str(),
+                                            g_localizeStrings.Get(218).c_str());
         break;
       case DRIVE_REMOVABLE:
         if (share.strName.empty())
-          share.strName = StringUtils::Format("%s (%s)", g_localizeStrings.Get(437).c_str(), share.strPath.c_str());
+          share.strName = StringUtils::Format("{} ({})", g_localizeStrings.Get(437).c_str(),
+                                              share.strPath.c_str());
         break;
       default:
         if (share.strName.empty())
           share.strName = share.strPath;
         else
-          share.strName = StringUtils::Format("%s (%s)", share.strPath.c_str(), share.strName.c_str());
+          share.strName =
+              StringUtils::Format("{} ({})", share.strPath.c_str(), share.strName.c_str());
         break;
       }
     }

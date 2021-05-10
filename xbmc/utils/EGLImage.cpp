@@ -189,7 +189,7 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
           valueStr = std::to_string(attrs[i + 1]);
       }
 
-      eglString.append(StringUtils::Format("%s: %s\n", keyStr, valueStr));
+      eglString.append(StringUtils::Format("{}: {}\n", keyStr, valueStr));
     }
 
     CLog::Log(LOGDEBUG, "CEGLImage::{} - attributes:\n{}", __FUNCTION__, eglString);

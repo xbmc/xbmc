@@ -169,12 +169,12 @@ TEST_F(TestZipFile, CorruptedFile)
   std::cout << "File contents:" << std::endl;
   while ((size = file->Read(buf, sizeof(buf))) > 0)
   {
-    str = StringUtils::Format("  %08llX", count);
+    str = StringUtils::Format("  {:08X}", count);
     std::cout << str << "  ";
     count += size;
     for (i = 0; i < size; i++)
     {
-      str = StringUtils::Format("%02X ", buf[i]);
+      str = StringUtils::Format("{:02X} ", buf[i]);
       std::cout << str;
     }
     while (i++ < static_cast<ssize_t> (sizeof(buf)))

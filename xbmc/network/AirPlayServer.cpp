@@ -533,13 +533,14 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
     const time_t ltime = time(NULL);
     char *date = asctime(gmtime(&ltime)); //Fri, 17 Dec 2010 11:18:01 GMT;
     date[strlen(date) - 1] = '\0'; // remove \n
-    response = StringUtils::Format("HTTP/1.1 %d %s\nDate: %s\r\n", status, statusMsg.c_str(), date);
+    response = StringUtils::Format("HTTP/1.1 {} {}\nDate: {}\r\n", status, statusMsg.c_str(), date);
     if (!responseHeader.empty())
     {
       response += responseHeader;
     }
 
-    response = StringUtils::Format("%sContent-Length: %ld\r\n\r\n", response.c_str(), responseBody.size());
+    response =
+        StringUtils::Format("{}Content-Length: {}\r\n\r\n", response.c_str(), responseBody.size());
 
     if (!responseBody.empty())
     {
@@ -601,8 +602,10 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( std::string& reverseHeader
         break;
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
-    reverseHeader = StringUtils::Format("%sContent-Length: %ld\r\n",reverseHeader.c_str(), reverseBody.size());
-    reverseHeader = StringUtils::Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(), m_sessionId.c_str());
+    reverseHeader =
+        StringUtils::Format("{}Content-Length: {}\r\n", reverseHeader.c_str(), reverseBody.size());
+    reverseHeader = StringUtils::Format("{}x-apple-session-id: {}\r\n", reverseHeader.c_str(),
+                                        m_sessionId.c_str());
     m_lastEvent = state;
   }
 }
@@ -610,7 +613,7 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( std::string& reverseHeader
 void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(std::string& responseHeader, std::string& responseBody)
 {
   int16_t random=rand();
-  std::string randomStr = StringUtils::Format("%i", random);
+  std::string randomStr = StringUtils::Format("{}", random);
   m_authNonce=CDigest::Calculate(CDigest::Type::MD5, randomStr);
   responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce.c_str());
   responseBody.clear();
@@ -986,7 +989,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       if (g_application.GetAppPlayer().GetTotalTime())
       {
         float position = ((float) g_application.GetAppPlayer().GetTime()) / 1000;
-        responseBody = StringUtils::Format("duration: %.6f\r\nposition: %.6f\r\n", (float)g_application.GetAppPlayer().GetTotalTime() / 1000, position);
+        responseBody = StringUtils::Format(
+            "duration: {:.6f}\r\nposition: {:.6f}\r\n",
+            (float)g_application.GetAppPlayer().GetTotalTime() / 1000, position);
       }
       else
       {

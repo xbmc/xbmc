@@ -684,9 +684,9 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
     // also handle RES_DESKTOP resolutions with non-default refresh rates
     if (resolution != RES_DESKTOP || (refreshrate > 0.0f && refreshrate != info.fRefreshRate))
     {
-      return StringUtils::Format("%05i%05i%09.5f%s",
-                                 info.iScreenWidth, info.iScreenHeight,
-                                 refreshrate > 0.0f ? refreshrate : info.fRefreshRate, ModeFlagsToString(info.dwFlags, true).c_str());
+      return StringUtils::Format("{:05}{:05}{:09.5f}{}", info.iScreenWidth, info.iScreenHeight,
+                                 refreshrate > 0.0f ? refreshrate : info.fRefreshRate,
+                                 ModeFlagsToString(info.dwFlags, true).c_str());
     }
   }
 
@@ -723,9 +723,10 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
     {
       auto setting = GetStringFromResolution((RESOLUTION)index, mode.fRefreshRate);
 
-      list.emplace_back(StringUtils::Format("%dx%d%s %0.2fHz", mode.iScreenWidth, mode.iScreenHeight,
-                                            ModeFlagsToString(mode.dwFlags, false).c_str(), mode.fRefreshRate),
-                        setting);
+      list.emplace_back(
+          StringUtils::Format("{}x{}{} {:0.2f}Hz", mode.iScreenWidth, mode.iScreenHeight,
+                              ModeFlagsToString(mode.dwFlags, false).c_str(), mode.fRefreshRate),
+          setting);
     }
   }
 
@@ -772,7 +773,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(const SettingConstPtr& s
     std::string screenmode = GetStringFromResolution((RESOLUTION)refreshrate->ResInfo_Index, refreshrate->RefreshRate);
     if (!match && StringUtils::EqualsNoCase(std::static_pointer_cast<const CSettingString>(setting)->GetValue(), screenmode))
       match = true;
-    list.emplace_back(StringUtils::Format("%.2f", refreshrate->RefreshRate), screenmode);
+    list.emplace_back(StringUtils::Format("{:.2f}", refreshrate->RefreshRate), screenmode);
   }
 
   if (!match)
@@ -797,7 +798,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
     std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem()->ScreenResolutions(info.fRefreshRate);
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
-      list.emplace_back(StringUtils::Format("%dx%d%s", resolution->width, resolution->height,
+      list.emplace_back(StringUtils::Format("{}x{}{}", resolution->width, resolution->height,
                                             ModeFlagsToString(resolution->flags, false).c_str()),
                         resolution->ResInfo_Index);
 

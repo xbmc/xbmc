@@ -275,7 +275,7 @@ CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, fl
 {
   m_layouts.emplace_back();
   m_layouts.back().CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, "", "");
-  std::string condition = StringUtils::Format("control.hasfocus(%i)", controlID);
+  std::string condition = StringUtils::Format("control.hasfocus({})", controlID);
   std::string condition2 = "!" + condition;
   m_focusedLayouts.emplace_back();
   m_focusedLayouts.back().CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, condition2, condition);

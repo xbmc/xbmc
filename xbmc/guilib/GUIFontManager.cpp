@@ -132,7 +132,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   }
 
   // check if we already have this font file loaded (font object could differ only by color or style)
-  std::string TTFfontName = StringUtils::Format("%s_%f_%f%s", strFilename.c_str(), newSize, aspect, border ? "_border" : "");
+  std::string TTFfontName = StringUtils::Format("{}_{:f}_{:f}{}", strFilename.c_str(), newSize,
+                                                aspect, border ? "_border" : "");
 
   CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
@@ -225,7 +226,8 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     RescaleFontSizeAndAspect(&newSize, &aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
 
-    std::string TTFfontName = StringUtils::Format("%s_%f_%f%s", strFilename.c_str(), newSize, aspect, fontInfo.border ? "_border" : "");
+    std::string TTFfontName = StringUtils::Format("{}_{:f}_{:f}{}", strFilename.c_str(), newSize,
+                                                  aspect, fontInfo.border ? "_border" : "");
     CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
     if (!pFontFile)
     {

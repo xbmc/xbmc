@@ -263,8 +263,8 @@ bool CTextureCache::ClearCachedTexture(int id, std::string &cachedURL)
 std::string CTextureCache::GetCacheFile(const std::string &url)
 {
   auto crc = Crc32::ComputeFromLowerCase(url);
-  std::string hex = StringUtils::Format("%08x", crc);
-  std::string hash = StringUtils::Format("%c/%s", hex[0], hex.c_str());
+  std::string hex = StringUtils::Format("{:08x}", crc);
+  std::string hash = StringUtils::Format("{}/{}", hex[0], hex.c_str());
   return hash;
 }
 

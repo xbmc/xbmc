@@ -489,7 +489,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
     if (!info.name.empty())
     {
       if (!strLanguage.empty())
-        strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+        strItem = StringUtils::Format("{} - {}", strLanguage.c_str(), info.name.c_str());
       else
         strItem = info.name;
     }
@@ -499,17 +499,18 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
     }
 
     if (info.codecName.empty())
-      strItem += StringUtils::Format(" (%ix%i", info.width, info.height);
+      strItem += StringUtils::Format(" ({}x{}", info.width, info.height);
     else
-      strItem += StringUtils::Format(" (%s, %ix%i", info.codecName.c_str(), info.width, info.height);
+      strItem +=
+          StringUtils::Format(" ({}, {}x{}", info.codecName.c_str(), info.width, info.height);
 
     if (info.bitrate)
-      strItem += StringUtils::Format(", %i bps)", info.bitrate);
+      strItem += StringUtils::Format(", {} bps)", info.bitrate);
     else
       strItem += ")";
 
     strItem += FormatFlags(info.flags);
-    strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
+    strItem += StringUtils::Format(" ({}/{})", i + 1, videoStreamCount);
     list.emplace_back(strItem, i);
   }
 
@@ -546,7 +547,7 @@ std::string CGUIDialogVideoSettings::FormatFlags(StreamFlags flags)
   std::string formated = StringUtils::Join(localizedFlags, ", ");
 
   if (!formated.empty())
-    formated = StringUtils::Format(" [%s]", formated);
+    formated = StringUtils::Format(" [{}]", formated);
 
   return formated;
 }

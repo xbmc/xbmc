@@ -283,7 +283,7 @@ void CURL::Parse(const std::string& strURL1)
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
-      m_strFileName = StringUtils::Format("%s/%s", m_strHostName.c_str(), m_strFileName.c_str());
+      m_strFileName = StringUtils::Format("{}/{}", m_strHostName.c_str(), m_strFileName.c_str());
       m_strHostName = "";
     }
     else
@@ -536,7 +536,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
     if ( HasPort() )
     {
       protectIPv6(strHostName);
-      strURL += strHostName + StringUtils::Format(":%i", m_iPort);
+      strURL += strHostName + StringUtils::Format(":{}", m_iPort);
     }
     else
       strURL += strHostName;
@@ -599,7 +599,7 @@ std::string CURL::GetWithoutFilename() const
     if (HasPort())
     {
       protectIPv6(hostname);
-      strURL += hostname + StringUtils::Format(":%i", m_iPort);
+      strURL += hostname + StringUtils::Format(":{}", m_iPort);
     }
     else
       strURL += hostname;
@@ -698,7 +698,7 @@ std::string CURL::Encode(const std::string& strURLData)
     if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%%%2.2x", (unsigned int)((unsigned char)kar));
+      strResult += StringUtils::Format("%{:02x}", (unsigned int)((unsigned char)kar));
   }
 
   return strResult;

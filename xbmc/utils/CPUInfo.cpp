@@ -49,14 +49,14 @@ std::string CCPUInfo::GetCoresUsageString()
         if (!strCores.empty())
           strCores += ' ';
         if (core.m_usagePercent < 10.0)
-          strCores += StringUtils::Format("#%d: %1.1f%%", core.m_id, core.m_usagePercent);
+          strCores += StringUtils::Format("#{}: {:1.1f}%", core.m_id, core.m_usagePercent);
         else
-          strCores += StringUtils::Format("#%d: %3.0f%%", core.m_id, core.m_usagePercent);
+          strCores += StringUtils::Format("#{}: {:3.0f}%", core.m_id, core.m_usagePercent);
       }
     }
     else
     {
-      strCores += StringUtils::Format("%3.0f%%", static_cast<double>(m_lastUsedPercentage));
+      strCores += StringUtils::Format("{:3.0f}%", static_cast<double>(m_lastUsedPercentage));
     }
   }
 

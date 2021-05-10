@@ -477,5 +477,5 @@ std::string CTemperature::ToString(Unit temperatureUnit) const
   if (!IsValid())
     return "";
 
-  return StringUtils::Format("%2.0f", To(temperatureUnit));
+  return StringUtils::Format("{:2.0f}", To(temperatureUnit));
 }

@@ -337,7 +337,7 @@ CFileItem::CFileItem(const CMediaSource& share)
     URIUtils::AddSlashAtEnd(m_strPath);
   std::string label = share.strName;
   if (!share.strStatus.empty())
-    label = StringUtils::Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
+    label = StringUtils::Format("{} ({})", share.strName.c_str(), share.strStatus.c_str());
   SetLabel(label);
   m_iLockMode = share.m_iLockMode;
   m_strLockCode = share.m_strLockCode;
@@ -1822,7 +1822,7 @@ void CFileItem::SetFromSong(const CSong &song)
   if (song.idSong > 0)
   {
     std::string strExt = URIUtils::GetExtension(song.strFileName);
-    m_strPath = StringUtils::Format("musicdb://songs/%li%s", song.idSong, strExt.c_str());
+    m_strPath = StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt.c_str());
   }
   else if (!song.strFileName.empty())
     m_strPath = song.strFileName;
@@ -3080,7 +3080,7 @@ void CFileItemList::RemoveDiscCache(const std::string& cacheFile) const
 
 void CFileItemList::RemoveDiscCacheCRC(const std::string& crc) const
 {
-  std::string cachefile = StringUtils::Format("special://temp/archive_cache/%s.fi", crc);
+  std::string cachefile = StringUtils::Format("special://temp/archive_cache/{}.fi", crc);
   RemoveDiscCache(cachefile);
 }
 
@@ -3093,21 +3093,21 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 
   std::string cacheFile;
   if (IsCDDA() || IsOnDVD())
-    return StringUtils::Format("special://temp/archive_cache/r-%08x.fi", crc);
+    return StringUtils::Format("special://temp/archive_cache/r-{:08x}.fi", crc);
 
   if (IsMusicDb())
-    return StringUtils::Format("special://temp/archive_cache/mdb-%08x.fi", crc);
+    return StringUtils::Format("special://temp/archive_cache/mdb-{:08x}.fi", crc);
 
   if (IsVideoDb())
-    return StringUtils::Format("special://temp/archive_cache/vdb-%08x.fi", crc);
+    return StringUtils::Format("special://temp/archive_cache/vdb-{:08x}.fi", crc);
 
   if (IsSmartPlayList())
-    return StringUtils::Format("special://temp/archive_cache/sp-%08x.fi", crc);
+    return StringUtils::Format("special://temp/archive_cache/sp-{:08x}.fi", crc);
 
   if (windowID)
-    return StringUtils::Format("special://temp/archive_cache/%i-%08x.fi", windowID, crc);
+    return StringUtils::Format("special://temp/archive_cache/{}-{:08x}.fi", windowID, crc);
 
-  return StringUtils::Format("special://temp/archive_cache/%08x.fi", crc);
+  return StringUtils::Format("special://temp/archive_cache/{:08x}.fi", crc);
 }
 
 bool CFileItemList::AlwaysCache() const
@@ -3558,7 +3558,7 @@ bool CFileItem::LoadMusicTag()
       std::string strText = g_localizeStrings.Get(554); // "Track"
       if (!strText.empty() && strText[strText.size() - 1] != ' ')
         strText += " ";
-      std::string strTrack = StringUtils::Format((strText + "%i").c_str(), iTrack);
+      std::string strTrack = StringUtils::Format((strText + "{}").c_str(), iTrack);
       GetMusicInfoTag()->SetTitle(strTrack);
       GetMusicInfoTag()->SetLoaded(true);
       return true;

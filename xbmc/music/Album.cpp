@@ -513,7 +513,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     int year;
     XMLUtils::GetInt(album, "year", year);
     if (year > 0)
-      strReleaseDate = StringUtils::Format("%04i", year);
+      strReleaseDate = StringUtils::Format("{:04}", year);
   }
   XMLUtils::GetString(album, "originalreleasedate", strOrigReleaseDate);
   
