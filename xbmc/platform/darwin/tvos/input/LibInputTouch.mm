@@ -30,6 +30,16 @@
 
 #pragma mark - gesture methods
 
+// called before any press or touch event
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
+       shouldReceiveEvent:(nonnull UIEvent*)event
+{
+  // allow press or touch event only if we are up and running
+  if (g_xbmcController.appAlive)
+    return YES;
+  return NO;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
     shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer*)otherGestureRecognizer
 {
@@ -400,9 +410,6 @@
 - (IBAction)handlePan:(UIPanGestureRecognizer*)sender
 {
   if (g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
-    return;
-
-  if (!g_xbmcController.appAlive) //NO GESTURES BEFORE WE ARE UP AND RUNNING
     return;
 
   if ([g_xbmcController.inputHandler.inputSettings siriRemotePanEnabled])
