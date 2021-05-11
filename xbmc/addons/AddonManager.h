@@ -292,6 +292,14 @@ namespace ADDON
     bool CanUninstall(const AddonPtr& addon);
 
     /*!
+     * @brief Checks whether an addon is a bundled addon
+     *
+     * @param[in] id id of the addon
+     * @return true if addon is bundled addon, false otherwise.
+     */
+    bool IsBundledAddon(const std::string& id);
+
+    /*!
      * @brief Checks whether an addon is a system addon
      *
      * @param[in] id id of the addon
@@ -299,7 +307,15 @@ namespace ADDON
      */
     bool IsSystemAddon(const std::string& id);
 
-   /*!
+    /*!
+     * @brief Checks whether an addon is a required system addon
+     *
+     * @param[in] id id of the addon
+     * @return true if addon is a required system addon, false otherwise.
+     */
+    bool IsRequiredSystemAddon(const std::string& id);
+
+    /*!
      * @brief Checks whether an addon is an optional system addon
      *
      * @param[in] id id of the addon
@@ -445,7 +461,7 @@ namespace ADDON
      * \brief Check whether an addon has been disabled with a special reason.
      * \param ID id of the addon
      * \param disabledReason reason we want to check for (NONE, USER, INCOMPATIBLE, PERMANENT_FAILURE)
-     * \return true or false 
+     * \return true or false
      */
     bool IsAddonDisabledWithReason(const std::string& ID, AddonDisabledReason disabledReason) const;
 
