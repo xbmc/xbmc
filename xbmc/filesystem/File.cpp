@@ -36,24 +36,12 @@ using namespace XFILE;
 #endif
 
 //*********************************************************************************************
-CFile::CFile()
-{
-  m_pFile = NULL;
-  m_pBuffer = NULL;
-  m_flags = 0;
-  m_bitStreamStats = NULL;
-}
+CFile::CFile() = default;
 
 //*********************************************************************************************
 CFile::~CFile()
 {
   Close();
-  if (m_pFile)
-    SAFE_DELETE(m_pFile);
-  if (m_pBuffer)
-    SAFE_DELETE(m_pBuffer);
-  if (m_bitStreamStats)
-    SAFE_DELETE(m_bitStreamStats);
 }
 
 //*********************************************************************************************
@@ -291,7 +279,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       if (m_flags & READ_CACHED)
       {
         // for internet stream, if it contains multiple stream, file cache need handle it specially.
-        m_pFile = new CFileCache(m_flags);
+        m_pFile = std::make_unique<CFileCache>(m_flags);
 
         if (!m_pFile)
           return false;
@@ -299,7 +287,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
         return m_pFile->Open(url);
       }
     }
-    m_pFile = CFileFactory::CreateLoader(url);
+    m_pFile.reset(CFileFactory::CreateLoader(url));
 
     if (!m_pFile)
       return false;
@@ -311,21 +299,17 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     try
     {
       if (!m_pFile->Open(authUrl))
-      {
-        SAFE_DELETE(m_pFile);
         return false;
-      }
     }
     catch (CRedirectException *pRedirectEx)
     {
       // the file implementation decided this item should use a different implementation.
       // the exception will contain the new implementation.
       CLog::Log(LOGDEBUG,"File::Open - redirecting implementation for %s", file.GetRedacted().c_str());
-      SAFE_DELETE(m_pFile);
       if (pRedirectEx && pRedirectEx->m_pNewFileImp)
       {
         std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
-        m_pFile = pRedirectEx->m_pNewFileImp;
+        m_pFile.reset(pRedirectEx->m_pNewFileImp);
         delete pRedirectEx;
 
         if (pNewUrl)
@@ -335,37 +319,30 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
             CPasswordManager::GetInstance().AuthenticateURL(newAuthUrl);
 
           if (!m_pFile->Open(newAuthUrl))
-          {
-            SAFE_DELETE(m_pFile);
             return false;
-          }
         }
         else
         {
           if (!m_pFile->Open(authUrl))
-          {
-            SAFE_DELETE(m_pFile);
             return false;
-          }
         }
       }
     }
     catch (...)
     {
       CLog::Log(LOGERROR, "File::Open - unknown exception when opening %s", file.GetRedacted().c_str());
-      SAFE_DELETE(m_pFile);
       return false;
     }
 
     if (m_pFile->GetChunkSize() && !(m_flags & READ_CHUNKED))
     {
-      m_pBuffer = new CFileStreamBuffer(0);
-      m_pBuffer->Attach(m_pFile);
+      m_pBuffer = std::make_unique<CFileStreamBuffer>(0);
+      m_pBuffer->Attach(m_pFile.get());
     }
 
     if (m_flags & READ_BITRATE)
     {
-      m_bitStreamStats = new BitstreamStats();
+      m_bitStreamStats = std::make_unique<BitstreamStats>();
       m_bitStreamStats->Start();
     }
 
@@ -395,7 +372,7 @@ bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
     if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
-    m_pFile = CFileFactory::CreateLoader(url);
+    m_pFile.reset(CFileFactory::CreateLoader(url));
 
     if (m_pFile && m_pFile->OpenForWrite(authUrl, bOverWrite))
     {
@@ -662,8 +639,8 @@ void CFile::Close()
     if (m_pFile)
       m_pFile->Close();
 
-    SAFE_DELETE(m_pBuffer);
-    SAFE_DELETE(m_pFile);
+    m_pBuffer.reset();
+    m_pFile.reset();
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
@@ -967,7 +944,7 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
 int CFile::IoControl(EIoControl request, void* param)
 {
   int result = -1;
-  if (m_pFile == NULL)
+  if (!m_pFile)
     return -1;
   result = m_pFile->IoControl(request, param);
 
@@ -1210,10 +1187,7 @@ std::streamsize CFileStreamBuffer::showmanyc()
   return egptr() - gptr();
 }
 
-CFileStream::CFileStream(int backsize /*= 0*/) :
-    std::istream(&m_buffer),
-    m_buffer(backsize),
-    m_file(NULL)
+CFileStream::CFileStream(int backsize /*= 0*/) : std::istream(&m_buffer), m_buffer(backsize)
 {
 }
 
@@ -1228,7 +1202,7 @@ bool CFileStream::Open(const CURL& filename)
   Close();
 
   CURL url(URIUtils::SubstitutePath(filename));
-  m_file = CFileFactory::CreateLoader(url);
+  m_file.reset(CFileFactory::CreateLoader(url));
 
   CURL authUrl = url;
   if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
@@ -1236,7 +1210,7 @@ bool CFileStream::Open(const CURL& filename)
 
   if(m_file && m_file->Open(authUrl))
   {
-    m_buffer.Attach(m_file);
+    m_buffer.Attach(m_file.get());
     return true;
   }
 
@@ -1255,7 +1229,6 @@ void CFileStream::Close()
     return;
 
   m_buffer.Detach();
-  SAFE_DELETE(m_file);
 }
 
 bool CFileStream::Open(const std::string& filename)
