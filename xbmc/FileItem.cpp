@@ -154,7 +154,12 @@ void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannel>& channel, co
   }
 }
 
-CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
+CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag) : CFileItem(tag, {})
+{
+}
+
+CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
+                     const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMemberIn)
 {
   Initialize();
 
@@ -164,8 +169,13 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   SetLabel(GetEpgTagTitle(tag));
   m_dateTime = tag->StartAsLocalTime();
 
-  const std::shared_ptr<CPVRChannel> channel =
-      CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+  std::shared_ptr<CPVRChannelGroupMember> groupMember = groupMemberIn;
+  if (!groupMember)
+    groupMember = CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*this);
+
+  std::shared_ptr<CPVRChannel> channel;
+  if (groupMember)
+    channel = groupMember->Channel();
 
   if (!tag->Icon().empty())
     SetArt("icon", tag->Icon());

@@ -41,7 +41,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel
 {
   const std::shared_ptr<CPVRChannel> channel = m_channelItems[iChannel]->GetPVRChannelInfoTag();
   const std::shared_ptr<CPVREpgInfoTag> gapTag = channel->CreateEPGGapTag(m_gridStart, m_gridEnd);
-  return std::make_shared<CFileItem>(gapTag);
+  return std::make_shared<CFileItem>(gapTag,
+                                     m_channelItems[iChannel]->GetPVRChannelGroupMemberInfoTag());
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CGUIEPGGridContainerModel::GetEPGTimeline(
@@ -170,7 +171,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
     if (GetFirstEventBlock(tag) > GetLastEventBlock(tag))
       continue;
 
-    const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(tag);
+    const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(
+        tag, m_channelItems[iChannel]->GetPVRChannelGroupMemberInfoTag());
     if (!result && IsEventMemberOfBlock(tag, iBlock))
       result = item;
 
@@ -262,7 +264,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
       if (GetFirstEventBlock(*it) > GetLastEventBlock(*it))
         continue;
 
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(*it);
+      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(
+          *it, m_channelItems[iChannel]->GetPVRChannelGroupMemberInfoTag());
       if (!result && IsEventMemberOfBlock(*it, iBlock))
         result = item;
 
@@ -324,7 +327,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
       if (GetFirstEventBlock(*it) > GetLastEventBlock(*it))
         continue;
 
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(*it);
+      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(
+          *it, m_channelItems[iChannel]->GetPVRChannelGroupMemberInfoTag());
       if (!result && IsEventMemberOfBlock(*it, iBlock))
         result = item;
 
@@ -564,7 +568,8 @@ bool CGUIEPGGridContainerModel::FreeProgrammeMemory(int firstChannel,
           if (GetFirstEventBlock(tag) > GetLastEventBlock(tag))
             continue;
 
-          epgTags.tags.emplace_back(std::make_shared<CFileItem>(tag));
+          epgTags.tags.emplace_back(std::make_shared<CFileItem>(
+              tag, m_channelItems[i]->GetPVRChannelGroupMemberInfoTag()));
         }
       }
     }
