@@ -1523,7 +1523,7 @@ namespace PVR
         return false;
 
       groupMember = channels.front();
-      if (!groupMember || !groupMember->Channel())
+      if (!groupMember)
         return false;
     }
 

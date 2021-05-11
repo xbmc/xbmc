@@ -134,8 +134,7 @@ namespace
 void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannelGroupMember>& groupMember,
                                  const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
-  if (groupMember && groupMember->Channel() && groupMember->Channel()->IsRadio() &&
-      !HasMusicInfoTag())
+  if (groupMember && groupMember->Channel()->IsRadio() && !HasMusicInfoTag())
   {
     CMusicInfoTag* musictag = GetMusicInfoTag(); // create (!) the music tag.
 

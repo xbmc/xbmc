@@ -76,11 +76,6 @@ namespace PVR
     bool operator ==(const CPVRChannelGroup& right) const;
     bool operator !=(const CPVRChannelGroup& right) const;
 
-    /**
-     * Empty group member
-     */
-    static std::shared_ptr<CPVRChannelGroupMember> EmptyMember;
-
     /*!
      * @brief Query the events available for CEventStream
      */
@@ -443,11 +438,9 @@ namespace PVR
     /*!
      * @brief Get a channel group member given its storage id.
      * @param id The storage id (a pair of client id and unique channel id).
-     * @return A reference to the group member or an empty group member if it wasn't found.
+     * @return The channel group member or nullptr if it wasn't found.
      */
-    std::shared_ptr<CPVRChannelGroupMember>& GetByUniqueID(const std::pair<int, int>& id);
-    const std::shared_ptr<CPVRChannelGroupMember>& GetByUniqueID(
-        const std::pair<int, int>& id) const;
+    std::shared_ptr<CPVRChannelGroupMember> GetByUniqueID(const std::pair<int, int>& id) const;
 
     bool SetHidden(bool bHidden);
     bool IsHidden() const;
