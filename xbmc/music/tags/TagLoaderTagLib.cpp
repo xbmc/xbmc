@@ -1333,7 +1333,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     tag.SetNoOfChannels(file->audioProperties()->channels());
     tag.SetSampleRate(file->audioProperties()->sampleRate());
   }
-  
+
   if (asf)
     ParseTag(asf, art, tag);
   if (id3v1)

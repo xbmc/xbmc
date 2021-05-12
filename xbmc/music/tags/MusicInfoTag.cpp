@@ -161,7 +161,7 @@ const std::string &CMusicInfoTag::GetType() const
 }
 
 int CMusicInfoTag::GetYear() const
-{  
+{
   return atoi(GetYearString().c_str());
 }
 

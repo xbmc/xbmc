@@ -130,7 +130,7 @@ void CGUIDialogLibExportSettings::OnSettingChanged(const std::shared_ptr<const C
     if (m_settings.IsItemExported(ELIBEXPORT_ALBUMS) && (m_settings.m_skipnfo && !m_settings.m_artwork))
     {
       m_settings.m_artwork = true;
-      m_settingArt->SetValue(true);     
+      m_settingArt->SetValue(true);
     }
     UpdateToggles();
   }
@@ -145,8 +145,8 @@ void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CS
 
   const std::string &settingId = setting->GetId();
 
-  if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER && 
-      !m_settings.IsToLibFolders() && !m_settings.IsArtistFoldersOnly())
+  if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER && !m_settings.IsToLibFolders() &&
+      !m_settings.IsArtistFoldersOnly())
   {
     VECSOURCES shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
@@ -298,8 +298,8 @@ void CGUIDialogLibExportSettings::UpdateToggles()
 }
 
 void CGUIDialogLibExportSettings::UpdateDescription()
-{ 
-  if (m_settings.IsToLibFolders())  
+{
+  if (m_settings.IsToLibFolders())
   {
     // Destination button is description of what to library means
     SetLabel(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, "");
@@ -383,7 +383,7 @@ void CGUIDialogLibExportSettings::InitializeSettings()
   }
   else
    items = m_settings.GetExportItems();
-  
+
   AddList(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ITEMS, 38306, SettingLevel::Basic, items, entries, 133, 1);
 
   if (m_settings.IsToLibFolders() || m_settings.IsSeparateFiles())

@@ -77,7 +77,7 @@ bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
 bool CGUIWindowMusicPlaylistEditor::OnClick(int iItem, const std::string& player /* = "" */)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
-  CFileItemPtr item = m_vecItems->Get(iItem);  
+  CFileItemPtr item = m_vecItems->Get(iItem);
 
   // Expand .m3u files in sources list when clicked on regardless of <playlistasfolders>
   if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))

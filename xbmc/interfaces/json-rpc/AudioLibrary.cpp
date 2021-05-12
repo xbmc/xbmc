@@ -63,7 +63,7 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
       property = (int)BLANKARTIST_ID;
     else if (propertyName == "librarylastupdated")
       property = musicdatabase.GetLibraryLastUpdated();
-    else if (propertyName == "librarylastcleaned")  
+    else if (propertyName == "librarylastcleaned")
       property = musicdatabase.GetLibraryLastCleaned();
     else if (propertyName == "artistlinksupdated")
       property = musicdatabase.GetArtistLinksUpdated();
@@ -251,8 +251,8 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); 
-      field != parameterObject["properties"].end_array(); field++)
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+         field != parameterObject["properties"].end_array(); field++)
       fields.insert(field->asString());
   }
 
@@ -477,7 +477,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
 
   int start, end;
   HandleLimits(parameterObject, result, total, start, end);
-  
+
   return OK;
 }
 
@@ -617,7 +617,7 @@ JSONRPC_STATUS CAudioLibrary::GetGenres(const std::string &method, ITransportLay
   std::set<std::string> additionalProperties;
   if (CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     sourcesneeded = (additionalProperties.find("sourceid") != additionalProperties.end());
-   
+
   CFileItemList items;
   if (!musicdatabase.GetGenresJSON(items, sourcesneeded))
     return InternalError;
@@ -1317,7 +1317,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
       }
     }
     if (additionalProperties.find("sourceid") != additionalProperties.end())
-    {      
+    {
       musicdatabase.GetSourcesBySong(item->GetMusicInfoTag()->GetDatabaseId(), item->GetPath(), item.get());
     }
     if (item->GetMusicInfoTag()->GetAlbumId() > 0)

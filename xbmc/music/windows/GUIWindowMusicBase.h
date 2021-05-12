@@ -49,7 +49,7 @@ public:
 
   /*! \brief Once a music source is added, store source in library, and prompt
   the user to scan this folder into the library
-  \param oldName the original music source name 
+  \param oldName the original music source name
   \param source details of the music source (just added or edited)
   */
   static void OnAssignContent(const std::string& oldName, const CMediaSource& source);
