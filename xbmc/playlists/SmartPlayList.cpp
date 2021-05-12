@@ -889,7 +889,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
         field = GetField(FieldOrigYear, strType);
       else
         field = GetField(m_field, strType);
-      query = FormatYearQuery(field, param, parameter);      
+      query = FormatYearQuery(field, param, parameter);
     }
   }
   else if (strType == "albums")

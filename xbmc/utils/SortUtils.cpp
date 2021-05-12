@@ -247,11 +247,11 @@ std::string ByYear(SortAttribute attributes, const SortItem &values)
 }
 
 std::string ByOrigDate(SortAttribute attributes, const SortItem& values)
-{  
+{
   std::string label;
   label = values.at(FieldOrigDate).asString();
 
-  const CVariant &album = values.at(FieldAlbum); 
+  const CVariant& album = values.at(FieldAlbum);
   if (!album.isNull())
     label += " " + SortUtils::RemoveArticles(album.asString());
 

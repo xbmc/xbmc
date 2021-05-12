@@ -165,10 +165,10 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
   if (m_pProgressCallback && !pItem->m_bIsFolder)
     m_pProgressCallback->SetProgressAdvance();
 
-  if ((pItem->m_bIsFolder && !pItem->IsAudio()) || 
-      pItem->IsPlayList() || pItem->IsSmartPlayList() ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") ||
+  if ((pItem->m_bIsFolder && !pItem->IsAudio()) || //
+      pItem->IsPlayList() || pItem->IsSmartPlayList() || //
+      StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
+      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
       pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
     return false;
 
@@ -206,7 +206,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath()); // Find file in song map
       if (it != m_songsMap.end() && it->second.size() == 1)
       {
-        // Have we loaded this item from database before, 
+        // Have we loaded this item from database before,
         // and even if it has a cuesheet it has only one song
         pItem->GetMusicInfoTag()->SetSong(it->second[0]);
         if (!it->second[0].strThumb.empty())

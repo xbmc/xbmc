@@ -946,8 +946,8 @@ private:
   \param sortAttributes the sort attributes e.g. SortAttributeIgnoreArticle
   \param strField original name or title field that articles could be removed from
   \param strSortField sort name or title field to be used instead of original (when data not null)
-  \return SQL string e.g. 
-  CASE WHEN strArtistSort IS NOT NULL THEN strArtistSort    
+  \return SQL string e.g.
+  CASE WHEN strArtistSort IS NOT NULL THEN strArtistSort
   WHEN strField LIKE 'the ' OR strField LIKE 'the_' ESCAPE '_' THEN SUBSTR(strArtist, 5)
   ELSE strField
   END AS strAlias
@@ -960,14 +960,14 @@ private:
   /*! \brief Build SQL for sorting field naturally and case insensitvely (in SQLite).
   \param strField field name
   \param sortOrder the sort order
-  \return SQL string e.g.   
-  CASE WHEN CAST(strTitle AS INTEGER) = 0 THEN 100000000 
+  \return SQL string e.g.
+  CASE WHEN CAST(strTitle AS INTEGER) = 0 THEN 100000000
   ELSE CAST(strTitle AS INTEGER) END DESC, strTitle COLLATE NOCASE DESC
   */
   std::string AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder);
 
   /*! \brief Checks that source table matches sources.xml
-  returns true when they do 
+  returns true when they do
   */
   bool CheckSources(VECSOURCES& sources);
 

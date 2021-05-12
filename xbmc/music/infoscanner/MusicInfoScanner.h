@@ -184,7 +184,7 @@ protected:
   /*! \brief Add art for an artist
   This scans the given folder for local art and/or applies the first available art of each type
   from the possibile art URLs previously scraped. Art is added to any already stored by previous
-  scanning etc.The art types processed are determined by whitelist and other art settings. 
+  scanning etc.The art types processed are determined by whitelist and other art settings.
   When usealllocalart is enabled then all local image files are applied as art (providing name is
   valid for an art type), and then the URL list of remote art is checked adding the first available
   image of each art type not yet in the art map.
@@ -203,9 +203,9 @@ protected:
   The art types processed are determined by whitelist and other art settings. When usealllocalart is
   enabled then all local image files are applied as art (providing name is valid for an art type),
   and then the URL list of remote art is checked adding the first available image of each art type
-  not yet in the art map. 
-  Art found is saved in the album structure and the music database. The images found are cached. 
-  \param artist [in/out] an album, the art is set 
+  not yet in the art map.
+  Art found is saved in the album structure and the music database. The images found are cached.
+  \param artist [in/out] an album, the art is set
   \return true when art is added
   */
   bool AddAlbumArtwork(CAlbum& album);
