@@ -345,7 +345,7 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetLastPlayedChannel(int iCurrent
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGroupMember(
-    int iCurrentChannel) const
+    int iCurrentChannel /* = -1 */) const
 {
   CSingleLock lock(m_critSection);
 
@@ -379,7 +379,8 @@ CPVRChannelNumber CPVRChannelGroup::GetClientChannelNumber(const std::shared_ptr
   return member->ClientChannelNumber();
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelNumber(const CPVRChannelNumber& channelNumber) const
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetByChannelNumber(
+    const CPVRChannelNumber& channelNumber) const
 {
   CSingleLock lock(m_critSection);
 
@@ -388,64 +389,66 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelNumber(const CPVRChan
     CPVRChannelNumber activeChannelNumber =
         m_bUsingBackendChannelNumbers ? member->ClientChannelNumber() : member->ChannelNumber();
     if (activeChannelNumber == channelNumber)
-      return member->Channel();
+      return member;
   }
 
   return {};
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetNextChannel(const std::shared_ptr<CPVRChannel>& channel) const
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetNextChannelGroupMember(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
 {
-  std::shared_ptr<CPVRChannel> nextChannel;
+  std::shared_ptr<CPVRChannelGroupMember> nextMember;
 
-  if (channel)
+  if (groupMember)
   {
     CSingleLock lock(m_critSection);
-    for (auto it = m_sortedMembers.cbegin(); !nextChannel && it != m_sortedMembers.cend(); ++it)
+    for (auto it = m_sortedMembers.cbegin(); !nextMember && it != m_sortedMembers.cend(); ++it)
     {
-      if ((*it)->Channel() == channel)
+      if (*it == groupMember)
       {
         do
         {
           if ((++it) == m_sortedMembers.cend())
             it = m_sortedMembers.cbegin();
           if ((*it)->Channel() && !(*it)->Channel()->IsHidden())
-            nextChannel = (*it)->Channel();
-        } while (!nextChannel && (*it)->Channel() != channel);
+            nextMember = *it;
+        } while (!nextMember && *it != groupMember);
 
         break;
       }
     }
   }
 
-  return nextChannel;
+  return nextMember;
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetPreviousChannel(const std::shared_ptr<CPVRChannel>& channel) const
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetPreviousChannelGroupMember(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
 {
-  std::shared_ptr<CPVRChannel> previousChannel;
+  std::shared_ptr<CPVRChannelGroupMember> previousMember;
 
-  if (channel)
+  if (groupMember)
   {
     CSingleLock lock(m_critSection);
-    for (auto it = m_sortedMembers.crbegin(); !previousChannel && it != m_sortedMembers.crend();
+    for (auto it = m_sortedMembers.crbegin(); !previousMember && it != m_sortedMembers.crend();
          ++it)
     {
-      if ((*it)->Channel() == channel)
+      if (*it == groupMember)
       {
         do
         {
           if ((++it) == m_sortedMembers.crend())
             it = m_sortedMembers.crbegin();
           if ((*it)->Channel() && !(*it)->Channel()->IsHidden())
-            previousChannel = (*it)->Channel();
-        } while (!previousChannel && (*it)->Channel() != channel);
+            previousMember = *it;
+        } while (!previousMember && *it != groupMember);
 
         break;
       }
     }
   }
-  return previousChannel;
+  return previousMember;
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::GetMembers(

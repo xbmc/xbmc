@@ -125,14 +125,16 @@ void CPVRChannelGroups::SortGroups()
   }
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroups::GetByPath(const CPVRChannelsPath& path) const
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMemberByPath(
+    const CPVRChannelsPath& path) const
 {
   if (path.IsChannel())
   {
     const std::shared_ptr<CPVRChannelGroup> group = GetByName(path.GetGroupName());
     if (group)
-      return group->GetByUniqueID(path.GetChannelUID(),
-                                  CServiceBroker::GetPVRManager().Clients()->GetClientId(path.GetClientID()));
+      return group->GetByUniqueID(
+          {CServiceBroker::GetPVRManager().Clients()->GetClientId(path.GetClientID()),
+           path.GetChannelUID()});
   }
 
   return {};

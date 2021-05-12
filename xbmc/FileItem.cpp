@@ -38,6 +38,7 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
@@ -175,15 +176,18 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const std::shared_ptr<CPVRChannel>& channel)
+CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroupMember)
 {
   Initialize();
 
-  std::shared_ptr<CPVREpgInfoTag> epgNow(channel->GetEPGNow());
+  const std::shared_ptr<CPVRChannel> channel = channelGroupMember->Channel();
+  const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
+
+  m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 
   m_strPath = channel->Path();
   m_bIsFolder = false;
-  m_pvrChannelInfoTag = channel;
+
   SetLabel(channel->ChannelName());
 
   if (!channel->IconPath().empty())
@@ -199,12 +203,6 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannel>& channel)
 
   FillMusicInfoTag(channel, epgNow);
   FillInMimeType(false);
-}
-
-CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroupMember)
-  : CFileItem(channelGroupMember->Channel())
-{
-  m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 }
 
 CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
@@ -449,7 +447,6 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   m_epgInfoTag = item.m_epgInfoTag;
-  m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
   m_pvrChannelGroupMemberInfoTag = item.m_pvrChannelGroupMemberInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
@@ -523,7 +520,6 @@ void CFileItem::Reset()
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
   m_epgInfoTag.reset();
-  m_pvrChannelInfoTag.reset();
   m_pvrChannelGroupMemberInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
@@ -1492,13 +1488,13 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
   //! @todo adapt this to use CMime::GetMimeType()
   if (m_mimetype.empty())
   {
-    if( m_bIsFolder )
+    if (m_bIsFolder)
       m_mimetype = "x-directory/normal";
-    else if( m_pvrChannelInfoTag )
-      m_mimetype = m_pvrChannelInfoTag->MimeType();
-    else if( StringUtils::StartsWithNoCase(GetDynPath(), "shout://")
-          || StringUtils::StartsWithNoCase(GetDynPath(), "http://")
-          || StringUtils::StartsWithNoCase(GetDynPath(), "https://"))
+    else if (HasPVRChannelInfoTag())
+      m_mimetype = GetPVRChannelInfoTag()->MimeType();
+    else if (StringUtils::StartsWithNoCase(GetDynPath(), "shout://") ||
+             StringUtils::StartsWithNoCase(GetDynPath(), "http://") ||
+             StringUtils::StartsWithNoCase(GetDynPath(), "https://"))
     {
       // If lookup is false, bail out early to leave mime type empty
       if (!lookup)
@@ -3702,6 +3698,17 @@ CGameInfoTag* CFileItem::GetGameInfoTag()
   return m_gameInfoTag;
 }
 
+bool CFileItem::HasPVRChannelInfoTag() const
+{
+  return m_pvrChannelGroupMemberInfoTag && m_pvrChannelGroupMemberInfoTag->Channel() != nullptr;
+}
+
+const std::shared_ptr<PVR::CPVRChannel> CFileItem::GetPVRChannelInfoTag() const
+{
+  return m_pvrChannelGroupMemberInfoTag ? m_pvrChannelGroupMemberInfoTag->Channel()
+                                        : std::shared_ptr<CPVRChannel>();
+}
+
 std::string CFileItem::FindTrailer() const
 {
   std::string strFile2;
@@ -3814,9 +3821,10 @@ CFileItem CFileItem::GetItemToPlay() const
 {
   if (HasEPGInfoTag())
   {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(GetEPGInfoTag());
-    if (channel)
-      return CFileItem(channel);
+    const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*this);
+    if (groupMember)
+      return CFileItem(groupMember);
   }
   return *this;
 }

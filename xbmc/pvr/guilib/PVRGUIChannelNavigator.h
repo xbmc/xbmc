@@ -20,7 +20,7 @@ namespace PVR
     INSTANT_OR_DELAYED_SWITCH // switch according to SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT
   };
 
-  class CPVRChannel;
+  class CPVRChannelGroupMember;
 
   class CPVRGUIChannelNavigator
   {
@@ -72,10 +72,10 @@ namespace PVR
     void ToggleInfo();
 
     /*!
-     * @brief Set a new playing channel and show the channel info OSD for the new channel.
-     * @param channel The new playing channel
+     * @brief Set a new playing channel group member and show the channel info OSD for the new channel.
+     * @param groupMember The new playing channel group member
      */
-    void SetPlayingChannel(const std::shared_ptr<CPVRChannel>& channel);
+    void SetPlayingChannel(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
 
     /*!
      * @brief Clear the currently playing channel and hide the channel info OSD.
@@ -84,18 +84,19 @@ namespace PVR
 
   private:
     /*!
-     * @brief Get next or previous channel of the playing channel group, relative to the currently selected channel.
-     * @param bNext True to get the next channel, false to get the previous channel.
+     * @brief Get next or previous channel group member of the playing channel group, relative to the currently selected channel group member.
+     * @param bNext True to get the next channel group member, false to get the previous channel group member.
      * @param return The channel or nullptr if not found.
      */
-    std::shared_ptr<CPVRChannel> GetNextOrPrevChannel(bool bNext);
+    std::shared_ptr<CPVRChannelGroupMember> GetNextOrPrevChannel(bool bNext);
 
     /*!
-     * @brief Select a given channel, display channel info OSD, switch according to given switch mode.
-     * @param item The channel to select.
+     * @brief Select a given channel group member, display channel info OSD, switch according to given switch mode.
+     * @param groupMember The channel group member to select.
      * @param eSwitchMode The channel switch mode.
      */
-    void SelectChannel(const std::shared_ptr<CPVRChannel>& channel, ChannelSwitchMode eSwitchMode);
+    void SelectChannel(const std::shared_ptr<CPVRChannelGroupMember>& groupMember,
+                       ChannelSwitchMode eSwitchMode);
 
     /*!
      * @brief Show the channel info OSD.
@@ -104,8 +105,8 @@ namespace PVR
     void ShowInfo(bool bForce);
 
     mutable CCriticalSection m_critSection;
-    std::shared_ptr<CPVRChannel> m_playingChannel;
-    std::shared_ptr<CPVRChannel> m_currentChannel;
+    std::shared_ptr<CPVRChannelGroupMember> m_playingChannel;
+    std::shared_ptr<CPVRChannelGroupMember> m_currentChannel;
     int m_iChannelEntryJobId = -1;
     int m_iChannelInfoJobId = -1;
   };

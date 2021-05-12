@@ -16,6 +16,7 @@ namespace PVR
 {
   class CPVRChannel;
   class CPVRChannelGroup;
+  class CPVRChannelGroupMember;
   class CPVRChannelGroups;
   class CPVREpgInfoTag;
 
@@ -130,6 +131,14 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
     /*!
+     * @brief Get a channel group member given it's path.
+     * @param strPath The path.
+     * @return The channel group member or nullptr if it wasn't found.
+     */
+    std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMemberByPath(
+        const std::string& strPath) const;
+
+    /*!
      * @brief Get a channel given it's channel ID from all containers.
      * @param iUniqueChannelId The unique channel id on the client.
      * @param iClientID The ID of the client.
@@ -138,10 +147,10 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetByUniqueID(int iUniqueChannelId, int iClientID) const;
 
     /*!
-     * @brief Get the channel that was played last.
-     * @return The requested channel or nullptr.
+     * @brief Get the channel group member that was played last.
+     * @return The requested channel group member or nullptr.
      */
-    std::shared_ptr<CPVRChannel> GetLastPlayedChannel() const;
+    std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember() const;
 
     /*!
      * @brief The group that was played last and optionally contains the given channel.

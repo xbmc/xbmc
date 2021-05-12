@@ -144,7 +144,7 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
     return InvalidParams;
 
   const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(CFileItem(channel));
+      CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(channel);
   if (!groupMember)
     return InvalidParams;
 

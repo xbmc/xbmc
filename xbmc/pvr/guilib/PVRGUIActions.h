@@ -37,6 +37,7 @@ namespace PVR
     SUCCESS
   };
 
+  class CPVRChannel;
   class CPVRChannelGroupMember;
   class CPVRRecording;
   class CPVRStreamProperties;
@@ -398,6 +399,15 @@ namespace PVR
      * @param iThreshold the value in seconds to trigger seek to start of current event instead of start of previous event.
      */
     void SeekBackward(unsigned int iThreshold);
+
+    /*!
+     * @brief Get a channel group member for the given channel, either from the currently active
+     * group or if not found there, from the 'all channels' group.
+     * @param cahnnel the channel.
+     * @return the group member or nullptr if not found.
+     */
+    std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMember(
+        const std::shared_ptr<CPVRChannel>& channel) const;
 
     /*!
      * @brief Get a channel group member for the given item, either from the currently active group
