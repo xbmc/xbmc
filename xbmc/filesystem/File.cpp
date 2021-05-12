@@ -17,8 +17,11 @@
 #include "FileFactory.h"
 #include "IFile.h"
 #include "PasswordManager.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "commons/Exception.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/BitstreamStats.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -270,22 +273,42 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
         return false;
     }
 
+    /*
+    * There are 5 buffer modes available (configurable in as.xml)
+    * 0) Buffer all internet filesystems (like 2 but additionally also ftp, webdav, etc.)
+    * 1) Buffer all filesystems (including local)
+    * 2) Only buffer true internet filesystems (streams) (http, etc.)
+    * 3) No buffer
+    * 4) Buffer all remote (non-local) filesystems
+    */
     if (!(m_flags & READ_NO_CACHE))
     {
       const std::string pathToUrl(url.Get());
-      if (URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(pathToUrl) )
-        m_flags |= READ_CACHED;
-
-      if (m_flags & READ_CACHED)
+      if (URIUtils::IsDVD(pathToUrl) || URIUtils::IsBluray(pathToUrl) ||
+          (m_flags & READ_AUDIO_VIDEO))
       {
-        // for internet stream, if it contains multiple stream, file cache need handle it specially.
-        m_pFile = std::make_unique<CFileCache>(m_flags);
-
-        if (!m_pFile)
-          return false;
-
-        return m_pFile->Open(url);
+        const unsigned int iCacheBufferMode =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheBufferMode;
+        if ((iCacheBufferMode == CACHE_BUFFER_MODE_INTERNET &&
+             URIUtils::IsInternetStream(pathToUrl, true)) ||
+            (iCacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET &&
+             URIUtils::IsInternetStream(pathToUrl, false)) ||
+            (iCacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(pathToUrl)) ||
+            (iCacheBufferMode == CACHE_BUFFER_MODE_ALL))
+        {
+          m_flags |= READ_CACHED;
+        }
       }
+    }
+
+    if (m_flags & READ_CACHED)
+    {
+      m_pFile = std::make_unique<CFileCache>(m_flags);
+
+      if (!m_pFile)
+        return false;
+
+      return m_pFile->Open(url);
     }
     m_pFile.reset(CFileFactory::CreateLoader(url));
 
