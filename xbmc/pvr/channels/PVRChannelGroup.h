@@ -466,6 +466,17 @@ namespace PVR
      */
     bool UpdateChannelNumbersFromAllChannelsGroup();
 
+    /*!
+     * @brief Whether this group is deleted.
+     * @return True, if deleted, false otherwise.
+     */
+    bool IsDeleted() const { return m_bDeleted; }
+
+    /*!
+     * @brief Mark this group as deleted.
+     */
+    void SetDeleted() { m_bDeleted = true; }
+
   protected:
     /*!
      * @brief Init class
@@ -557,5 +568,6 @@ namespace PVR
 
     std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
     CPVRChannelsPath m_path;
+    bool m_bDeleted = false;
   };
 }

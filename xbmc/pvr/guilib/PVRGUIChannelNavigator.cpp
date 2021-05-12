@@ -120,7 +120,8 @@ namespace PVR
 
     if (bPlayingTV || bPlayingRadio)
     {
-      const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(bPlayingRadio);
+      const std::shared_ptr<CPVRChannelGroup> group =
+          CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
       if (group)
       {
         CSingleLock lock(m_critSection);

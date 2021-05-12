@@ -150,18 +150,6 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroup> GetNextGroup(const CPVRChannelGroup& group) const;
 
     /*!
-     * @brief Get the group that is currently selected in the UI.
-     * @return The selected group.
-     */
-    std::shared_ptr<CPVRChannelGroup> GetSelectedGroup() const;
-
-    /*!
-     * @brief Change the selected group.
-     * @param selectedGroup The group to select.
-     */
-    void SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>& selectedGroup);
-
-    /*!
      * @brief Add a group to this container.
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.
@@ -231,7 +219,6 @@ namespace PVR
     void RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& channel);
 
     bool m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
-    std::shared_ptr<CPVRChannelGroup> m_selectedGroup; /*!< the group that's currently selected in the UI */
     std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups; /*!< the groups in this container */
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClientsForChannelGroups;

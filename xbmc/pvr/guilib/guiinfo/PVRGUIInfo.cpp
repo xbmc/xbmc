@@ -246,8 +246,10 @@ void CPVRGUIInfo::UpdateMisc()
   const bool bCanRecordPlayingChannel = bStarted && state->CanRecordOnPlayingChannel();
   const bool bIsRecordingPlayingChannel = bStarted && state->IsRecordingOnPlayingChannel();
   const bool bIsPlayingActiveRecording = bStarted && state->IsPlayingActiveRecording();
-  const std::string strPlayingTVGroup = (bStarted && bIsPlayingTV) ? state->GetPlayingGroup(false)->GroupName() : "";
-  const std::string strPlayingRadioGroup = (bStarted && bIsPlayingRadio) ? state->GetPlayingGroup(true)->GroupName() : "";
+  const std::string strPlayingTVGroup =
+      (bStarted && bIsPlayingTV) ? state->GetActiveChannelGroup(false)->GroupName() : "";
+  const std::string strPlayingRadioGroup =
+      (bStarted && bIsPlayingRadio) ? state->GetActiveChannelGroup(true)->GroupName() : "";
 
   CSingleLock lock(m_critSection);
   m_strPlayingClientName = strPlayingClientName;

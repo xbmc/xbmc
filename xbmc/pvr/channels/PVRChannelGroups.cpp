@@ -368,10 +368,6 @@ bool CPVRChannelGroups::Load()
     return false;
   }
 
-  // set the last opened group as selected group at startup
-  std::shared_ptr<CPVRChannelGroup> lastOpenedGroup = GetLastOpenedGroup();
-  SetSelectedGroup(lastOpenedGroup ? lastOpenedGroup : internalGroup);
-
   CLog::LogFC(LOGDEBUG, LOGPVR, "{} {} channel groups loaded", m_groups.size(),
               m_bRadio ? "radio" : "TV");
 
@@ -510,22 +506,6 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(const CPVRChan
   return GetFirstGroup();
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetSelectedGroup() const
-{
-  CSingleLock lock(m_critSection);
-  return m_selectedGroup;
-}
-
-void CPVRChannelGroups::SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>& selectedGroup)
-{
-  CSingleLock lock(m_critSection);
-  m_selectedGroup = selectedGroup;
-
-  auto duration = std::chrono::system_clock::now().time_since_epoch();
-  uint64_t tsMillis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-  m_selectedGroup->SetLastOpened(tsMillis);
-}
-
 bool CPVRChannelGroups::AddGroup(const std::string& strName)
 {
   bool bPersist(false);
@@ -562,7 +542,6 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
   }
 
   bool bFound(false);
-  std::shared_ptr<CPVRChannelGroup> playingGroup;
 
   // delete the group in this container
   {
@@ -571,11 +550,8 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
     {
       if (*(*it) == group || (group.GroupID() > 0 && (*it)->GroupID() == group.GroupID()))
       {
-        // update the selected group in the gui if it's deleted
-        std::shared_ptr<CPVRChannelGroup> selectedGroup = GetSelectedGroup();
-        if (selectedGroup && *selectedGroup == group)
-          playingGroup = GetGroupAll();
 
+        (*it)->SetDeleted();
         it = m_groups.erase(it);
         bFound = true;
 
@@ -587,9 +563,6 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
       }
     }
   }
-
-  if (playingGroup)
-    SetSelectedGroup(playingGroup);
 
   if (group.GroupID() > 0)
   {
