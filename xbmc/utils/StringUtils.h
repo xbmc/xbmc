@@ -375,6 +375,13 @@ public:
    */
   static std::string FormatFileSize(uint64_t bytes);
 
+  /*! \brief Converts a cstring pointer (const char*) to a std::string.
+             In case nullptr is passed the result is an empty string.
+      \param cstr the const pointer to char
+      \return the resulting std::string or ""
+   */
+  static std::string CreateFromCString(const char* cstr);
+
 private:
   /*!
    * Wrapper for CLangInfo::GetOriginalLocale() which allows us to
