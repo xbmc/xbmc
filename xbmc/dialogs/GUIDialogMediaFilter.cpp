@@ -307,8 +307,8 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
       float valueLower = values.at(0).asFloat();
       float valueUpper = values.at(1).asFloat();
 
-      if (valueLower > definitionNumber->GetMinimum() ||
-          valueUpper < definitionNumber->GetMaximum())
+      if (static_cast<double>(valueLower) > definitionNumber->GetMinimum() ||
+          static_cast<double>(valueUpper) < definitionNumber->GetMaximum())
       {
         strValueLower = values.at(0).asString();
         strValueUpper = values.at(1).asString();

@@ -223,7 +223,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PLAYSPEED:
     {
       float speed = g_application.GetAppPlayer().GetPlaySpeed();
-      if (speed == 1.0)
+      if (speed == 1.0f)
         speed = g_application.GetAppPlayer().GetPlayTempo();
       value = StringUtils::Format("{:.2f}", speed);
       return true;
@@ -249,7 +249,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       int playTimeRemaining = GetPlayTimeRemaining();
       float speed = g_application.GetAppPlayer().GetPlaySpeed();
       float tempo = g_application.GetAppPlayer().GetPlayTempo();
-      if (speed == 1.0)
+      if (speed == 1.0f)
         playTimeRemaining /= tempo;
       time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
       value = time.GetAsLocalizedTime(static_cast<TIME_FORMAT>(info.GetData1()));
@@ -258,7 +258,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_TIME_SPEED:
     {
       float speed = g_application.GetAppPlayer().GetPlaySpeed();
-      if (speed != 1.0)
+      if (speed != 1.0f)
         value = StringUtils::Format(
             "{} ({}x)", GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())).c_str(),
             static_cast<int>(speed));
@@ -433,16 +433,16 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_application.GetAppPlayer().IsPlayingGame();
       return true;
     case PLAYER_PLAYING:
-      value = g_application.GetAppPlayer().GetPlaySpeed() == 1.0;
+      value = g_application.GetAppPlayer().GetPlaySpeed() == 1.0f;
       return true;
     case PLAYER_PAUSED:
       value = g_application.GetAppPlayer().IsPausedPlayback();
       return true;
     case PLAYER_REWINDING:
-      value = g_application.GetAppPlayer().GetPlaySpeed() < 0;
+      value = g_application.GetAppPlayer().GetPlaySpeed() < 0.0f;
       return true;
     case PLAYER_FORWARDING:
-      value = g_application.GetAppPlayer().GetPlaySpeed() > 1.5;
+      value = g_application.GetAppPlayer().GetPlaySpeed() > 1.5f;
       return true;
     case PLAYER_REWINDING_2x:
       value = g_application.GetAppPlayer().GetPlaySpeed() == -2;
@@ -485,8 +485,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case PLAYER_IS_TEMPO:
     {
-      value = (g_application.GetAppPlayer().GetPlayTempo() != 1.0 &&
-               g_application.GetAppPlayer().GetPlaySpeed() == 1.0);
+      value = (g_application.GetAppPlayer().GetPlayTempo() != 1.0f &&
+               g_application.GetAppPlayer().GetPlaySpeed() == 1.0f);
       return true;
     }
     case PLAYER_CACHING:

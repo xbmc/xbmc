@@ -185,7 +185,8 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 
   if (m_pageControl)
   {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_scrollOffset / m_itemHeight));
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl,
+                    MathUtils::round_int(static_cast<double>(m_scrollOffset / m_itemHeight)));
     SendWindowMessage(msg);
   }
 

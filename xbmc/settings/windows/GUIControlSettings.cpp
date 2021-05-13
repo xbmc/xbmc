@@ -438,7 +438,7 @@ bool CGUIControlSpinExSetting::OnClick()
       auto pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       const auto& controlFormat = m_pSetting->GetControl()->GetFormat();
       if (controlFormat == "number")
-        SetValid(pSettingNumber->SetValue(m_pSpin->GetFloatValue()));
+        SetValid(pSettingNumber->SetValue(static_cast<double>(m_pSpin->GetFloatValue())));
       else
         SetValid(pSettingNumber->SetValue(pSettingNumber->GetMinimum() +
                                           pSettingNumber->GetStep() * m_pSpin->GetValue()));
@@ -1362,7 +1362,7 @@ bool CGUIControlSliderSetting::OnClick()
 
     case SettingType::Number:
       SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)
-                   ->SetValue(m_pSlider->GetFloatValue()));
+                   ->SetValue(static_cast<double>(m_pSlider->GetFloatValue())));
       break;
 
     default:
@@ -1407,7 +1407,7 @@ void CGUIControlSliderSetting::Update(bool fromControl, bool updateDisplayOnly)
           std::static_pointer_cast<CSettingNumber>(m_pSetting);
       double value;
       if (fromControl)
-        value = m_pSlider->GetFloatValue();
+        value = static_cast<double>(m_pSlider->GetFloatValue());
       else
       {
         value = std::static_pointer_cast<CSettingNumber>(m_pSetting)->GetValue();

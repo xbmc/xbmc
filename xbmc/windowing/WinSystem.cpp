@@ -117,7 +117,7 @@ static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int
       // check if the refresh rate of this resolution is better suited than
       // the refresh rate of the resolution with the same width/height/interlaced
       // property and if so replace it
-      if (bestRefreshrate > 0.0 && refreshrate == bestRefreshrate)
+      if (bestRefreshrate > 0.0f && refreshrate == bestRefreshrate)
         resolutions[idx].ResInfo_Index = addindex;
 
       // no need to add the resolution again

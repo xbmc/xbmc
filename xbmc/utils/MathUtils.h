@@ -118,7 +118,8 @@ namespace MathUtils
     int i;
 #if defined(HAVE_SSE2) && defined(__SSE2__)
     const float round_dn_to_nearest = 0.4999999f;
-    i = (x > 0) ? _mm_cvttsd_si32(_mm_set_sd(x + round_to_nearest)) : _mm_cvttsd_si32(_mm_set_sd(x - round_dn_to_nearest));
+    i = (x > 0) ? _mm_cvttsd_si32(_mm_set_sd(x + static_cast<double>(round_to_nearest)))
+                : _mm_cvttsd_si32(_mm_set_sd(x - static_cast<double>(round_dn_to_nearest)));
 
 #elif defined(TARGET_WINDOWS)
     __asm

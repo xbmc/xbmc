@@ -139,7 +139,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
   {
-    if (((m_fWidth / m_fHeight) > 1.9) || ((m_fHeight / m_fWidth) > 1.9))
+    if (((m_fWidth / m_fHeight) > 1.9f) || ((m_fHeight / m_fWidth) > 1.9f))
       m_displayEffect = EFFECT_PANORAMA;
     else
       m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
@@ -329,7 +329,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
           int i;
           for (i = 0; i < 10; i++)
           {
-            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01*zoomamount[i])
+            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01f * zoomamount[i])
             {
               m_fZoomAmount = zoomamount[i];
               break;
@@ -448,8 +448,8 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   // Rotate the image as needed
   float x[4];
   float y[4];
-  float si = (float)sin(m_fAngle / 180.0f * M_PI);
-  float co = (float)cos(m_fAngle / 180.0f * M_PI);
+  float si = sin(m_fAngle / 180.0f * static_cast<float>(M_PI));
+  float co = cos(m_fAngle / 180.0f * static_cast<float>(M_PI));
   x[0] = -m_fWidth * co + m_fHeight * si;
   y[0] = -m_fWidth * si - m_fHeight * co;
   x[1] = m_fWidth * co + m_fHeight * si;

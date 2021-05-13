@@ -409,8 +409,8 @@
     static UIPanGestureRecognizerDirection direction = UIPanGestureRecognizerDirectionUndefined;
     // speed       == how many clicks full swipe will give us(1000x1000px)
     // minVelocity == min velocity to trigger fast scroll, add this to settings?
-    float speed = 240.0f;
-    float minVelocity = 1300.0f;
+    double speed = 240.0;
+    double minVelocity = 1300.0;
     switch (sender.state)
     {
 

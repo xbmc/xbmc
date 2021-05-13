@@ -123,9 +123,9 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
         if (m_pcmOutput)
           delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
         else
-          delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+          delay += static_cast<float>(m_sinkFormat.m_streamInfo.GetDuration() / 1000.0);
       }
-      str.m_bufferedTime = delay;
+      str.m_bufferedTime = static_cast<double>(delay);
       stream->m_bufferedTime = 0;
       break;
     }
@@ -137,7 +137,7 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
   status = m_sinkDelay;
-  status.delay += m_sinkLatency;
+  status.delay += static_cast<double>(m_sinkLatency);
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
@@ -148,8 +148,8 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
     if (str.m_streamId == stream->m_id)
     {
       CSingleLock lock(stream->m_statsLock);
-      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
-      status.delay += buffertime / str.m_resampleRatio;
+      float buffertime = static_cast<float>(str.m_bufferedTime) + stream->m_bufferedTime;
+      status.delay += static_cast<double>(buffertime) / str.m_resampleRatio;
       return;
     }
   }
@@ -166,15 +166,15 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   else
     status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
-  status.delay += m_sinkLatency;
+  status.delay += static_cast<double>(m_sinkLatency);
 
   for (auto &str : m_streamStats)
   {
     if (str.m_streamId == stream->m_id)
     {
       CSingleLock lock(stream->m_statsLock);
-      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
-      status.delay += buffertime / str.m_resampleRatio;
+      float buffertime = static_cast<float>(str.m_bufferedTime) + stream->m_bufferedTime;
+      status.delay += static_cast<double>(buffertime) / str.m_resampleRatio;
       info.delay = status.GetDelay();
       info.error = str.m_syncError;
       info.errortime = str.m_errorTime;
@@ -195,8 +195,8 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
     if (str.m_streamId == stream->m_id)
     {
       CSingleLock lock(stream->m_statsLock);
-      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
-      delay += buffertime / str.m_resampleRatio;
+      float buffertime = static_cast<float>(str.m_bufferedTime) + stream->m_bufferedTime;
+      delay += buffertime / static_cast<float>(str.m_resampleRatio);
       break;
     }
   }
@@ -210,16 +210,17 @@ float CEngineStats::GetCacheTotal()
 
 float CEngineStats::GetMaxDelay() const
 {
-  return MAX_CACHE_LEVEL + MAX_WATER_LEVEL + m_sinkCacheTotal;
+  return static_cast<float>(MAX_CACHE_LEVEL) + static_cast<float>(MAX_WATER_LEVEL) +
+         m_sinkCacheTotal;
 }
 
 float CEngineStats::GetWaterLevel()
 {
   CSingleLock lock(m_lock);
   if (m_pcmOutput)
-    return (float)m_bufferedSamples / m_sinkSampleRate;
+    return static_cast<float>(m_bufferedSamples) / m_sinkSampleRate;
   else
-    return (float)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    return static_cast<float>(m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration()) / 1000;
 }
 
 void CEngineStats::SetSuspended(bool state)
@@ -1904,7 +1905,8 @@ bool CActiveAE::RunStages()
       float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
       if ((*it)->m_inputBuffers->m_format.m_dataFormat == AE_FMT_RAW)
         buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration() / 1000;
-      while ((time < MAX_CACHE_LEVEL || (*it)->m_streamIsBuffering) && !(*it)->m_inputBuffers->m_freeSamples.empty())
+      while ((time < static_cast<float>(MAX_CACHE_LEVEL) || (*it)->m_streamIsBuffering) &&
+             !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
         buffer = (*it)->m_inputBuffers->GetFreeBuffer();
         (*it)->m_processingSamples.push_back(buffer);
@@ -1943,8 +1945,8 @@ bool CActiveAE::RunStages()
     }
   }
 
-  if (m_stats.GetWaterLevel() < MAX_WATER_LEVEL &&
-     (m_mode != MODE_TRANSCODE || (m_encoderBuffers && !m_encoderBuffers->m_freeSamples.empty())))
+  if (m_stats.GetWaterLevel() < static_cast<float>(MAX_WATER_LEVEL) &&
+      (m_mode != MODE_TRANSCODE || (m_encoderBuffers && !m_encoderBuffers->m_freeSamples.empty())))
   {
     // calculate sync error
     for (it = m_streams.begin(); it != m_streams.end(); ++it)
@@ -2065,7 +2067,8 @@ bool CActiveAE::RunStages()
             // turned off downmix normalization,
             // or if sink format is float (in order to prevent from clipping)
             // we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0 || !(*it)->m_processingBuffers->DoesNormalize() || (m_sinkFormat.m_dataFormat == AE_FMT_FLOAT))
+            if ((*it)->m_amplify != 1.0f || !(*it)->m_processingBuffers->DoesNormalize() ||
+                (m_sinkFormat.m_dataFormat == AE_FMT_FLOAT))
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
@@ -2132,7 +2135,7 @@ bool CActiveAE::RunStages()
 
             // for streams amplification of turned off downmix normalization
             // we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0 || !(*it)->m_processingBuffers->DoesNormalize())
+            if ((*it)->m_amplify != 1.0f || !(*it)->m_processingBuffers->DoesNormalize())
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
@@ -2585,7 +2588,7 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
 
 void CActiveAE::Deamplify(CSoundPacket &dstSample)
 {
-  if (m_volumeScaled < 1.0 || m_muted)
+  if (m_volumeScaled < 1.0f || m_muted)
   {
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
     float volume = m_muted ? 0.0f : m_volumeScaled;

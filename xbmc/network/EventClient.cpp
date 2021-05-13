@@ -422,7 +422,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
         std::list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
-        if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
+        if (it2->m_bUseAmount && it2->m_fAmount != 0.0f)
         {
           m_buttonQueue.push_back(state);
         }
@@ -445,7 +445,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       else if(active && !it->m_bActive)
       {
         m_buttonQueue.push_back(state);
-        if(!state.m_bRepeat && state.m_bAxis && state.m_fAmount != 0.0)
+        if (!state.m_bRepeat && state.m_bAxis && state.m_fAmount != 0.0f)
         {
           state.m_bActive = false;
           state.m_bRepeat = false;
@@ -476,7 +476,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     {
       /* when a button is released that had amount, make sure *
        * to resend the keypress with an amount of 0           */
-      if((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0)
+      if ((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0f)
       {
         CEventButtonState state( m_currentButton.m_iKeyCode,
                                  m_currentButton.m_mapName,

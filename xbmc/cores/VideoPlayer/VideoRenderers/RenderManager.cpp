@@ -866,7 +866,8 @@ void CRenderManager::UpdateLatencyTweak()
   float refresh = fps;
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
-  m_latencyTweak = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(refresh);
+  m_latencyTweak = static_cast<double>(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(refresh));
 }
 
 void CRenderManager::UpdateResolution()
@@ -1099,9 +1100,15 @@ void CRenderManager::PrepareNextRender()
     return;
 
   double frameOnScreen = m_dvdClock.GetClock();
-  double frametime = 1.0 / CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS() * DVD_TIME_BASE;
+  double frametime = 1.0 /
+                     static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS()) *
+                     DVD_TIME_BASE;
 
-  m_displayLatency = DVD_MSEC_TO_TIME(m_latencyTweak + CServiceBroker::GetWinSystem()->GetGfxContext().GetDisplayLatency() - m_videoDelay - CServiceBroker::GetWinSystem()->GetFrameLatencyAdjustment());
+  m_displayLatency = DVD_MSEC_TO_TIME(
+      m_latencyTweak +
+      static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetDisplayLatency()) -
+      m_videoDelay -
+      static_cast<double>(CServiceBroker::GetWinSystem()->GetFrameLatencyAdjustment()));
 
   double renderPts = frameOnScreen + m_displayLatency;
 
@@ -1171,7 +1178,8 @@ void CRenderManager::PrepareNextRender()
       m_queued.pop_front();
     }
 
-    int lateframes = static_cast<int>((renderPts - m_Queue[idx].pts) * m_fps / DVD_TIME_BASE);
+    int lateframes = static_cast<int>((renderPts - m_Queue[idx].pts) *
+                                      static_cast<double>(m_fps / DVD_TIME_BASE));
     if (lateframes)
       m_lateframes += lateframes;
     else
@@ -1230,7 +1238,7 @@ void CRenderManager::CheckEnableClockSync()
 
   if (m_fps != 0)
   {
-    double fps = m_fps;
+    double fps = static_cast<double>(m_fps);
     double refreshrate, clockspeed;
     int missedvblanks;
     if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
@@ -1238,7 +1246,7 @@ void CRenderManager::CheckEnableClockSync()
       fps *= clockspeed;
     }
 
-    diff = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS() / fps;
+    diff = static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS()) / fps;
     if (diff < 1.0)
       diff = 1.0 / diff;
 

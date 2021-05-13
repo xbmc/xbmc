@@ -188,7 +188,7 @@ std::string field_value::get_asString() const {
     }
     case ft_Float: {
       char t[16];
-      sprintf(t,"%f",float_value);
+      sprintf(t, "%f", static_cast<double>(float_value));
       return tmp = t;
     }
     case ft_Double: {
@@ -288,7 +288,7 @@ char field_value::get_asChar() const {
     }
     case ft_Float: {
       char t[16];
-      sprintf(t,"%f",float_value);
+      sprintf(t, "%f", static_cast<double>(float_value));
       return t[0];
     }
     case ft_Double: {

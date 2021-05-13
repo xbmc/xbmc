@@ -797,7 +797,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   else if (uri == "/rate")
   {
       const char* found = strstr(queryString.c_str(), "value=");
-      int rate = found ? (int)(atof(found + strlen("value=")) + 0.5f) : 0;
+      int rate = found ? (int)(atof(found + strlen("value=")) + 0.5) : 0;
 
       CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with rate %i", uri.c_str(), rate);
 

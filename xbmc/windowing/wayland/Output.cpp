@@ -128,7 +128,10 @@ float COutput::GetDpiForMode(const Mode& mode) const
 
     float diagonalPixels = std::sqrt(mode.size.Width() * mode.size.Width() + mode.size.Height() * mode.size.Height());
     // physicalWidth/physicalHeight is in millimeters
-    float diagonalInches = std::sqrt(m_physicalSize.Width() * m_physicalSize.Width() + m_physicalSize.Height() * m_physicalSize.Height()) / INCH_MM_RATIO;
+    float diagonalInches =
+        std::sqrt(static_cast<float>(m_physicalSize.Width() * m_physicalSize.Width() +
+                                     m_physicalSize.Height() * m_physicalSize.Height())) /
+        INCH_MM_RATIO;
 
     return diagonalPixels / diagonalInches;
   }

@@ -1141,7 +1141,9 @@ CSettingNumber::CSettingNumber(const std::string& id,
                                int label,
                                float value,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingNumber"), m_value(value), m_default(value)
+  : CTraitedSetting(id, settingsManager, "CSettingNumber"),
+    m_value(static_cast<double>(value)),
+    m_default(static_cast<double>(value))
 {
   SetLabel(label);
 }
@@ -1154,11 +1156,11 @@ CSettingNumber::CSettingNumber(const std::string& id,
                                float maximum,
                                CSettingsManager* settingsManager /* = nullptr */)
   : CTraitedSetting(id, settingsManager, "CSettingNumber"),
-    m_value(value),
-    m_default(value),
-    m_min(minimum),
-    m_step(step),
-    m_max(maximum)
+    m_value(static_cast<double>(value)),
+    m_default(static_cast<double>(value)),
+    m_min(static_cast<double>(minimum)),
+    m_step(static_cast<double>(step)),
+    m_max(static_cast<double>(maximum))
 {
   SetLabel(label);
 }

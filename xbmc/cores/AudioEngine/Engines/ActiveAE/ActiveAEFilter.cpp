@@ -50,7 +50,7 @@ void CActiveAEFilter::Init(AVSampleFormat fmt, int sampleRate, uint64_t channelL
 bool CActiveAEFilter::SetTempo(float tempo)
 {
   m_tempo = tempo;
-  if (m_tempo == 1.0)
+  if (m_tempo == 1.0f)
   {
     CloseFilter();
     return true;

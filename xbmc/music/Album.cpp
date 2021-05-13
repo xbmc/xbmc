@@ -539,7 +539,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10
     if (rating > 10.f)
       rating = 10.f;
-    iUserrating = MathUtils::round_int(rating);
+    iUserrating = MathUtils::round_int(static_cast<double>(rating));
   }
   XMLUtils::GetInt(album, "votes", iVotes);
 

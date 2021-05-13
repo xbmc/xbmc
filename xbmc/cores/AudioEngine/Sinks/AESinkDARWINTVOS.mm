@@ -335,7 +335,7 @@ void CAAudioUnitSink::updatedelay(AEDelayStatus& status)
   status.delay += static_cast<double>(size) / static_cast<double>(m_frameSize) /
                   static_cast<double>(m_sampleRate);
   // add in hw delay and total latency (in seconds)
-  status.delay += m_totalLatency;
+  status.delay += static_cast<double>(m_totalLatency);
 }
 
 double CAAudioUnitSink::buffertime()

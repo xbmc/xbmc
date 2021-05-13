@@ -52,7 +52,8 @@ void RFFT::calc(const float* input, float* output)
 
   auto&& filter = [&](kiss_fft_cpx& data)
   {
-    return sqrt(data.r*data.r+data.i*data.i) * 2.0/m_size * (m_windowed?sqrt(8.0/3.0):1.0);
+    return static_cast<double>(sqrt(data.r * data.r + data.i * data.i)) * 2.0 / m_size *
+           (m_windowed ? sqrt(8.0 / 3.0) : 1.0);
   };
 
   // interleave while taking magnitudes and normalizing
@@ -68,5 +69,5 @@ void RFFT::calc(const float* input, float* output)
 void RFFT::hann(std::vector<kiss_fft_scalar>& data)
 {
   for (size_t i=0;i<data.size();++i)
-    data[i] *= 0.5*(1.0-cos(2*M_PI*i/(data.size()-1)));
+    data[i] *= 0.5f * (1.0f - cos(2.0f * static_cast<float>(M_PI) * i / (data.size() - 1)));
 }

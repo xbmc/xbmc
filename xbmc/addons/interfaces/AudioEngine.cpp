@@ -731,11 +731,11 @@ double Interface_AudioEngine::aestream_get_resample_ratio(void* kodiBase,
     CLog::Log(LOGERROR,
               "Interface_AudioEngine::{} - invalid stream data (kodiBase='{}', streamHandle='{}')",
               __FUNCTION__, kodiBase, static_cast<void*>(streamHandle));
-    return -1.0f;
+    return -1.0;
   }
 
   if (!CServiceBroker::GetActiveAE())
-    return -1.0f;
+    return -1.0;
 
   return static_cast<IAEStream*>(streamHandle)->GetResampleRatio();
 }

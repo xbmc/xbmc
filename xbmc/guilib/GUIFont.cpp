@@ -90,7 +90,8 @@ void CGUIFont::DrawText( float x, float y, const std::vector<UTILS::Color> &colo
   if (clip && ClippedRegionIsEmpty(x, y, maxPixelWidth, alignment))
     return;
 
-  maxPixelWidth = ROUND(maxPixelWidth / CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX());
+  maxPixelWidth = ROUND(static_cast<double>(
+      maxPixelWidth / CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX()));
   std::vector<UTILS::Color> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(colors[i] ? colors[i] : m_textColor));
@@ -174,8 +175,11 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<UTILS::Colo
 
   assert(scrollInfo.m_totalWidth != 0);
 
-  float textPixelWidth = ROUND(scrollInfo.m_textWidth / CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX());
-  float suffixPixelWidth = ROUND((scrollInfo.m_totalWidth - scrollInfo.m_textWidth) / CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX());
+  float textPixelWidth = ROUND(static_cast<double>(
+      scrollInfo.m_textWidth / CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX()));
+  float suffixPixelWidth =
+      ROUND(static_cast<double>((scrollInfo.m_totalWidth - scrollInfo.m_textWidth) /
+                                CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX()));
 
   float offset;
   if(scrollInfo.pixelSpeed >= 0)

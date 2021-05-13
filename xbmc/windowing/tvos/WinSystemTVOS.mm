@@ -223,7 +223,7 @@ bool CWinSystemTVOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool b
   m_bFullScreen = fullScreen;
 
   CLog::Log(LOGDEBUG, "About to switch to {} x {} @ {}", m_nWidth, m_nHeight, res.fRefreshRate);
-  SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate);
+  SwitchToVideoMode(res.iWidth, res.iHeight, static_cast<double>(res.fRefreshRate));
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
   return true;
@@ -243,7 +243,7 @@ bool CWinSystemTVOS::GetScreenResolution(int* w, int* h, double* fps, int screen
 {
   *w = [g_xbmcController.displayManager getScreenSize].width;
   *h = [g_xbmcController.displayManager getScreenSize].height;
-  *fps = [g_xbmcController.displayManager getDisplayRate];
+  *fps = static_cast<double>([g_xbmcController.displayManager getDisplayRate]);
 
   CLog::Log(LOGDEBUG, "Current resolution Screen: {} with {} x {} @ {}", screenIdx, *w, *h, *fps);
   return true;

@@ -265,7 +265,7 @@ void CConvolutionKernel::ToIntFract()
 
   for (int i = 0; i < m_size * 4; i++)
   {
-    int value = MathUtils::round_int((m_floatpixels[i] + 1.0) / 2.0 * 65535.0);
+    int value = MathUtils::round_int((static_cast<double>(m_floatpixels[i]) + 1.0) / 2.0 * 65535.0);
     if (value < 0)
       value = 0;
     else if (value > 65535)
@@ -286,7 +286,7 @@ void CConvolutionKernel::ToUint8()
 
   for (int i = 0; i < m_size * 4; i++)
   {
-    int value = MathUtils::round_int((m_floatpixels[i] * 0.5 + 0.5) * 255.0);
+    int value = MathUtils::round_int((static_cast<double>(m_floatpixels[i]) * 0.5 + 0.5) * 255.0);
     if (value < 0)
       value = 0;
     else if (value > 255)

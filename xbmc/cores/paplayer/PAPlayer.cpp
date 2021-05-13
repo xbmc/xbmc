@@ -470,7 +470,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   si->m_stream->SetVolume(si->m_volume);
   float peak = 1.0;
   float gain = si->m_decoder.GetReplayGain(peak);
-  if (peak * gain <= 1.0)
+  if (peak * gain <= 1.0f)
     // No clipping protection needed
     si->m_stream->SetReplayGain(gain);
   else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
@@ -980,7 +980,7 @@ bool PAPlayer::SetTotalTimeInternal(int64_t time)
 
   m_currentStream->m_decoder.SetTotalTime(time);
   UpdateGUIData(m_currentStream);
-  
+
   return true;
 }
 
@@ -994,7 +994,7 @@ bool PAPlayer::SetTimeInternal(int64_t time)
 
   if (m_currentStream->m_stream)
     m_currentStream->m_framesSent += m_currentStream->m_stream->GetDelay() * m_currentStream->m_audioFormat.m_sampleRate;
-  
+
   return true;
 }
 

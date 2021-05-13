@@ -44,7 +44,8 @@ int CVideoGUIInfo::GetPercentPlayed(const CVideoInfoTag* tag) const
 {
   CBookmark bookmark = tag->GetResumePoint();
   if (bookmark.IsPartWay())
-    return std::lrintf(static_cast<float>(bookmark.timeInSeconds) / bookmark.totalTimeInSeconds * 100.0f);
+    return std::lrintf(static_cast<float>(bookmark.timeInSeconds) /
+                       static_cast<float>(bookmark.totalTimeInSeconds) * 100.0f);
   else
     return 0;
 }
@@ -347,8 +348,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         break;
       case LISTITEM_PLOT:
         {
-          std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>( 
-            CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
+          std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(
+              CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+                  CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
           if (tag->m_type != MediaTypeTvShow && tag->m_type != MediaTypeVideoCollection &&
               tag->GetPlayCount() == 0 && setting &&
               ((tag->m_type == MediaTypeMovie &&

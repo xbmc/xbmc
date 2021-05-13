@@ -815,9 +815,10 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
     {
       // Compute 35 mm equivalent focal length based on sensor geometry if we haven't
       // already got it explicitly from a tag.
-      if (m_ExifInfo->CCDWidth != 0.0)
+      if (m_ExifInfo->CCDWidth != 0.0f)
       {
-        m_ExifInfo->FocalLength35mmEquiv = (int)(m_ExifInfo->FocalLength/m_ExifInfo->CCDWidth*36 + 0.5);
+        m_ExifInfo->FocalLength35mmEquiv =
+            (int)(m_ExifInfo->FocalLength / m_ExifInfo->CCDWidth * 36 + 0.5f);
       }
     }
   }
@@ -936,7 +937,7 @@ void CExifParse::ProcessGpsInfo(
       case TAG_GPS_ALT:
         {
           char temp[18];
-          sprintf(temp, "%.2fm", static_cast<float>(ConvertAnyFormat(ValuePtr, Format)));
+          sprintf(temp, "%.2fm", static_cast<double>(ConvertAnyFormat(ValuePtr, Format)));
           strcat(m_ExifInfo->GpsAlt, temp);
         }
       break;

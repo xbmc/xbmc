@@ -164,7 +164,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       // calculate the current and average speeds
       float end = timer.GetElapsedSeconds();
 
-      if (pCallback && end - start > 0.5 && end)
+      if (pCallback && end - start > 0.5f && end)
       {
         start = end;
 
@@ -1081,7 +1081,7 @@ double CFile::GetDownloadSpeed()
 {
   if (m_pFile)
     return m_pFile->GetDownloadSpeed();
-  return 0.0f;
+  return 0.0;
 }
 
 //*********************************************************************************************

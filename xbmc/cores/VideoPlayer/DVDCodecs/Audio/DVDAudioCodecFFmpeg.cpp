@@ -97,8 +97,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   float applyDrc = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioApplyDrc;
-  if (applyDrc >= 0.0)
-    av_opt_set_double(m_pCodecContext, "drc_scale", applyDrc, AV_OPT_SEARCH_CHILDREN);
+  if (applyDrc >= 0.0f)
+    av_opt_set_double(m_pCodecContext, "drc_scale", static_cast<double>(applyDrc),
+                      AV_OPT_SEARCH_CHILDREN);
 
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {

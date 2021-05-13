@@ -747,7 +747,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   { // do the drag and validate our offset (corrects for end of scroll)
     m_scroller.SetValue(m_scroller.GetValue() - ((m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY));
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
-    int offset = MathUtils::round_int(m_scroller.GetValue() / size);
+    int offset = MathUtils::round_int(static_cast<double>(m_scroller.GetValue() / size));
     m_lastScrollStartTimer.Stop();
     m_scrollTimer.Start();
     const int absCursor = CorrectOffset(GetOffset(), GetCursor());
@@ -778,7 +778,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     // and compute the nearest offset from this and scroll there
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     float offset = m_scroller.GetValue() / size;
-    int toOffset = MathUtils::round_int(offset);
+    int toOffset = MathUtils::round_int(static_cast<double>(offset));
     if (toOffset < offset)
       SetOffset(toOffset+1);
     else

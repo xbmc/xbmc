@@ -959,7 +959,7 @@ double Interface_Filesystem::get_file_download_speed(void* kodiBase, void* file)
   {
     CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', file='{}')",
               __FUNCTION__, kodiBase, file);
-    return 0.0f;
+    return 0.0;
   }
 
   return static_cast<CFile*>(file)->GetDownloadSpeed();

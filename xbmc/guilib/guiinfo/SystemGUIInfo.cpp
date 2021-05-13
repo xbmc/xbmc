@@ -249,13 +249,14 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
 #endif
     case SYSTEM_ALARM_POS:
-      if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
+      if (g_alarmClock.GetRemaining("shutdowntimer") == 0.0)
         value.clear();
       else
       {
         double fTime = g_alarmClock.GetRemaining("shutdowntimer");
-        if (fTime > 60.f)
-          value = StringUtils::Format(g_localizeStrings.Get(13213).c_str(), g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        if (fTime > 60.0)
+          value = StringUtils::Format(g_localizeStrings.Get(13213).c_str(),
+                                      g_alarmClock.GetRemaining("shutdowntimer") / 60.0);
         else
           value = StringUtils::Format(g_localizeStrings.Get(13214).c_str(), g_alarmClock.GetRemaining("shutdowntimer"));
       }

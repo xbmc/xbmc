@@ -876,7 +876,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         m_hints.fpsscale = m_mpeg2_sequence->fps_scale;
         m_hints.width    = m_mpeg2_sequence->width;
         m_hints.height   = m_mpeg2_sequence->height;
-        m_hints.aspect   = m_mpeg2_sequence->ratio;
+        m_hints.aspect = static_cast<double>(m_mpeg2_sequence->ratio);
 
         m_processInfo.SetVideoDAR(m_hints.aspect);
         UpdateFpsDuration();

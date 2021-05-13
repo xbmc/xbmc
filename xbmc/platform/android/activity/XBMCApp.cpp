@@ -553,10 +553,10 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001)
+    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001f)
     {
       params.setpreferredRefreshRate(rate);
-      if (params.getpreferredRefreshRate() > 0.0)
+      if (params.getpreferredRefreshRate() > 0.0f)
       {
         window.setAttributes(params);
         return;
@@ -589,14 +589,14 @@ void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
 
 void CXBMCApp::SetRefreshRate(float rate)
 {
-  if (rate < 1.0)
+  if (rate < 1.0f)
     return;
 
   CJNIWindow window = getWindow();
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) <= 0.001)
+    if (fabs(params.getpreferredRefreshRate() - rate) <= 0.001f)
       return;
   }
 

@@ -1553,7 +1553,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
     {
       double bestRelevance = 0;
-      double minRelevance = THRESHOLD;
+      double minRelevance = static_cast<double>(THRESHOLD);
       if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
       {
         //show dialog with all albums found
@@ -1570,7 +1570,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
-          double relevance = info.GetRelevance();
+          double relevance = static_cast<double>(info.GetRelevance());
           if (relevance < 0)
             relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum,
                         info.GetAlbum().GetAlbumArtistString(),
@@ -1606,7 +1606,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
             items.Add(item);
           }
-          if (!pDialog && relevance > .999f) // we're so close, no reason to search further
+          if (!pDialog && relevance > 0.999) // we're so close, no reason to search further
             break;
         }
 
@@ -1649,13 +1649,13 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       else
       {
         CMusicAlbumInfo& info = scraper.GetAlbum(0);
-        double relevance = info.GetRelevance();
+        double relevance = static_cast<double>(info.GetRelevance());
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
                                             album.strAlbum,
                                             info.GetAlbum().GetAlbumArtistString(),
                                             album.GetAlbumArtistString());
-        if (relevance < THRESHOLD)
+        if (relevance < static_cast<double>(THRESHOLD))
           return INFO_NOT_FOUND;
 
         iSelectedAlbum = 0;

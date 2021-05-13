@@ -44,7 +44,7 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
     {
       m_analogScrollCount += action.GetAmount() * action.GetAmount();
       bool handled = false;
-      while (m_analogScrollCount > 0.4)
+      while (m_analogScrollCount > 0.4f)
       {
         handled = true;
         m_analogScrollCount -= 0.4f;
@@ -57,7 +57,7 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
     {
       m_analogScrollCount += action.GetAmount() * action.GetAmount();
       bool handled = false;
-      while (m_analogScrollCount > 0.4)
+      while (m_analogScrollCount > 0.4f)
       {
         handled = true;
         m_analogScrollCount -= 0.4f;

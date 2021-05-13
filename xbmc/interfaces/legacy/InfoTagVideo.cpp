@@ -136,7 +136,7 @@ namespace XBMCAddon
 
     double InfoTagVideo::getRating()
     {
-      return infoTag->GetRating().rating;
+      return static_cast<double>(infoTag->GetRating().rating);
     }
 
     int InfoTagVideo::getUserRating()

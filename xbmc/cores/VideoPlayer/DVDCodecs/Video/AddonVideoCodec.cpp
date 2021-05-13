@@ -256,7 +256,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
 
     pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
     pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
-    if (m_displayAspect > 0.0)
+    if (m_displayAspect > 0.0f)
     {
       pVideoPicture->iDisplayWidth = ((int)lrint(pVideoPicture->iHeight * m_displayAspect)) & ~3;
       if (pVideoPicture->iDisplayWidth > pVideoPicture->iWidth)

@@ -352,7 +352,7 @@ float CCPUInfoLinux::GetCPUFrequency()
     return 0;
 
   CSysfsPath path{m_freqPath};
-  return path.Get<float>() / 1000.0;
+  return path.Get<float>() / 1000.0f;
 }
 
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)

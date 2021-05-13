@@ -493,8 +493,8 @@ const std::string CPictureInfoTag::GetInfo(int info) const
         value = StringUtils::Format("{:6.4f}s", m_exifInfo.ExposureTime);
       else
         value = StringUtils::Format("{:5.3f}s", m_exifInfo.ExposureTime);
-      if (m_exifInfo.ExposureTime <= 0.5)
-        value += StringUtils::Format(" (1/{})", (int)(0.5 + 1 / m_exifInfo.ExposureTime));
+      if (m_exifInfo.ExposureTime <= 0.5f)
+        value += StringUtils::Format(" (1/{})", static_cast<int>(0.5f + 1 / m_exifInfo.ExposureTime));
     }
     break;
   case SLIDESHOW_EXIF_EXPOSURE_BIAS:

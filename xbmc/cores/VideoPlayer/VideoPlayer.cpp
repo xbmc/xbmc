@@ -1250,7 +1250,8 @@ void CVideoPlayer::Prepare()
   {
     if (m_playerOptions.startpercent > 0 && m_pDemuxer)
     {
-      int playerStartTime = (int)( ( (float) m_pDemuxer->GetStreamLength() ) * ( m_playerOptions.startpercent/(float)100 ) );
+      int playerStartTime = static_cast<int>((static_cast<double>(
+          m_pDemuxer->GetStreamLength() * (m_playerOptions.startpercent / 100.0))));
       starttime = m_Edl.RestoreCutTime(playerStartTime);
     }
     else
@@ -2109,9 +2110,9 @@ void CVideoPlayer::HandlePlaySpeed()
   if (!m_State.cantempo)
   {
     float currentTempo = m_processInfo->GetNewTempo();
-    if (currentTempo != 1.0)
+    if (currentTempo != 1.0f)
     {
-      SetTempo(1.0);
+      SetTempo(1.0f);
     }
   }
 }
@@ -2872,7 +2873,7 @@ void CVideoPlayer::HandleMessages()
       if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
       {
         int frames = static_cast<CDVDMsgInt*>(pMsg)->m_value;
-        double time = DVD_TIME_BASE / m_processInfo->GetVideoFps() * frames;
+        double time = DVD_TIME_BASE / static_cast<double>(m_processInfo->GetVideoFps()) * frames;
         m_processInfo->SetFrameAdvance(true);
         m_clock.Advance(time);
       }
@@ -3215,7 +3216,7 @@ float CVideoPlayer::GetAVDelay()
 void CVideoPlayer::SetSubTitleDelay(float fValue)
 {
   m_processInfo->UpdateVideoSettings().SetSubtitleDelay(fValue);
-  m_VideoPlayerVideo->SetSubtitleDelay(-fValue * DVD_TIME_BASE);
+  m_VideoPlayerVideo->SetSubtitleDelay(static_cast<double>(-fValue) * DVD_TIME_BASE);
 }
 
 float CVideoPlayer::GetSubTitleDelay()
@@ -3346,7 +3347,7 @@ void CVideoPlayer::SetSpeed(float speed)
     if (iSpeed == DVD_PLAYSPEED_NORMAL)
     {
       float currentTempo = m_processInfo->GetNewTempo();
-      if (currentTempo != 1.0)
+      if (currentTempo != 1.0f)
       {
         SetTempo(currentTempo);
         return;
@@ -3358,7 +3359,7 @@ void CVideoPlayer::SetSpeed(float speed)
 
 void CVideoPlayer::SetTempo(float tempo)
 {
-  tempo = floor(tempo * 100 + 0.5) / 100;
+  tempo = floor(tempo * 100.0f + 0.5f) / 100.0f;
   if (m_processInfo->IsTempoAllowed(tempo))
   {
     int speed = tempo * DVD_PLAYSPEED_NORMAL;
@@ -3552,9 +3553,9 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   {
     /* set aspect ratio as requested by navigator for dvd's */
     float aspect = std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream)->GetVideoAspectRatio();
-    if (aspect != 0.0)
+    if (aspect != 0.0f)
     {
-      hint.aspect = aspect;
+      hint.aspect = static_cast<double>(aspect);
       hint.forced_aspect = true;
     }
     hint.dvd = true;
@@ -4032,7 +4033,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         m_overlayContainer.Clear();
 
         //Force an aspect ratio that is set in the dvdheaders if available
-        m_CurrentVideo.hint.aspect = pStream->GetVideoAspectRatio();
+        m_CurrentVideo.hint.aspect = static_cast<double>(pStream->GetVideoAspectRatio());
         if( m_VideoPlayerVideo->IsInited() )
           m_VideoPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, m_CurrentVideo.hint.aspect));
 

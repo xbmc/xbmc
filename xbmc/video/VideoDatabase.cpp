@@ -1569,7 +1569,10 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
       {
         m_pDS->close();
         // doesn't exists, add it
-        strSQL = PrepareSQL("INSERT INTO rating (media_id, media_type, rating_type, rating, votes) VALUES (%i, '%s', '%s', %f, %i)", mediaId, mediaType, i.first.c_str(), i.second.rating, i.second.votes);
+        strSQL = PrepareSQL("INSERT INTO rating (media_id, media_type, rating_type, rating, votes) "
+                            "VALUES (%i, '%s', '%s', %f, %i)",
+                            mediaId, mediaType, i.first.c_str(),
+                            static_cast<double>(i.second.rating), i.second.votes);
         m_pDS->exec(strSQL);
         id = (int)m_pDS->lastinsertid();
       }
@@ -1577,7 +1580,8 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
       {
         id = m_pDS->fv(0).get_asInt();
         m_pDS->close();
-        strSQL = PrepareSQL("UPDATE rating SET rating = %f, votes = %i WHERE rating_id = %i", i.second.rating, i.second.votes, id);
+        strSQL = PrepareSQL("UPDATE rating SET rating = %f, votes = %i WHERE rating_id = %i",
+                            static_cast<double>(i.second.rating), i.second.votes, id);
         m_pDS->exec(strSQL);
       }
       if (i.first == defaultRating)
@@ -2364,7 +2368,8 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
       conditions.emplace_back(PrepareSQL("c%02d='%s'", i, *(const bool*)(((const char*)&details)+offsets[i].offset)?"true":"false"));
       break;
     case VIDEODB_TYPE_FLOAT:
-      conditions.emplace_back(PrepareSQL("c%02d='%f'", i, *(const float*)(((const char*)&details)+offsets[i].offset)));
+      conditions.emplace_back(PrepareSQL(
+          "c%02d='%f'", i, *(const double*)(((const char*)&details) + offsets[i].offset)));
       break;
     case VIDEODB_TYPE_STRINGARRAY:
       conditions.emplace_back(PrepareSQL("c%02d='%s'", i, StringUtils::Join(*((const std::vector<std::string>*)(((const char*)&details)+offsets[i].offset)),
@@ -3037,13 +3042,14 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     for (int i=1; i<=details.GetVideoStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-        "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage) "
-        "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s')",
-        idFile, (int)CStreamDetail::VIDEO,
-        details.GetVideoCodec(i).c_str(), details.GetVideoAspect(i),
-        details.GetVideoWidth(i), details.GetVideoHeight(i), details.GetVideoDuration(i),
-        details.GetStereoMode(i).c_str(),
-        details.GetVideoLanguage(i).c_str()));
+                             "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, "
+                             "iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage) "
+                             "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s')",
+                             idFile, (int)CStreamDetail::VIDEO, details.GetVideoCodec(i).c_str(),
+                             static_cast<double>(details.GetVideoAspect(i)),
+                             details.GetVideoWidth(i), details.GetVideoHeight(i),
+                             details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
+                             details.GetVideoLanguage(i).c_str()));
     }
     for (int i=1; i<=details.GetAudioStreamCount(); i++)
     {
@@ -3288,8 +3294,8 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
     else if (type == CBookmark::STANDARD) // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
     {
       /* get a bookmark within the same time as previous */
-      double mintime = bookmark.timeInSeconds - 0.5f;
-      double maxtime = bookmark.timeInSeconds + 0.5f;
+      double mintime = bookmark.timeInSeconds - 0.5;
+      double maxtime = bookmark.timeInSeconds + 0.5;
       strSQL=PrepareSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f) and playerState='%s'", idFile, (int)type, mintime, maxtime, bookmark.playerState.c_str());
     }
 
@@ -3328,8 +3334,8 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath, 
 
     /* a little bit uggly, we clear first bookmark that is within one second of given */
     /* should be no problem since we never add bookmarks that are closer than that   */
-    double mintime = bookmark.timeInSeconds - 0.5f;
-    double maxtime = bookmark.timeInSeconds + 0.5f;
+    double mintime = bookmark.timeInSeconds - 0.5;
+    double maxtime = bookmark.timeInSeconds + 0.5;
     std::string strSQL = PrepareSQL("select idBookmark from bookmark where idFile=%i and type=%i and playerState like '%s' and player like '%s' and (timeInSeconds between %f and %f)", idFile, type, bookmark.playerState.c_str(), bookmark.player.c_str(), mintime, maxtime);
 
     m_pDS->query( strSQL );
@@ -4461,18 +4467,31 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
     {
       m_pDS->close();
       // update the item
-      strSQL=PrepareSQL("update settings set Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,VerticalShift=%f,"
-                       "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%f,Contrast=%f,Gamma=%f,"
-                       "VolumeAmplification=%f,AudioDelay=%f,Sharpness=%f,NoiseReduction=%f,NonLinStretch=%i,PostProcess=%i,ScalingMethod=%i,",
-                       setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_CustomVerticalShift,
-                       setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
-                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                       setting.m_Sharpness,setting.m_NoiseReduction,setting.m_CustomNonLinStretch,setting.m_PostProcess,setting.m_ScalingMethod);
+      strSQL = PrepareSQL(
+          "update settings set "
+          "Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,VerticalShift=%f,"
+          "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%f,Contrast="
+          "%f,Gamma=%f,"
+          "VolumeAmplification=%f,AudioDelay=%f,Sharpness=%f,NoiseReduction=%f,NonLinStretch=%i,"
+          "PostProcess=%i,ScalingMethod=%i,",
+          setting.m_InterlaceMethod, setting.m_ViewMode,
+          static_cast<double>(setting.m_CustomZoomAmount),
+          static_cast<double>(setting.m_CustomPixelRatio),
+          static_cast<double>(setting.m_CustomVerticalShift), setting.m_AudioStream,
+          setting.m_SubtitleStream, static_cast<double>(setting.m_SubtitleDelay),
+          setting.m_SubtitleOn, static_cast<double>(setting.m_Brightness),
+          static_cast<double>(setting.m_Contrast), static_cast<double>(setting.m_Gamma),
+          static_cast<double>(setting.m_VolumeAmplification),
+          static_cast<double>(setting.m_AudioDelay), static_cast<double>(setting.m_Sharpness),
+          static_cast<double>(setting.m_NoiseReduction), setting.m_CustomNonLinStretch,
+          setting.m_PostProcess, setting.m_ScalingMethod);
       std::string strSQL2;
 
-      strSQL2=PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,TonemapMethod=%i,TonemapParam=%f where idFile=%i\n",
-                         setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream,
-                         setting.m_ToneMapMethod, setting.m_ToneMapParam, idFile);
+      strSQL2 = PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,"
+                           "TonemapMethod=%i,TonemapParam=%f where idFile=%i\n",
+                           setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert,
+                           setting.m_VideoStream, setting.m_ToneMapMethod,
+                           static_cast<double>(setting.m_ToneMapParam), idFile);
       strSQL += strSQL2;
       m_pDS->exec(strSQL);
       return ;
@@ -4486,13 +4505,22 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
                 "ResumeTime,"
                 "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel) "
               "VALUES ";
-      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i)",
-                           idFile, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_CustomVerticalShift,
-                           setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn, setting.m_Brightness,
-                           setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                           setting.m_ResumeTime,
-                           setting.m_Sharpness, setting.m_NoiseReduction, setting.m_CustomNonLinStretch, setting.m_PostProcess, setting.m_ScalingMethod,
-                           setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream, setting.m_ToneMapMethod, setting.m_ToneMapParam, setting.m_Orientation,setting.m_CenterMixLevel);
+      strSQL += PrepareSQL(
+          "(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i)",
+          idFile, setting.m_InterlaceMethod, setting.m_ViewMode,
+          static_cast<double>(setting.m_CustomZoomAmount),
+          static_cast<double>(setting.m_CustomPixelRatio),
+          static_cast<double>(setting.m_CustomVerticalShift), setting.m_AudioStream,
+          setting.m_SubtitleStream, static_cast<double>(setting.m_SubtitleDelay),
+          setting.m_SubtitleOn, static_cast<double>(setting.m_Brightness),
+          static_cast<double>(setting.m_Contrast), static_cast<double>(setting.m_Gamma),
+          static_cast<double>(setting.m_VolumeAmplification),
+          static_cast<double>(setting.m_AudioDelay), setting.m_ResumeTime,
+          static_cast<double>(setting.m_Sharpness), static_cast<double>(setting.m_NoiseReduction),
+          setting.m_CustomNonLinStretch, setting.m_PostProcess, setting.m_ScalingMethod,
+          setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream,
+          setting.m_ToneMapMethod, static_cast<double>(setting.m_ToneMapParam),
+          setting.m_Orientation, setting.m_CenterMixLevel);
       m_pDS->exec(strSQL);
     }
   }
@@ -4964,7 +4992,7 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint
       times.clear();
       for (const auto &i : timeString)
       {
-        uint64_t partTime = static_cast<uint64_t>(atof(i.c_str()) * 1000.0f);
+        uint64_t partTime = static_cast<uint64_t>(atof(i.c_str()) * 1000.0);
         times.push_back(partTime); // db stores in secs, convert to msecs
         timeTotal += partTime;
       }
@@ -5576,7 +5604,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      m_pDS2->exec(PrepareSQL("INSERT INTO rating(media_id, media_type, rating_type, rating, votes) VALUES (%i, 'movie', 'default', %f, %i)", m_pDS->fv(0).get_asInt(), (float)strtod(m_pDS->fv(1).get_asString().c_str(), NULL), StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
+      m_pDS2->exec(PrepareSQL("INSERT INTO rating(media_id, media_type, rating_type, rating, "
+                              "votes) VALUES (%i, 'movie', 'default', %f, %i)",
+                              m_pDS->fv(0).get_asInt(),
+                              strtod(m_pDS->fv(1).get_asString().c_str(), NULL),
+                              StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       int idRating = (int)m_pDS2->lastinsertid();
       m_pDS2->exec(PrepareSQL("UPDATE movie SET c%02d=%i WHERE idMovie=%i", VIDEODB_ID_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
@@ -5587,7 +5619,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      m_pDS2->exec(PrepareSQL("INSERT INTO rating(media_id, media_type, rating_type, rating, votes) VALUES (%i, 'tvshow', 'default', %f, %i)", m_pDS->fv(0).get_asInt(), (float)strtod(m_pDS->fv(1).get_asString().c_str(), NULL), StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
+      m_pDS2->exec(PrepareSQL("INSERT INTO rating(media_id, media_type, rating_type, rating, "
+                              "votes) VALUES (%i, 'tvshow', 'default', %f, %i)",
+                              m_pDS->fv(0).get_asInt(),
+                              strtod(m_pDS->fv(1).get_asString().c_str(), NULL),
+                              StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       int idRating = (int)m_pDS2->lastinsertid();
       m_pDS2->exec(PrepareSQL("UPDATE tvshow SET c%02d=%i WHERE idShow=%i", VIDEODB_ID_TV_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
@@ -5598,7 +5634,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      m_pDS2->exec(PrepareSQL("INSERT INTO rating(media_id, media_type, rating_type, rating, votes) VALUES (%i, 'episode', 'default', %f, %i)", m_pDS->fv(0).get_asInt(), (float)strtod(m_pDS->fv(1).get_asString().c_str(), NULL), StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
+      m_pDS2->exec(PrepareSQL("INSERT INTO rating(media_id, media_type, rating_type, rating, "
+                              "votes) VALUES (%i, 'episode', 'default', %f, %i)",
+                              m_pDS->fv(0).get_asInt(),
+                              strtod(m_pDS->fv(1).get_asString().c_str(), NULL),
+                              StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       int idRating = (int)m_pDS2->lastinsertid();
       m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d=%i WHERE idEpisode=%i", VIDEODB_ID_EPISODE_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();

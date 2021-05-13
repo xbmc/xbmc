@@ -417,7 +417,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     videoStream->iFpsRate = stream->m_FpsRate;
     videoStream->iWidth = stream->m_Width;
     videoStream->iHeight = stream->m_Height;
-    videoStream->fAspect = stream->m_Aspect;
+    videoStream->fAspect = static_cast<double>(stream->m_Aspect);
     videoStream->iBitRate = stream->m_BitRate;
     videoStream->profile = ConvertVideoCodecProfile(stream->m_codecProfile);
 
