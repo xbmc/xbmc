@@ -10465,12 +10465,13 @@ msgctxt "#19215"
 msgid "Reminders"
 msgstr ""
 
-#. used by several skins
+#. label for 'all channels' value for 'channels' selector control in pvr radio guide search dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#19216"
 msgid "All radio channels"
 msgstr ""
 
-#. label for 'all channels' value for 'channels' selector control in pvr guide search dialog
+#. label for 'all channels' value for 'channels' selector control in pvr TV guide search dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#19217"
 msgid "All TV channels"
