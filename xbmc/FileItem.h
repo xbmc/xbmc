@@ -112,6 +112,8 @@ public:
   explicit CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   explicit CFileItem(const CVideoInfoTag& movie);
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
+  CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
+            const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
