@@ -187,7 +187,7 @@ public:
    * @brief Retrieve the recording start as local time
    * @return the recording start time
    */
-  const CDateTime& RecordingTimeAsLocalTime() const;
+  CDateTime RecordingTimeAsLocalTime() const;
 
   /*!
    * @brief Retrieve the recording end as UTC time
