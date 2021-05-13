@@ -58,7 +58,10 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
   int iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
   std::vector< std::pair<std::string, int> > labels;
-  labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
+  if (m_searchFilter->IsRadio())
+    labels.emplace_back(g_localizeStrings.Get(19216), EPG_SEARCH_UNSET); // All radio channels
+  else
+    labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET); // All TV channels
 
   std::shared_ptr<CPVRChannelGroup> group;
   if (iChannelGroup == EPG_SEARCH_UNSET)
