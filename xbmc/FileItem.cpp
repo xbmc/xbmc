@@ -169,6 +169,10 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
     SetArt("icon", tag->Icon());
   else if (channel && !channel->IconPath().empty())
     SetArt("icon", channel->IconPath());
+  else if (tag->IsRadio())
+    SetArt("icon", "DefaultAudio.png");
+  else
+    SetArt("icon", "DefaultTVShows.png");
 
   FillMusicInfoTag(channel, tag);
   FillInMimeType(false);
@@ -213,8 +217,16 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
 
   // Set art
   if (!record->m_strIconPath.empty())
-  {
     SetArt("icon", record->m_strIconPath);
+  else
+  {
+    const std::shared_ptr<CPVRChannel> channel = record->Channel();
+    if (channel && !channel->IconPath().empty())
+      SetArt("icon", channel->IconPath());
+    else if (record->IsRadio())
+      SetArt("icon", "DefaultAudio.png");
+    else
+      SetArt("icon", "DefaultTVShows.png");
   }
 
   if (!record->m_strThumbnailPath.empty())
@@ -238,6 +250,10 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
 
   if (!timer->ChannelIcon().empty())
     SetArt("icon", timer->ChannelIcon());
+  else if (timer->m_bIsRadio)
+    SetArt("icon", "DefaultAudio.png");
+  else
+    SetArt("icon", "DefaultTVShows.png");
 
   FillInMimeType(false);
 }
