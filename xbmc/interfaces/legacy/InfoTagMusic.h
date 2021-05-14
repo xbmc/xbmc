@@ -21,11 +21,9 @@ namespace XBMCAddon
     /// @{
     /// @brief **Kodi's music info tag class.**
     ///
-    /// \python_class{ InfoTagMusic() }
+    /// \python_class{ xbmc.InfoTagMusic() }
     ///
-    /// To get music info tag data of currently played source.
-    ///
-    /// @note Info tag load is only be possible from present player class.
+    /// To get music info tag data of a music item.
     ///
     ///
     ///-------------------------------------------------------------------------
