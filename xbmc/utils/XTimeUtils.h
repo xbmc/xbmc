@@ -42,6 +42,9 @@ struct SystemTime
   unsigned short milliseconds;
 };
 
+using Duration = std::chrono::duration<std::int64_t, std::ratio<1, 10'000'000>>;
+using TimePoint = std::chrono::time_point<std::chrono::system_clock, Duration>;
+
 template<typename Rep, typename Period>
 void Sleep(std::chrono::duration<Rep, Period> duration)
 {

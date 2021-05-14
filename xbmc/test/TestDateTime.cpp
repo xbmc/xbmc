@@ -616,7 +616,7 @@ TEST_F(TestDateTime, GetAsLocalDateTime)
 
   CDateTime cmpTime(std::chrono::duration_cast<std::chrono::seconds>(time).count());
 
-  EXPECT_TRUE(dateTime1 == cmpTime);
+  EXPECT_TRUE(dateTime2 == cmpTime);
 }
 
 TEST_F(TestDateTime, Reset)
