@@ -176,7 +176,7 @@ CDateTime::CDateTime(const time_t& time)
   SetValid(true);
 }
 
-CDateTime::CDateTime(const std::chrono::system_clock::time_point& time)
+CDateTime::CDateTime(const KODI::TIME::time_point& time)
 {
   m_time = time;
   SetValid(true);
@@ -223,7 +223,7 @@ const CDateTime& CDateTime::operator =(const tm& right)
   return *this;
 }
 
-const CDateTime& CDateTime::operator=(const std::chrono::system_clock::time_point& right)
+const CDateTime& CDateTime::operator=(const KODI::TIME::time_point& right)
 {
   m_time = right;
   SetValid(true);
@@ -321,32 +321,32 @@ bool CDateTime::operator !=(const tm& right) const
   return !operator ==(right);
 }
 
-bool CDateTime::operator>(const std::chrono::system_clock::time_point& right) const
+bool CDateTime::operator>(const KODI::TIME::time_point& right) const
 {
   return m_time > right;
 }
 
-bool CDateTime::operator>=(const std::chrono::system_clock::time_point& right) const
+bool CDateTime::operator>=(const KODI::TIME::time_point& right) const
 {
   return operator>(right) || operator==(right);
 }
 
-bool CDateTime::operator<(const std::chrono::system_clock::time_point& right) const
+bool CDateTime::operator<(const KODI::TIME::time_point& right) const
 {
   return m_time < right;
 }
 
-bool CDateTime::operator<=(const std::chrono::system_clock::time_point& right) const
+bool CDateTime::operator<=(const KODI::TIME::time_point& right) const
 {
   return operator<(right) || operator==(right);
 }
 
-bool CDateTime::operator==(const std::chrono::system_clock::time_point& right) const
+bool CDateTime::operator==(const KODI::TIME::time_point& right) const
 {
   return m_time == right;
 }
 
-bool CDateTime::operator!=(const std::chrono::system_clock::time_point& right) const
+bool CDateTime::operator!=(const KODI::TIME::time_point& right) const
 {
   return !operator==(right);
 }
@@ -577,7 +577,7 @@ void CDateTime::GetAsTm(tm& time) const
   localtime_r(&t, &time);
 }
 
-std::chrono::system_clock::time_point CDateTime::GetAsTimePoint() const
+KODI::TIME::time_point CDateTime::GetAsTimePoint() const
 {
   return m_time;
 }

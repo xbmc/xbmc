@@ -28,6 +28,9 @@ namespace KODI
 namespace TIME
 {
 
+using time_point = std::chrono::time_point<std::chrono::system_clock,
+                                           std::chrono::duration<long double, std::nano>>;
+
 template<typename Rep, typename Period>
 void Sleep(std::chrono::duration<Rep, Period> duration)
 {

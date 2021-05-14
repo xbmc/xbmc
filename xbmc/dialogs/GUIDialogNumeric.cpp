@@ -494,8 +494,7 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(std::string &timeString, const std::st
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
 
-  std::chrono::system_clock::time_point time{
-      std::chrono::seconds{StringUtils::TimeStringToSeconds(timeString)}};
+  KODI::TIME::time_point time{std::chrono::seconds{StringUtils::TimeStringToSeconds(timeString)}};
 
   CDateTime datetime(time);
 
