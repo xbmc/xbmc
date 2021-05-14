@@ -584,7 +584,8 @@ private:
   /*!
    \brief If given channel is radio, fill item's music tag from given epg tag and channel info.
    */
-  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVRChannel>& channel, const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
+  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember,
+                        const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
 
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;

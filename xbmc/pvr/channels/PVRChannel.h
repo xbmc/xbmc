@@ -192,12 +192,6 @@ namespace PVR
     bool SetLastWatched(time_t iLastWatched);
 
     /*!
-     * @brief True if this channel has no file or stream name
-     * @return True if this channel has no file or stream name
-     */
-    bool IsEmpty() const;
-
-    /*!
      * @brief Check whether this channel has unpersisted data changes.
      * @return True if this channel has changes to persist, false otherwise
      */
@@ -258,20 +252,8 @@ namespace PVR
      */
     std::string MimeType() const;
 
-    /*!
-     * @brief The path in the XBMC VFS to be used by PVRManager to open and read the stream.
-     * @return The path in the XBMC VFS to be used by PVRManager to open and read the stream.
-     */
-    std::string Path() const;
-
     // ISortable implementation
     void ToSortable(SortItem& sortable, Field field) const override;
-
-    /*!
-     * @brief Update the channel path
-     * @param channelGroup The (new) name of the group this channel belongs to
-     */
-    void UpdatePath(const std::string& channelGroup);
 
     /*!
      * @return Storage id for this channel in CPVRChannelGroup
@@ -500,7 +482,6 @@ namespace PVR
     std::string m_strClientChannelName; /*!< the name of this channel on the client */
     std::string
         m_strMimeType; /*!< the stream input type based mime type, see @ref https://www.iana.org/assignments/media-types/media-types.xhtml#video */
-    std::string m_strFileNameAndPath; /*!< the filename to be used by PVRManager to open and read the stream */
     int m_iClientEncryptionSystem = -1; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
     std::string m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
     int m_iClientOrder = 0; /*!< the order from this channels group member */

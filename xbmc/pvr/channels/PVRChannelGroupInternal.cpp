@@ -76,7 +76,7 @@ void CPVRChannelGroupInternal::UpdateChannelPaths()
     if (groupMemberPair.second->Channel()->IsHidden())
       ++m_iHiddenChannels;
     else
-      groupMemberPair.second->Channel()->UpdatePath(GroupName());
+      groupMemberPair.second->SetGroupName(GroupName());
   }
 }
 
@@ -94,9 +94,8 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupInternal::UpdateFromClient(
   }
   else
   {
-    channel->UpdatePath(GroupName());
-    auto newMember = std::make_shared<CPVRChannelGroupMember>(channel, CPVRChannelNumber(), 0,
-                                                              iOrder, clientChannelNumber);
+    const auto newMember = std::make_shared<CPVRChannelGroupMember>(
+        channel, GroupName(), CPVRChannelNumber(), 0, iOrder, clientChannelNumber);
     m_sortedMembers.emplace_back(newMember);
     m_members.insert(std::make_pair(channel->StorageId(), newMember));
 
