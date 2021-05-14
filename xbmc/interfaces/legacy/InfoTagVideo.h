@@ -22,11 +22,9 @@ namespace XBMCAddon
     /// @{
     /// @brief **Kodi's video info tag class.**
     ///
-    /// \python_class{ InfoTagVideo() }
+    /// \python_class{ xbmc.InfoTagVideo() }
     ///
-    /// To get video info tag data of currently played source.
-    ///
-    /// @note Info tag load is only be possible from present player class.
+    /// To get video info tag data of a video item.
     ///
     ///
     ///-------------------------------------------------------------------------
