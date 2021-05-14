@@ -223,8 +223,8 @@ TEST_F(TestArchive, StringArchive)
 TEST_F(TestArchive, TimePointArchive)
 {
   ASSERT_NE(nullptr, file);
-  std::chrono::system_clock::time_point tp_ref = std::chrono::system_clock::now();
-  std::chrono::system_clock::time_point tp_var;
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> tp_ref = std::chrono::system_clock::now();
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> tp_var;
 
   CArchive arstore(file, CArchive::store);
   arstore << tp_ref;
@@ -235,7 +235,7 @@ TEST_F(TestArchive, TimePointArchive)
   arload >> tp_var;
   arload.Close();
 
-  EXPECT_TRUE(!memcmp(&tp_ref, &tp_var, sizeof(std::chrono::system_clock::time_point)));
+  EXPECT_TRUE(!memcmp(&tp_ref, &tp_var, sizeof(std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>)));
 }
 
 TEST_F(TestArchive, CVariantArchive)
@@ -335,8 +335,8 @@ TEST_F(TestArchive, MultiTypeArchive)
   char char_ref = 'A', char_var = '\0';
   std::string string_ref = "test string", string_var;
   std::wstring wstring_ref = L"test wstring", wstring_var;
-  std::chrono::system_clock::time_point tp_ref = std::chrono::system_clock::now();
-  std::chrono::system_clock::time_point tp_var;
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> tp_ref = std::chrono::system_clock::now();
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> tp_var;
   CVariant CVariant_ref((int)1), CVariant_var;
   std::vector<std::string> strArray_ref, strArray_var;
   strArray_ref.emplace_back("test strArray_ref 0");
@@ -398,7 +398,7 @@ TEST_F(TestArchive, MultiTypeArchive)
   EXPECT_EQ(char_ref, char_var);
   EXPECT_STREQ(string_ref.c_str(), string_var.c_str());
   EXPECT_STREQ(wstring_ref.c_str(), wstring_var.c_str());
-  EXPECT_TRUE(!memcmp(&tp_ref, &tp_var, sizeof(std::chrono::system_clock::time_point)));
+  EXPECT_TRUE(!memcmp(&tp_ref, &tp_var, sizeof(std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>)));
   EXPECT_TRUE(CVariant_var.isInteger());
   EXPECT_STREQ("test strArray_ref 0", strArray_var.at(0).c_str());
   EXPECT_STREQ("test strArray_ref 1", strArray_var.at(1).c_str());

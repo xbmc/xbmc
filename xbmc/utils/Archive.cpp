@@ -151,9 +151,9 @@ CArchive& CArchive::operator<<(const std::wstring& wstr)
   return streamout(wstr.data(), size * sizeof(wchar_t));
 }
 
-CArchive& CArchive::operator<<(const std::chrono::system_clock::time_point& time)
+CArchive& CArchive::operator<<(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& time)
 {
-  return streamout(&time, sizeof(std::chrono::system_clock::time_point));
+  return streamout(&time, sizeof(std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>));
 }
 
 CArchive& CArchive::operator<<(IArchivable& obj)
@@ -264,9 +264,9 @@ CArchive& CArchive::operator>>(std::wstring& wstr)
   return *this;
 }
 
-CArchive& CArchive::operator>>(std::chrono::system_clock::time_point& time)
+CArchive& CArchive::operator>>(std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& time)
 {
-  return streamin(&time, sizeof(std::chrono::system_clock::time_point));
+  return streamin(&time, sizeof(std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>));
 }
 
 CArchive& CArchive::operator>>(IArchivable& obj)

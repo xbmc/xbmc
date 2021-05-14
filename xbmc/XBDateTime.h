@@ -120,7 +120,7 @@ public:
   CDateTime(const CDateTime& time);
   explicit CDateTime(const time_t& time);
   explicit CDateTime(const tm& time);
-  explicit CDateTime(const std::chrono::system_clock::time_point& time);
+  explicit CDateTime(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& time);
   CDateTime(int year, int month, int day, int hour, int minute, int second);
 
   static CDateTime GetCurrentDateTime();
@@ -137,7 +137,7 @@ public:
 
   const CDateTime& operator =(const time_t& right);
   const CDateTime& operator =(const tm& right);
-  const CDateTime& operator=(const std::chrono::system_clock::time_point& right);
+  const CDateTime& operator=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right);
 
   bool operator >(const CDateTime& right) const;
   bool operator >=(const CDateTime& right) const;
@@ -160,12 +160,12 @@ public:
   bool operator ==(const tm& right) const;
   bool operator !=(const tm& right) const;
 
-  bool operator>(const std::chrono::system_clock::time_point& right) const;
-  bool operator>=(const std::chrono::system_clock::time_point& right) const;
-  bool operator<(const std::chrono::system_clock::time_point& right) const;
-  bool operator<=(const std::chrono::system_clock::time_point& right) const;
-  bool operator==(const std::chrono::system_clock::time_point& right) const;
-  bool operator!=(const std::chrono::system_clock::time_point& right) const;
+  bool operator>(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator>=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator<(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator<=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator==(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator!=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
 
   CDateTime operator +(const CDateTimeSpan& right) const;
   CDateTime operator -(const CDateTimeSpan& right) const;
@@ -206,7 +206,7 @@ public:
 
   void GetAsTime(time_t& time) const;
   void GetAsTm(tm& time) const;
-  std::chrono::system_clock::time_point GetAsTimePoint() const;
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> GetAsTimePoint() const;
 
   /*! \brief convert UTC datetime to local datetime
    */
@@ -228,7 +228,7 @@ public:
   bool IsValid() const;
 
 private:
-  std::chrono::system_clock::time_point m_time;
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> m_time;
 
   typedef enum _STATE
   {
