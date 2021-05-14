@@ -206,7 +206,19 @@ CDateTime::CDateTime(const time_t& time)
 
 CDateTime::CDateTime(const std::chrono::system_clock::time_point& time)
 {
-  m_time = time;
+  Reset();
+
+  std::chrono::system_clock::time_point zero;
+
+  // Cast the duration between Unix epoch and current time_point
+  // to new resolution
+
+  KODI::TIME::Duration dur = std::chrono::duration_cast<KODI::TIME::Duration>(time - zero);
+
+  // Add derived duration to Unix epoch start in proper format
+
+  m_time += dur;
+
   SetValid(true);
 }
 
@@ -253,7 +265,19 @@ const CDateTime& CDateTime::operator=(const tm& right)
 
 const CDateTime& CDateTime::operator=(const std::chrono::system_clock::time_point& right)
 {
-  m_time = right;
+  Reset();
+
+  std::chrono::system_clock::time_point zero;
+
+  // Cast the duration between Unix epoch and current time_point
+  // to new resolution
+
+  KODI::TIME::Duration dur = std::chrono::duration_cast<KODI::TIME::Duration>(right - zero);
+
+  // Add derived duration to Unix epoch start in proper format
+
+  m_time += dur;
+
   SetValid(true);
 
   return *this;
@@ -351,32 +375,38 @@ bool CDateTime::operator!=(const tm& right) const
 
 bool CDateTime::operator>(const std::chrono::system_clock::time_point& right) const
 {
-  return m_time > right;
+  CDateTime temp(right);
+  return m_time > temp.m_time;
 }
 
 bool CDateTime::operator>=(const std::chrono::system_clock::time_point& right) const
 {
-  return operator>(right) || operator==(right);
+  CDateTime temp(right);
+  return operator>(temp) || operator==(temp);
 }
 
 bool CDateTime::operator<(const std::chrono::system_clock::time_point& right) const
 {
-  return m_time < right;
+  CDateTime temp(right);
+  return m_time < temp.m_time;
 }
 
 bool CDateTime::operator<=(const std::chrono::system_clock::time_point& right) const
 {
-  return operator<(right) || operator==(right);
+  CDateTime temp(right);
+  return operator<(temp) || operator==(temp);
 }
 
 bool CDateTime::operator==(const std::chrono::system_clock::time_point& right) const
 {
-  return m_time == right;
+  CDateTime temp(right);
+  return m_time == temp.m_time;
 }
 
 bool CDateTime::operator!=(const std::chrono::system_clock::time_point& right) const
 {
-  return !operator==(right);
+  CDateTime temp(right);
+  return !operator==(temp);
 }
 
 CDateTime CDateTime::operator+(const CDateTimeSpan& right) const
@@ -452,7 +482,7 @@ void CDateTime::SetFromSystemTime(const KODI::TIME::SystemTime& right)
 
   auto timeT = date::floor<std::chrono::milliseconds>(dur.time_since_epoch()).count();
 
-  std::chrono::system_clock::time_point tp{std::chrono::milliseconds{timeT}};
+  KODI::TIME::TimePoint tp{std::chrono::milliseconds{timeT}};
 
   m_time = tp;
 
@@ -649,7 +679,12 @@ void CDateTime::GetAsTm(tm& time) const
 
 std::chrono::system_clock::time_point CDateTime::GetAsTimePoint() const
 {
-  return m_time;
+  KODI::TIME::TimePoint zero_ttp;
+  std::chrono::system_clock::time_point tp;
+
+  tp += std::chrono::duration_cast<std::chrono::milliseconds>(m_time - zero_ttp);
+
+  return tp;
 }
 
 std::string CDateTime::GetAsDBDate() const

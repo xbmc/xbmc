@@ -195,7 +195,7 @@ private:
   KODI::TIME::SystemTime GetAsSystemTime();
   void SetFromSystemTime(const KODI::TIME::SystemTime& right);
 
-  std::chrono::system_clock::time_point m_time;
+  KODI::TIME::TimePoint m_time;
 
   typedef enum _STATE
   {
