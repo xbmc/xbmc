@@ -18,6 +18,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -38,11 +39,11 @@ namespace PVR
     {
       return m_item->GetPVRTimerInfoTag()->GetEpgInfoTag();
     }
-    else
+    else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");
     }
-    return std::shared_ptr<CPVREpgInfoTag>();
+    return {};
   }
 
   std::shared_ptr<CPVREpgInfoTag> CPVRItem::GetNextEpgInfoTag() const
@@ -63,11 +64,11 @@ namespace PVR
       if (channel)
         return channel->GetEPGNext();
     }
-    else
+    else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");
     }
-    return std::shared_ptr<CPVREpgInfoTag>();
+    return {};
   }
 
   std::shared_ptr<CPVRChannel> CPVRItem::GetChannel() const
@@ -88,11 +89,11 @@ namespace PVR
     {
       return m_item->GetPVRRecordingInfoTag()->Channel();
     }
-    else
+    else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");
     }
-    return std::shared_ptr<CPVRChannel>();
+    return {};
   }
 
   std::shared_ptr<CPVRTimerInfoTag> CPVRItem::GetTimerInfoTag() const
@@ -109,11 +110,11 @@ namespace PVR
     {
       return CServiceBroker::GetPVRManager().Timers()->GetActiveTimerForChannel(m_item->GetPVRChannelInfoTag());
     }
-    else
+    else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");
     }
-    return std::shared_ptr<CPVRTimerInfoTag>();
+    return {};
   }
 
   std::shared_ptr<CPVRRecording> CPVRItem::GetRecording() const
@@ -126,11 +127,11 @@ namespace PVR
     {
       return CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(m_item->GetEPGInfoTag());
     }
-    else
+    else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");
     }
-    return std::shared_ptr<CPVRRecording>();
+    return {};
   }
 
   bool CPVRItem::IsRadio() const
@@ -151,7 +152,7 @@ namespace PVR
     {
       return m_item->GetPVRTimerInfoTag()->m_bIsRadio;
     }
-    else
+    else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Unsupported item type!");
     }
