@@ -50,6 +50,9 @@
       <!-- IR remote/iDevice Now Playing prev track --> <button id="17">SkipPrevious</button>
       <!-- IR remote seek forward                   --> <button id="18">FastForward</button>
       <!-- IR remote seek backward                  --> <button id="19">Rewind</button>
+      <!-- Siri remote hold play/pause              --> <button id="20">Stop</button>
+      <!-- Siri remote double play/pause            --> <button id="21">noop</button>
+      <!-- Siri remote double select                --> <button id="22">noop</button>
     </customcontroller>
   </global>
   <Home>

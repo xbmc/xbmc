@@ -275,18 +275,44 @@
 
 - (void)longPlayPausePressed:(UILongPressGestureRecognizer*)sender
 {
-  CLog::Log(LOGDEBUG, "Input: play/pause long press, state: %ld", static_cast<long>(sender.state));
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: Siri remote play/pause long press (id: 20)");
+      [g_xbmcController.inputHandler sendButtonPressed:20];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
 }
 
 - (void)doublePlayPausePressed:(UITapGestureRecognizer*)sender
 {
-  // state is only UIGestureRecognizerStateBegan and UIGestureRecognizerStateEnded
-  CLog::Log(LOGDEBUG, "Input: play/pause double press");
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote play/pause double press (id: 21)");
+      [g_xbmcController.inputHandler sendButtonPressed:21];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
 }
 
 - (void)SiriDoubleSelectHandler:(UITapGestureRecognizer*)sender
 {
-  CLog::Log(LOGDEBUG, "Input: select double press");
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote select double press (id: 22)");
+      [g_xbmcController.inputHandler sendButtonPressed:22];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
 }
 
 #pragma mark - IR Arrows Pressed
