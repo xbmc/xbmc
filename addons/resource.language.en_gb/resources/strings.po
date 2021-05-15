@@ -7471,7 +7471,10 @@ msgctxt "#13600"
 msgid "Apple Remote"
 msgstr ""
 
-#empty string with id 13601
+#: system/settings/darwin_tvos.xml
+msgctxt "#13601"
+msgid "Apple TV"
+msgstr ""
 
 #: system/settings/darwin.xml
 msgctxt "#13602"
@@ -15758,56 +15761,57 @@ msgctxt "#24152"
 msgid "The add-on is not compatible with this version of Kodi."
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24153"
 msgid "Enable to make the Siri remote match the normal Apple tvOS behavior"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24154"
-msgid "Idle remote handling after N seconds"
+msgid "Consider Siri remote in idle state after N seconds"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24155"
-msgid "After remote idles, the first tap/swipe received will wake it"
+msgid "Time to wait before considering the Siri remote in idle state"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24156"
 msgid "30 Seconds"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24157"
 msgid "60 Seconds"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24158"
 msgid "90 Seconds"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24159"
 msgid "120 Seconds"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24160"
-msgid "Enable Siri remote timeout"
+msgid "Ignore first tap/swipe/pan of the Siri remote after a period of inactivity"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24161"
-msgid "Enable remote input timeout for tap/swipe"
+msgid "This prevents you from accidental tap/swipe/pan action when you grab the remote in your hand"
 msgstr ""
 
+#: system/settings/darwin_tvos.xml
 msgctxt "#24162"
 msgid "Use Kodi virtual keyboard"
 msgstr ""
 
-#: apple remote
+#: system/settings/darwin_tvos.xml
 msgctxt "#24163"
 msgid "Match Apple tvOS Standard (Siri remote)"
 msgstr ""
@@ -17018,7 +17022,12 @@ msgctxt "#34007"
 msgid "Windows media audio 2 (FFmpeg wmav2)"
 msgstr ""
 
-#empty strings from id 34008 to 34099
+#: system/settings/darwin_tvos.xml
+msgctxt "#34008"
+msgid "When you need to enter some text, Kodi virtual keyboard will show up instead of the built-in tvOS keyboard"
+msgstr ""
+
+#empty strings from id 34009 to 34099
 
 #: system/settings/settings.xml
 msgctxt "#34100"

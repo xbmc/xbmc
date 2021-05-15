@@ -34,15 +34,15 @@ CTVOSInputSettings& CTVOSInputSettings::GetInstance()
 
 void CTVOSInputSettings::Initialize()
 {
-  bool enable = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      CSettings::SETTING_INPUT_APPLESIRI);
-  g_xbmcController.inputHandler.inputSettings.useSiriRemote = enable;
-  bool enableTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
-  [g_xbmcController.inputHandler.inputSettings setRemoteIdleEnabled:enableTimeout];
-  int timeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-  [g_xbmcController.inputHandler.inputSettings setRemoteIdleTimeout:timeout];
+  bool panEnabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_INPUT_SIRIREMOTEPANENABLED);
+  g_xbmcController.inputHandler.inputSettings.siriRemotePanEnabled = panEnabled;
+  bool idleTimerEnabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED);
+  [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTimerEnabled:idleTimerEnabled];
+  int idleTime = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME);
+  [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTime:idleTime];
 }
 
 void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -51,21 +51,19 @@ void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
     return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_INPUT_APPLESIRI)
+  if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEPANENABLED)
   {
-    bool enable = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
-    g_xbmcController.inputHandler.inputSettings.useSiriRemote = enable;
+    bool panEnabled = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
+    g_xbmcController.inputHandler.inputSettings.siriRemotePanEnabled = panEnabled;
   }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED)
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED)
   {
-    bool enableTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
-    [g_xbmcController.inputHandler.inputSettings setRemoteIdleEnabled:enableTimeout];
+    bool idleTimerEnabled = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
+    [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTimerEnabled:idleTimerEnabled];
   }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUT)
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME)
   {
-    int timeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-        CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-    [g_xbmcController.inputHandler.inputSettings setRemoteIdleTimeout:timeout];
+    int idleTime = std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
+    [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTime:idleTime];
   }
 }

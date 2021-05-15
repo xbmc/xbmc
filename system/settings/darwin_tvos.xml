@@ -35,6 +35,7 @@
           <visible>false</visible>
         </setting>
       </group>
+      <!-- Apple Remote -->
       <group id="3">
         <setting id="input.appleremotemode">
           <visible>false</visible>
@@ -42,17 +43,22 @@
         <setting id="input.appleremotesequencetime">
           <visible>false</visible>
         </setting>
-        <setting id="input.applesiri" type="boolean" label="24163" help="24153">
+      </group>
+      <!-- Apple TV -->
+      <group id="4" label="13601">
+        <!-- Siri remote gestures -->
+        <setting id="input.siriremotepanenabled" type="boolean" label="24163" help="24153">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="input.applesiritimeoutenabled" type="boolean" label="24160" help="24161">
+        <!-- Siri remote idle timer -->
+        <setting id="input.siriremoteidletimerenabled" type="boolean" label="24160" help="24161">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="input.applesiritimeout" type="integer" label="24154" help="24155">
+        <setting id="input.siriremoteidletime" type="integer" label="24154" help="24155">
           <level>1</level>
           <default>60</default>
           <constraints>
@@ -65,10 +71,10 @@
           </constraints>
           <control type="list" format="integer" />
           <dependencies>
-            <dependency type="enable" setting="input.applesiritimeoutenabled">true</dependency>
+            <dependency type="enable" setting="input.siriremoteidletimerenabled">true</dependency>
           </dependencies>
         </setting>
-        <setting id="input.appleusekodikeyboard" type="boolean" label="24162">
+        <setting id="input.tvosusekodikeyboard" type="boolean" label="24162" help="34008">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
