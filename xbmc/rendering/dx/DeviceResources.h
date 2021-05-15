@@ -123,6 +123,7 @@ namespace DX
     };
 
     HRESULT CreateSwapChain(DXGI_SWAP_CHAIN_DESC1 &desc, DXGI_SWAP_CHAIN_FULLSCREEN_DESC &fsDesc, IDXGISwapChain1 **ppSwapChain) const;
+    void DestroySwapChain();
     void CreateDeviceIndependentResources();
     void CreateDeviceResources();
     void CreateWindowSizeDependentResources();
