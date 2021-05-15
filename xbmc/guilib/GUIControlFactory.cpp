@@ -753,6 +753,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   std::string altLabel;
   std::string strLabel2;
   std::string action;
+  std::string blendMode;
 
   int focusPosition = 0;
   int scrollTime = 200;
@@ -1068,6 +1069,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetString(pControlNode, "action", action);
 
+  XMLUtils::GetString(pControlNode, "blendmode", blendMode);
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1320,6 +1323,50 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       icontrol->SetInfo(textureFile);
       icontrol->SetAspectRatio(aspect);
       icontrol->SetCrossFade(fadeTime);
+
+      //basic blending modes. should be supported by virtually all GPUs.
+      // t = texture
+      // b = buffer
+
+      // t + b
+      if (blendMode == "add") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADD);
+      // t - b
+      else if (blendMode == "subtract") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_SUBTRACT);
+      // b - t
+      else if (blendMode == "reversesubtract") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_REVERSE_SUBTRACT);
+      // t * b
+      else if (blendMode == "multiply") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_MULTIPLY);
+      // t * b + t * b
+      else if (blendMode == "2xmultiply") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_2X_MULTIPLY);
+      // min(t, b)
+      else if (blendMode == "darken") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_DARKEN);
+      // max(t, b)
+      else if (blendMode == "lighten") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_LIGHTEN);
+
+      //advanced blending modes, only available with OGL 4, GLES 2 and VK. might be unsupported.
+      else if (blendMode == "advancedmultiply") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_MULTIPLY);
+      else if (blendMode == "advancedscreen") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_SCREEN);
+      else if (blendMode == "advancedoverlay") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_OVERLAY);
+      else if (blendMode == "advanceddarken") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_DARKEN);
+      else if (blendMode == "advancedlighten") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_LIGHTEN);
+      else if (blendMode == "advancedcolordodge") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_COLORDODGE);
+      else if (blendMode == "advancedcolorburn") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_COLORBURN);
+      else if (blendMode == "advanceddifference") 
+        icontrol->SetBlendMode(IMAGE_BLENDMODE_ADVANCED_DIFFERENCE);
     }
     break;
   case CGUIControl::GUICONTROL_MULTI_IMAGE:

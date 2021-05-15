@@ -385,6 +385,41 @@ void CGUIImage::SetInfo(const GUIINFO::CGUIInfoLabel &info)
     m_texture->SetFileName(m_info.GetLabel(0));
 }
 
+void CGUIImage::SetBlendMode(IMAGE_BLENDMODE blendMode)
+{
+  if (blendMode == IMAGE_BLENDMODE_ADD)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADD);
+  else if (blendMode == IMAGE_BLENDMODE_REVERSE_SUBTRACT)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_REVERSE_SUBTRACT);
+  else if (blendMode == IMAGE_BLENDMODE_SUBTRACT)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_SUBTRACT);
+  else if (blendMode == IMAGE_BLENDMODE_MULTIPLY)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_MULTIPLY);
+  else if (blendMode == IMAGE_BLENDMODE_2X_MULTIPLY)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_2X_MULTIPLY);
+  else if (blendMode == IMAGE_BLENDMODE_DARKEN)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_DARKEN);
+  else if (blendMode == IMAGE_BLENDMODE_LIGHTEN)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_LIGHTEN);
+
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_MULTIPLY)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_MULTIPLY);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_SCREEN)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_SCREEN);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_OVERLAY)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_OVERLAY);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_DARKEN)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_DARKEN);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_LIGHTEN)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_LIGHTEN);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_COLORDODGE)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_COLORDODGE);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_COLORBURN)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_COLORBURN);
+  else if (blendMode == IMAGE_BLENDMODE_ADVANCED_DIFFERENCE)
+    m_texture->SetBlendMode(TEXTURE_BLENDMODE_ADVANCED_DIFFERENCE);
+}
+
 unsigned char CGUIImage::GetFadeLevel(unsigned int time) const
 {
   float amount = (float)time / m_crossFadeTime;
