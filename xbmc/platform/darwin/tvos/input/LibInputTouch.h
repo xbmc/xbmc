@@ -51,6 +51,5 @@ typedef NS_ENUM(NSUInteger, UIPanGestureRecognizerDirection) {
 - (IBAction)handlePan:(UIPanGestureRecognizer*)sender;
 - (IBAction)handleSwipe:(UISwipeGestureRecognizer*)sender;
 - (UIPanGestureRecognizerDirection)getPanDirection:(CGPoint)translation;
-- (BOOL)shouldFastScroll;
 
 @end

@@ -46,12 +46,6 @@
       </group>
       <!-- Apple TV -->
       <group id="4" label="13601">
-        <!-- Siri remote gestures -->
-        <setting id="input.siriremotepanenabled" type="boolean" label="24163" help="24153">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <!-- Siri remote idle timer -->
         <setting id="input.siriremoteidletimerenabled" type="boolean" label="24160" help="24161">
           <level>1</level>
@@ -73,6 +67,27 @@
           <dependencies>
             <dependency type="enable" setting="input.siriremoteidletimerenabled">true</dependency>
           </dependencies>
+        </setting>
+        <!-- Siri remote sensitivity -->
+        <setting id="input.siriremotehorizontalsensitivity" type="integer" label="34009">
+          <level>2</level>
+          <default>400</default>
+          <constraints>
+            <minimum>50</minimum>
+            <step>50</step>
+            <maximum>1000</maximum>
+          </constraints>
+          <control type="spinner" format="integer" delayed="false"/>
+        </setting>
+        <setting id="input.siriremoteverticalsensitivity" type="integer" label="34010">
+          <level>2</level>
+          <default>300</default>
+          <constraints>
+            <minimum>50</minimum>
+            <step>50</step>
+            <maximum>1000</maximum>
+          </constraints>
+          <control type="spinner" format="integer" delayed="false"/>
         </setting>
         <setting id="input.tvosusekodikeyboard" type="boolean" label="24162" help="34008">
           <level>1</level>

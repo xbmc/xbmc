@@ -15811,10 +15811,7 @@ msgctxt "#24162"
 msgid "Use Kodi virtual keyboard"
 msgstr ""
 
-#: system/settings/darwin_tvos.xml
-msgctxt "#24163"
-msgid "Match Apple tvOS Standard (Siri remote)"
-msgstr ""
+#empty string with id 24163
 
 #. Header text for yes/no dialog about enable of broken addon
 #: xbmc/addons/gui/GUIHelpers.cpp
@@ -17027,7 +17024,17 @@ msgctxt "#34008"
 msgid "When you need to enter some text, Kodi virtual keyboard will show up instead of the built-in tvOS keyboard"
 msgstr ""
 
-#empty strings from id 34009 to 34099
+#: system/settings/darwin_tvos.xml
+msgctxt "#34009"
+msgid "Siri remote pan gesture horizontal sensitivity"
+msgstr ""
+
+#: system/settings/darwin_tvos.xml
+msgctxt "#34010"
+msgid "Siri remote pan gesture vertical sensitivity"
+msgstr ""
+
+#empty strings from id 34011 to 34099
 
 #: system/settings/settings.xml
 msgctxt "#34100"

@@ -34,15 +34,20 @@ CTVOSInputSettings& CTVOSInputSettings::GetInstance()
 
 void CTVOSInputSettings::Initialize()
 {
-  bool panEnabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      CSettings::SETTING_INPUT_SIRIREMOTEPANENABLED);
-  g_xbmcController.inputHandler.inputSettings.siriRemotePanEnabled = panEnabled;
   bool idleTimerEnabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED);
   [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTimerEnabled:idleTimerEnabled];
   int idleTime = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME);
   [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTime:idleTime];
+  int panHorizontalSensitivity = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY);
+  g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity =
+      panHorizontalSensitivity;
+  int panVerticalSensitivity = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY);
+  g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity =
+      panVerticalSensitivity;
 }
 
 void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -51,12 +56,7 @@ void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
     return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEPANENABLED)
-  {
-    bool panEnabled = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
-    g_xbmcController.inputHandler.inputSettings.siriRemotePanEnabled = panEnabled;
-  }
-  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED)
+  if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED)
   {
     bool idleTimerEnabled = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
     [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTimerEnabled:idleTimerEnabled];
@@ -65,5 +65,18 @@ void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
   {
     int idleTime = std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
     [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTime:idleTime];
+  }
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY)
+  {
+    int panHorizontalSensitivity =
+        std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
+    g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity =
+        panHorizontalSensitivity;
+  }
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY)
+  {
+    int panVerticalSensitivity = std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
+    g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity =
+        panVerticalSensitivity;
   }
 }

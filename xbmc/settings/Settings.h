@@ -384,9 +384,12 @@ public:
   static constexpr auto SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
   static constexpr auto SETTING_INPUT_APPLEREMOTEALWAYSON = "input.appleremotealwayson";
   static constexpr auto SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
-  static constexpr auto SETTING_INPUT_SIRIREMOTEPANENABLED = "input.siriremotepanenabled";
   static constexpr auto SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED = "input.siriremoteidletimerenabled";
   static constexpr auto SETTING_INPUT_SIRIREMOTEIDLETIME = "input.siriremoteidletime";
+  static constexpr auto SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY =
+      "input.siriremotehorizontalsensitivity";
+  static constexpr auto SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY =
+      "input.siriremoteverticalsensitivity";
   static constexpr auto SETTING_INPUT_TVOSUSEKODIKEYBOARD = "input.tvosusekodikeyboard";
   static constexpr auto SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";
   static constexpr auto SETTING_NETWORK_HTTPPROXYTYPE = "network.httpproxytype";

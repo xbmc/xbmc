@@ -53,6 +53,10 @@
       <!-- Siri remote hold play/pause              --> <button id="20">Stop</button>
       <!-- Siri remote double play/pause            --> <button id="21">noop</button>
       <!-- Siri remote double select                --> <button id="22">noop</button>
+      <!-- Siri remote pan up                       --> <button id="23">Up</button>
+      <!-- Siri remote pan down                     --> <button id="24">Down</button>
+      <!-- Siri remote pan left                     --> <button id="25">Left</button>
+      <!-- Siri remote pan right                    --> <button id="26">Right</button>
     </customcontroller>
   </global>
   <Home>
