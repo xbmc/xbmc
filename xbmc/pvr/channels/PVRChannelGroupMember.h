@@ -13,6 +13,7 @@
 #include "utils/ISortable.h"
 
 #include <memory>
+#include <string>
 
 namespace PVR
 {
@@ -26,12 +27,9 @@ class CPVRChannelGroupMember : public ISerializable, public ISortable
 public:
   CPVRChannelGroupMember() : m_bChanged(false) {}
 
-  CPVRChannelGroupMember(const std::shared_ptr<CPVRChannel>& channel,
+  CPVRChannelGroupMember(int iGroupID,
                          const std::string& groupName,
-                         const CPVRChannelNumber& channelNumber,
-                         int iClientPriority,
-                         int iOrder,
-                         const CPVRChannelNumber& clientChannelNumber);
+                         const std::shared_ptr<CPVRChannel>& channel);
 
   virtual ~CPVRChannelGroupMember() = default;
 
@@ -42,6 +40,10 @@ public:
   void ToSortable(SortItem& sortable, Field field) const override;
 
   std::shared_ptr<CPVRChannel> Channel() const { return m_channel; }
+  void SetChannel(const std::shared_ptr<CPVRChannel>& channel);
+
+  int GroupID() const { return m_iGroupID; }
+  void SetGroupID(int iGroupID);
 
   const std::string& Path() const { return m_path; }
   void SetGroupName(const std::string& groupName);
@@ -61,7 +63,17 @@ public:
   bool NeedsSave() const { return m_bChanged; }
   void SetSaved() { m_bChanged = false; }
 
+  /*!
+   * @brief Delete this group member from the database.
+   * @return True if it was deleted successfully, false otherwise.
+   */
+  bool QueueDelete();
+
 private:
+  int m_iGroupID = -1;
+  int m_iClientID = -1;
+  int m_iChannelUID = -1;
+  bool m_bIsRadio = false;
   std::shared_ptr<CPVRChannel> m_channel;
   std::string m_path;
   CPVRChannelNumber m_channelNumber; // the channel number this channel has in the group

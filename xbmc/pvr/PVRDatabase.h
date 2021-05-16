@@ -18,6 +18,7 @@ namespace PVR
 {
   class CPVRChannel;
   class CPVRChannelGroup;
+  class CPVRChannelGroupMember;
   class CPVRChannelGroups;
   class CPVRClient;
   class CPVRTimerInfoTag;
@@ -109,6 +110,14 @@ namespace PVR
     bool DeleteChannels();
 
     /*!
+     * @brief Get channels from the database.
+     * @param bRadio Whether to fetch radio or TV channels.
+     * @param results The container for the channels.
+     * @return The number of channels loaded.
+     */
+    int Get(bool bRadio, std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results);
+
+    /*!
      * @brief Add or update a channel entry in the database
      * @param channel The channel to persist.
      * @param bCommit queue only or queue and commit
@@ -123,12 +132,17 @@ namespace PVR
      */
     bool QueueDeleteQuery(const CPVRChannel& channel);
 
+    //@}
+
+    /*! @name Channel group member methods */
+    //@{
+
     /*!
-     * @brief Get the list of channels from the database
-     * @param results The channel group to store the results in.
-     * @return The amount of channels that were added.
+     * @brief Remove a channel group member entry from the database
+     * @param groupMember The group member to remove.
+     * @return True if the member was removed, false otherwise.
      */
-    int Get(CPVRChannelGroup& results);
+    bool QueueDeleteQuery(const CPVRChannelGroupMember& groupMember);
 
     //@}
 
@@ -142,18 +156,11 @@ namespace PVR
     bool DeleteChannelGroups();
 
     /*!
-     * @brief Delete a channel group from the database.
+     * @brief Delete a channel group and all its members from the database.
      * @param group The group to delete.
      * @return True if the group was deleted successfully, false otherwise.
      */
     bool Delete(const CPVRChannelGroup& group);
-
-    /*!
-     * @brief Remove all channel members of the given group from the database
-     * @param iGroupID The id of the group.
-     * @return True if all channel members were removed, false otherwise.
-     */
-    bool QueueDeleteChannelGroupMembersQuery(int iGroupID);
 
     /*!
      * @brief Get the channel groups.
@@ -165,10 +172,9 @@ namespace PVR
     /*!
      * @brief Add the group members to a group.
      * @param group The group to get the channels for.
-     * @param allGroup The "all channels group" matching param group's 'IsRadio' property.
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup& group, const CPVRChannelGroup& allGroup);
+    int Get(CPVRChannelGroup& group);
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -253,20 +259,11 @@ namespace PVR
     void UpdateTables(int version) override;
     int GetMinSchemaVersion() const override { return 11; }
 
-    bool DeleteChannelsFromGroup(const CPVRChannelGroup& group, const std::vector<int>& channelsToDelete);
-
-    bool GetCurrentGroupMembers(const CPVRChannelGroup& group, std::vector<int>& members);
-    bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup& group);
-
     bool PersistGroupMembers(const CPVRChannelGroup& group);
 
     bool PersistChannels(CPVRChannelGroup& group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
-    void InsertChannelIntoGroup(const std::shared_ptr<CPVRChannel>& channel,
-                                CPVRChannelGroup& group);
-
-    int GetClientIdByChannelId(int iChannelId);
 
     CCriticalSection m_critSection;
   };

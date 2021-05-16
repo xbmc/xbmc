@@ -23,11 +23,19 @@ namespace PVR
   class CPVRChannelGroupInternal : public CPVRChannelGroup
   {
   public:
+    CPVRChannelGroupInternal() = delete;
+
     /*!
      * @brief Create a new internal channel group.
      * @param bRadio True if this group holds radio channels.
      */
     explicit CPVRChannelGroupInternal(bool bRadio);
+
+    /*!
+     * @brief Create a new internal channel group.
+     * @param path The path for the new group.
+     */
+    explicit CPVRChannelGroupInternal(const CPVRChannelsPath& path);
 
     ~CPVRChannelGroupInternal() override;
 
@@ -38,17 +46,6 @@ namespace PVR
     size_t GetNumHiddenChannels() const override { return m_iHiddenChannels; }
 
     /*!
-     * @brief Callback for add-ons to update a channel.
-     * @param channel The updated channel.
-     * @param clientChannelNumber The client channel number of the channel to add. (optional)
-     * @param iOrder The value denoting the order of this member in the group, 0 if unknown and needs to be generated
-     * @return The new/updated channel.
-     */
-    std::shared_ptr<CPVRChannel> UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel,
-                                                  const CPVRChannelNumber& clientChannelNumber,
-                                                  int iOrder);
-
-    /*!
      * @see CPVRChannelGroup::IsGroupMember
      */
     bool IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const override;
@@ -56,7 +53,9 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber, int iOrder, bool bUseBackendChannelNumbers, const CPVRChannelNumber& clientChannelNumber = {}) override;
+    bool AddToGroup(const std::shared_ptr<CPVRChannel>& channel,
+                    const CPVRChannelNumber& channelNumber,
+                    int iOrder) override;
 
     /*!
      * @see CPVRChannelGroup::AppendToGroup
@@ -82,66 +81,30 @@ namespace PVR
 
   protected:
     /*!
-     * @brief Load all channels from the database.
-     * @return The amount of channels that were loaded.
+     * @brief Remove deleted group members from this group. Delete stale channels.
+     * @param groupMembers The group members to use to update this list.
+     * @return The removed members .
      */
-    int LoadFromDb() override;
+    std::vector<std::shared_ptr<CPVRChannelGroupMember>> RemoveDeletedGroupMembers(
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) override;
 
     /*!
-     * @brief Load all channels from the clients.
-     * @return True when updated successfully, false otherwise.
+     * @brief Refresh the channel list from the clients, sync with local data.
+     * @return True on success, false otherwise.
      */
-    bool LoadFromClients() override;
+    bool Update() override;
 
     /*!
-     * @brief Check if this group is the internal group containing all channels.
-     * @return True if it's the internal group, false otherwise.
-     */
-    bool IsInternalGroup() const override { return true; }
-
-    /*!
-     * @brief Update the current channel list with the given list.
-     *
-     * Update the current channel list with the given list.
-     * Only the new channels will be present in the passed list after this call.
-     *
-     * @param channels The channels to use to update this list.
-     * @param channelsToRemove Returns the channels to be removed from all groups, if any
-     * @return True if everything went well, false otherwise.
-     */
-    bool UpdateGroupEntries(const CPVRChannelGroup& channels, std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove) override;
-
-    /*!
-     * @brief Add new channels to this group; updtae data.
-     * @param channels The new channels to use for this group.
-     * @param bUseBackendChannelNumbers True, if channel numbers from backends shall be used.
-     * @return True if everything went well, false otherwise.
-     */
-    bool AddAndUpdateChannels(const CPVRChannelGroup& channels, bool bUseBackendChannelNumbers) override;
-
-    /*!
-     * @brief Remove deleted channels from this group.
-     * @param channels The new channels to use for this group.
-     * @return The removed channels.
-     */
-    std::vector<std::shared_ptr<CPVRChannel>> RemoveDeletedChannels(const CPVRChannelGroup& channels) override;
-
-    /*!
-     * @brief Refresh the channel list from the clients.
-     * @param channelsToRemove Returns the channels to be removed from all groups, if any
-     */
-    bool Update(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove) override;
-
-    /*!
-     * @brief Load the channels from the database.
-     *
-     * Load the channels from the database.
-     * If no channels are stored in the database, then the channels will be loaded from the clients.
-     *
-     * @param channelsToRemove Returns the channels to be removed from all groups, if any
+     * @brief Load the channels from the database, update and sync data from clients.
+     * @param channels All available channels.
      * @return True when loaded successfully, false otherwise.
      */
-    bool Load(std::vector<std::shared_ptr<CPVRChannel>>& channelsToRemove) override;
+    bool Load(const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels) override;
+
+    /*!
+     * @brief Clear all data.
+     */
+    void Unload() override;
 
     /*!
      * @brief Update the vfs paths of all channels.

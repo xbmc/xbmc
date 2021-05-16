@@ -255,11 +255,14 @@ namespace PVR
 
     /*!
      * @brief Get all channels from backends.
-     * @param group The container to store the channels in.
+     * @param bRadio Whether to fetch radio or TV channels.
+     * @param channels The container to store the channels.
      * @param failedClients in case of errors will contain the ids of the clients for which the channels could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channels were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannels(CPVRChannelGroupInternal* group, std::vector<int>& failedClients);
+    PVR_ERROR GetChannels(bool bRadio,
+                          std::vector<std::shared_ptr<CPVRChannel>>& channels,
+                          std::vector<int>& failedClients);
 
     /*!
      * @brief Get all channel groups from backends.
@@ -272,10 +275,14 @@ namespace PVR
     /*!
      * @brief Get all group members of a channel group.
      * @param group The group to get the member for.
+     * @param groupMembers The container for the group members.
      * @param failedClients in case of errors will contain the ids of the clients for which the channel group members could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the channel group members were fetched successfully, last error otherwise.
      */
-    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup* group, std::vector<int>& failedClients);
+    PVR_ERROR GetChannelGroupMembers(
+        CPVRChannelGroup* group,
+        std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers,
+        std::vector<int>& failedClients);
 
     /*!
      * @brief Get a list of clients providing a channel scan dialog.

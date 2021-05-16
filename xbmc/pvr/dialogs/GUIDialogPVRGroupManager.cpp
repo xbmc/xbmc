@@ -146,7 +146,10 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage& message)
     if (pDialog->IsConfirmed())
     {
       ClearSelectedGroupsThumbnail();
-      if (CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->DeleteGroup(*m_selectedGroup))
+      if (CServiceBroker::GetPVRManager()
+              .ChannelGroups()
+              ->Get(m_bIsRadio)
+              ->DeleteGroup(m_selectedGroup))
         Update();
     }
 

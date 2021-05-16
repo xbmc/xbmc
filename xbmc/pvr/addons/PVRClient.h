@@ -532,9 +532,11 @@ public:
   /*!
    * @brief Request the list of all group members from the backend.
    * @param group The group to get the members for.
+   * @param groupMembers The container for the group members.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup* group);
+  PVR_ERROR GetChannelGroupMembers(
+      CPVRChannelGroup* group, std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers);
 
   //@}
   /** @name PVR channel methods */
@@ -549,11 +551,11 @@ public:
 
   /*!
    * @brief Request the list of all channels from the backend.
-   * @param channels The channel group to add the channels to.
    * @param bRadio True to get the radio channels, false to get the TV channels.
+   * @param channels The container for the channels.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetChannels(CPVRChannelGroup& channels, bool bRadio);
+  PVR_ERROR GetChannels(bool bRadio, std::vector<std::shared_ptr<CPVRChannel>>& channels);
 
   //@}
   /** @name PVR recording methods */
