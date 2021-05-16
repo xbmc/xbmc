@@ -99,7 +99,7 @@ void CPVRPlaybackState::ReInit()
   if (!m_activeGroupTV)
     m_activeGroupTV = groupsTV->GetGroupAll();
   if (!m_activeGroupRadio)
-    m_activeGroupTV = groupsRadio->GetGroupAll();
+    m_activeGroupRadio = groupsRadio->GetGroupAll();
 }
 
 void CPVRPlaybackState::Clear()
