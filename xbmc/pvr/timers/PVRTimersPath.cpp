@@ -44,7 +44,7 @@ CPVRTimersPath::CPVRTimersPath(const std::string& strPath, int iClientId, int iP
 
 CPVRTimersPath::CPVRTimersPath(bool bRadio, bool bTimerRules)
   : m_path(StringUtils::Format(
-        "pvr://timers/%s/%s", bRadio ? "radio" : "tv", bTimerRules ? "rules" : "timers")),
+        "pvr://timers/{}/{}", bRadio ? "radio" : "tv", bTimerRules ? "rules" : "timers")),
     m_bValid(true),
     m_bRoot(true),
     m_bRadio(bRadio),

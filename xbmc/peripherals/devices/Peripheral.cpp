@@ -67,7 +67,7 @@ CPeripheral::CPeripheral(CPeripherals& manager,
   else
   {
     m_strFileLocation = StringUtils::Format(
-        "peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
+        "peripherals://{}/{}.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
         scanResult.m_strLocation);
   }
 }

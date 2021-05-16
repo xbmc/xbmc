@@ -2096,7 +2096,7 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
     for (int i = 1; i < 366; ++i)
     {
       m_recordingsLifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
-                                              i); // "%s days"
+                                              i); // "{} days"
     }
   }
   else

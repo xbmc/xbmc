@@ -1792,7 +1792,7 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
 {
   const std::array<std::string, 6> units{{"B", "kB", "MB", "GB", "TB", "PB"}};
   if (bytes < 1000)
-    return Format("%" PRIu64 "B", bytes);
+    return Format("{}B", bytes);
 
   size_t i = 0;
   double value = static_cast<double>(bytes);

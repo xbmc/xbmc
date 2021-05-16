@@ -118,8 +118,8 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     std::string ucAppName = lcAppName;
     StringUtils::ToUpper(ucAppName);
     info = StringUtils::Format("LOG: {}{}.log\n"
-                               "MEM: %" PRIu64 "/%" PRIu64 " KB - FPS: %2.1f fps\n"
-                               "CPU: %s (CPU-%s %4.2f%%%s)",
+                               "MEM: {}/{} KB - FPS: {:2.1f} fps\n"
+                               "CPU: {} (CPU-{} {:4.2f}%{})",
                                CSpecialProtocol::TranslatePath("special://logpath"), lcAppName,
                                stat.availPhys / 1024, stat.totalPhys / 1024,
                                CServiceBroker::GetGUI()

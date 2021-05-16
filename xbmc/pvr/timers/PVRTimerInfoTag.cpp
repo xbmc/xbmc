@@ -419,7 +419,7 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
     else if ((m_iTVChildTimersActive > 0 && !bRadio) || (m_iRadioChildTimersActive > 0 && bRadio))
       strReturn = StringUtils::Format(g_localizeStrings.Get(19255),
                                       bRadio ? m_iRadioChildTimersActive
-                                             : m_iTVChildTimersActive); // "%d scheduled"
+                                             : m_iTVChildTimersActive); // "{} scheduled"
   }
 
   return strReturn;

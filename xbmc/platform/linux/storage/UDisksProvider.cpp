@@ -155,8 +155,8 @@ bool CUDiskDevice::IsApproved()
 std::string CUDiskDevice::toString()
 {
   return StringUtils::Format("DeviceUDI {}: IsFileSystem {} HasFileSystem {} "
-                             "IsSystemInternal %s IsMounted %s IsRemovable %s IsPartition %s "
-                             "IsOptical %s",
+                             "IsSystemInternal {} IsMounted {} IsRemovable {} IsPartition {} "
+                             "IsOptical {}",
                              m_DeviceKitUDI, BOOL2SZ(m_isFileSystem), m_FileSystem,
                              BOOL2SZ(m_isSystemInternal), BOOL2SZ(m_isMounted),
                              BOOL2SZ(m_isRemovable), BOOL2SZ(m_isPartition), BOOL2SZ(m_isOptical));
