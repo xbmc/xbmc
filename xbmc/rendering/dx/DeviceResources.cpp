@@ -24,6 +24,15 @@
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
 
+#ifdef TARGET_WINDOWS_STORE
+#include <winrt/Windows.Graphics.Display.Core.h>
+
+extern "C"
+{
+#include <libavutil/rational.h>
+}
+#endif
+
 #ifdef _DEBUG
 #include <dxgidebug.h>
 #pragma comment(lib, "dxgi.lib")
@@ -169,6 +178,17 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
     }
     else
       mode->ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
+  }
+#else
+  using namespace winrt::Windows::Graphics::Display::Core;
+
+  auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+  if (hdmiInfo) // Xbox only
+  {
+    auto currentMode = hdmiInfo.GetCurrentDisplayMode();
+    AVRational refresh = av_d2q(currentMode.RefreshRate(), 60000);
+    mode->RefreshRate.Numerator = refresh.num;
+    mode->RefreshRate.Denominator = refresh.den;
   }
 #endif
 }
