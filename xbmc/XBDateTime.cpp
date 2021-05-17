@@ -193,7 +193,14 @@ CDateTime::CDateTime(const std::chrono::time_point<std::chrono::system_clock, st
 CDateTime::CDateTime(const tm& time)
 {
   Reset();
-  m_time += std::chrono::duration<long double>(std::mktime(const_cast<tm*>(&time)));
+
+  auto ymd = date::local_days(date::year(time.tm_year + 1900) / date::month(time.tm_mon + 1) / time.tm_mday);
+  auto dur = ymd + std::chrono::hours(time.tm_hour) + std::chrono::minutes(time.tm_min) + std::chrono::seconds(time.tm_sec);
+
+  auto timeT = date::floor<std::chrono::seconds>(dur.time_since_epoch()).count();
+
+  m_time += std::chrono::duration<long double>(timeT);
+
   SetValid(true);
 }
 
@@ -228,7 +235,14 @@ const CDateTime& CDateTime::operator =(const time_t& right)
 const CDateTime& CDateTime::operator =(const tm& right)
 {
   Reset();
-  m_time += std::chrono::duration<long double>(std::mktime(const_cast<tm*>(&right)));
+
+  auto ymd = date::local_days(date::year(right.tm_year + 1900) / date::month(right.tm_mon + 1) / right.tm_mday);
+  auto dur = ymd + std::chrono::hours(right.tm_hour) + std::chrono::minutes(right.tm_min) + std::chrono::seconds(right.tm_sec);
+
+  auto timeT = date::floor<std::chrono::seconds>(dur.time_since_epoch()).count();
+
+  m_time += std::chrono::duration<long double>(timeT);
+
   SetValid(true);
 
   return *this;
@@ -307,8 +321,8 @@ bool CDateTime::operator !=(const time_t& right) const
 
 bool CDateTime::operator >(const tm& right) const
 {
-  return m_time > std::chrono::system_clock::from_time_t(0) +
-    std::chrono::duration<long double>(std::mktime(const_cast<tm*>(&right)));
+  CDateTime temp(right);
+  return m_time > temp.m_time;
 }
 
 bool CDateTime::operator >=(const tm& right) const
@@ -318,8 +332,8 @@ bool CDateTime::operator >=(const tm& right) const
 
 bool CDateTime::operator <(const tm& right) const
 {
-  return m_time < std::chrono::system_clock::from_time_t(0) +
-    std::chrono::duration<long double>(std::mktime(const_cast<tm*>(&right)));
+  CDateTime temp(right);
+  return m_time < temp.m_time;
 }
 
 bool CDateTime::operator <=(const tm& right) const
@@ -329,8 +343,8 @@ bool CDateTime::operator <=(const tm& right) const
 
 bool CDateTime::operator ==(const tm& right) const
 {
-  return m_time == std::chrono::system_clock::from_time_t(0) +
-    std::chrono::duration<long double>(std::mktime(const_cast<tm*>(&right)));
+  CDateTime temp(right);
+  return m_time == temp.m_time;
 }
 
 bool CDateTime::operator !=(const tm& right) const
@@ -589,10 +603,26 @@ void CDateTime::GetAsTime(time_t& time) const
 
 void CDateTime::GetAsTm(tm& time) const
 {
-  auto t = date::floor<std::chrono::seconds>(m_time.time_since_epoch())
-                .count();
+  auto dp = date::floor<date::days>(m_time);
 
-  localtime_r(&t, &time);
+  auto ymd = date::year_month_day{dp};
+  time.tm_year = int(ymd.year()) - 1900;
+  time.tm_mon  = unsigned(ymd.month()) - 1;
+  time.tm_mday = unsigned(ymd.day());
+
+  auto hms = date::make_time(date::floor<std::chrono::seconds>(m_time - dp));
+  time.tm_hour = hms.hours().count();
+  time.tm_min  = hms.minutes().count();
+  time.tm_sec  = hms.seconds().count();
+
+  date::weekday wd{dp};
+  time.tm_wday = wd.c_encoding();
+
+  auto newyear = date::sys_days(date::year(time.tm_year + 1900) / 1 / 1);
+  auto seconds_to_newyear = date::floor<std::chrono::seconds>(m_time - newyear);
+  time.tm_yday = seconds_to_newyear.count() / 86400;
+
+  time.tm_isdst = date::current_zone()->get_info(m_time).save.count() != 0;
 }
 
 std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> CDateTime::GetAsTimePoint() const
