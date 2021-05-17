@@ -155,9 +155,9 @@ private:
                                                   const char* format,
                                                   Args&&... args)
   {
-    GetInstance().FormatAndLogInternal(
-        level, StringUtils::Format("{0:s}: {1:s}", functionName, format).c_str(),
-        std::forward<Args>(args)...);
+    GetInstance().FormatAndLogInternal(level,
+                                       StringUtils::Format("{0:s}: {1:s}", functionName, format),
+                                       std::forward<Args>(args)...);
   }
 
   template<typename... Args>
@@ -166,24 +166,20 @@ private:
                                                   const wchar_t* format,
                                                   Args&&... args)
   {
-    GetInstance().FormatAndLogInternal(
-        level, StringUtils::Format(L"{0:s}: {1:s}", functionName, format).c_str(),
-        std::forward<Args>(args)...);
+    GetInstance().FormatAndLogInternal(level,
+                                       StringUtils::Format(L"{0:s}: {1:s}", functionName, format),
+                                       std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
+  template<typename... Args>
   inline void FormatAndLogInternal(spdlog::level::level_enum level,
-                                   const Char* format,
+                                   std::string format,
                                    Args&&... args)
   {
-    // TODO: for now we manually format the messages to support both python- and printf-style formatting.
-    //       this can be removed once all log messages have been adjusted to python-style formatting
-    auto logString = StringUtils::Format(format, std::forward<Args>(args)...);
-
     // fixup newline alignment, number of spaces should equal prefix length
-    StringUtils::Replace(logString, "\n", "\n                                                   ");
+    StringUtils::Replace(format, "\n", "\n                                                   ");
 
-    m_defaultLogger->log(level, std::move(logString));
+    m_defaultLogger->log(level, format, std::forward<Args>(args)...);
   }
 
   Logger CreateLogger(const std::string& loggerName);
