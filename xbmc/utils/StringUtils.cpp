@@ -1802,8 +1802,7 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
     value /= 1024.0;
   }
   unsigned int decimals = value < 9.995 ? 2 : (value < 99.95 ? 1 : 0);
-  auto frmt = "%." + Format("%u", decimals) + "f%s";
-  return Format(frmt.c_str(), value, units[i].c_str());
+  return Format("{:.{}f}{}", value, decimals, units[i]);
 }
 
 const std::locale& StringUtils::GetOriginalLocale() noexcept
