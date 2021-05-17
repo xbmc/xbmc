@@ -786,11 +786,14 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   GetResumeItemOffset(&item, startOffset, startPart);
   if (startOffset > 0)
   {
-    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
-        StringUtils::SecondsToTimeString(static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)), TIME_FORMAT_HH_MM_SS).c_str());
+    resumeString =
+        StringUtils::Format(g_localizeStrings.Get(12022),
+                            StringUtils::SecondsToTimeString(
+                                static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
+                                TIME_FORMAT_HH_MM_SS));
     if (startPart > 0)
     {
-      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
+      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051), startPart);
       resumeString += " (" + partString + ")";
     }
   }
@@ -961,7 +964,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   CDirectory::GetDirectory(path, parts, "", DIR_FLAG_DEFAULTS);
 
   for (int i = 0; i < parts.Size(); i++)
-    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051).c_str(), i+1));
+    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051), i + 1));
 
   CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 

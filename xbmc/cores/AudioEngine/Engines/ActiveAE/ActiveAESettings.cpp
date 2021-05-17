@@ -130,10 +130,10 @@ void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(
 
   if (m_instance->m_audioEngine.SupportsSilenceTimeout())
   {
-    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13554).c_str(), 1), 1);
+    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13554), 1), 1);
     for (int i = 2; i <= 10; i++)
     {
-      list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13555).c_str(), i), i);
+      list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13555), i), i);
     }
   }
 }

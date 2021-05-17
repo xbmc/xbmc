@@ -873,8 +873,8 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
 
   std::string strLabel(addon->Name());
   if (CURL(path).GetHostName() == "search")
-    strLabel = StringUtils::Format(
-        "{} - {}", CAddonInfo::TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
+    strLabel = StringUtils::Format("{} - {}", CAddonInfo::TranslateType(addon->Type(), true),
+                                   addon->Name());
   item->SetLabel(strLabel);
   item->SetArt(addon->Art());
   item->SetArt("thumb", addon->Icon());
@@ -945,7 +945,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
       if (plugin && plugin->ProvidesSeveral())
       {
         CURL url(path);
-        std::string opt = StringUtils::Format("?content_type={}", content.c_str());
+        std::string opt = StringUtils::Format("?content_type={}", content);
         url.SetOptions(opt);
         path = url.Get();
       }

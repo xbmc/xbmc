@@ -86,13 +86,13 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
 
   int version = db.GetSchemaVersion();
   std::string latestDb = dbSettings.name;
-  latestDb += StringUtils::Format("{}", version);
+  latestDb += std::to_string(version);
 
   while (version >= db.GetMinSchemaVersion())
   {
     std::string dbName = dbSettings.name;
     if (version)
-      dbName += StringUtils::Format("{}", version);
+      dbName += std::to_string(version);
 
     if (db.Connect(dbName, dbSettings, false))
     {

@@ -371,7 +371,7 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
     // we only need to print the hex value if it's an actual EGL define
     CLog::Log(LOGDEBUG, "  {}: {}", eglAttribute.second,
               (value >= 0x3000 && value <= 0x3200) ? StringUtils::Format("{:#04x}", value)
-                                                   : StringUtils::Format("{}", value));
+                                                   : std::to_string(value));
   }
 
   return true;

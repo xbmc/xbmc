@@ -475,7 +475,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
 
   const std::string& str = g_localizeStrings.Get(13201);
   dlgYesNo->SetHeading(CVariant{13200});
-  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())});
+  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str, profile->getName())});
   dlgYesNo->SetLine(1, CVariant{""});
   dlgYesNo->SetLine(2, CVariant{""});
   dlgYesNo->Open();

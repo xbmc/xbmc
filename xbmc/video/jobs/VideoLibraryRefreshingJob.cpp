@@ -162,7 +162,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // if we don't have an url or need to refresh anyway do the web search
     if (!hasDetails && (needsRefresh || !scraperUrl.HasUrls()))
     {
-      SetTitle(StringUtils::Format(g_localizeStrings.Get(197).c_str(), scraper->Name().c_str()));
+      SetTitle(StringUtils::Format(g_localizeStrings.Get(197), scraper->Name()));
       SetText(itemTitle);
       SetProgress(0);
 

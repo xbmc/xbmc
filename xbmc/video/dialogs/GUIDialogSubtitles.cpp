@@ -393,7 +393,7 @@ void CGUIDialogSubtitles::UpdateStatus(STATUS status)
       break;
     case SEARCH_COMPLETE:
       if (!m_subtitles->IsEmpty())
-        label = StringUtils::Format(g_localizeStrings.Get(24108).c_str(), m_subtitles->Size());
+        label = StringUtils::Format(g_localizeStrings.Get(24108), m_subtitles->Size());
       else
         label = g_localizeStrings.Get(24109);
       break;
@@ -504,8 +504,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
     // construct subtitle path
     std::string strSubExt = URIUtils::GetExtension(strUrl);
-    std::string strSubName =
-        StringUtils::Format("{}.{}{}", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
+    std::string strSubName = StringUtils::Format("{}.{}{}", strFileName, strSubLang, strSubExt);
 
     // Handle URL encoding:
     std::string strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
@@ -552,8 +551,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
         if(CFile::Exists(strUrl))
         {
-          std::string strSubNameIdx =
-              StringUtils::Format("{}.{}.idx", strFileName.c_str(), strSubLang.c_str());
+          std::string strSubNameIdx = StringUtils::Format("{}.{}.idx", strFileName, strSubLang);
           // Handle URL encoding:
           strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
           CFile::Copy(strUrl, strDestFile);

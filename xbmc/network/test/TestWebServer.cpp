@@ -250,9 +250,8 @@ protected:
       EXPECT_STREQ(expectedContent.c_str(), result.c_str());
 
       // and Content-Length
-      EXPECT_STREQ(
-          StringUtils::Format("{}", static_cast<unsigned int>(expectedContent.size())).c_str(),
-          httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
+      EXPECT_STREQ(std::to_string(static_cast<unsigned int>(expectedContent.size())).c_str(),
+                   httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
 
       return;
     }

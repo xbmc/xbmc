@@ -365,7 +365,7 @@ CFileItem::CFileItem(const CMediaSource& share)
     URIUtils::AddSlashAtEnd(m_strPath);
   std::string label = share.strName;
   if (!share.strStatus.empty())
-    label = StringUtils::Format("{} ({})", share.strName.c_str(), share.strStatus.c_str());
+    label = StringUtils::Format("{} ({})", share.strName, share.strStatus);
   SetLabel(label);
   m_iLockMode = share.m_iLockMode;
   m_strLockCode = share.m_strLockCode;
@@ -1848,7 +1848,7 @@ void CFileItem::SetFromSong(const CSong &song)
   if (song.idSong > 0)
   {
     std::string strExt = URIUtils::GetExtension(song.strFileName);
-    m_strPath = StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt.c_str());
+    m_strPath = StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt);
   }
   else if (!song.strFileName.empty())
     m_strPath = song.strFileName;
@@ -3584,7 +3584,7 @@ bool CFileItem::LoadMusicTag()
       std::string strText = g_localizeStrings.Get(554); // "Track"
       if (!strText.empty() && strText[strText.size() - 1] != ' ')
         strText += " ";
-      std::string strTrack = StringUtils::Format((strText + "{}").c_str(), iTrack);
+      std::string strTrack = StringUtils::Format((strText + "{}"), iTrack);
       GetMusicInfoTag()->SetTitle(strTrack);
       GetMusicInfoTag()->SetLoaded(true);
       return true;

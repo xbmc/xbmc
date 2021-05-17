@@ -198,8 +198,8 @@ extern "C" void __stdcall update_emu_environ()
         !settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).empty())
     {
       strProxy = StringUtils::Format(
-          "{}:{}@", settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).c_str(),
-          settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).c_str());
+          "{}:{}@", settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME),
+          settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD));
     }
 
     strProxy += settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);

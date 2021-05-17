@@ -62,13 +62,13 @@ CPeripheral::CPeripheral(CPeripherals& manager,
     m_strFileLocation =
         StringUtils::Format("peripherals://{}/{}_{}.dev",
                             PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
-                            scanResult.m_strLocation.c_str(), scanResult.m_iSequence);
+                            scanResult.m_strLocation, scanResult.m_iSequence);
   }
   else
   {
     m_strFileLocation = StringUtils::Format(
-        "peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
-        scanResult.m_strLocation.c_str());
+        "peripherals://{}/{}.dev", PeripheralTypeTranslator::BusTypeToString(scanResult.m_busType),
+        scanResult.m_strLocation);
   }
 }
 
@@ -150,22 +150,20 @@ bool CPeripheral::Initialise(void)
     m_strSettingsFile =
         StringUtils::Format("special://profile/peripheral_data/{}_{}.xml",
                             PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
-                            CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT).c_str());
+                            CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT));
   }
   else
   {
     // Backwards compatibility - old settings files didn't include the device name
-    m_strSettingsFile =
-        StringUtils::Format("special://profile/peripheral_data/{}_{}_{}.xml",
-                            PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
-                            m_strVendorId.c_str(), m_strProductId.c_str());
+    m_strSettingsFile = StringUtils::Format(
+        "special://profile/peripheral_data/{}_{}_{}.xml",
+        PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId);
 
     if (!XFILE::CFile::Exists(m_strSettingsFile))
-      m_strSettingsFile =
-          StringUtils::Format("special://profile/peripheral_data/{}_{}_{}_{}.xml",
-                              PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
-                              m_strVendorId.c_str(), m_strProductId.c_str(),
-                              CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT).c_str());
+      m_strSettingsFile = StringUtils::Format(
+          "special://profile/peripheral_data/{}_{}_{}_{}.xml",
+          PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId,
+          CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT));
   }
 
   LoadPersistedSettings();
@@ -499,7 +497,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingInt> intSetting =
             std::static_pointer_cast<CSettingInt>(itr.second.m_setting);
         if (intSetting)
-          strValue = StringUtils::Format("{}", intSetting->GetValue());
+          strValue = std::to_string(intSetting->GetValue());
       }
       break;
       case SettingType::Number:
@@ -515,7 +513,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
         std::shared_ptr<CSettingBool> boolSetting =
             std::static_pointer_cast<CSettingBool>(itr.second.m_setting);
         if (boolSetting)
-          strValue = StringUtils::Format("{}", boolSetting->GetValue() ? 1 : 0);
+          strValue = std::to_string(boolSetting->GetValue() ? 1 : 0);
       }
       break;
       default:

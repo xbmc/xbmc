@@ -278,8 +278,7 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
 
   for (const auto& versionInfo : versions)
   {
-    CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339).c_str(),
-                                       versionInfo.first.asString().c_str()));
+    CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339), versionInfo.first.asString()));
     if (m_localAddon && m_localAddon->Version() == versionInfo.first &&
         m_item->GetAddonInfo()->Origin() == versionInfo.second)
       item.Select(true);
@@ -379,8 +378,8 @@ void CGUIDialogAddonInfo::OnSelectVersion()
       if (versions[i].second == LOCAL_CACHE)
       {
         CAddonInstaller::GetInstance().InstallFromZip(
-            StringUtils::Format("special://home/addons/packages/{}-{}.zip", processAddonId.c_str(),
-                                versions[i].first.asString().c_str()));
+            StringUtils::Format("special://home/addons/packages/{}-{}.zip", processAddonId,
+                                versions[i].first.asString()));
       }
       else
       {
@@ -527,8 +526,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   if (!deps.empty())
   {
-    std::string line0 =
-        StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
+    std::string line0 = StringUtils::Format(g_localizeStrings.Get(24046), m_localAddon->Name());
     std::string line1 = StringUtils::Join(deps, ", ");
     HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{std::move(line0)},
                                CVariant{std::move(line1)}, CVariant{line2});
@@ -647,10 +645,10 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
           }
 
           item->SetLabel2(StringUtils::Format(
-              g_localizeStrings.Get(messageId).c_str(), it.m_depInfo.versionMin.asString().c_str(),
-              it.m_installed ? it.m_installed->Version().asString().c_str() : "",
-              it.m_available ? it.m_available->Version().asString().c_str() : "",
-              it.m_depInfo.optional ? g_localizeStrings.Get(24184).c_str() : ""));
+              g_localizeStrings.Get(messageId), it.m_depInfo.versionMin.asString(),
+              it.m_installed ? it.m_installed->Version().asString() : "",
+              it.m_available ? it.m_available->Version().asString() : "",
+              it.m_depInfo.optional ? g_localizeStrings.Get(24184) : ""));
 
           item->SetArt("icon", infoAddon->Icon());
           item->SetProperty("addon_id", it.m_depInfo.id);

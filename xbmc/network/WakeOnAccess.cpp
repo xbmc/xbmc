@@ -75,12 +75,12 @@ static void ShowDiscoveryMessage(const char* function, const char* server_name, 
   if (new_entry)
   {
     CLog::Log(LOGINFO, "%s - Create new entry for host '%s'", function, server_name);
-    message = StringUtils::Format(LOCALIZED(13035).c_str(), server_name);
+    message = StringUtils::Format(LOCALIZED(13035), server_name);
   }
   else
   {
     CLog::Log(LOGINFO, "%s - Update existing entry for host '%s'", function, server_name);
-    message = StringUtils::Format(LOCALIZED(13034).c_str(), server_name);
+    message = StringUtils::Format(LOCALIZED(13034), server_name);
   }
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, LOCALIZED(13033), message, 4000, true, 3000);
 }
@@ -493,7 +493,7 @@ bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& c
 
 bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
-  std::string heading = StringUtils::Format(LOCALIZED(13027).c_str(), server.friendlyName.c_str());
+  std::string heading = StringUtils::Format(LOCALIZED(13027), server.friendlyName);
 
   ProgressDialogHelper dlg (heading);
 
@@ -754,7 +754,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     if (IsEnabled())
     {
       const std::string& heading = LOCALIZED(13033);
-      std::string message = StringUtils::Format(LOCALIZED(13036).c_str(), host.c_str());
+      std::string message = StringUtils::Format(LOCALIZED(13036), host);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, 4000, true, 3000);
     }
   }

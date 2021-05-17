@@ -426,7 +426,7 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     }
     else
     {
-      text = StringUtils::Format("{}", m_iValue);
+      text = std::to_string(m_iValue);
     }
   }
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
@@ -456,11 +456,11 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
       if (m_bShowRange)
       {
         text = StringUtils::Format("({}/{}) {}", m_iValue + 1, (int)m_vecLabels.size(),
-                                   m_vecLabels[m_iValue].c_str());
+                                   m_vecLabels[m_iValue]);
       }
       else
       {
-        text = StringUtils::Format("{}", m_vecLabels[m_iValue].c_str());
+        text = m_vecLabels[m_iValue];
       }
     }
     else

@@ -550,7 +550,7 @@ void CUtil::GetFileAndProtocol(const std::string& strURL, std::string& strDir)
   if (URIUtils::IsDVD(strURL)) return ;
 
   CURL url(strURL);
-  strDir = StringUtils::Format("{}://{}", url.GetProtocol().c_str(), url.GetFileName().c_str());
+  strDir = StringUtils::Format("{}://{}", url.GetProtocol(), url.GetFileName());
 }
 
 int CUtil::GetDVDIfoTitle(const std::string& strFile)
@@ -716,7 +716,7 @@ std::string CUtil::GetNextFilename(const std::string &fn_template, int max)
 {
   std::string searchPath = URIUtils::GetDirectory(fn_template);
   std::string mask = URIUtils::GetExtension(fn_template);
-  std::string name = StringUtils::Format(fn_template.c_str(), 0);
+  std::string name = StringUtils::Format(fn_template, 0);
 
   CFileItemList items;
   if (!CDirectory::GetDirectory(searchPath, items, mask, DIR_FLAG_NO_FILE_DIRS))
@@ -725,7 +725,7 @@ std::string CUtil::GetNextFilename(const std::string &fn_template, int max)
   items.SetFastLookup(true);
   for (int i = 0; i <= max; i++)
   {
-    std::string name = StringUtils::Format(fn_template.c_str(), i);
+    std::string name = StringUtils::Format(fn_template, i);
     if (!items.Get(name))
       return name;
   }
@@ -739,7 +739,7 @@ std::string CUtil::GetNextPathname(const std::string &path_template, int max)
 
   for (int i = 0; i <= max; i++)
   {
-    std::string name = StringUtils::Format(path_template.c_str(), i);
+    std::string name = StringUtils::Format(path_template, i);
     if (!CFile::Exists(name) && !CDirectory::Exists(name))
       return name;
   }
@@ -2060,7 +2060,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
           for (const auto &lang : TagConv.m_Langclass)
           {
             std::string strDest =
-                StringUtils::Format("special://temp/subtitle.{}.{}.smi", lang.Name.c_str(), i);
+                StringUtils::Format("special://temp/subtitle.{}.{}.smi", lang.Name, i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s",

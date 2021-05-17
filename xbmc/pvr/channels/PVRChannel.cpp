@@ -66,8 +66,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
     m_iClientEncryptionSystem(channel.iEncryptionSystem)
 {
   if (m_strChannelName.empty())
-    m_strChannelName =
-        StringUtils::Format("{} {}", g_localizeStrings.Get(19029).c_str(), m_iUniqueId);
+    m_strChannelName = StringUtils::Format("{} {}", g_localizeStrings.Get(19029), m_iUniqueId);
 
   UpdateEncryptionName();
 }
@@ -322,7 +321,7 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
   CSingleLock lock(m_critSection);
   if (m_strIconPath != strIconPath)
   {
-    m_strIconPath = StringUtils::Format("{}", strIconPath.c_str());
+    m_strIconPath = strIconPath;
 
     m_bChanged = true;
     m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
@@ -337,7 +336,8 @@ bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUser
   std::string strName(strChannelName);
 
   if (strName.empty())
-    strName = StringUtils::Format(g_localizeStrings.Get(19085).c_str(), m_clientChannelNumber.FormattedChannelNumber().c_str());
+    strName = StringUtils::Format(g_localizeStrings.Get(19085),
+                                  m_clientChannelNumber.FormattedChannelNumber());
 
   CSingleLock lock(m_critSection);
   if (m_strChannelName != strName)
@@ -619,7 +619,7 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
   {
     bool bCleanEPG = !m_strEPGScraper.empty() || strScraper.empty();
 
-    m_strEPGScraper = StringUtils::Format("{}", strScraper.c_str());
+    m_strEPGScraper = strScraper;
     m_bChanged = true;
 
     /* clear the previous EPG entries if needed */

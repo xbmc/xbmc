@@ -145,7 +145,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     xmlControl->SetAttribute("type", lpszType);
   if (m_controlID != 0)
   {
-    std::string str = StringUtils::Format("{}", m_controlID);
+    std::string str = std::to_string(m_controlID);
     xmlControl->SetAttribute("id", str.c_str());
   }
 
@@ -172,13 +172,13 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     std::string val;
     TiXmlElement *elem = new TiXmlElement("rendertime");
     xmlControl->LinkEndChild(elem);
-    val = StringUtils::Format("{}", rend);
+    val = std::to_string(rend);
     TiXmlText *text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
 
     elem = new TiXmlElement("visibletime");
     xmlControl->LinkEndChild(elem);
-    val = StringUtils::Format("{}", vis);
+    val = std::to_string(vis);
     text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
   }
@@ -324,7 +324,7 @@ bool CGUIControlProfiler::SaveResults(void)
   doc.InsertEndChild(decl);
 
   TiXmlElement *root = new TiXmlElement("guicontrolprofiler");
-  std::string str = StringUtils::Format("{}", m_iFrameCount);
+  std::string str = std::to_string(m_iFrameCount);
   root->SetAttribute("framecount", str.c_str());
   root->SetAttribute("timeunit", "ms");
   doc.LinkEndChild(root);

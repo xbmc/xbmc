@@ -415,7 +415,7 @@ bool Interface_Base::set_setting_int(void* kodiBase, const char* id, int value)
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, StringUtils::Format("{}", value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, std::to_string(value)))
     return true;
 
   if (!addon->UpdateSettingInt(id, value))

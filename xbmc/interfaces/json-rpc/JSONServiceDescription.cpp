@@ -695,7 +695,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
       {
         CLog::Log(LOGDEBUG, "JSONRPC: Value does not match extended type %s of type %s", extends.at(extendsIndex)->ID.c_str(), name.c_str());
         errorMessage = StringUtils::Format("value does not match extended type {}",
-                                           extends.at(extendsIndex)->ID.c_str());
+                                           extends.at(extendsIndex)->ID);
         errorData["message"] = errorMessage.c_str();
         return status;
       }

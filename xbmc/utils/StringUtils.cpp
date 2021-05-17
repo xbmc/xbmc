@@ -1393,13 +1393,13 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 
   std::string strHMS;
   if (format == TIME_FORMAT_SECS)
-    strHMS = StringUtils::Format("{}", lSeconds);
+    strHMS = std::to_string(lSeconds);
   else if (format == TIME_FORMAT_MINS)
-    strHMS = StringUtils::Format("{}", lrintf(static_cast<float>(lSeconds) / 60.0f));
+    strHMS = std::to_string(lrintf(static_cast<float>(lSeconds) / 60.0f));
   else if (format == TIME_FORMAT_HOURS)
-    strHMS = StringUtils::Format("{}", lrintf(static_cast<float>(lSeconds) / 3600.0f));
+    strHMS = std::to_string(lrintf(static_cast<float>(lSeconds) / 3600.0f));
   else if (format & TIME_FORMAT_M)
-    strHMS += StringUtils::Format("{}", lSeconds % 3600 / 60);
+    strHMS += std::to_string(lSeconds % 3600 / 60);
   else
   {
     int hh = lSeconds / 3600;
@@ -1412,7 +1412,7 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     if (format & TIME_FORMAT_HH)
       strHMS += StringUtils::Format("{:02}", hh);
     else if (format & TIME_FORMAT_H)
-      strHMS += StringUtils::Format("{}", hh);
+      strHMS += std::to_string(hh);
     if (format & TIME_FORMAT_MM)
       strHMS += StringUtils::Format(strHMS.empty() ? "{:02}" : ":{:02}", mm);
     if (format & TIME_FORMAT_SS)
@@ -1792,7 +1792,7 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
 {
   const std::array<std::string, 6> units{{"B", "kB", "MB", "GB", "TB", "PB"}};
   if (bytes < 1000)
-    return Format("%" PRIu64 "B", bytes);
+    return Format("{}B", bytes);
 
   size_t i = 0;
   double value = static_cast<double>(bytes);

@@ -1189,7 +1189,7 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
   }
   return false;
 #else
-  std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\{}", strWdrive.substr(0, 2).c_str());
+  std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\{}", strWdrive.substr(0, 2));
 
   HANDLE deviceHandle = CreateFileW(
     strWDevicePath.c_str(),

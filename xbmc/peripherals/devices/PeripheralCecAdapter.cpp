@@ -249,7 +249,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
       // display warning: incompatible libCEC
       std::string strMessage = StringUtils::Format(
-          g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1,
+          g_localizeStrings.Get(36040), m_cecAdapter ? m_configuration.serverVersion : -1,
           CEC_LIB_SUPPORTED_VERSION);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000),
                                             strMessage);
@@ -277,16 +277,15 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration& configuration)
 {
-  m_strVersionInfo =
-      StringUtils::Format("libCEC {} - firmware v{}",
-                          m_cecAdapter->VersionToString(configuration.serverVersion).c_str(),
-                          configuration.iFirmwareVersion);
+  m_strVersionInfo = StringUtils::Format("libCEC {} - firmware v{}",
+                                         m_cecAdapter->VersionToString(configuration.serverVersion),
+                                         configuration.iFirmwareVersion);
 
   // append firmware build date
   if (configuration.iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
   {
     CDateTime dt((time_t)configuration.iFirmwareBuildDate);
-    m_strVersionInfo += StringUtils::Format(" ({})", dt.GetAsDBDate().c_str());
+    m_strVersionInfo += StringUtils::Format(" ({})", dt.GetAsDBDate());
   }
 }
 
@@ -307,8 +306,8 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that
   // we're busy
-  std::string strMessage = StringUtils::Format(g_localizeStrings.Get(21336).c_str(),
-                                               g_localizeStrings.Get(36000).c_str());
+  std::string strMessage =
+      StringUtils::Format(g_localizeStrings.Get(21336), g_localizeStrings.Get(36000));
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
                                         strMessage);
 
@@ -1588,7 +1587,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     CLog::Log(LOGDEBUG,
               "%s - CEC capable amplifier found (%s). volume will be controlled on the amp",
               __FUNCTION__, ampName.c_str());
-    strAmpName += StringUtils::Format("{}", ampName.c_str());
+    strAmpName += ampName;
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
@@ -1628,12 +1627,11 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   // request the OSD name of the TV
   std::string strNotification;
   std::string tvName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV));
-  strNotification =
-      StringUtils::Format("{}: {}", g_localizeStrings.Get(36016).c_str(), tvName.c_str());
+  strNotification = StringUtils::Format("{}: {}", g_localizeStrings.Get(36016), tvName);
 
   std::string strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
-    strNotification += StringUtils::Format("- {}", strAmpName.c_str());
+    strNotification += StringUtils::Format("- {}", strAmpName);
 
   m_adapter->m_bIsReady = true;
 

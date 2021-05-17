@@ -81,7 +81,7 @@ void CAddonStatusHandler::Process()
   CSingleLock lock(m_critSection);
 
   std::string heading = StringUtils::Format(
-      "{}: {}", CAddonInfo::TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
+      "{}: {}", CAddonInfo::TranslateType(m_addon->Type(), true), m_addon->Name());
 
   /* Request to restart the AddOn and data structures need updated */
   if (m_status == ADDON_STATUS_NEED_RESTART)

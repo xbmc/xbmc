@@ -58,8 +58,10 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
     labelStarted = 13210;
   }
 
-  EventPtr alarmClockActivity(new CNotificationEvent(labelAlarmClock,
-    StringUtils::Format(g_localizeStrings.Get(labelStarted).c_str(), static_cast<int>(event.m_fSecs) / 60, static_cast<int>(event.m_fSecs) % 60)));
+  EventPtr alarmClockActivity(new CNotificationEvent(
+      labelAlarmClock,
+      StringUtils::Format(g_localizeStrings.Get(labelStarted), static_cast<int>(event.m_fSecs) / 60,
+                          static_cast<int>(event.m_fSecs) % 60)));
   if (bSilent)
     CServiceBroker::GetEventLog().Add(alarmClockActivity);
   else
@@ -99,7 +101,8 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
   else
   {
     float remaining = static_cast<float>(iter->second.m_fSecs) - elapsed;
-    strMessage = StringUtils::Format(g_localizeStrings.Get(13212).c_str(), static_cast<int>(remaining) / 60, static_cast<int>(remaining) % 60);
+    strMessage = StringUtils::Format(g_localizeStrings.Get(13212), static_cast<int>(remaining) / 60,
+                                     static_cast<int>(remaining) % 60);
   }
 
   if (iter->second.m_strCommand.empty() || static_cast<float>(iter->second.m_fSecs) > elapsed)

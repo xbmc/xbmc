@@ -62,7 +62,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CGUIVisualisationContro
   {
     SetUseDetails(false);
     SetMultiSelection(false);
-    SetHeading(CVariant{StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str())});
+    SetHeading(CVariant{StringUtils::Format(g_localizeStrings.Get(13407), m_viz->Name())});
     std::vector<std::string> presets;
     if (m_viz->GetPresetList(presets))
     {

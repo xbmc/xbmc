@@ -48,7 +48,7 @@ std::string CGUIDialogIgnoreInput::GetDialogText()
                    return JOYSTICK::CJoystickTranslator::GetPrimitiveName(primitive);
                  });
 
-  return StringUtils::Format(dialogText.c_str(), StringUtils::Join(primitives, " | ").c_str());
+  return StringUtils::Format(dialogText, StringUtils::Join(primitives, " | "));
 }
 
 std::string CGUIDialogIgnoreInput::GetDialogHeader()

@@ -1315,12 +1315,11 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(
-            new CMediaLibraryEvent(MediaTypeAlbum, album.strPath, 24146,
-                                   StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
-                                                       MediaTypeAlbum, album.strAlbum.c_str()),
-                                   CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
-                                   CURL::GetRedacted(album.strPath), EventLevel::Warning)));
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+            MediaTypeAlbum, album.strPath, 24146,
+            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeAlbum, album.strAlbum),
+            CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
+            CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1384,12 +1383,11 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(
-            new CMediaLibraryEvent(MediaTypeArtist, artist.strPath, 24146,
-                                   StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
-                                                       MediaTypeArtist, artist.strArtist.c_str()),
-                                   CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
-                                   CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+            MediaTypeArtist, artist.strPath, 24146,
+            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeArtist, artist.strArtist),
+            CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
+            CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1445,7 +1443,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 {
   if (m_handle)
   {
-    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321).c_str(), info->Name().c_str()));
+    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321), info->Name()));
     m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
@@ -1586,8 +1584,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
           if (pDialog)
           {
             // set the label to [relevance]  album - artist
-            std::string strTemp =
-                StringUtils::Format("[{:0.2f}]  {}", relevance, info.GetTitle2().c_str());
+            std::string strTemp = StringUtils::Format("[{:0.2f}]  {}", relevance, info.GetTitle2());
             CFileItemPtr item(new CFileItem("", false));
             item->SetLabel(strTemp);
 
@@ -1706,7 +1703,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
 {
   if (m_handle)
   {
-    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20320).c_str(), info->Name().c_str()));
+    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20320), info->Name()));
     m_handle->SetText(artist.strArtist);
   }
 
@@ -1848,7 +1845,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
             {
               std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
               if (!genres.empty())
-                strTemp = StringUtils::Format("[{}] {}", genres.c_str(), strTemp.c_str());
+                strTemp = StringUtils::Format("[{}] {}", genres, strTemp);
             }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
@@ -2232,7 +2229,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
       }
       else if (discnum > 0)
         // Append disc number when candidate art type (and file) not have it
-        strCandidate += StringUtils::Format("{}", discnum);
+        strCandidate += std::to_string(discnum);
 
       if (art.find(strCandidate) == art.end())
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));

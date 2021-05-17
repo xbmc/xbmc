@@ -730,8 +730,8 @@ bool CSmartPlaylistRule::CanGroupMix(Field group)
 
 std::string CSmartPlaylistRule::GetLocalizedRule() const
 {
-  return StringUtils::Format("{} {} {}", GetLocalizedField(m_field).c_str(),
-                             GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
+  return StringUtils::Format("{} {} {}", GetLocalizedField(m_field),
+                             GetLocalizedOperator(m_operator), GetParameter());
 }
 
 std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &parameter) const
@@ -825,7 +825,7 @@ std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorStrin
   // special-casing
   if (m_field == FieldTime || m_field == FieldAlbumDuration)
   { // translate time to seconds
-    std::string seconds = StringUtils::Format("{}", StringUtils::TimeStringToSeconds(param));
+    std::string seconds = std::to_string(StringUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString.c_str(), seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
@@ -836,10 +836,10 @@ std::string CSmartPlaylistRule::FormatLinkQuery(const char *field, const char *t
   // NOTE: no need for a PrepareSQL here, as the parameter has already been formatted
   return StringUtils::Format(
       " EXISTS (SELECT 1 FROM {}_link"
-      "         JOIN %s ON %s.%s_id=%s_link.%s_id"
-      "         WHERE %s_link.media_id=%s AND %s.name %s AND %s_link.media_type = '%s')",
-      field, table, table, table, field, table, field, mediaField.c_str(), table, parameter.c_str(),
-      field, mediaType.c_str());
+      "         JOIN {} ON {}.{}_id={}_link.{}_id"
+      "         WHERE {}_link.media_id={} AND {}.name {} AND {}_link.media_type = '{}')",
+      field, table, table, table, field, table, field, mediaField, table, parameter, field,
+      mediaType);
 }
 
 std::string CSmartPlaylistRule::FormatYearQuery(const std::string& field,
@@ -1114,7 +1114,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
           if (playlist.GetType() == strType)
           {
             if ((*it)->m_operator == CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL)
-              currentRule = StringUtils::Format("NOT ({})", playlistQuery.c_str());
+              currentRule = StringUtils::Format("NOT ({})", playlistQuery);
             else
               currentRule = playlistQuery;
           }

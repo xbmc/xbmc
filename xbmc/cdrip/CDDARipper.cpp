@@ -220,8 +220,8 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   {
     std::string strAlbum = infoTag.GetAlbum();
     if (strAlbum.empty())
-      strAlbum = StringUtils::Format(
-          "Unknown Album {}", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
+      strAlbum = StringUtils::Format("Unknown Album {}",
+                                     CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime());
     else
       StringUtils::Replace(strAlbum, '/', '_');
     StringUtils::Replace(strAlbumDir, "%B", strAlbum);

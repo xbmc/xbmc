@@ -542,22 +542,29 @@ namespace PVR
         switch (eAction)
         {
           case RECORD_INSTANTRECORDTIME:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), m_iInstantRecordTime)); // Record next <default duration> minutes
+            m_pDlgSelect->Add(StringUtils::Format(
+                g_localizeStrings.Get(19090),
+                m_iInstantRecordTime)); // Record next <default duration> minutes
             break;
           case RECORD_30_MINUTES:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 30)); // Record next 30 minutes
+            m_pDlgSelect->Add(
+                StringUtils::Format(g_localizeStrings.Get(19090), 30)); // Record next 30 minutes
             break;
           case RECORD_60_MINUTES:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 60)); // Record next 60 minutes
+            m_pDlgSelect->Add(
+                StringUtils::Format(g_localizeStrings.Get(19090), 60)); // Record next 60 minutes
             break;
           case RECORD_120_MINUTES:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 120)); // Record next 120 minutes
+            m_pDlgSelect->Add(
+                StringUtils::Format(g_localizeStrings.Get(19090), 120)); // Record next 120 minutes
             break;
           case RECORD_CURRENT_SHOW:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19091).c_str(), title.c_str())); // Record current show (<title>)
+            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19091),
+                                                  title)); // Record current show (<title>)
             break;
           case RECORD_NEXT_SHOW:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19092).c_str(), title.c_str())); // Record next show (<title>)
+            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19092),
+                                                  title)); // Record next show (<title>)
             break;
           case NONE:
           case ASK:
@@ -1164,8 +1171,9 @@ namespace PVR
     {
       int positionInSeconds = lrint(recording->GetResumePoint().timeInSeconds);
       if (positionInSeconds > 0)
-        resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
-                                           StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS).c_str());
+        resumeString = StringUtils::Format(
+            g_localizeStrings.Get(12022),
+            StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS));
     }
     return resumeString;
   }
@@ -1413,7 +1421,9 @@ namespace PVR
     else if (result == ParentalCheckResult::FAILED)
     {
       const std::string channelName = channel ? channel->ChannelName() : g_localizeStrings.Get(19029); // Channel
-      const std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
+      const std::string msg = StringUtils::Format(
+          g_localizeStrings.Get(19035),
+          channelName); // CHANNELNAME could not be played. Check the log for details.
 
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166), msg); // PVR information
     }
@@ -1489,10 +1499,14 @@ namespace PVR
                "first channel of active group could also not be determined.",
                bIsRadio ? "Radio" : "TV");
 
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                          g_localizeStrings.Get(19166), // PVR information
-                                          StringUtils::Format(g_localizeStrings.Get(19035).c_str(),
-                                                              g_localizeStrings.Get(bIsRadio ? 19021 : 19020).c_str())); // Radio/TV could not be played. Check the log for details.
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Error,
+        g_localizeStrings.Get(19166), // PVR information
+        StringUtils::Format(
+            g_localizeStrings.Get(19035),
+            g_localizeStrings.Get(
+                bIsRadio ? 19021
+                         : 19020))); // Radio/TV could not be played. Check the log for details.
     return false;
   }
 
@@ -1895,9 +1909,9 @@ namespace PVR
           {
             if (cause->IsRecording())
             {
-              text = StringUtils::Format(g_localizeStrings.Get(19691).c_str(), // "PVR is currently recording...."
-                                         cause->Title().c_str(),
-                                         cause->ChannelName().c_str());
+              text = StringUtils::Format(
+                  g_localizeStrings.Get(19691), // "PVR is currently recording...."
+                  cause->Title(), cause->ChannelName());
             }
             else
             {
@@ -1914,7 +1928,7 @@ namespace PVR
               if (mins > 1)
               {
                 // "%d minutes"
-                dueStr = StringUtils::Format(g_localizeStrings.Get(19694).c_str(), mins);
+                dueStr = StringUtils::Format(g_localizeStrings.Get(19694), mins);
               }
               else
               {
@@ -1922,12 +1936,11 @@ namespace PVR
                 dueStr = g_localizeStrings.Get(19695);
               }
 
-              text = StringUtils::Format(cause->IsReminder()
-                                           ? g_localizeStrings.Get(19690).c_str() // "PVR has scheduled a reminder...."
-                                           : g_localizeStrings.Get(19692).c_str(), // "PVR will start recording...."
-                                         cause->Title().c_str(),
-                                         cause->ChannelName().c_str(),
-                                         dueStr.c_str());
+              text = StringUtils::Format(
+                  cause->IsReminder()
+                      ? g_localizeStrings.Get(19690) // "PVR has scheduled a reminder...."
+                      : g_localizeStrings.Get(19692), // "PVR will start recording...."
+                  cause->Title(), cause->ChannelName(), dueStr);
             }
           }
           else
@@ -1946,7 +1959,7 @@ namespace PVR
             if (mins > 1)
             {
               // "%d minutes"
-              dueStr = StringUtils::Format(g_localizeStrings.Get(19694).c_str(), mins);
+              dueStr = StringUtils::Format(g_localizeStrings.Get(19694), mins);
             }
             else
             {
@@ -1954,8 +1967,8 @@ namespace PVR
               dueStr = g_localizeStrings.Get(19695);
             }
 
-            text = StringUtils::Format(g_localizeStrings.Get(19693).c_str(), // "Daily wakeup is due in...."
-                                       dueStr.c_str());
+            text = StringUtils::Format(g_localizeStrings.Get(19693), // "Daily wakeup is due in...."
+                                       dueStr);
           }
 
           // Inform user about PVR being busy. Ask if user wants to powerdown anyway.

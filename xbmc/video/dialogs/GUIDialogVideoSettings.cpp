@@ -491,7 +491,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
     if (!info.name.empty())
     {
       if (!strLanguage.empty())
-        strItem = StringUtils::Format("{} - {}", strLanguage.c_str(), info.name.c_str());
+        strItem = StringUtils::Format("{} - {}", strLanguage, info.name);
       else
         strItem = info.name;
     }
@@ -503,8 +503,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
     if (info.codecName.empty())
       strItem += StringUtils::Format(" ({}x{}", info.width, info.height);
     else
-      strItem +=
-          StringUtils::Format(" ({}, {}x{}", info.codecName.c_str(), info.width, info.height);
+      strItem += StringUtils::Format(" ({}, {}x{}", info.codecName, info.width, info.height);
 
     if (info.bitrate)
       strItem += StringUtils::Format(", {} bps)", info.bitrate);

@@ -594,7 +594,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const std:
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
   {
-    std::string label = StringUtils::Format("{}", labelNumber);
+    std::string label = std::to_string(labelNumber);
     infoLabels.emplace_back(label);
     return; // done
   }

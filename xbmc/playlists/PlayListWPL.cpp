@@ -119,8 +119,7 @@ void CPlayListWPL::Save(const std::string& strFileName) const
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    write +=
-        StringUtils::Format("            <media src={}{}{}/>", 34, item->GetPath().c_str(), 34);
+    write += StringUtils::Format("            <media src={}{}{}/>", 34, item->GetPath(), 34);
   }
   write += StringUtils::Format("        </seq>\n");
   write += StringUtils::Format("    </body>\n");

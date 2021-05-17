@@ -310,7 +310,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   m_latency = 20; // ms
   uint32_t frames = std::nearbyint((m_latency * format.m_sampleRate) / 1000.0);
-  std::string fraction = StringUtils::Format("%u/%u", frames, format.m_sampleRate);
+  std::string fraction = StringUtils::Format("{}/{}", frames, format.m_sampleRate);
 
   std::array<spa_dict_item, 5> items = {
       SPA_DICT_ITEM_INIT(PW_KEY_MEDIA_TYPE, "Audio"),

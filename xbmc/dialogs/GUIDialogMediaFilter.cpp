@@ -366,7 +366,8 @@ void CGUIDialogMediaFilter::SetupView()
     localizedMediaId = 134;
 
   // set the heading
-  SET_CONTROL_LABEL(CONTROL_HEADING, StringUtils::Format(g_localizeStrings.Get(1275).c_str(), g_localizeStrings.Get(localizedMediaId).c_str()));
+  SET_CONTROL_LABEL(CONTROL_HEADING, StringUtils::Format(g_localizeStrings.Get(1275),
+                                                         g_localizeStrings.Get(localizedMediaId)));
 
   SET_CONTROL_LABEL(CONTROL_OKAY_BUTTON, 186);
   SET_CONTROL_LABEL(CONTROL_CLEAR_BUTTON, 192);
@@ -415,8 +416,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       }
     }
 
-    std::string settingId =
-        StringUtils::Format("filter.{}.{}", filter.mediaType.c_str(), filter.field);
+    std::string settingId = StringUtils::Format("filter.{}.{}", filter.mediaType, filter.field);
     if (filter.controlType == "edit")
     {
       CVariant data;
@@ -602,7 +602,7 @@ void CGUIDialogMediaFilter::UpdateControls()
     else
     {
       CONTROL_ENABLE(control->GetID());
-      label = StringUtils::Format(g_localizeStrings.Get(21470).c_str(), label.c_str(), size);
+      label = StringUtils::Format(g_localizeStrings.Get(21470), label, size);
     }
     SET_CONTROL_LABEL(control->GetID(), label);
   }
@@ -791,7 +791,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
         table = "tvshow_view";
         year = StringUtils::Format(
             "strftime(\"%%Y\", {})",
-            DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPartWhere).c_str());
+            DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPartWhere));
       }
       else if (m_mediaType == "musicvideos")
       {

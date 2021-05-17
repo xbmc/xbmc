@@ -133,12 +133,13 @@ static std::string ToTimeFormat(bool use24HourClock, bool singleHour, bool merid
   if (!meridiem)
     return singleHour ? TIME_FORMAT_SINGLE_12 : TIME_FORMAT_DOUBLE_12;
 
-  return StringUtils::Format(g_localizeStrings.Get(12382).c_str(), ToTimeFormat(false, singleHour, false).c_str());
+  return StringUtils::Format(g_localizeStrings.Get(12382), ToTimeFormat(false, singleHour, false));
 }
 
 static std::string ToSettingTimeFormat(const CDateTime& time, const std::string& timeFormat)
 {
-  return StringUtils::Format(g_localizeStrings.Get(20036).c_str(), time.GetAsLocalizedTime(timeFormat, true).c_str(), timeFormat.c_str());
+  return StringUtils::Format(g_localizeStrings.Get(20036),
+                             time.GetAsLocalizedTime(timeFormat, true), timeFormat);
 }
 
 static CTemperature::Unit StringToTemperatureUnit(const std::string& temperatureUnit)
@@ -1040,8 +1041,8 @@ std::string CLangInfo::GetTemperatureAsString(const CTemperature& temperature) c
     return g_localizeStrings.Get(13205); // "Unknown"
 
   CTemperature::Unit temperatureUnit = GetTemperatureUnit();
-  return StringUtils::Format("{}{}", temperature.ToString(temperatureUnit).c_str(),
-                             GetTemperatureUnitString().c_str());
+  return StringUtils::Format("{}{}", temperature.ToString(temperatureUnit),
+                             GetTemperatureUnitString());
 }
 
 // Returns the temperature unit string for the current language
@@ -1089,8 +1090,7 @@ std::string CLangInfo::GetSpeedAsString(const CSpeed& speed) const
   if (!speed.IsValid())
     return g_localizeStrings.Get(13205); // "Unknown"
 
-  return StringUtils::Format("{}{}", speed.ToString(GetSpeedUnit()).c_str(),
-                             GetSpeedUnitString().c_str());
+  return StringUtils::Format("{}{}", speed.ToString(GetSpeedUnit()), GetSpeedUnitString());
 }
 
 // Returns the speed unit string for the current language
@@ -1247,9 +1247,9 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(const SettingConstPtr& sett
   CDateTime now = CDateTime::GetCurrentDateTime();
 
   list.emplace_back(
-    StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
-                        now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort).c_str()),
-    SETTING_REGIONAL_DEFAULT);
+      StringUtils::Format(g_localizeStrings.Get(20035),
+                          now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort)),
+      SETTING_REGIONAL_DEFAULT);
   if (shortDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1282,9 +1282,9 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(const SettingConstPtr& setti
   CDateTime now = CDateTime::GetCurrentDateTime();
 
   list.emplace_back(
-    StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
-                        now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong).c_str()),
-    SETTING_REGIONAL_DEFAULT);
+      StringUtils::Format(g_localizeStrings.Get(20035),
+                          now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong)),
+      SETTING_REGIONAL_DEFAULT);
   if (longDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1318,9 +1318,9 @@ void CLangInfo::SettingOptionsTimeFormatsFiller(const SettingConstPtr& setting,
   bool use24hourFormat = g_langInfo.Use24HourClock();
 
   list.emplace_back(
-    StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
-                        ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat).c_str()),
-    SETTING_REGIONAL_DEFAULT);
+      StringUtils::Format(g_localizeStrings.Get(20035),
+                          ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat)),
+      SETTING_REGIONAL_DEFAULT);
   if (timeFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1390,8 +1390,8 @@ void CLangInfo::SettingOptions24HourClockFormatsFiller(const SettingConstPtr& se
 
   // determine the 24-hour clock format of the regional setting
   int regionalClock24HourFormatLabel = DetermineUse24HourClockFromTimeFormat(g_langInfo.m_currentRegion->m_strTimeFormat) ? 12384 : 12383;
-  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
-                                        g_localizeStrings.Get(regionalClock24HourFormatLabel).c_str()),
+  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035),
+                                        g_localizeStrings.Get(regionalClock24HourFormatLabel)),
                     SETTING_REGIONAL_DEFAULT);
   if (clock24HourFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
@@ -1425,9 +1425,10 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(const SettingConstPtr& sett
   bool match = false;
   const std::string& temperatureUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
-  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
-                                        GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit).c_str()),
-                    SETTING_REGIONAL_DEFAULT);
+  list.emplace_back(
+      StringUtils::Format(g_localizeStrings.Get(20035),
+                          GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit)),
+      SETTING_REGIONAL_DEFAULT);
   if (temperatureUnitSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1457,9 +1458,10 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(const SettingConstPtr& setting,
   bool match = false;
   const std::string& speedUnitSetting = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 
-  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035).c_str(),
-                                        GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit).c_str()),
-                    SETTING_REGIONAL_DEFAULT);
+  list.emplace_back(
+      StringUtils::Format(g_localizeStrings.Get(20035),
+                          GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit)),
+      SETTING_REGIONAL_DEFAULT);
   if (speedUnitSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;

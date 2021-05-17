@@ -68,7 +68,7 @@ std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
   if (m_adapter.FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
     return CNetworkBase::GetMaskByPrefixLength(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 
-  return StringUtils::Format("{}", m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
+  return std::to_string(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const

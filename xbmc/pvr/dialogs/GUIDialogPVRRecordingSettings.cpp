@@ -131,8 +131,10 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(
     int iNewLifetime = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     if (m_recording->WillBeExpiredWithNewLifetime(iNewLifetime))
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{19068}, // "Recording settings"
-                                       StringUtils::Format(g_localizeStrings.Get(19147).c_str(), iNewLifetime)) // "Setting the lifetime..."
+      if (HELPERS::ShowYesNoDialogText(
+              CVariant{19068}, // "Recording settings"
+              StringUtils::Format(g_localizeStrings.Get(19147),
+                                  iNewLifetime)) // "Setting the lifetime..."
           != HELPERS::DialogResponse::YES)
         return false;
     }
@@ -215,9 +217,9 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(StringUtils::Format(g_localizeStrings.Get(17999).c_str(),
-                                                               current) /* {} days */,
-                                           current));
+      list.insert(it, IntegerSettingOption(
+                          StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
+                          current));
     }
   }
   else

@@ -3055,8 +3055,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
     CMusicDbUrl itemUrl = baseUrl;
     std::string strFileName = record->at(song_strFileName).get_asString();
     std::string strExt = URIUtils::GetExtension(strFileName);
-    std::string path =
-        StringUtils::Format("{}{}", record->at(song_idSong).get_asInt(), strExt.c_str());
+    std::string path = StringUtils::Format("{}{}", record->at(song_idSong).get_asInt(), strExt);
     itemUrl.AppendPath(path);
     item->SetPath(itemUrl.ToString());
     item->SetDynPath(strRealPath);
@@ -3366,11 +3365,10 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList& art
     {
       std::string path = StringUtils::Format("musicdb://artists/{}/", m_pDS->fv(0).get_asInt());
       CFileItemPtr pItem(new CFileItem(path, true));
-      std::string label =
-          StringUtils::Format("[{}] {}", artistLabel.c_str(), m_pDS->fv(1).get_asString().c_str());
+      std::string label = StringUtils::Format("[{}] {}", artistLabel, m_pDS->fv(1).get_asString());
       pItem->SetLabel(label);
       // sort label is stored in the title tag
-      label = StringUtils::Format("A {}", m_pDS->fv(1).get_asString().c_str());
+      label = StringUtils::Format("A {}", m_pDS->fv(1).get_asString());
       pItem->GetMusicInfoTag()->SetTitle(label);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(0).get_asInt(), MediaTypeArtist);
       artists.Add(pItem);
@@ -4052,11 +4050,10 @@ bool CMusicDatabase::SearchAlbums(const std::string& search, CFileItemList& albu
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
       std::string path = StringUtils::Format("musicdb://albums/{}/", album.idAlbum);
       CFileItemPtr pItem(new CFileItem(path, album));
-      std::string label =
-          StringUtils::Format("[{}] {}", albumLabel.c_str(), album.strAlbum.c_str());
+      std::string label = StringUtils::Format("[{}] {}", albumLabel, album.strAlbum);
       pItem->SetLabel(label);
       // sort label is stored in the title tag
-      label = StringUtils::Format("B {}", album.strAlbum.c_str());
+      label = StringUtils::Format("B {}", album.strAlbum);
       pItem->GetMusicInfoTag()->SetTitle(label);
       albums.Add(pItem);
       m_pDS->next();
@@ -5281,7 +5278,7 @@ bool CMusicDatabase::GetCommonNav(const std::string& strBaseDir,
       CFileItemPtr pItem(new CFileItem(labelValue));
 
       CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("{}/", labelValue.c_str());
+      std::string strDir = StringUtils::Format("{}/", labelValue);
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
@@ -11699,7 +11696,7 @@ std::string CMusicDatabase::GetItemById(const std::string& itemType, int id)
   else if (StringUtils::EqualsNoCase(itemType, "sources"))
     return GetSourceById(id);
   else if (StringUtils::EqualsNoCase(itemType, "years"))
-    return StringUtils::Format("{}", id);
+    return std::to_string(id);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistById(id);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
@@ -12096,8 +12093,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
 
   if (iFailCount > 0 && progressDialog)
     HELPERS::ShowOKDialogLines(
-        CVariant{20196},
-        CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
+        CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011), iFailCount)});
 }
 
 bool CMusicDatabase::ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* progressDialog)
@@ -12603,7 +12599,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
     // Write event log entry
     // "Importing song history {1} of {2} songs matched", total - unmatched, total)
     std::string strLine =
-        StringUtils::Format(g_localizeStrings.Get(38353).c_str(), total - unmatched, total);
+        StringUtils::Format(g_localizeStrings.Get(38353), total - unmatched, total);
     CServiceBroker::GetEventLog().Add(
         EventPtr(new CNotificationEvent(20197, strLine, EventLevel::Information)));
 

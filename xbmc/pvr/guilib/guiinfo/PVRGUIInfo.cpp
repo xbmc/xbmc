@@ -458,7 +458,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         }
         else if (recording->HasYear())
         {
-          strValue = StringUtils::Format("{}", recording->GetYear());
+          strValue = std::to_string(recording->GetYear());
           return true;
         }
         return false;
@@ -592,7 +592,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_YEAR:
         if (epgTag->Year() > 0)
         {
-          strValue = StringUtils::Format("{}", epgTag->Year());
+          strValue = std::to_string(epgTag->Year());
           return true;
         }
         return false;
@@ -600,7 +600,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_SEASON:
         if (epgTag->SeriesNumber() >= 0)
         {
-          strValue = StringUtils::Format("{}", epgTag->SeriesNumber());
+          strValue = std::to_string(epgTag->SeriesNumber());
           return true;
         }
         return false;
@@ -608,7 +608,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_EPISODE:
         if (epgTag->EpisodeNumber() >= 0)
         {
-          strValue = StringUtils::Format("{}", epgTag->EpisodeNumber());
+          strValue = std::to_string(epgTag->EpisodeNumber());
           return true;
         }
         return false;
@@ -640,7 +640,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_PARENTAL_RATING:
         if (epgTag->ParentalRating() > 0)
         {
-          strValue = StringUtils::Format("{}", epgTag->ParentalRating());
+          strValue = std::to_string(epgTag->ParentalRating());
           return true;
         }
         return false;
@@ -653,7 +653,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         }
         else if (epgTag->Year() > 0)
         {
-          strValue = StringUtils::Format("{}", epgTag->Year());
+          strValue = std::to_string(epgTag->Year());
           return true;
         }
         return false;
@@ -960,7 +960,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item, const CGUIInfo& info, 
       case RDS_ALBUM_TRACKNUMBER:
         if (tag->GetAlbumTrackNumber() > 0)
         {
-          strValue = StringUtils::Format("{}", tag->GetAlbumTrackNumber());
+          strValue = std::to_string(tag->GetAlbumTrackNumber());
           return true;
         }
         break;
@@ -980,43 +980,43 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item, const CGUIInfo& info, 
         strValue = tag->GetInfoStock();
         return true;
       case RDS_INFO_STOCK_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoStock().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoStock().size()));
         return true;
       case RDS_INFO_SPORT:
         strValue = tag->GetInfoSport();
         return true;
       case RDS_INFO_SPORT_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoSport().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoSport().size()));
         return true;
       case RDS_INFO_LOTTERY:
         strValue = tag->GetInfoLottery();
         return true;
       case RDS_INFO_LOTTERY_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoLottery().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoLottery().size()));
         return true;
       case RDS_INFO_WEATHER:
         strValue = tag->GetInfoWeather();
         return true;
       case RDS_INFO_WEATHER_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoWeather().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoWeather().size()));
         return true;
       case RDS_INFO_HOROSCOPE:
         strValue = tag->GetInfoHoroscope();
         return true;
       case RDS_INFO_HOROSCOPE_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoHoroscope().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoHoroscope().size()));
         return true;
       case RDS_INFO_CINEMA:
         strValue = tag->GetInfoCinema();
         return true;
       case RDS_INFO_CINEMA_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoCinema().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoCinema().size()));
         return true;
       case RDS_INFO_OTHER:
         strValue = tag->GetInfoOther();
         return true;
       case RDS_INFO_OTHER_SIZE:
-        strValue = StringUtils::Format("{}", static_cast<int>(tag->GetInfoOther().size()));
+        strValue = std::to_string(static_cast<int>(tag->GetInfoOther().size()));
         return true;
       case RDS_PROG_HOST:
         strValue = tag->GetProgHost();
@@ -1580,7 +1580,8 @@ void CPVRGUIInfo::CharInfoBackendNumber(std::string& strValue) const
   size_t numBackends = m_backendProperties.size();
 
   if (numBackends > 0)
-    strValue = StringUtils::Format("{0} {1} {2}", m_iCurrentActiveClient + 1, g_localizeStrings.Get(20163).c_str(), numBackends);
+    strValue = StringUtils::Format("{0} {1} {2}", m_iCurrentActiveClient + 1,
+                                   g_localizeStrings.Get(20163), numBackends);
   else
     strValue = g_localizeStrings.Get(14023);
 }
@@ -1653,9 +1654,9 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(std::string& strValue) const
 
   if (diskTotal > 0)
   {
-    strValue = StringUtils::Format(g_localizeStrings.Get(802).c_str(),
-        StringUtils::SizeToString(diskTotal - diskUsed).c_str(),
-        StringUtils::SizeToString(diskTotal).c_str());
+    strValue = StringUtils::Format(g_localizeStrings.Get(802),
+                                   StringUtils::SizeToString(diskTotal - diskUsed),
+                                   StringUtils::SizeToString(diskTotal));
   }
   else
     strValue = g_localizeStrings.Get(13205);
@@ -1777,16 +1778,16 @@ void CPVRGUIInfo::UpdateBackendCache()
     m_strBackendHost = backend.host;
 
     if (backend.numChannels >= 0)
-      m_strBackendChannels = StringUtils::Format("{}", backend.numChannels);
+      m_strBackendChannels = std::to_string(backend.numChannels);
 
     if (backend.numTimers >= 0)
-      m_strBackendTimers = StringUtils::Format("{}", backend.numTimers);
+      m_strBackendTimers = std::to_string(backend.numTimers);
 
     if (backend.numRecordings >= 0)
-      m_strBackendRecordings = StringUtils::Format("{}", backend.numRecordings);
+      m_strBackendRecordings = std::to_string(backend.numRecordings);
 
     if (backend.numDeletedRecordings >= 0)
-      m_strBackendDeletedRecordings = StringUtils::Format("{}", backend.numDeletedRecordings);
+      m_strBackendDeletedRecordings = std::to_string(backend.numDeletedRecordings);
 
     m_iBackendDiskTotal = backend.diskTotal;
     m_iBackendDiskUsed = backend.diskUsed;

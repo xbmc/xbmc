@@ -1049,8 +1049,7 @@ unsigned int CDVDRadioRDSData::DecodePTYN(uint8_t *msgElement)
   if (!m_RTPlus_GenrePresent)
   {
     std::string progTypeName = StringUtils::Format(
-        "{}: {}", g_localizeStrings.Get(pty_skin_info_table[m_PTY][m_RDS_IsRBDS].name).c_str(),
-        m_PTYN);
+        "{}: {}", g_localizeStrings.Get(pty_skin_info_table[m_PTY][m_RDS_IsRBDS].name), m_PTYN);
     SetRadioStyle(progTypeName);
   }
 

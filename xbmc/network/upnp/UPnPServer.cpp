@@ -181,8 +181,7 @@ CUPnPServer::PropagateUpdates()
     // only broadcast ids with modified bit set
     for (itr = m_UpdateIDs.begin(); itr != m_UpdateIDs.end(); ++itr) {
         if (itr->second.first) {
-          buffer.append(
-              StringUtils::Format("{},{},", itr->first.c_str(), itr->second.second).c_str());
+          buffer.append(StringUtils::Format("{},{},", itr->first, itr->second.second));
           itr->second.first = false;
         }
     }
