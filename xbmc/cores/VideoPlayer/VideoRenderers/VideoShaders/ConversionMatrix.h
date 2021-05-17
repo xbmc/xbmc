@@ -235,7 +235,6 @@ private:
   bool m_limitedDst = false;
   int m_srcBits = 8;
   int m_srcTextureBits = 8;
-  int m_dstBits = 8;
   float m_contrast = 1.0;
   float m_black = 0.0;
 };
