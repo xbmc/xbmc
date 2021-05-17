@@ -68,6 +68,7 @@ if(UNIX)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
+  option(ENABLE_INTERNAL_DATE "Enable internal date library?" ON)
 endif()
 # System options
 if(NOT WIN32)
@@ -125,6 +126,7 @@ set(required_deps ASS
                   Cdio
                   CrossGUID
                   Curl
+                  Date
                   FFMPEG
                   FlatBuffers
                   Fmt

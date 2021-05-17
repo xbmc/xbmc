@@ -24,7 +24,7 @@ public:
   CRssReader();
   ~CRssReader() override;
 
-  void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds, bool rtl);
+  void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<std::chrono::nanoseconds>& times, int spacesBetweenFeeds, bool rtl);
   bool Parse(const std::string& data, int iFeed, const std::string& charset);
   void getFeed(vecText &text);
   void AddTag(const std::string &addTag);
@@ -48,8 +48,8 @@ private:
 
   std::vector<std::wstring> m_strFeed;
   std::vector<std::wstring> m_strColors;
-  std::vector<KODI::TIME::SystemTime*> m_vecTimeStamps;
-  std::vector<int> m_vecUpdateTimes;
+  std::vector<std::chrono::nanoseconds> m_vecTimeStamps;
+  std::vector<std::chrono::nanoseconds> m_vecUpdateTimes;
   int m_spacesBetweenFeeds;
   CXBMCTinyXML m_xml;
   std::list<std::string> m_tagSet;

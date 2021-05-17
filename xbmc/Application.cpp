@@ -195,6 +195,10 @@
 #include "addons/AddonSystemSettings.h"
 #include "FileItem.h"
 
+#define USE_OS_TZDB 0
+#define HAS_REMOTE_API 0
+#include <date/tz.h>
+
 using namespace ADDON;
 using namespace XFILE;
 #ifdef HAS_DVD_DRIVE
@@ -316,6 +320,8 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
+#include "platform/posix/PosixTimezone.h"
+
 bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
@@ -333,6 +339,8 @@ bool CApplication::Create(const CAppParamParser &params)
 
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
+
+  g_timezone.Init();
 
   // Announement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();
@@ -404,6 +412,19 @@ bool CApplication::Create(const CAppParamParser &params)
   {
     return false;
   }
+
+  // must be done after stage two when addon manager is initialized
+  AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon("resource.timezone", addon,
+                                              ADDON::ADDON_RESOURCE_TIMEZONE, true))
+  {
+    CLog::LogF(LOGDEBUG, "failed to find resource.timezone");
+    return false;
+  }
+
+  std::string tzdataPath = URIUtils::AddFileToFolder(addon->Path(), "resources", "tzdata");
+  CLog::LogF(LOGDEBUG, "tzdata path: {}", tzdataPath);
+  date::set_install(tzdataPath);
 
   m_pActiveAE.reset(new ActiveAE::CActiveAE());
   m_pActiveAE->Start();

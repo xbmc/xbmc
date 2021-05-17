@@ -11,6 +11,7 @@
 #include "utils/IArchivable.h"
 #include "utils/XTimeUtils.h"
 
+#include <chrono>
 #include <string>
 
 #include "PlatformDefs.h"
@@ -78,7 +79,7 @@ class CDateTime;
 class CDateTimeSpan
 {
 public:
-  CDateTimeSpan();
+  CDateTimeSpan() = default;
   CDateTimeSpan(const CDateTimeSpan& span);
   CDateTimeSpan(int day, int hour, int minute, int second);
 
@@ -106,11 +107,7 @@ public:
   int GetSecondsTotal() const;
 
 private:
-  void ToLargeInt(LARGE_INTEGER& time) const;
-  void FromLargeInt(const LARGE_INTEGER& time);
-
-private:
-  KODI::TIME::FileTime m_timeSpan;
+  std::chrono::duration<int64_t> m_timeSpan{0};
 
   friend class CDateTime;
 };
@@ -121,10 +118,9 @@ class CDateTime final : public IArchivable
 public:
   CDateTime();
   CDateTime(const CDateTime& time);
-  explicit CDateTime(const KODI::TIME::SystemTime& time);
-  explicit CDateTime(const KODI::TIME::FileTime& time);
   explicit CDateTime(const time_t& time);
   explicit CDateTime(const tm& time);
+  explicit CDateTime(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& time);
   CDateTime(int year, int month, int day, int hour, int minute, int second);
 
   static CDateTime GetCurrentDateTime();
@@ -137,14 +133,11 @@ public:
   static CDateTime FromDBTime(const std::string &time);
   static CDateTime FromW3CDate(const std::string &date);
   static CDateTime FromW3CDateTime(const std::string &date, bool ignoreTimezone = false);
-  static CDateTime FromUTCDateTime(const CDateTime &dateTime);
-  static CDateTime FromUTCDateTime(const time_t &dateTime);
   static CDateTime FromRFC1123DateTime(const std::string &dateTime);
 
-  const CDateTime& operator=(const KODI::TIME::SystemTime& right);
-  const CDateTime& operator=(const KODI::TIME::FileTime& right);
   const CDateTime& operator =(const time_t& right);
   const CDateTime& operator =(const tm& right);
+  const CDateTime& operator=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right);
 
   bool operator >(const CDateTime& right) const;
   bool operator >=(const CDateTime& right) const;
@@ -152,20 +145,6 @@ public:
   bool operator <=(const CDateTime& right) const;
   bool operator ==(const CDateTime& right) const;
   bool operator !=(const CDateTime& right) const;
-
-  bool operator>(const KODI::TIME::FileTime& right) const;
-  bool operator>=(const KODI::TIME::FileTime& right) const;
-  bool operator<(const KODI::TIME::FileTime& right) const;
-  bool operator<=(const KODI::TIME::FileTime& right) const;
-  bool operator==(const KODI::TIME::FileTime& right) const;
-  bool operator!=(const KODI::TIME::FileTime& right) const;
-
-  bool operator>(const KODI::TIME::SystemTime& right) const;
-  bool operator>=(const KODI::TIME::SystemTime& right) const;
-  bool operator<(const KODI::TIME::SystemTime& right) const;
-  bool operator<=(const KODI::TIME::SystemTime& right) const;
-  bool operator==(const KODI::TIME::SystemTime& right) const;
-  bool operator!=(const KODI::TIME::SystemTime& right) const;
 
   bool operator >(const time_t& right) const;
   bool operator >=(const time_t& right) const;
@@ -181,6 +160,13 @@ public:
   bool operator ==(const tm& right) const;
   bool operator !=(const tm& right) const;
 
+  bool operator>(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator>=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator<(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator<=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator==(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+  bool operator!=(const std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>>& right) const;
+
   CDateTime operator +(const CDateTimeSpan& right) const;
   CDateTime operator -(const CDateTimeSpan& right) const;
 
@@ -188,8 +174,6 @@ public:
   const CDateTime& operator -=(const CDateTimeSpan& right);
 
   CDateTimeSpan operator -(const CDateTime& right) const;
-
-  operator KODI::TIME::FileTime() const;
 
   void Archive(CArchive& ar) override;
 
@@ -213,8 +197,6 @@ public:
   bool SetFromDBTime(const std::string &time);
   bool SetFromW3CDate(const std::string &date);
   bool SetFromW3CDateTime(const std::string &date, bool ignoreTimezone = false);
-  bool SetFromUTCDateTime(const CDateTime &dateTime);
-  bool SetFromUTCDateTime(const time_t &dateTime);
   bool SetFromRFC1123DateTime(const std::string &dateTime);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
@@ -222,12 +204,13 @@ public:
    */
   bool SetFromDBDateTime(const std::string &dateTime);
 
-  void GetAsSystemTime(KODI::TIME::SystemTime& time) const;
   void GetAsTime(time_t& time) const;
   void GetAsTm(tm& time) const;
-  void GetAsTimeStamp(KODI::TIME::FileTime& time) const;
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> GetAsTimePoint() const;
 
-  CDateTime GetAsUTCDateTime() const;
+  /*! \brief convert UTC datetime to local datetime
+   */
+  CDateTime GetAsLocalDateTime() const;
   std::string GetAsSaveString() const;
   std::string GetAsDBDateTime() const;
   std::string GetAsDBDate() const;
@@ -244,19 +227,8 @@ public:
   void SetValid(bool yesNo);
   bool IsValid() const;
 
-  static void ResetTimezoneBias(void);
-  static CDateTimeSpan GetTimezoneBias(void);
-
 private:
-  bool ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const;
-  bool ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) const;
-  bool ToFileTime(const tm& time, KODI::TIME::FileTime& fileTime) const;
-
-  void ToLargeInt(LARGE_INTEGER& time) const;
-  void FromLargeInt(const LARGE_INTEGER& time);
-
-private:
-  KODI::TIME::FileTime m_time;
+  std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long double, std::nano>> m_time;
 
   typedef enum _STATE
   {

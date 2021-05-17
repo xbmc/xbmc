@@ -228,7 +228,7 @@ MHD_RESULT CWebServer::HandlePartialRequest(struct MHD_Connection* connection,
             CDateTime ifUnmodifiedSinceDate;
             // handle If-Modified-Since (but only if the response is cacheable)
             if (cacheable && ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
-                lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
+                lastModified <= ifModifiedSinceDate)
             {
               struct MHD_Response* response = create_response(0, nullptr, MHD_NO, MHD_NO);
               if (response == nullptr)
@@ -241,7 +241,7 @@ MHD_RESULT CWebServer::HandlePartialRequest(struct MHD_Connection* connection,
             }
             // handle If-Unmodified-Since
             else if (ifUnmodifiedSinceDate.SetFromRFC1123DateTime(ifUnmodifiedSince) &&
-                     lastModified.GetAsUTCDateTime() > ifUnmodifiedSinceDate)
+                     lastModified > ifUnmodifiedSinceDate)
               return SendErrorResponse(request, MHD_HTTP_PRECONDITION_FAILED, request.method);
           }
 
@@ -515,7 +515,7 @@ bool CWebServer::IsRequestRanged(const HTTPRequest& request, const CDateTime& la
 
       // check if the last modification is newer than the If-Range date
       // if so we have to server the whole file instead
-      if (lastModified.GetAsUTCDateTime() > ifRangeDate)
+      if (lastModified > ifRangeDate)
         ranges.Clear();
     }
   }

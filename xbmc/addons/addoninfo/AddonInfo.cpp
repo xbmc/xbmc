@@ -64,6 +64,7 @@ static const TypeMapping types[] =
    {"xbmc.service",                      "", ADDON_SERVICE,             24018, "DefaultAddonService.png" },
    {"kodi.resource.images",              "", ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
    {"kodi.resource.language",            "", ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
+   {"kodi.resource.timezone",            "", ADDON_RESOURCE_TIMEZONE,   24026, "DefaultAddonTimeZone.png" },
    {"kodi.resource.uisounds",            "", ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
    {"kodi.resource.games",               "", ADDON_RESOURCE_GAMES,      35209, "DefaultAddonGame.png" },
    {"kodi.resource.font",                "", ADDON_RESOURCE_FONT,       13303, "DefaultAddonFont.png" },

@@ -49,11 +49,10 @@ CRssReader::~CRssReader()
   if (m_pObserver)
     m_pObserver->OnFeedRelease();
   StopThread();
-  for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
-    delete m_vecTimeStamps[i];
+  m_vecTimeStamps.clear();
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>& aUrls, const std::vector<int> &times, int spacesBetweenFeeds, bool rtl)
+void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>& aUrls, const std::vector<std::chrono::nanoseconds> &times, int spacesBetweenFeeds, bool rtl)
 {
   CSingleLock lock(m_critical);
 
@@ -71,9 +70,7 @@ void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>&
   for (unsigned int i = 0; i < m_vecUpdateTimes.size(); ++i)
   {
     AddToQueue(i);
-    KODI::TIME::SystemTime* time = new KODI::TIME::SystemTime;
-    KODI::TIME::GetLocalTime(time);
-    m_vecTimeStamps.push_back(time);
+    m_vecTimeStamps.push_back(std::chrono::system_clock::now().time_since_epoch());
   }
 }
 
@@ -393,18 +390,14 @@ void CRssReader::UpdateObserver()
 
 void CRssReader::CheckForUpdates()
 {
-  KODI::TIME::SystemTime time;
-  KODI::TIME::GetLocalTime(&time);
+
 
   for (unsigned int i = 0;i < m_vecUpdateTimes.size(); ++i )
   {
-    if (m_requestRefresh || ((time.day * 24 * 60) + (time.hour * 60) + time.minute) -
-                                    ((m_vecTimeStamps[i]->day * 24 * 60) +
-                                     (m_vecTimeStamps[i]->hour * 60) + m_vecTimeStamps[i]->minute) >
-                                m_vecUpdateTimes[i])
+    if (m_requestRefresh || (std::chrono::system_clock::now().time_since_epoch() - m_vecTimeStamps[i] > m_vecUpdateTimes[i]))
     {
       CLog::Log(LOGDEBUG, "Updating RSS");
-      KODI::TIME::GetLocalTime(m_vecTimeStamps[i]);
+      m_vecTimeStamps[i] = std::chrono::system_clock::now().time_since_epoch();
       AddToQueue(i);
     }
   }

@@ -1748,10 +1748,7 @@ namespace PVR
         return false;
     }
 
-    CDateTime::ResetTimezoneBias();
-
-    CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing {} database",
-                bResetEPGOnly ? "EPG" : "PVR and EPG");
+    CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing %s database", bResetEPGOnly ? "EPG" : "PVR and EPG");
 
     pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
     pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
@@ -1937,7 +1934,6 @@ namespace PVR
 
             CDateTime dailywakeuptime;
             dailywakeuptime.SetFromDBTime(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
-            dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
             const CDateTimeSpan diff(dailywakeuptime - now);
             int mins = diff.GetSecondsTotal() / 60;

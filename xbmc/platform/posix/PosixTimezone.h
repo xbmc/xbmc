@@ -21,7 +21,9 @@ struct StringSettingOption;
 class CPosixTimezone : public ISettingCallback, public ISettingsHandler
 {
 public:
-   CPosixTimezone();
+   CPosixTimezone() = default;
+
+   void Init();
 
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
@@ -29,7 +31,7 @@ public:
 
    std::string GetOSConfiguredTimezone();
 
-   std::vector<std::string> GetCounties();
+   std::vector<std::string> GetCountries();
    std::vector<std::string> GetTimezonesByCountry(const std::string& country);
    std::string GetCountryByTimezone(const std::string& timezone);
 
@@ -46,7 +48,7 @@ public:
                                             void* data);
 
 private:
-   std::vector<std::string> m_counties;
+   std::vector<std::string> m_countries;
    std::map<std::string, std::string> m_countryByCode;
    std::map<std::string, std::string> m_countryByName;
 

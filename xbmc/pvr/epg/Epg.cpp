@@ -266,7 +266,7 @@ bool CPVREpg::Update(time_t start,
 
       if (!m_lastScanTime.IsValid())
       {
-        m_lastScanTime.SetFromUTCDateTime(time_t(0));
+        m_lastScanTime = time_t(0);
         m_bUpdateLastScanTime = true;
       }
     }

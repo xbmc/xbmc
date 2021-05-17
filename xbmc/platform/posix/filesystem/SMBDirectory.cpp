@@ -105,10 +105,10 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       && strFile != "lost+found"
       && aDir.type != SMBC_PRINTER_SHARE && aDir.type != SMBC_IPC_SHARE)
     {
-     int64_t iSize = 0;
+      int64_t iSize = 0;
       bool bIsDir = true;
-      int64_t lTimeDate = 0;
       bool hidden = false;
+      struct stat info = {0};
 
       if(StringUtils::EndsWith(strFile, "$") && aDir.type == SMBC_FILE_SHARE )
         continue;
@@ -123,7 +123,6 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         // set this here to if the stat should fail
         bIsDir = (aDir.type == SMBC_DIR);
 
-        struct stat info = {0};
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
@@ -152,9 +151,6 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
               CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", CURL::GetRedacted(strFullName).c_str(), errno, strerror(errno));
 
             bIsDir = S_ISDIR(info.st_mode);
-            lTimeDate = info.st_mtime;
-            if(lTimeDate == 0) // if modification date is missing, use create date
-              lTimeDate = info.st_ctime;
             iSize = info.st_size;
           }
           else
@@ -163,10 +159,6 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           lock.Leave();
         }
       }
-
-      KODI::TIME::FileTime fileTime, localTime;
-      KODI::TIME::TimeTToFileTime(lTimeDate, &fileTime);
-      KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
 
       if (bIsDir)
       {
@@ -187,7 +179,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         URIUtils::AddSlashAtEnd(path);
         pItem->SetPath(path);
         pItem->m_bIsFolder = true;
-        pItem->m_dateTime=localTime;
+        pItem->m_dateTime = info.st_mtime != 0 ? info.st_mtime : info.st_ctime;
         if (hidden)
           pItem->SetProperty("file:hidden", true);
         items.Add(pItem);
@@ -198,7 +190,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetPath(strRoot + aDir.name);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
-        pItem->m_dateTime=localTime;
+        pItem->m_dateTime = info.st_mtime != 0 ? info.st_mtime : info.st_ctime;
         if (hidden)
           pItem->SetProperty("file:hidden", true);
         items.Add(pItem);
