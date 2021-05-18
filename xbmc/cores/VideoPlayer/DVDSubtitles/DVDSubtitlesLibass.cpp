@@ -192,7 +192,7 @@ ASS_Event* CDVDSubtitlesLibass::GetEvents()
   return m_track->events;
 }
 
-int CDVDSubtitlesLibass::GetNrOfEvents()
+int CDVDSubtitlesLibass::GetNrOfEvents() const
 {
   CSingleLock lock(m_section);
   if(!m_track)
