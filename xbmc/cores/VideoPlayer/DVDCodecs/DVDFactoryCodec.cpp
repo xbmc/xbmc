@@ -258,9 +258,6 @@ std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStrea
       pCodec = std::make_unique<CDVDOverlayCodecSSA>();
       break;
 
-      //! @todo: this seems unused?
-      pCodec = std::make_unique<CDVDOverlayCodecText>();
-
     case AV_CODEC_ID_MOV_TEXT:
       pCodec = std::make_unique<CDVDOverlayCodecTX3G>();
       break;

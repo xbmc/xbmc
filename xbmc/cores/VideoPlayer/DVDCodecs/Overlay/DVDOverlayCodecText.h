@@ -25,6 +25,5 @@ public:
   CDVDOverlay* GetOverlay() override;
 
 private:
-  bool             m_bIsSSA;
   CDVDOverlayText* m_pOverlay;
 };
