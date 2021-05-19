@@ -13,8 +13,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#import "platform/darwin/ios-common/peripherals/InputKey.h"
-#import "platform/darwin/ios-common/peripherals/PeripheralBusDarwinEmbeddedManager.h"
+#import "platform/darwin/peripherals/InputKey.h"
+#import "platform/darwin/peripherals/PeripheralBusGCControllerManager.h"
 
 #import <Foundation/Foundation.h>
 #import <GameController/GCController.h>
@@ -37,12 +37,12 @@ struct PlayerControllerState
   BOOL RightThumbDownPressed;
 };
 
-@implementation Input_IOSGamecontroller
+@implementation Input_GCController
 {
   NSMutableArray* controllerArray;
   // State for each controller
   struct PlayerControllerState controllerState[4];
-  CBPeripheralBusDarwinEmbeddedManager* cbmanager;
+  CBPeripheralBusGCControllerManager* cbmanager;
   CCriticalSection m_GCMutex;
   CCriticalSection m_controllerMutex;
 }
@@ -155,14 +155,14 @@ struct PlayerControllerState
     CLog::Log(LOGDEBUG, "INPUT - GAMECONTROLLER: microGamepad changehandler added");
     [self microValueChangeHandler:controller];
   }
-  if (@available(iOS 13.0, tvOS 13.0, *))
+  if (@available(iOS 13.0, tvOS 13.0, macOS 10.15, *))
   {
     // Do Nothing - Cant negate @available
   }
   else
   {
-    // pausevaluechangehandler only required for <= *os12
-    CLog::Log(LOGDEBUG, "INPUT - GAMECONTROLLER: <= *OS12 pauseValueChangeHandler added");
+    // pausevaluechangehandler only required for <= *os12/macos10.14
+    CLog::Log(LOGDEBUG, "INPUT - GAMECONTROLLER: pauseValueChangeHandler added");
     [self pauseValueChangeHandler:controller];
   }
 }
@@ -395,7 +395,7 @@ struct PlayerControllerState
                              withAxis:GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHT
                       withplayerIndex:playerIndex];
     }
-    if (@available(iOS 12.1, tvOS 12.1, *))
+    if (@available(iOS 12.1, tvOS 12.1, macOS 10.14.1, *))
     {
       // Left Thumbstick Button
       if (gamepad.leftThumbstickButton == element)
@@ -521,8 +521,8 @@ struct PlayerControllerState
     else
       peripheralScanResult.m_strDeviceName = "Unknown Gamepad";
 
-    peripheralScanResult.m_busType = PERIPHERALS::PERIPHERAL_BUS_DARWINEMBEDDED;
-    peripheralScanResult.m_mappedBusType = PERIPHERALS::PERIPHERAL_BUS_DARWINEMBEDDED;
+    peripheralScanResult.m_busType = PERIPHERALS::PERIPHERAL_BUS_GCCONTROLLER;
+    peripheralScanResult.m_mappedBusType = PERIPHERALS::PERIPHERAL_BUS_GCCONTROLLER;
     peripheralScanResult.m_iSequence = 0;
     scanresults.m_results.push_back(peripheralScanResult);
   }
@@ -566,7 +566,7 @@ struct PlayerControllerState
         [controller.extendedGamepad performSelector:@selector(buttonOptions)] != nil)
       ++optionalButtonCount;
 
-    if (@available(iOS 12.1, tvOS 12.1, *))
+    if (@available(iOS 12.1, tvOS 12.1, macOS 10.14.1, *))
     {
       if (controller.extendedGamepad.leftThumbstickButton)
         ++optionalButtonCount;
@@ -577,7 +577,7 @@ struct PlayerControllerState
   return optionalButtonCount;
 }
 
-- (instancetype)initWithName:(CBPeripheralBusDarwinEmbeddedManager*)callbackManager
+- (instancetype)initWithName:(CBPeripheralBusGCControllerManager*)callbackManager
 {
   self = [super init];
   if (!self)

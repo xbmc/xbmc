@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PeripheralBusDarwinEmbedded.h"
+#include "PeripheralBusGCController.h"
 
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/peripheral/PeripheralUtils.h"
@@ -16,33 +16,33 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "platform/darwin/ios-common/peripherals/InputKey.h"
-#import "platform/darwin/ios-common/peripherals/PeripheralBusDarwinEmbeddedManager.h"
+#include "platform/darwin/peripherals/InputKey.h"
+#import "platform/darwin/peripherals/PeripheralBusGCControllerManager.h"
 
-#define JOYSTICK_PROVIDER_DARWINEMBEDDED "darwinembedded"
+#define JOYSTICK_PROVIDER_DARWIN_GCController "GCController"
 
-struct PeripheralBusDarwinEmbeddedWrapper
+struct PeripheralBusGCControllerWrapper
 {
-  CBPeripheralBusDarwinEmbeddedManager* callbackClass;
+  CBPeripheralBusGCControllerManager* callbackClass;
 };
 
-PERIPHERALS::CPeripheralBusDarwinEmbedded::CPeripheralBusDarwinEmbedded(CPeripherals& manager)
-  : CPeripheralBus("PeripBusDarwinEmbedded", manager, PERIPHERAL_BUS_DARWINEMBEDDED)
+PERIPHERALS::CPeripheralBusGCController::CPeripheralBusGCController(CPeripherals& manager)
+  : CPeripheralBus("PeripBusGCController", manager, PERIPHERAL_BUS_GCCONTROLLER)
 {
-  m_peripheralDarwinEmbedded = std::make_unique<PeripheralBusDarwinEmbeddedWrapper>();
-  m_peripheralDarwinEmbedded->callbackClass =
-      [[CBPeripheralBusDarwinEmbeddedManager alloc] initWithName:this];
+  m_peripheralGCController = std::make_unique<PeripheralBusGCControllerWrapper>();
+  m_peripheralGCController->callbackClass =
+      [[CBPeripheralBusGCControllerManager alloc] initWithName:this];
   m_bNeedsPolling = false;
 
   // get all currently connected input devices
   m_scanResults = GetInputDevices();
 }
 
-PERIPHERALS::CPeripheralBusDarwinEmbedded::~CPeripheralBusDarwinEmbedded()
+PERIPHERALS::CPeripheralBusGCController::~CPeripheralBusGCController()
 {
 }
 
-bool PERIPHERALS::CPeripheralBusDarwinEmbedded::InitializeProperties(CPeripheral& peripheral)
+bool PERIPHERALS::CPeripheralBusGCController::InitializeProperties(CPeripheral& peripheral)
 {
   // Returns true regardless, why is it necessary?
   if (!CPeripheralBus::InitializeProperties(peripheral))
@@ -50,7 +50,7 @@ bool PERIPHERALS::CPeripheralBusDarwinEmbedded::InitializeProperties(CPeripheral
 
   if (peripheral.Type() != PERIPHERALS::PERIPHERAL_JOYSTICK)
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusDarwinEmbedded: invalid peripheral type: %s",
+    CLog::Log(LOGWARNING, "CPeripheralBusGCController: invalid peripheral type: %s",
               PERIPHERALS::PeripheralTypeTranslator::TypeToString(peripheral.Type()));
     return false;
   }
@@ -60,59 +60,59 @@ bool PERIPHERALS::CPeripheralBusDarwinEmbedded::InitializeProperties(CPeripheral
   if (!GetDeviceId(peripheral.Location(), deviceId))
   {
     CLog::Log(LOGWARNING,
-              "CPeripheralBusDarwinEmbedded: failed to initialize properties for peripheral \"%s\"",
+              "CPeripheralBusGCController: failed to initialize properties for peripheral \"%s\"",
               peripheral.Location().c_str());
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusDarwinEmbedded: Initializing device \"{}\"",
+  CLog::Log(LOGDEBUG, "CPeripheralBusGCController: Initializing device \"{}\"",
             peripheral.DeviceName());
 
   auto& joystick = static_cast<CPeripheralJoystick&>(peripheral);
 
   joystick.SetRequestedPort(deviceId);
-  joystick.SetProvider(JOYSTICK_PROVIDER_DARWINEMBEDDED);
+  joystick.SetProvider(JOYSTICK_PROVIDER_DARWIN_GCController);
 
-  auto controllerType = [m_peripheralDarwinEmbedded->callbackClass GetControllerType:deviceId];
+  auto controllerType = [m_peripheralGCController->callbackClass GetControllerType:deviceId];
 
   switch (controllerType)
   {
     case GCCONTROLLER_TYPE::EXTENDED:
       // Extended Gamepad
-      joystick.SetButtonCount([m_peripheralDarwinEmbedded->callbackClass
+      joystick.SetButtonCount([m_peripheralGCController->callbackClass
           GetControllerButtonCount:deviceId
                 withControllerType:controllerType]);
-      joystick.SetAxisCount([m_peripheralDarwinEmbedded->callbackClass
+      joystick.SetAxisCount([m_peripheralGCController->callbackClass
           GetControllerAxisCount:deviceId
               withControllerType:controllerType]);
       break;
     case GCCONTROLLER_TYPE::MICRO:
       // Micro Gamepad
-      joystick.SetButtonCount([m_peripheralDarwinEmbedded->callbackClass
+      joystick.SetButtonCount([m_peripheralGCController->callbackClass
           GetControllerButtonCount:deviceId
                 withControllerType:controllerType]);
-      joystick.SetAxisCount([m_peripheralDarwinEmbedded->callbackClass
+      joystick.SetAxisCount([m_peripheralGCController->callbackClass
           GetControllerAxisCount:deviceId
               withControllerType:controllerType]);
       break;
     default:
-      CLog::Log(LOGDEBUG, "CPeripheralBusDarwinEmbedded: Unknown Controller Type");
+      CLog::Log(LOGDEBUG, "CPeripheralBusGCController: Unknown Controller Type");
       return false;
   }
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusDarwinEmbedded: Device has %u buttons and %u axes",
+  CLog::Log(LOGDEBUG, "CPeripheralBusGCController: Device has %u buttons and %u axes",
             joystick.ButtonCount(), joystick.AxisCount());
 
   return true;
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::Initialise(void)
+void PERIPHERALS::CPeripheralBusGCController::Initialise(void)
 {
   CPeripheralBus::Initialise();
   TriggerDeviceScan();
 }
 
-bool PERIPHERALS::CPeripheralBusDarwinEmbedded::PerformDeviceScan(PeripheralScanResults& results)
+bool PERIPHERALS::CPeripheralBusGCController::PerformDeviceScan(PeripheralScanResults& results)
 {
   CSingleLock lock(m_critSectionResults);
   results = m_scanResults;
@@ -120,30 +120,30 @@ bool PERIPHERALS::CPeripheralBusDarwinEmbedded::PerformDeviceScan(PeripheralScan
   return true;
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::SetScanResults(
+void PERIPHERALS::CPeripheralBusGCController::SetScanResults(
     const PERIPHERALS::PeripheralScanResults& resScanResults)
 {
   CSingleLock lock(m_critSectionResults);
   m_scanResults = resScanResults;
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::GetEvents(
+void PERIPHERALS::CPeripheralBusGCController::GetEvents(
     std::vector<kodi::addon::PeripheralEvent>& events)
 {
   CSingleLock lock(m_critSectionStates);
   std::vector<kodi::addon::PeripheralEvent> digitalEvents;
-  digitalEvents = [m_peripheralDarwinEmbedded->callbackClass GetButtonEvents];
+  digitalEvents = [m_peripheralGCController->callbackClass GetButtonEvents];
 
   std::vector<kodi::addon::PeripheralEvent> axisEvents;
-  axisEvents = [m_peripheralDarwinEmbedded->callbackClass GetAxisEvents];
+  axisEvents = [m_peripheralGCController->callbackClass GetAxisEvents];
 
   events.reserve(digitalEvents.size() + axisEvents.size()); // preallocate memory
   events.insert(events.end(), digitalEvents.begin(), digitalEvents.end());
   events.insert(events.end(), axisEvents.begin(), axisEvents.end());
 }
 
-bool PERIPHERALS::CPeripheralBusDarwinEmbedded::GetDeviceId(const std::string& deviceLocation,
-                                                            int& deviceId)
+bool PERIPHERALS::CPeripheralBusGCController::GetDeviceId(const std::string& deviceLocation,
+                                                          int& deviceId)
 {
   if (deviceLocation.empty() ||
       !StringUtils::StartsWith(deviceLocation, getDeviceLocationPrefix()) ||
@@ -158,7 +158,7 @@ bool PERIPHERALS::CPeripheralBusDarwinEmbedded::GetDeviceId(const std::string& d
   return true;
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::ProcessEvents()
+void PERIPHERALS::CPeripheralBusGCController::ProcessEvents()
 {
   std::vector<kodi::addon::PeripheralEvent> events;
   {
@@ -202,24 +202,24 @@ void PERIPHERALS::CPeripheralBusDarwinEmbedded::ProcessEvents()
   }
 }
 
-std::string PERIPHERALS::CPeripheralBusDarwinEmbedded::GetDeviceLocation(int deviceId)
+std::string PERIPHERALS::CPeripheralBusGCController::GetDeviceLocation(int deviceId)
 {
-  return [m_peripheralDarwinEmbedded->callbackClass GetDeviceLocation:deviceId];
+  return [m_peripheralGCController->callbackClass GetDeviceLocation:deviceId];
 }
 
-PERIPHERALS::PeripheralScanResults PERIPHERALS::CPeripheralBusDarwinEmbedded::GetInputDevices()
+PERIPHERALS::PeripheralScanResults PERIPHERALS::CPeripheralBusGCController::GetInputDevices()
 {
-  CLog::Log(LOGINFO, "CPeripheralBusDarwinEmbedded: scanning for input devices...");
+  CLog::Log(LOGINFO, "CPeripheralBusGCController: scanning for input devices...");
 
-  return [m_peripheralDarwinEmbedded->callbackClass GetInputDevices];
+  return [m_peripheralGCController->callbackClass GetInputDevices];
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::callOnDeviceAdded(const std::string& strLocation)
+void PERIPHERALS::CPeripheralBusGCController::callOnDeviceAdded(const std::string& strLocation)
 {
   OnDeviceAdded(strLocation);
 }
 
-void PERIPHERALS::CPeripheralBusDarwinEmbedded::callOnDeviceRemoved(const std::string& strLocation)
+void PERIPHERALS::CPeripheralBusGCController::callOnDeviceRemoved(const std::string& strLocation)
 {
   OnDeviceRemoved(strLocation);
 }

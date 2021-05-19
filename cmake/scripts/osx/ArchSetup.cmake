@@ -36,7 +36,8 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework ApplicationServices" "-framework AppKit"
                     "-framework CoreAudio" "-framework AudioToolbox"
                     "-framework CoreGraphics" "-framework CoreMedia"
-                    "-framework VideoToolbox" "-framework Security")
+                    "-framework VideoToolbox" "-framework Security"
+                    "-framework GameController")
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)

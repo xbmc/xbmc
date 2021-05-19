@@ -10,19 +10,19 @@
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"
 
-#import "platform/darwin/ios-common/peripherals/Input_Gamecontroller.h"
-#include "platform/darwin/ios-common/peripherals/PeripheralBusDarwinEmbedded.h"
+#import "platform/darwin/peripherals/Input_Gamecontroller.h"
+#include "platform/darwin/peripherals/PeripheralBusGCController.h"
 
 #include <string>
 #include <vector>
 
 #import <Foundation/Foundation.h>
 
-@interface CBPeripheralBusDarwinEmbeddedManager : NSObject
+@interface CBPeripheralBusGCControllerManager : NSObject
 
-@property(nonatomic, strong) Input_IOSGamecontroller* input_GC;
+@property(nonatomic, strong) Input_GCController* input_GC;
 
-- (instancetype)initWithName:(PERIPHERALS::CPeripheralBusDarwinEmbedded*)parentClass;
+- (instancetype)initWithName:(PERIPHERALS::CPeripheralBusGCController*)parentClass;
 - (PERIPHERALS::PeripheralScanResults)GetInputDevices;
 - (void)DeviceAdded:(int)deviceID;
 - (void)DeviceRemoved:(int)deviceID;
