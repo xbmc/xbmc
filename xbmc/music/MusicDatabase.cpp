@@ -4077,7 +4077,7 @@ bool CMusicDatabase::CleanupSongsByIds(const std::string& strSongIds)
     if (nullptr == m_pDS)
       return false;
     // ok, now find all idSong's
-    std::string strSQL = PrepareSQL("SELECT * FROM song JOIN path ON song.idPath = path.idPath"
+    std::string strSQL = PrepareSQL("SELECT * FROM song JOIN path ON song.idPath = path.idPath "
                                     "WHERE song.idSong IN %s",
                                     strSongIds.c_str());
     if (!m_pDS->query(strSQL))
