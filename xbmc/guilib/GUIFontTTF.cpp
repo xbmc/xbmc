@@ -584,15 +584,15 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
 float CGUIFontTTF::GetTextWidthInternal(const vecText& text, vecGlyphInfo& glyphInfos)
 {
   float width = 0;
-  for (size_t i = 0; i < glyphInfos.size(); i++)
+  for (auto it = glyphInfos.begin(); it != glyphInfos.end(); it++)
   {
-    Character* c = GetCharacter(text[glyphInfos[i].cluster], glyphInfos[i].codepoint);
+    Character* c = GetCharacter(text[(*it).cluster],(*it).codepoint);
     if (c)
     {
       // If last character in line, we want to add render width
       // and not advance distance - this makes sure that italic text isn't
       // choped on the end (as render width is larger than advance then).
-      if (i == glyphInfos.size() - 1)
+      if (it == glyphInfos.end())
         width += std::max(c->right - c->left + c->offsetX, c->advance);
       else
         width += c->advance;
