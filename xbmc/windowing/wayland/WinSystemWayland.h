@@ -21,6 +21,7 @@
 #include "windowing/WinSystem.h"
 
 #include <atomic>
+#include <chrono>
 #include <ctime>
 #include <list>
 #include <map>
@@ -242,7 +243,8 @@ private:
   static constexpr int LATENCY_MOVING_AVERAGE_SIZE{30};
   std::atomic<float> m_latencyMovingAverage;
   CSignalHandlerList<PresentationFeedbackHandler> m_presentationFeedbackHandlers;
-  std::int64_t m_frameStartTime{};
+
+  std::chrono::steady_clock::time_point m_frameStartTime{};
 
   // IDispResource
   // -------------
