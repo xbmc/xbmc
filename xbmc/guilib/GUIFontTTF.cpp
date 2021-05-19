@@ -645,6 +645,7 @@ vecGlyphInfo CGUIFontTTF::GetHarfbuzzShapedGlyphs(const vecText& text)
   {
     scripts.emplace_back(hb_unicode_script(ufuncs, static_cast<wchar_t>(0xffff & character)));
   }
+
   // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
   for (unsigned int i = 0; i < scripts.size(); i++)
   {
@@ -665,6 +666,7 @@ vecGlyphInfo CGUIFontTTF::GetHarfbuzzShapedGlyphs(const vecText& text)
       lastSetIndex = i;
     }
   }
+
   lastScript = scripts[0];
   int lastRunStart = 0;
   for (unsigned int i = 0; i <= scripts.size(); i++)
@@ -687,6 +689,7 @@ vecGlyphInfo CGUIFontTTF::GetHarfbuzzShapedGlyphs(const vecText& text)
       }
     }
   }
+  
   for (auto& run : runs)
   {
     run.buffer = hb_buffer_create();
