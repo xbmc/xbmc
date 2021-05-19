@@ -72,8 +72,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     return true;      // no point loading if it's already there
 
 #ifdef _DEBUG
-  int64_t start;
-  start = CurrentHostCounter();
+  const auto start = std::chrono::steady_clock::now();
 #endif
 
   const char* strLoadType;
@@ -113,10 +112,9 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     OnWindowLoaded();
 
 #ifdef _DEBUG
-    int64_t end, freq;
-    end = CurrentHostCounter();
-    freq = CurrentHostFrequency();
-    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2f}ms", strPath, 1000.f * (end - start) / freq);
+    const auto end = std::chrono::steady_clock::now();
+    const std::chrono::duration<double, std::milli> duration = end - start;
+    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2f} ms", strPath, duration.count());
 #endif
   }
 
@@ -731,8 +729,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= false */)
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
 #ifdef _DEBUG
-  int64_t start;
-  start = CurrentHostCounter();
+  const auto start = std::chrono::steady_clock::now();
 #endif
   // use forceLoad to determine if window needs (re)loading
   forceLoad |= NeedLoad() || (m_loadType == LOAD_EVERY_TIME);
@@ -753,24 +750,24 @@ void CGUIWindow::AllocResources(bool forceLoad /*= false */)
   }
 
 #ifdef _DEBUG
-  int64_t slend;
-  slend = CurrentHostCounter();
+  const auto skinLoadEnd = std::chrono::steady_clock::now();
 #endif
 
   // and now allocate resources
   CGUIControlGroup::AllocResources();
 
 #ifdef _DEBUG
-  int64_t end, freq;
-  end = CurrentHostCounter();
-  freq = CurrentHostFrequency();
+  const auto end = std::chrono::steady_clock::now();
+  const std::chrono::duration<double, std::milli> skinLoadDuration = skinLoadEnd - start;
+  const std::chrono::duration<double, std::milli> duration = end - start;
+
   if (forceLoad)
-    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f}ms  ({:.2f} ms skin load)",
-              1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
+    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f} ms ({:.2f} ms skin load)", duration.count(),
+              skinLoadDuration.count());
   else
   {
     CLog::Log(LOGDEBUG, "Window {} was already loaded", GetProperty("xmlfile").asString());
-    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f}ms", 1000.f * (end - start) / freq);
+    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f} ms", duration.count());
   }
 #endif
   m_bAllocated = true;
