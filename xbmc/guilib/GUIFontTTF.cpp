@@ -378,14 +378,14 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   CVertexBuffer& vertexBuffer =
       hardwareClipping
           ? m_dynamicCache.Lookup(context, dynamicPos, colors, text, alignment, maxPixelWidth,
-                                  scrolling, XbmcThreads::SystemClockMillis(), dirtyCache)
+                                  scrolling, std::chrono::steady_clock::now(), dirtyCache)
           : unusedVertexBuffer;
   std::shared_ptr<std::vector<SVertex>> tempVertices = std::make_shared<std::vector<SVertex>>();
   std::shared_ptr<std::vector<SVertex>>& vertices =
       hardwareClipping ? tempVertices
                        : static_cast<std::shared_ptr<std::vector<SVertex>>&>(m_staticCache.Lookup(
                              context, staticPos, colors, text, alignment, maxPixelWidth, scrolling,
-                             XbmcThreads::SystemClockMillis(), dirtyCache));
+                             std::chrono::steady_clock::now(), dirtyCache));
   if (dirtyCache)
   {
     // save the origin, which is scaled separately
@@ -540,7 +540,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     {
       CVertexBuffer& vertexBuffer =
           m_dynamicCache.Lookup(context, dynamicPos, colors, text, rawAlignment, maxPixelWidth,
-                                scrolling, XbmcThreads::SystemClockMillis(), dirtyCache);
+                                scrolling, std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
       m_vertexTrans.emplace_back(0, 0, 0, &vertexBuffer, context.GetClipRegion());
@@ -548,7 +548,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     else
     {
       m_staticCache.Lookup(context, staticPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
-                           XbmcThreads::SystemClockMillis(), dirtyCache) =
+                           std::chrono::steady_clock::now(), dirtyCache) =
           *static_cast<CGUIFontCacheStaticValue*>(&tempVertices);
       /* Append the new vertices to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), tempVertices->begin(), tempVertices->end());
