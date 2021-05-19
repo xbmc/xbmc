@@ -81,7 +81,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
   return CGUIDialogSettingsManualBase::OnMessage(message);
 }
 
-void CGUIDialogNetworkSetup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogNetworkSetup::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -110,7 +110,7 @@ void CGUIDialogNetworkSetup::OnSettingChanged(std::shared_ptr<const CSetting> se
     m_password = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 }
 
-void CGUIDialogNetworkSetup::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogNetworkSetup::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -255,7 +255,7 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
       return;
     m_protocol = msg.GetParam1();
     // set defaults for the port
-    m_port = StringUtils::Format("%i", m_protocols[m_protocol].defaultPort);
+    m_port = std::to_string(m_protocols[m_protocol].defaultPort);
 
     UpdateButtons();
   }
@@ -413,7 +413,7 @@ bool CGUIDialogNetworkSetup::SetPath(const std::string &path)
   else
     m_username = url.GetUserName();
   m_password = url.GetPassWord();
-  m_port = StringUtils::Format("%i", url.GetPort());
+  m_port = std::to_string(url.GetPort());
   m_server = url.GetHostName();
   m_path = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(m_path);

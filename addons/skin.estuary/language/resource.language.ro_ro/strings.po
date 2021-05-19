@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Nota dvs."
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Mai multe informații"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Pagini"
@@ -192,10 +196,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponibil"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Apăsați [B]Bine[/B] pentru a opri"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrat"
@@ -203,10 +203,6 @@ msgstr "filtrat"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Cu Arial la bază"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Apăsați [B]La stânga[/B] pentru a derula înapoi, sau [B]La dreapta[/B] pentru a derula înainte"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -491,10 +487,6 @@ msgstr "Categorii"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Alegeți pachetul de decoruri"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Repozitoriu"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

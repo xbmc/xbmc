@@ -59,6 +59,11 @@ namespace RETRO
 }
 }
 
+namespace MEDIA_DETECT
+{
+class CDetectDVDMedia;
+}
+
 namespace PERIPHERALS
 {
   class CPeripherals;
@@ -125,6 +130,10 @@ public:
 
   CMediaManager& GetMediaManager();
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
+#endif
+
 protected:
   struct delete_dataCacheCore
   {
@@ -168,4 +177,7 @@ protected:
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
   std::unique_ptr<CDatabaseManager> m_databaseManager;
   std::unique_ptr<CMediaManager> m_mediaManager;
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  std::unique_ptr<MEDIA_DETECT::CDetectDVDMedia> m_DetectDVDType;
+#endif
 };

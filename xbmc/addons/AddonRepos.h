@@ -21,6 +21,7 @@ class CAddonDatabase;
 class CAddonMgr;
 class CRepository;
 class IAddon;
+enum class AddonCheckType;
 
 enum class CheckAddonPath
 {
@@ -46,7 +47,8 @@ struct CAddonWithUpdate
 class CAddonRepos
 {
 public:
-  CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){};
+  CAddonRepos() = delete;
+  explicit CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){};
 
   /*!
    * \brief Load the map of all available addon versions in any installed repository
@@ -75,22 +77,17 @@ public:
 
   /*!
    * \brief Build the list of addons to be updated depending on defined rules
+   *        or the list of outdated addons
    * \param installed vector of all addons installed on the system that are
    *        checked for an update
-   * \param[out] updates list of addon versions that are going to be installed
+   * \param[in] addonCheckType build list of OUTDATED or UPDATES
+   * \param[out] result list of addon versions that are going to be installed
+   *             or are outdated
    */
-  void BuildUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                       std::vector<std::shared_ptr<IAddon>>& updates) const;
+  void BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
+                                 std::vector<std::shared_ptr<IAddon>>& result,
+                                 AddonCheckType addonCheckType) const;
 
-  /*!
-   * \brief Build the list of addons that are outdated and have an update
-   *        available depending on defined rules
-   * \param installed vector of all addons installed on the system that are
-   *        checked for an update
-   * \param[out] outdated list of addon versions that have an update available
-   */
-  void BuildOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                         std::vector<std::shared_ptr<IAddon>>& outdated) const;
 
   /*!
    * \brief Build the list of outdated addons and their available updates.
@@ -115,6 +112,14 @@ public:
    */
   static bool IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon,
                                  CheckAddonPath checkAddonPath);
+
+  /*!
+   * \brief Checks if the passed in repository is defined as official repo
+   *        which includes ORIGIN_SYSTEM
+   * \param repoId repository id to check
+   * \return true if the repository id is defined as official, false otherwise
+   */
+  static bool IsOfficialRepo(const std::string& repoId);
 
   /*!
    * \brief Check if an update is available for a single addon
@@ -187,14 +192,6 @@ public:
   void BuildCompatibleVersionsList(std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
 
 private:
-  /*!
-   * \brief Executor for BuildUpdateList() and BuildOutdatedList()
-   * \sa BuildUpdateList() BuildOutdatedList()
-   */
-  void BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                 std::vector<std::shared_ptr<IAddon>>& result,
-                                 bool returnOutdatedAddons) const;
-
   /*!
    * \brief Load the map of addons
    * \note this function should only by called from publicly exposed wrappers

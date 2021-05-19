@@ -51,7 +51,8 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
   return true;
 }
 
-CSettingsManager::CSettingsManager() : CStaticLoggerBase("CSettingsManager")
+CSettingsManager::CSettingsManager()
+  : m_logger(CServiceBroker::GetLogging().GetLogger("CSettingsManager"))
 {
 }
 
@@ -84,7 +85,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
 
   if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
-    s_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT
+    m_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT
                     "> tag");
     return false;
   }
@@ -92,17 +93,17 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
   // try to get and check the version
   uint32_t version = ParseVersion(root);
   if (version == 0)
-    s_logger->warn("missing " SETTING_XML_ROOT_VERSION " attribute", SETTING_XML_ROOT_VERSION);
+    m_logger->warn("missing " SETTING_XML_ROOT_VERSION " attribute", SETTING_XML_ROOT_VERSION);
 
   if (MinimumSupportedVersion >= version+1)
   {
-    s_logger->error("unable to read setting definitions from version {} (minimum version: {})",
+    m_logger->error("unable to read setting definitions from version {} (minimum version: {})",
                     version, MinimumSupportedVersion);
     return false;
   }
   if (version > Version)
   {
-    s_logger->error("unable to read setting definitions from version {} (current version: {})",
+    m_logger->error("unable to read setting definitions from version {} (current version: {})",
                     version, Version);
     return false;
   }
@@ -125,7 +126,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
         AddSection(section);
       else
       {
-        s_logger->warn("unable to read section \"{}\"", sectionId);
+        m_logger->warn("unable to read section \"{}\"", sectionId);
       }
     }
 
@@ -148,17 +149,17 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   // try to get and check the version
   uint32_t version = ParseVersion(root);
   if (version == 0)
-    s_logger->warn("missing {} attribute", SETTING_XML_ROOT_VERSION);
+    m_logger->warn("missing {} attribute", SETTING_XML_ROOT_VERSION);
 
   if (MinimumSupportedVersion >= version+1)
   {
-    s_logger->error("unable to read setting values from version {} (minimum version: {})", version,
+    m_logger->error("unable to read setting values from version {} (minimum version: {})", version,
                     MinimumSupportedVersion);
     return false;
   }
   if (version > Version)
   {
-    s_logger->error("unable to read setting values from version {} (current version: {})", version,
+    m_logger->error("unable to read setting values from version {} (current version: {})", version,
                     Version);
     return false;
   }
@@ -262,7 +263,7 @@ void CSettingsManager::SetInitialized()
     ResolveSettingDependencies(setting.second);
 }
 
-void CSettingsManager::AddSection(SettingSectionPtr section)
+void CSettingsManager::AddSection(const SettingSectionPtr& section)
 {
   if (section == nullptr)
     return;
@@ -304,8 +305,10 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
   }
 }
 
-bool CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting, std::shared_ptr<CSettingSection> section,
-  std::shared_ptr<CSettingCategory> category, std::shared_ptr<CSettingGroup> group)
+bool CSettingsManager::AddSetting(const std::shared_ptr<CSetting>& setting,
+                                  const std::shared_ptr<CSettingSection>& section,
+                                  const std::shared_ptr<CSettingCategory>& category,
+                                  const std::shared_ptr<CSettingGroup>& group)
 {
   if (setting == nullptr || section == nullptr || category == nullptr || group == nullptr)
     return false;
@@ -458,7 +461,7 @@ void CSettingsManager::UnregisterSettingOptionsFiller(const std::string &identif
   m_optionsFillers.erase(identifier);
 }
 
-void* CSettingsManager::GetSettingOptionsFiller(SettingConstPtr setting)
+void* CSettingsManager::GetSettingOptionsFiller(const SettingConstPtr& setting)
 {
   CSharedLock lock(m_critical);
   if (setting == nullptr)
@@ -527,7 +530,7 @@ SettingPtr CSettingsManager::GetSetting(const std::string &id) const
     return setting->second.setting;
   }
 
-  s_logger->debug("requested setting ({}) was not found.", id);
+  m_logger->debug("requested setting ({}) was not found.", id);
   return nullptr;
 }
 
@@ -553,7 +556,7 @@ SettingSectionPtr CSettingsManager::GetSection(std::string section) const
   if (sectionIt != m_sections.end())
     return sectionIt->second;
 
-  s_logger->debug("requested setting section ({}) was not found.", section);
+  m_logger->debug("requested setting section ({}) was not found.", section);
   return nullptr;
 }
 
@@ -567,7 +570,7 @@ SettingDependencyMap CSettingsManager::GetDependencies(const std::string &id) co
   return setting->second.dependencies;
 }
 
-SettingDependencyMap CSettingsManager::GetDependencies(SettingConstPtr setting) const
+SettingDependencyMap CSettingsManager::GetDependencies(const SettingConstPtr& setting) const
 {
   if (setting == nullptr)
     return SettingDependencyMap();
@@ -756,7 +759,7 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
 
     if (parent->InsertEndChild(settingElement) == nullptr)
     {
-      s_logger->warn("unable to write <" SETTING_XML_ELM_SETTING " id=\"{}\"> tag",
+      m_logger->warn("unable to write <" SETTING_XML_ELM_SETTING " id=\"{}\"> tag",
                      setting.second.setting->GetId());
       continue;
     }
@@ -790,7 +793,7 @@ bool CSettingsManager::Deserialize(const TiXmlNode *node, bool &updated, std::ma
   return true;
 }
 
-bool CSettingsManager::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CSettingsManager::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return false;
@@ -848,7 +851,7 @@ bool CSettingsManager::OnSettingChanging(std::shared_ptr<const CSetting> setting
   return true;
 }
 
-void CSettingsManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CSettingsManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
@@ -874,7 +877,7 @@ void CSettingsManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-void CSettingsManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CSettingsManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
@@ -892,7 +895,9 @@ void CSettingsManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
     callback->OnSettingAction(setting);
 }
 
-bool CSettingsManager::OnSettingUpdate(SettingPtr setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CSettingsManager::OnSettingUpdate(const SettingPtr& setting,
+                                       const char* oldSettingId,
+                                       const TiXmlNode* oldSettingNode)
 {
   CSharedLock lock(m_settingsCritical);
   if (setting == nullptr)
@@ -913,7 +918,8 @@ bool CSettingsManager::OnSettingUpdate(SettingPtr setting, const char *oldSettin
   return ret;
 }
 
-void CSettingsManager::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName)
+void CSettingsManager::OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
+                                                const char* propertyName)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
@@ -1040,7 +1046,7 @@ void CSettingsManager::OnSettingsCleared()
     settingsHandler->OnSettingsCleared();
 }
 
-bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bool &updated)
+bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& setting, bool& updated)
 {
   updated = false;
 
@@ -1090,7 +1096,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bo
 
   if (!setting->FromString(settingElement->FirstChild() != nullptr ? settingElement->FirstChild()->ValueStr() : StringUtils::Empty))
   {
-    s_logger->warn("unable to read value of setting \"{}\"", settingId);
+    m_logger->warn("unable to read value of setting \"{}\"", settingId);
     return false;
   }
 
@@ -1107,7 +1113,9 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bo
   return true;
 }
 
-bool CSettingsManager::UpdateSetting(const TiXmlNode *node, SettingPtr setting, const CSettingUpdate& update)
+bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
+                                     const SettingPtr& setting,
+                                     const CSettingUpdate& update)
 {
   if (node == nullptr || setting == nullptr || update.GetType() == SettingUpdateType::Unknown)
     return false;
@@ -1140,7 +1148,7 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, SettingPtr setting, 
     if (setting->FromString(oldSettingNode->FirstChild() != nullptr ? oldSettingNode->FirstChild()->ValueStr() : StringUtils::Empty))
       updated = true;
     else
-      s_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
+      m_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",
                      setting->GetId(), oldSetting);
   }
 
@@ -1202,7 +1210,7 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, S
   }
 }
 
-void CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting)
+void CSettingsManager::AddSetting(const std::shared_ptr<CSetting>& setting)
 {
   setting->CheckRequirements();
 
@@ -1221,7 +1229,7 @@ void CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting)
   }
 }
 
-void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection> section)
+void CSettingsManager::ResolveReferenceSettings(const std::shared_ptr<CSettingSection>& section)
 {
   struct GroupedReferenceSettings
   {
@@ -1250,7 +1258,7 @@ void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection>
             auto itReferencedSetting = FindSetting(referencedSettingId);
             if (itReferencedSetting == m_settings.end())
             {
-              s_logger->warn("missing referenced setting \"{}\"", referencedSettingId);
+              m_logger->warn("missing referenced setting \"{}\"", referencedSettingId);
               continue;
             }
 
@@ -1328,7 +1336,7 @@ void CSettingsManager::CleanupIncompleteSettings()
     auto tmpIterator = setting++;
     if (tmpIterator->second.setting == nullptr)
     {
-      s_logger->warn("removing empty setting \"{}\"", tmpIterator->first);
+      m_logger->warn("removing empty setting \"{}\"", tmpIterator->first);
       m_settings.erase(tmpIterator);
     }
   }
@@ -1345,7 +1353,7 @@ void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifie
   m_optionsFillers.insert(make_pair(identifier, optionsFiller));
 }
 
-void CSettingsManager::ResolveSettingDependencies(std::shared_ptr<CSetting> setting)
+void CSettingsManager::ResolveSettingDependencies(const std::shared_ptr<CSetting>& setting)
 {
   if (setting == nullptr)
     return;

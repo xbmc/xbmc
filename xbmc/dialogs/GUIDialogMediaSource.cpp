@@ -205,7 +205,7 @@ std::string CGUIDialogMediaSource::GetUniqueMediaSourceName()
     }
     if (i < pShares->size())
       // found a match -  try next
-      strName = StringUtils::Format("%s (%i)", m_name.c_str(), j++);
+      strName = StringUtils::Format("{} ({})", m_name, j++);
     else
       bConfirmed = true;
   }
@@ -239,8 +239,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   if (m_name != CUtil::GetTitleFromPath(path))
     m_bNameChanged = true;
   path.clear();
-
-  std::string strDevices = g_localizeStrings.Get(33040); //"% Devices"
 
   if (m_type == "music")
   {

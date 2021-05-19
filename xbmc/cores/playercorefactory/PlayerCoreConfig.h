@@ -8,49 +8,44 @@
 
 #pragma once
 
-#include "utils/XBMCTinyXML.h"
+#include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "cores/IPlayer.h"
+#include "cores/RetroPlayer/RetroPlayer.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
-#include "cores/RetroPlayer/RetroPlayer.h"
-#include "cores/ExternalPlayer/ExternalPlayer.h"
 #ifdef HAS_UPNP
 #include "network/upnp/UPnPPlayer.h"
 #endif
-#include "system.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+
+#include <utility>
 
 class CPlayerCoreConfig
 {
 public:
-
-  CPlayerCoreConfig(std::string name, std::string type, const TiXmlElement* pConfig, const std::string& id = ""):
-    m_name(name),
-    m_id(id),
-    m_type(type)
+  CPlayerCoreConfig(std::string name,
+                    std::string type,
+                    const TiXmlElement* pConfig,
+                    const std::string& id = "")
+    : m_name(std::move(name)), m_id(id), m_type(std::move(type))
   {
     m_bPlaysAudio = false;
     m_bPlaysVideo = false;
 
     if (pConfig)
     {
-      m_config = static_cast<TiXmlElement*>(pConfig->Clone());
+      m_config.reset(static_cast<TiXmlElement*>(pConfig->Clone()));
       const char *sAudio = pConfig->Attribute("audio");
       const char *sVideo = pConfig->Attribute("video");
       m_bPlaysAudio = sAudio && StringUtils::CompareNoCase(sAudio, "true") == 0;
       m_bPlaysVideo = sVideo && StringUtils::CompareNoCase(sVideo, "true") == 0;
     }
-    else
-    {
-      m_config = nullptr;
-    }
+
     CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player %s", m_name.c_str());
   }
 
-  virtual ~CPlayerCoreConfig()
-  {
-    SAFE_DELETE(m_config);
-  }
+  ~CPlayerCoreConfig() = default;
 
   const std::string& GetName() const
   {
@@ -101,16 +96,19 @@ public:
     else
       return nullptr;
 
+    if (!pPlayer)
+      return nullptr;
+
     pPlayer->m_name = m_name;
     pPlayer->m_type = m_type;
 
-    if (pPlayer->Initialize(m_config))
+    if (pPlayer->Initialize(m_config.get()))
     {
       return pPlayer;
     }
     else
     {
-      SAFE_DELETE(pPlayer);
+      delete pPlayer;
       return nullptr;
     }
   }
@@ -120,5 +118,5 @@ public:
   std::string m_type;
   bool m_bPlaysAudio;
   bool m_bPlaysVideo;
-  TiXmlElement* m_config;
+  std::unique_ptr<TiXmlElement> m_config;
 };

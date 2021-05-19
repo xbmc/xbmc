@@ -12,17 +12,18 @@
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
 #include "Util.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
 
+#include "system.h"
 
-CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")
+CDVDOverlayCodecSSA::CDVDOverlayCodecSSA()
+  : CDVDOverlayCodec("SSA Subtitle Decoder"), m_libass(std::make_shared<CDVDSubtitlesLibass>())
 {
   m_pOverlay = NULL;
-  m_libass   = NULL;
   m_order    = 0;
   m_output   = false;
 }
@@ -40,16 +41,11 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   Dispose();
 
-  m_hints  = hints;
-  m_libass = new CDVDSubtitlesLibass();
-  return m_libass->DecodeHeader((char *)hints.extradata, hints.extrasize);
+  return m_libass->DecodeHeader(static_cast<char*>(hints.extradata), hints.extrasize);
 }
 
 void CDVDOverlayCodecSSA::Dispose()
 {
-  if(m_libass)
-    SAFE_RELEASE(m_libass);
-
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 }
@@ -61,7 +57,15 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 
   double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
   if (pts == DVD_NOPTS_VALUE)
+  {
     pts = 0;
+  }
+  else
+  {
+    // libass only has a precision of msec
+    pts = round(pts / 1000) * 1000;
+  }
+
   uint8_t *data = pPacket->pData;
   int size = pPacket->iSize;
   double duration = pPacket->duration;
@@ -89,13 +93,13 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
       end = 10000 * ((eh*360000.0)+(em*6000.0)+(es*100.0)+ec);
       beg = 10000 * ((sh*360000.0)+(sm*6000.0)+(ss*100.0)+sc);
 
-      pos = line.find_first_of(",", 0);
-      pos = line.find_first_of(",", pos+1);
-      pos = line.find_first_of(",", pos+1);
+      pos = line.find_first_of(',', 0);
+      pos = line.find_first_of(',', pos + 1);
+      pos = line.find_first_of(',', pos + 1);
       if(pos == std::string::npos)
         continue;
 
-      line2 = StringUtils::Format("%d,%s,%s", m_order++, layer.get(), line.substr(pos+1).c_str());
+      line2 = StringUtils::Format("{},{},{}", m_order++, layer.get(), line.substr(pos + 1));
 
       m_libass->DecodeDemuxPkt(line2.c_str(), line2.length(), beg, end - beg);
 
@@ -135,15 +139,13 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 void CDVDOverlayCodecSSA::Reset()
 {
   Dispose();
-  m_order  = 0;
-  m_output = false;
-  m_libass = new CDVDSubtitlesLibass();
-  m_libass->DecodeHeader((char *)m_hints.extradata, m_hints.extrasize);
+  Flush();
 }
 
 void CDVDOverlayCodecSSA::Flush()
 {
-  Reset();
+  m_order = 0;
+  m_output = false;
 }
 
 CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
@@ -155,5 +157,3 @@ CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
   }
   return NULL;
 }
-
-

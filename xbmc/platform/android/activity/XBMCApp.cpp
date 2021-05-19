@@ -74,6 +74,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/VideoDatabaseFile.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
 #include "input/mouse/MouseStat.h"
@@ -231,12 +232,6 @@ void CXBMCApp::onStart()
     registerReceiver(*this, intentFilter);
     m_mediaSession.reset(new CJNIXBMCMediaSession());
   }
-  if (g_application.IsInitialized())
-  {
-    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
-    if (syscall)
-      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnResume();
-  }
 }
 
 void CXBMCApp::onResume()
@@ -289,7 +284,13 @@ void CXBMCApp::onPause()
   }
 
   if (m_hasReqVisible)
-    g_application.SwitchToFullScreen(true);
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+    {
+      gui->GetWindowManager().SwitchToFullScreen(true);
+    }
+  }
 
   EnableWakeLock(false);
   m_hasReqVisible = false;
@@ -305,13 +306,6 @@ void CXBMCApp::onStop()
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
     else if (m_playback_state & PLAYBACK_STATE_VIDEO)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
-  }
-
-  if (!g_application.IsStopping())
-  {
-    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
-    if (syscall)
-      static_cast<CAndroidPowerSyscall*>(syscall)->SetOnPause();
   }
 }
 
@@ -559,10 +553,10 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001)
+    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001f)
     {
       params.setpreferredRefreshRate(rate);
-      if (params.getpreferredRefreshRate() > 0.0)
+      if (params.getpreferredRefreshRate() > 0.0f)
       {
         window.setAttributes(params);
         return;
@@ -595,14 +589,14 @@ void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
 
 void CXBMCApp::SetRefreshRate(float rate)
 {
-  if (rate < 1.0)
+  if (rate < 1.0f)
     return;
 
   CJNIWindow window = getWindow();
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) <= 0.001)
+    if (fabs(params.getpreferredRefreshRate() - rate) <= 0.001f)
       return;
   }
 
@@ -1031,7 +1025,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
-  else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
+  else if (action == "android.intent.action.DREAMING_STOPPED")
   {
     if (HasFocus())
       g_application.WakeUpScreenSaverAndDPMS();
@@ -1081,10 +1075,36 @@ void CXBMCApp::onReceive(CJNIIntent intent)
         dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
   }
+  else if (action == "android.intent.action.SCREEN_ON")
+  {
+    // Sent when the device wakes up and becomes interactive.
+    //
+    // For historical reasons, the name of this broadcast action refers to the power state of the
+    // screen but it is actually sent in response to changes in the overall interactive state of
+    // the device.
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+    {
+      CLog::Log(LOGINFO, "Got device wakeup intent");
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetResumed();
+    }
+
+    if (HasFocus())
+      g_application.WakeUpScreenSaverAndDPMS();
+  }
   else if (action == "android.intent.action.SCREEN_OFF")
   {
-    if (m_playback_state & PLAYBACK_STATE_VIDEO)
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+    // Sent when the device goes to sleep and becomes non-interactive.
+    //
+    // For historical reasons, the name of this broadcast action refers to the power state of the
+    // screen but it is actually sent in response to changes in the overall interactive state of
+    // the device.
+    IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
+    if (syscall)
+    {
+      CLog::Log(LOGINFO, "Got device sleep intent");
+      static_cast<CAndroidPowerSyscall*>(syscall)->SetSuspended();
+    }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
@@ -1237,6 +1257,18 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
     result = event->GetResultData();
     ret = event->GetResultCode();
   }
+
+  // delete from m_activityResultEvents map before deleting the event
+  CSingleLock lock(m_activityResultMutex);
+  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
+  {
+    if ((*it)->GetRequestCode() == requestCode)
+    {
+      m_activityResultEvents.erase(it);
+      break;
+    }
+  }
+
   delete event;
   return ret;
 }
@@ -1334,6 +1366,12 @@ void CXBMCApp::SetupEnv()
   std::string className = CCompileInfo::GetPackage();
 
   std::string cacheDir = getCacheDir().getAbsolutePath();
+  std::string xbmcTemp = CJNISystem::getProperty("xbmc.temp", "");
+  if (!xbmcTemp.empty())
+  {
+    setenv("KODI_TEMP", xbmcTemp.c_str(), 0);
+  }
+
   std::string xbmcHome = CJNISystem::getProperty("xbmc.home", "");
   if (xbmcHome.empty())
   {

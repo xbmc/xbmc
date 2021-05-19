@@ -67,7 +67,7 @@ inline std::shared_ptr<IRenderHelper> ATTRIBUTE_HIDDEN GetRenderHelper()
   if (static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper)
     return static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper;
 
-  const std::shared_ptr<kodi::gui::IRenderHelper> renderHelper(new CRenderHelper());
+  std::shared_ptr<kodi::gui::IRenderHelper> renderHelper(new CRenderHelper());
   if (!renderHelper->Init())
     return nullptr;
 

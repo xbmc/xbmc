@@ -6,11 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-#include <string>
-#include <vector>
-
 #include "ProfileManager.h"
+
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -31,9 +28,14 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
+#include "music/MusicLibraryQueue.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
+
+#include <algorithm>
+#include <string>
+#include <vector>
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
@@ -267,7 +269,7 @@ void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
   pvrManager.Stop();
 
   if (profileIndex != 0 || !IsMasterProfile())
-    networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+    networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
 }
 
 bool CProfileManager::LoadProfile(unsigned int index)
@@ -438,8 +440,8 @@ void CProfileManager::LogOff()
 
   g_application.StopPlaying();
 
-  if (g_application.IsMusicScanning())
-    g_application.StopMusicScan();
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
+    CMusicLibraryQueue::GetInstance().StopLibraryScanning();
 
   if (CVideoLibraryQueue::GetInstance().IsRunning())
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
@@ -447,7 +449,7 @@ void CProfileManager::LogOff()
   // Stop PVR services
   CServiceBroker::GetPVRManager().Stop();
 
-  networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+  networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
 
   LoadMasterProfileForLogin();
 
@@ -471,9 +473,9 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   if (dlgYesNo == NULL)
     return false;
 
-  std::string str = g_localizeStrings.Get(13201);
+  const std::string& str = g_localizeStrings.Get(13201);
   dlgYesNo->SetHeading(CVariant{13200});
-  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())});
+  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str, profile->getName())});
   dlgYesNo->SetLine(1, CVariant{""});
   dlgYesNo->SetLine(2, CVariant{""});
   dlgYesNo->Open();
@@ -520,7 +522,8 @@ void CProfileManager::CreateProfileFolders()
   CDirectory::Create(GetBookmarksThumbFolder());
   CDirectory::Create(GetSavestatesFolder());
   for (size_t hex = 0; hex < 16; hex++)
-    CDirectory::Create(URIUtils::AddFileToFolder(GetThumbnailsFolder(), StringUtils::Format("%lx", hex)));
+    CDirectory::Create(
+        URIUtils::AddFileToFolder(GetThumbnailsFolder(), StringUtils::Format("{:x}", hex)));
 
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
@@ -716,7 +719,7 @@ CEventLog& CProfileManager::GetEventLog()
   return m_eventLogs->GetEventLog(GetCurrentProfileId());
 }
 
-void CProfileManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CProfileManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

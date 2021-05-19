@@ -57,7 +57,7 @@ protected:
       port = dist(mt);
     }
     webserverPort = port;
-    baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":%u", webserverPort);
+    baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", webserverPort);
   }
   ~TestWebServer() override = default;
 
@@ -174,7 +174,7 @@ protected:
     const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
     // check the protocol line for the expected HTTP status
-    std::string httpStatusString = StringUtils::Format(" %d ", httpStatus);
+    std::string httpStatusString = StringUtils::Format(" {} ", httpStatus);
     std::string protocolLine = httpHeader.GetProtoLine();
     ASSERT_TRUE(protocolLine.find(httpStatusString) != std::string::npos);
 
@@ -205,7 +205,7 @@ protected:
     const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
     // check the protocol line for the expected HTTP status
-    std::string httpStatusString = StringUtils::Format(" %d ", MHD_HTTP_PARTIAL_CONTENT);
+    std::string httpStatusString = StringUtils::Format(" {} ", MHD_HTTP_PARTIAL_CONTENT);
     std::string protocolLine = httpHeader.GetProtoLine();
     ASSERT_TRUE(protocolLine.find(httpStatusString) != std::string::npos);
 
@@ -250,7 +250,8 @@ protected:
       EXPECT_STREQ(expectedContent.c_str(), result.c_str());
 
       // and Content-Length
-      EXPECT_STREQ(StringUtils::Format("%u", static_cast<unsigned int>(expectedContent.size())).c_str(), httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
+      EXPECT_STREQ(std::to_string(static_cast<unsigned int>(expectedContent.size())).c_str(),
+                   httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
 
       return;
     }
@@ -336,7 +337,7 @@ protected:
 
   std::string GenerateRangeHeaderValue(unsigned int start, unsigned int end)
   {
-    return StringUtils::Format("bytes=%u-%u", start, end);
+    return StringUtils::Format("bytes={}-{}", start, end);
   }
 
   CWebServer webserver;
@@ -782,7 +783,8 @@ TEST_F(TestWebServer, CanGetRangedFileRange_Last)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
   std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
-  const std::string range = StringUtils::Format("bytes=-%u", static_cast<unsigned int>(rangedContent.back().size()));
+  const std::string range =
+      StringUtils::Format("bytes=-{}", static_cast<unsigned int>(rangedContent.back().size()));
 
   CHttpRanges ranges;
   ASSERT_TRUE(ranges.Parse(range, rangedFileContent.size()));
@@ -799,8 +801,11 @@ TEST_F(TestWebServer, CanGetRangedFileRangeFirstSecond)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
   std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
-  const std::string range = StringUtils::Format("bytes=0-%u,%u-%u", static_cast<unsigned int>(rangedContent.front().size() - 1),
-    static_cast<unsigned int>(rangedContent.front().size() + 1), static_cast<unsigned int>(rangedContent.front().size() + 1) + static_cast<unsigned int>(rangedContent.at(1).size() - 1));
+  const std::string range = StringUtils::Format(
+      "bytes=0-{},{}-{}", static_cast<unsigned int>(rangedContent.front().size() - 1),
+      static_cast<unsigned int>(rangedContent.front().size() + 1),
+      static_cast<unsigned int>(rangedContent.front().size() + 1) +
+          static_cast<unsigned int>(rangedContent.at(1).size() - 1));
 
   CHttpRanges ranges;
   ASSERT_TRUE(ranges.Parse(range, rangedFileContent.size()));
@@ -817,9 +822,12 @@ TEST_F(TestWebServer, CanGetRangedFileRangeFirstSecondLast)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
   std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
-  const std::string range = StringUtils::Format("bytes=0-%u,%u-%u,-%u", static_cast<unsigned int>(rangedContent.front().size() - 1),
-    static_cast<unsigned int>(rangedContent.front().size() + 1), static_cast<unsigned int>(rangedContent.front().size() + 1) + static_cast<unsigned int>(rangedContent.at(1).size() - 1),
-    static_cast<unsigned int>(rangedContent.back().size()));
+  const std::string range = StringUtils::Format(
+      "bytes=0-{},{}-{},-{}", static_cast<unsigned int>(rangedContent.front().size() - 1),
+      static_cast<unsigned int>(rangedContent.front().size() + 1),
+      static_cast<unsigned int>(rangedContent.front().size() + 1) +
+          static_cast<unsigned int>(rangedContent.at(1).size() - 1),
+      static_cast<unsigned int>(rangedContent.back().size()));
 
   CHttpRanges ranges;
   ASSERT_TRUE(ranges.Parse(range, rangedFileContent.size()));

@@ -9,7 +9,7 @@
 #include "DVDDemuxSPU.h"
 
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
 #include <locale.h>

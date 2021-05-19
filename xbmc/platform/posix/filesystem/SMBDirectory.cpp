@@ -82,6 +82,8 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   struct smbc_dirent* dirEnt;
 
   lock.Enter();
+  if (!smb.IsSmbValid())
+    return false;
   while ((dirEnt = smbc_readdir(fd)))
   {
     CachedDirEntry aDir;
@@ -128,6 +130,11 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           const std::string strFullName = strAuth + smb.URLEncode(strFile);
 
           lock.Enter();
+          if (!smb.IsSmbValid())
+          {
+            items.ClearItems();
+            return false;
+          }
 
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
@@ -217,7 +224,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   int fd = -1;
 
   /* make a writeable copy */
-  CURL urlIn(url);
+  CURL urlIn = CSMB::GetResolvedUrl(url);
 
   CPasswordManager::GetInstance().AuthenticateURL(urlIn);
   strAuth = smb.URLEncode(urlIn);
@@ -235,6 +242,8 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url %s", CURL::GetRedacted(s).c_str());
 
   { CSingleLock lock(smb);
+    if (!smb.IsSmbValid())
+      return -1;
     fd = smbc_opendir(s.c_str());
   }
 
@@ -250,7 +259,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     }
 
     if (errno == ENODEV || errno == ENOENT)
-      cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),errno);
+      cError = StringUtils::Format(g_localizeStrings.Get(770), errno);
     else
       cError = strerror(errno);
 
@@ -273,7 +282,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
+  CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
@@ -290,7 +299,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
+  CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 
@@ -310,7 +319,7 @@ bool CSMBDirectory::Exists(const CURL& url2)
   CSingleLock lock(smb);
   smb.Init();
 
-  CURL url(url2);
+  CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);
 

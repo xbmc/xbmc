@@ -196,7 +196,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 
   AVInputFormat* inp = nullptr;
   if (is_jpeg)
-    inp = av_find_input_format("jpeg_pipe");
+    inp = av_find_input_format("image2");
   else if (m_strMimeType == "image/apng")
     inp = av_find_input_format("apng");
   else if (is_png)
@@ -209,7 +209,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     inp = av_find_input_format("webp_pipe");
   // brute force parse if above check already failed
   else if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
-    inp = av_find_input_format("jpeg_pipe");
+    inp = av_find_input_format("image2");
   else if (m_strMimeType == "image/png")
     inp = av_find_input_format("png_pipe");
   else if (m_strMimeType == "image/tiff")
@@ -688,36 +688,34 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.frame_input->format = jpg_output ? AV_PIX_FMT_YUVJ420P : AV_PIX_FMT_RGBA;
 
   int got_package = 0;
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  // encoder will allocate memory
-  avpkt.data = nullptr;
-  avpkt.size = 0;
+  AVPacket* avpkt;
+  avpkt = av_packet_alloc();
 
-  int ret = EncodeFFmpegFrame(tdm.avOutctx, &avpkt, &got_package, tdm.frame_input);
+  int ret = EncodeFFmpegFrame(tdm.avOutctx, avpkt, &got_package, tdm.frame_input);
 
   if ((ret < 0) || (got_package == 0))
   {
     CLog::Log(LOGERROR, "Could not encode thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
+    av_packet_free(&avpkt);
     return false;
   }
 
-  bufferoutSize = avpkt.size;
+  bufferoutSize = avpkt->size;
   m_outputBuffer = (uint8_t*) av_malloc(bufferoutSize);
   if (!m_outputBuffer)
   {
     CLog::Log(LOGERROR, "Could not generate allocate memory for thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
-    av_packet_unref(&avpkt);
+    av_packet_free(&avpkt);
     return false;
   }
   // update buffer ptr for caller
   bufferout = m_outputBuffer;
 
   // copy avpkt data into outputbuffer
-  memcpy(m_outputBuffer, avpkt.data, avpkt.size);
-  av_packet_unref(&avpkt);
+  memcpy(m_outputBuffer, avpkt->data, avpkt->size);
+  av_packet_free(&avpkt);
 
   return true;
 }

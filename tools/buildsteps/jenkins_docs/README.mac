@@ -4,13 +4,13 @@ This are the steps to be done for configuring a mac for being a build slave to t
 1. setup user jenkins as follows:
 
 # create jenkins group
-NEXT_GID=$((`dscl /Local/Default list /Groups gid | awk '{ print $2 }' | sort -n | grep -v ^[5-9] | tail -n1` + 1))
+NEXT_GID=$((`dscl /Local/Default list /Groups gid | awk '{ print $2 }' | sort -n | grep -v '^[5-9]' | tail -n1` + 1))
 sudo dscl /Local/Default create /Groups/jenkins
 sudo dscl /Local/Default create /Groups/jenkins PrimaryGroupID $NEXT_GID
 sudo dscl /Local/Default create /Groups/jenkins Password \*
 sudo dscl /Local/Default create /Groups/jenkins RealName 'Jenkins Node Service'
 # create jenkins user
-NEXT_UID=$((`dscl /Local/Default list /Users uid | awk '{ print $2 }' | sort -n | grep -v ^[5-9] | tail -n1` + 1))
+NEXT_UID=$((`dscl /Local/Default list /Users uid | awk '{ print $2 }' | sort -n | grep -v '^[5-9]' | tail -n1` + 1))
 sudo dscl /Local/Default create /Users/jenkins
 sudo dscl /Local/Default create /Users/jenkins UniqueID $NEXT_UID
 sudo dscl /Local/Default create /Users/jenkins PrimaryGroupID $NEXT_GID
@@ -78,23 +78,23 @@ java -Djava.awt.headless=true -jar slave.jar -jar-cache /Users/Shared/jenkins/ca
 </dict>
 </plist>
 
-13. sudo cp /Users/Shared/jenkins/slave/org.jenkins-ci.slave.jnlp.plist /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist
+13. sudo mv /Users/Shared/jenkins/slave/org.jenkins-ci.slave.jnlp.plist /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist
 
 14. sudo nano /etc/profile and add PATH=$PATH:/usr/local/bin
 
-15. curl http://jenkins.kodi.tv/jnlpJars/slave.jar -o /Users/Shared/jenkins/slave.jar
+15. curl http://jenkins.kodi.tv/jnlpJars/slave.jar -Lo /Users/Shared/jenkins/slave.jar
 
-16. install java JDK
+16. install java JDK 8
 
-17. Install xcode 10.2 to /Applications/Xcode10.2.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
+17. Install Xcode (get it from developer.apple.com -> Downloads) and start it once (accept license):
+- 10.2 to /Applications/Xcode10.2.app - for macOS and iOS builds
+- 11.3.1 to /Applications/Xcode11.3.1.app - for tvOS builds
 
-18. Install xcode 9.0 to /Applications/Xcode9.0.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
+18. install brew
 
-19. install brew
+19. install ccache via brew (brew install ccache)
 
-20. install ccache via brew (brew install ccache)
+20. edit /var/lib/jenkins/.ccache/ccache.conf and set max_size to 20.0G (this file might just appear after the first build done on the node)
 
-21. edit /var/lib/jenkins/.ccache/ccache.conf and set max_size to 15.0G (this file might just appear after the first build done on the node)
-
-22. load service:
+21. load service:
 sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist

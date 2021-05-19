@@ -109,6 +109,18 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
   return CLinuxRendererGL::Configure(picture, fps, orientation);
 }
 
+bool CRendererVAAPI::Flush(bool saveBuffers)
+{
+  for (auto &vaapiTexture : m_vaapiTextures)
+  {
+    if (m_isVAAPIBuffer)
+    {
+      vaapiTexture->Unmap();
+    }
+  }
+  return CLinuxRendererGL::Flush(saveBuffers);
+}
+
 bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);

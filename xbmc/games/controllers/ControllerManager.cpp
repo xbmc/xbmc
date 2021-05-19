@@ -25,8 +25,9 @@ ControllerPtr CControllerManager::GetController(const std::string& controllerId)
   if (!cachedController && m_failedControllers.find(controllerId) == m_failedControllers.end())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER, false))
-      cachedController = LoadController(std::move(addon));
+    if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER,
+                                               OnlyEnabled::NO))
+      cachedController = LoadController(addon);
   }
 
   return cachedController;
@@ -60,7 +61,7 @@ ControllerVector CControllerManager::GetControllers()
     {
       ControllerPtr& cachedController = m_cache[addon->ID()];
       if (!cachedController && m_failedControllers.find(addon->ID()) == m_failedControllers.end())
-        cachedController = LoadController(std::move(addon));
+        cachedController = LoadController(addon);
 
       if (cachedController)
         controllers.emplace_back(cachedController);
@@ -70,7 +71,7 @@ ControllerVector CControllerManager::GetControllers()
   return controllers;
 }
 
-ControllerPtr CControllerManager::LoadController(ADDON::AddonPtr addon)
+ControllerPtr CControllerManager::LoadController(const ADDON::AddonPtr& addon)
 {
   ControllerPtr controller = std::static_pointer_cast<CController>(addon);
   if (!controller->LoadLayout())

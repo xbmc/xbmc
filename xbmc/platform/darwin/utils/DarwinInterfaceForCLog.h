@@ -11,7 +11,6 @@
 #include "platform/posix/utils/PosixInterfaceForCLog.h"
 
 #include <memory>
-#include <mutex>
 
 #include <spdlog/formatter.h>
 #include <spdlog/sinks/sink.h>
@@ -20,7 +19,7 @@ class CDarwinInterfaceForCLog : public CPosixInterfaceForCLog, public spdlog::si
 {
 public:
   CDarwinInterfaceForCLog();
-  ~CDarwinInterfaceForCLog() = default;
+  ~CDarwinInterfaceForCLog() override = default;
 
   // specialization of CPosixInterfaceForCLog
   void AddSinks(
@@ -34,5 +33,4 @@ public:
 
 private:
   std::unique_ptr<spdlog::formatter> m_formatter;
-  std::mutex m_mutex;
 };

@@ -91,33 +91,6 @@ int CThread::GetPriority()
   return iReturn;
 }
 
-int64_t CThread::GetAbsoluteUsage()
-{
-#ifdef TARGET_WINDOWS_STORE
-  // GetThreadTimes is available since 10.0.15063 only
-  return 0;
-#else
-  CSingleLock lock(m_CriticalSection);
-
-  if (m_thread == nullptr)
-    return 0;
-
-  HANDLE tid = static_cast<HANDLE>(m_lwpId);
-
-  if (!tid)
-    return 0;
-
-  uint64_t time = 0;
-  FILETIME CreationTime, ExitTime, UserTime, KernelTime;
-  if( GetThreadTimes(tid, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
-  {
-    time = (((uint64_t)UserTime.dwHighDateTime) << 32) + ((uint64_t)UserTime.dwLowDateTime);
-    time += (((uint64_t)KernelTime.dwHighDateTime) << 32) + ((uint64_t)KernelTime.dwLowDateTime);
-  }
-  return time;
-#endif
-}
-
 void CThread::SetSignalHandlers()
 {
 }

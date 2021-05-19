@@ -66,11 +66,12 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
 }
 
 CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio)
-: m_bValid(true),
-  m_bRoot(true),
-  m_bActive(!bDeleted),
-  m_bRadio(bRadio),
-  m_path(StringUtils::Format("pvr://recordings/%s/%s/", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active"))
+  : m_bValid(true),
+    m_bRoot(true),
+    m_bActive(!bDeleted),
+    m_bRadio(bRadio),
+    m_path(StringUtils::Format(
+        "pvr://recordings/{}/{}/", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active"))
 {
 }
 
@@ -86,38 +87,39 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
 {
   std::string strDirectoryN(TrimSlashes(strDirectory));
   if (!strDirectoryN.empty())
-    strDirectoryN = StringUtils::Format("%s/", strDirectoryN.c_str());
+    strDirectoryN = StringUtils::Format("{}/", strDirectoryN);
 
   std::string strTitleN(strTitle);
   strTitleN = CURL::Encode(strTitleN);
 
   std::string strSeasonEpisodeN;
   if ((iSeason > -1 && iEpisode > -1 && (iSeason > 0 || iEpisode > 0)))
-    strSeasonEpisodeN = StringUtils::Format("s%02de%02d", iSeason, iEpisode);
+    strSeasonEpisodeN = StringUtils::Format("s{:02}e{:02}", iSeason, iEpisode);
   if (!strSeasonEpisodeN.empty())
-    strSeasonEpisodeN = StringUtils::Format(" %s", strSeasonEpisodeN.c_str());
+    strSeasonEpisodeN = StringUtils::Format(" {}", strSeasonEpisodeN);
 
-  std::string strYearN(iYear > 0 ? StringUtils::Format(" (%i)", iYear) : "");
+  std::string strYearN(iYear > 0 ? StringUtils::Format(" ({})", iYear) : "");
 
   std::string strSubtitleN;
   if (!strSubtitle.empty())
   {
-    strSubtitleN = StringUtils::Format(" %s", strSubtitle.c_str());
+    strSubtitleN = StringUtils::Format(" {}", strSubtitle);
     strSubtitleN = CURL::Encode(strSubtitleN);
   }
 
   std::string strChannelNameN;
   if (!strChannelName.empty())
   {
-    strChannelNameN = StringUtils::Format(" (%s)", strChannelName.c_str());
+    strChannelNameN = StringUtils::Format(" ({})", strChannelName);
     strChannelNameN = CURL::Encode(strChannelNameN);
   }
 
-  m_directoryPath = StringUtils::Format("%s%s%s%s%s",
-                                        strDirectoryN.c_str(), strTitleN.c_str(), strSeasonEpisodeN.c_str(),
-                                        strYearN.c_str(), strSubtitleN.c_str());
-  m_params = StringUtils::Format(", TV%s, %s, %s.pvr", strChannelNameN.c_str(), recordingTime.GetAsSaveString().c_str(), strId.c_str());
-  m_path = StringUtils::Format("pvr://recordings/%s/%s/%s%s", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active", m_directoryPath.c_str(), m_params.c_str());
+  m_directoryPath = StringUtils::Format("{}{}{}{}{}", strDirectoryN, strTitleN, strSeasonEpisodeN,
+                                        strYearN, strSubtitleN);
+  m_params = StringUtils::Format(", TV{}, {}, {}.pvr", strChannelNameN.c_str(),
+                                 recordingTime.GetAsSaveString().c_str(), strId.c_str());
+  m_path = StringUtils::Format("pvr://recordings/{}/{}/{}{}", bRadio ? "radio" : "tv",
+                               bDeleted ? "deleted" : "active", m_directoryPath, m_params);
 }
 
 std::string CPVRRecordingsPath::GetUnescapedDirectoryPath() const

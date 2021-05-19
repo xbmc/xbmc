@@ -27,6 +27,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
@@ -497,7 +498,7 @@ void CGUIDialogMusicInfo::SetDiscography(CMusicDatabase& database) const
   m_albumSongs->Clear();
   database.GetArtistDiscography(m_artist.idArtist, *m_albumSongs);
   CMusicThumbLoader loader;
-  for (auto item : *m_albumSongs)
+  for (const auto& item : *m_albumSongs)
   {
     // Load all the album art and related artist(s) art (could be other collaborating artists)
     loader.LoadItem(item.get());
@@ -576,7 +577,7 @@ void CGUIDialogMusicInfo::RefreshInfo()
     return;
 
   // Check if scanning
-  if (g_application.IsMusicScanning())
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{ 189 }, CVariant{ 14057 });
     return;
@@ -769,7 +770,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   for (unsigned int i = 0; i < remotethumbs.size(); ++i)
   {
     std::string strItemPath;
-    strItemPath = StringUtils::Format("thumb://Remote%i", i);
+    strItemPath = StringUtils::Format("thumb://Remote{}", i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetArt("thumb", remotethumbs[i]);
     item->SetArt("icon", "DefaultPicture.png");
@@ -933,14 +934,14 @@ void CGUIDialogMusicInfo::OnSetUserrating() const
 
 void CGUIDialogMusicInfo::ShowForAlbum(int idAlbum)
 {
-  std::string path = StringUtils::Format("musicdb://albums/%li", idAlbum);
+  std::string path = StringUtils::Format("musicdb://albums/{}", idAlbum);
   CFileItem item(path, true); // An album, but IsAlbum() not set as didn't use SetAlbum()
   ShowFor(&item);
 }
 
 void CGUIDialogMusicInfo::ShowForArtist(int idArtist)
 {
-  std::string path = StringUtils::Format("musicdb://artists/%li", idArtist);
+  std::string path = StringUtils::Format("musicdb://artists/{}", idArtist);
   CFileItem item(path, true);
   ShowFor(&item);
 }
@@ -979,12 +980,12 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
   }
   else if (pItem->HasProperty("artist_musicid"))
   {
-    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger(),
+    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("artist_musicid").asInteger32(),
                                                MediaTypeArtist);
   }
   else if (pItem->HasProperty("album_musicid"))
   {
-    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger(),
+    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty("album_musicid").asInteger32(),
                                                MediaTypeAlbum);
   }
   else

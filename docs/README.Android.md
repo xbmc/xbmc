@@ -73,12 +73,12 @@ Building Kodi for Android requires Android NDK revision 20. For the SDK just use
 ### 3.1. Extract Android SDK and NDK
 Create needed directories:
 ```
-mkdir -p $HOME/android-tools/android-sdk-linux
+mkdir -p $HOME/android-tools/android-sdk-linux/cmdline-tools
 ```
 
 Extract Android SDK:
 ```
-unzip $HOME/Downloads/sdk-tools-linux-4333796.zip -d $HOME/android-tools/android-sdk-linux
+unzip $HOME/Downloads/commandlinetools-linux-6200805_latest.zip -d $HOME/android-tools/android-sdk-linux/cmdline-tools
 ```
 
 **NOTE:** Since we're using the latest SDK available, filename can change over time. Adapt the `unzip` command accordingly.
@@ -91,11 +91,11 @@ unzip $HOME/Downloads/android-ndk-r20-linux-x86_64.zip -d $HOME/android-tools
 ### 3.2. Configure Android SDK
 Before Android SDK can be used, you need to accept the licenses and configure it:
 ```
-cd $HOME/android-tools/android-sdk-linux/tools/bin
-./sdkmanager --licenses
-./sdkmanager platform-tools
-./sdkmanager "platforms;android-28"
-./sdkmanager "build-tools;28.0.3"
+cd $HOME/android-tools/android-sdk-linux/cmdline-tools/tools/bin
+./sdkmanager --sdk_root=$(pwd)/../.. --licenses
+./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
+./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-28"
+./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;28.0.3"
 ```
 
 ### 3.3. Create a key to sign debug APKs
@@ -211,7 +211,7 @@ make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build
 
 Build Kodi:
 ```
-cd $HOME/kodi/build
+cd $HOME/kodi-build
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 

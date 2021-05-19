@@ -37,6 +37,7 @@
 #include "music/MusicLibraryQueue.h"
 #include "network/EventServer.h"
 #include "network/Network.h"
+#include "platform/Environment.h"
 #include "playlists/PlayListFactory.h"
 #include "threads/SystemClock.h"
 #include "utils/JobManager.h"
@@ -91,6 +92,9 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
+#include "windowing/WindowSystemFactory.h"
+
+#include <cmath>
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
@@ -106,9 +110,6 @@
 #include "network/ZeroconfBrowser.h"
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
-#endif
-#ifdef HAS_DBUS
-#include <dbus/dbus.h>
 #endif
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
@@ -176,9 +177,7 @@
 #endif
 
 #if defined(TARGET_ANDROID)
-#include <androidjni/Build.h>
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/activity/AndroidFeatures.h"
 #endif
 
 #ifdef TARGET_WINDOWS
@@ -317,45 +316,6 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
-//
-// Utility function used to copy files from the application bundle
-// over to the user data directory in Application Support/Kodi.
-//
-static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &file, const std::string &destname = "")
-{
-  std::string destPath;
-  if (destname == "")
-    destPath = URIUtils::AddFileToFolder(strPath, file);
-  else
-    destPath = URIUtils::AddFileToFolder(strPath, destname);
-
-  if (!CFile::Exists(destPath))
-  {
-    // need to copy it across
-    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
-    CFile::Copy(srcPath, destPath);
-  }
-}
-
-void CApplication::Preflight()
-{
-#ifdef HAS_DBUS
-  // call 'dbus_threads_init_default' before any other dbus calls in order to
-  // avoid race conditions with other threads using dbus connections
-  dbus_threads_init_default();
-#endif
-
-  // run any platform preflight scripts.
-#if defined(TARGET_DARWIN_OSX)
-  std::string install_path;
-
-  install_path = CUtil::GetHomePath();
-  setenv("KODI_HOME", install_path.c_str(), 0);
-  install_path += "/tools/darwin/runtime/preflight";
-  system(install_path.c_str());
-#endif
-}
-
 bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
@@ -364,6 +324,8 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bPlatformDirectories = params.m_platformDirectories;
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
+  m_windowing = params.m_windowing;
+  m_logTarget = params.m_logTarget;
 
   CServiceBroker::CreateLogging();
 
@@ -384,47 +346,18 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
   }
 
-  Preflight();
-
   // here we register all global classes for the CApplicationMessenger,
   // after that we can send messages to the corresponding modules
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CApplicationMessenger::GetInstance().RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
   CApplicationMessenger::GetInstance().SetGUIThread(m_threadID);
 
-  //! @todo - move to CPlatformXXX
-#ifdef TARGET_POSIX
-  tzset();   // Initialize timezone information variables
-#endif
-
-
-  //! @todo - move to CPlatformXXX
-  #if defined(TARGET_POSIX)
-    // set special://envhome
-    if (getenv("HOME"))
-    {
-      CSpecialProtocol::SetEnvHomePath(getenv("HOME"));
-    }
-    else
-    {
-      fprintf(stderr, "The HOME environment variable is not set!\n");
-      /* Cleanup. Leaving this out would lead to another crash */
-      m_ServiceManager->DeinitStageOne();
-      return false;
-    }
-  #endif
-
   // copy required files
-  CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+  CUtil::CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
 
-  //! @todo - move to CPlatformXXX
-  #ifdef TARGET_DARWIN_IOS
-    CopyUserDataIfNeeded("special://masterprofile/", "iOS/sources.xml", "sources.xml");
-  #endif
-
-    CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://logpath"));
+  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://logpath"));
 
 #ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
   //!       must create these here. Ideally this should be using special://home/ and
@@ -438,114 +371,9 @@ bool CApplication::Create(const CAppParamParser &params)
   // Init our DllLoaders emu env
   init_emu_environ();
 
-  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
-  CLog::Log(LOGINFO, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(),
-            CSysInfo::GetVersion().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
-            g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
-
-  std::string buildType;
-#if defined(_DEBUG)
-  buildType = "Debug";
-#elif defined(NDEBUG)
-  buildType = "Release";
-#else
-  buildType = "Unknown";
-#endif
-
-  CLog::Log(LOGINFO, "Using %s %s x%d", buildType.c_str(), CSysInfo::GetAppName().c_str(),
-            g_sysinfo.GetXbmcBitness());
-  CLog::Log(
-      LOGINFO, "%s compiled %s by %s for %s %s %d-bit %s (%s)", CSysInfo::GetAppName().c_str(),
-      CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(),
-      g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(),
-      g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
-      g_sysinfo.GetBuildTargetPlatformVersion().c_str());
-
-  std::string deviceModel(g_sysinfo.GetModelName());
-  if (!g_sysinfo.GetManufacturerName().empty())
-    deviceModel = g_sysinfo.GetManufacturerName() + " " + (deviceModel.empty() ? std::string("device") : deviceModel);
-  if (!deviceModel.empty())
-    CLog::Log(LOGINFO, "Running on %s with %s, kernel: %s %s %d-bit version %s",
-              deviceModel.c_str(), g_sysinfo.GetOsPrettyNameWithVersion().c_str(),
-              g_sysinfo.GetKernelName().c_str(), g_sysinfo.GetKernelCpuFamily().c_str(),
-              g_sysinfo.GetKernelBitness(), g_sysinfo.GetKernelVersionFull().c_str());
-  else
-    CLog::Log(LOGINFO, "Running on %s, kernel: %s %s %d-bit version %s",
-              g_sysinfo.GetOsPrettyNameWithVersion().c_str(), g_sysinfo.GetKernelName().c_str(),
-              g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(),
-              g_sysinfo.GetKernelVersionFull().c_str());
-
-  CLog::Log(LOGINFO, "FFmpeg version/source: %s", av_version_info());
-
-  std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
-  if (!cpuModel.empty())
-    CLog::Log(LOGINFO, "Host CPU: %s, %d core%s available", cpuModel.c_str(),
-              CServiceBroker::GetCPUInfo()->GetCPUCount(),
-              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
-  else
-    CLog::Log(LOGINFO, "%d CPU core%s available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
-              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
-
-    //! @todo - move to CPlatformXXX ???
-#if defined(TARGET_WINDOWS)
-  CLog::Log(LOGINFO, "System has {:.1f} GB of RAM installed",
-            CWIN32Util::GetSystemMemorySize() / static_cast<double>(MB));
-  CLog::Log(LOGINFO, "%s", CWIN32Util::GetResInfoString().c_str());
-  CLog::Log(LOGINFO, "Running with %s rights",
-            (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator"
-                                                                    : "restricted");
-  CLog::Log(LOGINFO, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
-  HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
-  if (hdrStatus == HDR_STATUS::HDR_UNSUPPORTED)
-    CLog::Log(LOGINFO, "Display is not HDR capable or cannot be detected");
-  else
-    CLog::Log(LOGINFO, "Display HDR capable is detected and Windows HDR switch is %s",
-              (hdrStatus == HDR_STATUS::HDR_ON) ? "ON" : "OFF");
-#endif
-#if defined(TARGET_ANDROID)
-  CLog::Log(
-      LOGINFO,
-      "Product: %s, Device: %s, Board: %s - Manufacturer: %s, Brand: %s, Model: %s, Hardware: %s",
-      CJNIBuild::PRODUCT.c_str(), CJNIBuild::DEVICE.c_str(), CJNIBuild::BOARD.c_str(),
-      CJNIBuild::MANUFACTURER.c_str(), CJNIBuild::BRAND.c_str(), CJNIBuild::MODEL.c_str(),
-      CJNIBuild::HARDWARE.c_str());
-  std::string extstorage;
-  bool extready = CXBMCApp::GetExternalStorage(extstorage);
-  CLog::Log(LOGINFO, "External storage path = %s; status = %s", extstorage.c_str(),
-            extready ? "ok" : "nok");
-#endif
-
-#if defined(__arm__) || defined(__aarch64__)
-  if (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON)
-    CLog::Log(LOGINFO, "ARM Features: Neon enabled");
-  else
-    CLog::Log(LOGINFO, "ARM Features: Neon disabled");
-#endif
-  CSpecialProtocol::LogPaths();
-
-  std::string executable = CUtil::ResolveExecutablePath();
-  CLog::Log(LOGINFO, "The executable running is: %s", executable.c_str());
-  std::string hostname("[unknown]");
-  m_ServiceManager->GetNetwork().GetHostName(hostname);
-  CLog::Log(LOGINFO, "Local hostname: %s", hostname.c_str());
-  std::string lowerAppName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGINFO, "Log File is located: %s.log",
-            CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName).c_str());
-  CRegExp::LogCheckUtf8Support();
-  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
+  PrintStartupLog();
 
   std::string strExecutablePath = CUtil::GetHomePath();
-
-  // for python scripts that check the OS
-  //! @todo - move to CPlatformXXX
-#if defined(TARGET_DARWIN)
-  setenv("OS","OS X",true);
-#elif defined(TARGET_POSIX)
-  setenv("OS","Linux",true);
-#elif defined(TARGET_WINDOWS)
-  CEnvironment::setenv("OS", "win32");
-#endif
 
   // initialize network protocols
   avformat_network_init();
@@ -568,17 +396,9 @@ bool CApplication::Create(const CAppParamParser &params)
 
   update_emu_environ();//apply the GUI settings
 
-  //! @todo - move to CPlatformXXX
-#ifdef TARGET_WINDOWS
-  CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
-#endif // TARGET_WINDOWS
-
   // application inbound service
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
-
-  m_pWinSystem = CWinSystemBase::CreateWinSystem();
-  CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
   if (!m_ServiceManager->InitStageTwo(params, m_pSettingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
   {
@@ -606,15 +426,26 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
   }
 
-  //! @todo - move to CPlatformXXX
-#if defined(TARGET_DARWIN_OSX)
-  // Configure and possible manually start the helper.
-  XBMCHelper::GetInstance().Configure();
-#endif
+  // set user defined CA trust bundle
+  std::string caCert =
+      CSpecialProtocol::TranslatePath(m_pSettingsComponent->GetAdvancedSettings()->m_caTrustFile);
+  if (!caCert.empty())
+  {
+    if (XFILE::CFile::Exists(caCert))
+    {
+      CEnvironment::setenv("SSL_CERT_FILE", caCert.c_str(), 1);
+      CLog::Log(LOGDEBUG, "CApplication::Create - SSL_CERT_FILE: {}", caCert);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CApplication::Create - Error reading SSL_CERT_FILE: {} -> ignored",
+                caCert);
+    }
+  }
 
   CUtil::InitRandomSeed();
 
-  m_lastRenderTime = XbmcThreads::SystemClockMillis();
+  m_lastRenderTime = std::chrono::steady_clock::now();
   return true;
 }
 
@@ -624,9 +455,46 @@ bool CApplication::CreateGUI()
 
   m_renderGUI = true;
 
-  if (!CServiceBroker::GetWinSystem()->InitWindowSystem())
+  auto windowSystems = KODI::WINDOWING::CWindowSystemFactory::GetWindowSystems();
+
+  if (!m_windowing.empty())
+    windowSystems = {m_windowing};
+
+  for (auto& windowSystem : windowSystems)
   {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
+    CLog::Log(LOGDEBUG, "CApplication::{} - trying to init {} windowing system", __FUNCTION__,
+              windowSystem);
+    m_pWinSystem = KODI::WINDOWING::CWindowSystemFactory::CreateWindowSystem(windowSystem);
+
+    if (!m_pWinSystem)
+      continue;
+
+    if (!m_windowing.empty() && m_windowing != windowSystem)
+      continue;
+
+    CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
+
+    if (!m_pWinSystem->InitWindowSystem())
+    {
+      CLog::Log(LOGDEBUG, "CApplication::{} - unable to init {} windowing system", __FUNCTION__,
+                windowSystem);
+      m_pWinSystem->DestroyWindowSystem();
+      m_pWinSystem.reset();
+      CServiceBroker::UnregisterWinSystem();
+      continue;
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "CApplication::{} - using the {} windowing system", __FUNCTION__,
+                windowSystem);
+      break;
+    }
+  }
+
+  if (!m_pWinSystem)
+  {
+    CLog::Log(LOGFATAL, "CApplication::{} - unable to init windowing system", __FUNCTION__);
+    CServiceBroker::UnregisterWinSystem();
     return false;
   }
 
@@ -644,7 +512,7 @@ bool CApplication::CreateGUI()
   }
 
   // update the window resolution
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
   CServiceBroker::GetWinSystem()->SetWindowResolution(settings->GetInt(CSettings::SETTING_WINDOW_WIDTH), settings->GetInt(CSettings::SETTING_WINDOW_HEIGHT));
 
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen && CDisplaySettings::GetInstance().GetCurrentResolution() == RES_WINDOW)
@@ -740,9 +608,9 @@ bool CApplication::Initialize()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   profileManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
-    StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
-    StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
-    "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
+      StringUtils::Format(g_localizeStrings.Get(177), g_sysinfo.GetAppName()),
+      StringUtils::Format(g_localizeStrings.Get(178), g_sysinfo.GetAppName()),
+      "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
   m_ServiceManager->GetNetwork().WaitForNet();
 
@@ -768,8 +636,6 @@ bool CApplication::Initialize()
       ++iDots;
   }
   CServiceBroker::GetRenderSystem()->ShowSplash("");
-
-  StartServices();
 
   // GUI depends on seek handler
   m_appPlayer.GetSeekHandler().Configure();
@@ -826,7 +692,14 @@ bool CApplication::Initialize()
     CServiceBroker::GetRenderSystem()->ShowSplash("");
     m_confirmSkinChange = true;
 
-    std::string defaultSkin = std::static_pointer_cast<const CSettingString>(settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
+    auto setting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    if (!setting)
+    {
+      CLog::Log(LOGFATAL, "Failed to load setting for: {}", CSettings::SETTING_LOOKANDFEEL_SKIN);
+      return false;
+    }
+
+    std::string defaultSkin = std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
     if (!LoadSkin(settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
       CLog::Log(LOGERROR, "Failed to load skin '%s'", settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
@@ -918,76 +791,7 @@ bool CApplication::Initialize()
   return true;
 }
 
-bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* = false*/)
-{
-  bool ret = false;
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  switch(eServer)
-  {
-    case ES_WEBSERVER:
-      // the callback will take care of starting/stopping webserver
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_WEBSERVER, bStart);
-      break;
-
-    case ES_AIRPLAYSERVER:
-      // the callback will take care of starting/stopping airplay
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_AIRPLAY, bStart);
-      break;
-
-    case ES_JSONRPCSERVER:
-      // the callback will take care of starting/stopping jsonrpc server
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_ESENABLED, bStart);
-      break;
-
-    case ES_UPNPSERVER:
-      // the callback will take care of starting/stopping upnp server
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_UPNPSERVER, bStart);
-      break;
-
-    case ES_UPNPRENDERER:
-      // the callback will take care of starting/stopping upnp renderer
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_UPNPRENDERER, bStart);
-      break;
-
-    case ES_EVENTSERVER:
-      // the callback will take care of starting/stopping event server
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_ESENABLED, bStart);
-      break;
-
-    case ES_ZEROCONF:
-      // the callback will take care of starting/stopping zeroconf
-      ret = settings->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, bStart);
-      break;
-
-    default:
-      ret = false;
-      break;
-  }
-  settings->Save();
-
-  return ret;
-}
-
-void CApplication::StartServices()
-{
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  // Start Thread for DVD Mediatype detection
-  CLog::Log(LOGINFO, "start dvd mediatype detection");
-  m_DetectDVDType.Create(false);
-#endif
-}
-
-void CApplication::StopServices()
-{
-  m_ServiceManager->GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 0);
-
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-  CLog::Log(LOGINFO, "stop dvd detect media");
-  m_DetectDVDType.StopThread();
-#endif
-}
-
-void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -1085,7 +889,7 @@ void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     m_replayGainSettings.bAvoidClipping = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
-void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -1098,13 +902,19 @@ void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
   else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
+    if (CServiceBroker::GetAddonMgr().GetAddon(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                CSettings::SETTING_SCREENSAVER_MODE),
+            addon, ADDON_SCREENSAVER, OnlyEnabled::YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon, ADDON_AUDIOENCODER))
+    if (CServiceBroker::GetAddonMgr().GetAddon(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                CSettings::SETTING_AUDIOCDS_ENCODER),
+            addon, ADDON_AUDIOENCODER, OnlyEnabled::YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
@@ -1123,7 +933,9 @@ void CApplication::OnSettingAction(std::shared_ptr<const CSetting> setting)
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_PICTURES);
 }
 
-bool CApplication::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CApplication::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                                   const char* oldSettingId,
+                                   const TiXmlNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;
@@ -1186,11 +998,18 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   else
   {
     // skin failed to load - we revert to the default only if we didn't fail loading the default
-    std::string defaultSkin = std::static_pointer_cast<CSettingString>(settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
+    auto setting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    if (!setting)
+    {
+      CLog::Log(LOGFATAL, "Failed to load setting for: {}", CSettings::SETTING_LOOKANDFEEL_SKIN);
+      return;
+    }
+
+    std::string defaultSkin = std::static_pointer_cast<CSettingString>(setting)->GetDefault();
     if (newSkin != defaultSkin)
     {
       m_confirmSkinChange = false;
-      settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN)->Reset();
+      setting->Reset();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
     }
   }
@@ -1234,7 +1053,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   SkinPtr skin;
   {
     AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN, OnlyEnabled::YES))
       return false;
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
@@ -1570,7 +1389,7 @@ void CApplication::Render()
     // execute post rendering actions (finalize window closing)
     CServiceBroker::GetGUI()->GetWindowManager().AfterRender();
 
-    m_lastRenderTime = XbmcThreads::SystemClockMillis();
+    m_lastRenderTime = std::chrono::steady_clock::now();
   }
 
   // render video layer
@@ -1600,10 +1419,14 @@ bool CApplication::OnAction(const CAction &action)
   // special case for switching between GUI & fullscreen mode.
   if (action.GetID() == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
-    if (SwitchToFullScreen())
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
     {
-      m_navigationTimer.StartZero();
-      return true;
+      if (gui->GetWindowManager().SwitchToFullScreen())
+      {
+        m_navigationTimer.StartZero();
+        return true;
+      }
     }
   }
 
@@ -1677,15 +1500,48 @@ bool CApplication::OnAction(const CAction &action)
 
     if (hdrStatus == HDR_STATUS::HDR_OFF)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::eMessageType::Info, "HDR is OFF",
-                                            "Display HDR is Off", TOAST_DISPLAY_TIME, true,
-                                            TOAST_DISPLAY_TIME);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34220),
+                                            g_localizeStrings.Get(34221));
     }
     else if (hdrStatus == HDR_STATUS::HDR_ON)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::eMessageType::Info, "HDR is ON",
-                                            "Display HDR is On", TOAST_DISPLAY_TIME, true,
-                                            TOAST_DISPLAY_TIME);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34220),
+                                            g_localizeStrings.Get(34222));
+    }
+    return true;
+  }
+  // Tone Mapping : switch to next tone map method
+  if (action.GetID() == ACTION_CYCLE_TONEMAP_METHOD)
+  {
+    // Only enables tone mapping switch if display is not HDR capable or HDR is not enabled
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
+        CServiceBroker::GetWinSystem()->IsHDRDisplay())
+      return true;
+
+    if (m_appPlayer.IsPlayingVideo())
+    {
+      CVideoSettings vs = m_appPlayer.GetVideoSettings();
+      vs.m_ToneMapMethod++;
+      if (vs.m_ToneMapMethod >= VS_TONEMAPMETHOD_MAX)
+        vs.m_ToneMapMethod = VS_TONEMAPMETHOD_OFF + 1;
+      m_appPlayer.SetVideoSettings(vs);
+
+      int code = 0;
+      switch (vs.m_ToneMapMethod)
+      {
+        case VS_TONEMAPMETHOD_REINHARD:
+          code = 36555;
+          break;
+        case VS_TONEMAPMETHOD_ACES:
+          code = 36557;
+          break;
+        case VS_TONEMAPMETHOD_HABLE:
+          code = 36558;
+          break;
+      }
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34224),
+                                            g_localizeStrings.Get(code), 1000, false, 500);
     }
     return true;
   }
@@ -1964,7 +1820,7 @@ bool CApplication::OnAction(const CAction &action)
       if (!player.empty())
       {
         item.m_lStartOffset = CUtil::ConvertSecsToMilliSecs(GetTime());
-        PlayFile(std::move(item), player, true);
+        PlayFile(item, player, true);
       }
     }
     else
@@ -2158,7 +2014,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_NETWORKMESSAGE:
-    m_ServiceManager->GetNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
+    m_ServiceManager->GetNetwork().NetworkMessage(static_cast<CNetworkBase::EMESSAGE>(pMsg->param1),
+                                                  pMsg->param2);
     break;
 
   case TMSG_SETLANGUAGE:
@@ -2167,9 +2024,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
 
   case TMSG_SWITCHTOFULLSCREEN:
-    SwitchToFullScreen(true);
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+      gui->GetWindowManager().SwitchToFullScreen(true);
     break;
-
+  }
   case TMSG_VIDEORESIZE:
   {
     XBMC_Event newEvent;
@@ -2192,7 +2052,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_MINIMIZE:
-    Minimize();
+    CServiceBroker::GetWinSystem()->Minimize();
     break;
 
   case TMSG_EXECUTE_OS:
@@ -2396,8 +2256,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     float frameTime = m_frameTime.GetElapsedSeconds();
     m_frameTime.StartZero();
     // never set a frametime less than 2 fps to avoid problems when debugging and on breaks
-    if( frameTime > 0.5 )
-      frameTime = 0.5;
+    if (frameTime > 0.5f)
+      frameTime = 0.5f;
 
     if (processGUI && m_renderGUI)
     {
@@ -2455,8 +2315,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback() && m_appPlayer.IsRenderingVideoLayer())
       fps = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
 
-    unsigned int now = XbmcThreads::SystemClockMillis();
-    unsigned int frameTime = now - m_lastRenderTime;
+    auto now = std::chrono::steady_clock::now();
+
+    auto frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastRenderTime).count();
     if (fps > 0 && frameTime * fps < 1000)
       m_skipGuiRender = true;
     */
@@ -2482,11 +2343,18 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 }
 
 
+void CApplication::ResetCurrentItem()
+{
+  m_itemCurrentFile->Reset();
+  if (m_pGUI)
+    m_pGUI->GetInfoManager().ResetCurrentItem();
+}
 
 bool CApplication::Cleanup()
 {
   try
   {
+    ResetCurrentItem();
     StopPlaying();
 
     if (m_ServiceManager)
@@ -2658,7 +2526,7 @@ void CApplication::Stop(int exitCode)
 
     CApplicationMessenger::GetInstance().Cleanup();
 
-    StopServices();
+    m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
 
 #ifdef HAS_ZEROCONF
     if(CZeroconfBrowser::IsInstantiated())
@@ -2787,7 +2655,8 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
   if (path.GetProtocol() == "game")
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL,
+                                               OnlyEnabled::YES))
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false);
@@ -2904,7 +2773,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
       std::string path = item.GetPath();
       std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.find("removable://") == 0)
+      if (videoInfoTagPath.find("removable://") == 0 || item.IsVideoDb())
         path = videoInfoTagPath;
       dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
 
@@ -2916,7 +2785,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       }
       else if (item.m_lStartOffset == STARTOFFSET_RESUME)
       {
-        options.starttime = 0.0f;
+        options.starttime = 0.0;
         if (item.IsResumePointSet())
         {
           options.starttime = item.GetCurrentResumeTime();
@@ -2938,7 +2807,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
           }
         }
 
-        if (options.starttime == 0.0f && item.HasVideoInfoTag())
+        if (options.starttime == 0.0 && item.HasVideoInfoTag())
         {
           // No resume point is set, but check if this item is part of a multi-episode file
           const CVideoInfoTag *tag = item.GetVideoInfoTag();
@@ -2970,7 +2839,8 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   }
 
   // a disc image might be Blu-Ray disc
-  if (!(options.startpercent > 0.0f || options.starttime > 0.0f) && (item.IsBDFile() || item.IsDiscImage()))
+  if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
+      (item.IsBDFile() || item.IsDiscImage()))
   {
     //check if we must show the simplified bd menu
     if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
@@ -3129,7 +2999,14 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   CLog::LogF(LOGDEBUG,"CApplication::OnPlayBackStarted");
 
   // check if VideoPlayer should set file item stream details from its current streams
-  if (file.GetProperty("get_stream_details_from_player").asBoolean())
+  if (file.GetProperty("get_stream_details_from_player").asBoolean()
+      || ((!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails())
+      && (file.IsDiscImage()
+      || file.IsDVDFile()
+      || file.IsBDFile()
+      || file.IsBluray()
+      || file.IsDVD()
+      || file.IsOnDVD())))
     m_appPlayer.SetUpdateStreamDetails();
 
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
@@ -3166,7 +3043,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   float percent = 0.0f;
 
   // Make sure we don't reset existing bookmark etc. on eg. player start failure
-  if (bookmark.timeInSeconds == 0.0f)
+  if (bookmark.timeInSeconds == 0.0)
     return;
 
   if (m_stackHelper.GetRegisteredStack(fileItem) != nullptr && m_stackHelper.GetRegisteredStackTotalTimeMs(fileItem) > 0)
@@ -3194,9 +3071,10 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
 
   if (advancedSettings->m_videoIgnorePercentAtEnd > 0 &&
       bookmark.totalTimeInSeconds - bookmark.timeInSeconds <
-        0.01f * advancedSettings->m_videoIgnorePercentAtEnd * bookmark.totalTimeInSeconds)
+          0.01 * static_cast<double>(advancedSettings->m_videoIgnorePercentAtEnd) *
+              bookmark.totalTimeInSeconds)
   {
-    resumeBookmark.timeInSeconds = -1.0f;
+    resumeBookmark.timeInSeconds = -1.0;
   }
   else if (bookmark.timeInSeconds > advancedSettings->m_videoIgnoreSecondsAtStart)
   {
@@ -3209,7 +3087,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
   }
   else
   {
-    resumeBookmark.timeInSeconds = 0.0f;
+    resumeBookmark.timeInSeconds = 0.0;
   }
 
   if (CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfile().canWriteDatabases())
@@ -3750,7 +3628,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     return;
   }
-  else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
+  else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver,
+                                                  ADDON_SCREENSAVER, OnlyEnabled::YES))
   {
     std::string libPath = m_pythonScreenSaver->LibPath();
     if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
@@ -3855,13 +3734,17 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
           // migration (incompatible addons) dialog
           auto addonList = StringUtils::Join(disabledAddonNames, ", ");
-          auto msg = StringUtils::Format(g_localizeStrings.Get(24149).c_str(), addonList.c_str());
+          auto msg = StringUtils::Format(g_localizeStrings.Get(24149), addonList);
           HELPERS::ShowOKDialogText(CVariant{24148}, CVariant{std::move(msg)});
           m_incompatibleAddons.clear();
         }
 
         // show info dialog about moved configuration files if needed
         ShowAppMigrationMessage();
+
+        // offer enabling addons at kodi startup that are disabled due to
+        // e.g. os package manager installation on linux
+        ConfigureAndEnableAddons();
 
         m_bInitializing = false;
 
@@ -3993,8 +3876,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STOPPED:
     m_playerEvent.Set();
-    m_itemCurrentFile->Reset();
-    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
+    ResetCurrentItem();
     PlaybackCleanup();
 #ifdef HAS_PYTHON
     CServiceBroker::GetXBPython().OnPlayBackStopped();
@@ -4008,8 +3890,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       PlayFile(m_stackHelper.SetNextStackPartCurrentFileItem(), "", true);
       return true;
     }
-    m_itemCurrentFile->Reset();
-    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
+    ResetCurrentItem();
     if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
       m_appPlayer.ClosePlayer();
 
@@ -4021,8 +3902,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     return true;
 
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    m_itemCurrentFile->Reset();
-    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
+    ResetCurrentItem();
     if (m_appPlayer.IsPlaying())
       StopPlaying();
     PlaybackCleanup();
@@ -4057,7 +3937,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_FULLSCREEN:
     { // Switch to fullscreen, if we can
-      SwitchToFullScreen();
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetWindowManager().SwitchToFullScreen();
+
       return true;
     }
     break;
@@ -4140,6 +4023,71 @@ void CApplication::ShowAppMigrationMessage()
   }
 }
 
+void CApplication::ConfigureAndEnableAddons()
+{
+  std::vector<std::shared_ptr<IAddon>>
+      disabledAddons; /*!< Installed addons, but not auto-enabled via manifest */
+
+  auto& addonMgr = CServiceBroker::GetAddonMgr();
+
+  if (addonMgr.GetDisabledAddons(disabledAddons) && !disabledAddons.empty())
+  {
+    // this applies to certain platforms only:
+    // look at disabled addons with disabledReason == NONE, usually those are installed via package managers or manually.
+    // also try to enable add-ons with disabledReason == INCOMPATIBLE at startup for all platforms.
+
+    bool isConfigureAddonsAtStartupEnabled =
+        m_ServiceManager->GetPlatform().IsConfigureAddonsAtStartupEnabled();
+
+    for (const auto& addon : disabledAddons)
+    {
+      if (addonMgr.IsAddonDisabledWithReason(addon->ID(), ADDON::AddonDisabledReason::INCOMPATIBLE))
+      {
+        auto addonInfo = addonMgr.GetAddonInfo(addon->ID());
+        if (addonInfo && addonMgr.IsCompatible(addonInfo))
+        {
+          CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",
+                    __FUNCTION__, addon->ID());
+          addonMgr.EnableAddon(addon->ID());
+        }
+        continue;
+      }
+
+      if (addonMgr.IsAddonDisabledExcept(addon->ID(), ADDON::AddonDisabledReason::NONE) ||
+          CAddonType::IsDependencyType(addon->MainType()))
+      {
+        continue;
+      }
+
+      if (isConfigureAddonsAtStartupEnabled)
+      {
+        if (HELPERS::ShowYesNoDialogLines(CVariant{24039}, // Disabled add-ons
+                                          CVariant{24059}, // Would you like to enable this add-on?
+                                          CVariant{addon->Name()}) == DialogResponse::YES)
+        {
+          if (addon->HasSettings())
+          {
+            if (CGUIDialogAddonSettings::ShowForAddon(addon))
+            {
+              // only enable if settings dialog hasn't been cancelled
+              addonMgr.EnableAddon(addon->ID());
+            }
+          }
+          else
+          {
+            addonMgr.EnableAddon(addon->ID());
+          }
+        }
+        else
+        {
+          // user chose not to configure/enable so we're not asking anymore
+          addonMgr.UpdateDisabledReason(addon->ID(), ADDON::AddonDisabledReason::USER);
+        }
+      }
+    }
+  }
+}
+
 void CApplication::Process()
 {
   // dispatch the messages generated by python or other threads to the current window
@@ -4172,9 +4120,6 @@ void CApplication::Process()
     m_slowTimer.Reset();
     ProcessSlow();
   }
-#if !defined(TARGET_DARWIN)
-  CServiceBroker::GetCPUInfo()->GetUsedPercentage(); // must call it to recalculate pct values
-#endif
 }
 
 // We get called every 500ms
@@ -4466,7 +4411,7 @@ float CApplication::GetVolumeRatio() const
 void CApplication::VolumeChanged()
 {
   CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = GetVolumePercent();
+  data["volume"] = static_cast<int>(std::lroundf(GetVolumePercent()));
   data["muted"] = m_muted;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Application, "OnVolumeChanged",
                                                      data);
@@ -4499,9 +4444,9 @@ double CApplication::GetTotalTime() const
   if (m_appPlayer.IsPlaying())
   {
     if (m_stackHelper.IsPlayingRegularStack())
-      rc = m_stackHelper.GetStackTotalTimeMs() * 0.001f;
+      rc = m_stackHelper.GetStackTotalTimeMs() * 0.001;
     else
-      rc = static_cast<double>(m_appPlayer.GetTotalTime() * 0.001f);
+      rc = m_appPlayer.GetTotalTime() * 0.001;
   }
 
   return rc;
@@ -4534,10 +4479,10 @@ double CApplication::GetTime() const
     if (m_stackHelper.IsPlayingRegularStack())
     {
       uint64_t startOfCurrentFile = m_stackHelper.GetCurrentStackPartStartTimeMs();
-      rc = (startOfCurrentFile + m_appPlayer.GetTime()) * 0.001f;
+      rc = (startOfCurrentFile + m_appPlayer.GetTime()) * 0.001;
     }
     else
-      rc = static_cast<double>(m_appPlayer.GetTime() * 0.001f);
+      rc = m_appPlayer.GetTime() * 0.001;
   }
 
   return rc;
@@ -4594,7 +4539,7 @@ float CApplication::GetPercentage() const
     if (m_stackHelper.IsPlayingRegularStack())
     {
       double totalTime = GetTotalTime();
-      if (totalTime > 0.0f)
+      if (totalTime > 0.0)
         return (float)(GetTime() / totalTime * 100);
     }
     else
@@ -4623,81 +4568,17 @@ float CApplication::GetCachePercentage() const
 
 void CApplication::SeekPercentage(float percent)
 {
-  if (m_appPlayer.IsPlaying() && (percent >= 0.0))
+  if (m_appPlayer.IsPlaying() && (percent >= 0.0f))
   {
     if (!m_appPlayer.CanSeek())
       return;
     if (m_stackHelper.IsPlayingRegularStack())
-      SeekTime(percent * 0.01 * GetTotalTime());
+      SeekTime(static_cast<double>(percent) * 0.01 * GetTotalTime());
     else
       m_appPlayer.SeekPercentage(percent);
   }
 }
 
-// SwitchToFullScreen() returns true if a switch is made, else returns false
-bool CApplication::SwitchToFullScreen(bool force /* = false */)
-{
-  // don't switch if the slideshow is active
-  if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SLIDESHOW))
-    return false;
-
-  // if playing from the video info window, close it first!
-  if (CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(WINDOW_DIALOG_VIDEO_INFO))
-  {
-    CGUIDialogVideoInfo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
-    if (pDialog) pDialog->Close(true);
-  }
-
-  // if playing from the album info window, close it first!
-  if (CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(WINDOW_DIALOG_MUSIC_INFO))
-  {
-    CGUIDialogVideoInfo* pDialog = CServiceBroker::GetGUI()->
-        GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_MUSIC_INFO);
-    if (pDialog)
-      pDialog->Close(true);
-  }
-
-  // if playing from the song info window, close it first!
-  if (CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(WINDOW_DIALOG_SONG_INFO))
-  {
-    CGUIDialogVideoInfo* pDialog = CServiceBroker::GetGUI()->
-        GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_SONG_INFO);
-    if (pDialog)
-      pDialog->Close(true);
-  }
-
-  const int activeWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  int windowID = WINDOW_INVALID;
-
-  // See if we're playing a game
-  if (activeWindowID != WINDOW_FULLSCREEN_GAME && m_appPlayer.IsPlayingGame())
-    windowID = WINDOW_FULLSCREEN_GAME;
-
-  // See if we're playing a video
-  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO && m_appPlayer.IsPlayingVideo())
-    windowID = WINDOW_FULLSCREEN_VIDEO;
-
-  // See if we're playing an audio song
-  if (activeWindowID != WINDOW_VISUALISATION && m_appPlayer.IsPlayingAudio())
-    windowID = WINDOW_VISUALISATION;
-
-  if (windowID != WINDOW_INVALID && (force || windowID != activeWindowID))
-  {
-    if (force)
-      CServiceBroker::GetGUI()->GetWindowManager().ForceActivateWindow(windowID);
-    else
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowID);
-
-    return true;
-  }
-
-  return false;
-}
-
-void CApplication::Minimize()
-{
-  CServiceBroker::GetWinSystem()->Minimize();
-}
 
 std::string CApplication::GetCurrentPlayer()
 {
@@ -4720,13 +4601,16 @@ void CApplication::UpdateLibraries()
   if (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGINFO, "Starting video library startup scan");
-    StartVideoScan("", !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
+    CVideoLibraryQueue::GetInstance().ScanLibrary(
+        "", false, !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE));
   }
 
   if (settings->GetBool(CSettings::SETTING_MUSICLIBRARY_UPDATEONSTARTUP))
   {
     CLog::LogF(LOGINFO, "Starting music library startup scan");
-    StartMusicScan("", !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
+    CMusicLibraryQueue::GetInstance().ScanLibrary(
+        "", MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL,
+        !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
   }
 }
 
@@ -4740,122 +4624,6 @@ void CApplication::UpdateCurrentPlayArt()
   loader.LoadItem(m_itemCurrentFile.get());
   // Mirror changes to GUI item
   CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
-}
-
-bool CApplication::IsVideoScanning() const
-{
-  return CVideoLibraryQueue::GetInstance().IsScanningLibrary();
-}
-
-bool CApplication::IsMusicScanning() const
-{
-  return CMusicLibraryQueue::GetInstance().IsScanningLibrary();
-}
-
-void CApplication::StopVideoScan()
-{
-  CVideoLibraryQueue::GetInstance().StopLibraryScanning();
-}
-
-void CApplication::StopMusicScan()
-{
-  CMusicLibraryQueue::GetInstance().StopLibraryScanning();
-}
-
-void CApplication::StartVideoCleanup(bool userInitiated /* = true */,
-                                     const std::string& content /* = "" */,
-                                     const std::string& strDirectory /* = "" */)
-{
-  if (userInitiated && CVideoLibraryQueue::GetInstance().IsRunning())
-    return;
-
-  std::set<int> paths;
-  if (!content.empty() || !strDirectory.empty())
-  {
-    CVideoDatabase db;
-    std::set<std::string> contentPaths;
-    if (db.Open())
-    {
-      if (!strDirectory.empty())
-        contentPaths.insert(strDirectory);
-      else
-        db.GetPaths(contentPaths);
-      for (const std::string& path : contentPaths)
-      {
-        if (db.GetContentForPath(path) == content)
-        {
-          paths.insert(db.GetPathId(path));
-          std::vector<std::pair<int, std::string>> sub;
-          if (db.GetSubPaths(path, sub))
-          {
-            for (const auto& it : sub)
-              paths.insert(it.first);
-          }
-        }
-      }
-    }
-    if (paths.empty())
-      return;
-  }
-  if (userInitiated)
-    CVideoLibraryQueue::GetInstance().CleanLibraryModal(paths);
-  else
-    CVideoLibraryQueue::GetInstance().CleanLibrary(paths, true);
-}
-
-void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
-{
-  CVideoLibraryQueue::GetInstance().ScanLibrary(strDirectory, scanAll, userInitiated);
-}
-
-void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
-{
-  if (userInitiated && CMusicLibraryQueue::GetInstance().IsRunning())
-    return;
-
-  if (userInitiated)
-    /*
-     CMusicLibraryQueue::GetInstance().CleanLibraryModal();
-     As cleaning is non-granular and does not offer many opportunities to update progress
-     dialog rendering, do asynchronously with model dialog
-    */
-    CMusicLibraryQueue::GetInstance().CleanLibrary(true);
-  else
-    CMusicLibraryQueue::GetInstance().CleanLibrary(false);
-}
-
-void CApplication::StartMusicScan(const std::string &strDirectory, bool userInitiated /* = true */, int flags /* = 0 */)
-{
-  if (IsMusicScanning())
-    return;
-
-  // Setup default flags
-  if (!flags)
-  { // Online scraping of additional info during scanning
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
-      flags |= CMusicInfoScanner::SCAN_ONLINE;
-  }
-  if (!userInitiated || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
-    flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-
-  CMusicLibraryQueue::GetInstance().ScanLibrary(strDirectory, flags, !(flags & CMusicInfoScanner::SCAN_BACKGROUND));
-}
-
-void CApplication::StartMusicAlbumScan(const std::string& strDirectory, bool refresh)
-{
-  if (IsMusicScanning())
-    return;
-
-  CMusicLibraryQueue::GetInstance().StartAlbumScan(strDirectory, refresh);
-}
-
-void CApplication::StartMusicArtistScan(const std::string& strDirectory,
-                                        bool refresh)
-{
-  if (IsMusicScanning())
-    return;
-
-  CMusicLibraryQueue::GetInstance().StartArtistScan(strDirectory, refresh);
 }
 
 bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
@@ -4939,6 +4707,82 @@ void CApplication::SetLoggingIn(bool switchingProfiles)
   // would therefore write the previous skin's settings into the new profile
   // instead of into the previous one
   m_saveSkinOnUnloading = !switchingProfiles;
+}
+
+void CApplication::PrintStartupLog()
+{
+  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
+  CLog::Log(LOGINFO, "Starting {} ({}). Platform: {} {} {}-bit", CSysInfo::GetAppName(),
+            CSysInfo::GetVersion(), g_sysinfo.GetBuildTargetPlatformName(),
+            g_sysinfo.GetBuildTargetCpuFamily(), g_sysinfo.GetXbmcBitness());
+
+  std::string buildType;
+#if defined(_DEBUG)
+  buildType = "Debug";
+#elif defined(NDEBUG)
+  buildType = "Release";
+#else
+  buildType = "Unknown";
+#endif
+
+  CLog::Log(LOGINFO, "Using {} {} x{}", buildType, CSysInfo::GetAppName(),
+            g_sysinfo.GetXbmcBitness());
+  CLog::Log(LOGINFO, "{} compiled {} by {} for {} {} {}-bit {} ({})", CSysInfo::GetAppName(),
+            CSysInfo::GetBuildDate(), g_sysinfo.GetUsedCompilerNameAndVer(),
+            g_sysinfo.GetBuildTargetPlatformName(), g_sysinfo.GetBuildTargetCpuFamily(),
+            g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded(),
+            g_sysinfo.GetBuildTargetPlatformVersion());
+
+  std::string deviceModel(g_sysinfo.GetModelName());
+  if (!g_sysinfo.GetManufacturerName().empty())
+    deviceModel = g_sysinfo.GetManufacturerName() + " " +
+                  (deviceModel.empty() ? std::string("device") : deviceModel);
+  if (!deviceModel.empty())
+    CLog::Log(LOGINFO, "Running on {} with {}, kernel: {} {} {}-bit version {}", deviceModel,
+              g_sysinfo.GetOsPrettyNameWithVersion(), g_sysinfo.GetKernelName(),
+              g_sysinfo.GetKernelCpuFamily(), g_sysinfo.GetKernelBitness(),
+              g_sysinfo.GetKernelVersionFull());
+  else
+    CLog::Log(LOGINFO, "Running on {}, kernel: {} {} {}-bit version {}",
+              g_sysinfo.GetOsPrettyNameWithVersion(), g_sysinfo.GetKernelName(),
+              g_sysinfo.GetKernelCpuFamily(), g_sysinfo.GetKernelBitness(),
+              g_sysinfo.GetKernelVersionFull());
+
+  CLog::Log(LOGINFO, "FFmpeg version/source: {}", av_version_info());
+
+  std::string cpuModel(CServiceBroker::GetCPUInfo()->GetCPUModel());
+  if (!cpuModel.empty())
+  {
+    // cpuModel must use c_str(), otherwise some cpuid calls provide null bytes in the string
+    CLog::Log(LOGINFO, "Host CPU: {}, {} core{} available", cpuModel.c_str(),
+              CServiceBroker::GetCPUInfo()->GetCPUCount(),
+              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
+  }
+  else
+    CLog::Log(LOGINFO, "{} CPU core{} available", CServiceBroker::GetCPUInfo()->GetCPUCount(),
+              (CServiceBroker::GetCPUInfo()->GetCPUCount() == 1) ? "" : "s");
+
+  // Any system info logging that is unique to a platform
+  m_ServiceManager->GetPlatform().PlatformSyslog();
+
+#if defined(__arm__) || defined(__aarch64__)
+  CLog::Log(LOGINFO, "ARM Features: Neon {}",
+            (CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_NEON) ? "enabled"
+                                                                                : "disabled");
+#endif
+  CSpecialProtocol::LogPaths();
+
+  std::string executable = CUtil::ResolveExecutablePath();
+  CLog::Log(LOGINFO, "The executable running is: {}", executable);
+  std::string hostname("[unknown]");
+  m_ServiceManager->GetNetwork().GetHostName(hostname);
+  CLog::Log(LOGINFO, "Local hostname: {}", hostname);
+  std::string lowerAppName = CCompileInfo::GetAppName();
+  StringUtils::ToLower(lowerAppName);
+  CLog::Log(LOGINFO, "Log File is located: {}.log",
+            CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName));
+  CRegExp::LogCheckUtf8Support();
+  CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
 }
 
 void CApplication::CloseNetworkShares()

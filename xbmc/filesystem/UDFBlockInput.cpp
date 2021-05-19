@@ -47,7 +47,7 @@ int CUDFBlockInput::Read(
   return static_cast<int>(read);
 }
 
-udfread_block_input* CUDFBlockInput::GetBlockInput(std::string file)
+udfread_block_input* CUDFBlockInput::GetBlockInput(const std::string& file)
 {
   auto fp = std::make_shared<XFILE::CFile>();
 

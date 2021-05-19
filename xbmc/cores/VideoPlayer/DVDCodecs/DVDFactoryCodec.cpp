@@ -87,7 +87,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   return nullptr;
 }
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(std::string id, CProcessInfo &processInfo)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(const std::string& id,
+                                                     CProcessInfo& processInfo)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -100,7 +101,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(std::string id, CProcessInf
   return nullptr;
 }
 
-IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(std::string id, CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(const std::string& id,
+                                                            CDVDStreamInfo& hint,
+                                                            CProcessInfo& processInfo,
+                                                            AVPixelFormat fmt)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -114,7 +118,7 @@ IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(std::string id, CDVD
 }
 
 
-void CDVDFactoryCodec::RegisterHWVideoCodec(std::string id, CreateHWVideoCodec createFunc)
+void CDVDFactoryCodec::RegisterHWVideoCodec(const std::string& id, CreateHWVideoCodec createFunc)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -133,6 +137,7 @@ std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
   CSingleLock lock(videoCodecSection);
 
   std::vector<std::string> ret;
+  ret.reserve(m_hwAccels.size());
   for (auto &hwaccel : m_hwAccels)
   {
     ret.push_back(hwaccel.first);
@@ -140,7 +145,7 @@ std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
   return ret;
 }
 
-void CDVDFactoryCodec::RegisterHWAccel(std::string id, CreateHWAccel createFunc)
+void CDVDFactoryCodec::RegisterHWAccel(const std::string& id, CreateHWAccel createFunc)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -200,7 +205,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   return nullptr;
 }
 
-void CDVDFactoryCodec::RegisterHWAudioCodec(std::string id, CreateHWAudioCodec createFunc)
+void CDVDFactoryCodec::RegisterHWAudioCodec(const std::string& id, CreateHWAudioCodec createFunc)
 {
   CSingleLock lock(audioCodecSection);
 
@@ -214,7 +219,8 @@ void CDVDFactoryCodec::ClearHWAudioCodecs()
   m_hwAudioCodecs.clear();
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(std::string id, CProcessInfo &processInfo)
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
+                                                     CProcessInfo& processInfo)
 {
   CSingleLock lock(audioCodecSection);
 

@@ -337,7 +337,7 @@ std::string CScraper::GetPathSettingsAsJSON()
     return EmptyPathSettings;
 
   CSettingsValueFlatJsonSerializer jsonSerializer;
-  const auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
+  auto json = jsonSerializer.SerializeValues(GetSettings()->GetSettingsManager());
   if (json.empty())
     return EmptyPathSettings;
 
@@ -368,7 +368,8 @@ bool CScraper::Load()
 
       bool bOptional = itr->optional;
 
-      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep))
+      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, ADDON::ADDON_UNKNOWN,
+                                                 ADDON::OnlyEnabled::YES))
       {
         CXBMCTinyXML doc;
         if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
@@ -609,11 +610,11 @@ template<>
 CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
 {
   CMusicAlbumInfo info;
-  std::string sTitle = item.GetLabel();
+  const std::string& sTitle = item.GetLabel();
   std::string sArtist = item.GetProperty("album.artist").asString();
   std::string sAlbumName;
   if (!sArtist.empty())
-    sAlbumName = StringUtils::Format("%s - %s", sArtist.c_str(), sTitle.c_str());
+    sAlbumName = StringUtils::Format("{} - {}", sArtist, sTitle);
   else
     sAlbumName = sTitle;
 
@@ -641,7 +642,7 @@ template<>
 CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
 {
   CMusicArtistInfo info;
-  std::string sTitle = item.GetLabel();
+  const std::string& sTitle = item.GetLabel();
 
   CScraperUrl url;
   url.AppendUrl(CScraperUrl::SUrlEntry(item.GetDynPath()));
@@ -675,7 +676,7 @@ static std::vector<T> PythonFind(const std::string &ID,
 
   if (XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
   {
-    for (auto it : items)
+    for (const auto& it : items)
       result.emplace_back(std::move(FromFileItem<T>(*it)));
   }
 
@@ -836,7 +837,7 @@ template<>
 void DetailsFromFileItem<CVideoInfoTag>(const CFileItem &item, CVideoInfoTag &tag)
 {
   if (item.HasVideoInfoTag())
-    tag = std::move(*item.GetVideoInfoTag());
+    tag = *item.GetVideoInfoTag();
 }
 
 template<class T>
@@ -991,11 +992,11 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())
-          title += StringUtils::Format(" (%s)", sCompareYear.c_str());
+          title += StringUtils::Format(" ({})", sCompareYear);
 
         std::string sLanguage;
         if (XMLUtils::GetString(pxeMovie, "language", sLanguage) && !sLanguage.empty())
-          title += StringUtils::Format(" (%s)", sLanguage.c_str());
+          title += StringUtils::Format(" ({})", sLanguage);
 
         // filter for dupes from naughty scrapers
         if (stsDupeCheck.insert(scurlMovie.GetFirstThumbUrl() + " " + title).second)
@@ -1082,13 +1083,13 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
         std::string sArtist;
         std::string sAlbumName;
         if (XMLUtils::GetString(pxeAlbum, "artist", sArtist) && !sArtist.empty())
-          sAlbumName = StringUtils::Format("%s - %s", sArtist.c_str(), sTitle.c_str());
+          sAlbumName = StringUtils::Format("{} - {}", sArtist, sTitle);
         else
           sAlbumName = sTitle;
 
         std::string sYear;
         if (XMLUtils::GetString(pxeAlbum, "year", sYear) && !sYear.empty())
-          sAlbumName = StringUtils::Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
+          sAlbumName = StringUtils::Format("{} ({})", sAlbumName, sYear);
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)
@@ -1276,7 +1277,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
           XMLUtils::GetString(pxeMovie, "epnum", strEpNum) && !strEpNum.empty())
       {
         CScraperUrl &scurlEp(ep.cScraperUrl);
-        size_t dot = strEpNum.find(".");
+        size_t dot = strEpNum.find('.');
         ep.iEpisode = atoi(strEpNum.c_str());
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         std::string title;

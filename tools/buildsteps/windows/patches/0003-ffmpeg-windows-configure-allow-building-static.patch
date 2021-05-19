@@ -1,0 +1,34 @@
+From efb771d944e96bcbb24635bcae99a43dffab262e Mon Sep 17 00:00:00 2001
+From: Lukas Rusak <lorusak@gmail.com>
+Date: Sat, 10 Apr 2021 08:17:11 -0700
+Subject: [PATCH 3/4] ffmpeg: windows: configure: allow building static
+
+---
+ configure | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure b/configure
+index da457705d1..e3a8f45ff4 100755
+--- a/configure
++++ b/configure
+@@ -5439,6 +5439,8 @@ case $target_os in
+         enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
+         enabled x86_32 && check_ldflags -Wl,--large-address-aware
+         shlibdir_default="$bindir_default"
++        LIBPREF=""
++        LIBSUF=".lib"
+         SLIBPREF=""
+         SLIBSUF=".dll"
+         SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
+@@ -5488,6 +5490,8 @@ case $target_os in
+         fi
+         enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
+         shlibdir_default="$bindir_default"
++        LIBPREF=""
++        LIBSUF=".lib"
+         SLIBPREF=""
+         SLIBSUF=".dll"
+         SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
+-- 
+2.29.2
+

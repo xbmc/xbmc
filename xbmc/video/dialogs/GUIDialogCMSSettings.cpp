@@ -158,7 +158,8 @@ void CGUIDialogCMSSettings::InitializeSettings()
   settingCmsGammaMode->SetDependencies(depsCmsIcc);
 
   float currentGamma = settings->GetInt(SETTING_VIDEO_CMSGAMMA)/100.0f;
-  if (currentGamma == 0.0) currentGamma = 2.20;
+  if (currentGamma == 0.0f)
+    currentGamma = 2.20f;
   std::shared_ptr<CSettingNumber> settingCmsGamma = AddSlider(groupColorManagement, SETTING_VIDEO_CMSGAMMA, 36574, SettingLevel::Basic, currentGamma, 36597, 1.6, 0.05, 2.8, 36574, usePopup);
   settingCmsGamma->SetDependencies(depsCmsGamma);
 
@@ -171,7 +172,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
   settingCmsLutSize->SetDependencies(depsCmsIcc);
 }
 
-void CGUIDialogCMSSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogCMSSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -203,17 +204,18 @@ bool CGUIDialogCMSSettings::OnBack(int actionID)
   return CGUIDialogSettingsBase::OnBack(actionID);
 }
 
-void CGUIDialogCMSSettings::Save()
+bool CGUIDialogCMSSettings::Save()
 {
   CLog::Log(LOGINFO, "CGUIDialogCMSSettings: Save() called");
   CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
+
+  return true;
 }
 
-void CGUIDialogCMSSettings::Cms3dLutsFiller(
-    SettingConstPtr setting,
-    std::vector<StringSettingOption> &list,
-    std::string &current,
-    void *data)
+void CGUIDialogCMSSettings::Cms3dLutsFiller(const SettingConstPtr& setting,
+                                            std::vector<StringSettingOption>& list,
+                                            std::string& current,
+                                            void* data)
 {
   // get 3dLut directory from settings
   CFileItemList items;

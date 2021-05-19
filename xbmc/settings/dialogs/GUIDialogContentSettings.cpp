@@ -149,7 +149,7 @@ void CGUIDialogContentSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogContentSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogContentSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -174,7 +174,7 @@ void CGUIDialogContentSettings::OnSettingChanged(std::shared_ptr<const CSetting>
     m_allExternalAudio = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
-void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -248,7 +248,8 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon);
+      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON::ADDON_UNKNOWN,
+                                             ADDON::OnlyEnabled::YES);
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
       SetupView();
@@ -259,9 +260,10 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
     CGUIDialogAddonSettings::ShowForAddon(m_scraper, false);
 }
 
-void CGUIDialogContentSettings::Save()
+bool CGUIDialogContentSettings::Save()
 {
   //Should be saved by caller of ::Show
+  return true;
 }
 
 void CGUIDialogContentSettings::SetupView()

@@ -35,9 +35,10 @@ bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   for (int i=0; i<iStreams; ++i)
   {
-    std::string strLabel = StringUtils::Format("%s - %s %2.2i", strFileName.c_str(), g_localizeStrings.Get(554).c_str(), i+1);
+    std::string strLabel =
+        StringUtils::Format("{} - {} {:02}", strFileName, g_localizeStrings.Get(554), i + 1);
     CFileItemPtr pItem(new CFileItem(strLabel));
-    strLabel = StringUtils::Format("%s%s-%i.%s", strPath.c_str(), strFileName.c_str(), i+1, m_strExt.c_str());
+    strLabel = StringUtils::Format("{}{}-{}.{}", strPath, strFileName, i + 1, m_strExt);
     pItem->SetPath(strLabel);
 
     /*

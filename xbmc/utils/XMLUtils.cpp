@@ -287,25 +287,25 @@ TiXmlNode* XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const s
 
 TiXmlNode* XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
 {
-  std::string strValue = StringUtils::Format("%i", value);
+  std::string strValue = std::to_string(value);
   return SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
 {
-  std::string strValue = StringUtils::Format("%ld", value);
+  std::string strValue = std::to_string(value);
   SetString(pRootNode, strTag, strValue);
 }
 
 TiXmlNode* XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
 {
-  std::string strValue = StringUtils::Format("%f", value);
+  std::string strValue = StringUtils::Format("{:f}", value);
   return SetString(pRootNode, strTag, strValue);
 }
 
 TiXmlNode* XMLUtils::SetDouble(TiXmlNode* pRootNode, const char* strTag, double value)
 {
-  std::string strValue = StringUtils::Format("%lf", value);
+  std::string strValue = StringUtils::Format("{:f}", value);
   return SetString(pRootNode, strTag, strValue);
 }
 
@@ -316,7 +316,7 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
 
 void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
 {
-  std::string strValue = StringUtils::Format("%x", value);
+  std::string strValue = StringUtils::Format("{:x}", value);
   SetString(pRootNode, strTag, strValue);
 }
 

@@ -44,7 +44,7 @@ std::string CSettingsValueFlatJsonSerializer::SerializeValues(
 }
 
 void CSettingsValueFlatJsonSerializer::SerializeSection(
-  CVariant& parent, std::shared_ptr<CSettingSection> section) const
+    CVariant& parent, const std::shared_ptr<CSettingSection>& section) const
 {
   if (section == nullptr)
     return;
@@ -55,7 +55,7 @@ void CSettingsValueFlatJsonSerializer::SerializeSection(
 }
 
 void CSettingsValueFlatJsonSerializer::SerializeCategory(
-  CVariant& parent, std::shared_ptr<CSettingCategory> category) const
+    CVariant& parent, const std::shared_ptr<CSettingCategory>& category) const
 {
   if (category == nullptr)
     return;
@@ -66,7 +66,7 @@ void CSettingsValueFlatJsonSerializer::SerializeCategory(
 }
 
 void CSettingsValueFlatJsonSerializer::SerializeGroup(
-  CVariant& parent, std::shared_ptr<CSettingGroup> group) const
+    CVariant& parent, const std::shared_ptr<CSettingGroup>& group) const
 {
   if (group == nullptr)
     return;
@@ -77,7 +77,7 @@ void CSettingsValueFlatJsonSerializer::SerializeGroup(
 }
 
 void CSettingsValueFlatJsonSerializer::SerializeSetting(
-  CVariant& parent, std::shared_ptr<CSetting> setting) const
+    CVariant& parent, const std::shared_ptr<CSetting>& setting) const
 {
   if (setting == nullptr)
     return;
@@ -94,7 +94,7 @@ void CSettingsValueFlatJsonSerializer::SerializeSetting(
 }
 
 CVariant CSettingsValueFlatJsonSerializer::SerializeSettingValue(
-  std::shared_ptr<CSetting> setting) const
+    const std::shared_ptr<CSetting>& setting) const
 {
   switch (setting->GetType())
   {

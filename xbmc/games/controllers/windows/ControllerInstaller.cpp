@@ -98,7 +98,7 @@ void CControllerInstaller::Process()
     const auto& addon = installableAddons[installedCount];
 
     // Set dialog text
-    const std::string progressTemplate = g_localizeStrings.Get(24057); // "Installing {0:s}..."
+    const std::string& progressTemplate = g_localizeStrings.Get(24057); // "Installing {0:s}..."
     const std::string progressText = StringUtils::Format(progressTemplate, addon->Name());
     pProgressDialog->SetLine(0, CVariant{progressText});
 

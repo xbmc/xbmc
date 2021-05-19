@@ -254,7 +254,7 @@ xcodebuild -target dmg
 ````
 **OR**
 ```
-cd $HOME/kodi-build/build
+cd $HOME/kodi-build
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake --build . --target "dmg" --config "Debug"
 ```
 
@@ -262,11 +262,11 @@ Generated `dmg` file will be inside `$HOME/kodi-build/tools/darwin/packaging/osx
 
 Alternatively, if you built using make:
 ```
-cd $HOME/kodi/build
+cd $HOME/kodi-build
 make dmg
 ```
 
-Generated `dmg` file will be inside `$HOME/kodi/build/tools/darwin/packaging/osx/`.
+Generated `dmg` file will be inside `$HOME/kodi-build/tools/darwin/packaging/osx/`.
 
 **[back to top](#table-of-contents)**
 

@@ -144,7 +144,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       CFileItem item;
       ParseResponse(pChild->ToElement(), item);
-      CURL url2(url);
+      const CURL& url2(url);
       CURL url3(item.GetPath());
 
       std::string itemPath(URIUtils::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName()));

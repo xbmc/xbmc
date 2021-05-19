@@ -24,7 +24,6 @@ CSong::CSong(CFileItem& item)
   CMusicInfoTag& tag = *item.GetMusicInfoTag();
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
-  std::vector<std::string> artist = tag.GetArtist();
   strArtistDesc = tag.GetArtistString();
   //Set sort string before processing artist credits
   strArtistSort = tag.GetArtistSort();
@@ -67,8 +66,8 @@ CSong::CSong(CFileItem& item)
   dateAdded = tag.GetDateAdded();
   replayGain = tag.GetReplayGain();
   strThumb = item.GetUserMusicThumb(true);
-  iStartOffset = item.m_lStartOffset;
-  iEndOffset = item.m_lEndOffset;
+  iStartOffset = static_cast<int>(item.m_lStartOffset);
+  iEndOffset = static_cast<int>(item.m_lEndOffset);
   idSong = -1;
   iTimesPlayed = 0;
   idAlbum = -1;
@@ -280,7 +279,7 @@ void CSong::Clear()
   iBitRate = 0;
   iSampleRate = 0;
   iChannels =  0;
-  
+
   replayGain = ReplayGain();
 }
 const std::vector<std::string> CSong::GetArtist() const
@@ -306,7 +305,7 @@ const std::string CSong::GetArtistSort() const
   if (!strArtistSort.empty())
     return strArtistSort;
   std::vector<std::string> artistvector;
-  for (auto artistcredit: artistCredits)
+  for (const auto& artistcredit : artistCredits)
     if (!artistcredit.GetSortName().empty())
       artistvector.emplace_back(artistcredit.GetSortName());
   std::string artistString;

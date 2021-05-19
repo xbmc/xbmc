@@ -327,7 +327,7 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED:
     {
-      std::string code = message.GetStringParam();
+      const std::string& code = message.GetStringParam();
       if (code == m_hzcode)
       {
         int response = message.GetParam1();
@@ -721,7 +721,7 @@ void CGUIDialogKeyboardGeneric::ShowWordList(int direct)
       hzlist.insert(hzlist.length(), 1, L' ');
     }
   }
-  hzlist.erase(hzlist.find_last_not_of(L" ") + 1);
+  hzlist.erase(hzlist.find_last_not_of(L' ') + 1);
   if (m_pos > 0)
     hzlist.insert(0, 1, L'<');
   if (m_pos + m_num < static_cast<int>(m_words.size()))

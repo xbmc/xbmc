@@ -130,7 +130,7 @@ CMediaSource CUDiskDevice::ToMediaShare()
   if (m_Label.empty())
   {
     std::string strSize = StringUtils::SizeToString(m_PartitionSize);
-    source.strName = StringUtils::Format("%s %s", strSize.c_str(), g_localizeStrings.Get(155).c_str());
+    source.strName = StringUtils::Format("{} {}", strSize, g_localizeStrings.Get(155));
   }
   else
     source.strName = m_Label;
@@ -154,12 +154,12 @@ bool CUDiskDevice::IsApproved()
 
 std::string CUDiskDevice::toString()
 {
-  return StringUtils::Format("DeviceUDI %s: IsFileSystem %s HasFileSystem %s "
-      "IsSystemInternal %s IsMounted %s IsRemovable %s IsPartition %s "
-      "IsOptical %s",
-      m_DeviceKitUDI.c_str(), BOOL2SZ(m_isFileSystem), m_FileSystem.c_str(),
-      BOOL2SZ(m_isSystemInternal), BOOL2SZ(m_isMounted),
-      BOOL2SZ(m_isRemovable), BOOL2SZ(m_isPartition), BOOL2SZ(m_isOptical));
+  return StringUtils::Format("DeviceUDI {}: IsFileSystem {} HasFileSystem {} "
+                             "IsSystemInternal {} IsMounted {} IsRemovable {} IsPartition {} "
+                             "IsOptical {}",
+                             m_DeviceKitUDI, BOOL2SZ(m_isFileSystem), m_FileSystem,
+                             BOOL2SZ(m_isSystemInternal), BOOL2SZ(m_isMounted),
+                             BOOL2SZ(m_isRemovable), BOOL2SZ(m_isPartition), BOOL2SZ(m_isOptical));
 }
 
 CUDisksProvider::CUDisksProvider()

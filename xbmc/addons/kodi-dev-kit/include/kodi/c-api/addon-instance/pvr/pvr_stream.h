@@ -6,18 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#pragma once
-
 #ifndef C_API_ADDONINSTANCE_PVR_STREAM_H
 #define C_API_ADDONINSTANCE_PVR_STREAM_H
 
+#include "../inputstream/demux_packet.h"
 #include "pvr_defines.h"
-
-#ifdef BUILD_KODI_ADDON
-#include "../../../DemuxPacket.h"
-#else
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#endif
 
 #include <stdint.h>
 #include <time.h>

@@ -8,19 +8,18 @@
 
 #pragma once
 
-#include <list>
-#include <string>
-#include <vector>
-
+#include "ActiveAESink.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "guilib/DispResource.h"
 #include "threads/Thread.h"
 
-#include "ActiveAESink.h"
-#include "cores/AudioEngine/Interfaces/AEStream.h"
-#include "cores/AudioEngine/Interfaces/AESound.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
-
-#include "guilib/DispResource.h"
+#include <list>
 #include <queue>
+#include <string>
+#include <utility>
+#include <vector>
 
 // ffmpeg
 extern "C" {
@@ -51,6 +50,7 @@ struct AudioSettings
   bool dtspassthrough;
   bool truehdpassthrough;
   bool dtshdpassthrough;
+  bool usesdtscorefallback;
   bool stereoupmix;
   bool normalizelevels;
   bool passthrough;
@@ -66,7 +66,8 @@ struct AudioSettings
 class CActiveAEControlProtocol : public Protocol
 {
 public:
-  CActiveAEControlProtocol(std::string name, CEvent* inEvent, CEvent *outEvent) : Protocol(name, inEvent, outEvent) {};
+  CActiveAEControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : Protocol(std::move(name), inEvent, outEvent){};
   enum OutSignal
   {
     INIT = 0,
@@ -105,7 +106,8 @@ public:
 class CActiveAEDataProtocol : public Protocol
 {
 public:
-  CActiveAEDataProtocol(std::string name, CEvent* inEvent, CEvent *outEvent) : Protocol(name, inEvent, outEvent) {};
+  CActiveAEDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
+    : Protocol(std::move(name), inEvent, outEvent){};
   enum OutSignal
   {
     NEWSOUND = 0,
@@ -249,13 +251,14 @@ public:
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) override;
   bool SupportsRaw(AEAudioFormat &format) override;
   bool SupportsSilenceTimeout() override;
+  bool UsesDtsCoreFallback() override;
   bool HasStereoAudioChannelCount() override;
   bool HasHDAudioChannelCount() override;
   bool SupportsQualityLevel(enum AEQuality level) override;
   bool IsSettingVisible(const std::string &settingId) override;
   void KeepConfiguration(unsigned int millis) override;
   void DeviceChange() override;
-  void DeviceCountChange(std::string driver) override;
+  void DeviceCountChange(const std::string& driver) override;
   bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) override;
 
   void RegisterAudioCallback(IAudioCallback* pCallback) override;

@@ -99,7 +99,7 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::s
   return true;
 }
 
-void CGUIDialogLockSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogLockSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -131,7 +131,7 @@ void CGUIDialogLockSettings::OnSettingChanged(std::shared_ptr<const CSetting> se
   m_changed = true;
 }
 
-void CGUIDialogLockSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogLockSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -212,7 +212,7 @@ void CGUIDialogLockSettings::SetupView()
 
   // set the title
   if (m_getUser)
-    SetHeading(StringUtils::Format(g_localizeStrings.Get(20152).c_str(), CURL::Decode(m_url).c_str()));
+    SetHeading(StringUtils::Format(g_localizeStrings.Get(20152), CURL::Decode(m_url)));
   else
   {
     SetHeading(20066);

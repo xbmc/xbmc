@@ -235,7 +235,7 @@ void CAirTunesServer::Process()
       m_actionQueue.clear();
     }
 
-    for (auto currentAction : currentActions)
+    for (const auto& currentAction : currentActions)
     {
       CSingleLock lock(m_dacpLock);
       if (m_pDACP)
@@ -594,9 +594,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   if (ServerInstance->Initialize(pw))
   {
     success = true;
-    std::string appName = StringUtils::Format("%s@%s",
-                                             m_macAddress.c_str(),
-                                             CSysInfo::GetDeviceName().c_str());
+    std::string appName = StringUtils::Format("{}@{}", m_macAddress, CSysInfo::GetDeviceName());
 
     std::vector<std::pair<std::string, std::string> > txt;
     txt.emplace_back("txtvers", "1");

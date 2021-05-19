@@ -13,7 +13,7 @@ endif
 
 ifeq ($(CPU), x86_64)
   MESA_GALLIUM_DRIVERS=iris
-else ifeq ($(CPU), arm)
+else ifeq ($(CPU), $(filter $(CPU), arm aarch64))
   MESA_GALLIUM_DRIVERS=kmsro,vc4
   MESA_EXTRA=-Dplatforms=wayland,drm
 endif

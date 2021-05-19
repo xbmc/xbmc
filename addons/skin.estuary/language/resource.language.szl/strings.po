@@ -136,6 +136,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Twoja ôcyna"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Ekstra info"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Zajty"
@@ -180,10 +184,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Dostympne"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Naciś [B]OK[/B], coby zastawić"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrowane"
@@ -191,10 +191,6 @@ msgstr "filtrowane"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Podane na Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Naciś [B]Lewo[/B], coby cofać lebo [B]Prawo[/B], coby przewijać"
 
 msgctxt "#31056"
 msgid "Go to playlist"

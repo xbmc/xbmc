@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WindowSystemFactory.h"
 
 #import "platform/darwin/ios/IOSScreenManager.h"
 #import "platform/darwin/ios/XBMCController.h"
@@ -64,10 +65,14 @@ struct CADisplayLinkWrapper
   IOSDisplayLinkCallback *callbackClass;
 };
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemIOS::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemIOS());
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemIOS::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemIOS>();
 }
 
 int CWinSystemIOS::GetDisplayIndexFromSettings()
@@ -182,7 +187,7 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_bFullScreen = fullScreen;
 
   CLog::Log(LOGDEBUG, "About to switch to %i x %i",m_nWidth, m_nHeight);
-  SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate);
+  SwitchToVideoMode(res.iWidth, res.iHeight, static_cast<double>(res.fRefreshRate));
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
   return true;
@@ -238,7 +243,7 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
     *w = firstMode.size.width;
     *h = firstMode.size.height;
   }
-  
+
   // for mainscreen use the eagl bounds from xbmcController
   // because mainscreen is might be 90° rotate dependend on
   // the device and eagl gives the correct values in all cases.
@@ -256,7 +261,7 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
       m_internalTouchscreenResolutionWidth = [g_xbmcController getScreenSize].width;
       m_internalTouchscreenResolutionHeight = [g_xbmcController getScreenSize].height;
     }
-    
+
     *w = m_internalTouchscreenResolutionWidth;
     *h = m_internalTouchscreenResolutionHeight;
   }

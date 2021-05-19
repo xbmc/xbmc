@@ -37,7 +37,8 @@ void CGUIDialogPVRClientPriorities::SetupView()
   SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222); // Cancel
 }
 
-std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(std::shared_ptr<ISetting> pSetting)
+std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(
+    const std::shared_ptr<ISetting>& pSetting)
 {
   int iClientId = std::atoi(pSetting->GetId().c_str());
   auto clientEntry = m_clients.find(iClientId);
@@ -71,11 +72,12 @@ void CGUIDialogPVRClientPriorities::InitializeSettings()
   CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(m_clients);
   for (const auto& client : m_clients)
   {
-    setting = AddEdit(group, StringUtils::Format("%i", client.second->GetID()), 13205 /* Unknown */, SettingLevel::Basic, client.second->GetPriority());
+    setting = AddEdit(group, std::to_string(client.second->GetID()), 13205 /* Unknown */,
+                      SettingLevel::Basic, client.second->GetPriority());
   }
 }
 
-void CGUIDialogPVRClientPriorities::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogPVRClientPriorities::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
   {
@@ -88,7 +90,7 @@ void CGUIDialogPVRClientPriorities::OnSettingChanged(std::shared_ptr<const CSett
   m_changedValues[setting->GetId()] = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
 }
 
-void CGUIDialogPVRClientPriorities::Save()
+bool CGUIDialogPVRClientPriorities::Save()
 {
   for (const auto& changedClient : m_changedValues)
   {
@@ -97,4 +99,6 @@ void CGUIDialogPVRClientPriorities::Save()
     if (clientEntry != m_clients.end())
       clientEntry->second->SetPriority(changedClient.second);
   }
+
+  return true;
 }

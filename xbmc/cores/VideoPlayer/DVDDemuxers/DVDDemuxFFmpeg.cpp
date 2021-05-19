@@ -13,9 +13,10 @@
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "commons/Exception.h"
 #include "cores/FFmpeg.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h" // for DVD_TIME_BASE
+#include "cores/VideoPlayer/Interface/TimingConstants.h" // for DVD_TIME_BASE
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -28,7 +29,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
-#include "Util.h"
 
 #include <sstream>
 #include <utility>
@@ -69,6 +69,31 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
   { "OverUnderLT",              "top_bottom" },
   {}
 };
+
+namespace
+{
+const std::vector<std::string> font_mimetypes = {"application/x-truetype-font",
+                                                 "application/vnd.ms-opentype",
+                                                 "application/x-font-ttf",
+                                                 "application/x-font", // probably incorrect
+                                                 "application/font-sfnt",
+                                                 "font/collection",
+                                                 "font/otf",
+                                                 "font/sfnt",
+                                                 "font/ttf"};
+
+bool AttachmentIsFont(const AVDictionaryEntry* dict)
+{
+  if (dict)
+  {
+    const std::string mimeType = dict->value;
+    return std::find_if(font_mimetypes.begin(), font_mimetypes.end(), [&mimeType](std::string str) {
+             return str == mimeType;
+           }) != font_mimetypes.end();
+  }
+  return false;
+}
+} // namespace
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
@@ -200,7 +225,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   return false;
 }
 
-bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool fileinfo)
+bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool fileinfo)
 {
   AVInputFormat* iformat = NULL;
   std::string strFile;
@@ -273,7 +298,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool fileinf
       if (found != std::string::npos)
       {
         size_t start = found + 3;
-        found = strURL.find("@");
+        found = strURL.find('@');
 
         if (found != std::string::npos && found > start)
         {
@@ -938,7 +963,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   // do calculations in floats as they can easily overflow otherwise
   // we don't care for having a completely exact timestamp anyway
   double timestamp = (double)pts * num / den;
-  double starttime = 0.0f;
+  double starttime = 0.0;
 
   std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInput);
   if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
@@ -952,7 +977,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
     if (timestamp > starttime || m_checkTransportStream)
       timestamp -= starttime;
     // allow for largest possible difference in pts and dts for a single packet
-    else if (timestamp + 0.5f > starttime)
+    else if (timestamp + 0.5 > starttime)
       timestamp = 0;
   }
 
@@ -1133,8 +1158,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     // we already check for a valid m_streams[pPacket->iStreamId] above
     else if (stream->type == STREAM_AUDIO)
     {
-      if (static_cast<CDemuxStreamAudio*>(stream)->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->channels ||
-          static_cast<CDemuxStreamAudio*>(stream)->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->sample_rate)
+      CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
+      if (audiostream && (audiostream->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->channels ||
+          audiostream->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->sample_rate))
       {
         // content has changed
         stream = AddStream(pPacket->iStreamId);
@@ -1593,6 +1619,28 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iBitsPerPixel = pStream->codecpar->bits_per_coded_sample;
         st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
 
+        st->colorPrimaries = pStream->codecpar->color_primaries;
+        st->colorSpace = pStream->codecpar->color_space;
+        st->colorTransferCharacteristic = pStream->codecpar->color_trc;
+        st->colorRange = pStream->codecpar->color_range;
+
+        int size = 0;
+        uint8_t* side_data = nullptr;
+
+        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
+        if (side_data && size)
+        {
+          st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
+              *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
+        }
+
+        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, &size);
+        if (side_data && size)
+        {
+          st->contentLightMetaData = std::make_shared<AVContentLightMetadata>(
+              *reinterpret_cast<AVContentLightMetadata*>(side_data));
+        }
+
         AVDictionaryEntry* rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag)
           st->iOrientation = atoi(rtag->value);
@@ -1652,11 +1700,15 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         }
       }
       case AVMEDIA_TYPE_ATTACHMENT:
-      { //mkv attachments. Only bothering with fonts for now.
+      {
+        // mkv attachments. Only bothering with fonts for now.
+        AVDictionaryEntry* attachmentMimetype =
+            av_dict_get(pStream->metadata, "mimetype", nullptr, 0);
+
         if (pStream->codecpar->codec_id == AV_CODEC_ID_TTF ||
-            pStream->codecpar->codec_id == AV_CODEC_ID_OTF)
+            pStream->codecpar->codec_id == AV_CODEC_ID_OTF || AttachmentIsFont(attachmentMimetype))
         {
-          std::string fileName = "special://temp/fonts/";
+          std::string fileName = "special://home/media/Fonts/";
           XFILE::CDirectory::Create(fileName);
           AVDictionaryEntry* nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);
           if (!nameTag)
@@ -1665,7 +1717,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           }
           else
           {
-            fileName += CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
+            // Note: libass only supports a single font directory to look for aditional fonts
+            // (c.f. ass_set_fonts_dir). To support both user defined fonts (those placed in
+            // special://home/media/Fonts/) and fonts extracted by the demuxer, make it extract
+            // fonts to the user directory with a known, easy to identify, prefix (tmp.font.*).
+            fileName += "tmp.font." + CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
             XFILE::CFile file;
             if (pStream->codecpar->extradata && file.OpenForWrite(fileName))
             {
@@ -2009,6 +2065,15 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
     if (m_pFormatContext->streams[idx]->codecpar->codec_id != stream->codec)
       return true;
+    if (m_pFormatContext->streams[idx]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+    {
+      CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
+      if (audiostream &&
+          m_pFormatContext->streams[idx]->codecpar->channels != audiostream->iChannels)
+      {
+        return true;
+      }
+    }
     if (m_pFormatContext->streams[idx]->codecpar->extradata_size != static_cast<int>(stream->ExtraSize))
       return true;
   }

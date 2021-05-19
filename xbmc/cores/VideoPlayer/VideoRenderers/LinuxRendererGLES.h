@@ -209,4 +209,7 @@ protected:
   // clear colour for "black" bars
   float m_clearColour{0.0f};
   CRect m_viewRect;
+
+private:
+  void DrawBlackBars();
 };

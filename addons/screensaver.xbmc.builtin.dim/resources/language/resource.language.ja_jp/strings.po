@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Dim レベル"
+msgid "Brightness level"
+msgstr "輝度"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "画面の輝度レベルをパーセントの比率で表しています。"
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "環境設定"

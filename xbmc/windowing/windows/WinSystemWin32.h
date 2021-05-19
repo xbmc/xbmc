@@ -13,6 +13,7 @@
 #include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
 
+#include <shellapi.h>
 #include <vector>
 
 static const DWORD WINDOWED_STYLE = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
@@ -109,7 +110,7 @@ public:
   void SetAlteringWindow(bool altering) { m_IsAlteringWindow = altering; }
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
-  void SetMinimized(bool minimized) { m_bMinimized = minimized; }
+  void SetMinimized(bool minimized);
   void GetConnectedOutputs(std::vector<std::string> *outputs);
 
   // touchscreen support
@@ -191,6 +192,8 @@ protected:
   bool m_bFirstResChange = true;
   std::unique_ptr<CIRServerSuite> m_irss;
   std::vector<MONITOR_DETAILS> m_displays;
+
+  NOTIFYICONDATA m_trayIcon = {};
 };
 
 extern HWND g_hWnd;

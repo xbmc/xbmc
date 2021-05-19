@@ -105,7 +105,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
           }
           else if (info.m_info == CONTAINER_VIEWCOUNT)
           {
-            value = StringUtils::Format("%i", window->GetViewCount());
+            value = std::to_string(window->GetViewCount());
             return true;
           }
         }
@@ -223,7 +223,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
         }
         else if (info.m_info == CONTAINER_TOTALWATCHED || info.m_info == CONTAINER_TOTALUNWATCHED)
         {
-          value = StringUtils::Format("%i", count);
+          value = std::to_string(count);
           return true;
         }
       }
@@ -316,7 +316,8 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       value = g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
       return true;
     case SYSTEM_STARTUP_WINDOW:
-      value = StringUtils::Format("%i", CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
+      value = std::to_string(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
       return true;
     case SYSTEM_CURRENT_CONTROL:
     case SYSTEM_CURRENT_CONTROL_ID:
@@ -328,7 +329,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
         if (control)
         {
           if (info.m_info == SYSTEM_CURRENT_CONTROL_ID)
-            value = StringUtils::Format("%i", control->GetID());
+            value = std::to_string(control->GetID());
           else if (info.m_info == SYSTEM_CURRENT_CONTROL)
             value = control->GetDescription();
           return true;
@@ -340,7 +341,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
     {
       CGUIDialogProgress *bar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
       if (bar && bar->IsDialogRunning())
-        value = StringUtils::Format("%i", bar->GetPercentage());
+        value = std::to_string(bar->GetPercentage());
       return true;
     }
 

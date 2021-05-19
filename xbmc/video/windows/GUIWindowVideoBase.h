@@ -86,7 +86,7 @@ protected:
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   virtual void OnQueueItem(int iItem, bool first = false);
-  virtual void OnDeleteItem(CFileItemPtr pItem);
+  virtual void OnDeleteItem(const CFileItemPtr& pItem);
   void OnDeleteItem(int iItem) override;
   virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {};
   std::string GetStartFolder(const std::string &dir) override;
@@ -103,13 +103,13 @@ protected:
    \param action the action to perform
    \return true if the action is performed, false otherwise
    */
-  bool OnFileAction(int item, int action, std::string player);
+  bool OnFileAction(int item, int action, const std::string& player);
 
   void OnRestartItem(int iItem, const std::string &player = "");
   bool OnResumeItem(int iItem, const std::string &player = "");
   void PlayItem(int iItem, const std::string &player = "");
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
-  bool OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player = "") override;
+  bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
   using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 

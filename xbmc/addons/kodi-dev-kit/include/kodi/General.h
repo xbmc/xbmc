@@ -787,7 +787,7 @@ inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
 /// @param[out] layout_name new name of used layout (input string not used!)
 /// @return true if request successed
 ///
-/// @note \ref GetKeyboardLayout must be called afterwards.
+/// @note @ref GetKeyboardLayout must be called afterwards.
 ///
 ///
 /// ------------------------------------------------------------------------

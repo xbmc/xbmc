@@ -49,7 +49,7 @@ private:
 
   AddonInstance_VideoCodec m_struct;
   int m_codecFlags;
-  VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT::MaxVideoFormats + 1];
+  VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT_MAXFORMATS + 1];
   float m_displayAspect;
   unsigned int m_width, m_height;
 };

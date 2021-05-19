@@ -30,7 +30,7 @@ std::string CPVRChannelNumber::SortableChannelNumber() const
 std::string CPVRChannelNumber::ToString(char separator) const
 {
   if (m_iSubChannelNumber == 0)
-    return StringUtils::Format("%u", m_iChannelNumber);
+    return std::to_string(m_iChannelNumber);
   else
-    return StringUtils::Format("%u%c%u", m_iChannelNumber, separator, m_iSubChannelNumber);
+    return StringUtils::Format("{}{}{}", m_iChannelNumber, separator, m_iSubChannelNumber);
 }

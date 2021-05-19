@@ -38,9 +38,9 @@ public:
                            , int flags);
 
   static bool GetDirectory(const CURL& url,
-                           std::shared_ptr<IDirectory> pDirectory,
-                           CFileItemList &items,
-                           const CHints &hints);
+                           const std::shared_ptr<IDirectory>& pDirectory,
+                           CFileItemList& items,
+                           const CHints& hints);
 
   static bool GetDirectory(const CURL& url
                            , CFileItemList &items
@@ -57,9 +57,9 @@ public:
                            , int flags);
 
   static bool GetDirectory(const std::string& strPath,
-                           std::shared_ptr<IDirectory> pDirectory,
-                           CFileItemList &items,
-                           const std::string &strMask,
+                           const std::shared_ptr<IDirectory>& pDirectory,
+                           CFileItemList& items,
+                           const std::string& strMask,
                            int flags);
 
   static bool GetDirectory(const std::string& strPath

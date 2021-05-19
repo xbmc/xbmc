@@ -13,6 +13,7 @@
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 #include <map>
+#include <utility>
 
 class CFileItemList;
 
@@ -33,9 +34,9 @@ public:
   bool HasListItems() const override { return true; };
 
   const ADDON::ScraperPtr& GetAlbumScraper() const { return m_albumscraper; }
-  void SetAlbumScraper(ADDON::ScraperPtr scraper) { m_albumscraper = scraper; }
+  void SetAlbumScraper(ADDON::ScraperPtr scraper) { m_albumscraper = std::move(scraper); }
   const ADDON::ScraperPtr& GetArtistScraper() const { return m_artistscraper; }
-  void SetArtistScraper(ADDON::ScraperPtr scraper) { m_artistscraper = scraper; }
+  void SetArtistScraper(ADDON::ScraperPtr scraper) { m_artistscraper = std::move(scraper); }
 
   /*! \brief Show dialog to change information provider for either artists or albums (not both).
    Has a list to select how settings are to be applied - as system default, to just current item or to all the filtered items on the node.
@@ -56,12 +57,12 @@ protected:
   void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override;
+  bool Save() override;
   void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase

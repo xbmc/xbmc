@@ -28,17 +28,6 @@ bool OPTIONALS::ALSARegister()
 #endif
 
 //-----------------------------------------------------------------------------
-// OSS
-//-----------------------------------------------------------------------------
-
-#ifdef TARGET_LINUX
-bool OPTIONALS::OSSRegister()
-{
-  return false;
-}
-#endif
-
-//-----------------------------------------------------------------------------
 // PulseAudio
 //-----------------------------------------------------------------------------
 
@@ -51,6 +40,24 @@ bool OPTIONALS::PulseAudioRegister()
 }
 #else
 bool OPTIONALS::PulseAudioRegister()
+{
+  return false;
+}
+#endif
+
+//-----------------------------------------------------------------------------
+// Pipewire
+//-----------------------------------------------------------------------------
+
+#ifdef HAS_PIPEWIRE
+#include "cores/AudioEngine/Sinks/pipewire/AESinkPipewire.h"
+bool OPTIONALS::PipewireRegister()
+{
+  bool ret = AE::SINK::CAESinkPipewire::Register();
+  return ret;
+}
+#else
+bool OPTIONALS::PipewireRegister()
 {
   return false;
 }

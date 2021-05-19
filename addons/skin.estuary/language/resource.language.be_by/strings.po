@@ -196,10 +196,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "У сеціве"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Націсніце [B]Добра[/B], каб спыніць"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "адфільтравана"
@@ -207,10 +203,6 @@ msgstr "адфільтравана"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Заснаваны на Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Націсніце [B]Улева[/B] для перамоткі назад, альбо [B]Управа[/B] для перамоткі ўперад"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -499,10 +491,6 @@ msgstr "Катэгорыі"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Абраць набор ілюстрацый да жанраў"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Рэпазіторый"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

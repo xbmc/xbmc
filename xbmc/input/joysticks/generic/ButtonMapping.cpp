@@ -20,7 +20,6 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
-#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -29,7 +28,6 @@
 
 using namespace KODI;
 using namespace JOYSTICK;
-using namespace XbmcThreads;
 
 #define MAPPING_COOLDOWN_MS 50 // Guard against repeated input
 #define AXIS_THRESHOLD 0.75f // Axis must exceed this value to be mapped
@@ -90,8 +88,7 @@ CAxisDetector::CAxisDetector(CButtonMapping* buttonMapping,
     m_type(AXIS_TYPE::UNKNOWN),
     m_initialPositionKnown(false),
     m_initialPosition(0.0f),
-    m_initialPositionChanged(false),
-    m_activationTimeMs(0)
+    m_initialPositionChanged(false)
 {
 }
 
@@ -127,7 +124,7 @@ bool CAxisDetector::OnMotion(float position)
         m_activatedPrimitive =
             CDriverPrimitive(m_axisIndex, m_config.center,
                              CJoystickTranslator::PositionToSemiAxisDirection(position), 1);
-        m_activationTimeMs = SystemClockMillis();
+        m_activationTimeMs = std::chrono::steady_clock::now();
       }
     }
   }
@@ -144,8 +141,11 @@ void CAxisDetector::ProcessMotion()
     bool bIgnore = false;
     if (m_type == AXIS_TYPE::OFFSET)
     {
-      unsigned int elapsedMs = SystemClockMillis() - m_activationTimeMs;
-      if (elapsedMs < TRIGGER_DELAY_MS)
+      auto now = std::chrono::steady_clock::now();
+      auto duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(now - m_activationTimeMs);
+
+      if (duration.count() < TRIGGER_DELAY_MS)
         bIgnore = true;
     }
 
@@ -322,7 +322,6 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
   : m_buttonMapper(buttonMapper),
     m_buttonMap(buttonMap),
     m_keymap(keymap),
-    m_lastAction(0),
     m_frameCount(0)
 {
   assert(m_buttonMapper != nullptr);
@@ -458,19 +457,19 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
 {
   bool bHandled = false;
 
-  const unsigned int now = SystemClockMillis();
+  auto now = std::chrono::steady_clock::now();
 
   bool bTimeoutElapsed = true;
 
   if (m_buttonMapper->NeedsCooldown())
-    bTimeoutElapsed = (now >= m_lastAction + MAPPING_COOLDOWN_MS);
+    bTimeoutElapsed = (now >= m_lastAction + std::chrono::milliseconds(MAPPING_COOLDOWN_MS));
 
   if (bTimeoutElapsed)
   {
     bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_keymap, primitive);
 
     if (bHandled)
-      m_lastAction = SystemClockMillis();
+      m_lastAction = std::chrono::steady_clock::now();
   }
   else if (m_buttonMap->IsIgnored(primitive))
   {
@@ -478,9 +477,10 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
   }
   else
   {
-    const unsigned int elapsed = now - m_lastAction;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAction);
+
     CLog::Log(LOGDEBUG, "Button mapping: rapid input after %ums dropped for profile \"%s\"",
-              elapsed, m_buttonMapper->ControllerID().c_str());
+              duration.count(), m_buttonMapper->ControllerID().c_str());
     bHandled = true;
   }
 

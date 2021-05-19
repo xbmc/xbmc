@@ -43,7 +43,10 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       action.GetHoldTime() < min_hold_time &&
       g_application.GetAppPlayer().IsPlaying())
   {
-    g_application.SwitchToFullScreen();
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+      gui->GetWindowManager().SwitchToFullScreen();
+
     return true;
   }
   return CGUIWindow::OnAction(action);

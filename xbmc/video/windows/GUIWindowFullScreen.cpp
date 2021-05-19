@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowFullScreenDefines.h"
 #include "Application.h"
@@ -49,7 +48,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen()
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
   m_viewModeChanged = true;
-  m_dwShowViewModeTimeout = 0;
+  m_dwShowViewModeTimeout = {};
   m_bShowCurrentTime = false;
   m_loadType = KEEP_IN_MEMORY;
   // audio
@@ -136,7 +135,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_ASPECT_RATIO:
     { // toggle the aspect ratio mode (only if the info is onscreen)
-      if (m_dwShowViewModeTimeout)
+      if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0)
       {
         CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
         vs.m_ViewMode = CViewModeSettings::GetNextQuickCycleViewMode(vs.m_ViewMode);
@@ -146,7 +145,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       }
       else
         m_viewModeChanged = true;
-      m_dwShowViewModeTimeout = XbmcThreads::SystemClockMillis();
+      m_dwShowViewModeTimeout = std::chrono::steady_clock::now();
     }
     return true;
     break;
@@ -240,7 +239,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
 
-      m_dwShowViewModeTimeout = 0;
+      m_dwShowViewModeTimeout = {};
       m_viewModeChanged = true;
 
 
@@ -291,7 +290,7 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
 void CGUIWindowFullScreen::FrameMove()
 {
   float playspeed = g_application.GetAppPlayer().GetPlaySpeed();
-  if (playspeed != 1.0 && !g_application.GetAppPlayer().HasGame() &&
+  if (playspeed != 1.0f && !g_application.GetAppPlayer().HasGame() &&
       !g_application.GetAppPlayer().IsPausedPlayback())
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 
@@ -301,23 +300,28 @@ void CGUIWindowFullScreen::FrameMove()
   //----------------------
   // ViewMode Information
   //----------------------
-  if (m_dwShowViewModeTimeout && XbmcThreads::SystemClockMillis() - m_dwShowViewModeTimeout > 2500)
+
+  auto now = std::chrono::steady_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::milliseconds>(now - m_dwShowViewModeTimeout);
+
+  if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0 && duration.count() > 2500)
   {
-    m_dwShowViewModeTimeout = 0;
+    m_dwShowViewModeTimeout = {};
     m_viewModeChanged = true;
   }
 
-  if (m_dwShowViewModeTimeout)
+  if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0)
   {
     RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
 
     {
       // get the "View Mode" string
-      std::string strTitle = g_localizeStrings.Get(629);
+      const std::string& strTitle = g_localizeStrings.Get(629);
       const auto& vs = g_application.GetAppPlayer().GetVideoSettings();
       int sId = CViewModeSettings::GetViewModeStringIndex(vs.m_ViewMode);
-      std::string strMode = g_localizeStrings.Get(sId);
-      std::string strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
+      const std::string& strMode = g_localizeStrings.Get(sId);
+      std::string strInfo = StringUtils::Format("{} : {}", strTitle, strMode);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);
       OnMessage(msg);
@@ -330,15 +334,13 @@ void CGUIWindowFullScreen::FrameMove()
       float xscale = (float)res.iScreenWidth  / (float)res.iWidth;
       float yscale = (float)res.iScreenHeight / (float)res.iHeight;
 
-      std::string strSizing = StringUtils::Format(g_localizeStrings.Get(245).c_str(),
-                                                 (int)info.SrcRect.Width(),
-                                                 (int)info.SrcRect.Height(),
-                                                 (int)(info.DestRect.Width() * xscale),
-                                                 (int)(info.DestRect.Height() * yscale),
-                                                 CDisplaySettings::GetInstance().GetZoomAmount(),
-                                                 info.videoAspectRatio*CDisplaySettings::GetInstance().GetPixelRatio(),
-                                                 CDisplaySettings::GetInstance().GetPixelRatio(),
-                                                 CDisplaySettings::GetInstance().GetVerticalShift());
+      std::string strSizing = StringUtils::Format(
+          g_localizeStrings.Get(245), (int)info.SrcRect.Width(), (int)info.SrcRect.Height(),
+          (int)(info.DestRect.Width() * xscale), (int)(info.DestRect.Height() * yscale),
+          CDisplaySettings::GetInstance().GetZoomAmount(),
+          info.videoAspectRatio * CDisplaySettings::GetInstance().GetPixelRatio(),
+          CDisplaySettings::GetInstance().GetPixelRatio(),
+          CDisplaySettings::GetInstance().GetVerticalShift());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
@@ -347,18 +349,13 @@ void CGUIWindowFullScreen::FrameMove()
     {
       std::string strStatus;
       if (CServiceBroker::GetWinSystem()->IsFullScreen())
-        strStatus = StringUtils::Format("%s %ix%i@%.2fHz - %s",
-                                        g_localizeStrings.Get(13287).c_str(),
-                                        res.iScreenWidth,
-                                        res.iScreenHeight,
-                                        res.fRefreshRate,
-                                        g_localizeStrings.Get(244).c_str());
+        strStatus = StringUtils::Format("{} {}x{}@{:.2f}Hz - {}", g_localizeStrings.Get(13287),
+                                        res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
+                                        g_localizeStrings.Get(244));
       else
-        strStatus = StringUtils::Format("%s %ix%i - %s",
-                                        g_localizeStrings.Get(13287).c_str(),
-                                        res.iScreenWidth,
-                                        res.iScreenHeight,
-                                        g_localizeStrings.Get(242).c_str());
+        strStatus =
+            StringUtils::Format("{} {}x{} - {}", g_localizeStrings.Get(13287), res.iScreenWidth,
+                                res.iScreenHeight, g_localizeStrings.Get(242));
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
@@ -368,7 +365,7 @@ void CGUIWindowFullScreen::FrameMove()
 
   if (m_viewModeChanged)
   {
-    if (m_dwShowViewModeTimeout)
+    if (m_dwShowViewModeTimeout.time_since_epoch().count() != 0)
     {
       SET_CONTROL_VISIBLE(LABEL_ROW1);
       SET_CONTROL_VISIBLE(LABEL_ROW2);

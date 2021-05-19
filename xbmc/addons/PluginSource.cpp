@@ -22,7 +22,7 @@ CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType) : CA
 {
   std::string provides = addonInfo->Type(addonType)->GetValue("provides").asString();
 
-  for (auto values : addonInfo->Type(addonType)->GetValues())
+  for (const auto& values : addonInfo->Type(addonType)->GetValues())
   {
     if (values.first != "medialibraryscanpath")
       continue;

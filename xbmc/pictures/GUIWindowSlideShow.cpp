@@ -33,7 +33,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/Random.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -88,7 +87,7 @@ void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 
 void CBackgroundPicLoader::Process()
 {
-  unsigned int totalTime = 0;
+  auto totalTime = std::chrono::milliseconds(0);
   unsigned int count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
@@ -96,9 +95,13 @@ void CBackgroundPicLoader::Process()
     {
       if (m_pCallback)
       {
-        unsigned int start = XbmcThreads::SystemClockMillis();
+        auto start = std::chrono::steady_clock::now();
         CTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight);
-        totalTime += XbmcThreads::SystemClockMillis() - start;
+
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+        totalTime += duration;
         count++;
         // tell our parent
         bool bFullSize = false;
@@ -122,8 +125,8 @@ void CBackgroundPicLoader::Process()
     }
   }
   if (count > 0)
-    CLog::Log(LOGDEBUG, "Time for loading %u images: %u ms, average %u ms",
-              count, totalTime, totalTime / count);
+    CLog::Log(LOGDEBUG, "Time for loading {} images: {} ms, average {} ms", count,
+              totalTime.count(), totalTime.count() / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight)
@@ -962,7 +965,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SHOW_PICTURE:
     {
-      std::string strFile = message.GetStringParam();
+      const std::string& strFile = message.GetStringParam();
       Reset();
       CFileItem item(strFile, false);
       Add(&item);
@@ -972,9 +975,9 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_START_SLIDESHOW:
     {
-      std::string strFolder = message.GetStringParam();
+      const std::string& strFolder = message.GetStringParam();
       unsigned int iParams = message.GetParam1();
-      std::string beginSlidePath = message.GetStringParam(1);
+      const std::string& beginSlidePath = message.GetStringParam(1);
       //decode params
       bool bRecursive = false;
       bool bRandom = false;
@@ -1155,7 +1158,7 @@ void CGUIWindowSlideShow::OnLoadPic(
     if (URIUtils::IsInRAR(m_slides.at(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides.at(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
     {
       CURL url(m_slides.at(m_iCurrentSlide)->GetPath());
-      std::string strHostName = url.GetHostName();
+      const std::string& strHostName = url.GetHostName();
       if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
       {
         m_Image[iPic].m_bIsComic = true;
@@ -1322,12 +1325,13 @@ std::string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
 }
 
 
-void CGUIWindowSlideShow::RunSlideShow(std::vector<std::string> paths, int start /* = 0*/)
+void CGUIWindowSlideShow::RunSlideShow(const std::vector<std::string>& paths, int start /* = 0*/)
 {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (dialog)
   {
     std::vector<CFileItemPtr> items;
+    items.reserve(paths.size());
     for (const auto& path : paths)
       items.push_back(std::make_shared<CFileItem>(CTextureUtils::GetWrappedImageURL(path), false));
 

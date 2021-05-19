@@ -106,7 +106,7 @@ void CMatrixGL::Scalef(GLfloat x, GLfloat y, GLfloat z)
 void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
   GLfloat modulus = std::sqrt((x*x)+(y*y)+(z*z));
-  if (modulus != 0.0)
+  if (modulus != 0.0f)
   {
     x /= modulus;
     y /= modulus;
@@ -176,7 +176,7 @@ void CMatrixGL::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx
   up[2] = upz;
 
   GLfloat tmp = std::sqrt(forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]);
-  if (tmp != 0.0)
+  if (tmp != 0.0f)
   {
     forward[0] /= tmp;
     forward[1] /= tmp;
@@ -188,7 +188,7 @@ void CMatrixGL::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx
   side[2] = forward[0]*up[1] - forward[1]*up[0];
 
   tmp = std::sqrt(side[0]*side[0] + side[1]*side[1] + side[2]*side[2]);
-  if (tmp != 0.0)
+  if (tmp != 0.0f)
   {
     side[0] /= tmp;
     side[1] /= tmp;
@@ -235,15 +235,15 @@ bool CMatrixGL::Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat 
   in[3]=1.0;
   __gluMultMatrixVecf(modelMatrix, in, out);
   __gluMultMatrixVecf(projMatrix, out, in);
-  if (in[3] == 0.0)
+  if (in[3] == 0.0f)
     return false;
   in[0] /= in[3];
   in[1] /= in[3];
   in[2] /= in[3];
   /* Map x, y and z to range 0-1 */
-  in[0] = in[0] * 0.5 + 0.5;
-  in[1] = in[1] * 0.5 + 0.5;
-  in[2] = in[2] * 0.5 + 0.5;
+  in[0] = in[0] * 0.5f + 0.5f;
+  in[1] = in[1] * 0.5f + 0.5f;
+  in[2] = in[2] * 0.5f + 0.5f;
 
   /* Map x,y to viewport */
   in[0] = in[0] * viewport[2] + viewport[0];

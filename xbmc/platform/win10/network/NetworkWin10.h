@@ -68,5 +68,3 @@ private:
     PIP_ADAPTER_ADDRESSES m_adapterAddresses;
 };
 
-using CNetwork = CNetworkWin10;
-

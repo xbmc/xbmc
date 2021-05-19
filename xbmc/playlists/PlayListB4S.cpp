@@ -69,7 +69,7 @@ bool CPlayListB4S::LoadData(std::istream& stream)
   while (pEntryElement)
   {
     std::string strFileName = XMLUtils::GetAttribute(pEntryElement, "Playstring");
-    size_t iColon = strFileName.find(":");
+    size_t iColon = strFileName.find(':');
     if (iColon != std::string::npos)
     {
       iColon++;
@@ -112,15 +112,18 @@ void CPlayListB4S::Save(const std::string& strFileName) const
     return ;
   }
   std::string write;
-  write += StringUtils::Format("<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);
+  write += StringUtils::Format("<?xml version={}1.0{} encoding='UTF-8' standalone={}yes{}?>\n", 34,
+                               34, 34, 34);
   write += StringUtils::Format("<WinampXML>\n");
-  write += StringUtils::Format("  <playlist num_entries=\"{0}\" label=\"{1}\">\n", m_vecItems.size(),m_strPlayListName.c_str());
+  write += StringUtils::Format("  <playlist num_entries=\"{0}\" label=\"{1}\">\n",
+                               m_vecItems.size(), m_strPlayListName);
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CFileItemPtr item = m_vecItems[i];
-    write += StringUtils::Format("    <entry Playstring=%cfile:%s%c>\n", 34, item->GetPath().c_str(), 34 );
-    write += StringUtils::Format("      <Name>%s</Name>\n", item->GetLabel().c_str());
-    write += StringUtils::Format("      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
+    write += StringUtils::Format("    <entry Playstring={}file:{}{}>\n", 34, item->GetPath(), 34);
+    write += StringUtils::Format("      <Name>{}</Name>\n", item->GetLabel().c_str());
+    write +=
+        StringUtils::Format("      <Length>{}</Length>\n", item->GetMusicInfoTag()->GetDuration());
   }
   write += StringUtils::Format("  </playlist>\n");
   write += StringUtils::Format("</WinampXML>\n");

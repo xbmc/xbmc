@@ -537,6 +537,7 @@ namespace XBMCAddon
     ControlRadioButton::ControlRadioButton(long x, long y, long width, long height, const String& label,
                                            const char* focusOnTexture,  const char* noFocusOnTexture,
                                            const char* focusOffTexture, const char* noFocusOffTexture,
+                                           const char* focusTexture, const char* noFocusTexture,
                                            long _textOffsetX, long _textOffsetY,
                                            long alignment, const char* font, const char* _textColor,
                                            const char* _disabledColor, long angle,
@@ -554,6 +555,11 @@ namespace XBMCAddon
       strText = label;
 
       // if texture is supplied use it, else get default ones
+      strTextureFocus = focusTexture ? focusTexture :
+        XBMCAddonUtils::getDefaultImage("button", "texturefocus");
+      strTextureNoFocus = noFocusTexture ? noFocusTexture :
+        XBMCAddonUtils::getDefaultImage("button", "texturenofocus");
+
       if (focusOnTexture && noFocusOnTexture)
       {
         strTextureRadioOnFocus = focusOnTexture;
@@ -1201,7 +1207,8 @@ namespace XBMCAddon
       sendLabelBind(vecItems.size());
     }
 
-    void ControlList::internAddListItem(AddonClass::Ref<ListItem> pListItem, bool sendMessage)
+    void ControlList::internAddListItem(const AddonClass::Ref<ListItem>& pListItem,
+                                        bool sendMessage)
     {
       if (pListItem.isNull())
         throw WindowException("NULL ListItem passed to ControlList::addListItem");

@@ -16,7 +16,19 @@
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 
+#include <iostream>
 #include <stdlib.h>
+#include <string>
+#include <vector>
+
+#if defined(TARGET_LINUX)
+namespace
+{
+std::vector<std::string> availableWindowSystems = CCompileInfo::GetAvailableWindowSystems();
+std::array<std::string, 1> availableLogTargets = {"console"};
+
+} // namespace
+#endif
 
 CAppParamParser::CAppParamParser()
 : m_logLevel(LOG_LEVEL_NORMAL),
@@ -63,6 +75,19 @@ void CAppParamParser::DisplayHelp()
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
+#if defined(TARGET_LINUX)
+  printf("  --windowing=<system>\tSelect which windowing method to use.\n");
+  printf("  \t\t\t\tAvailable window systems are:");
+  for (const auto& windowSystem : availableWindowSystems)
+    printf(" %s", windowSystem.c_str());
+  printf("\n");
+  printf("  --logging=<target>\tSelect which log target to use (log file will always be used in "
+         "conjunction).\n");
+  printf("  \t\t\t\tAvailable log targets are:");
+  for (const auto& logTarget : availableLogTargets)
+    printf(" %s", logTarget.c_str());
+  printf("\n");
+#endif
   exit(0);
 }
 
@@ -84,6 +109,40 @@ void CAppParamParser::ParseArg(const std::string &arg)
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")
     m_settingsFile = arg.substr(11);
+#if defined(TARGET_LINUX)
+  else if (arg.substr(0, 12) == "--windowing=")
+  {
+    if (std::find(availableWindowSystems.begin(), availableWindowSystems.end(), arg.substr(12)) !=
+        availableWindowSystems.end())
+      m_windowing = arg.substr(12);
+    else
+    {
+      std::cout << "Selected window system not available: " << arg << std::endl;
+      std::cout << "    Available window systems:";
+      for (const auto& windowSystem : availableWindowSystems)
+        std::cout << " " << windowSystem;
+      std::cout << std::endl;
+      exit(0);
+    }
+  }
+  else if (arg.substr(0, 10) == "--logging=")
+  {
+    if (std::find(availableLogTargets.begin(), availableLogTargets.end(), arg.substr(10)) !=
+        availableLogTargets.end())
+    {
+      m_logTarget = arg.substr(10);
+    }
+    else
+    {
+      std::cout << "Selected logging target not available: " << arg << std::endl;
+      std::cout << "    Available log targest:";
+      for (const auto& logTarget : availableLogTargets)
+        std::cout << " " << logTarget;
+      std::cout << std::endl;
+      exit(0);
+    }
+  }
+#endif
   else if (arg.length() != 0 && arg[0] != '-')
   {
     const CFileItemPtr item = std::make_shared<CFileItem>(arg);

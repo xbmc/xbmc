@@ -66,7 +66,7 @@ std::string CGUIViewStateWindowGames::GetExtensions()
   std::set<std::string> exts = CGameUtils::GetGameExtensions();
 
   // Ensure .zip appears
-  if (std::find(exts.begin(), exts.end(), ".zip") == exts.end())
+  if (exts.find(".zip") == exts.end())
     exts.insert(".zip");
 
   return StringUtils::Join(exts, "|");

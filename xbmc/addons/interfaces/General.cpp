@@ -131,7 +131,8 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
 
   // show settings dialog
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo, ADDON_UNKNOWN,
+                                              OnlyEnabled::YES))
   {
     CLog::Log(LOGERROR, "Interface_General::{} - Could not get addon information for '{}'",
               __FUNCTION__, addon->ID());
@@ -374,9 +375,8 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     StringUtils::Replace(result, "xx", "%p");
   }
   else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
-    result = StringUtils::Format("%s/%s",
-                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
-                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
+    result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
+                                 g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
   else
   {
     CLog::Log(LOGERROR, "Interface_General::{} -  add-on '{}' requests invalid id '{}'",
@@ -439,7 +439,7 @@ bool Interface_General::is_addon_avilable(void* kodiBase,
   }
 
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, false))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, OnlyEnabled::NO))
     return false;
 
   *version = strdup(addonInfo->Version().asString().c_str());

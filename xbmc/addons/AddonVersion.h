@@ -27,16 +27,20 @@ namespace ADDON
   class AddonVersion
   {
   public:
-    AddonVersion(const AddonVersion& other) { *this = other; }
-    explicit AddonVersion(const std::string& version);
     explicit AddonVersion(const char* version = nullptr);
+    explicit AddonVersion(const std::string& version);
+
+    AddonVersion(const AddonVersion& other) = default;
+    AddonVersion(AddonVersion&& other) = default;
+    AddonVersion& operator=(const AddonVersion& other) = default;
+    AddonVersion& operator=(AddonVersion&& other) = default;
+
     virtual ~AddonVersion() = default;
 
     int Epoch() const { return mEpoch; }
     const std::string &Upstream() const { return mUpstream; }
     const std::string &Revision() const { return mRevision; }
 
-    AddonVersion& operator=(const AddonVersion& other);
     bool operator< (const AddonVersion& other) const;
     bool operator> (const AddonVersion& other) const;
     bool operator<=(const AddonVersion& other) const;
@@ -56,6 +60,4 @@ namespace ADDON
 
     static int CompareComponent(const char *a, const char *b);
   };
-
-  inline AddonVersion& AddonVersion::operator=(const AddonVersion& other) = default;
 }

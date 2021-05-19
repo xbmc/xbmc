@@ -30,11 +30,11 @@ public:
   std::string SerializeValues(const CSettingsManager* settingsManager) const override;
 
 private:
-  void SerializeSection(CVariant& parent, std::shared_ptr<CSettingSection> section) const;
-  void SerializeCategory(CVariant& parent, std::shared_ptr<CSettingCategory> category) const;
-  void SerializeGroup(CVariant& parent, std::shared_ptr<CSettingGroup> group) const;
-  void SerializeSetting(CVariant& parent, std::shared_ptr<CSetting> setting) const;
-  CVariant SerializeSettingValue(std::shared_ptr<CSetting> setting) const;
+  void SerializeSection(CVariant& parent, const std::shared_ptr<CSettingSection>& section) const;
+  void SerializeCategory(CVariant& parent, const std::shared_ptr<CSettingCategory>& category) const;
+  void SerializeGroup(CVariant& parent, const std::shared_ptr<CSettingGroup>& group) const;
+  void SerializeSetting(CVariant& parent, const std::shared_ptr<CSetting>& setting) const;
+  CVariant SerializeSettingValue(const std::shared_ptr<CSetting>& setting) const;
 
   bool m_compact;
 };

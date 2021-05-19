@@ -1,0 +1,26 @@
+From 1e57e7f49f1a74ee11d3c8dd5d407f35eecd5167 Mon Sep 17 00:00:00 2001
+From: Lukas Rusak <lorusak@gmail.com>
+Date: Sat, 10 Apr 2021 08:16:48 -0700
+Subject: [PATCH 2/4] ffmpeg: windows: configure: fix zlib conflict
+
+---
+ configure | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/configure b/configure
+index 4b85e881b1..da457705d1 100755
+--- a/configure
++++ b/configure
+@@ -7627,6 +7627,9 @@ print_config CONFIG_ "$config_files" $CONFIG_LIST       \
+                                      $CONFIG_EXTRA      \
+                                      $ALL_COMPONENTS    \
+ 
++echo "#if defined(HAVE_UNISTD_H) && HAVE_UNISTD_H == 0" >> $TMPH
++echo "#undef HAVE_UNISTD_H" >> $TMPH
++echo "#endif" >> $TMPH
+ echo "#endif /* FFMPEG_CONFIG_H */" >> $TMPH
+ echo "endif # FFMPEG_CONFIG_MAK" >> ffbuild/config.mak
+ 
+-- 
+2.29.2
+

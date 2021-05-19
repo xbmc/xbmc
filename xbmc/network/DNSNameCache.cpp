@@ -35,7 +35,8 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 
   if (address != INADDR_NONE)
   {
-    strIpAddress = StringUtils::Format("%lu.%lu.%lu.%lu", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
+    strIpAddress = StringUtils::Format("{}.{}.{}.{}", (address & 0xFF), (address & 0xFF00) >> 8,
+                                       (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24);
     return true;
   }
 
@@ -47,6 +48,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   // perform netbios lookup (win32 is handling this via gethostbyname)
   char nmb_ip[100];
   char line[200];
+  std::vector<std::string> addresses;
 
   std::string cmd = "nmblookup " + strHostName;
   FILE* fp = popen(cmd.c_str(), "r");
@@ -57,10 +59,26 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
       if (sscanf(line, "%99s *<00>\n", nmb_ip))
       {
         if (inet_addr(nmb_ip) != INADDR_NONE)
-          strIpAddress = nmb_ip;
+          addresses.emplace_back(nmb_ip);
       }
     }
     pclose(fp);
+  }
+
+  for (auto ip : addresses)
+  {
+    cmd = "nmblookup -A " + ip;
+    fp = popen(cmd.c_str(), "r");
+    if (fp)
+    {
+      while (fgets(line, sizeof line, fp))
+        ;
+      if (pclose(fp) == 0)
+      {
+        strIpAddress = ip;
+        break;
+      }
+    }
   }
 
   if (!strIpAddress.empty())
@@ -74,8 +92,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   struct hostent *host = gethostbyname(strHostName.c_str());
   if (host && host->h_addr_list[0])
   {
-    strIpAddress = StringUtils::Format("%d.%d.%d.%d",
-                                       (unsigned char)host->h_addr_list[0][0],
+    strIpAddress = StringUtils::Format("{}.{}.{}.{}", (unsigned char)host->h_addr_list[0][0],
                                        (unsigned char)host->h_addr_list[0][1],
                                        (unsigned char)host->h_addr_list[0][2],
                                        (unsigned char)host->h_addr_list[0][3]);

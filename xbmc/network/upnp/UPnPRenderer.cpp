@@ -109,6 +109,7 @@ CUPnPRenderer::SetupServices()
         ",http-get:*:audio/RED:*"
         ",http-get:*:audio/VDVI:*"
         ",http-get:*:audio/ac3:*"
+        ",http-get:*:audio/webm:*"
         ",http-get:*:audio/vorbis:*"
         ",http-get:*:audio/speex:*"
         ",http-get:*:audio/flac:*"
@@ -128,6 +129,7 @@ CUPnPRenderer::SetupServices()
         ",http-get:*:image/ief:*"
         ",http-get:*:image/png:*"
         ",http-get:*:image/tiff:*"
+        ",http-get:*:image/webp:*"
         ",http-get:*:video/avi:*"
         ",http-get:*:video/divx:*"
         ",http-get:*:video/mpeg:*"
@@ -151,6 +153,7 @@ CUPnPRenderer::SetupServices()
         ",http-get:*:video/MP1S:*"
         ",http-get:*:video/MP2P:*"
         ",http-get:*:video/BMPEG:*"
+        ",http-get:*:video/webm:*"
         ",http-get:*:video/xvid:*"
         ",http-get:*:video/x-divx:*"
         ",http-get:*:video/x-matroska:*"
@@ -285,10 +288,10 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
     std::string buffer;
 
-    buffer = StringUtils::Format("%" PRId64, data["volume"].asInteger());
+    buffer = std::to_string(data["volume"].asInteger());
     rct->SetStateVariable("Volume", buffer.c_str());
 
-    buffer = StringUtils::Format("%" PRId64, 256 * (data["volume"].asInteger() * 60 - 60) / 100);
+    buffer = std::to_string(256 * (data["volume"].asInteger() * 60 - 60) / 100);
     rct->SetStateVariable("VolumeDb", buffer.c_str());
 
     rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
@@ -347,9 +350,9 @@ CUPnPRenderer::UpdateState()
         if (slideshow)
         {
           std::string index;
-          index = StringUtils::Format("%d", slideshow->NumSlides());
+          index = std::to_string(slideshow->NumSlides());
           avt->SetStateVariable("NumberOfTracks", index.c_str());
-          index = StringUtils::Format("%d", slideshow->CurrentSlide());
+          index = std::to_string(slideshow->CurrentSlide());
           avt->SetStateVariable("CurrentTrack", index.c_str());
 
         }

@@ -129,7 +129,7 @@ struct kiss_fft_state{
 #else
 #  define KISS_FFT_COS(phase) (kiss_fft_scalar) cos(phase)
 #  define KISS_FFT_SIN(phase) (kiss_fft_scalar) sin(phase)
-#  define HALF_OF(x) ((x)*.5)
+#  define HALF_OF(x) ((x)*.5f)
 #endif
 
 #define  kf_cexp(x,phase) \

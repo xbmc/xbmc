@@ -415,7 +415,7 @@ bool Interface_Base::set_setting_int(void* kodiBase, const char* id, int value)
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, StringUtils::Format("%d", value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, std::to_string(value)))
     return true;
 
   if (!addon->UpdateSettingInt(id, value))
@@ -440,10 +440,10 @@ bool Interface_Base::set_setting_float(void* kodiBase, const char* id, float val
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, StringUtils::Format("%f", value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, StringUtils::Format("{:f}", value)))
     return true;
 
-  if (!addon->UpdateSettingNumber(id, value))
+  if (!addon->UpdateSettingNumber(id, static_cast<double>(value)))
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid setting type", __func__);
     return false;

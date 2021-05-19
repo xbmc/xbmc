@@ -461,6 +461,24 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Player
+      /// @brief \python_func{ getPlayingItem() }
+      ///-----------------------------------------------------------------------
+      /// Returns the current playing item.
+      ///
+      /// @return                    Playing item
+      /// @throws Exception          If player is not playing a file.
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getPlayingItem();
+#else
+      XBMCAddon::xbmcgui::ListItem* getPlayingItem();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
       /// @brief \python_func{ getTime() }
       /// Get playing time.
       ///

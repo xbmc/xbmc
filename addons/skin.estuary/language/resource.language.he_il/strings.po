@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "הדירוג שלך"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "מידע מורחב"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "‎דפים"
@@ -192,10 +196,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "זמין"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "לחץ על [B]אישור[/B] כדי לעצור"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "מסונן"
@@ -203,10 +203,6 @@ msgstr "מסונן"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "מבוסס אריאל"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "לחצו על [B]שמאלה[/B] כדי להריץ אחורה, או [B]ימינה[/B] כדי להריץ קדימה"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -274,7 +270,7 @@ msgstr "שידור אינו זמין"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "מסתיים ב-"
+msgstr "מסתיים ב"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -491,10 +487,6 @@ msgstr "קטגוריות"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "בחר חבילת סגנונות פאנארט"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "מאגר (Repository)"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

@@ -53,7 +53,7 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
 
   default:
     {
-      if(MetadataPercentage(vecItems) > 0.25)
+      if (MetadataPercentage(vecItems) > 0.25f)
         return DEFAULT_VIEW_INFO;
       else
         return DEFAULT_VIEW_LIST;
@@ -182,7 +182,7 @@ bool CAutoSwitch::ByFileCount(const CFileItemList& vecItems)
 {
   if (vecItems.Size() == 0) return false;
   float fPercent = (float)vecItems.GetFileCount() / vecItems.Size();
-  return (fPercent > 0.25);
+  return (fPercent > 0.25f);
 }
 
 // returns true if:

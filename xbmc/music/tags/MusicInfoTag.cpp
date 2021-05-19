@@ -161,7 +161,7 @@ const std::string &CMusicInfoTag::GetType() const
 }
 
 int CMusicInfoTag::GetYear() const
-{  
+{
   return atoi(GetYearString().c_str());
 }
 
@@ -433,16 +433,16 @@ void CMusicInfoTag::SetYear(int year)
   // Parse integer year value into YYYY ISO8601 format (partial) date string
   // Add century for to 2 digit numbers, 41 -> 1941, 40 -> 2040
   if (year > 99)
-    SetReleaseDate(StringUtils::Format("%04i", year));
+    SetReleaseDate(StringUtils::Format("{:04}", year));
   else if (year > 40)
-    SetReleaseDate(StringUtils::Format("%04i", 19 + year));
+    SetReleaseDate(StringUtils::Format("{:04}", 19 + year));
   else  if (year > 0)
-    SetReleaseDate(StringUtils::Format("%04i", 20 + year));
+    SetReleaseDate(StringUtils::Format("{:04}", 20 + year));
   else
     m_strReleaseDate.clear();
 }
 
-void CMusicInfoTag::SetDatabaseId(long id, const std::string &type)
+void CMusicInfoTag::SetDatabaseId(int id, const std::string &type)
 {
   m_iDbId = id;
   m_type = type;
@@ -495,9 +495,8 @@ void CMusicInfoTag::AddReleaseDate(const std::string& strDateYear, bool isMonth 
     std::string strYYYY = GetReleaseYear();
     if (strYYYY.empty())
       strYYYY = "0000"; // Fake year when TYER not read yet
-    m_strReleaseDate =
-      StringUtils::Format("%s-%s-%s", strYYYY, StringUtils::Left(strDateYear, 2),
-        StringUtils::Right(strDateYear, 2));
+    m_strReleaseDate = StringUtils::Format("{}-{}-{}", strYYYY, StringUtils::Left(strDateYear, 2),
+                                           StringUtils::Right(strDateYear, 2));
   }
   // Given YYYY only (from YEAR tag) and already have YYYY-MM or YYYY-MM-DD (from DATE tag)
   else if (strDateYear.size() == 4 && (m_strReleaseDate.size() > 4))
@@ -758,7 +757,7 @@ void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
   m_albumReleaseType = releaseType;
 }
 
-void CMusicInfoTag::SetType(const MediaType mediaType)
+void CMusicInfoTag::SetType(const MediaType& mediaType)
 {
   m_type = mediaType;
 }
@@ -1107,7 +1106,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     for (int i = 0; i < iMusicRolesSize; ++i)
     {
       int idRole;
-      long idArtist;
+      int idArtist;
       std::string strArtist;
       std::string strRole;
       ar >> idRole;
@@ -1269,7 +1268,7 @@ const std::string CMusicInfoTag::GetContributorsText() const
   std::string strLabel;
   for (const auto& credit : m_musicRoles)
   {
-    strLabel += StringUtils::Format("%s\n", credit.GetArtist().c_str());
+    strLabel += StringUtils::Format("{}\n", credit.GetArtist());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }
@@ -1279,8 +1278,7 @@ const std::string CMusicInfoTag::GetContributorsAndRolesText() const
   std::string strLabel;
   for (const auto& credit : m_musicRoles)
   {
-    strLabel +=
-        StringUtils::Format("%s - %s\n", credit.GetRoleDesc().c_str(), credit.GetArtist().c_str());
+    strLabel += StringUtils::Format("{} - {}\n", credit.GetRoleDesc(), credit.GetArtist());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }

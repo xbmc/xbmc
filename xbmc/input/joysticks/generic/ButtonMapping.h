@@ -15,6 +15,7 @@
 #include "input/mouse/MouseTypes.h"
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <stdint.h>
@@ -215,7 +216,7 @@ private:
   bool m_initialPositionKnown; // set to true on first motion
   float m_initialPosition; // set to position of first motion
   bool m_initialPositionChanged; // set to true when position differs from the initial position
-  unsigned int
+  std::chrono::time_point<std::chrono::steady_clock>
       m_activationTimeMs; // only used to delay anomalous trigger mapping to detect full range
 };
 
@@ -385,7 +386,7 @@ private:
   std::map<XBMCKey, CKeyDetector> m_keys;
   std::map<MOUSE::BUTTON_ID, CMouseButtonDetector> m_mouseButtons;
   std::unique_ptr<CPointerDetector> m_pointer;
-  unsigned int m_lastAction;
+  std::chrono::time_point<std::chrono::steady_clock> m_lastAction;
   uint64_t m_frameCount;
 };
 } // namespace JOYSTICK

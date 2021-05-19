@@ -39,6 +39,8 @@ public:
 
   /** Fills the list with all visible view modes
    */
-  static void ViewModesFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
-
+  static void ViewModesFiller(const std::shared_ptr<const CSetting>& setting,
+                              std::vector<IntegerSettingOption>& list,
+                              int& current,
+                              void* data);
 };

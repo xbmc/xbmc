@@ -8,18 +8,17 @@
 
 #pragma once
 
-#include "DVDResource.h"
 #include "threads/CriticalSection.h"
 
 #include <ass/ass.h>
 
 /** Wrapper for Libass **/
 
-class CDVDSubtitlesLibass : public IDVDResourceCounted<CDVDSubtitlesLibass>
+class CDVDSubtitlesLibass
 {
 public:
   CDVDSubtitlesLibass();
-  ~CDVDSubtitlesLibass() override;
+  ~CDVDSubtitlesLibass();
 
   ASS_Image* RenderImage(int frameWidth, int frameHeight, int videoWidth, int videoHeight, int sourceWidth, int sourceHeight,
                          double pts, int useMargin = 0, double position = 0.0, int* changes = NULL);

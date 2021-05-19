@@ -48,7 +48,8 @@ public:
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
-  static std::string GetHomePath(std::string strTarget = "KODI_HOME"); // default target is "KODI_HOME"
+  static std::string GetHomePath(
+      const std::string& strTarget = "KODI_HOME"); // default target is "KODI_HOME"
   static bool ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps);
   static void GetFileAndProtocol(const std::string& strURL, std::string& strDir);
   static int GetDVDIfoTitle(const std::string& strPathFile);
@@ -194,6 +195,12 @@ public:
   static double ConvertMilliSecsToSecs(int64_t offset) { return offset / 1000.0; }
   static int64_t ConvertMilliSecsToSecsInt(int64_t offset) { return offset / 1000; }
   static int64_t ConvertMilliSecsToSecsIntRounded(int64_t offset) { return ConvertMilliSecsToSecsInt(offset + 499); }
+
+  /** \brief Copy files from the application bundle over to the user data directory in Application Support/Kodi.
+  */
+  static void CopyUserDataIfNeeded(const std::string& strPath,
+                                   const std::string& file,
+                                   const std::string& destname = "");
 
 #if !defined(TARGET_WINDOWS)
 private:

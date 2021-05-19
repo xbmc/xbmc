@@ -24,6 +24,6 @@ public:
   bool Remove(const CURL& url) override;
   bool RemoveRecursive(const CURL& url) override;
 private:
-  bool Create(std::string path);
+  bool Create(const std::string& path);
 };
 }

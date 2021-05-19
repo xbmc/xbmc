@@ -716,7 +716,7 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#168"
 msgid "{0:s}- {1:s}"
 msgstr ""
@@ -2039,14 +2039,16 @@ msgctxt "#434"
 msgid "From {0:s} at {1:d} {2:s}"
 msgstr ""
 
+#. Headline of a dialog that pops up when a user tries to play a video that is located on an optical disc (Blu-ray, DVD) but the current KODI device doesn't have the according drive
 #: xbmc/Application.cpp
 msgctxt "#435"
 msgid "No optical disc drive detected"
 msgstr ""
 
-#: xbmc/Application.cpp
+#. Message body of a dialog that pops up when a user tries to play a video that is located on an optical disc (Blu-ray, DVD) but the current KODI device doesn't have the according drive
+#: xbmc/storage/MediaManager.cpp
 msgctxt "#436"
-msgid "You need an optical disc drive to play this video"
+msgid "This video is stored on an optical disc (e.g. DVD, Blu-ray) and cannot be played as your device does not have an appropriate drive."
 msgstr ""
 
 msgctxt "#437"
@@ -2586,6 +2588,8 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/PlayListPlayer.cpp
+#: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
 msgctxt "#559"
 msgid "Playlist"
 msgstr ""
@@ -4229,6 +4233,7 @@ msgctxt "#1222"
 msgid "Music & video & pictures & files"
 msgstr ""
 
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#1223"
 msgid "Disabled"
 msgstr ""
@@ -4344,8 +4349,13 @@ msgctxt "#1302"
 msgid "Volume control steps"
 msgstr ""
 
-#empty strings from id 1303 to 1374
+#empty strings from id 1303 to 1373
 #strings from 1350 to 1449 are reserved for weather translation
+
+#. Weather token
+msgctxt "#1374"
+msgid "Breezy"
+msgstr ""
 
 #. Weather token
 msgctxt "#1375"
@@ -4773,7 +4783,19 @@ msgctxt "#2104"
 msgid "Check the log for more information."
 msgstr ""
 
-#empty strings from id 2105 to 9999
+#empty strings from id 2105 to 2202
+
+#: system/settings/settings.xml
+msgctxt "#2203"
+msgid "Use DTS Core"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#2204"
+msgid "Select this option if you want to passthrough DTS-HD formats as DTS, otherwise, DTS-HD formats will be played via PCM"
+msgstr ""
+
+#empty strings from id 2205 to 9999
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10000"
@@ -4940,12 +4962,14 @@ msgctxt "#10040"
 msgid "Add-on browser"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/peripherals/dialogs/GUIDialogPeripheralSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10041"
 msgid "Reset above settings to default"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/peripherals/dialogs/GUIDialogPeripheralSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr ""
@@ -4958,16 +4982,17 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr ""
 
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10046"
 msgid "No categories available"
 msgstr ""
 
-#: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
+#: xbmc/settings/dialogs/GUIDialogSettingsBase.cpp
 msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
 msgstr ""
@@ -6104,6 +6129,8 @@ msgctxt "#13023"
 msgid "Successfully removed storage device"
 msgstr ""
 
+#empty strings from id 13024 to 13025
+
 #: system/settings/settings.xml
 msgctxt "#13026"
 msgid "Try to wakeup remote servers on access"
@@ -6896,7 +6923,7 @@ msgid "There are no presets available for this visualisation"
 msgstr ""
 
 msgctxt "#13390"
-msgid "There are no settings available\nfor this visualisation"
+msgid "There are no settings available[CR]for this visualisation"
 msgstr ""
 
 #: xbmc/ContextMenus.h
@@ -7856,10 +7883,7 @@ msgctxt "#14084"
 msgid "Queue songs on selection"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14085"
-msgid "Whitelist"
-msgstr ""
+#empty string with id 14085
 
 #: system/settings/settings.xml
 msgctxt "#14086"
@@ -8077,7 +8101,22 @@ msgctxt "#14125"
 msgid "Input"
 msgstr ""
 
-#empty strings from id 14126 to 14199
+#: system/settings/settings.xml
+msgctxt "#14126"
+msgid "Whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14127"
+msgid "Allow 3:2 pulldown refresh rates"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14128"
+msgid "Allow double refresh rates"
+msgstr ""
+
+#empty strings from id 14129 to 14199
 
 #: system/settings/settings.xml
 msgctxt "#14200"
@@ -8754,6 +8793,8 @@ msgctxt "#16034"
 msgid "Couldn't get songs from database."
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 msgctxt "#16035"
 msgid "Party mode playlist"
@@ -8919,7 +8960,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16303"
-msgid "Bicubic"
+msgid "Bicubic (B-Spline)"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -8972,7 +9013,10 @@ msgctxt "#16313"
 msgid "VDPAU - Sharpness"
 msgstr ""
 
-#empty string with id 16314
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16314"
+msgid "Bicubic (Mitchell)"
+msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16315"
@@ -9005,7 +9049,10 @@ msgctxt "#16320"
 msgid "DXVA"
 msgstr ""
 
-#empty string with id 16321
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16321"
+msgid "Bicubic (Catmull-Rom)"
+msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16322"
@@ -9027,7 +9074,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr ""
 
-#empty string with id 16326
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16326"
+msgid "Bicubic (0,0.75)"
+msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16327"
@@ -9044,7 +9094,12 @@ msgctxt "#16329"
 msgid "VAAPI - Motion compensated"
 msgstr ""
 
-#empty strings from id 16330 to 16333
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#16330"
+msgid "Bicubic (0,1.)"
+msgstr ""
+
+#empty strings from id 16331 to 16333
 
 #. Description of OSD video settings for deinterlace method with label #16334
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -9565,7 +9620,11 @@ msgctxt "#19071"
 msgid "Update interval"
 msgstr ""
 
-#empty string with id 19072
+#. Dialog warning text for invalid timer setting
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#19072"
+msgid "In order to add/update a timer the end date and time must be greater than the start date and time."
+msgstr ""
 
 #. pvr settings "delay channel switch" setting label
 #: system/settings/settings.xml
@@ -10422,12 +10481,13 @@ msgctxt "#19215"
 msgid "Reminders"
 msgstr ""
 
-#. used by several skins
+#. label for 'all channels' value for 'channels' selector control in pvr radio guide search dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#19216"
 msgid "All radio channels"
 msgstr ""
 
-#. label for 'all channels' value for 'channels' selector control in pvr guide search dialog
+#. label for 'all channels' value for 'channels' selector control in pvr TV guide search dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#19217"
 msgid "All TV channels"
@@ -11109,7 +11169,31 @@ msgctxt "#19329"
 msgid "Allow backend channel numbers with more than one PVR add-on"
 msgstr ""
 
-#empty strings from id 19330 to 19498
+#. pvr settings "switch to channel on reminder auto-close" setting label
+#: system/settings/settings.xml
+msgctxt "#19330"
+msgid "Switch to channel when auto-closing the reminder popup"
+msgstr ""
+
+#. additional text for reminder announcement dialog, used if a recording can be scheduled
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19331"
+msgid "(Auto-close of this reminder will switch to channel...)"
+msgstr ""
+
+#. text for event log entry for logging auto channel switch for auto-closed reminders
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19332"
+msgid "Switched to channel for auto-closed PVR reminder for '{0:s}' on channel '{1:s}' at '{2:s}'"
+msgstr ""
+
+#. text for event log entry for logging auto scheduled recordings for auto-closed reminders
+#: xbmc/pvr/timers/PVRGUIActions.cpp
+msgctxt "#19333"
+msgid "Switched to channel for auto-closed PVR reminder for channel '{0:s}' at '{1:s}'"
+msgstr ""
+
+#empty strings from id 19334 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -15786,9 +15870,51 @@ msgctxt "#24171"
 msgid "Broken"
 msgstr ""
 
+#empty strings from id 24172 to 24179
 #24171-24179 reserved for future use of lifecycle state name (to have continuous chain of GUI)
 
-#empty strings from id 24180 to 24990
+#. The minimum version a dependency must meet. This is set in the <requires> tag of the dependee
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#24180"
+msgid "Minimum: {0:s}{3:s}"
+msgstr ""
+
+#. The minimum version, plus the version going to be installed
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24181"
+msgid "Minimum: {0:s} => Install: {2:s}{3:s}"
+msgstr ""
+
+#. The minimum version, plus the currently installed version
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24182"
+msgid "Minimum: {0:s} / Installed: {1:s}{3:s}"
+msgstr ""
+
+#. The minimum version, the currently installed, plus the updated version we're going to install
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24183"
+msgid "Minimum: {0:s} / Installed: {1:s} => Update to: {2:s}{3:s}"
+msgstr ""
+
+#. used in #24180 - #24183 as {3:s}
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24184"
+msgid " (optional)"
+msgstr ""
+
+#. The minimum version, only lower versions are available for install
+#. {3:s} reserved for an empty string or the " (optional)" optional string. see #24184
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#24185"
+msgid "Minimum: {0:s} / Not available{3:s}"
+msgstr ""
+
+#empty strings from id 24186 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -17058,7 +17184,34 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr ""
 
-#empty strings from id 34203 to 34299
+#empty strings from id 34203 to 34219
+
+#. Manual HDR toggle (ACTION_HDR_TOGGLE) - HDR On/Off toast caption
+#: xbmc/Application.cpp
+msgctxt "#34220"
+msgid "HDR status"
+msgstr ""
+
+#. Manual HDR toggle (ACTION_HDR_TOGGLE) - HDR Off toast message
+#: xbmc/Application.cpp
+msgctxt "#34221"
+msgid "Off"
+msgstr ""
+
+#. Manual HDR toggle (ACTION_HDR_TOGGLE) - HDR On toast message
+#: xbmc/Application.cpp
+msgctxt "#34222"
+msgid "On"
+msgstr ""
+
+#empty string with id 34223
+
+#: xbmc/Application.cpp
+msgctxt "#34224"
+msgid "Tone mapping method"
+msgstr ""
+
+#empty strings from id 34225 to 34299
 
 #: xbmc/network/windows/ZeroconfWIN.cpp
 msgctxt "#34300"
@@ -17932,6 +18085,7 @@ msgstr ""
 
 #. Label on emulators with a savestate in the emulator selection dialog
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+#: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
 msgctxt "#35259"
 msgid "Saved"
 msgstr ""
@@ -19371,7 +19525,7 @@ msgstr ""
 #. Description of setting with label #13436 "Use display HDR capabilities"
 #: system/settings/settings.xml
 msgctxt "#36299"
-msgid "Switch display into HDR mode if media with HDR information is played.\nIf disabled, HDR information are applied using Kodi's internal HDR path."
+msgid "Switch display into HDR mode if media with HDR information is played.[CR]If disabled, HDR information are applied using Kodi's internal HDR path."
 msgstr ""
 
 #. Description of setting with label #20226 "Movie set information folder"
@@ -19706,11 +19860,7 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#. Description of setting with label #14085 "Whitelist"
-#: system/settings/settings.xml
-msgctxt "#36356"
-msgid "Whitelisted modes are allowed to be switched to when changing resolution and refresh rate"
-msgstr ""
+#empty string with id 36356
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
@@ -20159,7 +20309,12 @@ msgctxt "#36433"
 msgid "When enabled, VAAPI render method is preferred and the CPU has less load. If you experience hangs, disable this option."
 msgstr ""
 
-#empty strings from id 36434 to 36435
+#: system/settings/settings.xml
+msgctxt "#36434"
+msgid "If enabled, switch to the channel with the programme to remind when auto-closing the reminder popup."
+msgstr ""
+
+#empty string with id 36435
 
 #. Description for setting #310: "Keyboard layouts"
 #: system/settings/settings.xml
@@ -20187,7 +20342,25 @@ msgctxt "#36442"
 msgid "Set the number of volume control steps."
 msgstr ""
 
-#empty strings from id 36443 to 36459
+#. Description of setting with label #14126 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36443"
+msgid "Whitelisted modes give the user the control to choose which display modes are allowed or not allowed to be used"
+msgstr ""
+
+#. Description of setting with label #14127 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36444"
+msgid "Select this option to allow using 3:2 pulldown refresh rates (playing 23.976 FPS video on a 59.94 Hz monitor or playing 24 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 23.976 Hz or 24 Hz mode."
+msgstr ""
+
+#. Description of setting with label #14128 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36445"
+msgid "Select this option to allow using double refresh rates (playing 29.97 FPS video on a 59.94 Hz monitor or playing 30 FPS video on a 60 Hz monitor). You may want to use this option if your monitor doesn't have a 29.97 Hz or 30 Hz mode."
+msgstr ""
+
+#empty strings from id 36446 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
@@ -20480,7 +20653,19 @@ msgctxt "#36556"
 msgid "Tone mapping parameter"
 msgstr ""
 
-#empty strings from id 36557 to 36559
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36557"
+msgid "ACES Filmic"
+msgstr ""
+
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36558"
+msgid "Hable"
+msgstr ""
+
+#empty string with id 36559
 
 #: system/settings/settings.xml
 msgctxt "#36560"
@@ -21082,7 +21267,7 @@ msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr ""
 
-#empty string id 37024
+#empty string with id 37024
 
 #: system/settings/settings.xml
 msgctxt "#37025"
@@ -22011,7 +22196,7 @@ msgctxt "#39028"
 msgid "Addon \"{0:s}\"[CR]Origin \"{1:s}\"[CR]Version \"{2:s}\"[CR]- will uninstall and be replaced. Would you like to proceed?"
 msgstr ""
 
-#empty string id 39029
+#empty string with id 39029
 
 #. Media source, a filter and smart playlist rule option
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -22171,10 +22356,14 @@ msgctxt "#39123"
 msgid "Artwork"
 msgstr ""
 
+#empty string with id 39124
+
 #: system/settings/settings.xml
 msgctxt "#39125"
 msgid "Enable tag reading in file view"
 msgstr ""
+
+#empty string with id 39126
 
 #: system/settings/settings.xml
 msgctxt "#39127"
@@ -22242,6 +22431,8 @@ msgctxt "#39138"
 msgid "The amount of artwork automatically selected - [Maximum] all local images and remote art; [Basic] save space on limited devices or when using a simple skin; [Custom] configured by user for detailed control; [None] no art"
 msgstr ""
 
+#empty string with id 39139
+
 #. Value of setting with label #39137 "Artwork level"
 #: system/settings/settings.xml
 msgctxt "#39140"
@@ -22258,6 +22449,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39142"
 msgid "Custom"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#39143"
@@ -22303,7 +22495,7 @@ msgctxt "#39150"
 msgid "Limit the music video artwork fetched locally or applied from scraper remote art results to just those art types in the whitelist"
 msgstr ""
 
-#.Display Hardware scaling filter setting toggle
+#. Display Hardware scaling filter setting toggle
 msgctxt "#39151"
 msgid "Display hardware scaling filter"
 msgstr ""
@@ -22311,4 +22503,9 @@ msgstr ""
 #. Description
 msgctxt "#39152"
 msgid "Integer scaling (IS) is a Nearest-Neighbor(NN) upscaling technique using Display Engine"
+msgstr ""
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39153"
+msgid "Windowing system:"
 msgstr ""

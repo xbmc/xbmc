@@ -185,7 +185,8 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 
   if (m_pageControl)
   {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_scrollOffset / m_itemHeight));
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl,
+                    MathUtils::round_int(static_cast<double>(m_scrollOffset / m_itemHeight)));
     SendWindowMessage(msg);
   }
 
@@ -410,10 +411,10 @@ std::string CGUITextBox::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label = StringUtils::Format("%u", GetNumPages());
+    label = std::to_string(GetNumPages());
     break;
   case CONTAINER_CURRENT_PAGE:
-    label = StringUtils::Format("%u", GetCurrentPage());
+    label = std::to_string(GetCurrentPage());
     break;
   default:
     break;

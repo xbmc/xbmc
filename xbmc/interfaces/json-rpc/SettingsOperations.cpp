@@ -341,7 +341,8 @@ SettingLevel CSettingsOperations::ParseSettingLevel(const std::string &strLevel)
   return SettingLevel::Standard;
 }
 
-bool CSettingsOperations::SerializeISetting(std::shared_ptr<const ISetting> setting, CVariant &obj)
+bool CSettingsOperations::SerializeISetting(const std::shared_ptr<const ISetting>& setting,
+                                            CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -351,7 +352,8 @@ bool CSettingsOperations::SerializeISetting(std::shared_ptr<const ISetting> sett
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingSection(std::shared_ptr<const CSettingSection> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingSection(
+    const std::shared_ptr<const CSettingSection>& setting, CVariant& obj)
 {
   if (!SerializeISetting(setting, obj))
     return false;
@@ -363,7 +365,8 @@ bool CSettingsOperations::SerializeSettingSection(std::shared_ptr<const CSetting
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingCategory(std::shared_ptr<const CSettingCategory> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingCategory(
+    const std::shared_ptr<const CSettingCategory>& setting, CVariant& obj)
 {
   if (!SerializeISetting(setting, obj))
     return false;
@@ -375,12 +378,14 @@ bool CSettingsOperations::SerializeSettingCategory(std::shared_ptr<const CSettin
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingGroup(std::shared_ptr<const CSettingGroup> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingGroup(const std::shared_ptr<const CSettingGroup>& setting,
+                                                CVariant& obj)
 {
   return SerializeISetting(setting, obj);
 }
 
-bool CSettingsOperations::SerializeSetting(std::shared_ptr<const CSetting> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSetting(const std::shared_ptr<const CSetting>& setting,
+                                           CVariant& obj)
 {
   if (!SerializeISetting(setting, obj))
     return false;
@@ -463,7 +468,8 @@ bool CSettingsOperations::SerializeSetting(std::shared_ptr<const CSetting> setti
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingBool(std::shared_ptr<const CSettingBool> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingBool(const std::shared_ptr<const CSettingBool>& setting,
+                                               CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -474,7 +480,8 @@ bool CSettingsOperations::SerializeSettingBool(std::shared_ptr<const CSettingBoo
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingInt(const std::shared_ptr<const CSettingInt>& setting,
+                                              CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -540,7 +547,8 @@ bool CSettingsOperations::SerializeSettingInt(std::shared_ptr<const CSettingInt>
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingNumber(std::shared_ptr<const CSettingNumber> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingNumber(
+    const std::shared_ptr<const CSettingNumber>& setting, CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -555,7 +563,8 @@ bool CSettingsOperations::SerializeSettingNumber(std::shared_ptr<const CSettingN
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingString> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingString(
+    const std::shared_ptr<const CSettingString>& setting, CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -643,7 +652,8 @@ bool CSettingsOperations::SerializeSettingString(std::shared_ptr<const CSettingS
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingAction(std::shared_ptr<const CSettingAction> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingAction(
+    const std::shared_ptr<const CSettingAction>& setting, CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -653,7 +663,8 @@ bool CSettingsOperations::SerializeSettingAction(std::shared_ptr<const CSettingA
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingList(std::shared_ptr<const CSettingList> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingList(const std::shared_ptr<const CSettingList>& setting,
+                                               CVariant& obj)
 {
   if (setting == NULL ||
       !SerializeSetting(setting->GetDefinition(), obj["definition"]))
@@ -670,7 +681,8 @@ bool CSettingsOperations::SerializeSettingList(std::shared_ptr<const CSettingLis
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingPath(std::shared_ptr<const CSettingPath> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingPath(const std::shared_ptr<const CSettingPath>& setting,
+                                               CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -682,7 +694,8 @@ bool CSettingsOperations::SerializeSettingPath(std::shared_ptr<const CSettingPat
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingAddon(std::shared_ptr<const CSettingAddon> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingAddon(const std::shared_ptr<const CSettingAddon>& setting,
+                                                CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -693,7 +706,8 @@ bool CSettingsOperations::SerializeSettingAddon(std::shared_ptr<const CSettingAd
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingDate(std::shared_ptr<const CSettingDate> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingDate(const std::shared_ptr<const CSettingDate>& setting,
+                                               CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -703,7 +717,8 @@ bool CSettingsOperations::SerializeSettingDate(std::shared_ptr<const CSettingDat
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingTime(std::shared_ptr<const CSettingTime> setting, CVariant &obj)
+bool CSettingsOperations::SerializeSettingTime(const std::shared_ptr<const CSettingTime>& setting,
+                                               CVariant& obj)
 {
   if (setting == NULL)
     return false;
@@ -713,7 +728,8 @@ bool CSettingsOperations::SerializeSettingTime(std::shared_ptr<const CSettingTim
   return true;
 }
 
-bool CSettingsOperations::SerializeSettingControl(std::shared_ptr<const ISettingControl> control, CVariant &obj)
+bool CSettingsOperations::SerializeSettingControl(
+    const std::shared_ptr<const ISettingControl>& control, CVariant& obj)
 {
   if (control == NULL)
     return false;

@@ -91,7 +91,7 @@ namespace XBMCAddon
 
     String InfoTagVideo::getVotes()
     {
-      return StringUtils::Format("%i", infoTag->GetRating().votes);
+      return std::to_string(infoTag->GetRating().votes);
     }
 
     String InfoTagVideo::getCast()
@@ -136,7 +136,7 @@ namespace XBMCAddon
 
     double InfoTagVideo::getRating()
     {
-      return infoTag->GetRating().rating;
+      return static_cast<double>(infoTag->GetRating().rating);
     }
 
     int InfoTagVideo::getUserRating()

@@ -184,6 +184,12 @@ public:
   virtual bool SupportsSilenceTimeout() { return false; }
 
   /**
+   * Returns true if the AudioEngine is currently configured to extract the DTS Core from DTS-HD streams
+   * @returns true if the AudioEngine is currently configured to extract the DTS Core from DTS-HD streams
+   */
+  virtual bool UsesDtsCoreFallback() { return false; }
+
+  /**
    * Returns true if the AudioEngine is currently configured for stereo audio
    * @returns true if the AudioEngine is currently configured for stereo audio
    */
@@ -225,7 +231,7 @@ public:
   /**
    * Instruct AE to re-initialize, e.g. after ELD change event
    */
-  virtual void DeviceCountChange(std::string driver) {}
+  virtual void DeviceCountChange(const std::string& driver) {}
 
   /**
    * Get the current sink data format

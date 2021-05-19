@@ -31,9 +31,9 @@ CScraperUrl::CScraperUrl() : m_relevance(0.0), m_parsed(false)
 {
 }
 
-CScraperUrl::CScraperUrl(std::string strUrl) : CScraperUrl()
+CScraperUrl::CScraperUrl(const std::string& strUrl) : CScraperUrl()
 {
-  ParseFromData(std::move(strUrl));
+  ParseFromData(strUrl);
 }
 
 CScraperUrl::CScraperUrl(const TiXmlElement* element) : CScraperUrl()
@@ -127,10 +127,10 @@ bool CScraperUrl::Parse()
 
   auto dataToParse = m_data;
   m_data.clear();
-  return ParseFromData(std::move(dataToParse));
+  return ParseFromData(dataToParse);
 }
 
-bool CScraperUrl::ParseFromData(std::string data)
+bool CScraperUrl::ParseFromData(const std::string& data)
 {
   if (data.empty())
     return false;
@@ -198,6 +198,7 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
   }
 
   url.m_aspect = XMLUtils::GetAttribute(element, "aspect");
+  url.m_preview = XMLUtils::GetAttribute(element, "preview");
 
   m_urls.push_back(url);
 
@@ -209,7 +210,7 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
 
 // XML format is of strUrls is:
 // <TAG><url>...</url>...</TAG> (parsed by ParseElement) or <url>...</url> (ditto)
-bool CScraperUrl::ParseAndAppendUrlsFromEpisodeGuide(std::string episodeGuide)
+bool CScraperUrl::ParseAndAppendUrlsFromEpisodeGuide(const std::string& episodeGuide)
 {
   if (episodeGuide.empty())
     return false;
@@ -239,11 +240,11 @@ bool CScraperUrl::ParseAndAppendUrlsFromEpisodeGuide(std::string episodeGuide)
   return true;
 }
 
-void CScraperUrl::AddParsedUrl(std::string url,
-                               std::string aspect,
-                               std::string preview,
-                               std::string referrer,
-                               std::string cache,
+void CScraperUrl::AddParsedUrl(const std::string& url,
+                               const std::string& aspect,
+                               const std::string& preview,
+                               const std::string& referrer,
+                               const std::string& cache,
                                bool post,
                                bool isgz,
                                int season)
@@ -259,7 +260,7 @@ void CScraperUrl::AddParsedUrl(std::string url,
     thumb.SetAttribute("gzip", "yes");
   if (season >= 0)
   {
-    thumb.SetAttribute("season", StringUtils::Format("%i", season));
+    thumb.SetAttribute("season", std::to_string(season));
     thumb.SetAttribute("type", "season");
   }
   thumb.SetAttribute("aspect", aspect);
@@ -274,6 +275,7 @@ void CScraperUrl::AddParsedUrl(std::string url,
   nUrl.m_post = post;
   nUrl.m_isgz = isgz;
   nUrl.m_cache = cache;
+  nUrl.m_preview = preview;
   if (season >= 0)
   {
     nUrl.m_type = UrlType::Season;

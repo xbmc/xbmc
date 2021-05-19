@@ -85,9 +85,8 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
     CVideoThumbLoader thumbLoader;
     auto fillSharedDicts =
         [&](CFileItemList& items, NSString* categoryKey, NSString* categoryTitle,
-            std::function<std::string(CFileItemPtr videoItem)> getThumbnailForItem,
-            std::function<std::string(CFileItemPtr videoItem)> getTitleForItem) {
-          
+            const std::function<std::string(CFileItemPtr videoItem)>& getThumbnailForItem,
+            const std::function<std::string(CFileItemPtr videoItem)>& getTitleForItem) {
           // Store all old thumbs names of this category in array
           const auto thumbsPath = [storeUrl URLByAppendingPathComponent:categoryKey isDirectory:YES];
           auto thumbsToRemove = [NSMutableSet setWithArray:[fileManager contentsOfDirectoryAtPath:thumbsPath.path error:nil]];
@@ -161,27 +160,29 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
       case TVOSTopShelfItemsCategory::MOVIES:
         fillSharedDicts(
             items, @"movies", @(g_localizeStrings.Get(20386).c_str()),
-            [](CFileItemPtr videoItem) {
+            [](const CFileItemPtr& videoItem) {
               if (videoItem->HasArt("poster"))
                 return videoItem->GetArt("poster");
               else
                 return videoItem->GetArt("thumb");
             },
-            [](CFileItemPtr videoItem) { return videoItem->GetLabel(); });
+            [](const CFileItemPtr& videoItem) { return videoItem->GetLabel(); });
         break;
       case TVOSTopShelfItemsCategory::TV_SHOWS:
         CVideoDatabase videoDb;
         videoDb.Open();
         fillSharedDicts(
             items, @"tvshows", @(g_localizeStrings.Get(20387).c_str()),
-            [&videoDb](CFileItemPtr videoItem) {
+            [&videoDb](const CFileItemPtr& videoItem)
+            {
               int season = videoItem->GetVideoInfoTag()->m_iIdSeason;
               return season > 0 ? videoDb.GetArtForItem(season, MediaTypeSeason, "poster")
                                 : std::string{};
             },
-            [](CFileItemPtr videoItem) {
-              return StringUtils::Format("%s s%02de%02d",
-                                         videoItem->GetVideoInfoTag()->m_strShowTitle.c_str(),
+            [](const CFileItemPtr& videoItem)
+            {
+              return StringUtils::Format("{} s{:02}e{:02}",
+                                         videoItem->GetVideoInfoTag()->m_strShowTitle,
                                          videoItem->GetVideoInfoTag()->m_iSeason,
                                          videoItem->GetVideoInfoTag()->m_iEpisode);
             });
@@ -213,8 +214,7 @@ void CTVOSTopShelf::RunTopShelf()
   //  check split[2] for url type (display or play)
 
   // its a bit ugly, but only way to get resume window to show
-  std::string cmd =
-      StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(url.c_str()).c_str());
+  std::string cmd = StringUtils::Format("PlayMedia({})", StringUtils::Paramify(url));
   KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1,
                                                                 nullptr, cmd);
 }

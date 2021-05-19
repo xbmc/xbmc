@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <utility>
 
 #include <wayland-client-protocol.hpp>
 
@@ -79,7 +80,10 @@ public:
    *                      type is removed
    */
   template<typename T>
-  void Request(std::uint32_t minVersion, std::uint32_t maxVersion, AddHandler addHandler, RemoveHandler removeHandler)
+  void Request(std::uint32_t minVersion,
+               std::uint32_t maxVersion,
+               const AddHandler& addHandler,
+               const RemoveHandler& removeHandler)
   {
     RequestInternal([]{ return T(); }, T::interface_name, minVersion, maxVersion, addHandler, removeHandler);
   }
@@ -136,8 +140,16 @@ private:
     std::uint32_t maxVersion;
     AddHandler addHandler;
     RemoveHandler removeHandler;
-    BindInfo(std::function<wayland::proxy_t()> constructor, std::uint32_t minVersion, std::uint32_t maxVersion, AddHandler addHandler, RemoveHandler removeHandler)
-    : constructor{constructor}, minVersion{minVersion}, maxVersion{maxVersion}, addHandler{addHandler}, removeHandler{removeHandler}
+    BindInfo(std::function<wayland::proxy_t()> constructor,
+             std::uint32_t minVersion,
+             std::uint32_t maxVersion,
+             AddHandler addHandler,
+             RemoveHandler removeHandler)
+      : constructor{std::move(constructor)},
+        minVersion{minVersion},
+        maxVersion{maxVersion},
+        addHandler{std::move(addHandler)},
+        removeHandler{std::move(removeHandler)}
     {}
   };
   std::map<std::string, BindInfo> m_binds;

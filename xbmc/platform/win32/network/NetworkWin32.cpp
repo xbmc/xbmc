@@ -48,7 +48,8 @@ std::string CNetworkInterfaceWin32::GetMacAddress() const
 {
   std::string result;
   const unsigned char* mAddr = m_adapter.PhysicalAddress;
-  result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
+  result = StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", mAddr[0], mAddr[1],
+                               mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
@@ -67,12 +68,17 @@ std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
   if (m_adapter.FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
     return CNetworkBase::GetMaskByPrefixLength(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 
-  return StringUtils::Format("%u", m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
+  return std::to_string(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const
 {
   return m_adapter.FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstGatewayAddress->Address.lpSockaddr) : "";
+}
+
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkWin32>();
 }
 
 CNetworkWin32::CNetworkWin32()
@@ -258,9 +264,10 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std:
   {
     if (neighborIp.PhysicalAddressLength == 6)
     {
-      mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-        neighborIp.PhysicalAddress[0], neighborIp.PhysicalAddress[1], neighborIp.PhysicalAddress[2],
-        neighborIp.PhysicalAddress[3], neighborIp.PhysicalAddress[4], neighborIp.PhysicalAddress[5]);
+      mac = StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
+                                neighborIp.PhysicalAddress[0], neighborIp.PhysicalAddress[1],
+                                neighborIp.PhysicalAddress[2], neighborIp.PhysicalAddress[3],
+                                neighborIp.PhysicalAddress[4], neighborIp.PhysicalAddress[5]);
       return true;
     }
     else

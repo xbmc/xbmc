@@ -160,7 +160,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
     return false;
 
   // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
-  if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+  if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON_UNKNOWN, OnlyEnabled::NO))
     return false; // addon is installed but disabled, and the user has specifically activated something that needs
                   // the addon - should we enable it?
 
@@ -183,7 +183,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
   if (!InstallOrUpdate(addonID, BackgroundJob::NO, ModalJob::YES))
     return false;
 
-  return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon);
+  return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON_UNKNOWN, OnlyEnabled::YES);
 }
 
 
@@ -196,14 +196,15 @@ bool CAddonInstaller::InstallOrUpdate(const std::string& addonID,
   if (!CAddonInstallJob::GetAddon(addonID, repo, addon))
     return false;
 
-  return DoInstall(addon, repo, background, modal, AutoUpdateJob::NO, DependencyJob::NO);
+  return DoInstall(addon, repo, background, modal, AutoUpdateJob::NO, DependencyJob::NO,
+                   AllowCheckForUpdates::YES);
 }
 
 bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
                                                 const ADDON::RepositoryPtr& repo)
 {
   return DoInstall(dependsId, repo, BackgroundJob::NO, ModalJob::NO, AutoUpdateJob::NO,
-                   DependencyJob::YES);
+                   DependencyJob::YES, AllowCheckForUpdates::YES);
 }
 
 bool CAddonInstaller::Install(const std::string& addonId,
@@ -220,11 +221,11 @@ bool CAddonInstaller::Install(const std::string& addonId,
     return false;
 
   AddonPtr repo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, ADDON_REPOSITORY))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, ADDON_REPOSITORY, OnlyEnabled::YES))
     return false;
 
   return DoInstall(addon, std::static_pointer_cast<CRepository>(repo), BackgroundJob::YES,
-                   ModalJob::NO, AutoUpdateJob::NO, DependencyJob::NO);
+                   ModalJob::NO, AutoUpdateJob::NO, DependencyJob::NO, AllowCheckForUpdates::YES);
 }
 
 bool CAddonInstaller::DoInstall(const AddonPtr& addon,
@@ -232,7 +233,8 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
                                 BackgroundJob background,
                                 ModalJob modal,
                                 AutoUpdateJob autoUpdate,
-                                DependencyJob dependsInstall)
+                                DependencyJob dependsInstall,
+                                AllowCheckForUpdates allowCheckForUpdates)
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
@@ -256,6 +258,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
   lock.Leave();
 
   installJob->SetDependsInstall(dependsInstall);
+  installJob->SetAllowCheckForUpdates(allowCheckForUpdates);
 
   bool result = false;
   if (modal == ModalJob::YES)
@@ -288,20 +291,20 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (!CDirectory::GetDirectory(zipDir, items, "", DIR_FLAG_DEFAULTS) ||
       items.Size() != 1 || !items[0]->m_bIsFolder)
   {
-    CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
-        StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-        "special://xbmc/media/icon256x256.png", EventLevel::Error)));
+    CServiceBroker::GetEventLog().AddWithNotification(EventPtr(
+        new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+                               "special://xbmc/media/icon256x256.png", EventLevel::Error)));
     return false;
   }
 
   AddonPtr addon;
   if (CServiceBroker::GetAddonMgr().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr(), BackgroundJob::YES, ModalJob::NO, AutoUpdateJob::NO,
-                     DependencyJob::NO);
+                     DependencyJob::NO, AllowCheckForUpdates::YES);
 
-  CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
-      StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-      "special://xbmc/media/icon256x256.png", EventLevel::Error)));
+  CServiceBroker::GetEventLog().AddWithNotification(EventPtr(
+      new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+                             "special://xbmc/media/icon256x256.png", EventLevel::Error)));
   return false;
 }
 
@@ -340,7 +343,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     bool optional = it.optional;
     AddonPtr dep;
     bool haveInstalledAddon =
-        CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, false);
+        CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, OnlyEnabled::NO);
     if ((haveInstalledAddon && !dep->MeetsVersion(versionMin, version)) ||
         (!haveInstalledAddon && !optional))
     {
@@ -440,7 +443,9 @@ void CAddonInstaller::PrunePackageCache()
   }
 }
 
-void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
+void CAddonInstaller::InstallAddons(const VECADDONS& addons,
+                                    bool wait,
+                                    AllowCheckForUpdates allowCheckForUpdates)
 {
   for (const auto& addon : addons)
   {
@@ -448,7 +453,7 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons, bool wait)
     RepositoryPtr repo;
     if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
       DoInstall(toInstall, repo, BackgroundJob::NO, ModalJob::NO, AutoUpdateJob::YES,
-                DependencyJob::NO);
+                DependencyJob::NO, allowCheckForUpdates);
   }
   if (wait)
   {
@@ -490,7 +495,8 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr& addon,
   : m_addon(addon), m_repo(repo), m_isAutoUpdate(isAutoUpdate)
 {
   AddonPtr dummy;
-  m_isUpdate = CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
+  m_isUpdate =
+      CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, OnlyEnabled::NO);
 }
 
 bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
@@ -500,7 +506,8 @@ bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
     return false;
 
   AddonPtr tmp;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->Origin(), tmp, ADDON_REPOSITORY))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->Origin(), tmp, ADDON_REPOSITORY,
+                                              OnlyEnabled::YES))
     return false;
 
   repo = std::static_pointer_cast<CRepository>(tmp);
@@ -512,7 +519,7 @@ bool CAddonInstallJob::DoWork()
 {
   m_currentType = CAddonInstallJob::TYPE_DOWNLOAD;
 
-  SetTitle(StringUtils::Format(g_localizeStrings.Get(24057).c_str(), m_addon->Name().c_str()));
+  SetTitle(StringUtils::Format(g_localizeStrings.Get(24057), m_addon->Name()));
   SetProgress(0);
 
   // check whether all the dependencies are available or not
@@ -520,7 +527,8 @@ bool CAddonInstallJob::DoWork()
   std::pair<std::string, std::string> failedDep;
   if (!CAddonInstaller::GetInstance().CheckDependencies(m_addon, failedDep))
   {
-    std::string details = StringUtils::Format(g_localizeStrings.Get(24142).c_str(), failedDep.first.c_str(), failedDep.second.c_str());
+    std::string details =
+        StringUtils::Format(g_localizeStrings.Get(24142), failedDep.first, failedDep.second);
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: %s", m_addon->ID().c_str(), details.c_str());
     ReportInstallError(m_addon->ID(), m_addon->ID(), details);
     return false;
@@ -656,7 +664,8 @@ bool CAddonInstallJob::DoWork()
   // Load new installed and if successed replace defined m_addon here with new one
   if (!CServiceBroker::GetAddonMgr().LoadAddon(m_addon->ID(), m_addon->Origin(),
                                                m_addon->Version()) ||
-      !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon))
+      !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon, ADDON_UNKNOWN,
+                                              OnlyEnabled::YES))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
     return false;
@@ -675,12 +684,27 @@ bool CAddonInstallJob::DoWork()
   {
     origin = ORIGIN_SYSTEM; // keep system add-on origin as ORIGIN_SYSTEM
   }
-  else if (m_addon->HasType(ADDON_REPOSITORY))
+  else if (m_addon->HasMainType(ADDON_REPOSITORY))
   {
     origin = m_addon->ID(); // use own id as origin if repository
-    if (m_isUpdate)
-      CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
-          std::static_pointer_cast<CRepository>(m_addon), false);
+
+    // if a repository is updated during the add-on migration process, we need to skip
+    // calling CheckForUpdates() on the repo to prevent deadlock issues during migration
+
+    if (m_allowCheckForUpdates == AllowCheckForUpdates::YES)
+    {
+      if (m_isUpdate)
+      {
+        CLog::Log(LOGDEBUG, "ADDONS: repository [{}] updated. now checking for content updates.",
+                  m_addon->ID());
+        CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
+            std::static_pointer_cast<CRepository>(m_addon), false);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "ADDONS: skipping CheckForUpdates() on repository [{}].", m_addon->ID());
+    }
   }
   else if (m_repo)
   {
@@ -743,7 +767,7 @@ bool CAddonInstallJob::DoWork()
   bool notify = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                      CSettings::SETTING_ADDONS_NOTIFICATIONS) ||
                  m_isAutoUpdate == AutoUpdateJob::NO) &&
-                !IsModal();
+                !IsModal() && m_dependsInstall == DependencyJob::NO;
   CServiceBroker::GetEventLog().Add(
       EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);
 
@@ -865,7 +889,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       const AddonVersion& version = it->version;
       bool optional = it->optional;
       AddonPtr dependency;
-      bool haveInstalledAddon = addonMgr.GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
+      bool haveInstalledAddon =
+          addonMgr.GetAddon(addonID, dependency, ADDON_UNKNOWN, OnlyEnabled::NO);
       if ((haveInstalledAddon && !dependency->MeetsVersion(versionMin, version)) ||
           (!haveInstalledAddon && !optional))
       {
@@ -904,6 +929,19 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
                       addonID);
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
+          }
+          else
+          {
+            if (!dependencyToInstall->MeetsVersion(versionMin, version))
+            {
+              CLog::Log(LOGERROR,
+                        "CAddonInstallJob[{}]: found dependency [{}/{}] doesn't meet minimum "
+                        "version [{}]",
+                        m_addon->ID(), addonID, dependencyToInstall->Version().asString(),
+                        versionMin.asString());
+              ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
+              return false;
+            }
           }
 
           if (IsModal())
@@ -972,7 +1010,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   if (addon != NULL)
   {
     AddonPtr addon2;
-    CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2);
+    CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, ADDON_UNKNOWN, OnlyEnabled::YES);
     if (msg.empty())
       msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
 
@@ -982,8 +1020,8 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   }
   else
   {
-    activity = EventPtr(new CNotificationEvent(24045,
-        !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143).c_str(), fileName.c_str()),
+    activity = EventPtr(new CNotificationEvent(
+        24045, !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143), fileName),
         EventLevel::Error));
 
     if (IsModal())

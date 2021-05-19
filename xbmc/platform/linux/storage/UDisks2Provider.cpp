@@ -42,16 +42,14 @@ CUDisks2Provider::Drive::Drive(const char *object) : m_object(object)
 
 bool CUDisks2Provider::Drive::IsOptical()
 {
-  return std::any_of(m_mediaCompatibility.begin(), m_mediaCompatibility.end(), [](std::string kind)
-  {
-    return kind.compare(0, 7, "optical") == 0;
-  });
+  return std::any_of(m_mediaCompatibility.begin(), m_mediaCompatibility.end(),
+                     [](const std::string& kind) { return kind.compare(0, 7, "optical") == 0; });
 }
 
 std::string CUDisks2Provider::Drive::toString()
 {
-  return StringUtils::Format("Drive %s: IsRemovable %s IsOptical %s",
-                             m_object, BOOL2SZ(m_isRemovable), BOOL2SZ(IsOptical()));
+  return StringUtils::Format("Drive {}: IsRemovable {} IsOptical {}", m_object,
+                             BOOL2SZ(m_isRemovable), BOOL2SZ(IsOptical()));
 }
 
 CUDisks2Provider::Block::Block(const char *object) : m_object(object)
@@ -65,9 +63,9 @@ bool CUDisks2Provider::Block::IsReady()
 
 std::string CUDisks2Provider::Block::toString()
 {
-  return StringUtils::Format("Block device %s: Device %s Label %s IsSystem: %s Drive %s",
-                             m_object, m_device, m_label.empty() ? "none" : m_label,
-                             BOOL2SZ(m_isSystem), m_driveobject.empty() ? "none" : m_driveobject);
+  return StringUtils::Format("Block device {}: Device {} Label {} IsSystem: {} Drive {}", m_object,
+                             m_device, m_label.empty() ? "none" : m_label, BOOL2SZ(m_isSystem),
+                             m_driveobject.empty() ? "none" : m_driveobject);
 }
 
 CUDisks2Provider::Filesystem::Filesystem(const char *object) : m_object(object)
@@ -76,8 +74,8 @@ CUDisks2Provider::Filesystem::Filesystem(const char *object) : m_object(object)
 
 std::string CUDisks2Provider::Filesystem::toString()
 {
-  return StringUtils::Format("Filesystem %s: IsMounted %s MountPoint %s",
-                             m_object, BOOL2SZ(m_isMounted), m_mountPoint.empty() ? "none" : m_mountPoint);
+  return StringUtils::Format("Filesystem {}: IsMounted {} MountPoint {}", m_object,
+                             BOOL2SZ(m_isMounted), m_mountPoint.empty() ? "none" : m_mountPoint);
 }
 
 bool CUDisks2Provider::Filesystem::IsReady()
@@ -137,7 +135,7 @@ std::string CUDisks2Provider::Filesystem::GetDisplayName()
   if (m_block->m_label.empty())
   {
     std::string strSize = StringUtils::SizeToString(m_block->m_size);
-    return StringUtils::Format("%s %s", strSize, g_localizeStrings.Get(155));
+    return StringUtils::Format("{} {}", strSize, g_localizeStrings.Get(155));
   }
   else
     return m_block->m_label;

@@ -71,7 +71,7 @@ namespace XFILE
       void SetPostData(const std::string& postdata) { m_postdata = postdata; }
       void SetReferer(const std::string& referer) { m_referer = referer; }
       void SetCookie(const std::string& cookie) { m_cookie = cookie; }
-      void SetMimeType(std::string mimetype) { SetRequestHeader("Content-Type", mimetype); }
+      void SetMimeType(const std::string& mimetype) { SetRequestHeader("Content-Type", mimetype); }
       void SetRequestHeader(const std::string& header, const std::string& value);
       void SetRequestHeader(const std::string& header, long value);
 
@@ -185,6 +185,7 @@ namespace XFILE
       bool m_allowRetry;
       bool m_verifyPeer = true;
       bool m_failOnError = true;
+      curl_slist* m_dnsCacheList = nullptr;
 
       CRingBuffer m_buffer; // our ringhold buffer
       char* m_overflowBuffer; // in the rare case we would overflow the above buffer

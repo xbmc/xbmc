@@ -104,8 +104,10 @@ public:
 
   /*!
    \brief Add a job to the queue
-   On completion of the job (or destruction of the job queue) the CJob object will be destroyed.
+   On completion of the job, destruction of the job queue or in case the job could not be added successfully, the CJob object will be destroyed.
    \param job a pointer to the job to add. The job should be subclassed from CJob.
+   \return True if the job was added successfully, false otherwise.
+   In case of failure, the passed CJob object will be deleted before returning from this method.
    \sa CJob
    */
   bool AddJob(CJob *job);
@@ -145,17 +147,27 @@ public:
   /*!
    \brief The callback used when a job completes.
 
-   OnJobComplete is called at the completion of the CJob::DoWork function, and is used
-   to return information to the caller on the result of the job.  On returning from this function
-   the CJobManager will destroy this job.
+   CJobQueue implementation will cleanup the internal processing queue and then queue the next
+   job at the job manager, if any.
 
-   Subclasses should override this function if they wish to transfer information from the job prior
-   to it's deletion.  They must then call this base class function, which will move on to the next
-   job.
-
-   \sa CJobManager, IJobCallback and  CJob
+   \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param success the result from the DoWork call
+   \param job the job that has been processed.
+   \sa CJobManager, IJobCallback and CJob
    */
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+
+  /*!
+   \brief The callback used when a job will be aborted.
+
+   CJobQueue implementation will cleanup the internal processing queue and then queue the next
+   job at the job manager, if any.
+
+   \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param job the job that has been aborted.
+   \sa CJobManager, IJobCallback and CJob
+   */
+  void OnJobAbort(unsigned int jobID, CJob* job) override;
 
 protected:
   /*!
@@ -165,6 +177,7 @@ protected:
   bool QueueEmpty() const;
 
 private:
+  void OnJobNotify(CJob* job);
   void QueueNextJob();
 
   typedef std::deque<CJobPointer> Queue;
@@ -233,10 +246,12 @@ public:
 
   /*!
    \brief Add a job to the threaded job manager.
+   On completion or abort of the job or in case the job could not be added successfully, the CJob object will be destroyed.
    \param job a pointer to the job to add. The job should be subclassed from CJob
    \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
    \param priority the priority that this job should run at.
-   \return a unique identifier for this job, to be used with other interaction
+   \return On success, a unique identifier for this job, to be used with other interaction, 0 otherwise.
+   In case of failure, the passed CJob object will be deleted before returning from this method.
    \sa CJob, IJobCallback, CancelJob()
    */
   unsigned int AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW);

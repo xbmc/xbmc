@@ -101,6 +101,15 @@ bool CRendererVDPAU::NeedBuffer(int idx)
   return false;
 }
 
+bool CRendererVDPAU::Flush(bool saveBuffers)
+{
+  for (int i = 0; i < NUM_BUFFERS; i++)
+      m_vdpauTextures[i].Unmap();
+
+  return CLinuxRendererGL::Flush(saveBuffers);
+}
+
+
 void CRendererVDPAU::ReleaseBuffer(int idx)
 {
   if (glIsSync(m_fences[idx]))
@@ -152,7 +161,11 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
       method == VS_SCALINGMETHOD_AUTO)
     return true;
 
-  if(method == VS_SCALINGMETHOD_CUBIC
+  if(method == VS_SCALINGMETHOD_CUBIC_B_SPLINE
+  || method == VS_SCALINGMETHOD_CUBIC_MITCHELL
+  || method == VS_SCALINGMETHOD_CUBIC_CATMULL
+  || method == VS_SCALINGMETHOD_CUBIC_0_075
+  || method == VS_SCALINGMETHOD_CUBIC_0_1
   || method == VS_SCALINGMETHOD_LANCZOS2
   || method == VS_SCALINGMETHOD_SPLINE36_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST

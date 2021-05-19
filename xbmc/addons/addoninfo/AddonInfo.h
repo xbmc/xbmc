@@ -16,6 +16,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace ADDON
@@ -78,11 +79,14 @@ struct DependencyInfo
   std::string id;
   AddonVersion versionMin, version;
   bool optional;
-  DependencyInfo(std::string id, AddonVersion versionMin, AddonVersion version, bool optional)
-    : id(id)
-    , versionMin(versionMin.empty() ? version : versionMin)
-    , version(version)
-    , optional(optional)
+  DependencyInfo(std::string id,
+                 const AddonVersion& versionMin,
+                 const AddonVersion& version,
+                 bool optional)
+    : id(std::move(id)),
+      versionMin(versionMin.empty() ? version : versionMin),
+      version(version),
+      optional(optional)
   {
   }
 
@@ -196,6 +200,8 @@ public:
     return GetTranslatedText(m_lifecycleStateDescription);
   }
   const std::string& Origin() const { return m_origin; }
+  const std::string& OriginName() const;
+
   const InfoMap& ExtraInfo() const { return m_extrainfo; }
 
   bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const;
@@ -246,6 +252,7 @@ private:
   CDateTime m_lastUpdated;
   CDateTime m_lastUsed;
   std::string m_origin;
+  mutable std::unique_ptr<std::string> m_originName; // @todo use std::optional once we use c++17
   uint64_t m_packageSize = 0;
   std::string m_libname;
   InfoMap m_extrainfo;

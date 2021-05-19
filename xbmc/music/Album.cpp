@@ -271,7 +271,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     {
       if (artistCredit.GetMusicBrainzArtistID().empty())
       {
-        for (auto sourceartistCredit : source.artistCredits)
+        for (const auto& sourceartistCredit : source.artistCredits)
         {
           if (StringUtils::EqualsNoCase(artistCredit.GetArtist(), sourceartistCredit.GetArtist()))
           {
@@ -332,7 +332,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     for (auto &song : songs)
     {
       if (!song.strMusicBrainzTrackID.empty())
-        for (auto sourceSong : source.songs)
+        for (const auto& sourceSong : source.songs)
           if ((sourceSong.strMusicBrainzTrackID == song.strMusicBrainzTrackID) && (sourceSong.iTrack == song.iTrack))
             song.MergeScrapedSong(sourceSong, override);
     }
@@ -388,7 +388,7 @@ const std::string CAlbum::GetAlbumArtistSort() const
   if (!strArtistSort.empty())
     return strArtistSort;
   std::vector<std::string> artistvector;
-  for (auto artistcredit : artistCredits)
+  for (const auto& artistcredit : artistCredits)
     if (!artistcredit.GetSortName().empty())
       artistvector.emplace_back(artistcredit.GetSortName());
   std::string artistString;
@@ -513,10 +513,10 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     int year;
     XMLUtils::GetInt(album, "year", year);
     if (year > 0)
-      strReleaseDate = StringUtils::Format("%04i", year);
+      strReleaseDate = StringUtils::Format("{:04}", year);
   }
   XMLUtils::GetString(album, "originalreleasedate", strOrigReleaseDate);
-  
+
   const TiXmlElement* rElement = album->FirstChildElement("rating");
   if (rElement)
   {
@@ -539,7 +539,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10
     if (rating > 10.f)
       rating = 10.f;
-    iUserrating = MathUtils::round_int(rating);
+    iUserrating = MathUtils::round_int(static_cast<double>(rating));
   }
   XMLUtils::GetInt(album, "votes", iVotes);
 
@@ -655,7 +655,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
     userrating->ToElement()->SetAttribute("max", 10);
 
   XMLUtils::SetInt(album,           "votes", iVotes);
-  
+
   for (const auto& artistCredit : artistCredits)
   {
     // add an <albumArtistCredits> tag

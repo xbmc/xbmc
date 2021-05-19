@@ -48,7 +48,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   size_t versionPos = m_source.find("#version");
   if (versionPos != std::string::npos)
   {
-    versionPos = m_source.find("\n", versionPos);
+    versionPos = m_source.find('\n', versionPos);
     if (versionPos != std::string::npos)
       pos = versionPos + 1;
   }
@@ -121,7 +121,7 @@ std::string CShader::GetSourceWithLineNumbers() const
   auto lines = StringUtils::Split(m_source, "\n");
   for (auto& line : lines)
   {
-    line.insert(0, StringUtils::Format("%3d: ", i));
+    line.insert(0, StringUtils::Format("{:3}: ", i));
     i++;
   }
 

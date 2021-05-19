@@ -9,7 +9,7 @@
 #include "PTSTracker.h"
 
 #include "DVDCodecs/DVDCodecUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -314,7 +314,7 @@ std::string CPtsTracker::GetPatternStr()
   std::string patternstr;
 
   for (unsigned int i = 0; i < m_pattern.size(); i++)
-    patternstr += StringUtils::Format("%.2f ", m_pattern[i]);
+    patternstr += StringUtils::Format("{:.2f} ", m_pattern[i]);
 
   StringUtils::Trim(patternstr);
 

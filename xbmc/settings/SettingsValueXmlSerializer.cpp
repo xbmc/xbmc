@@ -41,7 +41,7 @@ std::string CSettingsValueXmlSerializer::SerializeValues(
 }
 
 void CSettingsValueXmlSerializer::SerializeSection(
-  TiXmlNode* parent, std::shared_ptr<CSettingSection> section) const
+    TiXmlNode* parent, const std::shared_ptr<CSettingSection>& section) const
 {
   if (section == nullptr)
     return;
@@ -52,7 +52,7 @@ void CSettingsValueXmlSerializer::SerializeSection(
 }
 
 void CSettingsValueXmlSerializer::SerializeCategory(
-  TiXmlNode* parent, std::shared_ptr<CSettingCategory> category) const
+    TiXmlNode* parent, const std::shared_ptr<CSettingCategory>& category) const
 {
   if (category == nullptr)
     return;
@@ -62,8 +62,8 @@ void CSettingsValueXmlSerializer::SerializeCategory(
     SerializeGroup(parent, group);
 }
 
-void CSettingsValueXmlSerializer::SerializeGroup(
-  TiXmlNode* parent, std::shared_ptr<CSettingGroup> group) const
+void CSettingsValueXmlSerializer::SerializeGroup(TiXmlNode* parent,
+                                                 const std::shared_ptr<CSettingGroup>& group) const
 {
   if (group == nullptr)
     return;
@@ -73,8 +73,8 @@ void CSettingsValueXmlSerializer::SerializeGroup(
     SerializeSetting(parent, setting);
 }
 
-void CSettingsValueXmlSerializer::SerializeSetting(
-  TiXmlNode* parent, std::shared_ptr<CSetting> setting) const
+void CSettingsValueXmlSerializer::SerializeSetting(TiXmlNode* parent,
+                                                   const std::shared_ptr<CSetting>& setting) const
 {
   if (setting == nullptr)
     return;

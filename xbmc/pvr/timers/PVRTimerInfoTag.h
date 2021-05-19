@@ -66,6 +66,20 @@ namespace PVR
     static std::shared_ptr<CPVRTimerInfoTag> CreateTimerTag(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration);
 
     /*!
+     * @brief create a recording or reminder timer or timer rule for the given epg info tag.
+     * @param tag the epg info tag
+     * @param bCreateRule if true, create a timer rule, create a one shot timer otherwise
+     * @param bCreateReminder if true, create a reminder timer or rule, create a recording timer or rule otherwise
+     * @param bReadOnly whether the timer/rule is read only
+     * @return the timer or null if timer could not be created
+     */
+    static std::shared_ptr<CPVRTimerInfoTag> CreateFromEpg(
+        const std::shared_ptr<CPVREpgInfoTag>& tag,
+        bool bCreateRule,
+        bool bCreateReminder,
+        bool bReadOnly = false);
+
+    /*!
      * @brief create a timer or timer rule for the given epg info tag.
      * @param tag the epg info tag
      * @param bCreateRule if true, create a timer rule, create a one shot timer otherwise
@@ -236,13 +250,12 @@ namespace PVR
 
     /*!
      * @brief Get the text for the notification.
-     * @param strText The notification.
      */
-    void GetNotificationText(std::string& strText) const;
+    std::string GetNotificationText() const;
 
     /*!
-    * @brief Get the text for the notification when a timer has been deleted
-    */
+     * @brief Get the text for the notification when a timer has been deleted
+     */
     std::string GetDeletedNotificationText() const;
 
     const std::string& Title() const;
@@ -353,7 +366,6 @@ namespace PVR
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag();
 
-    static std::shared_ptr<CPVRTimerInfoTag> CreateFromEpg(const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule, bool bCreateReminder, bool bReadOnly);
     static std::shared_ptr<CPVRTimerInfoTag> CreateFromDate(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration, bool bCreateReminder, bool bReadOnly);
 
     mutable CCriticalSection m_critSection;

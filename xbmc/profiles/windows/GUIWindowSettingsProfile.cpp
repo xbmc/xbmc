@@ -245,7 +245,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
   {
     const CProfile *profile = profileManager->GetProfile(i);
-    std::string locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
+    const std::string& locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetLabel2(locked); // lock setting
     std::string thumb = profile->getThumb();

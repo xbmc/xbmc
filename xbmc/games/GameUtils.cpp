@@ -48,10 +48,19 @@ bool CGameUtils::FillInGameClient(CFileItem& item, bool bPrompt)
 
       if (candidates.empty() && installable.empty())
       {
-        int errorTextId =
-            bHasVfsGameClient ? 35214 : // "This game can only be played directly from a hard drive
-                                        // or partition. Compressed files must be extracted."
-                35212; // "This game isn't compatible with any available emulators."
+        int errorTextId = 0;
+
+        if (bHasVfsGameClient)
+        {
+          // "This game can only be played directly from a hard drive
+          // or partition. Compressed files must be extracted."
+          errorTextId = 35214;
+        }
+        else
+        {
+          // "This game isn't compatible with any available emulators."
+          errorTextId = 35212;
+        }
 
         // "Failed to play game"
         KODI::MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});

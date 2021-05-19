@@ -234,7 +234,8 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(std::string& strPassword, const std
   if (0 < iRetries)
   {
     // Show a string telling user they have iRetries retries left
-    strLine2 = StringUtils::Format("%s %i %s", g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
+    strLine2 = StringUtils::Format("{} {} {}", g_localizeStrings.Get(12342), iRetries,
+                                   g_localizeStrings.Get(12343));
   }
 
   // make a copy of strPassword to prevent from overwriting it later

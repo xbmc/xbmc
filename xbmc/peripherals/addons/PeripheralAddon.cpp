@@ -264,7 +264,7 @@ PeripheralPtr CPeripheralAddon::GetByPath(const std::string& strPath) const
   PeripheralPtr result;
 
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     if (StringUtils::EqualsNoCase(strPath, it.second->FileLocation()))
     {
@@ -296,7 +296,7 @@ unsigned int CPeripheralAddon::GetPeripheralsWithFeature(PeripheralVector& resul
 {
   unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     if (it.second->HasFeature(feature))
     {
@@ -318,7 +318,7 @@ unsigned int CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId,
 {
   unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     if (it.second->VendorId() == iVendorId && it.second->ProductId() == iProductId)
       iReturn++;
@@ -330,7 +330,7 @@ unsigned int CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId,
 void CPeripheralAddon::GetDirectory(const std::string& strPath, CFileItemList& items) const
 {
   CSingleLock lock(m_critSection);
-  for (auto it : m_peripherals)
+  for (const auto& it : m_peripherals)
   {
     const PeripheralPtr& peripheral = it.second;
     if (peripheral->IsHidden())
@@ -382,7 +382,7 @@ bool CPeripheralAddon::PerformDeviceScan(PeripheralScanResults& results)
       }
 
       result.m_strDeviceName = peripheral.Name();
-      result.m_strLocation = StringUtils::Format("%s/%d", ID().c_str(), peripheral.Index());
+      result.m_strLocation = StringUtils::Format("{}/{}", ID(), peripheral.Index());
       result.m_iVendorId = peripheral.VendorID();
       result.m_iProductId = peripheral.ProductID();
       result.m_mappedType = PERIPHERAL_JOYSTICK;
@@ -463,7 +463,7 @@ bool CPeripheralAddon::ProcessEvents(void)
       }
     }
 
-    for (auto it : m_peripherals)
+    for (const auto& it : m_peripherals)
     {
       if (it.second->Type() == PERIPHERAL_JOYSTICK)
         std::static_pointer_cast<CPeripheralJoystick>(it.second)->ProcessAxisMotions();
@@ -563,7 +563,7 @@ bool CPeripheralAddon::GetFeatures(const CPeripheral* device,
     {
       kodi::addon::JoystickFeature feature(pFeatures[i]);
       if (feature.Type() != JOYSTICK_FEATURE_TYPE_UNKNOWN)
-        features[feature.Name()] = std::move(feature);
+        features[feature.Name()] = feature;
     }
 
     m_struct.toAddon->free_features(&m_struct, featureCount, pFeatures);
@@ -598,7 +598,7 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
   feature.ToStruct(addonFeature);
 
   LogError(retVal = m_struct.toAddon->map_features(&m_struct, &joystickStruct,
-                                                  strControllerId.c_str(), 1, &addonFeature),
+                                                   strControllerId.c_str(), 1, &addonFeature),
            "MapFeatures()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);
@@ -629,7 +629,7 @@ bool CPeripheralAddon::GetIgnoredPrimitives(const CPeripheral* device, Primitive
   JOYSTICK_DRIVER_PRIMITIVE* pPrimitives = nullptr;
 
   LogError(retVal = m_struct.toAddon->get_ignored_primitives(&m_struct, &joystickStruct,
-                                                            &primitiveCount, &pPrimitives),
+                                                             &primitiveCount, &pPrimitives),
            "GetIgnoredPrimitives()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);
@@ -671,7 +671,7 @@ bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device,
   const unsigned int primitiveCount = static_cast<unsigned int>(primitives.size());
 
   LogError(retVal = m_struct.toAddon->set_ignored_primitives(&m_struct, &joystickStruct,
-                                                            primitiveCount, addonPrimitives),
+                                                             primitiveCount, addonPrimitives),
            "SetIgnoredPrimitives()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);

@@ -12,6 +12,8 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -168,8 +170,17 @@ bool CPVREpgSearchFilter::MatchChannelNumber(const std::shared_ptr<CPVREpgInfoTa
 
   if (m_channelNumber.IsValid())
   {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
-    bReturn = channel && (m_channelNumber ==  channel->ChannelNumber());
+    const std::shared_ptr<CPVRChannelGroupsContainer> groups =
+        CServiceBroker::GetPVRManager().ChannelGroups();
+    const std::shared_ptr<CPVRChannelGroup> group =
+        (m_iChannelGroup == EPG_SEARCH_UNSET) ? groups->GetGroupAll(m_bIsRadio)
+                                              : groups->Get(m_bIsRadio)->GetById(m_iChannelGroup);
+    if (group)
+    {
+      const std::shared_ptr<CPVRChannelGroupMember>& groupMember =
+          group->GetByUniqueID({tag->ClientID(), tag->UniqueChannelID()});
+      bReturn = m_channelNumber == groupMember->ChannelNumber();
+    }
   }
 
   return bReturn;

@@ -173,8 +173,8 @@ class CVideoBufferManager
 {
 public:
   CVideoBufferManager();
-  void RegisterPool(std::shared_ptr<IVideoBufferPool> pool);
-  void RegisterPoolFactory(std::string id, CreatePoolFunc createFunc);
+  void RegisterPool(const std::shared_ptr<IVideoBufferPool>& pool);
+  void RegisterPoolFactory(const std::string& id, CreatePoolFunc createFunc);
   void ReleasePools();
   void ReleasePool(IVideoBufferPool *pool);
   CVideoBuffer* Get(AVPixelFormat format, int size, IVideoBufferPool **pPool);

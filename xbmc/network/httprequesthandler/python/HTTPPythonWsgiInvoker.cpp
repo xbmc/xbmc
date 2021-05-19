@@ -318,7 +318,8 @@ const char* CHTTPPythonWsgiInvoker::getInitializationScript() const
   return RUNSCRIPT;
 }
 
-std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(const HTTPPythonRequest* httpRequest, ADDON::AddonPtr addon)
+std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
+    const HTTPPythonRequest* httpRequest, const ADDON::AddonPtr& addon)
 {
   std::map<std::string, std::string> environment;
 
@@ -374,7 +375,7 @@ std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
   environment.insert(std::make_pair("SERVER_NAME", httpRequest->hostname));
 
   // SERVER_PORT
-  environment.insert(std::make_pair("SERVER_PORT", StringUtils::Format("%hu", httpRequest->port)));
+  environment.insert(std::make_pair("SERVER_PORT", std::to_string(httpRequest->port)));
 
   // SERVER_PROTOCOL
   environment.insert(std::make_pair("SERVER_PROTOCOL", httpRequest->version));

@@ -162,7 +162,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
 void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
                                       const std::string& sender,
                                       const std::string& message,
-                                      CFileItemPtr item,
+                                      const CFileItemPtr& item,
                                       const CVariant& data)
 {
   if (item == nullptr)

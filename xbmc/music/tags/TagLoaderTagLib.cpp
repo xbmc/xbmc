@@ -229,7 +229,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   if (tag.GetArtist().empty())
     tag.SetArtist(asf->artist().toCString(true));
 
-  if (asf->comment() != String::null)
+  if (!asf->comment().isEmpty())
     tag.SetComment(asf->comment().toCString(true));
   tag.SetReplayGain(replayGainInfo);
   tag.SetLoaded(true);
@@ -298,8 +298,12 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     else if (it->first == "TSOC")   SetComposerSort(tag, GetID3v2StringList(it->second));
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TCON")   SetGenre(tag, GetID3v2StringList(it->second));
-    else if (it->first == "TRCK")   tag.SetTrackNumber(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
-    else if (it->first == "TPOS")   tag.SetDiscNumber(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
+    else if (it->first == "TRCK")
+      tag.SetTrackNumber(
+          static_cast<int>(strtol(it->second.front()->toString().toCString(true), nullptr, 10)));
+    else if (it->first == "TPOS")
+      tag.SetDiscNumber(
+          static_cast<int>(strtol(it->second.front()->toString().toCString(true), nullptr, 10)));
     else if (it->first == "TDOR" || it->first == "TORY") // TDOR - ID3v2.4, TORY - ID3v2.3
       tag.SetOriginalDate(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TDAT")   {} // empty as taglib has moved the value to TDRC
@@ -320,7 +324,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     else if (it->first == "TSST")
       tag.SetDiscSubtitle(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TBPM")
-      tag.SetBPM(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
+      tag.SetBPM(
+          static_cast<int>(strtol(it->second.front()->toString().toCString(true), nullptr, 10)));
     else if (it->first == "USLT")
       // Loop through any lyrics frames. Could there be multiple frames, how to choose?
       for (ID3v2::FrameList::ConstIterator lt = it->second.begin(); lt != it->second.end(); ++lt)
@@ -474,7 +479,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     }
 
 
-  if (id3v2->comment() != String::null)
+  if (!id3v2->comment().isEmpty())
     tag.SetComment(id3v2->comment().toCString(true));
 
   tag.SetReplayGain(replayGainInfo);
@@ -812,7 +817,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
   }
 #endif
 
-  if (xiph->comment() != String::null)
+  if (!xiph->comment().isEmpty())
     tag.SetComment(xiph->comment().toCString(true));
 
   tag.SetReplayGain(replayGainInfo);
@@ -826,8 +831,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
     return false;
 
   ReplayGain replayGainInfo;
-  MP4::ItemListMap& itemListMap = mp4->itemListMap();
-  for (MP4::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
+  const MP4::ItemMap itemMap = mp4->itemMap();
+  for (auto it = itemMap.begin(); it != itemMap.end(); ++it)
   {
     if (it->first == "\251nam")
       tag.SetTitle(it->second.toStringList().front().to8Bit(true));
@@ -843,7 +848,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "soaa")
       SetAlbumArtistSort(tag, StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS")
+    else if (it->first == "----:com.apple.iTunes:albumartists" ||
+             it->first == "----:com.apple.iTunes:ALBUMARTISTS")
       SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "soco")
       SetComposerSort(tag, StringListToVectorString(it->second.toStringList()));
@@ -938,7 +944,7 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
     }
   }
 
-  if (mp4->comment() != String::null)
+  if (!mp4->comment().isEmpty())
     tag.SetComment(mp4->comment().toCString(true));
 
   tag.SetReplayGain(replayGainInfo);
@@ -1150,8 +1156,8 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
   {
     std::vector<std::string> roles;
     std::string strArtist = values[i];
-    size_t firstLim = values[i].find_first_of("(");
-    size_t lastLim = values[i].find_last_of(")");
+    size_t firstLim = values[i].find_first_of('(');
+    size_t lastLim = values[i].find_last_of(')');
     if (lastLim != std::string::npos && firstLim != std::string::npos && firstLim < lastLim - 1)
     {
       //Pair of brackets with something between them
@@ -1327,7 +1333,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     tag.SetNoOfChannels(file->audioProperties()->channels());
     tag.SetSampleRate(file->audioProperties()->sampleRate());
   }
-  
+
   if (asf)
     ParseTag(asf, art, tag);
   if (id3v1)

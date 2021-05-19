@@ -23,12 +23,12 @@ namespace PVR
 
   protected:
     // implementation of ISettingCallback
-    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
     // specialization of CGUIDialogSettingsBase
-    std::string GetSettingsLabel(std::shared_ptr<ISetting> pSetting) override;
+    std::string GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting) override;
     bool AllowResettingSettings() const override { return false; }
-    void Save() override;
+    bool Save() override;
     void SetupView() override;
 
     // specialization of CGUIDialogSettingsManualBase

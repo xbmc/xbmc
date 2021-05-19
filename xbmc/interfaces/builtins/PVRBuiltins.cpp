@@ -70,7 +70,9 @@ static int SeekPercentage(const std::vector<std::string>& params)
       int iTimeshiftBufferStart = 0;
       infoMgr.GetInt(iTimeshiftBufferStart, PVR_TIMESHIFT_PROGRESS_BUFFER_START);
 
-      float fPlayerPercentage = static_cast<float>(iTimeshiftProgressDuration) / g_application.GetTotalTime() * (fTimeshiftPercentage - iTimeshiftBufferStart);
+      float fPlayerPercentage = static_cast<float>(iTimeshiftProgressDuration) /
+                                static_cast<float>(g_application.GetTotalTime()) *
+                                (fTimeshiftPercentage - static_cast<float>(iTimeshiftBufferStart));
       fPlayerPercentage = std::max(0.0f, std::min(fPlayerPercentage, 100.0f));
 
       g_application.SeekPercentage(fPlayerPercentage);
@@ -120,7 +122,7 @@ int EpgGridControl(const std::vector<std::string>& params)
   }
   else if (param == "currentprogramme")
   {
-    guideWindow->GotoNow();
+    guideWindow->GotoCurrentProgramme();
   }
   else if (param == "selectdate")
   {

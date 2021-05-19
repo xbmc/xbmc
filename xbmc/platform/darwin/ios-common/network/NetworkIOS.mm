@@ -14,6 +14,7 @@
 #import "platform/darwin/ios-common/network/route.h"
 
 #import <array>
+#include <utility>
 
 #import <arpa/inet.h>
 #import <ifaddrs.h>
@@ -29,7 +30,7 @@
 #import <sys/sysctl.h>
 
 CNetworkInterfaceIOS::CNetworkInterfaceIOS(CNetworkIOS* network, std::string interfaceName)
-  : m_interfaceName(interfaceName), m_network(network)
+  : m_interfaceName(std::move(interfaceName)), m_network(network)
 {
 }
 
@@ -263,6 +264,10 @@ std::string CNetworkInterfaceIOS::GetCurrentDefaultGateway() const
   return gateway;
 }
 
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkIOS>();
+}
 
 CNetworkIOS::CNetworkIOS() : CNetworkBase()
 {

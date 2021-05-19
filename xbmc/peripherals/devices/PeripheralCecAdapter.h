@@ -41,6 +41,7 @@ public:
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
+#include <chrono>
 #include <queue>
 #include <vector>
 
@@ -89,7 +90,10 @@ public:
                         CPeripheralBus* bus);
   ~CPeripheralCecAdapter(void) override;
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const std::string& sender, const std::string& message, const CVariant &data) override;
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override;
 
   // audio control
   bool HasAudioControl(void);
@@ -166,7 +170,7 @@ private:
   std::vector<CecButtonPress> m_buttonQueue;
   CecButtonPress m_currentButton;
   std::queue<CecVolumeChange> m_volumeChangeQueue;
-  unsigned int m_lastKeypress;
+  std::chrono::time_point<std::chrono::steady_clock> m_lastKeypress;
   CecVolumeChange m_lastChange;
   int m_iExitCode;
   bool m_bIsMuted;

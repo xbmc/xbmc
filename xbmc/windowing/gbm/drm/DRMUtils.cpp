@@ -144,6 +144,9 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
 
 bool CDRMUtils::FindPreferredMode()
 {
+  if (m_mode)
+    return true;
+
   for (int i = 0, area = 0; i < m_connector->GetModesCount(); i++)
   {
     drmModeModeInfo* current_mode = m_connector->GetModeForIndex(i);
@@ -181,7 +184,7 @@ bool CDRMUtils::FindPlanes()
     if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
-    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [this, &i](auto& plane) {
+    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [&i](auto& plane) {
       if (plane->GetPossibleCrtcs() & (1 << i))
       {
         return plane->SupportsFormat(DRM_FORMAT_NV12);
@@ -195,7 +198,7 @@ bool CDRMUtils::FindPlanes()
       videoPlaneId = videoPlane->get()->GetPlaneId();
 
     auto guiPlane =
-        std::find_if(m_planes.begin(), m_planes.end(), [this, &i, &videoPlaneId](auto& plane) {
+        std::find_if(m_planes.begin(), m_planes.end(), [&i, &videoPlaneId](auto& plane) {
           if (plane->GetPossibleCrtcs() & (1 << i))
           {
             return (plane->GetPlaneId() != videoPlaneId &&
@@ -205,7 +208,7 @@ bool CDRMUtils::FindPlanes()
           return false;
         });
 
-    if (videoPlane->get() && guiPlane->get())
+    if (videoPlane != m_planes.end() && guiPlane != m_planes.end())
     {
       m_crtc = m_crtcs[i].get();
       m_video_plane = videoPlane->get();
@@ -213,12 +216,13 @@ bool CDRMUtils::FindPlanes()
       break;
     }
 
-    if (guiPlane->get())
+    if (guiPlane != m_planes.end())
     {
       if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
       {
         m_crtc = m_crtcs[i].get();
         m_gui_plane = guiPlane->get();
+        m_video_plane = nullptr;
       }
     }
   }
@@ -320,48 +324,53 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
   for (const auto device : devices)
   {
-    for (int i = 0; i < DRM_NODE_MAX; i++)
+    if (!(device->available_nodes & 1 << DRM_NODE_PRIMARY))
+      continue;
+
+    close(m_fd);
+    m_fd = open(device->nodes[DRM_NODE_PRIMARY], O_RDWR | O_CLOEXEC);
+    if (m_fd < 0)
+      continue;
+
+    if (needConnector)
     {
-      if (device->available_nodes & 1 << i)
-      {
-        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opening device: {}", __FUNCTION__, device->nodes[i]);
-        PrintDrmDeviceInfo(device);
+      auto resources = drmModeGetResources(m_fd);
+      if (!resources)
+        continue;
 
-        close(m_fd);
-        m_fd = open(device->nodes[i], O_RDWR | O_CLOEXEC);
-        if (m_fd < 0)
-          continue;
+      m_connectors.clear();
+      for (int i = 0; i < resources->count_connectors; i++)
+        m_connectors.emplace_back(std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]));
 
-        if (needConnector)
-        {
-          auto resources = drmModeGetResources(m_fd);
-          if (!resources)
-            continue;
+      drmModeFreeResources(resources);
 
-          for (int i = 0; i < resources->count_connectors; i++)
-          {
-            auto connector = std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]);
-            if (connector->GetEncoderId() > 0 && connector->IsConnected())
-              break;
-          }
-
-          drmModeFreeResources(resources);
-        }
-
-        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened device: {}", __FUNCTION__, device->nodes[i]);
-
-        const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
-        if (renderPath)
-        {
-          m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
-          if (m_renderFd != 0)
-            CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
-        }
-
-        drmFreeDevices(devices.data(), devices.size());
-        return true;
-      }
+      if (!FindConnector())
+        continue;
     }
+
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened device: {}", __FUNCTION__,
+              device->nodes[DRM_NODE_PRIMARY]);
+
+    PrintDrmDeviceInfo(device);
+
+    const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
+
+    if (!renderPath)
+      renderPath = drmGetDeviceNameFromFd2(m_fd);
+
+    if (!renderPath)
+      renderPath = drmGetDeviceNameFromFd(m_fd);
+
+    if (renderPath)
+    {
+      m_renderDevicePath = renderPath;
+      m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
+      if (m_renderFd != 0)
+        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
+    }
+
+    drmFreeDevices(devices.data(), devices.size());
+    return true;
   }
 
   drmFreeDevices(devices.data(), devices.size());
@@ -404,12 +413,15 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
+  m_connectors.clear();
   for (int i = 0; i < resources->count_connectors; i++)
     m_connectors.emplace_back(std::make_unique<CDRMConnector>(m_fd, resources->connectors[i]));
 
+  m_encoders.clear();
   for (int i = 0; i < resources->count_encoders; i++)
     m_encoders.emplace_back(std::make_unique<CDRMEncoder>(m_fd, resources->encoders[i]));
 
+  m_crtcs.clear();
   for (int i = 0; i < resources->count_crtcs; i++)
     m_crtcs.emplace_back(std::make_unique<CDRMCrtc>(m_fd, resources->crtcs[i]));
 
@@ -422,6 +434,7 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
+  m_planes.clear();
   for (uint32_t i = 0; i < planeResources->count_planes; i++)
   {
     m_planes.emplace_back(std::make_unique<CDRMPlane>(m_fd, planeResources->planes[i]));
@@ -478,7 +491,7 @@ bool CDRMUtils::InitDrm()
 
 bool CDRMUtils::FindConnector()
 {
-  auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [this](auto& connector) {
+  auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [](auto& connector) {
     return connector->GetEncoderId() > 0 && connector->IsConnected();
   });
 
@@ -524,6 +537,13 @@ bool CDRMUtils::FindCrtc()
       if (m_crtcs[i]->GetCrtcId() == m_encoder->GetCrtcId())
       {
         m_orig_crtc = m_crtcs[i].get();
+        if (m_orig_crtc->GetModeValid())
+        {
+          m_mode = m_orig_crtc->GetMode();
+          CLog::Log(LOGDEBUG, "CDRMUtils::{} - original crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
+                    m_mode->hdisplay, m_mode->vdisplay,
+                    m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
+        }
         return true;
       }
     }
@@ -625,8 +645,9 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   else
     res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
 
-  res.strMode = StringUtils::Format("%dx%d%s @ %.6f Hz", res.iScreenWidth, res.iScreenHeight,
-                                    res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", res.fRefreshRate);
+  res.strMode =
+      StringUtils::Format("{}x{}{} @ {:.6f} Hz", res.iScreenWidth, res.iScreenHeight,
+                          res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", res.fRefreshRate);
   return res;
 }
 

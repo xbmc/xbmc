@@ -36,15 +36,16 @@ namespace MUSIC_UTILS
     std::string m_artType;
     std::string m_newArt;
   public:
-    CSetArtJob(const CFileItemPtr item, const std::string& type, const std::string& newArt) :
-      pItem(item),
-      m_artType(type),
-      m_newArt(newArt)
+    CSetArtJob(const CFileItemPtr& item, const std::string& type, const std::string& newArt)
+      : pItem(item), m_artType(type), m_newArt(newArt)
     { }
 
     ~CSetArtJob(void) override = default;
 
-    bool HasSongExtraArtChanged(const CFileItemPtr pSongItem, const std::string& type, const int itemID, CMusicDatabase& db)
+    bool HasSongExtraArtChanged(const CFileItemPtr& pSongItem,
+                                const std::string& type,
+                                const int itemID,
+                                CMusicDatabase& db)
     {
       if (!pSongItem->HasMusicInfoTag())
         return false;
@@ -64,7 +65,7 @@ namespace MUSIC_UTILS
           for (CVariant::const_iterator_array varid = pSongItem->GetProperty("artistid").begin_array();
             varid != pSongItem->GetProperty("artistid").end_array(); varid++)
           {
-            int idArtist = varid->asInteger();
+            int idArtist = static_cast<int>(varid->asInteger());
             result = (itemID == idArtist);
             if (result)
               break;
@@ -99,6 +100,8 @@ namespace MUSIC_UTILS
         db.SetArtForItem(itemID, type, m_artType, m_newArt);
       else
         db.RemoveArtForItem(itemID, type, m_artType);
+      // Artwork changed so set datemodified field for artist, album or song
+      db.SetItemUpdated(itemID, type);
 
       /* Update the art of the songs of the current music playlist.
       Song thumb is often a fallback from the album and fanart is from the artist(s).
@@ -174,7 +177,9 @@ namespace MUSIC_UTILS
     }
   };
 
-  void UpdateArtJob(const CFileItemPtr pItem, const std::string& strType, const std::string& strArt)
+  void UpdateArtJob(const CFileItemPtr& pItem,
+                    const std::string& strType,
+                    const std::string& strArt)
   {
     // Asynchronously update that type of art in the database
     CSetArtJob *job = new CSetArtJob(pItem, strType, strArt);
@@ -316,7 +321,7 @@ namespace MUSIC_UTILS
       dialog->SetHeading(CVariant{ 38023 });
       dialog->Add(g_localizeStrings.Get(38022));
       for (int i = 1; i <= 10; i++)
-        dialog->Add(StringUtils::Format("%s: %i", g_localizeStrings.Get(563).c_str(), i));
+        dialog->Add(StringUtils::Format("{}: {}", g_localizeStrings.Get(563), i));
       dialog->SetSelected(iSelected);
       dialog->Open();
 
@@ -328,7 +333,7 @@ namespace MUSIC_UTILS
     return -1;
   }
 
-  void UpdateSongRatingJob(const CFileItemPtr pItem, int userrating)
+  void UpdateSongRatingJob(const CFileItemPtr& pItem, int userrating)
   {
     // Asynchronously update the song user rating in music library
     const CMusicInfoTag *tag = pItem->GetMusicInfoTag();

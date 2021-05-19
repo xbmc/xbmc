@@ -29,6 +29,9 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#include "storage/DetectDVDType.h"
+#endif
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
@@ -50,7 +53,7 @@ CServiceManager::~CServiceManager()
 
 bool CServiceManager::InitForTesting()
 {
-  m_network.reset(new CNetwork());
+  m_network = CNetworkBase::GetNetwork();
 
   m_databaseManager.reset(new CDatabaseManager);
 
@@ -81,7 +84,8 @@ void CServiceManager::DeinitTesting()
 bool CServiceManager::InitStageOne()
 {
   m_Platform.reset(CPlatform::CreateInstance());
-  m_Platform->Init();
+  if (!m_Platform->InitStageOne())
+    return false;
 
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
@@ -90,7 +94,7 @@ bool CServiceManager::InitStageOne()
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
-  m_network.reset(new CNetwork());
+  m_network = CNetworkBase::GetNetwork();
 
   init_level = 1;
   return true;
@@ -147,6 +151,9 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
+  if (!m_Platform->InitStageTwo())
+    return false;
+
   init_level = 2;
   return true;
 }
@@ -154,6 +161,13 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 // stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& profileManager)
 {
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  // Start Thread for DVD Mediatype detection
+  CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
+  m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
+  m_DetectDVDType->Create(false);
+#endif
+
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
@@ -170,6 +184,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
+  if (!m_Platform->InitStageThree())
+    return false;
+
   init_level = 3;
   return true;
 }
@@ -178,6 +195,10 @@ void CServiceManager::DeinitStageThree()
 {
   init_level = 2;
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  m_DetectDVDType->StopThread();
+  m_DetectDVDType.reset();
+#endif
   m_playerCoreFactory.reset();
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();
@@ -259,6 +280,13 @@ ADDON::CRepositoryUpdater &CServiceManager::GetRepositoryUpdater()
 XBPython& CServiceManager::GetXBPython()
 {
   return *m_XBPython;
+}
+#endif
+
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+MEDIA_DETECT::CDetectDVDMedia& CServiceManager::GetDetectDVDMedia()
+{
+  return *m_DetectDVDType;
 }
 #endif
 

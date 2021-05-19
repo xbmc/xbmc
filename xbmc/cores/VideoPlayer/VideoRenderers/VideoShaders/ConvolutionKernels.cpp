@@ -34,8 +34,16 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
     Spline36();
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
     Lanczos3();
-  else if (method == VS_SCALINGMETHOD_CUBIC)
+  else if (method == VS_SCALINGMETHOD_CUBIC_B_SPLINE)
+    Bicubic(1.0, 0.0);
+  else if (method == VS_SCALINGMETHOD_CUBIC_MITCHELL)
     Bicubic(1.0 / 3.0, 1.0 / 3.0);
+  else if (method == VS_SCALINGMETHOD_CUBIC_CATMULL)
+    Bicubic(0.0, 0.5);
+  else if (method == VS_SCALINGMETHOD_CUBIC_0_075)
+    Bicubic(0.0, 0.75);
+  else if (method == VS_SCALINGMETHOD_CUBIC_0_1)
+    Bicubic(0.0, 1.0);
 
   ToIntFract();
   ToUint8();
@@ -257,7 +265,7 @@ void CConvolutionKernel::ToIntFract()
 
   for (int i = 0; i < m_size * 4; i++)
   {
-    int value = MathUtils::round_int((m_floatpixels[i] + 1.0) / 2.0 * 65535.0);
+    int value = MathUtils::round_int((static_cast<double>(m_floatpixels[i]) + 1.0) / 2.0 * 65535.0);
     if (value < 0)
       value = 0;
     else if (value > 65535)
@@ -278,7 +286,7 @@ void CConvolutionKernel::ToUint8()
 
   for (int i = 0; i < m_size * 4; i++)
   {
-    int value = MathUtils::round_int((m_floatpixels[i] * 0.5 + 0.5) * 255.0);
+    int value = MathUtils::round_int((static_cast<double>(m_floatpixels[i]) * 0.5 + 0.5) * 255.0);
     if (value < 0)
       value = 0;
     else if (value > 255)

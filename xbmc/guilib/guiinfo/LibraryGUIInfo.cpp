@@ -15,11 +15,13 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibraryQueue.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 
@@ -267,17 +269,18 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     }
     case LIBRARY_IS_SCANNING:
     {
-      value = (g_application.IsMusicScanning() || g_application.IsVideoScanning());
+      value = (CMusicLibraryQueue::GetInstance().IsScanningLibrary() ||
+               CVideoLibraryQueue::GetInstance().IsScanningLibrary());
       return true;
     }
     case LIBRARY_IS_SCANNING_VIDEO:
     {
-      value = g_application.IsVideoScanning();
+      value = CVideoLibraryQueue::GetInstance().IsScanningLibrary();
       return true;
     }
     case LIBRARY_IS_SCANNING_MUSIC:
     {
-      value = g_application.IsMusicScanning();
+      value = CMusicLibraryQueue::GetInstance().IsScanningLibrary();
       return true;
     }
   }

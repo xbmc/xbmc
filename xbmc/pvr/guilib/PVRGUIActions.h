@@ -37,6 +37,8 @@ namespace PVR
     SUCCESS
   };
 
+  class CPVRChannel;
+  class CPVRChannelGroupMember;
   class CPVRRecording;
   class CPVRStreamProperties;
   class CPVRTimerInfoTag;
@@ -309,6 +311,13 @@ namespace PVR
     bool StartChannelScan();
 
     /*!
+     * @brief Start a channel scan on the specified client or open a dialog to select a client
+     * @param clientId the id of client to scan or PVR_INVALID_CLIENT_ID if a dialog will be opened
+     * @return true on success, false otherwise.
+     */
+    bool StartChannelScan(int clientId);
+
+    /*!
      * @return True when a channel scan is currently running, false otherwise.
      */
     bool IsRunningChannelScan() const { return m_bChannelScanRunning; }
@@ -390,6 +399,23 @@ namespace PVR
      * @param iThreshold the value in seconds to trigger seek to start of current event instead of start of previous event.
      */
     void SeekBackward(unsigned int iThreshold);
+
+    /*!
+     * @brief Get a channel group member for the given channel, either from the currently active
+     * group or if not found there, from the 'all channels' group.
+     * @param cahnnel the channel.
+     * @return the group member or nullptr if not found.
+     */
+    std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMember(
+        const std::shared_ptr<CPVRChannel>& channel) const;
+
+    /*!
+     * @brief Get a channel group member for the given item, either from the currently active group
+     * or if not found there, from the 'all channels' group.
+     * @param item the item containing a channel, channel group, recording, timer or epg tag.
+     * @return the group member or nullptr if not found.
+     */
+    std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMember(const CFileItem& item) const;
 
     /*!
      * @brief Get the currently active channel number input handler.

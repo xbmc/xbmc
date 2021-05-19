@@ -18,6 +18,7 @@
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
+#include "platform/win32/network/WSDiscoveryWin32.h"
 
 #include <Windows.h>
 #include <Winnetwk.h>
@@ -50,6 +51,7 @@ static inline bool worthTryToConnect(const DWORD lastErr)
 */
 static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, const std::string& urlPrefixForItems, CFileItemList& items, bool getShares);
 static bool localGetShares(const std::wstring& serverNameToScan, const std::string& urlPrefixForItems, CFileItemList& items);
+static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList& items);
 
 // check for empty string, remove trailing slash if any, convert to win32 form
 inline static std::wstring prepareWin32SMBDirectoryName(const CURL& url)
@@ -392,9 +394,18 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     if (localGetShares(basePathToScanPtr->lpRemoteName, urlPrefixForItems, items))
       return true;
 
-    CLog::LogF(LOGINFO,
-               "Can't read shares for \"%ls\" by localGetShares(), fallback to standard method",
+    CLog::LogF(LOGWARNING,
+               "Can't read shares for \"%ls\" by localGetShares(), fallback to old method",
                FromW(basePathToScanPtr->lpRemoteName));
+  }
+
+  // Get servers using WS-Discovery protocol
+  if (!getShares)
+  {
+    if (localGetServers(urlPrefixForItems, items))
+      return true;
+
+    CLog::LogF(LOGWARNING, "Can't locate servers by localGetServers(), fallback to old method");
   }
 
   HANDLE netEnum;
@@ -422,15 +433,16 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
   do
   {
     DWORD resCount = -1;
-    DWORD bufSize = buf.size();
-    result = WNetEnumResourceW(netEnum, &resCount, buf.get(), &bufSize);
+    size_t bufSize = buf.size();
+    result = WNetEnumResourceW(netEnum, &resCount, buf.get(), reinterpret_cast<LPDWORD>(&bufSize));
     if (result == NO_ERROR)
     {
       if (bufSize > buf.size())
       { // buffer is too small
         buf.allocate(bufSize); // discard buffer content and extend the buffer
         bufSize = buf.size();
-        result = WNetEnumResourceW(netEnum, &resCount, buf.get(), &bufSize);
+        result =
+            WNetEnumResourceW(netEnum, &resCount, buf.get(), reinterpret_cast<LPDWORD>(&bufSize));
         if (result != NO_ERROR || bufSize > buf.size())
           errorFlag = true; // hardly ever happens
       }
@@ -618,6 +630,32 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
   return true;
 }
 
+// Get servers using WS-Discovery protocol
+static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList& items)
+{
+  auto wsd = CWSDiscoverySupport::Get();
+
+  // Get servers immediately from WSD daemon process
+  if (wsd && wsd->IsInitialized() && wsd->ThereAreServers())
+  {
+    for (const auto& ip : wsd->GetServersIPs())
+    {
+      std::wstring hostname = wsd->ResolveHostName(ip);
+      std::string shareNameUtf8;
+      if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
+      {
+        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
+        pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
+        pItem->m_bIsFolder = true;
+        items.Add(pItem);
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
 bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCredential /*= false*/)
 {
   assert(url.IsProtocol("smb"));
@@ -686,10 +724,20 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   connInfo.dwType = RESOURCETYPE_ANY;
   connInfo.lpRemoteName = (LPWSTR)serverShareNameW.c_str();
   DWORD connRes;
+
   for (int i = 0; i < 3; i++) // make up to three attempts to connect
   {
+    // try with provided user/password or NULL user/password (NULL = current Windows user/password)
     connRes = WNetAddConnection2W(&connInfo, passwordW.empty() ? NULL : (LPWSTR)passwordW.c_str(),
                                   usernameW.empty() ? NULL : (LPWSTR)usernameW.c_str(), CONNECT_TEMPORARY);
+
+    // try with passwordless access (guest user and no password)
+    if (usernameW.empty() && passwordW.empty() &&
+        (connRes == ERROR_ACCESS_DENIED || connRes == ERROR_BAD_USERNAME ||
+         connRes == ERROR_INVALID_PASSWORD || connRes == ERROR_LOGON_FAILURE ||
+         connRes == ERROR_LOGON_TYPE_NOT_GRANTED || connRes == ERROR_LOGON_NOT_GRANTED))
+      connRes = WNetAddConnection2W(&connInfo, L"", L"guest", CONNECT_TEMPORARY);
+
     if (connRes == NO_ERROR)
     {
       CLog::LogF(LOGDEBUG, "Connected to \"%s\" %s", serverShareName.c_str(), loginDescr.c_str());

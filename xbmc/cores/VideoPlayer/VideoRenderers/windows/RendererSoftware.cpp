@@ -181,10 +181,19 @@ void CRendererSoftware::CRenderBufferImpl::ReleasePicture()
 
 bool CRendererSoftware::CRenderBufferImpl::UploadBuffer()
 {
+  if (!videoBuffer)
+    return false;
+
+  if (videoBuffer->GetFormat() != AV_PIX_FMT_D3D11VA_VLD)
+  {
+    m_bLoaded = true;
+    return true;
+  }
+
   if (!m_staging)
     return false;
 
-  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD && m_msr.pData == nullptr)
+  if (m_msr.pData == nullptr)
   {
     // map will finish copying data from GPU to CPU
     m_bLoaded = SUCCEEDED(DX::DeviceResources::Get()->GetImmediateContext()->Map(

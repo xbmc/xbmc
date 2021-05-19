@@ -18,7 +18,7 @@
 class CScreenShot
 {
 public:
-  static void Register(std::function<std::unique_ptr<IScreenshotSurface>()> createFunc);
+  static void Register(const std::function<std::unique_ptr<IScreenshotSurface>()>& createFunc);
 
   static void TakeScreenshot();
   static void TakeScreenshot(const std::string &filename, bool sync);

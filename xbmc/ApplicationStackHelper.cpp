@@ -17,6 +17,8 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <utility>
+
 using namespace XFILE;
 
 CApplicationStackHelper::CApplicationStackHelper(void)
@@ -237,7 +239,7 @@ bool CApplicationStackHelper::HasRegisteredStack(const CFileItem & item)
 
 void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem)
 {
-  GetStackPartInformation(item.GetPath())->m_pStack = stackItem;
+  GetStackPartInformation(item.GetPath())->m_pStack = std::move(stackItem);
 }
 
 int CApplicationStackHelper::GetRegisteredStackPartNumber(const CFileItem& item)
@@ -270,7 +272,8 @@ void CApplicationStackHelper::SetRegisteredStackTotalTimeMs(const CFileItem& ite
   GetStackPartInformation(item.GetPath())->m_lStackTotalTimeMs = totalTime;
 }
 
-CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(std::string key)
+CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(
+    const std::string& key)
 {
   if (m_stackmap.count(key) == 0)
   {

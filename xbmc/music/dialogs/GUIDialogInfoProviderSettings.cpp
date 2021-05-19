@@ -133,7 +133,8 @@ void CGUIDialogInfoProviderSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogInfoProviderSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogInfoProviderSettings::OnSettingChanged(
+    const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -158,7 +159,7 @@ void CGUIDialogInfoProviderSettings::OnSettingChanged(std::shared_ptr<const CSet
   }
 }
 
-void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -178,7 +179,8 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon);
+      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
+                                             OnlyEnabled::YES);
       m_albumscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
       SetupView();
       SetFocus(settingId);
@@ -195,7 +197,8 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon);
+      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
+                                             OnlyEnabled::YES);
       m_artistscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
       SetupView();
       SetFocus(settingId);
@@ -239,10 +242,10 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
   }
 }
 
-void CGUIDialogInfoProviderSettings::Save()
+bool CGUIDialogInfoProviderSettings::Save()
 {
   if (m_showSingleScraper)
-    return;  //Save done by caller of ::Show
+    return true; //Save done by caller of ::Show
 
   // Save default settings for fetching additional information and art
   CLog::Log(LOGINFO, "%s called", __FUNCTION__);
@@ -257,6 +260,8 @@ void CGUIDialogInfoProviderSettings::Save()
   // Save artist information folder
   settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, m_strArtistInfoPath);
   settings->Save();
+
+  return true;
 }
 
 void CGUIDialogInfoProviderSettings::SetupView()

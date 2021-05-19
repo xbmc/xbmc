@@ -11,6 +11,7 @@
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+#include "utils/SortUtils.h"
 
 #include <set>
 #include <string>
@@ -111,7 +112,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void OnSettingsLoaded() override;
     void OnSettingsUnloaded() override;
 
-    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
     void Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr);
     void Uninitialize(CSettingsManager& settingsMgr);
@@ -284,9 +285,13 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
     int m_curlretries;
+    int m_curlKeepAliveInterval;    // seconds
     bool m_curlDisableIPV6;
     bool m_curlDisableHTTP2;
 
+    std::string m_caTrustFile;
+
+    bool m_minimizeToTray; /* win32 only */
     bool m_fullScreen;
     bool m_startFullScreen;
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
@@ -297,6 +302,12 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_playlistTimeout;
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
+
+    /*!< @brief Decision flag to show or hide specific dependencies in the list of the AddonInfo dialog
+    as this information usually adds no value for a consumer.
+    True to recursively show any dependency of the selected add-on
+    False to hide 'low-level' dependencies like e.g. scripts/modules (default) */
+    bool m_showAllDependencies;
 
     bool m_bVirtualShares;
     bool m_bTry10bitOutput;
@@ -312,6 +323,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in msecs after that a channel switch occurs after entering a channel number, if confirmchannelswitch is disabled */
     int m_iPVRTimeshiftThreshold; /*!< @brief time diff between current playing time and timeshift buffer end, in seconds, before a playing stream is displayed as timeshifting. */
     bool m_bPVRTimeshiftSimpleOSD; /*!< @brief use simple timeshift OSD (with progress only for the playing event instead of progress for the whole ts buffer). */
+    SortDescription m_PVRDefaultSortOrder; /*!< @brief SortDecription used to store default recording sort type and sort order */
+
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
     DatabaseSettings m_databaseTV;    // advanced tv database setup
@@ -364,6 +377,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     std::string m_userAgent;
     uint32_t m_nfsTimeout;
+    int m_nfsRetries;
 
   private:
     void Initialize();

@@ -59,7 +59,7 @@ namespace PVR
     }
     else if (m_item->IsPVRTimer())
     {
-      const std::shared_ptr<CPVRChannel> channel =m_item->GetPVRTimerInfoTag()->Channel();
+      const std::shared_ptr<CPVRChannel> channel = m_item->GetPVRTimerInfoTag()->Channel();
       if (channel)
         return channel->GetEPGNext();
     }
@@ -83,6 +83,10 @@ namespace PVR
     else if (m_item->IsPVRTimer())
     {
       return m_item->GetPVRTimerInfoTag()->Channel();
+    }
+    else if (m_item->IsPVRRecording())
+    {
+      return m_item->GetPVRRecordingInfoTag()->Channel();
     }
     else
     {
@@ -142,6 +146,10 @@ namespace PVR
     else if (m_item->IsPVRRecording())
     {
       return m_item->GetPVRRecordingInfoTag()->IsRadio();
+    }
+    else if (m_item->IsPVRTimer())
+    {
+      return m_item->GetPVRTimerInfoTag()->m_bIsRadio;
     }
     else
     {

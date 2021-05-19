@@ -25,6 +25,8 @@ namespace PVR
 
   /** The PVR database */
 
+  static constexpr int CHANNEL_COMMIT_QUERY_COUNT_LIMIT = 10000;
+
   class CPVRDatabase : public CDatabase
   {
   public:
@@ -46,10 +48,20 @@ namespace PVR
     void Close() override;
 
     /*!
+     * @brief Lock the database.
+     */
+    void Lock();
+
+    /*!
+     * @brief Unlock the database.
+     */
+    void Unlock();
+
+    /*!
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 37; }
+    int GetSchemaVersion() const override { return 38; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -109,15 +121,14 @@ namespace PVR
      * @param channel The channel to remove.
      * @return True if the channel was removed, false otherwise.
      */
-    bool Delete(const CPVRChannel& channel);
+    bool QueueDeleteQuery(const CPVRChannel& channel);
 
     /*!
      * @brief Get the list of channels from the database
      * @param results The channel group to store the results in.
-     * @param bCompressDB Compress the DB after getting the list
      * @return The amount of channels that were added.
      */
-    int Get(CPVRChannelGroup& results, bool bCompressDB);
+    int Get(CPVRChannelGroup& results);
 
     //@}
 
@@ -136,6 +147,13 @@ namespace PVR
      * @return True if the group was deleted successfully, false otherwise.
      */
     bool Delete(const CPVRChannelGroup& group);
+
+    /*!
+     * @brief Remove all channel members of the given group from the database
+     * @param iGroupID The id of the group.
+     * @return True if all channel members were removed, false otherwise.
+     */
+    bool QueueDeleteChannelGroupMembersQuery(int iGroupID);
 
     /*!
      * @brief Get the channel groups.
@@ -245,6 +263,8 @@ namespace PVR
     bool PersistChannels(CPVRChannelGroup& group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
+    void InsertChannelIntoGroup(const std::shared_ptr<CPVRChannel>& channel,
+                                CPVRChannelGroup& group);
 
     int GetClientIdByChannelId(int iChannelId);
 

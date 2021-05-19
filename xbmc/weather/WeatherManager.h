@@ -99,8 +99,8 @@ protected:
   std::string BusyInfo(int info) const override;
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
 

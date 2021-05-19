@@ -111,7 +111,7 @@ void CPVRGUITimesInfo::UpdateTimeshiftData()
   time_t iStartTime;
   int64_t iPlayTime, iMinTime, iMaxTime;
   CServiceBroker::GetDataCacheCore().GetPlayTimes(iStartTime, iPlayTime, iMinTime, iMaxTime);
-  bool bPlaying = CServiceBroker::GetDataCacheCore().GetSpeed() == 1.0;
+  bool bPlaying = CServiceBroker::GetDataCacheCore().GetSpeed() == 1.0f;
   const std::shared_ptr<CPVRChannel> playingChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
 
   CSingleLock lock(m_critSection);

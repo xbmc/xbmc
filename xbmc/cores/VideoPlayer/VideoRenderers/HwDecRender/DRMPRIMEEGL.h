@@ -17,6 +17,9 @@
 class CDRMPRIMETexture
 {
 public:
+  CDRMPRIMETexture() = default;
+  ~CDRMPRIMETexture();
+
   bool Map(CVideoBufferDRMPRIME* buffer);
   void Unmap();
   void Init(EGLDisplay eglDisplay);
@@ -32,8 +35,4 @@ protected:
   GLuint m_texture{0};
   int m_texWidth{0};
   int m_texHeight{0};
-
-private:
-  static int GetColorSpace(int colorSpace);
-  static int GetColorRange(int colorRange);
 };

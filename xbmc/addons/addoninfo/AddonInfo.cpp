@@ -9,6 +9,9 @@
 #include "AddonInfo.h"
 
 #include "LangInfo.h"
+#include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/IAddon.h"
 #include "guilib/LocalizeStrings.h"
 
 #include <algorithm>
@@ -69,6 +72,20 @@ static const TypeMapping types[] =
    {"kodi.imagedecoder",                 "", ADDON_IMAGEDECODER,        39015, "DefaultAddonImageDecoder.png" },
   };
 // clang-format on
+
+const std::string& CAddonInfo::OriginName() const
+{
+  if (!m_originName)
+  {
+    ADDON::AddonPtr origin;
+    if (CServiceBroker::GetAddonMgr().GetAddon(m_origin, origin, ADDON::ADDON_UNKNOWN,
+                                               ADDON::OnlyEnabled::NO))
+      m_originName = std::make_unique<std::string>(origin->Name());
+    else
+      m_originName = std::make_unique<std::string>(); // remember we tried to fetch the name
+  }
+  return *m_originName;
+}
 
 /**
  * static public helper functions

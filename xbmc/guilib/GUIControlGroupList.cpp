@@ -49,8 +49,13 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     GUIPROFILER_VISIBILITY_END(control);
   }
 
-  ValidateOffset();
-  if (m_pageControl && m_lastScrollerValue != m_scroller.GetValue())
+  // visibility status of some of the list items may have changed. Thus, the group list size
+  // may now be different and the scroller needs to be updated
+  int previousTotalSize = m_totalSize;
+  ValidateOffset(); // m_totalSize is updated here
+  bool sizeChanged = previousTotalSize != m_totalSize;
+
+  if (m_pageControl && (m_lastScrollerValue != m_scroller.GetValue() || sizeChanged))
   {
     CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (int)Size(), (int)m_totalSize);
     SendWindowMessage(message);
@@ -440,11 +445,11 @@ std::string CGUIControlGroupList::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_CURRENT_ITEM:
-    return StringUtils::Format("%i", GetSelectedItem());
+    return std::to_string(GetSelectedItem());
   case CONTAINER_NUM_ITEMS:
-    return StringUtils::Format("%i", GetNumItems());
+    return std::to_string(GetNumItems());
   case CONTAINER_POSITION:
-    return StringUtils::Format("%i", m_focusedPosition);
+    return std::to_string(m_focusedPosition);
   default:
     break;
   }

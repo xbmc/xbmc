@@ -806,7 +806,7 @@ struct DriverPrimitive
 {
 protected:
   /*!
-   * \brief Construct a driver primitive of the specified type
+   * @brief Construct a driver primitive of the specified type
    */
   DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE type, unsigned int driverIndex)
     : m_type(type), m_driverIndex(driverIndex)

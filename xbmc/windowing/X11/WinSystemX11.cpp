@@ -27,8 +27,6 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
-#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
-
 #include <string>
 #include <vector>
 
@@ -56,7 +54,6 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 
   m_winEventsX11 = new CWinEventsX11(*this);
   m_winEvents.reset(m_winEventsX11);
-  CLinuxPowerSyscall::Register();
 }
 
 CWinSystemX11::~CWinSystemX11() = default;
@@ -73,6 +70,12 @@ bool CWinSystemX11::InitWindowSystem()
   if ((m_dpy = XOpenDisplay(NULL)))
   {
     bool ret = CWinSystemBase::InitWindowSystem();
+
+    CServiceBroker::GetSettingsComponent()
+        ->GetSettings()
+        ->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE)
+        ->SetVisible(true);
+
     return ret;
   }
   else
@@ -406,7 +409,7 @@ void CWinSystemX11::UpdateResolutions()
 
       CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
 
-      res.strMode      = StringUtils::Format("%s: %s @ %.2fHz", out->name.c_str(), mode.name.c_str(), mode.hz);
+      res.strMode = StringUtils::Format("{}: {} @ {:.2f}Hz", out->name, mode.name, mode.hz);
       res.strOutput    = out->name;
       res.strId        = mode.id;
       res.iSubtitles   = (int)(0.965*mode.h);
@@ -471,7 +474,7 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
   }
 }
 
-bool CWinSystemX11::IsCurrentOutput(std::string output)
+bool CWinSystemX11::IsCurrentOutput(const std::string& output)
 {
   return (StringUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
 }
@@ -814,7 +817,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       XTextProperty windowName, iconName;
 
       std::string titleString = CCompileInfo::GetAppName();
-      std::string classString = titleString;
+      const std::string& classString = titleString;
       char *title = const_cast<char*>(titleString.c_str());
 
       XStringListToTextProperty(&title, 1, &windowName);

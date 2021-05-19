@@ -88,8 +88,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     if (StringUtils::StartsWith(strLine, InfoMarker))
     {
       // start of info
-      size_t iColon = strLine.find(":");
-      size_t iComma = strLine.find(",");
+      size_t iColon = strLine.find(':');
+      size_t iComma = strLine.find(',');
       if (iColon != std::string::npos &&
           iComma != std::string::npos &&
           iComma > iColon)
@@ -105,8 +105,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     }
     else if (StringUtils::StartsWith(strLine, OffsetMarker))
     {
-      size_t iColon = strLine.find(":");
-      size_t iComma = strLine.find(",");
+      size_t iColon = strLine.find(':');
+      size_t iComma = strLine.find(',');
       if (iColon != std::string::npos &&
         iComma != std::string::npos &&
         iComma > iColon)
@@ -121,8 +121,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     else if (StringUtils::StartsWith(strLine, PropertyMarker)
     || StringUtils::StartsWith(strLine, VLCOptMarker))
     {
-      size_t iColon = strLine.find(":");
-      size_t iEqualSign = strLine.find("=");
+      size_t iColon = strLine.find(':');
+      size_t iEqualSign = strLine.find('=');
       if (iColon != std::string::npos &&
         iEqualSign != std::string::npos &&
         iEqualSign > iColon)
@@ -217,7 +217,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return;
   }
-  std::string strLine = StringUtils::Format("%s\n",StartMarker);
+  std::string strLine = StringUtils::Format("{}\n", StartMarker);
   if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
     return; // error
 
@@ -226,17 +226,19 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     CFileItemPtr item = m_vecItems[i];
     std::string strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    strLine = StringUtils::Format( "%s:%i,%s\n", InfoMarker, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
+    strLine = StringUtils::Format("{}:{},{}\n", InfoMarker,
+                                  item->GetMusicInfoTag()->GetDuration() / 1000, strDescription);
     if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
       return; // error
     if (item->m_lStartOffset != 0 || item->m_lEndOffset != 0)
     {
-      strLine = StringUtils::Format("%s:%" PRIi64 ",%" PRIi64 "\n", OffsetMarker, item->m_lStartOffset, item->m_lEndOffset);
+      strLine =
+          StringUtils::Format("{}:{},{}\n", OffsetMarker, item->m_lStartOffset, item->m_lEndOffset);
       file.Write(strLine.c_str(),strLine.size());
     }
     std::string strFileName = ResolveURL(item);
     g_charsetConverter.utf8ToStringCharset(strFileName);
-    strLine = StringUtils::Format("%s\n",strFileName.c_str());
+    strLine = StringUtils::Format("{}\n", strFileName);
     if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
       return; // error
   }

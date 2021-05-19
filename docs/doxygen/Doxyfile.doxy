@@ -38,7 +38,7 @@ PROJECT_NAME           = "Kodi Documentation"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 19.0
+PROJECT_NUMBER         = 20.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -245,9 +245,9 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "table_h3{3}=<tr bgcolor=576f9f><th width=30% align=left valign=middle><b>\1</b></th><th width=10% align=left valign=middle><b>\2</b></th><th width=60% align=left valign=middle><span><b>\3</b></span></th></tr>" \
                          "table_row3{3}=\htmlonly<tr bgcolor=white><td width= 30% align=left>\endhtmlonly\1\htmlonly</td><td width= 10% align=left>\endhtmlonly\2\htmlonly</td><td width= 60% align=left>\endhtmlonly\3\htmlonly</td></tr>\endhtmlonly" \
                          "python_func{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4><hr> \endhtmlonly" \
-                         "python_func_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
+                         "python_func_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style=\"float:right;\"><small>\2</small></span></h4> \endhtmlonly" \
                          "python_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
-                         "python_class_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
+                         "python_class_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style=\"float:right;\"><small>\2</small></span></h4> \endhtmlonly" \
                          "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly" \
                          "python_removed_function{3}=\htmlonly <dl class=\"reflist\"><dt>Member <a class=\"el\" href=\"\2\">\1</a> (...)</dt><dd>\3</dd></dl>\endhtmlonly" \
                          "cpp_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
@@ -260,6 +260,7 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "python_v17=\xrefitem python_v17 \"v17 Python API changes\" \"\"" \
                          "python_v18=\xrefitem python_v18 \"v18 Python API changes\" \"\"" \
                          "python_v19=\xrefitem python_v19 \"v19 Python API changes\" \"\"" \
+                         "python_v20=\xrefitem python_v20 \"v20 Python API changes\" \"\"" \
                          "skinning_v12=\xrefitem skinning_v12 \"v12 Skinning engine changes\" \"\"" \
                          "skinning_v13=\xrefitem skinning_v13 \"v13 Skinning engine changes\" \"\"" \
                          "skinning_v14=\xrefitem skinning_v14 \"v14 Skinning engine changes\" \"\"" \
@@ -268,6 +269,7 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "skinning_v17=\xrefitem skinning_v17 \"v17 Skinning engine changes\" \"\"" \
                          "skinning_v18=\xrefitem skinning_v18 \"v18 Skinning engine changes\" \"\"" \
                          "skinning_v19=\xrefitem skinning_v19 \"v19 Skinning engine changes\" \"\""
+                         "skinning_v20=\xrefitem skinning_v20 \"v20 Skinning engine changes\" \"\""
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

@@ -43,13 +43,13 @@ std::string GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */)
   {
     case PLAYLIST_LENGTH:
     {
-      return StringUtils::Format("%i", player.GetPlaylist(iPlaylist).size());
+      return std::to_string(player.GetPlaylist(iPlaylist).size());
     }
     case PLAYLIST_POSITION:
     {
       int currentSong = player.GetCurrentSong();
       if (currentSong > -1)
-        return StringUtils::Format("%i", currentSong + 1);
+        return std::to_string(currentSong + 1);
       break;
     }
     case PLAYLIST_RANDOM:

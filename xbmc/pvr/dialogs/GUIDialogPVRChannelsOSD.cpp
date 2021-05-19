@@ -19,7 +19,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
@@ -127,7 +127,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
       const std::shared_ptr<CPVRChannelGroup> nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP
                                                         ? groups->GetNextGroup(*m_group)
                                                         : groups->GetPreviousGroup(*m_group);
-      CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(nextGroup);
+      CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(nextGroup);
       m_group = nextGroup;
       Init();
       Update();
@@ -171,13 +171,15 @@ void CGUIDialogPVRChannelsOSD::Update()
   const std::shared_ptr<CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
   if (channel)
   {
-    const std::shared_ptr<CPVRChannelGroup> group = pvrMgr.PlaybackState()->GetPlayingGroup(channel->IsRadio());
+    const std::shared_ptr<CPVRChannelGroup> group =
+        pvrMgr.PlaybackState()->GetActiveChannelGroup(channel->IsRadio());
     if (group)
     {
-      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+          group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
-        m_vecItems->Add(std::make_shared<CFileItem>(groupMember->channel));
+        m_vecItems->Add(std::make_shared<CFileItem>(groupMember));
       }
 
       m_viewControl.SetItems(*m_vecItems);
@@ -273,7 +275,7 @@ void CGUIDialogPVRChannelsOSD::OnInputDone()
     int itemIndex = 0;
     for (const CFileItemPtr& channel : *m_vecItems)
     {
-      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
+      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
       {
         m_viewControl.SetSelectedItem(itemIndex);
         return;

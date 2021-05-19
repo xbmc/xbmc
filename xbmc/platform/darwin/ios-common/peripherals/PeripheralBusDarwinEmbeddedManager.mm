@@ -165,7 +165,7 @@
 
 - (std::string)GetDeviceLocation:(int)deviceId
 {
-  return StringUtils::Format("%s%d", parentClass->getDeviceLocationPrefix().c_str(), deviceId);
+  return StringUtils::Format("{}{}", parentClass->getDeviceLocationPrefix(), deviceId);
 }
 
 #pragma mark - Logging Utils

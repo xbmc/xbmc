@@ -96,10 +96,33 @@ CDVDVideoCodec* CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 
 void CDVDVideoCodecDRMPRIME::Register()
 {
-  CServiceBroker::GetSettingsComponent()
-      ->GetSettings()
-      ->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER)
-      ->SetVisible(true);
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  auto setting = settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}",
+              CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER);
+    return;
+  }
+
+  setting->SetVisible(true);
+
+  setting = settings->GetSetting(SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}", SETTING_VIDEOPLAYER_USEPRIMEDECODERFORHW);
+    return;
+  }
+
+  setting->SetVisible(true);
+
   CDVDFactoryCodec::RegisterHWVideoCodec("drm_prime", CDVDVideoCodecDRMPRIME::Create);
 }
 
@@ -251,27 +274,16 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 #if defined(HAVE_GBM)
     auto winSystem = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
 
-    if (!winSystem)
-      return false;
+    if (winSystem)
+    {
+      auto drm = winSystem->GetDrm();
 
-    auto drm = winSystem->GetDrm();
+      if (!drm)
+        return false;
 
-    if (!drm)
-      return false;
-
-    int fd = drm->GetFileDescriptor();
-
-    if (fd < 0)
-      return false;
-
-    if (!device)
-      device = drmGetRenderDeviceNameFromFd(fd);
-
-    if (!device)
-      device = drmGetDeviceNameFromFd2(fd);
-
-    if (!device)
-      device = drmGetDeviceNameFromFd(fd);
+      if (!device)
+        device = drm->GetRenderDevicePath();
+    }
 #endif
 
     //! @todo: fix with proper device when dma-hints wayland protocol works
@@ -301,7 +313,6 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
   m_pCodecContext->time_base.num = 1;
   m_pCodecContext->time_base.den = DVD_TIME_BASE;
-  m_pCodecContext->thread_safe_callbacks = 1;
   m_pCodecContext->thread_count = CServiceBroker::GetCPUInfo()->GetCPUCount();
 
   if (hints.extradata && hints.extrasize > 0)
@@ -356,20 +367,33 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
   if (!packet.pData)
     return true;
 
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  avpkt.data = packet.pData;
-  avpkt.size = packet.iSize;
-  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE)
-                  ? AV_NOPTS_VALUE
-                  : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE)
-                  ? AV_NOPTS_VALUE
-                  : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
-  avpkt.side_data = static_cast<AVPacketSideData*>(packet.pSideData);
-  avpkt.side_data_elems = packet.iSideDataElems;
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+    return false;
+  }
 
-  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+  avpkt->data = packet.pData;
+  avpkt->size = packet.iSize;
+  avpkt->dts = (packet.dts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->pts = (packet.pts == DVD_NOPTS_VALUE)
+                   ? AV_NOPTS_VALUE
+                   : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
+  avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
+  avpkt->side_data_elems = packet.iSideDataElems;
+
+  int ret = avcodec_send_packet(m_pCodecContext, avpkt);
+
+  //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+  // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
+  // and storing our own AVPacket. This will require some extensive changes.
+  av_buffer_unref(&avpkt->buf);
+  av_free(avpkt);
+
   if (ret == AVERROR(EAGAIN))
     return false;
   else if (ret)
@@ -415,11 +439,18 @@ void CDVDVideoCodecDRMPRIME::Reset()
 
 void CDVDVideoCodecDRMPRIME::Drain()
 {
-  AVPacket avpkt;
-  av_init_packet(&avpkt);
-  avpkt.data = nullptr;
-  avpkt.size = 0;
-  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+  AVPacket* avpkt = av_packet_alloc();
+  if (!avpkt)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - av_packet_alloc failed: {}", __FUNCTION__,
+              strerror(errno));
+    return;
+  }
+
+  avpkt->data = nullptr;
+  avpkt->size = 0;
+
+  int ret = avcodec_send_packet(m_pCodecContext, avpkt);
   if (ret && ret != AVERROR_EOF)
   {
     char err[AV_ERROR_MAX_STRING_SIZE] = {};
@@ -427,6 +458,8 @@ void CDVDVideoCodecDRMPRIME::Drain()
     CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - send packet failed: {} ({})", __FUNCTION__,
               err, ret);
   }
+
+  av_packet_free(&avpkt);
 }
 
 void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
@@ -505,6 +538,12 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iFlags = 0;
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
+  pVideoPicture->iFlags |= m_pFrame->data[0] ? 0 : DVP_FLAG_DROPPED;
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+  {
+    pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+  }
 
   int64_t pts = m_pFrame->best_effort_timestamp;
   pVideoPicture->pts = (pts == AV_NOPTS_VALUE)
@@ -577,4 +616,25 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   }
 
   return VC_PICTURE;
+}
+
+void CDVDVideoCodecDRMPRIME::SetCodecControl(int flags)
+{
+  m_codecControlFlags = flags;
+
+  if (m_pCodecContext)
+  {
+    if ((flags & DVD_CODEC_CTRL_DROP_ANY) != 0)
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_NONREF;
+      m_pCodecContext->skip_idct = AVDISCARD_NONREF;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+    }
+    else
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+    }
+  }
 }

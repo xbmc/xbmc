@@ -11,7 +11,7 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDSubtitleTagMicroDVD.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
 
 CDVDSubtitleParserMPL2::CDVDSubtitleParserMPL2(std::unique_ptr<CDVDSubtitleStream> && stream, const std::string& filename)

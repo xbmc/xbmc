@@ -41,9 +41,9 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
       value = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON);
       return true;
     case WEATHER_TEMPERATURE:
-      value = StringUtils::Format("%s%s",
-                                  CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_TEMP).c_str(),
-                                  g_langInfo.GetTemperatureUnitString().c_str());
+      value = StringUtils::Format(
+          "{}{}", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_TEMP),
+          g_langInfo.GetTemperatureUnitString());
       return true;
     case WEATHER_LOCATION:
       value = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_LOCATION);

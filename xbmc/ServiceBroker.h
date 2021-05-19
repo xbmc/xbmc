@@ -26,6 +26,11 @@ namespace ANNOUNCEMENT
   class CAnnouncementManager;
 }
 
+namespace MEDIA_DETECT
+{
+class CDetectDVDMedia;
+}
+
 namespace PVR
 {
   class CPVRManager;
@@ -96,6 +101,7 @@ public:
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ADDON::CVFSAddonCache &GetVFSAddonCache();
   static XBPython &GetXBPython();
+  static MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
   static PVR::CPVRManager &GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();

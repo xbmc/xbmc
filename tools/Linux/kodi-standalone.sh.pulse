@@ -1,9 +1,4 @@
 PULSE_START="$(command -v start-pulseaudio-x11)"
 if [ -n "$PULSE_START" ]; then
   $PULSE_START
-else
-  PULSE_SESSION="$(command -v pulse-session)"
-  if [ -n "$PULSE_SESSION" ]; then
-    XBMC="$PULSE_SESSION $XBMC"
-  fi
 fi

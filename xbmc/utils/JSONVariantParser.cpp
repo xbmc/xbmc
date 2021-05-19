@@ -40,7 +40,7 @@ private:
     return true;
   }
 
-  void PushObject(CVariant variant);
+  void PushObject(const CVariant& variant);
   void PopObject();
 
   CVariant& m_parsedObject;
@@ -146,7 +146,7 @@ bool CJSONVariantParserHandler::EndArray(rapidjson::SizeType elementCount)
   return true;
 }
 
-void CJSONVariantParserHandler::PushObject(CVariant variant)
+void CJSONVariantParserHandler::PushObject(const CVariant& variant)
 {
   if (m_status == PARSE_STATUS::Object)
   {

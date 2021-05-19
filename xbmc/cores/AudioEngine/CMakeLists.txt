@@ -52,7 +52,7 @@ if(ALSA_FOUND)
   list(APPEND HEADERS Sinks/AESinkALSA.h
                       Utils/AEELDParser.h)
 
-  if(NOT CORE_PLATFORM_NAME_LC STREQUAL x11)
+  if(NOT "x11" IN_LIST CORE_PLATFORM_NAME_LC)
     list(APPEND SOURCES Sinks/alsa/ALSAHControlMonitor.cpp)
     list(APPEND HEADERS Sinks/alsa/ALSAHControlMonitor.h)
   endif()
@@ -66,6 +66,27 @@ endif()
 if(PULSEAUDIO_FOUND)
   list(APPEND SOURCES Sinks/AESinkPULSE.cpp)
   list(APPEND HEADERS Sinks/AESinkPULSE.h)
+endif()
+
+if(PIPEWIRE_FOUND)
+  list(APPEND SOURCES Sinks/pipewire/AESinkPipewire.cpp
+                      Sinks/pipewire/Pipewire.cpp
+                      Sinks/pipewire/PipewireContext.cpp
+                      Sinks/pipewire/PipewireCore.cpp
+                      Sinks/pipewire/PipewireNode.cpp
+                      Sinks/pipewire/PipewireProxy.cpp
+                      Sinks/pipewire/PipewireRegistry.cpp
+                      Sinks/pipewire/PipewireStream.cpp
+                      Sinks/pipewire/PipewireThreadLoop.cpp)
+  list(APPEND HEADERS Sinks/pipewire/AESinkPipewire.h
+                      Sinks/pipewire/Pipewire.h
+                      Sinks/pipewire/PipewireContext.h
+                      Sinks/pipewire/PipewireCore.h
+                      Sinks/pipewire/PipewireNode.h
+                      Sinks/pipewire/PipewireProxy.h
+                      Sinks/pipewire/PipewireRegistry.h
+                      Sinks/pipewire/PipewireStream.h
+                      Sinks/pipewire/PipewireThreadLoop.h)
 endif()
 
 if(SNDIO_FOUND)
@@ -114,10 +135,10 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
   list(APPEND SOURCES Sinks/darwin/CoreAudioHelpers.cpp)
   list(APPEND HEADERS Sinks/darwin/CoreAudioHelpers.h)
-  if(CORE_PLATFORM_NAME_LC STREQUAL ios)
+  if("ios" IN_LIST CORE_PLATFORM_NAME_LC)
     list(APPEND SOURCES Sinks/AESinkDARWINIOS.mm)
     list(APPEND HEADERS Sinks/AESinkDARWINIOS.h)
-  elseif(CORE_PLATFORM_NAME_LC STREQUAL tvos)
+  elseif("tvos" IN_LIST CORE_PLATFORM_NAME_LC)
     list(APPEND SOURCES Sinks/AESinkDARWINTVOS.mm)
     list(APPEND HEADERS Sinks/AESinkDARWINTVOS.h)
   endif()

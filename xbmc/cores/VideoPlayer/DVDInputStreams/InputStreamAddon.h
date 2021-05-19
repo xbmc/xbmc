@@ -124,7 +124,7 @@ private:
    * @param iDataSize The size of the data that will go into the packet
    * @return The allocated packet.
    */
-  static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+  static DEMUX_PACKET* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
 
   /*!
   * @brief Allocate an encrypted demux packet. Free with FreeDemuxPacket
@@ -133,13 +133,30 @@ private:
   * @param encryptedSubsampleCount The number of subsample description blocks to allocate
   * @return The allocated packet.
   */
-  static DemuxPacket* cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount);
+  static DEMUX_PACKET* cb_allocate_encrypted_demux_packet(void* kodiInstance,
+                                                          unsigned int dataSize,
+                                                          unsigned int encryptedSubsampleCount);
 
   /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket
    * @param kodiInstance A pointer to the add-on.
    * @param pPacket The packet to free.
    */
-  static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
+  static void cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket);
+
+  /*!
+   * @brief Callback used by @ref GetStream to get the data
+   *
+   * Used as callback to prevent memleaks as the temporary stack memory on addon
+   * can be used to give data to Kodi.
+   *
+   * @param[in] handle Pointer to identify this class
+   * @param[in] streamId The related stream Identifier
+   * @param[in] stream "C" structure with stream information
+   * @return The created demux stream packet
+   */
+  static KODI_HANDLE cb_get_stream_transfer(KODI_HANDLE handle,
+                                            int streamId,
+                                            INPUTSTREAM_INFO* stream);
   //@}
 };

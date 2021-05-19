@@ -8,7 +8,6 @@
 
 #include <limits.h>
 
-#include "threads/SystemClock.h"
 #include "SystemInfo.h"
 #ifndef TARGET_POSIX
 #include <conio.h>
@@ -78,6 +77,11 @@ using namespace winrt::Windows::System::Profile;
 /* Expand macro before stringify */
 #define STR_MACRO(x) #x
 #define XSTR_MACRO(x) STR_MACRO(x)
+
+namespace
+{
+auto startTime = std::chrono::steady_clock::now();
+}
 
 using namespace XFILE;
 
@@ -274,7 +278,7 @@ bool CSysInfoJob::DoWork()
   m_info.internetState     = GetInternetState();
   m_info.videoEncoder      = GetVideoEncoder();
   m_info.cpuFrequency =
-      StringUtils::Format("%4.0f MHz", CServiceBroker::GetCPUInfo()->GetCPUFrequency());
+      StringUtils::Format("{:4.0f} MHz", CServiceBroker::GetCPUInfo()->GetCPUFrequency());
   m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
@@ -311,7 +315,7 @@ std::string CSysInfoJob::GetVideoEncoder()
 
 std::string CSysInfoJob::GetBatteryLevel()
 {
-  return StringUtils::Format("%d%%", CServiceBroker::GetPowerManager().BatteryLevel());
+  return StringUtils::Format("{}%", CServiceBroker::GetPowerManager().BatteryLevel());
 }
 
 bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
@@ -336,35 +340,35 @@ std::string CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   std::string strSystemUptime;
   int iInputMinutes, iMinutes,iHours,iDays;
 
+  auto now = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::minutes>(now - startTime);
+
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_sysinfo.GetTotalUptime() + ((int)(XbmcThreads::SystemClockMillis() / 60000));
+    iInputMinutes = g_sysinfo.GetTotalUptime() + duration.count();
   }
   else
   {
     //Current UpTime
-    iInputMinutes = (int)(XbmcThreads::SystemClockMillis() / 60000);
+    iInputMinutes = duration.count();
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   if (iDays > 0)
   {
-    strSystemUptime = StringUtils::Format("%i %s, %i %s, %i %s",
-                                          iDays, g_localizeStrings.Get(12393).c_str(),
-                                          iHours, g_localizeStrings.Get(12392).c_str(),
-                                          iMinutes, g_localizeStrings.Get(12391).c_str());
+    strSystemUptime =
+        StringUtils::Format("{} {}, {} {}, {} {}", iDays, g_localizeStrings.Get(12393), iHours,
+                            g_localizeStrings.Get(12392), iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours >= 1 )
   {
-    strSystemUptime = StringUtils::Format("%i %s, %i %s",
-                                          iHours, g_localizeStrings.Get(12392).c_str(),
-                                          iMinutes, g_localizeStrings.Get(12391).c_str());
+    strSystemUptime = StringUtils::Format("{} {}, {} {}", iHours, g_localizeStrings.Get(12392),
+                                          iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
-    strSystemUptime = StringUtils::Format("%i %s",
-                                          iMinutes, g_localizeStrings.Get(12391).c_str());
+    strSystemUptime = StringUtils::Format("{} {}", iMinutes, g_localizeStrings.Get(12391));
   }
   return strSystemUptime;
 }
@@ -534,13 +538,13 @@ std::string CSysInfo::GetKernelVersionFull(void)
   DWORD len = sizeof(DWORD);
 
   if (sysGetVersionExWByRef(osvi))
-    kernelVersionFull = StringUtils::Format("%d.%d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion,
+    kernelVersionFull = StringUtils::Format("{}.{}.{}", osvi.dwMajorVersion, osvi.dwMinorVersion,
                                             osvi.dwBuildNumber);
   // get UBR (updates build revision)
   if (ERROR_SUCCESS == RegGetValueW(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, L"UBR",
                                     RRF_RT_REG_DWORD, nullptr, &dwBuildRevision, &len))
   {
-    kernelVersionFull += StringUtils::Format(".%d", dwBuildRevision);
+    kernelVersionFull += StringUtils::Format(".{}", dwBuildRevision);
   }
 
 #elif  defined(TARGET_WINDOWS_STORE)
@@ -552,9 +556,9 @@ std::string CSysInfo::GetKernelVersionFull(void)
   unsigned long long v2 = (v & 0x0000FFFF00000000L) >> 32;
   unsigned long long v3 = (v & 0x00000000FFFF0000L) >> 16;
   unsigned long long v4 = (v & 0x000000000000FFFFL);
-  kernelVersionFull = StringUtils::Format("%lld.%lld.%lld", v1, v2, v3);
+  kernelVersionFull = StringUtils::Format("{}.{}.{}", v1, v2, v3);
   if (v4)
-    kernelVersionFull += StringUtils::Format(".ll%d", v4);
+    kernelVersionFull += StringUtils::Format(".{}", v4);
 
 #elif defined(TARGET_POSIX)
   struct utsname un;
@@ -708,10 +712,10 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
     // Append Service Pack version if any
     if (osvi.wServicePackMajor > 0 || osvi.wServicePackMinor > 0)
     {
-      osNameVer.append(StringUtils::Format(" SP%d", osvi.wServicePackMajor));
+      osNameVer.append(StringUtils::Format(" SP{}", osvi.wServicePackMajor));
       if (osvi.wServicePackMinor > 0)
       {
-        osNameVer.append(StringUtils::Format(".%d", osvi.wServicePackMinor));
+        osNameVer.append(StringUtils::Format(".{}", osvi.wServicePackMinor));
       }
     }
   }
@@ -722,7 +726,8 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
 #elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
   osNameVer = GetOsName() + " " + GetOsVersion();
 #elif defined(TARGET_ANDROID)
-  osNameVer = GetOsName() + " " + GetOsVersion() + " API level " +   StringUtils::Format("%d", CJNIBuild::SDK_INT);
+  osNameVer =
+      GetOsName() + " " + GetOsVersion() + " API level " + std::to_string(CJNIBuild::SDK_INT);
 #elif defined(TARGET_LINUX)
   osNameVer = getValueFromOs_release("PRETTY_NAME");
   if (osNameVer.empty())
@@ -1035,19 +1040,19 @@ std::string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       switch(drive)
       {
       case SYSTEM_FREE_SPACE:
-        strRet = StringUtils::Format("%i MB %s", totalFree, g_localizeStrings.Get(160).c_str());
+        strRet = StringUtils::Format("{} MB {}", totalFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE:
-        strRet = StringUtils::Format("%i MB %s", totalUsed, g_localizeStrings.Get(20162).c_str());
+        strRet = StringUtils::Format("{} MB {}", totalUsed, g_localizeStrings.Get(20162));
         break;
       case SYSTEM_TOTAL_SPACE:
-        strRet = StringUtils::Format("%i MB %s", total, g_localizeStrings.Get(20161).c_str());
+        strRet = StringUtils::Format("{} MB {}", total, g_localizeStrings.Get(20161));
         break;
       case SYSTEM_FREE_SPACE_PERCENT:
-        strRet = StringUtils::Format("%i %% %s", percentFree, g_localizeStrings.Get(160).c_str());
+        strRet = StringUtils::Format("{} % {}", percentFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE_PERCENT:
-        strRet = StringUtils::Format("%i %% %s", percentused, g_localizeStrings.Get(20162).c_str());
+        strRet = StringUtils::Format("{} % {}", percentused, g_localizeStrings.Get(20162));
         break;
       }
     }
@@ -1154,7 +1159,7 @@ std::string CSysInfo::GetUserAgent()
   {
     std::string cpuStr(un.machine);
     if (cpuStr == "x86_64" && GetXbmcBitness() == 32)
-      cpuStr = "i686 (x86_64)";
+      cpuStr = "i686 on x86_64";
     result += un.sysname;
     result += " ";
     result += cpuStr;
@@ -1200,7 +1205,7 @@ std::string CSysInfo::GetUserAgent()
   }
 #endif
 
-  result += " App_Bitness/" + StringUtils::Format("%d", GetXbmcBitness());
+  result += " App_Bitness/" + std::to_string(GetXbmcBitness());
 
   std::string fullVer(CSysInfo::GetVersion());
   StringUtils::Replace(fullVer, ' ', '-');
@@ -1216,7 +1221,7 @@ std::string CSysInfo::GetDeviceName()
   {
     std::string hostname("[unknown]");
     CServiceBroker::GetNetwork().GetHostName(hostname);
-    return StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
+    return StringUtils::Format("{} ({})", friendlyName, hostname);
   }
 
   return friendlyName;
@@ -1227,9 +1232,10 @@ std::string CSysInfo::GetDeviceName()
 std::string CSysInfo::GetVersionShort()
 {
   if (strlen(CCompileInfo::GetSuffix()) == 0)
-    return StringUtils::Format("%d.%d", CCompileInfo::GetMajor(), CCompileInfo::GetMinor());
+    return StringUtils::Format("{}.{}", CCompileInfo::GetMajor(), CCompileInfo::GetMinor());
   else
-    return StringUtils::Format("%d.%d-%s", CCompileInfo::GetMajor(), CCompileInfo::GetMinor(), CCompileInfo::GetSuffix());
+    return StringUtils::Format("{}.{}-{}", CCompileInfo::GetMajor(), CCompileInfo::GetMinor(),
+                               CCompileInfo::GetSuffix());
 }
 
 std::string CSysInfo::GetVersion()
@@ -1307,38 +1313,40 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
 {
 #if defined(TARGET_DARWIN_OSX)
   if (__MAC_OS_X_VERSION_MIN_REQUIRED % 100)
-    return StringUtils::Format("version %d.%d.%d", __MAC_OS_X_VERSION_MIN_REQUIRED / 10000,
+    return StringUtils::Format("version {}.{}.{}", __MAC_OS_X_VERSION_MIN_REQUIRED / 10000,
                                (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100,
                                __MAC_OS_X_VERSION_MIN_REQUIRED % 100);
   else
-    return StringUtils::Format("version %d.%d", __MAC_OS_X_VERSION_MIN_REQUIRED / 10000,
+    return StringUtils::Format("version {}.{}", __MAC_OS_X_VERSION_MIN_REQUIRED / 10000,
                                (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100);
 #elif defined(TARGET_DARWIN_EMBEDDED)
   std::string versionStr = GetBuildTargetPlatformVersion();
   static const int major = (std::stoi(versionStr) / 10000) % 100;
   static const int minor = (std::stoi(versionStr) / 100) % 100;
   static const int rev = std::stoi(versionStr) % 100;
-  return StringUtils::Format("version %d.%d.%d", major, minor, rev);
+  return StringUtils::Format("version {}.{}.{}", major, minor, rev);
 #elif defined(TARGET_FREEBSD)
   // FIXME: should works well starting from FreeBSD 8.1
   static const int major = (__FreeBSD_version / 100000) % 100;
   static const int minor = (__FreeBSD_version / 1000) % 100;
   static const int Rxx = __FreeBSD_version % 1000;
   if ((major < 9 && Rxx == 0))
-    return StringUtils::Format("version %d.%d-RELEASE", major, minor);
+    return StringUtils::Format("version {}.{}-RELEASE", major, minor);
   if (Rxx >= 500)
-    return StringUtils::Format("version %d.%d-STABLE", major, minor);
+    return StringUtils::Format("version {}.{}-STABLE", major, minor);
 
-  return StringUtils::Format("version %d.%d-CURRENT", major, minor);
+  return StringUtils::Format("version {}.{}-CURRENT", major, minor);
 #elif defined(TARGET_ANDROID)
   return "API level " XSTR_MACRO(__ANDROID_API__);
 #elif defined(TARGET_LINUX)
-  return StringUtils::Format("version %d.%d.%d", (LINUX_VERSION_CODE >> 16) & 0xFF , (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
+  return StringUtils::Format("version {}.{}.{}", (LINUX_VERSION_CODE >> 16) & 0xFF,
+                             (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
 #elif defined(TARGET_WINDOWS)
 #ifdef NTDDI_VERSION
-  std::string version(StringUtils::Format("version %d.%d", int(NTDDI_VERSION >> 24) & 0xFF, int(NTDDI_VERSION >> 16) & 0xFF));
+  std::string version(StringUtils::Format("version {}.{}", int(NTDDI_VERSION >> 24) & 0xFF,
+                                          int(NTDDI_VERSION >> 16) & 0xFF));
   if (SPVER(NTDDI_VERSION))
-    version += StringUtils::Format(" SP%d", int(SPVER(NTDDI_VERSION)));
+    version += StringUtils::Format(" SP{}", int(SPVER(NTDDI_VERSION)));
   return version;
 #else // !NTDDI_VERSION
   return "(unknown Win32 platform)";

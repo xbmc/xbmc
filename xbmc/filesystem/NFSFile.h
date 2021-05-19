@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "threads/CriticalSection.h"
 
+#include <chrono>
 #include <list>
 #include <map>
 
@@ -37,7 +38,7 @@ public:
   struct contextTimeout
   {
     struct nfs_context *pContext;
-    uint64_t lastAccessedTime;
+    std::chrono::time_point<std::chrono::steady_clock> lastAccessedTime;
   };
 
   typedef std::map<std::string, struct contextTimeout> tOpenContextMap;
@@ -64,7 +65,7 @@ public:
   void Deinit();
   //adds the filehandle to the keep alive list or resets
   //the timeout for this filehandle if already in list
-  void resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
+  void resetKeepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
   //removes file handle from keep alive list
   void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);
 
@@ -83,7 +84,8 @@ private:
   unsigned int m_IdleTimeout = 0;//timeout for idle connection close and dyunload
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
-  uint64_t m_lastAccessedTime = 0;//last access time for m_pNfsContext
+  std::chrono::time_point<std::chrono::steady_clock>
+      m_lastAccessedTime; //last access time for m_pNfsContext
   std::list<std::string> m_exportList;//list of exported paths of current connected servers
   CCriticalSection keepAliveLock;
   CCriticalSection openContextLock;
@@ -94,8 +96,8 @@ private:
   void destroyOpenContexts();
   void destroyContext(const std::string &exportName);
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
-  void keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
-  static void setTimeout(struct nfs_context* context);
+  void keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
+  static void setOptions(struct nfs_context* context);
 };
 
 extern CNfsConnection gNfsConnection;

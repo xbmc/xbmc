@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <string>
 
 #define FLOFSIZE 4
@@ -381,7 +382,7 @@ typedef struct
 typedef struct
 {
   bool Valid;
-  long Timestamp;
+  std::chrono::time_point<std::chrono::steady_clock> Timestamp;
   unsigned char  PageChar[TELETEXT_PAGE_SIZE];
   TextPageAttr_t PageAtrb[TELETEXT_PAGE_SIZE];
 } TextSubtitleCache_t;

@@ -6,19 +6,24 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SingleLock.h"
 #include "VideoPlayerAudio.h"
-#include "ServiceBroker.h"
+
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "system.h"
-#include "utils/log.h"
-#include "utils/MathUtils.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
+#include "utils/MathUtils.h"
+#include "utils/log.h"
+
+#include "system.h"
+#ifdef TARGET_RASPBERRY_PI
+#include "platform/linux/RBP.h"
+#endif
 
 #include <sstream>
 #include <iomanip>
@@ -48,7 +53,6 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
 , m_audioSink(pClock)
 {
   m_pClock = pClock;
-  m_pAudioCodec = NULL;
   m_audioClock = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
@@ -103,8 +107,7 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 
 void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 {
-  SAFE_DELETE(m_pAudioCodec);
-  m_pAudioCodec = codec;
+  m_pAudioCodec.reset(codec);
 
   m_processInfo.ResetAudioCodecInfo();
 
@@ -181,8 +184,7 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   if (m_pAudioCodec)
   {
     m_pAudioCodec->Dispose();
-    delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
+    m_pAudioCodec.reset();
   }
 }
 
@@ -618,8 +620,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
     return false;
   }
 
-  delete m_pAudioCodec;
-  m_pAudioCodec = codec;
+  m_pAudioCodec.reset(codec);
 
   return true;
 }

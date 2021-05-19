@@ -62,6 +62,16 @@ public:
   bool HasType(TYPE type) const override { return m_addonInfo->HasType(type); }
 
   /**
+   * @brief To check complete addon (not only this) has a specific type
+   * defined in its first extension point including the provided subcontent
+   * e.g. video or audio
+   *
+   * @param[in] type Type identifier to be checked
+   * @return true in case the wanted type is the main type, false if not
+   */
+  bool HasMainType(TYPE type) const override { return m_addonInfo->HasType(type, true); }
+
+  /**
    * @brief The get for given addon type information and extension data
    *
    * @param[in] type The wanted type data
@@ -107,6 +117,7 @@ public:
   CDateTime LastUpdated() const override { return m_addonInfo->LastUpdated(); }
   CDateTime LastUsed() const override { return m_addonInfo->LastUsed(); }
   std::string Origin() const override { return m_addonInfo->Origin(); }
+  std::string OriginName() const override { return m_addonInfo->OriginName(); }
   uint64_t PackageSize() const override { return m_addonInfo->PackageSize(); }
   const InfoMap& ExtraInfo() const override { return m_addonInfo->ExtraInfo(); }
   const std::vector<DependencyInfo>& GetDependencies() const override { return m_addonInfo->GetDependencies(); }
@@ -230,6 +241,8 @@ public:
     return m_addonInfo->MeetsVersion(versionMin, version);
   }
   bool ReloadSettings() override;
+
+  void ResetSettings() override;
 
   /*! \brief retrieve the running instance of an add-on if it persists while running.
    */

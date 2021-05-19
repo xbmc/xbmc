@@ -35,7 +35,7 @@ public:
   void OnSettingsLoaded() override;
   void OnSettingsUnloaded() override;
 
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
   void Start();
   void Stop();

@@ -217,7 +217,7 @@ void CGUIDialogMediaFilter::OnInitWindow()
   UpdateControls();
 }
 
-void CGUIDialogMediaFilter::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
@@ -307,8 +307,8 @@ void CGUIDialogMediaFilter::OnSettingChanged(std::shared_ptr<const CSetting> set
       float valueLower = values.at(0).asFloat();
       float valueUpper = values.at(1).asFloat();
 
-      if (valueLower > definitionNumber->GetMinimum() ||
-          valueUpper < definitionNumber->GetMaximum())
+      if (static_cast<double>(valueLower) > definitionNumber->GetMinimum() ||
+          static_cast<double>(valueUpper) < definitionNumber->GetMaximum())
       {
         strValueLower = values.at(0).asString();
         strValueUpper = values.at(1).asString();
@@ -366,7 +366,8 @@ void CGUIDialogMediaFilter::SetupView()
     localizedMediaId = 134;
 
   // set the heading
-  SET_CONTROL_LABEL(CONTROL_HEADING, StringUtils::Format(g_localizeStrings.Get(1275).c_str(), g_localizeStrings.Get(localizedMediaId).c_str()));
+  SET_CONTROL_LABEL(CONTROL_HEADING, StringUtils::Format(g_localizeStrings.Get(1275),
+                                                         g_localizeStrings.Get(localizedMediaId)));
 
   SET_CONTROL_LABEL(CONTROL_OKAY_BUTTON, 186);
   SET_CONTROL_LABEL(CONTROL_CLEAR_BUTTON, 192);
@@ -415,7 +416,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       }
     }
 
-    std::string settingId = StringUtils::Format("filter.%s.%d", filter.mediaType.c_str(), filter.field);
+    std::string settingId = StringUtils::Format("filter.{}.{}", filter.mediaType, filter.field);
     if (filter.controlType == "edit")
     {
       CVariant data;
@@ -601,7 +602,7 @@ void CGUIDialogMediaFilter::UpdateControls()
     else
     {
       CONTROL_ENABLE(control->GetID());
-      label = StringUtils::Format(g_localizeStrings.Get(21470).c_str(), label.c_str(), size);
+      label = StringUtils::Format(g_localizeStrings.Get(21470), label, size);
     }
     SET_CONTROL_LABEL(control->GetID(), label);
   }
@@ -739,7 +740,10 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
   }
 }
 
-void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::vector<StringSettingOption> &list, std::string &current, void *data)
+void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
+                                                 std::vector<StringSettingOption>& list,
+                                                 std::string& current,
+                                                 void* data)
 {
   if (setting == NULL || data == NULL)
     return;
@@ -785,7 +789,9 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
       else if (m_mediaType == "tvshows")
       {
         table = "tvshow_view";
-        year = StringUtils::Format("strftime(\"%%Y\", %s)", DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPartWhere).c_str());
+        year = StringUtils::Format(
+            "strftime(\"%%Y\", {})",
+            DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPartWhere));
       }
       else if (m_mediaType == "musicvideos")
       {
@@ -820,7 +826,8 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
     if (m_mediaType == "episodes")
     {
-      std::string field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
+      std::string field = StringUtils::Format("CAST(strftime(\"%%s\", c{:02}) AS INTEGER)",
+                                              VIDEODB_ID_EPISODE_AIRED);
 
       GetMinMax("episode_view", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week

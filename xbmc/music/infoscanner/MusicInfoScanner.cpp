@@ -44,7 +44,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
@@ -97,7 +96,7 @@ void CMusicInfoScanner::Process()
       return;
     }
 
-    unsigned int tick = XbmcThreads::SystemClockMillis();
+    auto tick = std::chrono::steady_clock::now();
     m_musicDatabase.Open();
     m_bCanInterrupt = true;
 
@@ -192,9 +191,11 @@ void CMusicInfoScanner::Process()
 
       m_musicDatabase.EmptyCache();
 
-      tick = XbmcThreads::SystemClockMillis() - tick;
-      CLog::Log(LOGINFO, "My Music: Scanning for music info using worker thread, operation took %s",
-                StringUtils::SecondsToTimeString(tick / 1000).c_str());
+      auto elapsed =
+          std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tick);
+      CLog::Log(LOGINFO,
+                "My Music: Scanning for music info using worker thread, operation took {}s",
+                elapsed.count());
     }
     if (m_scanType == 1) // load album info
     {
@@ -628,16 +629,33 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     // keep the db-only fields intact on rescan...
     if (songsMap != NULL)
     {
-      MAPSONGS::iterator it = songsMap->find(items[i]->GetPath());
-      if (it != songsMap->end())
+      // Match up item to songs in library previously scanned with this path
+      MAPSONGS::iterator songlist = songsMap->find(items[i]->GetPath());
+      if (songlist != songsMap->end())
       {
-        song.idSong = it->second.idSong; // Reuse ID
-        song.dateNew = it->second.dateNew; // Keep date originally created
-        song.iTimesPlayed = it->second.iTimesPlayed;
-        song.lastPlayed = it->second.lastPlayed;
-        if (song.rating == 0)    song.rating = it->second.rating;
-        if (song.userrating == 0)    song.userrating = it->second.userrating;
-        if (song.strThumb.empty()) song.strThumb = it->second.strThumb;
+        VECSONGS::iterator foundsong;
+        if (songlist->second.size() == 1)
+          foundsong = songlist->second.begin();
+        else
+        {
+          // When filename mapped to multiple songs it is from cuesheet, match on disc/track number
+          int disctrack = tag.GetTrackAndDiscNumber();
+          foundsong = std::find_if(songlist->second.begin(), songlist->second.end(),
+                                   [&](const CSong& song) { return disctrack == song.iTrack; });
+        }
+        if (foundsong != songlist->second.end())
+        {
+          song.idSong = foundsong->idSong; // Reuse ID
+          song.dateNew = foundsong->dateNew; // Keep date originally created
+          song.iTimesPlayed = foundsong->iTimesPlayed;
+          song.lastPlayed = foundsong->lastPlayed;
+          if (song.rating == 0)
+            song.rating = foundsong->rating;
+          if (song.userrating == 0)
+            song.userrating = foundsong->userrating;
+          if (song.strThumb.empty())
+            song.strThumb = foundsong->strThumb;
+        }
       }
     }
 
@@ -945,7 +963,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
     m_musicDatabase.AddAlbum(album, m_idSourcePath);
     m_albumsAdded.insert(album.idAlbum);
 
-    numAdded += album.songs.size();
+    numAdded += static_cast<int>(album.songs.size());
   }
   return numAdded;
 }
@@ -999,7 +1017,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
       if (m_handle)
       {
         m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
-        m_handle->SetProgress(i, m_albumsAdded.size());
+        m_handle->SetProgress(i, static_cast<int>(m_albumsAdded.size()));
       }
 
       // Fetch any artist mbids for album artist(s) and song artists when scraping those too.
@@ -1071,7 +1089,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
   if (albums.size() == 1)
   {
     CFileItem album(path, true);
-    /* 
+    /*
      If we are scanning a directory served over http(s) the root directory for an album will set
      IsInternetStream to true which prevents scanning it for art.  As we can't reach this point
      without having read some tags (and tags are not read from streams) we can safely check for
@@ -1168,7 +1186,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
     if (m_handle)
     {
       m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
-      m_handle->SetProgress(count, m_albumsAdded.size());
+      m_handle->SetProgress(count, static_cast<int>(m_albumsAdded.size()));
     }
 
     /*
@@ -1297,12 +1315,11 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(
-            new CMediaLibraryEvent(MediaTypeAlbum, album.strPath, 24146,
-                                   StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
-                                                       MediaTypeAlbum, album.strAlbum.c_str()),
-                                   CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
-                                   CURL::GetRedacted(album.strPath), EventLevel::Warning)));
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+            MediaTypeAlbum, album.strPath, 24146,
+            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeAlbum, album.strAlbum),
+            CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
+            CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1317,7 +1334,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
     bool overridetags = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
     // Remove art accidentally set by the Python scraper, it only provides URLs of possible artwork
     // Art is selected later applying whitelist and other art preferences
-    albumInfo.GetAlbum().art.clear(); 
+    albumInfo.GetAlbum().art.clear();
     album.MergeScrapedAlbum(albumInfo.GetAlbum(), overridetags);
     m_musicDatabase.UpdateAlbum(album);
     albumInfo.SetLoaded(true);
@@ -1366,12 +1383,11 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(
-            new CMediaLibraryEvent(MediaTypeArtist, artist.strPath, 24146,
-                                   StringUtils::Format(g_localizeStrings.Get(24147).c_str(),
-                                                       MediaTypeArtist, artist.strArtist.c_str()),
-                                   CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
-                                   CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+            MediaTypeArtist, artist.strPath, 24146,
+            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeArtist, artist.strArtist),
+            CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
+            CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1427,7 +1443,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 {
   if (m_handle)
   {
-    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321).c_str(), info->Name().c_str()));
+    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321), info->Name()));
     m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
@@ -1535,7 +1551,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
     {
       double bestRelevance = 0;
-      double minRelevance = THRESHOLD;
+      double minRelevance = static_cast<double>(THRESHOLD);
       if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
       {
         //show dialog with all albums found
@@ -1552,7 +1568,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
-          double relevance = info.GetRelevance();
+          double relevance = static_cast<double>(info.GetRelevance());
           if (relevance < 0)
             relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum,
                         info.GetAlbum().GetAlbumArtistString(),
@@ -1568,7 +1584,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
           if (pDialog)
           {
             // set the label to [relevance]  album - artist
-            std::string strTemp = StringUtils::Format("[%0.2f]  %s", relevance, info.GetTitle2().c_str());
+            std::string strTemp = StringUtils::Format("[{:0.2f}]  {}", relevance, info.GetTitle2());
             CFileItemPtr item(new CFileItem("", false));
             item->SetLabel(strTemp);
 
@@ -1587,7 +1603,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
             items.Add(item);
           }
-          if (!pDialog && relevance > .999f) // we're so close, no reason to search further
+          if (!pDialog && relevance > 0.999) // we're so close, no reason to search further
             break;
         }
 
@@ -1630,13 +1646,13 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       else
       {
         CMusicAlbumInfo& info = scraper.GetAlbum(0);
-        double relevance = info.GetRelevance();
+        double relevance = static_cast<double>(info.GetRelevance());
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
                                             album.strAlbum,
                                             info.GetAlbum().GetAlbumArtistString(),
                                             album.GetAlbumArtistString());
-        if (relevance < THRESHOLD)
+        if (relevance < static_cast<double>(THRESHOLD))
           return INFO_NOT_FOUND;
 
         iSelectedAlbum = 0;
@@ -1687,7 +1703,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
 {
   if (m_handle)
   {
-    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20320).c_str(), info->Name().c_str()));
+    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20320), info->Name()));
     m_handle->SetText(artist.strArtist);
   }
 
@@ -1829,7 +1845,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
             {
               std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
               if (!genres.empty())
-                strTemp = StringUtils::Format("[%s] %s", genres.c_str(), strTemp.c_str());
+                strTemp = StringUtils::Format("[{}] {}", genres, strTemp);
             }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
@@ -1931,7 +1947,7 @@ void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
     m_StopEvent.WaitMSec(milliseconds);
   }
   else
-    XbmcThreads::ThreadSleep(milliseconds);
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& artfolder)
@@ -2054,7 +2070,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
         // Handle thumbs separately. Get thumb for path from textures db cached during scan
         // (could be embedded or local file from multiple confgurable file names)
         CFileItem item(pathpair.first.c_str(), true);
-        std::string strArtType = StringUtils::Format("%s%i", "thumb", discnum);
+        std::string strArtType = StringUtils::Format("{}{}", "thumb", discnum);
         strArt = loader.GetCachedImage(item, "thumb");
         if (strArt.empty())
           strArt = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType(strArtType));
@@ -2185,34 +2201,36 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     // Validate art type name
     size_t last_index = strCandidate.find_last_not_of("0123456789");
     std::string strDigits = strCandidate.substr(last_index + 1);
-    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
-    {
-      // Basic art exact match to whitelist, otherwise whitelist contains art type "families" so
-      // 'fanart' also matches 'fanart1', 'fanart2' etc.
-      strCandidate = strCandidate.substr(0, last_index + 1); // "abc" of "abc16"
-      if (strCandidate.empty())
-        continue;
-    }
+    std::string strFamily = strCandidate.substr(0, last_index + 1); // "abc" of "abc16"
+    if (strFamily.empty())
+      continue;
     if (!MUSIC_UTILS::IsValidArtType(strCandidate))
       continue;
     // Disc specific art from disc subfolder
     // Skip art where digits of filename do not match disc number
     if (discnum > 0 && !strDigits.empty() && (atoi(strDigits.c_str()) != discnum))
       continue;
-    
-    if ((bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strCandidate) !=
-                        whitelistarttypes.end()))
+
+    // Use all art, or check for basic level art in whitelist exactly allowing for disc number,
+    // or for custom art check whitelist contains art type family (strip trailing digits)
+    // e.g. 'fanart', 'fanart1', 'fanart2' etc. all match whitelist entry 'fanart'
+    std::string strCheck = strCandidate;
+    if (discnum > 0 || iArtLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM)
+      strCheck = strFamily;
+    if (bUseAll || std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strCheck) !=
+                       whitelistarttypes.end())
     {
-      // Catch any variants of music thumbs e.g. folder2.jpg as "thumb2"
-      // Used for disc sets when files all in one album folder
-      if (!strDigits.empty() &&
-          std::find(thumbs.begin(), thumbs.end(), strCandidate + strExt) != thumbs.end())
+      if (!strDigits.empty())
       {
-        strCandidate = "thumb" + strDigits;
+        // Catch any variants of music thumbs e.g. folder2.jpg as "thumb2"
+        // Used for disc sets when files all in one album folder
+        if (std::find(thumbs.begin(), thumbs.end(), strFamily + strExt) != thumbs.end())
+          strCandidate = "thumb" + strDigits;
       }
-      // Append disc number when candidate art type (and file) not have it
-      if (discnum > 0 && strDigits.empty())
-        strCandidate += StringUtils::Format("%i", discnum);
+      else if (discnum > 0)
+        // Append disc number when candidate art type (and file) not have it
+        strCandidate += std::to_string(discnum);
+
       if (art.find(strCandidate) == art.end())
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));
     }

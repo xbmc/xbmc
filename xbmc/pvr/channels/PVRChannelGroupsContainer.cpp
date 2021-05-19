@@ -9,6 +9,7 @@
 #include "PVRChannelGroupsContainer.h"
 
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "threads/SingleLock.h"
@@ -113,18 +114,23 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(con
   return Get(epgTag->IsRadio())->GetGroupAll()->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID());
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByPath(const std::string& strPath) const
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::GetChannelGroupMemberByPath(
+    const std::string& strPath) const
 {
   const CPVRChannelsPath path(strPath);
   if (path.IsValid())
-    return Get(path.IsRadio())->GetByPath(path);
+    return Get(path.IsRadio())->GetChannelGroupMemberByPath(path);
 
   return {};
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByPath(const std::string& strPath) const
 {
-  return Get(bRadio)->GetSelectedGroup();
+  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetChannelGroupMemberByPath(strPath);
+  if (groupMember)
+    return groupMember->Channel();
+
+  return {};
 }
 
 std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId, int iClientID) const
@@ -142,14 +148,17 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByUniqueID(int iUniq
   return channel;
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetLastPlayedChannel() const
+std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::
+    GetLastPlayedChannelGroupMember() const
 {
-  const std::shared_ptr<CPVRChannel> channelTV = m_groupsTV->GetGroupAll()->GetLastPlayedChannel();
-  const std::shared_ptr<CPVRChannel> channelRadio = m_groupsRadio->GetGroupAll()->GetLastPlayedChannel();
+  std::shared_ptr<CPVRChannelGroupMember> channelTV =
+      m_groupsTV->GetGroupAll()->GetLastPlayedChannelGroupMember();
+  std::shared_ptr<CPVRChannelGroupMember> channelRadio =
+      m_groupsRadio->GetGroupAll()->GetLastPlayedChannelGroupMember();
 
-  if (!channelTV ||
-      (channelRadio && channelRadio->LastWatched() > channelTV->LastWatched()))
-     return channelRadio;
+  if (!channelTV || (channelRadio &&
+                     channelRadio->Channel()->LastWatched() > channelTV->Channel()->LastWatched()))
+    return channelRadio;
 
   return channelTV;
 }

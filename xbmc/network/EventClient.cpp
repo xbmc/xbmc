@@ -19,7 +19,6 @@
 #include "input/Key.h"
 #include "input/KeyboardTranslator.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -369,7 +368,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
   float famount = 0;
   bool active = (flags & PTB_DOWN) ? true : false;
-  
+
   if (flags & PTB_USE_NAME)
     CLog::Log(LOGDEBUG, "EventClient: button name \"%s\" map \"%s\" %s",
               button.c_str(), map.c_str(), active ? "pressed" : "released");
@@ -423,7 +422,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
         std::list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
-        if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
+        if (it2->m_bUseAmount && it2->m_fAmount != 0.0f)
         {
           m_buttonQueue.push_back(state);
         }
@@ -431,7 +430,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
         /* if the last event was waiting for a repeat interval, it has executed already.*/
         if(it2->m_bRepeat)
         {
-          if(it2->m_iNextRepeat > 0)
+          if (it2->m_iNextRepeat.time_since_epoch().count() > 0)
           {
             m_buttonQueue.erase(it2);
           }
@@ -446,7 +445,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       else if(active && !it->m_bActive)
       {
         m_buttonQueue.push_back(state);
-        if(!state.m_bRepeat && state.m_bAxis && state.m_fAmount != 0.0)
+        if (!state.m_bRepeat && state.m_bAxis && state.m_fAmount != 0.0f)
         {
           state.m_bActive = false;
           state.m_bRepeat = false;
@@ -469,7 +468,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       m_currentButton.m_fAmount    = famount;
       m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
       m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? true : false;
-      m_currentButton.m_iNextRepeat = 0;
+      m_currentButton.m_iNextRepeat = {};
       m_currentButton.SetActive();
       m_currentButton.Load();
     }
@@ -477,7 +476,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     {
       /* when a button is released that had amount, make sure *
        * to resend the keypress with an amount of 0           */
-      if((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0)
+      if ((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0f)
       {
         CEventButtonState state( m_currentButton.m_iKeyCode,
                                  m_currentButton.m_mapName,
@@ -790,11 +789,11 @@ bool CEventClient::GetMousePos(float& x, float& y)
   return false;
 }
 
-bool CEventClient::CheckButtonRepeat(unsigned int &next)
+bool CEventClient::CheckButtonRepeat(std::chrono::time_point<std::chrono::steady_clock>& next)
 {
-  unsigned int now = XbmcThreads::SystemClockMillis();
+  auto now = std::chrono::steady_clock::now();
 
-  if ( next == 0 )
+  if (next.time_since_epoch().count() == 0)
   {
     next = now + m_iRepeatDelay;
     return true;

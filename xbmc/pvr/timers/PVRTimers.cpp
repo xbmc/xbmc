@@ -101,22 +101,31 @@ bool CPVRTimers::Load()
   // load local timers from database
   bool bReturn = LoadFromDatabase();
 
-  Update(); // update from clients
-
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(this, &CPVRTimers::Notify);
-  Create();
+  // update from clients
+  Update();
 
   return bReturn;
 }
 
 void CPVRTimers::Unload()
 {
-  StopThread();
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
-
   // remove all tags
   CSingleLock lock(m_critSection);
   m_tags.clear();
+}
+
+void CPVRTimers::Start()
+{
+  Stop();
+
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(this, &CPVRTimers::Notify);
+  Create();
+}
+
+void CPVRTimers::Stop()
+{
+  StopThread();
+  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 }
 
 bool CPVRTimers::Update()
@@ -200,6 +209,23 @@ void CPVRTimers::RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
   }
 }
 
+bool CPVRTimers::CheckAndAppendTimerNotification(
+    std::vector<std::pair<int, std::string>>& timerNotifications,
+    const std::shared_ptr<CPVRTimerInfoTag>& tag,
+    bool bDeleted) const
+{
+  // no notification on first update or if previous update failed for tag's client.
+  if (!m_bFirstUpdate && std::find(m_failedClients.cbegin(), m_failedClients.cend(),
+                                   tag->m_iClientId) == m_failedClients.cend())
+  {
+    const std::string strMessage =
+        bDeleted ? tag->GetDeletedNotificationText() : tag->GetNotificationText();
+    timerNotifications.emplace_back(std::make_pair(tag->m_iClientId, strMessage));
+    return true;
+  }
+  return false;
+}
+
 bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vector<int>& failedClients)
 {
   bool bChanged(false);
@@ -225,11 +251,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
           existingTimer->ResetChildState();
 
           if (bStateChanged)
-          {
-            std::string strMessage;
-            existingTimer->GetNotificationText(strMessage);
-            timerNotifications.emplace_back(std::make_pair((*timerIt)->m_iClientId, strMessage));
-          }
+            CheckAndAppendTimerNotification(timerNotifications, existingTimer, false);
 
           CLog::LogFC(LOGDEBUG, LOGPVR, "Updated timer {} on client {}", (*timerIt)->m_iClientIndex,
                       (*timerIt)->m_iClientId);
@@ -246,9 +268,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
         bChanged = true;
         bAddedOrDeleted = true;
 
-        std::string strMessage;
-        newTimer->GetNotificationText(strMessage);
-        timerNotifications.emplace_back(newTimer->m_iClientId, strMessage);
+        CheckAndAppendTimerNotification(timerNotifications, newTimer, false);
 
         CLog::LogFC(LOGDEBUG, LOGPVR, "Added timer {} on client {}", (*timerIt)->m_iClientIndex,
                     (*timerIt)->m_iClientId);
@@ -290,7 +310,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
         CLog::LogFC(LOGDEBUG, LOGPVR, "Deleted timer {} on client {}", timer->m_iClientIndex,
                     timer->m_iClientId);
 
-        timerNotifications.emplace_back(timer->m_iClientId, timer->GetDeletedNotificationText());
+        CheckAndAppendTimerNotification(timerNotifications, timer, true);
 
         it2 = it->second.erase(it2);
 
@@ -347,7 +367,10 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
     }
   }
 
+  m_failedClients = failedClients;
+  m_bFirstUpdate = false;
   m_bIsUpdating = false;
+
   if (bChanged)
   {
     UpdateChannels();
@@ -355,7 +378,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
 
     NotifyTimersEvent(bAddedOrDeleted);
 
-    if (!timerNotifications.empty() && CServiceBroker::GetPVRManager().IsStarted())
+    if (!timerNotifications.empty())
     {
       CPVREventLogJob* job = new CPVREventLogJob;
 

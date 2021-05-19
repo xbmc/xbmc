@@ -285,16 +285,16 @@ std::string CWIN32Util::GetResInfoString()
 #ifdef TARGET_WINDOWS_STORE
   auto displayInfo = DisplayInformation::GetForCurrentView();
 
-  return StringUtils::Format("Desktop Resolution: %dx%d"
-    , displayInfo.ScreenWidthInRawPixels()
-    , displayInfo.ScreenHeightInRawPixels()
-  );
+  return StringUtils::Format("Desktop Resolution: {}x{}", displayInfo.ScreenWidthInRawPixels(),
+                             displayInfo.ScreenHeightInRawPixels());
 #else
   DEVMODE devmode;
   ZeroMemory(&devmode, sizeof(devmode));
   devmode.dmSize = sizeof(devmode);
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-  return StringUtils::Format("Desktop Resolution: %dx%d %dBit at %dHz",devmode.dmPelsWidth,devmode.dmPelsHeight,devmode.dmBitsPerPel,devmode.dmDisplayFrequency);
+  return StringUtils::Format("Desktop Resolution: {}x{} {}Bit at {}Hz", devmode.dmPelsWidth,
+                             devmode.dmPelsHeight, devmode.dmBitsPerPel,
+                             devmode.dmDisplayFrequency);
 #endif
 }
 
@@ -531,10 +531,10 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  auto strVolFormat = ToW(StringUtils::Format("\\\\.\\%c:", cDL));
+  auto strVolFormat = ToW(StringUtils::Format("\\\\.\\{}:", cDL));
   HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  auto strRootFormat = ToW(StringUtils::Format("%c:\\", cDL));
+  auto strRootFormat = ToW(StringUtils::Format("{}:\\", cDL));
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
     ( GetDriveType( strRootFormat.c_str() ) == DRIVE_CDROM ) )
   {
@@ -547,7 +547,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
   {
     CMediaSource share;
-    share.strPath = StringUtils::Format("%c:", cDL);
+    share.strPath = StringUtils::Format("{}:", cDL);
     share.strName = share.strPath;
     CServiceBroker::GetMediaManager().RemoveAutoSource(share);
   }
@@ -567,7 +567,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  std::string strVolFormat = StringUtils::Format("\\\\.\\%c:", cDL);
+  std::string strVolFormat = StringUtils::Format("\\\\.\\{}:", cDL);
 
   if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
@@ -586,7 +586,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  std::string strVolFormat = StringUtils::Format( "\\\\.\\%c:", cDL);
+  std::string strVolFormat = StringUtils::Format("\\\\.\\{}:", cDL);
 
   if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
@@ -1189,7 +1189,7 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
   }
   return false;
 #else
-  std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());
+  std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\{}", strWdrive.substr(0, 2));
 
   HANDLE deviceHandle = CreateFileW(
     strWDevicePath.c_str(),
@@ -1237,9 +1237,9 @@ std::string CWIN32Util::WUSysMsg(DWORD dwError)
 
   if ( 0 != ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
                              SS_DEFLANGID, szBuf, 511, NULL) )
-    return StringUtils::Format("%s (0x%X)", szBuf, dwError);
+    return StringUtils::Format("{} (0x{:X})", szBuf, dwError);
   else
-    return StringUtils::Format("Unknown error (0x%X)", dwError);
+    return StringUtils::Format("Unknown error (0x{:X})", dwError);
 }
 
 bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
@@ -1520,4 +1520,20 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
   }
 
   return status;
+}
+
+void CWIN32Util::PlatformSyslog()
+{
+  CLog::Log(LOGINFO, "System has {:.1f} GB of RAM installed",
+            GetSystemMemorySize() / static_cast<double>(MB));
+  CLog::Log(LOGINFO, "{}", GetResInfoString());
+  CLog::Log(LOGINFO, "Running with {} rights",
+            (IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
+  CLog::Log(LOGINFO, "Aero is {}", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
+  HDR_STATUS hdrStatus = GetWindowsHDRStatus();
+  if (hdrStatus == HDR_STATUS::HDR_UNSUPPORTED)
+    CLog::Log(LOGINFO, "Display is not HDR capable or cannot be detected");
+  else
+    CLog::Log(LOGINFO, "Display HDR capable is detected and Windows HDR switch is {}",
+              (hdrStatus == HDR_STATUS::HDR_ON) ? "ON" : "OFF");
 }

@@ -52,7 +52,7 @@ set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/win10-$
 list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})
 list(APPEND CMAKE_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
 # dependencies
-list(APPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
+list(PREPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
 
 
 # -------- Compiler options ---------
@@ -91,8 +91,7 @@ set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 link_directories(${MINGW_LIBS_DIR}/lib
                  ${DEPENDENCIES_DIR}/lib)
 
-list(APPEND DEPLIBS bcrypt.lib d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib WindowsApp.lib
-                    Mfplat.lib Mfuuid.lib Strmiids.lib)
+list(APPEND DEPLIBS bcrypt.lib d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib WindowsApp.lib)
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /WINMD:NO")
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:msvcrt /DEBUG:FASTLINK /OPT:NOREF /OPT:NOICF")

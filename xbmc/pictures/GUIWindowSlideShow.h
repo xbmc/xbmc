@@ -94,7 +94,7 @@ public:
   bool IsShuffled() const { return m_bShuffled; }
   int GetDirection() const { return m_iDirection; }
 
-  static void RunSlideShow(std::vector<std::string> paths, int start=0);
+  static void RunSlideShow(const std::vector<std::string>& paths, int start = 0);
 
 private:
   void ShowNext();

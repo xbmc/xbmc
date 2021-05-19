@@ -87,7 +87,7 @@ Helper.setup(this,classes,
       'int' : '${api} = (int)PyLong_AsLong(${slarg});',
       'double' : '${api} = PyFloat_AsDouble(${slarg});',
       'float' : '${api} = (float)PyFloat_AsDouble(${slarg});',
-      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyLong_Check(${slarg}) || PyLong_Check(${slarg}) || PyFloat_Check(${slarg}),"${api}","${method.@name}");'
+      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyLong_Check(${slarg}) || PyFloat_Check(${slarg}),"${api}","${method.@name}");'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
 // ---------------------------------------------------------
 
@@ -680,7 +680,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 %>
 
     pythonType.tp_base = ${baseclass ? ('&(Ty' + PythonTools.getClassNameAsVariable(baseclass) + '_Type.pythonType)') : "NULL"};
-    pythonType.tp_new = <% Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
+    pythonType.tp_new = <% !Helper.hasDefinedConstructor(clazz) || Helper.hasHiddenConstructor(clazz) ? print('NULL') : print("${module.@name}_${classNameAsVariable}_New") %>;
     pythonType.tp_init = dummy_tp_init;
 
     Ty${classNameAsVariable}_Type.swigType="p.${fullClassName}";<%

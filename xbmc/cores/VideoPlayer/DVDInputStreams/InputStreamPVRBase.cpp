@@ -10,7 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "settings/Settings.h"
@@ -293,7 +293,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
       streamVideo->iFpsRate = stream.iFPSRate;
       streamVideo->iHeight = stream.iHeight;
       streamVideo->iWidth = stream.iWidth;
-      streamVideo->fAspect = stream.fAspect;
+      streamVideo->fAspect = static_cast<double>(stream.fAspect);
 
       dStream = streamVideo;
     }

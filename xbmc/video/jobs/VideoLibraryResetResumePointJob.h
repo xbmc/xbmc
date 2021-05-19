@@ -22,7 +22,7 @@ public:
 
    \param[in] item Item for that the resume point shall be reset.
   */
-  CVideoLibraryResetResumePointJob(const CFileItemPtr item);
+  CVideoLibraryResetResumePointJob(const CFileItemPtr& item);
   ~CVideoLibraryResetResumePointJob() override = default;
 
   const char *GetType() const override { return "CVideoLibraryResetResumePointJob"; }

@@ -25,9 +25,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-
-#include "platform/freebsd/OptionalsReg.h"
-#include "platform/linux/OptionalsReg.h"
+#include "windowing/WindowSystemFactory.h"
 
 #include <vector>
 
@@ -38,53 +36,14 @@ using namespace KODI;
 using namespace KODI::WINDOWING::X11;
 
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemX11GLContext::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemX11GLContext());
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem, "x11");
 }
 
-CWinSystemX11GLContext::CWinSystemX11GLContext()
+std::unique_ptr<CWinSystemBase> CWinSystemX11GLContext::CreateWinSystem()
 {
-  std::string envSink;
-  if (getenv("KODI_AE_SINK"))
-    envSink = getenv("KODI_AE_SINK");
-  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
-  {
-    OPTIONALS::ALSARegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
-  {
-    OPTIONALS::PulseAudioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
-  {
-    OPTIONALS::OSSRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
-  {
-    OPTIONALS::SndioRegister();
-  }
-  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
-  {
-    OPTIONALS::ALSARegister();
-    OPTIONALS::PulseAudioRegister();
-  }
-  else
-  {
-    if (!OPTIONALS::PulseAudioRegister())
-    {
-      if (!OPTIONALS::ALSARegister())
-      {
-        if (!OPTIONALS::SndioRegister())
-        {
-          OPTIONALS::OSSRegister();
-        }
-      }
-    }
-  }
-
-  m_lirc.reset(OPTIONALS::LircRegister());
+  return std::make_unique<CWinSystemX11GLContext>();
 }
 
 CWinSystemX11GLContext::~CWinSystemX11GLContext()
@@ -262,12 +221,19 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   bool success = false;
   if (m_pGLContext)
   {
+    if (force)
+    {
+      g_application.UnloadSkin();
+      CRenderSystemGL::DestroyRenderSystem();
+    }
     success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
     if (!success)
     {
       success = m_pGLContext->CreatePB();
       m_newGlContext = true;
     }
+    if (force)
+      CRenderSystemGL::InitRenderSystem();
     return success;
   }
 
@@ -366,7 +332,7 @@ uint64_t CWinSystemX11GLContext::GetVblankTiming(uint64_t &msc, uint64_t &interv
   if (m_pGLContext)
   {
     float micros = m_pGLContext->GetVblankTiming(msc, interval);
-    return micros / 1000;
+    return micros;
   }
   msc = 0;
   interval = 0;

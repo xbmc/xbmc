@@ -18,8 +18,8 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/DemuxCrypto.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "media/decoderfilter/DecoderFilterManager.h"
@@ -38,6 +38,7 @@
 
 #include <cassert>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include <GLES2/gl2.h>
@@ -136,9 +137,9 @@ void CMediaCodecVideoBuffer::Set(int bufferId, int textureId,
 {
   m_bufferId = bufferId;
   m_textureId = textureId;
-  m_surfacetexture = surfacetexture;
-  m_frameready = frameready;
-  m_videoview = videoview;
+  m_surfacetexture = std::move(surfacetexture);
+  m_frameready = std::move(frameready);
+  m_videoview = std::move(videoview);
 }
 
 bool CMediaCodecVideoBuffer::WaitForFrame(int millis)
@@ -464,23 +465,41 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         case FF_PROFILE_H264_HIGH_10:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh10;
           break;
+        case FF_PROFILE_H264_HIGH_422:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh422;
+          break;
+        case FF_PROFILE_H264_HIGH_444:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh444;
+          break;
+        // All currently not supported formats
         case FF_PROFILE_H264_HIGH_10_INTRA:
-          // No known h/w decoder supporting Hi10P
+        case FF_PROFILE_H264_HIGH_422_INTRA:
+        case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+        case FF_PROFILE_H264_HIGH_444_INTRA:
+        case FF_PROFILE_H264_CAVLC_444:
           goto FAIL;
+        default:
+          break;
       }
       m_mime = "video/avc";
       m_formatname = "amc-h264";
       // check for h264-avcC and convert to h264-annex-b
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
-        m_bitstream = new CBitstreamConverter;
+        m_bitstream = std::make_unique<CBitstreamConverter>();
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
-          SAFE_DELETE(m_bitstream);
+          m_bitstream.reset();
         }
       }
       break;
     case AV_CODEC_ID_HEVC:
+      if (m_hints.profile == FF_PROFILE_HEVC_REXT)
+      {
+        // No known h/w decoder supporting Hi10P
+        goto FAIL;
+      }
+
       if (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'))
       {
         m_mime = "video/dolby-vision";
@@ -499,10 +518,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       // check for hevc-hvcC and convert to h265-annex-b
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
-        m_bitstream = new CBitstreamConverter;
+        m_bitstream = std::make_unique<CBitstreamConverter>();
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
-          SAFE_DELETE(m_bitstream);
+          m_bitstream.reset();
         }
       }
       break;
@@ -588,9 +607,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                 m_hints.cryptoSession->keySystem);
       goto FAIL;
     }
-    CJNIMediaCrypto crypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId,
-                                                   m_hints.cryptoSession->sessionId +
-                                                       m_hints.cryptoSession->sessionIdSize));
+    CJNIMediaCrypto crypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId.begin(),
+                                                   m_hints.cryptoSession->sessionId.end()));
     m_needSecureDecoder =
         crypto.requiresSecureDecoderComponent(m_mime) &&
         (m_hints.cryptoSession->flags & DemuxCryptoSession::FLAG_SECURE_DECODER) != 0;
@@ -647,7 +665,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
       if (std::find_if(profileLevels.cbegin(), profileLevels.cend(),
-        [&](const CJNIMediaCodecInfoCodecProfileLevel profileLevel){ return profileLevel.profile() == profile; }) == profileLevels.cend())
+                       [&](const CJNIMediaCodecInfoCodecProfileLevel& profileLevel) {
+                         return profileLevel.profile() == profile;
+                       }) == profileLevels.cend())
       {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
         continue;
@@ -697,9 +717,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open Initializing MediaCrypto");
 
     m_crypto =
-        new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId,
-                                                    m_hints.cryptoSession->sessionId +
-                                                        m_hints.cryptoSession->sessionIdSize));
+        new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId.begin(),
+                                                    m_hints.cryptoSession->sessionId.end()));
 
     if (!m_crypto)
     {
@@ -771,7 +790,7 @@ FAIL:
 
   m_codec = nullptr;
 
-  SAFE_DELETE(m_bitstream);
+  m_bitstream.reset();
 
   return false;
 }
@@ -812,7 +831,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     m_jnivideoview.reset();
   }
 
-  SAFE_DELETE(m_bitstream);
+  m_bitstream.reset();
 
   m_opened = false;
 }
@@ -857,7 +876,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         m_hints.fpsscale = m_mpeg2_sequence->fps_scale;
         m_hints.width    = m_mpeg2_sequence->width;
         m_hints.height   = m_mpeg2_sequence->height;
-        m_hints.aspect   = m_mpeg2_sequence->ratio;
+        m_hints.aspect = static_cast<double>(m_mpeg2_sequence->ratio);
 
         m_processInfo.SetVideoDAR(m_hints.aspect);
         UpdateFpsDuration();

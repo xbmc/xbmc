@@ -22,6 +22,10 @@ testMain
 # Created in vs2017 when using open folder with cmake tools
 CMakeSettings.json
 
+# Created in vscode when using cmake-tools
+cmake-variants.yaml
+cmake-kits.json
+
 # generated files etc
 .last_success_revision
 *.d
@@ -99,6 +103,7 @@ cmake_install.cmake
 /kodi.bin
 /kodi-test
 /kodi-xrandr
+/*.diff
 /*.patch
 /kodi-build*/
 /gtestresults.xml
@@ -287,7 +292,6 @@ cmake_install.cmake
 /tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh
 /tools/darwin/packaging/osx/mkdmg-osx.sh
 /tools/darwin/packaging/osx/VolumeIcon.icns
-/tools/darwin/packaging/darwin_embedded/migrate_to_kodi.sh
 /tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh
 /tools/darwin/runtime/XBMCHelper
 

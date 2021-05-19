@@ -155,7 +155,7 @@ if(PLATFORM_DEFINES)
 endif()
 
 if(NOT MSVC)
-  add_options(ALL_LANGUAGES ALL_BUILDS "-Wall")
+  add_options(ALL_LANGUAGES ALL_BUILDS "-Wall" "-Wdouble-promotion")
   add_options(ALL_LANGUAGES DEBUG "-g" "-D_DEBUG")
 endif()
 

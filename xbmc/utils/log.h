@@ -28,8 +28,7 @@ namespace spdlog
 {
 namespace sinks
 {
-template<typename Mutex>
-class basic_file_sink;
+class sink;
 
 template<typename Mutex>
 class dist_sink;
@@ -46,7 +45,7 @@ public:
   void OnSettingsLoaded() override;
 
   // implementation of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   void Initialize(const std::string& path);
   void Uninitialize();
@@ -56,7 +55,7 @@ public:
   bool IsLogLevelLogged(int loglevel);
 
   bool CanLogComponent(uint32_t component) const;
-  static void SettingOptionsLoggingComponentsFiller(std::shared_ptr<const CSetting> setting,
+  static void SettingOptionsLoggingComponentsFiller(const std::shared_ptr<const CSetting>& setting,
                                                     std::vector<IntegerSettingOption>& list,
                                                     int& current,
                                                     void* data);
@@ -195,23 +194,10 @@ private:
   std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> m_sinks;
   Logger m_defaultLogger;
 
-  std::shared_ptr<spdlog::sinks::basic_file_sink<std::mutex>> m_fileSink;
+  std::shared_ptr<spdlog::sinks::sink> m_fileSink;
 
   int m_logLevel;
 
   bool m_componentLogEnabled;
   uint32_t m_componentLogLevels;
 };
-
-namespace XbmcUtils
-{
-class LogImplementation : public XbmcCommons::ILogger
-{
-public:
-  ~LogImplementation() override = default;
-  inline void log(int logLevel, IN_STRING const char* message) override
-  {
-    CLog::Log(logLevel, "{0:s}", message);
-  }
-};
-} // namespace XbmcUtils

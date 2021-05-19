@@ -123,13 +123,12 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
 
 std::string CKeyboardLayout::GetIdentifier() const
 {
-  return StringUtils::Format("%s %s", m_language.c_str(), m_layout.c_str());
+  return StringUtils::Format("{} {}", m_language, m_layout);
 }
 
 std::string CKeyboardLayout::GetName() const
 {
-  return StringUtils::Format(g_localizeStrings.Get(311).c_str(), m_language.c_str(),
-                             m_layout.c_str());
+  return StringUtils::Format(g_localizeStrings.Get(311), m_language, m_layout);
 }
 
 std::string CKeyboardLayout::GetCharAt(unsigned int row,

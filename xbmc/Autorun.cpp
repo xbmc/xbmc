@@ -31,6 +31,9 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#ifndef TARGET_WINDOWS
+#include "storage/DetectDVDType.h"
+#endif
 #include "storage/MediaManager.h"
 #include "video/VideoDatabase.h"
 #include "utils/StringUtils.h"
@@ -138,6 +141,12 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
  */
 bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */, bool startFromBeginning /* = false */)
 {
+  if (!pDir)
+  {
+    CLog::Log(LOGDEBUG, "CAutorun::{}: cannot run disc. is it properly mounted?", __FUNCTION__);
+    return false;
+  }
+
   bool bPlaying(false);
   CFileItemList vecItems;
 
@@ -361,7 +370,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
               && (bypassSettings))
         {
           bPlaying = true;
-          std::string strExec = StringUtils::Format("RecursiveSlideShow(%s)", pItem->GetPath().c_str());
+          std::string strExec = StringUtils::Format("RecursiveSlideShow({})", pItem->GetPath());
           CBuiltins::Execute(strExec);
           return true;
         }
@@ -437,7 +446,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
-        std::string strExec = StringUtils::Format("RecursiveSlideShow(%s)", strDrive.c_str());
+        std::string strExec = StringUtils::Format("RecursiveSlideShow({})", strDrive);
         CBuiltins::Execute(strExec);
         break;
       }
@@ -470,17 +479,19 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
 void CAutorun::HandleAutorun()
 {
-#ifndef TARGET_WINDOWS
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  const CDetectDVDMedia& mediadetect = CServiceBroker::GetDetectDVDMedia();
+
   if (!m_bEnable)
   {
-    CDetectDVDMedia::m_evAutorun.Reset();
+    mediadetect.m_evAutorun.Reset();
     return ;
   }
 
-  if (CDetectDVDMedia::m_evAutorun.WaitMSec(0))
+  if (mediadetect.m_evAutorun.WaitMSec(0))
   {
     ExecuteAutorun();
-    CDetectDVDMedia::m_evAutorun.Reset();
+    mediadetect.m_evAutorun.Reset();
   }
 #endif
 }
@@ -521,7 +532,10 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
   return false;
 }
 
-void CAutorun::SettingOptionAudioCdActionsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CAutorun::SettingOptionAudioCdActionsFiller(const SettingConstPtr& setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data)
 {
   list.emplace_back(g_localizeStrings.Get(16018), AUTOCD_NONE);
   list.emplace_back(g_localizeStrings.Get(14098), AUTOCD_PLAY);

@@ -186,9 +186,11 @@ SettingSectionPtr CGUIWindowSettingsCategory::GetSection()
   return NULL;
 }
 
-void CGUIWindowSettingsCategory::Save()
+bool CGUIWindowSettingsCategory::Save()
 {
   m_settings->Save();
+
+  return true;
 }
 
 CSettingsManager* CGUIWindowSettingsCategory::GetSettingsManager() const

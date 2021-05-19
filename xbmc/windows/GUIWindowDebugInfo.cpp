@@ -104,20 +104,30 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
 #if !defined(TARGET_POSIX)
-    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s",
-                               CSpecialProtocol::TranslatePath("special://logpath").c_str(), lcAppName.c_str(),
-                               stat.availPhys / 1024, stat.totalPhys / 1024, CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetSystemInfoProvider().GetFPS(),
-                               strCores.c_str(), profiling.c_str());
+    info = StringUtils::Format("LOG: {}{}.log\nMEM: {}/{} KB - FPS: {:2.1f} fps\nCPU: {}{}",
+                               CSpecialProtocol::TranslatePath("special://logpath"), lcAppName,
+                               stat.availPhys / 1024, stat.totalPhys / 1024,
+                               CServiceBroker::GetGUI()
+                                   ->GetInfoManager()
+                                   .GetInfoProviders()
+                                   .GetSystemInfoProvider()
+                                   .GetFPS(),
+                               strCores, profiling);
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     std::string ucAppName = lcAppName;
     StringUtils::ToUpper(ucAppName);
-    info = StringUtils::Format("LOG: %s%s.log\n"
-                                "MEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\n"
-                                "CPU: %s (CPU-%s %4.2f%%%s)",
-                                CSpecialProtocol::TranslatePath("special://logpath").c_str(), lcAppName.c_str(),
-                                stat.availPhys / 1024, stat.totalPhys / 1024, CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetSystemInfoProvider().GetFPS(),
-                                strCores.c_str(), ucAppName.c_str(), dCPU, profiling.c_str());
+    info = StringUtils::Format("LOG: {}{}.log\n"
+                               "MEM: {}/{} KB - FPS: {:2.1f} fps\n"
+                               "CPU: {} (CPU-{} {:4.2f}%{})",
+                               CSpecialProtocol::TranslatePath("special://logpath"), lcAppName,
+                               stat.availPhys / 1024, stat.totalPhys / 1024,
+                               CServiceBroker::GetGUI()
+                                   ->GetInfoManager()
+                                   .GetInfoProviders()
+                                   .GetSystemInfoProvider()
+                                   .GetFPS(),
+                               strCores, ucAppName, dCPU, profiling);
 #endif
   }
 
@@ -145,12 +155,15 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
       point.y *= CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY();
       CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(), false);
     }
-    info += StringUtils::Format("Mouse: (%d,%d)  ", static_cast<int>(point.x), static_cast<int>(point.y));
+    info += StringUtils::Format("Mouse: ({},{})  ", static_cast<int>(point.x),
+                                static_cast<int>(point.y));
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
       if (control)
-        info += StringUtils::Format("Focused: %i (%s)", control->GetID(), CGUIControlFactory::TranslateControlType(control->GetControlType()).c_str());
+        info += StringUtils::Format(
+            "Focused: {} ({})", control->GetID(),
+            CGUIControlFactory::TranslateControlType(control->GetControlType()));
     }
   }
 

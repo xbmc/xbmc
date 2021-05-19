@@ -13,7 +13,7 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "utils/log.h"
 
-#define BUFFER_OFFSET(i) (static_cast<char*>(NULL) + (i))
+#include <cstddef>
 
 using namespace KODI;
 using namespace RETRO;
@@ -64,10 +64,10 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
   glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
   glEnableVertexAttribArray(vertLoc);
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, x)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
   glEnableVertexAttribArray(loc);
   glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   // Set up black bars VAO/VBO
   glGenVertexArrays(1, &m_blackbarsVAO);
@@ -164,7 +164,7 @@ void CRPRendererOpenGL::DrawBlackBars()
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
   // top quad
-  if (m_rotatedDestCoords[0].y > 0.0)
+  if (m_rotatedDestCoords[0].y > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
@@ -206,7 +206,7 @@ void CRPRendererOpenGL::DrawBlackBars()
   }
 
   // left quad
-  if (m_rotatedDestCoords[0].x > 0.0)
+  if (m_rotatedDestCoords[0].x > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;

@@ -126,7 +126,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string& strType)
 bool CGUIPassword::IsItemUnlocked(CMediaSource* pItem, const std::string& strType)
 {
   const std::string strLabel = pItem->strName;
-  std::string strHeading = g_localizeStrings.Get(12325); // "Locked! Enter code..."
+  const std::string& strHeading = g_localizeStrings.Get(12325); // "Locked! Enter code..."
 
   return IsItemUnlocked<CMediaSource*>(pItem, strType, strLabel, strHeading);
 }
@@ -136,7 +136,7 @@ bool CGUIPassword::CheckStartUpLock()
   // prompt user for mastercode if the mastercode was set b4 or by xml
   int iVerifyPasswordResult = -1;
 
-  std::string strHeader = g_localizeStrings.Get(20075); // "Enter master lock code"
+  const std::string& strHeader = g_localizeStrings.Get(20075); // "Enter master lock code"
 
   if (iMasterLockRetriesLeft == -1)
     iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
@@ -160,7 +160,7 @@ bool CGUIPassword::CheckStartUpLock()
         std::string strLabel1;
         strLabel1 = g_localizeStrings.Get(12343); // "retries left"
         int iLeft = g_passwordManager.iMasterLockRetriesLeft-i;
-        std::string strLabel = StringUtils::Format("%i %s", iLeft, strLabel1.c_str());
+        std::string strLabel = StringUtils::Format("{} {}", iLeft, strLabel1);
 
         // PopUp OK and Display: MasterLock mode has changed but no new Mastercode has been set!
         HELPERS::ShowOKDialogLines(CVariant{12360}, CVariant{12367}, CVariant{strLabel}, CVariant{""});
@@ -279,7 +279,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   }
 
   // no, unlock since we are allowed to prompt
-  std::string strHeading = g_localizeStrings.Get(20075);
+  const std::string& strHeading = g_localizeStrings.Get(20075);
   std::string strPassword = profileManager->GetMasterProfile().getLockCode();
 
   int iVerifyPasswordResult = VerifyPassword(profileManager->GetMasterProfile().getLockMode(), strPassword, strHeading);
@@ -323,8 +323,8 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     }
     std::string dlgLine1 = "";
     if (0 < g_passwordManager.iMasterLockRetriesLeft)
-      dlgLine1 = StringUtils::Format("%d %s", g_passwordManager.iMasterLockRetriesLeft,
-                                     g_localizeStrings.Get(12343).c_str()); // "retries left"
+      dlgLine1 = StringUtils::Format("{} {}", g_passwordManager.iMasterLockRetriesLeft,
+                                     g_localizeStrings.Get(12343)); // "retries left"
     // prompt user for master lock code
     HELPERS::ShowOKDialogLines(CVariant{20075}, CVariant{12345}, CVariant{std::move(dlgLine1)}, CVariant{0});
   }
@@ -352,7 +352,7 @@ bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, i
     return true;
   }
 
-  std::string strHeading = g_localizeStrings.Get(iHeading);
+  const std::string& strHeading = g_localizeStrings.Get(iHeading);
   int iVerifyPasswordResult = VerifyPassword(btnType, strPassword, strHeading);
 
   if (iVerifyPasswordResult == -1)
@@ -570,7 +570,7 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
   return true;
 }
 
-void CGUIPassword::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIPassword::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

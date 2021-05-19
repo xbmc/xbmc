@@ -8,6 +8,7 @@
 
 #include <signal.h>
 #include <sys/resource.h>
+#include <cstdio>
 
 #include <cstring>
 
@@ -58,7 +59,7 @@ int main(int argc, char* argv[])
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
-    CLog::Log(LOGDEBUG, "Failed to set core size limit (%s)", strerror(errno));
+    fprintf(stderr, "Failed to set core size limit (%s).\n", strerror(errno));
 #endif
 
   // Set up global SIGINT/SIGTERM handler

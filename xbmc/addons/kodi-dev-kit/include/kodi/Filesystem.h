@@ -91,7 +91,7 @@ namespace vfs
 /// @brief **File information status**\n
 /// Used on kodi::vfs::StatFile() to get detailed information about a file.
 ///
-//@{
+///@{
 class ATTRIBUTE_HIDDEN FileStatus : public kodi::addon::CStructHdl<FileStatus, STAT_STRUCTURE>
 {
 public:
@@ -102,7 +102,7 @@ public:
   FileStatus(STAT_STRUCTURE* channel) : CStructHdl(channel) {}
   /*! \endcond */
 
-  /// @defgroup cpp_kodi_vfs_Defs_FileStatus_Help *Value Help*
+  /// @defgroup cpp_kodi_vfs_Defs_FileStatus_Help Value Help
   /// @ingroup cpp_kodi_vfs_Defs_FileStatus
   /// ----------------------------------------------------------------------------
   ///
@@ -126,7 +126,7 @@ public:
 
   /// @addtogroup cpp_kodi_vfs_Defs_FileStatus
   /// @copydetails cpp_kodi_vfs_Defs_FileStatus_Help
-  //@{
+  ///@{
 
   /// @brief Set ID of device containing file.
   void SetDeviceId(uint32_t deviceId) { m_cStructure->deviceId = deviceId; }
@@ -208,9 +208,9 @@ public:
 
   /// @brief Get stat url is a regular.
   bool GetIsSocket() const { return m_cStructure->isSocket; }
-  //@}
+  ///@}
 };
-//@}
+///@}
 //------------------------------------------------------------------------------
 
 //==============================================================================
@@ -220,7 +220,7 @@ public:
 /// Used on kodi::vfs::CFile::IoControlGetCacheStatus() to get running cache
 /// status of proccessed stream.
 ///
-//@{
+///@{
 class ATTRIBUTE_HIDDEN CacheStatus
   : public kodi::addon::CStructHdl<CacheStatus, VFS_CACHE_STATUS_DATA>
 {
@@ -232,7 +232,7 @@ public:
   CacheStatus(VFS_CACHE_STATUS_DATA* channel) : CStructHdl(channel) {}
   /*! \endcond */
 
-  /// @defgroup cpp_kodi_vfs_Defs_CacheStatus_Help *Value Help*
+  /// @defgroup cpp_kodi_vfs_Defs_CacheStatus_Help Value Help
   /// @ingroup cpp_kodi_vfs_Defs_CacheStatus
   /// ----------------------------------------------------------------------------
   ///
@@ -247,7 +247,7 @@ public:
 
   /// @addtogroup cpp_kodi_vfs_Defs_CacheStatus
   /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
-  //@{
+  ///@{
 
   /// @brief Set number of bytes cached forward of current position.
   void SetForward(uint64_t forward) { m_cStructure->forward = forward; }
@@ -273,9 +273,9 @@ public:
   /// @brief Get cache low speed condition detected.
   bool GetLowspeed() { return m_cStructure->lowspeed; }
 
-  //@}
+  ///@}
 };
-//@}
+///@}
 //------------------------------------------------------------------------------
 
 //==============================================================================
@@ -318,7 +318,7 @@ public:
   }
   //--------------------------------------------------------------------------
 
-  /// @defgroup cpp_kodi_vfs_Defs_HttpHeader_Help *Value Help*
+  /// @defgroup cpp_kodi_vfs_Defs_HttpHeader_Help Value Help
   /// @ingroup cpp_kodi_vfs_Defs_HttpHeader
   ///
   /// <b>The following table contains values that can be get with @ref cpp_kodi_vfs_Defs_HttpHeader :</b>
@@ -382,6 +382,7 @@ public:
     if (res)
     {
       std::vector<std::string> vecReturn;
+      vecReturn.reserve(numValues);
       for (int i = 0; i < numValues; ++i)
       {
         vecReturn.emplace_back(res[i]);
@@ -537,7 +538,7 @@ public:
 /// It has the header @ref Filesystem.h "#include <kodi/Filesystem.h>" be included
 /// to enjoy it.
 ///
-//@{
+///@{
 class ATTRIBUTE_HIDDEN CDirEntry
 {
 public:
@@ -580,7 +581,7 @@ public:
   }
   //----------------------------------------------------------------------------
 
-  /// @defgroup cpp_kodi_vfs_CDirEntry_Help *Value Help*
+  /// @defgroup cpp_kodi_vfs_CDirEntry_Help Value Help
   /// @ingroup cpp_kodi_vfs_CDirEntry
   /// --------------------------------------------------------------------------
   ///
@@ -598,7 +599,7 @@ public:
 
   /// @addtogroup cpp_kodi_vfs_CDirEntry
   /// @copydetails cpp_kodi_vfs_CDirEntry_Help
-  //@{
+  ///@{
 
   //============================================================================
   /// @brief Get the directory entry name.
@@ -723,7 +724,7 @@ public:
   const std::map<std::string, std::string>& GetProperties() const { return m_properties; }
   //----------------------------------------------------------------------------
 
-  //@}
+  ///@}
 
 private:
   std::string m_label;
@@ -734,7 +735,7 @@ private:
   int64_t m_size;
   time_t m_dateTime;
 };
-//@}
+///@}
 //------------------------------------------------------------------------------
 
 //}}}
@@ -1823,7 +1824,7 @@ inline bool ATTRIBUTE_HIDDEN GetCookies(const std::string& url, std::string& coo
 ///
 /// ~~~~~~~~~~~~~
 ///
-//@{
+///@{
 class ATTRIBUTE_HIDDEN CFile
 {
 public:
@@ -2324,6 +2325,7 @@ public:
     if (res)
     {
       std::vector<std::string> vecReturn;
+      vecReturn.reserve(numValues);
       for (int i = 0; i < numValues; ++i)
       {
         vecReturn.emplace_back(res[i]);
@@ -2356,7 +2358,7 @@ public:
 private:
   void* m_file = nullptr;
 };
-//@}
+///@}
 //------------------------------------------------------------------------------
 
 //}}}

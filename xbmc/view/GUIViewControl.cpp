@@ -316,7 +316,8 @@ void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)
   {
     IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
-    std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
+    std::string label = StringUtils::Format(g_localizeStrings.Get(534),
+                                            view->GetLabel()); // View: {}
     labels.emplace_back(std::move(label), i);
   }
   CGUIMessage msg(GUI_MSG_SET_LABELS, m_parentWindow, m_viewAsControl, m_currentView);
@@ -324,7 +325,7 @@ void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg, m_parentWindow);
 
   // otherwise it's just a normal button
-  std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
+  std::string label = StringUtils::Format(g_localizeStrings.Get(534), viewLabel); // View: {}
   CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
   msgSet.SetLabel(label);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msgSet, m_parentWindow);

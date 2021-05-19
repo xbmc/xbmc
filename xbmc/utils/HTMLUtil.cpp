@@ -218,9 +218,9 @@ void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStr
     num = strStripped.substr(i, iPos-i);
     wchar_t val = (wchar_t)wcstol(num.c_str(),NULL,base);
     if (base == 10)
-      num = StringUtils::Format(L"&#%ls;", num.c_str());
+      num = StringUtils::Format(L"&#{};", num);
     else
-      num = StringUtils::Format(L"&#x%ls;", num.c_str());
+      num = StringUtils::Format(L"&#x{};", num);
 
     StringUtils::Replace(strStripped, num,std::wstring(1,val));
     iPos = strStripped.find(L"&#", iStart);

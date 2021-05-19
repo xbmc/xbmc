@@ -507,7 +507,7 @@ std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /*
   for (const auto& pathPair : m_advancedSettings->m_pathSubstitutions)
   {
     const std::string fromPath = reverse ? pathPair.second : pathPair.first;
-    const std::string toPath = reverse ? pathPair.first : pathPair.second;
+    std::string toPath = reverse ? pathPair.first : pathPair.second;
 
     if (strncmp(strPath.c_str(), fromPath.c_str(), HasSlashAtEnd(fromPath) ? fromPath.size() - 1 : fromPath.size()) == 0)
     {
@@ -665,7 +665,7 @@ bool URIUtils::IsOnLAN(const std::string& strPath)
   if(!IsRemote(strPath))
     return false;
 
-  std::string host = url.GetHostName();
+  const std::string& host = url.GetHostName();
 
   return IsHostOnLAN(host);
 }
@@ -1163,7 +1163,7 @@ bool URIUtils::HasSlashAtEnd(const std::string& strFile, bool checkURL /* = fals
   if (checkURL && IsURL(strFile))
   {
     CURL url(strFile);
-    std::string file = url.GetFileName();
+    const std::string& file = url.GetFileName();
     return file.empty() || HasSlashAtEnd(file, false);
   }
   char kar = strFile.c_str()[strFile.size() - 1];

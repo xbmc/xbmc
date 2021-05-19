@@ -367,7 +367,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   SetInvalid();
 }
 
-void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, CVariant heading)
+void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, const CVariant& heading)
 {
   m_inputType = type;
   if (heading.isString())

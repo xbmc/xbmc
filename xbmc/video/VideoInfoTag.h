@@ -71,6 +71,7 @@ public:
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const std::string &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
+  void Merge(CVideoInfoTag& other);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
@@ -137,9 +138,9 @@ public:
   void SetRatings(RatingMap ratings);
   void SetVotes(int votes, const std::string& type = "");
   void SetUniqueIDs(std::map<std::string, std::string> uniqueIDs);
-  void SetPremiered(CDateTime premiered);
-  void SetPremieredFromDBDate(std::string premieredString);
-  void SetYear(int year);
+  void SetPremiered(const CDateTime& premiered);
+  void SetPremieredFromDBDate(const std::string& premieredString);
+  virtual void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
@@ -255,6 +256,7 @@ public:
   std::vector<std::string> m_showLink;
   std::map<int, std::string> m_namedSeasons;
   int m_iTop250;
+  int m_year;
   int m_iSeason;
   int m_iEpisode;
   int m_iIdUniqueID;

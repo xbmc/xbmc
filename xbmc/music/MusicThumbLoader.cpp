@@ -151,7 +151,7 @@ bool CMusicThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true *
 
 bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 {
-  /* Called for any item with MusicInfoTag and no art. 
+  /* Called for any item with MusicInfoTag and no art.
      Items on Genres, Sources and Roles nodes have ID (although items on Years
      node do not) so check for song/album/artist specifically.
      Non-library songs (file view) can also have MusicInfoTag but no ID or type
@@ -159,9 +159,9 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   bool artfound(false);
   std::vector<ArtForThumbLoader> art;
   CMusicInfoTag &tag = *item.GetMusicInfoTag();
-  if (tag.GetDatabaseId() > -1 && (tag.GetType() == MediaTypeSong || 
-      tag.GetType() == MediaTypeAlbum || 
-      tag.GetType() == MediaTypeArtist))
+  if (tag.GetDatabaseId() > -1 &&
+      (tag.GetType() == MediaTypeSong || tag.GetType() == MediaTypeAlbum ||
+       tag.GetType() == MediaTypeArtist))
   {
     // Item in music library, fetch the art
     m_musicDatabase->Open();
@@ -174,15 +174,15 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 
     m_musicDatabase->Close();
   }
-  else if (!tag.GetArtist().empty() && 
-    (tag.GetType() == MediaTypeNone || tag.GetType() == MediaTypeSong))
+  else if (!tag.GetArtist().empty() &&
+           (tag.GetType() == MediaTypeNone || tag.GetType() == MediaTypeSong))
   {
-    /* 
+    /*
     Could be non-library song - has musictag but no ID or type (may have
     thumb already). Try to fetch both song artist(s) and album artist(s) art by
     artist name, e.g. "artist.thumb", "artist.fanart", "artist.clearlogo",
     "artist.banner", "artist1.thumb", "artist1.fanart", "artist1.clearlogo",
-    "artist1.banner", "albumartist.thumb", "albumartist.fanart" etc. 
+    "artist1.banner", "albumartist.thumb", "albumartist.fanart" etc.
     Set fanart as fallback.
     */
     CSong song;
@@ -205,7 +205,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
             for (auto& artitem : artistart)
             {
               if (iOrder > 0)
-                artitem.prefix = StringUtils::Format("artist%i", iOrder);
+                artitem.prefix = StringUtils::Format("artist{}", iOrder);
               else
                 artitem.prefix = "artist";
             }
@@ -235,7 +235,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
               for (auto& artitem : artistart)
               {
                 if (iOrder > 0)
-                  artitem.prefix = StringUtils::Format("albumartist%i", iOrder);
+                  artitem.prefix = StringUtils::Format("albumartist{}", iOrder);
                 else
                   artitem.prefix = "albumartist";
               }
@@ -262,7 +262,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       }
       artfound = !art.empty();
       m_musicDatabase->Close();
-    }    
+    }
   }
 
   if (artfound)
@@ -325,7 +325,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       item.SetArtFallback("fanart", fanartfallback);
 
     // Process specific disc art when we have some
-    for (auto discart : discartmap)
+    for (const auto& discart : discartmap)
     {
       std::map<std::string, std::string>::iterator it;
       if (tag.GetType() == MediaTypeAlbum)

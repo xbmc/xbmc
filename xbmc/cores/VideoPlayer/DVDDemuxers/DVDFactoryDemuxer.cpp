@@ -17,7 +17,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(std::shared_ptr<CDVDInputStream> pInputStream, bool fileinfo)
+CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(const std::shared_ptr<CDVDInputStream>& pInputStream,
+                                             bool fileinfo)
 {
   if (!pInputStream)
     return NULL;

@@ -8,7 +8,7 @@ DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 libfstrcmp liblzo2 freetype2 fontconfig \
 	openssl gmp nettle gnutls googletest curl nghttp2 \
-	libjpeg-turbo libpng fribidi libass \
+	libjpeg-turbo libpng fribidi harfbuzz libass \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
 	python3 libshairplay libfmt libspdlog \
 	libplist libcec libbluray tinyxml \
@@ -90,7 +90,8 @@ gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 curl: openssl nghttp2
-libass: fontconfig fribidi libpng freetype2 expat $(ICONV)
+harfbuzz: meson-cross-file $(ICONV)
+libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
 python3: expat gettext libxml2 sqlite3 openssl libffi bzip2
 libcdio: $(ICONV)

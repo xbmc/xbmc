@@ -393,17 +393,15 @@ void CGameClient::NotifyError(GAME_ERROR error)
   {
     // Failed to play game
     // This game requires the following add-on: %s
-    HELPERS::ShowOKDialogText(CVariant{35210},
-                              CVariant{StringUtils::Format(g_localizeStrings.Get(35211).c_str(),
-                                                           missingResource.c_str())});
+    HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{StringUtils::Format(
+                                                   g_localizeStrings.Get(35211), missingResource)});
   }
   else
   {
     // Failed to play game
     // The emulator "%s" had an internal error.
-    HELPERS::ShowOKDialogText(
-        CVariant{35210},
-        CVariant{StringUtils::Format(g_localizeStrings.Get(35213).c_str(), Name().c_str())});
+    HELPERS::ShowOKDialogText(CVariant{35210},
+                              CVariant{StringUtils::Format(g_localizeStrings.Get(35213), Name())});
   }
 }
 
@@ -420,7 +418,8 @@ std::string CGameClient::GetMissingResource()
     if (StringUtils::StartsWith(strDependencyId, "resource.games"))
     {
       AddonPtr addon;
-      const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(strDependencyId, addon);
+      const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(
+          strDependencyId, addon, ADDON_UNKNOWN, OnlyEnabled::YES);
       if (!bInstalled)
       {
         strAddonId = strDependencyId;

@@ -105,19 +105,21 @@ void CPlayListWPL::Save(const std::string& strFileName) const
     return ;
   }
   std::string write;
-  write += StringUtils::Format("<?wpl version=%c1.0%c>\n", 34, 34);
+  write += StringUtils::Format("<?wpl version={}1.0{}>\n", 34, 34);
   write += StringUtils::Format("<smil>\n");
   write += StringUtils::Format("    <head>\n");
-  write += StringUtils::Format("        <meta name=%cGenerator%c content=%cMicrosoft Windows Media Player -- 10.0.0.3646%c/>\n", 34, 34, 34, 34);
+  write += StringUtils::Format("        <meta name={}Generator{} content={}Microsoft Windows Media "
+                               "Player -- 10.0.0.3646{}/>\n",
+                               34, 34, 34, 34);
   write += StringUtils::Format("        <author/>\n");
-  write += StringUtils::Format("        <title>%s</title>\n", m_strPlayListName.c_str());
+  write += StringUtils::Format("        <title>{}</title>\n", m_strPlayListName.c_str());
   write += StringUtils::Format("    </head>\n");
   write += StringUtils::Format("    <body>\n");
   write += StringUtils::Format("        <seq>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    write += StringUtils::Format("            <media src=%c%s%c/>", 34, item->GetPath().c_str(), 34);
+    write += StringUtils::Format("            <media src={}{}{}/>", 34, item->GetPath(), 34);
   }
   write += StringUtils::Format("        </seq>\n");
   write += StringUtils::Format("    </body>\n");

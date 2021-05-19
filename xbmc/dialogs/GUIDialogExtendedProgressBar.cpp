@@ -11,7 +11,7 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIProgressControl.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
+#include "utils/TimeUtils.h"
 
 #include <cmath>
 
@@ -74,7 +74,7 @@ bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      m_iLastSwitchTime = XbmcThreads::SystemClockMillis();
+      m_iLastSwitchTime = CTimeUtils::GetFrameTime();
       m_iCurrentItem = 0;
       CGUIDialog::OnMessage(message);
 

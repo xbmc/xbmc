@@ -584,7 +584,8 @@ size_t CCharsetDetection::GetHtmlAttribute(const std::string& htmlContent, size_
   return std::string::npos; // rest of htmlContent was attribute value
 }
 
-std::string CCharsetDetection::ExtractEncodingFromHtmlMeta(std::string metaContent, size_t pos /*= 0*/)
+std::string CCharsetDetection::ExtractEncodingFromHtmlMeta(const std::string& metaContent,
+                                                           size_t pos /*= 0*/)
 {
   size_t len = metaContent.length();
   if (pos >= len)

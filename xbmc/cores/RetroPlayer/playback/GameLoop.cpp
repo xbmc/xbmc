@@ -8,8 +8,7 @@
 
 #include "GameLoop.h"
 
-#include "threads/SystemClock.h"
-
+#include <chrono>
 #include <cmath>
 
 using namespace KODI;
@@ -129,5 +128,7 @@ double CGameLoop::SleepTimeMs() const
 
 double CGameLoop::NowMs() const
 {
-  return static_cast<double>(XbmcThreads::SystemClockMillis());
+  return std::chrono::duration<double, std::milli>(
+             std::chrono::steady_clock::now().time_since_epoch())
+      .count();
 }

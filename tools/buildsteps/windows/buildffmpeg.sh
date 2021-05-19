@@ -84,6 +84,7 @@ do_addOption "--disable-gnutls"
 do_addOption "--enable-openssl"
 do_addOption "--enable-nonfree"
 do_addOption "--toolchain=msvc"
+do_addOption "--disable-mediafoundation"
 
 if [ "$ARCH" == "x86_64" ]; then
   FFMPEG_TARGET_OS=win64

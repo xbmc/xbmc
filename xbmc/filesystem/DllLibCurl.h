@@ -82,7 +82,8 @@ public:
   /* structure holding a session info */
   typedef struct SSession
   {
-    unsigned int m_idletimestamp; // timestamp of when this object when idle
+    std::chrono::time_point<std::chrono::steady_clock>
+        m_idletimestamp; // timestamp of when this object when idle
     std::string m_protocol;
     std::string m_hostname;
     bool m_busy;

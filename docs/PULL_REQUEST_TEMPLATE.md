@@ -1,15 +1,21 @@
 ## Description
 <!--- Provide a general summary of your change in the Pull Request title above -->
-<!--- Describe your change in detail here -->
+<!--- Describe your change in detail here. -->
 
-## Motivation and Context
+## Motivation and context
 <!--- Why is this change required? What problem does it solve? -->
-<!--- If it fixes an open issue, please link to the issue here -->
+<!--- If it fixes an open issue, please link to the issue here. -->
 
-## How Has This Been Tested?
-<!--- Please describe in detail how you tested your change -->
+## How has this been tested?
+<!--- Please describe in detail how you tested your change. -->
 <!--- Include details of your testing environment, and the tests you ran to -->
-<!--- see how your change affects other areas of the code, etc -->
+<!--- see how your change affects other areas of the code, etc. -->
+
+## What is the effect on users?
+<!--- Summarize the effect of this change on Kodi end-users. -->
+<!--- If the PR does not have a noticeable impact (e.g., if it only changes documentation), -->
+<!--- just leave it empty. Put in more detail the bigger the impact is. -->
+<!--- This section may be used for automatic creation of release notes. -->
 
 ## Screenshots (if appropriate):
 

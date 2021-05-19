@@ -46,7 +46,8 @@ bool CAutorunMediaJob::DoWork()
   int selection = pDialog->GetSelectedItem();
   if (selection >= 0)
   {
-    std::string strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
+    std::string strAction =
+        StringUtils::Format("ActivateWindow({}, {})", GetWindowString(selection), m_path);
     CBuiltins::GetInstance().Execute(strAction);
   }
 

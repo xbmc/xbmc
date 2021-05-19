@@ -27,7 +27,6 @@
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -48,7 +47,7 @@ CPlayListPlayer::CPlayListPlayer(void)
   for (REPEAT_STATE& repeatState : m_repeatState)
     repeatState = REPEAT_NONE;
   m_iFailedSongs = 0;
-  m_failedSongsStart = 0;
+  m_failedSongsStart = std::chrono::steady_clock::now();
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -255,7 +254,7 @@ bool CPlayListPlayer::PlaySongId(int songId)
   return Play();
 }
 
-bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
+bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
 {
   int playlist;
   if (pItem->IsAudio())
@@ -276,7 +275,10 @@ bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
   return Play(0, player);
 }
 
-bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+bool CPlayListPlayer::Play(int iSong,
+                           const std::string& player,
+                           bool bAutoPlay /* = false */,
+                           bool bPlayPrevious /* = false */)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
@@ -307,7 +309,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
 
   m_bPlaybackStarted = false;
 
-  unsigned int playAttempt = XbmcThreads::SystemClockMillis();
+  const auto playAttempt = std::chrono::steady_clock::now();
   bool ret = g_application.PlayFile(*item, player, bAutoPlay);
   if (!ret)
   {
@@ -319,9 +321,15 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
       m_failedSongsStart = playAttempt;
     m_iFailedSongs++;
     const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-    if ((m_iFailedSongs >= advancedSettings->m_playlistRetries && advancedSettings->m_playlistRetries >= 0)
-        || ((XbmcThreads::SystemClockMillis() - m_failedSongsStart  >= static_cast<unsigned int>(advancedSettings->m_playlistTimeout) * 1000) &&
-            advancedSettings->m_playlistTimeout))
+
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_failedSongsStart);
+
+    if ((m_iFailedSongs >= advancedSettings->m_playlistRetries &&
+         advancedSettings->m_playlistRetries >= 0) ||
+        ((duration.count() >=
+          static_cast<unsigned int>(advancedSettings->m_playlistTimeout) * 1000) &&
+         advancedSettings->m_playlistTimeout))
     {
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 
@@ -334,7 +342,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
       GetPlaylist(m_iCurrentPlayList).Clear();
       m_iCurrentPlayList = PLAYLIST_NONE;
       m_iFailedSongs = 0;
-      m_failedSongsStart = 0;
+      m_failedSongsStart = std::chrono::steady_clock::now();
       return false;
     }
 
@@ -365,7 +373,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
 
   // consecutive error counter so reset if the current item is playing
   m_iFailedSongs = 0;
-  m_failedSongsStart = 0;
+  m_failedSongsStart = std::chrono::steady_clock::now();
   m_bPlayedFirstFile = true;
   return true;
 }
@@ -511,7 +519,9 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
 
     if (bNotify)
     {
-      std::string shuffleStr = StringUtils::Format("%s: %s", g_localizeStrings.Get(191).c_str(), g_localizeStrings.Get(bYesNo ? 593 : 591).c_str()); // Shuffle: All/Off
+      std::string shuffleStr =
+          StringUtils::Format("{}: {}", g_localizeStrings.Get(191),
+                              g_localizeStrings.Get(bYesNo ? 593 : 591)); // Shuffle: All/Off
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559),  shuffleStr);
     }
 
@@ -526,7 +536,7 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
     }
   }
 
-  // its likely that the playlist changed   
+  // its likely that the playlist changed
   if (CServiceBroker::GetGUI() != nullptr)
   {
     CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
@@ -586,7 +596,7 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify 
     break;
   }
 
-  // its likely that the playlist changed   
+  // its likely that the playlist changed
   if (CServiceBroker::GetGUI() != nullptr)
   {
     CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);

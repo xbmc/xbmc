@@ -192,10 +192,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Có sẵn"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Nhấn [B]OK[/B] để dừng"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "đã lọc"
@@ -203,10 +199,6 @@ msgstr "đã lọc"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Theo chuẩn Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Nhấn [B]Trái[/B] để tua lại hoặc [B]Phải[/B] để tua tới nhanh"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -495,10 +487,6 @@ msgstr "Danh mục"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Chọn thể loại của gói fanart"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Kho lưu trữ"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

@@ -40,8 +40,14 @@ public:
   CInputProcessorPointer(wayland::surface_t const& surface, IInputHandlerPointer& handler);
   void SetCoordinateScale(std::int32_t scale) { m_coordinateScale = scale; }
 
-  void OnPointerEnter(CSeat* seat, std::uint32_t serial, wayland::surface_t surface, double surfaceX, double surfaceY) override;
-  void OnPointerLeave(CSeat* seat, std::uint32_t serial, wayland::surface_t surface) override;
+  void OnPointerEnter(CSeat* seat,
+                      std::uint32_t serial,
+                      const wayland::surface_t& surface,
+                      double surfaceX,
+                      double surfaceY) override;
+  void OnPointerLeave(CSeat* seat,
+                      std::uint32_t serial,
+                      const wayland::surface_t& surface) override;
   void OnPointerMotion(CSeat* seat, std::uint32_t time, double surfaceX, double surfaceY) override;
   void OnPointerButton(CSeat* seat, std::uint32_t serial, std::uint32_t time, std::uint32_t button, wayland::pointer_button_state state) override;
   void OnPointerAxis(CSeat* seat, std::uint32_t time, wayland::pointer_axis axis, double value) override;

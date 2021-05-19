@@ -32,9 +32,12 @@ public:
   CSeekHandler() = default;
   ~CSeekHandler() override;
 
-  static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data);
+  static void SettingOptionsSeekStepsFiller(const std::shared_ptr<const CSetting>& setting,
+                                            std::vector<IntegerSettingOption>& list,
+                                            int& current,
+                                            void* data);
 
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   bool OnAction(const CAction &action) override;
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);

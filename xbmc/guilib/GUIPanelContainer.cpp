@@ -521,9 +521,9 @@ std::string CGUIPanelContainer::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_ROW:
-    return StringUtils::Format("%i", row);
+    return std::to_string(row);
   case CONTAINER_COLUMN:
-    return StringUtils::Format("%i", col);
+    return std::to_string(col);
   default:
     return CGUIBaseContainer::GetLabel(info);
   }

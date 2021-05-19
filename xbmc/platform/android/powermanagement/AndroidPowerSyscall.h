@@ -32,8 +32,8 @@ public:
 
   bool PumpPowerEvents(IPowerEventsCallback* callback) override;
 
-  void SetOnPause() { m_state = SUSPENDED; }
-  void SetOnResume() { m_state = RESUMED; }
+  void SetSuspended() { m_state = SUSPENDED; }
+  void SetResumed() { m_state = RESUMED; }
 
 private:
   enum STATE : unsigned int

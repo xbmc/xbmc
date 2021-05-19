@@ -16,7 +16,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
@@ -44,22 +43,26 @@ void CPVRGUITimerInfo::ResetProperties()
   m_strNextRecordingTime.clear();
   m_iTimerAmount = 0;
   m_iRecordingTimerAmount = 0;
-  m_iTimerInfoToggleStart = 0;
+  m_iTimerInfoToggleStart = {};
   m_iTimerInfoToggleCurrent = 0;
 }
 
 bool CPVRGUITimerInfo::TimerInfoToggle()
 {
   CSingleLock lock(m_critSection);
-  if (m_iTimerInfoToggleStart == 0)
+  if (m_iTimerInfoToggleStart.time_since_epoch().count() == 0)
   {
-    m_iTimerInfoToggleStart = XbmcThreads::SystemClockMillis();
+    m_iTimerInfoToggleStart = std::chrono::steady_clock::now();
     m_iTimerInfoToggleCurrent = 0;
     return true;
   }
 
-  if (static_cast<int>(XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) >
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
+  auto now = std::chrono::steady_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::milliseconds>(now - m_iTimerInfoToggleStart);
+
+  if (duration.count() >
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
@@ -68,7 +71,7 @@ bool CPVRGUITimerInfo::TimerInfoToggle()
 
     if (m_iTimerInfoToggleCurrent != iPrevious)
     {
-      m_iTimerInfoToggleStart = XbmcThreads::SystemClockMillis();
+      m_iTimerInfoToggleStart = std::chrono::steady_clock::now();
       return true;
     }
   }
@@ -93,10 +96,10 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
     if (m_iTimerInfoToggleCurrent < activeTags.size())
     {
       const std::shared_ptr<CPVRTimerInfoTag> tag = activeTags.at(m_iTimerInfoToggleCurrent);
-      strActiveTimerTitle = StringUtils::Format("%s", tag->Title().c_str());
-      strActiveTimerChannelName = StringUtils::Format("%s", tag->ChannelName().c_str());
-      strActiveTimerChannelIcon = StringUtils::Format("%s", tag->ChannelIcon().c_str());
-      strActiveTimerTime = StringUtils::Format("%s", tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+      strActiveTimerTitle = tag->Title();
+      strActiveTimerChannelName = tag->ChannelName();
+      strActiveTimerChannelIcon = tag->ChannelIcon();
+      strActiveTimerTime = tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
     }
   }
 
@@ -116,7 +119,7 @@ void CPVRGUITimerInfo::UpdateTimersCache()
     CSingleLock lock(m_critSection);
     m_iTimerAmount = iTimerAmount;
     m_iRecordingTimerAmount = iRecordingTimerAmount;
-    m_iTimerInfoToggleStart = 0;
+    m_iTimerInfoToggleStart = {};
   }
 
   UpdateTimersToggle();
@@ -133,16 +136,15 @@ void CPVRGUITimerInfo::UpdateNextTimer()
   const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer();
   if (timer)
   {
-    strNextRecordingTitle = StringUtils::Format("%s", timer->Title().c_str());
-    strNextRecordingChannelName = StringUtils::Format("%s", timer->ChannelName().c_str());
-    strNextRecordingChannelIcon = StringUtils::Format("%s", timer->ChannelIcon().c_str());
-    strNextRecordingTime = StringUtils::Format("%s", timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+    strNextRecordingTitle = timer->Title();
+    strNextRecordingChannelName = timer->ChannelName();
+    strNextRecordingChannelIcon = timer->ChannelIcon();
+    strNextRecordingTime = timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
 
-    strNextTimerInfo = StringUtils::Format("%s %s %s %s",
-        g_localizeStrings.Get(19106).c_str(),
-        timer->StartAsLocalTime().GetAsLocalizedDate(true).c_str(),
-        g_localizeStrings.Get(19107).c_str(),
-        timer->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false).c_str());
+    strNextTimerInfo = StringUtils::Format("{} {} {} {}", g_localizeStrings.Get(19106),
+                                           timer->StartAsLocalTime().GetAsLocalizedDate(true),
+                                           g_localizeStrings.Get(19107),
+                                           timer->StartAsLocalTime().GetAsLocalizedTime("", false));
   }
 
   CSingleLock lock(m_critSection);

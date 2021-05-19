@@ -235,7 +235,7 @@ void CPVRTimerType::InitDescription()
     ? 824  // Reminder: ...
     : 825; // Recording: ...
 
-  m_strDescription = StringUtils::Format(g_localizeStrings.Get(prefixId).c_str(), m_strDescription.c_str());
+  m_strDescription = StringUtils::Format(g_localizeStrings.Get(prefixId), m_strDescription);
 }
 
 void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE& type)
@@ -257,7 +257,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%d", type.priorities[i].iValue);
+        strDescr = std::to_string(type.priorities[i].iValue);
       }
       m_priorityValues.emplace_back(strDescr, type.priorities[i].iValue);
     }
@@ -268,7 +268,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
   {
     // No values given by addon, but priority supported. Use default values 1..100
     for (int i = 1; i < 101; ++i)
-      m_priorityValues.emplace_back(StringUtils::Format("%d", i), i);
+      m_priorityValues.emplace_back(std::to_string(i), i);
 
     m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
   }
@@ -296,7 +296,7 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%d", iValue);
+        strDescr = std::to_string(iValue);
       }
       m_lifetimeValues.emplace_back(strDescr, iValue);
     }
@@ -308,7 +308,8 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
     // No values given by addon, but lifetime supported. Use default values 1..365
     for (int i = 1; i < 366; ++i)
     {
-      m_lifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i), i); // "%s days"
+      m_lifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
+                                    i); // "{} days"
     }
     m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
   }
@@ -335,7 +336,7 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%d", type.maxRecordings[i].iValue);
+        strDescr = std::to_string(type.maxRecordings[i].iValue);
       }
       m_maxRecordingsValues.emplace_back(strDescr, type.maxRecordings[i].iValue);
     }
@@ -360,7 +361,7 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%d", type.preventDuplicateEpisodes[i].iValue);
+        strDescr = std::to_string(type.preventDuplicateEpisodes[i].iValue);
       }
       m_preventDupEpisodesValues.emplace_back(strDescr, type.preventDuplicateEpisodes[i].iValue);
     }
@@ -397,8 +398,8 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE& type)
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%s %d",
-                                       g_localizeStrings.Get(811).c_str(), // Recording group
+        strDescr = StringUtils::Format("{} {}",
+                                       g_localizeStrings.Get(811), // Recording group
                                        type.recordingGroup[i].iValue);
       }
       m_recordingGroupValues.emplace_back(strDescr, type.recordingGroup[i].iValue);

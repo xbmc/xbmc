@@ -14,7 +14,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
@@ -58,7 +58,10 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
   int iChannelGroup = GetSpinValue(CONTROL_SPIN_GROUPS);
 
   std::vector< std::pair<std::string, int> > labels;
-  labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
+  if (m_searchFilter->IsRadio())
+    labels.emplace_back(g_localizeStrings.Get(19216), EPG_SEARCH_UNSET); // All radio channels
+  else
+    labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET); // All TV channels
 
   std::shared_ptr<CPVRChannelGroup> group;
   if (iChannelGroup == EPG_SEARCH_UNSET)
@@ -70,21 +73,20 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
     group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_searchFilter->IsRadio());
 
   m_channelNumbersMap.clear();
-  const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+  const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+      group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
   int iIndex = 0;
   int iSelectedChannel = EPG_SEARCH_UNSET;
   for (const auto& groupMember : groupMembers)
   {
-    if (groupMember->channel)
-    {
-      labels.emplace_back(std::make_pair(groupMember->channel->ChannelName(), iIndex));
-      m_channelNumbersMap.insert(std::make_pair(iIndex, groupMember->channelNumber));
+    labels.emplace_back(std::make_pair(groupMember->Channel()->ChannelName(), iIndex));
+    m_channelNumbersMap.insert(std::make_pair(iIndex, groupMember->ChannelNumber()));
 
-      if (iSelectedChannel == EPG_SEARCH_UNSET && groupMember->channelNumber == m_searchFilter->GetChannelNumber())
-        iSelectedChannel = iIndex;
+    if (iSelectedChannel == EPG_SEARCH_UNSET &&
+        groupMember->ChannelNumber() == m_searchFilter->GetChannelNumber())
+      iSelectedChannel = iIndex;
 
-      ++iIndex;
-    }
+    ++iIndex;
   }
 
   SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, iSelectedChannel, &labels);
@@ -129,7 +131,7 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
 
   labels.emplace_back("-", EPG_SEARCH_UNSET);
   for (int i = 1; i < 12*60/5; ++i)
-    labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i * 5), i * 5);
+    labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044), i * 5), i * 5);
 
   SET_CONTROL_LABELS(CONTROL_SPIN_MIN_DURATION, m_searchFilter->GetMinimumDuration(), &labels);
 
@@ -138,7 +140,7 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin()
 
   labels.emplace_back("-", EPG_SEARCH_UNSET);
   for (int i = 1; i < 12*60/5; ++i)
-    labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), i * 5), i * 5);
+    labels.emplace_back(StringUtils::Format(g_localizeStrings.Get(14044), i * 5), i * 5);
 
   SET_CONTROL_LABELS(CONTROL_SPIN_MAX_DURATION, m_searchFilter->GetMaximumDuration(), &labels);
 }

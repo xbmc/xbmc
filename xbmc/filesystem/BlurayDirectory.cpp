@@ -115,16 +115,17 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const st
   std::string chap;
   CFileItemPtr item(new CFileItem("", false));
   CURL path(m_url);
-  buf = StringUtils::Format("BDMV/PLAYLIST/%05d.mpls", title->playlist);
+  buf = StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title->playlist);
   path.SetFileName(buf);
   item->SetPath(path.Get());
   int duration = (int)(title->duration / 90000);
   item->GetVideoInfoTag()->SetDuration(duration);
   item->GetVideoInfoTag()->m_iTrack = title->playlist;
-  buf = StringUtils::Format(label.c_str(), title->playlist);
+  buf = StringUtils::Format(label, title->playlist);
   item->m_strTitle = buf;
   item->SetLabel(buf);
-  chap = StringUtils::Format(g_localizeStrings.Get(25007).c_str(), title->chapter_count, StringUtils::SecondsToTimeString(duration).c_str());
+  chap = StringUtils::Format(g_localizeStrings.Get(25007), title->chapter_count,
+                             StringUtils::SecondsToTimeString(duration));
   item->SetLabel2(chap);
   item->m_dwSize = 0;
   item->SetArt("icon", "DefaultVideo.png");
@@ -242,7 +243,7 @@ CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
 {
   assert(url.IsProtocol("bluray"));
   std::string host = url.GetHostName();
-  std::string filename = url.GetFileName();
+  const std::string& filename = url.GetFileName();
   return CURL(host.append(filename));
 }
 

@@ -7,7 +7,6 @@
  */
 
 #include "network/Network.h"
-#include "threads/SystemClock.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -310,8 +309,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   URIUtils::RemoveSlashAtEnd(path);
   std::string strFilename = URIUtils::GetFileName(path);
 
-  std::string strHostname = url.GetHostName();
-
 #ifdef HAS_UPNP
   // UPNP
   if (url.IsProtocol("upnp"))
@@ -501,7 +498,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-std::string CUtil::GetHomePath(std::string strTarget)
+std::string CUtil::GetHomePath(const std::string& strTarget)
 {
   auto strPath = CEnvironment::getenv(strTarget);
 
@@ -553,7 +550,7 @@ void CUtil::GetFileAndProtocol(const std::string& strURL, std::string& strDir)
   if (URIUtils::IsDVD(strURL)) return ;
 
   CURL url(strURL);
-  strDir = StringUtils::Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
+  strDir = StringUtils::Format("{}://{}", url.GetProtocol(), url.GetFileName());
 }
 
 int CUtil::GetDVDIfoTitle(const std::string& strFile)
@@ -681,7 +678,7 @@ void CUtil::ClearSubtitles()
 
 void CUtil::ClearTempFonts()
 {
-  std::string searchPath = "special://temp/fonts/";
+  const std::string searchPath = "special://home/media/Fonts/";
 
   if (!CDirectory::Exists(searchPath))
     return;
@@ -693,7 +690,9 @@ void CUtil::ClearTempFonts()
   {
     if (item->m_bIsFolder)
       continue;
-    CFile::Delete(item->GetPath());
+
+    if (StringUtils::StartsWithNoCase(URIUtils::GetFileName(item->GetPath()), "tmp.font."))
+      CFile::Delete(item->GetPath());
   }
 }
 
@@ -717,7 +716,7 @@ std::string CUtil::GetNextFilename(const std::string &fn_template, int max)
 {
   std::string searchPath = URIUtils::GetDirectory(fn_template);
   std::string mask = URIUtils::GetExtension(fn_template);
-  std::string name = StringUtils::Format(fn_template.c_str(), 0);
+  std::string name = StringUtils::Format(fn_template, 0);
 
   CFileItemList items;
   if (!CDirectory::GetDirectory(searchPath, items, mask, DIR_FLAG_NO_FILE_DIRS))
@@ -726,7 +725,7 @@ std::string CUtil::GetNextFilename(const std::string &fn_template, int max)
   items.SetFastLookup(true);
   for (int i = 0; i <= max; i++)
   {
-    std::string name = StringUtils::Format(fn_template.c_str(), i);
+    std::string name = StringUtils::Format(fn_template, i);
     if (!items.Get(name))
       return name;
   }
@@ -740,7 +739,7 @@ std::string CUtil::GetNextPathname(const std::string &path_template, int max)
 
   for (int i = 0; i <= max; i++)
   {
-    std::string name = StringUtils::Format(path_template.c_str(), i);
+    std::string name = StringUtils::Format(path_template, i);
     if (!CFile::Exists(name) && !CDirectory::Exists(name))
       return name;
   }
@@ -1032,8 +1031,8 @@ void CUtil::SplitExecFunction(const std::string &execString, std::string &functi
 {
   std::string paramString;
 
-  size_t iPos = execString.find("(");
-  size_t iPos2 = execString.rfind(")");
+  size_t iPos = execString.find('(');
+  size_t iPos2 = execString.rfind(')');
   if (iPos != std::string::npos && iPos2 != std::string::npos)
   {
     paramString = execString.substr(iPos + 1, iPos2 - iPos - 1);
@@ -1412,7 +1411,7 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
   std::string strAlbum = strAlbum1;
   StringUtils::ToLower(strAlbum);
   double fAlbumPercentage = fstrcmp(strAlbumTemp.c_str(), strAlbum.c_str());
-  double fArtistPercentage = 0.0f;
+  double fArtistPercentage = 0.0;
   if (!strArtist1.empty())
   {
     std::string strArtistTemp = strArtistTemp1;
@@ -1421,7 +1420,7 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
     StringUtils::ToLower(strArtist);
     fArtistPercentage = fstrcmp(strArtistTemp.c_str(), strArtist.c_str());
   }
-  double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;
+  double fRelevance = fAlbumPercentage * 0.5 + fArtistPercentage * 0.5;
   return fRelevance;
 }
 
@@ -1471,7 +1470,7 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
     iStrInputSize = StrInput.size();
   }
   // replace any additional /../../ with just /../ if necessary
-  std::string replaceDots = StringUtils::Format("..%c..", cDelim);
+  std::string replaceDots = StringUtils::Format("..{}..", cDelim);
   while (StrInput.size() > (unsigned int)iTextMaxLength)
     if (!StringUtils::Replace(StrInput, replaceDots, ".."))
       break;
@@ -1965,7 +1964,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
         StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
       continue;
 
-    for (auto ext : item_exts)
+    for (const auto& ext : item_exts)
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {
@@ -1983,7 +1982,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
 
 void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles)
 {
-  unsigned int startTimer = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
 
   CFileItem item(strMovie, false);
   if ((item.IsInternetStream() && !URIUtils::IsOnLAN(item.GetDynPath()))
@@ -2060,7 +2059,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
         {
           for (const auto &lang : TagConv.m_Langclass)
           {
-            std::string strDest = StringUtils::Format("special://temp/subtitle.%s.%zu.smi", lang.Name.c_str(), i);
+            std::string strDest =
+                StringUtils::Format("special://temp/subtitle.{}.{}.smi", lang.Name, i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s",
@@ -2072,7 +2072,10 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
       }
     }
   }
-  CLog::Log(LOGDEBUG, "%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
+
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "{}: END (total time: {} ms)", __FUNCTION__, duration.count());
 }
 
 ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string& videoPath, const std::string& associatedFile)
@@ -2394,3 +2397,20 @@ int CUtil::GetRandomNumber()
 #endif
 }
 
+void CUtil::CopyUserDataIfNeeded(const std::string& strPath,
+                                 const std::string& file,
+                                 const std::string& destname)
+{
+  std::string destPath;
+  if (destname.empty())
+    destPath = URIUtils::AddFileToFolder(strPath, file);
+  else
+    destPath = URIUtils::AddFileToFolder(strPath, destname);
+
+  if (!CFile::Exists(destPath))
+  {
+    // need to copy it across
+    std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
+    CFile::Copy(srcPath, destPath);
+  }
+}

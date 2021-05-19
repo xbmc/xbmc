@@ -17,11 +17,12 @@
 #include "utils/log.h"
 
 #include <sstream>
+#include <utility>
 
 template<typename TKey, typename TValue>
 bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pair<TKey, TValue>>& options)
 {
-  for (auto it : options)
+  for (const auto& it : options)
   {
     if (it.second == value)
       return true;
@@ -33,7 +34,7 @@ bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pai
 template<typename TKey, typename TValue>
 bool CheckSettingOptionsValidity(const TValue& value, const std::vector<TKey>& options)
 {
-  for (auto it : options)
+  for (const auto& it : options)
   {
     if (it.value == value)
       return true;
@@ -65,18 +66,22 @@ bool DeserializeOptionsSort(const TiXmlElement* optionsElement, SettingOptionsSo
   return true;
 }
 
+Logger CSetting::s_logger;
+
 CSetting::CSetting(const std::string& id,
                    CSettingsManager* settingsManager /* = nullptr */,
                    const std::string& name /* = "CSetting" */)
-  : ISetting(id, settingsManager), CStaticLoggerBase(name)
-{ }
+  : ISetting(id, settingsManager)
+{
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger(name);
+}
 
 CSetting::CSetting(const std::string& id,
                    const CSetting& setting,
                    const std::string& name /* = "CSetting" */)
-  : ISetting(id, setting.m_settingsManager), CStaticLoggerBase(name)
+  : CSetting(id, setting.m_settingsManager, name)
 {
-  m_id = id;
   Copy(setting);
 }
 
@@ -199,7 +204,7 @@ bool CSetting::IsEnabled() const
   }
 
   bool enabled = m_enabled;
-  for (auto dep : m_dependencies)
+  for (const auto& dep : m_dependencies)
   {
     if (dep.GetType() != SettingDependencyType::Enable)
       continue;
@@ -239,7 +244,7 @@ bool CSetting::IsVisible() const
     return false;
 
   bool visible = true;
-  for (auto dep : m_dependencies)
+  for (const auto& dep : m_dependencies)
   {
     if (dep.GetType() != SettingDependencyType::Visible)
       continue;
@@ -254,7 +259,7 @@ bool CSetting::IsVisible() const
   return visible;
 }
 
-bool CSetting::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CSetting::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_callback == nullptr)
     return true;
@@ -262,7 +267,7 @@ bool CSetting::OnSettingChanging(std::shared_ptr<const CSetting> setting)
   return m_callback->OnSettingChanging(setting);
 }
 
-void CSetting::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CSetting::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_callback == nullptr)
     return;
@@ -270,7 +275,7 @@ void CSetting::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   m_callback->OnSettingChanged(setting);
 }
 
-void CSetting::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CSetting::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_callback == nullptr)
     return;
@@ -278,7 +283,9 @@ void CSetting::OnSettingAction(std::shared_ptr<const CSetting> setting)
   m_callback->OnSettingAction(setting);
 }
 
-bool CSetting::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CSetting::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                               const char* oldSettingId,
+                               const TiXmlNode* oldSettingNode)
 {
   if (m_callback == nullptr)
     return false;
@@ -286,7 +293,8 @@ bool CSetting::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *ol
   return m_callback->OnSettingUpdate(setting, oldSettingId, oldSettingNode);
 }
 
-void CSetting::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName)
+void CSetting::OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
+                                        const char* propertyName)
 {
   if (m_callback == nullptr)
     return;
@@ -319,14 +327,14 @@ void CSetting::Copy(const CSetting &setting)
 CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingList"), m_definition(settingDefinition)
+  : CSetting(id, settingsManager, "CSettingList"), m_definition(std::move(settingDefinition))
 { }
 
 CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            int label,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingList"), m_definition(settingDefinition)
+  : CSetting(id, settingsManager, "CSettingList"), m_definition(std::move(settingDefinition))
 {
   SetLabel(label);
 }
@@ -477,7 +485,7 @@ void CSettingList::Reset()
 {
   CExclusiveLock lock(m_critical);
   SettingList values;
-  for (auto it : m_defaults)
+  for (const auto& it : m_defaults)
     values.push_back(it->Clone(it->GetId()));
 
   SetValue(values);
@@ -545,7 +553,7 @@ void CSettingList::SetDefault(const SettingList &values)
   if (!m_changed)
   {
     m_values.clear();
-    for (auto it : m_defaults)
+    for (const auto& it : m_defaults)
       m_values.push_back(it->Clone(it->GetId()));
   }
 }
@@ -573,7 +581,7 @@ void CSettingList::copy(const SettingList &srcValues, SettingList &dstValues)
 {
   dstValues.clear();
 
-  for (auto value : srcValues)
+  for (const auto& value : srcValues)
   {
     if (value == nullptr)
       continue;
@@ -599,7 +607,7 @@ bool CSettingList::fromValues(const std::vector<std::string> &strValues, Setting
 
   bool ret = true;
   int index = 0;
-  for (auto value : strValues)
+  for (const auto& value : strValues)
   {
     auto settingValue = m_definition->Clone(StringUtils::Format("{}.{}", m_id, index++));
     if (settingValue == nullptr ||
@@ -621,7 +629,7 @@ bool CSettingList::fromValues(const std::vector<std::string> &strValues, Setting
 std::string CSettingList::toString(const SettingList &values) const
 {
   std::vector<std::string> strValues;
-  for (auto value : values)
+  for (const auto& value : values)
   {
     if (value != nullptr)
       strValues.push_back(value->ToString());
@@ -1133,7 +1141,9 @@ CSettingNumber::CSettingNumber(const std::string& id,
                                int label,
                                float value,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingNumber"), m_value(value), m_default(value)
+  : CTraitedSetting(id, settingsManager, "CSettingNumber"),
+    m_value(static_cast<double>(value)),
+    m_default(static_cast<double>(value))
 {
   SetLabel(label);
 }
@@ -1146,11 +1156,11 @@ CSettingNumber::CSettingNumber(const std::string& id,
                                float maximum,
                                CSettingsManager* settingsManager /* = nullptr */)
   : CTraitedSetting(id, settingsManager, "CSettingNumber"),
-    m_value(value),
-    m_default(value),
-    m_min(minimum),
-    m_step(step),
-    m_max(maximum)
+    m_value(static_cast<double>(value)),
+    m_default(static_cast<double>(value)),
+    m_min(static_cast<double>(minimum)),
+    m_step(static_cast<double>(step)),
+    m_max(static_cast<double>(maximum))
 {
   SetLabel(label);
 }

@@ -132,7 +132,7 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
 
   //txt records to AvahiStringList
   AvahiStringList *txtList = NULL;
-  for (const auto it : txt)
+  for (const auto& it : txt)
   {
     txtList = avahi_string_list_add_pair(txtList, it.first.c_str(), it.second.c_str());
   }
@@ -377,7 +377,8 @@ void CZeroconfAvahi::updateServices(AvahiClient* fp_client)
   }
 }
 
-void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info, AvahiClient* fp_client)
+void CZeroconfAvahi::addService(const tServiceMap::mapped_type& fp_service_info,
+                                AvahiClient* fp_client)
 {
   assert(fp_client);
   CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() named: %s type: %s port:%i", fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(), fp_service_info->m_port);

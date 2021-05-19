@@ -57,6 +57,7 @@ void CVideoInfoTag::Reset()
   m_artist.clear();
   m_strTrailer.clear();
   m_iTop250 = 0;
+  m_year = -1;
   m_iSeason = -1;
   m_iEpisode = -1;
   m_iIdUniqueID = -1;
@@ -321,6 +322,157 @@ bool CVideoInfoTag::Load(const TiXmlElement *element, bool append, bool prioriti
   return true;
 }
 
+void CVideoInfoTag::Merge(CVideoInfoTag& other)
+{
+  if (!other.m_director.empty())
+    m_director = other.m_director;
+  if (!other.m_writingCredits.empty())
+    m_writingCredits = other.m_writingCredits;
+  if (!other.m_genre.empty())
+    m_genre = other.m_genre;
+  if (!other.m_country.empty())
+    m_country = other.m_country;
+  if (!other.m_strTagLine.empty())
+    m_strTagLine = other.m_strTagLine;
+  if (!other.m_strPlotOutline.empty())
+    m_strPlotOutline = other.m_strPlotOutline;
+  if (!other.m_strPlot.empty())
+    m_strPlot = other.m_strPlot;
+  if (other.m_strPictureURL.HasData())
+    m_strPictureURL = other.m_strPictureURL;
+  if (!other.m_strTitle.empty())
+    m_strTitle = other.m_strTitle;
+  if (!other.m_strShowTitle.empty())
+    m_strShowTitle = other.m_strShowTitle;
+  if (!other.m_strOriginalTitle.empty())
+    m_strOriginalTitle = other.m_strOriginalTitle;
+  if (!other.m_strSortTitle.empty())
+    m_strSortTitle = other.m_strSortTitle;
+  if (other.m_cast.size())
+    m_cast = other.m_cast;
+
+  if (!other.m_set.title.empty())
+    m_set.title = other.m_set.title;
+  if (other.m_set.id)
+    m_set.id = other.m_set.id;
+  if (!other.m_set.overview.empty())
+    m_set.overview = other.m_set.overview;
+  if (!other.m_tags.empty())
+    m_tags = other.m_tags;
+
+  if (!other.m_strFile.empty())
+    m_strFile = other.m_strFile;
+  if (!other.m_strPath.empty())
+    m_strPath = other.m_strPath;
+
+  if (!other.m_strMPAARating.empty())
+    m_strMPAARating = other.m_strMPAARating;
+  if (!other.m_strFileNameAndPath.empty())
+      m_strFileNameAndPath = other.m_strFileNameAndPath;
+
+  if (other.m_premiered.IsValid())
+    SetPremiered(other.GetPremiered());
+
+  if (!other.m_strStatus.empty())
+    m_strStatus = other.m_strStatus;
+  if (!other.m_strProductionCode.empty())
+    m_strProductionCode = other.m_strProductionCode;
+
+  if (other.m_firstAired.IsValid())
+    m_firstAired = other.m_firstAired;
+  if (!other.m_studio.empty())
+    m_studio = other.m_studio;
+  if (!other.m_strAlbum.empty())
+    m_strAlbum = other.m_strAlbum;
+  if (!other.m_artist.empty())
+    m_artist = other.m_artist;
+  if (!other.m_strTrailer.empty())
+    m_strTrailer = other.m_strTrailer;
+  if (other.m_iTop250)
+    m_iTop250 = other.m_iTop250;
+  if (other.m_iSeason != -1)
+    m_iSeason = other.m_iSeason;
+  if (other.m_iEpisode != -1)
+    m_iEpisode = other.m_iEpisode;
+
+  if (other.m_iIdUniqueID != -1)
+    m_iIdUniqueID = other.m_iIdUniqueID;
+  if (other.m_uniqueIDs.size())
+  {
+    m_uniqueIDs = other.m_uniqueIDs;
+    m_strDefaultUniqueID = other.m_strDefaultUniqueID;
+  };
+  if (other.m_iSpecialSortSeason != -1)
+    m_iSpecialSortSeason = other.m_iSpecialSortSeason;
+  if (other.m_iSpecialSortEpisode != -1)
+    m_iSpecialSortEpisode = other.m_iSpecialSortEpisode;
+
+  if (!other.m_ratings.empty())
+  {
+    m_ratings = other.m_ratings;
+    m_strDefaultRating = other.m_strDefaultRating;
+  };
+  if (other.m_iIdRating != -1)
+    m_iIdRating = other.m_iIdRating;
+  if (other.m_iUserRating)
+    m_iUserRating = other.m_iUserRating;
+
+  if (other.m_iDbId != -1)
+    m_iDbId = other.m_iDbId;
+  if (other.m_iFileId != -1)
+    m_iFileId = other.m_iFileId;
+  if (other.m_iBookmarkId != -1)
+    m_iBookmarkId = other.m_iBookmarkId;
+  if (other.m_iTrack != -1)
+    m_iTrack = other.m_iTrack;
+
+  if (other.m_fanart.GetNumFanarts())
+    m_fanart = other.m_fanart;
+
+  if (other.m_duration)
+    m_duration = other.m_duration;
+  if (other.m_lastPlayed.IsValid())
+    m_lastPlayed = other.m_lastPlayed;
+
+  if (!other.m_showLink.empty())
+    m_showLink = other.m_showLink;
+  if (other.m_namedSeasons.size())
+    m_namedSeasons = other.m_namedSeasons;
+  if (other.m_streamDetails.HasItems())
+    m_streamDetails = other.m_streamDetails;
+  if (other.IsPlayCountSet())
+    SetPlayCount(other.GetPlayCount());
+
+  if (other.m_EpBookmark.IsSet())
+    m_EpBookmark = other.m_EpBookmark;
+
+  if (!other.m_basePath.empty())
+    m_basePath = other.m_basePath;
+  if (other.m_parentPathID != -1)
+    m_parentPathID = other.m_parentPathID;
+  if (other.GetResumePoint().IsSet())
+    SetResumePoint(other.GetResumePoint());
+  if (other.m_iIdShow != -1)
+    m_iIdShow = other.m_iIdShow;
+  if (other.m_iIdSeason != -1)
+    m_iIdSeason = other.m_iIdSeason;
+
+  if (other.m_dateAdded.IsValid())
+    m_dateAdded = other.m_dateAdded;
+
+  if (!other.m_type.empty())
+    m_type = other.m_type;
+
+  if (other.m_relevance != -1)
+    m_relevance = other.m_relevance;
+  if (other.m_parsedDetails)
+    m_parsedDetails = other.m_parsedDetails;
+  if (other.m_coverArt.size())
+    m_coverArt = other.m_coverArt;
+  if (other.m_year != -1)
+    m_year = other.m_year;
+}
+
 void CVideoInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
@@ -555,7 +707,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
-  value["votes"] = StringUtils::Format("%i", GetRating().votes);
+  value["votes"] = std::to_string(GetRating().votes);
   value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
@@ -592,7 +744,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["playcount"] = GetPlayCount();
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["top250"] = m_iTop250;
-  value["year"] = m_premiered.GetYear();
+  value["year"] = GetYear();
   value["season"] = m_iSeason;
   value["episode"] = m_iEpisode;
   for (const auto& i : m_uniqueIDs)
@@ -666,7 +818,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   {
     // seasons with a custom name/title need special handling as they should be sorted by season number
     if (m_type == MediaTypeSeason && !m_strSortTitle.empty())
-      sortable[FieldSortTitle] = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), m_iSeason);
+      sortable[FieldSortTitle] = StringUtils::Format(g_localizeStrings.Get(20358), m_iSeason);
     else
       sortable[FieldSortTitle] = m_strSortTitle;
     break;
@@ -680,7 +832,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldPlaycount:                sortable[FieldPlaycount] = GetPlayCount(); break;
   case FieldLastPlayed:               sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldTop250:                   sortable[FieldTop250] = m_iTop250; break;
-  case FieldYear:                     sortable[FieldYear] = m_premiered.GetYear(); break;
+  case FieldYear:                     sortable[FieldYear] = GetYear(); break;
   case FieldSeason:                   sortable[FieldSeason] = m_iSeason; break;
   case FieldEpisodeNumber:            sortable[FieldEpisodeNumber] = m_iEpisode; break;
   case FieldNumberOfEpisodes:         sortable[FieldNumberOfEpisodes] = m_iEpisode; break;
@@ -731,11 +883,13 @@ const std::string& CVideoInfoTag::GetDefaultRating() const
 
 bool CVideoInfoTag::HasYear() const
 {
-  return m_firstAired.IsValid() || m_premiered.IsValid();
+  return m_year > 0 || m_firstAired.IsValid() || m_premiered.IsValid();
 }
 
 int CVideoInfoTag::GetYear() const
 {
+  if (m_year > 0)
+    return m_year;
   if (m_firstAired.IsValid())
     return GetFirstAired().GetYear();
   if (m_premiered.IsValid())
@@ -792,9 +946,10 @@ const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   {
     std::string character;
     if (it->strRole.empty() || !bIncludeRole)
-      character = StringUtils::Format("%s\n", it->strName.c_str());
+      character = StringUtils::Format("{}\n", it->strName);
     else
-      character = StringUtils::Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      character =
+          StringUtils::Format("{} {} {}\n", it->strName, g_localizeStrings.Get(20347), it->strRole);
     strLabel += character;
   }
   return StringUtils::TrimRight(strLabel, "\n");
@@ -1387,16 +1542,16 @@ void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
     m_ratings[type].votes = votes;
 }
 
-void CVideoInfoTag::SetPremiered(CDateTime premiered)
+void CVideoInfoTag::SetPremiered(const CDateTime& premiered)
 {
-  m_premiered = std::move(premiered);
+  m_premiered = premiered;
   m_bHasPremiered = premiered.IsValid();
 }
 
-void CVideoInfoTag::SetPremieredFromDBDate(std::string premieredString)
+void CVideoInfoTag::SetPremieredFromDBDate(const std::string& premieredString)
 {
   CDateTime premiered;
-  premiered.SetFromDBDate(std::move(premieredString));
+  premiered.SetFromDBDate(premieredString);
   SetPremiered(premiered);
 }
 
@@ -1405,10 +1560,7 @@ void CVideoInfoTag::SetYear(int year)
   if (year <= 0)
     return;
 
-  if (m_bHasPremiered)
-    m_premiered.SetDate(year, m_premiered.GetMonth(), m_premiered.GetDay());
-  else
-    m_premiered = CDateTime(year, 1, 1, 0, 0, 0);
+  m_year = year;
 }
 
 void CVideoInfoTag::SetArtist(std::vector<std::string> artist)
@@ -1477,7 +1629,8 @@ void CVideoInfoTag::SetEpisodeGuide(std::string episodeGuide)
   if (StringUtils::StartsWith(episodeGuide, "<episodeguide"))
     m_strEpisodeGuide = Trim(std::move(episodeGuide));
   else
-    m_strEpisodeGuide = StringUtils::Format("<episodeguide>%s</episodeguide>", Trim(std::move(episodeGuide)).c_str());
+    m_strEpisodeGuide =
+        StringUtils::Format("<episodeguide>{}</episodeguide>", Trim(std::move(episodeGuide)));
 }
 
 void CVideoInfoTag::SetStatus(std::string status)

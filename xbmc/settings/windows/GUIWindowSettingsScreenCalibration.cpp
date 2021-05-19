@@ -64,7 +64,9 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     {
       CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
       pDialog->SetHeading(CVariant{20325});
-      std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
+      std::string strText = StringUtils::Format(
+          g_localizeStrings.Get(20326),
+          CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]).strMode);
       pDialog->SetLine(0, CVariant{std::move(strText)});
       pDialog->SetLine(1, CVariant{20327});
       pDialog->SetChoice(0, CVariant{222});
@@ -318,7 +320,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       // recenter our control...
       pControl->SetPosition((info.iWidth - pControl->GetWidth()) / 2,
                             (info.iHeight - pControl->GetHeight()) / 2);
-      strStatus = StringUtils::Format("%s (%5.3f)", g_localizeStrings.Get(275).c_str(), info.fPixelRatio);
+      strStatus = StringUtils::Format("{} ({:5.3f})", g_localizeStrings.Get(275), info.fPixelRatio);
       SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 278);
     }
   }
@@ -333,7 +335,8 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
         {
           info.Overscan.left = pControl->GetXLocation();
           info.Overscan.top = pControl->GetYLocation();
-          strStatus = StringUtils::Format("%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
+          strStatus = StringUtils::Format("{} ({},{})", g_localizeStrings.Get(272),
+                                          pControl->GetXLocation(), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 276);
         }
         break;
@@ -344,7 +347,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           info.Overscan.bottom = pControl->GetYLocation();
           int iXOff1 = info.iWidth - pControl->GetXLocation();
           int iYOff1 = info.iHeight - pControl->GetYLocation();
-          strStatus = StringUtils::Format("%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
+          strStatus = StringUtils::Format("{} ({},{})", g_localizeStrings.Get(273), iXOff1, iYOff1);
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 276);
         }
         break;
@@ -352,7 +355,8 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       case CONTROL_SUBTITLES:
         {
           info.iSubtitles = pControl->GetYLocation();
-          strStatus = StringUtils::Format("%s (%i)", g_localizeStrings.Get(274).c_str(), pControl->GetYLocation());
+          strStatus =
+              StringUtils::Format("{} ({})", g_localizeStrings.Get(274), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 277);
         }
         break;
@@ -365,18 +369,11 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   // set the label control correctly
   std::string strText;
   if (CServiceBroker::GetWinSystem()->IsFullScreen())
-    strText = StringUtils::Format("%ix%i@%.2f - %s | %s",
-                                  info.iScreenWidth,
-                                  info.iScreenHeight,
-                                  info.fRefreshRate,
-                                  g_localizeStrings.Get(244).c_str(),
-                                  strStatus.c_str());
+    strText = StringUtils::Format("{}x{}@{:.2f} - {} | {}", info.iScreenWidth, info.iScreenHeight,
+                                  info.fRefreshRate, g_localizeStrings.Get(244), strStatus);
   else
-    strText = StringUtils::Format("%ix%i - %s | %s",
-                                  info.iScreenWidth,
-                                  info.iScreenHeight,
-                                  g_localizeStrings.Get(242).c_str(),
-                                  strStatus.c_str());
+    strText = StringUtils::Format("{}x{} - {} | {}", info.iScreenWidth, info.iScreenHeight,
+                                  g_localizeStrings.Get(242), strStatus);
 
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);
 }

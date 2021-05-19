@@ -154,6 +154,8 @@ bool CThumbExtractor::DoWork()
         m_item.SetPath(m_listpath);
       }
 
+      db.BeginTransaction();
+
       if (info->m_iFileId < 0)
         db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
       else
@@ -169,6 +171,7 @@ bool CThumbExtractor::DoWork()
         db.SetDetailsForItem(info->m_iDbId, info->m_type, *info, m_item.GetArt());
       }
 
+      db.CommitTransaction();
       db.Close();
     }
     return true;
@@ -232,7 +235,7 @@ std::vector<std::string> GetSettingListAsString(const std::string& settingID)
     CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(settingID);
   std::vector<std::string> result;
   std::transform(values.begin(), values.end(), std::back_inserter(result),
-    [](CVariant s) { return s.asString(); });
+                 [](const CVariant& s) { return s.asString(); });
   return result;
 }
 
@@ -755,7 +758,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     // add audio language properties
     for (int i = 1; i <= details.GetAudioStreamCount(); i++)
     {
-      std::string index = StringUtils::Format("%i", i);
+      std::string index = std::to_string(i);
       item.SetProperty("AudioChannels." + index, details.GetAudioChannels(i));
       item.SetProperty("AudioCodec."    + index, details.GetAudioCodec(i).c_str());
       item.SetProperty("AudioLanguage." + index, details.GetAudioLanguage(i).c_str());
@@ -764,7 +767,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     // add subtitle language properties
     for (int i = 1; i <= details.GetSubtitleStreamCount(); i++)
     {
-      std::string index = StringUtils::Format("%i", i);
+      std::string index = std::to_string(i);
       item.SetProperty("SubtitleLanguage." + index, details.GetSubtitleLanguage(i).c_str());
     }
   }

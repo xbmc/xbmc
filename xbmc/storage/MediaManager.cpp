@@ -194,9 +194,9 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
 #ifdef HAS_UPNP
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNP))
     {
-      std::string strDevices = g_localizeStrings.Get(33040); //"% Devices"
+      const std::string& strDevices = g_localizeStrings.Get(33040); //"% Devices"
       share.strPath = "upnp://";
-      share.strName = StringUtils::Format(strDevices.c_str(), "UPnP"); //"UPnP Devices"
+      share.strName = StringUtils::Format(strDevices, "UPnP"); //"UPnP Devices"
       locations.push_back(share);
     }
 #endif
@@ -331,7 +331,7 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
   if(bReturnAsDevice == false)
     StringUtils::Replace(strDevice, "\\\\.\\","");
   else if(!strDevice.empty() && strDevice[1]==':')
-    strDevice = StringUtils::Format("\\\\.\\%c:", strDevice[0]);
+    strDevice = StringUtils::Format("\\\\.\\{}:", strDevice[0]);
 
   URIUtils::RemoveSlashAtEnd(strDevice);
 #endif
@@ -559,7 +559,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
     return "";
   }
 
-  std::string strID = StringUtils::Format("removable://%s_%s", info.name.c_str(), info.serial.c_str());
+  std::string strID = StringUtils::Format("removable://{}_{}", info.name, info.serial);
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for %s with path %s", strID.c_str(), info.type.c_str(), CURL::GetRedacted(mediaPath).c_str());
 
   return strID;
@@ -717,28 +717,29 @@ CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
     return info;
 
   // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted
-  std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS");
-  if (CFile::Exists(URIUtils::AddFileToFolder(pathVideoTS, "VIDEO_TS.IFO")))
+  std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS", "VIDEO_TS.IFO");
+  // correct the filename if needed
+  if (StringUtils::StartsWith(mediaPath, "dvd://") ||
+      StringUtils::StartsWith(mediaPath, "iso9660://"))
   {
-    info.type = "DVD";
-    // correct the filename if needed
-    if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
-      StringUtils::StartsWith(pathVideoTS, "iso9660://"))
-      pathVideoTS = CServiceBroker::GetMediaManager().TranslateDevicePath("");
+    pathVideoTS = TranslateDevicePath("");
+  }
 
-
+  if (XFILE::CFile::Exists(pathVideoTS))
+  {
     CFileItem item(pathVideoTS, false);
     CDVDInputStreamNavigator dvdNavigator(nullptr, item);
-
-    if (!dvdNavigator.Open())
+    if (dvdNavigator.Open())
+    {
+      info.type = "DVD";
+      info.name = dvdNavigator.GetDVDTitleString();
+      info.serial = dvdNavigator.GetDVDSerialString();
       return info;
-
-    info.name = dvdNavigator.GetDVDTitleString();
-    info.serial = dvdNavigator.GetDVDSerialString();
+    }
   }
 #ifdef HAVE_LIBBLURAY
   // check for Blu-ray discs
-  else if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
+  if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
   {
     info.type = "Blu-ray";
     CBlurayDirectory bdDir;
@@ -767,22 +768,26 @@ bool CMediaManager::playStubFile(const CFileItem& item)
 {
   // Figure out Lines 1 and 2 of the dialog
   std::string strLine1, strLine2;
+
+  // use generic message by default
+  strLine1 = g_localizeStrings.Get(435).c_str();
+  strLine2 = g_localizeStrings.Get(436).c_str();
+
   CXBMCTinyXML discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
     TiXmlElement* pRootElement = discStubXML.RootElement();
     if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
-      CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
+      CLog::Log(LOGINFO, "No <discstub> node found for %s. Using default info dialog message", item.GetPath().c_str());
     else
     {
       XMLUtils::GetString(pRootElement, "title", strLine1);
       XMLUtils::GetString(pRootElement, "message", strLine2);
+      // no title? use the label of the CFileItem as line 1
+      if (strLine1.empty())
+        strLine1 = item.GetLabel();
     }
   }
-
-  // Use the label for Line 1 if not defined
-  if (strLine1.empty())
-    strLine1 = item.GetLabel();
 
   if (HasOpticalDrive())
   {

@@ -14,7 +14,7 @@ if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND)
   endif()
 endif()
 
-if(CORE_PLATFORM_NAME_LC STREQUAL "wayland")
+if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
   # This cannot go into wayland.cmake since it requires the Wayland dependencies
   # to already be resolved
   set(PROTOCOL_XMLS "${WAYLANDPP_PROTOCOLS_DIR}/presentation-time.xml"

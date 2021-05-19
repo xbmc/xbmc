@@ -52,6 +52,14 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
+  auto setting = m_settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+  if (!setting)
+  {
+    CLog::Log(LOGERROR, "Failed to load setting for: {}",
+              CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+    return;
+  }
+
   int defaultShutdown = m_settings->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
 
   switch (defaultShutdown)
@@ -91,7 +99,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  std::static_pointer_cast<CSettingInt>(m_settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
+  std::static_pointer_cast<CSettingInt>(setting)->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()
@@ -177,9 +185,10 @@ void CPowerManager::OnSleep()
 
   CLog::Log(LOGINFO, "%s: Running sleep jobs", __FUNCTION__);
 
-  CServiceBroker::GetPVRManager().OnSleep();
   StorePlayerState();
+
   g_application.StopPlaying();
+  CServiceBroker::GetPVRManager().OnSleep();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
   g_application.CloseNetworkShares();
@@ -262,7 +271,10 @@ void CPowerManager::RestorePlayerState()
   g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 
-void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CPowerManager::SettingOptionsShutdownStatesFiller(const SettingConstPtr& setting,
+                                                       std::vector<IntegerSettingOption>& list,
+                                                       int& current,
+                                                       void* data)
 {
   if (CServiceBroker::GetPowerManager().CanPowerdown())
     list.emplace_back(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);

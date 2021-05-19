@@ -78,7 +78,8 @@ std::string CNetworkInterfaceWin10::GetMacAddress() const
 {
   std::string result;
   unsigned char* mAddr = m_adapterAddr->PhysicalAddress;
-  result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
+  result = StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", mAddr[0], mAddr[1],
+                               mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
@@ -193,7 +194,12 @@ CNetworkInterface* CNetworkWin10::GetFirstConnectedInterface()
   }
 
   // fallback to default
-  return CNetwork::GetFirstConnectedInterface();
+  return CNetworkBase::GetFirstConnectedInterface();
+}
+
+std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
+{
+  return std::make_unique<CNetworkWin10>();
 }
 
 void CNetworkWin10::queryInterfaceList()

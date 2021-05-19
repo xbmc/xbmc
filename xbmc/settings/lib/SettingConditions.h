@@ -19,7 +19,10 @@
 class CSettingsManager;
 class CSetting;
 
-using SettingConditionCheck = bool (*)(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data);
+using SettingConditionCheck = bool (*)(const std::string& condition,
+                                       const std::string& value,
+                                       const std::shared_ptr<const CSetting>& setting,
+                                       void* data);
 
 class ISettingCondition
 {
@@ -88,7 +91,10 @@ public:
   void AddDynamicCondition(std::string identifier, SettingConditionCheck condition, void *data = nullptr);
   void RemoveDynamicCondition(std::string identifier);
 
-  bool Check(std::string condition, const std::string &value = "", std::shared_ptr<const CSetting> setting = std::shared_ptr<const CSetting>()) const;
+  bool Check(
+      std::string condition,
+      const std::string& value = "",
+      const std::shared_ptr<const CSetting>& setting = std::shared_ptr<const CSetting>()) const;
 
 private:
   using SettingConditionPair = std::pair<std::string, std::pair<SettingConditionCheck, void*>>;

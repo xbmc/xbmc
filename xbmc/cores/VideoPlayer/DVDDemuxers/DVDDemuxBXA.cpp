@@ -10,7 +10,7 @@
 
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
 
 // AirTunes audio Demuxer.
@@ -39,7 +39,7 @@ CDVDDemuxBXA::~CDVDDemuxBXA()
   Dispose();
 }
 
-bool CDVDDemuxBXA::Open(std::shared_ptr<CDVDInputStream> pInput)
+bool CDVDDemuxBXA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 {
   Abort();
 

@@ -10,6 +10,8 @@
 // which we don't use here
 #define FF_API_OLD_SAMPLE_FMT 0
 
+#define LIMIT_VIDEO_MEMORY_4K 2960ull
+
 #include "DXVA.h"
 
 #include "ServiceBroker.h"
@@ -208,9 +210,9 @@ static DWORD VP3DeviceID [] = {
 static std::string GUIDToString(const GUID& guid)
 {
   std::string buffer = StringUtils::Format(
-      "%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x", guid.Data1, guid.Data2, guid.Data3,
-      guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5],
-      guid.Data4[6], guid.Data4[7]);
+      "{:08X}-{:04x}-{:04x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}", guid.Data1,
+      guid.Data2, guid.Data3, guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
+      guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
   return buffer;
 }
 
@@ -816,6 +818,9 @@ void CVideoBufferCopy::Initialize(CDecoder* decoder)
     // copy decoder surface on decoder device
     m_pDeviceContext->CopySubresourceRegion(m_copyRes.Get(), 0, 0, 0, 0, m_pResource.Get(),
                                             CVideoBuffer::GetIdx(), nullptr);
+
+    if (decoder->m_DVDWorkaround) // DVDs menus/stills need extra Flush()
+      m_pDeviceContext->Flush();
   }
 }
 
@@ -1132,6 +1137,10 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   if (!CheckCompatibility(avctx))
     return false;
 
+  // DVDs menus/stills need extra Flush() after copy texture
+  if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && avctx->height <= 576)
+    m_DVDWorkaround = true;
+
   CSingleLock lock(m_section);
   Close();
 
@@ -1212,13 +1221,21 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   if (avctx->active_thread_type & FF_THREAD_FRAME)
     m_refs += avctx->thread_count;
 
+  // Limit decoder surfaces to 32 maximum in any case. Since with some 16 cores / 32 threads
+  // new CPU's (Ryzen 5950x) this number may be higher than what the graphics card can handle.
+  if (m_refs > 32)
+  {
+    CLog::LogF(LOGWARNING, "The number of decoder surfaces has been limited from {} to 32.", m_refs);
+    m_refs = 32;
+  }
+
   // Check if available video memory is sufficient for 4K decoding (is need ~3000 MB)
-  if (avctx->width >= 3840 && m_refs > 16 && videoMem < (3000ull * MB))
+  if (avctx->width >= 3840 && m_refs > 16 && videoMem < (LIMIT_VIDEO_MEMORY_4K * MB))
   {
     CLog::LogF(LOGWARNING,
                "Current available video memory ({} MB) is insufficient 4K video decoding (DXVA2) "
-               "using {} surfaces. Fallback to SW decode.", videoMem / MB, m_refs);
-    return false;
+               "using {} surfaces. Decoder surfaces has been limited to 16.", videoMem / MB, m_refs);
+    m_refs = 16;
   }
 
   /* On the Xbox 1/S with limited memory we have to

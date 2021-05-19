@@ -31,8 +31,8 @@ public:
   bool OnAction(const CAction& action) override;
 
   // ISettingCallback implementation
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
   void OnPVRManagerEvent(const PVREvent& event);
 

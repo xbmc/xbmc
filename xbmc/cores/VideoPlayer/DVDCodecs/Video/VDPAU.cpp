@@ -12,7 +12,7 @@
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -516,11 +516,26 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 },
       { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2 },
     };
+
+    auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    if (!settingsComponent)
+      return false;
+
+    auto settings = settingsComponent->GetSettings();
+    if (!settings)
+      return false;
+
     auto entry = settings_map.find(avctx->codec_id);
     if (entry != settings_map.end())
     {
-      const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      bool enabled = settings->GetBool(entry->second) && settings->GetSetting(entry->second)->IsVisible();
+      auto setting = settings->GetSetting(entry->second);
+      if (!setting)
+      {
+        CLog::Log(LOGERROR, "Failed to load setting for: {}", entry->second);
+        return false;
+      }
+
+      bool enabled = settings->GetBool(entry->second) && setting->IsVisible();
       if (!enabled)
         return false;
     }
@@ -1327,17 +1342,38 @@ void CDecoder::Register()
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
 
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAU)->SetVisible(true);
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  auto setting = settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAU);
+  if (!setting)
+    CLog::Log(LOGERROR, "Failed to load setting for: {}", CSettings::SETTING_VIDEOPLAYER_USEVDPAU);
+  else
+    setting->SetVisible(true);
 
   if (!isNvidia)
   {
-    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4)->SetVisible(true);
-    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1)->SetVisible(true);
-    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2)->SetVisible(true);
-    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER)->SetVisible(true);
-  }
+    constexpr std::array<const char*, 4> vdpauSettings = {
+        CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1,
+        CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER};
 
+    for (const auto& vdpauSetting : vdpauSettings)
+    {
+      setting = settings->GetSetting(vdpauSetting);
+      if (!setting)
+      {
+        CLog::Log(LOGERROR, "Failed to load setting for: {}", vdpauSetting);
+        continue;
+      }
+
+      setting->SetVisible(true);
+    }
+  }
 }
 
 //-----------------------------------------------------------------------------

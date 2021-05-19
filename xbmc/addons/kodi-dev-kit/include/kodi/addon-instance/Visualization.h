@@ -721,7 +721,7 @@ public:
   inline void TransferPresets(const std::vector<std::string>& presets)
   {
     m_instanceData->toKodi->clear_presets(m_instanceData->toKodi->kodiInstance);
-    for (auto it : presets)
+    for (const auto& it : presets)
       m_instanceData->toKodi->transfer_preset(m_instanceData->toKodi->kodiInstance, it.c_str());
   }
   //----------------------------------------------------------------------------
@@ -915,7 +915,7 @@ private:
     std::vector<std::string> presets;
     if (thisClass->GetPresets(presets))
     {
-      for (auto it : presets)
+      for (const auto& it : presets)
         thisClass->m_instanceData->toKodi->transfer_preset(addon->toKodi->kodiInstance, it.c_str());
     }
 

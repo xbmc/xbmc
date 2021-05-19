@@ -94,9 +94,9 @@ namespace PVR
       return;
     }
 
-    const std::shared_ptr<CPVRChannel> nextChannel = GetNextOrPrevChannel(true);
-    if (nextChannel)
-      SelectChannel(nextChannel, eSwitchMode);
+    const std::shared_ptr<CPVRChannelGroupMember> nextMember = GetNextOrPrevChannel(true);
+    if (nextMember)
+      SelectChannel(nextMember, eSwitchMode);
   }
 
   void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMode)
@@ -108,34 +108,37 @@ namespace PVR
       return;
     }
 
-    const std::shared_ptr<CPVRChannel> prevChannel = GetNextOrPrevChannel(false);
-    if (prevChannel)
-      SelectChannel(prevChannel, eSwitchMode);
+    const std::shared_ptr<CPVRChannelGroupMember> prevMember = GetNextOrPrevChannel(false);
+    if (prevMember)
+      SelectChannel(prevMember, eSwitchMode);
   }
 
-  std::shared_ptr<CPVRChannel> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext)
+  std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext)
   {
     const bool bPlayingRadio = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio();
     const bool bPlayingTV = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV();
 
     if (bPlayingTV || bPlayingRadio)
     {
-      const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingGroup(bPlayingRadio);
+      const std::shared_ptr<CPVRChannelGroup> group =
+          CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
       if (group)
       {
         CSingleLock lock(m_critSection);
-        return bNext ? group->GetNextChannel(m_currentChannel) : group->GetPreviousChannel(m_currentChannel);
+        return bNext ? group->GetNextChannelGroupMember(m_currentChannel)
+                     : group->GetPreviousChannelGroupMember(m_currentChannel);
       }
     }
     return {};
   }
 
-  void CPVRGUIChannelNavigator::SelectChannel(const std::shared_ptr<CPVRChannel> channel, ChannelSwitchMode eSwitchMode)
+  void CPVRGUIChannelNavigator::SelectChannel(
+      const std::shared_ptr<CPVRChannelGroupMember>& groupMember, ChannelSwitchMode eSwitchMode)
   {
-    CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(channel));
+    CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(groupMember));
 
     CSingleLock lock(m_critSection);
-    m_currentChannel = channel;
+    m_currentChannel = groupMember;
     ShowInfo(false);
 
     if (IsPreview() && eSwitchMode == ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH)
@@ -253,15 +256,16 @@ namespace PVR
       ShowInfo();
   }
 
-  void CPVRGUIChannelNavigator::SetPlayingChannel(const std::shared_ptr<CPVRChannel> channel)
+  void CPVRGUIChannelNavigator::SetPlayingChannel(
+      const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
   {
     CFileItemPtr item;
 
-    if (channel)
+    if (groupMember)
     {
       CSingleLock lock(m_critSection);
 
-      m_playingChannel = channel;
+      m_playingChannel = groupMember;
       if (m_currentChannel != m_playingChannel)
       {
         m_currentChannel = m_playingChannel;

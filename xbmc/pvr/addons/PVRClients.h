@@ -154,6 +154,12 @@ namespace PVR
      */
     int EnabledClientAmount() const;
 
+    /*!
+     * @brief Get a list of the enabled client infos.
+     * @return A list of enabled client infos.
+     */
+    std::vector<CVariant> GetEnabledClientInfos() const;
+
     //@}
 
     /*! @name general methods */
@@ -194,9 +200,12 @@ namespace PVR
      * @brief Get all recordings from clients
      * @param recordings Store the recordings in this container.
      * @param deleted If true, return deleted recordings, return not deleted recordings otherwise.
+     * @param failedClients in case of errors will contain the ids of the clients for which the recordings could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings* recordings, bool deleted);
+    PVR_ERROR GetRecordings(CPVRRecordings* recordings,
+                            bool deleted,
+                            std::vector<int>& failedClients);
 
     /*!
      * @brief Delete all "soft" deleted recordings permanently on the backend.
@@ -210,13 +219,34 @@ namespace PVR
     //@{
 
     /*!
-     * Tell all clients the time frame to use when notifying epg events back to Kodi. The clients might push epg events asynchronously
-     * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
-     * clients need to know about the epg time frame Kodi uses.
-     * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
-     * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
+     * @brief Tell all clients the past time frame to use when notifying epg events back to Kodi.
+     *
+     * The clients might push epg events asynchronously to Kodi using the callback function
+     * EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * clients need to know about the future epg time frame Kodi uses.
+     *
+     * @param[in] iPastDays number of days before "now".
+     *                        @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all
+     *                        epg events, regardless of event times.
+     * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
+     *         value otherwise.
      */
-    PVR_ERROR SetEPGTimeFrame(int iDays);
+    PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+
+    /*!
+     * @brief Tell all clients the future time frame to use when notifying epg events back to Kodi.
+     *
+     * The clients might push epg events asynchronously to Kodi using the callback function
+     * EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * clients need to know about the future epg time frame Kodi uses.
+     *
+     * @param[in] iFutureDays number of days from "now".
+     *                        @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all
+     *                        epg events, regardless of event times.
+     * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
+     *         value otherwise.
+     */
+    PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
 
     //@}
 
@@ -354,7 +384,8 @@ namespace PVR
      * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a std::shared_ptr<CPVRClient> as parameter.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
-    PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function) const;
+    PVR_ERROR ForCreatedClients(const char* strFunctionName,
+                                const PVRClientFunction& function) const;
 
     /*!
      * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
@@ -363,7 +394,9 @@ namespace PVR
      * @param failedClients Contains a list of the ids of clients for that the call failed, if any.
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
-    PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int>& failedClients) const;
+    PVR_ERROR ForCreatedClients(const char* strFunctionName,
+                                const PVRClientFunction& function,
+                                std::vector<int>& failedClients) const;
 
     mutable CCriticalSection m_critSection;
     CPVRClientMap m_clientMap;

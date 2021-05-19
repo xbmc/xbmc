@@ -3555,6 +3555,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///                  _string_,
 ///     @return The language of the subtitle of the currently playing video
 ///     (possible values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage").
+///     @note `VideoPlayer.SubtitlesLanguage` holds the language of the next available
+///     subtitle stream if subtitles are disabled in the player
 ///     <p><hr>
 ///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguage `VideoPlayer.SubtitlesLanguage`\endlink
 ///     <p>
@@ -3689,6 +3691,15 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v19 **[New Infolabel]** \link VideoPlayer_TvShowDBID `VideoPlayer.TvShowDBID`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.AudioStreamCount`</b>,
+///                  \anchor VideoPlayer_AudioStreamCount
+///                  _integer_,
+///     @return The number of audio streams of the currently playing video.
+///     @note If the video contains no audio streams it returns 0.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_AudioStreamCount `VideoPlayer.AudioStreamCount`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3761,6 +3772,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "dbid",             VIDEOPLAYER_DBID },
                                   { "uniqueid",         VIDEOPLAYER_UNIQUEID },
                                   { "tvshowdbid",       VIDEOPLAYER_TVSHOWDBID },
+                                  { "audiostreamcount", VIDEOPLAYER_AUDIOSTREAMCOUNT },
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -4495,6 +4507,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return **True** if this add-on is a valid update of an installed outdated add-on.
 ///     <p><hr>
 ///     @skinning_v19 **[New Boolean Condition]** \link ListItem_Property_AddonIsUpdate `ListItem.Property(Addon.IsUpdate)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.ValidUpdateOrigin)`</b>,
+///                  \anchor ListItem_Property_ValidUpdateOrigin
+///                  _string_,
+///     @return The origin string of a valid update for the addon. Empty string if there is no valid update available.
+///     <p><hr>
+///     @skinning_v19 **[New Infolabel]** \link ListItem_Property_ValidUpdateOrigin `ListItem.Property(Addon.ValidUpdateOrigin)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.ValidUpdateVersion)`</b>,
@@ -7044,6 +7064,12 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 ///     @return The id of the selected addon\, in `DialogAddonSettings.xml`.
 ///     <p><hr>
 ///     @skinning_v17 **[New Infolabel]** \link Window_Property_AddonId `Window.Property(Addon.ID)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Window.Property(IsRadio)`</b>,
+///                  \anchor Window_Property_IsRadio
+///                  _string_,
+///     @return "true" if the window is a radio window\, empty string otherwise (for use in the PVR windows).
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Window([window]).Property(key)`</b>,
@@ -10801,7 +10827,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
           return StringUtils::SizeToString(item->m_dwSize);
         break;
       case LISTITEM_PROGRAM_COUNT:
-        return StringUtils::Format("%i", item->m_iprogramCount);
+        return std::to_string(item->m_iprogramCount);
       case LISTITEM_ACTUAL_ICON:
         return item->GetArt("icon");
       case LISTITEM_ICON:

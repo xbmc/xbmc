@@ -316,14 +316,13 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   double current = data->current + ((double)ipercent * data->opWeight * (double)m_time)/ 100.0;
 
   if (avgSpeed > 1000000.0f)
-    data->base->m_avgSpeed = StringUtils::Format("%.1f MB/s", avgSpeed / 1000000.0f);
+    data->base->m_avgSpeed = StringUtils::Format("{:.1f} MB/s", avgSpeed / 1000000.0f);
   else
-    data->base->m_avgSpeed = StringUtils::Format("%.1f KB/s", avgSpeed / 1000.0f);
+    data->base->m_avgSpeed = StringUtils::Format("{:.1f} KB/s", avgSpeed / 1000.0f);
 
   std::string line;
-  line = StringUtils::Format("%s (%s)",
-                              data->base->GetCurrentFile().c_str(),
-                              data->base->GetAverageSpeed().c_str());
+  line =
+      StringUtils::Format("{} ({})", data->base->GetCurrentFile(), data->base->GetAverageSpeed());
   data->base->SetText(line);
   return !data->base->ShouldCancel((unsigned)current, 100);
 }

@@ -16,6 +16,7 @@
 #include "addons/Scraper.h"
 
 #include <string>
+#include <utility>
 
 class CNfoFile
 {
@@ -40,7 +41,7 @@ public:
   }
 
   void Close();
-  void SetScraperInfo(ADDON::ScraperPtr info) { m_info = info; }
+  void SetScraperInfo(ADDON::ScraperPtr info) { m_info = std::move(info); }
   ADDON::ScraperPtr GetScraperInfo() { return m_info; }
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
@@ -48,7 +49,7 @@ public:
                     const std::string& content);
 
   static std::vector<ADDON::ScraperPtr> GetScrapers(ADDON::TYPE type,
-                                                    ADDON::ScraperPtr selectedScraper);
+                                                    const ADDON::ScraperPtr& selectedScraper);
 
 private:
   std::string m_doc;

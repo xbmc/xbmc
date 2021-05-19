@@ -50,8 +50,8 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_SETTING_UPDATED:
     {
-      std::string settingId = message.GetStringParam(0);
-      std::string settingValue = message.GetStringParam(1);
+      const std::string& settingId = message.GetStringParam(0);
+      const std::string& settingValue = message.GetStringParam(1);
 
       std::shared_ptr<CSetting> setting = GetSettingsManager()->GetSetting(settingId);
       if (setting != nullptr)
@@ -198,8 +198,8 @@ void CGUIDialogAddonSettings::SetupView()
   SetProperty("Addon.ID", m_addon->ID());
 
   // set heading
-  SetHeading(StringUtils::Format("$LOCALIZE[10004] - %s",
-                                 m_addon->Name().c_str())); // "Settings - AddonName"
+  SetHeading(StringUtils::Format("$LOCALIZE[10004] - {}",
+                                 m_addon->Name())); // "Settings - AddonName"
 
   // set control labels
   SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
@@ -218,7 +218,7 @@ std::string CGUIDialogAddonSettings::GetLocalizedString(uint32_t labelId) const
   return CGUIDialogSettingsManagerBase::GetLocalizedString(labelId);
 }
 
-std::string CGUIDialogAddonSettings::GetSettingsLabel(std::shared_ptr<ISetting> setting)
+std::string CGUIDialogAddonSettings::GetSettingsLabel(const std::shared_ptr<ISetting>& setting)
 {
   if (setting == nullptr)
     return "";
@@ -261,7 +261,7 @@ CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
   return m_addon->GetSettings()->GetSettingsManager();
 }
 
-void CGUIDialogAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CGUIDialogAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (m_addon == nullptr || m_addon->GetSettings() == nullptr)
     return;

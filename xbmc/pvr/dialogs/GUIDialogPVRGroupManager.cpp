@@ -23,6 +23,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
@@ -270,7 +271,10 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage& message)
     CGUIRadioButtonControl* button = static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
     if (button)
     {
-      m_selectedGroup->SetHidden(button->IsSelected());
+      CServiceBroker::GetPVRManager()
+          .ChannelGroups()
+          ->Get(m_bIsRadio)
+          ->HideGroup(m_selectedGroup, button->IsSelected());
       Update();
     }
 
@@ -451,58 +455,64 @@ void CGUIDialogPVRGroupManager::Update()
   if (m_selectedGroup)
   {
     /* set this group in the pvrmanager, so it becomes the selected group in other dialogs too */
-    CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(m_selectedGroup);
+    CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(m_selectedGroup);
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_selectedGroup->GroupName());
     SET_CONTROL_SELECTED(GetID(), BUTTON_HIDE_GROUP, m_selectedGroup->IsHidden());
 
+    CONTROL_ENABLE_ON_CONDITION(BUTTON_DELGROUP, !m_selectedGroup->IsInternalGroup());
+
     if (m_selectedGroup->IsInternalGroup())
     {
-      std::string strNewLabel = StringUtils::Format("%s %s",
-                                        g_localizeStrings.Get(19022).c_str(),
-                                        m_bIsRadio ? g_localizeStrings.Get(19024).c_str() : g_localizeStrings.Get(19023).c_str());
+      std::string strNewLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19022),
+                                                    m_bIsRadio ? g_localizeStrings.Get(19024)
+                                                               : g_localizeStrings.Get(19023));
       SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
 
-      strNewLabel = StringUtils::Format("%s %s",
-                                        g_localizeStrings.Get(19218).c_str(),
-                                        m_bIsRadio ? g_localizeStrings.Get(19024).c_str() : g_localizeStrings.Get(19023).c_str());
+      strNewLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19218),
+                                        m_bIsRadio ? g_localizeStrings.Get(19024)
+                                                   : g_localizeStrings.Get(19023));
       SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
     }
     else
     {
-      std::string strNewLabel = StringUtils::Format("%s", g_localizeStrings.Get(19219).c_str());
+      std::string strNewLabel = g_localizeStrings.Get(19219);
       SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
 
-      strNewLabel = StringUtils::Format("%s %s", g_localizeStrings.Get(19220).c_str(), m_selectedGroup->GroupName().c_str());
+      strNewLabel =
+          StringUtils::Format("{} {}", g_localizeStrings.Get(19220), m_selectedGroup->GroupName());
       SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
     }
 
     // Slightly different handling for "all" group...
     if (m_selectedGroup->IsInternalGroup())
     {
-      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ALL);
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+          m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ALL);
       for (const auto& groupMember : groupMembers)
       {
-        if (groupMember->channel->IsHidden())
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember->channel));
+        if (groupMember->Channel()->IsHidden())
+          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
         else
-          m_groupMembers->Add(std::make_shared<CFileItem>(groupMember->channel));
+          m_groupMembers->Add(std::make_shared<CFileItem>(groupMember));
       }
     }
     else
     {
-      const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+          m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
-        m_groupMembers->Add(std::make_shared<CFileItem>(groupMember->channel));
+        m_groupMembers->Add(std::make_shared<CFileItem>(groupMember));
       }
 
       /* for the center part, get all channels of the "all" channels group that are not in this group */
       const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
-      const std::vector<std::shared_ptr<PVRChannelGroupMember>> allGroupMembers = allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> allGroupMembers =
+          allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : allGroupMembers)
       {
-        if (!m_selectedGroup->IsGroupMember(groupMember->channel))
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember->channel));
+        if (!m_selectedGroup->IsGroupMember(groupMember->Channel()))
+          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
       }
     }
     m_viewGroupMembers.SetItems(*m_groupMembers);

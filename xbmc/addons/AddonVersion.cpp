@@ -156,7 +156,7 @@ namespace ADDON
   {
     std::string out;
     if (mEpoch)
-      out = StringUtils::Format("%i:", mEpoch);
+      out = StringUtils::Format("{}:", mEpoch);
     out += mUpstream;
     if (!mRevision.empty())
       out += "-" + mRevision;
@@ -166,7 +166,7 @@ namespace ADDON
   bool AddonVersion::SplitFileName(std::string& ID, std::string& version,
                                    const std::string& filename)
   {
-    size_t dpos = filename.rfind("-");
+    size_t dpos = filename.rfind('-');
     if (dpos == std::string::npos)
       return false;
     ID = filename.substr(0, dpos);

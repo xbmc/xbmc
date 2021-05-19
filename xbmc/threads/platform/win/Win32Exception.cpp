@@ -68,9 +68,9 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   KODI::TIME::SystemTime stLocalTime;
   KODI::TIME::GetLocalTime(&stLocalTime);
 
-  dumpFileName = StringUtils::Format(
-      "kodi_crashlog-%s-%04d%02d%02d-%02d%02d%02d.dmp", mVersion.c_str(), stLocalTime.year,
-      stLocalTime.month, stLocalTime.day, stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
+  dumpFileName = StringUtils::Format("kodi_crashlog-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.dmp",
+                                     mVersion, stLocalTime.year, stLocalTime.month, stLocalTime.day,
+                                     stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
 
   dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
@@ -167,9 +167,9 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
      pSFTA == NULL || pSGMB == NULL)
     goto cleanup;
 
-  dumpFileName = StringUtils::Format(
-      "kodi_stacktrace-%s-%04d%02d%02d-%02d%02d%02d.txt", mVersion.c_str(), stLocalTime.year,
-      stLocalTime.month, stLocalTime.day, stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
+  dumpFileName = StringUtils::Format("kodi_stacktrace-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.txt",
+                                     mVersion, stLocalTime.year, stLocalTime.month, stLocalTime.day,
+                                     stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
 
   dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
@@ -221,7 +221,8 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   Module.SizeOfStruct = sizeof(Module);
   int seq=0;
 
-  strOutput = StringUtils::Format("Thread %d (process %d)\r\n", GetCurrentThreadId(), GetCurrentProcessId());
+  strOutput = StringUtils::Format("Thread {} (process {})\r\n", GetCurrentThreadId(),
+                                  GetCurrentProcessId());
   WriteFile(hDumpFile, strOutput.c_str(), strOutput.size(), &dwBytes, NULL);
 
   while(pSW(IMAGE_FILE_MACHINE_I386, hCurProc, GetCurrentThread(), &frame, pEp->ContextRecord, NULL, pSFTA, pSGMB, NULL))
@@ -230,15 +231,15 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
     {
       DWORD64 symoffset=0;
       DWORD   lineoffset=0;
-      strOutput = StringUtils::Format("#%2d", seq++);
+      strOutput = StringUtils::Format("#{:2}", seq++);
 
       if(pSGSFA(hCurProc, frame.AddrPC.Offset, &symoffset, pSym))
       {
         if(pUDSN(pSym->Name, cTemp, STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE)>0)
-          strOutput.append(StringUtils::Format(" %s", cTemp));
+          strOutput.append(StringUtils::Format(" {}", cTemp));
       }
       if(pSGLFA(hCurProc, frame.AddrPC.Offset, &lineoffset, &Line))
-        strOutput.append(StringUtils::Format(" at %s:%d", Line.FileName, Line.LineNumber));
+        strOutput.append(StringUtils::Format(" at {}:{}", Line.FileName, Line.LineNumber));
 
       strOutput.append("\r\n");
       WriteFile(hDumpFile, strOutput.c_str(), strOutput.size(), &dwBytes, NULL);

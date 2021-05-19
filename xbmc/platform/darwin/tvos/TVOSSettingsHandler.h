@@ -17,7 +17,7 @@ public:
 
   void Initialize();
 
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
   CTVOSInputSettings() = default;

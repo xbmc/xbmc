@@ -395,7 +395,7 @@ struct PlayerControllerState
                              withAxis:GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHT
                       withplayerIndex:playerIndex];
     }
-    if (@available(iOS 12.1, *))
+    if (@available(iOS 12.1, tvOS 12.1, *))
     {
       // Left Thumbstick Button
       if (gamepad.leftThumbstickButton == element)
@@ -566,7 +566,7 @@ struct PlayerControllerState
         [controller.extendedGamepad performSelector:@selector(buttonOptions)] != nil)
       ++optionalButtonCount;
 
-    if (@available(iOS 12.1, *))
+    if (@available(iOS 12.1, tvOS 12.1, *))
     {
       if (controller.extendedGamepad.leftThumbstickButton)
         ++optionalButtonCount;
@@ -679,7 +679,7 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_Y
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_Y)];
 
-        message = [message stringByAppendingFormat:@" Up %f", 0.0f];
+        message = [message stringByAppendingFormat:@" Up %f", 0.0];
         [cbmanager SetAxisEvent:newReleaseEvent];
       }
       else
@@ -699,7 +699,8 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_Y
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_Y)];
 
-        message = [message stringByAppendingFormat:@" Up %f", thumbstick.yAxis.value];
+        message = [message
+            stringByAppendingFormat:@" Up %f", static_cast<double>(thumbstick.yAxis.value)];
         [cbmanager SetAxisEvent:*event];
       }
     }
@@ -725,7 +726,7 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_Y
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_Y)];
 
-        message = [message stringByAppendingFormat:@" Down %f", 0.0f];
+        message = [message stringByAppendingFormat:@" Down %f", 0.0];
         [cbmanager SetAxisEvent:newReleaseEvent];
       }
       else
@@ -745,7 +746,8 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_Y
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_Y)];
 
-        message = [message stringByAppendingFormat:@" Down %f", thumbstick.yAxis.value];
+        message = [message
+            stringByAppendingFormat:@" Down %f", static_cast<double>(thumbstick.yAxis.value)];
         [cbmanager SetAxisEvent:*event];
       }
     }
@@ -771,7 +773,7 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_X
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_X)];
 
-        message = [message stringByAppendingFormat:@" Left %f", 0.0f];
+        message = [message stringByAppendingFormat:@" Left %f", 0.0];
         [cbmanager SetAxisEvent:newReleaseEvent];
       }
       else
@@ -791,7 +793,8 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_X
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_X)];
 
-        message = [message stringByAppendingFormat:@" Left %f", thumbstick.xAxis.value];
+        message = [message
+            stringByAppendingFormat:@" Left %f", static_cast<double>(thumbstick.xAxis.value)];
         [cbmanager SetAxisEvent:*event];
       }
     }
@@ -817,7 +820,7 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_X
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_X)];
 
-        message = [message stringByAppendingFormat:@" Right %f", 0.0f];
+        message = [message stringByAppendingFormat:@" Right %f", 0.0];
         [cbmanager SetAxisEvent:newReleaseEvent];
       }
       else
@@ -837,7 +840,8 @@ struct PlayerControllerState
                                 ? GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::RIGHTTHUMB_X
                                 : GCCONTROLLER_EXTENDED_GAMEPAD_AXIS::LEFTTHUMB_X)];
 
-        message = [message stringByAppendingFormat:@" Right %f", thumbstick.xAxis.value];
+        message = [message
+            stringByAppendingFormat:@" Right %f", static_cast<double>(thumbstick.xAxis.value)];
         [cbmanager SetAxisEvent:*event];
       }
     }

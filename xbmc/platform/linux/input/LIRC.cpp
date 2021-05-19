@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
@@ -42,7 +43,18 @@ void CLirc::Start()
 
 void CLirc::Process()
 {
-  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    throw std::runtime_error("CSettingsComponent needs to exist before starting CLirc");
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    throw std::runtime_error("CSettings needs to exist before starting CLirc");
+
+  while (!settings->IsLoaded())
+    CThread::Sleep(1000);
+
+  m_profileId = settingsComponent->GetProfileManager()->GetCurrentProfileId();
   m_irTranslator.Load("Lircmap.xml");
 
   // make sure work-around (CheckDaemon) uses the same socket path as lirc_init
@@ -85,7 +97,7 @@ void CLirc::Process()
       }
       if (code != nullptr)
       {
-        int profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
+        int profileId = settingsComponent->GetProfileManager()->GetCurrentProfileId();
         if (m_profileId != profileId)
         {
           m_profileId = profileId;
@@ -131,7 +143,7 @@ void CLirc::ProcessCode(char *buf)
   if (repeat == 0)
   {
     CLog::Log(LOGDEBUG, "LIRC: - NEW %s %s %s %s (%s)", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0], buttonName);
-    m_firstClickTime = XbmcThreads::SystemClockMillis();
+    m_firstClickTime = std::chrono::steady_clock::now();
 
     XBMC_Event newEvent;
     newEvent.type = XBMC_BUTTON;
@@ -147,7 +159,11 @@ void CLirc::ProcessCode(char *buf)
     XBMC_Event newEvent;
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
-    newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
+
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_firstClickTime);
+
+    newEvent.keybutton.holdtime = duration.count();
     std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
     if (appPort)
       appPort->OnEvent(newEvent);

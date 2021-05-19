@@ -765,7 +765,7 @@ bool CInputManager::IsControllerEnabled() const
   return m_enableController;
 }
 
-void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CInputManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

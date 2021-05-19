@@ -136,7 +136,7 @@ bool CMultiPathDirectory::Remove(const CURL& url)
 
 std::string CMultiPathDirectory::GetFirstPath(const std::string &strPath)
 {
-  size_t pos = strPath.find("/", 12);
+  size_t pos = strPath.find('/', 12);
   if (pos != std::string::npos)
     return CURL::Decode(strPath.substr(12, pos - 12));
   return "";
@@ -234,7 +234,7 @@ std::string CMultiPathDirectory::ConstructMultiPath(const std::set<std::string> 
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", items.Size());
-  unsigned int time = XbmcThreads::SystemClockMillis();
+  auto start = std::chrono::steady_clock::now();
   if (items.Size() == 0)
     return;
   // sort items by label
@@ -289,9 +289,11 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     i++;
   }
 
-  CLog::Log(LOGDEBUG,
-            "CMultiPathDirectory::MergeItems, items = %i,  took %d ms",
-            items.Size(), XbmcThreads::SystemClockMillis() - time);
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = {},  took {} ms", items.Size(),
+            duration.count());
 }
 
 bool CMultiPathDirectory::SupportsWriteFileOperations(const std::string &strPath)

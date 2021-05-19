@@ -46,8 +46,4 @@ set(SOURCES TestAlarmClock.cpp
 
 set(HEADERS TestGlobalsHandlingPattern1.h)
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES TestCryptThreading.cpp)
-endif()
-
 core_add_test_library(utils_test)

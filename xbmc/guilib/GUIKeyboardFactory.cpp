@@ -74,7 +74,11 @@ bool CGUIKeyboardFactory::SendTextToActiveKeyboard(const std::string &aTextStrin
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsuccessful display of the keyboard or cancelled editing
-bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant heading, bool allowEmptyResult, bool hiddenInput /* = false */, unsigned int autoCloseMs /* = 0 */)
+bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
+                                          const CVariant& heading,
+                                          bool allowEmptyResult,
+                                          bool hiddenInput /* = false */,
+                                          unsigned int autoCloseMs /* = 0 */)
 {
   bool confirmed = false;
   //heading can be a string or a localization id
@@ -127,7 +131,10 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, bool allowEm
 
 // Shows keyboard and prompts for a password.
 // Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
-bool CGUIKeyboardFactory::ShowAndGetNewPassword(std::string& newPassword, CVariant heading, bool allowEmpty, unsigned int autoCloseMs /* = 0 */)
+bool CGUIKeyboardFactory::ShowAndGetNewPassword(std::string& newPassword,
+                                                const CVariant& heading,
+                                                bool allowEmpty,
+                                                unsigned int autoCloseMs /* = 0 */)
 {
   return ShowAndGetInput(newPassword, heading, allowEmpty, true, autoCloseMs);
 }
@@ -153,7 +160,10 @@ bool CGUIKeyboardFactory::ShowAndGetFilter(std::string &filter, bool searching, 
 // \param heading Heading to display
 // \param allowEmpty Whether a blank password is valid or not.
 // \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
-bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, CVariant heading, bool allowEmpty, unsigned int autoCloseMs /* = 0 */)
+bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword,
+                                                   const CVariant& heading,
+                                                   bool allowEmpty,
+                                                   unsigned int autoCloseMs /* = 0 */)
 {
   // Prompt user for password input
   std::string userInput;
@@ -182,7 +192,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, CVa
 // \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, unsigned int autoCloseMs /* = 0 */)
 {
-  std::string heading = g_localizeStrings.Get(12340);
+  const std::string& heading = g_localizeStrings.Get(12340);
   return ShowAndVerifyNewPassword(newPassword, heading, false, autoCloseMs);
 }
 
@@ -197,10 +207,12 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
   if (1 > iRetries && strHeading.size())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp = StringUtils::Format("%s - %i %s",
-                                         g_localizeStrings.Get(12326).c_str(),
-                                         CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) - iRetries,
-                                         g_localizeStrings.Get(12343).c_str());
+    strHeadingTemp =
+        StringUtils::Format("{} - {} {}", g_localizeStrings.Get(12326),
+                            CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                CSettings::SETTING_MASTERLOCK_MAXRETRIES) -
+                                iRetries,
+                            g_localizeStrings.Get(12343));
 
   std::string strUserInput;
   //! @todo GUI Setting to enable disable this feature y/n?

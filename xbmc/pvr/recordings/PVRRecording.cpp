@@ -201,6 +201,8 @@ void CPVRRecording::Serialize(CVariant& value) const
     value["art"]["thumb"] = m_strThumbnailPath;
   if (!m_strFanartPath.empty())
     value["art"]["fanart"] = m_strFanartPath;
+
+  value["clientid"] = m_iClientId;
 }
 
 void CPVRRecording::ToSortable(SortItem& sortable, Field field) const
@@ -356,17 +358,15 @@ bool CPVRRecording::UpdateRecordingSize()
   return false;
 }
 
-void CPVRRecording::UpdateMetadata(CVideoDatabase& db)
+void CPVRRecording::UpdateMetadata(CVideoDatabase& db, const CPVRClient& client)
 {
   if (m_bGotMetaData || !db.IsOpen())
     return;
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
-
-  if (!client || !client->GetClientCapabilities().SupportsRecordingsPlayCount())
+  if (!client.GetClientCapabilities().SupportsRecordingsPlayCount())
     CVideoInfoTag::SetPlayCount(db.GetPlayCount(m_strFileNameAndPath));
 
-  if (!client || !client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
+  if (!client.GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
   {
     CBookmark resumePoint;
     if (db.GetResumeBookMark(m_strFileNameAndPath, resumePoint))
@@ -387,7 +387,7 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
   return edls;
 }
 
-void CPVRRecording::Update(const CPVRRecording& tag)
+void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
 {
   m_strRecordingId = tag.m_strRecordingId;
   m_iClientId = tag.m_iClientId;
@@ -418,8 +418,12 @@ void CPVRRecording::Update(const CPVRRecording& tag)
     m_sizeInBytes = tag.m_sizeInBytes;
   }
 
-  CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
-  CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
+  if (client.GetClientCapabilities().SupportsRecordingsPlayCount())
+    CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
+
+  if (client.GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
+    CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
+
   SetDuration(tag.GetDuration());
 
   if (m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING)
@@ -434,7 +438,7 @@ void CPVRRecording::Update(const CPVRRecording& tag)
   }
 
   //Old Method of identifying TV show title and subtitle using m_strDirectory and strPlotOutline (deprecated)
-  std::string strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
+  std::string strShow = StringUtils::Format("{} - ", g_localizeStrings.Get(20364));
   if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
     CLog::Log(LOGWARNING, "PVR addon provides episode name in strPlotOutline which is deprecated");
@@ -579,6 +583,12 @@ const std::string CPVRRecording::GetGenresLabel() const
 CDateTime CPVRRecording::FirstAired() const
 {
   return m_firstAired;
+}
+
+void CPVRRecording::SetYear(int year)
+{
+  if (year > 0)
+    m_premiered = CDateTime(year, 1, 1, 0, 0, 0);
 }
 
 int CPVRRecording::GetYear() const

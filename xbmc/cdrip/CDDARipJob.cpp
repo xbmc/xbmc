@@ -82,9 +82,8 @@ bool CCDDARipJob::DoWork()
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
 
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
-  std::string strLine0 = StringUtils::Format("%02i. %s - %s", iTrack,
-                                            m_tag.GetArtistString().c_str(),
-                                            m_tag.GetTitle().c_str());
+  std::string strLine0 =
+      StringUtils::Format("{:02}. {} - {}", iTrack, m_tag.GetArtistString(), m_tag.GetTitle());
   handle->SetText(strLine0);
 
   // start ripping
@@ -193,7 +192,8 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
     return NULL;
 
   // we have to set the tags before we init the Encoder
-  const std::string strTrack = StringUtils::Format("%li", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(), nullptr, 10));
+  const std::string strTrack = StringUtils::Format(
+      "{}", std::stol(m_input.substr(13, m_input.size() - 13 - 5), nullptr, 10));
 
   const std::string itemSeparator = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 

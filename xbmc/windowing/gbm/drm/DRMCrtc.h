@@ -30,6 +30,7 @@ public:
   uint32_t GetX() const { return m_crtc->x; }
   uint32_t GetY() const { return m_crtc->y; }
   drmModeModeInfoPtr GetMode() const { return &m_crtc->mode; }
+  bool GetModeValid() const { return m_crtc->mode_valid != 0; }
 
 private:
   struct DrmModeCrtcDeleter

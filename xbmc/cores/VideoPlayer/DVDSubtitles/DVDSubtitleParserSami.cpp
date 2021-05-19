@@ -11,7 +11,7 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDSubtitleTagSami.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

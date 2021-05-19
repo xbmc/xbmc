@@ -51,7 +51,7 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share.
    */
-  const std::string strMovie = fileItem.GetDynPath();
+  const std::string& strMovie = fileItem.GetDynPath();
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
       !URIUtils::IsInternetStream(strMovie))
   {
@@ -147,7 +147,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     int64_t iCutStartEnd[2];
     for (int i = 0; i < 2; i++)
     {
-      if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
+      if (strFields[i].find(':') != std::string::npos) // HH:MM:SS.sss format
       {
         std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms
@@ -326,8 +326,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
     if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Cut cut;
-      cut.start = (int64_t)(dStartFrame / fFrameRate * 1000);
-      cut.end = (int64_t)(dEndFrame / fFrameRate * 1000);
+      cut.start = static_cast<int64_t>(dStartFrame / static_cast<double>(fFrameRate) * 1000.0);
+      cut.end = static_cast<int64_t>(dEndFrame / static_cast<double>(fFrameRate) * 1000.0);
       cut.action = Action::COMM_BREAK;
       bValid = AddCut(cut);
     }
@@ -767,11 +767,11 @@ std::string CEdl::GetInfo() const
       }
     }
     if (cutCount > 0)
-      strInfo += StringUtils::Format("c%i", cutCount);
+      strInfo += StringUtils::Format("c{}", cutCount);
     if (muteCount > 0)
-      strInfo += StringUtils::Format("m%i", muteCount);
+      strInfo += StringUtils::Format("m{}", muteCount);
     if (commBreakCount > 0)
-      strInfo += StringUtils::Format("b%i", commBreakCount);
+      strInfo += StringUtils::Format("b{}", commBreakCount);
   }
   if (HasSceneMarker())
     strInfo += StringUtils::Format("s{0}", m_vecSceneMarkers.size());
@@ -901,7 +901,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
 {
   std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
-  strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
+  strTimeString += StringUtils::Format(".{:03}", iMilliseconds % 1000);
   return strTimeString;
 }
 

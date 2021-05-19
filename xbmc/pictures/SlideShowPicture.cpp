@@ -45,8 +45,6 @@ using namespace Microsoft::WRL;
 
 #define FPS                                 25
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
 CSlideShowPic::CSlideShowPic()
@@ -141,7 +139,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
   {
-    if (((m_fWidth / m_fHeight) > 1.9) || ((m_fHeight / m_fWidth) > 1.9))
+    if (((m_fWidth / m_fHeight) > 1.9f) || ((m_fHeight / m_fWidth) > 1.9f))
       m_displayEffect = EFFECT_PANORAMA;
     else
       m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
@@ -331,7 +329,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
           int i;
           for (i = 0; i < 10; i++)
           {
-            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01*zoomamount[i])
+            if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01f * zoomamount[i])
             {
               m_fZoomAmount = zoomamount[i];
               break;
@@ -450,8 +448,8 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   // Rotate the image as needed
   float x[4];
   float y[4];
-  float si = (float)sin(m_fAngle / 180.0f * M_PI);
-  float co = (float)cos(m_fAngle / 180.0f * M_PI);
+  float si = sin(m_fAngle / 180.0f * static_cast<float>(M_PI));
+  float co = cos(m_fAngle / 180.0f * static_cast<float>(M_PI));
   x[0] = -m_fWidth * co + m_fHeight * si;
   y[0] = -m_fWidth * si - m_fHeight * co;
   x[1] = m_fWidth * co + m_fHeight * si;
@@ -909,8 +907,10 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::Color 
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(tex0Loc);

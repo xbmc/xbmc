@@ -267,6 +267,7 @@
 #define VIDEOPLAYER_CAST              292
 #define VIDEOPLAYER_CAST_AND_ROLE     293
 #define VIDEOPLAYER_UNIQUEID          294
+#define VIDEOPLAYER_AUDIOSTREAMCOUNT  295
 
 // Videoplayer infobools
 #define VIDEOPLAYER_HASSUBTITLES      300
@@ -457,7 +458,7 @@
 #define SYSTEM_PLATFORM_DARWIN_IOS  745
 #define SYSTEM_PLATFORM_UWP         746
 #define SYSTEM_PLATFORM_ANDROID     747
-// previously used by rpi           748
+#define SYSTEM_PLATFORM_WINDOWING   748
 #define SYSTEM_PLATFORM_WIN10       749
 
 #define SYSTEM_CAN_POWERDOWN        750

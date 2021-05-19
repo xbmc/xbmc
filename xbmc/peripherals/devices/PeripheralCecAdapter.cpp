@@ -94,11 +94,14 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bIsReady = false;
   m_bHasConnectedAudioSystem = false;
   m_strMenuLanguage = "???";
-  m_lastKeypress = 0;
+  m_lastKeypress = {};
   m_lastChange = VOLUME_CHANGE_NONE;
   m_iExitCode = EXITCODE_QUIT;
-  m_bIsMuted = false; //! @todo fetch the correct initial value when system audiostatus is
-                      //! implemented in libCEC
+
+  //! @todo fetch the correct initial value when system audiostatus is
+  //! implemented in libCEC
+  m_bIsMuted = false;
+
   m_bGoingToStandby = false;
   m_bIsRunning = false;
   m_bDeviceRemoved = false;
@@ -246,7 +249,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
       // display warning: incompatible libCEC
       std::string strMessage = StringUtils::Format(
-          g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1,
+          g_localizeStrings.Get(36040), m_cecAdapter ? m_configuration.serverVersion : -1,
           CEC_LIB_SUPPORTED_VERSION);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000),
                                             strMessage);
@@ -274,16 +277,15 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralCecAdapter::SetVersionInfo(const libcec_configuration& configuration)
 {
-  m_strVersionInfo =
-      StringUtils::Format("libCEC %s - firmware v%d",
-                          m_cecAdapter->VersionToString(configuration.serverVersion).c_str(),
-                          configuration.iFirmwareVersion);
+  m_strVersionInfo = StringUtils::Format("libCEC {} - firmware v{}",
+                                         m_cecAdapter->VersionToString(configuration.serverVersion),
+                                         configuration.iFirmwareVersion);
 
   // append firmware build date
   if (configuration.iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
   {
     CDateTime dt((time_t)configuration.iFirmwareBuildDate);
-    m_strVersionInfo += StringUtils::Format(" (%s)", dt.GetAsDBDate().c_str());
+    m_strVersionInfo += StringUtils::Format(" ({})", dt.GetAsDBDate());
   }
 }
 
@@ -304,8 +306,8 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that
   // we're busy
-  std::string strMessage = StringUtils::Format(g_localizeStrings.Get(21336).c_str(),
-                                               g_localizeStrings.Get(36000).c_str());
+  std::string strMessage =
+      StringUtils::Format(g_localizeStrings.Get(21336), g_localizeStrings.Get(36000));
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
                                         strMessage);
 
@@ -442,6 +444,8 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
   CecVolumeChange pendingVolumeChange = VOLUME_CHANGE_NONE;
   {
     CSingleLock lock(m_critSection);
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastKeypress);
     if (!m_volumeChangeQueue.empty())
     {
       /* get the first change from the queue */
@@ -453,27 +457,28 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
         m_volumeChangeQueue.pop();
 
       /* send another keypress after VOLUME_REFRESH_TIMEOUT ms */
-      bool bRefresh(XbmcThreads::SystemClockMillis() - m_lastKeypress > VOLUME_REFRESH_TIMEOUT);
+
+      bool bRefresh(duration.count() > VOLUME_REFRESH_TIMEOUT);
 
       /* only send the keypress when it hasn't been sent yet */
       if (pendingVolumeChange != m_lastChange)
       {
-        m_lastKeypress = XbmcThreads::SystemClockMillis();
+        m_lastKeypress = std::chrono::steady_clock::now();
         m_lastChange = pendingVolumeChange;
       }
       else if (bRefresh)
       {
-        m_lastKeypress = XbmcThreads::SystemClockMillis();
+        m_lastKeypress = std::chrono::steady_clock::now();
         pendingVolumeChange = m_lastChange;
       }
       else
         pendingVolumeChange = VOLUME_CHANGE_NONE;
     }
-    else if (m_lastKeypress > 0 &&
-             XbmcThreads::SystemClockMillis() - m_lastKeypress > VOLUME_CHANGE_TIMEOUT)
+    else if (m_lastKeypress.time_since_epoch().count() > 0 &&
+             duration.count() > VOLUME_CHANGE_TIMEOUT)
     {
       /* send a key release */
-      m_lastKeypress = 0;
+      m_lastKeypress = {};
       bSendRelease = true;
       m_lastChange = VOLUME_CHANGE_NONE;
     }
@@ -755,7 +760,7 @@ void CPeripheralCecAdapter::CecAlert(void* cbParam,
   {
     std::string strLog(g_localizeStrings.Get(iAlertString));
     if (data.paramType == CEC_PARAMETER_TYPE_STRING && data.paramData)
-      strLog += StringUtils::Format(" - %s", (const char*)data.paramData);
+      strLog += StringUtils::Format(" - {}", (const char*)data.paramData);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000),
                                           strLog);
   }
@@ -1292,7 +1297,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
                            m_configuration.iHDMIPort > CEC_MAX_HDMI_PORTNUMBER))
   {
     m_configuration.iPhysicalAddress = config.iPhysicalAddress;
-    strPhysicalAddress = StringUtils::Format("%x", config.iPhysicalAddress);
+    strPhysicalAddress = StringUtils::Format("{:x}", config.iPhysicalAddress);
   }
   bChanged |= SetSetting("physical_address", strPhysicalAddress);
 
@@ -1473,7 +1478,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
     std::string strPowerOffDevices;
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
       if (addresses[iPtr])
-        strPowerOffDevices += StringUtils::Format(" %X", iPtr);
+        strPowerOffDevices += StringUtils::Format(" {:X}", iPtr);
     StringUtils::Trim(strPowerOffDevices);
     bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices);
   }
@@ -1582,7 +1587,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     CLog::Log(LOGDEBUG,
               "%s - CEC capable amplifier found (%s). volume will be controlled on the amp",
               __FUNCTION__, ampName.c_str());
-    strAmpName += StringUtils::Format("%s", ampName.c_str());
+    strAmpName += ampName;
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
@@ -1622,12 +1627,11 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   // request the OSD name of the TV
   std::string strNotification;
   std::string tvName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV));
-  strNotification =
-      StringUtils::Format("%s: %s", g_localizeStrings.Get(36016).c_str(), tvName.c_str());
+  strNotification = StringUtils::Format("{}: {}", g_localizeStrings.Get(36016), tvName);
 
   std::string strAmpName = UpdateAudioSystemStatus();
   if (!strAmpName.empty())
-    strNotification += StringUtils::Format("- %s", strAmpName.c_str());
+    strNotification += StringUtils::Format("- {}", strAmpName);
 
   m_adapter->m_bIsReady = true;
 

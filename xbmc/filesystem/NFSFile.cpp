@@ -17,7 +17,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -143,14 +142,18 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
   if (it != m_openContextMap.end())
   {
     //check if context has timed out already
-    uint64_t now = XbmcThreads::SystemClockMillis();
-    if((now - it->second.lastAccessedTime) < CONTEXT_TIMEOUT || forceCacheHit)
+    auto now = std::chrono::steady_clock::now();
+    auto duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second.lastAccessedTime);
+    if (duration.count() < CONTEXT_TIMEOUT || forceCacheHit)
     {
       //its not timedout yet or caller wants the cached entry regardless of timeout
       //refresh access time of that
       //context and return it
       if (!forceCacheHit) // only log it if this isn't the resetkeepalive on each read ;)
-        CLog::Log(LOGDEBUG, "NFS: Refreshing context for %s, old: %" PRId64", new: %" PRId64, exportname.c_str(), it->second.lastAccessedTime, now);
+        CLog::Log(LOGDEBUG, "NFS: Refreshing context for {}, old: {}, new: {}", exportname,
+                  it->second.lastAccessedTime.time_since_epoch().count(),
+                  now.time_since_epoch().count());
       it->second.lastAccessedTime = now;
       pRet = it->second.pContext;
     }
@@ -187,9 +190,9 @@ int CNfsConnection::getContextForExport(const std::string &exportname)
     {
       struct contextTimeout tmp;
       CSingleLock lock(openContextLock);
-      setTimeout(m_pNfsContext);
+      setOptions(m_pNfsContext);
       tmp.pContext = m_pNfsContext;
-      tmp.lastAccessedTime = XbmcThreads::SystemClockMillis();
+      tmp.lastAccessedTime = std::chrono::steady_clock::now();
       m_openContextMap[exportname] = tmp; //add context to list of all contexts
       ret = CONTEXT_NEW;
     }
@@ -199,7 +202,7 @@ int CNfsConnection::getContextForExport(const std::string &exportname)
     ret = CONTEXT_CACHED;
     CLog::Log(LOGDEBUG,"NFS: Using cached context.");
   }
-  m_lastAccessedTime = XbmcThreads::SystemClockMillis(); //refresh last access time of m_pNfsContext
+  m_lastAccessedTime = std::chrono::steady_clock::now();
 
   return ret;
 }
@@ -273,9 +276,11 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
   resolveHost(url);
   bool ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
 
-  if( (ret && (exportPath != m_exportPath  ||
-       url.GetHostName() != m_hostName))    ||
-      (XbmcThreads::SystemClockMillis() - m_lastAccessedTime) > CONTEXT_TIMEOUT )
+  auto now = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAccessedTime);
+
+  if ((ret && (exportPath != m_exportPath || url.GetHostName() != m_hostName)) ||
+      duration.count() > CONTEXT_TIMEOUT)
   {
     int contextRet = getContextForExport(url.GetHostName() + exportPath);
 
@@ -376,7 +381,7 @@ void CNfsConnection::removeFromKeepAliveList(struct nfsfh  *_pFileHandle)
 }
 
 //reset timeouts on read
-void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle)
+void CNfsConnection::resetKeepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle)
 {
   CSingleLock lock(keepAliveLock);
   //refresh last access time of the context aswell
@@ -386,7 +391,7 @@ void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFi
   // its last access time too here
   if (m_pNfsContext == pContext)
   {
-    m_lastAccessedTime = XbmcThreads::SystemClockMillis();
+    m_lastAccessedTime = std::chrono::steady_clock::now();
   }
 
   //adds new keys - refreshs existing ones
@@ -397,7 +402,7 @@ void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFi
 //keep alive the filehandles nfs connection
 //by blindly doing a read 32bytes - seek back to where
 //we were before
-void CNfsConnection::keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle)
+void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle)
 {
   uint64_t offset = 0;
   char buffer[32];
@@ -433,7 +438,7 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
 
     if(pTmpContext)
     {
-      setTimeout(pTmpContext);
+      setOptions(pTmpContext);
       //we connect to the directory of the path. This will be the "root" path of this connection then.
       //So all fileoperations are relative to this mountpoint...
       nfsRet = nfs_mount(pTmpContext, m_resolvedHostName.c_str(), exportPath.c_str());
@@ -474,12 +479,14 @@ void CNfsConnection::AddIdleConnection()
 }
 
 
-void CNfsConnection::setTimeout(struct nfs_context* context)
+void CNfsConnection::setOptions(struct nfs_context* context)
 {
 #ifdef HAS_NFS_SET_TIMEOUT
   uint32_t timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsTimeout;
   nfs_set_timeout(context, timeout > 0 ? timeout * 1000 : -1);
 #endif
+  int retries = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsRetries;
+  nfs_set_autoreconnect(context, retries);
 }
 
 CNfsConnection gNfsConnection;

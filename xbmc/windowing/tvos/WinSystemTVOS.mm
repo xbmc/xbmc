@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/OSScreenSaver.h"
+#include "windowing/WindowSystemFactory.h"
 #import "windowing/tvos/OSScreenSaverTVOS.h"
 #import "windowing/tvos/VideoSyncTVos.h"
 #import "windowing/tvos/WinEventsTVOS.h"
@@ -36,7 +37,6 @@
 #import "platform/darwin/DarwinUtils.h"
 #import "platform/darwin/tvos/TVOSDisplayManager.h"
 #import "platform/darwin/tvos/XBMCController.h"
-#include "platform/darwin/tvos/powermanagement/TVOSPowerSyscall.h"
 
 #include <memory>
 #include <vector>
@@ -73,10 +73,14 @@ struct CADisplayLinkWrapper
   TVOSDisplayLinkCallback* callbackClass;
 };
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemTVOS::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem = std::make_unique<CWinSystemTVOS>();
-  return winSystem;
+  KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemTVOS::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemTVOS>();
 }
 
 void CWinSystemTVOS::MessagePush(XBMC_Event* newEvent)
@@ -136,7 +140,6 @@ CWinSystemTVOS::CWinSystemTVOS() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_winEvents.reset(new CWinEventsTVOS());
 
   CAESinkDARWINTVOS::Register();
-  CTVOSPowerSyscall::Register();
 }
 
 CWinSystemTVOS::~CWinSystemTVOS()
@@ -220,7 +223,7 @@ bool CWinSystemTVOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool b
   m_bFullScreen = fullScreen;
 
   CLog::Log(LOGDEBUG, "About to switch to {} x {} @ {}", m_nWidth, m_nHeight, res.fRefreshRate);
-  SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate);
+  SwitchToVideoMode(res.iWidth, res.iHeight, static_cast<double>(res.fRefreshRate));
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
   return true;
@@ -240,7 +243,7 @@ bool CWinSystemTVOS::GetScreenResolution(int* w, int* h, double* fps, int screen
 {
   *w = [g_xbmcController.displayManager getScreenSize].width;
   *h = [g_xbmcController.displayManager getScreenSize].height;
-  *fps = [g_xbmcController.displayManager getDisplayRate];
+  *fps = static_cast<double>([g_xbmcController.displayManager getDisplayRate]);
 
   CLog::Log(LOGDEBUG, "Current resolution Screen: {} with {} x {} @ {}", screenIdx, *w, *h, *fps);
   return true;

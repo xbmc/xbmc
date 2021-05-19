@@ -69,6 +69,16 @@ namespace PVR
     ~CPVRTimers() override = default;
 
     /**
+     * @brief start the timer update thread.
+     */
+    void Start();
+
+    /**
+     * @brief stop the timer update thread.
+     */
+    void Stop();
+
+    /**
      * @brief (re)load the timers from the clients.
      * @return True if loaded successfully, false otherwise.
      */
@@ -285,9 +295,17 @@ namespace PVR
     std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetActiveRecordings(const TimerKind& eKind) const;
     int AmountActiveRecordings(const TimerKind& eKind) const;
 
+    bool CheckAndAppendTimerNotification(
+        std::vector<std::pair<int, std::string>>& timerNotifications,
+        const std::shared_ptr<CPVRTimerInfoTag>& tag,
+        bool bDeleted) const;
+
     bool m_bIsUpdating = false;
     CPVRSettings m_settings;
     std::queue<std::shared_ptr<CPVRTimerInfoTag>> m_remindersToAnnounce;
     bool m_bReminderRulesUpdatePending = false;
+
+    bool m_bFirstUpdate = true;
+    std::vector<int> m_failedClients;
   };
 }

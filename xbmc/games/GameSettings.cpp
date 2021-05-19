@@ -85,7 +85,7 @@ unsigned int CGameSettings::MaxRewindTimeSec()
   return static_cast<unsigned int>(std::max(rewindTimeSec, 0));
 }
 
-void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGameSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

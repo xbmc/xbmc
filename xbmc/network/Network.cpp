@@ -414,7 +414,7 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
   std::vector<SOCKET> sockets;
   struct addrinfo* results = nullptr;
 
-  std::string sPort = StringUtils::Format("%d", port);
+  std::string sPort = std::to_string(port);
   struct addrinfo hints = { 0 };
   hints.ai_family = PF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;

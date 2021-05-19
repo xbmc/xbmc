@@ -42,35 +42,47 @@ namespace XBMCAddon
   {
     Dialog::~Dialog() = default;
 
-    bool Dialog::yesno(const String& heading, const String& message,
+    bool Dialog::yesno(const String& heading,
+                       const String& message,
                        const String& nolabel,
                        const String& yeslabel,
-                       const String& customlabel,
-                       int autoclose)
+                       int autoclose,
+                       int defaultbutton)
+    {
+      return yesNoCustomInternal(heading, message, nolabel, yeslabel, emptyString, autoclose,
+                                 defaultbutton) == 1;
+    }
+
+    int Dialog::yesnocustom(const String& heading,
+                            const String& message,
+                            const String& customlabel,
+                            const String& nolabel,
+                            const String& yeslabel,
+                            int autoclose,
+                            int defaultbutton)
+    {
+      return yesNoCustomInternal(heading, message, nolabel, yeslabel, customlabel, autoclose,
+                                 defaultbutton);
+    }
+
+    int Dialog::yesNoCustomInternal(const String& heading,
+                                    const String& message,
+                                    const String& nolabel,
+                                    const String& yeslabel,
+                                    const String& customlabel,
+                                    int autoclose,
+                                    int defaultbutton)
     {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-      if (pDialog == NULL)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
+      CGUIDialogYesNo* pDialog =
+          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(
+              WINDOW_DIALOG_YES_NO);
+      if (pDialog == nullptr)
+        throw WindowException("Error: Window is null");
 
-      if (!heading.empty())
-        pDialog->SetHeading(CVariant{heading});
-      if (!message.empty())
-        pDialog->SetText(CVariant{message});
-
-      if (!nolabel.empty())
-        pDialog->SetChoice(0, CVariant{nolabel});
-      if (!yeslabel.empty())
-        pDialog->SetChoice(1, CVariant{yeslabel});
-      if (!customlabel.empty())
-        pDialog->SetChoice(2, CVariant{customlabel});
-
-      if (autoclose > 0)
-        pDialog->SetAutoClose(autoclose);
-
-      pDialog->Open();
-
-      return pDialog->IsConfirmed();
+      return pDialog->ShowAndGetInput(CVariant{heading}, CVariant{message}, CVariant{nolabel},
+                                      CVariant{yeslabel}, CVariant{customlabel}, autoclose,
+                                      defaultbutton);
     }
 
     bool Dialog::info(const ListItem* item)
@@ -282,13 +294,14 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 10)
           {
-            std::string sDefault = defaultt;
+            const std::string& sDefault = defaultt;
             timedate.day = atoi(sDefault.substr(0, 2).c_str());
             timedate.month = atoi(sDefault.substr(3, 4).c_str());
             timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-            value = StringUtils::Format("%2d/%2d/%4d", timedate.day, timedate.month, timedate.year);
+            value =
+                StringUtils::Format("{:2}/{:2}/{:4}", timedate.day, timedate.month, timedate.year);
           else
             return emptyString;
         }
@@ -296,12 +309,12 @@ namespace XBMCAddon
         {
           if (!defaultt.empty() && defaultt.size() == 5)
           {
-            std::string sDefault = defaultt;
+            const std::string& sDefault = defaultt;
             timedate.hour = atoi(sDefault.substr(0, 2).c_str());
             timedate.minute = atoi(sDefault.substr(3, 2).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-            value = StringUtils::Format("%2d:%02d", timedate.hour, timedate.minute);
+            value = StringUtils::Format("{:2}:{:02}", timedate.hour, timedate.minute);
           else
             return emptyString;
         }
@@ -375,14 +388,14 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 10)
             {
-              std::string sDefault = defaultt;
+              const std::string& sDefault = defaultt;
               timedate.day = atoi(sDefault.substr(0, 2).c_str());
               timedate.month = atoi(sDefault.substr(3, 4).c_str());
               timedate.year = atoi(sDefault.substr(sDefault.size() - 4).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-              value =
-                  StringUtils::Format("%2d/%2d/%4d", timedate.day, timedate.month, timedate.year);
+              value = StringUtils::Format("{:2}/{:2}/{:4}", timedate.day, timedate.month,
+                                          timedate.year);
             else
               value = emptyString;
           }
@@ -391,12 +404,12 @@ namespace XBMCAddon
           {
             if (!defaultt.empty() && defaultt.size() == 5)
             {
-              std::string sDefault = defaultt;
+              const std::string& sDefault = defaultt;
               timedate.hour = atoi(sDefault.substr(0, 2).c_str());
               timedate.minute = atoi(sDefault.substr(3, 2).c_str());
             }
             if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-              value = StringUtils::Format("%2d:%02d", timedate.hour, timedate.minute);
+              value = StringUtils::Format("{:2}:{:02}", timedate.hour, timedate.minute);
             else
               value = emptyString;
           }

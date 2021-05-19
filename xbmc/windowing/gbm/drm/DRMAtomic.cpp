@@ -30,20 +30,6 @@ namespace
 
 const auto SETTING_VIDEOSCREEN_HW_SCALING_FILTER = "videoscreen.hwscalingfilter";
 
-enum drm_scaling_filter
-{
-  DRM_SCALING_FILTER_DEFAULT,
-  DRM_SCALING_FILTER_NEAREST_NEIGHBOR,
-};
-
-uint32_t GetScalingFilterType(const char* type)
-{
-  if (!strcmp(type, "Nearest Neighbor"))
-    return DRM_SCALING_FILTER_NEAREST_NEIGHBOR;
-  else
-    return DRM_SCALING_FILTER_DEFAULT;
-}
-
 uint32_t GetScalingFactor(uint32_t srcWidth,
                           uint32_t srcHeight,
                           uint32_t destWidth,
@@ -58,25 +44,23 @@ uint32_t GetScalingFactor(uint32_t srcWidth,
 
 } // namespace
 
-bool CDRMAtomic::SetScalingFilter(struct CDRMObject* object, const char* name, const char* type)
+bool CDRMAtomic::SetScalingFilter(CDRMObject* object, const char* name, const char* type)
 {
-  uint32_t filter_type = GetScalingFilterType(type);
-  if (object->SupportsPropertyAndValue(name, filter_type))
-  {
-    if (AddProperty(object, name, filter_type))
-    {
-      uint32_t mar_scale_factor =
-          GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
-      uint32_t diff_w = m_mode->hdisplay - (mar_scale_factor * m_width);
-      uint32_t diff_h = m_mode->vdisplay - (mar_scale_factor * m_height);
-      AddProperty(object, "CRTC_X", (diff_w / 2));
-      AddProperty(object, "CRTC_Y", (diff_h / 2));
-      AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
-      AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
-      return true;
-    }
-  }
-  return false;
+  bool result;
+  uint64_t value;
+  std::tie(result, value) = m_gui_plane->GetPropertyValue(name, type);
+  if (!result)
+    return false;
+
+  if (!AddProperty(object, name, value))
+    return false;
+
+  uint32_t mar_scale_factor =
+      GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
+  AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
+  AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
+
+  return true;
 }
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
@@ -116,6 +100,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
+    AddProperty(m_gui_plane, "CRTC_X", 0);
+    AddProperty(m_gui_plane, "CRTC_Y", 0);
     //! @todo: disabled until upstream kernel changes are merged
     // if (DisplayHardwareScalingEnabled())
     // {
@@ -123,8 +109,6 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     // }
     // else
     {
-      AddProperty(m_gui_plane, "CRTC_X", 0);
-      AddProperty(m_gui_plane, "CRTC_Y", 0);
       AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
       AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
     }
@@ -137,19 +121,31 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "CRTC_ID", 0);
   }
 
-  auto ret = drmModeAtomicCommit(m_fd, m_req, flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGWINDOWING))
+    m_req->LogAtomicRequest();
+
+  auto ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDRMAtomic::{} - test commit failed: {}", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR,
+              "CDRMAtomic::{} - test commit failed: ({}) - falling back to last successful atomic "
+              "request",
+              __FUNCTION__, strerror(errno));
+
+    auto oldRequest = m_atomicRequestQueue.front().get();
+    CDRMAtomicRequest::LogAtomicDiff(m_req, oldRequest);
+    m_req = oldRequest;
+
+    // update the old atomic request with the new fb id to avoid tearing
+    if (rendered)
+      AddProperty(m_gui_plane, "FB_ID", fb_id);
   }
-  else if (ret == 0)
+
+  ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
+  if (ret < 0)
   {
-    ret = drmModeAtomicCommit(m_fd, m_req, flags, nullptr);
-    if (ret < 0)
-    {
-      CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
-                strerror(errno));
-    }
+    CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
+              strerror(errno));
   }
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
@@ -159,8 +155,11 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
                 strerror(errno));
   }
 
-  drmModeAtomicFree(m_req);
-  m_req = drmModeAtomicAlloc();
+  if (m_atomicRequestQueue.size() > 1)
+    m_atomicRequestQueue.pop_back();
+
+  m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
+  m_req = m_atomicRequestQueue.back().get();
 }
 
 void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
@@ -207,7 +206,8 @@ bool CDRMAtomic::InitDrm()
     return false;
   }
 
-  m_req = drmModeAtomicAlloc();
+  m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
+  m_req = m_atomicRequestQueue.back().get();
 
   if (!CDRMUtils::InitDrm())
     return false;
@@ -234,9 +234,6 @@ bool CDRMAtomic::InitDrm()
 void CDRMAtomic::DestroyDrm()
 {
   CDRMUtils::DestroyDrm();
-
-  drmModeAtomicFree(m_req);
-  m_req = nullptr;
 }
 
 bool CDRMAtomic::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)
@@ -256,15 +253,7 @@ bool CDRMAtomic::SetActive(bool active)
 
 bool CDRMAtomic::AddProperty(CDRMObject* object, const char* name, uint64_t value)
 {
-  uint32_t propId = object->GetPropertyId(name);
-  if (propId == 0)
-    return false;
-
-  int ret = drmModeAtomicAddProperty(m_req, object->GetId(), propId, value);
-  if (ret < 0)
-    return false;
-
-  return true;
+  return m_req->AddProperty(object, name, value);
 }
 
 bool CDRMAtomic::DisplayHardwareScalingEnabled()
@@ -276,3 +265,80 @@ bool CDRMAtomic::DisplayHardwareScalingEnabled()
 
   return false;
 }
+
+CDRMAtomic::CDRMAtomicRequest::CDRMAtomicRequest() : m_atomicRequest(drmModeAtomicAlloc())
+{
+}
+
+bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object, const char* name, uint64_t value)
+{
+  uint32_t propertyId = object->GetPropertyId(name);
+  if (propertyId == 0)
+    return false;
+
+  int ret = drmModeAtomicAddProperty(m_atomicRequest.get(), object->GetId(), propertyId, value);
+  if (ret < 0)
+    return false;
+
+  m_atomicRequestItems[object][propertyId] = value;
+  return true;
+}
+
+void CDRMAtomic::CDRMAtomicRequest::LogAtomicDiff(CDRMAtomicRequest* current,
+                                                  CDRMAtomicRequest* old)
+{
+  std::map<CDRMObject*, std::map<uint32_t, uint64_t>> atomicDiff;
+
+  for (const auto& object : current->m_atomicRequestItems)
+  {
+    auto sameObject = old->m_atomicRequestItems.find(object.first);
+    if (sameObject != old->m_atomicRequestItems.end())
+    {
+      std::map<uint32_t, uint64_t> propertyDiff;
+
+      std::set_difference(current->m_atomicRequestItems[object.first].begin(),
+                          current->m_atomicRequestItems[object.first].end(),
+                          old->m_atomicRequestItems[object.first].begin(),
+                          old->m_atomicRequestItems[object.first].end(),
+                          std::inserter(propertyDiff, propertyDiff.begin()));
+
+      atomicDiff[object.first] = propertyDiff;
+    }
+    else
+    {
+      atomicDiff[object.first] = current->m_atomicRequestItems[object.first];
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "CDRMAtomicRequest::{} - DRM Atomic Request Diff:", __FUNCTION__);
+
+  LogAtomicRequest(LOGERROR, atomicDiff);
+}
+
+void CDRMAtomic::CDRMAtomicRequest::LogAtomicRequest()
+{
+  CLog::Log(LOGDEBUG, "CDRMAtomicRequest::{} - DRM Atomic Request:", __FUNCTION__);
+  LogAtomicRequest(LOGDEBUG, m_atomicRequestItems);
+}
+
+void CDRMAtomic::CDRMAtomicRequest::LogAtomicRequest(
+    uint8_t logLevel, std::map<CDRMObject*, std::map<uint32_t, uint64_t>>& atomicRequestItems)
+{
+  std::string message;
+  for (const auto& object : atomicRequestItems)
+  {
+    message.append("\nObject: " + object.first->GetTypeName() +
+                   "\tID: " + std::to_string(object.first->GetId()));
+    for (const auto& property : object.second)
+      message.append("\n  Property: " + object.first->GetPropertyName(property.first) +
+                     "\tID: " + std::to_string(property.first) +
+                     "\tValue: " + std::to_string(property.second));
+  }
+
+  CLog::Log(logLevel, "{}", message);
+}
+
+void CDRMAtomic::CDRMAtomicRequest::DrmModeAtomicReqDeleter::operator()(drmModeAtomicReqPtr p) const
+{
+  drmModeAtomicFree(p);
+};

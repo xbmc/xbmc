@@ -422,11 +422,11 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
   {
     if (m_bShowRange)
     {
-      text = StringUtils::Format("%i/%i", m_iValue, m_iEnd);
+      text = StringUtils::Format("{}/{}", m_iValue, m_iEnd);
     }
     else
     {
-      text = StringUtils::Format("%i", m_iValue);
+      text = std::to_string(m_iValue);
     }
   }
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
@@ -436,17 +436,17 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     int currentPage = m_currentItem / m_itemsPerPage + 1;
     if (m_currentItem >= m_numItems - m_itemsPerPage)
       currentPage = numPages;
-    text = StringUtils::Format("%i/%i", currentPage, numPages);
+    text = StringUtils::Format("{}/{}", currentPage, numPages);
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
     if (m_bShowRange)
     {
-      text = StringUtils::Format("%02.2f/%02.2f", m_fValue, m_fEnd);
+      text = StringUtils::Format("{:02.2f}/{:02.2f}", m_fValue, m_fEnd);
     }
     else
     {
-      text = StringUtils::Format("%02.2f", m_fValue);
+      text = StringUtils::Format("{:02.2f}", m_fValue);
     }
   }
   else
@@ -455,15 +455,16 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     {
       if (m_bShowRange)
       {
-        text = StringUtils::Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), m_vecLabels[m_iValue].c_str() );
+        text = StringUtils::Format("({}/{}) {}", m_iValue + 1, (int)m_vecLabels.size(),
+                                   m_vecLabels[m_iValue]);
       }
       else
       {
-        text = StringUtils::Format("%s", m_vecLabels[m_iValue].c_str() );
+        text = m_vecLabels[m_iValue];
       }
     }
-    else text = StringUtils::Format("?%i?", m_iValue);
-
+    else
+      text = StringUtils::Format("?{}?", m_iValue);
   }
 
   changed |= m_label.SetText(text);
@@ -1030,7 +1031,7 @@ EVENT_RESULT CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEven
 
 std::string CGUISpinControl::GetDescription() const
 {
-  return StringUtils::Format("%i/%i", 1 + GetValue(), GetMaximum());
+  return StringUtils::Format("{}/{}", 1 + GetValue(), GetMaximum());
 }
 
 bool CGUISpinControl::IsFocusedOnUp() const

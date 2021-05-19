@@ -17,7 +17,13 @@ CInputProcessorTouch::CInputProcessorTouch(wayland::surface_t const& surface)
 {
 }
 
-void CInputProcessorTouch::OnTouchDown(CSeat* seat, std::uint32_t serial, std::uint32_t time, wayland::surface_t surface, std::int32_t id, double x, double y)
+void CInputProcessorTouch::OnTouchDown(CSeat* seat,
+                                       std::uint32_t serial,
+                                       std::uint32_t time,
+                                       const wayland::surface_t& surface,
+                                       std::int32_t id,
+                                       double x,
+                                       double y)
 {
   if (surface != m_surface)
   {

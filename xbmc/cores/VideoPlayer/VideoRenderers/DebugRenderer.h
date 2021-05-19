@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DebugInfo.h"
 #include "OverlayRenderer.h"
 
 #include <string>
@@ -19,8 +20,9 @@ class CDebugRenderer
 public:
   CDebugRenderer();
   virtual ~CDebugRenderer();
-  void SetInfo(std::string &info1, std::string &info2, std::string &info3, std::string &info4);
-  void Render(CRect &src, CRect &dst, CRect &view);
+  void SetInfo(DEBUG_INFO_PLAYER& info);
+  void SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render);
+  void Render(CRect& src, CRect& dst, CRect& view);
   void Flush();
 
 protected:
@@ -32,7 +34,7 @@ protected:
     void Render(int idx) override;
   };
 
-  std::string m_strDebug[4];
-  CDVDOverlayText *m_overlay[4];
+  std::string m_strDebug[6];
+  CDVDOverlayText* m_overlay[6];
   CRenderer m_overlayRenderer;
 };

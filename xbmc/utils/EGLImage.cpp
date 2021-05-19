@@ -8,6 +8,7 @@
 
 #include "EGLImage.h"
 
+#include "ServiceBroker.h"
 #include "utils/EGLUtils.h"
 #include "utils/log.h"
 
@@ -154,11 +155,8 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
 
   m_image = m_eglCreateImageKHR(m_display, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr, attribs.Get());
 
-  if(!m_image)
+  if (!m_image || CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
-    CLog::Log(LOGERROR, "CEGLImage::{} - failed to import buffer into EGL image: {:#4x}",
-              __FUNCTION__, eglGetError());
-
     const EGLint* attrs = attribs.Get();
 
     std::string eglString;
@@ -168,31 +166,39 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
       std::string keyStr;
       std::string valueStr;
 
-      auto eglAttr = eglAttributes.find(attrs[i]);
-      if (eglAttr != eglAttributes.end())
+      auto eglAttrKey = eglAttributes.find(attrs[i]);
+      if (eglAttrKey != eglAttributes.end())
       {
-        keyStr = eglAttr->second;
+        keyStr = eglAttrKey->second;
       }
       else
       {
         keyStr = std::to_string(attrs[i]);
       }
 
-      eglAttr = eglAttributes.find(attrs[i + 1]);
-      if (eglAttr != eglAttributes.end())
+      auto eglAttrValue = eglAttributes.find(attrs[i + 1]);
+      if (eglAttrValue != eglAttributes.end())
       {
-        valueStr = eglAttr->second;
+        valueStr = eglAttrValue->second;
       }
       else
       {
-        valueStr = std::to_string(attrs[i + 1]);
+        if (eglAttrKey != eglAttributes.end() && eglAttrKey->first == EGL_LINUX_DRM_FOURCC_EXT)
+          valueStr = FourCCToString(attrs[i + 1]);
+        else
+          valueStr = std::to_string(attrs[i + 1]);
       }
 
-      eglString.append(StringUtils::Format("%s: %s\n", keyStr, valueStr));
+      eglString.append(StringUtils::Format("{}: {}\n", keyStr, valueStr));
     }
 
     CLog::Log(LOGDEBUG, "CEGLImage::{} - attributes:\n{}", __FUNCTION__, eglString);
+  }
 
+  if (!m_image)
+  {
+    CLog::Log(LOGERROR, "CEGLImage::{} - failed to import buffer into EGL image: {:#4x}",
+              __FUNCTION__, eglGetError());
     return false;
   }
 

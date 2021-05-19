@@ -39,7 +39,7 @@ std::string CGUIDialogIgnoreInput::GetDialogText()
 {
   // "Some controllers have buttons and axes that interfere with mapping. Press
   // these now to disable them:[CR]%s"
-  std::string dialogText = g_localizeStrings.Get(35014);
+  const std::string& dialogText = g_localizeStrings.Get(35014);
 
   std::vector<std::string> primitives;
 
@@ -48,7 +48,7 @@ std::string CGUIDialogIgnoreInput::GetDialogText()
                    return JOYSTICK::CJoystickTranslator::GetPrimitiveName(primitive);
                  });
 
-  return StringUtils::Format(dialogText.c_str(), StringUtils::Join(primitives, " | ").c_str());
+  return StringUtils::Format(dialogText, StringUtils::Join(primitives, " | "));
 }
 
 std::string CGUIDialogIgnoreInput::GetDialogHeader()

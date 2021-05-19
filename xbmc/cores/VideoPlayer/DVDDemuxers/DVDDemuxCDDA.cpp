@@ -10,7 +10,7 @@
 
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 
 // CDDA audio demuxer based on AirTunes audio Demuxer.
 
@@ -31,7 +31,7 @@ CDVDDemuxCDDA::~CDVDDemuxCDDA()
   Dispose();
 }
 
-bool CDVDDemuxCDDA::Open(std::shared_ptr<CDVDInputStream> pInput)
+bool CDVDDemuxCDDA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 {
   Abort();
 

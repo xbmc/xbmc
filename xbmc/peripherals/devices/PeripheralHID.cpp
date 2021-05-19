@@ -45,7 +45,7 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
 
     if (m_strKeymap.empty())
     {
-      m_strKeymap = StringUtils::Format("v%sp%s", VendorIdAsString(), ProductIdAsString());
+      m_strKeymap = StringUtils::Format("v{}p{}", VendorIdAsString(), ProductIdAsString());
       SetSetting("keymap", m_strKeymap);
     }
 

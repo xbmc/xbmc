@@ -21,6 +21,7 @@
 #include <wrl/client.h>
 
 struct RESOLUTION_INFO;
+struct DEBUG_INFO_RENDER;
 
 namespace DX
 {
@@ -81,8 +82,9 @@ namespace DX
     // HDR display support
     HDR_STATUS ToggleHDR();
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;
-    void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace) const;
+    void SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpace);
     bool IsHDROutput() const { return m_IsHDROutput; }
+    bool IsTransferPQ() const { return m_IsTransferPQ; }
 
     // DX resources registration
     void Register(ID3DResource *resource);
@@ -107,6 +109,9 @@ namespace DX
     void SetWindowPos(winrt::Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
     bool IsNV12SharedTexturesSupported() const { return m_NV12SharedTexturesSupport; }
+
+    // Gets debug info from swapchain
+    DEBUG_INFO_RENDER GetDebugInfo() const;
 
   private:
     class CBackBuffer : public CD3DTexture
@@ -167,6 +172,7 @@ namespace DX
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
     bool m_IsHDROutput;
+    bool m_IsTransferPQ;
     bool m_NV12SharedTexturesSupport{false};
   };
 }

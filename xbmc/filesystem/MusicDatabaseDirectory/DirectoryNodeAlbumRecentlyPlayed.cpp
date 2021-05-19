@@ -55,7 +55,7 @@ bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items) const
   for (int i=0; i<(int)albums.size(); ++i)
   {
     CAlbum& album=albums[i];
-    std::string strDir = StringUtils::Format("%s%ld/", BuildPath().c_str(), album.idAlbum);
+    std::string strDir = StringUtils::Format("{}{}/", BuildPath(), album.idAlbum);
     CFileItemPtr pItem(new CFileItem(strDir, album));
     items.Add(pItem);
   }

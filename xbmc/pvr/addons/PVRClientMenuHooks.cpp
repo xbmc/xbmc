@@ -26,7 +26,7 @@ CPVRClientMenuHook::CPVRClientMenuHook(const std::string& addonId, const PVR_MEN
       hook.category != PVR_MENUHOOK_TIMER &&
       hook.category != PVR_MENUHOOK_EPG &&
       hook.category != PVR_MENUHOOK_RECORDING &&
-      hook.category != PVR_MENUHOOK_RECORDING &&
+      hook.category != PVR_MENUHOOK_DELETED_RECORDING &&
       hook.category != PVR_MENUHOOK_SETTING)
     CLog::LogF(LOGERROR, "Unknown PVR_MENUHOOK_CAT value: {}", hook.category);
 }
@@ -77,6 +77,11 @@ bool CPVRClientMenuHook::IsSettingsHook() const
   return m_hook->category == PVR_MENUHOOK_SETTING;
 }
 
+std::string CPVRClientMenuHook::GetAddonId() const
+{
+  return m_addonId;
+}
+
 unsigned int CPVRClientMenuHook::GetId() const
 {
   return m_hook->iHookId;
@@ -113,7 +118,8 @@ void CPVRClientMenuHooks::Clear()
   m_hooks.reset();
 }
 
-std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(std::function<bool(const CPVRClientMenuHook& hook)> function) const
+std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(
+    const std::function<bool(const CPVRClientMenuHook& hook)>& function) const
 {
   std::vector<CPVRClientMenuHook> hooks;
 

@@ -34,7 +34,7 @@ class CVariant;
 class CGenre
 {
 public:
-  long idGenre;
+  int idGenre;
   std::string strGenre;
 };
 
@@ -157,7 +157,7 @@ public:
   void SetArtistCredits(const std::vector<std::string>& names, const std::vector<std::string>& hints,
     const std::vector<std::string>& mbids);
 
-  long idSong;
+  int idSong;
   int idAlbum;
   std::string strFileName;
   std::string strTitle;
@@ -205,16 +205,16 @@ private:
 
 /*!
  \ingroup music
- \brief A map of CSong objects, used for CMusicDatabase
- */
-typedef std::map<std::string, CSong> MAPSONGS;
-
-/*!
- \ingroup music
  \brief A vector of CSong objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
 typedef std::vector<CSong> VECSONGS;
+
+/*!
+ \ingroup music
+ \brief A map of a vector of CSong objects key by filename, used for CMusicDatabase
+ */
+typedef std::map<std::string, VECSONGS> MAPSONGS;
 
 /*!
  \ingroup music

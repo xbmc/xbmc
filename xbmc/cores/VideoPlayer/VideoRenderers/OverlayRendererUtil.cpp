@@ -32,7 +32,7 @@ static uint32_t build_rgba(int a, int r, int g, int b, bool mergealpha)
          | b << PIXEL_BSHIFT;
 }
 
-#define clamp(x) (x) > 255.0 ? 255 : ((x) < 0.0 ? 0 : (int)(x+0.5f))
+#define clamp(x) (x) > 255.0 ? 255 : ((x) < 0.0 ? 0 : (int)(x + 0.5))
 static uint32_t build_rgba(int yuv[3], int alpha, bool mergealpha)
 {
   int    a = alpha + ( (alpha << 4) & 0xff );

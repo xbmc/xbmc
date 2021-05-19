@@ -96,9 +96,9 @@ public:
 
     RepoUpdateData() = default;
 
-    RepoUpdateData(CDateTime lastCheckedAt,
-                   ADDON::AddonVersion lastCheckedVersion,
-                   CDateTime nextCheckAt)
+    RepoUpdateData(const CDateTime& lastCheckedAt,
+                   const ADDON::AddonVersion& lastCheckedVersion,
+                   const CDateTime& nextCheckAt)
       : lastCheckedAt{lastCheckedAt},
         lastCheckedVersion{lastCheckedVersion},
         nextCheckAt{nextCheckAt}

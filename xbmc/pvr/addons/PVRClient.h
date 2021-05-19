@@ -10,6 +10,7 @@
 
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr.h"
+#include "threads/Event.h"
 
 #include <atomic>
 #include <functional>
@@ -17,6 +18,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+struct DemuxPacket;
 
 namespace PVR
 {
@@ -477,18 +480,36 @@ public:
   PVR_ERROR GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t start, time_t end);
 
   /*!
-   * @brief Tell the client the time frame to use when notifying epg events back
+   * @brief Tell the client the past time frame to use when notifying epg events back
    * to Kodi.
    *
    * The client might push epg events asynchronously to Kodi using the callback
    * function EpgEventStateChange. To be able to only push events that are
-   * actually of interest for Kodi, client needs to know about the epg time
+   * actually of interest for Kodi, client needs to know about the past epg time
    * frame Kodi uses.
    *
-   * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+   * @param[in] iPastDays number of days before "now".
+                @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events,
+                regardless of event times.
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.
    */
-  PVR_ERROR SetEPGTimeFrame(int iDays);
+  PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+
+  /*!
+   * @brief Tell the client the future time frame to use when notifying epg events back
+   * to Kodi.
+   *
+   * The client might push epg events asynchronously to Kodi using the callback
+   * function EpgEventStateChange. To be able to only push events that are
+   * actually of interest for Kodi, client needs to know about the future epg time
+   * frame Kodi uses.
+   *
+   * @param[in] iFutureDays number of days after "now".
+                @ref EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events,
+                regardless of event times.
+   * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+   */
+  PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
 
   //@}
   /** @name PVR channel group methods */
@@ -1054,9 +1075,21 @@ private:
    */
   typedef AddonInstance_PVR AddonInstance;
   PVR_ERROR DoAddonCall(const char* strFunctionName,
-                        std::function<PVR_ERROR(const AddonInstance*)> function,
+                        const std::function<PVR_ERROR(const AddonInstance*)>& function,
                         bool bIsImplemented = true,
                         bool bCheckReadyToUse = true) const;
+
+  /*!
+   * @brief Wraps an addon callback function call in order to do common pre and post function invocation actions.
+   * @param strFunctionName The function name, for logging purposes.
+   * @param kodiInstance The addon instance pointer.
+   * @param function The function to wrap. It must take one parameter of type CPVRClient*.
+   * @param bForceCall If true, make the call, ignoring client's state.
+   */
+  static void HandleAddonCallback(const char* strFunctionName,
+                                  void* kodiInstance,
+                                  const std::function<void(CPVRClient* client)>& function,
+                                  bool bForceCall = false);
 
   /*!
    * @brief Callback functions from addon to kodi
@@ -1178,7 +1211,7 @@ private:
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    * @param pPacket The packet to free.
    */
-  static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
+  static void cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket);
 
   /*!
    * @brief Allocate a demux packet. Free with FreeDemuxPacket
@@ -1186,7 +1219,7 @@ private:
    * @param iDataSize The size of the data that will go into the packet
    * @return The allocated packet.
    */
-  static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+  static DEMUX_PACKET* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
 
   /*!
    * @brief Notify a state change for a PVR backend connection
@@ -1220,6 +1253,8 @@ private:
   std::atomic<bool>
       m_bReadyToUse; /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
   std::atomic<bool> m_bBlockAddonCalls; /*!< true if no add-on API calls are allowed */
+  mutable std::atomic<int> m_iAddonCalls; /*!< number of in-progress addon calls */
+  mutable CEvent m_allAddonCallsFinished; /*!< fires after last in-progress addon call finished */
   PVR_CONNECTION_STATE m_connectionState; /*!< the backend connection state */
   PVR_CONNECTION_STATE m_prevConnectionState; /*!< the previous backend connection state */
   bool

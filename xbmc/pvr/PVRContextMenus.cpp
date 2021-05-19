@@ -602,6 +602,10 @@ namespace PVR
 
     bool PVRClientMenuHook::IsVisible(const CFileItem& item) const
     {
+      const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
+      if (!client || m_hook.GetAddonId() != client->ID())
+        return false;
+
       if (m_hook.IsAllHook())
         return !item.m_bIsFolder && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER);
       else if (m_hook.IsEpgHook())

@@ -165,7 +165,7 @@ CNetworkServices::~CNetworkServices()
 #endif // HAS_WEB_SERVER
 }
 
-bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting)
+bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return false;
@@ -470,7 +470,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
   return true;
 }
 
-void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CNetworkServices::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -492,7 +492,9 @@ void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-bool CNetworkServices::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CNetworkServices::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                                       const char* oldSettingId,
+                                       const TiXmlNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;
@@ -572,6 +574,63 @@ void CNetworkServices::Stop(bool bWait)
   StopJSONRPCServer(bWait);
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
+}
+
+bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
+{
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings)
+    return false;
+
+  bool ret = false;
+  switch (server)
+  {
+    case ES_WEBSERVER:
+      // the callback will take care of starting/stopping webserver
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_WEBSERVER, start);
+      break;
+
+    case ES_AIRPLAYSERVER:
+      // the callback will take care of starting/stopping airplay
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_AIRPLAY, start);
+      break;
+
+    case ES_JSONRPCSERVER:
+      // the callback will take care of starting/stopping jsonrpc server
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_ESENABLED, start);
+      break;
+
+    case ES_UPNPSERVER:
+      // the callback will take care of starting/stopping upnp server
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_UPNPSERVER, start);
+      break;
+
+    case ES_UPNPRENDERER:
+      // the callback will take care of starting/stopping upnp renderer
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_UPNPRENDERER, start);
+      break;
+
+    case ES_EVENTSERVER:
+      // the callback will take care of starting/stopping event server
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_ESENABLED, start);
+      break;
+
+    case ES_ZEROCONF:
+      // the callback will take care of starting/stopping zeroconf
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, start);
+      break;
+
+    default:
+      ret = false;
+      break;
+  }
+  settings->Save();
+
+  return ret;
 }
 
 bool CNetworkServices::StartWebserver()

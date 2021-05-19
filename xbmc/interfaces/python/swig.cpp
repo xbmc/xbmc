@@ -228,10 +228,10 @@ namespace PythonBindings
 
     if (!exceptionType.empty())
     {
-      msg += StringUtils::Format("Error Type: %s\n", exceptionType.c_str());
+      msg += StringUtils::Format("Error Type: {}\n", exceptionType);
 
       if (!exceptionValue.empty())
-        msg += StringUtils::Format("Error Contents: %s\n", exceptionValue.c_str());
+        msg += StringUtils::Format("Error Contents: {}\n", exceptionValue);
 
       if (!exceptionTraceback.empty())
         msg += exceptionTraceback;

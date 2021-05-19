@@ -43,7 +43,10 @@ public:
   void CleanUp(double pts); // validates all overlays against current pts
   int GetSize();
 
-  void UpdateOverlayInfo(std::shared_ptr<CDVDInputStreamNavigator> pStream, CDVDDemuxSPU *pSpu, int iAction);
+  void UpdateOverlayInfo(const std::shared_ptr<CDVDInputStreamNavigator>& pStream,
+                         CDVDDemuxSPU* pSpu,
+                         int iAction);
+
 private:
   VecOverlaysIter Remove(VecOverlaysIter itOverlay); // removes a specific overlay
 

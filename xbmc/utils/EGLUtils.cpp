@@ -157,7 +157,7 @@ bool CEGLUtils::HasClientExtension(const std::string& name)
 void CEGLUtils::Log(int logLevel, const std::string& what)
 {
   EGLenum error = eglGetError();
-  std::string errorStr = StringUtils::Format("0x%04X", error);
+  std::string errorStr = StringUtils::Format("{:#04X}", error);
 
   auto eglError = eglErrors.find(error);
   if (eglError != eglErrors.end())
@@ -365,10 +365,13 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
   {
     EGLint value{0};
     if (eglGetConfigAttrib(m_eglDisplay, *currentConfig, eglAttribute.first, &value) != EGL_TRUE)
-      CEGLUtils::Log(LOGERROR, StringUtils::Format("failed to query EGL attribute %s", eglAttribute.second));
+      CEGLUtils::Log(LOGERROR,
+                     StringUtils::Format("failed to query EGL attribute {}", eglAttribute.second));
 
     // we only need to print the hex value if it's an actual EGL define
-    CLog::Log(LOGDEBUG, "  %s: %s", eglAttribute.second, (value >= 0x3000 && value <= 0x3200) ? StringUtils::Format("0x%04x", value) : StringUtils::Format("%d", value));
+    CLog::Log(LOGDEBUG, "  {}: {}", eglAttribute.second,
+              (value >= 0x3000 && value <= 0x3200) ? StringUtils::Format("{:#04x}", value)
+                                                   : std::to_string(value));
   }
 
   return true;

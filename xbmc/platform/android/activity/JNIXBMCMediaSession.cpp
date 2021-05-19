@@ -156,7 +156,7 @@ void CJNIXBMCMediaSession::OnSeekRequested(int64_t pos)
   g_application.SeekTime(pos / 1000.0);
 }
 
-bool CJNIXBMCMediaSession::OnMediaButtonEvent(CJNIIntent intent)
+bool CJNIXBMCMediaSession::OnMediaButtonEvent(const CJNIIntent& intent)
 {
   if (CXBMCApp::HasFocus())
   {

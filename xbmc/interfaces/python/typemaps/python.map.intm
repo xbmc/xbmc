@@ -19,6 +19,6 @@
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(valtype))} value;
         ${helper.getInConversion(keytype, 'key', 'pykey', method)}
         ${helper.getInConversion(valtype, 'value', 'pyvalue' ,method)}
-        ${api}[key] = value;
+        ${api}.emplace(std::move(key), std::move(value));
       }
     }

@@ -59,9 +59,11 @@ namespace XBMCAddon
 
       // if we still don't have an id then bail
       if (id.empty())
-        throw AddonException("No valid addon id could be obtained. None was passed and the script wasn't executed in a normal xbmc manner.");
+        throw AddonException("No valid addon id could be obtained. None was passed and the script "
+                             "wasn't executed in a normal Kodi manner.");
 
-      if (!CServiceBroker::GetAddonMgr().GetAddon(id.c_str(), pAddon))
+      if (!CServiceBroker::GetAddonMgr().GetAddon(id.c_str(), pAddon, ADDON_UNKNOWN,
+                                                  OnlyEnabled::YES))
         throw AddonException("Unknown addon id '%s'.", id.c_str());
 
       CServiceBroker::GetAddonMgr().AddToUpdateableAddons(pAddon);
@@ -148,7 +150,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
-      if (UpdateSettingInActiveDialog(id, StringUtils::Format("%d", value)))
+      if (UpdateSettingInActiveDialog(id, std::to_string(value)))
         return true;
 
       if (!addon->UpdateSettingInt(id, value))
@@ -163,7 +165,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
-      if (UpdateSettingInActiveDialog(id, StringUtils::Format("%f", value)))
+      if (UpdateSettingInActiveDialog(id, StringUtils::Format("{:f}", value)))
         return true;
 
       if (!addon->UpdateSettingNumber(id, value))

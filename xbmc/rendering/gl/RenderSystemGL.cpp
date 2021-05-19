@@ -353,7 +353,7 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
   glMatrixModview->LoadIdentity();
   glMatrixModview->Translatef(-(w + offset.x - stereoFactor), +(h + offset.y), 0);
-  glMatrixModview->LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+  glMatrixModview->LookAt(0.0f, 0.0f, -2.0f * h, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f);
   glMatrixModview.Load();
 
   glMatrixProject->LoadIdentity();
@@ -454,10 +454,10 @@ void CRenderSystemGL::SetScissors(const CRect &rect)
 {
   if (!m_bRenderCreated)
     return;
-  GLint x1 = MathUtils::round_int(rect.x1);
-  GLint y1 = MathUtils::round_int(rect.y1);
-  GLint x2 = MathUtils::round_int(rect.x2);
-  GLint y2 = MathUtils::round_int(rect.y2);
+  GLint x1 = MathUtils::round_int(static_cast<double>(rect.x1));
+  GLint y1 = MathUtils::round_int(static_cast<double>(rect.y1));
+  GLint x2 = MathUtils::round_int(static_cast<double>(rect.x2));
+  GLint y2 = MathUtils::round_int(static_cast<double>(rect.y2));
   glScissor(x1, m_height - y2, x2-x1, y2-y1);
 }
 

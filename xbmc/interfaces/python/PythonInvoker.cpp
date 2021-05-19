@@ -150,7 +150,7 @@ bool CPythonInvoker::Execute(
 bool CPythonInvoker::execute(const std::string& script, const std::vector<std::string>& arguments)
 {
   std::vector<std::wstring> w_arguments;
-  for (auto argument : arguments)
+  for (const auto& argument : arguments)
   {
     std::wstring w_argument;
     g_charsetConverter.utf8ToW(argument, w_argument);
@@ -188,7 +188,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       extern PyThreadState* savestate;
       PyEval_RestoreThread(savestate);
 #else
-      PyThreadState* ts = PyThreadState_New(PyInterpreterState_Main());
+      PyThreadState* ts = PyInterpreterState_ThreadHead(PyInterpreterState_Main());
       PyEval_RestoreThread(ts);
 #endif
       l_threadState = Py_NewInterpreter();
@@ -693,7 +693,7 @@ void CPythonInvoker::onError(const std::string& exceptionType /* = "" */,
   {
     std::string message;
     if (m_addon && !m_addon->Name().empty())
-      message = StringUtils::Format(g_localizeStrings.Get(2102).c_str(), m_addon->Name().c_str());
+      message = StringUtils::Format(g_localizeStrings.Get(2102), m_addon->Name());
     else
       message = g_localizeStrings.Get(2103);
     pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, message, g_localizeStrings.Get(2104));
@@ -725,7 +725,8 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
   {
     //Check if dependency is a module addon
     ADDON::AddonPtr dependency;
-    if (CServiceBroker::GetAddonMgr().GetAddon(it.id, dependency, ADDON::ADDON_SCRIPT_MODULE))
+    if (CServiceBroker::GetAddonMgr().GetAddon(it.id, dependency, ADDON::ADDON_SCRIPT_MODULE,
+                                               ADDON::OnlyEnabled::YES))
     {
       std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
       if (paths.find(path) == paths.end())

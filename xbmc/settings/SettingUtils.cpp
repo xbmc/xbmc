@@ -14,12 +14,13 @@
 
 #include <algorithm>
 
-std::vector<CVariant> CSettingUtils::GetList(std::shared_ptr<const CSettingList> settingList)
+std::vector<CVariant> CSettingUtils::GetList(const std::shared_ptr<const CSettingList>& settingList)
 {
   return ListToValues(settingList, settingList->GetValue());
 }
 
-bool CSettingUtils::SetList(std::shared_ptr<CSettingList> settingList, const std::vector<CVariant> &value)
+bool CSettingUtils::SetList(const std::shared_ptr<CSettingList>& settingList,
+                            const std::vector<CVariant>& value)
 {
   SettingList newValues;
   if (!ValuesToList(settingList, value, newValues))
@@ -28,7 +29,9 @@ bool CSettingUtils::SetList(std::shared_ptr<CSettingList> settingList, const std
   return settingList->SetValue(newValues);
 }
 
-std::vector<CVariant> CSettingUtils::ListToValues(std::shared_ptr<const CSettingList> setting, const std::vector< std::shared_ptr<CSetting> > &values)
+std::vector<CVariant> CSettingUtils::ListToValues(
+    const std::shared_ptr<const CSettingList>& setting,
+    const std::vector<std::shared_ptr<CSetting>>& values)
 {
   std::vector<CVariant> realValues;
 
@@ -63,8 +66,9 @@ std::vector<CVariant> CSettingUtils::ListToValues(std::shared_ptr<const CSetting
   return realValues;
 }
 
-bool CSettingUtils::ValuesToList(std::shared_ptr<const CSettingList> setting, const std::vector<CVariant> &values,
-                                 std::vector< std::shared_ptr<CSetting> > &newValues)
+bool CSettingUtils::ValuesToList(const std::shared_ptr<const CSettingList>& setting,
+                                 const std::vector<CVariant>& values,
+                                 std::vector<std::shared_ptr<CSetting>>& newValues)
 {
   if (setting == NULL)
     return false;
@@ -73,7 +77,8 @@ bool CSettingUtils::ValuesToList(std::shared_ptr<const CSettingList> setting, co
   bool ret = true;
   for (const auto& value : values)
   {
-    SettingPtr settingValue = setting->GetDefinition()->Clone(StringUtils::Format("%s.%d", setting->GetId().c_str(), index++));
+    SettingPtr settingValue =
+        setting->GetDefinition()->Clone(StringUtils::Format("{}.{}", setting->GetId(), index++));
     if (settingValue == NULL)
       return false;
 
@@ -121,7 +126,7 @@ bool CSettingUtils::ValuesToList(std::shared_ptr<const CSettingList> setting, co
   return true;
 }
 
-bool CSettingUtils::FindIntInList(std::shared_ptr<const CSettingList> settingList, int value)
+bool CSettingUtils::FindIntInList(const std::shared_ptr<const CSettingList>& settingList, int value)
 {
   if (settingList == nullptr || settingList->GetElementType() != SettingType::Integer)
     return false;

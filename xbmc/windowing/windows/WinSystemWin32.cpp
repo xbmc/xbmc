@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "VideoSyncD3D.h"
+#include "WIN32Util.h"
 #include "WinEventsWin32.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDirectSound.h"
@@ -33,7 +34,6 @@
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/input/IRServerSuite.h"
-#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 
 #include <algorithm>
 
@@ -72,7 +72,6 @@ CWinSystemWin32::CWinSystemWin32()
   AE::CAESinkFactory::ClearSinks();
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
-  CWin32PowerSyscall::Register();
   CScreenshotSurfaceWindows::Register();
 
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer)
@@ -215,6 +214,14 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
   UpdateWindow( m_hWnd );
+  
+  // Configure the tray icon.
+  m_trayIcon.cbSize = sizeof(m_trayIcon);
+  m_trayIcon.hWnd = m_hWnd;
+  m_trayIcon.hIcon = m_hIcon;
+  wcsncpy(m_trayIcon.szTip, nameW.c_str(), sizeof(m_trayIcon.szTip) / sizeof(WCHAR));
+  m_trayIcon.uCallbackMessage = TRAY_ICON_NOTIFY;
+  m_trayIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;  
 
   return true;
 }
@@ -614,6 +621,27 @@ bool CWinSystemWin32::DPIChanged(WORD dpi, RECT windowRect) const
   return true;
 }
 
+void CWinSystemWin32::SetMinimized(bool minimized)
+{
+  const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  if (advancedSettings->m_minimizeToTray)
+  {
+    if (minimized)
+    {
+      Shell_NotifyIcon(NIM_ADD, &m_trayIcon);
+      ShowWindow(m_hWnd, SW_HIDE);
+    }
+    else
+    {
+      Shell_NotifyIcon(NIM_DELETE, &m_trayIcon);
+      ShowWindow(m_hWnd, SW_RESTORE);
+    }
+  }
+
+  m_bMinimized = minimized;
+}
+
 void CWinSystemWin32::GetConnectedOutputs(std::vector<std::string>* outputs)
 {
   for (auto& display : m_displays)
@@ -935,8 +963,8 @@ void CWinSystemWin32::UpdateResolutions()
     res.iScreenWidth = res.iWidth;
     res.iScreenHeight = res.iHeight;
     res.iSubtitles = (int)(0.965 * res.iHeight);
-    res.strMode = StringUtils::Format("%s: %dx%d @ %.2fHz", monitorName.c_str(), res.iWidth,
-                                      res.iHeight, res.fRefreshRate);
+    res.strMode = StringUtils::Format("{}: {}x{} @ {:.2f}Hz", monitorName, res.iWidth, res.iHeight,
+                                      res.fRefreshRate);
     GetGfxContext().ResetOverscan(res);
     res.strOutput = strOutput;
 

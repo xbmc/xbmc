@@ -14,6 +14,8 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <utility>
+
 using namespace KODI;
 
 
@@ -47,7 +49,7 @@ std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::GetAnnouncem
 }
 void CServiceBroker::RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> port)
 {
-  g_serviceBroker.m_pAnnouncementManager = port;
+  g_serviceBroker.m_pAnnouncementManager = std::move(port);
 }
 
 void CServiceBroker::UnregisterAnnouncementManager()
@@ -79,6 +81,13 @@ ADDON::CVFSAddonCache &CServiceBroker::GetVFSAddonCache()
 XBPython& CServiceBroker::GetXBPython()
 {
   return g_application.m_ServiceManager->GetXBPython();
+}
+#endif
+
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+MEDIA_DETECT::CDetectDVDMedia& CServiceBroker::GetDetectDVDMedia()
+{
+  return g_application.m_ServiceManager->GetDetectDVDMedia();
 }
 #endif
 
@@ -268,7 +277,7 @@ std::shared_ptr<CAppInboundProtocol> CServiceBroker::GetAppPort()
 }
 void CServiceBroker::RegisterAppPort(std::shared_ptr<CAppInboundProtocol> port)
 {
-  g_serviceBroker.m_pAppPort = port;
+  g_serviceBroker.m_pAppPort = std::move(port);
 }
 void CServiceBroker::UnregisterAppPort()
 {
@@ -292,7 +301,7 @@ std::shared_ptr<CCPUInfo> CServiceBroker::GetCPUInfo()
 
 void CServiceBroker::RegisterCPUInfo(std::shared_ptr<CCPUInfo> cpuInfo)
 {
-  g_serviceBroker.m_cpuInfo = cpuInfo;
+  g_serviceBroker.m_cpuInfo = std::move(cpuInfo);
 }
 
 void CServiceBroker::UnregisterCPUInfo()

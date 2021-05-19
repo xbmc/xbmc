@@ -578,5 +578,5 @@ std::string CSpeed::ToString(Unit speedUnit) const
   if (!IsValid())
     return "";
 
-  return StringUtils::Format("%2.0f", To(speedUnit));
+  return StringUtils::Format("{:2.0f}", To(speedUnit));
 }

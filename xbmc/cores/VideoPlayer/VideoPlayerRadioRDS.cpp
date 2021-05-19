@@ -31,7 +31,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -723,7 +723,7 @@ std::string CDVDRadioRDSData::GetRadioText(unsigned int line)
   return str;
 }
 
-void CDVDRadioRDSData::SetRadioStyle(std::string genre)
+void CDVDRadioRDSData::SetRadioStyle(const std::string& genre)
 {
   g_application.CurrentFileItem().GetMusicInfoTag()->SetGenre(genre);
   m_currentInfoTag->SetProgStyle(genre);
@@ -1048,7 +1048,8 @@ unsigned int CDVDRadioRDSData::DecodePTYN(uint8_t *msgElement)
 
   if (!m_RTPlus_GenrePresent)
   {
-    std::string progTypeName = StringUtils::Format("%s: %s", g_localizeStrings.Get(pty_skin_info_table[m_PTY][m_RDS_IsRBDS].name).c_str(), m_PTYN);
+    std::string progTypeName = StringUtils::Format(
+        "{}: {}", g_localizeStrings.Get(pty_skin_info_table[m_PTY][m_RDS_IsRBDS].name), m_PTYN);
     SetRadioStyle(progTypeName);
   }
 

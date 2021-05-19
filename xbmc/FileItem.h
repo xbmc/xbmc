@@ -47,6 +47,7 @@ namespace GAME
 namespace PVR
 {
 class CPVRChannel;
+class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
 class CPVRRecording;
 class CPVRTimerInfoTag;
@@ -111,7 +112,9 @@ public:
   explicit CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   explicit CFileItem(const CVideoInfoTag& movie);
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
-  explicit CFileItem(const std::shared_ptr<PVR::CPVRChannel>& channel);
+  CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
+            const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember);
+  explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
   explicit CFileItem(const CMediaSource& share);
@@ -290,20 +293,18 @@ public:
     return m_epgInfoTag;
   }
 
-  inline void SetEPGInfoTag(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag)
+  inline bool HasPVRChannelGroupMemberInfoTag() const
   {
-    m_epgInfoTag = tag;
+    return m_pvrChannelGroupMemberInfoTag.get() != nullptr;
   }
 
-  inline bool HasPVRChannelInfoTag() const
+  inline const std::shared_ptr<PVR::CPVRChannelGroupMember> GetPVRChannelGroupMemberInfoTag() const
   {
-    return m_pvrChannelInfoTag.get() != NULL;
+    return m_pvrChannelGroupMemberInfoTag;
   }
 
-  inline const std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const
-  {
-    return m_pvrChannelInfoTag;
-  }
+  bool HasPVRChannelInfoTag() const;
+  const std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const;
 
   inline bool HasPVRRecordingInfoTag() const
   {
@@ -510,6 +511,14 @@ public:
    */
   void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
 
+  /*! \brief Merge an item with information from another item
+  We take metadata/art information from the given item and supplement the current
+  item with that info. If tags exist in the new item we only merge the missing
+  tag information. Properties are appended, and labels are updated if non-empty
+  in the given item.
+  */
+  void MergeInfo(const CFileItem &item);
+
   bool IsSamePath(const CFileItem *item) const;
 
   bool IsAlbum() const;
@@ -575,7 +584,8 @@ private:
   /*!
    \brief If given channel is radio, fill item's music tag from given epg tag and channel info.
    */
-  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVRChannel>& channel, const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
+  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember,
+                        const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
 
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
@@ -590,9 +600,9 @@ private:
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   std::shared_ptr<PVR::CPVREpgInfoTag> m_epgInfoTag;
-  std::shared_ptr<PVR::CPVRChannel> m_pvrChannelInfoTag;
   std::shared_ptr<PVR::CPVRRecording> m_pvrRecordingInfoTag;
   std::shared_ptr<PVR::CPVRTimerInfoTag> m_pvrTimerInfoTag;
+  std::shared_ptr<PVR::CPVRChannelGroupMember> m_pvrChannelGroupMemberInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
   KODI::GAME::CGameInfoTag* m_gameInfoTag;
@@ -675,7 +685,7 @@ public:
   void Append(const CFileItemList& itemlist);
   void Assign(const CFileItemList& itemlist, bool append = false);
   bool Copy  (const CFileItemList& item, bool copyItems = true);
-  void Reserve(int iCount);
+  void Reserve(size_t iCount);
   void Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute sortAttributes = SortAttributeNone);
   /* \brief Sorts the items based on the given sorting options
 

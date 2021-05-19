@@ -190,10 +190,10 @@ void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float wid
   else if (verticalShift < -1.0f)
     posY += shiftRange * (verticalShift + 1.0f);
 
-  m_destRect.x1 = (float)MathUtils::round_int(posX + offsetX);
-  m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(newWidth);
-  m_destRect.y1 = (float)MathUtils::round_int(posY + offsetY);
-  m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(newHeight);
+  m_destRect.x1 = (float)MathUtils::round_int(static_cast<double>(posX + offsetX));
+  m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(static_cast<double>(newWidth));
+  m_destRect.y1 = (float)MathUtils::round_int(static_cast<double>(posY + offsetY));
+  m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(static_cast<double>(newHeight));
 
   // clip as needed
   if (!(CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() || CServiceBroker::GetWinSystem()->GetGfxContext().IsCalibrating()))
@@ -410,7 +410,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
   { // super zoom
     float stretchAmount = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
     CDisplaySettings::GetInstance().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
-    CDisplaySettings::GetInstance().SetZoomAmount(pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0)));
+    CDisplaySettings::GetInstance().SetZoomAmount(
+        pow(stretchAmount, float((stretchAmount < 1.0f) ? -1.0 / 3.0 : 1.0 / 3.0)));
     CDisplaySettings::GetInstance().SetNonLinearStretched(true);
   }
   else if (m_videoSettings.m_ViewMode == ViewModeStretch16x9 ||
@@ -483,7 +484,11 @@ void CBaseRenderer::SetVideoSettings(const CVideoSettings &settings)
   m_videoSettings = settings;
 }
 
-void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CBaseRenderer::SettingOptionsRenderMethodsFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
 {
   list.emplace_back(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
 

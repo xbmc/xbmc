@@ -8,6 +8,7 @@
 #pragma once
 
 #include "VideoRenderers/ColorManager.h"
+#include "VideoRenderers/DebugInfo.h"
 #include "VideoRenderers/RenderInfo.h"
 #include "VideoRenderers/VideoShaders/WinVideoFilter.h"
 #include "cores/VideoSettings.h"
@@ -19,6 +20,7 @@
 #include <dxgi1_5.h>
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixdesc.h>
 }
 
 struct VideoPicture;
@@ -38,17 +40,17 @@ namespace win
 
 enum RenderMethod
 {
-  RENDER_INVALID = 0x00,
-  RENDER_DXVA = 0x01,
-  RENDER_PS = 0x02,
-  RENDER_SW = 0x03,
+  RENDER_INVALID = 0,
+  RENDER_DXVA = 1,
+  RENDER_PS = 2,
+  RENDER_SW = 3
 };
 
-enum class HDR_TYPE : uint32_t
+enum class HDR_TYPE
 {
-  HDR_NONE_SDR = 0x00,
-  HDR_HDR10 = 0x01,
-  HDR_HLG = 0x02
+  HDR_NONE_SDR = 0,
+  HDR_HDR10 = 1,
+  HDR_HLG = 2
 };
 
 class CRenderBuffer
@@ -79,7 +81,7 @@ public:
   bool full_range = false;
   int bits = 8;
   uint8_t texBits = 8;
-
+  AVPixelFormat pixelFormat = AV_PIX_FMT_NONE; // source pixel format
   bool hasDisplayMetadata = false;
   bool hasLightMetadata = false;
   AVMasteringDisplayMetadata displayMetadata = {};
@@ -127,6 +129,8 @@ public:
   bool Flush(bool saveBuffers);
   void SetBufferSize(int numBuffers) { m_iBuffersRequired = numBuffers; }
 
+  DEBUG_INFO_VIDEO GetDebugInfo(int idx);
+
   static DXGI_FORMAT GetDXGIFormat(const VideoPicture &picture);
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);
   static AVPixelFormat GetAVFormat(DXGI_FORMAT dxgi_format);
@@ -151,13 +155,13 @@ protected:
   virtual void CheckVideoParameters();
   virtual void OnViewSizeChanged() {}
   virtual void OnOutputReset() {}
-  virtual bool UseToneMapping() const { return m_toneMapping; }
 
   bool m_toneMapping = false;
   bool m_useDithering = false;
   bool m_cmsOn = false;
   bool m_clutLoaded = false;
   bool m_useHLGtoPQ = false;
+  int m_toneMapMethod = 0;
 
   int m_iBufferIndex = 0;
   int m_iNumBuffers = 0;

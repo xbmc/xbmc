@@ -10,12 +10,14 @@
 
 #include "ScriptInvocationManager.h"
 
+#include <utility>
+
 CLanguageInvokerThread::CLanguageInvokerThread(LanguageInvokerPtr invoker,
                                                CScriptInvocationManager* invocationManager,
                                                bool reuseable)
   : ILanguageInvoker(NULL),
     CThread("LanguageInvoker"),
-    m_invoker(invoker),
+    m_invoker(std::move(invoker)),
     m_invocationManager(invocationManager),
     m_reusable(reuseable)
 { }

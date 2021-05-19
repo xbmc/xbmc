@@ -432,9 +432,11 @@ void CGUIWindowFileManager::UpdateItemCounts()
     }
     std::string items;
     if (selectedCount > 0)
-      items = StringUtils::Format("%i/%i %s (%s)", selectedCount, totalCount, g_localizeStrings.Get(127).c_str(), StringUtils::SizeToString(selectedSize).c_str());
+      items =
+          StringUtils::Format("{}/{} {} ({})", selectedCount, totalCount,
+                              g_localizeStrings.Get(127), StringUtils::SizeToString(selectedSize));
     else
-      items = StringUtils::Format("%i %s", totalCount, g_localizeStrings.Get(127).c_str());
+      items = StringUtils::Format("{} {}", totalCount, g_localizeStrings.Get(127));
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }
@@ -487,7 +489,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   URIUtils::GetParentPath(strDirectory, strParentPath);
   if (strDirectory.empty() && (m_vecItems[iList]->Size() == 0 || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS)))
   { // add 'add source button'
-    std::string strLabel = g_localizeStrings.Get(1026);
+    const std::string& strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
     pItem->SetArt("icon", "DefaultAddSource.png");
@@ -630,7 +632,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
   // start playlists from file manager
   if (pItem->IsPlayList())
   {
-    std::string strPlayList = pItem->GetPath();
+    const std::string& strPlayList = pItem->GetPath();
     std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
     if (nullptr != pPlayList)
     {

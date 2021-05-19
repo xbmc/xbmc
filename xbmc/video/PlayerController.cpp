@@ -71,7 +71,7 @@ bool CPlayerController::OnAction(const CAction &action)
           if (info.name.length() == 0)
             sub = lang;
           else
-            sub = StringUtils::Format("%s - %s", lang.c_str(), info.name.c_str());
+            sub = StringUtils::Format("{} - {}", lang, info.name);
         }
         else
           sub = g_localizeStrings.Get(1223);
@@ -118,7 +118,7 @@ bool CPlayerController::OnAction(const CAction &action)
           if (info.name.length() == 0)
             sub = lang;
           else
-            sub = StringUtils::Format("%s - %s", lang.c_str(), info.name.c_str());
+            sub = StringUtils::Format("{} - {}", lang, info.name);
         }
         else
           sub = g_localizeStrings.Get(1223);
@@ -218,9 +218,9 @@ bool CPlayerController::OnAction(const CAction &action)
         if (info.name.empty())
           aud = lan;
         else
-          aud = StringUtils::Format("%s - %s", lan.c_str(), info.name.c_str());
+          aud = StringUtils::Format("{} - {}", lan, info.name);
         std::string caption = g_localizeStrings.Get(460);
-        caption += StringUtils::Format(" (%i/%i)", currentAudio + 1, audioStreamCount);
+        caption += StringUtils::Format(" ({}/{})", currentAudio + 1, audioStreamCount);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, aud, DisplTime, false, MsgTime);
         return true;
       }
@@ -239,7 +239,7 @@ bool CPlayerController::OnAction(const CAction &action)
         VideoStreamInfo info;
         g_application.GetAppPlayer().GetVideoStreamInfo(currentVideo, info);
         std::string caption = g_localizeStrings.Get(38031);
-        caption += StringUtils::Format(" (%i/%i)", currentVideo + 1, videoStreamCount);
+        caption += StringUtils::Format(" ({}/{})", currentVideo + 1, videoStreamCount);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
         return true;
       }
@@ -452,7 +452,7 @@ bool CPlayerController::OnAction(const CAction &action)
         {
           int playing = 0;
           int idx = 0;
-          for (auto prog : programs)
+          for (const auto& prog : programs)
           {
             dialog->Add(prog.name);
             if (prog.playing)
@@ -527,7 +527,7 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
       m_sliderAction == ACTION_VSHIFT_UP || m_sliderAction == ACTION_VSHIFT_DOWN ||
       m_sliderAction == ACTION_SUBTITLE_VSHIFT_UP || m_sliderAction == ACTION_SUBTITLE_VSHIFT_DOWN)
   {
-    std::string strValue = StringUtils::Format("%1.2f",slider->GetFloatValue());
+    std::string strValue = StringUtils::Format("{:1.2f}", slider->GetFloatValue());
     slider->SetTextValue(strValue);
   }
   else if (m_sliderAction == ACTION_VOLAMP_UP ||

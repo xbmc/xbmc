@@ -30,6 +30,7 @@ class CGUIListItemLayout;
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRChannelGroupMember;
   class CPVRChannelNumber;
 
   class CGUIEPGGridContainerModel;
@@ -71,7 +72,7 @@ namespace PVR
     std::string GetLabel(int info) const override;
 
     std::shared_ptr<CFileItem> GetSelectedGridItem(int offset = 0) const;
-    std::shared_ptr<CPVRChannel> GetSelectedChannel() const;
+    std::shared_ptr<CPVRChannelGroupMember> GetSelectedChannelGroupMember() const;
     CDateTime GetSelectedDate() const;
 
     void LoadLayout(TiXmlElement* layout);
@@ -85,6 +86,7 @@ namespace PVR
     void SetRenderOffset(const CPoint& offset);
 
     void JumpToNow();
+    void JumpToDate(const CDateTime& date);
 
     void GoToBegin();
     void GoToEnd();

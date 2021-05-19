@@ -50,7 +50,7 @@ void CActiveAEFilter::Init(AVSampleFormat fmt, int sampleRate, uint64_t channelL
 bool CActiveAEFilter::SetTempo(float tempo)
 {
   m_tempo = tempo;
-  if (m_tempo == 1.0)
+  if (m_tempo == 1.0f)
   {
     CloseFilter();
     return true;
@@ -84,11 +84,9 @@ bool CActiveAEFilter::CreateFilterGraph()
   const AVFilter* srcFilter = avfilter_get_by_name("abuffer");
   const AVFilter* outFilter = avfilter_get_by_name("abuffersink");
 
-  std::string args = StringUtils::Format("time_base=1/%d:sample_rate=%d:sample_fmt=%s:channel_layout=0x%" PRIx64,
-                                         m_sampleRate,
-                                         m_sampleRate,
-                                         av_get_sample_fmt_name(m_sampleFormat),
-                                         m_channelLayout);
+  std::string args = StringUtils::Format(
+      "time_base=1/{}:sample_rate={}:sample_fmt={}:channel_layout={}", m_sampleRate, m_sampleRate,
+      av_get_sample_fmt_name(m_sampleFormat), m_channelLayout);
 
   int ret = avfilter_graph_create_filter(&m_pFilterCtxIn, srcFilter, "in", args.c_str(), NULL, m_pFilterGraph);
   if (ret < 0)
@@ -115,7 +113,7 @@ bool CActiveAEFilter::CreateAtempoFilter()
 
   atempo = avfilter_get_by_name("atempo");
   m_pFilterCtxAtempo = avfilter_graph_alloc_filter(m_pFilterGraph, atempo, "atempo");
-  std::string args =  StringUtils::Format("tempo=%f", m_tempo);
+  std::string args = StringUtils::Format("tempo={:f}", m_tempo);
   int ret = avfilter_init_str(m_pFilterCtxAtempo, args.c_str());
 
   if (ret < 0)

@@ -193,9 +193,13 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_SETTINGS_OKAY_BUTTON)
       {
-        OnOkay();
-        Close();
-        return true;
+        if (OnOkay())
+        {
+          Close();
+          return true;
+        }
+
+        return false;
       }
 
       if (iControl == CONTROL_SETTINGS_CANCEL_BUTTON)
@@ -495,7 +499,7 @@ void CGUIDialogSettingsBase::OnTimeout()
   UpdateSettingControl(m_delayedSetting, true);
 }
 
-void CGUIDialogSettingsBase::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIDialogSettingsBase::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL || setting->GetType() == SettingType::Unknown ||
       setting->GetType() == SettingType::Action)
@@ -504,8 +508,8 @@ void CGUIDialogSettingsBase::OnSettingChanged(std::shared_ptr<const CSetting> se
   UpdateSettingControl(setting->GetId(), true);
 }
 
-void CGUIDialogSettingsBase::OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting,
-                                                      const char* propertyName)
+void CGUIDialogSettingsBase::OnSettingPropertyChanged(
+    const std::shared_ptr<const CSetting>& setting, const char* propertyName)
 {
   if (setting == NULL || propertyName == NULL)
     return;
@@ -606,7 +610,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   return settingMap;
 }
 
-std::string CGUIDialogSettingsBase::GetSettingsLabel(std::shared_ptr<ISetting> pSetting)
+std::string CGUIDialogSettingsBase::GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting)
 {
   return GetLocalizedString(pSetting->GetLabel());
 }
@@ -626,7 +630,7 @@ void CGUIDialogSettingsBase::UpdateSettings()
   }
 }
 
-CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetting,
+CGUIControl* CGUIDialogSettingsBase::AddSetting(const std::shared_ptr<CSetting>& pSetting,
                                                 float width,
                                                 int& iControlID)
 {
@@ -652,8 +656,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     std::string indentation;
     for (int index = 1; index < parentLevels; index++)
       indentation.append("  ");
-    label =
-        StringUtils::Format(g_localizeStrings.Get(168).c_str(), indentation.c_str(), label.c_str());
+    label = StringUtils::Format(g_localizeStrings.Get(168), indentation, label);
   }
 
   // create the proper controls
@@ -777,7 +780,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int& iControlID)
                            width, iControlID);
 }
 
-CGUIControl* CGUIDialogSettingsBase::AddGroupLabel(std::shared_ptr<CSettingGroup> group,
+CGUIControl* CGUIDialogSettingsBase::AddGroupLabel(const std::shared_ptr<CSettingGroup>& group,
                                                    float width,
                                                    int& iControlID)
 {
@@ -846,7 +849,7 @@ void CGUIDialogSettingsBase::OnResetSettings()
   }
 }
 
-void CGUIDialogSettingsBase::OnClick(BaseSettingControlPtr pSettingControl)
+void CGUIDialogSettingsBase::OnClick(const BaseSettingControlPtr& pSettingControl)
 {
   if (AllowResettingSettings() &&
       pSettingControl->GetSetting()->GetId() == SETTINGS_RESET_SETTING_ID)
@@ -892,7 +895,7 @@ void CGUIDialogSettingsBase::UpdateSettingControl(const std::string& settingId,
   return UpdateSettingControl(GetSettingControl(settingId), updateDisplayOnly);
 }
 
-void CGUIDialogSettingsBase::UpdateSettingControl(BaseSettingControlPtr pSettingControl,
+void CGUIDialogSettingsBase::UpdateSettingControl(const BaseSettingControlPtr& pSettingControl,
                                                   bool updateDisplayOnly /* = false */)
 {
   if (pSettingControl == NULL)

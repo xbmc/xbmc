@@ -10,8 +10,9 @@
 
 #ifdef __cplusplus
 
-#include "system_egl.h"
+#if defined(WIN32) && defined(HAS_ANGLE)
 
+#include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <angle_gl.h>
 #include <d3d11.h>
@@ -386,5 +387,9 @@ private:
 using CRenderHelper = gl::CGLonDX;
 } /* namespace gui */
 } /* namespace kodi */
+
+#else /* defined(WIN32) && defined(HAS_ANGLE) */
+#pragma message ( "WARNING: GLonDX.h only be available on Windows by use of Angle as depend!" )
+#endif /* defined(WIN32) && defined(HAS_ANGLE) */
 
 #endif /* __cplusplus */

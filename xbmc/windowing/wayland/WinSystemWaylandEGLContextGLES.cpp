@@ -21,13 +21,18 @@
 #include "utils/DMAHeapBufferObject.h"
 #include "utils/UDMABufferObject.h"
 #include "utils/log.h"
+#include "windowing/WindowSystemFactory.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 
-std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
+void CWinSystemWaylandEGLContextGLES::Register()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWaylandEGLContextGLES());
-  return winSystem;
+  CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem, "wayland");
+}
+
+std::unique_ptr<CWinSystemBase> CWinSystemWaylandEGLContextGLES::CreateWinSystem()
+{
+  return std::make_unique<CWinSystemWaylandEGLContextGLES>();
 }
 
 bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()

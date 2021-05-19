@@ -552,7 +552,7 @@ public:
   /// ~~~~~~~~~~~~~{.cpp}
   /// #include <kodi/tools/StringUtils.h>
   ///
-  /// std::string str = kodi::tools::StringUtils::Format("Hello %s %i", "World", 2020);
+  /// std::string str = kodi::tools::StringUtils::Format("Hello {} {}", "World", 2020);
   /// ~~~~~~~~~~~~~
   ///
   inline static std::string Format(const char* fmt, ...)
@@ -2936,13 +2936,13 @@ public:
 
     std::string strHMS;
     if (format == TIME_FORMAT_SECS)
-      strHMS = StringUtils::Format("%i", seconds);
+      strHMS = std::to_string(seconds);
     else if (format == TIME_FORMAT_MINS)
-      strHMS = StringUtils::Format("%i", lrintf(static_cast<float>(seconds) / 60.0f));
+      strHMS = std::to_string(lrintf(static_cast<float>(seconds) / 60.0f));
     else if (format == TIME_FORMAT_HOURS)
-      strHMS = StringUtils::Format("%i", lrintf(static_cast<float>(seconds) / 3600.0f));
+      strHMS = std::to_string(lrintf(static_cast<float>(seconds) / 3600.0f));
     else if (format & TIME_FORMAT_M)
-      strHMS += StringUtils::Format("%i", seconds % 3600 / 60);
+      strHMS += std::to_string(seconds % 3600 / 60);
     else
     {
       int hh = seconds / 3600;
@@ -2953,13 +2953,13 @@ public:
       if (format == TIME_FORMAT_GUESS)
         format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
       if (format & TIME_FORMAT_HH)
-        strHMS += StringUtils::Format("%2.2i", hh);
+        strHMS += StringUtils::Format("{:02}", hh);
       else if (format & TIME_FORMAT_H)
-        strHMS += StringUtils::Format("%i", hh);
+        strHMS += std::to_string(hh);
       if (format & TIME_FORMAT_MM)
-        strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", mm);
+        strHMS += StringUtils::Format(strHMS.empty() ? "{:02}" : ":{:02}", mm);
       if (format & TIME_FORMAT_SS)
-        strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", ss);
+        strHMS += StringUtils::Format(strHMS.empty() ? "{:02}" : ":{:02}", ss);
     }
 
     if (isNegative)

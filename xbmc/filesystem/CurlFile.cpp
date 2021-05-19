@@ -12,6 +12,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/SpecialProtocol.h"
+#include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -450,6 +452,10 @@ void CCurlFile::Close()
   m_opened = false;
   m_forWrite = false;
   m_inError = false;
+
+  if (m_dnsCacheList)
+    g_curlInterface.slist_free_all(m_dnsCacheList);
+  m_dnsCacheList = nullptr;
 }
 
 void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true */)
@@ -471,12 +477,8 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   g_curlInterface.easy_setopt(h, CURLOPT_READDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_READFUNCTION, read_callback);
 
-  // set username and password for current handle
-  if (m_username.length() > 0 && m_password.length() > 0)
-  {
-    std::string userpwd = m_username + ':' + m_password;
-    g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
-  }
+  // use DNS cache
+  g_curlInterface.easy_setopt(h, CURLOPT_RESOLVE, m_dnsCacheList);
 
   // make sure headers are separated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
@@ -555,8 +557,10 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   }
 
   // setup requested http authentication method
+  bool bAuthSet = false;
   if(!m_httpauth.empty())
   {
+    bAuthSet = true;
     if( m_httpauth == "any" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
     else if( m_httpauth == "anysafe" )
@@ -565,6 +569,19 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
     else if( m_httpauth == "ntlm" )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
+    else
+      bAuthSet = false;
+  }
+
+  // set username and password for current handle
+  if (!m_username.empty())
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
+    if (!m_password.empty())
+      g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
+
+    if (!bAuthSet)
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
   }
 
   // allow passive mode for ftp
@@ -598,8 +615,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
 
-    const std::string hostport = m_proxyhost +
-      StringUtils::Format(":%d", m_proxyport);
+    const std::string hostport = m_proxyhost + StringUtils::Format(":{}", m_proxyport);
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, hostport.c_str());
 
     std::string userpass;
@@ -628,6 +644,18 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
 
+  // enable tcp keepalive
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval > 0)
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_TCP_KEEPALIVE, 1L);
+    g_curlInterface.easy_setopt(
+        h, CURLOPT_TCP_KEEPIDLE,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval / 2);
+    g_curlInterface.easy_setopt(
+        h, CURLOPT_TCP_KEEPINTVL,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval);
+  }
+
   // Setup allowed TLS/SSL ciphers. New versions of cURL may deprecate things that are still in use.
   if (!m_cipherlist.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_SSL_CIPHER_LIST, m_cipherlist.c_str());
@@ -637,6 +665,13 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   else
     // enable HTTP2 support. default: CURL_HTTP_VERSION_1_1. Curl >= 7.62.0 defaults to CURL_HTTP_VERSION_2TLS
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+
+  // set CA bundle file
+  std::string caCert = CSpecialProtocol::TranslatePath(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caTrustFile);
+  if (!caCert.empty() && XFILE::CFile::Exists(caCert))
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
+
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -685,6 +720,33 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 {
   std::string strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
+
+  // lookup host in DNS cache
+  std::string resolvedHost;
+  if (CDNSNameCache::Lookup(url2.GetHostName(), resolvedHost))
+  {
+    struct curl_slist* tempCache;
+    int entryPort = url2.GetPort();
+
+    if (entryPort == 0)
+    {
+      if (strProtocol == "http")
+        entryPort = 80;
+      else if (strProtocol == "https")
+        entryPort = 443;
+      else if (strProtocol == "ftp")
+        entryPort = 21;
+      else if (strProtocol == "ftps")
+        entryPort = 990;
+    }
+
+    std::string entryString =
+        url2.GetHostName() + ":" + std::to_string(entryPort) + ":" + resolvedHost;
+    tempCache = g_curlInterface.slist_append(m_dnsCacheList, entryString.c_str());
+
+    if (tempCache)
+      m_dnsCacheList = tempCache;
+  }
 
   if( url2.IsProtocol("ftp")
    || url2.IsProtocol("ftps") )
@@ -1506,27 +1568,23 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
-  if(buffer)
+  if (buffer)
   {
-    char *content;
-    result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, &content);
-    if (result != CURLE_OK)
-    {
-      CLog::Log(LOGINFO, "CCurlFile::Stat - Content type failed: %s(%d) for %s",
-                g_curlInterface.easy_strerror(result), result, url.GetRedacted().c_str());
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-      errno = ENOENT;
-      return -1;
-    }
+    *buffer = {};
+    buffer->st_size = static_cast<int64_t>(length);
+
+    // Note: CURLINFO_CONTENT_TYPE returns the last received content-type response header value.
+    // In case there is authentication required there might be multiple requests involved and if
+    // the last request whch actually returns the data does not return a content-type header, but
+    // one of the preceeding requests, CURLINFO_CONTENT_TYPE returns not the content type of the
+    // actual resource requested! m_state contains only the values of the last request, which is
+    // what we want here.
+    const std::string mimeType = m_state->m_httpheader.GetMimeType();
+    if (mimeType.find("text/html") != std::string::npos) // consider html files directories
+      buffer->st_mode = _S_IFDIR;
     else
-    {
-      memset(buffer, 0, sizeof(struct __stat64));
-      buffer->st_size = (int64_t)length;
-      if(content && strstr(content, "text/html")) //consider html files directories
-        buffer->st_mode = _S_IFDIR;
-      else
-        buffer->st_mode = _S_IFREG;
-    }
+      buffer->st_mode = _S_IFREG;
+
     long filetime;
     result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_FILETIME, &filetime);
     if (result != CURLE_OK)
@@ -1820,7 +1878,7 @@ void CCurlFile::SetRequestHeader(const std::string& header, const std::string& v
 
 void CCurlFile::SetRequestHeader(const std::string& header, long value)
 {
-  m_requestheaders[header] = StringUtils::Format("%ld", value);
+  m_requestheaders[header] = std::to_string(value);
 }
 
 std::string CCurlFile::GetURL(void)

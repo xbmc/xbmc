@@ -35,7 +35,7 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
   StringUtils::ToLower(lowerName);
   Stop(lowerName);
   SAlarmClockEvent event;
-  event.m_fSecs = n_secs;
+  event.m_fSecs = static_cast<double>(n_secs);
   event.m_strCommand = strCommand;
   event.m_loop = bLoop;
   if (!m_bIsRunning)
@@ -58,8 +58,10 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
     labelStarted = 13210;
   }
 
-  EventPtr alarmClockActivity(new CNotificationEvent(labelAlarmClock,
-    StringUtils::Format(g_localizeStrings.Get(labelStarted).c_str(), static_cast<int>(event.m_fSecs) / 60, static_cast<int>(event.m_fSecs) % 60)));
+  EventPtr alarmClockActivity(new CNotificationEvent(
+      labelAlarmClock,
+      StringUtils::Format(g_localizeStrings.Get(labelStarted), static_cast<int>(event.m_fSecs) / 60,
+                          static_cast<int>(event.m_fSecs) % 60)));
   if (bSilent)
     CServiceBroker::GetEventLog().Add(alarmClockActivity);
   else
@@ -94,15 +96,16 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
   if (iter->second.watch.IsRunning())
     elapsed = iter->second.watch.GetElapsedSeconds();
 
-  if (elapsed > iter->second.m_fSecs)
+  if (elapsed > static_cast<float>(iter->second.m_fSecs))
     strMessage = g_localizeStrings.Get(13211);
   else
   {
-    float remaining = static_cast<float>(iter->second.m_fSecs - elapsed);
-    strMessage = StringUtils::Format(g_localizeStrings.Get(13212).c_str(), static_cast<int>(remaining) / 60, static_cast<int>(remaining) % 60);
+    float remaining = static_cast<float>(iter->second.m_fSecs) - elapsed;
+    strMessage = StringUtils::Format(g_localizeStrings.Get(13212), static_cast<int>(remaining) / 60,
+                                     static_cast<int>(remaining) % 60);
   }
 
-  if (iter->second.m_strCommand.empty() || iter->second.m_fSecs > elapsed)
+  if (iter->second.m_strCommand.empty() || static_cast<float>(iter->second.m_fSecs) > elapsed)
   {
     EventPtr alarmClockActivity(new CNotificationEvent(labelAlarmClock, strMessage));
     if (bSilent)
@@ -132,8 +135,8 @@ void CAlarmClock::Process()
     {
       CSingleLock lock(m_events);
       for (std::map<std::string,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
-        if ( iter->second.watch.IsRunning()
-          && iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
+        if (iter->second.watch.IsRunning() &&
+            iter->second.watch.GetElapsedSeconds() >= static_cast<float>(iter->second.m_fSecs))
         {
           Stop(iter->first);
           if ((iter = m_event.find(strLast)) == m_event.end())

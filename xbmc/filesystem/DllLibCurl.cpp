@@ -112,17 +112,6 @@ const char* DllLibCurl::easy_strerror(CURLcode code)
   return curl_easy_strerror(code);
 }
 
-#if defined(HAS_CURL_STATIC)
-void DllLibCurl::crypto_set_id_callback(unsigned long (*cb)())
-{
-  CRYPTO_set_id_callback(cb);
-}
-void DllLibCurl::crypto_set_locking_callback(void (*cb)(int, int, const char*, int))
-{
-  CRYPTO_set_locking_callback(cb);
-}
-#endif
-
 DllLibCurlGlobal::DllLibCurlGlobal()
 {
   /* we handle this ourself */
@@ -147,7 +136,11 @@ void DllLibCurlGlobal::CheckIdle()
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while (it != m_sessions.end())
   {
-    if (!it->m_busy && (XbmcThreads::SystemClockMillis() - it->m_idletimestamp) > idletime)
+    auto now = std::chrono::steady_clock::now();
+    auto duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now - it->m_idletimestamp);
+
+    if (!it->m_busy && duration.count() > idletime)
     {
       CLog::Log(LOGDEBUG, "%s - Closing session to %s://%s (easy=%p, multi=%p)", __FUNCTION__,
                 it->m_protocol.c_str(), it->m_hostname.c_str(), static_cast<void*>(it->m_easy),
@@ -255,7 +248,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
       /* will reset verbose too so it won't print that it closed connections on cleanup*/
       easy_reset(easy);
       it.m_busy = false;
-      it.m_idletimestamp = XbmcThreads::SystemClockMillis();
+      it.m_idletimestamp = std::chrono::steady_clock::now();
       return;
     }
   }

@@ -570,8 +570,8 @@
 						<font>font25</font>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>@#$!</label>
-						<altlabel>[COLOR=blue]@#$%[/COLOR]</altlabel>
+						<label>ãéö</label>
+						<altlabel>[COLOR=blue]abc[/COLOR]</altlabel>
 					</control>
 					<control type="group">
 						<posx>0</posx>

@@ -42,6 +42,7 @@ struct PVR_RECORDING;
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRClient;
   class CPVRTimerInfoTag;
 
   /*!
@@ -184,14 +185,17 @@ namespace PVR
     /*!
      * @brief Get the resume point and play count from the database if the
      * client doesn't handle it itself.
+     * @param db The database to read the data from.
+     * @param client The client this recording belongs to.
      */
-    void UpdateMetadata(CVideoDatabase& db);
+    void UpdateMetadata(CVideoDatabase& db, const CPVRClient& client);
 
     /*!
      * @brief Update this tag with the contents of the given tag.
      * @param tag The new tag info.
+     * @param client The client this recording belongs to.
      */
-    void Update(const CPVRRecording& tag);
+    void Update(const CPVRRecording& tag, const CPVRClient& client);
 
     /*!
      * @brief Retrieve the recording start as UTC time
@@ -304,13 +308,13 @@ namespace PVR
    void SetGenre(int iGenreType, int iGenreSubType, const std::string& strGenre);
 
     /*!
-     * @brief Get the genre type ID of this event.
+     * @brief Get the genre type ID of this recording.
      * @return The genre type ID.
      */
     int GenreType() const { return m_iGenreType; }
 
     /*!
-     * @brief Get the genre subtype ID of this event.
+     * @brief Get the genre subtype ID of this recording.
      * @return The genre subtype ID.
      */
     int GenreSubType() const { return m_iGenreSubType; }
@@ -322,26 +326,32 @@ namespace PVR
     const std::vector<std::string> Genre() const { return m_genre; }
 
     /*!
-     * @brief Get the genre(s) of this event as formatted string.
+     * @brief Get the genre(s) of this recording as formatted string.
      * @return The genres label.
      */
    const std::string GetGenresLabel() const;
 
    /*!
-    * @brief Get the first air date of this event.
+    * @brief Get the first air date of this recording.
     * @return The first air date.
     */
    CDateTime FirstAired() const;
 
    /*!
-    * @brief Get the premiere year of this event.
+    * @brief Get the premiere year of this recording.
     * @return The premiere year
     */
    int GetYear() const override;
 
    /*!
-    * @brief Check if the premiere year of this event is valid
-    * @return True if the event has as valid premiere date, false otherwise
+    * @brief Set the premiere year of this recording.
+    * @param year The premiere year
+    */
+   void SetYear(int year) override;
+
+   /*!
+    * @brief Check if the premiere year of this recording is valid
+    * @return True if the recording has as valid premiere date, false otherwise
     */
    bool HasYear() const override;
 
@@ -381,7 +391,21 @@ namespace PVR
     */
    int64_t GetSizeInBytes() const;
 
+    /*!
+     * @brief Mark a recording as dirty/clean.
+     * @param bDirty true to mark as dirty, false to mark as clean.
+     */
+    void SetDirty(bool bDirty) { m_bDirty = bDirty; }
+
+    /*!
+     * @brief Return whether the recording is marked dirty.
+     * @return true if dirty, false otherwise.
+     */
+    bool IsDirty() const { return m_bDirty; }
+
   private:
+    void UpdatePath();
+
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;
     bool m_bIsDeleted; /*!< set if entry is a deleted recording which can be undelete */
@@ -394,8 +418,7 @@ namespace PVR
     unsigned int m_iFlags = 0; /*!< the flags applicable to this recording */
     mutable XbmcThreads::EndTime m_recordingSizeRefetchTimeout;
     int64_t m_sizeInBytes = 0; /*!< the size of the recording in bytes */
-
-    void UpdatePath();
+    bool m_bDirty = false;
 
     mutable CCriticalSection m_critSection;
   };

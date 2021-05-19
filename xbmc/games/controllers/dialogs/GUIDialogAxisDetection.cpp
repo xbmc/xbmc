@@ -22,7 +22,7 @@ using namespace GAME;
 std::string CGUIDialogAxisDetection::GetDialogText()
 {
   // "Press all analog buttons now to detect them:[CR][CR]%s"
-  std::string dialogText = g_localizeStrings.Get(35020);
+  const std::string& dialogText = g_localizeStrings.Get(35020);
 
   std::vector<std::string> primitives;
 
@@ -32,7 +32,7 @@ std::string CGUIDialogAxisDetection::GetDialogText()
     primitives.emplace_back(JOYSTICK::CJoystickTranslator::GetPrimitiveName(axis));
   }
 
-  return StringUtils::Format(dialogText.c_str(), StringUtils::Join(primitives, " | ").c_str());
+  return StringUtils::Format(dialogText, StringUtils::Join(primitives, " | "));
 }
 
 std::string CGUIDialogAxisDetection::GetDialogHeader()

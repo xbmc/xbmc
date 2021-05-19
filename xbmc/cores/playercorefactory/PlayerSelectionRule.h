@@ -21,7 +21,7 @@ class CPlayerSelectionRule
 {
 public:
   explicit CPlayerSelectionRule(TiXmlElement* rule);
-  virtual ~CPlayerSelectionRule();
+  virtual ~CPlayerSelectionRule() = default;
 
   void GetPlayers(const CFileItem& item, std::vector<std::string>&validPlayers, std::vector<std::string>&players);
 
@@ -58,5 +58,5 @@ private:
 
   std::string m_playerName;
 
-  std::vector<CPlayerSelectionRule *> vecSubRules;
+  std::vector<std::unique_ptr<CPlayerSelectionRule>> vecSubRules;
 };

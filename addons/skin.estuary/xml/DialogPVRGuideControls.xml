@@ -124,7 +124,7 @@
 							</include>
 							<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
 							<onclick>PVR.EpgGridControl(PlayingChannel)</onclick>
-							<visible>PVR.IsPlayingTV | PVR.IsPlayingRadio</visible>
+							<visible>PVR.IsPlayingTV | PVR.IsPlayingRadio | PVR.IsPlayingEpgTag</visible>
 						</control>
 						<control type="radiobutton" id="70042">
 							<include content="OSDButton">

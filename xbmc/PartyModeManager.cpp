@@ -24,7 +24,6 @@
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -96,8 +95,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   std::string strCurrentFilterVideo;
   unsigned int songcount = 0;
   unsigned int videocount = 0;
-  unsigned int time = XbmcThreads::SystemClockMillis();
-  
+  auto start = std::chrono::steady_clock::now();
+
   if (StringUtils::EqualsNoCase(m_type, "songs") ||
       StringUtils::EqualsNoCase(m_type, "mixed"))
   {
@@ -169,7 +168,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   // Songs and music videos are random from query, but need mixing together when have both
   if (songcount > 0 && videocount > 0 )
     KODI::UTILS::RandomShuffle(m_songIDCache.begin(), m_songIDCache.end());
- 
+
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Matching songs = {0}", m_iMatchingSongs);
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 
@@ -187,8 +186,10 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     pDialog->Close();
     return false;
   }
-  CLog::Log(LOGDEBUG, "%s time for song fetch: %u",
-            __FUNCTION__, XbmcThreads::SystemClockMillis() - time);
+
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::Log(LOGDEBUG, "{} time for song fetch: {} ms", __FUNCTION__, duration.count());
 
   // start playing
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
@@ -311,7 +312,7 @@ bool CPartyModeManager::AddRandomSongs()
   {
     // Limit songs fetched to remainder of songID cache
     iMissingSongs = std::min(iMissingSongs, static_cast<int>(m_songIDCache.size()) - m_iMatchingSongsPicked);
-      
+
     // Pick iMissingSongs from remaining songID cache
     std::string sqlWhereMusic = "songview.idSong IN (";
     std::string sqlWhereVideo = "idMVideo IN (";
@@ -320,7 +321,7 @@ bool CPartyModeManager::AddRandomSongs()
     bool bMusicVideos = false;
     for (int i = m_iMatchingSongsPicked; i < m_iMatchingSongsPicked + iMissingSongs; i++)
     {
-      std::string song = StringUtils::Format("%i,", m_songIDCache[i].second);
+      std::string song = StringUtils::Format("{},", m_songIDCache[i].second);
       if (m_songIDCache[i].first == 1)
       {
         sqlWhereMusic += song;

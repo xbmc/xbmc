@@ -172,7 +172,7 @@ std::string LocalizeReplacer(const std::string &str)
 std::string AddonReplacer(const std::string &str)
 {
   // assumes "addon.id #####"
-  size_t length = str.find(" ");
+  size_t length = str.find(' ');
   const std::string addonid = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
   return g_localizeStrings.GetAddonString(addonid, stringid);

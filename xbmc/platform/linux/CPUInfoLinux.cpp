@@ -81,6 +81,14 @@ CCPUInfoLinux::CCPUInfoLinux()
   if (socPath.Exists())
     m_cpuSoC += " " + socPath.Get<std::string>();
 
+  CSysfsPath revisionPath{"/sys/bus/soc/devices/soc0/revision"};
+  if (revisionPath.Exists())
+    m_cpuRevision += revisionPath.Get<std::string>();
+
+  CSysfsPath serialPath{"/sys/bus/soc/devices/soc0/serial_number"};
+  if (serialPath.Exists())
+    m_cpuSerial += serialPath.Get<std::string>();
+
   const std::string freqStr{"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"};
   CSysfsPath freqPath{freqStr};
   if (freqPath.Exists())
@@ -234,19 +242,34 @@ CCPUInfoLinux::CCPUInfoLinux()
         std::ssub_match value = match[1];
 
         if (line.find("model name") != std::string::npos)
-          m_cpuModel = value.str();
+        {
+          if (m_cpuModel.empty())
+            m_cpuModel = value.str();
+        }
 
         if (line.find("BogoMIPS") != std::string::npos)
-          m_cpuBogoMips = value.str();
+        {
+          if (m_cpuBogoMips.empty())
+            m_cpuBogoMips = value.str();
+        }
 
         if (line.find("Hardware") != std::string::npos)
-          m_cpuHardware = value.str();
+        {
+          if (m_cpuHardware.empty())
+            m_cpuHardware = value.str();
+        }
 
         if (line.find("Serial") != std::string::npos)
-          m_cpuSerial = value.str();
+        {
+          if (m_cpuSerial.empty())
+            m_cpuSerial = value.str();
+        }
 
         if (line.find("Revision") != std::string::npos)
-          m_cpuRevision = value.str();
+        {
+          if (m_cpuRevision.empty())
+            m_cpuRevision = value.str();
+        }
       }
     }
   }
@@ -326,10 +349,10 @@ int CCPUInfoLinux::GetUsedPercentage()
 float CCPUInfoLinux::GetCPUFrequency()
 {
   if (m_freqPath.empty())
-    return -1;
+    return 0;
 
   CSysfsPath path{m_freqPath};
-  return path.Get<float>() / 1000.0;
+  return path.Get<float>() / 1000.0f;
 }
 
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)

@@ -47,7 +47,9 @@ float CAELimiter::Run(float* frame[AE_CH_MAX], int channels, int offset /*= 0*/,
   if (sample * m_attenuation > 1.0f)
   {
     m_attenuation = 1.0f / sample;
-    m_holdcounter = MathUtils::round_int(m_samplerate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterHold);
+    m_holdcounter = MathUtils::round_int(static_cast<double>(
+        m_samplerate *
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterHold));
     m_increase = powf(std::min(sample, 10000.0f), 1.0f / (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterRelease * m_samplerate));
   }
 

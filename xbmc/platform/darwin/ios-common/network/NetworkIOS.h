@@ -64,5 +64,3 @@ private:
   std::vector<CNetworkInterfaceIOS*> m_interfaces;
   int m_sock;
 };
-
-using CNetwork = CNetworkIOS;

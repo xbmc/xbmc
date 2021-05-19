@@ -12,8 +12,10 @@
 #include "AddonString.h"
 #include "Alternative.h"
 #include "ListItem.h"
+#include "dialogs/GUIDialogBoxBase.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "swighelper.h"
 
 #include <string>
 #include <vector>
@@ -52,7 +54,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, nolabel, yeslabel, customlabel, autoclose]) }
+      /// \python_func{ xbmcgui.Dialog().yesno(heading, message, [nolabel, yeslabel, autoclose]) }
       /// **Yes / no dialog**
       ///
       /// The Yes / No dialog can be used to inform the user about questions and
@@ -62,8 +64,14 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// @param message        string or unicode - message text.
       /// @param nolabel        [opt] label to put on the no button.
       /// @param yeslabel       [opt] label to put on the yes button.
-      /// @param customlabel    [opt] label to put on the custom button.
       /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      /// @param defaultbutton  [opt] integer - specifies the default focused button.
+      ///                       <em>(default=DLG_YESNO_NO_BTN)</em>
+      ///  |  Value:                       | Description:                                      |
+      ///  |------------------------------:|---------------------------------------------------|
+      ///  | xbmcgui.DLG_YESNO_NO_BTN     | Set the "No" button as default.
+      ///  | xbmcgui.DLG_YESNO_YES_BTN    | Set the "Yes" button as default.
+      ///  | xbmcgui.DLG_YESNO_CUSTOM_BTN | Set the "Custom" button as default.
       /// @return Returns True if 'Yes' was pressed, else False.
       ///
       ///
@@ -73,7 +81,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       /// @python_v19 Renamed option **line1** to **message**.
       /// @python_v19 Removed option **line2**.
       /// @python_v19 Removed option **line3**.
-      /// @python_v19 Added new option **customlabel**.
+      /// @python_v20 Added new option **defaultbutton**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -85,11 +93,62 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       yesno(...);
 #else
-      bool yesno(const String& heading, const String& message,
+      bool yesno(const String& heading,
+                 const String& message,
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
-                 const String& customlabel = emptyString,
-                 int autoclose = 0);
+                 int autoclose = 0,
+                 int defaultbutton = CONTROL_NO_BUTTON);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().yesnocustom(heading, message, customlabel, [nolabel, yeslabel, autoclose]) }
+      /// **Yes / no / custom dialog**
+      ///
+      /// The YesNoCustom dialog can be used to inform the user about questions and
+      /// get the answer. The dialog provides a third button appart from yes and no.
+      /// Button labels are fully customizable.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param message        string or unicode - message text.
+      /// @param customlabel    string or unicode - label to put on the custom button.
+      /// @param nolabel        [opt] label to put on the no button.
+      /// @param yeslabel       [opt] label to put on the yes button.
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      /// @param defaultbutton  [opt] integer - specifies the default focused button.
+      ///                       <em>(default=DLG_YESNO_NO_BTN)</em>
+      ///  |  Value:                       | Description:                                      |
+      ///  |------------------------------:|---------------------------------------------------|
+      ///  | xbmcgui.DLG_YESNO_NO_BTN     | Set the "No" button as default.
+      ///  | xbmcgui.DLG_YESNO_YES_BTN    | Set the "Yes" button as default.
+      ///  | xbmcgui.DLG_YESNO_CUSTOM_BTN | Set the "Custom" button as default.
+      /// @return Returns the integer value for the selected button (-1:cancelled, 0:no, 1:yes, 2:custom)
+      ///
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v19 New function added.
+      /// @python_v20 Added new option **defaultbutton**.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.yesnocustom('Kodi', 'Question?', 'Maybe')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      yesnocustom(...);
+#else
+      int yesnocustom(const String& heading,
+                      const String& message,
+                      const String& customlabel,
+                      const String& nolabel = emptyString,
+                      const String& yeslabel = emptyString,
+                      int autoclose = 0,
+                      int defaultbutton = CONTROL_NO_BUTTON);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -582,6 +641,18 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
                    int option = 0,
                    int autoclose = 0);
 #endif
+
+    private:
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+      // used by both yesno() and yesnocustom()
+      int yesNoCustomInternal(const String& heading,
+                              const String& message,
+                              const String& nolabel,
+                              const String& yeslabel,
+                              const String& customlabel,
+                              int autoclose,
+                              int defaultbutton);
+#endif
     };
     //@}
 
@@ -831,6 +902,10 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
 #endif
     };
     //@}
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    SWIG_CONSTANT2(int, DLG_YESNO_NO_BTN, CONTROL_NO_BUTTON);
+    SWIG_CONSTANT2(int, DLG_YESNO_YES_BTN, CONTROL_YES_BUTTON);
+    SWIG_CONSTANT2(int, DLG_YESNO_CUSTOM_BTN, CONTROL_CUSTOM_BUTTON);
+#endif
 } // namespace xbmcgui
 } // namespace XBMCAddon

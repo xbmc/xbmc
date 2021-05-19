@@ -148,7 +148,7 @@ void SendEditingText(const char *text, unsigned int location, unsigned int lengt
 
   NSWindow *window = [self window];
   NSRect contentRect = [window contentRectForFrameRect: [window frame]];
-  float windowHeight = contentRect.size.height;
+  double windowHeight = contentRect.size.height;
   NSRect rect = NSMakeRect(_inputRect.origin.x, windowHeight - _inputRect.origin.y - _inputRect.size.height,
                            _inputRect.size.width, _inputRect.size.height);
 

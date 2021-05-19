@@ -38,7 +38,6 @@ protected:
   void CheckVideoParameters() override;
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
-  bool UseToneMapping() const override;
 
 private:
   void FillBuffersSet(CRenderBuffer* (&buffers)[8]);

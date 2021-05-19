@@ -28,5 +28,34 @@
 		<string>com.apple.identities</string>
 		<string>com.apple.mobilesafari</string>
 	</array>
+	<key>com.apple.security.iokit-user-client-class</key>
+	<array>
+		<string>AGXCommandQueue</string>
+		<string>AGXDevice</string>
+		<string>AGXDeviceUserClient</string>
+		<string>AGXGLContext</string>
+		<string>AGXSharedUserClient</string>
+		<string>AppleCredentialManagerUserClient</string>
+		<string>AppleHPMUserClient</string>
+		<string>AppleJPEGDriverUserClient</string>
+		<string>AppleUSBHostDeviceUserClient</string>
+		<string>H11ANEInDirectPathClient</string>
+		<string>IOAVControllerConcreteUserClient</string>
+		<string>IOAccelContext</string>
+		<string>IOAccelContext2</string>
+		<string>IOAccelDevice</string>
+		<string>IOAccelDevice2</string>
+		<string>IOAccelSharedUserClient</string>
+		<string>IOAccelSharedUserClient2</string>
+		<string>IOAccelSubmitter2</string>
+		<string>IOHDIXControllerUserClient</string>
+		<string>IOHIDEventServiceFastPathUserClient</string>
+		<string>IOHIDLibUserClient</string>
+		<string>IOMobileFramebufferUserClient</string>
+		<string>IOReportUserClient</string>
+		<string>IOSurfaceAcceleratorClient</string>
+		<string>IOSurfaceRootUserClient</string>
+		<string>RootDomainUserClient</string>
+	</array>
 </dict>
 </plist>

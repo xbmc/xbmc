@@ -12,6 +12,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
+#include <chrono>
 #include <string>
 
 class CLirc : CThread
@@ -27,7 +28,7 @@ protected:
   bool CheckDaemon();
 
   int m_fd = -1;
-  uint32_t m_firstClickTime = 0;
+  std::chrono::time_point<std::chrono::steady_clock> m_firstClickTime;
   CCriticalSection m_critSection;
   CIRTranslator m_irTranslator;
   int m_profileId;

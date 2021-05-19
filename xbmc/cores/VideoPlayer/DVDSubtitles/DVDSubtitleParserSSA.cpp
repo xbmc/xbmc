@@ -9,13 +9,14 @@
 #include "DVDSubtitleParserSSA.h"
 
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
-CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& strFile)
-    : CDVDSubtitleParserText(std::move(pStream), strFile)
+CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(std::unique_ptr<CDVDSubtitleStream>&& pStream,
+                                             const std::string& strFile)
+  : CDVDSubtitleParserText(std::move(pStream), strFile),
+    m_libass(std::make_shared<CDVDSubtitlesLibass>())
 {
-  m_libass = new CDVDSubtitlesLibass();
 }
 
 CDVDSubtitleParserSSA::~CDVDSubtitleParserSSA()
@@ -57,10 +58,5 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
 
 void CDVDSubtitleParserSSA::Dispose()
 {
-  if(m_libass)
-  {
-    SAFE_RELEASE(m_libass);
-    CLog::Log(LOGINFO, "SSA Parser: Releasing reference to ASS Library");
-  }
   CDVDSubtitleParserCollection::Dispose();
 }

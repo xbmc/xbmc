@@ -1,0 +1,29 @@
+package @APP_PACKAGE@;
+
+import android.util.Log;
+
+public class XBMCURIUtils
+{
+  native String _substitutePath(String path);
+
+  private static String TAG = "@APP_NAME@uriutils";
+
+  public XBMCURIUtils()
+  {
+  }
+
+  public String substitutePath(String path)
+  {
+    try
+    {
+      return _substitutePath(path);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      Log.e(TAG, "substitutePath: Exception");
+      return null;
+    }
+  }
+
+}

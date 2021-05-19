@@ -119,7 +119,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const std::string& strDirector
 
   uint32_t crc = Crc32::ComputeFromLowerCase(path);
 
-  std::string strFileName = StringUtils::Format("special://temp/archive_cache/%08x.fi", crc);
+  std::string strFileName = StringUtils::Format("special://temp/archive_cache/{:08x}.fi", crc);
   CFile::Delete(strFileName);
 }
 
@@ -166,7 +166,7 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   // get year
   if (params.GetYear() != -1)
   {
-    std::string strTemp = StringUtils::Format("%li",params.GetYear());
+    std::string strTemp = std::to_string(params.GetYear());
     if (!strLabel.empty())
       strLabel += " / ";
     strLabel += strTemp;

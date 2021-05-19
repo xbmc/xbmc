@@ -157,6 +157,9 @@ namespace XBMCAddon
     /// Execute a built in Kodi function.
     ///
     /// @param function                string - builtin function to execute.
+    /// @param wait                    [opt] bool - If Kodi should wait for the
+    ///                                builtin function execution to finish
+    ///                                (default False)
     ///
     ///
     /// \ref page_List_of_built_in_functions "List of builtin functions"
@@ -613,35 +616,6 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.translatePath(path)  }
-    /// Returns the translated path.
-    ///
-    /// @param path                  string - Path to format
-    /// @return                      Translated path
-    ///
-    /// @note Only useful if you are coding for both Linux and Windows.
-    ///        e.g. Converts 'special://home' -> '/home/[username]/.kodi'
-    ///        on Linux.
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    /// @python_v19 Deprecated **xbmc.translatePath**. Moved to **xbmcvfs.translatePath**
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// fpath = xbmc.translatePath('special://home')
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    translatePath(...);
-#else
-    String translatePath(const String& path);
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCleanMovieTitle(path[, usefoldername]) }
     /// Get clean movie title and year string if available.
     ///
@@ -770,11 +744,11 @@ namespace XBMCAddon
     /// | xbmc.SERVER_EVENTSERVER   | [Set eventServer part that accepts remote device input on all platforms](http://kodi.wiki/view/EventServer)
     /// | xbmc.SERVER_ZEROCONF      | [Control Kodi's Avahi Zeroconf](http://kodi.wiki/view/Zeroconf)
     /// @param bStart               bool - start (True) or stop (False) a server
-    /// @param bWait                [opt] bool - wait on stop before returning (not supported by all servers)
     /// @return                     bool - True or False
     ///
     ///
     /// ------------------------------------------------------------------------
+    /// @python_v20 Removed option **bWait**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -785,7 +759,7 @@ namespace XBMCAddon
     ///
     startServer(...);
 #else
-    bool startServer(int iTyp, bool bStart, bool bWait = false);
+    bool startServer(int iTyp, bool bStart);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

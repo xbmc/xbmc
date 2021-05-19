@@ -41,7 +41,7 @@ CGUIAudioManager::~CGUIAudioManager()
   m_settings->UnregisterCallback(this);
 }
 
-void CGUIAudioManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CGUIAudioManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;
@@ -54,7 +54,9 @@ void CGUIAudioManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-bool CGUIAudioManager::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CGUIAudioManager::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                                       const char* oldSettingId,
+                                       const TiXmlNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;
@@ -227,7 +229,8 @@ std::string GetSoundSkinPath()
     return "";
 
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS,
+                                              ADDON::OnlyEnabled::YES))
   {
     CLog::Log(LOGINFO, "Unknown sounds addon '%s'. Setting default sounds.", value.c_str());
     setting->Reset();

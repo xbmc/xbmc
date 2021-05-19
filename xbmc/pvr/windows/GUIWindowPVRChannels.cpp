@@ -25,6 +25,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
@@ -290,18 +291,20 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr& item)
   {
     epg->ForceUpdate();
 
-    const std::string strMessage = StringUtils::Format("%s: '%s'",
-                                                       g_localizeStrings.Get(19253).c_str(), // "Guide update scheduled for channel"
-                                                       channel->ChannelName().c_str());
+    const std::string strMessage =
+        StringUtils::Format("{}: '{}'",
+                            g_localizeStrings.Get(19253), // "Guide update scheduled for channel"
+                            channel->ChannelName());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                           g_localizeStrings.Get(19166), // "PVR information"
                                           strMessage);
   }
   else
   {
-    const std::string strMessage = StringUtils::Format("%s: '%s'",
-                                                       g_localizeStrings.Get(19254).c_str(), // "Guide update failed for channel"
-                                                       channel->ChannelName().c_str());
+    const std::string strMessage =
+        StringUtils::Format("{}: '{}'",
+                            g_localizeStrings.Get(19254), // "Guide update failed for channel"
+                            channel->ChannelName());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                           g_localizeStrings.Get(19166), // "PVR information"
                                           strMessage);
@@ -313,6 +316,8 @@ void CGUIWindowPVRChannelsBase::ShowChannelManager()
   CGUIDialogPVRChannelManager* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelManager>(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
   if (!dialog)
     return;
+
+  dialog->SetRadio(m_bRadio);
 
   const int iItem = m_viewControl.GetSelectedItem();
   dialog->Open(iItem >= 0 && iItem < m_vecItems->Size() ? m_vecItems->Get(iItem) : nullptr);
@@ -337,7 +342,7 @@ void CGUIWindowPVRChannelsBase::OnInputDone()
     int itemIndex = 0;
     for (const CFileItemPtr& channel : *m_vecItems)
     {
-      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
+      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
       {
         m_viewControl.SetSelectedItem(itemIndex);
         return;

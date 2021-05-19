@@ -38,9 +38,8 @@ public:
   bool Load(const TiXmlNode *settings) override;
   bool Save(TiXmlNode *settings) const override;
 
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingsLoaded() override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }

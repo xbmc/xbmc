@@ -302,11 +302,12 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
         if (m_format.m_dataFormat != AE_FMT_RAW)
         {
           m_currentBuffer->pkt->nb_samples += minFrames;
-          m_bufferedTime += (double)minFrames / m_currentBuffer->pkt->config.sample_rate;
+          m_bufferedTime +=
+              static_cast<float>(minFrames) / m_currentBuffer->pkt->config.sample_rate;
         }
         else
         {
-          m_bufferedTime += m_format.m_streamInfo.GetDuration() / 1000;
+          m_bufferedTime += static_cast<float>(m_format.m_streamInfo.GetDuration()) / 1000;
           m_currentBuffer->pkt->nb_samples += minFrames;
           rawPktComplete = true;
         }
@@ -370,17 +371,17 @@ bool CActiveAEStream::IsBuffering()
 
 double CActiveAEStream::GetCacheTime()
 {
-  return m_activeAE->GetCacheTime(this);
+  return static_cast<double>(m_activeAE->GetCacheTime(this));
 }
 
 double CActiveAEStream::GetCacheTotal()
 {
-  return m_activeAE->GetCacheTotal();
+  return static_cast<double>(m_activeAE->GetCacheTotal());
 }
 
 double CActiveAEStream::GetMaxDelay()
 {
-  return m_activeAE->GetMaxDelay();
+  return static_cast<double>(m_activeAE->GetMaxDelay());
 }
 
 void CActiveAEStream::Pause()
@@ -740,7 +741,7 @@ void CActiveAEStreamBuffers::SetRR(double rr, double atempoThreshold)
 double CActiveAEStreamBuffers::GetRR()
 {
   double tempo = m_resampleBuffers->GetRR();
-  tempo /= m_atempoBuffers->GetTempo();
+  tempo /= static_cast<double>(m_atempoBuffers->GetTempo());
   return tempo;
 }
 

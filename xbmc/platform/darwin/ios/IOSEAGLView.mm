@@ -355,7 +355,6 @@ using namespace KODI::MESSAGING;
 
     setlocale(LC_NUMERIC, "C");
 
-    g_application.Preflight();
     if (!g_application.Create(appParamParser))
     {
       readyToRun = false;

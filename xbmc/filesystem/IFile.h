@@ -107,7 +107,7 @@ public:
    * It can also be used to indicate a file system is non buffered *
    * but accepts any read size, have it return the value 1         */
   virtual int  GetChunkSize() {return 0;}
-  virtual double GetDownloadSpeed(){ return 0.0f; };
+  virtual double GetDownloadSpeed() { return 0.0; };
 
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }

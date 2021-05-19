@@ -109,7 +109,8 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't play game, no game client was passed!");
   }
-  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL))
+  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL,
+                                                   ADDON::OnlyEnabled::YES))
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't find add-on %s for game file!",
               gameClientId.c_str());
@@ -156,7 +157,8 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       if (save->GameClientID() != m_gameClient->ID())
       {
         ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon))
+        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
+                                                   ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::YES))
         {
           // Warn the user that continuing with a different game client will
           // overwrite the save
@@ -365,7 +367,7 @@ uint64_t CRetroPlayer::GetTotalTime()
 
 void CRetroPlayer::SetSpeed(float speed)
 {
-  if (m_playback->GetSpeed() != speed)
+  if (m_playback->GetSpeed() != static_cast<double>(speed))
   {
     if (speed == 1.0f)
       m_callback.OnPlayBackResumed();

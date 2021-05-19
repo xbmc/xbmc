@@ -18,7 +18,6 @@
 #include "Application.h"
 #include "filesystem/SpecialProtocol.h"
 #include "input/Key.h"
-#include "threads/SystemClock.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -1163,11 +1162,11 @@ void CTeletextDecoder::RenderPage()
         if (c == NULL)
           return;
 
-        memset(c, 0x00, sizeof(TextSubtitleCache_t));
+        c = {};
         m_RenderInfo.SubtitleCache[j] = c;
       }
       c->Valid = true;
-      c->Timestamp = XbmcThreads::SystemClockMillis()/1000;
+      c->Timestamp = std::chrono::steady_clock::now();
 
       if (m_txtCache->SubPageTable[m_txtCache->Page] != 0xFF)
       {
@@ -1207,10 +1206,12 @@ void CTeletextDecoder::RenderPage()
   {
     if (m_RenderInfo.DelayStarted)
     {
-      long now = XbmcThreads::SystemClockMillis()/1000;
+      auto now = std::chrono::steady_clock::now();
       for (TextSubtitleCache_t* const subtitleCache : m_RenderInfo.SubtitleCache)
       {
-        if (subtitleCache && subtitleCache->Valid && now - subtitleCache->Timestamp >= (long)m_RenderInfo.SubtitleDelay)
+        if (subtitleCache && subtitleCache->Valid &&
+            std::chrono::duration_cast<std::chrono::seconds>(now - subtitleCache->Timestamp)
+                    .count() >= m_RenderInfo.SubtitleDelay)
         {
           memcpy(m_RenderInfo.PageChar, subtitleCache->PageChar, 40 * 25);
           memcpy(m_RenderInfo.PageAtrb, subtitleCache->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
@@ -1285,7 +1286,6 @@ void CTeletextDecoder::RenderPage()
         else
         {
           SetPosX(33+i);
-          m_RenderInfo.PageChar[32+i] = m_RenderInfo.PageChar[32+i];
         }
       }
 
@@ -1313,7 +1313,7 @@ void CTeletextDecoder::DoFlashing(int startrow)
   /* Flashing */
   TextPageAttr_t flashattr;
   char flashchar;
-  long flashphase = XbmcThreads::SystemClockMillis() % 1000;
+  long flashphase = std::chrono::steady_clock::now().time_since_epoch().count() % 1000;
 
   int srow = startrow;
   int erow = 24;

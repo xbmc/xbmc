@@ -206,7 +206,7 @@ void CAAudioUnitSink::getDelay(AEDelayStatus& status)
   } while(lock.retry());
 
   status.delay /= m_sampleRate;
-  status.delay += m_bufferDuration + m_outputLatency;
+  status.delay += static_cast<double>(m_bufferDuration + m_outputLatency);
 }
 
 double CAAudioUnitSink::cacheSize()

@@ -48,6 +48,7 @@ CPVRGUIActionListener::CPVRGUIActionListener()
     CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
     CSettings::SETTING_PVRMENU_SEARCHICONS,
     CSettings::SETTING_PVRCLIENT_MENUHOOK,
+    CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
     CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY
   });
 }
@@ -248,14 +249,18 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       int iChannelNumber = static_cast<int>(action.GetAmount(0));
       int iSubChannelNumber = static_cast<int>(action.GetAmount(1));
 
-      const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
-      const std::shared_ptr<CPVRChannelGroup> selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(currentChannel->IsRadio())->GetSelectedGroup();
-      const std::shared_ptr<CPVRChannel> channel = selectedGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber));
+      const std::shared_ptr<CPVRPlaybackState> playbackState =
+          CServiceBroker::GetPVRManager().PlaybackState();
+      const std::shared_ptr<CPVRChannelGroup> activeGroup =
+          playbackState->GetActiveChannelGroup(playbackState->IsPlayingRadio());
+      const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+          activeGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber));
 
-      if (!channel)
+      if (!groupMember)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(std::make_shared<CFileItem>(channel), false);
+      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(
+          std::make_shared<CFileItem>(groupMember), false);
       return true;
     }
 
@@ -274,7 +279,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
   return false;
 }
 
-void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;
@@ -293,13 +298,19 @@ void CPVRGUIActionListener::OnSettingChanged(std::shared_ptr<const CSetting> set
         std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);
     }
   }
+  else if (settingId == CSettings::SETTING_EPG_PAST_DAYSTODISPLAY)
+  {
+    CServiceBroker::GetPVRManager().Clients()->SetEPGMaxPastDays(
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+  }
   else if (settingId == CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY)
   {
-    CServiceBroker::GetPVRManager().Clients()->SetEPGTimeFrame(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    CServiceBroker::GetPVRManager().Clients()->SetEPGMaxFutureDays(
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   }
 }
 
-void CPVRGUIActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return;

@@ -16,6 +16,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -156,7 +157,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
       const CFileItemPtr favourite(std::make_shared<CFileItem>(item.GetLabel()));
       if (item.GetLabel().empty())
         favourite->SetLabel(CUtil::GetTitleFromPath(item.GetPath(), item.m_bIsFolder));
-      favourite->SetArt("thumb", item.GetArt("thumb"));
+      favourite->SetArt("thumb", ContentUtils::GetPreferredArtImage(item));
       favourite->SetPath(favUrl);
       m_favourites.Add(favourite);
     }
@@ -174,7 +175,7 @@ bool CFavouritesService::IsFavourited(const CFileItem& item, int contextWindow) 
 
 std::string CFavouritesService::GetExecutePath(const CFileItem &item, int contextWindow) const
 {
-  return GetExecutePath(item, StringUtils::Format("%i", contextWindow));
+  return GetExecutePath(item, std::to_string(contextWindow));
 }
 
 std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std::string &contextWindow) const
@@ -189,31 +190,35 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
                                 !(item.IsSmartPlayList() || item.IsPlayList())))
   {
     if (!contextWindow.empty())
-      execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
+      execute = StringUtils::Format("ActivateWindow({},{},return)", contextWindow,
+                                    StringUtils::Paramify(item.GetPath()));
   }
   //! @todo STRING_CLEANUP
   else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
-    execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
+    execute = StringUtils::Format("RunScript({})", StringUtils::Paramify(item.GetPath().substr(9)));
   else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
   {
     CURL url(item.GetPath());
     if (url.GetHostName() == "install")
       execute = "installfromzip";
     else
-      execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
+      execute = StringUtils::Format("RunAddon({})", url.GetFileName());
   }
   else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
-    execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
+    execute = StringUtils::Format("StartAndroidActivity({})",
+                                  StringUtils::Paramify(item.GetPath().substr(26)));
   else  // assume a media file
   {
     if (item.IsVideoDb() && item.HasVideoInfoTag())
-      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
+      execute = StringUtils::Format(
+          "PlayMedia({})", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath));
     else if (item.IsMusicDb() && item.HasMusicInfoTag())
-      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()).c_str());
+      execute = StringUtils::Format("PlayMedia({})",
+                                    StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()));
     else if (item.IsPicture())
-      execute = StringUtils::Format("ShowPicture(%s)", StringUtils::Paramify(item.GetPath()).c_str());
+      execute = StringUtils::Format("ShowPicture({})", StringUtils::Paramify(item.GetPath()));
     else
-      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetPath()).c_str());
+      execute = StringUtils::Format("PlayMedia({})", StringUtils::Paramify(item.GetPath()));
   }
   return execute;
 }

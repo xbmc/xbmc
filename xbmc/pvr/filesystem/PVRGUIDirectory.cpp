@@ -16,7 +16,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
@@ -79,7 +79,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   if (bAnyClientSupportingEPG)
   {
     item.reset(
-        new CFileItem(StringUtils::Format("pvr://guide/%s/", bRadio ? "radio" : "tv"), true));
+        new CFileItem(StringUtils::Format("pvr://guide/{}/", bRadio ? "radio" : "tv"), true));
     item->SetLabel(g_localizeStrings.Get(19069)); // Guide
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
                                                                                : WINDOW_TV_GUIDE));
@@ -122,7 +122,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   if (bAnyClientSupportingEPG)
   {
     item.reset(
-        new CFileItem(StringUtils::Format("pvr://search/%s/", bRadio ? "radio" : "tv"), true));
+        new CFileItem(StringUtils::Format("pvr://search/{}/", bRadio ? "radio" : "tv"), true));
     item->SetLabel(g_localizeStrings.Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
@@ -326,9 +326,8 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     {
       item->IncrementProperty("watchedepisodes", 1);
     }
-    item->SetLabel2(StringUtils::Format("%s / %s",
-        item->GetProperty("watchedepisodes").asString().c_str(),
-        item->GetProperty("totalepisodes").asString().c_str()));
+    item->SetLabel2(StringUtils::Format("{} / {}", item->GetProperty("watchedepisodes").asString(),
+                                        item->GetProperty("totalepisodes").asString()));
 
     item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
   }
@@ -476,7 +475,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
     }
     else if (path.IsChannelsRoot())
     {
-      return GetChannelGroupsDirectory(path.IsRadio(), false, results);
+      return GetChannelGroupsDirectory(path.IsRadio(), true, results);
     }
     else if (path.IsChannelGroup())
     {
@@ -495,13 +494,14 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 
       if (group)
       {
-        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers();
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
+            group->GetMembers();
         for (const auto& groupMember : groupMembers)
         {
-          if (bShowHiddenChannels != groupMember->channel->IsHidden())
+          if (bShowHiddenChannels != groupMember->Channel()->IsHidden())
             continue;
 
-          results.Add(std::make_shared<CFileItem>(groupMember->channel));
+          results.Add(std::make_shared<CFileItem>(groupMember));
         }
       }
       else

@@ -19,6 +19,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicLibraryQueue.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "settings/AdvancedSettings.h"
@@ -218,7 +220,8 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   {
     std::string strAlbum = infoTag.GetAlbum();
     if (strAlbum.empty())
-      strAlbum = StringUtils::Format("Unknown Album %s", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
+      strAlbum = StringUtils::Format("Unknown Album {}",
+                                     CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime());
     else
       StringUtils::Replace(strAlbum, '/', '_');
     StringUtils::Replace(strAlbumDir, "%B", strAlbum);
@@ -271,7 +274,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   // grab the label to use it as our ripped filename
   std::string track = destItem.GetLabel();
   if (track.empty())
-    track = StringUtils::Format("%s%02i", "Track-", trackNumber);
+    track = StringUtils::Format("{}{:02}", "Track-", trackNumber);
 
   const std::string encoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);
@@ -296,7 +299,9 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
       CMusicDatabase database;
       database.Open();
       if (source>=0 && database.InsideScannedPath(dir))
-        g_application.StartMusicScan(dir, false);
+        CMusicLibraryQueue::GetInstance().ScanLibrary(
+            dir, MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL, false);
+
       database.Close();
     }
     return CJobQueue::OnJobComplete(jobID, success, job);

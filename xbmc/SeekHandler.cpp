@@ -140,7 +140,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     if (totalTime < 0)
       totalTime = 0;
 
-    double seekSize = (amount * amount * speed) * totalTime / 100;
+    double seekSize = static_cast<double>(amount * amount * speed) * totalTime / 100.0;
     if (forward)
       SetSeekSize(m_seekSize + seekSize);
     else
@@ -227,22 +227,25 @@ void CSeekHandler::FrameMove()
   }
 }
 
-void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector<IntegerSettingOption> &list, int &current, void *data)
+void CSeekHandler::SettingOptionsSeekStepsFiller(const SettingConstPtr& setting,
+                                                 std::vector<IntegerSettingOption>& list,
+                                                 int& current,
+                                                 void* data)
 {
   std::string label;
   for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
   {
     if (seconds > 60)
-      label = StringUtils::Format(g_localizeStrings.Get(14044).c_str(), seconds / 60);
+      label = StringUtils::Format(g_localizeStrings.Get(14044), seconds / 60);
     else
-      label = StringUtils::Format(g_localizeStrings.Get(14045).c_str(), seconds);
+      label = StringUtils::Format(g_localizeStrings.Get(14045), seconds);
 
     list.insert(list.begin(), IntegerSettingOption("-" + label, seconds * -1));
     list.emplace_back(label, seconds);
   }
 }
 
-void CSeekHandler::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CSeekHandler::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == NULL)
     return;

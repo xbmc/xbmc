@@ -43,7 +43,7 @@ ${SYNC} "$SRCROOT/addons/skin.estuary/resources" "$TARGET_PATH/addons/skin.estua
 ${SYNCSKIN} "$SRCROOT/addons/skin.estouchy" "$TARGET_PATH/addons"
 ${SYNC} "$SRCROOT/addons/skin.estouchy/background" "$TARGET_PATH/addons/skin.estouchy"
 ${SYNC} "$SRCROOT/addons/skin.estouchy/resources" "$TARGET_PATH/addons/skin.estouchy"
-${SYNC} "$SRCROOT/system" "$TARGET_PATH"
+${SYNC} --include 'settings/settings.xml' --include 'settings/darwin*' --exclude 'settings/*.xml' "$SRCROOT/system" "$TARGET_PATH"
 ${SYNC} "$SRCROOT/userdata" "$TARGET_PATH"
 
 # copy extra packages if applicable

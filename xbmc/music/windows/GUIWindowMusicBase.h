@@ -49,7 +49,7 @@ public:
 
   /*! \brief Once a music source is added, store source in library, and prompt
   the user to scan this folder into the library
-  \param oldName the original music source name 
+  \param oldName the original music source name
   \param source details of the music source (just added or edited)
   */
   static void OnAssignContent(const std::string& oldName, const CMediaSource& source);
@@ -90,7 +90,7 @@ protected:
 
   void RetrieveMusicInfo();
   void OnItemInfo(int iItem);
-  void OnItemInfoAll(const std::string strPath, bool refresh = false);
+  void OnItemInfoAll(const std::string& strPath, bool refresh = false);
   virtual void OnQueueItem(int iItem, bool first = false);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
 

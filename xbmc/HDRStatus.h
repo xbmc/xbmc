@@ -8,7 +8,7 @@
 
 #pragma once
 
-enum class HDR_STATUS : int
+enum class HDR_STATUS
 {
   HDR_TOGGLE_FAILED = -1,
   HDR_UNSUPPORTED = 0,

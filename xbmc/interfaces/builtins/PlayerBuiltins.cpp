@@ -10,26 +10,28 @@
 
 #include "Application.h"
 #include "FileItem.h"
-#include "ServiceBroker.h"
-#include "filesystem/Directory.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "SeekHandler.h"
+#include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "view/GUIViewState.h"
+#include "utils/log.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "view/GUIViewState.h"
 
 #include <math.h>
 
@@ -357,10 +359,19 @@ static int PlayerControl(const std::vector<std::string>& params)
 
     if (channel)
     {
-      CFileItem playItem(channel);
+      const std::shared_ptr<PVR::CPVRChannelGroupMember> groupMember =
+          CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(channel);
+      if (!groupMember)
+      {
+        CLog::Log(LOGERROR, "ResumeLiveTv could not obtain channel group member for channel: {}",
+                  channel->ChannelName());
+        return false;
+      }
+
+      CFileItem playItem(groupMember);
       if (!g_application.PlayMedia(playItem, "", channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
       {
-        CLog::Log(LOGERROR, "ResumeLiveTv could not play channel: %s", channel->ChannelName().c_str());
+        CLog::Log(LOGERROR, "ResumeLiveTv could not play channel: {}", channel->ChannelName());
         return false;
       }
     }
@@ -477,13 +488,19 @@ static int PlayMedia(const std::vector<std::string>& params)
       else
         items.Sort(SortByLabel, SortOrderAscending);
 
-      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
-      if (containsMusic && containsVideo) //mixed content found in the folder
+      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
+      // Mixed playlist item played by music player, mixed content folder has music removed
+      if (containsMusic && containsVideo)
       {
-        for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+        if (item.IsPlayList())
+          playlist = PLAYLIST_MUSIC;
+        else
         {
-          if (!items[i]->IsVideo())
-            items.Remove(i);
+          for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+          {
+            if (!items[i]->IsVideo())
+              items.Remove(i);
+          }
         }
       }
 

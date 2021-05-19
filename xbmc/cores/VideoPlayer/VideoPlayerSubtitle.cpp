@@ -13,8 +13,8 @@
 #include "DVDCodecs/Overlay/DVDOverlayCodec.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDSubtitles/DVDSubtitleParser.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
-#include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -24,10 +24,6 @@ CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContain
 : IDVDStreamPlayer(processInfo)
 {
   m_pOverlayContainer = pOverlayContainer;
-
-  m_pSubtitleFileParser = NULL;
-  m_pSubtitleStream = NULL;
-  m_pOverlayCodec = NULL;
   m_lastPts = DVD_NOPTS_VALUE;
 }
 
@@ -131,7 +127,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   // okey check if this is a filesubtitle
   if(filename.size() && filename != "dvd" )
   {
-    m_pSubtitleFileParser = CDVDFactorySubtitle::CreateParser(filename);
+    m_pSubtitleFileParser.reset(CDVDFactorySubtitle::CreateParser(filename));
     if (!m_pSubtitleFileParser)
     {
       CLog::Log(LOGERROR, "%s - Unable to create subtitle parser", __FUNCTION__);
@@ -153,7 +149,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   if(hints.codec == AV_CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
+  m_pOverlayCodec.reset(CDVDFactoryCodec::CreateOverlayCodec(hints));
   if(m_pOverlayCodec)
     return true;
 
@@ -165,12 +161,8 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
 {
   CSingleLock lock(m_section);
 
-  if(m_pSubtitleStream)
-    SAFE_DELETE(m_pSubtitleStream);
-  if(m_pSubtitleFileParser)
-    SAFE_DELETE(m_pSubtitleFileParser);
-  if(m_pOverlayCodec)
-    SAFE_DELETE(m_pOverlayCodec);
+  m_pSubtitleFileParser.reset();
+  m_pOverlayCodec.reset();
 
   m_dvdspus.FlushCurrentPacket();
 

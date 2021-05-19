@@ -109,6 +109,7 @@ bool CKeyHandler::OnAnalogMotion(float magnitude, unsigned int motionTimeMs)
   {
     std::vector<const KeymapAction*> allActions;
 
+    allActions.reserve(actions.size());
     for (const auto& action : actions)
       allActions.emplace_back(&action);
 

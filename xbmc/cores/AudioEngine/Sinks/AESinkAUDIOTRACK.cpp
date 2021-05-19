@@ -267,7 +267,7 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate,
 
   // make sure to have enough buffer as minimum might not be enough to open
   if (!isRaw)
-    minBufferSize *= 4;
+    minBufferSize *= 2;
 
   if (supported)
   {
@@ -490,17 +490,31 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       m_sink_frameSize = m_format.m_frameSize;
-      // aim at 200 ms buffer and 50 ms periods
-      m_audiotrackbuffer_sec =
-          static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
-      while (m_audiotrackbuffer_sec < 0.15)
+      bool isHDiec = ((m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD) ||
+                      (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA));
+      if (m_passthrough && isHDiec)
       {
-        m_min_buffer_size += min_buffer;
+        // Certain boxes have issues opening DTS-HD / TrueHD with this large amount of data
+        // adjust accordingly
+        m_min_buffer_size *= 2;
+        m_format.m_frames = static_cast<int>(m_min_buffer_size / m_format.m_frameSize) / 2;
         m_audiotrackbuffer_sec =
             static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
       }
-      // division by 4 -> 4 periods into one buffer
-      m_format.m_frames = static_cast<int>(m_min_buffer_size / m_format.m_frameSize) / 4;
+      else
+      {
+        // aim at 200 ms buffer and 50 ms periods
+        m_audiotrackbuffer_sec =
+            static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
+        while (m_audiotrackbuffer_sec < 0.15)
+        {
+          m_min_buffer_size += min_buffer;
+          m_audiotrackbuffer_sec =
+              static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
+        }
+        // division by 4 -> 4 periods into one buffer
+        m_format.m_frames = static_cast<int>(m_min_buffer_size / m_format.m_frameSize) / 4;
+      }
     }
 
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
@@ -1078,8 +1092,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
   m_sinkSupportsFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_FLOAT);
   // Only try for Android 7 or later - there are a lot of old devices that open successfully
   // but won't work correctly under the hood (famouse example: old FireTV)
-  if (CJNIAudioManager::GetSDKVersion() > 23)
-    m_sinkSupportsMultiChannelFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND, CJNIAudioFormat::ENCODING_PCM_FLOAT);
+  // As even newish devices like Android Chromecast don't do it properly - just disable it ... and use 16 bit Integer
+  //if (CJNIAudioManager::GetSDKVersion() > 23)
+  //  m_sinkSupportsMultiChannelFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND, CJNIAudioFormat::ENCODING_PCM_FLOAT);
 
   if (m_sinkSupportsFloat)
   {

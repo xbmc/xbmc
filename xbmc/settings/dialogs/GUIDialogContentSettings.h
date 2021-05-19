@@ -12,6 +12,7 @@
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 #include <map>
+#include <utility>
 
 namespace VIDEO
 {
@@ -32,7 +33,7 @@ public:
   void ResetContent();
 
   const ADDON::ScraperPtr& GetScraper() const { return m_scraper; }
-  void SetScraper(ADDON::ScraperPtr scraper) { m_scraper = scraper; }
+  void SetScraper(ADDON::ScraperPtr scraper) { m_scraper = std::move(scraper); }
 
   void SetScanSettings(const VIDEO::SScanSettings &scanSettings);
   bool GetScanRecursive() const { return m_scanRecursive; }
@@ -50,12 +51,12 @@ protected:
   void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  void Save() override;
+  bool Save() override;
   void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase

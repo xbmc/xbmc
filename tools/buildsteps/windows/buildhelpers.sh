@@ -167,14 +167,11 @@ do_clean_get() {
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
 
 #hash a dir based on the git revision and $TRIPLET
-#param1 path to be hashed
+#params paths to be hashed
 function getBuildHash ()
 {
-  local checkPath
-  checkPath="$1"
-  shift 1
   local hashStr
-  hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath $@)"
+  hashStr="$(git rev-list HEAD --max-count=1  -- $@)"
   hashStr="$hashStr $@ $TRIPLET"
   echo $hashStr
 }

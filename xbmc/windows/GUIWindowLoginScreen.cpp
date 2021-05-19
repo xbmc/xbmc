@@ -151,7 +151,8 @@ void CGUIWindowLoginScreen::FrameMove()
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, profileManager->GetNumberOfProfiles());
+  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem + 1,
+                                             profileManager->GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
@@ -202,7 +203,7 @@ void CGUIWindowLoginScreen::Update()
     if (profile->getDate().empty())
       strLabel = g_localizeStrings.Get(20113);
     else
-      strLabel = StringUtils::Format(g_localizeStrings.Get(20112).c_str(), profile->getDate().c_str());
+      strLabel = StringUtils::Format(g_localizeStrings.Get(20112), profile->getDate());
 
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());

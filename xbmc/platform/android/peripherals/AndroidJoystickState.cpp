@@ -27,7 +27,7 @@ static std::string PrintAxisIds(const std::vector<int>& axisIds)
     return "";
 
   if (axisIds.size() == 1)
-    return StringUtils::Format("%d", axisIds.front());
+    return std::to_string(axisIds.front());
 
   std::string strAxisIds;
   for (const auto& axisId : axisIds)
@@ -37,7 +37,7 @@ static std::string PrintAxisIds(const std::vector<int>& axisIds)
     else
       strAxisIds += " | ";
 
-    strAxisIds += StringUtils::Format("%d", axisId);
+    strAxisIds += std::to_string(axisId);
   }
   strAxisIds += "]";
 
@@ -64,8 +64,8 @@ static void MapAxisIds(int axisId, int primaryAxisId, int secondaryAxisId, std::
     axisIds.insert(axisIds.begin(), primaryAxisId);
 }
 
-CAndroidJoystickState::CAndroidJoystickState(CAndroidJoystickState &&other) :
-    m_deviceId(other.m_deviceId),
+CAndroidJoystickState::CAndroidJoystickState(CAndroidJoystickState&& other) noexcept
+  : m_deviceId(other.m_deviceId),
     m_buttons(std::move(other.m_buttons)),
     m_axes(std::move(other.m_axes)),
     m_analogState(std::move(other.m_analogState)),

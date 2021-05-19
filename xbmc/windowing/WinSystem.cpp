@@ -33,14 +33,14 @@ bool CWinSystemBase::InitWindowSystem()
 {
   UpdateResolutions();
   CDisplaySettings::GetInstance().ApplyCalibrations();
+
+  CResolutionUtils::PrintWhitelist();
+
   return true;
 }
 
 bool CWinSystemBase::DestroyWindowSystem()
 {
-#if HAS_GLES
-  CGUIFontTTFGL::DestroyStaticVertexBuffers();
-#endif
   m_screenSaverManager.reset();
   return false;
 }
@@ -60,9 +60,9 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std:
   newRes.iHeight = height;
   newRes.iScreenWidth = width;
   newRes.iScreenHeight = height;
-  newRes.strMode = StringUtils::Format("%s: %dx%d", output.c_str(), width, height);
+  newRes.strMode = StringUtils::Format("{}: {}x{}", output, width, height);
   if (refreshRate > 1)
-    newRes.strMode += StringUtils::Format(" @ %.2fHz", refreshRate);
+    newRes.strMode += StringUtils::Format(" @ {:.2f}Hz", refreshRate);
   if (dwFlags & D3DPRESENTFLAG_INTERLACED)
     newRes.strMode += "i";
   if (dwFlags & D3DPRESENTFLAG_MODE3DTB)
@@ -117,7 +117,7 @@ static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int
       // check if the refresh rate of this resolution is better suited than
       // the refresh rate of the resolution with the same width/height/interlaced
       // property and if so replace it
-      if (bestRefreshrate > 0.0 && refreshrate == bestRefreshrate)
+      if (bestRefreshrate > 0.0f && refreshrate == bestRefreshrate)
         resolutions[idx].ResInfo_Index = addindex;
 
       // no need to add the resolution again

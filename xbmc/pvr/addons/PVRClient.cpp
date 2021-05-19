@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h" // added for compile test on related sources only!
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/VideoPlayer/Interface/Addon/InputStreamConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -105,6 +104,8 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strClientPath = CSpecialProtocol::TranslatePath(Path());
   m_bReadyToUse = false;
   m_bBlockAddonCalls = false;
+  m_iAddonCalls = 0;
+  m_allAddonCallsFinished.Set();
   m_connectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient = false;
@@ -122,7 +123,9 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 
   m_struct.props->strUserPath = m_strUserPath.c_str();
   m_struct.props->strClientPath = m_strClientPath.c_str();
-  m_struct.props->iEpgMaxDays =
+  m_struct.props->iEpgMaxPastDays =
+      CServiceBroker::GetPVRManager().EpgContainer().GetPastDaysToDisplay();
+  m_struct.props->iEpgMaxFutureDays =
       CServiceBroker::GetPVRManager().EpgContainer().GetFutureDaysToDisplay();
 
   m_struct.toKodi->kodiInstance = this;
@@ -155,7 +158,6 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   if (iClientId <= PVR_INVALID_CLIENT_ID)
     return status;
 
-  /* reset all properties to defaults */
   ResetProperties(iClientId);
 
   /* initialise the add-on */
@@ -175,16 +177,18 @@ void CPVRClient::Destroy()
 
   m_bReadyToUse = false;
 
-  /* reset 'ready to use' to false */
   CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '{}'", GetFriendlyName());
 
-  /* destroy the add-on */
+  m_bBlockAddonCalls = true;
+  m_allAddonCallsFinished.Wait();
+
   DestroyInstance();
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR add-on instance '{}' destroyed", GetFriendlyName());
 
   if (m_menuhooks)
     m_menuhooks->Clear();
 
-  /* reset all properties to defaults */
   ResetProperties();
 }
 
@@ -437,7 +441,7 @@ bool CPVRClient::GetAddonProperties()
     return false;
 
   /* display name = backend name:connection string */
-  strFriendlyName = StringUtils::Format("%s:%s", strBackendName, strConnectionString);
+  strFriendlyName = StringUtils::Format("{}:{}", strBackendName, strConnectionString);
 
   /* backend version number */
   retVal = DoAddonCall(
@@ -660,6 +664,8 @@ PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<CPVRChannel>& channel)
       [channel](const AddonInstance* addon) {
         PVR_CHANNEL addonChannel;
         WriteClientChannelInfo(channel, addonChannel);
+        strncpy(addonChannel.strChannelName, channel->ChannelName().c_str(),
+                sizeof(addonChannel.strChannelName) - 1);
         return addon->toAddon->RenameChannel(addon, &addonChannel);
       },
       m_clientCapabilities.SupportsChannelSettings());
@@ -684,11 +690,23 @@ PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t sta
       m_clientCapabilities.SupportsEPG());
 }
 
-PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
+PVR_ERROR CPVRClient::SetEPGMaxPastDays(int iPastDays)
 {
   return DoAddonCall(
       __func__,
-      [iDays](const AddonInstance* addon) { return addon->toAddon->SetEPGTimeFrame(addon, iDays); },
+      [iPastDays](const AddonInstance* addon) {
+        return addon->toAddon->SetEPGMaxPastDays(addon, iPastDays);
+      },
+      m_clientCapabilities.SupportsEPG());
+}
+
+PVR_ERROR CPVRClient::SetEPGMaxFutureDays(int iFutureDays)
+{
+  return DoAddonCall(
+      __func__,
+      [iFutureDays](const AddonInstance* addon) {
+        return addon->toAddon->SetEPGMaxFutureDays(addon, iFutureDays);
+      },
       m_clientCapabilities.SupportsEPG());
 }
 
@@ -702,7 +720,7 @@ class CAddonEpgTag : public EPG_TAG
 {
 public:
   CAddonEpgTag() = delete;
-  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag> kodiTag)
+  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& kodiTag)
     : m_strTitle(kodiTag->Title()),
       m_strPlotOutline(kodiTag->PlotOutline()),
       m_strPlot(kodiTag->Plot()),
@@ -1315,7 +1333,7 @@ PVR_ERROR CPVRClient::DemuxRead(DemuxPacket*& packet)
   return DoAddonCall(
       __func__,
       [&packet](const AddonInstance* addon) {
-        packet = addon->toAddon->DemuxRead(addon);
+        packet = static_cast<DemuxPacket*>(addon->toAddon->DemuxRead(addon));
         return packet ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
       },
       m_clientCapabilities.HandlesDemuxing());
@@ -1350,7 +1368,7 @@ const char* CPVRClient::ToString(const PVR_ERROR error)
 }
 
 PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
-                                  std::function<PVR_ERROR(const AddonInstance*)> function,
+                                  const std::function<PVR_ERROR(const AddonInstance*)>& function,
                                   bool bIsImplemented /* = true */,
                                   bool bCheckReadyToUse /* = true */) const
 {
@@ -1365,7 +1383,14 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
     return PVR_ERROR_SERVER_ERROR;
 
   // Call.
+  m_allAddonCallsFinished.Reset();
+  m_iAddonCalls++;
+
   const PVR_ERROR error = function(&m_struct);
+
+  m_iAddonCalls--;
+  if (m_iAddonCalls == 0)
+    m_allAddonCallsFinished.Set();
 
   // Log error, if any.
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
@@ -1634,177 +1659,176 @@ int CPVRClient::GetPriority() const
   return m_iPriority;
 }
 
+void CPVRClient::HandleAddonCallback(const char* strFunctionName,
+                                     void* kodiInstance,
+                                     const std::function<void(CPVRClient* client)>& function,
+                                     bool bForceCall /* = false */)
+{
+  // Check preconditions.
+  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  if (!client)
+  {
+    CLog::LogFunction(LOGERROR, strFunctionName, "No instance pointer given!");
+    return;
+  }
+
+  if (!bForceCall && client->m_bBlockAddonCalls && client->m_iAddonCalls == 0)
+  {
+    CLog::LogFunction(LOGWARNING, strFunctionName, LOGPVR, "Ignoring callback from PVR client '{}'",
+                      client->GetFriendlyName());
+    return;
+  }
+
+  // Call.
+  function(client);
+}
+
 void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
                                            const ADDON_HANDLE handle,
                                            const PVR_CHANNEL_GROUP* group)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!handle || !group)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
-  if (!group || !kodiGroups)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+    if (strlen(group->strGroupName) == 0)
+    {
+      CLog::LogF(LOGERROR, "Empty group name");
+      return;
+    }
 
-  if (strlen(group->strGroupName) == 0)
-  {
-    CLog::LogF(LOGERROR, "Empty group name");
-    return;
-  }
-
-  /* transfer this entry to the groups container */
-  CPVRChannelGroup transferGroup(*group, kodiGroups->GetGroupAll());
-  kodiGroups->UpdateFromClient(transferGroup);
+    // transfer this entry to the groups container
+    CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
+    CPVRChannelGroup transferGroup(*group, kodiGroups->GetGroupAll());
+    kodiGroups->UpdateFromClient(transferGroup);
+  });
 }
 
 void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
                                                   const ADDON_HANDLE handle,
                                                   const PVR_CHANNEL_GROUP_MEMBER* member)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!handle || !member)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRChannelGroup* group = static_cast<CPVRChannelGroup*>(handle->dataAddress);
-  if (!member || !client || !group)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
-
-  std::shared_ptr<CPVRChannel> channel =
-      CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId,
-                                                                     client->GetID());
-  if (!channel)
-  {
-    CLog::LogF(LOGERROR, "Cannot find group '{}' or channel '{}'", member->strGroupName,
-               member->iChannelUniqueId);
-  }
-  else if (group->IsRadio() == channel->IsRadio())
-  {
-    /* transfer this entry to the group */
-    group->AddToGroup(channel, CPVRChannelNumber(), member->iOrder, true,
-                      CPVRChannelNumber(member->iChannelNumber, member->iSubChannelNumber));
-  }
+    CPVRChannelGroup* group = static_cast<CPVRChannelGroup*>(handle->dataAddress);
+    const std::shared_ptr<CPVRChannel> channel =
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId,
+                                                                       client->GetID());
+    if (!channel)
+    {
+      CLog::LogF(LOGERROR, "Cannot find group '{}' or channel '{}'", member->strGroupName,
+                 member->iChannelUniqueId);
+    }
+    else if (group->IsRadio() == channel->IsRadio())
+    {
+      // add this entry to the group
+      group->AddToGroup(channel, CPVRChannelNumber(), member->iOrder, true,
+                        CPVRChannelNumber(member->iChannelNumber, member->iSubChannelNumber));
+    }
+  });
 }
 
 void CPVRClient::cb_transfer_epg_entry(void* kodiInstance,
                                        const ADDON_HANDLE handle,
                                        const EPG_TAG* epgentry)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!handle || !epgentry)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVREpg* kodiEpg = static_cast<CPVREpg*>(handle->dataAddress);
-  if (!epgentry || !client || !kodiEpg)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
-
-  /* transfer this entry to the epg */
-  kodiEpg->UpdateEntry(epgentry, client->GetID());
+    // transfer this entry to the epg
+    CPVREpg* epg = static_cast<CPVREpg*>(handle->dataAddress);
+    epg->UpdateEntry(epgentry, client->GetID());
+  });
 }
 
 void CPVRClient::cb_transfer_channel_entry(void* kodiInstance,
                                            const ADDON_HANDLE handle,
                                            const PVR_CHANNEL* channel)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!handle || !channel)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRChannelGroupInternal* kodiChannels =
-      static_cast<CPVRChannelGroupInternal*>(handle->dataAddress);
-  if (!channel || !client || !kodiChannels)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
-
-  /* transfer this entry to the internal channels group */
-  std::shared_ptr<CPVRChannel> transferChannel(new CPVRChannel(*channel, client->GetID()));
-  kodiChannels->UpdateFromClient(transferChannel, CPVRChannelNumber(), channel->iOrder,
-                                 transferChannel->ClientChannelNumber());
+    // transfer this entry to the internal channels group
+    const std::shared_ptr<CPVRChannel> transferChannel =
+        std::make_shared<CPVRChannel>(*channel, client->GetID());
+    CPVRChannelGroupInternal* channels =
+        static_cast<CPVRChannelGroupInternal*>(handle->dataAddress);
+    channels->UpdateFromClient(transferChannel, transferChannel->ClientChannelNumber(),
+                               channel->iOrder);
+  });
 }
 
 void CPVRClient::cb_transfer_recording_entry(void* kodiInstance,
                                              const ADDON_HANDLE handle,
                                              const PVR_RECORDING* recording)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!handle || !recording)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRRecordings* kodiRecordings = static_cast<CPVRRecordings*>(handle->dataAddress);
-  if (!recording || !client || !kodiRecordings)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
-
-  /* transfer this entry to the recordings container */
-  std::shared_ptr<CPVRRecording> transferRecording(new CPVRRecording(*recording, client->GetID()));
-  kodiRecordings->UpdateFromClient(transferRecording);
+    // transfer this entry to the recordings container
+    const std::shared_ptr<CPVRRecording> transferRecording =
+        std::make_shared<CPVRRecording>(*recording, client->GetID());
+    CPVRRecordings* recordings = static_cast<CPVRRecordings*>(handle->dataAddress);
+    recordings->UpdateFromClient(transferRecording, *client);
+  });
 }
 
 void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
                                          const ADDON_HANDLE handle,
                                          const PVR_TIMER* timer)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!handle || !timer)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRTimersContainer* kodiTimers = static_cast<CPVRTimersContainer*>(handle->dataAddress);
-  if (!timer || !client || !kodiTimers)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+    // Note: channel can be nullptr here, for instance for epg-based timer rules
+    //       ("record on any channel" condition)
+    const std::shared_ptr<CPVRChannel> channel =
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(timer->iClientChannelUid,
+                                                                       client->GetID());
 
-  /* Note: channel can be NULL here, for instance for epg-based timer rules ("record on any channel" condition). */
-  std::shared_ptr<CPVRChannel> channel =
-      CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(timer->iClientChannelUid,
-                                                                     client->GetID());
-
-  /* transfer this entry to the timers container */
-  std::shared_ptr<CPVRTimerInfoTag> transferTimer(
-      new CPVRTimerInfoTag(*timer, channel, client->GetID()));
-  kodiTimers->UpdateFromClient(transferTimer);
+    // transfer this entry to the timers container
+    const std::shared_ptr<CPVRTimerInfoTag> transferTimer =
+        std::make_shared<CPVRTimerInfoTag>(*timer, channel, client->GetID());
+    CPVRTimersContainer* timers = static_cast<CPVRTimersContainer*>(handle->dataAddress);
+    timers->UpdateFromClient(transferTimer);
+  });
 }
 
 void CPVRClient::cb_add_menu_hook(void* kodiInstance, const PVR_MENUHOOK* hook)
 {
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  if (!hook || !client)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!hook)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  client->GetMenuHooks()->AddHook(*hook);
+    client->GetMenuHooks()->AddHook(*hook);
+  });
 }
 
 void CPVRClient::cb_recording_notification(void* kodiInstance,
@@ -1812,74 +1836,89 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
                                            const char* strFileName,
                                            bool bOnOff)
 {
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  if (!client || !strFileName)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!strFileName)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  std::string strLine1 = StringUtils::Format(g_localizeStrings.Get(bOnOff ? 19197 : 19198).c_str(),
-                                             client->Name().c_str());
-  std::string strLine2;
-  if (strName)
-    strLine2 = strName;
-  else if (strFileName)
-    strLine2 = strFileName;
+    const std::string strLine1 =
+        StringUtils::Format(g_localizeStrings.Get(bOnOff ? 19197 : 19198), client->Name());
+    std::string strLine2;
+    if (strName)
+      strLine2 = strName;
+    else if (strFileName)
+      strLine2 = strFileName;
 
-  /* display a notification for 5 seconds */
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
-  CServiceBroker::GetEventLog().Add(
-      EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
+    // display a notification for 5 seconds
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000,
+                                          false);
+    CServiceBroker::GetEventLog().Add(
+        EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client '{}'. name='{}' filename='{}'",
-              bOnOff ? "started" : "finished", client->Name(), strName, strFileName);
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client '{}'. name='{}' filename='{}'",
+                bOnOff ? "started" : "finished", client->Name(), strName, strFileName);
+  });
 }
 
 void CPVRClient::cb_trigger_channel_update(void* kodiInstance)
 {
-  /* update the channels table in the next iteration of the pvrmanager's main loop */
-  CServiceBroker::GetPVRManager().TriggerChannelsUpdate();
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    // update channels in the next iteration of the pvrmanager's main loop
+    CServiceBroker::GetPVRManager().TriggerChannelsUpdate();
+  });
 }
 
 void CPVRClient::cb_trigger_timer_update(void* kodiInstance)
 {
-  /* update the timers table in the next iteration of the pvrmanager's main loop */
-  CServiceBroker::GetPVRManager().TriggerTimersUpdate();
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    // update timers in the next iteration of the pvrmanager's main loop
+    CServiceBroker::GetPVRManager().TriggerTimersUpdate();
+  });
 }
 
 void CPVRClient::cb_trigger_recording_update(void* kodiInstance)
 {
-  /* update the recordings table in the next iteration of the pvrmanager's main loop */
-  CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    // update recordings in the next iteration of the pvrmanager's main loop
+    CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
+  });
 }
 
 void CPVRClient::cb_trigger_channel_groups_update(void* kodiInstance)
 {
-  /* update all channel groups in the next iteration of the pvrmanager's main loop */
-  CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate();
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    // update all channel groups in the next iteration of the pvrmanager's main loop
+    CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate();
+  });
 }
 
 void CPVRClient::cb_trigger_epg_update(void* kodiInstance, unsigned int iChannelUid)
 {
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  if (!client)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
-
-  CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
+  });
 }
 
-void CPVRClient::cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket)
+void CPVRClient::cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket)
 {
-  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  HandleAddonCallback(__func__, kodiInstance,
+                      [&](CPVRClient* client) {
+                        CDVDDemuxUtils::FreeDemuxPacket(static_cast<DemuxPacket*>(pPacket));
+                      },
+                      true);
 }
 
-DemuxPacket* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
+DEMUX_PACKET* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
 {
-  return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
+  DEMUX_PACKET* result = nullptr;
+
+  HandleAddonCallback(
+      __func__, kodiInstance,
+      [&](CPVRClient* client) { result = CDVDDemuxUtils::AllocateDemuxPacket(iDataSize); }, true);
+
+  return result;
 }
 
 void CPVRClient::cb_connection_state_change(void* kodiInstance,
@@ -1887,46 +1926,48 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance,
                                             PVR_CONNECTION_STATE newState,
                                             const char* strMessage)
 {
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  if (!client || !strConnectionString)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!strConnectionString)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  const PVR_CONNECTION_STATE prevState(client->GetConnectionState());
-  if (prevState == newState)
-    return;
+    const PVR_CONNECTION_STATE prevState(client->GetConnectionState());
+    if (prevState == newState)
+      return;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR,
-              "State for connection '{}' on client '{}' changed from '{}' to '{}'",
-              strConnectionString, client->Name(), prevState, newState);
+    CLog::LogFC(LOGDEBUG, LOGPVR,
+                "State for connection '{}' on client '{}' changed from '{}' to '{}'",
+                strConnectionString, client->Name(), prevState, newState);
 
-  client->SetConnectionState(newState);
+    client->SetConnectionState(newState);
 
-  std::string msg;
-  if (strMessage != nullptr)
-    msg = strMessage;
+    std::string msg;
+    if (strMessage)
+      msg = strMessage;
 
-  CServiceBroker::GetPVRManager().ConnectionStateChange(client, std::string(strConnectionString),
-                                                        newState, msg);
+    CServiceBroker::GetPVRManager().ConnectionStateChange(client, std::string(strConnectionString),
+                                                          newState, msg);
+  });
 }
 
 void CPVRClient::cb_epg_event_state_change(void* kodiInstance,
                                            EPG_TAG* tag,
                                            EPG_EVENT_STATE newState)
 {
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  if (!client || !tag)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    if (!tag)
+    {
+      CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+      return;
+    }
 
-  // Note: channel data and epg id may not yet be available. Tag will be fully initialized later.
-  const std::shared_ptr<CPVREpgInfoTag> epgTag =
-      std::make_shared<CPVREpgInfoTag>(*tag, client->GetID(), nullptr, -1);
-  CServiceBroker::GetPVRManager().EpgContainer().UpdateFromClient(epgTag, newState);
+    // Note: channel data and epg id may not yet be available. Tag will be fully initialized later.
+    const std::shared_ptr<CPVREpgInfoTag> epgTag =
+        std::make_shared<CPVREpgInfoTag>(*tag, client->GetID(), nullptr, -1);
+    CServiceBroker::GetPVRManager().EpgContainer().UpdateFromClient(epgTag, newState);
+  });
 }
 
 class CCodecIds
@@ -1993,7 +2034,14 @@ private:
 
 PVR_CODEC CPVRClient::cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName)
 {
-  return CCodecIds::GetInstance().GetCodecByName(strCodecName);
+  PVR_CODEC result = PVR_INVALID_CODEC;
+
+  HandleAddonCallback(
+      __func__, const_cast<void*>(kodiInstance),
+      [&](CPVRClient* client) { result = CCodecIds::GetInstance().GetCodecByName(strCodecName); },
+      true);
+
+  return result;
 }
 
 CPVRClientCapabilities::CPVRClientCapabilities(const CPVRClientCapabilities& other)
@@ -2037,7 +2085,7 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%d", iValue);
+        strDescr = std::to_string(iValue);
       }
       m_recordingsLifetimeValues.emplace_back(strDescr, iValue);
     }
@@ -2047,9 +2095,8 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
     // No values given by addon, but lifetime supported. Use default values 1..365
     for (int i = 1; i < 366; ++i)
     {
-      m_recordingsLifetimeValues.emplace_back(
-          StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i),
-          i); // "%s days"
+      m_recordingsLifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
+                                              i); // "{} days"
     }
   }
   else

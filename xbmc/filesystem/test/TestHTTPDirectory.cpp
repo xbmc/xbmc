@@ -36,12 +36,13 @@ using namespace XFILE;
 #define TEST_FILE_BASIC_MULTILINE "basic-multiline.html"
 #define TEST_FILE_LIGHTTP_DEFAULT "lighttp-default.html"
 #define TEST_FILE_NGINX_DEFAULT "nginx-default.html"
+#define TEST_FILE_NGINX_FANCYINDEX "nginx-fancyindex.html"
 
 #define SAMPLE_ITEM_COUNT 6
 
 #define SAMPLE_ITEM_1_LABEL "folder1"
 #define SAMPLE_ITEM_2_LABEL "folder2"
-#define SAMPLE_ITEM_3_LABEL "sample3.mpg"
+#define SAMPLE_ITEM_3_LABEL "sample3: the sampling.mpg"
 #define SAMPLE_ITEM_4_LABEL "sample4.mpg"
 #define SAMPLE_ITEM_5_LABEL "sample5.mpg"
 #define SAMPLE_ITEM_6_LABEL "sample6.mpg"
@@ -71,7 +72,7 @@ protected:
     std::uniform_int_distribution<uint16_t> dist(49152, 65535);
     m_webServerPort = dist(mt);
 
-    m_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":%u", m_webServerPort);
+    m_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", m_webServerPort);
   }
 
   ~TestHTTPDirectory() override = default;
@@ -285,6 +286,16 @@ TEST_F(TestHTTPDirectory, NginxDefaultIndex)
 
   ASSERT_TRUE(m_httpDirectory.Exists(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_DEFAULT))));
   ASSERT_TRUE(m_httpDirectory.GetDirectory(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_DEFAULT)), items));
+
+  CheckFileItemsAndMetadata(items);
+}
+
+TEST_F(TestHTTPDirectory, NginxFancyIndex)
+{
+  CFileItemList items;
+
+  ASSERT_TRUE(m_httpDirectory.Exists(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_FANCYINDEX))));
+  ASSERT_TRUE(m_httpDirectory.GetDirectory(CURL(GetUrlOfTestFile(TEST_FILE_NGINX_FANCYINDEX)), items));
 
   CheckFileItemsAndMetadata(items);
 }

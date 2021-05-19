@@ -148,6 +148,10 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Din vurdering"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Udvidet info"
+
 msgctxt "#31035"
 msgid "Pages"
 msgstr "Sider"
@@ -196,10 +200,6 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Tilgængelig"
 
-msgctxt "#31050"
-msgid "Press [B]OK[/B] to stop"
-msgstr "Tryk [B]OK[/B] for at stoppe"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtreret"
@@ -207,10 +207,6 @@ msgstr "filtreret"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Baseret på Arial"
-
-msgctxt "#31054"
-msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Tryk [B]Venstre[/B] for tilbagespoling, eller [B]Højre[/B] for at spole fremad"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -499,10 +495,6 @@ msgstr "Kategorier"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Vælg fankunst genrepakke"
-
-msgctxt "#31150"
-msgid "Repository"
-msgstr "Fjernlager"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

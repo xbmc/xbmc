@@ -184,7 +184,7 @@ namespace JSONRPC
     public:
       CJsonSchemaPropertiesMap();
 
-      void add(JSONSchemaTypeDefinitionPtr property);
+      void add(const JSONSchemaTypeDefinitionPtr& property);
 
       typedef std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator JSONSchemaPropertiesIterator;
       JSONSchemaPropertiesIterator begin() const;
@@ -265,9 +265,14 @@ namespace JSONRPC
     JSONSchemaTypeDefinitionPtr returns;
 
   private:
-    bool parseParameter(const CVariant &value, JSONSchemaTypeDefinitionPtr parameter);
+    bool parseParameter(const CVariant& value, const JSONSchemaTypeDefinitionPtr& parameter);
     bool parseReturn(const CVariant &value);
-    static JSONRPC_STATUS checkParameter(const CVariant &requestParameters, JSONSchemaTypeDefinitionPtr type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
+    static JSONRPC_STATUS checkParameter(const CVariant& requestParameters,
+                                         const JSONSchemaTypeDefinitionPtr& type,
+                                         unsigned int position,
+                                         CVariant& outputParameters,
+                                         unsigned int& handled,
+                                         CVariant& errorData);
   };
 
   /*!
@@ -390,10 +395,11 @@ namespace JSONRPC
     static bool addMethod(const std::string &jsonMethod, MethodCall method);
     static void parseHeader(const CVariant &descriptionObject);
     static bool parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinitionPtr>& typeDefinitions, JSONSchemaType &schemaType, std::string &missingReference);
-    static void addReferenceTypeDefinition(JSONSchemaTypeDefinitionPtr typeDefinition);
+    static void addReferenceTypeDefinition(const JSONSchemaTypeDefinitionPtr& typeDefinition);
     static void removeReferenceTypeDefinition(const std::string &typeID);
 
-    static void getReferencedTypes(const JSONSchemaTypeDefinitionPtr type, std::vector<std::string> &referencedTypes);
+    static void getReferencedTypes(const JSONSchemaTypeDefinitionPtr& type,
+                                   std::vector<std::string>& referencedTypes);
 
     class CJsonRpcMethodMap
     {

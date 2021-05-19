@@ -10,6 +10,7 @@
 
 #include "AudioLibrary.h"
 #include "FileOperations.h"
+#include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "Util.h"
 #include "VideoLibrary.h"
@@ -19,10 +20,14 @@
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
+#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
 #include "utils/ISerializable.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
@@ -51,6 +56,79 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       item->FillInMimeType(false);
       result[field] = item->GetMimeType();
       return true;
+    }
+
+    if (item->HasPVRChannelInfoTag())
+    {
+      // Translate PVR.Details.Broadcast -> List.Item.Base format
+      if (field == "cast")
+      {
+        // string -> Video.Cast
+        const std::vector<std::string> actors =
+            StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+
+        result[field] = CVariant(CVariant::VariantTypeArray);
+        for (const auto& actor : actors)
+        {
+          CVariant actorVar;
+          actorVar["name"] = actor;
+          result[field].push_back(actorVar);
+        }
+        return true;
+      }
+      else if (field == "director" || field == "writer")
+      {
+        // string -> Array.String
+        result[field] = StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+        return true;
+      }
+      else if (field == "isrecording")
+      {
+        result[field] = CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(
+            *item->GetPVRChannelInfoTag());
+        return true;
+      }
+    }
+
+    if (item->HasEPGInfoTag())
+    {
+      if (field == "hastimer")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer != nullptr);
+        return true;
+      }
+      else if (field == "hasreminder")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer && timer->IsReminder());
+        return true;
+      }
+      else if (field == "hastimerrule")
+      {
+        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
+            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        result[field] = (timer && (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT));
+        return true;
+      }
+      else if (field == "hasrecording")
+      {
+        const std::shared_ptr<PVR::CPVRRecording> recording =
+            CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
+                item->GetEPGInfoTag());
+        result[field] = (recording != nullptr);
+        return true;
+      }
+      else if (field == "recording")
+      {
+        const std::shared_ptr<PVR::CPVRRecording> recording =
+            CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
+                item->GetEPGInfoTag());
+        result[field] = recording ? recording->m_strFileNameAndPath : "";
+        return true;
+      }
     }
   }
 
@@ -243,7 +321,15 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   delete thumbLoader;
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
+void CFileItemHandler::HandleFileItem(const char* ID,
+                                      bool allowFile,
+                                      const char* resultname,
+                                      const CFileItemPtr& item,
+                                      const CVariant& parameterObject,
+                                      const CVariant& validFields,
+                                      CVariant& result,
+                                      bool append /* = true */,
+                                      CThumbLoader* thumbLoader /* = NULL */)
 {
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
@@ -255,7 +341,15 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, append, thumbLoader);
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const std::set<std::string> &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
+void CFileItemHandler::HandleFileItem(const char* ID,
+                                      bool allowFile,
+                                      const char* resultname,
+                                      const CFileItemPtr& item,
+                                      const CVariant& parameterObject,
+                                      const std::set<std::string>& validFields,
+                                      CVariant& result,
+                                      bool append /* = true */,
+                                      CThumbLoader* thumbLoader /* = NULL */)
 {
   CVariant object;
   std::set<std::string> fields(validFields.begin(), validFields.end());
@@ -298,8 +392,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     {
       if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag()->ChannelID() > 0)
          object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
-      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->UniqueBroadcastID() > EPG_TAG_INVALID_UID)
-         object[ID] = item->GetEPGInfoTag()->UniqueBroadcastID();
+      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->DatabaseID() > 0)
+        object[ID] = item->GetEPGInfoTag()->DatabaseID();
       else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iRecordingId > 0)
          object[ID] = item->GetPVRRecordingInfoTag()->m_iRecordingId;
       else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)
@@ -360,6 +454,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
     if (item->HasPVRChannelInfoTag())
       FillDetails(item->GetPVRChannelInfoTag().get(), item, fields, object, thumbLoader);
+    if (item->HasPVRChannelGroupMemberInfoTag())
+      FillDetails(item->GetPVRChannelGroupMemberInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasEPGInfoTag())
       FillDetails(item->GetEPGInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasPVRRecordingInfoTag())

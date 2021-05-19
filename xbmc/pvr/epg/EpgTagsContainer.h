@@ -95,6 +95,13 @@ public:
   std::shared_ptr<CPVREpgInfoTag> GetTag(unsigned int iUniqueBroadcastID) const;
 
   /*!
+   * @brief Get an EPG tag given its database ID.
+   * @param iDatabaseID The ID.
+   * @return The tag or nullptr if no tag was found.
+   */
+  std::shared_ptr<CPVREpgInfoTag> GetTagByDatabaseID(int iDatabaseID) const;
+
+  /*!
    * @brief Get the event that occurs between the given begin and end time.
    * @param start The start of the time interval.
    * @param end The end of the time interval.
@@ -164,9 +171,9 @@ public:
   void QueuePersistQuery();
 
   /*!
-   * @brief Delete this container from its database.
+   * @brief Queue the deletion of this container from its database.
    */
-  void Delete();
+  void QueueDelete();
 
 private:
   /*!

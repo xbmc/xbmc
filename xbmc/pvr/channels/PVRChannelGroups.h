@@ -64,11 +64,12 @@ namespace PVR
     bool UpdateFromClient(const CPVRChannelGroup& group) { return Update(group, true); }
 
     /*!
-     * @brief Get a channel given its path
-     * @param strPath The path to the channel
-     * @return The channel, or nullptr if not found
+     * @brief Get a channel group member given its path
+     * @param strPath The path to the channel group member
+     * @return The channel group member, or nullptr if not found
      */
-    std::shared_ptr<CPVRChannel> GetByPath(const CPVRChannelsPath& path) const;
+    std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMemberByPath(
+        const CPVRChannelsPath& path) const;
 
     /*!
      * @brief Get a pointer to a channel group given its ID.
@@ -150,23 +151,6 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroup> GetNextGroup(const CPVRChannelGroup& group) const;
 
     /*!
-     * @brief Get the group that is currently selected in the UI.
-     * @return The selected group.
-     */
-    std::shared_ptr<CPVRChannelGroup> GetSelectedGroup() const;
-
-    /*!
-     * @brief Change the selected group.
-     * @param selectedGroup The group to select.
-     */
-    void SetSelectedGroup(const std::shared_ptr<CPVRChannelGroup>& selectedGroup);
-
-    /*!
-     * @brief Update the selected groups channel numbers and client order.
-     */
-    void UpdateSelectedGroup();
-
-    /*!
      * @brief Add a group to this container.
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.
@@ -179,6 +163,14 @@ namespace PVR
      * @return True if it was deleted successfully, false if not.
      */
     bool DeleteGroup(const CPVRChannelGroup& group);
+
+    /*!
+     * @brief Hide/unhide a group in this container.
+     * @param group The group to hide/unhide.
+     * @param bHide True to hide the group, false to unhide it.
+     * @return True on success, false otherwise.
+     */
+    bool HideGroup(const std::shared_ptr<CPVRChannelGroup>& group, bool bHide);
 
     /*!
      * @brief Create EPG tags for all channels of the internal group.
@@ -228,7 +220,6 @@ namespace PVR
     void RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& channel);
 
     bool m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
-    std::shared_ptr<CPVRChannelGroup> m_selectedGroup; /*!< the group that's currently selected in the UI */
     std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups; /*!< the groups in this container */
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClientsForChannelGroups;

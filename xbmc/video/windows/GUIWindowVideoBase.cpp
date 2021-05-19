@@ -315,7 +315,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   CGUIDialogVideoInfo* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
 
-  ScraperPtr info(info2); // use this as nfo might change it..
+  const ScraperPtr& info(info2); // use this as nfo might change it..
 
   if (!pDlgProgress) return false;
   if (!pDlgSelect) return false;
@@ -398,22 +398,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
         item->SetPath(item->GetVideoInfoTag()->GetPath());
     }
   }
-  
-  if (needsRefresh)
-  {
-    // Delete stream details (=media flags). This allows users to force
-    // a refresh of the stream details by performing a video info refresh
-    const int fileId = item->GetVideoInfoTag()->m_iFileId;
-    if (fileId > 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.DeleteStreamDetails(fileId);
-        db.Close();
-      }
-    }
-  }
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -424,7 +408,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   if (!info)
     return false;
 
-  if (g_application.IsVideoScanning())
+  if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{14057});
     return false;
@@ -659,7 +643,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   return CGUIMediaWindow::OnSelect(iItem);
 }
 
-bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player)
+bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string& player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
 
@@ -802,11 +786,14 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   GetResumeItemOffset(&item, startOffset, startPart);
   if (startOffset > 0)
   {
-    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
-        StringUtils::SecondsToTimeString(static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)), TIME_FORMAT_HH_MM_SS).c_str());
+    resumeString =
+        StringUtils::Format(g_localizeStrings.Get(12022),
+                            StringUtils::SecondsToTimeString(
+                                static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
+                                TIME_FORMAT_HH_MM_SS));
     if (startPart > 0)
     {
-      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
+      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051), startPart);
       resumeString += " (" + partString + ")";
     }
   }
@@ -977,7 +964,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   CDirectory::GetDirectory(path, parts, "", DIR_FLAG_DEFAULTS);
 
   for (int i = 0; i < parts.Size(); i++)
-    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051).c_str(), i+1));
+    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051), i + 1));
 
   CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
@@ -1181,7 +1168,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   return true;
 }
 
-bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
+bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   // Get the current playlist and make sure it is not shuffled
   int iPlaylist = m_guiState->GetPlaylist();
@@ -1217,7 +1204,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
+void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
 {
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
@@ -1419,7 +1406,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 {
-  std::string content = items.GetContent();
+  const std::string& content = items.GetContent();
   if ((items.IsVideoDb() || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "movies")   ||
        StringUtils::EqualsNoCase(content, "tvshows")  ||
@@ -1566,7 +1553,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
 
 void CGUIWindowVideoBase::OnScan(const std::string& strPath, bool scanAll)
 {
-    g_application.StartVideoScan(strPath, true, scanAll);
+  CVideoLibraryQueue::GetInstance().ScanLibrary(strPath, scanAll, true);
 }
 
 std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
@@ -1647,6 +1634,6 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
 
   if (bScan)
   {
-    g_application.StartVideoScan(path, true, true);
+    CVideoLibraryQueue::GetInstance().ScanLibrary(path, true, true);
   }
 }

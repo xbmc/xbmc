@@ -25,7 +25,7 @@ public:
   CDVDDemuxCDDA();
   ~CDVDDemuxCDDA() override;
 
-  bool Open(std::shared_ptr<CDVDInputStream> pInput);
+  bool Open(const std::shared_ptr<CDVDInputStream>& pInput);
   void Dispose();
   bool Reset() override;
   void Abort() override;

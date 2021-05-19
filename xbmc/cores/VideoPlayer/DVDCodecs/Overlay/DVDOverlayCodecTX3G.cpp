@@ -12,7 +12,7 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
+#include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"
@@ -220,7 +220,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 
     // invert the order from above so we bracket the text correctly.
     if (bgnColorIndex == charIndex && textColorRGBA != m_textColor)
-      strUTF8 += StringUtils::Format("[COLOR %8x]", textColorRGBA);
+      strUTF8 += StringUtils::Format("[COLOR {:8x}]", textColorRGBA);
     // we do not support underline
     //if (bgnStyles & UNDERLINE)
     //  strUTF8.append("[U]");

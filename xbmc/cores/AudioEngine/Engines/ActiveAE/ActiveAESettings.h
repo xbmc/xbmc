@@ -31,23 +31,36 @@ public:
   CActiveAESettings(CActiveAE &ae);
   ~CActiveAESettings() override;
 
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
-  static void SettingOptionsAudioDevicesFiller(std::shared_ptr<const CSetting> setting,
-                                               std::vector<StringSettingOption> &list,
-                                               std::string &current, void *data);
-  static void SettingOptionsAudioDevicesPassthroughFiller(std::shared_ptr<const CSetting> setting,
-                                                          std::vector<StringSettingOption> &list,
-                                                          std::string &current, void *data);
-  static void SettingOptionsAudioQualityLevelsFiller(std::shared_ptr<const CSetting> setting,
-                                                     std::vector<IntegerSettingOption> &list, int &current, void *data);
-  static void SettingOptionsAudioStreamsilenceFiller(std::shared_ptr<const CSetting> setting,
-                                                     std::vector<IntegerSettingOption> &list, int &current, void *data);
-  static bool IsSettingVisible(const std::string &condition, const std::string &value,
-                               std::shared_ptr<const CSetting> setting, void *data);
+  static void SettingOptionsAudioDevicesFiller(const std::shared_ptr<const CSetting>& setting,
+                                               std::vector<StringSettingOption>& list,
+                                               std::string& current,
+                                               void* data);
+  static void SettingOptionsAudioDevicesPassthroughFiller(
+      const std::shared_ptr<const CSetting>& setting,
+      std::vector<StringSettingOption>& list,
+      std::string& current,
+      void* data);
+  static void SettingOptionsAudioQualityLevelsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                     std::vector<IntegerSettingOption>& list,
+                                                     int& current,
+                                                     void* data);
+  static void SettingOptionsAudioStreamsilenceFiller(const std::shared_ptr<const CSetting>& setting,
+                                                     std::vector<IntegerSettingOption>& list,
+                                                     int& current,
+                                                     void* data);
+  static bool IsSettingVisible(const std::string& condition,
+                               const std::string& value,
+                               const std::shared_ptr<const CSetting>& setting,
+                               void* data);
 
 protected:
-  static void SettingOptionsAudioDevicesFillerGeneral(std::shared_ptr<const CSetting> setting, std::vector<StringSettingOption> &list, std::string &current, bool passthrough);
+  static void SettingOptionsAudioDevicesFillerGeneral(
+      const std::shared_ptr<const CSetting>& setting,
+      std::vector<StringSettingOption>& list,
+      std::string& current,
+      bool passthrough);
 
   CActiveAE &m_audioEngine;
   CCriticalSection m_cs;

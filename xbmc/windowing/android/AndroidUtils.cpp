@@ -43,7 +43,7 @@ static float currentRefreshRate()
   if (window)
   {
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
-    if (preferredRate > 20.0 && preferredRate < 70.0)
+    if (preferredRate > 20.0f && preferredRate < 70.0f)
     {
       CLog::Log(LOGINFO, "CAndroidUtils: Preferred refresh rate: %f", preferredRate);
       return preferredRate;
@@ -54,7 +54,7 @@ static float currentRefreshRate()
       if (display)
       {
         float reportedRate = display.getRefreshRate();
-        if (reportedRate > 20.0 && reportedRate < 70.0)
+        if (reportedRate > 20.0f && reportedRate < 70.0f)
         {
           CLog::Log(LOGINFO, "CAndroidUtils: Current display refresh rate: %f", reportedRate);
           return reportedRate;
@@ -83,7 +83,7 @@ static void fetchDisplayModes()
         s_hasModeApi = true;
 
         CLog::Log(LOGDEBUG, "CAndroidUtils: current mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
-        s_res_cur_displayMode.strId = StringUtils::Format("%d", m.getModeId());
+        s_res_cur_displayMode.strId = std::to_string(m.getModeId());
         s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth = m.getPhysicalWidth();
         s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
         s_res_cur_displayMode.fRefreshRate = m.getRefreshRate();
@@ -91,8 +91,10 @@ static void fetchDisplayModes()
         s_res_cur_displayMode.bFullScreen   = true;
         s_res_cur_displayMode.iSubtitles    = (int)(0.965 * s_res_cur_displayMode.iHeight);
         s_res_cur_displayMode.fPixelRatio   = 1.0f;
-        s_res_cur_displayMode.strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", s_res_cur_displayMode.iScreenWidth, s_res_cur_displayMode.iScreenHeight, s_res_cur_displayMode.fRefreshRate,
-                                                                  s_res_cur_displayMode.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+        s_res_cur_displayMode.strMode = StringUtils::Format(
+            "{}x{} @ {:.6f}{} - Full Screen", s_res_cur_displayMode.iScreenWidth,
+            s_res_cur_displayMode.iScreenHeight, s_res_cur_displayMode.fRefreshRate,
+            s_res_cur_displayMode.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
         std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
         for (auto m : modes)
@@ -100,7 +102,7 @@ static void fetchDisplayModes()
           CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: %d: %dx%d@%f", m.getModeId(), m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
 
           RESOLUTION_INFO res;
-          res.strId = StringUtils::Format("%d", m.getModeId());
+          res.strId = std::to_string(m.getModeId());
           res.iWidth = res.iScreenWidth = m.getPhysicalWidth();
           res.iHeight = res.iScreenHeight = m.getPhysicalHeight();
           res.fRefreshRate = m.getRefreshRate();
@@ -108,8 +110,9 @@ static void fetchDisplayModes()
           res.bFullScreen   = true;
           res.iSubtitles    = (int)(0.965 * res.iHeight);
           res.fPixelRatio   = 1.0f;
-          res.strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
-                                                  res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+          res.strMode = StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res.iScreenWidth,
+                                            res.iScreenHeight, res.fRefreshRate,
+                                            res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
           s_res_displayModes.push_back(res);
         }
@@ -128,7 +131,7 @@ CAndroidUtils::CAndroidUtils()
   if (CJNIBase::GetSDKVersion() >= 24)
   {
     fetchDisplayModes();
-    for (auto res : s_res_displayModes)
+    for (const auto& res : s_res_displayModes)
     {
       if (res.iWidth > m_width || res.iHeight > m_height)
       {
@@ -223,8 +226,9 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
     res->iScreenHeight = res->iHeight;
   }
   res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->strMode       = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
-                                           res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+  res->strMode =
+      StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res->iScreenWidth, res->iScreenHeight,
+                          res->fRefreshRate, res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
   CLog::Log(LOGINFO, "CAndroidUtils: Current resolution: %dx%d %s", res->iWidth, res->iHeight,
             res->strMode.c_str());
   return true;
@@ -289,11 +293,12 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions)
       {
         for (unsigned int i = 0; i < refreshRates.size(); i++)
         {
-          if (refreshRates[i] < 20.0 || refreshRates[i] > 70.0)
+          if (refreshRates[i] < 20.0f || refreshRates[i] > 70.0f)
             continue;
           cur_res.fRefreshRate = refreshRates[i];
-          cur_res.strMode      = StringUtils::Format("%dx%d @ %.6f%s - Full Screen", cur_res.iScreenWidth, cur_res.iScreenHeight, cur_res.fRefreshRate,
-                                                 cur_res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+          cur_res.strMode = StringUtils::Format(
+              "{}x{} @ {:.6f}{} - Full Screen", cur_res.iScreenWidth, cur_res.iScreenHeight,
+              cur_res.fRefreshRate, cur_res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
           resolutions.push_back(cur_res);
         }
       }
@@ -334,7 +339,7 @@ bool CAndroidUtils::IsHDRDisplay()
   return ret;
 }
 
-void  CAndroidUtils::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   const std::string &settingId = setting->GetId();
   /* Calibration (overscan / subtitles) are based on GUI size -> reset required */

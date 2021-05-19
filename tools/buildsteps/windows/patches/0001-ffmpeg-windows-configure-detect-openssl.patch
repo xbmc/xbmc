@@ -1,0 +1,25 @@
+From 08ae41e824e04ab48eafde763c72d1ff3e878a41 Mon Sep 17 00:00:00 2001
+From: Lukas Rusak <lorusak@gmail.com>
+Date: Sat, 10 Apr 2021 08:16:11 -0700
+Subject: [PATCH 1/4] ffmpeg: windows: configure: detect openssl
+
+---
+ configure | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/configure b/configure
+index d7a3f507e8..4b85e881b1 100755
+--- a/configure
++++ b/configure
+@@ -6529,6 +6529,8 @@ enabled openssl           && { check_pkg_config openssl openssl openssl/ssl.h OP
+                                check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto ||
+                                check_lib openssl openssl/ssl.h SSL_library_init -lssl32 -leay32 ||
+                                check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto -lws2_32 -lgdi32 ||
++                               check_lib openssl openssl/ssl.h OPENSSL_init_ssl -llibssl -llibcrypto -lws2_32 -lgdi32 -ladvapi32 -luser32 ||
++                               check_lib openssl openssl/ssl.h SSL_library_init -llibeay32 -lssleay32 ||
+                                die "ERROR: openssl not found"; }
+ enabled pocketsphinx      && require_pkg_config pocketsphinx pocketsphinx pocketsphinx/pocketsphinx.h ps_init
+ enabled rkmpp             && { require_pkg_config rkmpp rockchip_mpp  rockchip/rk_mpi.h mpp_create &&
+-- 
+2.29.2
+

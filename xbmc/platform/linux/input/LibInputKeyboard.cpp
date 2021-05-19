@@ -26,8 +26,10 @@
 #include <xkbcommon/xkbcommon-keysyms.h>
 #include <xkbcommon/xkbcommon-names.h>
 
-const int REPEAT_DELAY = 400;
-const int REPEAT_RATE = 80;
+namespace
+{
+constexpr int REPEAT_DELAY = 400;
+constexpr int REPEAT_RATE = 80;
 
 static const std::map<xkb_keysym_t, XBMCKey> xkbMap =
 {
@@ -146,6 +148,7 @@ static const std::map<xkb_keysym_t, XBMCKey> xkbMap =
   { XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE }
   // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
 };
+} // namespace
 
 CLibInputKeyboard::CLibInputKeyboard()
   : m_repeatTimer(std::bind(&CLibInputKeyboard::KeyRepeatTimeout, this))
@@ -350,7 +353,7 @@ void CLibInputKeyboard::UpdateLeds(libinput_device *dev)
 
 void CLibInputKeyboard::GetRepeat(libinput_device *dev)
 {
-  int kbdrep[2] = { 400, 80 };
+  int kbdrep[2] = {REPEAT_DELAY, REPEAT_RATE};
   const char *name = libinput_device_get_name(dev);
   const char *sysname = libinput_device_get_sysname(dev);
   std::string path("/dev/input/");

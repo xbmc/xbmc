@@ -66,7 +66,7 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     case RETROPLAYER_VIDEO_ROTATION:
     {
       const unsigned int rotationDegCCW = CMediaSettings::GetInstance().GetCurrentGameSettings().RotationDegCCW();
-      value = StringUtils::Format("%u", rotationDegCCW);
+      value = std::to_string(rotationDegCCW);
       return true;
     }
     default:

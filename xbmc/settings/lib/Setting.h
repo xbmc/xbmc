@@ -17,11 +17,12 @@
 #include "SettingType.h"
 #include "SettingUpdate.h"
 #include "threads/SharedSection.h"
-#include "utils/StaticLoggerBase.h"
+#include "utils/logtypes.h"
 
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 enum class SettingOptionsType {
@@ -43,8 +44,7 @@ using SettingList = std::vector<SettingPtr>;
  */
 class CSetting : public ISetting,
                  protected ISettingCallback,
-                 public std::enable_shared_from_this<CSetting>,
-                 protected CStaticLoggerBase
+                 public std::enable_shared_from_this<CSetting>
 {
 public:
   CSetting(const std::string& id,
@@ -76,7 +76,7 @@ public:
   void SetLevel(SettingLevel level) { m_level = level; }
   std::shared_ptr<const ISettingControl> GetControl() const { return m_control; }
   std::shared_ptr<ISettingControl> GetControl() { return m_control; }
-  void SetControl(std::shared_ptr<ISettingControl> control) { m_control = control; }
+  void SetControl(std::shared_ptr<ISettingControl> control) { m_control = std::move(control); }
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
   void SetDependencies(const SettingDependencies &dependencies) { m_dependencies = dependencies; }
   const std::set<CSettingUpdate>& GetUpdates() const { return m_updates; }
@@ -93,14 +93,17 @@ public:
   bool IsVisible() const override;
 
   // implementation of ISettingCallback
-  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 protected:
   // implementation of ISettingCallback
-  bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
-  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
-  void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
+                       const char* oldSettingId,
+                       const TiXmlNode* oldSettingNode) override;
+  void OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
+                                const char* propertyName) override;
 
   void Copy(const CSetting &setting);
 
@@ -121,6 +124,8 @@ protected:
   mutable CSharedSection m_critical;
 
   std::string m_referencedId;
+
+  static Logger s_logger;
 };
 
 template<typename TValue, SettingType TSettingType>
@@ -176,7 +181,7 @@ public:
   SettingType GetElementType() const;
   std::shared_ptr<CSetting> GetDefinition() { return m_definition; }
   std::shared_ptr<const CSetting> GetDefinition() const { return m_definition; }
-  void SetDefinition(std::shared_ptr<CSetting> definition) { m_definition = definition; }
+  void SetDefinition(std::shared_ptr<CSetting> definition) { m_definition = std::move(definition); }
 
   const std::string& GetDelimiter() const { return m_delimiter; }
   void SetDelimiter(const std::string &delimiter) { m_delimiter = delimiter; }

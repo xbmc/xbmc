@@ -21,6 +21,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <utility>
+
 using namespace KODI::MESSAGING;
 
 namespace ADDON
@@ -42,13 +44,13 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATU
 {
   //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
   //! having CAddonMgr construct an instance makes no sense
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonID, m_addon))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonID, m_addon, ADDON_UNKNOWN, OnlyEnabled::YES))
     return;
 
   CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
 
   m_status  = status;
-  m_message = message;
+  m_message = std::move(message);
 
   if (sameThread)
   {
@@ -78,7 +80,8 @@ void CAddonStatusHandler::Process()
 {
   CSingleLock lock(m_critSection);
 
-  std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
+  std::string heading = StringUtils::Format(
+      "{}: {}", CAddonInfo::TranslateType(m_addon->Type(), true), m_addon->Name());
 
   /* Request to restart the AddOn and data structures need updated */
   if (m_status == ADDON_STATUS_NEED_RESTART)

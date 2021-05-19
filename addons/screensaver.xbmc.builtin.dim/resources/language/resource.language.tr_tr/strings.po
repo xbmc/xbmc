@@ -17,5 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#30000"
-msgid "Dim level"
-msgstr "Karartma düzeyi"
+msgid "Brightness level"
+msgstr "Parlaklık düzeyi"
+
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr "Yüzde olarak ekranın hangi şiddetle aydınlık kalacağı."
+
+msgctxt "#30002"
+msgid "Preferences"
+msgstr "Tercihler"

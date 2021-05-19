@@ -316,21 +316,21 @@ void CGUIDialogNumeric::FrameMove()
     strLabel = m_number;
   else if (m_mode == INPUT_TIME)
   { // format up the time
-    strLabel = StringUtils::Format("%2d:%02d", m_datetime.hour, m_datetime.minute);
+    strLabel = StringUtils::Format("{:2}:{:02}", m_datetime.hour, m_datetime.minute);
     start = m_block * 3;
     end = m_block * 3 + 2;
   }
   else if (m_mode == INPUT_TIME_SECONDS)
   { // format up the time
-    strLabel =
-        StringUtils::Format("%2d:%02d:%02d", m_datetime.hour, m_datetime.minute, m_datetime.second);
+    strLabel = StringUtils::Format("{:2}:{:02}:{:02}", m_datetime.hour, m_datetime.minute,
+                                   m_datetime.second);
     start = m_block * 3;
     end = m_block * 3 + 2;
   }
   else if (m_mode == INPUT_DATE)
   { // format up the date
     strLabel =
-        StringUtils::Format("%2d/%2d/%4d", m_datetime.day, m_datetime.month, m_datetime.year);
+        StringUtils::Format("{:2}/{:2}/{:4}", m_datetime.day, m_datetime.month, m_datetime.year);
     start = m_block * 3;
     end = m_block * 3 + 2;
     if (m_block == 2)
@@ -338,7 +338,7 @@ void CGUIDialogNumeric::FrameMove()
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   { // format up the date
-    strLabel = StringUtils::Format("%3d.%3d.%3d.%3d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
+    strLabel = StringUtils::Format("{:3}.{:3}.{:3}.{:3}", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
     start = m_block * 4;
     end = m_block * 4 + 3;
   }
@@ -457,14 +457,15 @@ std::string CGUIDialogNumeric::GetOutputString() const
   switch (m_mode)
   {
   case INPUT_DATE:
-    return StringUtils::Format("%02i/%02i/%04i", m_datetime.day, m_datetime.month, m_datetime.year);
+    return StringUtils::Format("{:02}/{:02}/{:04}", m_datetime.day, m_datetime.month,
+                               m_datetime.year);
   case INPUT_TIME:
-    return StringUtils::Format("%i:%02i", m_datetime.hour, m_datetime.minute);
+    return StringUtils::Format("{}:{:02}", m_datetime.hour, m_datetime.minute);
   case INPUT_TIME_SECONDS:
-    return StringUtils::Format("%i:%02i:%02i", m_datetime.hour, m_datetime.minute,
+    return StringUtils::Format("{}:{:02}:{:02}", m_datetime.hour, m_datetime.minute,
                                m_datetime.second);
   case INPUT_IP_ADDRESS:
-    return StringUtils::Format("%d.%d.%d.%d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
+    return StringUtils::Format("{}.{}.{}.{}", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
   case INPUT_NUMBER:
   case INPUT_PASSWORD:
     return m_number;
@@ -604,7 +605,8 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(std::string& strPassword, const std
   if (iRetries > 0)
   {
     // Show a string telling user they have iRetries retries left
-    strTempHeading = StringUtils::Format("%s. %s %i %s", strHeading.c_str(), g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
+    strTempHeading = StringUtils::Format("{}. {} {} {}", strHeading, g_localizeStrings.Get(12342),
+                                         iRetries, g_localizeStrings.Get(12343));
   }
 
   // make a copy of strPassword to prevent from overwriting it later

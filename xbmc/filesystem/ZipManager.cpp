@@ -219,7 +219,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 
 bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
 {
-  std::string strFile = url.GetHostName();
+  const std::string& strFile = url.GetHostName();
 
   std::map<std::string, std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   std::vector<SZipEntry> items;
@@ -232,7 +232,7 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
     items = it->second;
   }
 
-  std::string strFileName = url.GetFileName();
+  const std::string& strFileName = url.GetFileName();
   for (const auto& it2 : items)
   {
     if (std::string(it2.name) == strFileName)

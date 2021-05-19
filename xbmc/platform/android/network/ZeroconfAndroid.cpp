@@ -34,7 +34,7 @@ bool CZeroconfAndroid::doPublishService(const std::string& fcr_identifier, const
   newService.serviceInfo.setHost(CJNIInetAddress::getLocalHost());
   newService.serviceInfo.setPort(f_port);
 
-  for (auto it : txt)
+  for (const auto& it : txt)
   {
 //    CLog::Log(LOGDEBUG, "ZeroconfAndroid: key:%s, value:%s", it.first.c_str(),it.second.c_str());
     newService.serviceInfo.setAttribute(it.first, it.second);
@@ -92,7 +92,7 @@ void CZeroconfAndroid::doStop()
   {
     CSingleLock lock(m_data_guard);
     CLog::Log(LOGDEBUG, "ZeroconfAndroid: Shutdown services");
-    for(auto it : m_services)
+    for (const auto& it : m_services)
     {
       m_manager.unregisterService(it.second.registrationListener);
       CLog::Log(LOGDEBUG, "CZeroconfAndroid: Removed service %s", it.first.c_str());

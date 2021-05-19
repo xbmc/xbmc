@@ -68,6 +68,8 @@ void CSaveFileState::DoWork(CFileItem& item,
       }
       else
       {
+        videodatabase.BeginTransaction();
+
         if (URIUtils::IsPlugin(progressTrackingFile) && !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
         {
           // FileItem from plugin can lack information, make sure all needed fields are set
@@ -115,7 +117,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!item.HasVideoInfoTag() ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
           {
-            if (bookmark.timeInSeconds <= 0.0f)
+            if (bookmark.timeInSeconds <= 0.0)
               videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else
               videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark, CBookmark::RESUME);
@@ -156,6 +158,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         if (stackHelper.HasRegisteredStack(item) && stackHelper.GetRegisteredStackTotalTimeMs(item) == 0)
           videodatabase.GetResumePoint(*(stackHelper.GetRegisteredStack(item)->GetVideoInfoTag()));
 
+        videodatabase.CommitTransaction();
         videodatabase.Close();
 
         if (updateListing)

@@ -13,7 +13,6 @@
 #include "input/remote/IRRemote.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #define XBOX_REMOTE_DEVICE_ID L"GIP:0000F50000000001"
@@ -29,7 +28,6 @@ using namespace winrt::Windows::UI::Core;
 
 CRemoteControlXbox::CRemoteControlXbox()
   : m_bInitialized(false)
-  , m_firstClickTime(0)
   , m_repeatCount(0)
 {
 }
@@ -103,7 +101,7 @@ void CRemoteControlXbox::HandleAcceleratorKey(const CoreDispatcher& sender, cons
   {
     if (!args.KeyStatus().WasKeyDown) // first occurrence
     {
-      m_firstClickTime = XbmcThreads::SystemClockMillis();
+      m_firstClickTime = std::chrono::steady_clock::now();
       if (appPort)
         appPort->OnEvent(newEvent);
     }
@@ -112,7 +110,11 @@ void CRemoteControlXbox::HandleAcceleratorKey(const CoreDispatcher& sender, cons
       m_repeatCount++;
       if (m_repeatCount > CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_remoteDelay)
       {
-        newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
+        auto now = std::chrono::steady_clock::now();
+        auto duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>(now - m_firstClickTime);
+
+        newEvent.keybutton.holdtime = duration.count();
         if (appPort)
           appPort->OnEvent(newEvent);
       }
