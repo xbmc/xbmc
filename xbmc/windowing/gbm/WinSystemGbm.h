@@ -11,6 +11,7 @@
 #include "VideoLayerBridge.h"
 #include "drm/DRMUtils.h"
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
 
 #include "platform/linux/input/LibInputHandler.h"

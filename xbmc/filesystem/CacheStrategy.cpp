@@ -186,7 +186,7 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
     if (iAvail >= iMinAvail)
       return iAvail;
 
-    if (!m_hDataAvailEvent->WaitMSec(endTime.MillisLeft()))
+    if (!m_hDataAvailEvent->WaitMSec(std::chrono::milliseconds(endTime.MillisLeft())))
       return CACHE_RC_TIMEOUT;
   }
   return GetAvailableRead();

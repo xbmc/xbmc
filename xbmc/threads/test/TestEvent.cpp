@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 using namespace XbmcThreads;
+using namespace std::chrono_literals;
 
 //=============================================================================
 // Helper classes
@@ -52,7 +53,7 @@ public:
   {
     waiting = true;
     result = 0;
-    result = event.WaitMSec(waitTime) ? 1 : -1;
+    result = event.WaitMSec(std::chrono::milliseconds(waitTime)) ? 1 : -1;
     waiting = false;
   }
 };
@@ -313,11 +314,11 @@ TEST(TestEvent, AutoResetBehavior)
 {
   CEvent event;
 
-  EXPECT_TRUE(!event.WaitMSec(1));
+  EXPECT_TRUE(!event.WaitMSec(1ms));
 
   event.Set(); // event will remain signaled if there are no waits
 
-  EXPECT_TRUE(event.WaitMSec(1));
+  EXPECT_TRUE(event.WaitMSec(1ms));
 }
 
 TEST(TestEvent, ManualReset)
@@ -338,23 +339,23 @@ TEST(TestEvent, ManualReset)
   EXPECT_TRUE(result);
 
   // with manual reset, the state should remain signaled
-  EXPECT_TRUE(event.WaitMSec(1));
+  EXPECT_TRUE(event.WaitMSec(1ms));
 
   event.Reset();
 
-  EXPECT_TRUE(!event.WaitMSec(1));
+  EXPECT_TRUE(!event.WaitMSec(1ms));
 }
 
 TEST(TestEvent, InitVal)
 {
   CEvent event(false,true);
-  EXPECT_TRUE(event.WaitMSec(50));
+  EXPECT_TRUE(event.WaitMSec(50ms));
 }
 
 TEST(TestEvent, SimpleTimeout)
 {
   CEvent event;
-  EXPECT_TRUE(!event.WaitMSec(50));
+  EXPECT_TRUE(!event.WaitMSec(50ms));
 }
 
 TEST(TestEvent, GroupChildSet)
@@ -449,7 +450,7 @@ TEST(TestEvent, GroupWaitResetsChild)
   EXPECT_TRUE(!w3.waiting);
   EXPECT_TRUE(w3.result == &event2);
   // event2 should have been reset.
-  EXPECT_TRUE(event2.WaitMSec(1) == false);
+  EXPECT_TRUE(event2.WaitMSec(1ms) == false);
 }
 
 TEST(TestEvent, GroupTimedWait)
@@ -553,7 +554,8 @@ public:
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
-    while ((result = event.WaitMSec(0)) == false);
+    while ((result = event.WaitMSec(0ms)) == false)
+      ;
     waiting = false;
   }
 };

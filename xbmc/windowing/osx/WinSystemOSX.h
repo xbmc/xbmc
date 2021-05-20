@@ -9,6 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "threads/Timer.h"
 #include "windowing/WinSystem.h"
 

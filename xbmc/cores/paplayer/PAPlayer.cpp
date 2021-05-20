@@ -22,11 +22,13 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SystemClock.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "video/Bookmark.h"
 
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -530,7 +532,7 @@ bool PAPlayer::CloseFile(bool reopen)
     while (m_jobCounter > 0)
     {
       lock.Leave();
-      m_jobEvent.WaitMSec(100);
+      m_jobEvent.WaitMSec(100ms);
       lock.Enter();
     }
   }
@@ -540,7 +542,7 @@ bool PAPlayer::CloseFile(bool reopen)
 
 void PAPlayer::Process()
 {
-  if (!m_startEvent.WaitMSec(100))
+  if (!m_startEvent.WaitMSec(100ms))
   {
     CLog::Log(LOGDEBUG, "PAPlayer::Process - Failed to receive start event");
     return;

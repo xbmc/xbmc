@@ -17,8 +17,12 @@
 #include "utils/log.h"
 
 using namespace PERIPHERALS;
+using namespace std::chrono_literals;
 
-#define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 5000
+namespace
+{
+constexpr auto PERIPHERAL_DEFAULT_RESCAN_INTERVAL = 5000ms;
+}
 
 CPeripheralBus::CPeripheralBus(const std::string& threadname,
                                CPeripherals& manager,

@@ -75,8 +75,15 @@ public:
    *  to be triggered. The method will return 'true' if the Event
    *  was triggered. Otherwise it will return false.
    */
-  inline bool WaitMSec(unsigned int milliSeconds)
-  { CSingleLock lock(mutex); numWaits++; condVar.wait(mutex,milliSeconds); numWaits--; return prepReturn(); }
+  template<typename Rep, typename Period>
+  inline bool WaitMSec(std::chrono::duration<Rep, Period> duration)
+  {
+    CSingleLock lock(mutex);
+    numWaits++;
+    condVar.wait(mutex, duration);
+    numWaits--;
+    return prepReturn();
+  }
 
   /**
    * This will wait for the Event to be triggered. The method will return

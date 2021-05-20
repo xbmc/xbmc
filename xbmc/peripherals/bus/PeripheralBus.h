@@ -190,7 +190,7 @@ protected:
   virtual bool PerformDeviceScan(PeripheralScanResults& results) = 0;
 
   PeripheralVector m_peripherals;
-  int m_iRescanTime;
+  std::chrono::milliseconds m_iRescanTime;
   bool m_bNeedsPolling; /*!< true when this bus needs to be polled for new devices, false when it
                            uses callbacks to notify this bus of changed */
   CPeripherals& m_manager;

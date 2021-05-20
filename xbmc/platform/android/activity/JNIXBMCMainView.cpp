@@ -111,7 +111,7 @@ void CJNIXBMCMainView::surfaceDestroyed(CJNISurfaceHolder holder)
 
 bool CJNIXBMCMainView::waitForSurface(unsigned int millis)
 {
-  return m_surfaceCreated.WaitMSec(millis);
+  return m_surfaceCreated.WaitMSec(std::chrono::milliseconds(millis));
 }
 
 bool CJNIXBMCMainView::isCreated() const

@@ -22,6 +22,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include <memory>

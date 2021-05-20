@@ -14,6 +14,7 @@
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "threads/Condition.h"
+#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -229,7 +230,7 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
     // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, timeout);
+    condVar.wait(mutex, std::chrono::milliseconds(timeout));
     if (!m_started && timer.IsTimePast())
     {
       CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout);
@@ -254,7 +255,7 @@ void CAAudioUnitSink::drain()
   {
     CSingleLock lock(mutex);
     XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, timeout);
+    condVar.wait(mutex, std::chrono::milliseconds(timeout));
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and don't

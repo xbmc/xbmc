@@ -31,6 +31,7 @@ using namespace MESSAGING;
 using namespace PERIPHERALS;
 using namespace CEC;
 using namespace ANNOUNCEMENT;
+using namespace std::chrono_literals;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
 
@@ -1555,7 +1556,7 @@ bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
   {
     powerStatus = m_adapter->m_cecAdapter->GetDevicePowerStatus(waitFor);
     if (powerStatus != CEC_POWER_STATUS_ON)
-      bContinue = !m_event.WaitMSec(1000);
+      bContinue = !m_event.WaitMSec(1000ms);
   }
 
   return powerStatus == CEC_POWER_STATUS_ON;
@@ -1663,7 +1664,7 @@ void CPeripheralCecAdapterUpdateThread::Process(void)
   while (!m_bStop)
   {
     // update received
-    if (bUpdate || m_event.WaitMSec(500))
+    if (bUpdate || m_event.WaitMSec(500ms))
     {
       if (m_bStop)
         return;

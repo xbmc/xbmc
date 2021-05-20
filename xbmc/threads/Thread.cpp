@@ -233,7 +233,7 @@ void CThread::TermHandler()
 void CThread::Sleep(unsigned int milliseconds)
 {
   if (milliseconds > 10 && IsCurrentThread())
-    m_StopEvent.WaitMSec(milliseconds);
+    m_StopEvent.WaitMSec(std::chrono::milliseconds(milliseconds));
   else
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }

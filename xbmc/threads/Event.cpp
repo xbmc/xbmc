@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <limits>
 
+using namespace std::chrono_literals;
+
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {
   CSingleLock lock(groupListMutex);
@@ -108,7 +110,7 @@ namespace XbmcThreads
       if (milliseconds == std::numeric_limits<unsigned int>::max())
         condVar.wait(mutex);
       else
-        condVar.wait(mutex,milliseconds);
+        condVar.wait(mutex, std::chrono::milliseconds(milliseconds));
     } // at this point the CEventGroup::mutex is reacquired
     numWaits--;
 
@@ -119,7 +121,7 @@ namespace XbmcThreads
       if (signaled)
         // This acquires and releases the CEvent::mutex. This is fine since the
         //  CEventGroup::mutex is already being held
-        signaled->WaitMSec(0); // reset the event if needed
+        signaled->WaitMSec(0ms); // reset the event if needed
       signaled = nullptr;  // clear the signaled if all the waiters are gone
     }
     return ret;

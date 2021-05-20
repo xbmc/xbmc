@@ -9,7 +9,6 @@
 #pragma once
 
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 
 #include <chrono>
 #include <condition_variable>
@@ -39,17 +38,23 @@ namespace XbmcThreads
       lock.count = count;
     }
 
-    inline bool wait(CCriticalSection& lock, unsigned long milliseconds)
+    template<typename Rep, typename Period>
+    inline bool wait(CCriticalSection& lock, std::chrono::duration<Rep, Period> duration)
     {
       int count  = lock.count;
       lock.count = 0;
-      std::cv_status res = cond.wait_for(lock.get_underlying(), std::chrono::milliseconds(milliseconds));
+      std::cv_status res = cond.wait_for(lock.get_underlying(), duration);
       lock.count = count;
       return res == std::cv_status::no_timeout;
     }
 
     inline void wait(CSingleLock& lock) { wait(lock.get_underlying()); }
-    inline bool wait(CSingleLock& lock, unsigned long milliseconds) { return wait(lock.get_underlying(), milliseconds); }
+
+    template<typename Rep, typename Period>
+    inline bool wait(CSingleLock& lock, std::chrono::duration<Rep, Period> duration)
+    {
+      return wait(lock.get_underlying(), duration);
+    }
 
     inline void notifyAll()
     {
@@ -80,23 +85,44 @@ namespace XbmcThreads
   public:
     inline TightConditionVariable(ConditionVariable& cv, P predicate_) : cond(cv), predicate(predicate_) {}
 
-    template <typename L> inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
-    template <typename L> inline bool wait(L& lock, unsigned long milliseconds)
+    template<typename L>
+    inline void wait(L& lock)
+    {
+      while (!predicate)
+        cond.wait(lock);
+    }
+
+    template<typename L, typename Rep, typename Period>
+    inline bool wait(L& lock, std::chrono::duration<Rep, Period> duration)
     {
       bool ret = true;
       if (!predicate)
       {
-        if (!milliseconds)
+        if (duration == std::chrono::duration<Rep, Period>::zero())
         {
-          cond.wait(lock,milliseconds /* zero */);
+          cond.wait(lock, duration /* zero */);
           return !(!predicate); // eh? I only require the ! operation on P
         }
         else
         {
-          EndTime endTime((unsigned int)milliseconds);
+          const auto start = std::chrono::steady_clock::now();
+
+          auto end = std::chrono::steady_clock::now();
+          auto elapsed = end - start;
+
+          auto remaining = duration - elapsed;
+
           for (bool notdone = true; notdone && ret == true;
-               ret = (notdone = (!predicate)) ? ((milliseconds = endTime.MillisLeft()) != 0) : true)
-            cond.wait(lock,milliseconds);
+               ret = (notdone = (!predicate))
+                         ? (remaining > std::chrono::duration<Rep, Period>::zero())
+                         : true)
+          {
+            cond.wait(lock, duration);
+
+            end = std::chrono::steady_clock::now();
+            elapsed = end - start;
+            remaining = duration - elapsed;
+          }
         }
       }
       return ret;
