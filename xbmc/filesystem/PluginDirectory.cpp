@@ -28,6 +28,30 @@ using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
+namespace
+{
+const unsigned int maxPluginResolutions = 5;
+
+/*!
+  \brief Get the plugin path from a CFileItem.
+
+  \param item CFileItem where to get the path.
+  \return The plugin path if found otherwise an empty string.
+*/
+std::string GetOriginalPluginPath(const CFileItem& item)
+{
+  std::string currentPath = item.GetPath();
+  if (URIUtils::IsPlugin(currentPath))
+    return currentPath;
+
+  currentPath = item.GetDynPath();
+  if (URIUtils::IsPlugin(currentPath))
+    return currentPath;
+
+  return std::string();
+}
+} // unnamed namespace
+
 CPluginDirectory::CPluginDirectory() : m_cancelled(false)
 {
   m_listItems = new CFileItemList;
@@ -68,6 +92,46 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
 
   // run the script
   return RunScript(this, addon, strPath, resume);
+}
+
+bool CPluginDirectory::GetResolvedPluginResult(CFileItem& resultItem)
+{
+  std::string lastResolvedPath;
+  if (resultItem.HasProperty("ForceResolvePlugin") &&
+      resultItem.GetProperty("ForceResolvePlugin").asBoolean())
+  {
+    // ensures that a plugin have the callback to resolve the paths in any case
+    // also when the same items in the playlist are played more times
+    lastResolvedPath = GetOriginalPluginPath(resultItem);
+  }
+  else
+  {
+    lastResolvedPath = resultItem.GetDynPath();
+  }
+
+  if (!lastResolvedPath.empty())
+  {
+    // we try to resolve recursively up to n. (maxPluginResolutions) nested plugin paths
+    // to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
+    for (unsigned int i = 0; URIUtils::IsPlugin(lastResolvedPath) && i < maxPluginResolutions; ++i)
+    {
+      bool resume = resultItem.m_lStartOffset == STARTOFFSET_RESUME;
+
+      // we modify the item so that it becomes a real URL
+      if (!XFILE::CPluginDirectory::GetPluginResult(lastResolvedPath, resultItem, resume) ||
+          resultItem.GetDynPath() ==
+              resultItem.GetPath()) // GetPluginResult resolved to an empty path
+      {
+        return false;
+      }
+      lastResolvedPath = resultItem.GetDynPath();
+    }
+    // if after the maximum allowed resolution attempts the item is still a plugin just return, it isn't playable
+    if (URIUtils::IsPlugin(resultItem.GetDynPath()))
+      return false;
+  }
+
+  return true;
 }
 
 bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &resultItem, bool resume)

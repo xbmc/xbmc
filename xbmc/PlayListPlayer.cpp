@@ -913,11 +913,10 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         {
           CFileItemPtr item = (*list)[0];
           // if the item is a plugin we need to resolve the URL to ensure the infotags are filled.
-          // resolve only for a maximum of 5 times to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
-          for (int i = 0; URIUtils::IsPlugin(item->GetDynPath()) && i < 5; ++i)
+          if (URIUtils::HasPluginPath(*item) &&
+              !XFILE::CPluginDirectory::GetResolvedPluginResult(*item))
           {
-            if (!XFILE::CPluginDirectory::GetPluginResult(item->GetDynPath(), *item, true))
-              return;
+            return;
           }
           if (item->IsAudio() || item->IsVideo())
             Play(item, pMsg->strParam);

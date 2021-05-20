@@ -13,6 +13,7 @@
 
 class CURL;
 class CAdvancedSettings;
+class CFileItem;
 
 class URIUtils
 {
@@ -27,6 +28,13 @@ public:
 
   static std::string GetExtension(const CURL& url);
   static std::string GetExtension(const std::string& strFileName);
+
+
+  /*! \brief Check if the CFileItem has a plugin path.
+   \param item The CFileItem.
+   \return true if there is a plugin path, false otherwise.
+  */
+  static bool HasPluginPath(const CFileItem& item);
 
   /*!
    \brief Check if there is a file extension

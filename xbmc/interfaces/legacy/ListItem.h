@@ -1008,10 +1008,12 @@ namespace XBMCAddon
       /// | StationName   | string ("My Station Name") - Used to enforce/override MusicPlayer.StationName infolabel from addons (e.g. in radio addons)
       /// | TotalTime     | float (7848.0) - Set the total time of the item in seconds
       /// | OverrideInfotag | string - "true", "false" - When true will override all info from previous listitem
+      /// | ForceResolvePlugin | string - "true", "false" - When true ensures that a plugin will always receive callbacks to resolve paths (useful for playlist cases)
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 OverrideInfotag property added
       /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.setResumePoint()** instead.
+      /// @python_v20 ForceResolvePlugin property added
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

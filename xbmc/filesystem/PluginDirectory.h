@@ -34,6 +34,13 @@ public:
   float GetProgress() const override;
   void CancelDirectory() override;
   static bool RunScriptWithParams(const std::string& strPath, bool resume);
+
+  /*! \brief Get a reproducible CFileItem by trying to recursively resolve the plugin paths
+  up to a maximum allowed limit. If no plugin paths exist it will be ignored.
+  \param resultItem the CFileItem with plugin paths to be resolved.
+  \return false if the plugin path cannot be resolved, true otherwise.
+  */
+  static bool GetResolvedPluginResult(CFileItem& resultItem);
   static bool GetPluginResult(const std::string& strPath, CFileItem &resultItem, bool resume);
 
   /*! \brief Check whether a plugin supports media library scanning.
