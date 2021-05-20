@@ -96,7 +96,7 @@ protected:
 
   EOutputState OutputPicture(const VideoPicture* src);
   void ProcessOverlays(const VideoPicture* pSource, double pts);
-  void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
+  void OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVideoCodec> codec);
 
   void ResetFrameRateCalc();
   void CalcFrameRate();
@@ -131,7 +131,7 @@ protected:
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
   CDVDStreamInfo m_hints;
-  CDVDVideoCodec* m_pVideoCodec;
+  std::unique_ptr<CDVDVideoCodec> m_pVideoCodec;
   CPtsTracker m_ptsTracker;
   std::list<DVDMessageListItem> m_packets;
   CDroppingStats m_droppingStats;

@@ -67,50 +67,46 @@ public:
     return m_bPlaysVideo;
   }
 
-  IPlayer* CreatePlayer(IPlayerCallback& callback) const
+  std::shared_ptr<IPlayer> CreatePlayer(IPlayerCallback& callback) const
   {
-    IPlayer* pPlayer;
+    std::shared_ptr<IPlayer> player;
+
     if (m_type.compare("video") == 0)
     {
-      pPlayer = new CVideoPlayer(callback);
+      player = std::make_shared<CVideoPlayer>(callback);
     }
     else if (m_type.compare("music") == 0)
     {
-      pPlayer = new PAPlayer(callback);
+      player = std::make_shared<PAPlayer>(callback);
     }
     else if (m_type.compare("game") == 0)
     {
-      pPlayer = new KODI::RETRO::CRetroPlayer(callback);
+      player = std::make_shared<KODI::RETRO::CRetroPlayer>(callback);
     }
     else if (m_type.compare("external") == 0)
     {
-      pPlayer = new CExternalPlayer(callback);
+      player = std::make_shared<CExternalPlayer>(callback);
     }
 
 #if defined(HAS_UPNP)
     else if (m_type.compare("remote") == 0)
     {
-      pPlayer = new UPNP::CUPnPPlayer(callback, m_id.c_str());
+      player = std::make_shared<UPNP::CUPnPPlayer>(callback, m_id.c_str());
     }
 #endif
     else
       return nullptr;
 
-    if (!pPlayer)
+    if (!player)
       return nullptr;
 
-    pPlayer->m_name = m_name;
-    pPlayer->m_type = m_type;
+    player->m_name = m_name;
+    player->m_type = m_type;
 
-    if (pPlayer->Initialize(m_config.get()))
-    {
-      return pPlayer;
-    }
-    else
-    {
-      delete pPlayer;
-      return nullptr;
-    }
+    if (player->Initialize(m_config.get()))
+      return player;
+
+    return nullptr;
   }
 
   std::string m_name;

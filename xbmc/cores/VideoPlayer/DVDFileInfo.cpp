@@ -185,7 +185,6 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
 
   if (nVideoStream != -1)
   {
-    CDVDVideoCodec *pVideoCodec;
     std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
     std::vector<AVPixelFormat> pixFmts;
     pixFmts.push_back(AV_PIX_FMT_YUV420P);
@@ -194,7 +193,8 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
     CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
     hint.codecOptions = CODEC_FORCE_SOFTWARE;
 
-    pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
+    std::unique_ptr<CDVDVideoCodec> pVideoCodec =
+        CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
 
     if (pVideoCodec)
     {
@@ -282,7 +282,6 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
           CLog::Log(LOGDEBUG,"%s - decode failed in %s after %d packets.", __FUNCTION__, redactPath.c_str(), packetsTried);
         }
       }
-      delete pVideoCodec;
     }
   }
 

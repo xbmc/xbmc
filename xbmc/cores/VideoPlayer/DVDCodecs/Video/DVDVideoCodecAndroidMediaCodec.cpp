@@ -344,9 +344,9 @@ CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
   }
 }
 
-CDVDVideoCodec* CDVDVideoCodecAndroidMediaCodec::Create(CProcessInfo &processInfo)
+std::unique_ptr<CDVDVideoCodec> CDVDVideoCodecAndroidMediaCodec::Create(CProcessInfo& processInfo)
 {
-  return new CDVDVideoCodecAndroidMediaCodec(processInfo);
+  return std::make_unique<CDVDVideoCodecAndroidMediaCodec>(processInfo);
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::Register()

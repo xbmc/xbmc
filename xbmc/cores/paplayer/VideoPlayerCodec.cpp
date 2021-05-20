@@ -290,11 +290,7 @@ void VideoPlayerCodec::DeInit()
     throw std::runtime_error("m_pInputStream reference count is greater than 1");
   m_pInputStream.reset();
 
-  if (m_pAudioCodec != NULL)
-  {
-    delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
-  }
+  m_pAudioCodec.reset();
 
   delete m_pResampler;
   m_pResampler = NULL;

@@ -58,7 +58,7 @@ void CApplicationPlayer::CreatePlayer(const CPlayerCoreFactory &factory, const s
   if (!m_pPlayer)
   {
     CDataCacheCore::GetInstance().Reset();
-    m_pPlayer.reset(factory.CreatePlayer(player, callback));
+    m_pPlayer = factory.CreatePlayer(player, callback);
   }
 }
 

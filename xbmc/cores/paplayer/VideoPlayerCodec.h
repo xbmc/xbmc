@@ -43,7 +43,7 @@ private:
 
   CDVDDemux* m_pDemuxer;
   std::shared_ptr<CDVDInputStream> m_pInputStream;
-  CDVDAudioCodec* m_pAudioCodec;
+  std::unique_ptr<CDVDAudioCodec> m_pAudioCodec;
 
   std::string m_strContentType;
   std::string m_strFileName;

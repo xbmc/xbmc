@@ -29,16 +29,12 @@
 class CDVDMsgVideoCodecChange : public CDVDMsg
 {
 public:
-  CDVDMsgVideoCodecChange(const CDVDStreamInfo &hints, CDVDVideoCodec* codec)
-    : CDVDMsg(GENERAL_STREAMCHANGE)
-    , m_codec(codec)
-    , m_hints(hints)
+  CDVDMsgVideoCodecChange(const CDVDStreamInfo& hints, std::unique_ptr<CDVDVideoCodec> codec)
+    : CDVDMsg(GENERAL_STREAMCHANGE), m_codec(std::move(codec)), m_hints(hints)
   {}
- ~CDVDMsgVideoCodecChange() override
-  {
-    delete m_codec;
-  }
-  CDVDVideoCodec* m_codec;
+  ~CDVDMsgVideoCodecChange() override = default;
+
+  std::unique_ptr<CDVDVideoCodec> m_codec;
   CDVDStreamInfo  m_hints;
 };
 
@@ -126,24 +122,28 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     {
       hint.codecOptions |= CODEC_ALLOW_FALLBACK;
     }
-    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
+
+    std::unique_ptr<CDVDVideoCodec> codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
     if (!codec)
     {
       CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
     }
-    SendMessage(new CDVDMsgVideoCodecChange(hint, codec), 0);
+
+    SendMessage(new CDVDMsgVideoCodecChange(hint, std::move(codec)), 0);
   }
   else
   {
     m_processInfo.ResetVideoCodecInfo();
     hint.codecOptions |= CODEC_ALLOW_FALLBACK;
-    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
+
+    std::unique_ptr<CDVDVideoCodec> codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
     if (!codec)
     {
       CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - could not open video codec");
       return false;
     }
-    OpenStream(hint, codec);
+
+    OpenStream(hint, std::move(codec));
     CLog::Log(LOGINFO, "Creating video thread");
     m_messageQueue.Init();
     m_processInfo.SetLevelVQ(0);
@@ -152,7 +152,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
   return true;
 }
 
-void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
+void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVideoCodec> codec)
 {
   CLog::Log(LOGDEBUG, "CVideoPlayerVideo::OpenStream - open stream with codec id: %i", hint.codec);
 
@@ -193,13 +193,11 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   if (m_pVideoCodec && m_pVideoCodec->Reconfigure(hint))
   {
     // reuse old decoder
-    codec = m_pVideoCodec;
+    codec = std::move(m_pVideoCodec);
   }
-  else if (m_pVideoCodec)
-  {
-    delete m_pVideoCodec;
-    m_pVideoCodec = nullptr;
-  }
+
+  m_pVideoCodec.reset();
+
   if (!codec)
   {
     CLog::Log(LOGINFO, "Creating video codec with codec id: %i", hint.codec);
@@ -213,7 +211,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     }
   }
 
-  m_pVideoCodec = codec;
+  m_pVideoCodec = std::move(codec);
   m_hints = hint;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_rewindStalled = false;
@@ -242,11 +240,7 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   m_messageQueue.End();
 
   CLog::Log(LOGINFO, "deleting video codec");
-  if (m_pVideoCodec)
-  {
-    delete m_pVideoCodec;
-    m_pVideoCodec = NULL;
-  }
+  m_pVideoCodec.reset();
 
   if (m_picture.videoBuffer)
   {
@@ -426,6 +420,7 @@ void CVideoPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+
       if (m_picture.videoBuffer)
       {
         m_picture.videoBuffer->Release();
@@ -442,6 +437,7 @@ void CVideoPlayerVideo::Process()
       bool sync = static_cast<CDVDMsgBool*>(pMsg)->m_value;
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+
       if (m_picture.videoBuffer)
       {
         m_picture.videoBuffer->Release();
@@ -470,8 +466,10 @@ void CVideoPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+
       if (m_pVideoCodec)
         m_pVideoCodec->SetSpeed(m_speed);
+
       m_droppingStats.Reset();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
@@ -487,7 +485,7 @@ void CVideoPlayerVideo::Process()
           break;
       }
 
-      OpenStream(msg->m_hints, msg->m_codec);
+      OpenStream(msg->m_hints, std::move(msg->m_codec));
       msg->m_codec = NULL;
       if (m_picture.videoBuffer)
       {

@@ -118,7 +118,7 @@ public:
   ~CDVDVideoCodecAndroidMediaCodec() override;
 
   // registration
-  static CDVDVideoCodec* Create(CProcessInfo& processInfo);
+  static std::unique_ptr<CDVDVideoCodec> Create(CProcessInfo& processInfo);
   static bool Register();
 
   // required overrides

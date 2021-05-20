@@ -38,7 +38,8 @@ std::map<std::string, CreateHWAccel> CDVDFactoryCodec::m_hwAccels;
 
 CCriticalSection videoCodecSection, audioCodecSection;
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo)
+std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo& hint,
+                                                                   CProcessInfo& processInfo)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -54,10 +55,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
     hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
     if (addonInfo && parentInstance)
     {
-      pCodec.reset(new CAddonVideoCodec(processInfo, addonInfo, parentInstance));
-      if (pCodec && pCodec->Open(hint, options))
+      pCodec = std::make_unique<CAddonVideoCodec>(processInfo, addonInfo, parentInstance);
+      if (pCodec->Open(hint, options))
       {
-        return pCodec.release();
+        return pCodec;
       }
     }
     return nullptr;
@@ -68,27 +69,27 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   {
     for (auto &codec : m_hwVideoCodecs)
     {
-      pCodec.reset(CreateVideoCodecHW(codec.first, processInfo));
+      pCodec = CreateVideoCodecHW(codec.first, processInfo);
       if (pCodec && pCodec->Open(hint, options))
       {
-        return pCodec.release();
+        return pCodec;
       }
     }
     if (!(hint.codecOptions & CODEC_ALLOW_FALLBACK))
       return nullptr;
   }
 
-  pCodec.reset(new CDVDVideoCodecFFmpeg(processInfo));
+  pCodec = std::make_unique<CDVDVideoCodecFFmpeg>(processInfo);
   if (pCodec->Open(hint, options))
   {
-    return pCodec.release();
+    return pCodec;
   }
 
   return nullptr;
 }
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(const std::string& id,
-                                                     CProcessInfo& processInfo)
+std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodecHW(const std::string& id,
+                                                                     CProcessInfo& processInfo)
 {
   CSingleLock lock(videoCodecSection);
 
@@ -163,9 +164,12 @@ void CDVDFactoryCodec::ClearHWAccels()
 // Audio
 //------------------------------------------------------------------------------
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
-                                                   bool allowpassthrough, bool allowdtshddecode,
-                                                   CAEStreamInfo::DataType ptStreamType)
+std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodec(
+    CDVDStreamInfo& hint,
+    CProcessInfo& processInfo,
+    bool allowpassthrough,
+    bool allowdtshddecode,
+    CAEStreamInfo::DataType ptStreamType)
 {
   std::unique_ptr<CDVDAudioCodec> pCodec;
   CDVDCodecOptions options;
@@ -179,27 +183,27 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   // platform specifig audio decoders
   for (auto &codec : m_hwAudioCodecs)
   {
-    pCodec.reset(CreateAudioCodecHW(codec.first, processInfo));
+    pCodec = CreateAudioCodecHW(codec.first, processInfo);
     if (pCodec && pCodec->Open(hint, options))
     {
-      return pCodec.release();
+      return pCodec;
     }
   }
 
   // we don't use passthrough if "sync playback to display" is enabled
   if (allowpassthrough && ptStreamType != CAEStreamInfo::STREAM_TYPE_NULL)
   {
-    pCodec.reset(new CDVDAudioCodecPassthrough(processInfo, ptStreamType));
+    pCodec = std::make_unique<CDVDAudioCodecPassthrough>(processInfo, ptStreamType);
     if (pCodec->Open(hint, options))
     {
-      return pCodec.release();
+      return pCodec;
     }
   }
 
-  pCodec.reset(new CDVDAudioCodecFFmpeg(processInfo));
+  pCodec = std::make_unique<CDVDAudioCodecFFmpeg>(processInfo);
   if (pCodec->Open(hint, options))
   {
-    return pCodec.release();
+    return pCodec;
   }
 
   return nullptr;
@@ -219,8 +223,8 @@ void CDVDFactoryCodec::ClearHWAudioCodecs()
   m_hwAudioCodecs.clear();
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
-                                                     CProcessInfo& processInfo)
+std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
+                                                                     CProcessInfo& processInfo)
 {
   CSingleLock lock(audioCodecSection);
 
@@ -237,7 +241,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
 // Overlay
 //------------------------------------------------------------------------------
 
-CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
+std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStreamInfo& hint)
 {
   std::unique_ptr<CDVDOverlayCodec> pCodec;
   CDVDCodecOptions options;
@@ -246,44 +250,25 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
   {
     case AV_CODEC_ID_TEXT:
     case AV_CODEC_ID_SUBRIP:
-      pCodec.reset(new CDVDOverlayCodecText());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecText>();
       break;
 
     case AV_CODEC_ID_SSA:
     case AV_CODEC_ID_ASS:
-      pCodec.reset(new CDVDOverlayCodecSSA());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
-
-      pCodec.reset(new CDVDOverlayCodecText());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecSSA>();
       break;
 
     case AV_CODEC_ID_MOV_TEXT:
-      pCodec.reset(new CDVDOverlayCodecTX3G());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecTX3G>();
       break;
 
     default:
-      pCodec.reset(new CDVDOverlayCodecFFmpeg());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = std::make_unique<CDVDOverlayCodecFFmpeg>();
       break;
   }
+
+  if (pCodec->Open(hint, options))
+    return pCodec;
 
   return nullptr;
 }

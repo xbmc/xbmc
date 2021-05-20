@@ -86,11 +86,12 @@ CDVDVideoCodecDRMPRIME::~CDVDVideoCodecDRMPRIME()
   avcodec_free_context(&m_pCodecContext);
 }
 
-CDVDVideoCodec* CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
+std::unique_ptr<CDVDVideoCodec> CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 {
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
-    return new CDVDVideoCodecDRMPRIME(processInfo);
+    return std::make_unique<CDVDVideoCodecDRMPRIME>(processInfo);
+
   return nullptr;
 }
 
