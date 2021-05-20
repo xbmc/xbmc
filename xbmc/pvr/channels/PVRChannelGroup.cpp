@@ -328,13 +328,6 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelEpgID(int iEpgID) con
   return {};
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 */) const
-{
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-      GetLastPlayedChannelGroupMember(iCurrentChannel);
-  return groupMember ? groupMember->Channel() : std::shared_ptr<CPVRChannel>();
-}
-
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGroupMember(
     int iCurrentChannel /* = -1 */) const
 {

@@ -278,13 +278,6 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetByChannelEpgID(int iEpgID) const;
 
     /*!
-     * @brief Get the channel that was played last.
-     * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
-     * @return The requested channel or nullptr.
-     */
-    std::shared_ptr<CPVRChannel> GetLastPlayedChannel(int iCurrentChannel = -1) const;
-
-    /*!
      * @brief Get the channel group member that was played last.
      * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
      * @return The requested channel group member or nullptr.
