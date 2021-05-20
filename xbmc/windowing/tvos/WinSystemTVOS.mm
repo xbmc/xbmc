@@ -46,13 +46,15 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 
+using namespace std::chrono_literals;
+
 #define CONST_HDMI "HDMI"
 
 // if there was a devicelost callback
 // but no device reset for 3 secs
 // a timeout fires the reset callback
 // (for ensuring that e.x. AE isn't stuck)
-constexpr uint32_t LOST_DEVICE_TIMEOUT_MS{3000};
+constexpr auto LOST_DEVICE_TIMEOUT_MS{3000ms};
 
 // TVOSDisplayLinkCallback is defined in the lower part of the file
 @interface TVOSDisplayLinkCallback : NSObject

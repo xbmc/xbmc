@@ -40,6 +40,7 @@
 #include <EGL/eglplatform.h>
 
 using namespace KODI;
+using namespace std::chrono_literals;
 
 CWinSystemAndroid::CWinSystemAndroid()
 {
@@ -220,12 +221,13 @@ void CWinSystemAndroid::OnTimeout()
 
 void CWinSystemAndroid::InitiateModeChange()
 {
-  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                  "videoscreen.delayrefreshchange") *
-              100;
+  auto delay =
+      std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                    "videoscreen.delayrefreshchange") *
+                                100);
 
-  if (delay < 2000)
-    delay = 2000;
+  if (delay < 2000ms)
+    delay = 2000ms;
   m_dispResetTimer->Stop();
   m_dispResetTimer->Start(delay);
 

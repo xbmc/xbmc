@@ -40,10 +40,16 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
 std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
+
+namespace
+{
+constexpr auto DELAY = 500ms;
+}
 
 namespace ADDON
 {
@@ -58,8 +64,6 @@ public:
   void OnTimeout() override;
   void TriggerSave();
 private:
-  static constexpr int DELAY = 500;
-
   CAddon &m_addon;
   CTimer m_timer;
 };

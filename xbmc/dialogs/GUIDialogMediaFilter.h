@@ -60,7 +60,7 @@ protected:
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
   bool Save() override { return true; }
-  unsigned int GetDelayMs() const override { return 500; }
+  std::chrono::milliseconds GetDelayMs() const override { return std::chrono::milliseconds(500); }
 
   // specialization of CGUIDialogSettingsManualBase
   void SetupView() override;

@@ -17,9 +17,11 @@
 #include <algorithm>
 #include <cmath>
 
+using namespace std::chrono_literals;
+
 namespace
 {
-constexpr int TOUCH_HOLD_TIMEOUT = 500;
+constexpr auto TOUCH_HOLD_TIMEOUT = 500ms;
 }
 
 CGenericTouchInputHandler::CGenericTouchInputHandler() : m_holdTimer(new CTimer(this))

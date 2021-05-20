@@ -29,10 +29,10 @@ public:
   explicit CTimer(std::function<void()> const& callback);
   ~CTimer() override;
 
-  bool Start(uint32_t timeout, bool interval = false);
+  bool Start(std::chrono::milliseconds timeout, bool interval = false);
   bool Stop(bool wait = false);
   bool Restart();
-  void RestartAsync(uint32_t timeout);
+  void RestartAsync(std::chrono::milliseconds timeout);
 
   bool IsRunning() const { return CThread::IsRunning(); }
 

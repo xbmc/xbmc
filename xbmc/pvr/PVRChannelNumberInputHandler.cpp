@@ -18,6 +18,8 @@
 #include <cstdlib>
 #include <string>
 
+using namespace std::chrono_literals;
+
 namespace PVR
 {
 
@@ -54,7 +56,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
     if (m_timer.IsRunning())
       m_label.erase();
     else
-      m_timer.Start(500);
+      m_timer.Start(500ms);
   }
 }
 
@@ -132,7 +134,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
   }
 
   if (!m_timer.IsRunning())
-    m_timer.Start(m_iDelay);
+    m_timer.Start(std::chrono::milliseconds(m_iDelay));
   else
     m_timer.Restart();
 }
