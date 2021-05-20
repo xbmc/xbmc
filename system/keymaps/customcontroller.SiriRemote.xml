@@ -31,25 +31,32 @@
 <keymap>
   <global>
     <customcontroller name="SiriRemote">
-      <!-- up       -->      <button id="1">Up</button>
-      <!-- down      -->      <button id="2">Down</button>
-      <!-- left       -->      <button id="3">Left</button>
-      <!-- right      -->      <button id="4">Right</button>
-      <!-- center     -->      <button id="5">Select</button>
-      <!-- menu       -->      <button id="6">Back</button>
-      <!-- hold center-->      <button id="7">ContextMenu</button>
-      <!-- swipe up -->        <button id="8">Up</button>
-      <!-- swipe down -->      <button id="9">Down</button>
-      <!-- swipe left -->      <button id="10">Left</button>
-      <!-- swipe right -->     <button id="11">Right</button>
-      <!-- play/pause -->      <button id="12">PlayPause</button>
-      <!-- ir play -->         <button id="13">Play</button>
-      <!-- ir pause -->        <button id="14">Pause</button>
-      <!-- ir stop -->         <button id="15">Stop</button>
-      <!-- ir next track -->   <button id="16">SkipNext</button>
-      <!-- ir prev track -->   <button id="17">SkipPrevious</button>
-      <!-- ir fast forward --> <button id="18">FastForward</button>
-      <!-- ir rewind -->       <button id="19">Rewind</button>
+      <!-- Siri/IR remotes up                       --> <button id="1">Up</button>
+      <!-- Siri/IR remotes down                     --> <button id="2">Down</button>
+      <!-- Siri/IR remotes left                     --> <button id="3">Left</button>
+      <!-- Siri/IR remotes right                    --> <button id="4">Right</button>
+      <!-- Siri remote select                       --> <button id="5">Select</button>
+      <!-- Siri remote menu                         --> <button id="6">Back</button>
+      <!-- Siri remote hold select                  --> <button id="7">ContextMenu</button>
+      <!-- Siri remote swipe up                     --> <button id="8">Up</button>
+      <!-- Siri remote swipe down                   --> <button id="9">Down</button>
+      <!-- Siri remote swipe left                   --> <button id="10">Left</button>
+      <!-- Siri remote swipe right                  --> <button id="11">Right</button>
+      <!-- Siri remote play/pause                   --> <button id="12">PlayPause</button>
+      <!-- IR remote/iDevice Now Playing play       --> <button id="13">Play</button>
+      <!-- IR remote/iDevice Now Playing pause      --> <button id="14">Pause</button>
+      <!-- IR remote stop                           --> <button id="15">Stop</button>
+      <!-- IR remote/iDevice Now Playing next track --> <button id="16">SkipNext</button>
+      <!-- IR remote/iDevice Now Playing prev track --> <button id="17">SkipPrevious</button>
+      <!-- IR remote seek forward                   --> <button id="18">FastForward</button>
+      <!-- IR remote seek backward                  --> <button id="19">Rewind</button>
+      <!-- Siri remote hold play/pause              --> <button id="20">Stop</button>
+      <!-- Siri remote double play/pause            --> <button id="21">noop</button>
+      <!-- Siri remote double select                --> <button id="22">noop</button>
+      <!-- Siri remote pan up                       --> <button id="23">Up</button>
+      <!-- Siri remote pan down                     --> <button id="24">Down</button>
+      <!-- Siri remote pan left                     --> <button id="25">Left</button>
+      <!-- Siri remote pan right                    --> <button id="26">Right</button>
     </customcontroller>
   </global>
   <Home>
@@ -77,7 +84,7 @@
       <button id="3">ChannelDown</button>
       <button id="4">ChannelUp</button>
       <button id="8">noop</button>
-      <button id="9">noop</button>                                
+      <button id="9">noop</button>
       <button id="10">noop</button>
       <button id="11">noop</button>
     </customcontroller>

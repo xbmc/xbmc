@@ -34,15 +34,20 @@ CTVOSInputSettings& CTVOSInputSettings::GetInstance()
 
 void CTVOSInputSettings::Initialize()
 {
-  bool enable = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      CSettings::SETTING_INPUT_APPLESIRI);
-  g_xbmcController.inputHandler.inputSettings.useSiriRemote = enable;
-  bool enableTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
-  [g_xbmcController.inputHandler.inputSettings setRemoteIdleEnabled:enableTimeout];
-  int timeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-  [g_xbmcController.inputHandler.inputSettings setRemoteIdleTimeout:timeout];
+  bool idleTimerEnabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED);
+  [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTimerEnabled:idleTimerEnabled];
+  int idleTime = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME);
+  [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTime:idleTime];
+  int panHorizontalSensitivity = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY);
+  g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity =
+      panHorizontalSensitivity;
+  int panVerticalSensitivity = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY);
+  g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity =
+      panVerticalSensitivity;
 }
 
 void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -51,21 +56,27 @@ void CTVOSInputSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
     return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_INPUT_APPLESIRI)
+  if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED)
   {
-    bool enable = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
-    g_xbmcController.inputHandler.inputSettings.useSiriRemote = enable;
+    bool idleTimerEnabled = std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue();
+    [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTimerEnabled:idleTimerEnabled];
   }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED)
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME)
   {
-    bool enableTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
-    [g_xbmcController.inputHandler.inputSettings setRemoteIdleEnabled:enableTimeout];
+    int idleTime = std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
+    [g_xbmcController.inputHandler.inputSettings setSiriRemoteIdleTime:idleTime];
   }
-  else if (settingId == CSettings::SETTING_INPUT_APPLESIRITIMEOUT)
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY)
   {
-    int timeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-        CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-    [g_xbmcController.inputHandler.inputSettings setRemoteIdleTimeout:timeout];
+    int panHorizontalSensitivity =
+        std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
+    g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity =
+        panHorizontalSensitivity;
+  }
+  else if (settingId == CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY)
+  {
+    int panVerticalSensitivity = std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue();
+    g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity =
+        panVerticalSensitivity;
   }
 }

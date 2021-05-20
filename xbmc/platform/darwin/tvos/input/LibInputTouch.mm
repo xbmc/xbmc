@@ -30,21 +30,24 @@
 
 #pragma mark - gesture methods
 
+// called before any press or touch event
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
+       shouldReceiveEvent:(nonnull UIEvent*)event
+{
+  // allow press or touch event only if we are up and running
+  if (g_xbmcController.appAlive)
+    return YES;
+  return NO;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
     shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer*)otherGestureRecognizer
 {
-  if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] &&
-      [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
-  {
-    return YES;
-  }
-  if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] &&
-      [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]])
-  {
-    return YES;
-  }
-  if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] &&
-      [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
+  // an high speed move in specific direction should trigger pan AND swipe gesture
+  if (([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]] &&
+       [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) ||
+      ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] &&
+       [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]))
   {
     return YES;
   }
@@ -211,15 +214,10 @@
 {
   switch (sender.state)
   {
-    case UIGestureRecognizerStateBegan:
-      break;
-    case UIGestureRecognizerStateChanged:
-      break;
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote menu press (id: 6)");
       [g_xbmcController.inputHandler sendButtonPressed:6];
-
-      // start remote timeout
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -228,20 +226,26 @@
 
 - (void)SiriLongSelectHandler:(UIGestureRecognizer*)sender
 {
-  if (sender.state == UIGestureRecognizerStateBegan)
+  switch (sender.state)
   {
-    [g_xbmcController.inputHandler sendButtonPressed:7];
-    [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+    case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: Siri remote select long press (id: 7)");
+      [g_xbmcController.inputHandler sendButtonPressed:7];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
   }
 }
 
 - (void)SiriSelectHandler:(UITapGestureRecognizer*)sender
 {
-  CLog::Log(LOGDEBUG, "SiriSelectHandler");
   switch (sender.state)
   {
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote select press (id: 5)");
       [g_xbmcController.inputHandler sendButtonPressed:5];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -252,14 +256,10 @@
 {
   switch (sender.state)
   {
-    case UIGestureRecognizerStateBegan:
-      break;
-    case UIGestureRecognizerStateChanged:
-      break;
     case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote play/pause press (id: 12)");
       [g_xbmcController.inputHandler sendButtonPressed:12];
-      // start remote timeout
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -268,18 +268,44 @@
 
 - (void)longPlayPausePressed:(UILongPressGestureRecognizer*)sender
 {
-  CLog::Log(LOGDEBUG, "Input: play/pause long press, state: %ld", static_cast<long>(sender.state));
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: Siri remote play/pause long press (id: 20)");
+      [g_xbmcController.inputHandler sendButtonPressed:20];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
 }
 
 - (void)doublePlayPausePressed:(UITapGestureRecognizer*)sender
 {
-  // state is only UIGestureRecognizerStateBegan and UIGestureRecognizerStateEnded
-  CLog::Log(LOGDEBUG, "Input: play/pause double press");
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote play/pause double press (id: 21)");
+      [g_xbmcController.inputHandler sendButtonPressed:21];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
 }
 
 - (void)SiriDoubleSelectHandler:(UITapGestureRecognizer*)sender
 {
-  CLog::Log(LOGDEBUG, "Input: select double press");
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote select double press (id: 22)");
+      [g_xbmcController.inputHandler sendButtonPressed:22];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
 }
 
 #pragma mark - IR Arrows Pressed
@@ -289,14 +315,14 @@
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: IR remote up press (id: 1)");
       [g_xbmcController.inputHandler.inputRemote startKeyPressTimer:1];
       break;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
       [g_xbmcController.inputHandler.inputRemote stopKeyPressTimer];
-      // start remote timeout
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -308,14 +334,14 @@
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: IR remote down press (id: 2)");
       [g_xbmcController.inputHandler.inputRemote startKeyPressTimer:2];
       break;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
       [g_xbmcController.inputHandler.inputRemote stopKeyPressTimer];
-      // start remote timeout
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -327,14 +353,14 @@
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: IR remote left press (id: 3)");
       [g_xbmcController.inputHandler.inputRemote startKeyPressTimer:3];
       break;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
       [g_xbmcController.inputHandler.inputRemote stopKeyPressTimer];
-      // start remote timeout
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -346,14 +372,14 @@
   switch (sender.state)
   {
     case UIGestureRecognizerStateBegan:
+      CLog::Log(LOGDEBUG, "Input: IR remote right press (id: 4)");
       [g_xbmcController.inputHandler.inputRemote startKeyPressTimer:4];
       break;
     case UIGestureRecognizerStateChanged:
       break;
     case UIGestureRecognizerStateEnded:
       [g_xbmcController.inputHandler.inputRemote stopKeyPressTimer];
-      // start remote timeout
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
       break;
@@ -364,283 +390,184 @@
 
 - (IBAction)tapUpArrowPressed:(UIGestureRecognizer*)sender
 {
-  if (!g_xbmcController.inputHandler.inputRemote.remoteIdleState)
+  CLog::Log(LOGDEBUG, "Input: Siri remote tap up (id: 1)");
+  if (!g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
     [g_xbmcController.inputHandler sendButtonPressed:1];
 
-  [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
 - (IBAction)tapDownArrowPressed:(UIGestureRecognizer*)sender
 {
-  if (!g_xbmcController.inputHandler.inputRemote.remoteIdleState)
+  CLog::Log(LOGDEBUG, "Input: Siri remote tap down (id: 2)");
+  if (!g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
     [g_xbmcController.inputHandler sendButtonPressed:2];
 
-  [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
 - (IBAction)tapLeftArrowPressed:(UIGestureRecognizer*)sender
 {
-  if (!g_xbmcController.inputHandler.inputRemote.remoteIdleState)
+  CLog::Log(LOGDEBUG, "Input: Siri remote tap left (id: 3)");
+  if (!g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
     [g_xbmcController.inputHandler sendButtonPressed:3];
 
-  [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
 - (IBAction)tapRightArrowPressed:(UIGestureRecognizer*)sender
 {
-  if (!g_xbmcController.inputHandler.inputRemote.remoteIdleState)
+  CLog::Log(LOGDEBUG, "Input: Siri remote tap right (id: 4)");
+  if (!g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
     [g_xbmcController.inputHandler sendButtonPressed:4];
 
-  [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
 #pragma mark - Pan
 
 - (IBAction)handlePan:(UIPanGestureRecognizer*)sender
 {
-  if (g_xbmcController.inputHandler.inputRemote.remoteIdleState)
-    return;
-
-  if (!g_xbmcController.appAlive) //NO GESTURES BEFORE WE ARE UP AND RUNNING
-    return;
-
-  if ([g_xbmcController.inputHandler.inputSettings useSiriRemote])
+  if (g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
   {
-    static UIPanGestureRecognizerDirection direction = UIPanGestureRecognizerDirectionUndefined;
-    // speed       == how many clicks full swipe will give us(1000x1000px)
-    // minVelocity == min velocity to trigger fast scroll, add this to settings?
-    double speed = 240.0;
-    double minVelocity = 1300.0;
-    switch (sender.state)
-    {
-
-      case UIGestureRecognizerStateBegan:
-      {
-
-        if (direction == UIPanGestureRecognizerDirectionUndefined)
-        {
-          m_lastGesturePoint = [sender translationInView:sender.view];
-          m_lastGesturePoint.x = m_lastGesturePoint.x / 1.92;
-          m_lastGesturePoint.y = m_lastGesturePoint.y / 1.08;
-
-          m_direction = [self getPanDirection:m_lastGesturePoint];
-          m_directionOverride = false;
-        }
-        break;
-      }
-      case UIGestureRecognizerStateChanged:
-      {
-        CGPoint gesturePoint = [sender translationInView:sender.view];
-        gesturePoint.x = gesturePoint.x / 1.92;
-        gesturePoint.y = gesturePoint.y / 1.08;
-
-        CGPoint gestureMovement;
-        gestureMovement.x = gesturePoint.x - m_lastGesturePoint.x;
-        gestureMovement.y = gesturePoint.y - m_lastGesturePoint.y;
-        direction = [self getPanDirection:gestureMovement];
-
-        CGPoint velocity = [sender velocityInView:sender.view];
-        CGFloat velocityX = (0.2 * velocity.x);
-        CGFloat velocityY = (0.2 * velocity.y);
-
-        if (ABS(velocityY) > minVelocity || ABS(velocityX) > minVelocity || m_directionOverride)
-        {
-          direction = m_direction;
-          // Override direction to correct swipe errors
-          m_directionOverride = true;
-        }
-        switch (direction)
-        {
-          case UIPanGestureRecognizerDirectionUp:
-          {
-            if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) ||
-                ABS(velocityY) > minVelocity)
-            {
-              [g_xbmcController.inputHandler sendButtonPressed:8];
-              if (ABS(velocityY) > minVelocity && [self shouldFastScroll])
-                [g_xbmcController.inputHandler sendButtonPressed:8];
-
-              m_lastGesturePoint = gesturePoint;
-            }
-            break;
-          }
-          case UIPanGestureRecognizerDirectionDown:
-          {
-            if ((ABS(m_lastGesturePoint.y - gesturePoint.y) > speed) ||
-                ABS(velocityY) > minVelocity)
-            {
-              [g_xbmcController.inputHandler sendButtonPressed:9];
-              if (ABS(velocityY) > minVelocity && [self shouldFastScroll])
-                [g_xbmcController.inputHandler sendButtonPressed:9];
-
-              m_lastGesturePoint = gesturePoint;
-            }
-            break;
-          }
-          case UIPanGestureRecognizerDirectionLeft:
-          {
-            // add 80 px to slow left/right swipes, it matched up down better
-            if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed + 80) ||
-                ABS(velocityX) > minVelocity)
-            {
-              [g_xbmcController.inputHandler sendButtonPressed:10];
-              if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
-                [g_xbmcController.inputHandler sendButtonPressed:10];
-
-              m_lastGesturePoint = gesturePoint;
-            }
-            break;
-          }
-          case UIPanGestureRecognizerDirectionRight:
-          {
-            // add 80 px to slow left/right swipes, it matched up down better
-            if ((ABS(m_lastGesturePoint.x - gesturePoint.x) > speed + 80) ||
-                ABS(velocityX) > minVelocity)
-            {
-              [g_xbmcController.inputHandler sendButtonPressed:11];
-              if (ABS(velocityX) > minVelocity && [self shouldFastScroll])
-                [g_xbmcController.inputHandler sendButtonPressed:11];
-
-              m_lastGesturePoint = gesturePoint;
-            }
-            break;
-          }
-          default:
-            break;
-        }
-      }
-      case UIGestureRecognizerStateEnded:
-      {
-        direction = UIPanGestureRecognizerDirectionUndefined;
-        // start remote idle timer
-        [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
-        break;
-      }
-      default:
-        break;
-    }
+    [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+    return;
   }
-  else // dont mimic apple siri remote
+
+  auto translation = [sender translationInView:sender.view];
+  auto velocity = [sender velocityInView:sender.view];
+  auto direction = [self getPanDirection:velocity];
+
+  switch (sender.state)
   {
-    switch (sender.state)
+    case UIGestureRecognizerStateBegan:
     {
-      case UIGestureRecognizerStateBegan:
-      {
-        m_touchBeginSignaled = false;
-        break;
-      }
-      case UIGestureRecognizerStateChanged:
-      {
-        int keyId = 0;
-        if (!m_touchBeginSignaled && m_touchDirection)
-        {
-          switch (m_touchDirection)
-          {
-            case UISwipeGestureRecognizerDirectionRight:
-            {
-              keyId = 11;
-              break;
-            }
-            case UISwipeGestureRecognizerDirectionLeft:
-            {
-              keyId = 10;
-              break;
-            }
-            case UISwipeGestureRecognizerDirectionUp:
-            {
-              keyId = 8;
-              break;
-            }
-            case UISwipeGestureRecognizerDirectionDown:
-            {
-              keyId = 9;
-              break;
-            }
-            default:
-              break;
-          }
-          m_touchBeginSignaled = true;
-          [g_xbmcController.inputHandler.inputRemote startKeyPressTimer:keyId];
-        }
-        break;
-      }
-      case UIGestureRecognizerStateEnded:
-      case UIGestureRecognizerStateCancelled:
-      {
-        if (m_touchBeginSignaled)
-        {
-          m_touchBeginSignaled = false;
-          m_touchDirection = NULL;
-          [g_xbmcController.inputHandler.inputRemote stopKeyPressTimer];
-        }
-        // start remote idle timer
-        [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
-        break;
-      }
-      default:
-        break;
+      m_lastGesturePoint = translation;
+      break;
     }
+    case UIGestureRecognizerStateChanged:
+    {
+      int keyId = 0;
+      switch (direction)
+      {
+        case UIPanGestureRecognizerDirectionUp:
+        {
+          if (fabs(m_lastGesturePoint.y - translation.y) >
+              g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity)
+          {
+            CLog::Log(LOGDEBUG, "Input: Siri remote pan up (id: 23)");
+            keyId = 23;
+          }
+          break;
+        }
+        case UIPanGestureRecognizerDirectionDown:
+        {
+          if (fabs(m_lastGesturePoint.y - translation.y) >
+              g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity)
+          {
+            CLog::Log(LOGDEBUG, "Input: Siri remote pan down (id: 24)");
+            keyId = 24;
+          }
+          break;
+        }
+        case UIPanGestureRecognizerDirectionLeft:
+        {
+          if (fabs(m_lastGesturePoint.x - translation.x) >
+              g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity)
+          {
+            CLog::Log(LOGDEBUG, "Input: Siri remote pan left (id: 25)");
+            keyId = 25;
+          }
+          break;
+        }
+        case UIPanGestureRecognizerDirectionRight:
+        {
+          if (fabs(m_lastGesturePoint.x - translation.x) >
+              g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity)
+          {
+            CLog::Log(LOGDEBUG, "Input: Siri remote pan right (id: 26)");
+            keyId = 26;
+          }
+          break;
+        }
+        default:
+        {
+          break;
+        }
+      }
+      if (keyId != 0)
+      {
+        m_lastGesturePoint = translation;
+        [g_xbmcController.inputHandler sendButtonPressed:keyId];
+      }
+      break;
+    }
+    default:
+      break;
   }
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
 - (IBAction)handleSwipe:(UISwipeGestureRecognizer*)sender
 {
-  if (!g_xbmcController.inputHandler.inputRemote.remoteIdleState)
-    m_touchDirection = sender.direction;
+  if (g_xbmcController.inputHandler.inputRemote.siriRemoteIdleState)
+  {
+    [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+    return;
+  }
 
-  // start remote idle timer
-  [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+  int keyId = 0;
+  switch (sender.direction)
+  {
+    case UISwipeGestureRecognizerDirectionUp:
+    {
+      CLog::Log(LOGDEBUG, "Input: Siri remote swipe up (id: 8)");
+      keyId = 8;
+      break;
+    }
+    case UISwipeGestureRecognizerDirectionDown:
+    {
+      CLog::Log(LOGDEBUG, "Input: Siri remote swipe down (id: 9)");
+      keyId = 9;
+      break;
+    }
+    case UISwipeGestureRecognizerDirectionLeft:
+    {
+      CLog::Log(LOGDEBUG, "Input: Siri remote swipe left (id: 10)");
+      keyId = 10;
+      break;
+    }
+    case UISwipeGestureRecognizerDirectionRight:
+    {
+      CLog::Log(LOGDEBUG, "Input: Siri remote swipe right (id: 11)");
+      keyId = 11;
+      break;
+    }
+    default:
+      break;
+  }
+  [g_xbmcController.inputHandler sendButtonPressed:keyId];
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
-- (UIPanGestureRecognizerDirection)getPanDirection:(CGPoint)translation
+- (UIPanGestureRecognizerDirection)getPanDirection:(CGPoint)velocity
 {
-  int x = static_cast<int>(translation.x);
-  int y = static_cast<int>(translation.y);
-  int absX = x;
-  int absY = y;
+  bool isVerticalGesture = fabs(velocity.y) > fabs(velocity.x);
 
-  if (absX < 0)
-    absX *= -1;
-
-  if (absY < 0)
-    absY *= -1;
-
-  bool horizontal, veritical;
-  horizontal = (absX > absY);
-  veritical = !horizontal;
-
-  // Determine up, down, right, or left:
-  bool swipe_up, swipe_down, swipe_left, swipe_right;
-  swipe_left = (horizontal && x < 0);
-  swipe_right = (horizontal && x >= 0);
-  swipe_up = (veritical && y < 0);
-  swipe_down = (veritical && y >= 0);
-
-  if (swipe_down)
-    return UIPanGestureRecognizerDirectionDown;
-  if (swipe_up)
-    return UIPanGestureRecognizerDirectionUp;
-  if (swipe_left)
-    return UIPanGestureRecognizerDirectionLeft;
-  if (swipe_right)
-    return UIPanGestureRecognizerDirectionRight;
-
-  return UIPanGestureRecognizerDirectionUndefined;
-}
-
-#pragma mark - Private Functions
-
-- (BOOL)shouldFastScroll
-{
-  // we dont want fast scroll in below windows, no point in going 15 places in home screen
-  int window = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-
-  if (window == WINDOW_HOME || window == WINDOW_FULLSCREEN_LIVETV ||
-      window == WINDOW_FULLSCREEN_VIDEO || window == WINDOW_FULLSCREEN_RADIO ||
-      (window >= WINDOW_SETTINGS_START && window <= WINDOW_SETTINGS_SERVICE))
-    return NO;
-
-  return YES;
+  if (isVerticalGesture)
+  {
+    if (velocity.y > 0)
+      return UIPanGestureRecognizerDirectionDown;
+    else
+      return UIPanGestureRecognizerDirectionUp;
+  }
+  else
+  {
+    if (velocity.x > 0)
+      return UIPanGestureRecognizerDirectionRight;
+    else
+      return UIPanGestureRecognizerDirectionLeft;
+  }
 }
 
 @end

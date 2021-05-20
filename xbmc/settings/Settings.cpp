@@ -384,10 +384,11 @@ constexpr const char* CSettings::SETTING_INPUT_CONTROLLERPOWEROFF;
 constexpr const char* CSettings::SETTING_INPUT_APPLEREMOTEMODE;
 constexpr const char* CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON;
 constexpr const char* CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME;
-constexpr const char* CSettings::SETTING_INPUT_APPLESIRI;
-constexpr const char* CSettings::SETTING_INPUT_APPLESIRITIMEOUT;
-constexpr const char* CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED;
-constexpr const char* CSettings::SETTING_INPUT_APPLEUSEKODIKEYBOARD;
+constexpr const char* CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED;
+constexpr const char* CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME;
+constexpr const char* CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY;
+constexpr const char* CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY;
+constexpr const char* CSettings::SETTING_INPUT_TVOSUSEKODIKEYBOARD;
 constexpr const char* CSettings::SETTING_NETWORK_USEHTTPPROXY;
 constexpr const char* CSettings::SETTING_NETWORK_HTTPPROXYTYPE;
 constexpr const char* CSettings::SETTING_NETWORK_HTTPPROXYSERVER;
@@ -1032,9 +1033,10 @@ void CSettings::InitializeISettingCallbacks()
 
 #if defined(TARGET_DARWIN_TVOS)
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRI);
-  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRITIMEOUT);
-  settingSet.insert(CSettings::SETTING_INPUT_APPLESIRITIMEOUTENABLED);
+  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED);
+  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME);
+  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY);
+  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY);
   GetSettingsManager()->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
 #endif
 

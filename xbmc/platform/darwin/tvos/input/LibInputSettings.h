@@ -10,8 +10,9 @@
 
 @interface TVOSLibInputSettings : NSObject
 
-@property(nonatomic) bool useSiriRemote;
-@property(nonatomic) BOOL remoteIdleEnabled;
-@property(nonatomic) int remoteIdleTimeout;
+@property(nonatomic) bool siriRemoteIdleTimerEnabled;
+@property(nonatomic) int siriRemoteIdleTime;
+@property(nonatomic) int siriRemoteHorizontalSensitivity;
+@property(nonatomic) int siriRemoteVerticalSensitivity;
 
 @end

@@ -16,24 +16,25 @@
 
 @implementation TVOSLibInputSettings
 
-@synthesize useSiriRemote = m_useSiriRemote;
-@synthesize remoteIdleEnabled = m_remoteIdleEnabled;
-@synthesize remoteIdleTimeout = m_remoteIdleTimeout;
+@synthesize siriRemoteIdleTimerEnabled = m_siriRemoteIdleTimerEnabled;
+@synthesize siriRemoteIdleTime = m_siriRemoteIdleTime;
+@synthesize siriRemoteHorizontalSensitivity = m_siriRemoteHorizontalSensitivity;
+@synthesize siriRemoteVerticalSensitivity = m_siriRemoteVerticalSensitivity;
 
-- (void)setRemoteIdleEnabled:(BOOL)idle
+- (void)setSiriRemoteIdleTimer:(bool)idle
 {
-  if (m_remoteIdleEnabled != idle)
+  if (m_siriRemoteIdleTimerEnabled != idle)
   {
-    m_remoteIdleEnabled = idle;
-    if (m_remoteIdleEnabled == YES)
-      [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+    m_siriRemoteIdleTimerEnabled = idle;
+    if (m_siriRemoteIdleTimerEnabled)
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
   }
 }
 
-- (void)setRemoteIdleTimeout:(int)timeout
+- (void)setSiriRemoteIdleTime:(int)time
 {
-  m_remoteIdleTimeout = timeout;
-  [g_xbmcController.inputHandler.inputRemote startRemoteTimer];
+  m_siriRemoteIdleTime = time;
+  [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
 }
 
 @end
