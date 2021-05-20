@@ -12,6 +12,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 namespace XBMCAddon
 {
@@ -115,7 +116,15 @@ namespace XBMCAddon
 
     String InfoTagMusic::getLastPlayed()
     {
+      CLog::Log(LOGWARNING, "InfoTagMusic.getLastPlayed() is deprecated and might be removed in "
+                            "future Kodi versions. Please use InfoTagMusic.getLastPlayedAsW3C().");
+
       return infoTag->GetLastPlayed().GetAsLocalizedDate();
+    }
+
+    String InfoTagMusic::getLastPlayedAsW3C()
+    {
+      return infoTag->GetLastPlayed().GetAsW3CDateTime();
     }
 
     String InfoTagMusic::getComment()

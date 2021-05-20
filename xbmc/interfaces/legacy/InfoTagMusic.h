@@ -345,11 +345,28 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      ///
+      /// @python_v20 Deprecated. Use **getLastPlayedAsW3C()** instead.
       ///
       getLastPlayed();
 #else
       String getLastPlayed();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getLastPlayedAsW3C() }
+      /// Returns last played time as string in W3C format (YYYY-MM-DDThh:mm:ssTZD).
+      ///
+      /// @return [string] Last played datetime (W3C)
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getLastPlayedAsW3C();
+#else
+      String getLastPlayedAsW3C();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
