@@ -11,9 +11,7 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#endif
+#include <algorithm>
 
 using namespace XFILE;
 
@@ -103,7 +101,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
   int nResult = 0;
   if (!IsEmpty())
   {
-    int nToRead = min((int)m_buffer.getMaxReadSize(), nMaxSize);
+    int nToRead = std::min(static_cast<int>(m_buffer.getMaxReadSize()), nMaxSize);
     m_buffer.ReadData(buf, nToRead);
     nResult = nToRead;
   }
@@ -129,7 +127,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
       for (size_t l=0; l<m_listeners.size(); l++)
         m_listeners[l]->OnPipeUnderFlow();
 
-      bHasData = m_readEvent.WaitMSec(min(200,nMillisLeft));
+      bHasData = m_readEvent.WaitMSec(std::min(200, nMillisLeft));
       nMillisLeft -= 200;
     } while (!bHasData && nMillisLeft > 0 && !m_bEof);
 
@@ -141,7 +139,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
 
     if (bHasData)
     {
-      int nToRead = min((int)m_buffer.getMaxReadSize(), nMaxSize);
+      int nToRead = std::min(static_cast<int>(m_buffer.getMaxReadSize()), nMaxSize);
       m_buffer.ReadData(buf, nToRead);
       nResult = nToRead;
     }
