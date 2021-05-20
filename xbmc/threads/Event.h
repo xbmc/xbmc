@@ -141,13 +141,54 @@ namespace XbmcThreads
      */
     CEvent* wait();
 
-    /**
-     * This will block until any one of the CEvents in the group are
-     * signaled or the timeout is reached. If an event is signaled then
-     * it will return a pointer to that CEvent, otherwise it will return
-     * NULL.
-     */
-    CEvent* wait(unsigned int milliseconds);
+    // locking is ALWAYS done in this order:
+    //  CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
+    //
+    // Notice that this method doesn't grab the CEvent::groupListMutex at all. This
+    // is fine. It just grabs the CEventGroup::mutex and THEN the individual
+    // CEvent::mutex's
+    template<typename Rep, typename Period>
+    CEvent* wait(std::chrono::duration<Rep, Period> duration)
+    {
+      CSingleLock lock(mutex); // grab CEventGroup::mutex
+      numWaits++;
+
+      // ==================================================
+      // This block checks to see if any child events are
+      // signaled and sets 'signaled' to the first one it
+      // finds.
+      // ==================================================
+      signaled = nullptr;
+      for (auto* cur : events)
+      {
+        CSingleLock lock2(cur->mutex);
+        if (cur->signaled)
+          signaled = cur;
+      }
+      // ==================================================
+
+      if (!signaled)
+      {
+        // both of these release the CEventGroup::mutex
+        if (duration == std::chrono::duration<Rep, Period>::max())
+          condVar.wait(mutex);
+        else
+          condVar.wait(mutex, duration);
+      } // at this point the CEventGroup::mutex is reacquired
+      numWaits--;
+
+      // signaled should have been set by a call to CEventGroup::Set
+      CEvent* ret = signaled;
+      if (numWaits == 0)
+      {
+        if (signaled)
+          // This acquires and releases the CEvent::mutex. This is fine since the
+          //  CEventGroup::mutex is already being held
+          signaled->Wait(std::chrono::duration<Rep, Period>::zero()); // reset the event if needed
+        signaled = nullptr; // clear the signaled if all the waiters are gone
+      }
+      return ret;
+    }
 
     /**
      * This is mostly for testing. It allows a thread to make sure there are

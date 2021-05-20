@@ -75,7 +75,7 @@ public:
     if (timeout == -1)
       result = event.wait();
     else
-      result = event.wait((unsigned int)timeout);
+      result = event.wait(std::chrono::milliseconds(timeout));
     waiting = false;
   }
 };
@@ -471,7 +471,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(waitForWaiters(event1,1,10000));
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
 
-  EXPECT_TRUE(group.wait(20) == NULL); // waited ... got nothing
+  EXPECT_TRUE(group.wait(20ms) == NULL); // waited ... got nothing
 
   group_wait w3(group,50);
   thread waitThread3(w3);
