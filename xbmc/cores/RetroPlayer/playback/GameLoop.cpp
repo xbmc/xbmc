@@ -64,7 +64,7 @@ void CGameLoop::Process(void)
     if (m_speedFactor == 0.0)
     {
       m_lastFrameMs = 0.0;
-      m_sleepEvent.WaitMSec(5000ms);
+      m_sleepEvent.Wait(5000ms);
     }
     else
     {
@@ -90,7 +90,7 @@ void CGameLoop::Process(void)
       // Sleep at least 1 ms to avoid sleeping forever
       while (sleepTimeMs > 1.0)
       {
-        m_sleepEvent.WaitMSec(std::chrono::milliseconds(static_cast<unsigned int>(sleepTimeMs)));
+        m_sleepEvent.Wait(std::chrono::milliseconds(static_cast<unsigned int>(sleepTimeMs)));
 
         if (m_bStop)
           break;

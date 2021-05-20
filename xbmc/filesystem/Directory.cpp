@@ -92,13 +92,13 @@ public:
 
   bool Wait(unsigned int timeout)
   {
-    return m_result->m_event.WaitMSec(std::chrono::milliseconds(timeout));
+    return m_result->m_event.Wait(std::chrono::milliseconds(timeout));
   }
 
   bool GetDirectory(CFileItemList& list)
   {
     /* if it was not finished or failed, return failure */
-    if (!m_result->m_event.WaitMSec(0ms) || !m_result->m_result)
+    if (!m_result->m_event.Wait(0ms) || !m_result->m_result)
     {
       list.Clear();
       return false;

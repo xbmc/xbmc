@@ -73,7 +73,7 @@ bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt,
     CApplicationMessenger::GetInstance().SendGUIMessage(msgLabel, WINDOW_INVALID, false);
 
     waitEvent.Reset();
-    bInterrupted = waitEvent.WaitMSec(1000ms); // Wait 1 second
+    bInterrupted = waitEvent.Wait(1000ms); // Wait 1 second
 
     if (bInterrupted)
       break;

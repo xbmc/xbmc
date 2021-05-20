@@ -912,11 +912,11 @@ void CPVRRefreshTimelineItemsThread::Process()
 
       iLastEpgItemsCount = iCurrentEpgItemsCount;
 
-      m_ready.WaitMSec(1000ms); // boosted update cycle
+      m_ready.Wait(1000ms); // boosted update cycle
     }
     else
     {
-      m_ready.WaitMSec(5000ms); // normal update cycle
+      m_ready.Wait(5000ms); // normal update cycle
     }
 
     m_ready.Reset();

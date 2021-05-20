@@ -228,7 +228,7 @@ void CAirTunesServer::Process()
     if (m_streamStarted)
       SetupRemoteControl();// check for remote controls
 
-    m_processActions.WaitMSec(1000ms); // timeout for being able to stop
+    m_processActions.Wait(1000ms); // timeout for being able to stop
     std::list<CAction> currentActions;
     {
       CSingleLock lock(m_actionQueueLock);// copy and clear the source queue

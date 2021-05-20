@@ -489,7 +489,7 @@ void CAutorun::HandleAutorun()
     return ;
   }
 
-  if (mediadetect.m_evAutorun.WaitMSec(0ms))
+  if (mediadetect.m_evAutorun.Wait(0ms))
   {
     ExecuteAutorun();
     mediadetect.m_evAutorun.Reset();

@@ -96,7 +96,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
   }
 
   while (!m_bReadyForRead && !m_bEof)
-    m_readEvent.WaitMSec(100ms);
+    m_readEvent.Wait(100ms);
 
   int nResult = 0;
   if (!IsEmpty())
@@ -127,7 +127,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
       for (size_t l=0; l<m_listeners.size(); l++)
         m_listeners[l]->OnPipeUnderFlow();
 
-      bHasData = m_readEvent.WaitMSec(std::min(200ms, nMillisLeft));
+      bHasData = m_readEvent.Wait(std::min(200ms, nMillisLeft));
       nMillisLeft -= 200ms;
     } while (!bHasData && nMillisLeft > 0ms && !m_bEof);
 
@@ -171,7 +171,7 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
         m_listeners[l]->OnPipeOverFlow();
 
       bool bClear = nWaitMillis < 0 ? m_writeEvent.Wait()
-                                    : m_writeEvent.WaitMSec(std::chrono::milliseconds(nWaitMillis));
+                                    : m_writeEvent.Wait(std::chrono::milliseconds(nWaitMillis));
       lock.Enter();
       if (bClear && (int)m_buffer.getMaxWriteSize() >= nSize)
       {

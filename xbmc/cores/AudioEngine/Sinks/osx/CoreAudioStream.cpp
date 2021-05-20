@@ -292,7 +292,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
                 (uint)m_StreamId, StreamDescriptionToString(checkVirtualFormat, formatString));
       break;
     }
-    m_virtual_format_event.WaitMSec(100ms);
+    m_virtual_format_event.Wait(100ms);
   }
   return true;
 }
@@ -385,7 +385,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
                 (uint)m_StreamId, StreamDescriptionToString(checkPhysicalFormat, formatString));
       break;
     }
-    m_physical_format_event.WaitMSec(100ms);
+    m_physical_format_event.Wait(100ms);
   }
 
   return true;

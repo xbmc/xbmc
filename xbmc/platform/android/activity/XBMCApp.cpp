@@ -608,7 +608,7 @@ void CXBMCApp::SetRefreshRate(float rate)
   runNativeOnUiThread(SetRefreshRateCallback, variant);
   if (g_application.IsInitialized())
   {
-    m_displayChangeEvent.WaitMSec(5000ms);
+    m_displayChangeEvent.Wait(5000ms);
     if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
       dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
@@ -636,7 +636,7 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   runNativeOnUiThread(SetDisplayModeCallback, variant);
   if (g_application.IsInitialized())
   {
-    m_displayChangeEvent.WaitMSec(5000ms);
+    m_displayChangeEvent.Wait(5000ms);
     if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
       dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
@@ -1332,7 +1332,7 @@ float CXBMCApp::GetFrameLatencyMs()
 
 bool CXBMCApp::WaitVSync(unsigned int milliSeconds)
 {
-  return m_vsyncEvent.WaitMSec(std::chrono::milliseconds(milliSeconds));
+  return m_vsyncEvent.Wait(std::chrono::milliseconds(milliSeconds));
 }
 
 bool CXBMCApp::GetMemoryInfo(long& availMem, long& totalMem)

@@ -195,7 +195,7 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 bool CGUIDialogProgress::Wait(int progresstime /*= 10*/)
 {
   CEvent m_done;
-  while (!m_done.WaitMSec(std::chrono::milliseconds(progresstime)) && m_active && !IsCanceled())
+  while (!m_done.Wait(std::chrono::milliseconds(progresstime)) && m_active && !IsCanceled())
     Progress();
 
   return !IsCanceled();
@@ -203,7 +203,7 @@ bool CGUIDialogProgress::Wait(int progresstime /*= 10*/)
 
 bool CGUIDialogProgress::WaitOnEvent(CEvent& event)
 {
-  while (!event.WaitMSec(1ms))
+  while (!event.Wait(1ms))
   {
     if (IsCanceled())
       return false;

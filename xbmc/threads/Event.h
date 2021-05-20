@@ -76,7 +76,7 @@ public:
    *  was triggered. Otherwise it will return false.
    */
   template<typename Rep, typename Period>
-  inline bool WaitMSec(std::chrono::duration<Rep, Period> duration)
+  inline bool Wait(std::chrono::duration<Rep, Period> duration)
   {
     CSingleLock lock(mutex);
     numWaits++;

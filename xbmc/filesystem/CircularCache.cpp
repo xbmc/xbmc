@@ -195,7 +195,7 @@ int64_t CCircularCache::WaitForData(unsigned int minimum, unsigned int millis)
   while (!IsEndOfInput() && avail < minimum && !endtime.IsTimePast() )
   {
     lock.Leave();
-    m_written.WaitMSec(50ms); // may miss the deadline. shouldn't be a problem.
+    m_written.Wait(50ms); // may miss the deadline. shouldn't be a problem.
     lock.Enter();
     avail = m_end - m_cur;
   }

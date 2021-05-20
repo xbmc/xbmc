@@ -337,7 +337,7 @@ void CShoutcastFile::Process()
 {
   while (!m_bStop)
   {
-    if (m_tagChange.WaitMSec(500ms))
+    if (m_tagChange.Wait(500ms))
     {
       CSingleLock lock(m_tagSection);
       while (!m_bStop && !m_tags.empty())

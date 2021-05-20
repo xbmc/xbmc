@@ -775,7 +775,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   if (state == VDPAU_LOST)
   {
     CLog::Log(LOGINFO, "CVDPAU::Check waiting for display reset event");
-    if (!m_DisplayEvent.WaitMSec(4000ms))
+    if (!m_DisplayEvent.Wait(4000ms))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
       state = VDPAU_RESET;
@@ -1228,7 +1228,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
       }
     }
 
-    if (!m_inMsgEvent.WaitMSec(2000ms))
+    if (!m_inMsgEvent.Wait(2000ms))
       break;
   }
 
@@ -1901,7 +1901,7 @@ void CMixer::Process()
     }
 
     // wait for message
-    else if (m_outMsgEvent.WaitMSec(std::chrono::milliseconds(m_extTimeout)))
+    else if (m_outMsgEvent.Wait(std::chrono::milliseconds(m_extTimeout)))
     {
       continue;
     }
@@ -3134,7 +3134,7 @@ void COutput::Process()
     }
 
     // wait for message
-    else if (m_outMsgEvent.WaitMSec(std::chrono::milliseconds(m_extTimeout)))
+    else if (m_outMsgEvent.Wait(std::chrono::milliseconds(m_extTimeout)))
     {
       continue;
     }

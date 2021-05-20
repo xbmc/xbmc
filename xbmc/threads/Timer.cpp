@@ -94,7 +94,7 @@ void CTimer::Process()
     // wait the necessary time
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(m_endTime - currentTime);
 
-    if (!m_eventTimeout.WaitMSec(duration))
+    if (!m_eventTimeout.Wait(duration))
     {
       currentTime = std::chrono::steady_clock::now();
       if (m_endTime <= currentTime)

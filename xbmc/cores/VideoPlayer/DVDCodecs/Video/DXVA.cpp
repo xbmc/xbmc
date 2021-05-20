@@ -1373,7 +1373,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     lock.Leave();
     // wait app device restoration
-    m_event.WaitMSec(2000ms);
+    m_event.Wait(2000ms);
     lock.Enter();
 
     // still in lost state after 2sec

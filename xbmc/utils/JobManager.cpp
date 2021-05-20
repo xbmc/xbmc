@@ -373,7 +373,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
       return job;
     // no jobs are left - sleep for 30 seconds to allow new jobs to come in
     lock.Leave();
-    bool newJob = m_jobEvent.WaitMSec(30000ms);
+    bool newJob = m_jobEvent.Wait(30000ms);
     lock.Enter();
     if (!newJob)
       break;

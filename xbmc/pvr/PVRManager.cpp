@@ -89,7 +89,7 @@ public:
 
   bool WaitForJobs(unsigned int milliSeconds)
   {
-    return m_triggerEvent.WaitMSec(std::chrono::milliseconds(milliSeconds));
+    return m_triggerEvent.Wait(std::chrono::milliseconds(milliSeconds));
   }
 
 

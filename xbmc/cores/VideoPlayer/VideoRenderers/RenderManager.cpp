@@ -150,7 +150,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_presentevent.notifyAll();
   }
 
-  if (!m_stateEvent.WaitMSec(1000ms))
+  if (!m_stateEvent.Wait(1000ms))
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for configure");
     CSingleLock lock(m_statelock);
@@ -359,7 +359,7 @@ void CRenderManager::PreInit()
   {
     m_initEvent.Reset();
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_PREINIT);
-    if (!m_initEvent.WaitMSec(2000ms))
+    if (!m_initEvent.Wait(2000ms))
     {
       CLog::Log(LOGERROR, "{} - timed out waiting for renderer to preinit", __FUNCTION__);
     }
@@ -388,7 +388,7 @@ void CRenderManager::UnInit()
   {
     m_initEvent.Reset();
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_UNINIT);
-    if (!m_initEvent.WaitMSec(2000ms))
+    if (!m_initEvent.Wait(2000ms))
     {
       CLog::Log(LOGERROR, "{} - timed out waiting for renderer to uninit", __FUNCTION__);
     }
@@ -451,7 +451,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_FLUSH);
     if (wait)
     {
-      if (!m_flushEvent.WaitMSec(1000ms))
+      if (!m_flushEvent.Wait(1000ms))
       {
         CLog::Log(LOGERROR, "{} - timed out waiting for renderer to flush", __FUNCTION__);
         return false;
@@ -568,7 +568,7 @@ bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int
       millis = 1000;
 
     CSingleExit exitlock(m_captCritSect);
-    if (!it->second->GetEvent().WaitMSec(std::chrono::milliseconds(millis)))
+    if (!it->second->GetEvent().Wait(std::chrono::milliseconds(millis)))
     {
       m_captureWaitCounter--;
       return false;

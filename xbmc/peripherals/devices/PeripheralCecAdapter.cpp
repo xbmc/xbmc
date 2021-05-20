@@ -1556,7 +1556,7 @@ bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
   {
     powerStatus = m_adapter->m_cecAdapter->GetDevicePowerStatus(waitFor);
     if (powerStatus != CEC_POWER_STATUS_ON)
-      bContinue = !m_event.WaitMSec(1000ms);
+      bContinue = !m_event.Wait(1000ms);
   }
 
   return powerStatus == CEC_POWER_STATUS_ON;
@@ -1664,7 +1664,7 @@ void CPeripheralCecAdapterUpdateThread::Process(void)
   while (!m_bStop)
   {
     // update received
-    if (bUpdate || m_event.WaitMSec(500ms))
+    if (bUpdate || m_event.Wait(500ms))
     {
       if (m_bStop)
         return;

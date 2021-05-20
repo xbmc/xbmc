@@ -84,7 +84,7 @@ void CVideoSyncOsx::OnLostDisplay()
   if (!m_displayLost)
   {
     m_displayLost = true;
-    m_lostEvent.WaitMSec(1000ms);
+    m_lostEvent.Wait(1000ms);
   }
 }
 

@@ -192,7 +192,7 @@ void CGUIConfigurationWizard::Process(void)
     {
       CLog::Log(LOGDEBUG, "Configuration wizard: waiting {}ms for axes to neutralize",
                 POST_MAPPING_WAIT_TIME_MS.count());
-      m_motionlessEvent.WaitMSec(POST_MAPPING_WAIT_TIME_MS);
+      m_motionlessEvent.Wait(POST_MAPPING_WAIT_TIME_MS);
     }
   }
 

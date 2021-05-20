@@ -121,7 +121,7 @@ namespace XbmcThreads
       if (signaled)
         // This acquires and releases the CEvent::mutex. This is fine since the
         //  CEventGroup::mutex is already being held
-        signaled->WaitMSec(0ms); // reset the event if needed
+        signaled->Wait(0ms); // reset the event if needed
       signaled = nullptr;  // clear the signaled if all the waiters are gone
     }
     return ret;

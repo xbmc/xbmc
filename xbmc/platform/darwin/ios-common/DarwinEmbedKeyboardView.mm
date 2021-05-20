@@ -96,7 +96,7 @@ static CEvent keyboardFinishedEvent;
   });
 
   // we are waiting on the user finishing the keyboard
-  while (!keyboardFinishedEvent.WaitMSec(500ms))
+  while (!keyboardFinishedEvent.Wait(500ms))
   {
   }
 }

@@ -496,7 +496,7 @@ bool CPythonInvoker::stop(bool abort)
       lock.Leave();
 
     XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
-    while (!m_stoppedEvent.WaitMSec(15ms))
+    while (!m_stoppedEvent.Wait(15ms))
     {
       if (timeout.IsTimePast())
       {

@@ -222,7 +222,7 @@ void CPeripheralBus::Process(void)
       break;
 
     if (!m_bStop)
-      m_triggerEvent.WaitMSec(m_iRescanTime);
+      m_triggerEvent.Wait(m_iRescanTime);
   }
 }
 

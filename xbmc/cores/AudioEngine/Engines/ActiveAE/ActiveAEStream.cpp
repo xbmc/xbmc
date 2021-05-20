@@ -344,7 +344,7 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
         break;
       }
     }
-    if (!m_inMsgEvent.WaitMSec(200ms))
+    if (!m_inMsgEvent.Wait(200ms))
       break;
   }
   return copied;
@@ -452,7 +452,7 @@ void CActiveAEStream::Drain(bool wait)
     else if (!wait)
       return;
 
-    m_inMsgEvent.WaitMSec(std::chrono::milliseconds(timer.MillisLeft()));
+    m_inMsgEvent.Wait(std::chrono::milliseconds(timer.MillisLeft()));
   }
   CLog::Log(LOGERROR, "CActiveAEStream::Drain - timeout out");
 }

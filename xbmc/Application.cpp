@@ -626,7 +626,7 @@ bool CApplication::Initialize()
 
   std::string localizedStr = g_localizeStrings.Get(24150);
   int iDots = 1;
-  while (!event.WaitMSec(1000ms))
+  while (!event.Wait(1000ms))
   {
     if (databaseManager.IsUpgrading())
       CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
@@ -670,7 +670,7 @@ bool CApplication::Initialize()
             CJob::PRIORITY_DEDICATED);
         localizedStr = g_localizeStrings.Get(24151);
         iDots = 1;
-        while (!event.WaitMSec(1000ms))
+        while (!event.Wait(1000ms))
         {
           CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr +
                                                         std::string(iDots, '.'));

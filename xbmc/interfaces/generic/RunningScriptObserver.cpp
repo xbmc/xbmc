@@ -32,7 +32,7 @@ void CRunningScriptObserver::Run()
       m_event.Set();
       break;
     }
-  } while (!m_stopEvent.WaitMSec(20ms));
+  } while (!m_stopEvent.Wait(20ms));
 }
 
 void CRunningScriptObserver::Abort()

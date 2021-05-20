@@ -532,7 +532,7 @@ bool PAPlayer::CloseFile(bool reopen)
     while (m_jobCounter > 0)
     {
       lock.Leave();
-      m_jobEvent.WaitMSec(100ms);
+      m_jobEvent.Wait(100ms);
       lock.Enter();
     }
   }
@@ -542,7 +542,7 @@ bool PAPlayer::CloseFile(bool reopen)
 
 void PAPlayer::Process()
 {
-  if (!m_startEvent.WaitMSec(100ms))
+  if (!m_startEvent.Wait(100ms))
   {
     CLog::Log(LOGDEBUG, "PAPlayer::Process - Failed to receive start event");
     return;

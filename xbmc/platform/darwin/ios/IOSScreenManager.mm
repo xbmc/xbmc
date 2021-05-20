@@ -174,7 +174,7 @@ static CEvent screenChangeEvent;
   if([NSThread currentThread] != [NSThread mainThread])
   {
     [self performSelectorOnMainThread:@selector(changeScreenSelector:) withObject:dict  waitUntilDone:YES];
-    screenChangeEvent.WaitMSec(30000ms);
+    screenChangeEvent.Wait(30000ms);
   }
   else
   {
