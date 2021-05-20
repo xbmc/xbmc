@@ -260,11 +260,37 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      ///
+      /// @python_v20 Deprecated. Use **getVotesAsInt()** instead.
       ///
       getVotes();
 #else
       String getVotes();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getVotesAsInt([type]) }
+      /// Get the votes of the rating (if available) as an integer.
+      ///
+      /// @param type           [opt] string - the type of the rating.
+      /// - Some rating type values (any string possible):
+      ///  | Label         | Type                                             |
+      ///  |---------------|--------------------------------------------------|
+      ///  | imdb          | string - type name
+      ///  | tvdb          | string - type name
+      ///  | tmdb          | string - type name
+      ///  | anidb         | string - type name
+      ///
+      /// @return [integer] Votes
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getVotesAsInt(type);
+#else
+      int getVotesAsInt(const String& type = "");
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -474,11 +500,28 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      ///
+      /// @python_v20 Deprecated. Use **getLastPlayedAsW3C()** instead.
       ///
       getLastPlayed();
 #else
       String getLastPlayed();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getLastPlayedAsW3C() }
+      /// Get last played datetime as string in W3C format (YYYY-MM-DDThh:mm:ssTZD).
+      ///
+      /// @return [string] Last played datetime (W3C)
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getLastPlayedAsW3C();
+#else
+      String getLastPlayedAsW3C();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -509,11 +552,28 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      ///
+      /// @python_v20 Deprecated. Use **getPremieredAsW3C()** instead.
       ///
       getPremiered();
 #else
       String getPremiered();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getPremieredAsW3C() }
+      /// Get [premiered](https://en.wikipedia.org/wiki/Premiere) date as string in W3C format (YYYY-MM-DD).
+      ///
+      /// @return [string] Premiered date (W3C)
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getPremieredAsW3C();
+#else
+      String getPremieredAsW3C();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -526,11 +586,28 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      ///
+      /// @python_v20 Deprecated. Use **getFirstAiredAsW3C()** instead.
       ///
       getFirstAired();
 #else
       String getFirstAired();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getFirstAiredAsW3C() }
+      /// Get first aired date as string in W3C format (YYYY-MM-DD).
+      ///
+      /// @return [string] First aired date (W3C)
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getFirstAiredAsW3C();
+#else
+      String getFirstAiredAsW3C();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

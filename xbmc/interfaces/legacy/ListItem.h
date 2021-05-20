@@ -574,6 +574,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.getVotesAsInt()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

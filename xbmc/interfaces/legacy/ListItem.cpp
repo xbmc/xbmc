@@ -312,6 +312,10 @@ namespace XBMCAddon
 
     int ListItem::getVotes(const char* key)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.getVotes() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.getVotesAsInt().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return GetVideoInfoTag()->GetRating(key).votes;
     }

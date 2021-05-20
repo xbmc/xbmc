@@ -12,6 +12,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 namespace XBMCAddon
 {
@@ -91,7 +92,17 @@ namespace XBMCAddon
 
     String InfoTagVideo::getVotes()
     {
-      return std::to_string(infoTag->GetRating().votes);
+      CLog::Log(
+          LOGWARNING,
+          "InfoTagVideo.getVotes() is deprecated and might be removed in future Kodi versions. "
+          "Please use InfoTagVideo.getVotesAsInt().");
+
+      return std::to_string(getVotesAsInt());
+    }
+
+    int InfoTagVideo::getVotesAsInt(const String& type /* = "" */)
+    {
+      return infoTag->GetRating(type).votes;
     }
 
     String InfoTagVideo::getCast()
