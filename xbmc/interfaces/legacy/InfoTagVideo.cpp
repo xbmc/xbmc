@@ -162,7 +162,15 @@ namespace XBMCAddon
 
     String InfoTagVideo::getLastPlayed()
     {
+      CLog::Log(LOGWARNING, "InfoTagVideo.getLastPlayed() is deprecated and might be removed in "
+                            "future Kodi versions. Please use InfoTagVideo.getLastPlayedAsW3C().");
+
       return infoTag->m_lastPlayed.GetAsLocalizedDateTime();
+    }
+
+    String InfoTagVideo::getLastPlayedAsW3C()
+    {
+      return infoTag->m_lastPlayed.GetAsW3CDateTime();
     }
 
     String InfoTagVideo::getOriginalTitle()
@@ -172,12 +180,28 @@ namespace XBMCAddon
 
     String InfoTagVideo::getPremiered()
     {
+      CLog::Log(LOGWARNING, "InfoTagVideo.getPremiered() is deprecated and might be removed in "
+                            "future Kodi versions. Please use InfoTagVideo.getPremieredAsW3C().");
+
       return infoTag->GetPremiered().GetAsLocalizedDate();
+    }
+
+    String InfoTagVideo::getPremieredAsW3C()
+    {
+      return infoTag->GetPremiered().GetAsW3CDate();
     }
 
     String InfoTagVideo::getFirstAired()
     {
+      CLog::Log(LOGWARNING, "InfoTagVideo.getFirstAired() is deprecated and might be removed in "
+                            "future Kodi versions. Please use InfoTagVideo.getFirstAiredAsW3C().");
+
       return infoTag->m_firstAired.GetAsLocalizedDate();
+    }
+
+    String InfoTagVideo::getFirstAiredAsW3C()
+    {
+      return infoTag->m_firstAired.GetAsW3CDate();
     }
 
     String InfoTagVideo::getTrailer()
