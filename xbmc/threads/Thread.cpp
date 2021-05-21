@@ -230,14 +230,6 @@ void CThread::TermHandler()
 {
 }
 
-void CThread::Sleep(unsigned int milliseconds)
-{
-  if (milliseconds > 10 && IsCurrentThread())
-    m_StopEvent.Wait(std::chrono::milliseconds(milliseconds));
-  else
-    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
-}
-
 bool CThread::Join(unsigned int milliseconds)
 {
   CSingleLock l(m_CriticalSection);

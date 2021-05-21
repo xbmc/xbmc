@@ -33,6 +33,7 @@
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
+using namespace std::chrono_literals;
 
 CCriticalSection CDetectDVDMedia::m_muReadingMedia;
 CEvent CDetectDVDMedia::m_evAutorun;
@@ -74,17 +75,17 @@ void CDetectDVDMedia::Process()
   {
     if (g_application.GetAppPlayer().IsPlayingVideo())
     {
-      CThread::Sleep(10000);
+      CThread::Sleep(10000ms);
     }
     else
     {
       UpdateDvdrom();
       m_bStartup = false;
-      CThread::Sleep(2000);
+      CThread::Sleep(2000ms);
       if ( m_bAutorun )
       {
-        CThread::Sleep(
-            1500); // Media in drive, wait 1.5s more to be sure the device is ready for playback
+        // Media in drive, wait 1.5s more to be sure the device is ready for playback
+        CThread::Sleep(1500ms);
         m_evAutorun.Set();
         m_bAutorun = false;
       }
@@ -138,7 +139,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
-          // CThread::Sleep(6000);
+          // CThread::Sleep(6000ms);
           return ;
         }
         break;

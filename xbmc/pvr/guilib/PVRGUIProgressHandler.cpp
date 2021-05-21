@@ -18,6 +18,8 @@
 #include <cmath>
 #include <string>
 
+using namespace std::chrono_literals;
+
 namespace PVR
 {
   CPVRGUIProgressHandler::CPVRGUIProgressHandler(const std::string& strTitle)
@@ -86,8 +88,8 @@ namespace PVR
         progressHandle->SetText(strText);
       }
 
-      CThread::Sleep(
-          100); // Intentionally ignore some changes that come in too fast. Humans cannot read as fast as Mr. Data ;-)
+      // Intentionally ignore some changes that come in too fast. Humans cannot read as fast as Mr. Data ;-)
+      CThread::Sleep(100ms);
     }
 
     progressHandle->MarkFinished();

@@ -11,6 +11,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace std::chrono_literals;
+
 #define BITS (256 * 8)
 #define BYTES (256)
 
@@ -37,7 +39,7 @@ TEST(TestBitstreamStats, General)
   {
     a.AddSampleBits(1);
     i++;
-    t.Sleep(1);
+    t.Sleep(1ms);
   }
   a.CalculateBitrate();
   EXPECT_GT(a.GetBitrate(), 0.0);
@@ -48,7 +50,7 @@ TEST(TestBitstreamStats, General)
   while (i <= BYTES)
   {
     a.AddSampleBytes(1);
-    t.Sleep(2);
+    t.Sleep(2ms);
     i++;
   }
   a.CalculateBitrate();

@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+using namespace std::chrono_literals;
+
 namespace PVR
 {
 
@@ -432,7 +434,7 @@ void CPVREpgContainer::Process()
       iLastSave = iNow;
     }
 
-    CThread::Sleep(1000);
+    CThread::Sleep(1000ms);
   }
 
   // store data on exit

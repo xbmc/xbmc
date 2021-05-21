@@ -20,6 +20,8 @@
 
 #include <arpa/inet.h>
 
+using namespace std::chrono_literals;
+
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
 CUdpClient::CUdpClient(void) : CThread("UDPClient")
@@ -130,7 +132,7 @@ bool CUdpClient::Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWOR
 
 void CUdpClient::Process()
 {
-  CThread::Sleep(2000);
+  CThread::Sleep(2000ms);
 
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Listening.");
 

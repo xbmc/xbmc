@@ -36,7 +36,16 @@ public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
   virtual ~CThread();
   void Create(bool bAutoDelete = false);
-  void Sleep(unsigned int milliseconds);
+
+  template<typename Rep, typename Period>
+  void Sleep(std::chrono::duration<Rep, Period> duration)
+  {
+    if (duration > std::chrono::milliseconds(10) && IsCurrentThread())
+      m_StopEvent.Wait(duration);
+    else
+      std::this_thread::sleep_for(duration);
+  }
+
   bool IsAutoDelete() const;
   virtual void StopThread(bool bWait = true);
   bool IsRunning() const;

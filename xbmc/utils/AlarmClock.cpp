@@ -21,6 +21,7 @@
 #include <utility>
 
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 CAlarmClock::CAlarmClock() : CThread("AlarmClock")
 {
@@ -145,7 +146,7 @@ void CAlarmClock::Process()
         else
           strLast = iter->first;
     }
-    CThread::Sleep(100);
+    CThread::Sleep(100ms);
   }
 }
 

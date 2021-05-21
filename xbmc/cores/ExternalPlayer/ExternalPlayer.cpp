@@ -44,6 +44,7 @@
 #define DEFAULT_PLAYCOUNT_MIN_TIME 10
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 #if defined(TARGET_WINDOWS_DESKTOP)
 extern HWND g_hWnd;
@@ -296,7 +297,7 @@ void CExternalPlayer::Process()
   XbmcThreads::EndTime timer(2000);
   while (!timer.IsTimePast() && !CServiceBroker::GetActiveAE()->IsSuspended())
   {
-    CThread::Sleep(50);
+    CThread::Sleep(50ms);
   }
   if (timer.IsTimePast())
   {

@@ -92,7 +92,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
   {
     /* wait for them to fade in */
     lock.Leave();
-    CThread::Sleep(FAST_XFADE_TIME);
+    CThread::Sleep(std::chrono::milliseconds(FAST_XFADE_TIME));
     lock.Enter();
 
     /* be sure they have faded in */
@@ -106,7 +106,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         {
           lock.Leave();
           wait = true;
-          CThread::Sleep(1);
+          CThread::Sleep(1ms);
           lock.Enter();
           break;
         }
@@ -141,7 +141,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 
     /* wait for them to fade out */
     lock.Leave();
-    CThread::Sleep(FAST_XFADE_TIME);
+    CThread::Sleep(std::chrono::milliseconds(FAST_XFADE_TIME));
     lock.Enter();
 
     /* be sure they have faded out */
@@ -155,7 +155,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         {
           lock.Leave();
           wait = true;
-          CThread::Sleep(1);
+          CThread::Sleep(1ms);
           lock.Enter();
           break;
         }
@@ -361,7 +361,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     }
 
     /* yield our time so that the main PAP thread doesn't stall */
-    CThread::Sleep(1);
+    CThread::Sleep(1ms);
   }
 
   // set m_upcomingCrossfadeMS depending on type of file and user settings
@@ -506,7 +506,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
       break;
 
     /* yield our time so that the main PAP thread doesn't stall */
-    CThread::Sleep(1);
+    CThread::Sleep(1ms);
   }
 
   CLog::Log(LOGINFO, "PAPlayer::PrepareStream - Ready");
@@ -564,7 +564,7 @@ void PAPlayer::Process()
     // if none of our streams wants at least 10ms of data, we sleep
     if (freeBufferTime < 0.01)
     {
-      CThread::Sleep(10);
+      CThread::Sleep(10ms);
     }
 
     if (m_newForcedPlayerTime != -1)

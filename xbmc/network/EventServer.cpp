@@ -31,6 +31,7 @@ using namespace EVENTSERVER;
 using namespace EVENTPACKET;
 using namespace EVENTCLIENT;
 using namespace SOCKETS;
+using namespace std::chrono_literals;
 
 /************************************************************************/
 /* CEventServer                                                         */
@@ -134,7 +135,7 @@ void CEventServer::Process()
   {
     Run();
     if (!m_bStop)
-      CThread::Sleep(1000);
+      CThread::Sleep(1000ms);
   }
 }
 

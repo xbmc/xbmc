@@ -16,6 +16,7 @@
 
 using namespace VIDEO;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)
@@ -122,7 +123,7 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
         CloseThread();
         return 0;
       }
-      CThread::Sleep(1);
+      CThread::Sleep(1ms);
     }
     // transfer to our movielist
     m_movieList.swap(movieList);
@@ -171,7 +172,7 @@ bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
         CloseThread();
         return false;
       }
-      CThread::Sleep(1);
+      CThread::Sleep(1ms);
     }
     movieDetails = m_movieDetails;
     CloseThread();
@@ -206,7 +207,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
         CloseThread();
         return false;
       }
-      CThread::Sleep(1);
+      CThread::Sleep(1ms);
     }
     movieDetails = m_movieDetails;
     CloseThread();
@@ -241,7 +242,7 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
         CloseThread();
         return false;
       }
-      CThread::Sleep(1);
+      CThread::Sleep(1ms);
     }
     movieDetails = m_episode;
     CloseThread();

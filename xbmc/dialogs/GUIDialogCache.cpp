@@ -21,6 +21,7 @@
 
 
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, const std::string& strMsg) : CThread("GUIDialogCache"),
   m_strHeader(strHeader),
@@ -133,7 +134,7 @@ void CGUIDialogCache::Process()
         m_pDlg->Progress();
         if( bSentCancel )
         {
-          CThread::Sleep(10);
+          CThread::Sleep(10ms);
           continue;
         }
 
@@ -151,7 +152,7 @@ void CGUIDialogCache::Process()
       }
     }
 
-    CThread::Sleep(10);
+    CThread::Sleep(10ms);
   }
 }
 

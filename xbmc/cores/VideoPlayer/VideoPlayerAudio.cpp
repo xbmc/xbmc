@@ -29,6 +29,8 @@
 #include <iomanip>
 #include <math.h>
 
+using namespace std::chrono_literals;
+
 class CDVDMsgAudioCodecChange : public CDVDMsg
 {
 public:
@@ -277,7 +279,7 @@ void CVideoPlayerAudio::Process()
         }
       }
       if (timeout == 0)
-        CThread::Sleep(10);
+        CThread::Sleep(10ms);
 
       continue;
     }

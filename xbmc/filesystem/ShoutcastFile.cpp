@@ -346,7 +346,7 @@ void CShoutcastFile::Process()
         if (m_cacheReader->GetPosition() < front.first) // tagpos
         {
           CSingleExit ex(m_tagSection);
-          CThread::Sleep(20);
+          CThread::Sleep(20ms);
         }
         else
         {

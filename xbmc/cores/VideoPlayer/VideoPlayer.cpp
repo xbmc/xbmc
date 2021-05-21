@@ -72,6 +72,7 @@
 #include <iterator>
 
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 //------------------------------------------------------------------------------
 // selection streams
@@ -656,7 +657,7 @@ CVideoPlayer::~CVideoPlayer()
 
   while (m_outboundEvents->IsProcessing())
   {
-    CThread::Sleep(10);
+    CThread::Sleep(10ms);
   }
 }
 
@@ -1329,7 +1330,7 @@ void CVideoPlayer::Process()
     // check display lost
     if (m_displayLost)
     {
-      CThread::Sleep(50);
+      CThread::Sleep(50ms);
       continue;
     }
 
@@ -1414,7 +1415,7 @@ void CVideoPlayer::Process()
           m_pDemuxer->SetSpeed(DVD_PLAYSPEED_PAUSE);
         m_demuxerSpeed = DVD_PLAYSPEED_PAUSE;
       }
-      CThread::Sleep(10);
+      CThread::Sleep(10ms);
       continue;
     }
 
@@ -1484,7 +1485,7 @@ void CVideoPlayer::Process()
       // input stream asked us to just retry
       if(next == CDVDInputStream::NEXTSTREAM_RETRY)
       {
-        CThread::Sleep(100);
+        CThread::Sleep(100ms);
         continue;
       }
 
@@ -1506,7 +1507,7 @@ void CVideoPlayer::Process()
       if (m_VideoPlayerAudio->HasData() ||
           m_VideoPlayerVideo->HasData())
       {
-        CThread::Sleep(100);
+        CThread::Sleep(100ms);
         continue;
       }
 
