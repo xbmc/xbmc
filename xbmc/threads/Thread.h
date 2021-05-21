@@ -91,11 +91,13 @@ protected:
    *  stop is called on the thread the wait will return with a response
    *  indicating what happened.
    */
-  inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis = -1 /* indicates wait forever*/)
+  inline WaitResponse AbortableWait(CEvent& event,
+                                    std::chrono::milliseconds duration =
+                                        std::chrono::milliseconds(-1) /* indicates wait forever*/)
   {
     XbmcThreads::CEventGroup group{&event, &m_StopEvent};
     CEvent* result =
-        timeoutMillis < 0 ? group.wait() : group.wait(std::chrono::milliseconds(timeoutMillis));
+        duration < std::chrono::milliseconds::zero() ? group.wait() : group.wait(duration);
     return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
   }

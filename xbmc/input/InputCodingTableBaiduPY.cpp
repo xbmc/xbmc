@@ -37,7 +37,7 @@ void CInputCodingTableBaiduPY::Process()
   m_initialized = true;
   while (!m_bStop) // Make sure we don't exit the thread
   {
-    AbortableWait(m_Event, -1); // Wait for work to appear
+    AbortableWait(m_Event); // Wait for work to appear
     while (!m_bStop) // Process all queued work before going back to wait on the event
     {
       CSingleLock lock(m_CS);
