@@ -14,18 +14,13 @@
 
 #define MILLIS(x) x
 
-inline static void SleepMillis(unsigned int millis)
-{
-  std::this_thread::sleep_for(std::chrono::milliseconds(millis));
-}
-
 template<class E> inline static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
 {
   for( int i = 0; i < milliseconds; i++)
   {
     if (event.getNumWaits() == numWaiters)
       return true;
-    SleepMillis(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   return false;
 }
@@ -41,7 +36,7 @@ inline static bool waitForThread(std::atomic<long>& mutex, int numWaiters, int m
     {
       CSingleLock tmplock(sec); // kick any memory syncs
     }
-    SleepMillis(1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   return false;
 }

@@ -191,7 +191,7 @@ TEST(TestEvent, Group)
 
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
-  SleepMillis(10);
+  std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(!w1.waiting);
@@ -240,7 +240,7 @@ TEST(TestEvent, GroupLimitedGroupScope)
 
     EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
     EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
-    SleepMillis(10);
+    std::this_thread::sleep_for(10ms);
 
     EXPECT_TRUE(result1);
     EXPECT_TRUE(!w1.waiting);
@@ -252,7 +252,7 @@ TEST(TestEvent, GroupLimitedGroupScope)
 
   event2.Set();
 
-  SleepMillis(50); // give thread 2 a chance to exit
+  std::this_thread::sleep_for(50ms); // give thread 2 a chance to exit
 }*/
 
 TEST(TestEvent, TwoGroups)
@@ -294,7 +294,7 @@ TEST(TestEvent, TwoGroups)
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
-  SleepMillis(10);
+  std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(!w1.waiting);
@@ -380,7 +380,7 @@ TEST(TestEvent, GroupChildSet)
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
-  SleepMillis(10);
+  std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(!result2);
@@ -414,7 +414,7 @@ TEST(TestEvent, GroupChildSet2)
   EXPECT_TRUE(waitForWaiters(event2,1,10000));
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
-  SleepMillis(10);
+  std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(!result2);
@@ -502,7 +502,7 @@ TEST(TestEvent, GroupTimedWait)
 
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
-  SleepMillis(10);
+  std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(!result2);
@@ -572,7 +572,7 @@ template <class W> void RunMassEventTest(std::vector<std::shared_ptr<W>>& m, boo
     EXPECT_TRUE(waitForWaiters(*g_event,NUMTHREADS,10000));
   }
 
-  SleepMillis(100);// give them a little more time
+  std::this_thread::sleep_for(100ms); // give them a little more time
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
