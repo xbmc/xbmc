@@ -450,6 +450,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
              res.iWidth, res.iHeight, res.fRefreshRate,
              (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
+  // oldMonitor may be NULL if it's powered off or not available due windows settings
   MONITOR_DETAILS* oldMonitor = GetDisplayDetails(m_hMonitor);
   MONITOR_DETAILS* newMonitor = GetDisplayDetails(res.strOutput);
 
@@ -457,10 +458,11 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   bool changeScreen = false;   // display is changed
   bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
-  if ( m_nWidth != res.iWidth || m_nHeight != res.iHeight  || m_fRefreshRate != res.fRefreshRate ||
-      oldMonitor->hMonitor != newMonitor->hMonitor || stereoChange || m_bFirstResChange)
+  if (m_nWidth != res.iWidth || m_nHeight != res.iHeight || m_fRefreshRate != res.fRefreshRate ||
+      !oldMonitor || oldMonitor->hMonitor != newMonitor->hMonitor || stereoChange ||
+      m_bFirstResChange)
   {
-    if (oldMonitor->hMonitor != newMonitor->hMonitor)
+    if (!oldMonitor || oldMonitor->hMonitor != newMonitor->hMonitor)
       changeScreen = true;
     forceChange = true;
   }
