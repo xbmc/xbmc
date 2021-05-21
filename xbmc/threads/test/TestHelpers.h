@@ -76,14 +76,8 @@ public:
   inline thread(thread& other) : f(other.f), cthread(other.cthread) { other.f = NULL; other.cthread = NULL; }
   inline thread& operator=(thread& other) { f = other.f; other.f = NULL; cthread = other.cthread; other.cthread = NULL; return *this; }
 
-  void join()
-  {
-    cthread->Join(static_cast<unsigned int>(-1));
-  }
+  void join() { cthread->Join(std::chrono::milliseconds::max()); }
 
-  bool timed_join(unsigned int millis)
-  {
-    return cthread->Join(millis);
-  }
+  bool timed_join(unsigned int millis) { return cthread->Join(std::chrono::milliseconds(millis)); }
 };
 

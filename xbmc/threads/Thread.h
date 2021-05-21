@@ -51,7 +51,7 @@ public:
   bool IsRunning() const;
 
   bool IsCurrentThread() const;
-  bool Join(unsigned int milliseconds);
+  bool Join(std::chrono::milliseconds duration);
 
   inline static const std::thread::id GetCurrentThreadId()
   {
