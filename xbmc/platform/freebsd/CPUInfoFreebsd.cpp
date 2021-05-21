@@ -110,6 +110,8 @@ CCPUInfoFreebsd::CCPUInfoFreebsd()
     }
   }
 
+  m_cpuModel = m_cpuModel.substr(0, m_cpuModel.find(char(0))); // remove extra null terminations
+
   if (__get_cpuid(CPUID_INFOTYPE_STANDARD, &eax, &eax, &ecx, &edx))
   {
     if (edx & CPUID_00000001_EDX_MMX)

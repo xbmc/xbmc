@@ -38,6 +38,8 @@ CCPUInfoDarwinEmbed::CCPUInfoDarwinEmbed() : m_resourceCounter(new CPosixResourc
   if (sysctlbyname("machdep.cpu.brand_string", buffer.data(), &length, nullptr, 0) == 0)
     m_cpuModel = buffer.data();
 
+  m_cpuModel.substr(0, m_cpuModel.find(char(0))); // remove extra null terminations
+
   buffer = {};
   if (sysctlbyname("machdep.cpu.vendor", buffer.data(), &length, nullptr, 0) == 0)
     m_cpuVendor = buffer.data();
