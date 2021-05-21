@@ -525,7 +525,6 @@ void DX::DeviceResources::ResizeBuffers()
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED ==
                           CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
-  bool isHdrEnabled = false;
   HRESULT hr = E_FAIL;
   DXGI_SWAP_CHAIN_DESC1 scDesc = {};
 
@@ -554,14 +553,9 @@ void DX::DeviceResources::ResizeBuffers()
     }
   }
 
-  isHdrEnabled = (HDR_STATUS::HDR_ON == CWIN32Util::GetWindowsHDRStatus());
-
-  if (m_swapChain != nullptr)
+  if (m_swapChain) // If the swap chain already exists, resize it.
   {
-    // If the swap chain already exists, resize it.
     m_swapChain->GetDesc1(&scDesc);
-    isHdrEnabled ? scDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM
-                 : scDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     hr = m_swapChain->ResizeBuffers(scDesc.BufferCount, lround(m_outputSize.Width),
                                     lround(m_outputSize.Height), scDesc.Format,
                                     windowed ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
@@ -577,9 +571,12 @@ void DX::DeviceResources::ResizeBuffers()
     }
     CHECK_ERR();
   }
-  else
+  else // Otherwise, create a new one using the same adapter as the existing Direct3D device.
   {
-    // Otherwise, create a new one using the same adapter as the existing Direct3D device.
+    HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
+    const bool isHdrEnabled = (hdrStatus == HDR_STATUS::HDR_ON);
+    const bool is10bitSafe = (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
+
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
@@ -589,7 +586,7 @@ void DX::DeviceResources::ResizeBuffers()
     // HDR 60 fps needs 6 buffers to avoid frame drops but it's good for all
     swapChainDesc.BufferCount = 6;
     // FLIP_DISCARD improves performance (needed in some systems for 4K HDR 60 fps)
-    swapChainDesc.SwapEffect = (m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_12_0)
+    swapChainDesc.SwapEffect = CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
                                    ? DXGI_SWAP_EFFECT_FLIP_DISCARD
                                    : DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
     swapChainDesc.Flags = windowed ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -604,7 +601,7 @@ void DX::DeviceResources::ResizeBuffers()
     ComPtr<IDXGISwapChain1> swapChain;
     if (m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0 && !bHWStereoEnabled &&
         (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bTry10bitOutput ||
-         isHdrEnabled))
+         isHdrEnabled || is10bitSafe))
     {
       swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
@@ -1254,8 +1251,8 @@ DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
       m_IsTransferPQ ? "PQ" : "SDR", m_IsHDROutput ? "on" : "off");
 
   info.videoOutput = StringUtils::Format(
-      "Output: {}x{}{} @ {:.2f} Hz, pixel: {} {}-bit, range: {} ({}-{})", desc.Width, desc.Height,
-      (md.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE) ? "p" : "i",
+      "Surfaces: {}x{}{} @ {:.3f} Hz, pixel: {} {}-bit, range: {} ({}-{})", desc.Width, desc.Height,
+      (md.ScanlineOrdering > DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE) ? "i" : "p",
       static_cast<double>(md.RefreshRate.Numerator) /
           static_cast<double>(md.RefreshRate.Denominator),
       (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? "R10G10B10A2" : "B8G8R8A8", bits,
