@@ -14,21 +14,26 @@
 
 #define MILLIS(x) x
 
-template<class E> inline static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
+template<class E>
+inline static bool waitForWaiters(E& event, int numWaiters, std::chrono::milliseconds duration)
 {
-  for( int i = 0; i < milliseconds; i++)
+  for (auto i = std::chrono::milliseconds::zero(); i < duration; i++)
   {
     if (event.getNumWaits() == numWaiters)
       return true;
+
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+
   return false;
 }
 
-inline static bool waitForThread(std::atomic<long>& mutex, int numWaiters, int milliseconds)
+inline static bool waitForThread(std::atomic<long>& mutex,
+                                 int numWaiters,
+                                 std::chrono::milliseconds duration)
 {
   CCriticalSection sec;
-  for( int i = 0; i < milliseconds; i++)
+  for (auto i = std::chrono::milliseconds::zero(); i < duration; i++)
   {
     if (mutex == (long)numWaiters)
       return true;
@@ -36,8 +41,10 @@ inline static bool waitForThread(std::atomic<long>& mutex, int numWaiters, int m
     {
       CSingleLock tmplock(sec); // kick any memory syncs
     }
+
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+
   return false;
 }
 

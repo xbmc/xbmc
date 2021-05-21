@@ -89,7 +89,7 @@ TEST(TestEvent, General)
   waiter w1(event,result);
   thread waitThread(w1);
 
-  EXPECT_TRUE(waitForWaiters(event,1,10000));
+  EXPECT_TRUE(waitForWaiters(event, 1, 10000ms));
 
   EXPECT_TRUE(!result);
 
@@ -110,7 +110,7 @@ TEST(TestEvent, TwoWaits)
   thread waitThread1(w1);
   thread waitThread2(w2);
 
-  EXPECT_TRUE(waitForWaiters(event,2,10000));
+  EXPECT_TRUE(waitForWaiters(event, 2, 10000ms));
 
   EXPECT_TRUE(!result1);
   EXPECT_TRUE(!result2);
@@ -132,7 +132,7 @@ TEST(TestEvent, TimedWaits)
   timed_waiter w1(event,result1,100);
   thread waitThread1(w1);
 
-  EXPECT_TRUE(waitForWaiters(event,1,10000));
+  EXPECT_TRUE(waitForWaiters(event, 1, 10000ms));
 
   EXPECT_TRUE(result1 == 0);
 
@@ -150,7 +150,7 @@ TEST(TestEvent, TimedWaitsTimeout)
   timed_waiter w1(event,result1,50);
   thread waitThread1(w1);
 
-  EXPECT_TRUE(waitForWaiters(event,1,100));
+  EXPECT_TRUE(waitForWaiters(event, 1, 100ms));
 
   EXPECT_TRUE(result1 == 0);
 
@@ -177,9 +177,9 @@ TEST(TestEvent, Group)
   thread waitThread2(w2);
   thread waitThread3(w3);
 
-  EXPECT_TRUE(waitForWaiters(event1,1,10000));
-  EXPECT_TRUE(waitForWaiters(event2,1,10000));
-  EXPECT_TRUE(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(event1, 1, 10000ms));
+  EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
+  EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(!result1);
   EXPECT_TRUE(!result2);
@@ -226,9 +226,9 @@ TEST(TestEvent, GroupLimitedGroupScope)
     thread waitThread2(w2);
     thread waitThread3(w3);
 
-    EXPECT_TRUE(waitForWaiters(event1,1,10000));
-    EXPECT_TRUE(waitForWaiters(event2,1,10000));
-    EXPECT_TRUE(waitForWaiters(group,1,10000));
+    EXPECT_TRUE(waitForWaiters(event1,1,10000ms));
+    EXPECT_TRUE(waitForWaiters(event2,1,10000ms));
+    EXPECT_TRUE(waitForWaiters(group,1,10000ms));
 
     EXPECT_TRUE(!result1);
     EXPECT_TRUE(!result2);
@@ -276,10 +276,10 @@ TEST(TestEvent, TwoGroups)
   thread waitThread3(w3);
   thread waitThread4(w4);
 
-  EXPECT_TRUE(waitForWaiters(event1,1,10000));
-  EXPECT_TRUE(waitForWaiters(event2,1,10000));
-  EXPECT_TRUE(waitForWaiters(group1,1,10000));
-  EXPECT_TRUE(waitForWaiters(group2,1,10000));
+  EXPECT_TRUE(waitForWaiters(event1, 1, 10000ms));
+  EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
+  EXPECT_TRUE(waitForWaiters(group1, 1, 10000ms));
+  EXPECT_TRUE(waitForWaiters(group2, 1, 10000ms));
 
   EXPECT_TRUE(!result1);
   EXPECT_TRUE(!result2);
@@ -328,7 +328,7 @@ TEST(TestEvent, ManualReset)
   waiter w1(event,result);
   thread waitThread(w1);
 
-  EXPECT_TRUE(waitForWaiters(event,1,10000));
+  EXPECT_TRUE(waitForWaiters(event, 1, 10000ms));
 
   EXPECT_TRUE(!result);
 
@@ -377,7 +377,7 @@ TEST(TestEvent, GroupChildSet)
   thread waitThread2(w2);
   thread waitThread3(w3);
 
-  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
   std::this_thread::sleep_for(10ms);
@@ -411,7 +411,7 @@ TEST(TestEvent, GroupChildSet2)
   thread waitThread2(w2);
   thread waitThread3(w3);
 
-  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
   EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
   EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
   std::this_thread::sleep_for(10ms);
@@ -438,7 +438,7 @@ TEST(TestEvent, GroupWaitResetsChild)
 
   thread waitThread3(w3);
 
-  EXPECT_TRUE(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(w3.waiting);
   EXPECT_TRUE(w3.result == NULL);
@@ -468,15 +468,15 @@ TEST(TestEvent, GroupTimedWait)
   thread waitThread1(w1);
   thread waitThread2(w2);
 
-  EXPECT_TRUE(waitForWaiters(event1,1,10000));
-  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitForWaiters(event1, 1, 10000ms));
+  EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
 
   EXPECT_TRUE(group.wait(20ms) == NULL); // waited ... got nothing
 
   group_wait w3(group,50);
   thread waitThread3(w3);
 
-  EXPECT_TRUE(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(!result1);
   EXPECT_TRUE(!result2);
@@ -493,7 +493,7 @@ TEST(TestEvent, GroupTimedWait)
   group_wait w4(group,50);
   thread waitThread4(w4);
 
-  EXPECT_TRUE(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(w4.waiting);
   EXPECT_TRUE(w4.result == NULL);
@@ -566,10 +566,10 @@ template <class W> void RunMassEventTest(std::vector<std::shared_ptr<W>>& m, boo
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].reset(new thread(*m[i]));
 
-  EXPECT_TRUE(waitForThread(g_mutex,NUMTHREADS,10000));
+  EXPECT_TRUE(waitForThread(g_mutex, NUMTHREADS, 10000ms));
   if (canWaitOnEvent)
   {
-    EXPECT_TRUE(waitForWaiters(*g_event,NUMTHREADS,10000));
+    EXPECT_TRUE(waitForWaiters(*g_event, NUMTHREADS, 10000ms));
   }
 
   std::this_thread::sleep_for(100ms); // give them a little more time
