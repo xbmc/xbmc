@@ -95,7 +95,7 @@ TEST(TestEvent, General)
 
   event.Set();
 
-  EXPECT_TRUE(waitThread.timed_join(10000));
+  EXPECT_TRUE(waitThread.timed_join(10000ms));
 
   EXPECT_TRUE(result);
 }
@@ -117,8 +117,8 @@ TEST(TestEvent, TwoWaits)
 
   event.Set();
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
+  EXPECT_TRUE(waitThread2.timed_join(10000ms));
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(result2);
@@ -138,7 +138,7 @@ TEST(TestEvent, TimedWaits)
 
   event.Set();
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
 
   EXPECT_TRUE(result1 == 1);
 }
@@ -154,7 +154,7 @@ TEST(TestEvent, TimedWaitsTimeout)
 
   EXPECT_TRUE(result1 == 0);
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
 
   EXPECT_TRUE(result1 == -1);
 }
@@ -189,8 +189,8 @@ TEST(TestEvent, Group)
 
   event1.Set();
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
   std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
@@ -202,8 +202,7 @@ TEST(TestEvent, Group)
 
   event2.Set();
 
-  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
-
+  EXPECT_TRUE(waitThread2.timed_join(10000ms));
 }
 
 /* Test disabled for now, because it deadlocks
@@ -238,8 +237,8 @@ TEST(TestEvent, GroupLimitedGroupScope)
 
     event1.Set();
 
-    EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-    EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread1.timed_join(10000ms));
+    EXPECT_TRUE(waitThread3.timed_join(10000ms));
     std::this_thread::sleep_for(10ms);
 
     EXPECT_TRUE(result1);
@@ -291,9 +290,9 @@ TEST(TestEvent, TwoGroups)
 
   event1.Set();
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
+  EXPECT_TRUE(waitThread4.timed_join(10000ms));
   std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
@@ -307,7 +306,7 @@ TEST(TestEvent, TwoGroups)
 
   event2.Set();
 
-  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(10000ms));
 }
 
 TEST(TestEvent, AutoResetBehavior)
@@ -334,7 +333,7 @@ TEST(TestEvent, ManualReset)
 
   event.Set();
 
-  EXPECT_TRUE(waitThread.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread.timed_join(10000ms));
 
   EXPECT_TRUE(result);
 
@@ -378,8 +377,8 @@ TEST(TestEvent, GroupChildSet)
   thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
   std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
@@ -390,7 +389,7 @@ TEST(TestEvent, GroupChildSet)
 
   event2.Set();
 
-  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(10000ms));
 }
 
 TEST(TestEvent, GroupChildSet2)
@@ -412,8 +411,8 @@ TEST(TestEvent, GroupChildSet2)
   thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
   std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
@@ -424,7 +423,7 @@ TEST(TestEvent, GroupChildSet2)
 
   event2.Set();
 
-  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(10000ms));
 }
 
 TEST(TestEvent, GroupWaitResetsChild)
@@ -445,7 +444,7 @@ TEST(TestEvent, GroupWaitResetsChild)
 
   event2.Set();
 
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
 
   EXPECT_TRUE(!w3.waiting);
   EXPECT_TRUE(w3.result == &event2);
@@ -485,7 +484,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(w3.result == NULL);
 
   // this should end given the wait is for only 50 millis
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(200)));
+  EXPECT_TRUE(waitThread3.timed_join(200ms));
 
   EXPECT_TRUE(!w3.waiting);
   EXPECT_TRUE(w3.result == NULL);
@@ -500,8 +499,8 @@ TEST(TestEvent, GroupTimedWait)
 
   event1.Set();
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-  EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
+  EXPECT_TRUE(waitThread4.timed_join(10000ms));
   std::this_thread::sleep_for(10ms);
 
   EXPECT_TRUE(result1);
@@ -512,7 +511,7 @@ TEST(TestEvent, GroupTimedWait)
 
   event2.Set();
 
-  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(10000ms));
 }
 
 #define TESTNUM 100000l
@@ -583,7 +582,7 @@ template <class W> void RunMassEventTest(std::vector<std::shared_ptr<W>>& m, boo
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    EXPECT_TRUE(t[i]->timed_join(MILLIS(10000)));
+    EXPECT_TRUE(t[i]->timed_join(10000ms));
   }
 
   for(size_t i=0; i<NUMTHREADS; i++)

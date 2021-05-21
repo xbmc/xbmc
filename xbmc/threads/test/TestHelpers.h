@@ -12,8 +12,6 @@
 
 #include <gtest/gtest.h>
 
-#define MILLIS(x) x
-
 template<class E>
 inline static bool waitForWaiters(E& event, int numWaiters, std::chrono::milliseconds duration)
 {
@@ -80,6 +78,6 @@ public:
 
   void join() { cthread->Join(std::chrono::milliseconds::max()); }
 
-  bool timed_join(unsigned int millis) { return cthread->Join(std::chrono::milliseconds(millis)); }
+  bool timed_join(std::chrono::milliseconds duration) { return cthread->Join(duration); }
 };
 

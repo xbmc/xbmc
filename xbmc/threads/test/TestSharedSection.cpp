@@ -91,7 +91,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
   EXPECT_TRUE(l3.haslock);
 
   event.Set();
-  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
 
   // l3 should have released.
   EXPECT_TRUE(!l3.haslock);
@@ -103,7 +103,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
   // let it go
   l1.Leave(); // the last shared lock leaves.
 
-  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(10000ms));
 
   EXPECT_TRUE(l2.obtainedlock);  // the exclusive lock was captured
   EXPECT_TRUE(!l2.haslock);  // ... but it doesn't have it anymore
@@ -127,7 +127,7 @@ TEST(TestSharedSection, TwoCase)
 
     event.Set();
 
-    EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread1.timed_join(10000ms));
   }
 
   locker<CSharedLock> l2(sec,&mutex,&event);
@@ -148,7 +148,7 @@ TEST(TestSharedSection, TwoCase)
 
     event.Set();
 
-    EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread2.timed_join(10000ms));
   }
 }
 
@@ -172,7 +172,7 @@ TEST(TestMultipleSharedSection, General)
 
     event.Set();
 
-    EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread1.timed_join(10000ms));
   }
 
   locker<CSharedLock> l2(sec,&mutex,&event);
@@ -205,10 +205,10 @@ TEST(TestMultipleSharedSection, General)
 
     event.Set();
 
-    EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
-    EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
-    EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
-    EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread1.timed_join(10000ms));
+    EXPECT_TRUE(waitThread2.timed_join(10000ms));
+    EXPECT_TRUE(waitThread3.timed_join(10000ms));
+    EXPECT_TRUE(waitThread4.timed_join(10000ms));
   }
 }
 
