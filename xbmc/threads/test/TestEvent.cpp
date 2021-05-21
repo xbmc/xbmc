@@ -41,19 +41,23 @@ public:
 class timed_waiter : public IRunnable
 {
   CEvent& event;
-  unsigned int waitTime;
+  std::chrono::milliseconds waitTime;
+
 public:
   int& result;
 
   volatile bool waiting;
 
-  timed_waiter(CEvent& o, int& flag, int waitTimeMillis) : event(o), waitTime(waitTimeMillis), result(flag), waiting(false) {}
+  timed_waiter(CEvent& o, int& flag, std::chrono::milliseconds waitTimeMillis)
+    : event(o), waitTime(waitTimeMillis), result(flag), waiting(false)
+  {
+  }
 
   void Run() override
   {
     waiting = true;
     result = 0;
-    result = event.Wait(std::chrono::milliseconds(waitTime)) ? 1 : -1;
+    result = event.Wait(waitTime) ? 1 : -1;
     waiting = false;
   }
 };
@@ -129,7 +133,7 @@ TEST(TestEvent, TimedWaits)
 {
   CEvent event;
   int result1 = 10;
-  timed_waiter w1(event,result1,100);
+  timed_waiter w1(event, result1, 100ms);
   thread waitThread1(w1);
 
   EXPECT_TRUE(waitForWaiters(event, 1, 10000ms));
@@ -147,7 +151,7 @@ TEST(TestEvent, TimedWaitsTimeout)
 {
   CEvent event;
   int result1 = 10;
-  timed_waiter w1(event,result1,50);
+  timed_waiter w1(event, result1, 50ms);
   thread waitThread1(w1);
 
   EXPECT_TRUE(waitForWaiters(event, 1, 100ms));
