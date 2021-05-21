@@ -65,21 +65,26 @@ public:
 class group_wait : public IRunnable
 {
   CEventGroup& event;
-  int timeout;
+  std::chrono::milliseconds timeout;
+
 public:
   CEvent* result;
   bool waiting;
 
-  group_wait(CEventGroup& o) : event(o), timeout(-1), result(NULL), waiting(false) {}
-  group_wait(CEventGroup& o, int timeout_) : event(o), timeout(timeout_), result(NULL), waiting(false) {}
+  group_wait(CEventGroup& o) : event(o), timeout(-1ms), result(NULL), waiting(false) {}
+
+  group_wait(CEventGroup& o, std::chrono::milliseconds timeout_)
+    : event(o), timeout(timeout_), result(NULL), waiting(false)
+  {
+  }
 
   void Run() override
   {
     waiting = true;
-    if (timeout == -1)
+    if (timeout == -1ms)
       result = event.wait();
     else
-      result = event.wait(std::chrono::milliseconds(timeout));
+      result = event.wait(timeout);
     waiting = false;
   }
 };
@@ -476,7 +481,7 @@ TEST(TestEvent, GroupTimedWait)
 
   EXPECT_TRUE(group.wait(20ms) == NULL); // waited ... got nothing
 
-  group_wait w3(group,50);
+  group_wait w3(group, 50ms);
   thread waitThread3(w3);
 
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
@@ -493,7 +498,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(!w3.waiting);
   EXPECT_TRUE(w3.result == NULL);
 
-  group_wait w4(group,50);
+  group_wait w4(group, 50ms);
   thread waitThread4(w4);
 
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
