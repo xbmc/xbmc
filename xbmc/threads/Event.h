@@ -21,16 +21,17 @@ namespace XbmcThreads
 class CEventGroup;
 }
 
-
 /**
- * This is an Event class built from a ConditionVariable. The Event adds the state
- * that the condition is gating as well as the mutex/lock.
+ * @brief This is an Event class built from a ConditionVariable. The Event adds the state
+ *        that the condition is gating as well as the mutex/lock.
  *
- * This Event can be 'interruptible' (even though there is only a single place
- * in the code that uses this behavior).
+ *        This Event can be 'interruptible' (even though there is only a single place
+ *        in the code that uses this behavior).
  *
- * This class manages 'spurious returns' from the condition variable.
+ *        This class manages 'spurious returns' from the condition variable.
+ *
  */
+
 class CEvent
 {
   bool manualReset;
@@ -79,7 +80,10 @@ public:
   }
   void Set();
 
-  /** Returns true if Event has been triggered and not reset, false otherwise. */
+  /**
+   * @brief Returns true if Event has been triggered and not reset, false otherwise.
+   *
+   */
   inline bool Signaled()
   {
     CSingleLock lock(mutex);
@@ -87,9 +91,10 @@ public:
   }
 
   /**
-   * This will wait up to 'milliSeconds' milliseconds for the Event
-   *  to be triggered. The method will return 'true' if the Event
-   *  was triggered. Otherwise it will return false.
+   * @brief This will wait up to 'duration' for the Event to be
+   *        triggered. The method will return 'true' if the Event
+   *        was triggered. Otherwise it will return false.
+   *
    */
   template<typename Rep, typename Period>
   inline bool Wait(std::chrono::duration<Rep, Period> duration)
@@ -102,9 +107,10 @@ public:
   }
 
   /**
-   * This will wait for the Event to be triggered. The method will return
-   * 'true' if the Event was triggered. If it was either interrupted
-   * it will return false. Otherwise it will return false.
+   * @brief This will wait for the Event to be triggered. The method will return
+   *        'true' if the Event was triggered. If it was either interrupted
+   *        it will return false. Otherwise it will return false.
+   *
    */
   inline bool Wait()
   {
@@ -116,8 +122,9 @@ public:
   }
 
   /**
-   * This is mostly for testing. It allows a thread to make sure there are
-   *  the right amount of other threads waiting.
+   * @brief This is mostly for testing. It allows a thread to make sure there are
+   *        the right amount of other threads waiting.
+   *
    */
   inline int getNumWaits()
   {
@@ -129,10 +136,11 @@ public:
 namespace XbmcThreads
 {
 /**
-   * CEventGroup is a means of grouping CEvents to wait on them together.
-   * It is equivalent to WaitOnMultipleObject that returns when "any" Event
-   * in the group signaled.
-   */
+ * @brief  CEventGroup is a means of grouping CEvents to wait on them together.
+ *         It is equivalent to WaitOnMultipleObject that returns when "any" Event
+ *         in the group signaled.
+ *
+ */
 class CEventGroup
 {
   std::vector<CEvent*> events;
@@ -158,25 +166,29 @@ class CEventGroup
 
 public:
   /**
-     * Create a CEventGroup from a number of CEvents.
-     */
+   * @brief Create a CEventGroup from a number of CEvents.
+   *
+   */
   CEventGroup(std::initializer_list<CEvent*> events);
 
   ~CEventGroup();
 
   /**
-     * This will block until any one of the CEvents in the group are
-     * signaled at which point a pointer to that CEvents will be
-     * returned.
-     */
+   * @brief This will block until any one of the CEvents in the group are
+   *        signaled at which point a pointer to that CEvents will be
+   *        returned.
+   *
+   */
   CEvent* wait();
 
-  // locking is ALWAYS done in this order:
-  //  CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
-  //
-  // Notice that this method doesn't grab the CEvent::groupListMutex at all. This
-  // is fine. It just grabs the CEventGroup::mutex and THEN the individual
-  // CEvent::mutex's
+  /**
+   * @brief locking is ALWAYS done in this order:
+   *        CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
+   *
+   *        Notice that this method doesn't grab the CEvent::groupListMutex at all. This
+   *        is fine. It just grabs the CEventGroup::mutex and THEN the individual
+   *
+   */
   template<typename Rep, typename Period>
   CEvent* wait(std::chrono::duration<Rep, Period> duration)
   {
@@ -221,9 +233,10 @@ public:
   }
 
   /**
-     * This is mostly for testing. It allows a thread to make sure there are
-     *  the right amount of other threads waiting.
-     */
+   * @brief This is mostly for testing. It allows a thread to make sure there are
+   *        the right amount of other threads waiting.
+   *
+   */
   inline int getNumWaits()
   {
     CSingleLock lock(mutex);
