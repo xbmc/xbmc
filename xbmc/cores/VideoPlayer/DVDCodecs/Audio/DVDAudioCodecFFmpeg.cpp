@@ -61,7 +61,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if (!pCodec)
   {
-    CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
+    CLog::Log(LOGDEBUG, "CDVDAudioCodecFFmpeg::Open() Unable to find codec {}", hints.codec);
     return false;
   }
 
@@ -121,7 +121,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_codecName = "ff-" + std::string(m_pCodecContext->codec->name);
 
-  CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::Open() Successful opened audio decoder %s",
+  CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::Open() Successful opened audio decoder {}",
             m_pCodecContext->codec->name);
 
   return true;
@@ -358,7 +358,10 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
     layout = m_pCodecContext->channel_layout;
   else
   {
-    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported %d channels, but the layout contains %d ignoring", m_pCodecContext->channels, bits);
+    CLog::Log(LOGINFO,
+              "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported {} channels, but the layout "
+              "contains {} ignoring",
+              m_pCodecContext->channels, bits);
     layout = av_get_default_channel_layout(m_pCodecContext->channels);
   }
 

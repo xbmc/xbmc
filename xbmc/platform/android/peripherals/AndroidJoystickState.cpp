@@ -96,7 +96,10 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
     if (!motionRange.isFromSource(CJNIViewInputDevice::SOURCE_JOYSTICK) &&
         !motionRange.isFromSource(CJNIViewInputDevice::SOURCE_GAMEPAD))
     {
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState: ignoring axis %d from source %d for input device \"%s\" with ID %d", motionRange.getAxis(), motionRange.getSource(), deviceName.c_str(), m_deviceId);
+      CLog::Log(LOGDEBUG,
+                "CAndroidJoystickState: ignoring axis {} from source {} for input device \"{}\" "
+                "with ID {}",
+                motionRange.getAxis(), motionRange.getSource(), deviceName, m_deviceId);
       continue;
     }
 
@@ -123,7 +126,9 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
        // check if this axis is already known
       if (ContainsAxis(axisId, m_axes))
       {
-        CLog::Log(LOGWARNING, "CAndroidJoystickState: duplicate axis %s on input device \"%s\" with ID %d", PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
+        CLog::Log(LOGWARNING,
+                  "CAndroidJoystickState: duplicate axis {} on input device \"{}\" with ID {}",
+                  PrintAxisIds(axis.ids), deviceName, m_deviceId);
         continue;
       }
 
@@ -134,10 +139,14 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       MapAxisIds(axisId, AMOTION_EVENT_AXIS_RTRIGGER, AMOTION_EVENT_AXIS_GAS, axis.ids);
 
       m_axes.push_back(axis);
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState: axis %s on input device \"%s\" with ID %d detected", PrintAxisIds(axis.ids).c_str(), deviceName.c_str(), m_deviceId);
+      CLog::Log(LOGDEBUG,
+                "CAndroidJoystickState: axis {} on input device \"{}\" with ID {} detected",
+                PrintAxisIds(axis.ids), deviceName, m_deviceId);
     }
     else
-      CLog::Log(LOGWARNING, "CAndroidJoystickState: ignoring unknown axis %d on input device \"%s\" with ID %d", axisId, deviceName.c_str(), m_deviceId);
+      CLog::Log(LOGWARNING,
+                "CAndroidJoystickState: ignoring unknown axis {} on input device \"{}\" with ID {}",
+                axisId, deviceName, m_deviceId);
   }
 
   // add the usual suspects
@@ -168,7 +177,10 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   // check if there are no buttons or axes at all
   if (GetButtonCount() == 0 && GetAxisCount() == 0)
   {
-    CLog::Log(LOGWARNING, "CAndroidJoystickState: no buttons, hats or axes detected for input device \"%s\" with ID %d", deviceName.c_str(), m_deviceId);
+    CLog::Log(LOGWARNING,
+              "CAndroidJoystickState: no buttons, hats or axes detected for input device \"{}\" "
+              "with ID {}",
+              deviceName, m_deviceId);
     return false;
   }
 
@@ -201,10 +213,9 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
       if (action == AKEY_EVENT_ACTION_DOWN)
         buttonState = JOYSTICK_STATE_BUTTON_PRESSED;
 
-      CLog::Log(LOGDEBUG, "Android Key %s (%d) %s",
-          CAndroidJoystickTranslator::TranslateKeyCode(keycode),
-          keycode,
-          (buttonState == JOYSTICK_STATE_BUTTON_UNPRESSED ? "released" : "pressed"));
+      CLog::Log(LOGDEBUG, "Android Key {} ({}) {}",
+                CAndroidJoystickTranslator::TranslateKeyCode(keycode), keycode,
+                (buttonState == JOYSTICK_STATE_BUTTON_UNPRESSED ? "released" : "pressed"));
 
       bool result = SetButtonValue(keycode, buttonState);
 
@@ -241,7 +252,9 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
     }
 
     default:
-      CLog::Log(LOGWARNING, "CAndroidJoystickState: unknown input event type %d from input device with ID %d", type, m_deviceId);
+      CLog::Log(LOGWARNING,
+                "CAndroidJoystickState: unknown input event type {} from input device with ID {}",
+                type, m_deviceId);
       break;
   }
 

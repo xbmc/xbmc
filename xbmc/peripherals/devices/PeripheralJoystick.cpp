@@ -75,15 +75,14 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
       // Ensure an add-on is present to translate input
       if (!m_manager.GetAddonWithButtonMap(this))
       {
-        CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for %s",
-                  m_strLocation.c_str());
+        CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for {}", m_strLocation);
       }
       else
       {
         if (m_bus->InitializeProperties(*this))
           bSuccess = true;
         else
-          CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
+          CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location ({})", m_strLocation);
       }
 
       if (bSuccess)
@@ -124,16 +123,16 @@ void CPeripheralJoystick::InitializeDeadzoneFiltering()
     else
     {
       CLog::Log(LOGERROR,
-                "CPeripheralJoystick: Failed to load button map for deadzone filtering on %s",
-                m_strLocation.c_str());
+                "CPeripheralJoystick: Failed to load button map for deadzone filtering on {}",
+                m_strLocation);
       m_buttonMap.reset();
     }
   }
   else
   {
     CLog::Log(LOGERROR,
-              "CPeripheralJoystick: Failed to create button map for deadzone filtering on %s",
-              m_strLocation.c_str());
+              "CPeripheralJoystick: Failed to create button map for deadzone filtering on {}",
+              m_strLocation);
   }
 }
 
@@ -204,7 +203,7 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
   // Silence debug log if controllers are not enabled
   if (m_manager.GetInputManager().IsControllerEnabled())
   {
-    CLog::Log(LOGDEBUG, "BUTTON [ %u ] on \"%s\" %s", buttonIndex, DeviceName().c_str(),
+    CLog::Log(LOGDEBUG, "BUTTON [ {} ] on \"{}\" {}", buttonIndex, DeviceName(),
               bPressed ? "pressed" : "released");
   }
 
@@ -260,7 +259,7 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   // Silence debug log if controllers are not enabled
   if (m_manager.GetInputManager().IsControllerEnabled())
   {
-    CLog::Log(LOGDEBUG, "HAT [ %u ] on \"%s\" %s", hatIndex, DeviceName().c_str(),
+    CLog::Log(LOGDEBUG, "HAT [ {} ] on \"{}\" {}", hatIndex, DeviceName(),
               CJoystickTranslator::HatStateToString(state));
   }
 

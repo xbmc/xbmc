@@ -54,12 +54,12 @@ bool CControllerPort::Deserialize(const TiXmlElement* pElement)
       if (!controller.empty())
         m_accepts.emplace_back(std::move(controller));
       else
-        CLog::Log(LOGWARNING, "<%s> tag is missing \"%s\" attribute", LAYOUT_XML_ELM_ACCEPTS,
+        CLog::Log(LOGWARNING, "<{}> tag is missing \"{}\" attribute", LAYOUT_XML_ELM_ACCEPTS,
                   LAYOUT_XML_ATTR_CONTROLLER);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <%s>", pChild->ValueStr().c_str());
+      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <{}>", pChild->ValueStr());
     }
   }
 
@@ -99,7 +99,7 @@ bool CControllerTopology::Deserialize(const TiXmlElement* pElement)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Unknown physical topology tag: <%s>", pChild->ValueStr().c_str());
+      CLog::Log(LOGDEBUG, "Unknown physical topology tag: <{}>", pChild->ValueStr());
     }
   }
 

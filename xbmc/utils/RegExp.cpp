@@ -253,7 +253,7 @@ CRegExp& CRegExp::operator=(const CRegExp& re)
         m_iOptions = re.m_iOptions;
       }
       else
-        CLog::Log(LOGFATAL, "%s: Failed to allocate memory", __FUNCTION__);
+        CLog::Log(LOGFATAL, "{}: Failed to allocate memory", __FUNCTION__);
     }
   }
   return *this;
@@ -285,8 +285,8 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
   if (!m_re)
   {
     m_pattern.clear();
-    CLog::Log(LOGERROR, "PCRE: %s. Compilation failed at offset %d in expression '%s'",
-              errMsg, errOffset, re);
+    CLog::Log(LOGERROR, "PCRE: {}. Compilation failed at offset {} in expression '{}'", errMsg,
+              errOffset, re);
     return false;
   }
 
@@ -300,7 +300,8 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
     m_sd = pcre_study(m_re, studyOptions, &errMsg);
     if (errMsg != NULL)
     {
-      CLog::Log(LOGWARNING, "%s: PCRE error \"%s\" while studying expression", __FUNCTION__, errMsg);
+      CLog::Log(LOGWARNING, "{}: PCRE error \"{}\" while studying expression", __FUNCTION__,
+                errMsg);
       if (m_sd != NULL)
       {
         pcre_free_study(m_sd);
@@ -342,7 +343,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
 
   if (startoffset > bufferLen)
   {
-    CLog::Log(LOGERROR, "%s: startoffset is beyond end of string to match", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: startoffset is beyond end of string to match", __FUNCTION__);
     return -1;
   }
 
@@ -351,7 +352,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
   {
     m_jitStack = pcre_jit_stack_alloc(32*1024, 512*1024);
     if (m_jitStack == NULL)
-      CLog::Log(LOGWARNING, "%s: can't allocate address space for JIT stack", __FUNCTION__);
+      CLog::Log(LOGWARNING, "{}: can't allocate address space for JIT stack", __FUNCTION__);
 
     pcre_assign_jit_stack(m_sd, NULL, m_jitStack);
   }
@@ -380,7 +381,10 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
       {
         const size_t startPos = (m_subject.length() > fragmentLen) ? CUtf8Utils::RFindValidUtf8Char(m_subject, m_subject.length() - fragmentLen) : 0;
         if (startPos != std::string::npos)
-          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character at the end of string. Text before bad character: \"%s\"", m_subject.substr(startPos).c_str());
+          CLog::Log(
+              LOGERROR,
+              "PCRE: Bad UTF-8 character at the end of string. Text before bad character: \"{}\"",
+              m_subject.substr(startPos));
         else
           CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character at the end of string");
         return -1;
@@ -390,9 +394,14 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
       {
         const size_t startPos = (m_iOvector[0] > fragmentLen) ? CUtf8Utils::RFindValidUtf8Char(m_subject, m_iOvector[0] - fragmentLen) : 0;
         if (m_iOvector[0] >= 0 && startPos != std::string::npos)
-          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: %d, position: %d. Text before bad char: \"%s\"", m_iOvector[1], m_iOvector[0], m_subject.substr(startPos, m_iOvector[0] - startPos + 1).c_str());
+          CLog::Log(LOGERROR,
+                    "PCRE: Bad UTF-8 character, error code: {}, position: {}. Text before bad "
+                    "char: \"{}\"",
+                    m_iOvector[1], m_iOvector[0],
+                    m_subject.substr(startPos, m_iOvector[0] - startPos + 1));
         else
-          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: %d, position: %d", m_iOvector[1], m_iOvector[0]);
+          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: {}, position: {}",
+                    m_iOvector[1], m_iOvector[0]);
         return -1;
       }
     case PCRE_ERROR_BADUTF8_OFFSET:
@@ -400,7 +409,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
       return -1;
 
     default:
-      CLog::Log(LOGERROR, "PCRE: Unknown error: %d", rc);
+      CLog::Log(LOGERROR, "PCRE: Unknown error: {}", rc);
       return -1;
     }
   }
@@ -542,7 +551,7 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
     str += t;
   }
   str += "}";
-  CLog::Log(iLog, "regexp ovector=%s", str.c_str());
+  CLog::Log(iLog, "regexp ovector={}", str);
 }
 
 void CRegExp::Cleanup()
@@ -618,7 +627,7 @@ bool CRegExp::LogCheckUtf8Support(void)
   {
     CLog::Log(LOGINFO,
               "Consider installing PCRE lib version 8.10 or later with enabled Unicode properties "
-              "and UTF-8 support. Your PCRE lib version: %s",
+              "and UTF-8 support. Your PCRE lib version: {}",
               PCRE::pcre_version());
 #if PCRE_UCP == 0
     CLog::Log(LOGINFO, "You will need to rebuild XBMC after PCRE lib update.");

@@ -75,8 +75,10 @@ void CCoreAudioDevice::Start()
 
   OSStatus ret = AudioDeviceStart(m_DeviceId, m_IoProc);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::Start: "
-      "Unable to start device. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::Start: "
+              "Unable to start device. Error = {}",
+              GetError(ret));
   else
     m_Started = true;
 }
@@ -88,8 +90,10 @@ void CCoreAudioDevice::Stop()
 
   OSStatus ret = AudioDeviceStop(m_DeviceId, m_IoProc);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: "
-      "Unable to stop device. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::Stop: "
+              "Unable to stop device. Error = {}",
+              GetError(ret));
   m_Started = false;
 }
 
@@ -106,8 +110,10 @@ void CCoreAudioDevice::RemoveObjectListenerProc(AudioObjectPropertyListenerProc 
   OSStatus ret = AudioObjectRemovePropertyListener(m_DeviceId, &audioProperty, callback, pClientData);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveObjectListenerProc: "
-      "Unable to set ObjectListener callback. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::RemoveObjectListenerProc: "
+              "Unable to set ObjectListener callback. Error = {}",
+              GetError(ret));
   }
   m_ObjectListenerProc = NULL;
 }
@@ -127,8 +133,10 @@ bool CCoreAudioDevice::SetObjectListenerProc(AudioObjectPropertyListenerProc cal
 
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetObjectListenerProc: "
-      "Unable to remove ObjectListener callback. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::SetObjectListenerProc: "
+              "Unable to remove ObjectListener callback. Error = {}",
+              GetError(ret));
     return false;
   }
 
@@ -144,8 +152,10 @@ bool CCoreAudioDevice::AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData)
   OSStatus ret = AudioDeviceCreateIOProcID(m_DeviceId, ioProc, pCallbackData, &m_IoProc);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::AddIOProc: "
-      "Unable to add IOProc. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::AddIOProc: "
+              "Unable to add IOProc. Error = {}",
+              GetError(ret));
     m_IoProc = NULL;
     return false;
   }
@@ -164,8 +174,10 @@ bool CCoreAudioDevice::RemoveIOProc()
 
   OSStatus ret = AudioDeviceDestroyIOProcID(m_DeviceId, m_IoProc);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveIOProc: "
-      "Unable to remove IOProc. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::RemoveIOProc: "
+              "Unable to remove IOProc. Error = {}",
+              GetError(ret));
 
   m_IoProc = NULL; // Clear the reference no matter what
 
@@ -192,8 +204,10 @@ std::string CCoreAudioDevice::GetName() const
 
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetName: "
-      "Unable to get device name - id: 0x%04x. Error = %s", (uint)m_DeviceId, GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetName: "
+              "Unable to get device name - id: {:#04x}. Error = {}",
+              (uint)m_DeviceId, GetError(ret));
   }
   else
   {
@@ -275,9 +289,10 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels() const
   }
   else
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetTotalOutputChannels: "
-      "Unable to get total device output channels - id: 0x%04x. Error = %s",
-      (uint)m_DeviceId, GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetTotalOutputChannels: "
+              "Unable to get total device output channels - id: {:#04x}. Error = {}",
+              (uint)m_DeviceId, GetError(ret));
   }
 
   free(pList);
@@ -311,9 +326,10 @@ UInt32 CCoreAudioDevice::GetNumChannelsOfStream(UInt32 streamIdx) const
   }
   else
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetNumChannelsOfStream: "
-              "Unable to get number of stream output channels - id: 0x%04x. Error = %s",
-              (uint)m_DeviceId, GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetNumChannelsOfStream: "
+              "Unable to get number of stream output channels - id: {:#04x}. Error = {}",
+              (uint)m_DeviceId, GetError(ret));
   }
 
   free(pList);
@@ -398,8 +414,10 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
 
       if (ret || m_HogPid != getpid())
       {
-        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: "
-          "Unable to set 'hog' status. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR,
+                  "CCoreAudioDevice::SetHogStatus: "
+                  "Unable to set 'hog' status. Error = {}",
+                  GetError(ret));
         return false;
       }
     }
@@ -413,8 +431,10 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(hogPid), &hogPid);
       if (ret || hogPid == getpid())
       {
-        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: "
-          "Unable to release 'hog' status. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR,
+                  "CCoreAudioDevice::SetHogStatus: "
+                  "Unable to release 'hog' status. Error = {}",
+                  GetError(ret));
         return false;
       }
       // Reset internal state
@@ -465,8 +485,10 @@ bool CCoreAudioDevice::SetMixingSupport(UInt32 mix)
   OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(mixEnable), &mixEnable);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: "
-      "Unable to set MixingSupport to %s. Error = %s", mix ? "'On'" : "'Off'", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::SetMixingSupport: "
+              "Unable to set MixingSupport to {}. Error = {}",
+              mix ? "'On'" : "'Off'", GetError(ret));
     return false;
   }
   if (m_MixerRestore == -1)
@@ -493,8 +515,10 @@ bool CCoreAudioDevice::GetMixingSupport()
     OSStatus ret = AudioObjectIsPropertySettable(m_DeviceId, &propertyAddress, &writable);
     if (ret)
     {
-      CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
-        "Unable to get propertyinfo mixing support. Error = %s", GetError(ret).c_str());
+      CLog::Log(LOGERROR,
+                "CCoreAudioDevice::SupportsMixing: "
+                "Unable to get propertyinfo mixing support. Error = {}",
+                GetError(ret));
       writable = false;
     }
 
@@ -506,8 +530,10 @@ bool CCoreAudioDevice::GetMixingSupport()
         mix = 0;
     }
   }
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::SupportsMixing: "
-    "Device mixing support : %s.", mix ? "'Yes'" : "'No'");
+  CLog::Log(LOGDEBUG,
+            "CCoreAudioDevice::SupportsMixing: "
+            "Device mixing support : {}.",
+            mix ? "'Yes'" : "'No'");
 
   return (mix > 0);
 }
@@ -525,8 +551,10 @@ bool CCoreAudioDevice::SetCurrentVolume(Float32 vol)
   OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(Float32), &vol);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetCurrentVolume: "
-      "Unable to set AudioUnit volume. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::SetCurrentVolume: "
+              "Unable to set AudioUnit volume. Error = {}",
+              GetError(ret));
     return false;
   }
   return true;
@@ -550,8 +578,10 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout
   void* pBuf = malloc(propertySize);
   ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, pBuf);
   if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetPreferredChannelLayout: "
-      "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetPreferredChannelLayout: "
+              "Unable to retrieve preferred channel layout. Error = {}",
+              GetError(ret));
   else
   {
     // Copy the result into the caller's instance
@@ -576,8 +606,10 @@ bool CCoreAudioDevice::GetPreferredChannelLayoutForStereo(CCoreAudioChannelLayou
 
   OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &channels);
   if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetPreferredChannelLayoutForStereo: "
-              "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetPreferredChannelLayoutForStereo: "
+              "Unable to retrieve preferred channel layout. Error = {}",
+              GetError(ret));
   else
   {
     // Copy/generate a layout into the result into the caller's instance
@@ -714,8 +746,11 @@ Float64 CCoreAudioDevice::GetNominalSampleRate()
   OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &sampleRate);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetNominalSampleRate: "
-      "Unable to retrieve current device sample rate. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetNominalSampleRate: "
+              "Unable to retrieve current device sample rate. Error = {}",
+              GetError(ret));
+
     return 0.0;
   }
   return sampleRate;
@@ -738,9 +773,10 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
   OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(Float64), &sampleRate);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetNominalSampleRate: "
-      "Unable to set current device sample rate to %0.0f. Error = %s",
-      (float)sampleRate, GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::SetNominalSampleRate: "
+              "Unable to set current device sample rate to {:0.0f}. Error = {}",
+              (float)sampleRate, GetError(ret));
     return false;
   }
   if (m_SampleRateRestore == 0.0)
@@ -796,8 +832,10 @@ UInt32 CCoreAudioDevice::GetBufferSize()
   UInt32 propertySize = sizeof(size);
   OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &size);
   if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetBufferSize: "
-      "Unable to retrieve buffer size. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::GetBufferSize: "
+              "Unable to retrieve buffer size. Error = {}",
+              GetError(ret));
   return size;
 }
 
@@ -815,8 +853,10 @@ bool CCoreAudioDevice::SetBufferSize(UInt32 size)
   OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, propertySize, &size);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetBufferSize: "
-      "Unable to set buffer size. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioDevice::SetBufferSize: "
+              "Unable to set buffer size. Error = {}",
+              GetError(ret));
   }
 
   if (GetBufferSize() != size)
@@ -855,7 +895,9 @@ void CCoreAudioDevice::RegisterDeviceChangedCB(bool bRegister, AudioObjectProper
         ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, callback, ref);
 
     if (ret != noErr)
-        CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");
+      CLog::Log(LOGERROR,
+                "CCoreAudioAE::Deinitialize - error {} a listener callback for device changes!",
+                bRegister ? "attaching" : "removing");
 }
 
 void CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(bool bRegister, AudioObjectPropertyListenerProc callback, void *ref)
@@ -886,7 +928,10 @@ void CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(bool bRegister, Audi
     }
 
     if (ret != noErr)
-        CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for default output device changes!", bRegister?"attaching":"removing");
+      CLog::Log(LOGERROR,
+                "CCoreAudioAE::Deinitialize - error {} a listener callback for default output "
+                "device changes!",
+                bRegister ? "attaching" : "removing");
     else
         registered = bRegister ? 1 : 0;
 }

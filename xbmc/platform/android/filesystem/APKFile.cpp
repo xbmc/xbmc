@@ -42,8 +42,7 @@ bool CAPKFile::Open(const CURL& url)
   m_zip_archive = zip_open(host.c_str(), zip_flags, &zip_error);
   if (!m_zip_archive || zip_error)
   {
-    CLog::Log(LOGERROR, "CAPKFile::Open: Unable to open archive : '%s'",
-      host.c_str());
+    CLog::Log(LOGERROR, "CAPKFile::Open: Unable to open archive : '{}'", host);
     return false;
   }
 
@@ -51,8 +50,7 @@ bool CAPKFile::Open(const CURL& url)
   if (m_zip_index == -1)
   {
     // might not be an error if caller is just testing for presence/absence
-    CLog::Log(LOGDEBUG, "CAPKFile::Open: Unable to locate file : '%s'",
-      path.c_str());
+    CLog::Log(LOGDEBUG, "CAPKFile::Open: Unable to locate file : '{}'", path);
     zip_close(m_zip_archive);
     m_zip_archive = NULL;
     return false;
@@ -64,8 +62,7 @@ bool CAPKFile::Open(const CURL& url)
   int rtn = zip_stat_index(m_zip_archive, m_zip_index, zip_flags, &sb);
   if (rtn == -1)
   {
-    CLog::Log(LOGERROR, "CAPKFile::Open: Unable to stat file : '%s'",
-      path.c_str());
+    CLog::Log(LOGERROR, "CAPKFile::Open: Unable to stat file : '{}'", path);
     zip_close(m_zip_archive);
     m_zip_archive = NULL;
     return false;
@@ -77,8 +74,7 @@ bool CAPKFile::Open(const CURL& url)
   m_zip_file = zip_fopen_index(m_zip_archive, m_zip_index, zip_flags);
   if (!m_zip_file)
   {
-    CLog::Log(LOGERROR, "CAPKFile::Open: Unable to open file : '%s'",
-      path.c_str());
+    CLog::Log(LOGERROR, "CAPKFile::Open: Unable to open file : '{}'", path);
     zip_close(m_zip_archive);
     m_zip_archive = NULL;
     return false;
@@ -200,8 +196,7 @@ int CAPKFile::Stat(const CURL& url, struct __stat64* buffer)
   zip_archive = zip_open(host.c_str(), zip_flags, &zip_error);
   if (!zip_archive || zip_error)
   {
-    CLog::Log(LOGERROR, "CAPKFile::Stat: Unable to open archive : '%s'",
-      host.c_str());
+    CLog::Log(LOGERROR, "CAPKFile::Stat: Unable to open archive : '{}'", host);
     errno = ENOENT;
     return -1;
   }

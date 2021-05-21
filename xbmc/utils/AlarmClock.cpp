@@ -70,7 +70,7 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
   event.watch.StartZero();
   CSingleLock lock(m_events);
   m_event.insert(make_pair(lowerName,event));
-  CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
+  CLog::Log(LOGDEBUG, "started alarm with name: {}", lowerName);
 }
 
 void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)

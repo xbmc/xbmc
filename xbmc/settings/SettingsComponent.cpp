@@ -400,7 +400,7 @@ void CSettingsComponent::CreateUserDirs() const
   auto archiveCachePath = CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
   if (XFILE::CDirectory::Exists(archiveCachePath))
     if (!XFILE::CDirectory::RemoveRecursive(archiveCachePath))
-      CLog::Log(LOGWARNING, "Failed to remove the archive cache at %s", archiveCachePath.c_str());
+      CLog::Log(LOGWARNING, "Failed to remove the archive cache at {}", archiveCachePath);
   XFILE::CDirectory::Create(archiveCachePath);
 
 }

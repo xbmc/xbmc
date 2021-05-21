@@ -140,7 +140,7 @@ CNetworkInterface* CNetworkPosix::GetFirstConnectedInterface()
   // no connected Interfaces found? - requeryInterfaceList
   if (!pNetIf)
   {
-    CLog::Log(LOGDEBUG, "%s no connected interface found - requery list", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} no connected interface found - requery list", __FUNCTION__);
     queryInterfaceList();
     //retry finding a connected if
     pNetIf = CNetworkBase::GetFirstConnectedInterface();

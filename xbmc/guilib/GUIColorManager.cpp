@@ -52,7 +52,7 @@ void CGUIColorManager::Load(const std::string &colorFile)
   path = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors", colorFile);
   if (!URIUtils::HasExtension(path))
     path += ".xml";
-  CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
+  CLog::Log(LOGINFO, "Loading colors from {}", path);
 
   if (xmlDoc.LoadFile(path))
     LoadXML(xmlDoc);

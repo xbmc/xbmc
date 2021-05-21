@@ -36,7 +36,8 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
   status = vaDeriveImage(pic->vadsp, pic->procPic.videoSurface, &m_glSurface.vaImage);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "CVaapiTexture::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "CVaapiTexture::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status),
+              status);
     return false;
   }
   memset(&m_glSurface.vBufInfo, 0, sizeof(m_glSurface.vBufInfo));
@@ -44,7 +45,8 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
   status = vaAcquireBufferHandle(pic->vadsp, m_glSurface.vaImage.buf, &m_glSurface.vBufInfo);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "CVaapiTexture::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "CVaapiTexture::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status),
+              status);
     return false;
   }
 
@@ -77,7 +79,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       if (!m_glSurface.eglImageY)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: {}", err);
         return false;
       }
 
@@ -101,7 +103,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       if (!m_glSurface.eglImageVU)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: {}", err);
         return false;
       }
 
@@ -147,7 +149,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       if (!m_glSurface.eglImageY)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: {}", err);
         return false;
       }
 
@@ -171,7 +173,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       if (!m_glSurface.eglImageVU)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: {}", err);
         return false;
       }
 
@@ -214,7 +216,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       if (!m_glSurface.eglImage)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer BGRA into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer BGRA into EGL image: {}", err);
         return false;
       }
 
@@ -255,13 +257,13 @@ void CVaapi1Texture::Unmap()
   status = vaReleaseBufferHandle(m_vaapiPic->vadsp, m_glSurface.vaImage.buf);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status), status);
   }
 
   status = vaDestroyImage(m_vaapiPic->vadsp, m_glSurface.vaImage.image_id);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "VAAPI::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status), status);
   }
 
   m_glSurface.vaImage.image_id = VA_INVALID_ID;
@@ -453,7 +455,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::LogFunction(LOGWARNING, "CVaapi2Texture::Map", "vaExportSurfaceHandle failed - Error: %s (%d)", vaErrorStr(status), status);
+    CLog::LogFunction(LOGWARNING, "CVaapi2Texture::Map",
+                      "vaExportSurfaceHandle failed - Error: {} ({})", vaErrorStr(status), status);
     return false;
   }
 
@@ -469,7 +472,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
   status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::LogFunction(LOGERROR, "CVaapi2Texture::Map", "vaSyncSurface - Error: %s (%d)", vaErrorStr(status), status);
+    CLog::LogFunction(LOGERROR, "CVaapi2Texture::Map", "vaSyncSurface - Error: {} ({})",
+                      vaErrorStr(status), status);
     return false;
   }
 
@@ -481,7 +485,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     auto const& layer = surface.layers[layerNo];
     if (layer.num_planes != 1)
     {
-      CLog::LogFunction(LOGDEBUG, "CVaapi2Texture::Map", "DRM-exported layer has %d planes - only 1 supported", layer.num_planes);
+      CLog::LogFunction(LOGDEBUG, "CVaapi2Texture::Map",
+                        "DRM-exported layer has {} planes - only 1 supported", layer.num_planes);
       return false;
     }
     auto const& object = surface.objects[layer.object_index[plane]];
@@ -512,7 +517,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
         }
         break;
       default:
-        CLog::LogFunction(LOGDEBUG, "CVaapi2Texture::Map", "DRM-exported surface %d layers - only 2 supported", surface.num_layers);
+        CLog::LogFunction(LOGDEBUG, "CVaapi2Texture::Map",
+                          "DRM-exported surface {} layers - only 2 supported", surface.num_layers);
         return false;
     }
 

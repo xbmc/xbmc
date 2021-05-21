@@ -72,7 +72,8 @@ bool CWebSocketV8::Handshake(const char* data, size_t length, std::string &respo
 
   if (fVersion < 1.1f)
   {
-    CLog::Log(LOGINFO, "WebSocket [hybi-10]: invalid HTTP version %f (1.1 or higher expected)", fVersion);
+    CLog::Log(LOGINFO, "WebSocket [hybi-10]: invalid HTTP version {:f} (1.1 or higher expected)",
+              fVersion);
     return false;
   }
 

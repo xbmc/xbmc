@@ -233,7 +233,7 @@ CVFSEntry::CVFSEntry(const AddonInfoPtr& addonInfo)
 
   m_struct.toKodi->kodiInstance = this;
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
-    CLog::Log(LOGFATAL, "CVFSEntry - Couldn't create instance on add-on '%s'", addonInfo->Name().c_str());
+    CLog::Log(LOGFATAL, "CVFSEntry - Couldn't create instance on add-on '{}'", addonInfo->Name());
 }
 
 CVFSEntry::~CVFSEntry()

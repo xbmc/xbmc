@@ -140,7 +140,8 @@ void CDirectoryHistory::DumpPathHistory()
   // debug log
   CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
   for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-    CLog::Log(LOGDEBUG, "  %02i.[%s; %s]", i, m_vecPathHistory[i].m_strPath.c_str(), m_vecPathHistory[i].m_strFilterPath.c_str());
+    CLog::Log(LOGDEBUG, "  {:02}.[{}; {}]", i, m_vecPathHistory[i].m_strPath,
+              m_vecPathHistory[i].m_strFilterPath);
 }
 
 std::string CDirectoryHistory::preparePath(const std::string &strDirectory, bool tolower /* = true */)

@@ -356,7 +356,8 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
 
     if (!m_rootDir.GetDirectory(pathToUrl, items, m_useFileDirectories, false))
     {
-      CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", pathToUrl.GetRedacted().c_str());
+      CLog::Log(LOGERROR, "CGUIDialogFileBrowser::GetDirectory({}) failed",
+                pathToUrl.GetRedacted());
 
       // We assume, we can get the parent
       // directory again

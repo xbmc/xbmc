@@ -412,7 +412,8 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
   if (!item->CanQueue())
     item->SetCanQueue(true);
 
-  CLog::Log(LOGDEBUG, "Adding file %s%s to music playlist", item->GetPath().c_str(), item->m_bIsFolder ? " (folder) " : "");
+  CLog::Log(LOGDEBUG, "Adding file {}{} to music playlist", item->GetPath(),
+            item->m_bIsFolder ? " (folder) " : "");
   CFileItemList queuedItems;
   AddItemToPlayList(item, queuedItems);
 

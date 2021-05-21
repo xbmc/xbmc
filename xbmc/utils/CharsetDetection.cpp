@@ -339,7 +339,8 @@ bool CCharsetDetection::ConvertHtmlToUtf8(const std::string& htmlContent, std::s
   else
     usedHtmlCharset = "WINDOWS-1252";
 
-  CLog::Log(LOGWARNING, "%s: Can't correctly convert to UTF-8 charset, converting as \"%s\"", __FUNCTION__, usedHtmlCharset.c_str());
+  CLog::Log(LOGWARNING, "{}: Can't correctly convert to UTF-8 charset, converting as \"{}\"",
+            __FUNCTION__, usedHtmlCharset);
   g_charsetConverter.ToUtf8(usedHtmlCharset, htmlContent, converted, false);
 
   return false;
@@ -410,7 +411,8 @@ bool CCharsetDetection::ConvertPlainTextToUtf8(const std::string& textContent, s
   else
     usedCharset = "WINDOWS-1252";
 
-  CLog::Log(LOGWARNING, "%s: Can't correctly convert to UTF-8 charset, converting as \"%s\"", __FUNCTION__, usedCharset.c_str());
+  CLog::Log(LOGWARNING, "{}: Can't correctly convert to UTF-8 charset, converting as \"{}\"",
+            __FUNCTION__, usedCharset);
   g_charsetConverter.ToUtf8(usedCharset, textContent, converted, false);
 
   return false;

@@ -48,7 +48,7 @@ void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode* pCus
       buttonMap[id] = action;
     }
     else
-      CLog::Log(LOGERROR, "Error reading customController map element, Invalid id: %d", id);
+      CLog::Log(LOGERROR, "Error reading customController map element, Invalid id: {}", id);
 
     pButton = pButton->NextSiblingElement();
   }

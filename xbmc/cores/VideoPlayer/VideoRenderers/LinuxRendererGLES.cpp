@@ -117,7 +117,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
 
 bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
-  CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: fps: %0.3f", fps);
+  CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: fps: {:0.3f}", fps);
   m_format = picture.videoBuffer->GetFormat();
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
@@ -145,7 +145,8 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   if (picture.hasDisplayMetadata && picture.hasLightMetadata)
   {
     m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
-    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: %s", m_passthroughHDR ? "on" : "off");
+    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
+              m_passthroughHDR ? "on" : "off");
   }
 
   return true;
@@ -537,7 +538,10 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   if(!Supports(m_scalingMethod))
   {
-    CLog::Log(LOGWARNING, "CLinuxRendererGLES::UpdateVideoFilter - chosen scaling method %d, is not supported by renderer", static_cast<int>(m_scalingMethod));
+    CLog::Log(LOGWARNING,
+              "CLinuxRendererGLES::UpdateVideoFilter - chosen scaling method {}, is not supported "
+              "by renderer",
+              static_cast<int>(m_scalingMethod));
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
@@ -637,7 +641,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   if (!LoadShadersHook())
   {
     int requestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
-    CLog::Log(LOGDEBUG, "GLES: Requested render method: %d", requestedMethod);
+    CLog::Log(LOGDEBUG, "GLES: Requested render method: {}", requestedMethod);
 
     ReleaseShaders();
 

@@ -192,7 +192,7 @@ bool CRepository::FetchIndex(const DirInfo& repo,
   std::string response;
   if (!http.Get(repo.info, response))
   {
-    CLog::Log(LOGERROR, "CRepository: failed to read %s", repo.info.c_str());
+    CLog::Log(LOGERROR, "CRepository: failed to read {}", repo.info);
     return false;
   }
 
@@ -209,11 +209,11 @@ bool CRepository::FetchIndex(const DirInfo& repo,
   if (URIUtils::HasExtension(repo.info, ".gz")
       || CMime::GetFileTypeFromMime(http.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE)) == CMime::EFileType::FileTypeGZip)
   {
-    CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", repo.info.c_str());
+    CLog::Log(LOGDEBUG, "CRepository '{}' is gzip. decompressing", repo.info);
     std::string buffer;
     if (!CZipFile::DecompressGzip(response, buffer))
     {
-      CLog::Log(LOGERROR, "CRepository: failed to decompress gzip from '%s'", repo.info.c_str());
+      CLog::Log(LOGERROR, "CRepository: failed to decompress gzip from '{}'", repo.info);
       return false;
     }
     response = std::move(buffer);
@@ -240,7 +240,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
       if (!FetchChecksum(dir.checksum, part, recheckAfterThisDir))
       {
         recheckAfter = 1 * 60 * 60; // retry after 1 hour
-        CLog::Log(LOGERROR, "CRepository: failed read '%s'", dir.checksum.c_str());
+        CLog::Log(LOGERROR, "CRepository: failed read '{}'", dir.checksum);
         return STATUS_ERROR;
       }
       dirChecksums.emplace_back(dir, part);
@@ -314,7 +314,7 @@ CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(r
 
 bool CRepositoryUpdateJob::DoWork()
 {
-  CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] checking for updates.", m_repo->ID().c_str());
+  CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checking for updates.", m_repo->ID());
   CAddonDatabase database;
   database.Open();
 
@@ -343,7 +343,7 @@ bool CRepositoryUpdateJob::DoWork()
 
   if (status == CRepository::STATUS_NOT_MODIFIED)
   {
-    CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] checksum not changed.", m_repo->ID().c_str());
+    CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checksum not changed.", m_repo->ID());
     return true;
   }
 
@@ -359,7 +359,7 @@ bool CRepositoryUpdateJob::DoWork()
       if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
       {
         if (!oldAddon->Icon().empty() || !oldAddon->Art().empty() || !oldAddon->Screenshots().empty())
-          CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
+          CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '{}'", addon->ID());
 
         if (!oldAddon->Icon().empty())
           textureDB.InvalidateCachedTexture(oldAddon->Icon());

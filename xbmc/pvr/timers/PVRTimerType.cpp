@@ -156,7 +156,8 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(uint64_t iMus
       return type;
   }
 
-  CLog::LogF(LOGERROR, "Unable to resolve timer type (0x%x, 0x%x, %d)", iMustHaveAttr, iMustNotHaveAttr, iClientId);
+  CLog::LogF(LOGERROR, "Unable to resolve timer type (0x{:x}, 0x{:x}, {})", iMustHaveAttr,
+             iMustNotHaveAttr, iClientId);
   return {};
 }
 

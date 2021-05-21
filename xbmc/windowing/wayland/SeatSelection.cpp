@@ -95,11 +95,13 @@ CSeatSelection::CSeatSelection(CConnection& connection, wayland::seat_t const& s
       if (mimeIt != MIME_TYPES_PREFERENCE.cend())
       {
         m_matchedMimeType = *mimeIt;
-        CLog::Log(LOGDEBUG, "Chose selection MIME type %s out of offered %s", m_matchedMimeType.c_str(), offers.c_str());
+        CLog::Log(LOGDEBUG, "Chose selection MIME type {} out of offered {}", m_matchedMimeType,
+                  offers);
       }
       else
       {
-        CLog::Log(LOGDEBUG, "Could not find compatible MIME type for selection data (offered: %s)", offers.c_str());
+        CLog::Log(LOGDEBUG, "Could not find compatible MIME type for selection data (offered: {})",
+                  offers);
       }
     }
   };
@@ -116,7 +118,8 @@ std::string CSeatSelection::GetSelectionText() const
   std::array<int, 2> fds;
   if (pipe(fds.data()) != 0)
   {
-    CLog::LogF(LOGERROR, "Could not open pipe for selection data transfer: %s", std::strerror(errno));
+    CLog::LogF(LOGERROR, "Could not open pipe for selection data transfer: {}",
+               std::strerror(errno));
     return "";
   }
 
@@ -183,7 +186,7 @@ std::string CSeatSelection::GetSelectionText() const
       ssize_t readBytes{read(fd.fd, buffer.data() + totalBytesRead, buffer.size() - totalBytesRead)};
       if (readBytes < 0)
       {
-        CLog::LogF(LOGERROR, "read() from selection pipe failed: %s", std::strerror(errno));
+        CLog::LogF(LOGERROR, "read() from selection pipe failed: {}", std::strerror(errno));
         return "";
       }
       totalBytesRead += readBytes;

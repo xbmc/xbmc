@@ -70,7 +70,7 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
   const AVPixelFormat pixelFormat = CGameClientTranslator::TranslatePixelFormat(properties.format);
   if (pixelFormat == AV_PIX_FMT_NONE)
   {
-    CLog::Log(LOGERROR, "GAME: Unknown pixel format: %d", properties.format);
+    CLog::Log(LOGERROR, "GAME: Unknown pixel format: {}", properties.format);
     return nullptr;
   }
 
@@ -78,7 +78,7 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
   const unsigned int nominalHeight = properties.nominal_height;
   if (nominalWidth == 0 || nominalHeight == 0)
   {
-    CLog::Log(LOGERROR, "GAME: Invalid nominal dimensions: %ux%u", nominalWidth, nominalHeight);
+    CLog::Log(LOGERROR, "GAME: Invalid nominal dimensions: {}x{}", nominalWidth, nominalHeight);
     return nullptr;
   }
 
@@ -86,12 +86,12 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
   const unsigned int maxHeight = properties.max_height;
   if (maxWidth == 0 || maxHeight == 0)
   {
-    CLog::Log(LOGERROR, "GAME: Invalid max dimensions: %ux%u", maxWidth, maxHeight);
+    CLog::Log(LOGERROR, "GAME: Invalid max dimensions: {}x{}", maxWidth, maxHeight);
     return nullptr;
   }
 
   if (nominalWidth > maxWidth || nominalHeight > maxHeight)
-    CLog::Log(LOGERROR, "GAME: Nominal dimensions (%ux%u) bigger than max dimensions (%ux%u)",
+    CLog::Log(LOGERROR, "GAME: Nominal dimensions ({}x{}) bigger than max dimensions ({}x{})",
               nominalWidth, nominalHeight, maxWidth, maxHeight);
 
   float pixelAspectRatio;

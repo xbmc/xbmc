@@ -55,7 +55,7 @@ void CTextureBundleXBT::CloseBundle()
   if (m_XBTFReader != nullptr && m_XBTFReader->IsOpen())
   {
     XFILE::CXbtManager::GetInstance().Release(CURL(m_path));
-    CLog::Log(LOGDEBUG, "%s - Closed %sbundle", __FUNCTION__, m_themeBundle ? "theme " : "");
+    CLog::Log(LOGDEBUG, "{} - Closed {}bundle", __FUNCTION__, m_themeBundle ? "theme " : "");
   }
 }
 
@@ -99,7 +99,7 @@ bool CTextureBundleXBT::OpenBundle()
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "%s - Opened bundle %s", __FUNCTION__, m_path.c_str());
+  CLog::Log(LOGDEBUG, "{} - Opened bundle {}", __FUNCTION__, m_path);
 
   m_TimeStamp = m_XBTFReader->GetLastModificationTimestamp();
 
@@ -220,14 +220,15 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   unsigned char *buffer = new unsigned char [(size_t)frame.GetPackedSize()];
   if (buffer == NULL)
   {
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetPackedSize());
+    CLog::Log(LOGERROR, "Out of memory loading texture: {} (need {} bytes)", name,
+              frame.GetPackedSize());
     return false;
   }
 
   // load the compressed texture
   if (!m_XBTFReader->Load(frame, buffer))
   {
-    CLog::Log(LOGERROR, "Error loading texture: %s", name.c_str());
+    CLog::Log(LOGERROR, "Error loading texture: {}", name);
     delete[] buffer;
     return false;
   }
@@ -238,7 +239,8 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
     unsigned char *unpacked = new unsigned char[(size_t)frame.GetUnpackedSize()];
     if (unpacked == NULL)
     {
-      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
+      CLog::Log(LOGERROR, "Out of memory unpacking texture: {} (need {} bytes)", name,
+                frame.GetUnpackedSize());
       delete[] buffer;
       return false;
     }
@@ -246,7 +248,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
     if (lzo1x_decompress_safe(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
         s != frame.GetUnpackedSize())
     {
-      CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());
+      CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name);
       delete[] buffer;
       delete[] unpacked;
       return false;
@@ -287,7 +289,8 @@ uint8_t* CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader, const CXBTFFr
   uint8_t* packedBuffer = new uint8_t[static_cast<size_t>(frame.GetPackedSize())];
   if (packedBuffer == nullptr)
   {
-    CLog::Log(LOGERROR, "CTextureBundleXBT: out of memory loading frame with %" PRIu64" packed bytes", frame.GetPackedSize());
+    CLog::Log(LOGERROR, "CTextureBundleXBT: out of memory loading frame with {} packed bytes",
+              frame.GetPackedSize());
     return nullptr;
   }
 
@@ -306,7 +309,8 @@ uint8_t* CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader, const CXBTFFr
   uint8_t* unpackedBuffer = new uint8_t[static_cast<size_t>(frame.GetUnpackedSize())];
   if (unpackedBuffer == nullptr)
   {
-    CLog::Log(LOGERROR, "CTextureBundleXBT: out of memory loading frame with %" PRIu64" unpacked bytes", frame.GetPackedSize());
+    CLog::Log(LOGERROR, "CTextureBundleXBT: out of memory loading frame with {} unpacked bytes",
+              frame.GetPackedSize());
     delete[] packedBuffer;
     return nullptr;
   }
@@ -323,7 +327,9 @@ uint8_t* CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader, const CXBTFFr
   lzo_uint size = static_cast<lzo_uint>(frame.GetUnpackedSize());
   if (lzo1x_decompress_safe(packedBuffer, static_cast<lzo_uint>(frame.GetPackedSize()), unpackedBuffer, &size, nullptr) != LZO_E_OK || size != frame.GetUnpackedSize())
   {
-    CLog::Log(LOGERROR, "CTextureBundleXBT: failed to decompress frame with %" PRIu64" unpacked bytes to %" PRIu64" bytes", frame.GetPackedSize(), frame.GetUnpackedSize());
+    CLog::Log(LOGERROR,
+              "CTextureBundleXBT: failed to decompress frame with {} unpacked bytes to {} bytes",
+              frame.GetPackedSize(), frame.GetUnpackedSize());
     delete[] packedBuffer;
     delete[] unpackedBuffer;
     return nullptr;

@@ -98,7 +98,8 @@ void CRendererHQ::CheckVideoParameters()
 
     if (!Supports(m_scalingMethod))
     {
-      CLog::LogF(LOGWARNING, "chosen scaling method %d is not supported by renderer", static_cast<int>(m_scalingMethod));
+      CLog::LogF(LOGWARNING, "chosen scaling method {} is not supported by renderer",
+                 static_cast<int>(m_scalingMethod));
       m_scalingMethod = VS_SCALINGMETHOD_AUTO;
     }
 

@@ -45,7 +45,7 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   const AEDataFormat pcmFormat = CAudioTranslator::TranslatePCMFormat(audioProperties.format);
   if (pcmFormat == AE_FMT_INVALID)
   {
-    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Unknown PCM format: %d",
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Unknown PCM format: {}",
               static_cast<int>(audioProperties.format));
     return false;
   }
@@ -53,7 +53,7 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   unsigned int iSampleRate = static_cast<unsigned int>(std::round(audioProperties.sampleRate));
   if (iSampleRate == 0)
   {
-    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Invalid samplerate: %f", audioProperties.sampleRate);
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Invalid samplerate: {:f}", audioProperties.sampleRate);
     return false;
   }
 
@@ -83,7 +83,7 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
 
   CLog::Log(
       LOGINFO,
-      "RetroPlayer[AUDIO]: Creating audio stream, format = %s, sample rate = %d, channels = %d",
+      "RetroPlayer[AUDIO]: Creating audio stream, format = {}, sample rate = {}, channels = {}",
       CAEUtil::DataFormatToStr(pcmFormat), iSampleRate, channelLayout.Count());
 
   AEAudioFormat audioFormat;
@@ -123,7 +123,7 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
       if (delaySecs > MAX_DELAY)
       {
         m_pAudioStream->Flush();
-        CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay (%0.2f ms) is too high - flushing",
+        CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay ({:0.2f} ms) is too high - flushing",
                   delaySecs * 1000);
       }
 

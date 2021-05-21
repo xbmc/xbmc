@@ -104,7 +104,7 @@ void CWinSystemWaylandEGLContextGL::SetContextSize(CSizeInt size)
   // Propagate changed dimensions to render system if necessary
   if (CRenderSystemGL::m_width != size.Width() || CRenderSystemGL::m_height != size.Height())
   {
-    CLog::LogF(LOGDEBUG, "Resetting render system to %dx%d", size.Width(), size.Height());
+    CLog::LogF(LOGDEBUG, "Resetting render system to {}x{}", size.Width(), size.Height());
     CRenderSystemGL::ResetRenderSystem(size.Width(), size.Height());
   }
 }

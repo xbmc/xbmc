@@ -14,7 +14,7 @@ extern "C" void not_implement( const char* debuginfo)
 {
   if (debuginfo)
   {
-    CLog::Log(LOGDEBUG, "%s", debuginfo);
+    CLog::Log(LOGDEBUG, "{}", debuginfo);
   }
 }
 

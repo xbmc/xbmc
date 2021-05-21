@@ -34,7 +34,8 @@ namespace XBMCAddon
     {
 #ifdef ENABLE_XBMC_TRACE_API
       XBMC_TRACE;
-      CLog::Log(LOGDEBUG,"%sNEWADDON WindowDialog::OnMessage Message %d", _tg.getSpaces(),message.GetMessage());
+      CLog::Log(LOGDEBUG, "{}NEWADDON WindowDialog::OnMessage Message {}", _tg.getSpaces(),
+                message.GetMessage());
 #endif
 
       switch(message.GetMessage())

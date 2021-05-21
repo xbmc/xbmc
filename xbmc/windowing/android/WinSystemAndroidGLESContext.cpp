@@ -58,8 +58,9 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
   m_hasEGLHDRExtensions = CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_gl_colorspace_bt2020_pq")
     && CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_surface_SMPTE2086_metadata");
 
-  CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::InitWindowSystem: HDRConfig: %d, HDRExtensions: %d",
-    static_cast<int>(m_hasHDRConfig), static_cast<int>(m_hasEGLHDRExtensions));
+  CLog::Log(LOGDEBUG,
+            "CWinSystemAndroidGLESContext::InitWindowSystem: HDRConfig: {}, HDRExtensions: {}",
+            static_cast<int>(m_hasHDRConfig), static_cast<int>(m_hasEGLHDRExtensions));
 
   CEGLAttributesVec contextAttribs;
   contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
@@ -242,7 +243,7 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 
     if (HDRColorSpace != m_HDRColorSpace)
     {
-      CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: ColorSpace: %d", HDRColorSpace);
+      CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: ColorSpace: {}", HDRColorSpace);
 
       m_HDRColorSpace = HDRColorSpace;
       m_displayMetadata = m_HDRColorSpace == EGL_NONE ? nullptr : std::unique_ptr<AVMasteringDisplayMetadata>(new AVMasteringDisplayMetadata(videoPicture->displayMetadata));

@@ -90,7 +90,7 @@ void CDeltaPairMemoryStream::CullPastFrames(uint64_t frameCount)
     if (m_rewindBuffer.empty())
     {
       CLog::Log(LOGDEBUG,
-                "CDeltaPairMemoryStream: Tried to cull %d frames too many. Check your math!",
+                "CDeltaPairMemoryStream: Tried to cull {} frames too many. Check your math!",
                 frameCount - removedCount);
       break;
     }

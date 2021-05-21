@@ -57,7 +57,7 @@ void CControllerInstaller::Process()
     return;
   }
 
-  CLog::Log(LOGDEBUG, "Controller installer: Found %u controller add-ons",
+  CLog::Log(LOGDEBUG, "Controller installer: Found {} controller add-ons",
             installableAddons.size());
 
   CFileItemList items;
@@ -82,7 +82,7 @@ void CControllerInstaller::Process()
     return;
   }
 
-  CLog::Log(LOGDEBUG, "Controller installer: Installing %u controller add-ons",
+  CLog::Log(LOGDEBUG, "Controller installer: Installing {} controller add-ons",
             installableAddons.size());
 
   pProgressDialog->SetHeading(CVariant{24086}); // "Installing add-on..."
@@ -110,7 +110,7 @@ void CControllerInstaller::Process()
     if (!ADDON::CAddonInstaller::GetInstance().InstallOrUpdate(
             addon->ID(), ADDON::BackgroundJob::NO, ADDON::ModalJob::NO))
     {
-      CLog::Log(LOGERROR, "Controller installer: Failed to install %s", addon->ID().c_str());
+      CLog::Log(LOGERROR, "Controller installer: Failed to install {}", addon->ID());
       // "Error"
       // "Failed to install add-on."
       MESSAGING::HELPERS::ShowOKDialogText(257, 35256);
@@ -132,6 +132,6 @@ void CControllerInstaller::Process()
     installedCount++;
   }
 
-  CLog::Log(LOGDEBUG, "Controller window: Installed %u controller add-ons", installedCount);
+  CLog::Log(LOGDEBUG, "Controller window: Installed {} controller add-ons", installedCount);
   pProgressDialog->Close();
 }

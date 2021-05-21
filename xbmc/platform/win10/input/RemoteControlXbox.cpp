@@ -202,7 +202,7 @@ int32_t CRemoteControlXbox::TranslateVirtualKey(VirtualKey vk)
   case VirtualKey::GamepadMenu:
     return XINPUT_IR_REMOTE_MENU;
   default:
-    CLog::LogFunction(LOGDEBUG, __FUNCTION__, "unknown vrtual key %d", static_cast<int>(vk));
+    CLog::LogFunction(LOGDEBUG, __FUNCTION__, "unknown vrtual key {}", static_cast<int>(vk));
     return 0;
   }
 }

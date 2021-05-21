@@ -26,7 +26,7 @@ CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager,
 
   if (!addon)
   {
-    CLog::Log(LOGDEBUG, "Failed to locate add-on for \"%s\"", peripheral->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "Failed to locate add-on for \"{}\"", peripheral->DeviceName());
   }
   else
   {

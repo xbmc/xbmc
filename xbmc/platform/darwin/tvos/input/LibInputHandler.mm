@@ -51,7 +51,7 @@
   }
   else
   {
-    CLog::Log(LOGDEBUG, "ERROR mapping customcontroller action. CustomController: %s %i",
+    CLog::Log(LOGDEBUG, "ERROR mapping customcontroller action. CustomController: {} {}",
               "SiriRemote", buttonId);
   }
 }

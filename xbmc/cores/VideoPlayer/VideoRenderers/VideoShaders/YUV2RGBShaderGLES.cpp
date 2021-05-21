@@ -43,7 +43,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
   else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
   else
-    CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
+    CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
 
   if (dstPrimaries != srcPrimaries)
   {
@@ -58,7 +58,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
-  CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n%s", m_defines.c_str());
+  CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines);
 
   m_pConvMatrix.reset(new CConvertMatrix());
   m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);

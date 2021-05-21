@@ -86,12 +86,12 @@ bool CWinShader::UnlockVertexBuffer()
 
 bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
 {
-  CLog::LogF(LOGDEBUG, "loading shader %s", filename);
+  CLog::LogF(LOGDEBUG, "loading shader {}", filename);
 
   XFILE::CFileStream file;
   if(!file.Open(filename))
   {
-    CLog::LogF(LOGERROR, "failed to open file %s", filename);
+    CLog::LogF(LOGERROR, "failed to open file {}", filename);
     return false;
   }
 
@@ -100,7 +100,7 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
 
   if (!m_effect.Create(pStrEffect, defines))
   {
-    CLog::LogF(LOGERROR, "%s failed", pStrEffect);
+    CLog::LogF(LOGERROR, "{} failed", pStrEffect);
     return false;
   }
 
@@ -308,7 +308,7 @@ bool COutputShader::Create(
 
   if (!LoadEffect(effectString, &defines))
   {
-    CLog::LogF(LOGERROR, "Failed to load shader %s.", effectString);
+    CLog::LogF(LOGERROR, "Failed to load shader {}.", effectString);
     return false;
   }
 
@@ -598,7 +598,7 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
 
   if(!LoadEffect(effectString, &defines))
   {
-    CLog::LogF(LOGERROR, "Failed to load shader %s.", effectString);
+    CLog::LogF(LOGERROR, "Failed to load shader {}.", effectString);
     return false;
   }
 
@@ -821,7 +821,7 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, const std::shared_pt
       effectString = "special://xbmc/system/shaders/convolution-6x6_d3d.fx";
       break;
     default:
-      CLog::LogF(LOGERROR, "scaling method %d not supported.", method);
+      CLog::LogF(LOGERROR, "scaling method {} not supported.", method);
       return false;
   }
 
@@ -844,7 +844,7 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, const std::shared_pt
 
   if(!LoadEffect(effectString, &defines))
   {
-    CLog::LogF(LOGERROR, "Failed to load shader %s.", effectString);
+    CLog::LogF(LOGERROR, "Failed to load shader {}.", effectString);
     return false;
   }
 
@@ -957,7 +957,7 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, const std::share
       effectString = "special://xbmc/system/shaders/convolutionsep-6x6_d3d.fx";
       break;
     default:
-      CLog::LogF(LOGERROR, "scaling method %d not supported.", method);
+      CLog::LogF(LOGERROR, "scaling method {} not supported.", method);
       return false;
   }
 
@@ -986,7 +986,7 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, const std::share
 
   if(!LoadEffect(effectString, &defines))
   {
-    CLog::LogF(LOGERROR, "Failed to load shader %s.", effectString);
+    CLog::LogF(LOGERROR, "Failed to load shader {}.", effectString);
     return false;
   }
 
@@ -1042,7 +1042,7 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
     return false;
   }
 
-  CLog::LogF(LOGDEBUG, "format %i", m_IntermediateFormat);
+  CLog::LogF(LOGDEBUG, "format {}", m_IntermediateFormat);
   return true;
 }
 
@@ -1219,7 +1219,7 @@ bool CTestShader::Create()
 
   if (!m_effect.Create(strShader, nullptr))
   {
-    CLog::LogF(LOGERROR, "Failed to create test shader: %s", strShader);
+    CLog::LogF(LOGERROR, "Failed to create test shader: {}", strShader);
     return false;
   }
   return true;

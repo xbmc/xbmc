@@ -20,6 +20,6 @@ CGameClientHardware::CGameClientHardware(CGameClient& gameClient) : m_gameClient
 
 void CGameClientHardware::OnResetButton()
 {
-  CLog::Log(LOGDEBUG, "%s: Sending hardware reset", m_gameClient.ID().c_str());
+  CLog::Log(LOGDEBUG, "{}: Sending hardware reset", m_gameClient.ID());
   m_gameClient.Reset();
 }

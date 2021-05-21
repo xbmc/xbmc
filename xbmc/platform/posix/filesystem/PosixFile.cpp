@@ -282,7 +282,7 @@ bool CPosixFile::Delete(const CURL& url)
     return true;
 
   if (errno == EACCES || errno == EPERM)
-    CLog::LogF(LOGWARNING, "Can't access file \"%s\"", filename.c_str());
+    CLog::LogF(LOGWARNING, "Can't access file \"{}\"", filename);
 
   return false;
 }
@@ -300,12 +300,15 @@ bool CPosixFile::Rename(const CURL& url, const CURL& urlnew)
     return true;
 
   if (errno == EACCES || errno == EPERM)
-    CLog::LogF(LOGWARNING, "Can't access file \"%s\" for rename to \"%s\"", name.c_str(), newName.c_str());
+    CLog::LogF(LOGWARNING, "Can't access file \"{}\" for rename to \"{}\"", name, newName);
 
   // rename across mount points - need to copy/delete
   if (errno == EXDEV)
   {
-    CLog::LogF(LOGDEBUG, "Source file \"%s\" and target file \"%s\" are located on different filesystems, copy&delete will be used instead of rename", name.c_str(), newName.c_str());
+    CLog::LogF(LOGDEBUG,
+               "Source file \"{}\" and target file \"{}\" are located on different filesystems, "
+               "copy&delete will be used instead of rename",
+               name, newName);
     if (XFILE::CFile::Copy(name, newName))
     {
       if (XFILE::CFile::Delete(name))

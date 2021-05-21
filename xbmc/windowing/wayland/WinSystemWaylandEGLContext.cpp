@@ -115,7 +115,7 @@ void CWinSystemWaylandEGLContext::SetContextSize(CSizeInt size)
   // Change EGL surface size if necessary
   if (GetNativeWindowAttachedSize() != size)
   {
-    CLog::LogF(LOGDEBUG, "Updating egl_window size to %dx%d", size.Width(), size.Height());
+    CLog::LogF(LOGDEBUG, "Updating egl_window size to {}x{}", size.Width(), size.Height());
     m_nativeWindow.resize(size.Width(), size.Height(), 0, 0);
   }
 }

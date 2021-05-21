@@ -223,7 +223,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
         art->Set(reinterpret_cast<const uint8_t *>(pic.picture().data()), pic.picture().size(), pic.mimeType().toCString());
     }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
-      CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
+      CLog::Log(LOGDEBUG, "unrecognized ASF tag name: {}", it->first.toCString(true));
   }
   // artist may be specified in the ContentDescription block rather than using the 'Author' attribute.
   if (tag.GetArtist().empty())
@@ -391,7 +391,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
         else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
-          CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:%s", frame->description().toCString(true));
+          CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:{}",
+                    frame->description().toCString(true));
       }
     else if (it->first == "TIPL")
       // Loop through and process the involved people list
@@ -456,12 +457,14 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
               popFrame->email() != "no@email" &&
               popFrame->email() != "quodlibet@lists.sacredchao.net" &&
               popFrame->email() != "rating@winamp.com")
-            CLog::Log(LOGDEBUG, "unrecognized ratings schema detected: %s", popFrame->email().toCString(true));
+            CLog::Log(LOGDEBUG, "unrecognized ratings schema detected: {}",
+                      popFrame->email().toCString(true));
           tag.SetUserrating(POPMtoXBMC(popFrame->rating()));
         }
       }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
-      CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: %c%c%c%c", it->first[0], it->first[1], it->first[2], it->first[3]);
+      CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: {}{}{}{}", it->first[0], it->first[1],
+                it->first[2], it->first[3]);
   } // for
 
   // Process the extracted picture frames; 0 = CoverArt, 1 = Other, 2 = First Found picture
@@ -617,7 +620,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       }
     }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
-      CLog::Log(LOGDEBUG, "unrecognized APE tag: %s", it->first.toCString(true));
+      CLog::Log(LOGDEBUG, "unrecognized APE tag: {}", it->first.toCString(true));
   }
 
   tag.SetReplayGain(replayGainInfo);
@@ -775,7 +778,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     }
 #endif
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
-      CLog::Log(LOGDEBUG, "unrecognized XipComment name: %s", it->first.toCString(true));
+      CLog::Log(LOGDEBUG, "unrecognized XipComment name: {}", it->first.toCString(true));
   }
 
 #if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
@@ -1195,7 +1198,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
   if (!stream)
   {
-    CLog::Log(LOGERROR, "could not create TagLib VFS stream for: %s", strFileName.c_str());
+    CLog::Log(LOGERROR, "could not create TagLib VFS stream for: {}", strFileName);
     return false;
   }
 
@@ -1271,14 +1274,14 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   }
   catch (const std::exception& ex)
   {
-    CLog::Log(LOGERROR, "Taglib exception: %s", ex.what());
+    CLog::Log(LOGERROR, "Taglib exception: {}", ex.what());
   }
 
   if (!file || !file->isOpen())
   {
     delete file;
     delete stream;
-    CLog::Log(LOGDEBUG, "file %s could not be opened for tag reading", strFileName.c_str());
+    CLog::Log(LOGDEBUG, "file {} could not be opened for tag reading", strFileName);
     return false;
   }
 

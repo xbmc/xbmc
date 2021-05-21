@@ -131,7 +131,7 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
         if (it == m_addonItems.end())
           m_addonItems.push_back(item);
       }
-      CLog::Log(LOGDEBUG, "ContextMenuManager: loaded %s.", event.id.c_str());
+      CLog::Log(LOGDEBUG, "ContextMenuManager: loaded {}.", event.id);
     }
   }
   else if (typeid(event) == typeid(AddonEvents::Disabled))

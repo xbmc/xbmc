@@ -201,7 +201,7 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
 
   if (!DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
   {
-    CLog::LogF(LOGERROR, "unsupported texture format %d", format);
+    CLog::LogF(LOGERROR, "unsupported texture format {}", format);
     return false;
   }
 
@@ -606,7 +606,7 @@ HRESULT CD3DEffect::Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID
 
   if (!includeFile.Open(fileName))
   {
-    CLog::LogF(LOGERROR, "Could not open 3DLUT file: %s", fileName);
+    CLog::LogF(LOGERROR, "Could not open 3DLUT file: {}", fileName);
     return E_FAIL;
   }
 
@@ -791,10 +791,11 @@ bool CD3DEffect::CreateEffect()
   {
     std::string error;
     error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
-    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): %s", error.c_str());
+    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): {}", error);
   }
   else
-    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): call to D3DXCreateEffect() failed with %" PRId32, hr);
+    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): call to D3DXCreateEffect() failed with {}",
+              hr);
   return false;
 }
 

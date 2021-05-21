@@ -22,7 +22,7 @@ void err(void *ctx, const char *msg, ...) {
   va_start(arg_ptr, msg);
   vsnprintf(string, TMP_BUF_SIZE, msg, arg_ptr);
   va_end(arg_ptr);
-  CLog::Log(LOGDEBUG, "XSLT: %s", string);
+  CLog::Log(LOGDEBUG, "XSLT: {}", string);
 }
 
 XSLTUtils::XSLTUtils()

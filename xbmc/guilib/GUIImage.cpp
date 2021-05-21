@@ -351,10 +351,9 @@ void CGUIImage::DumpTextureUse()
   if (m_texture->IsAllocated())
   {
     if (GetID())
-      CLog::Log(LOGDEBUG, "Image control %u using texture %s", GetID(),
-                m_texture->GetFileName().c_str());
+      CLog::Log(LOGDEBUG, "Image control {} using texture {}", GetID(), m_texture->GetFileName());
     else
-      CLog::Log(LOGDEBUG, "Using texture %s", m_texture->GetFileName().c_str());
+      CLog::Log(LOGDEBUG, "Using texture {}", m_texture->GetFileName());
   }
 }
 #endif

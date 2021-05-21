@@ -50,7 +50,7 @@ bool PERIPHERALS::CPeripheralBusGCController::InitializeProperties(CPeripheral& 
 
   if (peripheral.Type() != PERIPHERALS::PERIPHERAL_JOYSTICK)
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusGCController: invalid peripheral type: %s",
+    CLog::Log(LOGWARNING, "CPeripheralBusGCController: invalid peripheral type: {}",
               PERIPHERALS::PeripheralTypeTranslator::TypeToString(peripheral.Type()));
     return false;
   }
@@ -60,8 +60,8 @@ bool PERIPHERALS::CPeripheralBusGCController::InitializeProperties(CPeripheral& 
   if (!GetDeviceId(peripheral.Location(), deviceId))
   {
     CLog::Log(LOGWARNING,
-              "CPeripheralBusGCController: failed to initialize properties for peripheral \"%s\"",
-              peripheral.Location().c_str());
+              "CPeripheralBusGCController: failed to initialize properties for peripheral \"{}\"",
+              peripheral.Location());
     return false;
   }
 
@@ -100,7 +100,7 @@ bool PERIPHERALS::CPeripheralBusGCController::InitializeProperties(CPeripheral& 
       return false;
   }
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusGCController: Device has %u buttons and %u axes",
+  CLog::Log(LOGDEBUG, "CPeripheralBusGCController: Device has {} buttons and {} axes",
             joystick.ButtonCount(), joystick.AxisCount());
 
   return true;

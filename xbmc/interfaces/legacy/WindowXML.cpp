@@ -295,7 +295,7 @@ namespace XBMCAddon
     {
 #ifdef ENABLE_XBMC_TRACE_API
       XBMC_TRACE;
-      CLog::Log(LOGDEBUG,"%sMessage id:%d",_tg.getSpaces(),(int)message.GetMessage());
+      CLog::Log(LOGDEBUG, "{}Message id:{}", _tg.getSpaces(), (int)message.GetMessage());
 #endif
 
       //! @todo We shouldn't be dropping down to CGUIWindow in any of this ideally.
@@ -412,7 +412,7 @@ namespace XBMCAddon
       URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
       m_mediaDir = fallbackMediaPath;
 
-      //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
+      //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: {}", fallbackMediaPath);
       CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->AllocResources(forceLoad);
       CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);

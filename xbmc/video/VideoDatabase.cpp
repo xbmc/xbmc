@@ -228,7 +228,7 @@ void CVideoDatabase::CreateAnalytics()
   /* advantage of a index that has been created on ( bar_id, foo_id )   */
   /* however an index on ( foo_id, bar_id ) will be considered for use  */
 
-  CLog::Log(LOGINFO, "%s - creating indices", __FUNCTION__);
+  CLog::Log(LOGINFO, "{} - creating indices", __FUNCTION__);
   m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_stacktimes ON stacktimes ( idFile )\n");
@@ -286,7 +286,7 @@ void CVideoDatabase::CreateAnalytics()
   CreateLinkIndex("genre");
   CreateLinkIndex("country");
 
-  CLog::Log(LOGINFO, "%s - creating triggers", __FUNCTION__);
+  CLog::Log(LOGINFO, "{} - creating triggers", __FUNCTION__);
   m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN "
               "DELETE FROM genre_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM actor_link WHERE media_id=old.idMovie AND media_type='movie'; "
@@ -577,7 +577,7 @@ int CVideoDatabase::GetPathId(const std::string& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to getpath (%s)", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} unable to getpath ({})", __FUNCTION__, strSQL);
   }
   return -1;
 }
@@ -649,7 +649,7 @@ bool CVideoDatabase::GetPaths(std::set<std::string> &paths)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -670,7 +670,7 @@ bool CVideoDatabase::GetPathsLinkedToTvShow(int idShow, std::vector<std::string>
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s error during query: %s",__FUNCTION__, sql.c_str());
+    CLog::Log(LOGERROR, "{} error during query: {}", __FUNCTION__, sql);
   }
   return false;
 }
@@ -703,7 +703,7 @@ bool CVideoDatabase::GetPathsForTvShow(int idShow, std::set<int>& paths)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s error during query: %s",__FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} error during query: {}", __FUNCTION__, strSQL);
   }
   return false;
 }
@@ -755,7 +755,7 @@ bool CVideoDatabase::GetSubPaths(const std::string &basepath, std::vector<std::p
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s error during query: %s",__FUNCTION__, sql.c_str());
+    CLog::Log(LOGERROR, "{} error during query: {}", __FUNCTION__, sql);
   }
   return false;
 }
@@ -803,7 +803,7 @@ int CVideoDatabase::AddPath(const std::string& strPath, const std::string &paren
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to addpath (%s)", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} unable to addpath ({})", __FUNCTION__, strSQL);
   }
   return -1;
 }
@@ -826,7 +826,7 @@ bool CVideoDatabase::GetPathHash(const std::string &path, std::string &hash)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, path.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, path);
   }
 
   return false;
@@ -908,7 +908,7 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -965,7 +965,7 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to addfile (%s)", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} unable to addfile ({})", __FUNCTION__, strSQL);
   }
   return -1;
 }
@@ -1033,7 +1033,7 @@ bool CVideoDatabase::SetPathHash(const std::string &path, const std::string &has
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, path.c_str(), hash.c_str());
+    CLog::Log(LOGERROR, "{} ({}, {}) failed", __FUNCTION__, path, hash);
   }
 
   return false;
@@ -1062,7 +1062,7 @@ bool CVideoDatabase::LinkMovieToTvshow(int idMovie, int idShow, bool bRemove)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i, %i) failed", __FUNCTION__, idMovie, idShow);
+    CLog::Log(LOGERROR, "{} ({}, {}) failed", __FUNCTION__, idMovie, idShow);
   }
 
   return false;
@@ -1090,7 +1090,7 @@ bool CVideoDatabase::IsLinkedToTvshow(int idMovie)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idMovie);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idMovie);
   }
 
   return false;
@@ -1118,7 +1118,7 @@ bool CVideoDatabase::GetLinksToTvShow(int idMovie, std::vector<int>& ids)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idMovie);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idMovie);
   }
 
   return false;
@@ -1153,7 +1153,7 @@ int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return -1;
 }
@@ -1223,7 +1223,8 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
     else
       strSQL=PrepareSQL("select idMovie from movie where idFile=%i", idFile);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s (%s), query = %s", __FUNCTION__, CURL::GetRedacted(strFilenameAndPath).c_str(), strSQL.c_str());
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
+              CURL::GetRedacted(strFilenameAndPath), strSQL);
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() > 0)
       idMovie = m_pDS->fv("idMovie").get_asInt();
@@ -1233,7 +1234,7 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return -1;
 }
@@ -1284,7 +1285,7 @@ int CVideoDatabase::GetTvShowId(const std::string& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strPath);
   }
   return -1;
 }
@@ -1310,7 +1311,8 @@ int CVideoDatabase::GetEpisodeId(const std::string& strFilenameAndPath, int idEp
 
     std::string strSQL=PrepareSQL("select idEpisode from episode where idFile=%i", idFile);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s (%s), query = %s", __FUNCTION__, CURL::GetRedacted(strFilenameAndPath).c_str(), strSQL.c_str());
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
+              CURL::GetRedacted(strFilenameAndPath), strSQL);
     pDS->query(strSQL);
     if (pDS->num_rows() > 0)
     {
@@ -1343,7 +1345,7 @@ int CVideoDatabase::GetEpisodeId(const std::string& strFilenameAndPath, int idEp
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return -1;
 }
@@ -1363,7 +1365,8 @@ int CVideoDatabase::GetMusicVideoId(const std::string& strFilenameAndPath)
 
     std::string strSQL=PrepareSQL("select idMVideo from musicvideo where idFile=%i", idFile);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s (%s), query = %s", __FUNCTION__, CURL::GetRedacted(strFilenameAndPath).c_str(), strSQL.c_str());
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
+              CURL::GetRedacted(strFilenameAndPath), strSQL);
     m_pDS->query(strSQL);
     int idMVideo=-1;
     if (m_pDS->num_rows() > 0)
@@ -1374,7 +1377,7 @@ int CVideoDatabase::GetMusicVideoId(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return -1;
 }
@@ -1523,7 +1526,7 @@ int CVideoDatabase::AddToTable(const std::string& table, const std::string& firs
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, value.c_str() );
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, value);
   }
 
   return -1;
@@ -1545,7 +1548,7 @@ int CVideoDatabase::UpdateRatings(int mediaId, const char *mediaType, const Rati
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to update ratings of  (%s)", __FUNCTION__, mediaType);
+    CLog::Log(LOGERROR, "{} unable to update ratings of  ({})", __FUNCTION__, mediaType);
   }
   return -1;
 }
@@ -1592,7 +1595,7 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i - %s) failed", __FUNCTION__, mediaId, mediaType);
+    CLog::Log(LOGERROR, "{} ({} - {}) failed", __FUNCTION__, mediaId, mediaType);
   }
 
   return ratingid;
@@ -1614,7 +1617,7 @@ int CVideoDatabase::UpdateUniqueIDs(int mediaId, const char *mediaType, const CV
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to update unique ids of (%s)", __FUNCTION__, mediaType);
+    CLog::Log(LOGERROR, "{} unable to update unique ids of ({})", __FUNCTION__, mediaType);
   }
   return -1;
 }
@@ -1657,7 +1660,7 @@ int CVideoDatabase::AddUniqueIDs(int mediaId, const char *mediaType, const CVide
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i - %s) failed", __FUNCTION__, mediaId, mediaType);
+    CLog::Log(LOGERROR, "{} ({} - {}) failed", __FUNCTION__, mediaId, mediaType);
   }
 
   return uniqueid;
@@ -1692,7 +1695,7 @@ int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOver
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSet.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSet);
   }
 
   return -1;
@@ -1748,7 +1751,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, name.c_str() );
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, name);
   }
   return -1;
 }
@@ -1897,7 +1900,7 @@ bool CVideoDatabase::HasMovieInfo(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -1915,7 +1918,7 @@ bool CVideoDatabase::HasTvShowInfo(const std::string& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strPath);
   }
   return false;
 }
@@ -1933,7 +1936,7 @@ bool CVideoDatabase::HasEpisodeInfo(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -1951,7 +1954,7 @@ bool CVideoDatabase::HasMusicVideoInfo(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -1998,7 +2001,7 @@ void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idTvShow);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idTvShow);
   }
 }
 
@@ -2072,7 +2075,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const std::string& strArtist, CFileI
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strArtist.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strArtist);
   }
 }
 
@@ -2096,7 +2099,7 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -2121,7 +2124,7 @@ bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& de
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strPath);
   }
   return false;
 }
@@ -2197,7 +2200,7 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool al
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSeason);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSeason);
   }
   return false;
 }
@@ -2220,7 +2223,7 @@ bool CVideoDatabase::GetEpisodeBasicInfo(const std::string& strFilenameAndPath, 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -2244,7 +2247,7 @@ bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVide
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -2268,7 +2271,7 @@ bool CVideoDatabase::GetMusicVideoInfo(const std::string& strFilenameAndPath, CV
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -2293,7 +2296,7 @@ bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idSet);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSet);
   }
   return false;
 }
@@ -2337,7 +2340,7 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
   return false;
 }
@@ -2552,7 +2555,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
 
   try
   {
-    CLog::Log(LOGINFO, "%s: Starting updates for movie %i", __FUNCTION__, idMovie);
+    CLog::Log(LOGINFO, "{}: Starting updates for movie {}", __FUNCTION__, idMovie);
 
     BeginTransaction();
 
@@ -2605,7 +2608,8 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
         if (!items.IsEmpty())
           LinkMovieToTvshow(idMovie, items[0]->GetVideoInfoTag()->m_iDbId, false);
         else
-          CLog::Log(LOGWARNING, "%s: Failed to link movie %s to show %s", __FUNCTION__, details.m_strTitle.c_str(), showLink.c_str());
+          CLog::Log(LOGWARNING, "{}: Failed to link movie {} to show {}", __FUNCTION__,
+                    details.m_strTitle, showLink);
       }
     }
 
@@ -2628,13 +2632,13 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
 
     CommitTransaction();
 
-    CLog::Log(LOGINFO, "%s: Finished updates for movie %i", __FUNCTION__, idMovie);
+    CLog::Log(LOGINFO, "{}: Finished updates for movie {}", __FUNCTION__, idMovie);
 
     return idMovie;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idMovie);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idMovie);
   }
   RollbackTransaction();
   return -1;
@@ -2669,7 +2673,7 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSet);
   }
   RollbackTransaction();
   return -1;
@@ -2829,7 +2833,7 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std:
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSeason);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSeason);
   }
   RollbackTransaction();
   return -1;
@@ -3086,7 +3090,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idFile);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idFile);
   }
 }
 
@@ -3127,7 +3131,7 @@ void CVideoDatabase::GetFilePathById(int idMovie, std::string &filePath, VIDEODB
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
 }
 
@@ -3187,7 +3191,7 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
 }
 
@@ -3249,7 +3253,8 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, item.GetVideoInfoTag()->m_strFileNameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__,
+              item.GetVideoInfoTag()->m_strFileNameAndPath);
   }
 }
 
@@ -3268,7 +3273,7 @@ void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
 }
 
@@ -3317,7 +3322,7 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
 }
 
@@ -3355,7 +3360,7 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath, 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
   }
 }
 
@@ -3389,7 +3394,7 @@ void CVideoDatabase::ClearBookMarksOfFile(int idFile, CBookmark::EType type /*= 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idFile);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idFile);
   }
 }
 
@@ -3418,7 +3423,7 @@ bool CVideoDatabase::GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
     return false;
   }
   return true;
@@ -3440,7 +3445,7 @@ void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBook
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, tag.m_iDbId);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, tag.m_iDbId);
   }
 }
 
@@ -3455,7 +3460,7 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, tag.m_iDbId);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, tag.m_iDbId);
   }
 }
 
@@ -3499,7 +3504,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
     RollbackTransaction();
   }
 }
@@ -3564,7 +3569,7 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idTvShow);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idTvShow);
     RollbackTransaction();
   }
 }
@@ -3597,7 +3602,7 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idSeason);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSeason);
     RollbackTransaction();
   }
 }
@@ -3636,7 +3641,7 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idEpisode);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idEpisode);
   }
 }
 
@@ -3678,7 +3683,7 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
     RollbackTransaction();
   }
 }
@@ -3717,7 +3722,7 @@ void CVideoDatabase::DeleteSet(int idSet)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSet);
   }
 }
 
@@ -3756,7 +3761,7 @@ void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idTag);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idTag);
   }
 }
 
@@ -3913,7 +3918,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, tag.m_iFileId);
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, tag.m_iFileId);
   }
   details.DetermineBestStreams();
 
@@ -3965,7 +3970,7 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, tag.m_strFileNameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, tag.m_strFileNameAndPath);
   }
 
   return match;
@@ -4302,7 +4307,7 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+    CLog::Log(LOGERROR, "{}({},{}) failed", __FUNCTION__, media_id, media_type);
   }
 }
 
@@ -4326,7 +4331,7 @@ void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::v
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+    CLog::Log(LOGERROR, "{}({},{}) failed", __FUNCTION__, media_id, media_type);
   }
 }
 
@@ -4350,7 +4355,7 @@ void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, Rat
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+    CLog::Log(LOGERROR, "{}({},{}) failed", __FUNCTION__, media_id, media_type);
   }
 }
 
@@ -4374,7 +4379,7 @@ void CVideoDatabase::GetUniqueIDs(int media_id, const std::string &media_type, C
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+    CLog::Log(LOGERROR, "{}({},{}) failed", __FUNCTION__, media_id, media_type);
   }
 }
 
@@ -4439,7 +4444,7 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -4526,7 +4531,7 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idFile);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idFile);
   }
 }
 
@@ -4571,7 +4576,8 @@ void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, cons
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%d, '%s', '%s', '%s') failed", __FUNCTION__, mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
+    CLog::Log(LOGERROR, "{}({}, '{}', '{}', '{}') failed", __FUNCTION__, mediaId, mediaType,
+              artType, url);
   }
 }
 
@@ -4596,7 +4602,7 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std:
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, mediaId);
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaId);
   }
   return false;
 }
@@ -4638,7 +4644,7 @@ bool CVideoDatabase::HasArtForItem(int mediaId, const MediaType &mediaType)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, mediaId);
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaId);
   }
   return false;
 }
@@ -4667,7 +4673,7 @@ bool CVideoDatabase::GetTvShowSeasons(int showId, std::map<int, int> &seasons)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, showId);
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, showId);
   }
   return false;
 }
@@ -4696,7 +4702,7 @@ bool CVideoDatabase::GetTvShowNamedSeasons(int showId, std::map<int, std::string
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, showId);
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, showId);
   }
   return false;
 }
@@ -4723,7 +4729,7 @@ bool CVideoDatabase::GetTvShowSeasonArt(int showId, std::map<int, std::map<std::
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, showId);
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, showId);
   }
   return false;
 }
@@ -4752,7 +4758,7 @@ bool CVideoDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, mediaType.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaType);
   }
   return false;
 }
@@ -5003,7 +5009,7 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -5033,7 +5039,7 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vecto
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, filePath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filePath);
   }
 }
 
@@ -5119,7 +5125,7 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath, CGUIDialog
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strPath);
   }
   if (progress)
     progress->Close();
@@ -5179,7 +5185,7 @@ void CVideoDatabase::SetScraperForPath(const std::string& filePath, const Scrape
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, filePath.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filePath);
   }
 }
 
@@ -5201,7 +5207,7 @@ bool CVideoDatabase::ScraperInUse(const std::string &scraperID) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraperID.c_str());
+    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, scraperID);
   }
   return false;
 }
@@ -5919,7 +5925,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -5950,7 +5956,7 @@ int CVideoDatabase::GetPlayCount(int iFileId)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return -1;
 }
@@ -5990,7 +5996,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - error updating fanart for %s", __FUNCTION__, item.GetPath().c_str());
+    CLog::Log(LOGERROR, "{} - error updating fanart for {}", __FUNCTION__, item.GetPath());
   }
 }
 
@@ -6050,7 +6056,7 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateT
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
 }
 
@@ -6075,27 +6081,27 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const std::string& strNewMovi
     std::string content;
     if (iType == VIDEODB_CONTENT_MOVIES)
     {
-      CLog::Log(LOGINFO, "Changing Movie:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing Movie:id:{} New Title:{}", idMovie, strNewMovieTitle);
       content = MediaTypeMovie;
     }
     else if (iType == VIDEODB_CONTENT_EPISODES)
     {
-      CLog::Log(LOGINFO, "Changing Episode:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing Episode:id:{} New Title:{}", idMovie, strNewMovieTitle);
       content = MediaTypeEpisode;
     }
     else if (iType == VIDEODB_CONTENT_TVSHOWS)
     {
-      CLog::Log(LOGINFO, "Changing TvShow:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing TvShow:id:{} New Title:{}", idMovie, strNewMovieTitle);
       content = MediaTypeTvShow;
     }
     else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
-      CLog::Log(LOGINFO, "Changing MusicVideo:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing MusicVideo:id:{} New Title:{}", idMovie, strNewMovieTitle);
       content = MediaTypeMusicVideo;
     }
     else if (iType == VIDEODB_CONTENT_MOVIE_SETS)
     {
-      CLog::Log(LOGINFO, "Changing Movie set:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing Movie set:id:{} New Title:{}", idMovie, strNewMovieTitle);
       std::string strSQL = PrepareSQL("UPDATE sets SET strSet='%s' WHERE idSet=%i", strNewMovieTitle.c_str(), idMovie );
       m_pDS->exec(strSQL);
     }
@@ -6108,7 +6114,10 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const std::string& strNewMovi
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (int idMovie, const std::string& strNewMovieTitle) failed on MovieID:%i and Title:%s", __FUNCTION__, idMovie, strNewMovieTitle.c_str());
+    CLog::Log(
+        LOGERROR,
+        "{} (int idMovie, const std::string& strNewMovieTitle) failed on MovieID:{} and Title:{}",
+        __FUNCTION__, idMovie, strNewMovieTitle);
   }
 }
 
@@ -6133,7 +6142,10 @@ bool CVideoDatabase::UpdateVideoSortTitle(int idDb, const std::string& strNewSor
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (int idDb, const std::string& strNewSortTitle, VIDEODB_CONTENT_TYPE iType) failed on ID: %i and Sort Title: %s", __FUNCTION__, idDb, strNewSortTitle.c_str());
+    CLog::Log(LOGERROR,
+              "{} (int idDb, const std::string& strNewSortTitle, VIDEODB_CONTENT_TYPE iType) "
+              "failed on ID: {} and Sort Title: {}",
+              __FUNCTION__, idDb, strNewSortTitle);
   }
 
   return false;
@@ -6150,12 +6162,13 @@ void CVideoDatabase::EraseVideoSettings(const CFileItem &item)
   {
     std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile=%i", idFile);
 
-    CLog::Log(LOGINFO, "Deleting settings information for files %s", CURL::GetRedacted(item.GetPath()).c_str());
+    CLog::Log(LOGINFO, "Deleting settings information for files {}",
+              CURL::GetRedacted(item.GetPath()));
     m_pDS->exec(sql);
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
 }
 
@@ -6170,7 +6183,7 @@ void CVideoDatabase::EraseAllVideoSettings()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
 }
 
@@ -6200,7 +6213,7 @@ void CVideoDatabase::EraseAllVideoSettings(const std::string& path)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
 }
 
@@ -6407,7 +6420,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -6473,7 +6486,7 @@ bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -6639,7 +6652,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFile
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -6932,7 +6945,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         catch (...)
         {
           m_pDS->close();
-          CLog::Log(LOGERROR, "%s: out of memory - retrieved %i items", __FUNCTION__, items.Size());
+          CLog::Log(LOGERROR, "{}: out of memory - retrieved {} items", __FUNCTION__, items.Size());
           return items.Size() > 0;
         }
       }
@@ -6950,7 +6963,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
   catch (...)
   {
     m_pDS->close();
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7119,7 +7132,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7284,7 +7297,7 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7535,7 +7548,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7644,7 +7657,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7782,7 +7795,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7903,7 +7916,7 @@ bool CVideoDatabase::HasSets() const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -7930,7 +7943,7 @@ int CVideoDatabase::GetTvShowForEpisode(int idEpisode)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idEpisode);
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idEpisode);
   }
   return false;
 }
@@ -7978,7 +7991,7 @@ bool CVideoDatabase::HasContent(VIDEODB_CONTENT_TYPE type)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return result;
 }
@@ -8149,7 +8162,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return ScraperPtr();
 }
@@ -8236,7 +8249,7 @@ void CVideoDatabase::GetMovieGenresByName(const std::string& strSearch, CFileIte
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8278,7 +8291,7 @@ void CVideoDatabase::GetMovieCountriesByName(const std::string& strSearch, CFile
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8319,7 +8332,7 @@ void CVideoDatabase::GetTvShowGenresByName(const std::string& strSearch, CFileIt
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8360,7 +8373,7 @@ void CVideoDatabase::GetMovieActorsByName(const std::string& strSearch, CFileIte
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8401,7 +8414,7 @@ void CVideoDatabase::GetTvShowsActorsByName(const std::string& strSearch, CFileI
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8445,7 +8458,7 @@ void CVideoDatabase::GetMusicVideoArtistsByName(const std::string& strSearch, CF
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8486,7 +8499,7 @@ void CVideoDatabase::GetMusicVideoGenresByName(const std::string& strSearch, CFi
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8543,7 +8556,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const std::string& strSearch, CFi
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8586,7 +8599,7 @@ void CVideoDatabase::GetMusicVideosByAlbum(const std::string& strSearch, CFileIt
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8685,7 +8698,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
 }
@@ -8722,7 +8735,7 @@ unsigned int CVideoDatabase::GetRandomMusicVideoIDs(const std::string& strWhere,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strWhere.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strWhere);
   }
   return 0;
 }
@@ -8769,7 +8782,7 @@ int CVideoDatabase::GetMatchingMusicVideo(const std::string& strArtist, const st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return -1;
 }
@@ -8825,7 +8838,7 @@ void CVideoDatabase::GetMoviesByName(const std::string& strSearch, CFileItemList
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8869,7 +8882,7 @@ void CVideoDatabase::GetTvShowsByName(const std::string& strSearch, CFileItemLis
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8912,7 +8925,7 @@ void CVideoDatabase::GetEpisodesByName(const std::string& strSearch, CFileItemLi
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -8959,7 +8972,7 @@ void CVideoDatabase::GetMusicVideosByName(const std::string& strSearch, CFileIte
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -9009,7 +9022,7 @@ void CVideoDatabase::GetEpisodesByPlot(const std::string& strSearch, CFileItemLi
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -9054,7 +9067,7 @@ void CVideoDatabase::GetMoviesByPlot(const std::string& strSearch, CFileItemList
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -9097,7 +9110,7 @@ void CVideoDatabase::GetMovieDirectorsByName(const std::string& strSearch, CFile
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -9140,7 +9153,7 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const std::string& strSearch, CFi
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -9183,7 +9196,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const std::string& strSearch, 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
 }
 
@@ -9200,7 +9213,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       return;
 
     auto start = std::chrono::steady_clock::now();
-    CLog::Log(LOGINFO, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
+    CLog::Log(LOGINFO, "{}: Starting videodatabase cleanup ..", __FUNCTION__);
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
                                                        "OnCleanStarted");
 
@@ -9379,7 +9392,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       }
       CLog::LogF(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathHashCount);
 
-      CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning files table", __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning files table", __FUNCTION__);
       sql = "DELETE FROM files WHERE idFile IN " + filesToDelete;
       m_pDS->exec(sql);
     }
@@ -9391,7 +9404,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         moviesToDelete += StringUtils::Format("{},", i);
       moviesToDelete = "(" + StringUtils::TrimRight(moviesToDelete, ",") + ")";
 
-      CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning movie table", __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning movie table", __FUNCTION__);
       sql = "DELETE FROM movie WHERE idMovie IN " + moviesToDelete;
       m_pDS->exec(sql);
     }
@@ -9403,12 +9416,13 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         episodesToDelete += StringUtils::Format("{},", i);
       episodesToDelete = "(" + StringUtils::TrimRight(episodesToDelete, ",") + ")";
 
-      CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning episode table", __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning episode table", __FUNCTION__);
       sql = "DELETE FROM episode WHERE idEpisode IN " + episodesToDelete;
       m_pDS->exec(sql);
     }
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning paths that don't exist and have content set...", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning paths that don't exist and have content set...",
+              __FUNCTION__);
     sql = "SELECT path.idPath, path.strPath, path.idParentPath FROM path "
             "WHERE NOT ((strContent IS NULL OR strContent = '') "
                    "AND (strSettings IS NULL OR strSettings = '') "
@@ -9453,7 +9467,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       m_pDS->exec(sql);
     }
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning tvshow table", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning tvshow table", __FUNCTION__);
 
     std::string tvshowsToDelete;
     sql = "SELECT idShow FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
@@ -9478,12 +9492,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         musicVideosToDelete += StringUtils::Format("{},", i);
       musicVideosToDelete = "(" + StringUtils::TrimRight(musicVideosToDelete, ",") + ")";
 
-      CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning musicvideo table", __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning musicvideo table", __FUNCTION__);
       sql = "DELETE FROM musicvideo WHERE idMVideo IN " + musicVideosToDelete;
       m_pDS->exec(sql);
     }
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning path table", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning path table", __FUNCTION__);
     sql = StringUtils::Format(
         "DELETE FROM path "
         "WHERE (strContent IS NULL OR strContent = '') "
@@ -9501,28 +9515,29 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
     m_pDS->exec(sql);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning genre table", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning genre table", __FUNCTION__);
     sql = "DELETE FROM genre "
             "WHERE NOT EXISTS (SELECT 1 FROM genre_link WHERE genre_link.genre_id = genre.genre_id)";
     m_pDS->exec(sql);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning country table", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning country table", __FUNCTION__);
     sql = "DELETE FROM country WHERE NOT EXISTS (SELECT 1 FROM country_link WHERE country_link.country_id = country.country_id)";
     m_pDS->exec(sql);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning actor table of actors, directors and writers", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning actor table of actors, directors and writers",
+              __FUNCTION__);
     sql = "DELETE FROM actor "
             "WHERE NOT EXISTS (SELECT 1 FROM actor_link WHERE actor_link.actor_id = actor.actor_id) "
               "AND NOT EXISTS (SELECT 1 FROM director_link WHERE director_link.actor_id = actor.actor_id) "
               "AND NOT EXISTS (SELECT 1 FROM writer_link WHERE writer_link.actor_id = actor.actor_id)";
     m_pDS->exec(sql);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning studio table", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning studio table", __FUNCTION__);
     sql = "DELETE FROM studio "
             "WHERE NOT EXISTS (SELECT 1 FROM studio_link WHERE studio_link.studio_id = studio.studio_id)";
     m_pDS->exec(sql);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning set table", __FUNCTION__);
+    CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning set table", __FUNCTION__);
     sql = "DELETE FROM sets WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idSet = sets.idSet)";
     m_pDS->exec(sql);
 
@@ -9555,7 +9570,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
     RollbackTransaction();
   }
   if (progress)
@@ -9853,7 +9868,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       {
         if (!item.Exists(false))
         {
-          CLog::Log(LOGINFO, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
+                    movie.m_strFileNameAndPath);
           bSkip = true;
         }
         else
@@ -9871,7 +9887,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           {
             if(!xmlDoc.SaveFile(nfoFile))
             {
-              CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              CLog::Log(LOGERROR, "{}: Movie nfo export failed! ('{}')", __FUNCTION__, nfoFile);
               CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
               iFailCount++;
             }
@@ -9950,9 +9966,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
         else
-          CLog::Log(LOGDEBUG,
-            "CVideoDatabase::%s - Not exporting movie set '%s' as could not create folder '%s'",
-            __FUNCTION__, title.c_str(), itemPath.c_str());
+          CLog::Log(
+              LOGDEBUG,
+              "CVideoDatabase::{} - Not exporting movie set '{}' as could not create folder '{}'",
+              __FUNCTION__, title, itemPath);
         m_pDS->next();
         current++;
       }
@@ -10002,7 +10019,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       {
         if (!item.Exists(false))
         {
-          CLog::Log(LOGINFO, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
+                    movie.m_strFileNameAndPath);
           bSkip = true;
         }
         else
@@ -10013,7 +10031,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           {
             if(!xmlDoc.SaveFile(nfoFile))
             {
-              CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              CLog::Log(LOGERROR, "{}: Musicvideo nfo export failed! ('{}')", __FUNCTION__,
+                        nfoFile);
               CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
               iFailCount++;
             }
@@ -10101,7 +10120,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       {
         if (!item.Exists(false))
         {
-          CLog::Log(LOGINFO, "%s - Not exporting item %s as it does not exist", __FUNCTION__, tvshow.m_strPath.c_str());
+          CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
+                    tvshow.m_strPath);
           bSkip = true;
         }
         else
@@ -10112,7 +10132,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           {
             if(!xmlDoc.SaveFile(nfoFile))
             {
-              CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              CLog::Log(LOGERROR, "{}: TVShow nfo export failed! ('{}')", __FUNCTION__, nfoFile);
               CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
               iFailCount++;
             }
@@ -10196,7 +10216,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         {
           if (!item.Exists(false))
           {
-            CLog::Log(LOGINFO, "%s - Not exporting item %s as it does not exist", __FUNCTION__, episode.m_strFileNameAndPath.c_str());
+            CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
+                      episode.m_strFileNameAndPath);
             bSkip = true;
           }
           else
@@ -10207,7 +10228,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             {
               if(!xmlDoc.SaveFile(nfoFile))
               {
-                CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+                CLog::Log(LOGERROR, "{}: Episode nfo export failed! ('{}')", __FUNCTION__, nfoFile);
                 CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
                 iFailCount++;
               }
@@ -10288,7 +10309,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
     iFailCount++;
   }
 
@@ -10357,7 +10378,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     int iVersion = 0;
     XMLUtils::GetInt(root, "version", iVersion);
 
-    CLog::Log(LOGINFO, "%s: Starting import (export version = %i)", __FUNCTION__, iVersion);
+    CLog::Log(LOGINFO, "{}: Starting import (export version = {})", __FUNCTION__, iVersion);
 
     TiXmlElement *movie = root->FirstChildElement();
     int current = 0;
@@ -10519,7 +10540,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   if (progress)
     progress->Close();
@@ -10642,7 +10663,7 @@ bool CVideoDatabase::SetSingleValue(VIDEODB_CONTENT_TYPE type, int dbId, int dbF
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
   return false;
 }
@@ -10680,7 +10701,7 @@ bool CVideoDatabase::SetSingleValue(const std::string &table, const std::string 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, sql.c_str());
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, sql);
   }
   return false;
 }
@@ -11031,7 +11052,7 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, const MediaType& m
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i, %s, %i) failed", __FUNCTION__, dbId, mediaType.c_str(), rating);
+    CLog::Log(LOGERROR, "{} ({}, {}, {}) failed", __FUNCTION__, dbId, mediaType, rating);
   }
   return false;
 }

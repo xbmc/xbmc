@@ -60,24 +60,28 @@ void CJNIXBMCNsdManagerRegistrationListener::RegisterNatives(JNIEnv* env)
 void CJNIXBMCNsdManagerRegistrationListener::_onRegistrationFailed(JNIEnv* env, jobject thiz, jobject serviceInfo, jint errorCode)
 {
   CJNINsdServiceInfo si = CJNINsdServiceInfo(jhobject::fromJNI(serviceInfo));
-  CLog::Log(LOGERROR, "ZeroconfAndroid: %s.%s registration failed: %d", si.getServiceName().c_str(), si.getServiceType().c_str(), errorCode);
+  CLog::Log(LOGERROR, "ZeroconfAndroid: {}.{} registration failed: {}", si.getServiceName(),
+            si.getServiceType(), errorCode);
 }
 
 void CJNIXBMCNsdManagerRegistrationListener::_onServiceRegistered(JNIEnv* env, jobject thiz, jobject serviceInfo)
 {
   CJNINsdServiceInfo si = CJNINsdServiceInfo(jhobject::fromJNI(serviceInfo));
-  CLog::Log(LOGINFO, "ZeroconfAndroid: %s.%s now registered and active", si.getServiceName().c_str(), si.getServiceType().c_str());
+  CLog::Log(LOGINFO, "ZeroconfAndroid: {}.{} now registered and active", si.getServiceName(),
+            si.getServiceType());
 }
 
 void CJNIXBMCNsdManagerRegistrationListener::_onServiceUnregistered(JNIEnv* env, jobject thiz, jobject serviceInfo)
 {
   CJNINsdServiceInfo si = CJNINsdServiceInfo(jhobject::fromJNI(serviceInfo));
-  CLog::Log(LOGINFO, "ZeroconfAndroid: %s.%s registration removed", si.getServiceName().c_str(), si.getServiceType().c_str());
+  CLog::Log(LOGINFO, "ZeroconfAndroid: {}.{} registration removed", si.getServiceName(),
+            si.getServiceType());
 }
 
 void CJNIXBMCNsdManagerRegistrationListener::_onUnregistrationFailed(JNIEnv* env, jobject thiz, jobject serviceInfo, jint errorCode)
 {
   CJNINsdServiceInfo si = CJNINsdServiceInfo(jhobject::fromJNI(serviceInfo));
-  CLog::Log(LOGERROR, "ZeroconfAndroid: %s.%s unregistration failed: %d", si.getServiceName().c_str(), si.getServiceType().c_str(), errorCode);
+  CLog::Log(LOGERROR, "ZeroconfAndroid: {}.{} unregistration failed: {}", si.getServiceName(),
+            si.getServiceType(), errorCode);
 }
 

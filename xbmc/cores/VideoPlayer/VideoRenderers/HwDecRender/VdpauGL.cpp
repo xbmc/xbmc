@@ -189,7 +189,7 @@ bool CVdpauTexture::MapRGB()
   GLenum err = glGetError();
   if (err != GL_NO_ERROR)
   {
-    CLog::Log(LOGERROR, "CVdpauTexture::MapRGB error register output surface: %d", err);
+    CLog::Log(LOGERROR, "CVdpauTexture::MapRGB error register output surface: {}", err);
     return false;
   }
 

@@ -73,8 +73,8 @@ CRPProcessInfo* CRPProcessInfo::CreateInstance()
     processInfo = m_processControl();
 
     if (processInfo != nullptr)
-      CLog::Log(LOGINFO, "RetroPlayer[PROCESS]: Created process info for %s",
-                processInfo->GetPlatformName().c_str());
+      CLog::Log(LOGINFO, "RetroPlayer[PROCESS]: Created process info for {}",
+                processInfo->GetPlatformName());
     else
       CLog::Log(LOGERROR, "RetroPlayer[PROCESS]: Failed to create process info");
   }
@@ -94,8 +94,8 @@ void CRPProcessInfo::RegisterProcessControl(CreateRPProcessControl createFunc)
 
   if (processInfo)
   {
-    CLog::Log(LOGINFO, "RetroPlayer[PROCESS]: Registering process control for %s",
-              processInfo->GetPlatformName().c_str());
+    CLog::Log(LOGINFO, "RetroPlayer[PROCESS]: Registering process control for {}",
+              processInfo->GetPlatformName());
     m_processControl = createFunc;
   }
   else
@@ -109,8 +109,8 @@ void CRPProcessInfo::RegisterRendererFactory(IRendererFactory* factory)
 {
   CSingleLock lock(m_createSection);
 
-  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Registering renderer factory for %s",
-            factory->RenderSystemName().c_str());
+  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Registering renderer factory for {}",
+            factory->RenderSystemName());
 
   m_rendererFactories.emplace_back(factory);
 }

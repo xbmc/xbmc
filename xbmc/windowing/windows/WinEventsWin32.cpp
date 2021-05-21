@@ -275,7 +275,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         if (UnregisterDeviceNotification(hDeviceNotify))
           hDeviceNotify = nullptr;
         else
-          CLog::LogF(LOGINFO, "UnregisterDeviceNotification failed (%d)", GetLastError());
+          CLog::LogF(LOGINFO, "UnregisterDeviceNotification failed ({})", GetLastError());
       }
       newEvent.type = XBMC_QUIT;
       if (appPort)
@@ -288,12 +288,14 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           appPort->SetRenderGUI(wParam != 0);
         if (g_application.GetRenderGUI() != active)
           DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_SHOWWINDOW -> window is %s", wParam != 0 ? "shown" : "hidden");
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_SHOWWINDOW -> window is {}",
+                    wParam != 0 ? "shown" : "hidden");
       }
       break;
     case WM_ACTIVATE:
       {
-        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_ACTIVATE -> window is %s", LOWORD(wParam) != WA_INACTIVE ? "active" : "inactive");
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_ACTIVATE -> window is {}",
+                    LOWORD(wParam) != WA_INACTIVE ? "active" : "inactive");
         bool active = g_application.GetRenderGUI();
         if (HIWORD(wParam))
         {
@@ -319,20 +321,22 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         }
         if (g_application.GetRenderGUI() != active)
           DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window is {}",
+                    g_application.GetRenderGUI() ? "active" : "inactive");
       }
       break;
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
-      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window focus %s", g_application.m_AppFocused ? "set" : "lost");
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window focus {}",
+                  g_application.m_AppFocused ? "set" : "lost");
 
       DX::Windowing()->NotifyAppFocusChange(g_application.m_AppFocused);
       if (uMsg == WM_KILLFOCUS)
       {
         std::string procfile;
         if (CWIN32Util::GetFocussedProcess(procfile))
-          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "Focus switched to process %s", procfile);
+          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "Focus switched to process {}", procfile);
       }
       break;
     /* needs to be reviewed after frodo. we reset the system idle timer
@@ -443,7 +447,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     {
       const unsigned int appcmd = GET_APPCOMMAND_LPARAM(lParam);
 
-      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "APPCOMMAND %d", appcmd);
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "APPCOMMAND {}", appcmd);
 
       // Reset the screen saver
       g_application.ResetScreenSaver();
@@ -460,12 +464,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CAction appcmdaction = CServiceBroker::GetInputManager().GetAction(iWin, key);
       if (appcmdaction.GetID())
       {
-        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "appcommand %d, action %s", appcmd, appcmdaction.GetName().c_str());
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "appcommand {}, action {}", appcmd,
+                    appcmdaction.GetName());
         CServiceBroker::GetInputManager().QueueAction(appcmdaction);
         return true;
       }
 
-      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "unknown appcommand %d", appcmd);
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "unknown appcommand {}", appcmd);
       return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_GESTURENOTIFY:
@@ -550,7 +555,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       // get the suggested size of the window on the new display with a different DPI
       uint16_t  dpi = HIWORD(wParam);
       RECT rc = *reinterpret_cast<RECT*>(lParam);
-      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "dpi changed event -> %d (%d, %d, %d, %d)", dpi, rc.left, rc.top, rc.right, rc.bottom);
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "dpi changed event -> {} ({}, {}, {}, {})", dpi, rc.left,
+                  rc.top, rc.right, rc.bottom);
       DX::Windowing()->DPIChanged(dpi, rc);
       return(0);
     }
@@ -647,7 +653,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.resize.w = g_sizeMoveWidth;
           newEvent.resize.h = g_sizeMoveHight;
 
-          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window resize event %d x %d", newEvent.resize.w, newEvent.resize.h);
+          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window resize event {} x {}", newEvent.resize.w,
+                      newEvent.resize.h);
           // tell device about new size
           DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell application about size changes
@@ -710,7 +717,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAINSERTED:
               if (GetDriveType(drivePath) != DRIVE_CDROM)
               {
-                CLog::LogF(LOGDEBUG, "Drive %s Media has arrived.", FromW(drivePath));
+                CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", FromW(drivePath));
                 CWin32StorageProvider::SetEvent();
               }
               break;
@@ -719,7 +726,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAREMOVED:
               if (GetDriveType(drivePath) != DRIVE_CDROM)
               {
-                CLog::LogF(LOGDEBUG, "Drive %s Media was removed.", FromW(drivePath));
+                CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", FromW(drivePath));
                 CWin32StorageProvider::SetEvent();
               }
               break;
@@ -765,12 +772,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                     "{}:", CWIN32Util::FirstDriveFromMask(lpdbv->dbcv_unitmask));
                 if(wParam == DBT_DEVICEARRIVAL)
                 {
-                  CLog::LogF(LOGDEBUG, "Drive %s Media has arrived.", strdrive.c_str());
+                  CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive);
                   CJobManager::GetInstance().AddJob(new CDetectDisc(strdrive, true), NULL);
                 }
                 else
                 {
-                  CLog::LogF(LOGDEBUG, "Drive %s Media was removed.", strdrive.c_str());
+                  CLog::LogF(LOGDEBUG, "Drive {} Media was removed.", strdrive);
                   CMediaSource share;
                   share.strPath = strdrive;
                   share.strName = share.strPath;

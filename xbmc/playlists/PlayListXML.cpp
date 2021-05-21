@@ -79,7 +79,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
   // Try to load the file as XML. If it does not load, return an error.
   if ( !xmlDoc.LoadFile( strFileName ) )
   {
-    CLog::Log(LOGERROR, "Playlist %s has invalid format/malformed xml", strFileName.c_str());
+    CLog::Log(LOGERROR, "Playlist {} has invalid format/malformed xml", strFileName);
     return false;
   }
 
@@ -88,7 +88,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
   // If the stream does not contain "streams", still ok. Not an error.
   if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "streams"))
   {
-    CLog::Log(LOGERROR, "Playlist %s has no <streams> root", strFileName.c_str());
+    CLog::Log(LOGERROR, "Playlist {} has no <streams> root", strFileName);
     return false;
   }
 
@@ -144,7 +144,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
        Add(newItem);
     }
     else
-       CLog::Log(LOGERROR, "Playlist entry %s in file %s has missing <url> tag", name.c_str(), strFileName.c_str());
+      CLog::Log(LOGERROR, "Playlist entry {} in file {} has missing <url> tag", name, strFileName);
 
     pSet = pSet->NextSiblingElement("stream");
   }
@@ -160,7 +160,7 @@ void CPlayListXML::Save(const std::string& strFileName) const
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))
   {
-    CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
+    CLog::Log(LOGERROR, "Could not save WPL playlist: [{}]", strPlaylist);
     return ;
   }
   std::string write;

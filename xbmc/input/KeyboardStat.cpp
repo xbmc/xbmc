@@ -90,7 +90,8 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   if (keysym.mod & XBMCKMOD_MODE)
     lockingModifiers |= CKey::MODIFIER_SCROLLLOCK;
 
-  CLog::Log(LOGDEBUG, "Keyboard: scancode: 0x%02x, sym: 0x%04x, unicode: 0x%04x, modifier: 0x%x",
+  CLog::Log(LOGDEBUG,
+            "Keyboard: scancode: {:#02x}, sym: {:#04x}, unicode: {:#04x}, modifier: 0x{:x}",
             keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
   // The keysym.unicode is usually valid, even if it is zero. A zero
@@ -105,7 +106,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   // Start by check whether any of the HID peripherals wants to translate this keypress
   if (LookupSymAndUnicodePeripherals(keysym, &vkey, &ascii))
   {
-    CLog::Log(LOGDEBUG, "%s - keypress translated by a HID peripheral", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - keypress translated by a HID peripheral", __FUNCTION__);
   }
 
   // Continue by trying to match both the sym and unicode. This will identify

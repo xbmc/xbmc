@@ -16,7 +16,7 @@ namespace XbmcCommons
 
   void Exception::LogThrowMessage(const char* prefix) const
   {
-    CLog::Log(LOGERROR,"EXCEPTION Thrown (%s) : %s", classname.c_str(), message.c_str());
+    CLog::Log(LOGERROR, "EXCEPTION Thrown ({}) : {}", classname, message);
   }
 }
 

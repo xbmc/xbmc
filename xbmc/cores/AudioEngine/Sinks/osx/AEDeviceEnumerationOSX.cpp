@@ -451,7 +451,8 @@ AESampleRateList AEDeviceEnumerationOSX::getSampleRateListForStream(UInt32 strea
     // the "fixed" audio config to force one of them
     if (formatDesc.mSampleRate == kAudioStreamAnyRate)
     {
-      CLog::Log(LOGINFO, "%s reported samplerate is kAudioStreamAnyRate adding 44.1khz and 48khz", __FUNCTION__);
+      CLog::Log(LOGINFO, "{} reported samplerate is kAudioStreamAnyRate adding 44.1khz and 48khz",
+                __FUNCTION__);
       formatDesc.mSampleRate = 44100;
       if (!hasSampleRate(returnSampleRateList, formatDesc.mSampleRate))
         returnSampleRateList.push_back(formatDesc.mSampleRate);
@@ -505,7 +506,7 @@ std::string AEDeviceEnumerationOSX::getExtraDisplayNameForStream(UInt32 streamId
     extraName << " - ";
     extraName << startChannel + numChannels - 1;
     CLog::Log(LOGINFO,
-              "%s adding stream %d as pseudo device with start channel %d and %d channels total",
+              "{} adding stream {} as pseudo device with start channel {} and {} channels total",
               __FUNCTION__, (unsigned int)streamIdx, (unsigned int)startChannel,
               (unsigned int)numChannels);
     return extraName.str();
@@ -577,7 +578,8 @@ float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &for
 
 bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, bool virt, AudioStreamBasicDescription &outputFormat, AudioStreamID &outputStream) const
 {
-  CLog::Log(LOGDEBUG, "%s: Finding stream for format %s", __FUNCTION__, CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "{}: Finding stream for format {}", __FUNCTION__,
+            CAEUtil::DataFormatToStr(format.m_dataFormat));
 
   bool                        formatFound  = false;
   float                       outputScore  = 0;
@@ -619,9 +621,11 @@ bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, cons
 
       std::string formatString;
       if (!virt)
-        CLog::Log(LOGDEBUG, "%s: Physical Format: %s rated %f", __FUNCTION__, StreamDescriptionToString(formatDesc, formatString), score);
+        CLog::Log(LOGDEBUG, "{}: Physical Format: {} rated {:f}", __FUNCTION__,
+                  StreamDescriptionToString(formatDesc, formatString), score);
       else
-        CLog::Log(LOGDEBUG, "%s: Virtual Format: %s rated %f", __FUNCTION__, StreamDescriptionToString(formatDesc, formatString), score);
+        CLog::Log(LOGDEBUG, "{}: Virtual Format: {} rated {:f}", __FUNCTION__,
+                  StreamDescriptionToString(formatDesc, formatString), score);
 
       if (score > outputScore)
       {
@@ -795,12 +799,15 @@ void AEDeviceEnumerationOSX::GetAEChannelMap(CAEChannelInfo &channelMap, unsigne
 
   if (logMapping)
   {
-    CLog::Log(LOGDEBUG, "%s Engine requests layout %s", __FUNCTION__, ((std::string)channelMap).c_str());
+    CLog::Log(LOGDEBUG, "{} Engine requests layout {}", __FUNCTION__, ((std::string)channelMap));
 
     if (mapAvailable)
-      CLog::Log(LOGDEBUG, "%s trying to map to %s layout: %s", __FUNCTION__, channelsPerFrame == 2 ? "stereo" : "multichannel", calayout.ChannelLayoutToString(*layout, layoutStr));
+      CLog::Log(LOGDEBUG, "{} trying to map to {} layout: {}", __FUNCTION__,
+                channelsPerFrame == 2 ? "stereo" : "multichannel",
+                calayout.ChannelLayoutToString(*layout, layoutStr));
     else
-      CLog::Log(LOGDEBUG, "%s no map available - using static multichannel map layout", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "{} no map available - using static multichannel map layout",
+                __FUNCTION__);
   }
 
   channelMap.Reset();// start with an empty map
@@ -826,5 +833,5 @@ void AEDeviceEnumerationOSX::GetAEChannelMap(CAEChannelInfo &channelMap, unsigne
   }
 
   if (logMapping)
-    CLog::Log(LOGDEBUG, "%s mapped channels to layout %s", __FUNCTION__, ((std::string)channelMap).c_str());
+    CLog::Log(LOGDEBUG, "{} mapped channels to layout {}", __FUNCTION__, ((std::string)channelMap));
 }

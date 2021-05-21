@@ -544,8 +544,8 @@ CGDisplayModeRef GetMode(int width, int height, double refreshrate, int screenId
   double rate;
   RESOLUTION_INFO res;
 
-  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d", width,
-            height, refreshrate, screenIdx);
+  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with {} x {} @ {:f} Hz on display {}",
+            width, height, refreshrate, screenIdx);
 
   CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(screenIdx));
 
@@ -592,7 +592,7 @@ static void DisplayReconfigured(CGDirectDisplayID display,
   if (!winsys)
     return;
 
-  CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured with flags %d", flags);
+  CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured with flags {}", flags);
 
   // we fire the callbacks on start of configuration
   // or when the mode set was finished
@@ -701,7 +701,7 @@ bool CWinSystemOSX::InitWindowSystem()
 
   if (SDL_Init(SDL_INIT_VIDEO) != 0)
   {
-    CLog::LogF(LOGFATAL, "Unable to initialize SDL: %s", SDL_GetError());
+    CLog::LogF(LOGFATAL, "Unable to initialize SDL: {}", SDL_GetError());
     return false;
   }
   // SDL_Init will install a handler for segfaults, restore the default handler.
@@ -1366,7 +1366,7 @@ void CWinSystemOSX::FillInVideoModes()
     CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
 
-    CLog::Log(LOGINFO, "Display %i has name %s", disp, [dispName UTF8String]);
+    CLog::Log(LOGINFO, "Display {} has name {}", disp, [dispName UTF8String]);
 
     if (NULL == displayModes)
       continue;
@@ -1395,8 +1395,8 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
-        CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz", disp, w,
-                  h, refreshrate);
+        CLog::Log(LOGINFO, "Found possible resolution for display {} with {} x {} @ {:f} Hz", disp,
+                  w, h, refreshrate);
 
         // only add the resolution if it belongs to "our" screen
         // all others are only logged above...
@@ -1540,8 +1540,7 @@ bool CWinSystemOSX::IsObscured(void)
         {
           std::string appName;
           if (CDarwinUtils::CFStringRefToUTF8String(ownerName, appName))
-            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures Kodi!",
-                      appName.c_str());
+            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window {} obscures Kodi!", appName);
           obscureLogged = true;
         }
         m_obscured = true;

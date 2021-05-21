@@ -39,12 +39,12 @@ bool SoLoader::Load()
   }
   else
   {
-    CLog::Log(LOGDEBUG, "Loading: %s", strFileName.c_str());
+    CLog::Log(LOGDEBUG, "Loading: {}", strFileName);
     int flags = RTLD_LAZY;
     m_soHandle = dlopen(strFileName.c_str(), flags);
     if (!m_soHandle)
     {
-      CLog::Log(LOGERROR, "Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
+      CLog::Log(LOGERROR, "Unable to load {}, reason: {}", strFileName, dlerror());
       return false;
     }
   }
@@ -58,7 +58,7 @@ void SoLoader::Unload()
   if (m_soHandle)
   {
     if (dlclose(m_soHandle) != 0)
-       CLog::Log(LOGERROR, "Unable to unload %s, reason: %s", GetName(), dlerror());
+      CLog::Log(LOGERROR, "Unable to unload {}, reason: {}", GetName(), dlerror());
   }
   m_bLoaded = false;
   m_soHandle = NULL;
@@ -69,7 +69,7 @@ int SoLoader::ResolveExport(const char* symbol, void** f, bool logging)
   if (!m_bLoaded && !Load())
   {
     if (logging)
-      CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: so not loaded", GetName(), symbol);
+      CLog::Log(LOGWARNING, "Unable to resolve: {} {}, reason: so not loaded", GetName(), symbol);
     return 0;
   }
 
@@ -77,7 +77,7 @@ int SoLoader::ResolveExport(const char* symbol, void** f, bool logging)
   if (!s)
   {
     if (logging)
-      CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: %s", GetName(), symbol, dlerror());
+      CLog::Log(LOGWARNING, "Unable to resolve: {} {}, reason: {}", GetName(), symbol, dlerror());
     return 0;
   }
 

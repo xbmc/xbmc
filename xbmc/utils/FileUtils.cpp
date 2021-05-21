@@ -71,7 +71,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, CVariant{g_localizeStrings.Get(16013)}, false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
-    CLog::Log(LOGINFO, "FileUtils: rename %s->%s", strFileAndPath.c_str(), strPath.c_str());
+    CLog::Log(LOGINFO, "FileUtils: rename {}->{}", strFileAndPath, strPath);
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.
       std::vector<std::string> paths;
@@ -177,7 +177,7 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
   CDateTime dateAdded;
   if (strFileNameAndPath.empty())
   {
-    CLog::Log(LOGDEBUG, "%s empty strFileNameAndPath variable", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} empty strFileNameAndPath variable", __FUNCTION__);
     return dateAdded;
   }
 
@@ -243,8 +243,8 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to extract modification date for file (%s)", __FUNCTION__,
-              strFileNameAndPath.c_str());
+    CLog::Log(LOGERROR, "{} unable to extract modification date for file ({})", __FUNCTION__,
+              strFileNameAndPath);
   }
   return dateAdded;
 }
@@ -287,7 +287,7 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
   {
     if (decodePath.find(b) != std::string::npos)
     {
-      CLog::Log(LOGERROR,"%s denied access to %s",  __FUNCTION__, decodePath.c_str());
+      CLog::Log(LOGERROR, "{} denied access to {}", __FUNCTION__, decodePath);
       return false;
     }
   }

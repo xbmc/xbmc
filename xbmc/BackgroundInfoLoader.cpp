@@ -52,7 +52,9 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item %s", CURL::GetRedacted(pItem->GetPath()).c_str());
+          CLog::Log(LOGERROR,
+                    "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item {}",
+                    CURL::GetRedacted(pItem->GetPath()));
         }
       }
 
@@ -72,7 +74,9 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item %s", CURL::GetRedacted(pItem->GetPath()).c_str());
+          CLog::Log(LOGERROR,
+                    "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item {}",
+                    CURL::GetRedacted(pItem->GetPath()));
         }
       }
     }
@@ -83,7 +87,7 @@ void CBackgroundInfoLoader::Run()
   catch (...)
   {
     m_bIsLoading = false;
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__);
   }
 }
 

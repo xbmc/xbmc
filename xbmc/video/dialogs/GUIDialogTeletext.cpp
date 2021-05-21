@@ -131,7 +131,7 @@ void CGUIDialogTeletext::OnInitWindow()
 
   if (!m_TextDecoder.InitDecoder())
   {
-    CLog::Log(LOGERROR, "%s: failed to init teletext decoder", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: failed to init teletext decoder", __FUNCTION__);
     Close();
   }
 
@@ -139,7 +139,7 @@ void CGUIDialogTeletext::OnInitWindow()
       CTexture::CreateTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), XB_FMT_A8R8G8B8);
   if (!m_pTxtTexture)
   {
-    CLog::Log(LOGERROR, "%s: failed to create texture", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: failed to create texture", __FUNCTION__);
     Close();
   }
 

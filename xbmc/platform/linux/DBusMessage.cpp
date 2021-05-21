@@ -22,7 +22,7 @@ CDBusMessage::CDBusMessage(const char *destination, const char *object, const ch
   }
   m_haveArgs = false;
 
-  CLog::Log(LOGDEBUG, LOGDBUS, "DBus: Creating message to %s on %s with interface %s and method %s",
+  CLog::Log(LOGDEBUG, LOGDBUS, "DBus: Creating message to {} on {} with interface {} and method {}",
             destination, object, interface, method);
 }
 
@@ -190,7 +190,7 @@ bool CDBusMessage::CheckTypeAndGetValue(DBusMessageIter* iter, int expectType, v
   const int haveType = dbus_message_iter_get_arg_type(iter);
   if (haveType != expectType)
   {
-    CLog::Log(LOGDEBUG, "DBus argument type mismatch: expected %d, got %d", expectType, haveType);
+    CLog::Log(LOGDEBUG, "DBus argument type mismatch: expected {}, got {}", expectType, haveType);
     return false;
   }
 

@@ -26,7 +26,8 @@ CVariant CDBusUtil::GetVariant(const char *destination, const char *object, cons
     if (dbus_message_iter_init(reply, &iter))
     {
       if (!dbus_message_has_signature(reply, "v"))
-        CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
+        CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was {}",
+                  dbus_message_iter_get_signature(&iter));
       else
         result = ParseVariant(&iter);
     }
@@ -47,7 +48,8 @@ CVariant CDBusUtil::GetAll(const char *destination, const char *object, const ch
     if (dbus_message_iter_init(reply, &iter))
     {
       if (!dbus_message_has_signature(reply, "a{sv}"))
-        CLog::Log(LOGERROR, "DBus: wrong signature on GetAll - should be \"a{sv}\" but was %s", dbus_message_iter_get_signature(&iter));
+        CLog::Log(LOGERROR, "DBus: wrong signature on GetAll - should be \"a{sv}\" but was {}",
+                  dbus_message_iter_get_signature(&iter));
       else
       {
         do
@@ -290,5 +292,5 @@ void CDBusError::Log(int level, const std::string& message) const
   {
     throw std::logic_error("Cannot log unset DBus error");
   }
-  CLog::Log(level, "%s: %s - %s", message.c_str(), m_error.name, m_error.message);
+  CLog::Log(level, "{}: {} - {}", message, m_error.name, m_error.message);
 }

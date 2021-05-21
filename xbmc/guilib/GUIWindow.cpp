@@ -90,7 +90,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     strLoadType = "LOAD_EVERY_TIME";
     break;
   }
-  CLog::Log(LOGINFO, "Loading skin file: %s, load type: %s", strFileName.c_str(), strLoadType);
+  CLog::Log(LOGINFO, "Loading skin file: {}, load type: {}", strFileName, strLoadType);
 
   // Find appropriate skin folder + resolution to load from
   std::string strPath;
@@ -116,7 +116,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     int64_t end, freq;
     end = CurrentHostCounter();
     freq = CurrentHostFrequency();
-    CLog::Log(LOGDEBUG, "Skin file %s loaded in %.2fms", strPath.c_str(), 1000.f * (end - start) / freq);
+    CLog::Log(LOGDEBUG, "Skin file {} loaded in {:.2f}ms", strPath, 1000.f * (end - start) / freq);
 #endif
   }
 
@@ -133,7 +133,8 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     StringUtils::ToLower(strPathLower);
     if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
     {
-      CLog::Log(LOGERROR, "Unable to load window XML: %s. Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath, xmlDoc.ErrorRow(),
+                xmlDoc.ErrorDesc());
       SetID(WINDOW_INVALID);
       return false;
     }
@@ -141,7 +142,8 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     // xml need a <window> root element
     if (!StringUtils::EqualsNoCase(xmlDoc.RootElement()->Value(), "window"))
     {
-      CLog::Log(LOGERROR, "XML file %s does not contain a <window> root element", GetProperty("xmlfile").c_str());
+      CLog::Log(LOGERROR, "XML file {} does not contain a <window> root element",
+                GetProperty("xmlfile").asString());
       return false;
     }
 
@@ -149,7 +151,7 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     m_windowXMLRootElement = static_cast<TiXmlElement*>(xmlDoc.RootElement()->Clone());
   }
   else
-    CLog::Log(LOGDEBUG, "Using already stored xml root node for %s", strPath.c_str());
+    CLog::Log(LOGDEBUG, "Using already stored xml root node for {}", strPath);
 
   return Load(Prepare(m_windowXMLRootElement).get());
 }
@@ -582,7 +584,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
+      CLog::Log(LOGDEBUG, "------ Window Init ({}) ------", GetProperty("xmlfile").asString());
       if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources(false);
       OnInitWindow();
       return true;
@@ -591,7 +593,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
+      CLog::Log(LOGDEBUG, "------ Window Deinit ({}) ------", GetProperty("xmlfile").asString());
       OnDeinitWindow(message.GetParam1());
       // now free the window
       if (m_dynamicResourceAlloc) FreeResources();
@@ -608,7 +610,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         //tell focused control that it has lost the focus
         CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), control->GetID());
         control->OnMessage(msgLostFocus);
-        CLog::Log(LOGDEBUG, "Unfocus WindowID: %i, ControlID: %i",GetID(), control->GetID());
+        CLog::Log(LOGDEBUG, "Unfocus WindowID: {}, ControlID: {}", GetID(), control->GetID());
       }
       return true;
     }
@@ -635,7 +637,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_SETFOCUS:
     {
-      //      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)", message.GetControlId(),message.GetSenderId(), GetID());
+      //      CLog::Log(LOGDEBUG,"set focus to control:{} window:{} ({})", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
         // first unfocus the current control
@@ -763,11 +765,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= false */)
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
   if (forceLoad)
-    CLog::Log(LOGDEBUG,"Alloc resources: %.2fms  (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
+    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f}ms  ({:.2f} ms skin load)",
+              1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
   else
   {
-    CLog::Log(LOGDEBUG,"Window %s was already loaded", GetProperty("xmlfile").c_str());
-    CLog::Log(LOGDEBUG,"Alloc resources: %.2fms", 1000.f * (end - start) / freq);
+    CLog::Log(LOGDEBUG, "Window {} was already loaded", GetProperty("xmlfile").asString());
+    CLog::Log(LOGDEBUG, "Alloc resources: {:.2f}ms", 1000.f * (end - start) / freq);
   }
 #endif
   m_bAllocated = true;
@@ -938,8 +941,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   if (!control) control = GetControl(fromControl);
   if (!control)
   { // no current control??
-    CLog::Log(LOGERROR, "Unable to find control %i in window %u",
-              fromControl, GetID());
+    CLog::Log(LOGERROR, "Unable to find control {} in window {}", fromControl, GetID());
     return false;
   }
   std::vector<int> moveHistory;
@@ -1015,7 +1017,7 @@ bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for window %u", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "{} for window {}", __FUNCTION__, GetID());
   CGUIControlGroup::DumpTextureUse();
 }
 #endif

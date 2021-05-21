@@ -90,7 +90,7 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
   m_type = CControllerTranslator::TranslateFeatureType(strType);
   if (m_type == FEATURE_TYPE::UNKNOWN)
   {
-    CLog::Log(LOGDEBUG, "Invalid feature: <%s> ", pElement->Value());
+    CLog::Log(LOGDEBUG, "Invalid feature: <{}> ", pElement->Value());
     return false;
   }
 
@@ -102,16 +102,14 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
   m_strName = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_NAME);
   if (m_strName.empty())
   {
-    CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(),
-              LAYOUT_XML_ATTR_FEATURE_NAME);
+    CLog::Log(LOGERROR, "<{}> tag has no \"{}\" attribute", strType, LAYOUT_XML_ATTR_FEATURE_NAME);
     return false;
   }
 
   // Label ID
   std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_LABEL);
   if (strLabel.empty())
-    CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", strType.c_str(),
-              LAYOUT_XML_ATTR_FEATURE_LABEL);
+    CLog::Log(LOGDEBUG, "<{}> tag has no \"{}\" attribute", strType, LAYOUT_XML_ATTR_FEATURE_LABEL);
   else
     std::istringstream(strLabel) >> m_labelId;
 
@@ -121,8 +119,7 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
     std::string strInputType = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_INPUT_TYPE);
     if (strInputType.empty())
     {
-      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(),
-                LAYOUT_XML_ATTR_INPUT_TYPE);
+      CLog::Log(LOGERROR, "<{}> tag has no \"{}\" attribute", strType, LAYOUT_XML_ATTR_INPUT_TYPE);
       return false;
     }
     else
@@ -130,8 +127,8 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
       m_inputType = CControllerTranslator::TranslateInputType(strInputType);
       if (m_inputType == INPUT_TYPE::UNKNOWN)
       {
-        CLog::Log(LOGERROR, "<%s> tag - attribute \"%s\" is invalid: \"%s\"", strType.c_str(),
-                  LAYOUT_XML_ATTR_INPUT_TYPE, strInputType.c_str());
+        CLog::Log(LOGERROR, "<{}> tag - attribute \"{}\" is invalid: \"{}\"", strType,
+                  LAYOUT_XML_ATTR_INPUT_TYPE, strInputType);
         return false;
       }
     }
@@ -143,8 +140,7 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
     std::string strSymbol = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_KEY_SYMBOL);
     if (strSymbol.empty())
     {
-      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(),
-                LAYOUT_XML_ATTR_KEY_SYMBOL);
+      CLog::Log(LOGERROR, "<{}> tag has no \"{}\" attribute", strType, LAYOUT_XML_ATTR_KEY_SYMBOL);
       return false;
     }
     else
@@ -152,8 +148,8 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
       m_keycode = CControllerTranslator::TranslateKeysym(strSymbol);
       if (m_keycode == XBMCK_UNKNOWN)
       {
-        CLog::Log(LOGERROR, "<%s> tag - attribute \"%s\" is invalid: \"%s\"", strType.c_str(),
-                  LAYOUT_XML_ATTR_KEY_SYMBOL, strSymbol.c_str());
+        CLog::Log(LOGERROR, "<{}> tag - attribute \"{}\" is invalid: \"{}\"", strType,
+                  LAYOUT_XML_ATTR_KEY_SYMBOL, strSymbol);
         return false;
       }
     }

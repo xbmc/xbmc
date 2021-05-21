@@ -208,7 +208,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
   if (fireJob)
   {
-    CLog::Log(LOGDEBUG, "CDirectoryProvider[%s]: refreshing..", m_currentUrl.c_str());
+    CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing..", m_currentUrl);
     if (m_jobID)
       CJobManager::GetInstance().CancelJob(m_jobID);
     m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);

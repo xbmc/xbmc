@@ -111,7 +111,7 @@ bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
     // and ask the user if they would like to start mapping the controller
     if (m_buttonMap->IsEmpty())
     {
-      CLog::Log(LOGDEBUG, "Empty button map detected for %s", m_buttonMap->ControllerID().c_str());
+      CLog::Log(LOGDEBUG, "Empty button map detected for {}", m_buttonMap->ControllerID());
       m_dialog->ShowAsync();
     }
   }

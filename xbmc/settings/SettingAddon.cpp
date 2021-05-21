@@ -43,7 +43,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
   if (m_control != nullptr &&
      (m_control->GetType() != "button" || m_control->GetFormat() != "addon"))
   {
-    CLog::Log(LOGERROR, "CSettingAddon: invalid <control> of \"%s\"", m_id.c_str());
+    CLog::Log(LOGERROR, "CSettingAddon: invalid <control> of \"{}\"", m_id);
     return false;
   }
 
@@ -63,7 +63,8 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
 
   if (!ok && !update)
   {
-    CLog::Log(LOGERROR, "CSettingAddon: error reading the addontype value \"%s\" of \"%s\"", strAddonType.c_str(), m_id.c_str());
+    CLog::Log(LOGERROR, "CSettingAddon: error reading the addontype value \"{}\" of \"{}\"",
+              strAddonType, m_id);
     return false;
   }
 

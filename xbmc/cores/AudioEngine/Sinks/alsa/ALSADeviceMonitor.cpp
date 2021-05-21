@@ -107,7 +107,8 @@ void CALSADeviceMonitor::FDEventCallback(int id, int fd, short revents, void *da
     /* cardX devices emit a "change" event when ready (i.e. all subdevices added) */
     if (strcmp(action, "change") == 0)
     {
-      CLog::Log(LOGDEBUG, "CALSADeviceMonitor - ALSA card added (\"%s\", \"%s\")", udev_device_get_syspath(device), udev_device_get_devpath(device));
+      CLog::Log(LOGDEBUG, "CALSADeviceMonitor - ALSA card added (\"{}\", \"{}\")",
+                udev_device_get_syspath(device), udev_device_get_devpath(device));
       audioDevicesChanged = true;
     }
     else if (strcmp(action, "remove") == 0)

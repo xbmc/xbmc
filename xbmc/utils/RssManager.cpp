@@ -106,14 +106,15 @@ bool CRssManager::Load()
   CXBMCTinyXML rssDoc;
   if (!rssDoc.LoadFile(rssXML))
   {
-    CLog::Log(LOGERROR, "CRssManager: error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "CRssManager: error loading {}, Line {}\n{}", rssXML, rssDoc.ErrorRow(),
+              rssDoc.ErrorDesc());
     return false;
   }
 
   const TiXmlElement *pRootElement = rssDoc.RootElement();
   if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
   {
-    CLog::Log(LOGERROR, "CRssManager: error loading %s, no <rssfeeds> node", rssXML.c_str());
+    CLog::Log(LOGERROR, "CRssManager: error loading {}, no <rssfeeds> node", rssXML);
     return false;
   }
 

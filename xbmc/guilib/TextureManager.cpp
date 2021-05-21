@@ -173,8 +173,8 @@ void CTextureMap::Dump() const
   if (!m_referenceCount)
     return;   // nothing to see here
 
-  CLog::Log(LOGDEBUG, "{0}: texture:{1} has {2} frames {3} refcount", __FUNCTION__, m_textureName.c_str(),
-    m_texture.m_textures.size(), m_referenceCount);
+  CLog::Log(LOGDEBUG, "{0}: texture:{1} has {2} frames {3} refcount", __FUNCTION__, m_textureName,
+            m_texture.m_textures.size(), m_referenceCount);
 }
 
 unsigned int CTextureMap::GetMemoryUsage() const
@@ -309,7 +309,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
       CTextureMap *pMap = m_vecTextures[i];
       if (pMap->GetName() == strTextureName)
       {
-        //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
+        //CLog::Log(LOGDEBUG, "Total memusage {}", GetMemoryUsage());
         return pMap->GetTexture();
       }
     }
@@ -352,7 +352,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, width, height, nLoops, &Delay);
     if (!nImages)
     {
-      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
+      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: {}", strTextureName);
       delete[] pTextures;
       delete[] Delay;
       return emptyTexture;
@@ -393,7 +393,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     if (file.LoadFile(strPath, buf) <= 0 ||
        !anim.Initialize((uint8_t*)buf.get(), buf.size()))
     {
-      CLog::Log(LOGERROR, "Texture manager unable to load file: %s", CURL::GetRedacted(strPath).c_str());
+      CLog::Log(LOGERROR, "Texture manager unable to load file: {}", CURL::GetRedacted(strPath));
       file.Close();
       return emptyTexture;
     }
@@ -421,7 +421,9 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
       }
       else
       {
-        CLog::Log(LOGDEBUG, "Memory limit (%" PRIu64 " bytes) exceeded, %i frames extracted from file : %s", (maxMemoryUsage/11)*12,pMap->GetTexture().size(), CURL::GetRedacted(strPath).c_str());
+        CLog::Log(LOGDEBUG, "Memory limit ({} bytes) exceeded, {} frames extracted from file : {}",
+                  (maxMemoryUsage / 11) * 12, pMap->GetTexture().size(),
+                  CURL::GetRedacted(strPath));
         break;
       }
     }
@@ -441,7 +443,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   {
     if (!m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, width, height))
     {
-      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
+      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: {}", strTextureName);
       return emptyTexture;
     }
   }
@@ -486,7 +488,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
     {
       if (pMap->Release())
       {
-        //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
+        //CLog::Log(LOGINFO, "  cleanup:{}", strTextureName);
         // add to our textures to free
         std::chrono::time_point<std::chrono::steady_clock> timestamp;
 
@@ -500,7 +502,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
     }
     ++i;
   }
-  CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
+  CLog::Log(LOGWARNING, "{}: Unable to release texture {}", __FUNCTION__, strTextureName);
 }
 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
@@ -551,7 +553,7 @@ void CGUITextureManager::Cleanup()
   while (i != m_vecTextures.end())
   {
     CTextureMap* pMap = *i;
-    CLog::Log(LOGWARNING, "%s: Having to cleanup texture %s", __FUNCTION__, pMap->GetName().c_str());
+    CLog::Log(LOGWARNING, "{}: Having to cleanup texture {}", __FUNCTION__, pMap->GetName());
     delete pMap;
     i = m_vecTextures.erase(i);
   }
@@ -656,7 +658,8 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
     }
   }
 
-  CLog::Log(LOGDEBUG, "[Warning] CGUITextureManager::GetTexturePath: could not find texture '%s'", textureName.c_str());
+  CLog::Log(LOGDEBUG, "[Warning] CGUITextureManager::GetTexturePath: could not find texture '{}'",
+            textureName);
   return "";
 }
 

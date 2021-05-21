@@ -135,7 +135,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
 
     if (!CDirectory::Exists(addonProfile))
     {
-      CLog::Log(LOGDEBUG, "Creating resource directory: %s", addonProfile.c_str());
+      CLog::Log(LOGDEBUG, "Creating resource directory: {}", addonProfile);
       CDirectory::Create(addonProfile);
     }
 
@@ -215,14 +215,14 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
         {
           if (!CServiceBroker::GetAddonMgr().EnableAddon(dependency.id))
           {
-            CLog::Log(LOGERROR, "Failed to enable add-on %s", dependency.id.c_str());
+            CLog::Log(LOGERROR, "Failed to enable add-on {}", dependency.id);
             missingDependencies.emplace_back(addon->Name());
             addon.reset();
           }
         }
         else
         {
-          CLog::Log(LOGERROR, "User chose to not enable add-on %s", dependency.id.c_str());
+          CLog::Log(LOGERROR, "User chose to not enable add-on {}", dependency.id);
           missingDependencies.emplace_back(addon->Name());
           addon.reset();
         }
@@ -235,11 +235,11 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
     {
       if (dependency.optional)
       {
-        CLog::Log(LOGDEBUG, "Missing optional dependency %s", dependency.id.c_str());
+        CLog::Log(LOGDEBUG, "Missing optional dependency {}", dependency.id);
       }
       else
       {
-        CLog::Log(LOGERROR, "Missing mandatory dependency %s", dependency.id.c_str());
+        CLog::Log(LOGERROR, "Missing mandatory dependency {}", dependency.id);
         missingDependencies.emplace_back(dependency.id);
       }
     }

@@ -51,7 +51,7 @@ bool CRetroPlayerVideo::OpenStream(const StreamProperties& properties)
   // const float pixelAspectRatio = videoProperties.pixelAspectRatio; //! @todo
 
   CLog::Log(LOGDEBUG,
-            "RetroPlayer[VIDEO]: Creating video stream - format %s, nominal %ux%u, max %ux%u",
+            "RetroPlayer[VIDEO]: Creating video stream - format {}, nominal {}x{}, max {}x{}",
             CRenderTranslator::TranslatePixelFormat(pixfmt), nominalWidth, nominalHeight, maxWidth,
             maxHeight);
 

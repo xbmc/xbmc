@@ -45,7 +45,7 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
   /* Open the class "kodi::addon::CInstanceVisualization" on add-on side */
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
   {
-    CLog::Log(LOGFATAL, "Visualization: failed to create instance for '%s' and not usable!", ID().c_str());
+    CLog::Log(LOGFATAL, "Visualization: failed to create instance for '{}' and not usable!", ID());
     return;
   }
 
@@ -195,7 +195,7 @@ void CVisualization::transfer_preset(void* kodiInstance, const char* preset)
   CVisualization *addon = static_cast<CVisualization*>(kodiInstance);
   if (!addon || !preset)
   {
-    CLog::Log(LOGERROR, "CVisualization::%s - invalid handler data", __FUNCTION__);
+    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __FUNCTION__);
     return;
   }
 
@@ -207,7 +207,7 @@ void CVisualization::clear_presets(void* kodiInstance)
   CVisualization* addon = static_cast<CVisualization*>(kodiInstance);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "CVisualization::%s - invalid handler data", __FUNCTION__);
+    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __FUNCTION__);
     return;
   }
 

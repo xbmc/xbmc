@@ -73,7 +73,8 @@ bool Xcddb::openSocket()
 #else
     err = gai_strerror(res);
 #endif
-    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to lookup %s with error %s", m_cddb_ip_address, err);
+    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to lookup {} with error {}", m_cddb_ip_address,
+              err);
     res = getaddrinfo("130.179.31.49", service, &hints, &result);
     if(res)
       return false;
@@ -86,17 +87,17 @@ bool Xcddb::openSocket()
       strcpy(namebuf, "[unknown]");
       strcpy(portbuf, "[unknown]");
 	}
-    CLog::Log(LOGDEBUG, "Xcddb::openSocket - connecting to: %s:%s ...", namebuf, portbuf);
+        CLog::Log(LOGDEBUG, "Xcddb::openSocket - connecting to: {}:{} ...", namebuf, portbuf);
 
-    fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-    if(fd == INVALID_SOCKET)
-      continue;
+        fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        if (fd == INVALID_SOCKET)
+          continue;
 
-    if(connect(fd, addr->ai_addr, addr->ai_addrlen) != SOCKET_ERROR)
-      break;
+        if (connect(fd, addr->ai_addr, addr->ai_addrlen) != SOCKET_ERROR)
+          break;
 
-    closesocket(fd);
-    fd = INVALID_SOCKET;
+        closesocket(fd);
+        fd = INVALID_SOCKET;
   }
 
   freeaddrinfo(result);
@@ -170,7 +171,9 @@ std::string Xcddb::Recv(bool wait4point)
     //Check if there was any error reading the buffer
     if(lenRead == 0 || lenRead == SOCKET_ERROR  || WSAGetLastError() == WSAECONNRESET)
     {
-      CLog::Log(LOGERROR, "Xcddb::Recv Error reading buffer. lenRead = [%d] and WSAGetLastError = [%d]", lenRead, WSAGetLastError());
+      CLog::Log(LOGERROR,
+                "Xcddb::Recv Error reading buffer. lenRead = [{}] and WSAGetLastError = [{}]",
+                lenRead, WSAGetLastError());
       break;
     }
 
@@ -182,7 +185,10 @@ std::string Xcddb::Recv(bool wait4point)
 
   //##########################################################
   // Write captured data information to the xbmc log file
-  CLog::Log(LOGDEBUG,"Xcddb::Recv Captured {0} bytes // Buffer= {1} bytes. Captured data follows on next line\n{2}", counter, str_buffer.size(),str_buffer.c_str());
+  CLog::Log(LOGDEBUG,
+            "Xcddb::Recv Captured {0} bytes // Buffer= {1} bytes. Captured data follows on next "
+            "line\n{2}",
+            counter, str_buffer.size(), str_buffer);
 
 
   return str_buffer;
@@ -216,7 +222,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   Recv(false); // Clear pending data on our connection
   if (!Send(read_buffer.c_str()))
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error sending \"%s\"", read_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error sending \"{}\"", read_buffer);
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select pInfo == NULL");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
@@ -236,7 +242,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   case 403: //Database entry is corrupt.
   case 409: //No handshake.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -245,7 +251,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   // Quit
   if ( ! Send("quit") )
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error sending \"%s\"", "quit");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error sending \"{}\"", "quit");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -259,7 +265,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
 
   case 530: //error, closing connection.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -814,7 +820,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   //
   if ( queryCache(discid) )
   {
-    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08x] already cached", discid);
+    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [{:08x}] already cached", discid);
     return true;
   }
 
@@ -853,7 +859,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   case 433: //No connections allowed: X users allowed, Y currently active
   case 434: //No connections allowed: system load too high
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -868,7 +874,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   std::string strGreeting = "cddb hello " + lcAppName + " kodi.tv " + CCompileInfo::GetAppName() + " " + version;
   if ( ! Send(strGreeting.c_str()) )
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", strGreeting.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"{}\"", strGreeting);
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -882,7 +888,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   case 431: //Handshake not successful, closing connection
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -891,7 +897,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   // Set CDDB protocol-level to 5
   if ( ! Send("proto 5"))
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "proto 5");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"{}\"", "proto 5");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -906,7 +912,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   case 501: //Illegal protocol level.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -943,7 +949,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   // Query for matches
   if ( ! Send(query_buffer))
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", query_buffer);
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"{}\"", query_buffer);
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -976,12 +982,12 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   case 202: //No match found
     CLog::Log(
         LOGINFO,
-        "Xcddb::queryCDinfo No match found in CDDB database when doing the query shown below:\n%s",
+        "Xcddb::queryCDinfo No match found in CDDB database when doing the query shown below:\n{}",
         query_buffer);
   case 403: //Database entry is corrupt
   case 409: //No handshake
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -990,7 +996,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   // Read the data from cddb
   if ( !Send(read_buffer.c_str()) )
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", read_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"{}\"", read_buffer);
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -1009,7 +1015,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   case 403: //Database entry is corrupt.
   case 409: //No handshake.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"{}\"", recv_buffer);
     return false;
   }
 
@@ -1018,7 +1024,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   // Quit
   if ( ! Send("quit") )
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "quit");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"{}\"", "quit");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -1032,7 +1038,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   case 530: //error, closing connection.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"{}\"", recv_buffer);
     return false;
   }
 

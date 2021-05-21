@@ -92,7 +92,7 @@ bool CWinSystemAndroid::InitWindowSystem()
 
 bool CWinSystemAndroid::DestroyWindowSystem()
 {
-  CLog::Log(LOGINFO, "CWinSystemAndroid::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
 
   delete m_android;
   m_android = nullptr;
@@ -148,7 +148,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroid::DestroyWindow()
 {
-  CLog::Log(LOGINFO, "CWinSystemAndroid::%s", __FUNCTION__);
+  CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
   m_nativeWindow = nullptr;
   m_bWindowCreated = false;
   return true;
@@ -166,7 +166,7 @@ void CWinSystemAndroid::UpdateResolutions(bool bUpdateDesktopRes)
   std::vector<RESOLUTION_INFO> resolutions;
   if (!m_android->ProbeResolutions(resolutions) || resolutions.empty())
   {
-    CLog::Log(LOGWARNING, "CWinSystemAndroid::%s failed.", __FUNCTION__);
+    CLog::Log(LOGWARNING, "CWinSystemAndroid::{} failed.", __FUNCTION__);
   }
 
   const RESOLUTION_INFO resWindow = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
@@ -235,7 +235,7 @@ void CWinSystemAndroid::InitiateModeChange()
 void CWinSystemAndroid::SetHdmiState(bool connected)
 {
   CSingleLock lock(m_resourceSection);
-  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHdmiState: state: %d", static_cast<int>(connected));
+  CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHdmiState: state: {}", static_cast<int>(connected));
 
   if (connected)
   {

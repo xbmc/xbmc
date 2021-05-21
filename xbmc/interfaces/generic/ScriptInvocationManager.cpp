@@ -199,8 +199,8 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
   {
     if (m_lastInvokerThread->Reuseable(script))
     {
-      CLog::Log(LOGDEBUG, "%s - Reusing LanguageInvokerThread %d for script %s", __FUNCTION__,
-                m_lastInvokerThread->GetId(), script.c_str());
+      CLog::Log(LOGDEBUG, "{} - Reusing LanguageInvokerThread {} for script {}", __FUNCTION__,
+                m_lastInvokerThread->GetId(), script);
       m_lastInvokerThread->GetInvoker()->Reset();
       return m_lastInvokerThread->GetInvoker();
     }
@@ -230,7 +230,7 @@ int CScriptInvocationManager::ExecuteAsync(
 
   if (!CFile::Exists(script, false))
   {
-    CLog::Log(LOGERROR, "%s - Not executing non-existing script %s", __FUNCTION__, script.c_str());
+    CLog::Log(LOGERROR, "{} - Not executing non-existing script {}", __FUNCTION__, script);
     return -1;
   }
 
@@ -251,7 +251,7 @@ int CScriptInvocationManager::ExecuteAsync(
 
   if (!CFile::Exists(script, false))
   {
-    CLog::Log(LOGERROR, "%s - Not executing non-existing script %s", __FUNCTION__, script.c_str());
+    CLog::Log(LOGERROR, "{} - Not executing non-existing script {}", __FUNCTION__, script);
     return -1;
   }
 
@@ -304,7 +304,7 @@ int CScriptInvocationManager::ExecuteSync(
 
   if (!CFile::Exists(script, false))
   {
-    CLog::Log(LOGERROR, "%s - Not executing non-existing script %s", __FUNCTION__, script.c_str());
+    CLog::Log(LOGERROR, "{} - Not executing non-existing script {}", __FUNCTION__, script);
     return -1;
   }
 

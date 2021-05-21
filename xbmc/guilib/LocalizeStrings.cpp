@@ -51,9 +51,11 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
                           PODoc.GetMsgid() == strings[id + offset].strOriginal))
           continue;
         else if (bStrInMem)
-          CLog::Log(LOGDEBUG,
-              "POParser: id:%i was recently re-used in the English string file, which is not yet "
-                  "changed in the translated file. Using the English string instead", id);
+          CLog::Log(
+              LOGDEBUG,
+              "POParser: id:{} was recently re-used in the English string file, which is not yet "
+              "changed in the translated file. Using the English string instead",
+              id);
         strings[id + offset].strTranslated = PODoc.GetMsgid();
         counter++;
       }
@@ -79,7 +81,7 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
     }
   }
 
-  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded %i strings from file %s", counter, filename.c_str());
+  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded {} strings from file {}", counter, filename);
   return true;
 }
 

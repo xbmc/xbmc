@@ -133,7 +133,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
   if (ReturnV != True)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned {}", ReturnV);
     return false;
   }
 
@@ -147,7 +147,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   ReturnV = m_glXWaitVideoSyncSGI(2, 0, &GlxTest);
   if (ReturnV)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned {}", ReturnV);
     return false;
   }
 
@@ -161,7 +161,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   ReturnV = m_glXGetVideoSyncSGI(&GlxTest);
   if (ReturnV)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned {}", ReturnV);
     return false;
   }
 
@@ -189,7 +189,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
 
     if(ReturnV)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned {}", ReturnV);
       return;
     }
 
@@ -211,7 +211,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
       ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
       if (ReturnV != True)
       {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned {}", ReturnV);
         return;
       }
 
@@ -222,7 +222,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
       ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
       if (ReturnV != True)
       {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned {}", ReturnV);
         return;
       }
 

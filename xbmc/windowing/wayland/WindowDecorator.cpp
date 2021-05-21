@@ -574,7 +574,8 @@ void CWindowDecorator::UpdateSeatCursor(SeatState& seatState)
   }
   catch (std::exception const& e)
   {
-    CLog::LogF(LOGERROR, "Could not get required cursor %s from cursor theme: %s", cursorName.c_str(), e.what());
+    CLog::LogF(LOGERROR, "Could not get required cursor {} from cursor theme: {}", cursorName,
+               e.what());
     return;
   }
   auto cursorImage = cursor.image(0);
@@ -723,7 +724,11 @@ void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBi
 
   m_buttonColor = m_windowState.test(IShellSurface::STATE_ACTIVATED) ? BUTTON_COLOR_ACTIVE : BUTTON_COLOR_INACTIVE;
 
-  CLog::Log(LOGDEBUG, "CWindowDecorator::SetState: Setting full surface size %dx%d scale %d (main surface size %dx%d), decorations active: %u", size.Width(), size.Height(), scale, mainSurfaceSize.Width(), mainSurfaceSize.Height(), IsDecorationActive());
+  CLog::Log(LOGDEBUG,
+            "CWindowDecorator::SetState: Setting full surface size {}x{} scale {} (main surface "
+            "size {}x{}), decorations active: {}",
+            size.Width(), size.Height(), scale, mainSurfaceSize.Width(), mainSurfaceSize.Height(),
+            IsDecorationActive());
 
   if (mainSurfaceSize != m_mainSurfaceSize || scale != m_scale || wasDecorations != IsDecorationActive())
   {

@@ -220,7 +220,7 @@ XVisualInfo* CWinSystemX11GLESContext::GetVisual()
   EGLConfig eglConfig = 0;
   if (!eglChooseConfig(eglDisplay, att, &eglConfig, 1, &numConfigs) || numConfigs == 0)
   {
-    CLog::Log(LOGERROR, "Failed to choose a config %d", eglGetError());
+    CLog::Log(LOGERROR, "Failed to choose a config {}", eglGetError());
     return nullptr;
   }
 

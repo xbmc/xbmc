@@ -20,7 +20,10 @@ bool CInfoScanner::HasNoMedia(const std::string &strDirectory) const
 
   if (!URIUtils::IsPlugin(strDirectory) && XFILE::CFile::Exists(noMediaFile))
   {
-    CLog::Log(LOGWARNING, "Skipping item '%s' with '.nomedia' file in parent directory, it won't be added to the library.", CURL::GetRedacted(strDirectory).c_str());
+    CLog::Log(LOGWARNING,
+              "Skipping item '{}' with '.nomedia' file in parent directory, it won't be added to "
+              "the library.",
+              CURL::GetRedacted(strDirectory));
     return true;
   }
 

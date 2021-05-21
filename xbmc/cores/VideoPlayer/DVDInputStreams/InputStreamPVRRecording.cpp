@@ -33,11 +33,15 @@ bool CInputStreamPVRRecording::OpenPVRStream()
     recording = CServiceBroker::GetPVRManager().Recordings()->GetByPath(m_item.GetPath());
 
   if (!recording)
-    CLog::Log(LOGERROR, "CInputStreamPVRRecording - %s - unable to obtain recording instance for recording %s", __FUNCTION__, m_item.GetPath().c_str());
+    CLog::Log(
+        LOGERROR,
+        "CInputStreamPVRRecording - {} - unable to obtain recording instance for recording {}",
+        __FUNCTION__, m_item.GetPath());
 
   if (recording && m_client && (m_client->OpenRecordedStream(recording) == PVR_ERROR_NO_ERROR))
   {
-    CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - %s - opened recording stream %s", __FUNCTION__, m_item.GetPath().c_str());
+    CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - {} - opened recording stream {}", __FUNCTION__,
+              m_item.GetPath());
     return true;
   }
   return false;
@@ -47,7 +51,8 @@ void CInputStreamPVRRecording::ClosePVRStream()
 {
   if (m_client && (m_client->CloseRecordedStream() == PVR_ERROR_NO_ERROR))
   {
-    CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - %s - closed recording stream %s", __FUNCTION__, m_item.GetPath().c_str());
+    CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - {} - closed recording stream {}", __FUNCTION__,
+              m_item.GetPath());
   }
 }
 

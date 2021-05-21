@@ -73,17 +73,17 @@ void CServiceAddonManager::Start(const AddonPtr& addon)
   CSingleLock lock(m_criticalSection);
   if (m_services.find(addon->ID()) != m_services.end())
   {
-    CLog::Log(LOGDEBUG, "CServiceAddonManager: %s already started.", addon->ID().c_str());
+    CLog::Log(LOGDEBUG, "CServiceAddonManager: {} already started.", addon->ID());
     return;
   }
 
   if (StringUtils::EndsWith(addon->LibPath(), ".py"))
   {
-    CLog::Log(LOGDEBUG, "CServiceAddonManager: starting %s", addon->ID().c_str());
+    CLog::Log(LOGDEBUG, "CServiceAddonManager: starting {}", addon->ID());
     auto handle = CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
     if (handle == -1)
     {
-      CLog::Log(LOGERROR, "CServiceAddonManager: %s failed to start", addon->ID().c_str());
+      CLog::Log(LOGERROR, "CServiceAddonManager: {} failed to start", addon->ID());
       return;
     }
     m_services[addon->ID()] = handle;
@@ -115,10 +115,10 @@ void CServiceAddonManager::Stop(const std::string& addonId)
 
 void CServiceAddonManager::Stop(const std::map<std::string, int>::value_type& service)
 {
-  CLog::Log(LOGDEBUG, "CServiceAddonManager: stopping %s.", service.first.c_str());
+  CLog::Log(LOGDEBUG, "CServiceAddonManager: stopping {}.", service.first);
   if (!CScriptInvocationManager::GetInstance().Stop(service.second))
   {
-    CLog::Log(LOGINFO, "CServiceAddonManager: failed to stop %s (may have ended)", service.first.c_str());
+    CLog::Log(LOGINFO, "CServiceAddonManager: failed to stop {} (may have ended)", service.first);
   }
 }
 }

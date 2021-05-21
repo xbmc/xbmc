@@ -166,7 +166,8 @@ static CEvent screenChangeEvent;
                                                                   idx,  @"screenIdx", nil];
 
 
-  CLog::Log(LOGINFO, "Changing screen to %d with %f x %f",screenIdx,[mode size].width, [mode size].height);
+  CLog::Log(LOGINFO, "Changing screen to {} with {:f} x {:f}", screenIdx, [mode size].width,
+            [mode size].height);
   //ensure that the screen change is done in the mainthread
   if([NSThread currentThread] != [NSThread mainThread])
   {

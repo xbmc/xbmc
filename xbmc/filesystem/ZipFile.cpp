@@ -69,7 +69,7 @@ bool CZipFile::Open(const CURL&url)
 
   if (!mFile.Open(url.GetHostName())) // this is the zip-file, always open binary
   {
-    CLog::Log(LOGERROR,"FileZip: unable to open zip file %s!",url.GetHostName().c_str());
+    CLog::Log(LOGERROR, "FileZip: unable to open zip file {}!", url.GetHostName());
     return false;
   }
   mFile.Seek(mZipItem.offset,SEEK_SET);
@@ -491,7 +491,7 @@ bool CZipFile::DecompressGzip(const std::string& in, std::string& out)
   int err = inflateInit2(&strm, windowBits);
   if (err != Z_OK)
   {
-    CLog::Log(LOGERROR, "FileZip: zlib error %d", err);
+    CLog::Log(LOGERROR, "FileZip: zlib error {}", err);
     return false;
   }
 
@@ -513,7 +513,7 @@ bool CZipFile::DecompressGzip(const std::string& in, std::string& out)
       case Z_DATA_ERROR:
       case Z_MEM_ERROR:
       case Z_STREAM_ERROR:
-        CLog::Log(LOGERROR, "FileZip: failed to decompress. zlib error %d", err);
+        CLog::Log(LOGERROR, "FileZip: failed to decompress. zlib error {}", err);
         inflateEnd(&strm);
         return false;
     }

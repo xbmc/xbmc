@@ -176,7 +176,7 @@ XBMCController* g_xbmcController;
 
 - (void)beginEnterBackgroundTask;
 {
-  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
   // we have to alloc the background task for keep network working after screen lock and dark.
   if (m_enterBackgroundTaskId == UIBackgroundTaskInvalid)
     m_enterBackgroundTaskId =
@@ -185,7 +185,7 @@ XBMCController* g_xbmcController;
 
 - (void)endEnterBackgroundTask;
 {
-  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
   if (m_enterBackgroundTaskId != UIBackgroundTaskInvalid)
   {
     [[UIApplication sharedApplication] endBackgroundTask:m_enterBackgroundTaskId];
@@ -197,7 +197,7 @@ XBMCController* g_xbmcController;
 
 - (void)enterBackground
 {
-  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
   [self beginEnterBackgroundTask];
 
   // We need this hack, without it we stay stuck forever in
@@ -225,12 +225,12 @@ XBMCController* g_xbmcController;
 
 - (void)enterForeground
 {
-  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+  CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
 
   // If enterBackground task is still running, wait
   while (m_enterBackgroundTaskId != UIBackgroundTaskInvalid)
   {
-    CLog::Log(LOGDEBUG, "%s: enterBackground task still running, wait", __PRETTY_FUNCTION__);
+    CLog::Log(LOGDEBUG, "{}: enterBackground task still running, wait", __PRETTY_FUNCTION__);
     usleep(50 * 1000);
   }
 
@@ -367,7 +367,7 @@ XBMCController* g_xbmcController;
     catch (...)
     {
       m_appAlive = FALSE;
-      CLog::Log(LOGERROR, "%sException caught on main loop status=%d. Exiting", __PRETTY_FUNCTION__,
+      CLog::Log(LOGERROR, "{}Exception caught on main loop status={}. Exiting", __PRETTY_FUNCTION__,
                 status);
     }
 

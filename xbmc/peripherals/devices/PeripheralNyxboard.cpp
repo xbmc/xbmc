@@ -29,20 +29,20 @@ bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym& keysym, uint8_t* key,
       GetSettingBool("enable_flip_commands"))
   {
     /* switched to keyboard side */
-    CLog::Log(LOGDEBUG, "%s - switched to keyboard side", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - switched to keyboard side", __FUNCTION__);
     strCommand = GetSettingString("flip_keyboard");
   }
   else if (keysym.sym == XBMCK_F7 && keysym.mod == XBMCKMOD_LCTRL &&
            GetSettingBool("enable_flip_commands"))
   {
     /* switched to remote side */
-    CLog::Log(LOGDEBUG, "%s - switched to remote side", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - switched to remote side", __FUNCTION__);
     strCommand = GetSettingString("flip_remote");
   }
 
   if (!strCommand.empty())
   {
-    CLog::Log(LOGDEBUG, "%s - executing command '%s'", __FUNCTION__, strCommand.c_str());
+    CLog::Log(LOGDEBUG, "{} - executing command '{}'", __FUNCTION__, strCommand);
     if (g_application.ExecuteXBMCAction(strCommand))
     {
       *key = 0;

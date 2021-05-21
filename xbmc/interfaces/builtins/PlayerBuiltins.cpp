@@ -76,7 +76,7 @@ static int PlayOffset(const std::vector<std::string>& params)
     // unknown playlist
     if (iPlaylist == PLAYLIST_NONE)
     {
-      CLog::Log(LOGERROR,"Playlist.PlayOffset called with unknown playlist: %s", strPlaylist.c_str());
+      CLog::Log(LOGERROR, "Playlist.PlayOffset called with unknown playlist: {}", strPlaylist);
       return false;
     }
 
@@ -134,7 +134,8 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (params[0].size() == 12)
       CLog::Log(LOGERROR, "PlayerControl(frameadvance(n)) called with no argument");
     else if (params[0].size() < 15) // arg must be at least "(N)"
-      CLog::Log(LOGERROR, "PlayerControl(frameadvance(n)) called with invalid argument: \"%s\"", params[0].substr(13).c_str());
+      CLog::Log(LOGERROR, "PlayerControl(frameadvance(n)) called with invalid argument: \"{}\"",
+                params[0].substr(13));
     else
 
     strFrames = params[0].substr(13);
@@ -186,8 +187,8 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (params[0].size() == 5)
       CLog::Log(LOGERROR, "PlayerControl(tempo(n)) called with no argument");
     else if (params[0].size() < 8) // arg must be at least "(N)"
-      CLog::Log(LOGERROR, "PlayerControl(tempo(n)) called with invalid argument: \"%s\"",
-                params[0].substr(6).c_str());
+      CLog::Log(LOGERROR, "PlayerControl(tempo(n)) called with invalid argument: \"{}\"",
+                params[0].substr(6));
     else
     {
       CApplicationPlayer& player = g_application.GetAppPlayer();
@@ -235,7 +236,8 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (params[0].size() == 14)
       CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
     else if (params[0].size() < 17) // arg must be at least "(N)"
-      CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", params[0].substr(14).c_str());
+      CLog::Log(LOGERROR, "PlayerControl(seekpercentage(n)) called with invalid argument: \"{}\"",
+                params[0].substr(14));
     else
     {
       // Don't bother checking the argument: an invalid arg will do seek(0)
@@ -243,7 +245,8 @@ static int PlayerControl(const std::vector<std::string>& params)
       StringUtils::TrimRight(offset, ")");
       float offsetpercent = (float) atof(offset.c_str());
       if (offsetpercent < 0 || offsetpercent > 100)
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
+        CLog::Log(LOGERROR, "PlayerControl(seekpercentage(n)) argument, {:f}, must be 0-100",
+                  offsetpercent);
       else if (g_application.GetAppPlayer().IsPlaying())
         g_application.SeekPercentage(offsetpercent);
     }

@@ -490,7 +490,8 @@ void CGraphicContext::ApplyVideoResolution(RESOLUTION res)
 {
   if (!IsValidResolution(res))
   {
-    CLog::LogF(LOGWARNING, "Asked to apply invalid resolution %d, falling back to RES_DESKTOP", res);
+    CLog::LogF(LOGWARNING, "Asked to apply invalid resolution {}, falling back to RES_DESKTOP",
+               res);
     res = RES_DESKTOP;
   }
 

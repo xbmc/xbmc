@@ -632,7 +632,7 @@ bool URIUtils::IsOnDVD(const std::string& strFile)
     return true;
 
 #if defined(TARGET_WINDOWS_STORE)
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
 #elif defined(TARGET_WINDOWS_DESKTOP)
   using KODI::PLATFORM::WINDOWS::ToW;
   if (strFile.size() >= 2 && strFile.substr(1, 1) == ":")

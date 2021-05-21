@@ -425,7 +425,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       }
       {
         std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "CActiveAE::%s - signal: %d from port: %s not handled for state: %d", __FUNCTION__, signal, portName.c_str(), m_state);
+        CLog::Log(LOGWARNING, "CActiveAE::{} - signal: {} from port: {} not handled for state: {}",
+                  __FUNCTION__, signal, portName, m_state);
       }
       return;
 
@@ -619,7 +620,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           if (m_extLastDeviceChange.size() > 2)
           {
-            CLog::Log(LOGWARNING,"CActiveAE - received %ld device change events within one second", m_extLastDeviceChange.size());
+            CLog::Log(LOGWARNING, "CActiveAE - received {} device change events within one second",
+                      m_extLastDeviceChange.size());
             return;
           }
           m_extLastDeviceChange.push(now);
@@ -643,7 +645,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
           const char* param;
           param = reinterpret_cast<const char*>(msg->data);
-          CLog::Log(LOGDEBUG, "CActiveAE - device count change event from driver: %s", param);
+          CLog::Log(LOGDEBUG, "CActiveAE - device count change event from driver: {}", param);
           m_sink.EnumerateSinkList(true, param);
           if (!m_sink.DeviceExist(m_settings.driver, m_currDevice))
           {
@@ -1012,7 +1014,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "CActiveAE::%s - no valid state: %d", __FUNCTION__, m_state);
+      CLog::Log(LOGERROR, "CActiveAE::{} - no valid state: {}", __FUNCTION__, m_state);
       return;
     }
   } // for
@@ -1189,7 +1191,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       double buffertime = (double)m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate;
       if (buffertime > MAX_BUFFER_TIME)
       {
-        CLog::Log(LOGWARNING, "ActiveAE::%s - sink returned large buffer of %d ms, reducing to %d ms", __FUNCTION__, (int)(buffertime * 1000), (int)(MAX_BUFFER_TIME*1000));
+        CLog::Log(LOGWARNING,
+                  "ActiveAE::{} - sink returned large buffer of {} ms, reducing to {} ms",
+                  __FUNCTION__, (int)(buffertime * 1000), (int)(MAX_BUFFER_TIME * 1000));
         m_sinkFormat.m_frames = MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate;
       }
     }
@@ -1562,14 +1566,14 @@ void CActiveAE::FlushEngine()
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error on flush", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error on flush", __FUNCTION__);
       m_extError = true;
     }
     reply->Release();
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to flush", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - failed to flush", __FUNCTION__);
     m_extError = true;
   }
   m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
@@ -1725,7 +1729,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       if (format.m_sampleRate > m_settings.samplerate)
       {
         format.m_sampleRate = m_settings.samplerate;
-        CLog::Log(LOGINFO, "CActiveAE::ApplySettings - limit samplerate for SPDIF to %d", format.m_sampleRate);
+        CLog::Log(LOGINFO, "CActiveAE::ApplySettings - limit samplerate for SPDIF to {}",
+                  format.m_sampleRate);
       }
       format.m_channelLayout = AE_CH_LAYOUT_2_0;
     }
@@ -1734,7 +1739,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     {
       format.m_sampleRate = m_settings.samplerate;
       format.m_dataFormat = AE_FMT_FLOAT;
-      CLog::Log(LOGINFO, "CActiveAE::ApplySettings - Forcing samplerate to %d", format.m_sampleRate);
+      CLog::Log(LOGINFO, "CActiveAE::ApplySettings - Forcing samplerate to {}",
+                format.m_sampleRate);
     }
 
     // sinks may not support mono
@@ -1791,7 +1797,7 @@ bool CActiveAE::InitSink()
     if (!success)
     {
       reply->Release();
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error", __FUNCTION__);
       m_extError = true;
       return false;
     }
@@ -1809,7 +1815,7 @@ bool CActiveAE::InitSink()
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - failed to init", __FUNCTION__);
     m_stats.SetSinkCacheTotal(0);
     m_stats.SetSinkLatency(0);
     AEAudioFormat invalidFormat;
@@ -1835,7 +1841,7 @@ void CActiveAE::DrainSink()
     if (!success)
     {
       reply->Release();
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error on drain", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error on drain", __FUNCTION__);
       m_extError = true;
       return;
     }
@@ -1843,7 +1849,7 @@ void CActiveAE::DrainSink()
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to drain", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - failed to drain", __FUNCTION__);
     m_extError = true;
     return;
   }
@@ -1860,14 +1866,14 @@ void CActiveAE::UnconfigureSink()
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error", __FUNCTION__);
       m_extError = true;
     }
     reply->Release();
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to unconfigure", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - failed to unconfigure", __FUNCTION__);
     m_extError = true;
   }
 
@@ -1969,12 +1975,12 @@ bool CActiveAE::RunStages()
         double error = playingPts - (*it)->m_pClock->GetClock();
         if (error > maxError)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
           error = maxError;
         }
         else if (error < -maxError)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: %f", error);
+          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
           error = -maxError;
         }
         (*it)->m_syncError.Add(error);
@@ -2231,7 +2237,7 @@ bool CActiveAE::RunStages()
               m_vizBuffers->m_inputSamples.push_back(viz);
             }
             else
-              CLog::Log(LOGWARNING,"ActiveAE::%s - viz ran out of free buffers", __FUNCTION__);
+              CLog::Log(LOGWARNING, "ActiveAE::{} - viz ran out of free buffers", __FUNCTION__);
             AEDelayStatus status;
             m_stats.GetDelay(status);
             int64_t now = std::chrono::steady_clock::now().time_since_epoch().count();
@@ -2388,13 +2394,14 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
     stream->m_resampleIntegral = 0;
     stream->m_lastSyncError = error;
-    CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f above threshold of %f", error, threshold);
+    CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error {:f} above threshold of {:f}", error,
+              threshold);
   }
   else if (newerror && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
     stream->m_lastSyncError = error;
-    CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error of %f, start adjusting", error);
+    CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error of {:f}, start adjusting", error);
   }
 
   if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
@@ -2502,7 +2509,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       {
         stream->m_syncState = CAESyncInfo::AESyncState::SYNC_MUTE;
         stream->m_syncError.Flush(100);
-        CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f, last average error: %f", error, stream->m_lastSyncError);
+        CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error {:f}, last average error: {:f}",
+                  error, stream->m_lastSyncError);
         stream->m_lastSyncError = error;
       }
       else
@@ -2511,7 +2519,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         stream->m_syncError.Flush(1000);
         stream->m_resampleIntegral = 0;
         stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
-        CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f below threshold of %f", error, 30.0);
+        CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error {:f} below threshold of {:f}",
+                  error, 30.0);
       }
     }
 
@@ -2656,12 +2665,12 @@ void CActiveAE::Start()
     reply->Release();
     if (!success)
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error", __FUNCTION__);
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - failed to init", __FUNCTION__);
   }
 
   m_inMsgEvent.Reset();
@@ -2849,13 +2858,13 @@ bool CActiveAE::Resume()
     reply->Release();
     if (!success)
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error", __FUNCTION__);
       return false;
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - failed to init", __FUNCTION__);
     return false;
   }
 
@@ -2925,12 +2934,12 @@ void CActiveAE::OnLostDisplay()
     reply->Release();
     if (!success)
     {
-      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+      CLog::Log(LOGERROR, "ActiveAE::{} - returned error", __FUNCTION__);
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "ActiveAE::%s - timed out", __FUNCTION__);
+    CLog::Log(LOGERROR, "ActiveAE::{} - timed out", __FUNCTION__);
   }
 }
 
@@ -3314,7 +3323,7 @@ IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int option
     reply->Release();
   }
 
-  CLog::Log(LOGERROR, "ActiveAE::%s - could not create stream", __FUNCTION__);
+  CLog::Log(LOGERROR, "ActiveAE::{} - could not create stream", __FUNCTION__);
   return NULL;
 }
 

@@ -131,7 +131,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
                 auto itemTitle = getTitleForItem(item);
                 
                 // Add item object in categoryItems
-                CLog::Log(LOGDEBUG, "[TopShelf] Adding item '{}' in category '{}'", itemTitle.c_str(),
+                CLog::Log(LOGDEBUG, "[TopShelf] Adding item '{}' in category '{}'", itemTitle,
                           categoryKey.UTF8String);
                 [categoryItems addObject:@{
                   @"title" : @(itemTitle.c_str()),

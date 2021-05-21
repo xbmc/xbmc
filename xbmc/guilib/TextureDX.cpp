@@ -92,7 +92,8 @@ void CDXTexture::LoadToGPU()
 
     if (m_texture.Get() == nullptr)
     {
-      CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size %d x %d.", m_textureWidth, m_textureHeight);
+      CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size {} x {}.",
+                m_textureWidth, m_textureHeight);
       return;
     }
   }
@@ -112,7 +113,8 @@ void CDXTexture::LoadToGPU()
       m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() ? 0 : 1, usage, GetFormat(), m_pixels, GetPitch());
       if (m_texture.Get() == nullptr)
       {
-        CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size %d x %d.", m_textureWidth, m_textureHeight);
+        CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size {} x {}.",
+                  m_textureWidth, m_textureHeight);
         return;
       }
 

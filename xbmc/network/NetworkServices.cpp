@@ -653,7 +653,7 @@ bool CNetworkServices::StartWebserver()
   int webPort = m_settings->GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT);
   if (!ValidatePort(webPort))
   {
-    CLog::Log(LOGERROR, "Cannot start Web Server on port %i", webPort);
+    CLog::Log(LOGERROR, "Cannot start Web Server on port {}", webPort);
     return false;
   }
 

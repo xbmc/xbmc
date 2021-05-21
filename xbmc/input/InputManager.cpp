@@ -145,13 +145,13 @@ bool CInputManager::ProcessMouse(int windowId)
   // handled this mouse action
   if (!mouseaction.GetID())
   {
-    CLog::LogF(LOGDEBUG, "unknown mouse command %d", mousekey);
+    CLog::LogF(LOGDEBUG, "unknown mouse command {}", mousekey);
     return false;
   }
 
   // Log mouse actions except for move and noop
   if (mouseaction.GetID() != ACTION_MOUSE_MOVE && mouseaction.GetID() != ACTION_NOOP)
-    CLog::LogF(LOGDEBUG, "trying mouse action %s", mouseaction.GetName().c_str());
+    CLog::LogF(LOGDEBUG, "trying mouse action {}", mouseaction.GetName());
 
   // The action might not be a mouse action. For example wheel moves might
   // be mapped to volume up/down in mouse.xml. In this case we do not want
@@ -222,14 +222,14 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 
           m_Mouse.SetActive(false);
 
-          CLog::Log(LOGDEBUG, "EventServer: key %d translated to action %s", wKeyID, actionName);
+          CLog::Log(LOGDEBUG, "EventServer: key {} translated to action {}", wKeyID, actionName);
 
           return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
         }
         else
         {
-          CLog::Log(LOGDEBUG, "ERROR mapping customcontroller action. CustomController: %s %i",
-                    strMapName.c_str(), wKeyID);
+          CLog::Log(LOGDEBUG, "ERROR mapping customcontroller action. CustomController: {} {}",
+                    strMapName, wKeyID);
         }
       }
     }
@@ -527,8 +527,8 @@ bool CInputManager::HandleKey(const CKey& key)
     // do not wake up the screensaver right after switching off the playing device
     if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState"))
     {
-      CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device",
-                 action.GetName().c_str(), action.GetID());
+      CLog::LogF(LOGDEBUG, "action {} [{}], toggling state of playing device", action.GetName(),
+                 action.GetID());
       bool result;
       CApplicationMessenger::GetInstance().SendMsg(TMSG_CECTOGGLESTATE, 0, 0,
                                                    static_cast<void*>(&result));
@@ -547,8 +547,8 @@ bool CInputManager::HandleKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (g_application.WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
-    CLog::LogF(LOGDEBUG, "%s pressed, screen saver/dpms woken up",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str());
+    CLog::LogF(LOGDEBUG, "{} pressed, screen saver/dpms woken up",
+               m_Keyboard.GetKeyName((int)key.GetButtonCode()));
     return true;
   }
 
@@ -630,8 +630,8 @@ bool CInputManager::HandleKey(const CKey& key)
         }
       }
 
-      CLog::LogF(LOGDEBUG, "%s pressed, trying keyboard action %x",
-                 m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetID());
+      CLog::LogF(LOGDEBUG, "{} pressed, trying keyboard action {:x}",
+                 m_Keyboard.GetKeyName((int)key.GetButtonCode()), action.GetID());
 
       if (g_application.OnAction(action))
         return true;
@@ -646,8 +646,8 @@ bool CInputManager::HandleKey(const CKey& key)
       action = m_buttonTranslator->GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::LogF(LOGDEBUG, "%s pressed, action is %s",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
+    CLog::LogF(LOGDEBUG, "{} pressed, action is {}",
+               m_Keyboard.GetKeyName((int)key.GetButtonCode()), action.GetName());
 
   return ExecuteInputAction(action);
 }

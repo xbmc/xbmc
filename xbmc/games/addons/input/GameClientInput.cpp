@@ -142,7 +142,7 @@ bool CGameClientInput::HasFeature(const std::string& controllerId,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "GAME: %s: exception caught in HasFeature()", m_gameClient.ID().c_str());
+    CLog::Log(LOGERROR, "GAME: {}: exception caught in HasFeature()", m_gameClient.ID());
 
     // Fail gracefully
     bHasFeature = true;
@@ -169,7 +169,7 @@ bool CGameClientInput::InputEvent(const game_input_event& event)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
+    CLog::Log(LOGERROR, "GAME: {}: exception caught in InputEvent()", m_gameClient.ID());
   }
 
   return bHandled;
@@ -445,7 +445,7 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
 
   if (!controller)
   {
-    CLog::Log(LOGERROR, "Failed to open port \"%s\", no controller given", portAddress.c_str());
+    CLog::Log(LOGERROR, "Failed to open port \"{}\", no controller given", portAddress);
     return false;
   }
 
@@ -454,8 +454,8 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
   const CControllerPortNode& port = controllerTree.GetPort(portAddress);
   if (!port.IsControllerAccepted(portAddress, controller->ID()))
   {
-    CLog::Log(LOGERROR, "Failed to open port: Invalid controller \"%s\" on port \"%s\"",
-              controller->ID().c_str(), portAddress.c_str());
+    CLog::Log(LOGERROR, "Failed to open port: Invalid controller \"{}\" on port \"{}\"",
+              controller->ID(), portAddress);
     return false;
   }
 

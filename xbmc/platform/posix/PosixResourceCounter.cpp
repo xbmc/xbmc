@@ -25,7 +25,7 @@ double CPosixResourceCounter::GetCPUUsage()
 {
   struct timeval tmNow;
   if (gettimeofday(&tmNow, NULL) == -1)
-    CLog::Log(LOGERROR, "error %d in gettimeofday", errno);
+    CLog::Log(LOGERROR, "error {} in gettimeofday", errno);
   else
   {
     double dElapsed = ( ((double)tmNow.tv_sec + (double)tmNow.tv_usec / 1000000.0) -
@@ -35,7 +35,7 @@ double CPosixResourceCounter::GetCPUUsage()
     {
       struct rusage usage;
       if (getrusage(RUSAGE_SELF, &usage) == -1)
-        CLog::Log(LOGERROR,"error %d in getrusage", errno);
+        CLog::Log(LOGERROR, "error {} in getrusage", errno);
       else
       {
         double dUser = ( ((double)usage.ru_utime.tv_sec + (double)usage.ru_utime.tv_usec / 1000000.0) -
@@ -57,10 +57,10 @@ double CPosixResourceCounter::GetCPUUsage()
 void CPosixResourceCounter::Reset()
 {
   if (gettimeofday(&m_tmLastCheck, NULL) == -1)
-    CLog::Log(LOGERROR, "error %d in gettimeofday", errno);
+    CLog::Log(LOGERROR, "error {} in gettimeofday", errno);
 
   if (getrusage(RUSAGE_SELF, &m_usage) == -1)
-    CLog::Log(LOGERROR, "error %d in getrusage", errno);
+    CLog::Log(LOGERROR, "error {} in getrusage", errno);
 
   m_dLastUsage = 0.0;
 }

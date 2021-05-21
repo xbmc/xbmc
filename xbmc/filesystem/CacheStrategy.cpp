@@ -69,7 +69,7 @@ int CSimpleFileCache::Open()
   m_filename = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
   if (m_filename.empty())
   {
-    CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} - Unable to generate a new filename", __FUNCTION__);
     Close();
     return CACHE_RC_ERROR;
   }
@@ -78,14 +78,14 @@ int CSimpleFileCache::Open()
 
   if (!m_cacheFileWrite->OpenForWrite(fileURL, false))
   {
-    CLog::LogF(LOGERROR, "failed to create file \"%s\" for writing", m_filename.c_str());
+    CLog::LogF(LOGERROR, "failed to create file \"{}\" for writing", m_filename);
     Close();
     return CACHE_RC_ERROR;
   }
 
   if (!m_cacheFileRead->Open(fileURL))
   {
-    CLog::LogF(LOGERROR, "failed to open file \"%s\" for reading", m_filename.c_str());
+    CLog::LogF(LOGERROR, "failed to open file \"{}\" for reading", m_filename);
     Close();
     return CACHE_RC_ERROR;
   }
@@ -104,7 +104,7 @@ void CSimpleFileCache::Close()
   m_cacheFileRead->Close();
 
   if (!m_filename.empty() && !m_cacheFileRead->Delete(CURL(m_filename)))
-    CLog::LogF(LOGWARNING, "failed to delete temporary file \"%s\"", m_filename.c_str());
+    CLog::LogF(LOGWARNING, "failed to delete temporary file \"{}\"", m_filename);
 
   m_filename.clear();
 }

@@ -218,7 +218,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
   }
 
   std::string path = translatedUrl.Get();
-  CLog::Log(LOGDEBUG, "GameClient: Loading %s", CURL::GetRedacted(path).c_str());
+  CLog::Log(LOGDEBUG, "GameClient: Loading {}", CURL::GetRedacted(path));
 
   CSingleLock lock(m_critSection);
 
@@ -254,7 +254,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
 bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInputCallback* input)
 {
-  CLog::Log(LOGDEBUG, "GameClient: Loading %s in standalone mode", ID().c_str());
+  CLog::Log(LOGDEBUG, "GameClient: Loading {} in standalone mode", ID());
 
   CSingleLock lock(m_critSection);
 
@@ -366,11 +366,11 @@ bool CGameClient::LoadGameInfo()
   }
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
-  CLog::Log(LOGINFO, "GAME: Game loop:      %s", bRequiresGameLoop ? "true" : "false");
-  CLog::Log(LOGINFO, "GAME: FPS:            %f", timingInfo.fps);
-  CLog::Log(LOGINFO, "GAME: Sample Rate:    %f", timingInfo.sample_rate);
-  CLog::Log(LOGINFO, "GAME: Region:         %s", CGameClientTranslator::TranslateRegion(region));
-  CLog::Log(LOGINFO, "GAME: Savestate size: %u", serializeSize);
+  CLog::Log(LOGINFO, "GAME: Game loop:      {}", bRequiresGameLoop ? "true" : "false");
+  CLog::Log(LOGINFO, "GAME: FPS:            {:f}", timingInfo.fps);
+  CLog::Log(LOGINFO, "GAME: Sample Rate:    {:f}", timingInfo.sample_rate);
+  CLog::Log(LOGINFO, "GAME: Region:         {}", CGameClientTranslator::TranslateRegion(region));
+  CLog::Log(LOGINFO, "GAME: Savestate size: {}", serializeSize);
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
 
   m_bRequiresGameLoop = bRequiresGameLoop;
@@ -553,13 +553,12 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
 void CGameClient::LogAddonProperties(void) const
 {
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
-  CLog::Log(LOGINFO, "GAME: Loaded DLL for %s", ID().c_str());
-  CLog::Log(LOGINFO, "GAME: Client: %s at version %s", Name().c_str(),
-            Version().asString().c_str());
-  CLog::Log(LOGINFO, "GAME: Valid extensions: %s", StringUtils::Join(m_extensions, " ").c_str());
-  CLog::Log(LOGINFO, "GAME: Supports VFS:                  %s", m_bSupportsVFS ? "yes" : "no");
-  CLog::Log(LOGINFO, "GAME: Supports standalone execution: %s",
-            m_bSupportsStandalone ? "yes" : "no");
+  CLog::Log(LOGINFO, "GAME: Loaded DLL for {}", ID());
+  CLog::Log(LOGINFO, "GAME: Client:              {}", Name());
+  CLog::Log(LOGINFO, "GAME: Version:             {}", Version().asString());
+  CLog::Log(LOGINFO, "GAME: Valid extensions:    {}", StringUtils::Join(m_extensions, " "));
+  CLog::Log(LOGINFO, "GAME: Supports VFS:        {}", m_bSupportsVFS);
+  CLog::Log(LOGINFO, "GAME: Supports standalone: {}", m_bSupportsStandalone);
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
 }
 
@@ -567,7 +566,7 @@ bool CGameClient::LogError(GAME_ERROR error, const char* strMethod) const
 {
   if (error != GAME_ERROR_NO_ERROR)
   {
-    CLog::Log(LOGERROR, "GAME - %s - addon '%s' returned an error: %s", strMethod, ID().c_str(),
+    CLog::Log(LOGERROR, "GAME - {} - addon '{}' returned an error: {}", strMethod, ID(),
               CGameClientTranslator::ToString(error));
     return false;
   }
@@ -576,9 +575,9 @@ bool CGameClient::LogError(GAME_ERROR error, const char* strMethod) const
 
 void CGameClient::LogException(const char* strFunctionName) const
 {
-  CLog::Log(LOGERROR, "GAME: exception caught while trying to call '%s' on add-on %s",
-            strFunctionName, ID().c_str());
-  CLog::Log(LOGERROR, "Please contact the developer of this add-on: %s", Author().c_str());
+  CLog::Log(LOGERROR, "GAME: exception caught while trying to call '{}' on add-on {}",
+            strFunctionName, ID());
+  CLog::Log(LOGERROR, "Please contact the developer of this add-on: {}", Author());
 }
 
 

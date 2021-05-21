@@ -33,12 +33,12 @@ int CAndroidFeatures::GetVersion()
     jclass jcOsBuild = jenv->FindClass("android/os/Build$VERSION");
     if (jcOsBuild == NULL)
     {
-      CLog::Log(LOGERROR, "%s: Error getting class android.os.Build.VERSION", __PRETTY_FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Error getting class android.os.Build.VERSION", __PRETTY_FUNCTION__);
       return version;
     }
 
     jint iSdkVersion = jenv->GetStaticIntField(jcOsBuild, jenv->GetStaticFieldID(jcOsBuild, "SDK_INT", "I"));
-    CLog::Log(LOGDEBUG, "%s: android.os.Build.VERSION %d", __PRETTY_FUNCTION__, (int)iSdkVersion);
+    CLog::Log(LOGDEBUG, "{}: android.os.Build.VERSION {}", __PRETTY_FUNCTION__, (int)iSdkVersion);
 
     // <= 10 Gingerbread
     // <= 13 Honeycomb

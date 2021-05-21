@@ -55,7 +55,7 @@ CDetectDVDMedia::~CDetectDVDMedia() = default;
 void CDetectDVDMedia::OnStartup()
 {
   // SetPriority( THREAD_PRIORITY_LOWEST );
-  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
+  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.{}", LIBCDIO_VERSION_NUM);
 }
 
 void CDetectDVDMedia::Process()
@@ -210,10 +210,9 @@ void CDetectDVDMedia::DetectMediaType()
     CLog::Log(LOGERROR, "Detection of DVD-ROM media failed.");
     return ;
   }
-  CLog::Log(LOGINFO, "Tracks overall:%i; Audio tracks:%i; Data tracks:%i",
-            m_pCdInfo->GetTrackCount(),
-            m_pCdInfo->GetAudioTrackCount(),
-            m_pCdInfo->GetDataTrackCount() );
+  CLog::Log(LOGINFO, "Tracks overall:{}; Audio tracks:{}; Data tracks:{}",
+            m_pCdInfo->GetTrackCount(), m_pCdInfo->GetAudioTrackCount(),
+            m_pCdInfo->GetDataTrackCount());
 
   // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
   if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
@@ -245,12 +244,12 @@ void CDetectDVDMedia::DetectMediaType()
     }
   }
 
-  CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
+  CLog::Log(LOGINFO, "Using protocol {}", strNewUrl);
 
   if (m_pCdInfo->IsValidFs())
   {
     if (!m_pCdInfo->IsAudio(1))
-      CLog::Log(LOGINFO, "Disc label: %s", m_pCdInfo->GetDiscLabel().c_str());
+      CLog::Log(LOGINFO, "Disc label: {}", m_pCdInfo->GetDiscLabel());
   }
   else
   {

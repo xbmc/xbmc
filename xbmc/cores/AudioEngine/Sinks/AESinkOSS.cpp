@@ -115,7 +115,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     m_fd = open(device.c_str(), O_WRONLY, 0);
   if (m_fd == -1)
   {
-    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to open the audio device: %s", device.c_str());
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to open the audio device: {}", device);
     return false;
   }
 
@@ -167,7 +167,9 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
   }
   else
   {
-    CLog::Log(LOGINFO, "CAESinkOSS::Initialize - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(format.m_dataFormat));
+    CLog::Log(LOGINFO,
+              "CAESinkOSS::Initialize - Your hardware does not support {}, trying other formats",
+              CAEUtil::DataFormatToStr(format.m_dataFormat));
 
     /* fallback to the best supported format */
 #ifdef AFMT_FLOAT
@@ -240,7 +242,8 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
   if (ioctl(m_fd, SNDCTL_DSP_SETFMT, &oss_fmt) == -1)
   {
     close(m_fd);
-    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to set the data format (%s)", CAEUtil::DataFormatToStr(format.m_dataFormat));
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to set the data format ({})",
+              CAEUtil::DataFormatToStr(format.m_dataFormat));
     return false;
   }
 
@@ -450,7 +453,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   if ((mixerfd = open(mixerdev, O_RDWR, 0)) == -1)
   {
-    CLog::Log(LOGINFO, "CAESinkOSS::EnumerateDevicesEx - No OSS mixer device present: %s",
+    CLog::Log(LOGINFO, "CAESinkOSS::EnumerateDevicesEx - No OSS mixer device present: {}",
               mixerdev);
     return;
   }

@@ -499,7 +499,8 @@ bool CSettings::Load(const std::string &file)
   if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
       !Load(xmlDoc.RootElement(), updated))
   {
-    CLog::Log(LOGERROR, "CSettings: unable to load settings from %s, creating new default settings", file.c_str());
+    CLog::Log(LOGERROR, "CSettings: unable to load settings from {}, creating new default settings",
+              file);
     if (!Reset())
       return false;
 
@@ -609,11 +610,12 @@ bool CSettings::Initialize(const std::string &file)
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(file.c_str()))
   {
-    CLog::Log(LOGERROR, "CSettings: error loading settings definition from %s, Line %d\n%s", file.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "CSettings: error loading settings definition from {}, Line {}\n{}", file,
+              xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from %s", file.c_str());
+  CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from {}", file);
 
   return InitializeDefinitionsFromXml(xmlDoc);
 }
@@ -662,7 +664,8 @@ bool CSettings::InitializeDefinitions()
 
 #if defined(PLATFORM_SETTINGS_FILE)
   if (CFile::Exists(SETTINGS_XML_FOLDER DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE)) && !Initialize(SETTINGS_XML_FOLDER DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE)))
-    CLog::Log(LOGFATAL, "Unable to load platform-specific settings definitions (%s)", DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE));
+    CLog::Log(LOGFATAL, "Unable to load platform-specific settings definitions ({})",
+              DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE));
 #endif
 
   // load any custom visibility and default values before loading the special
@@ -1087,7 +1090,7 @@ bool CSettings::Reset()
 
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))
-    CLog::Log(LOGWARNING, "Unable to delete old settings file at %s", settingsFile.c_str());
+    CLog::Log(LOGWARNING, "Unable to delete old settings file at {}", settingsFile);
 
   // unload any loaded settings
   Unload();
@@ -1095,7 +1098,7 @@ bool CSettings::Reset()
   // try to save the default settings
   if (!Save())
   {
-    CLog::Log(LOGWARNING, "Failed to save the default settings to %s", settingsFile.c_str());
+    CLog::Log(LOGWARNING, "Failed to save the default settings to {}", settingsFile);
     return false;
   }
 

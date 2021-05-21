@@ -54,14 +54,15 @@ bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, i
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const std::string &thumbFile)
 {
-  CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", CURL::GetRedacted(thumbFile).c_str(), width, height);
+  CLog::Log(LOGDEBUG, "cached image '{}' size {}x{}", CURL::GetRedacted(thumbFile), width, height);
 
   unsigned char *thumb = NULL;
   unsigned int thumbsize=0;
   IImage* pImage = ImageFactory::CreateLoader(thumbFile);
   if(pImage == NULL || !pImage->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
   {
-    CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for %s", CURL::GetRedacted(thumbFile).c_str());
+    CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for {}",
+              CURL::GetRedacted(thumbFile));
     delete pImage;
     return false;
   }
@@ -96,7 +97,8 @@ bool CThumbnailWriter::DoWork()
 
   if (!CPicture::CreateThumbnailFromSurface(m_buffer, m_width, m_height, m_stride, m_thumbFile))
   {
-    CLog::Log(LOGERROR, "CThumbnailWriter::DoWork unable to write %s", CURL::GetRedacted(m_thumbFile).c_str());
+    CLog::Log(LOGERROR, "CThumbnailWriter::DoWork unable to write {}",
+              CURL::GetRedacted(m_thumbFile));
     success = false;
   }
 
@@ -381,7 +383,7 @@ bool CPicture::OrientateImage(uint32_t *&pixels, unsigned int &width, unsigned i
       out = Rotate90CCW(pixels, width, height);
       break;
     default:
-      CLog::Log(LOGERROR, "Unknown orientation %i", orientation);
+      CLog::Log(LOGERROR, "Unknown orientation {}", orientation);
       break;
   }
   return out;

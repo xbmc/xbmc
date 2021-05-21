@@ -67,22 +67,24 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
 
   if (peripheral.Type() != PERIPHERAL_JOYSTICK)
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: invalid peripheral type: %s",
-        PeripheralTypeTranslator::TypeToString(peripheral.Type()));
+    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: invalid peripheral type: {}",
+              PeripheralTypeTranslator::TypeToString(peripheral.Type()));
     return false;
   }
 
   int deviceId;
   if (!GetDeviceId(peripheral.Location(), deviceId))
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to initialize properties for peripheral \"%s\"", peripheral.Location().c_str());
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: failed to initialize properties for peripheral \"{}\"",
+              peripheral.Location());
     return false;
   }
 
   const CJNIViewInputDevice device = CXBMCApp::GetInputDevice(deviceId);
   if (!device)
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to get input device with ID %d", deviceId);
+    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to get input device with ID {}", deviceId);
     return false;
   }
 
@@ -91,14 +93,17 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
      joystick.SetRequestedPort(device.getControllerNumber() - 1);
   joystick.SetProvider(JOYSTICK_PROVIDER_ANDROID);
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Initializing device %d \"%s\"", deviceId, peripheral.DeviceName().c_str());
+  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Initializing device {} \"{}\"", deviceId,
+            peripheral.DeviceName());
 
   // prepare the joystick state
   CAndroidJoystickState state;
   if (!state.Initialize(device))
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to initialize the state for input device \"%s\" with ID %d",
-              joystick.DeviceName().c_str(), deviceId);
+    CLog::Log(
+        LOGWARNING,
+        "CPeripheralBusAndroid: failed to initialize the state for input device \"{}\" with ID {}",
+        joystick.DeviceName(), deviceId);
     return false;
   }
 
@@ -109,7 +114,7 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   // remember the joystick state
   m_joystickStates.insert(std::make_pair(deviceId, std::move(state)));
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device has %u buttons and %u axes",
+  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device has {} buttons and {} axes",
             joystick.ButtonCount(), joystick.AxisCount());
 
   return true;
@@ -179,14 +184,20 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
 
     if (it != m_scanResults.m_results.cend())
     {
-      CLog::Log(LOGINFO, "CPeripheralBusAndroid: ignoring added input device with ID %d because we already know it", deviceId);
+      CLog::Log(LOGINFO,
+                "CPeripheralBusAndroid: ignoring added input device with ID {} because we already "
+                "know it",
+                deviceId);
       return;
     }
 
     const CJNIViewInputDevice device = CXBMCApp::GetInputDevice(deviceId);
     if (!device)
     {
-      CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to add input device with ID %d because it couldn't be found", deviceId);
+      CLog::Log(LOGWARNING,
+                "CPeripheralBusAndroid: failed to add input device with ID {} because it couldn't "
+                "be found",
+                deviceId);
       return;
     }
 
@@ -199,7 +210,7 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
     m_scanResults.m_results.push_back(result);
   }
 
-  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device with ID %d added", deviceId);
+  CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device with ID {} added", deviceId);
   OnDeviceAdded(deviceLocation);
 }
 
@@ -217,14 +228,18 @@ void CPeripheralBusAndroid::OnInputDeviceChanged(int deviceId)
         const CJNIViewInputDevice device = CXBMCApp::GetInputDevice(deviceId);
         if (!device)
         {
-          CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to update input device \"%s\" with ID %d because it couldn't be found", result->m_strDeviceName.c_str(), deviceId);
+          CLog::Log(LOGWARNING,
+                    "CPeripheralBusAndroid: failed to update input device \"{}\" with ID {} "
+                    "because it couldn't be found",
+                    result->m_strDeviceName, deviceId);
           return;
         }
 
         if (!ConvertToPeripheralScanResult(device, *result))
           return;
 
-        CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"%s\" with ID %d updated", result->m_strDeviceName.c_str(), deviceId);
+        CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"{}\" with ID {} updated",
+                  result->m_strDeviceName, deviceId);
         changed = true;
         break;
       }
@@ -234,7 +249,10 @@ void CPeripheralBusAndroid::OnInputDeviceChanged(int deviceId)
   if (changed)
     OnDeviceChanged(deviceLocation);
   else
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to update input device with ID %d because it couldn't be found", deviceId);
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: failed to update input device with ID {} because it couldn't "
+              "be found",
+              deviceId);
 }
 
 void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
@@ -248,7 +266,8 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
     {
       if (result->m_strLocation == deviceLocation)
       {
-        CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"%s\" with ID %d removed", result->m_strDeviceName.c_str(), deviceId);
+        CLog::Log(LOGINFO, "CPeripheralBusAndroid: input device \"{}\" with ID {} removed",
+                  result->m_strDeviceName, deviceId);
         m_scanResults.m_results.erase(result);
         removed = true;
         break;
@@ -263,7 +282,10 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
     OnDeviceRemoved(deviceLocation);
   }
   else
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to remove input device with ID %d because it couldn't be found", deviceId);
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: failed to remove input device with ID {} because it couldn't "
+              "be found",
+              deviceId);
 }
 
 bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
@@ -279,7 +301,9 @@ bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
   auto joystickState = m_joystickStates.find(deviceId);
   if (joystickState == m_joystickStates.end())
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: ignoring input event for unknown input device with ID %d", deviceId);
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: ignoring input event for unknown input device with ID {}",
+              deviceId);
     return false;
   }
 
@@ -306,7 +330,7 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
     const CJNIViewInputDevice device = CXBMCApp::GetInputDevice(deviceId);
     if (!device)
     {
-      CLog::Log(LOGWARNING, "CPeripheralBusAndroid: no input device with ID %d found", deviceId);
+      CLog::Log(LOGWARNING, "CPeripheralBusAndroid: no input device with ID {} found", deviceId);
       continue;
     }
 
@@ -374,25 +398,25 @@ bool CPeripheralBusAndroid::ConvertToPeripheralScanResult(const CJNIViewInputDev
 void CPeripheralBusAndroid::LogInputDevice(const CJNIViewInputDevice &device)
 {
   // Log device properties
-  CLog::Log(LOGDEBUG, "  Name: \"%s\"", device.getName().c_str());
-  CLog::Log(LOGDEBUG, "    ID: %d", device.getId());
-  CLog::Log(LOGDEBUG, "    Controller number: %d", device.getControllerNumber());
+  CLog::Log(LOGDEBUG, "  Name: \"{}\"", device.getName());
+  CLog::Log(LOGDEBUG, "    ID: {}", device.getId());
+  CLog::Log(LOGDEBUG, "    Controller number: {}", device.getControllerNumber());
   std::string descriptor = device.getDescriptor();
   if (descriptor.size() > 14)
-    CLog::Log(LOGDEBUG, "    Descriptor: \"%s...\"", descriptor.substr(0, 14).c_str());
+    CLog::Log(LOGDEBUG, "    Descriptor: \"{}...\"", descriptor.substr(0, 14));
   else
-    CLog::Log(LOGDEBUG, "    Descriptor: \"%s\"", descriptor.c_str());
-  CLog::Log(LOGDEBUG, "    Product ID: %04X", device.getProductId());
-  CLog::Log(LOGDEBUG, "    Vendor ID: %04X", device.getVendorId());
-  CLog::Log(LOGDEBUG, "    Has microphone: %s", device.hasMicrophone() ? "true" : "false");
-  CLog::Log(LOGDEBUG, "    Is virtual: %s", device.isVirtual() ? "true" : "false");
+    CLog::Log(LOGDEBUG, "    Descriptor: \"{}\"", descriptor);
+  CLog::Log(LOGDEBUG, "    Product ID: {:04X}", device.getProductId());
+  CLog::Log(LOGDEBUG, "    Vendor ID: {:04X}", device.getVendorId());
+  CLog::Log(LOGDEBUG, "    Has microphone: {}", device.hasMicrophone() ? "true" : "false");
+  CLog::Log(LOGDEBUG, "    Is virtual: {}", device.isVirtual() ? "true" : "false");
 
   // Log device sources
-  CLog::Log(LOGDEBUG, "    Source flags: 0x%08x", device.getSources());
+  CLog::Log(LOGDEBUG, "    Source flags: {:#08x}", device.getSources());
   for (const auto &source : GetInputSources())
   {
     if (device.supportsSource(source.first))
-      CLog::Log(LOGDEBUG, "    Has source: %s (0x%08x)", source.second, source.first);
+      CLog::Log(LOGDEBUG, "    Has source: {} ({:#08x})", source.second, source.first);
   }
 
   // Log device keys
@@ -403,14 +427,15 @@ void CPeripheralBusAndroid::LogInputDevice(const CJNIViewInputDevice &device)
 
   if (results.size() != keys.size())
   {
-    CLog::Log(LOGERROR, "Failed to get key status for %u keys", keys.size());
+    CLog::Log(LOGERROR, "Failed to get key status for {} keys", keys.size());
   }
   else
   {
     for (unsigned int i = 0; i < keys.size(); i++)
     {
       if (results[i])
-        CLog::Log(LOGDEBUG, "    Has key: %s (%d)", CAndroidJoystickTranslator::TranslateKeyCode(keys[i]), keys[i]);
+        CLog::Log(LOGDEBUG, "    Has key: {} ({})",
+                  CAndroidJoystickTranslator::TranslateKeyCode(keys[i]), keys[i]);
     }
   }
 
@@ -421,10 +446,12 @@ void CPeripheralBusAndroid::LogInputDevice(const CJNIViewInputDevice &device)
     const CJNIViewInputDeviceMotionRange motionRange = motionRanges.get(index);
 
     int axisId = motionRange.getAxis();
-    CLog::Log(LOGDEBUG, "    Has axis: %s (%d)", CAndroidJoystickTranslator::TranslateAxis(axisId), axisId);
-    CLog::Log(LOGDEBUG, "      Endpoints: [%f, %f]", motionRange.getMin(), motionRange.getMax());
-    CLog::Log(LOGDEBUG, "      Center: %f", motionRange.getFlat());
-    CLog::Log(LOGDEBUG, "      Fuzz: %f", motionRange.getFuzz());
+    CLog::Log(LOGDEBUG, "    Has axis: {} ({})", CAndroidJoystickTranslator::TranslateAxis(axisId),
+              axisId);
+    CLog::Log(LOGDEBUG, "      Endpoints: [{:f}, {:f}]", motionRange.getMin(),
+              motionRange.getMax());
+    CLog::Log(LOGDEBUG, "      Center: {:f}", motionRange.getFlat());
+    CLog::Log(LOGDEBUG, "      Fuzz: {:f}", motionRange.getFuzz());
   }
 }
 

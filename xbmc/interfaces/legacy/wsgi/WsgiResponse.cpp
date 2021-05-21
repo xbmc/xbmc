@@ -45,10 +45,11 @@ namespace XBMCAddon
           if (parsedStatus >= MHD_HTTP_OK && parsedStatus <= MHD_HTTP_NOT_EXTENDED)
             m_status = static_cast<int>(parsedStatus);
           else
-            CLog::Log(LOGWARNING, "WsgiResponse: invalid status number %" PRId64 " in \"%s\" provided", parsedStatus, status.c_str());
+            CLog::Log(LOGWARNING, "WsgiResponse: invalid status number {} in \"{}\" provided",
+                      parsedStatus, status);
         }
         else
-          CLog::Log(LOGWARNING, "WsgiResponse: invalid status \"%s\" provided", status.c_str());
+          CLog::Log(LOGWARNING, "WsgiResponse: invalid status \"{}\" provided", status);
       }
       else
         CLog::Log(LOGWARNING, "WsgiResponse: empty status provided");

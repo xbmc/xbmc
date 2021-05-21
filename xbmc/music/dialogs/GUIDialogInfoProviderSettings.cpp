@@ -248,7 +248,7 @@ bool CGUIDialogInfoProviderSettings::Save()
     return true; //Save done by caller of ::Show
 
   // Save default settings for fetching additional information and art
-  CLog::Log(LOGINFO, "%s called", __FUNCTION__);
+  CLog::Log(LOGINFO, "{} called", __FUNCTION__);
   // Save Fetch addiitional info during update
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   settings->SetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO, m_fetchInfo);
@@ -369,13 +369,13 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
   std::shared_ptr<CSettingCategory> category = AddCategory("infoprovidersettings", -1);
   if (category == nullptr)
   {
-    CLog::Log(LOGERROR, "%s: unable to setup settings", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: unable to setup settings", __FUNCTION__);
     return;
   }
   std::shared_ptr<CSettingGroup> group1 = AddGroup(category);
   if (group1 == nullptr)
   {
-    CLog::Log(LOGERROR, "%s: unable to setup settings", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: unable to setup settings", __FUNCTION__);
     return;
   }
 
@@ -404,7 +404,7 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
   std::shared_ptr<CSettingGroup> group = AddGroup(category, 38337);
   if (group == nullptr)
   {
-    CLog::Log(LOGERROR, "%s: unable to setup settings", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: unable to setup settings", __FUNCTION__);
     return;
   }
   std::shared_ptr<CSettingAction> subsetting;

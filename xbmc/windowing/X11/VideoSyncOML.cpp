@@ -17,7 +17,7 @@ using namespace KODI::WINDOWING::X11;
 
 bool CVideoSyncOML::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncOML::%s - setting up OML", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CVideoSyncOML::{} - setting up OML", __FUNCTION__);
 
   UpdateClock = func;
 

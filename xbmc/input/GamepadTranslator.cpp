@@ -79,7 +79,7 @@ uint32_t CGamepadTranslator::TranslateString(std::string strButton)
   else if (strButton == "dpaddown")
     buttonCode = KEY_BUTTON_DPAD_DOWN;
   else
-    CLog::Log(LOGERROR, "Gamepad Translator: Can't find button %s", strButton.c_str());
+    CLog::Log(LOGERROR, "Gamepad Translator: Can't find button {}", strButton);
 
   return buttonCode;
 }

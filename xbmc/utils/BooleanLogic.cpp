@@ -32,7 +32,7 @@ bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
       m_negated = true;
     else if (!StringUtils::EqualsNoCase(strNegated, "false"))
     {
-      CLog::Log(LOGDEBUG, "CBooleanLogicValue: invalid negated value \"%s\"", strNegated);
+      CLog::Log(LOGDEBUG, "CBooleanLogicValue: invalid negated value \"{}\"", strNegated);
       return false;
     }
   }
@@ -73,7 +73,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
       operation->SetOperation(StringUtils::EqualsNoCase(tag, "and") ? BooleanLogicOperationAnd : BooleanLogicOperationOr);
       if (!operation->Deserialize(operationNode))
       {
-        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <%s> definition", tag.c_str());
+        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition", tag);
         return false;
       }
 
@@ -89,14 +89,14 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
       {
         if (!value->Deserialize(operationNode))
         {
-          CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <%s> definition", tag.c_str());
+          CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition", tag);
           return false;
         }
 
         m_values.push_back(value);
       }
       else if (operationNode->Type() == TiXmlNode::TINYXML_ELEMENT)
-        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: unknown <%s> definition encountered", tag.c_str());
+        CLog::Log(LOGDEBUG, "CBooleanLogicOperation: unknown <{}> definition encountered", tag);
     }
 
     operationNode = operationNode->NextSibling();

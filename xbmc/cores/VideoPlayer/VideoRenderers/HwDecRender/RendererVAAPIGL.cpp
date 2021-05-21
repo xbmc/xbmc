@@ -41,11 +41,13 @@ void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDi
   }
 
   CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general %s, deepColor %s", general ? "yes" : "no", deepColor ? "yes" : "no");
+  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general {}, deepColor {}",
+            general ? "yes" : "no", deepColor ? "yes" : "no");
   if (!general)
   {
     CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
-    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general %s, deepColor %s", general ? "yes" : "no", deepColor ? "yes" : "no");
+    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general {}, deepColor {}",
+              general ? "yes" : "no", deepColor ? "yes" : "no");
   }
 
   vaTerminate(vaDpy);

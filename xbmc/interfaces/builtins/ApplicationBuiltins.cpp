@@ -76,7 +76,7 @@ static int NotifyAll(const std::vector<std::string>& params)
   {
     if (!CJSONVariantParser::Parse(params[2], data))
     {
-      CLog::Log(LOGERROR, "NotifyAll failed to parse data: %s", params[2].c_str());
+      CLog::Log(LOGERROR, "NotifyAll failed to parse data: {}", params[2]);
       return -3;
     }
   }

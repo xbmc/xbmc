@@ -152,14 +152,18 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
 
     if (flags & kCFNetServiceFlagRemove)
     {
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback service named: %s, type: %s, domain: %s disappeared",
-        s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+      CLog::Log(LOGDEBUG,
+                "CZeroconfBrowserDarwin::BrowserCallback service named: {}, type: {}, domain: {} "
+                "disappeared",
+                s.GetName(), s.GetType(), s.GetDomain());
       p_this->removeDiscoveredService(browser, flags, s);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback found service named: %s, type: %s, domain: %s",
-        s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
+      CLog::Log(
+          LOGDEBUG,
+          "CZeroconfBrowserDarwin::BrowserCallback found service named: {}, type: {}, domain: {}",
+          s.GetName(), s.GetType(), s.GetDomain());
       p_this->addDiscoveredService(browser, flags, s);
     }
     if (! (flags & kCFNetServiceFlagMoreComing) )
@@ -171,8 +175,10 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
     }
   } else
   {
-    CLog::Log(LOGERROR, "CZeroconfBrowserDarwin::BrowserCallback returned"
-      "(domain = %d, error = %" PRId64")", (int)error->domain, (int64_t)error->error);
+    CLog::Log(LOGERROR,
+              "CZeroconfBrowserDarwin::BrowserCallback returned"
+              "(domain = {}, error = {})",
+              (int)error->domain, (int64_t)error->error);
   }
 }
 
@@ -252,8 +258,10 @@ bool CZeroconfBrowserDarwin::doAddServiceType(const std::string& fcr_service_typ
     CFNetServiceBrowserUnscheduleFromRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);
     CFRelease(p_browser);
     p_browser = NULL;
-    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned"
-      "(domain = %d, error = %" PRId64")", (int)error.domain, (int64_t)error.error);
+    CLog::Log(LOGERROR,
+              "CFNetServiceBrowserSearchForServices returned"
+              "(domain = {}, error = {})",
+              (int)error.domain, (int64_t)error.error);
   }
   else
   {

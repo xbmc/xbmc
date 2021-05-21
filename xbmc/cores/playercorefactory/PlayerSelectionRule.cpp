@@ -32,7 +32,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   if (m_name.empty())
     m_name = "un-named";
 
-  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::Initialize: creating rule: %s", m_name.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::Initialize: creating rule: {}", m_name);
 
   m_tInternetStream = GetTristate(pRule->Attribute("internetstream"));
   m_tRemote = GetTristate(pRule->Attribute("remote"));
@@ -67,7 +67,9 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
 
   if (m_bStreamDetails && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
   {
-      CLog::Log(LOGWARNING, "CPlayerSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
+    CLog::Log(LOGWARNING,
+              "CPlayerSelectionRule::Initialize: rule: {} needs media flagging, which is disabled",
+              m_name);
   }
 
   m_playerName = XMLUtils::GetAttribute(pRule, "player");
@@ -104,7 +106,7 @@ bool CPlayerSelectionRule::MatchesRegExp(const std::string& str, CRegExp& regExp
 
 void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::string>&validPlayers, std::vector<std::string>&players)
 {
-  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: %s", m_name.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: {}", m_name);
 
   if (m_bStreamDetails && !item.HasVideoInfoTag())
     return;
@@ -134,7 +136,9 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
   {
     if (!item.GetVideoInfoTag()->HasStreamDetails())
     {
-      CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: cannot check rule: %s, no StreamDetails", m_name.c_str());
+      CLog::Log(LOGDEBUG,
+                "CPlayerSelectionRule::GetPlayers: cannot check rule: {}, no StreamDetails",
+                m_name);
       return;
     }
 
@@ -176,14 +180,15 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
   if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.GetDynPath(), regExp))
     return;
 
-  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: matches rule: %s", m_name.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: matches rule: {}", m_name);
 
   for (const auto& rule : vecSubRules)
     rule->GetPlayers(item, validPlayers, players);
 
   if (std::find(validPlayers.begin(), validPlayers.end(), m_playerName) != validPlayers.end())
   {
-    CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: adding player: %s for rule: %s", m_playerName.c_str(), m_name.c_str());
+    CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: adding player: {} for rule: {}",
+              m_playerName, m_name);
     players.push_back(m_playerName);
   }
 }

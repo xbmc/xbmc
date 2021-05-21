@@ -52,20 +52,21 @@ bool CWinSystemGbm::InitWindowSystem()
 
   if (!m_DRM->InitDrm())
   {
-    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize Atomic DRM", __FUNCTION__);
+    CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to initialize Atomic DRM", __FUNCTION__);
     m_DRM.reset();
 
     m_DRM = std::make_shared<CDRMLegacy>();
 
     if (!m_DRM->InitDrm())
     {
-      CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize Legacy DRM", __FUNCTION__);
+      CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to initialize Legacy DRM", __FUNCTION__);
       m_DRM.reset();
 
       m_DRM = std::make_shared<COffScreenModeSetting>();
       if (!m_DRM->InitDrm())
       {
-        CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize off screen DRM", __FUNCTION__);
+        CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to initialize off screen DRM",
+                  __FUNCTION__);
         m_DRM.reset();
         return false;
       }
@@ -94,13 +95,13 @@ bool CWinSystemGbm::InitWindowSystem()
   if (setting)
     setting->SetVisible(true);
 
-  CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
 }
 
 bool CWinSystemGbm::DestroyWindowSystem()
 {
-  CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - deinitialized DRM", __FUNCTION__);
 
   m_libinput.reset();
 
@@ -114,7 +115,7 @@ void CWinSystemGbm::UpdateResolutions()
   auto resolutions = m_DRM->GetModes();
   if (resolutions.empty())
   {
-    CLog::Log(LOGWARNING, "CWinSystemGbm::%s - Failed to get resolutions", __FUNCTION__);
+    CLog::Log(LOGWARNING, "CWinSystemGbm::{} - Failed to get resolutions", __FUNCTION__);
   }
   else
   {
@@ -135,7 +136,7 @@ void CWinSystemGbm::UpdateResolutions()
         CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = res;
       }
 
-      CLog::Log(LOGINFO, "Found resolution %dx%d with %dx%d%s @ %f Hz", res.iWidth, res.iHeight,
+      CLog::Log(LOGINFO, "Found resolution {}x{} with {}x{}{} @ {:f} Hz", res.iWidth, res.iHeight,
                 res.iScreenWidth, res.iScreenHeight,
                 res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", res.fRefreshRate);
     }
@@ -156,7 +157,7 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if(!m_DRM->SetMode(res))
   {
-    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to set DRM mode", __FUNCTION__);
+    CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to set DRM mode", __FUNCTION__);
     return false;
   }
 
@@ -258,7 +259,7 @@ void CWinSystemGbm::Unregister(IDispResource *resource)
 
 void CWinSystemGbm::OnLostDevice()
 {
-  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "{} - notify display change event", __FUNCTION__);
   m_dispReset = true;
 
   CSingleLock lock(m_resourceSection);

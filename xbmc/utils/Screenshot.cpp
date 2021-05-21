@@ -43,13 +43,13 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
 
   if (!surface->Capture())
   {
-    CLog::Log(LOGERROR, "Screenshot %s failed", CURL::GetRedacted(filename).c_str());
+    CLog::Log(LOGERROR, "Screenshot {} failed", CURL::GetRedacted(filename));
     return;
   }
 
   surface->CaptureVideo(true);
 
-  CLog::Log(LOGDEBUG, "Saving screenshot %s", CURL::GetRedacted(filename).c_str());
+  CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(filename));
 
   //set alpha byte to 0xFF
   for (int y = 0; y < surface->GetHeight(); y++)
@@ -63,7 +63,7 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
   if (sync)
   {
     if (!CPicture::CreateThumbnailFromSurface(surface->GetBuffer(), surface->GetWidth(), surface->GetHeight(), surface->GetStride(), filename))
-      CLog::Log(LOGERROR, "Unable to write screenshot %s", CURL::GetRedacted(filename).c_str());
+      CLog::Log(LOGERROR, "Unable to write screenshot {}", CURL::GetRedacted(filename));
 
     surface->ReleaseBuffer();
   }
@@ -74,7 +74,7 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
     if (file.OpenForWrite(filename))
       file.Close();
     else
-      CLog::Log(LOGERROR, "Unable to create file %s", CURL::GetRedacted(filename).c_str());
+      CLog::Log(LOGERROR, "Unable to create file {}", CURL::GetRedacted(filename));
 
     //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
     //buffer is deleted from CThumbnailWriter

@@ -64,7 +64,7 @@ CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()
       minheight = 720;
 
     add(CDecoderFilter(codecname, flags, minheight));
-    CLog::Log(LOGINFO, "Mediacodec decoder: %s", codecname.c_str());
+    CLog::Log(LOGINFO, "Mediacodec decoder: {}", codecname);
   }
   Save();
 }

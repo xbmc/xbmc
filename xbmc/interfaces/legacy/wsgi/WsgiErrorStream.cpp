@@ -36,9 +36,9 @@ namespace XBMCAddon
         msg.erase(msg.size() - 1);
 
       if (m_request != NULL)
-        CLog::Log(LOGERROR, "WSGI [%s]: %s", m_request->url.c_str(), msg.c_str());
+        CLog::Log(LOGERROR, "WSGI [{}]: {}", m_request->url, msg);
       else
-        CLog::Log(LOGERROR, "WSGI: %s", msg.c_str());
+        CLog::Log(LOGERROR, "WSGI: {}", msg);
     }
 
     void WsgiErrorStream::writelines(const std::vector<String>& seq)

@@ -81,8 +81,8 @@ bool CPeripheralBusAddon::GetAddonWithButtonMap(const CPeripheral* device,
       if (addonWithButtonMap->HasButtonMaps())
         addon = std::move(addonWithButtonMap);
       else
-        CLog::Log(LOGDEBUG, "Add-on %s doesn't provide button maps for its controllers",
-                  addonWithButtonMap->ID().c_str());
+        CLog::Log(LOGDEBUG, "Add-on {} doesn't provide button maps for its controllers",
+                  addonWithButtonMap->ID());
     }
   }
 
@@ -406,7 +406,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
   // Register new add-ons
   for (const std::string& addonId : added)
   {
-    CLog::Log(LOGDEBUG, "Add-on bus: Registering add-on %s", addonId.c_str());
+    CLog::Log(LOGDEBUG, "Add-on bus: Registering add-on {}", addonId);
 
     auto GetAddon = [&addonId](const AddonInfoPtr& addon) { return addon->ID() == addonId; };
 
@@ -459,7 +459,7 @@ void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
 
   if (erased)
   {
-    CLog::Log(LOGDEBUG, "Add-on bus: Unregistered add-on %s", addonId.c_str());
+    CLog::Log(LOGDEBUG, "Add-on bus: Unregistered add-on {}", addonId);
     CSingleExit exit(m_critSection);
     erased->DestroyAddon();
   }

@@ -89,7 +89,8 @@ namespace XBMCAddon
           //  is deallocating. holding this lock should prevent it from
           //  deallocating during the execution of this call.
 #ifdef ENABLE_XBMC_TRACE_API
-          CLog::Log(LOGDEBUG,"%sNEWADDON executing callback 0x%lx",_tg.getSpaces(),(long)(p->cb.get()));
+          CLog::Log(LOGDEBUG, "{}NEWADDON executing callback 0x{:x}", _tg.getSpaces(),
+                    (long)(p->cb.get()));
 #endif
           AddonClass* obj = (p->cb->getObject());
           AddonClass::Ref<AddonClass> ref(obj);
@@ -104,7 +105,8 @@ namespace XBMCAddon
             catch (XbmcCommons::Exception& e) { e.LogThrowMessage(); }
             catch (...)
             {
-              CLog::Log(LOGERROR,"Unknown exception while executing callback 0x%lx", (long)(p->cb.get()));
+              CLog::Log(LOGERROR, "Unknown exception while executing callback 0x{:x}",
+                        (long)(p->cb.get()));
             }
           }
         }
@@ -132,7 +134,9 @@ namespace XBMCAddon
       if(p->handler->shouldRemoveCallback(p->cb->getObject(),userData))
       {
 #ifdef ENABLE_XBMC_TRACE_API
-        CLog::Log(LOGDEBUG,"%sNEWADDON removing callback 0x%lx for PyThreadState 0x%lx from queue", _tg.getSpaces(),(long)(p->cb.get()) ,(long)userData);
+        CLog::Log(LOGDEBUG,
+                  "{}NEWADDON removing callback 0x{:x} for PyThreadState 0x{:x} from queue",
+                  _tg.getSpaces(), (long)(p->cb.get()), (long)userData);
 #endif
         iter = g_callQueue.erase(iter);
       }

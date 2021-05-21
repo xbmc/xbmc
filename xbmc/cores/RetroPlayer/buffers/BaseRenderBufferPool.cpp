@@ -92,7 +92,7 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
     if (renderBuffer == nullptr)
     {
       CLog::Log(LOGDEBUG,
-                "RetroPlayer[RENDER]: Creating render buffer of size %ux%u for buffer pool", width,
+                "RetroPlayer[RENDER]: Creating render buffer of size {}x{} for buffer pool", width,
                 height);
 
       std::unique_ptr<IRenderBuffer> renderBufferPtr(CreateRenderBuffer(header));

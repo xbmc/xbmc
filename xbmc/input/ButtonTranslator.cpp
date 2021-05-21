@@ -114,8 +114,8 @@ bool CButtonTranslator::Load()
 
   if (!success)
   {
-    CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0].c_str(),
-              DIRS_TO_CHECK[1].c_str(), DIRS_TO_CHECK[2].c_str());
+    CLog::Log(LOGERROR, "Error loading keymaps from: {} or {} or {}", DIRS_TO_CHECK[0],
+              DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
     return false;
   }
 
@@ -127,25 +127,25 @@ bool CButtonTranslator::LoadKeymap(const std::string& keymapPath)
 {
   CXBMCTinyXML xmlDoc;
 
-  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
+  CLog::Log(LOGINFO, "Loading {}", keymapPath);
   if (!xmlDoc.LoadFile(keymapPath))
   {
-    CLog::Log(LOGERROR, "Error loading keymap: %s, Line %d\n%s", keymapPath.c_str(),
-              xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading keymap: {}, Line {}\n{}", keymapPath, xmlDoc.ErrorRow(),
+              xmlDoc.ErrorDesc());
     return false;
   }
 
   TiXmlElement* pRoot = xmlDoc.RootElement();
   if (pRoot == nullptr)
   {
-    CLog::Log(LOGERROR, "Error getting keymap root: %s", keymapPath.c_str());
+    CLog::Log(LOGERROR, "Error getting keymap root: {}", keymapPath);
     return false;
   }
 
   std::string strValue = pRoot->Value();
   if (strValue != "keymap")
   {
-    CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", keymapPath.c_str());
+    CLog::Log(LOGERROR, "{} Doesn't contain <keymap>", keymapPath);
     return false;
   }
 
@@ -270,7 +270,7 @@ unsigned int CButtonTranslator::GetActionCode(int window,
   // Some buttoncodes changed in Hardy
   if (action == ACTION_NONE && (code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
   {
-    CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, code);
+    CLog::Log(LOGDEBUG, "{}: Trying Hardy keycode for {:#04x}", __FUNCTION__, code);
     code &= ~0x0F00;
     it2 = (*it).second.find(code);
     if (it2 != (*it).second.end())

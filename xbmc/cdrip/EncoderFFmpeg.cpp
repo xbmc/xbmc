@@ -53,7 +53,8 @@ bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
   std::string filename = URIUtils::GetFileName(m_strFile);
   if(avformat_alloc_output_context2(&m_Format,NULL,NULL,filename.c_str()))
   {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file {}",
+              filename);
     return false;
   }
 
@@ -132,7 +133,8 @@ bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
 
   if (m_OutFormat <= AV_SAMPLE_FMT_NONE || avcodec_open2(m_CodecCtx, codec, NULL))
   {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to open the codec %s", codec->long_name ? codec->long_name : codec->name);
+    CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to open the codec {}",
+              codec->long_name ? codec->long_name : codec->name);
     av_freep(&m_Stream);
     av_freep(&m_Format->pb);
     av_freep(&m_Format);
@@ -225,7 +227,9 @@ bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "CEncoderFFmpeg::Init - Successfully initialized with muxer %s and codec %s", m_Format->oformat->long_name? m_Format->oformat->long_name : m_Format->oformat->name, codec->long_name? codec->long_name : codec->name);
+  CLog::Log(LOGDEBUG, "CEncoderFFmpeg::Init - Successfully initialized with muxer {} and codec {}",
+            m_Format->oformat->long_name ? m_Format->oformat->long_name : m_Format->oformat->name,
+            codec->long_name ? codec->long_name : codec->name);
 
   return true;
 }
@@ -306,7 +310,7 @@ bool CEncoderFFmpeg::WriteFrame()
   m_BufferSize = 0;
 
   if (encoded < 0) {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::WriteFrame - Error encoding audio: %i", encoded);
+    CLog::Log(LOGERROR, "CEncoderFFmpeg::WriteFrame - Error encoding audio: {}", encoded);
     av_packet_free(&pkt);
     return false;
   }

@@ -219,11 +219,15 @@ void CGUIWindowSettingsCategory::FocusElement(const std::string& elementId)
           if (control)
             SET_CONTROL_FOCUS(control->GetID(), 0);
           else
-            CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: failed to get control for setting '%s'.", elementId.c_str());
+            CLog::Log(LOGERROR,
+                      "CGUIWindowSettingsCategory: failed to get control for setting '{}'.",
+                      elementId);
           return;
         }
       }
     }
   }
-  CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: failed to set focus. unknown category/setting id '%s'.", elementId.c_str());
+  CLog::Log(LOGERROR,
+            "CGUIWindowSettingsCategory: failed to set focus. unknown category/setting id '{}'.",
+            elementId);
 }

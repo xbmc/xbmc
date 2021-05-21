@@ -261,7 +261,8 @@ void CDirectoryCache::Delete(iCache it)
 void CDirectoryCache::PrintStats() const
 {
   CSingleLock lock (m_cs);
-  CLog::Log(LOGDEBUG, "%s - total of %u cache hits, and %u cache misses", __FUNCTION__, m_cacheHits, m_cacheMisses);
+  CLog::Log(LOGDEBUG, "{} - total of {} cache hits, and {} cache misses", __FUNCTION__, m_cacheHits,
+            m_cacheMisses);
   // run through and find the oldest and the number of items cached
   unsigned int oldest = UINT_MAX;
   unsigned int numItems = 0;
@@ -273,6 +274,7 @@ void CDirectoryCache::PrintStats() const
     numItems += dir->m_Items->Size();
     numDirs++;
   }
-  CLog::Log(LOGDEBUG, "%s - %u folders cached, with %u items total.  Oldest is %u, current is %u", __FUNCTION__, numDirs, numItems, oldest, m_accessCounter);
+  CLog::Log(LOGDEBUG, "{} - {} folders cached, with {} items total.  Oldest is {}, current is {}",
+            __FUNCTION__, numDirs, numItems, oldest, m_accessCounter);
 }
 #endif

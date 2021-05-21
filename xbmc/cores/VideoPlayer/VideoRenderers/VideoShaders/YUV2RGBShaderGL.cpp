@@ -81,7 +81,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
   else if (m_format == SHADER_YV12)
     m_defines += "#define XBMC_YV12\n";
   else
-    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
 
   if (dstPrimaries != srcPrimaries)
   {
@@ -103,7 +103,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
 
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
-  CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n%s", m_defines.c_str());
+  CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines);
 
   m_pConvMatrix.reset(new CConvertMatrix());
   m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);
@@ -341,7 +341,8 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
 
   if (m_scaling != VS_SCALINGMETHOD_LANCZOS3_FAST && m_scaling != VS_SCALINGMETHOD_SPLINE36_FAST)
   {
-    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader4 - unsupported scaling %d will fallback", m_scaling);
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader4 - unsupported scaling {} will fallback",
+              m_scaling);
     m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
   }
 

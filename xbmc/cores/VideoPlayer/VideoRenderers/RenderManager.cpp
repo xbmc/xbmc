@@ -104,7 +104,10 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     }
   }
 
-  CLog::Log(LOGDEBUG, "CRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f.", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps);
+  CLog::Log(LOGDEBUG,
+            "CRenderManager::Configure - change configuration. {}x{}. display: {}x{}. framerate: "
+            "{:4.2f}.",
+            picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps);
 
   // make sure any queued frame was fully presented
   {
@@ -195,7 +198,8 @@ bool CRenderManager::Configure()
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
-      CLog::Log(LOGWARNING, "CRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, m_NumberBuffers);
+      CLog::Log(LOGWARNING, "CRenderManager::Configure - queue size too small ({}, {}, {})",
+                m_QueueSize, renderbuffers, m_NumberBuffers);
     }
 
     m_pRenderer->SetBufferSize(m_QueueSize);
@@ -227,7 +231,7 @@ bool CRenderManager::Configure()
 
     m_renderState = STATE_CONFIGURED;
 
-    CLog::Log(LOGDEBUG, "CRenderManager::Configure - %d", m_QueueSize);
+    CLog::Log(LOGDEBUG, "CRenderManager::Configure - {}", m_QueueSize);
   }
   else
     m_renderState = STATE_UNCONFIGURED;
@@ -356,7 +360,7 @@ void CRenderManager::PreInit()
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_PREINIT);
     if (!m_initEvent.WaitMSec(2000))
     {
-      CLog::Log(LOGERROR, "%s - timed out waiting for renderer to preinit", __FUNCTION__);
+      CLog::Log(LOGERROR, "{} - timed out waiting for renderer to preinit", __FUNCTION__);
     }
   }
 
@@ -385,7 +389,7 @@ void CRenderManager::UnInit()
     CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_UNINIT);
     if (!m_initEvent.WaitMSec(2000))
     {
-      CLog::Log(LOGERROR, "%s - timed out waiting for renderer to uninit", __FUNCTION__);
+      CLog::Log(LOGERROR, "{} - timed out waiting for renderer to uninit", __FUNCTION__);
     }
   }
 
@@ -412,7 +416,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
 
   if (g_application.IsCurrentThread())
   {
-    CLog::Log(LOGDEBUG, "%s - flushing renderer", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - flushing renderer", __FUNCTION__);
 
     CSingleExit exitlock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
@@ -448,7 +452,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
     {
       if (!m_flushEvent.WaitMSec(1000))
       {
-        CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
+        CLog::Log(LOGERROR, "{} - timed out waiting for renderer to flush", __FUNCTION__);
         return false;
       }
       else
@@ -486,7 +490,7 @@ void CRenderManager::DeleteRenderer()
 {
   if (m_pRenderer)
   {
-    CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - deleting renderer", __FUNCTION__);
 
     delete m_pRenderer;
     m_pRenderer = NULL;
@@ -519,7 +523,7 @@ void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int wid
   it = m_captures.find(captureId);
   if (it == m_captures.end())
   {
-    CLog::Log(LOGERROR, "CRenderManager::Capture - unknown capture id: %d", captureId);
+    CLog::Log(LOGERROR, "CRenderManager::Capture - unknown capture id: {}", captureId);
     return;
   }
 
@@ -1137,7 +1141,11 @@ void CRenderManager::PrepareNextRender()
     m_dvdClock.SetVsyncAdjust(0);
   }
 
-  CLog::LogF(LOGDEBUG, LOGAVTIMING, "frameOnScreen: %f renderPts: %f nextFramePts: %f -> diff: %f  render: %u forceNext: %u", frameOnScreen, renderPts, nextFramePts, (renderPts - nextFramePts), renderPts >= nextFramePts, m_forceNext);
+  CLog::LogF(LOGDEBUG, LOGAVTIMING,
+             "frameOnScreen: {:f} renderPts: {:f} nextFramePts: {:f} -> diff: {:f}  render: {} "
+             "forceNext: {}",
+             frameOnScreen, renderPts, nextFramePts, (renderPts - nextFramePts),
+             renderPts >= nextFramePts, m_forceNext);
 
   bool combined = false;
   if (m_presentsourcePast >= 0)

@@ -156,7 +156,7 @@ bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
 {
   if (item && g_application.GetAppPlayer().IsPlaying())
   {
-    CLog::Log(LOGDEBUG, "CPlayerGUIInfo::InitCurrentItem(%s)", CURL::GetRedacted(item->GetPath()).c_str());
+    CLog::Log(LOGDEBUG, "CPlayerGUIInfo::InitCurrentItem({})", CURL::GetRedacted(item->GetPath()));
     m_currentItem.reset(new CFileItem(*item));
   }
   else
@@ -625,7 +625,7 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
         ranges = GetChapters(data, duration);
         break;
       default:
-        CLog::Log(LOGERROR, "CPlayerGUIInfo::GetContentRanges(%i) - unhandled guiinfo", iInfo);
+        CLog::Log(LOGERROR, "CPlayerGUIInfo::GetContentRanges({}) - unhandled guiinfo", iInfo);
         break;
     }
 

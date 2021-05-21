@@ -375,7 +375,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     CPlayListM3U playlist;
     playlist.Add(*m_vecItems);
 
-    CLog::Log(LOGDEBUG, "Saving video playlist: [%s]", strPath.c_str());
+    CLog::Log(LOGDEBUG, "Saving video playlist: [{}]", strPath);
     playlist.Save(strPath);
   }
 }

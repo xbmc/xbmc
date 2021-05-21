@@ -156,7 +156,7 @@ CLibInputKeyboard::CLibInputKeyboard()
   m_ctx = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
   if (!m_ctx)
   {
-    CLog::Log(LOGERROR, "CLibInputKeyboard::%s - failed to create xkb context", __FUNCTION__);
+    CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to create xkb context", __FUNCTION__);
     return;
   }
 
@@ -164,7 +164,7 @@ CLibInputKeyboard::CLibInputKeyboard()
 
   if (!SetKeymap(layout))
   {
-    CLog::Log(LOGERROR, "CLibInputKeyboard::%s - failed set default keymap", __FUNCTION__);
+    CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed set default keymap", __FUNCTION__);
     return;
   }
 }
@@ -192,14 +192,14 @@ bool CLibInputKeyboard::SetKeymap(const std::string& layout)
   m_keymap = xkb_keymap_new_from_names(m_ctx, &names, XKB_KEYMAP_COMPILE_NO_FLAGS);
   if (!m_keymap)
   {
-    CLog::Log(LOGERROR, "CLibInputKeyboard::%s - failed to compile keymap", __FUNCTION__);
+    CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to compile keymap", __FUNCTION__);
     return false;
   }
 
   m_state = xkb_state_new(m_keymap);
   if (!m_state)
   {
-    CLog::Log(LOGERROR, "CLibInputKeyboard::%s - failed to create xkb state", __FUNCTION__);
+    CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to create xkb state", __FUNCTION__);
     return false;
   }
 
@@ -301,7 +301,8 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     auto data = m_repeatData.find(dev);
     if (data != m_repeatData.end())
     {
-      CLog::Log(LOGDEBUG, "CLibInputKeyboard::%s - using delay: %ims repeat: %ims", __FUNCTION__, data->second.at(0), data->second.at(1));
+      CLog::Log(LOGDEBUG, "CLibInputKeyboard::{} - using delay: {}ms repeat: {}ms", __FUNCTION__,
+                data->second.at(0), data->second.at(1));
 
       m_repeatRate = data->second.at(1);
       m_repeatTimer.Stop(true);
@@ -362,15 +363,18 @@ void CLibInputKeyboard::GetRepeat(libinput_device *dev)
 
   if (fd < 0)
   {
-    CLog::Log(LOGERROR, "CLibInputKeyboard::%s - failed to open %s (%s)", __FUNCTION__, sysname, strerror(errno));
+    CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to open {} ({})", __FUNCTION__, sysname,
+              strerror(errno));
   }
   else
   {
     auto ret = ioctl(fd, EVIOCGREP, &kbdrep);
     if (ret < 0)
-      CLog::Log(LOGDEBUG, "CLibInputKeyboard::%s - could not get key repeat for %s (%s)", __FUNCTION__, sysname, strerror(errno));
+      CLog::Log(LOGDEBUG, "CLibInputKeyboard::{} - could not get key repeat for {} ({})",
+                __FUNCTION__, sysname, strerror(errno));
 
-    CLog::Log(LOGDEBUG, "CLibInputKeyboard::%s - delay: %ims repeat: %ims for %s (%s)", __FUNCTION__, kbdrep[0], kbdrep[1], name, sysname);
+    CLog::Log(LOGDEBUG, "CLibInputKeyboard::{} - delay: {}ms repeat: {}ms for {} ({})",
+              __FUNCTION__, kbdrep[0], kbdrep[1], name, sysname);
     close(fd);
   }
 

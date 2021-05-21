@@ -99,7 +99,8 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   }
   else
   {
-    CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
+    CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: {}",
+              strWindow);
     return false;
   }
 
@@ -143,7 +144,8 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
 
   }
   else
-    CLog::Log(LOGERROR, "Replace/ActivateWindowAndFocus called with invalid destination window: %s", strWindow.c_str());
+    CLog::Log(LOGERROR, "Replace/ActivateWindowAndFocus called with invalid destination window: {}",
+              strWindow);
 
   return 1;
 }
@@ -312,7 +314,7 @@ static int Screenshot(const std::vector<std::string>& params)
         }
         else
         {
-          CLog::Log(LOGWARNING, "Too many screen shots or invalid folder %s", strSaveToPath.c_str());
+          CLog::Log(LOGWARNING, "Too many screen shots or invalid folder {}", strSaveToPath);
         }
       }
       else
@@ -362,7 +364,7 @@ static int SetStereoMode(const std::vector<std::string>& params)
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
   else
   {
-    CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", params[0].c_str());
+    CLog::Log(LOGERROR, "Builtin 'SetStereoMode' called with unknown parameter: {}", params[0]);
     return -2;
   }
 

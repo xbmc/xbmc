@@ -156,10 +156,12 @@ bool Win32DllLoader::Load()
     if (strLen != 0)
     {
       auto strMessage = FromW(lpMsgBuf, strLen);
-      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu: \"%s\"", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage.c_str());
+      CLog::Log(LOGERROR, "{}: Failed to load \"{}\" with error {}: \"{}\"", __FUNCTION__,
+                CSpecialProtocol::TranslatePath(strFileName), dw, strMessage);
     }
     else
-      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw);
+      CLog::Log(LOGERROR, "{}: Failed to load \"{}\" with error {}", __FUNCTION__,
+                CSpecialProtocol::TranslatePath(strFileName), dw);
 
     LocalFree(lpMsgBuf);
     return false;
@@ -180,7 +182,7 @@ void Win32DllLoader::Unload()
   if (m_dllHandle)
   {
     if (!FreeLibrary(m_dllHandle))
-       CLog::Log(LOGERROR, "%s Unable to unload %s", __FUNCTION__, GetName());
+      CLog::Log(LOGERROR, "{} Unable to unload {}", __FUNCTION__, GetName());
   }
 
   m_dllHandle = NULL;
@@ -191,7 +193,8 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f, bool logging)
   if (!m_dllHandle && !Load())
   {
     if (logging)
-      CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s, reason: DLL not loaded", __FUNCTION__, GetName(), symbol);
+      CLog::Log(LOGWARNING, "{} - Unable to resolve: {} {}, reason: DLL not loaded", __FUNCTION__,
+                GetName(), symbol);
     return 0;
   }
 
@@ -200,7 +203,7 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f, bool logging)
   if (!s)
   {
     if (logging)
-      CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s", __FUNCTION__, GetName(), symbol);
+      CLog::Log(LOGWARNING, "{} - Unable to resolve: {} {}", __FUNCTION__, GetName(), symbol);
     return 0;
   }
 
@@ -231,7 +234,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
   if (!image_base)
   {
-    CLog::Log(LOGERROR, "%s - unable to GetModuleHandle for dll %s", __FUNCTION__, dll.c_str());
+    CLog::Log(LOGERROR, "{} - unable to GetModuleHandle for dll {}", __FUNCTION__, dll);
     return;
   }
 
@@ -243,7 +246,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
   if (!imp_desc)
   {
-    CLog::Log(LOGERROR, "%s - unable to get import directory for dll %s", __FUNCTION__, dll.c_str());
+    CLog::Log(LOGERROR, "{} - unable to get import directory for dll {}", __FUNCTION__, dll);
     return;
   }
 

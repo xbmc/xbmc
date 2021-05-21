@@ -103,20 +103,21 @@ public:
       break;
     }
 
-    CLog::Log(LOGDEBUG, "%s: New default device: flow = %s, role = %s", __FUNCTION__, pszFlow, pszRole);
+    CLog::Log(LOGDEBUG, "{}: New default device: flow = {}, role = {}", __FUNCTION__, pszFlow,
+              pszRole);
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR pwstrDeviceId)
   {
-    CLog::Log(LOGDEBUG, "%s: Added device: %s", __FUNCTION__, FromW(pwstrDeviceId));
+    CLog::Log(LOGDEBUG, "{}: Added device: {}", __FUNCTION__, FromW(pwstrDeviceId));
     NotifyAE();
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR pwstrDeviceId)
   {
-    CLog::Log(LOGDEBUG, "%s: Removed device: %s", __FUNCTION__, FromW(pwstrDeviceId));
+    CLog::Log(LOGDEBUG, "{}: Removed device: {}", __FUNCTION__, FromW(pwstrDeviceId));
     NotifyAE();
     return S_OK;
   }
@@ -140,20 +141,20 @@ public:
       pszState = "UNPLUGGED";
       break;
     }
-    CLog::Log(LOGDEBUG, "%s: New device state is DEVICE_STATE_%s", __FUNCTION__, pszState);
+    CLog::Log(LOGDEBUG, "{}: New device state is DEVICE_STATE_{}", __FUNCTION__, pszState);
     NotifyAE();
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnPropertyValueChanged(LPCWSTR pwstrDeviceId, const PROPERTYKEY key)
   {
-    CLog::Log(LOGDEBUG, "%s: Changed device property of %s is (%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x)#%d",
+    CLog::Log(LOGDEBUG,
+              "{}: Changed device property of {} is "
+              "({:08x}-{:04x}-{:04x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x})#{}",
               __FUNCTION__, FromW(pwstrDeviceId), key.fmtid.Data1, key.fmtid.Data2, key.fmtid.Data3,
-                                           key.fmtid.Data4[0], key.fmtid.Data4[1],
-                                           key.fmtid.Data4[2], key.fmtid.Data4[3],
-                                           key.fmtid.Data4[4], key.fmtid.Data4[5],
-                                           key.fmtid.Data4[6], key.fmtid.Data4[7],
-                                           key.pid);
+              key.fmtid.Data4[0], key.fmtid.Data4[1], key.fmtid.Data4[2], key.fmtid.Data4[3],
+              key.fmtid.Data4[4], key.fmtid.Data4[5], key.fmtid.Data4[6], key.fmtid.Data4[7],
+              key.pid);
     return S_OK;
   }
 

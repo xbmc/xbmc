@@ -110,13 +110,15 @@ bool CInputStreamMultiSource::Open()
     InputStreamPtr inputstream(CDVDFactoryInputStream::CreateInputStream(m_pPlayer, fileitem));
     if (!inputstream)
     {
-      CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to create input stream for file [%s]", m_filenames[i].c_str());
+      CLog::Log(LOGERROR,
+                "CDVDPlayer::OpenInputStream - unable to create input stream for file [{}]",
+                m_filenames[i]);
       continue;
     }
 
     if (!inputstream->Open())
     {
-      CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening file [%s]", m_filenames[i].c_str());
+      CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening file [{}]", m_filenames[i]);
       continue;
     }
     m_InputStreams.push_back(inputstream);

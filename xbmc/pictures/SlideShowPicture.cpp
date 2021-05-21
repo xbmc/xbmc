@@ -428,7 +428,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   {
     /* this really annoying.  there's non-stop logging when viewing a pic outside of the slideshow
     if (m_displayEffect == EFFECT_NO_TIMEOUT)
-      CLog::Log(LOGDEBUG, "Incrementing counter (%i) while not in slideshow (startlength=%i,endstart=%i,endlength=%i)", m_iCounter, m_transitionStart.length, m_transitionEnd.start, m_transitionEnd.length);
+      CLog::Log(LOGDEBUG, "Incrementing counter ({}) while not in slideshow (startlength={},endstart={},endlength={})", m_iCounter, m_transitionStart.length, m_transitionEnd.start, m_transitionEnd.length);
     */
     m_iCounter++;
   }

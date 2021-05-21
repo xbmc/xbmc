@@ -489,10 +489,10 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
       // so point it to frameworks which is where python3.8 is located
       setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
-      CLog::Log(LOGDEBUG, "PYTHONHOME -> %s",
-                CSpecialProtocol::TranslatePath("special://frameworks").c_str());
-      CLog::Log(LOGDEBUG, "PYTHONPATH -> %s",
-                CSpecialProtocol::TranslatePath("special://frameworks").c_str());
+      CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
+                CSpecialProtocol::TranslatePath("special://frameworks"));
+      CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
+                CSpecialProtocol::TranslatePath("special://frameworks"));
     }
 #elif defined(TARGET_WINDOWS)
     // because the third party build of python is compiled with vs2008 we need

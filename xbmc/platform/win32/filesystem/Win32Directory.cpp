@@ -76,7 +76,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     std::string itemName;
     if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
     {
-      CLog::Log(LOGERROR, "%s: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
       continue;
     }
 
@@ -187,7 +187,7 @@ bool CWin32Directory::RemoveRecursive(const CURL& url)
       std::string path;
       if (!g_charsetConverter.wToUTF8(pathW, path, true))
       {
-        CLog::Log(LOGERROR, "%s: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
+        CLog::Log(LOGERROR, "{}: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
         continue;
       }
 

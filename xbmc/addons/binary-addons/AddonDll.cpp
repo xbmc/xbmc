@@ -74,7 +74,7 @@ std::string CAddonDll::GetDllPath(const std::string &libPath)
 
     if (doCopy)
     {
-      CLog::Log(LOGDEBUG, "ADDON: caching %s to %s", strFileName.c_str(), dstfile.c_str());
+      CLog::Log(LOGDEBUG, "ADDON: caching {} to {}", strFileName, dstfile);
       XFILE::CFile::Copy(strFileName, dstfile);
     }
 
@@ -102,7 +102,7 @@ std::string CAddonDll::GetDllPath(const std::string &libPath)
         strAltFileName.erase(0, temp.size());
         strAltFileName = altbin + strAltFileName;
       }
-      CLog::Log(LOGDEBUG, "ADDON: Trying to load %s", strAltFileName.c_str());
+      CLog::Log(LOGDEBUG, "ADDON: Trying to load {}", strAltFileName);
     }
 
     if (XFILE::CFile::Exists(strAltFileName))
@@ -115,7 +115,7 @@ std::string CAddonDll::GetDllPath(const std::string &libPath)
       strFileName = tempbin + strFileName;
       if (!XFILE::CFile::Exists(strFileName))
       {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", strLibName.c_str());
+        CLog::Log(LOGERROR, "ADDON: Could not locate {}", strLibName);
         strFileName.clear();
       }
     }
@@ -159,7 +159,7 @@ bool CAddonDll::LoadDll()
 
 ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 {
-  CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
+  CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - {}", Name());
   m_initialized = false;
 
   if (!LoadDll())
@@ -197,7 +197,9 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
   }
   else
   { // Addon failed initialization
-    CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
+    CLog::Log(LOGERROR,
+              "ADDON: Dll {} - Client returned bad status ({}) from Create and is not usable",
+              Name(), status);
 
     // @todo currently a copy and paste from other function and becomes improved.
     std::string heading =
@@ -224,7 +226,7 @@ void CAddonDll::Destroy()
   {
     delete m_pDll;
     m_pDll = nullptr;
-    CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
+    CLog::Log(LOGINFO, "ADDON: Dll Destroyed - {}", Name());
   }
 
   ResetSettings();
@@ -353,7 +355,7 @@ ADDON_STATUS CAddonDll::TransferSettings()
   bool restart = false;
   ADDON_STATUS reportStatus = ADDON_STATUS_OK;
 
-  CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
+  CLog::Log(LOGDEBUG, "Calling TransferSettings for: {}", Name());
 
   LoadSettings(false);
 
@@ -400,7 +402,7 @@ ADDON_STATUS CAddonDll::TransferSettings()
 
               default:
                 // log unknowns as an error, but go ahead and transfer the string
-                CLog::Log(LOGERROR, "Unknown setting type of '%s' for %s", id, Name().c_str());
+                CLog::Log(LOGERROR, "Unknown setting type of '{}' for {}", id, Name());
                 status = m_interface.toAddon->set_setting(id, setting->ToString().c_str());
                 break;
             }

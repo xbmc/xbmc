@@ -39,8 +39,8 @@ bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
                       unsigned int f_port,
                       const std::vector<std::pair<std::string, std::string> >& txt)
 {
-  CLog::Log(LOGDEBUG, "CZeroconfDarwin::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(),
-            fcr_type.c_str(), fcr_name.c_str(), f_port);
+  CLog::Log(LOGDEBUG, "CZeroconfDarwin::doPublishService identifier: {} type: {} name:{} port:{}",
+            fcr_identifier, fcr_type, fcr_name, f_port);
 
   CFStringRef name = CFStringCreateWithCString (NULL,
                                                 fcr_name.c_str(),
@@ -96,8 +96,10 @@ bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
     CFNetServiceSetClient(netService, NULL, NULL);
     CFRelease(netService);
     netService = NULL;
-    CLog::Log(LOGERROR, "CZeroconfDarwin::doPublishService CFNetServiceRegister returned "
-      "(domain = %d, error = %" PRId64")", (int)error.domain, (int64_t)error.error);
+    CLog::Log(LOGERROR,
+              "CZeroconfDarwin::doPublishService CFNetServiceRegister returned "
+              "(domain = {}, error = {})",
+              (int)error.domain, (int64_t)error.error);
   } else
   {
     CSingleLock lock(m_data_guard);
@@ -165,8 +167,10 @@ void CZeroconfDarwin::registerCallback(CFNetServiceRef theService, CFStreamError
         CLog::Log(LOGERROR, "CZeroconfDarwin::registerCallback name collision occured");
         break;
       default:
-        CLog::Log(LOGERROR, "CZeroconfDarwin::registerCallback returned "
-          "(domain = %d, error = %" PRId64")", (int)error->domain, (int64_t)error->error);
+        CLog::Log(LOGERROR,
+                  "CZeroconfDarwin::registerCallback returned "
+                  "(domain = {}, error = {})",
+                  (int)error->domain, (int64_t)error->error);
         break;
     }
     p_this->cancelRegistration(theService);

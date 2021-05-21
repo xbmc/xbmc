@@ -33,7 +33,7 @@ void InfoExpression::Initialize()
 {
   if (!Parse(m_expression))
   {
-    CLog::Log(LOGERROR, "Error parsing boolean expression %s", m_expression.c_str());
+    CLog::Log(LOGERROR, "Error parsing boolean expression {}", m_expression);
     m_expression_tree = std::make_shared<InfoLeaf>(CServiceBroker::GetGUI()->GetInfoManager().Register("false", 0), false);
   }
 }
@@ -224,7 +224,7 @@ bool InfoExpression::Parse(const std::string &expression)
       if ((!after_binaryoperator && (c == '!' || c == '[')) ||
           (after_binaryoperator && (c == ']' || c == '+' || c == '|')))
       {
-        CLog::Log(LOGERROR, "Misplaced %c", c);
+        CLog::Log(LOGERROR, "Misplaced {}", c);
         return false;
       }
       if (c == '[')
@@ -239,7 +239,7 @@ bool InfoExpression::Parse(const std::string &expression)
         InfoPtr info = infoMgr.Register(operand, m_context);
         if (!info)
         {
-          CLog::Log(LOGERROR, "Bad operand '%s'", operand.c_str());
+          CLog::Log(LOGERROR, "Bad operand '{}'", operand);
           return false;
         }
         /* Propagate any listItem dependency from the operand to the expression */
@@ -290,7 +290,7 @@ bool InfoExpression::Parse(const std::string &expression)
     InfoPtr info = infoMgr.Register(operand, m_context);
     if (!info)
     {
-      CLog::Log(LOGERROR, "Bad operand '%s'", operand.c_str());
+      CLog::Log(LOGERROR, "Bad operand '{}'", operand);
       return false;
     }
     /* Propagate any listItem dependency from the operand to the expression */

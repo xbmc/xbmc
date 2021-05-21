@@ -303,7 +303,7 @@ bool CActionTranslator::TranslateString(std::string strAction, unsigned int& act
 
   if (actionId == ACTION_NONE)
   {
-    CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
+    CLog::Log(LOGERROR, "Keymapping error: no such action '{}' defined", strAction);
     return false;
   }
 

@@ -25,8 +25,10 @@ bool CCoreAudioHardware::GetAutoHogMode()
   OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, &val);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::GetAutoHogMode: "
-      "Unable to get auto 'hog' mode. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::GetAutoHogMode: "
+              "Unable to get auto 'hog' mode. Error = {}",
+              GetError(ret));
     return false;
   }
   return (val == 1);
@@ -43,8 +45,10 @@ void CCoreAudioHardware::SetAutoHogMode(bool enable)
   UInt32 size = sizeof(val);
   OSStatus ret = AudioObjectSetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, size, &val);
   if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioHardware::SetAutoHogMode: "
-      "Unable to set auto 'hog' mode. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::SetAutoHogMode: "
+              "Unable to set auto 'hog' mode. Error = {}",
+              GetError(ret));
 }
 
 void CCoreAudioHardware::ResetAudioDevices()
@@ -60,7 +64,8 @@ void CCoreAudioHardware::ResetAudioDevices()
       AudioStreamIdList streams;
       if (device.GetStreams(&streams))
       {
-        CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetAudioDevices %lu streams for device %s", streams.size(), device.GetName().c_str());
+        CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetAudioDevices {} streams for device {}",
+                  streams.size(), device.GetName());
         for (AudioStreamIdList::iterator ait = streams.begin(); ait != streams.end(); ++ait)
           ResetStream(*ait);
       }
@@ -78,7 +83,10 @@ void CCoreAudioHardware::ResetStream(AudioStreamID streamId)
   {
     if (desc.mFormatID == 'IAC3' || desc.mFormatID == kAudioFormat60958AC3)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetStream stream 0x%x is in encoded format.. setting to LPCM", (unsigned int)streamId);
+      CLog::Log(
+          LOGDEBUG,
+          "CCoreAudioHardware::ResetStream stream 0x{:x} is in encoded format.. setting to LPCM",
+          (unsigned int)streamId);
 
       StreamFormatList availableFormats;
       if (stream.GetAvailablePhysicalFormats(&availableFormats))
@@ -113,12 +121,16 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
   if (searchNameLowerCase.compare("default") == 0)
   {
     AudioDeviceID defaultDevice = GetDefaultOutputDevice();
-    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: "
-      "Returning default device [0x%04x].", (uint)defaultDevice);
+    CLog::Log(LOGDEBUG,
+              "CCoreAudioHardware::FindAudioDevice: "
+              "Returning default device [{:#04x}].",
+              (uint)defaultDevice);
     return defaultDevice;
   }
-  CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: "
-    "Searching for device - %s.", searchName.c_str());
+  CLog::Log(LOGDEBUG,
+            "CCoreAudioHardware::FindAudioDevice: "
+            "Searching for device - {}.",
+            searchName);
 
   // Obtain a list of all available audio devices
   AudioObjectPropertyAddress propertyAddress;
@@ -130,8 +142,10 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
   OSStatus ret = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FindAudioDevice: "
-      "Unable to retrieve the size of the list of available devices. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::FindAudioDevice: "
+              "Unable to retrieve the size of the list of available devices. Error = {}",
+              GetError(ret));
     return 0;
   }
 
@@ -140,8 +154,10 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
   ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, pDevices);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FindAudioDevice: "
-      "Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::FindAudioDevice: "
+              "Unable to retrieve the list of available devices. Error = {}",
+              GetError(ret));
     delete[] pDevices;
     return 0;
   }
@@ -181,8 +197,10 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
   // or if the default device is set to an encoded format
   if (ret != noErr || !deviceId)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::GetDefaultOutputDevice:"
-      " Unable to identify default output device. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::GetDefaultOutputDevice:"
+              " Unable to identify default output device. Error = {}",
+              GetError(ret));
     // if there was no error and no deviceId was returned
     // return the last known default device
     if (ret == noErr && !deviceId)
@@ -236,8 +254,10 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
   OSStatus ret = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::GetOutputDevices:"
-      " Unable to retrieve the size of the list of available devices. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::GetOutputDevices:"
+              " Unable to retrieve the size of the list of available devices. Error = {}",
+              GetError(ret));
     return found;
   }
 
@@ -245,8 +265,10 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
   ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, pDevices);
   if (ret != noErr)
-    CLog::Log(LOGERROR, "CCoreAudioHardware::GetOutputDevices:"
-      " Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR,
+              "CCoreAudioHardware::GetOutputDevices:"
+              " Unable to retrieve the list of available devices. Error = {}",
+              GetError(ret));
   else
   {
     for (size_t dev = 0; dev < deviceCount; dev++)

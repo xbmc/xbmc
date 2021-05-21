@@ -161,7 +161,7 @@ void CWeatherJob::LoadLocalizedToken()
       }
     }
 
-    CLog::Log(LOGDEBUG, "POParser: loaded %i weather tokens", counter);
+    CLog::Log(LOGDEBUG, "POParser: loaded {} weather tokens", counter);
     return;
   }
 }

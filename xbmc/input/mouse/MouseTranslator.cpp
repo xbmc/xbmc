@@ -61,7 +61,7 @@ uint32_t CMouseTranslator::TranslateCommand(const TiXmlElement* pButton)
 
       if (buttonId == 0)
       {
-        CLog::Log(LOGERROR, "Unknown mouse action (%s), skipping", pButton->Value());
+        CLog::Log(LOGERROR, "Unknown mouse action ({}), skipping", pButton->Value());
       }
       else
       {

@@ -583,7 +583,7 @@ DbErrors::DbErrors(const char *msg, ...) {
   msg_ =   "SQL: ";
   msg_ += buf;
 
-  CLog::Log(LOGERROR, "%s", msg_.c_str());
+  CLog::Log(LOGERROR, "{}", msg_);
 }
 
 const char * DbErrors::getMsg() {

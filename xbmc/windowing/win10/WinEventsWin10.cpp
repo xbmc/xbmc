@@ -171,7 +171,10 @@ void CWinEventsWin10::UpdateWindowSize()
 {
   auto size = DX::DeviceResources::Get()->GetOutputSize();
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %f x %f (as:%s)", size.Width, size.Height, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen ? "true" : "false");
+  CLog::Log(LOGDEBUG, __FUNCTION__ ": window resize event {:f} x {:f} (as:{})", size.Width,
+            size.Height,
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen ? "true"
+                                                                                        : "false");
 
   auto appView = ApplicationView::GetForCurrentView();
   appView.SetDesiredBoundsMode(ApplicationViewBoundsMode::UseCoreWindow);
@@ -253,7 +256,8 @@ void CWinEventsWin10::OnVisibilityChanged(const CoreWindow& sender, const Visibi
 
   if (g_application.GetRenderGUI() != active)
     DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-  CLog::Log(LOGDEBUG, __FUNCTION__": window is %s", g_application.GetRenderGUI() ? "shown" : "hidden");
+  CLog::Log(LOGDEBUG, __FUNCTION__ ": window is {}",
+            g_application.GetRenderGUI() ? "shown" : "hidden");
 }
 
 void CWinEventsWin10::OnWindowActivationChanged(const CoreWindow& sender, const WindowActivatedEventArgs& args)
@@ -274,7 +278,8 @@ void CWinEventsWin10::OnWindowActivationChanged(const CoreWindow& sender, const 
   }
   if (g_application.GetRenderGUI() != active)
     DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-  CLog::Log(LOGDEBUG, __FUNCTION__": window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
+  CLog::Log(LOGDEBUG, __FUNCTION__ ": window is {}",
+            g_application.GetRenderGUI() ? "active" : "inactive");
 }
 
 void CWinEventsWin10::OnWindowClosed(const CoreWindow& sender, const CoreWindowEventArgs& args)

@@ -67,15 +67,15 @@ bool CGUIDialogIgnoreInput::MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap
   // If a primitive comes from a different device, ignore it
   if (bHasDevice && m_deviceName != buttonMap->DeviceName())
   {
-    CLog::Log(LOGDEBUG, "%s: ignoring input from device %s", buttonMap->ControllerID().c_str(),
-              buttonMap->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "{}: ignoring input from device {}", buttonMap->ControllerID(),
+              buttonMap->DeviceName());
     return false;
   }
 
   if (!bHasDevice)
   {
-    CLog::Log(LOGDEBUG, "%s: capturing input for device %s", buttonMap->ControllerID().c_str(),
-              buttonMap->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "{}: capturing input for device {}", buttonMap->ControllerID(),
+              buttonMap->DeviceName());
     m_deviceName = buttonMap->DeviceName();
   }
 

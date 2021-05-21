@@ -56,7 +56,7 @@ void CJobWorker::Process()
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, job->GetType());
+      CLog::Log(LOGERROR, "{} error processing job {}", __FUNCTION__, job->GetType());
     }
     m_jobManager->OnJobComplete(success, job);
   }
@@ -421,7 +421,7 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, item.m_job->GetType());
+      CLog::Log(LOGERROR, "{} error processing job {}", __FUNCTION__, item.m_job->GetType());
     }
     lock.Enter();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);

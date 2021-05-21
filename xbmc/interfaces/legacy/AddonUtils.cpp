@@ -97,7 +97,7 @@ namespace XBMCAddonUtils
 
     tlParent = this;
 
-    CLog::Log(LOGDEBUG, "%sNEWADDON Entering %s", spaces[depth], function);
+    CLog::Log(LOGDEBUG, "{}NEWADDON Entering {}", spaces[depth], function);
   }
 
   TraceGuard::TraceGuard() :function(NULL)
@@ -111,7 +111,7 @@ namespace XBMCAddonUtils
   TraceGuard::~TraceGuard()
   {
     if (function)
-      CLog::Log(LOGDEBUG, "%sNEWADDON Leaving %s", spaces[depth], function);
+      CLog::Log(LOGDEBUG, "{}NEWADDON Leaving {}", spaces[depth], function);
 
     // need to pop the stack
     tlParent = this->parent;

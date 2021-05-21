@@ -152,25 +152,25 @@ void LogGraphicsInfo()
 
   s = glGetString(GL_VENDOR);
   if (s)
-    CLog::Log(LOGINFO, "GL_VENDOR = %s", s);
+    CLog::Log(LOGINFO, "GL_VENDOR = {}", s);
   else
     CLog::Log(LOGINFO, "GL_VENDOR = NULL");
 
   s = glGetString(GL_RENDERER);
   if (s)
-    CLog::Log(LOGINFO, "GL_RENDERER = %s", s);
+    CLog::Log(LOGINFO, "GL_RENDERER = {}", s);
   else
     CLog::Log(LOGINFO, "GL_RENDERER = NULL");
 
   s = glGetString(GL_VERSION);
   if (s)
-    CLog::Log(LOGINFO, "GL_VERSION = %s", s);
+    CLog::Log(LOGINFO, "GL_VERSION = {}", s);
   else
     CLog::Log(LOGINFO, "GL_VERSION = NULL");
 
   s = glGetString(GL_SHADING_LANGUAGE_VERSION);
   if (s)
-    CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = %s", s);
+    CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = {}", s);
   else
     CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = NULL");
 
@@ -186,11 +186,11 @@ void LogGraphicsInfo()
     GLint mem = 0;
 
     glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &mem);
-    CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX = %i", mem);
+    CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX = {}", mem);
 
     //this seems to be the amount of ram on the videocard
     glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &mem);
-    CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
+    CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = {}", mem);
   }
 
   std::string extensions;
@@ -219,7 +219,7 @@ void LogGraphicsInfo()
   }
 
   if (!extensions.empty())
-    CLog::Log(LOGINFO, "GL_EXTENSIONS = %s", extensions.c_str());
+    CLog::Log(LOGINFO, "GL_EXTENSIONS = {}", extensions);
   else
     CLog::Log(LOGINFO, "GL_EXTENSIONS = NULL");
 
@@ -255,7 +255,7 @@ int glFormatElementByteCount(GLenum format)
   case GL_ALPHA:
     return 1;
   default:
-    CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format %u", format);
+    CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format {}", format);
     return 1;
   }
 }

@@ -125,8 +125,10 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   if (CheckMissed) //set to true from the vblank run function, set to false from Wait and GetTime
   {
     if (NrVBlanks < m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected %i vblanks, missed %i, refreshrate might have changed",
-                NrVBlanks, m_MissedVblanks);
+      CLog::Log(
+          LOGDEBUG,
+          "CVideoReferenceClock: detected {} vblanks, missed {}, refreshrate might have changed",
+          NrVBlanks, m_MissedVblanks);
 
     NrVBlanks -= m_MissedVblanks; //subtract the vblanks we missed
     m_MissedVblanks = 0;
@@ -211,7 +213,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
     if (Speed != m_ClockSpeed)
     {
       m_ClockSpeed = Speed;
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %0.2f %%", m_ClockSpeed * 100.0);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed {:0.2f} %", m_ClockSpeed * 100.0);
     }
   }
 }
@@ -233,7 +235,7 @@ void CVideoReferenceClock::UpdateRefreshrate()
   m_RefreshRate = static_cast<double>(m_pVideoSync->GetFps());
   m_ClockSpeed = 1.0;
 
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %.3f hertz", m_RefreshRate);
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: {:.3f} hertz", m_RefreshRate);
 }
 
 //VideoPlayer needs to know the refreshrate for matching the fps of the video playing to it

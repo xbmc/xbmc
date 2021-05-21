@@ -122,11 +122,11 @@ void CGUIDialogTextViewer::ShowForFile(const std::string& path, bool useMonoFont
     }
     catch(const std::bad_alloc&)
     {
-      CLog::Log(LOGERROR, "Not enough memory to load text file %s", path.c_str());
+      CLog::Log(LOGERROR, "Not enough memory to load text file {}", path);
     }
     catch(...)
     {
-      CLog::Log(LOGERROR, "Exception while trying to view text file %s", path.c_str());
+      CLog::Log(LOGERROR, "Exception while trying to view text file {}", path);
     }
   }
 }

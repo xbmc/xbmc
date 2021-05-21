@@ -65,7 +65,7 @@ bool CAddonButtonMap::Load(void)
   if (bSuccess)
     driverMap = CreateLookupTable(features);
   else
-    CLog::Log(LOGDEBUG, "Failed to load button map for \"%s\"", m_device->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "Failed to load button map for \"{}\"", m_device->DeviceName());
 
   {
     CSingleLock lock(m_mutex);

@@ -348,7 +348,7 @@ EShaderFormat CBaseRenderer::GetShaderFormat()
   else if (m_format == AV_PIX_FMT_UYVY422)
     ret = SHADER_UYVY;
   else
-    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format %d", m_format);
+    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format {}", m_format);
 
   return ret;
 }

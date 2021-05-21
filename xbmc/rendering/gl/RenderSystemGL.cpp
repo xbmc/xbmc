@@ -43,7 +43,7 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
-  CLog::Log(LOGINFO, "CRenderSystemGL::%s - Version: %s, Major: %d, Minor: %d", __FUNCTION__, ver,
+  CLog::Log(LOGINFO, "CRenderSystemGL::{} - Version: {}, Major: {}, Minor: {}", __FUNCTION__, ver,
             m_RenderVersionMajor, m_RenderVersionMinor);
 
   m_RenderExtensions  = " ";
@@ -164,12 +164,15 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
     GLenum error = glGetError();
     if (error != GL_NO_ERROR)
     {
-      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned error %i", (int)error);
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned error {}",
+                (int)error);
       maxtex = 3;
     }
     else if (maxtex < 1 || maxtex > 32)
     {
-      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned invalid value %i", (int)maxtex);
+      CLog::Log(LOGERROR,
+                "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned invalid value {}",
+                (int)maxtex);
       maxtex = 3;
     }
 
@@ -401,7 +404,7 @@ void CRenderSystemGL::CalculateMaxTexturesize()
     }
   }
 
-  CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
+  CLog::Log(LOGINFO, "GL: Maximum texture width: {}", m_maxTextureSize);
 }
 
 void CRenderSystemGL::GetViewPort(CRect& viewPort)
@@ -480,7 +483,10 @@ void CRenderSystemGL::ResetGLErrors()
     count++;
     if (count >= 100)
     {
-      CLog::Log(LOGWARNING, "CRenderSystemGL::ResetGLErrors glGetError didn't return GL_NO_ERROR after %i iterations", count);
+      CLog::Log(
+          LOGWARNING,
+          "CRenderSystemGL::ResetGLErrors glGetError didn't return GL_NO_ERROR after {} iterations",
+          count);
       break;
     }
   }
@@ -701,7 +707,7 @@ void CRenderSystemGL::EnableShader(ESHADERMETHOD method)
   }
   else
   {
-    CLog::Log(LOGERROR, "Invalid GUI Shader selected %d", method);
+    CLog::Log(LOGERROR, "Invalid GUI Shader selected {}", method);
   }
 }
 

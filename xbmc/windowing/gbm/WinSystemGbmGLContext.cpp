@@ -89,7 +89,8 @@ bool CWinSystemGbmGLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res
   if (res.iWidth != m_nWidth ||
       res.iHeight != m_nHeight)
   {
-    CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext::%s - resolution changed, creating a new window", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext::{} - resolution changed, creating a new window",
+              __FUNCTION__);
     CreateNewWindow("", fullScreen, res);
   }
 
@@ -124,7 +125,7 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
 
     if (m_dispReset && m_dispResetTimer.IsTimePast())
     {
-      CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext::%s - Sending display reset to all clients",
+      CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext::{} - Sending display reset to all clients",
                 __FUNCTION__);
       m_dispReset = false;
       CSingleLock lock(m_resourceSection);

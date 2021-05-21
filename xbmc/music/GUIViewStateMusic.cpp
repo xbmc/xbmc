@@ -89,7 +89,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   std::string strAlbum = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_strMusicLibraryAlbumFormat;
   if (strAlbum.empty())
     strAlbum = "%B"; // album
-  CLog::Log(LOGDEBUG,"Custom album format = [%s]", strAlbum.c_str());
+  CLog::Log(LOGDEBUG, "Custom album format = [{}]", strAlbum);
   SortAttribute sortAttribute = SortAttributeNone;
   if (settings->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttribute = SortAttributeIgnoreArticle;

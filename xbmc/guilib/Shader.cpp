@@ -39,7 +39,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file {}", filename);
     return false;
   }
   getline(file, m_source, '\0');
@@ -72,7 +72,7 @@ bool CShader::AppendSource(const std::string& filename)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file {}", filename);
     return false;
   }
   getline(file, temp, '\0');
@@ -96,7 +96,7 @@ bool CShader::InsertSource(const std::string& filename, const std::string& loc)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CShader::InsertSource - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::InsertSource - failed to open file {}", filename);
     return false;
   }
   getline(file, temp, '\0');
@@ -104,7 +104,7 @@ bool CShader::InsertSource(const std::string& filename, const std::string& loc)
   size_t locPos = m_source.find(loc);
   if (locPos == std::string::npos)
   {
-    CLog::Log(LOGERROR, "CShader::InsertSource - could not find location %s", loc.c_str());
+    CLog::Log(LOGERROR, "CShader::InsertSource - could not find location {}", loc);
     return false;
   }
 
@@ -152,7 +152,7 @@ bool CGLSLVertexShader::Compile()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, "%s", log);
+    CLog::Log(LOGERROR, "{}", log);
     m_lastLog = log;
     m_compiled = false;
   }
@@ -164,7 +164,7 @@ bool CGLSLVertexShader::Compile()
     if (length > 0)
     {
       CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
-      CLog::Log(LOGDEBUG, "%s", log);
+      CLog::Log(LOGDEBUG, "{}", log);
     }
     m_lastLog = log;
     m_compiled = true;
@@ -205,7 +205,7 @@ bool CGLSLPixelShader::Compile()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling pixel shader");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, "%s", log);
+    CLog::Log(LOGERROR, "{}", log);
     m_lastLog = log;
     m_compiled = false;
   }
@@ -217,7 +217,7 @@ bool CGLSLPixelShader::Compile()
     if (length > 0)
     {
       CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
-      CLog::Log(LOGDEBUG, "%s", log);
+      CLog::Log(LOGDEBUG, "{}", log);
     }
     m_lastLog = log;
     m_compiled = true;
@@ -321,7 +321,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error linking shader");
     glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, "%s", log);
+    CLog::Log(LOGERROR, "{}", log);
     goto error;
   }
   VerifyGLState();
@@ -356,7 +356,7 @@ bool CGLSLShaderProgram::Enable()
           GLchar log[LOG_SIZE];
           CLog::Log(LOGERROR, "GL: Error validating shader");
           glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-          CLog::Log(LOGERROR, "%s", log);
+          CLog::Log(LOGERROR, "{}", log);
         }
         m_validated = true;
       }

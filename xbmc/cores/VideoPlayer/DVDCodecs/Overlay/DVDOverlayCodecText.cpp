@@ -83,7 +83,7 @@ int CDVDOverlayCodecText::Decode(DemuxPacket *pPacket)
       char* override = (char*)malloc(p-start + 1);
       memcpy(override, start, p-start);
       override[p-start] = '\0';
-      CLog::Log(LOGINFO, "%s - Skipped formatting tag %s", __FUNCTION__, override);
+      CLog::Log(LOGINFO, "{} - Skipped formatting tag {}", __FUNCTION__, override);
       free(override);
 
       start = p+1;

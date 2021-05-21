@@ -277,7 +277,7 @@ bool CMediaDrmCryptoSession::ProvisionRequest()
   std::vector<char> provData = request.getData();
   std::string url = request.getDefaultUrl();
 
-  CLog::Log(LOGDEBUG, "MediaDrm: Provisioning: size: %lu, url: %s", provData.size(), url.c_str());
+  CLog::Log(LOGDEBUG, "MediaDrm: Provisioning: size: {}, url: {}", provData.size(), url);
 
   std::string tmp_str("{\"signedRequest\":\"");
   tmp_str += std::string(provData.data(), provData.size());

@@ -74,8 +74,9 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
   if (!oldAddonProp.isNull())
   {
     CLog::Log(LOGERROR,
-              "CInputStreamAddon::%s - 'inputstreamaddon' has been deprecated, "
-              "please use `#KODIPROP:inputstream=%s` instead", __func__, oldAddonProp.asString());
+              "CInputStreamAddon::{} - 'inputstreamaddon' has been deprecated, "
+              "please use `#KODIPROP:inputstream={}` instead",
+              __func__, oldAddonProp.asString());
   }
 
   // check if a specific inputstream addon is requested
@@ -159,11 +160,9 @@ bool CInputStreamAddon::Open()
     if (props.m_nCountInfoValues >= STREAM_MAX_PROPERTY_COUNT)
     {
       CLog::Log(LOGERROR,
-                "CInputStreamAddon::%s - Hit max count of stream properties, "
-                "have %d, actual count: %d",
-                __func__,
-                STREAM_MAX_PROPERTY_COUNT,
-                propsMap.size());
+                "CInputStreamAddon::{} - Hit max count of stream properties, "
+                "have {}, actual count: {}",
+                __func__, STREAM_MAX_PROPERTY_COUNT, propsMap.size());
       break;
     }
   }

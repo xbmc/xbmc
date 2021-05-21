@@ -149,7 +149,10 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
                 hidden = true;
             }
             else
-              CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", CURL::GetRedacted(strFullName).c_str(), errno, strerror(errno));
+              CLog::Log(
+                  LOGERROR,
+                  "Getting extended attributes for the share: '{}'\nunix_err:'{:x}' error: '{}'",
+                  CURL::GetRedacted(strFullName), errno, strerror(errno));
 
             bIsDir = S_ISDIR(info.st_mode);
             lTimeDate = info.st_mtime;
@@ -158,7 +161,8 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             iSize = info.st_size;
           }
           else
-            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, CURL::GetRedacted(strFullName).c_str());
+            CLog::Log(LOGERROR, "{} - Failed to stat file {}", __FUNCTION__,
+                      CURL::GetRedacted(strFullName));
 
           lock.Leave();
         }
@@ -239,7 +243,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     s.erase(len - 1, 1);
   }
 
-  CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url %s", CURL::GetRedacted(s).c_str());
+  CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s));
 
   { CSingleLock lock(smb);
     if (!smb.IsSmbValid())
@@ -271,7 +275,10 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   if (fd < 0)
   {
     // write error to logfile
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strAuth).c_str(), errno, strerror(errno));
+    CLog::Log(
+        LOGERROR,
+        "SMBDirectory->GetDirectory: Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
+        CURL::GetRedacted(strAuth), errno, strerror(errno));
   }
 
   return fd;
@@ -289,7 +296,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   int result = smbc_mkdir(strFileName.c_str(), 0);
   bool success = (result == 0 || EEXIST == errno);
   if(!success)
-    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
 
   return success;
 }
@@ -307,7 +314,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
 
   if(result != 0 && errno != ENOENT)
   {
-    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
     return false;
   }
 

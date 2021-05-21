@@ -30,7 +30,7 @@ bool CMusicInfoTagLoaderSHN::Load(const std::string& strFileName, CMusicInfoTag&
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "Tag loader shn: exception in file %s", strFileName.c_str());
+    CLog::Log(LOGERROR, "Tag loader shn: exception in file {}", strFileName);
   }
 
   tag.SetLoaded(false);

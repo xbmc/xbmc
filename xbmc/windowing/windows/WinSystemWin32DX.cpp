@@ -256,7 +256,8 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   if (!deviceFound)
     return;
 
-  CLog::LogF(LOGDEBUG, "Hooking into UserModeDriver on device %s. ", FromW(displayDevice.DeviceKey));
+  CLog::LogF(LOGDEBUG, "Hooking into UserModeDriver on device {}. ",
+             FromW(displayDevice.DeviceKey));
   wchar_t* keyName =
 #ifndef _M_X64
   // on x64 system and x32 build use UserModeDriverNameWow key
@@ -320,7 +321,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   }
 
   if (lstat != ERROR_SUCCESS)
-    CLog::LogF(LOGDEBUG, "error open registry key with error %ld.", lstat);
+    CLog::LogF(LOGDEBUG, "error open registry key with error {}.", lstat);
 
   if (hKey != nullptr)
     RegCloseKey(hKey);
@@ -340,15 +341,18 @@ void CWinSystemWin32DX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOUR
       uint32_t refreshNum, refreshDen;
       DX::GetRefreshRatio(static_cast<uint32_t>(floor(m_fRefreshRate)), &refreshNum, &refreshDen);
       float diff = fabs(refreshRate - static_cast<float>(refreshNum) / static_cast<float>(refreshDen)) / refreshRate;
-      CLog::LogF(LOGDEBUG, "refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s, %d",
-        refreshRate, m_fRefreshRate, diff, (diff > 0.0005 && diff < 0.1) ? "yes" : "no", pResource->pPrimaryDesc->Flags);
+      CLog::LogF(LOGDEBUG,
+                 "refreshRate: {:0.4f}, desired: {:0.4f}, deviation: {:.5f}, fixRequired: {}, {}",
+                 refreshRate, m_fRefreshRate, diff, (diff > 0.0005 && diff < 0.1) ? "yes" : "no",
+                 pResource->pPrimaryDesc->Flags);
       if (diff > 0.0005 && diff < 0.1)
       {
         pResource->pPrimaryDesc->ModeDesc.RefreshRate.Numerator = refreshNum;
         pResource->pPrimaryDesc->ModeDesc.RefreshRate.Denominator = refreshDen;
         if (pResource->pPrimaryDesc->ModeDesc.ScanlineOrdering > DXGI_DDI_MODE_SCANLINE_ORDER_PROGRESSIVE)
           pResource->pPrimaryDesc->ModeDesc.RefreshRate.Numerator *= 2;
-        CLog::LogF(LOGDEBUG, "refreshRate fix applied -> %0.3f", RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate));
+        CLog::LogF(LOGDEBUG, "refreshRate fix applied -> {:0.3f}",
+                   RATIONAL_TO_FLOAT(pResource->pPrimaryDesc->ModeDesc.RefreshRate));
       }
     }
   }

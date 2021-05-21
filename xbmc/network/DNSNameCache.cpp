@@ -100,7 +100,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     return true;
   }
 
-  CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
+  CLog::Log(LOGERROR, "Unable to lookup host: '{}'", strHostName);
   return false;
 }
 

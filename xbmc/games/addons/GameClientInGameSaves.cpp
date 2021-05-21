@@ -82,7 +82,7 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "GAME: %s: Exception caught in GetMemory()", m_gameClient->ID().c_str());
+    CLog::Log(LOGERROR, "GAME: {}: Exception caught in GetMemory()", m_gameClient->ID());
   }
 
   const std::string path = GetPath(memoryType);
@@ -94,24 +94,24 @@ void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)
       ssize_t read = file.Read(gameMemory, size);
       if (read == static_cast<ssize_t>(size))
       {
-        CLog::Log(LOGINFO, "GAME: In-game saves (%s) loaded from %s",
-                  CGameClientTranslator::ToString(memoryType), path.c_str());
+        CLog::Log(LOGINFO, "GAME: In-game saves ({}) loaded from {}",
+                  CGameClientTranslator::ToString(memoryType), path);
       }
       else
       {
-        CLog::Log(LOGERROR, "GAME: Failed to read in-game saves (%s): %ld/%ld bytes read",
+        CLog::Log(LOGERROR, "GAME: Failed to read in-game saves ({}): {}/{} bytes read",
                   CGameClientTranslator::ToString(memoryType), read, size);
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "GAME: Unable to open in-game saves (%s) from file %s",
-                CGameClientTranslator::ToString(memoryType), path.c_str());
+      CLog::Log(LOGERROR, "GAME: Unable to open in-game saves ({}) from file {}",
+                CGameClientTranslator::ToString(memoryType), path);
     }
   }
   else
   {
-    CLog::Log(LOGDEBUG, "GAME: No in-game saves (%s) to load",
+    CLog::Log(LOGDEBUG, "GAME: No in-game saves ({}) to load",
               CGameClientTranslator::ToString(memoryType));
   }
 }
@@ -127,7 +127,7 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "GAME: %s: Exception caught in GetMemory()", m_gameClient->ID().c_str());
+    CLog::Log(LOGERROR, "GAME: {}: Exception caught in GetMemory()", m_gameClient->ID());
   }
 
   if (size > 0)
@@ -141,24 +141,24 @@ void CGameClientInGameSaves::Save(GAME_MEMORY memoryType)
       file.Close();
       if (written == static_cast<ssize_t>(size))
       {
-        CLog::Log(LOGINFO, "GAME: In-game saves (%s) written to %s",
-                  CGameClientTranslator::ToString(memoryType), path.c_str());
+        CLog::Log(LOGINFO, "GAME: In-game saves ({}) written to {}",
+                  CGameClientTranslator::ToString(memoryType), path);
       }
       else
       {
-        CLog::Log(LOGERROR, "GAME: Failed to write in-game saves (%s): %ld/%ld bytes written",
+        CLog::Log(LOGERROR, "GAME: Failed to write in-game saves ({}): {}/{} bytes written",
                   CGameClientTranslator::ToString(memoryType), written, size);
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "GAME: Unable to open in-game saves (%s) from file %s",
-                CGameClientTranslator::ToString(memoryType), path.c_str());
+      CLog::Log(LOGERROR, "GAME: Unable to open in-game saves ({}) from file {}",
+                CGameClientTranslator::ToString(memoryType), path);
     }
   }
   else
   {
-    CLog::Log(LOGDEBUG, "GAME: No in-game saves (%s) to save",
+    CLog::Log(LOGDEBUG, "GAME: No in-game saves ({}) to save",
               CGameClientTranslator::ToString(memoryType));
   }
 }

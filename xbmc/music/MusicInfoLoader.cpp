@@ -120,7 +120,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     path = pItem->GetMusicInfoTag()->GetURL();
   }
 
-  CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
+  CLog::Log(LOGDEBUG, "Loading additional tag info for file {}", path);
 
   // we load up the actual tag for this file in order to
   // fetch the lyrics and add it to the current music info tag

@@ -166,7 +166,7 @@ void COverlayText::PrepareRender(const std::string &font, int color, int opacity
 
   if (m_layout == nullptr)
   {
-    CLog::Log(LOGERROR, "COverlayText::PrepareRender - GetFontLayout failed for font %s", font.c_str());
+    CLog::Log(LOGERROR, "COverlayText::PrepareRender - GetFontLayout failed for font {}", font);
     return;
   }
   

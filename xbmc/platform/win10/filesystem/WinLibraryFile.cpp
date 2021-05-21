@@ -109,7 +109,7 @@ ssize_t CWinLibraryFile::Read(void* lpBuf, size_t uiBufSize)
   catch (const winrt::hresult_error& ex)
   {
     using KODI::PLATFORM::WINDOWS::FromW;
-    CLog::LogF(LOGERROR, "unable to read file ({})", FromW(ex.message().c_str()));
+    CLog::LogF(LOGERROR, "unable to read file ({})", winrt::to_string(ex.message()));
     return -1;
   }
 }
@@ -130,7 +130,7 @@ ssize_t CWinLibraryFile::Write(const void* lpBuf, size_t uiBufSize)
   catch (const winrt::hresult_error& ex)
   {
     using KODI::PLATFORM::WINDOWS::FromW;
-    CLog::LogF(LOGERROR, "unable write to file ({})", FromW(ex.message().c_str()));
+    CLog::LogF(LOGERROR, "unable write to file ({})", winrt::to_string(ex.message()));
     return -1;
   }
 }
@@ -338,10 +338,8 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
   catch (const winrt::hresult_error& ex)
   {
     std::string error = FromW(ex.message().c_str());
-    CLog::LogF(LOGERROR, "an exception occurs while openning a file '%s' (mode: %s) : %s"
-                       , url.GetRedacted().c_str()
-                       , mode == FileAccessMode::Read ? "r" : "rw"
-                       , error.c_str());
+    CLog::LogF(LOGERROR, "an exception occurs while openning a file '{}' (mode: {}) : {}",
+               url.GetRedacted(), mode == FileAccessMode::Read ? "r" : "rw", error);
     return false;
   }
 
@@ -370,9 +368,7 @@ StorageFile CWinLibraryFile::GetFile(const CURL& url)
     catch (const winrt::hresult_error& ex)
     {
       std::string error = FromW(ex.message().c_str());
-      CLog::LogF(LOGERROR, "unable to get file '%s' with error %s"
-                         , url.GetRedacted().c_str()
-                         , error.c_str());
+      CLog::LogF(LOGERROR, "unable to get file '{}' with error {}", url.GetRedacted(), error);
     }
   }
   else if (url.IsProtocol("file") || url.GetProtocol().empty())

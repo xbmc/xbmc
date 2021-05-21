@@ -110,13 +110,13 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
       if (m_pInputStream.use_count() > 1)
         throw std::runtime_error("m_pInputStream reference count is greater than 1");
       m_pInputStream.reset();
-      CLog::Log(LOGERROR, "%s: Error creating demuxer", __FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Error creating demuxer", __FUNCTION__);
       return false;
     }
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s: Exception thrown when opening demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: Exception thrown when opening demuxer", __FUNCTION__);
     if (m_pDemuxer)
     {
       delete m_pDemuxer;
@@ -141,7 +141,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
   if (m_nAudioStream == -1)
   {
-    CLog::Log(LOGERROR, "%s: Could not find audio stream", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: Could not find audio stream", __FUNCTION__);
     delete m_pDemuxer;
     m_pDemuxer = NULL;
     if (m_pInputStream.use_count() > 1)
@@ -157,7 +157,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, *m_processInfo, true, true, ptStreamTye);
   if (!m_pAudioCodec)
   {
-    CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);
+    CLog::Log(LOGERROR, "{}: Could not create audio codec", __FUNCTION__);
     delete m_pDemuxer;
     m_pDemuxer = NULL;
     if (m_pInputStream.use_count() > 1)
@@ -198,7 +198,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   }
   if (nErrors >= 10)
   {
-    CLog::Log(LOGDEBUG, "%s: Could not decode data", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{}: Could not decode data", __FUNCTION__);
     return false;
   }
 

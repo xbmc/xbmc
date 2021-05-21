@@ -35,8 +35,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   zip_archive = zip_open(host.c_str(), zip_flags, &zip_error);
   if (!zip_archive || zip_error)
   {
-    CLog::Log(LOGERROR, "CAPKDirectory::GetDirectory: Unable to open archive : '%s'",
-      host.c_str());
+    CLog::Log(LOGERROR, "CAPKDirectory::GetDirectory: Unable to open archive : '{}'", host);
     return false;
   }
 

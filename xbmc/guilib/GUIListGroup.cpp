@@ -41,7 +41,7 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
           control->GetControlType() == CGUIControl::GUICONTROL_MULTI_IMAGE ||
           control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX ||
           control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS))
-      CLog::Log(LOGWARNING, "Trying to add unsupported control type %d", control->GetControlType());
+      CLog::Log(LOGWARNING, "Trying to add unsupported control type {}", control->GetControlType());
   }
   CGUIControlGroup::AddControl(control, position);
 }

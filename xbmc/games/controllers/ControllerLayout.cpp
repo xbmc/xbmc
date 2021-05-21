@@ -51,7 +51,7 @@ bool CControllerLayout::IsValid(bool bLog) const
   if (m_labelId < 0)
   {
     if (bLog)
-      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT,
+      CLog::Log(LOGERROR, "<{}> tag has no \"{}\" attribute", LAYOUT_XML_ROOT,
                 LAYOUT_XML_ATTR_LAYOUT_LABEL);
     return false;
   }
@@ -59,7 +59,7 @@ bool CControllerLayout::IsValid(bool bLog) const
   if (m_strImage.empty())
   {
     if (bLog)
-      CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT,
+      CLog::Log(LOGDEBUG, "<{}> tag has no \"{}\" attribute", LAYOUT_XML_ROOT,
                 LAYOUT_XML_ATTR_LAYOUT_IMAGE);
     return false;
   }
@@ -153,7 +153,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pChild->ValueStr().c_str());
+      CLog::Log(LOGDEBUG, "Ignoring <{}> tag", pChild->ValueStr());
     }
   }
 }

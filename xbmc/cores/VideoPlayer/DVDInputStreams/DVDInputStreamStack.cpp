@@ -58,7 +58,8 @@ bool CDVDInputStreamStack::Open()
 
     if (!file->Open(items[index]->GetDynPath(), READ_TRUNCATED))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '%s' - skipping", items[index]->GetDynPath().c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '{}' - skipping",
+                items[index]->GetDynPath());
       continue;
     }
     TSeg segment;
@@ -67,7 +68,9 @@ bool CDVDInputStreamStack::Open()
 
     if(segment.length <= 0)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get file length for '%s' - skipping", items[index]->GetDynPath().c_str());
+      CLog::Log(LOGERROR,
+                "CDVDInputStreamStack::Open - failed to get file length for '{}' - skipping",
+                items[index]->GetDynPath());
       continue;
     }
 

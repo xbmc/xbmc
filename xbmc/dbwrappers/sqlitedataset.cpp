@@ -294,7 +294,7 @@ int SqliteDatabase::connect(bool create) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
-  //CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
+  //CLog::Log(LOGDEBUG, "Connecting to sqlite:{}:{}", host, db);
 
   std::string db_fullpath = URIUtils::AddFileToFolder(host, db);
 
@@ -307,7 +307,7 @@ int SqliteDatabase::connect(bool create) {
     int errorCode = sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL);
     if (create && errorCode == SQLITE_CANTOPEN)
     {
-      CLog::Log(LOGFATAL, "SqliteDatabase: can't open %s", db_fullpath.c_str());
+      CLog::Log(LOGFATAL, "SqliteDatabase: can't open {}", db_fullpath);
       throw std::runtime_error("SqliteDatabase: can't open " + db_fullpath);
     }
     else if (errorCode == SQLITE_OK)
@@ -321,7 +321,7 @@ int SqliteDatabase::connect(bool create) {
       }
       else if (sqlite3_db_readonly(conn, nullptr) == 1)
       {
-        CLog::Log(LOGFATAL, "SqliteDatabase: %s is read only", db_fullpath.c_str());
+        CLog::Log(LOGFATAL, "SqliteDatabase: {} is read only", db_fullpath);
         throw std::runtime_error("SqliteDatabase: " + db_fullpath + " is read only");
       }
       errorCode = sqlite3_create_collation(conn, "ALPHANUM", SQLITE_UTF8, 0, AlphaNumericCollation);
@@ -374,7 +374,7 @@ int SqliteDatabase::copy(const char *backup_name) {
   if (active == false)
     throw DbErrors("Can't copy database: no active connection...");
 
-  CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", db.c_str(), backup_name, host.c_str());
+  CLog::Log(LOGDEBUG, "Copying from {} to {} at {}", db, backup_name, host);
 
   int rc;
   std::string backup_db = backup_name;
@@ -425,7 +425,7 @@ int SqliteDatabase::drop_analytics(void) {
   char sqlcmd[4096];
   result_set res;
 
-  CLog::Log(LOGDEBUG, "Cleaning indexes from database %s at %s", db.c_str(), host.c_str());
+  CLog::Log(LOGDEBUG, "Cleaning indexes from database {} at {}", db, host);
   sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
@@ -435,7 +435,7 @@ int SqliteDatabase::drop_analytics(void) {
   }
   res.clear();
 
-  CLog::Log(LOGDEBUG, "Cleaning views from database %s at %s", db.c_str(), host.c_str());
+  CLog::Log(LOGDEBUG, "Cleaning views from database {} at {}", db, host);
   sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'view'");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
@@ -445,7 +445,7 @@ int SqliteDatabase::drop_analytics(void) {
   }
   res.clear();
 
-  CLog::Log(LOGDEBUG, "Cleaning triggers from database %s at %s", db.c_str(), host.c_str());
+  CLog::Log(LOGDEBUG, "Cleaning triggers from database {} at {}", db, host);
   sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'trigger'");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 

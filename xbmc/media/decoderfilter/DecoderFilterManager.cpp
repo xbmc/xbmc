@@ -121,19 +121,20 @@ bool CDecoderFilterManager::Load()
   if (!XFILE::CFile::Exists(fileName))
     return true;
 
-  CLog::Log(LOGINFO, "%s: loading filters from %s", CLASSNAME, fileName.c_str());
+  CLog::Log(LOGINFO, "{}: loading filters from {}", CLASSNAME, fileName);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(fileName))
   {
-    CLog::Log(LOGERROR, "%s: error loading: line %d, %s", CLASSNAME, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "{}: error loading: line {}, {}", CLASSNAME, xmlDoc.ErrorRow(),
+              xmlDoc.ErrorDesc());
     return false;
   }
 
   const TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (!pRootElement || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), TAG_ROOT))
   {
-    CLog::Log(LOGERROR, "%s: invalid root element (%s)", CLASSNAME, pRootElement->ValueStr().c_str());
+    CLog::Log(LOGERROR, "{}: invalid root element ({})", CLASSNAME, pRootElement->ValueStr());
     return false;
   }
 

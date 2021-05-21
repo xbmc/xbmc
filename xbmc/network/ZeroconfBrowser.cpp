@@ -212,8 +212,7 @@ void CZeroconfBrowser::ZeroconfService::SetTxtRecords(const tTxtRecordMap& txt_r
   CLog::Log(LOGDEBUG,"CZeroconfBrowser: dump txt-records");
   for (const auto& it : m_txtrecords_map)
   {
-    CLog::Log(LOGDEBUG, "CZeroconfBrowser:  key: %s value: %s", it.first.c_str(),
-              it.second.c_str());
+    CLog::Log(LOGDEBUG, "CZeroconfBrowser:  key: {} value: {}", it.first, it.second);
   }
 }
 

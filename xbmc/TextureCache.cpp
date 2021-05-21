@@ -171,7 +171,7 @@ std::string CTextureCache::CacheImage(const std::string& image,
   }
   else
   {
-    CLog::Log(LOGDEBUG, "CTextureCache::%s - Return NULL texture because cache is not ready",
+    CLog::Log(LOGDEBUG, "CTextureCache::{} - Return NULL texture because cache is not ready",
               __FUNCTION__);
   }
 
@@ -333,7 +333,7 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
     {
       if (CFile::Copy(cachedImage, dest))
         return true;
-      CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), dest.c_str());
+      CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, dest);
     }
   }
   return false;
@@ -347,7 +347,7 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
   {
     if (CFile::Copy(cachedImage, destination))
       return true;
-    CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), destination.c_str());
+    CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, destination);
   }
   return false;
 }

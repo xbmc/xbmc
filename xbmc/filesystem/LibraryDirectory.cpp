@@ -48,7 +48,8 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         XMLUtils::GetString(node, "content", type);
         if (type.empty())
         {
-          CLog::Log(LOGERROR, "<content> tag must not be empty for type=\"filter\" node '%s'", libNode.c_str());
+          CLog::Log(LOGERROR, "<content> tag must not be empty for type=\"filter\" node '{}'",
+                    libNode);
           return false;
         }
         if (XMLUtils::GetString(node, "label", label))

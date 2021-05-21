@@ -142,7 +142,10 @@ ssize_t CFileCDDA::Read(void* lpBuf, size_t uiBufSize)
     // iSectorCount is low so it cannot solve read problem
     if (iSectorCount <= 10)
     {
-      CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed with error code %i", iSectorCount, m_lsnCurrent, iret);
+      CLog::Log(LOGERROR,
+                "file cdda: Reading {} sectors of audio data starting at lsn {} failed with error "
+                "code {}",
+                iSectorCount, m_lsnCurrent, iret);
       return -1;
     }
 

@@ -63,7 +63,7 @@ int CGUIDialogProgress::GetChoice() const
 
 void CGUIDialogProgress::Open(const std::string &param /* = "" */)
 {
-  CLog::Log(LOGDEBUG, "DialogProgress::Open called %s", m_active ? "(already running)!" : "");
+  CLog::Log(LOGDEBUG, "DialogProgress::Open called {}", m_active ? "(already running)!" : "");
 
   {
     CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());

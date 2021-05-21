@@ -1626,7 +1626,7 @@ namespace PVR
       if (!scanClient)
       {
         CLog::LogF(LOGERROR,
-                   "Provided client id '%d' could not be found in list of possible scan clients!",
+                   "Provided client id '{}' could not be found in list of possible scan clients!",
                    clientId);
         m_bChannelScanRunning = false;
         return false;

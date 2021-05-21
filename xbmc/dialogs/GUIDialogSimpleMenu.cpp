@@ -97,13 +97,16 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
 
   if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
   {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for %s", directory.c_str());
+    CLog::Log(LOGERROR,
+              "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for {}",
+              directory);
     return true;
   }
 
   if (items.IsEmpty())
   {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", directory.c_str());
+    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
+              directory);
     return true;
   }
 
@@ -119,7 +122,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
     CFileItemPtr item_new = dialog->GetSelectedFileItem();
     if (!item_new || dialog->GetSelectedItem() < 0)
     {
-      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted %s", directory.c_str());
+      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted {}", directory);
       break;
     }
 
@@ -135,7 +138,8 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
     items.Clear();
     if (!GetDirectoryItems(item_new->GetDynPath(), items, XFILE::CDirectory::CHints()) || items.IsEmpty())
     {
-      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", item_new->GetPath().c_str());
+      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
+                item_new->GetPath());
       break;
     }
   }

@@ -214,7 +214,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
   CFile file;
   if (!file.OpenForWrite(strPlaylist,true))
   {
-    CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
+    CLog::Log(LOGERROR, "Could not save M3U playlist: [{}]", strPlaylist);
     return;
   }
   std::string strLine = StringUtils::Format("{}\n", StartMarker);

@@ -403,7 +403,8 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_info.m_ac3FrameSize = m_fsize;
     m_info.m_repeat = 1;
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
+    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected ({} channels, {}Hz)",
+              m_info.m_channels, m_info.m_sampleRate);
     return true;
   }
   else
@@ -415,7 +416,8 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
 
     if (strmtyp != 1 && wantEAC3dependent)
     {
-      CLog::Log(LOGDEBUG, "CAEStreamParser::TrySyncAC3 - Unexpected stream type: %d (wantEAC3dependent: %d)",
+      CLog::Log(LOGDEBUG,
+                "CAEStreamParser::TrySyncAC3 - Unexpected stream type: {} (wantEAC3dependent: {})",
                 strmtyp, wantEAC3dependent);
       return false;
     }
@@ -454,7 +456,8 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
     m_info.m_ac3FrameSize = m_fsize;
 
-    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
+    CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected ({} channels, {}Hz)",
+              m_info.m_channels, m_info.m_sampleRate);
     return true;
   }
 }
@@ -700,9 +703,10 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t *data, unsigned int size)
         }
       }
 
-      CLog::Log(LOGINFO, "CAEStreamParser::SyncDTS - %s stream detected (%d channels, %dHz, %dbit %s, period: %u, syncword: 0x%x, target rate: 0x%x, framesize %u))",
-                type.c_str(), m_info.m_channels, m_info.m_sampleRate,
-                bits, m_info.m_dataIsLE ? "LE" : "BE",
+      CLog::Log(LOGINFO,
+                "CAEStreamParser::SyncDTS - {} stream detected ({} channels, {}Hz, {}bit {}, "
+                "period: {}, syncword: 0x{:x}, target rate: 0x{:x}, framesize {}))",
+                type, m_info.m_channels, m_info.m_sampleRate, bits, m_info.m_dataIsLE ? "LE" : "BE",
                 m_info.m_dtsPeriod, hd_sync, target_rate, m_fsize);
     }
 
@@ -777,7 +781,9 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t *data, unsigned int size)
       m_info.m_channels = CAEStreamParser::GetTrueHDChannels(channel_map);
 
       if (!m_hasSync)
-        CLog::Log(LOGINFO, "CAEStreamParser::SyncTrueHD - TrueHD stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
+        CLog::Log(LOGINFO,
+                  "CAEStreamParser::SyncTrueHD - TrueHD stream detected ({} channels, {}Hz)",
+                  m_info.m_channels, m_info.m_sampleRate);
 
       m_hasSync = true;
       m_fsize = length;

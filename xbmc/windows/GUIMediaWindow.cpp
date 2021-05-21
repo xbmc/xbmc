@@ -732,9 +732,8 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   std::string strParentPath = m_history.GetParentPath();
 
-  CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)",
-            CURL::GetRedacted(strDirectory).c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", CURL::GetRedacted(strParentPath).c_str());
+  CLog::Log(LOGDEBUG, "CGUIMediaWindow::GetDirectory ({})", CURL::GetRedacted(strDirectory));
+  CLog::Log(LOGDEBUG, "  ParentPath = [{}]", CURL::GetRedacted(strParentPath));
 
   if (pathToUrl.IsProtocol("plugin") && !pathToUrl.GetHostName().empty())
     CServiceBroker::GetAddonMgr().UpdateLastUsed(pathToUrl.GetHostName());
@@ -842,7 +841,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
   if (!GetDirectory(pathNoFilter, *m_vecItems))
   {
-    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", CURL(path).GetRedacted().c_str());
+    CLog::Log(LOGERROR, "CGUIMediaWindow::GetDirectory({}) failed", CURL(path).GetRedacted());
 
     if (URIUtils::PathEquals(path, GetRootPath()))
       return false; // Nothing to fallback to
@@ -1134,7 +1133,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   else if (pItem->IsAndroidApp())
   {
     std::string appName = URIUtils::GetFileName(pItem->GetPath());
-    CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnClick Trying to run: %s",appName.c_str());
+    CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnClick Trying to run: {}", appName);
     return CXBMCApp::StartActivity(appName);
   }
 #endif
@@ -1491,7 +1490,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
-  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()).c_str());
+  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()));
 
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())
@@ -1909,7 +1908,8 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
   {
     if (!m_filter.LoadFromJson(filter))
     {
-      CLog::Log(LOGWARNING, "CGUIMediaWindow::UpdateFilterPath(): unable to load existing filter (%s)", filter.c_str());
+      CLog::Log(LOGWARNING,
+                "CGUIMediaWindow::UpdateFilterPath(): unable to load existing filter ({})", filter);
       m_filter.Reset();
       m_strFilterPath = m_vecItems->GetPath();
     }
@@ -2123,7 +2123,8 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
   }
 
   if (resultItems.Size() > 0)
-    CLog::Log(LOGWARNING, "CGUIMediaWindow::GetAdvanceFilteredItems(): %d unknown items", resultItems.Size());
+    CLog::Log(LOGWARNING, "CGUIMediaWindow::GetAdvanceFilteredItems(): {} unknown items",
+              resultItems.Size());
 
   items.ClearItems();
   items.Append(filteredItems);

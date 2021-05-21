@@ -60,7 +60,7 @@ uint32_t CAppTranslator::TranslateAppCommand(const std::string& szButton)
   if (it != AppCommands.end())
     return it->second | KEY_APPCOMMAND;
 
-  CLog::Log(LOGERROR, "%s: Can't find appcommand %s", __FUNCTION__, szButton.c_str());
+  CLog::Log(LOGERROR, "{}: Can't find appcommand {}", __FUNCTION__, szButton);
 #endif
 
   return 0;
