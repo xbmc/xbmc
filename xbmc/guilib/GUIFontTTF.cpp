@@ -586,7 +586,7 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, vecGlyphInfo& glyph
   float width = 0;
   for (auto it = glyphInfos.begin(); it != glyphInfos.end(); it++)
   {
-    Character* c = GetCharacter(text[(*it).cluster],(*it).codepoint);
+    Character* c = GetCharacter(text[(*it).cluster], (*it).codepoint);
     if (c)
     {
       // If last character in line, we want to add render width
@@ -689,7 +689,7 @@ vecGlyphInfo CGUIFontTTF::GetHarfbuzzShapedGlyphs(const vecText& text)
       }
     }
   }
-  
+
   for (auto& run : runs)
   {
     run.buffer = hb_buffer_create();
