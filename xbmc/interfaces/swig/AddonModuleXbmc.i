@@ -36,6 +36,7 @@ using namespace xbmc;
 
 %include "interfaces/legacy/AddonString.h"
 %include "interfaces/legacy/ModuleXbmc.h"
+%include "interfaces/legacy/Dictionary.h"
 
 %feature("director") Player;
 
@@ -47,7 +48,9 @@ using namespace xbmc;
 
 %include "interfaces/legacy/RenderCapture.h"
 
+%include "interfaces/legacy/InfoTagGame.h"
 %include "interfaces/legacy/InfoTagMusic.h"
+%include "interfaces/legacy/InfoTagPicture.h"
 %include "interfaces/legacy/InfoTagRadioRDS.h"
 %include "interfaces/legacy/InfoTagVideo.h"
 %include "interfaces/legacy/Keyboard.h"

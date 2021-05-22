@@ -124,7 +124,7 @@ namespace XBMCAddon
       // set datetime
       {
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        item->m_dateTime.SetFromW3CDateTime(dateTime);
+        setDateTimeRaw(dateTime);
       }
     }
 
@@ -133,12 +133,8 @@ namespace XBMCAddon
       if (!item) return;
       {
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        for (const auto& it: dictionary)
-        {
-          std::string artName = it.first;
-          StringUtils::ToLower(artName);
-          item->SetArt(artName, it.second);
-        }
+        for (const auto& it : dictionary)
+          addArtRaw(it.first, it.second);
       }
     }
 
@@ -146,20 +142,31 @@ namespace XBMCAddon
     {
       if (!item)
         return;
+
       {
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        item->m_bIsFolder = isFolder;
+        setIsFolderRaw(isFolder);
       }
     }
 
     void ListItem::setUniqueIDs(const Properties& dictionary, const String& defaultrating /* = "" */)
     {
-      if (!item) return;
+      CLog::Log(
+          LOGWARNING,
+          "ListItem.setUniqueIDs() is deprecated and might be removed in future Kodi versions. "
+          "Please use InfoTagVideo.setUniqueIDs().");
 
-      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      CVideoInfoTag& vtag = *GetVideoInfoTag();
+      if (!item)
+        return;
+
+      std::map<String, String> uniqueIDs;
       for (const auto& it : dictionary)
-        vtag.SetUniqueID(it.second, it.first, it.first == defaultrating);
+        uniqueIDs.emplace(it.first, it.second);
+
+      {
+        XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+        xbmc::InfoTagVideo::setUniqueIDsRaw(GetVideoInfoTag(), uniqueIDs, defaultrating);
+      }
     }
 
     void ListItem::setRating(const std::string& type,
@@ -167,18 +174,26 @@ namespace XBMCAddon
                              int votes /* = 0 */,
                              bool defaultt /* = false */)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.setRating() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.setRating().");
+
       if (!item) return;
 
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->SetRating(rating, votes, type, defaultt);
+      xbmc::InfoTagVideo::setRatingRaw(GetVideoInfoTag(), rating, votes, type, defaultt);
     }
 
     void ListItem::addSeason(int number, std::string name /* = "" */)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.addSeason() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.addSeason().");
+
       if (!item) return;
 
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_namedSeasons[number] = std::move(name);
+      xbmc::InfoTagVideo::addSeasonRaw(GetVideoInfoTag(), number, name);
     }
 
     void ListItem::select(bool selected)
@@ -210,9 +225,8 @@ namespace XBMCAddon
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
       if (lowerKey == "startoffset")
-      { // special case for start offset - don't actually store in a property,
-        // we store it in item.m_lStartOffset instead
-        item->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(atof(value.c_str())); // we store the offset in frames, or 1/75th of a second
+      { // special case for start offset - don't actually store in a property
+        setStartOffsetRaw(strtod(value.c_str(), nullptr));
       }
       else if (lowerKey == "mimetype")
       { // special case for mime type - don't actually stored in a property,
@@ -220,32 +234,35 @@ namespace XBMCAddon
       }
       else if (lowerKey == "totaltime")
       {
+        CLog::Log(LOGWARNING,
+                  "\"{}\" in ListItem.setProperty() is deprecated and might be removed in future "
+                  "Kodi versions. Please use InfoTagVideo.setResumePoint().",
+                  lowerKey);
+
         CBookmark resumePoint(GetVideoInfoTag()->GetResumePoint());
         resumePoint.totalTimeInSeconds = atof(value.c_str());
         GetVideoInfoTag()->SetResumePoint(resumePoint);
       }
       else if (lowerKey == "resumetime")
       {
-        CBookmark resumePoint(GetVideoInfoTag()->GetResumePoint());
-        resumePoint.timeInSeconds = atof(value.c_str());
-        GetVideoInfoTag()->SetResumePoint(resumePoint);
+        CLog::Log(LOGWARNING,
+                  "\"{}\" in ListItem.setProperty() is deprecated and might be removed in future "
+                  "Kodi versions. Please use InfoTagVideo.setResumePoint().",
+                  lowerKey);
+
+        xbmc::InfoTagVideo::setResumePointRaw(GetVideoInfoTag(), atof(value.c_str()));
       }
       else if (lowerKey == "specialsort")
-      {
-        if (value == "bottom")
-          item->SetSpecialSort(SortSpecialOnBottom);
-        else if (value == "top")
-          item->SetSpecialSort(SortSpecialOnTop);
-      }
+        setSpecialSortRaw(value);
       else if (lowerKey == "fanart_image")
         item->SetArt("fanart", value);
       else
-        item->SetProperty(lowerKey, value);
+        addPropertyRaw(lowerKey, value);
     }
 
     void ListItem::setProperties(const Properties& dictionary)
     {
-      for (const auto& it: dictionary)
+      for (const auto& it : dictionary)
         setProperty(it.first.c_str(), it.second);
     }
 
@@ -261,9 +278,23 @@ namespace XBMCAddon
         value = StringUtils::Format("{:f}", CUtil::ConvertMilliSecsToSecs(item->m_lStartOffset));
       }
       else if (lowerKey == "totaltime")
+      {
+        CLog::Log(LOGWARNING,
+                  "\"{}\" in ListItem.getProperty() is deprecated and might be removed in future "
+                  "Kodi versions. Please use InfoTagVideo.getResumeTimeTotal().",
+                  lowerKey);
+
         value = StringUtils::Format("{:f}", GetVideoInfoTag()->GetResumePoint().totalTimeInSeconds);
+      }
       else if (lowerKey == "resumetime")
+      {
+        CLog::Log(LOGWARNING,
+                  "\"{}\" in ListItem.getProperty() is deprecated and might be removed in future "
+                  "Kodi versions. Please use InfoTagVideo.getResumeTime().",
+                  lowerKey);
+
         value = StringUtils::Format("{:f}", GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+      }
       else if (lowerKey == "fanart_image")
         value = item->GetArt("fanart");
       else
@@ -286,18 +317,31 @@ namespace XBMCAddon
 
     String ListItem::getUniqueID(const char* key)
     {
+      CLog::Log(
+          LOGWARNING,
+          "ListItem.getUniqueID() is deprecated and might be removed in future Kodi versions. "
+          "Please use InfoTagVideo.getUniqueID().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return GetVideoInfoTag()->GetUniqueID(key);
     }
 
     float ListItem::getRating(const char* key)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.getRating() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.getRating().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return GetVideoInfoTag()->GetRating(key).rating;
     }
 
     int ListItem::getVotes(const char* key)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.getVotes() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.getVotesAsInt().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return GetVideoInfoTag()->GetRating(key).votes;
     }
@@ -305,19 +349,19 @@ namespace XBMCAddon
     void ListItem::setPath(const String& path)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      item->SetPath(path);
+      setPathRaw(path);
     }
 
     void ListItem::setMimeType(const String& mimetype)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      item->SetMimeType(mimetype);
+      setMimeTypeRaw(mimetype);
     }
 
     void ListItem::setContentLookup(bool enable)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      item->SetContentLookup(enable);
+      setContentLookupRaw(enable);
     }
 
     String ListItem::getPath()
@@ -330,356 +374,362 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
+      bool hasDeprecatedInfoLabel = false;
       if (StringUtils::CompareNoCase(type, "video") == 0)
       {
-        auto& videotag = *GetVideoInfoTag();
-        for (const auto& it: infoLabels)
+        using InfoTagVideo = xbmc::InfoTagVideo;
+        auto videotag = GetVideoInfoTag();
+        for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
+          const auto key = StringUtils::ToLower(it.first);
           const InfoLabelValue& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
-          if (key == "dbid")
-            videotag.m_iDbId = strtol(value.c_str(), nullptr, 10);
-          else if (key == "year")
-            videotag.SetYear(strtol(value.c_str(), nullptr, 10));
-          else if (key == "episode")
-            videotag.m_iEpisode = strtol(value.c_str(), nullptr, 10);
-          else if (key == "season")
-            videotag.m_iSeason = strtol(value.c_str(), nullptr, 10);
-          else if (key == "sortepisode")
-            videotag.m_iSpecialSortEpisode = strtol(value.c_str(), nullptr, 10);
-          else if (key == "sortseason")
-            videotag.m_iSpecialSortSeason = strtol(value.c_str(), nullptr, 10);
-          else if (key == "episodeguide")
-            videotag.SetEpisodeGuide(value);
-          else if (key == "showlink")
-            videotag.SetShowLink(getStringArray(alt, key, value));
-          else if (key == "top250")
-            videotag.m_iTop250 = strtol(value.c_str(), nullptr, 10);
-          else if (key == "setid")
-            videotag.m_set.id = strtol(value.c_str(), nullptr, 10);
-          else if (key == "tracknumber")
-            videotag.m_iTrack = strtol(value.c_str(), nullptr, 10);
-          else if (key == "count")
-            item->m_iprogramCount = strtol(value.c_str(), nullptr, 10);
-          else if (key == "rating")
-            videotag.SetRating(static_cast<float>(strtod(value.c_str(), nullptr)));
-          else if (key == "userrating")
-            videotag.m_iUserRating = strtol(value.c_str(), nullptr, 10);
+          if (key == "count")
+            setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
-            item->m_dwSize = (int64_t)strtoll(value.c_str(), nullptr, 10);
-          else if (key == "watched") // backward compat - do we need it?
-            videotag.SetPlayCount(strtol(value.c_str(), nullptr, 10));
-          else if (key == "playcount")
-            videotag.SetPlayCount(strtol(value.c_str(), nullptr, 10));
+            setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
           else if (key == "overlay")
           {
             long overlay = strtol(value.c_str(), nullptr, 10);
             if (overlay >= 0 && overlay <= 8)
               item->SetOverlayImage(static_cast<CGUIListItem::GUIIconOverlay>(overlay));
           }
-          else if (key == "cast" || key == "castandrole")
-          {
-            if (alt.which() != second)
-              throw WrongTypeException("When using \"cast\" or \"castandrole\" you need to supply a list of tuples for the value in the dictionary");
-
-            videotag.m_cast.clear();
-            for (const auto& castEntry: alt.later())
-            {
-              // castEntry can be a string meaning it's the actor or it can be a tuple meaning it's the
-              //  actor and the role.
-              const String& actor = castEntry.which() == first ? castEntry.former() : castEntry.later().first();
-              SActorInfo info;
-              info.strName = actor;
-              if (castEntry.which() == second)
-                info.strRole = static_cast<const String&>(castEntry.later().second());
-              videotag.m_cast.push_back(info);
-            }
-          }
-          else if (key == "artist")
-          {
-            if (alt.which() != second)
-              throw WrongTypeException("When using \"artist\" you need to supply a list of strings for the value in the dictionary");
-
-            videotag.m_artist.clear();
-
-            for (const auto& castEntry: alt.later())
-            {
-              const String& actor = castEntry.which() == first ? castEntry.former() : castEntry.later().first();
-              videotag.m_artist.push_back(actor);
-            }
-          }
-          else if (key == "genre")
-            videotag.SetGenre(getStringArray(alt, key, value));
-          else if (key == "country")
-            videotag.SetCountry(getStringArray(alt, key, value));
-          else if (key == "director")
-            videotag.SetDirector(getStringArray(alt, key, value));
-          else if (key == "mpaa")
-            videotag.SetMPAARating(value);
-          else if (key == "plot")
-            videotag.SetPlot(value);
-          else if (key == "plotoutline")
-            videotag.SetPlotOutline(value);
-          else if (key == "title")
-            videotag.SetTitle(value);
-          else if (key == "originaltitle")
-            videotag.SetOriginalTitle(value);
-          else if (key == "sorttitle")
-            videotag.SetSortTitle(value);
-          else if (key == "duration")
-            videotag.SetDuration(strtol(value.c_str(), nullptr, 10));
-          else if (key == "studio")
-            videotag.SetStudio(getStringArray(alt, key, value));
-          else if (key == "tagline")
-            videotag.SetTagLine(value);
-          else if (key == "writer" || key == "credits")
-            videotag.SetWritingCredits(getStringArray(alt, key, value));
-          else if (key == "tvshowtitle")
-            videotag.SetShowTitle(value);
-          else if (key == "premiered")
-          {
-            CDateTime premiered;
-            premiered.SetFromDateString(value);
-            videotag.SetPremiered(premiered);
-          }
-          else if (key == "status")
-            videotag.SetStatus(value);
-          else if (key == "set")
-            videotag.SetSet(value);
-          else if (key == "setoverview")
-            videotag.SetSetOverview(value);
-          else if (key == "tag")
-            videotag.SetTags(getStringArray(alt, key, value));
-          else if (key == "imdbnumber")
-            videotag.SetUniqueID(value);
-          else if (key == "code")
-            videotag.SetProductionCode(value);
-          else if (key == "aired")
-            videotag.m_firstAired.SetFromDateString(value);
-          else if (key == "lastplayed")
-            videotag.m_lastPlayed.SetFromDBDateTime(value);
-          else if (key == "album")
-            videotag.SetAlbum(value);
-          else if (key == "votes")
-            videotag.SetVotes(StringUtils::ReturnDigits(value));
-          else if (key == "trailer")
-            videotag.SetTrailer(value);
-          else if (key == "path")
-            videotag.SetPath(value);
-          else if (key == "filenameandpath")
-            videotag.SetFileNameAndPath(value);
           else if (key == "date")
-          {
-            if (value.length() == 10)
-            {
-              int year = atoi(value.substr(value.size() - 4).c_str());
-              int month = atoi(value.substr(3, 4).c_str());
-              int day = atoi(value.substr(0, 2).c_str());
-              item->m_dateTime.SetDate(year, month, day);
-            }
-            else
-              CLog::Log(LOGERROR, "NEWADDON Invalid Date Format \"{}\"", value);
-          }
-          else if (key == "dateadded")
-            videotag.m_dateAdded.SetFromDBDateTime(value.c_str());
-          else if (key == "mediatype")
-          {
-            if (CMediaTypes::IsValidMediaType(value))
-              videotag.m_type = value;
-            else
-              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value);
-          }
+            setDateTimeRaw(value);
           else
-            CLog::Log(LOGERROR, "NEWADDON Unknown Video Info Key \"{}\"", key);
+          {
+            hasDeprecatedInfoLabel = true;
+
+            if (key == "dbid")
+              InfoTagVideo::setDbIdRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "year")
+              InfoTagVideo::setYearRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "episode")
+              InfoTagVideo::setEpisodeRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "season")
+              InfoTagVideo::setSeasonRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "sortepisode")
+              InfoTagVideo::setSortEpisodeRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "sortseason")
+              InfoTagVideo::setSortSeasonRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "episodeguide")
+              InfoTagVideo::setEpisodeGuideRaw(videotag, value);
+            else if (key == "showlink")
+              InfoTagVideo::setShowLinksRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "top250")
+              InfoTagVideo::setTop250Raw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "setid")
+              InfoTagVideo::setSetIdRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "tracknumber")
+              InfoTagVideo::setTrackNumberRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "rating")
+              InfoTagVideo::setRatingRaw(videotag,
+                                         static_cast<float>(strtod(value.c_str(), nullptr)));
+            else if (key == "userrating")
+              InfoTagVideo::setUserRatingRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "watched") // backward compat - do we need it?
+              InfoTagVideo::setPlaycountRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "playcount")
+              InfoTagVideo::setPlaycountRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "cast" || key == "castandrole")
+            {
+              if (alt.which() != second)
+                throw WrongTypeException("When using \"cast\" or \"castandrole\" you need to "
+                                         "supply a list of tuples for the value in the dictionary");
+
+              std::vector<SActorInfo> cast;
+              cast.reserve(alt.later().size());
+              for (const auto& castEntry : alt.later())
+              {
+                // castEntry can be a string meaning it's the actor or it can be a tuple meaning it's the
+                //  actor and the role.
+                const String& actor =
+                    castEntry.which() == first ? castEntry.former() : castEntry.later().first();
+                SActorInfo info;
+                info.strName = actor;
+                if (castEntry.which() == second)
+                  info.strRole = static_cast<const String&>(castEntry.later().second());
+                cast.push_back(std::move(info));
+              }
+              InfoTagVideo::setCastRaw(videotag, std::move(cast));
+            }
+            else if (key == "artist")
+            {
+              if (alt.which() != second)
+                throw WrongTypeException("When using \"artist\" you need to supply a list of "
+                                         "strings for the value in the dictionary");
+
+              std::vector<String> artists;
+              artists.reserve(alt.later().size());
+              for (const auto& castEntry : alt.later())
+              {
+                auto actor =
+                    castEntry.which() == first ? castEntry.former() : castEntry.later().first();
+                artists.push_back(std::move(actor));
+              }
+              InfoTagVideo::setArtistsRaw(videotag, artists);
+            }
+            else if (key == "genre")
+              InfoTagVideo::setGenresRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "country")
+              InfoTagVideo::setCountriesRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "director")
+              InfoTagVideo::setDirectorsRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "mpaa")
+              InfoTagVideo::setMpaaRaw(videotag, value);
+            else if (key == "plot")
+              InfoTagVideo::setPlotRaw(videotag, value);
+            else if (key == "plotoutline")
+              InfoTagVideo::setPlotOutlineRaw(videotag, value);
+            else if (key == "title")
+              InfoTagVideo::setTitleRaw(videotag, value);
+            else if (key == "originaltitle")
+              InfoTagVideo::setOriginalTitleRaw(videotag, value);
+            else if (key == "sorttitle")
+              InfoTagVideo::setSortTitleRaw(videotag, value);
+            else if (key == "duration")
+              InfoTagVideo::setDurationRaw(videotag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "studio")
+              InfoTagVideo::setStudiosRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "tagline")
+              InfoTagVideo::setTagLineRaw(videotag, value);
+            else if (key == "writer" || key == "credits")
+              InfoTagVideo::setWritersRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "tvshowtitle")
+              InfoTagVideo::setTvShowTitleRaw(videotag, value);
+            else if (key == "premiered")
+              InfoTagVideo::setPremieredRaw(videotag, value);
+            else if (key == "status")
+              InfoTagVideo::setTvShowStatusRaw(videotag, value);
+            else if (key == "set")
+              InfoTagVideo::setSetRaw(videotag, value);
+            else if (key == "setoverview")
+              InfoTagVideo::setSetOverviewRaw(videotag, value);
+            else if (key == "tag")
+              InfoTagVideo::setTagsRaw(videotag, getVideoStringArray(alt, key, value));
+            else if (key == "imdbnumber")
+              InfoTagVideo::setIMDBNumberRaw(videotag, value);
+            else if (key == "code")
+              InfoTagVideo::setProductionCodeRaw(videotag, value);
+            else if (key == "aired")
+              InfoTagVideo::setFirstAiredRaw(videotag, value);
+            else if (key == "lastplayed")
+              InfoTagVideo::setLastPlayedRaw(videotag, value);
+            else if (key == "album")
+              InfoTagVideo::setAlbumRaw(videotag, value);
+            else if (key == "votes")
+              InfoTagVideo::setVotesRaw(videotag, StringUtils::ReturnDigits(value));
+            else if (key == "trailer")
+              InfoTagVideo::setTrailerRaw(videotag, value);
+            else if (key == "path")
+              InfoTagVideo::setPathRaw(videotag, value);
+            else if (key == "filenameandpath")
+              InfoTagVideo::setFilenameAndPathRaw(videotag, value);
+            else if (key == "dateadded")
+              InfoTagVideo::setDateAddedRaw(videotag, value);
+            else if (key == "mediatype")
+              InfoTagVideo::setMediaTypeRaw(videotag, value);
+            else
+              CLog::Log(LOGERROR, "NEWADDON Unknown Video Info Key \"{}\"", key);
+          }
+        }
+
+        if (hasDeprecatedInfoLabel)
+        {
+          CLog::Log(
+            LOGWARNING,
+            "Setting most video properties through ListItem.setInfo() is deprecated and might be "
+            "removed in future Kodi versions. Please use the respective setter in InfoTagVideo.");
         }
       }
       else if (StringUtils::CompareNoCase(type, "music") == 0)
       {
-        std::string type;
-        for (auto it = infoLabels.begin(); it != infoLabels.end(); ++it)
-        {
-          String key = it->first;
-          StringUtils::ToLower(key);
-          const InfoLabelValue& alt = it->second;
-          const String value(alt.which() == first ? alt.former() : emptyString);
+        String mediaType;
+        int dbId = -1;
 
-          if (key == "mediatype")
-          {
-            if (CMediaTypes::IsValidMediaType(value))
-            {
-              type = value;
-              item->GetMusicInfoTag()->SetType(value);
-            }
-            else
-              CLog::Log(LOGWARNING, "Invalid media type \"{}\"", value);
-          }
-        }
-        auto& musictag = *item->GetMusicInfoTag();
+        using InfoTagMusic = xbmc::InfoTagMusic;
+        auto musictag = GetMusicInfoTag();
         for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
-          const InfoLabelValue& alt = it.second;
+          const auto key = StringUtils::ToLower(it.first);
+          const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           //! @todo add the rest of the infolabels
-          if (key == "dbid" && !type.empty())
-            musictag.SetDatabaseId(static_cast<int>(strtol(value.c_str(), NULL, 10)), type);
-          else if (key == "tracknumber")
-            musictag.SetTrackNumber(strtol(value.c_str(), NULL, 10));
-          else if (key == "discnumber")
-            musictag.SetDiscNumber(strtol(value.c_str(), nullptr, 10));
-          else if (key == "count")
-            item->m_iprogramCount = strtol(value.c_str(), nullptr, 10);
+          if (key == "count")
+            setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
-            item->m_dwSize = static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10));
-          else if (key == "duration")
-            musictag.SetDuration(strtol(value.c_str(), nullptr, 10));
-          else if (key == "year")
-            musictag.SetYear(strtol(value.c_str(), nullptr, 10));
-          else if (key == "listeners")
-            musictag.SetListeners(strtol(value.c_str(), nullptr, 10));
-          else if (key == "playcount")
-            musictag.SetPlayCount(strtol(value.c_str(), nullptr, 10));
-          else if (key == "genre")
-            musictag.SetGenre(value);
-          else if (key == "album")
-            musictag.SetAlbum(value);
-          else if (key == "artist")
-            musictag.SetArtist(value);
-          else if (key == "title")
-            musictag.SetTitle(value);
-          else if (key == "rating")
-            musictag.SetRating(static_cast<float>(strtod(value.c_str(), nullptr)));
-          else if (key == "userrating")
-            musictag.SetUserrating(strtol(value.c_str(), nullptr, 10));
-          else if (key == "lyrics")
-            musictag.SetLyrics(value);
-          else if (key == "lastplayed")
-            musictag.SetLastPlayed(value);
-          else if (key == "musicbrainztrackid")
-            musictag.SetMusicBrainzTrackID(value);
-          else if (key == "musicbrainzartistid")
-            musictag.SetMusicBrainzArtistID(StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
-          else if (key == "musicbrainzalbumid")
-            musictag.SetMusicBrainzAlbumID(value);
-          else if (key == "musicbrainzalbumartistid")
-            musictag.SetMusicBrainzAlbumArtistID(StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
-          else if (key == "comment")
-            musictag.SetComment(value);
+            setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
           else if (key == "date")
+            setDateTimeRaw(value);
+          else
           {
-            if (strlen(value.c_str()) == 10)
-            {
-              int year = atoi(value.substr(value.size() - 4).c_str());
-              int month = atoi(value.substr(3, 4).c_str());
-              int day = atoi(value.substr(0, 2).c_str());
-              item->m_dateTime.SetDate(year, month, day);
-            }
+            hasDeprecatedInfoLabel = true;
+
+            if (key == "dbid")
+              dbId = static_cast<int>(strtol(value.c_str(), NULL, 10));
+            else if (key == "mediatype")
+              mediaType = value;
+            else if (key == "tracknumber")
+              InfoTagMusic::setTrackRaw(musictag, strtol(value.c_str(), NULL, 10));
+            else if (key == "discnumber")
+              InfoTagMusic::setDiscRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "duration")
+              InfoTagMusic::setDurationRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "year")
+              InfoTagMusic::setYearRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "listeners")
+              InfoTagMusic::setListenersRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "playcount")
+              InfoTagMusic::setPlayCountRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "genre")
+              InfoTagMusic::setGenresRaw(musictag, getMusicStringArray(alt, key, value));
+            else if (key == "album")
+              InfoTagMusic::setAlbumRaw(musictag, value);
+            else if (key == "artist")
+              InfoTagMusic::setArtistRaw(musictag, value);
+            else if (key == "title")
+              InfoTagMusic::setTitleRaw(musictag, value);
+            else if (key == "rating")
+              InfoTagMusic::setRatingRaw(musictag,
+                                         static_cast<float>(strtod(value.c_str(), nullptr)));
+            else if (key == "userrating")
+              InfoTagMusic::setUserRatingRaw(musictag, strtol(value.c_str(), nullptr, 10));
+            else if (key == "lyrics")
+              InfoTagMusic::setLyricsRaw(musictag, value);
+            else if (key == "lastplayed")
+              InfoTagMusic::setLastPlayedRaw(musictag, value);
+            else if (key == "musicbrainztrackid")
+              InfoTagMusic::setMusicBrainzTrackIDRaw(musictag, value);
+            else if (key == "musicbrainzartistid")
+              InfoTagMusic::setMusicBrainzArtistIDRaw(musictag,
+                                                      getMusicStringArray(alt, key, value));
+            else if (key == "musicbrainzalbumid")
+              InfoTagMusic::setMusicBrainzAlbumIDRaw(musictag, value);
+            else if (key == "musicbrainzalbumartistid")
+              InfoTagMusic::setMusicBrainzAlbumArtistIDRaw(musictag,
+                                                           getMusicStringArray(alt, key, value));
+            else if (key == "comment")
+              InfoTagMusic::setCommentRaw(musictag, value);
+            else if (key != "mediatype")
+              CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key);
           }
-          else if (key != "mediatype")
-            CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key);
 
           // This should probably be set outside of the loop but since the original
           //  implementation set it inside of the loop, I'll leave it that way. - Jim C.
-          musictag.SetLoaded(true);
+          musictag->SetLoaded(true);
+        }
+
+        if (dbId > 0 && !mediaType.empty())
+          InfoTagMusic::setDbIdRaw(musictag, dbId, mediaType);
+
+        if (hasDeprecatedInfoLabel)
+        {
+          CLog::Log(
+              LOGWARNING,
+              "Setting most music properties through ListItem.setInfo() is deprecated and might be "
+              "removed in future Kodi versions. Please use the respective setter in InfoTagMusic.");
         }
       }
       else if (StringUtils::CompareNoCase(type, "pictures") == 0)
       {
-        for (const auto& it: infoLabels)
+        for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
-          const InfoLabelValue& alt = it.second;
+          const auto key = StringUtils::ToLower(it.first);
+          const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           if (key == "count")
-            item->m_iprogramCount = strtol(value.c_str(), nullptr, 10);
+            setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
-            item->m_dwSize = static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10));
+            setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
           else if (key == "title")
-            item->m_strTitle = value;
+            setTitleRaw(value);
           else if (key == "picturepath")
-            item->SetPath(value);
+            setPathRaw(value);
           else if (key == "date")
-          {
-            if (strlen(value.c_str()) == 10)
-            {
-              int year = atoi(value.substr(value.size() - 4).c_str());
-              int month = atoi(value.substr(3, 4).c_str());
-              int day = atoi(value.substr(0, 2).c_str());
-              item->m_dateTime.SetDate(year, month, day);
-            }
-          }
+            setDateTimeRaw(value);
           else
           {
-            const String& exifkey = key;
-            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
-              continue;
+            hasDeprecatedInfoLabel = true;
 
-            item->GetPictureInfoTag()->SetInfo(StringUtils::Mid(exifkey, 5), value);
+            String exifkey = key;
+            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
+            {
+              CLog::Log(LOGWARNING, "ListItem.setInfo: unknown pictures info key \"{}\"", key);
+              continue;
+            }
+
+            exifkey = StringUtils::Mid(exifkey, 5);
+            if (exifkey == "resolution")
+              xbmc::InfoTagPicture::setResolutionRaw(item->GetPictureInfoTag(), value);
+            else if (exifkey == "exiftime")
+              xbmc::InfoTagPicture::setDateTimeTakenRaw(item->GetPictureInfoTag(), value);
+            else
+              CLog::Log(LOGWARNING, "ListItem.setInfo: unknown pictures info key \"{}\"", key);
           }
+        }
+
+        if (hasDeprecatedInfoLabel)
+        {
+          CLog::Log(LOGWARNING, "Setting most picture properties through ListItem.setInfo() is "
+                                "deprecated and might be removed in future Kodi versions. Please "
+                                "use the respective setter in InfoTagPicture.");
         }
       }
       else if (StringUtils::EqualsNoCase(type, "game"))
       {
-        auto& gametag = *item->GetGameInfoTag();
-        for (const auto& it: infoLabels)
+        auto gametag = item->GetGameInfoTag();
+        for (const auto& it : infoLabels)
         {
-          String key = it.first;
-          StringUtils::ToLower(key);
-
-          const InfoLabelValue& alt = it.second;
+          const auto key = StringUtils::ToLower(it.first);
+          const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           if (key == "title")
           {
-            item->m_strTitle = value;
-            gametag.SetTitle(value);
+            setTitleRaw(value);
+            xbmc::InfoTagGame::setTitleRaw(gametag, value);
           }
           else if (key == "platform")
-            gametag.SetPlatform(value);
+            xbmc::InfoTagGame::setPlatformRaw(gametag, value);
           else if (key == "genres")
-          {
-            if (alt.which() != second)
-              throw WrongTypeException("When using \"genres\" you need to supply a list of strings for the value in the dictionary");
-
-            std::vector<std::string> genres;
-
-            for (const auto& genreEntry: alt.later())
-            {
-              const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
-              genres.emplace_back(genre);
-            }
-
-            gametag.SetGenres(genres);
-          }
+            xbmc::InfoTagGame::setGenresRaw(gametag, getStringArray(alt, key, value, ","));
           else if (key == "publisher")
-            gametag.SetPublisher(value);
+            xbmc::InfoTagGame::setPublisherRaw(gametag, value);
           else if (key == "developer")
-            gametag.SetDeveloper(value);
+            xbmc::InfoTagGame::setDeveloperRaw(gametag, value);
           else if (key == "overview")
-            gametag.SetOverview(value);
+            xbmc::InfoTagGame::setOverviewRaw(gametag, value);
           else if (key == "year")
-            gametag.SetYear(strtol(value.c_str(), nullptr, 10));
+            xbmc::InfoTagGame::setYearRaw(gametag, strtoul(value.c_str(), nullptr, 10));
           else if (key == "gameclient")
-            gametag.SetGameClient(value);
+            xbmc::InfoTagGame::setGameClientRaw(gametag, value);
+        }
+
+        if (!infoLabels.empty())
+        {
+          CLog::Log(
+              LOGWARNING,
+              "Setting game properties through ListItem.setInfo() is deprecated and might be "
+              "removed in future Kodi versions. Please use the respective setter in InfoTagGame.");
         }
       }
+      else
+        CLog::Log(LOGWARNING, "ListItem.setInfo: unknown \"type\" parameter value: {}", type);
     } // end ListItem::setInfo
 
     void ListItem::setCast(const std::vector<Properties>& actors)
     {
+      CLog::Log(LOGWARNING,
+                "ListItem.setCast() is deprecated and might be removed in future Kodi versions. "
+                "Please use InfoTagVideo.setCast().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_cast.clear();
-      for (const auto& dictionary: actors)
+      std::vector<SActorInfo> cast;
+      cast.reserve(actors.size());
+      for (const auto& dictionary : actors)
       {
         SActorInfo info;
         for (auto it = dictionary.begin(); it != dictionary.end(); ++it)
@@ -699,20 +749,22 @@ namespace XBMCAddon
           else if (key == "order")
             info.order = strtol(value.c_str(), nullptr, 10);
         }
-        GetVideoInfoTag()->m_cast.push_back(std::move(info));
+        cast.push_back(std::move(info));
       }
+      xbmc::InfoTagVideo::setCastRaw(GetVideoInfoTag(), std::move(cast));
     }
 
     void ListItem::setAvailableFanart(const std::vector<Properties>& images)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_fanart.Clear();
+      auto infoTag = GetVideoInfoTag();
+      infoTag->m_fanart.Clear();
       for (const auto& dictionary : images)
       {
         std::string image;
         std::string preview;
         std::string colors;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String& value = it.second;
@@ -723,9 +775,9 @@ namespace XBMCAddon
           else if (key == "colors")
             colors = value;
         }
-        GetVideoInfoTag()->m_fanart.AddFanart(image, preview, colors);
+        infoTag->m_fanart.AddFanart(image, preview, colors);
       }
-      GetVideoInfoTag()->m_fanart.Pack();
+      infoTag->m_fanart.Pack();
     }
 
     void ListItem::addAvailableArtwork(const std::string& url,
@@ -737,19 +789,29 @@ namespace XBMCAddon
                                        bool isgz,
                                        int season)
     {
+      CLog::Log(LOGWARNING, "ListItem.addAvailableArtwork() is deprecated and might be removed in "
+                            "future Kodi versions. Please use InfoTagVideo.addAvailableArtwork().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      GetVideoInfoTag()->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post,
-                                                      isgz, season);
+      xbmc::InfoTagVideo::addAvailableArtworkRaw(GetVideoInfoTag(), url, art_type, preview,
+                                                 referrer, cache, post, isgz, season);
     }
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
     {
+      CLog::Log(
+          LOGWARNING,
+          "ListItem.addStreamInfo() is deprecated and might be removed in future Kodi versions. "
+          "Please use InfoTagVideo.addVideoStream(), InfoTagVideo.addAudioStream() and "
+          "InfoTagVideo.addSubtitleStream().");
+
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
+      auto infoTag = GetVideoInfoTag();
       if (StringUtils::CompareNoCase(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String value(it.second.c_str());
@@ -769,12 +831,12 @@ namespace XBMCAddon
           else if (key == "language")
             video->m_strLanguage = value;
         }
-        GetVideoInfoTag()->m_streamDetails.AddStream(video);
+        xbmc::InfoTagVideo::addStreamRaw(infoTag, video);
       }
       else if (StringUtils::CompareNoCase(cType, "audio") == 0)
       {
         CStreamDetailAudio* audio = new CStreamDetailAudio;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String& value = it.second;
@@ -786,12 +848,12 @@ namespace XBMCAddon
           else if (key == "channels")
             audio->m_iChannels = strtol(value.c_str(), nullptr, 10);
         }
-        GetVideoInfoTag()->m_streamDetails.AddStream(audio);
+        xbmc::InfoTagVideo::addStreamRaw(infoTag, audio);
       }
       else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
       {
         CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
-        for (const auto& it: dictionary)
+        for (const auto& it : dictionary)
         {
           const String& key = it.first;
           const String& value = it.second;
@@ -799,9 +861,9 @@ namespace XBMCAddon
           if (key == "language")
             subtitle->m_strLanguage = value;
         }
-        GetVideoInfoTag()->m_streamDetails.AddStream(subtitle);
+        xbmc::InfoTagVideo::addStreamRaw(infoTag, subtitle);
       }
-      GetVideoInfoTag()->m_streamDetails.DetermineBestStreams();
+      xbmc::InfoTagVideo::finalizeStreamsRaw(infoTag);
     } // end ListItem::addStreamInfo
 
     void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */)
@@ -821,37 +883,47 @@ namespace XBMCAddon
     void ListItem::setSubtitles(const std::vector<String>& paths)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      unsigned int i = 1;
-      for (const auto& it: paths)
-      {
-        String property = StringUtils::Format("subtitle:{}", i++);
-        item->SetProperty(property, it);
-      }
+      addSubtitlesRaw(paths);
     }
 
     xbmc::InfoTagVideo* ListItem::getVideoInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      if (item->HasVideoInfoTag())
-        return new xbmc::InfoTagVideo(*GetVideoInfoTag());
-      return new xbmc::InfoTagVideo();
+      return new xbmc::InfoTagVideo(GetVideoInfoTag(), m_offscreen);
     }
 
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      if (item->HasMusicInfoTag())
-        return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
-      return new xbmc::InfoTagMusic();
+      return new xbmc::InfoTagMusic(GetMusicInfoTag(), m_offscreen);
     }
 
-    std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt, const std::string& tag, std::string value)
+    xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      if (item->HasPictureInfoTag())
+        return new xbmc::InfoTagPicture(item->GetPictureInfoTag(), m_offscreen);
+      return new xbmc::InfoTagPicture();
+    }
+
+    xbmc::InfoTagGame* ListItem::getGameInfoTag()
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      if (item->HasGameInfoTag())
+        return new xbmc::InfoTagGame(item->GetGameInfoTag(), m_offscreen);
+      return new xbmc::InfoTagGame();
+    }
+
+    std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt,
+                                                      const std::string& tag,
+                                                      std::string value,
+                                                      const std::string& separator)
     {
       if (alt.which() == first)
       {
         if (value.empty())
           value = alt.former();
-        return StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+        return StringUtils::Split(value, separator);
       }
 
       std::vector<std::string> els;
@@ -864,6 +936,24 @@ namespace XBMCAddon
       return els;
     }
 
+    std::vector<std::string> ListItem::getVideoStringArray(const InfoLabelValue& alt,
+                                                           const std::string& tag,
+                                                           std::string value /* = "" */)
+    {
+      return getStringArray(
+          alt, tag, value,
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+    }
+
+    std::vector<std::string> ListItem::getMusicStringArray(const InfoLabelValue& alt,
+                                                           const std::string& tag,
+                                                           std::string value /* = "" */)
+    {
+      return getStringArray(
+          alt, tag, value,
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+    }
+
     CVideoInfoTag* ListItem::GetVideoInfoTag()
     {
       return item->GetVideoInfoTag();
@@ -872,6 +962,98 @@ namespace XBMCAddon
     const CVideoInfoTag* ListItem::GetVideoInfoTag() const
     {
       return item->GetVideoInfoTag();
+    }
+
+    MUSIC_INFO::CMusicInfoTag* ListItem::GetMusicInfoTag()
+    {
+      return item->GetMusicInfoTag();
+    }
+
+    const MUSIC_INFO::CMusicInfoTag* ListItem::GetMusicInfoTag() const
+    {
+      return item->GetMusicInfoTag();
+    }
+
+    void ListItem::setTitleRaw(std::string title)
+    {
+      item->m_strTitle = std::move(title);
+    }
+
+    void ListItem::setPathRaw(std::string path)
+    {
+      item->SetPath(std::move(path));
+    }
+
+    void ListItem::setCountRaw(int count)
+    {
+      item->m_iprogramCount = count;
+    }
+
+    void ListItem::setSizeRaw(int64_t size)
+    {
+      item->m_dwSize = size;
+    }
+
+    void ListItem::setDateTimeRaw(const std::string& dateTime)
+    {
+      if (dateTime.length() == 10)
+      {
+        int year = strtol(dateTime.substr(dateTime.size() - 4).c_str(), nullptr, 10);
+        int month = strtol(dateTime.substr(3, 4).c_str(), nullptr, 10);
+        int day = strtol(dateTime.substr(0, 2).c_str(), nullptr, 10);
+        item->m_dateTime.SetDate(year, month, day);
+      }
+      else
+        item->m_dateTime.SetFromW3CDateTime(dateTime);
+    }
+
+    void ListItem::setIsFolderRaw(bool isFolder)
+    {
+      item->m_bIsFolder = isFolder;
+    }
+
+    void ListItem::setStartOffsetRaw(double startOffset)
+    {
+      // we store the offset in frames, or 1/75th of a second
+      item->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
+    }
+
+    void ListItem::setMimeTypeRaw(const std::string& mimetype)
+    {
+      item->SetMimeType(mimetype);
+    }
+
+    void ListItem::setSpecialSortRaw(std::string specialSort)
+    {
+      StringUtils::ToLower(specialSort);
+
+      if (specialSort == "bottom")
+        item->SetSpecialSort(SortSpecialOnBottom);
+      else if (specialSort == "top")
+        item->SetSpecialSort(SortSpecialOnTop);
+    }
+
+    void ListItem::setContentLookupRaw(bool enable)
+    {
+      item->SetContentLookup(enable);
+    }
+
+    void ListItem::addArtRaw(std::string type, std::string url)
+    {
+      StringUtils::ToLower(type);
+      item->SetArt(type, url);
+    }
+
+    void ListItem::addPropertyRaw(std::string type, CVariant value)
+    {
+      StringUtils::ToLower(type);
+      item->SetProperty(std::move(type), std::move(value));
+    }
+
+    void ListItem::addSubtitlesRaw(const std::vector<std::string>& subtitles)
+    {
+      for (size_t i = 0; i < subtitles.size(); ++i)
+        addPropertyRaw(StringUtils::Format("subtitle:{}", i), subtitles[i]);
     }
   }
 }

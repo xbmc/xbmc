@@ -104,8 +104,12 @@ public:
 
   static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
   static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
+  static std::string ToUpper(const std::string& str);
+  static std::wstring ToUpper(const std::wstring& str);
   static void ToUpper(std::string &str);
   static void ToUpper(std::wstring &str);
+  static std::string ToLower(const std::string& str);
+  static std::wstring ToLower(const std::wstring& str);
   static void ToLower(std::string &str);
   static void ToLower(std::wstring &str);
   static void ToCapitalize(std::string &str);

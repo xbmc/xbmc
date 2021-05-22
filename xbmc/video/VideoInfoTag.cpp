@@ -1530,9 +1530,12 @@ void CVideoInfoTag::RemoveRating(const std::string& type)
   }
 }
 
-void CVideoInfoTag::SetRatings(RatingMap ratings)
+void CVideoInfoTag::SetRatings(RatingMap ratings, const std::string& defaultRating /* = "" */)
 {
   m_ratings = std::move(ratings);
+
+  if (!defaultRating.empty() && m_ratings.find(defaultRating) != m_ratings.end())
+    m_strDefaultRating = defaultRating;
 }
 
 void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)

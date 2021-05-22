@@ -13,7 +13,9 @@
 #include "Alternative.h"
 #include "Dictionary.h"
 #include "FileItem.h"
+#include "InfoTagGame.h"
 #include "InfoTagMusic.h"
+#include "InfoTagPicture.h"
 #include "InfoTagVideo.h"
 #include "ListItem.h"
 #include "Tuple.h"
@@ -359,6 +361,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.setUniqueIDs()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -394,6 +397,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.setRating()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -421,6 +425,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       ///
       /// @python_v18 New function added.
+      /// @python_v20 Deprecated. Use **InfoTagVideo.addSeason()** or **InfoTagVideo.addSeasons()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -510,6 +515,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.getUniqueID()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -541,6 +547,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.getRating()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -572,6 +579,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.getVotesAsInt()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -641,7 +649,7 @@ namespace XBMCAddon
       /// @brief \python_func{ setInfo(type, infoLabels) }
       /// Sets the listitem's infoLabels.
       ///
-      /// @param type               string - type of
+      /// @param type               string - type of info labels
       /// @param infoLabels         dictionary - pairs of `{ label: value }`
       ///
       /// __Available types__
@@ -683,7 +691,7 @@ namespace XBMCAddon
       /// | tracknumber   | integer (3)
       /// | rating        | float (6.4) - range is 0..10
       /// | userrating    | integer (9) - range is 1..10 (0 to reset)
-      /// | watched       | depreciated - use playcount instead
+      /// | watched       | deprecated - use playcount instead
       /// | playcount     | integer (2) - number of times this item has been played
       /// | overlay       | integer (2) - range is `0..7`.  See \ref kodi_guilib_listitem_iconoverlay "Overlay icon types" for values
       /// | cast          | list (["Michal C. Hall","Jennifer Carpenter"]) - if provided a list of tuples cast will be interpreted as castandrole
@@ -774,6 +782,7 @@ namespace XBMCAddon
       /// @python_v18 Added new **game** type and associated infolabels.
       /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
+      /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo**, **InfoTagMusic**, **InfoTagPicture** or **InfoTagGame** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -806,6 +815,7 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v17 New function added.
+      /// @python_v20 Deprecated. Use **InfoTagVideo.setCast()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -871,6 +881,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
       /// @python_v19 New param added (preview).
+      /// @python_v20 Deprecated. Use **InfoTagVideo.addAvailableArtwork()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -924,6 +935,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 Deprecated. Use **InfoTagVideo.addVideoStream()**, **InfoTagVideo.addAudioStream()** or **InfoTagVideo.addSubtitleStream()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -999,6 +1011,7 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 OverrideInfotag property added
+      /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.setResumePoint()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1051,6 +1064,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.getResumeTime()** and **InfoTagVideo.getResumeTimeTotal()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1202,11 +1216,71 @@ namespace XBMCAddon
       xbmc::InfoTagMusic* getMusicInfoTag();
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getPictureInfoTag() }
+      /// Returns the InfoTagPicture for this item.
+      ///
+      /// @return     picture info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getPictureInfoTag();
+#else
+      xbmc::InfoTagPicture* getPictureInfoTag();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getGameInfoTag() }
+      /// Returns the InfoTagGame for this item.
+      ///
+      /// @return     game info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getGameInfoTag();
+#else
+      xbmc::InfoTagGame* getGameInfoTag();
+#endif
+
 private:
-      std::vector<std::string> getStringArray(const InfoLabelValue& alt, const std::string& tag, std::string value = "");
+      std::vector<std::string> getStringArray(const InfoLabelValue& alt,
+                                              const std::string& tag,
+                                              std::string value,
+                                              const std::string& separator);
+      std::vector<std::string> getVideoStringArray(const InfoLabelValue& alt,
+                                                   const std::string& tag,
+                                                   std::string value = "");
+      std::vector<std::string> getMusicStringArray(const InfoLabelValue& alt,
+                                                   const std::string& tag,
+                                                   std::string value = "");
 
       CVideoInfoTag* GetVideoInfoTag();
       const CVideoInfoTag* GetVideoInfoTag() const;
+
+      MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
+      const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const;
+
+      void setTitleRaw(std::string title);
+      void setPathRaw(std::string path);
+      void setCountRaw(int count);
+      void setSizeRaw(int64_t size);
+      void setDateTimeRaw(const std::string& dateTime);
+      void setIsFolderRaw(bool isFolder);
+      void setStartOffsetRaw(double startOffset);
+      void setMimeTypeRaw(const std::string& mimetype);
+      void setSpecialSortRaw(std::string specialSort);
+      void setContentLookupRaw(bool enable);
+      void addArtRaw(std::string type, std::string url);
+      void addPropertyRaw(std::string type, CVariant value);
+      void addSubtitlesRaw(const std::vector<std::string>& subtitles);
     };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
