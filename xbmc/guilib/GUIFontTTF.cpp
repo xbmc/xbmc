@@ -373,7 +373,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
   }
 
   Begin();
-  vecGlyphInfo glyphInfos = GetHarfbuzzShapedGlyphs(text);
+  std::vector<hb_glyph_info_t> glyphInfos = GetHarfbuzzShapedGlyphs(text);
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
   bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
@@ -576,12 +576,13 @@ void CGUIFontTTF::DrawTextInternal(float x,
 
 float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
 {
-  vecGlyphInfo glyphInfos = GetHarfbuzzShapedGlyphs(text);
+  std::vector<hb_glyph_info_t> glyphInfos = GetHarfbuzzShapedGlyphs(text);
   return GetTextWidthInternal(text, glyphInfos);
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTF::GetTextWidthInternal(const vecText& text, vecGlyphInfo& glyphInfos)
+float CGUIFontTTF::GetTextWidthInternal(const vecText& text,
+                                        std::vector<hb_glyph_info_t>& glyphInfos)
 {
   float width = 0;
   for (auto it = glyphInfos.begin(); it != glyphInfos.end(); it++)
@@ -627,9 +628,9 @@ unsigned int CGUIFontTTF::GetTextureLineHeight() const
   return m_cellHeight + spacing_between_characters_in_texture;
 }
 
-vecGlyphInfo CGUIFontTTF::GetHarfbuzzShapedGlyphs(const vecText& text)
+std::vector<hb_glyph_info_t> CGUIFontTTF::GetHarfbuzzShapedGlyphs(const vecText& text)
 {
-  vecGlyphInfo glyphInfos;
+  std::vector<hb_glyph_info_t> glyphInfos;
   if (text.empty())
   {
     return glyphInfos;

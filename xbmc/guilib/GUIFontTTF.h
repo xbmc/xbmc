@@ -47,7 +47,6 @@ typedef struct FT_StrokerRec_ *FT_Stroker;
 
 typedef uint32_t character_t;
 typedef std::vector<character_t> vecText;
-typedef std::vector<hb_glyph_info_t> vecGlyphInfo;
 
 /*!
  \ingroup textures
@@ -114,10 +113,10 @@ protected:
   void AddReference();
   void RemoveReference();
 
-  vecGlyphInfo GetHarfbuzzShapedGlyphs(const vecText& text);
+  std::vector<hb_glyph_info_t> GetHarfbuzzShapedGlyphs(const vecText& text);
 
   float GetTextWidthInternal(const vecText& text);
-  float GetTextWidthInternal(const vecText& text, vecGlyphInfo& glyphInfos);
+  float GetTextWidthInternal(const vecText& text, std::vector<hb_glyph_info_t>& glyphInfos);
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetTextBaseLine() const { return (float)m_cellBaseLine; }
@@ -131,7 +130,7 @@ protected:
   std::string m_strFilename;
 
   // Stuff for pre-rendering for speed
-  inline Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
+  Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
   bool CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex);
   void RenderCharacter(float posX, float posY, const Character *ch, UTILS::Color color, bool roundX, std::vector<SVertex> &vertices);
   void ClearCharacterCache();
