@@ -140,6 +140,10 @@ void CWinSystemWin32DX::OnMove(int x, int y)
   if (newMonitor != m_hMonitor)
   {
     MONITOR_DETAILS* details = GetDisplayDetails(newMonitor);
+
+    if (!details)
+      return;
+
     CDisplaySettings::GetInstance().SetMonitor(KODI::PLATFORM::WINDOWS::FromW(details->MonitorNameW));
     m_deviceResources->SetMonitor(newMonitor);
     m_hMonitor = newMonitor;
