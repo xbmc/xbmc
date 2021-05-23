@@ -56,6 +56,8 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
   {
     // get writable
     XMLUtils::GetBoolean(constraints, "writable", m_writable);
+    // get hide extensions
+    XMLUtils::GetBoolean(constraints, "hideextensions", m_hideExtension);
 
     // get sources
     auto sources = constraints->FirstChild("sources");
