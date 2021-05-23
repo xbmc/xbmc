@@ -10,6 +10,7 @@
 
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/EDIDUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -484,6 +485,17 @@ bool CDRMUtils::InitDrm()
     }
 
     CLog::Log(LOGINFO, "CDRMUtils::{} - successfully authorized drm magic", __FUNCTION__);
+  }
+
+  //! @todo: improve in c++17
+  bool result;
+  std::vector<uint8_t> raw;
+  std::tie(result, raw) = m_connector->GetEDID();
+  if (result)
+  {
+    KODI::UTILS::CEDIDUtils edid;
+    edid.SetEDID(raw);
+    edid.LogInfo();
   }
 
   return true;

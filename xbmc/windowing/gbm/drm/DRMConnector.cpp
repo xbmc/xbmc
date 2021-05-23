@@ -37,3 +37,35 @@ bool CDRMConnector::CheckConnector()
 
   return m_connector->connection == DRM_MODE_CONNECTED;
 }
+
+std::tuple<bool, std::vector<uint8_t>> CDRMConnector::GetEDID() const
+{
+  std::vector<uint8_t> edid;
+
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [](auto& prop) { return prop->name == std::string("EDID"); });
+
+  if (property == m_propsInfo.end())
+  {
+    CLog::Log(LOGDEBUG, "CDRMConnector::{} - failed to find EDID property for connector: {}",
+              __FUNCTION__, m_connector->connector_id);
+    return std::make_tuple(false, edid);
+  }
+
+  uint64_t blob_id = m_props->prop_values[std::distance(m_propsInfo.begin(), property)];
+  if (blob_id == 0)
+    return std::make_tuple(false, edid);
+
+  drmModePropertyBlobPtr blob = drmModeGetPropertyBlob(m_fd, blob_id);
+  if (!blob)
+    return std::make_tuple(false, edid);
+
+  auto data = static_cast<uint8_t*>(blob->data);
+  uint32_t length = blob->length;
+
+  edid = std::vector<uint8_t>(data, data + length);
+
+  drmModeFreePropertyBlob(blob);
+
+  return std::make_tuple(true, edid);
+}

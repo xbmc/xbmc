@@ -195,6 +195,9 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
   if("gbm" IN_LIST CORE_PLATFORM_NAME_LC)
     list(APPEND SOURCES DumbBufferObject.cpp)
     list(APPEND SOURCES DumbBufferObject.h)
+
+    list(APPEND SOURCES EDIDUtils.cpp)
+    list(APPEND HEADERS EDIDUtils.h)
   endif()
 
   if(HAVE_LINUX_MEMFD AND HAVE_LINUX_UDMABUF)
