@@ -44,9 +44,9 @@ public:
     std::string controlType;
     std::string controlFormat;
     CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;
-    std::shared_ptr<CSetting> setting;
-    CSmartPlaylistRule *rule;
-    void *data;
+    std::shared_ptr<CSetting> setting = nullptr;
+    CSmartPlaylistRule* rule = nullptr;
+    void* data = nullptr;
   } Filter;
 
 protected:

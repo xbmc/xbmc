@@ -36,8 +36,6 @@ typedef struct
   char string[14];
   TextureField field;
   CDatabaseQueryRule::FIELD_TYPE type;
-  bool browseable;
-  int localizedString;
 } translateField;
 
 static const translateField fields[] = {

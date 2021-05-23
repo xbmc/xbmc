@@ -18,7 +18,62 @@ namespace PythonBindings
 {
   TypeInfo::TypeInfo(const std::type_info& ti) : swigType(NULL), parentType(NULL), typeIndex(ti)
   {
-    static PyTypeObject py_type_object_header = {PyVarObject_HEAD_INIT(NULL, 0)};
+    static PyTypeObject py_type_object_header =
+    { PyVarObject_HEAD_INIT(nullptr, 0) 0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+#if PY_VERSION_HEX > 0x03080000
+      0,
+      0,
+#endif
+#if PY_VERSION_HEX < 0x03090000
+      0,
+#endif
+    };
+
     static int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
     memcpy(&(this->pythonType), &py_type_object_header, size);
   }

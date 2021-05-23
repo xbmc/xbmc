@@ -862,7 +862,8 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
     {
       if (m_bFullScreen)
       {
-        XBMC_Event msg{XBMC_MODECHANGE};
+        XBMC_Event msg{};
+        msg.type = XBMC_MODECHANGE;
         msg.mode.res = RES_WINDOW;
         SetWindowResolution(sizes.bufferSize.Width(), sizes.bufferSize.Height());
         // FIXME
@@ -873,7 +874,8 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
       }
       else
       {
-        XBMC_Event msg{XBMC_VIDEORESIZE};
+        XBMC_Event msg{};
+        msg.type = XBMC_VIDEORESIZE;
         msg.resize = {sizes.bufferSize.Width(), sizes.bufferSize.Height()};
         // FIXME
         dynamic_cast<CWinEventsWayland&>(*m_winEvents).MessagePush(&msg);
@@ -897,7 +899,8 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
         res = static_cast<RESOLUTION> (CDisplaySettings::GetInstance().ResolutionInfoSize() - 1);
       }
 
-      XBMC_Event msg{XBMC_MODECHANGE};
+      XBMC_Event msg{};
+      msg.type = XBMC_MODECHANGE;
       msg.mode.res = res;
       // FIXME
       dynamic_cast<CWinEventsWayland&>(*m_winEvents).MessagePush(&msg);

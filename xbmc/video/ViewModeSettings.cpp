@@ -16,8 +16,8 @@ struct ViewModeProperties
 {
   int stringIndex;
   int viewMode;
-  bool hideFromQuickCycle;
-  bool hideFromList;
+  bool hideFromQuickCycle = false;
+  bool hideFromList = false;
 };
 
 #define HIDE_ITEM true

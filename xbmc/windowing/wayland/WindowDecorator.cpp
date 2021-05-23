@@ -668,7 +668,11 @@ CWindowDecorator::BorderSurface CWindowDecorator::MakeBorderSurface()
   surface.wlSurface = m_compositor.create_surface();
   auto subsurface = m_subcompositor.get_subsurface(surface.wlSurface, m_mainSurface);
 
-  return {surface, subsurface};
+  CWindowDecorator::BorderSurface boarderSurface;
+  boarderSurface.surface = surface;
+  boarderSurface.subsurface = subsurface;
+
+  return boarderSurface;
 }
 
 bool CWindowDecorator::IsDecorationActive() const

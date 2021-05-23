@@ -30,8 +30,7 @@ std::shared_ptr<CLibcdio> CLibcdio::m_pInstance;
 #define UDF_ANCHOR_SECTOR     256  /* buffer[5] */
 
 
-signature_t CCdIoSupport::sigs[] =
-  {
+signature_t CCdIoSupport::sigs[] = {
     /*buffer[x] off look for     description */
     {0, 1, "CD001\0", "ISO 9660\0"},
     {0, 1, "CD-I", "CD-I"},
@@ -47,8 +46,7 @@ signature_t CCdIoSupport::sigs[] =
     {4, 0, "VIDEO_CD", "VIDEO CD"},
     {4, 0, "SUPERVCD", "Chaoji VCD"},
     {0, 1, "BEA01", "UDF"},
-    { 0 }
-  };
+    {}};
 
 #undef DEBUG_CDIO
 

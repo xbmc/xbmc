@@ -83,8 +83,8 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
   }
 
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
-  uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0}, flags = 0;
-  uint64_t modifier[4] = {0};
+  uint32_t handles[4] = {}, pitches[4] = {}, offsets[4] = {}, flags = 0;
+  uint64_t modifier[4] = {};
   int ret;
 
   // convert Prime FD to GEM handle
@@ -147,7 +147,8 @@ void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
   {
     if (buffer->m_handles[i])
     {
-      struct drm_gem_close gem_close = {.handle = buffer->m_handles[i]};
+      struct drm_gem_close gem_close;
+      gem_close.handle = buffer->m_handles[i];
       drmIoctl(m_DRM->GetFileDescriptor(), DRM_IOCTL_GEM_CLOSE, &gem_close);
       buffer->m_handles[i] = 0;
     }
@@ -176,10 +177,8 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
   if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
   {
     m_hdr_metadata.metadata_type = HDMI_STATIC_METADATA_TYPE1;
-    m_hdr_metadata.hdmi_metadata_type1 = {
-        .eotf = GetEOTF(picture),
-        .metadata_type = HDMI_STATIC_METADATA_TYPE1,
-    };
+    m_hdr_metadata.hdmi_metadata_type1.eotf = GetEOTF(picture);
+    m_hdr_metadata.hdmi_metadata_type1.metadata_type = HDMI_STATIC_METADATA_TYPE1;
 
     if (m_hdr_blob_id)
       drmModeDestroyPropertyBlob(m_DRM->GetFileDescriptor(), m_hdr_blob_id);

@@ -224,7 +224,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   AEDeviceEnumerationOSX devEnum(deviceID);
-  AudioStreamBasicDescription outputFormat = { 0 };
+  AudioStreamBasicDescription outputFormat = {};
   AudioStreamID outputStream = 0;
   UInt32 numOutputChannels = 0;
   m_planes = 1;
@@ -247,7 +247,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-  AudioStreamBasicDescription outputFormatVirt = { 0 };
+  AudioStreamBasicDescription outputFormatVirt = {};
   AudioStreamID outputStreamVirt = 0;
   UInt32 numOutputChannelsVirt = 0;
   if (passthrough)

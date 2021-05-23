@@ -436,7 +436,7 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
   m_protocols.clear();
 #ifdef HAS_FILESYSTEM_SMB
   // most popular protocol at the first place
-  m_protocols.emplace_back(Protocol{ true, true, true, false, true, 0, "smb", 20171 });
+  m_protocols.emplace_back(Protocol{true, true, true, false, true, 0, "smb", 20171, ""});
 #endif
   // protocols from vfs addon next
   if (CServiceBroker::IsBinaryAddonCacheUp())
@@ -455,19 +455,18 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
     }
   }
   // internals
-  const std::vector<Protocol> defaults =
-        {{ true,  true,  true,  true, false, 443, "https", 20301},
-         { true,  true,  true,  true, false,  80,  "http", 20300},
-         { true,  true,  true,  true, false, 443,  "davs", 20254},
-         { true,  true,  true,  true, false,  80,   "dav", 20253},
-         { true,  true,  true,  true, false,  21,   "ftp", 20173},
-         { true,  true,  true,  true, false, 990,  "ftps", 20174},
-         {false, false, false, false,  true,   0,  "upnp", 20175},
-         { true,  true,  true,  true, false,  80,   "rss", 20304},
-         { true,  true,  true,  true, false, 443,  "rsss", 20305}};
+  const std::vector<Protocol> defaults = {{true, true, true, true, false, 443, "https", 20301, ""},
+                                          {true, true, true, true, false, 80, "http", 20300, ""},
+                                          {true, true, true, true, false, 443, "davs", 20254, ""},
+                                          {true, true, true, true, false, 80, "dav", 20253, ""},
+                                          {true, true, true, true, false, 21, "ftp", 20173, ""},
+                                          {true, true, true, true, false, 990, "ftps", 20174, ""},
+                                          {false, false, false, false, true, 0, "upnp", 20175, ""},
+                                          {true, true, true, true, false, 80, "rss", 20304, ""},
+                                          {true, true, true, true, false, 443, "rsss", 20305, ""}};
 
   m_protocols.insert(m_protocols.end(), defaults.begin(), defaults.end());
 #ifdef HAS_FILESYSTEM_NFS
-  m_protocols.emplace_back(Protocol{true, false, false, false, true, 0, "nfs", 20259});
+  m_protocols.emplace_back(Protocol{true, false, false, false, true, 0, "nfs", 20259, ""});
 #endif
 }

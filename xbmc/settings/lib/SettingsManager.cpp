@@ -375,7 +375,7 @@ void CSettingsManager::RegisterCallback(ISettingCallback *callback, const std::s
       if (m_initialized)
         continue;
 
-      Setting tmpSetting = { nullptr };
+      Setting tmpSetting = {};
       std::pair<SettingMap::iterator, bool> tmpIt = InsertSetting(setting, tmpSetting);
       itSetting = tmpIt.first;
     }
@@ -1217,7 +1217,7 @@ void CSettingsManager::AddSetting(const std::shared_ptr<CSetting>& setting)
   auto addedSetting = FindSetting(setting->GetId());
   if (addedSetting == m_settings.end())
   {
-    Setting tmpSetting = { nullptr };
+    Setting tmpSetting = {};
     auto tmpIt = InsertSetting(setting->GetId(), tmpSetting);
     addedSetting = tmpIt.first;
   }

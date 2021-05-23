@@ -299,7 +299,7 @@ bool CAAudioUnitSink::deactivate()
     AudioOutputUnitStop(m_audioUnit);
 
     // detach the render callback on the unit
-    AURenderCallbackStruct callbackStruct = {0};
+    AURenderCallbackStruct callbackStruct = {};
     AudioUnitSetProperty(m_audioUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input,
                          0, &callbackStruct, sizeof(callbackStruct));
 
@@ -464,7 +464,7 @@ bool CAAudioUnitSink::setupAudio()
   }
 
   // Attach a render callback on the unit
-  AURenderCallbackStruct callbackStruct = {0};
+  AURenderCallbackStruct callbackStruct = {};
   callbackStruct.inputProc = renderCallback;
   callbackStruct.inputProcRefCon = this;
   status = AudioUnitSetProperty(m_audioUnit, kAudioUnitProperty_SetRenderCallback,
@@ -653,7 +653,7 @@ bool CAESinkDARWINTVOS::Initialize(AEAudioFormat& format, std::string& device)
   if (!found)
     return false;
 
-  AudioStreamBasicDescription audioFormat = {0};
+  AudioStreamBasicDescription audioFormat = {};
   audioFormat.mFormatID = kAudioFormatLinearPCM;
 
   // check if are we dealing with raw formats or pcm

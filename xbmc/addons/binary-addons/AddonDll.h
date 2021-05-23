@@ -163,7 +163,7 @@ private:
    * This structure is defined in:
    * /xbmc/addons/kodi-dev-kit/include/kodi/AddonBase.h
    */
-  AddonGlobalInterface m_interface = {0};
+  AddonGlobalInterface m_interface = {};
 };
 
 } /* namespace ADDON */

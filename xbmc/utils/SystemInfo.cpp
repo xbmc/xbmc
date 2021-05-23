@@ -456,7 +456,7 @@ bool CSysInfo::GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int&
 {
   using namespace KODI::PLATFORM::FILESYSTEM;
 
-  space_info total = { 0 };
+  space_info total = {};
   std::error_code ec;
 
   // None of this makes sense but the idea of total space

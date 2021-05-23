@@ -143,7 +143,8 @@ XBMC_Event CInputProcessorKeyboard::SendKey(unsigned char scancode, XBMCKey key,
 {
   assert(m_keymap);
 
-  XBMC_Event event{static_cast<unsigned char> (pressed ? XBMC_KEYDOWN : XBMC_KEYUP)};
+  XBMC_Event event{};
+  event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym =
   {
     .scancode = scancode,

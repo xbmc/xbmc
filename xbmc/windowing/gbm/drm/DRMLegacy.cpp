@@ -71,15 +71,9 @@ bool CDRMLegacy::WaitingForFlip()
     0,
   };
 
-  drmEventContext drm_evctx =
-  {
-    DRM_EVENT_CONTEXT_VERSION,
-    nullptr,
-    PageFlipHandler,
-  #if DRM_EVENT_CONTEXT_VERSION > 2
-    nullptr,
-  #endif
-  };
+  drmEventContext drm_evctx{};
+  drm_evctx.version = DRM_EVENT_CONTEXT_VERSION;
+  drm_evctx.page_flip_handler = PageFlipHandler;
 
   while(flip_happening)
   {

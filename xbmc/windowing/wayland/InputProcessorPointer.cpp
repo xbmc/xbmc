@@ -121,14 +121,16 @@ void CInputProcessorPointer::SetMousePosFromSurface(CPointGen<double> position)
 
 void CInputProcessorPointer::SendMouseMotion()
 {
-  XBMC_Event event{XBMC_MOUSEMOTION};
+  XBMC_Event event{};
+  event.type = XBMC_MOUSEMOTION;
   event.motion = {m_pointerPosition.x, m_pointerPosition.y};
   m_handler.OnPointerEvent(event);
 }
 
 void CInputProcessorPointer::SendMouseButton(unsigned char button, bool pressed)
 {
-  XBMC_Event event{static_cast<unsigned char> (pressed ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP)};
+  XBMC_Event event{};
+  event.type = pressed ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
   event.button = {button, m_pointerPosition.x, m_pointerPosition.y};
   m_handler.OnPointerEvent(event);
 }

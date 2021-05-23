@@ -466,7 +466,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
       Character* ch = GetCharacter(pos);
       if (!ch)
       {
-        Character null = { 0 };
+        Character null = {};
         characters.push(null);
         continue;
       }

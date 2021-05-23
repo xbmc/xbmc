@@ -181,7 +181,8 @@ void CGenericTouchActionHandler::sendEvent(int actionId,
                                            float y3,
                                            int pointers /* = 1 */)
 {
-  XBMC_Event newEvent{XBMC_TOUCH};
+  XBMC_Event newEvent{};
+  newEvent.type = XBMC_TOUCH;
 
   newEvent.touch.action = actionId;
   newEvent.touch.x = x;
@@ -199,7 +200,8 @@ void CGenericTouchActionHandler::sendEvent(int actionId,
 
 void CGenericTouchActionHandler::focusControl(float x, float y)
 {
-  XBMC_Event newEvent{XBMC_SETFOCUS};
+  XBMC_Event newEvent{};
+  newEvent.type = XBMC_SETFOCUS;
 
   newEvent.focus.x = static_cast<int>(std::round(x));
   newEvent.focus.y = static_cast<int>(std::round(y));

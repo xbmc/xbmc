@@ -33,7 +33,7 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
                                    AddonGlobalInterface& addonInterface,
                                    KODI_HANDLE firstKodiInstance)
 {
-  addonInterface = {0};
+  addonInterface = {};
 
   addonInterface.libBasePath =
       strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
@@ -92,7 +92,7 @@ void Interface_Base::DeInitInterface(AddonGlobalInterface& addonInterface)
 
   delete addonInterface.toKodi;
   delete addonInterface.toAddon;
-  addonInterface = {0};
+  addonInterface = {};
 }
 
 void Interface_Base::RegisterInterface(ADDON_GET_INTERFACE_FN fn)

@@ -491,7 +491,7 @@ int CSMBFile::Stat(struct __stat64* buffer)
   if (m_fd == -1)
     return -1;
 
-  struct stat tmpBuffer = {0};
+  struct stat tmpBuffer = {};
 
   CSingleLock lock(smb);
   if (!smb.IsSmbValid())
@@ -509,7 +509,7 @@ int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
 
   if (!smb.IsSmbValid())
     return -1;
-  struct stat tmpBuffer = {0};
+  struct stat tmpBuffer = {};
   int iResult = smbc_stat(strFileName.c_str(), &tmpBuffer);
   CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;

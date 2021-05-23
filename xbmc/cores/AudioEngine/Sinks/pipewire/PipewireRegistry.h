@@ -40,7 +40,7 @@ private:
   static void OnGlobalRemoved(void* userdata, uint32_t id);
 
   const pw_registry_events m_registryEvents = {
-      PW_VERSION_REGISTRY_EVENTS,
+      .version = PW_VERSION_REGISTRY_EVENTS,
       .global = OnGlobalAdded,
       .global_remove = OnGlobalRemoved,
   };

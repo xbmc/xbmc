@@ -650,7 +650,7 @@ bool CDateTime::ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) c
 
 bool CDateTime::ToFileTime(const tm& time, KODI::TIME::FileTime& fileTime) const
 {
-  KODI::TIME::SystemTime st = {0};
+  KODI::TIME::SystemTime st = {};
 
   st.year = time.tm_year + 1900;
   st.month = time.tm_mon + 1;
@@ -779,7 +779,7 @@ int CDateTime::GetMinuteOfDay() const
 
 bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
-  KODI::TIME::SystemTime st = {0};
+  KODI::TIME::SystemTime st = {};
 
   st.year = year;
   st.month = month;

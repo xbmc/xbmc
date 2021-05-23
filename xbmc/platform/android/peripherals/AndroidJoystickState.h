@@ -68,12 +68,12 @@ namespace PERIPHERALS
     struct JoystickAxis
     {
       std::vector<int> ids;
-      float flat;
-      float fuzz;
-      float min;
-      float max;
-      float range;
-      float resolution;
+      float flat = 0.0f;
+      float fuzz = 0.0f;
+      float min = 0.0f;
+      float max = 0.0f;
+      float range = 0.0f;
+      float resolution = 0.0f;
     };
 
     using JoystickAxes = std::vector<JoystickAxis>;
