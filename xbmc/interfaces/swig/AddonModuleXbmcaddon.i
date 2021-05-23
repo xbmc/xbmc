@@ -14,6 +14,7 @@
 #endif
 
 #include "interfaces/legacy/Addon.h"
+#include "interfaces/legacy/Settings.h"
 
 using namespace XBMCAddon;
 using namespace xbmcaddon;
@@ -32,4 +33,5 @@ using namespace xbmcaddon;
 %include "interfaces/legacy/AddonString.h"
 
 %include "interfaces/legacy/Addon.h"
+%include "interfaces/legacy/Settings.h"
 

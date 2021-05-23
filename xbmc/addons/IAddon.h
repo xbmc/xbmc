@@ -76,7 +76,7 @@ namespace ADDON
     virtual bool GetSettingInt(const std::string& key, int& value) = 0;
     virtual bool GetSettingNumber(const std::string& key, double& value) = 0;
     virtual bool GetSettingString(const std::string& key, std::string& value) = 0;
-    virtual CAddonSettings* GetSettings() const =0;
+    virtual std::shared_ptr<CAddonSettings> GetSettings() = 0;
     virtual const std::vector<DependencyInfo> &GetDependencies() const =0;
     virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
     virtual bool MeetsVersion(const AddonVersion& versionMin,

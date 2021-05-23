@@ -23,6 +23,7 @@ set(SOURCES AddonCallback.cpp
             Monitor.cpp
             Player.cpp
             PlayList.cpp
+            Settings.cpp
             String.cpp
             Window.cpp
             WindowDialog.cpp
@@ -61,6 +62,7 @@ set(HEADERS Addon.h
             Player.h
             PlayList.h
             RenderCapture.h
+            Settings.h
             Stat.h
             swighelper.h
             Tuple.h

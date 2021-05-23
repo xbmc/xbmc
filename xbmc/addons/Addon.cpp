@@ -350,13 +350,16 @@ bool CAddon::SettingsToXML(CXBMCTinyXML &doc) const
   return true;
 }
 
-CAddonSettings* CAddon::GetSettings() const
+std::shared_ptr<CAddonSettings> CAddon::GetSettings()
 {
   // initialize addon settings if necessary
   if (m_settings == nullptr)
+  {
     m_settings = std::make_shared<CAddonSettings>(enable_shared_from_this::shared_from_this());
+    LoadSettings(false);
+  }
 
-  return m_settings.get();
+  return m_settings;
 }
 
 std::string CAddon::LibPath() const

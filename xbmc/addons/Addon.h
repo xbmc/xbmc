@@ -224,7 +224,7 @@ public:
   */
   bool GetSettingString(const std::string& key, std::string& value) override;
 
-  CAddonSettings* GetSettings() const override;
+  std::shared_ptr<CAddonSettings> GetSettings() override;
 
   /*! \brief get the required version of a dependency.
    \param dependencyID the addon ID of the dependency.
