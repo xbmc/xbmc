@@ -196,6 +196,15 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
       }
     }
   }
+  else if (m_format == "file")
+  {
+    bool useThumbs = false;
+    if (XMLUtils::GetBoolean(node, "usethumbs", useThumbs))
+      m_useImageThumbs = useThumbs;
+    bool useFileDirectories = false;
+    if (XMLUtils::GetBoolean(node, "treatasfolder", useFileDirectories))
+      m_useFileDirectories = useFileDirectories;
+  }
 
   return true;
 }
