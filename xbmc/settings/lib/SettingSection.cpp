@@ -97,7 +97,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
   while (settingElement != nullptr)
   {
     std::string settingId;
-    if (CSettingCategory::DeserializeIdentification(settingElement, settingId))
+    if (CSetting::DeserializeIdentification(settingElement, settingId))
     {
       auto settingIt = std::find_if(m_settings.begin(), m_settings.end(),
         [&settingId](const SettingPtr& setting)
