@@ -519,8 +519,6 @@ long MysqlDatabase::nextid(const char* sname) {
     }
     else
     {
-      MYSQL_ROW row = mysql_fetch_row(res);
-      //id = (int)row[0];
       id = -1;
       unsigned long *lengths;
       lengths = mysql_fetch_lengths(res);
