@@ -49,9 +49,9 @@
           <level>3</level>
           <default>false</default>
           <control type="toggle" />
-      </setting>
-    </group>
-  </category>
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="interface">
     <category id="regional">

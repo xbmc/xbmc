@@ -147,8 +147,8 @@
           <visible>false</visible>
         </setting>
         <setting id="audiooutput.supportdtshdcpudecoding" type="boolean">
-            <default>false</default>
-            <visible>false</visible>
+          <default>false</default>
+          <visible>false</visible>
         </setting>
       </group>
     </category>

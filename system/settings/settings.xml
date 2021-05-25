@@ -442,9 +442,9 @@
           <control type="toggle" />
         </setting>
         <setting id="slideshow.highqualitydownscaling" type="boolean" label="36619" help="36620">
-            <level>1</level>
-            <default>false</default>
-            <control type="toggle" />
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
     </category>
@@ -771,7 +771,7 @@
         <setting id="musiclibrary.exportfolder" type="string" label="38305" help="">
           <level>4</level>
           <default></default>
-		  <constraints>
+          <constraints>
             <allowempty>true</allowempty>
           </constraints>
         </setting>
@@ -789,11 +789,11 @@
         </setting>
         <setting id="musiclibrary.exportartwork" type="boolean" label="" help="">
           <level>4</level>
-		  <default>false</default>
+          <default>false</default>
         </setting>
         <setting id="musiclibrary.exportskipnfo" type="boolean" label="" help="">
           <level>4</level>
-		  <default>false</default>
+          <default>false</default>
         </setting>
         <setting id="musiclibrary.import" type="action" label="14249" help="36263">
           <level>2</level>
@@ -993,7 +993,7 @@
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-         </setting>
+        </setting>
       </group>
       <group id="4" label="39123">
         <!-- Hidden setting indicating video art settings have been migrated from old advancedsettings.xml format-->
@@ -1296,7 +1296,7 @@
             <allowempty>true</allowempty>
             <allownewoption>true</allownewoption>
           </constraints>
-		  <dependencies>
+          <dependencies>
             <dependency type="enable" setting="musiclibrary.artworklevel" operator="!is">3</dependency>
           </dependencies>
           <control type="list" format="string">
@@ -1307,9 +1307,9 @@
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
-		  <dependencies>
+          <dependencies>
             <dependency type="enable" setting="musiclibrary.artworklevel" operator="!is">3</dependency>
-          </dependencies>		  
+          </dependencies>
         </setting>
       </group>
       <group id="4" label="128">
@@ -1923,7 +1923,7 @@
         </setting>
       </group>
       <group id="2" label="1259">
-      <requirement>HAS_ZEROCONF</requirement>
+        <requirement>HAS_ZEROCONF</requirement>
         <setting id="services.zeroconf" type="boolean" label="1260" help="36342">
           <level>1</level>
           <default>true</default>
@@ -1931,7 +1931,7 @@
         </setting>
       </group>
       <group id="3">
-      <requirement>HAS_ZEROCONF</requirement>
+        <requirement>HAS_ZEROCONF</requirement>
         <setting id="services.deviceuuid" type="string">
           <visible>false</visible>
           <level>1</level>
@@ -1945,7 +1945,7 @@
     </category>
     <category id="control" label="14223" help="36327">
       <group id="1" label="33101">
-      <requirement>HAS_WEB_SERVER</requirement>
+        <requirement>HAS_WEB_SERVER</requirement>
         <setting id="services.webserver" type="boolean" label="263" help="36328">
           <level>1</level>
           <default>false</default>
@@ -2057,7 +2057,7 @@
           <default>false</default>
           <dependencies>
             <dependency type="enable">
-                <condition setting="services.esenabled" operator="is">true</condition>
+              <condition setting="services.esenabled" operator="is">true</condition>
             </dependency>
           </dependencies>
           <control type="toggle" />
@@ -2249,7 +2249,7 @@
           <control type="toggle" />
           <dependencies>
             <dependency type="enable">
-                <condition setting="smb.maxprotocol" operator="is">1</condition>
+              <condition setting="smb.maxprotocol" operator="is">1</condition>
             </dependency>
           </dependencies>
         </setting>
@@ -2831,7 +2831,7 @@
           <default>resource.uisounds.kodi</default>
           <dependencies>
             <dependency type="enable" setting="audiooutput.guisoundmode" operator="!is">0</dependency>
-          </dependencies>          
+          </dependencies>
           <constraints>
             <addontype>kodi.resource.uisounds</addontype>
             <allowempty>true</allowempty>
