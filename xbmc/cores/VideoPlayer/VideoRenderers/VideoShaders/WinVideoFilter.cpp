@@ -202,11 +202,10 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
 
     param *= m_toneMappingParam;
 
-    float coefs[3];
-    CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT709, coefs);
+    Matrix3x1 coefs = CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT709);
 
     effect.SetScalar("g_toneP1", param);
-    effect.SetFloatArray("g_coefsDst", coefs, 3);
+    effect.SetFloatArray("g_coefsDst", coefs.data(), coefs.size());
     m_toneMappingDebug = param;
   }
   else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
@@ -589,7 +588,10 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
   }
 
   if (srcPrimaries != dstPrimaries)
+  {
+    m_colorConversion = true;
     defines["XBMC_COL_CONVERSION"] = "";
+  }
 
   if (m_pOutShader)
     m_pOutShader->GetDefines(defines);
@@ -617,8 +619,8 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
     return false;
   }
 
-  m_pConvMatrix.reset(new CConvertMatrix());
-  m_pConvMatrix->SetColPrimaries(dstPrimaries, srcPrimaries);
+  m_convMatrix.SetDestinationColorPrimaries(dstPrimaries).SetSourceColorPrimaries(srcPrimaries);
+
   return true;
 }
 
@@ -629,12 +631,14 @@ void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* vide
   Execute({ &target }, 4);
 }
 
-void CYUV2RGBShader::SetParams(float contrast, float black, bool limited) const
+void CYUV2RGBShader::SetParams(float contrast, float black, bool limited)
 {
-  m_pConvMatrix->SetParams(contrast * 0.02f, black * 0.01f - 0.5f, limited);
+  m_convMatrix.SetDestinationContrast(contrast * 0.02f)
+      .SetDestinationBlack(black * 0.01f - 0.5f)
+      .SetDestinationLimitedRange(limited);
 }
 
-void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited, int texBits) const
+void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited, int texBits)
 {
   if (colSpace == AVCOL_SPC_UNSPECIFIED)
   {
@@ -643,7 +647,11 @@ void CYUV2RGBShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
     else
       colSpace = AVCOL_SPC_BT470BG;
   }
-  m_pConvMatrix->SetColParams(colSpace, bits, limited, texBits);
+
+  m_convMatrix.SetSourceColorSpace(colSpace)
+      .SetSourceBitDepth(bits)
+      .SetSourceLimitedRange(limited)
+      .SetSourceTextureBitDepth(texBits);
 }
 
 void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[])
@@ -716,21 +724,17 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
   m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetViewCount());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
-  float yuvMat[4][4];
-  m_pConvMatrix->GetYuvMat(yuvMat);
-  m_effect.SetMatrix("g_ColorMatrix", reinterpret_cast<float*>(yuvMat));
+  Matrix4 yuvMat = m_convMatrix.GetYuvMat();
+  m_effect.SetMatrix("g_ColorMatrix", yuvMat.ToRaw());
 
-  float primMat[3][3];
-  if (m_pConvMatrix->GetPrimMat(primMat))
+  if (m_colorConversion)
   {
+    Matrix4 primMat(m_convMatrix.GetPrimMat());
+
     // looks like FX11 doesn't like 3x3 matrix, so used 4x4 for its happiness
-    float dxMat[4][4] = {};
-    dxMat[0][0] = primMat[0][0]; dxMat[0][1] = primMat[0][1]; dxMat[0][2] = primMat[0][2];
-    dxMat[1][0] = primMat[1][0]; dxMat[1][1] = primMat[1][1]; dxMat[1][2] = primMat[1][2];
-    dxMat[2][0] = primMat[2][0]; dxMat[2][1] = primMat[2][1]; dxMat[2][2] = primMat[2][2];
-    m_effect.SetMatrix("g_primMat", reinterpret_cast<float*>(dxMat));
-    m_effect.SetScalar("g_gammaSrc", m_pConvMatrix->GetGammaSrc());
-    m_effect.SetScalar("g_gammaDstInv", 1/m_pConvMatrix->GetGammaDst());
+    m_effect.SetMatrix("g_primMat", primMat.ToRaw());
+    m_effect.SetScalar("g_gammaSrc", m_convMatrix.GetGammaSrc());
+    m_effect.SetScalar("g_gammaDstInv", 1 / m_convMatrix.GetGammaDst());
   }
 
   unsigned numPorts = 1;
@@ -867,10 +871,8 @@ void CConvolutionShader1Pass::Render(CD3DTexture& sourceTexture, CD3DTexture& ta
   const unsigned int sourceHeight = sourceTexture.GetHeight();
 
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
-  float texSteps[] = { 
-    1.0f / static_cast<float>(sourceWidth),
-    1.0f / static_cast<float>(sourceHeight)
-  };
+  float texSteps[] = {1.0f / static_cast<float>(sourceWidth),
+                      1.0f / static_cast<float>(sourceHeight)};
   SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps), useLimitRange);
   Execute({ &target }, 4);
 }
@@ -1032,9 +1034,9 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
   const D3D11_FORMAT_SUPPORT usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET;
 
   // Need a float texture, as the output of the first pass can contain negative values.
-  if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) 
+  if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage))
     m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) 
+  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage))
     m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
   else
   {

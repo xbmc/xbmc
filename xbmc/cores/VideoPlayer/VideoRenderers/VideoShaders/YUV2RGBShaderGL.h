@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "utils/TransformMatrix.h"
-#include "ShaderFormats.h"
+#include "ConversionMatrix.h"
 #include "GLSLOutput.h"
-#include "guilib/Shader.h"
+#include "ShaderFormats.h"
 #include "cores/VideoSettings.h"
+#include "guilib/Shader.h"
+#include "utils/TransformMatrix.h"
 
 #include <memory>
 
@@ -78,6 +79,8 @@ protected:
   int m_toneMappingMethod = VS_TONEMAPMETHOD_REINHARD;
   float m_toneMappingParam = 1.0;
 
+  bool m_colorConversion{false};
+
   float m_black;
   float m_contrast;
   float m_stretch;
@@ -89,7 +92,7 @@ protected:
   std::string m_defines;
 
   std::shared_ptr<Shaders::GLSLOutput> m_glslOutput;
-  std::shared_ptr<CConvertMatrix> m_pConvMatrix;
+  CConvertMatrix m_convMatrix;
 
   // pixel shader attribute handles
   GLint m_hYTex = -1;

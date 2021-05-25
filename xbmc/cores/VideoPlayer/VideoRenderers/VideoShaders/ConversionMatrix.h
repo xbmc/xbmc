@@ -8,44 +8,79 @@
 
 #pragma once
 
+#include <array>
+#include <cmath>
 #include <memory>
 
 extern "C" {
 #include <libavutil/pixfmt.h>
 }
 
-template <unsigned Order>
+template<uint8_t Order>
 class CMatrix
 {
 public:
-  CMatrix(float (&src)[Order][Order]);
-  CMatrix(float (&src)[Order-1][Order-1]);
-  CMatrix& operator=(const CMatrix& src);
-  CMatrix& operator=(const float (&src)[Order-1][Order-1]);
+  CMatrix() = default;
+  explicit CMatrix(const CMatrix<Order - 1>& other);
+  explicit CMatrix(const std::array<std::array<float, Order>, Order>& other) { m_mat = other; }
+  explicit CMatrix(const std::array<std::array<float, Order - 1>, Order - 1>& other);
   virtual ~CMatrix() = default;
 
-  float (&Get())[Order][Order];
-  CMatrix Invert();
+  virtual CMatrix operator*(const std::array<std::array<float, Order>, Order>& other);
+
   CMatrix operator*(const CMatrix& other);
-  CMatrix operator*=(const CMatrix& other);
-  virtual CMatrix operator*(const float (&other)[Order][Order]);
+  CMatrix& operator*=(const CMatrix& other);
+
+  CMatrix& operator=(const std::array<std::array<float, Order - 1>, Order - 1>& other);
+
+  bool operator==(const CMatrix<Order>& other) const
+  {
+    for (int i = 0; i < Order; ++i)
+    {
+      for (int j = 0; j < Order; ++j)
+      {
+        if (m_mat[i][j] == other.m_mat[i][j])
+          continue;
+
+        // some floating point comparisions should be done by checking if the difference is within a tolerance
+        if (std::abs(m_mat[i][j] - other.m_mat[i][j]) <=
+            (std::max(std::abs(other.m_mat[i][j]), std::abs(m_mat[i][j])) * 1e-2f))
+          continue;
+
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  std::array<float, Order>& operator[](int index) { return m_mat[index]; }
+
+  const std::array<float, Order>& operator[](int index) const { return m_mat[index]; }
+
+  std::array<std::array<float, Order>, Order>& Get();
+
+  const std::array<std::array<float, Order>, Order>& Get() const;
+
+  CMatrix& Invert();
+
+  float* ToRaw() { return &m_mat[0][0]; }
 
 protected:
-  CMatrix() = default;
+  std::array<std::array<float, Order>, Order> Invert(
+      std::array<std::array<float, Order>, Order>& other) const;
 
-  void Copy(float (&dst)[Order][Order], const float (&src)[Order][Order]);
-  void Invert(float (&dst)[Order][Order], float (&src)[Order][Order]);
-
-  float m_mat[Order][Order] = {};
+  std::array<std::array<float, Order>, Order> m_mat{{}};
 };
 
 class CGlMatrix : public CMatrix<4>
 {
 public:
   CGlMatrix() = default;
-  CGlMatrix(float (&src)[3][3]);
+  explicit CGlMatrix(const CMatrix<3>& other);
+  explicit CGlMatrix(const std::array<std::array<float, 3>, 3>& other);
   ~CGlMatrix() override = default;
-  CMatrix operator*(const float (&other)[4][4]) override;
+  CMatrix operator*(const std::array<std::array<float, 4>, 4>& other) override;
 };
 
 class CScale : public CGlMatrix
@@ -67,7 +102,6 @@ class ConversionToRGB : public CMatrix<3>
 public:
   ConversionToRGB(float Kr, float Kb);
   ~ConversionToRGB() override = default;
-  ConversionToRGB& operator=(const float (&src)[3][3]);
 
 protected:
   ConversionToRGB() = default;
@@ -98,27 +132,100 @@ public:
 
 //------------------------------------------------------------------------------
 
+using Matrix4 = CMatrix<4>;
+using Matrix3 = CMatrix<3>;
+using Matrix3x1 = std::array<float, 3>;
+
+/**
+ * @brief Helper class used for YUV to RGB conversions. This class can
+ *        take into account different source/destination primaries and
+ *        various other parameters.
+ */
 class CConvertMatrix
 {
 public:
   CConvertMatrix() = default;
-  virtual ~CConvertMatrix() = default;
+  ~CConvertMatrix() = default;
 
-  void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textuteBits);
-  void SetColPrimaries(AVColorPrimaries dst, AVColorPrimaries src);
-  void SetParams(float contrast, float black, bool limited);
-  void GetYuvMat(float (&mat)[4][4]);
-  bool GetPrimMat(float (&mat)[3][3]);
+  /**
+   * @brief Set the source color space.
+   */
+  CConvertMatrix& SetSourceColorSpace(AVColorSpace colorSpace);
+
+  /**
+   * @brief Set the source bit depth.
+   */
+  CConvertMatrix& SetSourceBitDepth(int bits);
+
+  /**
+   * @brief Set the source limited range boolean.
+   */
+  CConvertMatrix& SetSourceLimitedRange(bool limited);
+
+  /**
+   * @brief Set the source texture bit depth. This is need to normalize values
+   *        when using > 8 bit texture formats in OpenGL/DirectX. For example
+   *        GL_R16 is a 16 bit texture which needs to normalize the 10 bit format.
+   */
+  CConvertMatrix& SetSourceTextureBitDepth(int textureBits);
+
+  /**
+   * @brief Set the source color primaries.
+   */
+  CConvertMatrix& SetSourceColorPrimaries(AVColorPrimaries src);
+
+  /**
+   * @brief Set the destination color primaries.
+   */
+  CConvertMatrix& SetDestinationColorPrimaries(AVColorPrimaries dst);
+
+  /**
+   * @brief Set the destination contrast.
+   */
+  CConvertMatrix& SetDestinationContrast(float contrast);
+
+  /**
+   * @brief Set the destination black level.
+   */
+  CConvertMatrix& SetDestinationBlack(float black);
+
+  /**
+   * @brief Set the destination limited range boolean.
+   */
+  CConvertMatrix& SetDestinationLimitedRange(bool limited);
+
+  /**
+   * @brief Get the YUV Matrix for the YUV to RGB conversion.
+   */
+  Matrix4 GetYuvMat();
+
+  /**
+   * @brief Get the Primaries Matrix for the primaries conversion.
+   */
+  Matrix3 GetPrimMat();
+
+  /**
+   * @brief Get the gamma source value. Used for color primary conversion..
+   */
   float GetGammaSrc();
+
+  /**
+   * @brief Get the gamma destination value. Used for color primary conversion.
+   */
   float GetGammaDst();
 
-  static bool GetRGBYuvCoefs(AVColorSpace colspace, float (&coefs)[3]);
+  /**
+   * @brief Get the YUV coeffecients used for tonemapping.
+   */
+  static Matrix3x1 GetRGBYuvCoefs(AVColorSpace colspace);
 
-protected:
-  void GenMat();
+private:
+  const CGlMatrix& GenMat();
+  const CMatrix<3>& GenPrimMat();
 
-  std::unique_ptr<CGlMatrix> m_pMat;
-  std::unique_ptr<CMatrix<3>> m_pMatPrim;
+  std::unique_ptr<CGlMatrix> m_mat;
+  std::unique_ptr<CMatrix<3>> m_matPrim;
+
   AVColorSpace m_colSpace = AVCOL_SPC_BT709;
   AVColorPrimaries m_colPrimariesSrc = AVCOL_PRI_BT709;
   float m_gammaSrc = 2.2f;
@@ -128,7 +235,6 @@ protected:
   bool m_limitedDst = false;
   int m_srcBits = 8;
   int m_srcTextureBits = 8;
-  int m_dstBits = 8;
   float m_contrast = 1.0;
   float m_black = 0.0;
 };

@@ -8,17 +8,15 @@
 
 #pragma once
 
-#include "utils/TransformMatrix.h"
+#include "ConversionMatrix.h"
 #include "ShaderFormats.h"
-
 #include "guilib/Shader.h"
+#include "utils/TransformMatrix.h"
 
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
 #include <libavutil/pixfmt.h>
 }
-
-class CConvertMatrix;
 
 namespace Shaders {
 
@@ -64,12 +62,14 @@ namespace Shaders {
     bool m_toneMapping{false};
     float m_toneMappingParam{1.0};
 
+    bool m_colorConversion{false};
+
     float m_black;
     float m_contrast;
 
     std::string m_defines;
 
-    std::shared_ptr<CConvertMatrix> m_pConvMatrix;
+    CConvertMatrix m_convMatrix;
 
     // shader attribute handles
     GLint m_hYTex{-1};
