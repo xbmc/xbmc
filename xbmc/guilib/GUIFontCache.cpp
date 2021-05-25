@@ -24,14 +24,15 @@ class CGUIFontCacheImpl
 {
   struct EntryList
   {
-    using HashMap = std::multimap<size_t, CGUIFontCacheEntry<Position, Value>*>;
+    using HashMap = std::multimap<size_t, std::unique_ptr<CGUIFontCacheEntry<Position, Value>>>;
     using HashIter = typename HashMap::iterator;
     using AgeMap = std::multimap<std::chrono::steady_clock::time_point, HashIter>;
 
     ~EntryList() { Flush(); }
-    HashIter Insert(size_t hash, CGUIFontCacheEntry<Position, Value>* v)
+
+    HashIter Insert(size_t hash, std::unique_ptr<CGUIFontCacheEntry<Position, Value>> v)
     {
-      auto r(hashMap.insert(typename HashMap::value_type(hash, v)));
+      auto r(hashMap.insert(typename HashMap::value_type(hash, std::move(v))));
       if (r->second)
         ageMap.insert(typename AgeMap::value_type(r->second->m_lastUsed, r));
 
@@ -40,8 +41,6 @@ class CGUIFontCacheImpl
     void Flush()
     {
       ageMap.clear();
-      for (auto it = hashMap.begin(); it != hashMap.end(); ++it)
-        delete (it->second);
       hashMap.clear();
     }
     typename HashMap::iterator FindKey(CGUIFontCacheKey<Position> key)
@@ -168,7 +167,7 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context
   {
     // Cache miss
     dirtyCache = true;
-    CGUIFontCacheEntry<Position, Value>* entry = nullptr;
+    std::unique_ptr<CGUIFontCacheEntry<Position, Value>> entry;
 
     if (!m_list.ageMap.empty())
     {
@@ -176,7 +175,7 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context
           std::chrono::duration_cast<std::chrono::milliseconds>(now - m_list.ageMap.begin()->first);
       if (duration > FONT_CACHE_TIME_LIMIT)
       {
-        entry = m_list.ageMap.begin()->second->second;
+        entry = std::move(m_list.ageMap.begin()->second->second);
         m_list.hashMap.erase(m_list.ageMap.begin()->second);
         m_list.ageMap.erase(m_list.ageMap.begin());
       }
@@ -185,10 +184,10 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context
     // add new entry
     CGUIFontCacheHash<Position> hashgen;
     if (!entry)
-      entry = new CGUIFontCacheEntry<Position, Value>(*m_parent, key, now);
+      entry = std::make_unique<CGUIFontCacheEntry<Position, Value>>(*m_parent, key, now);
     else
       entry->Assign(key, now);
-    return m_list.Insert(hashgen(key), entry)->second->m_value;
+    return m_list.Insert(hashgen(key), std::move(entry))->second->m_value;
   }
   else
   {
