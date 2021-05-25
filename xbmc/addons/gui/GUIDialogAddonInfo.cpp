@@ -752,9 +752,6 @@ void CGUIDialogAddonInfo::BuildDependencyList()
   m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(),
                                                           OnlyEnabledRootAddon::NO);
 
-  const bool showAllDependencies =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showAllDependencies;
-
   for (const auto& dep : m_deps)
   {
     std::shared_ptr<IAddon> addonInstalled;
@@ -781,8 +778,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
       // - dependencies are unavailable (for informational purposes) OR
       // - the dependency is not a script/module                     OR
       // - the script/module is not available at an official repo
-      if (showAllDependencies || !addonAvailable ||
-          addonAvailable->MainType() != ADDON_SCRIPT_MODULE ||
+      if (!addonAvailable || addonAvailable->MainType() != ADDON_SCRIPT_MODULE ||
           !CAddonRepos::IsFromOfficialRepo(addonAvailable, CheckAddonPath::NO))
       {
         m_showDepDialogOnInstall = true;
