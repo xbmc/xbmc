@@ -49,6 +49,7 @@
 #define SETTING_XML_ELM_DATA "data"
 
 #define SETTING_XML_ATTR_ID "id"
+#define SETTING_XML_ATTR_REFERENCE "ref"
 #define SETTING_XML_ATTR_LABEL "label"
 #define SETTING_XML_ATTR_HELP "help"
 #define SETTING_XML_ATTR_TYPE "type"

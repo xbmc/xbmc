@@ -95,6 +95,19 @@ public:
   // implementation of ISettingCallback
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
+  /*!
+   \brief Deserializes the given XML node to retrieve a setting object's identifier and
+          whether the setting is a reference to another setting or not.
+
+   \param node XML node containing a setting object's identifier
+   \param identification Will contain the deserialized setting object's identifier
+   \param isReference Whether the setting is a reference to the setting with the determined identifier
+   \return True if a setting object's identifier was deserialized, false otherwise
+   */
+  static bool DeserializeIdentification(const TiXmlNode* node,
+                                        std::string& identification,
+                                        bool& isReference);
+
 protected:
   // implementation of ISettingCallback
   bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;

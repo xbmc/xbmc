@@ -283,6 +283,24 @@ void CSetting::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
   m_callback->OnSettingAction(setting);
 }
 
+bool CSetting::DeserializeIdentification(const TiXmlNode* node,
+                                         std::string& identification,
+                                         bool& isReference)
+{
+  isReference = false;
+
+  // first check if we can simply retrieve the setting's identifier
+  if (ISetting::DeserializeIdentification(node, identification))
+    return true;
+
+  // otherwise try to retrieve a reference to another setting's identifier
+  if (!DeserializeIdentificationFromAttribute(node, SETTING_XML_ATTR_REFERENCE, identification))
+    return false;
+
+  isReference = true;
+  return true;
+}
+
 bool CSetting::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                const char* oldSettingId,
                                const TiXmlNode* oldSettingNode)
