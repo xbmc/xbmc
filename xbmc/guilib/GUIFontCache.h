@@ -143,7 +143,7 @@ struct CGUIFontCacheKeysMatch
 template<class Position, class Value>
 class CGUIFontCache
 {
-  CGUIFontCacheImpl<Position, Value>* m_impl;
+  std::unique_ptr<CGUIFontCacheImpl<Position, Value>> m_impl;
 
   CGUIFontCache(const CGUIFontCache<Position, Value>&) = delete;
   const CGUIFontCache<Position, Value>& operator=(const CGUIFontCache<Position, Value>&) = delete;
