@@ -9,9 +9,9 @@
 #pragma once
 
 #include "XBDateTime.h"
+#include "pvr/channels/PVRChannelGroupSettings.h"
 #include "pvr/channels/PVRChannelNumber.h"
 #include "pvr/channels/PVRChannelsPath.h"
-#include "settings/lib/ISettingCallback.h"
 #include "utils/EventStream.h"
 
 #include <map>
@@ -46,7 +46,7 @@ namespace PVR
     IGNORE_NUMBERING_FROM_ONE = 1
   };
 
-  class CPVRChannelGroup : public ISettingCallback
+  class CPVRChannelGroup : public IChannelGroupSettingsCallback
   {
     friend class CPVRDatabase;
 
@@ -240,7 +240,10 @@ namespace PVR
 
     //@}
 
-    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+    // IChannelGroupSettingsCallback implementation
+    void UseBackendChannelOrderChanged() override;
+    void UseBackendChannelNumbersChanged() override;
+    void StartGroupChannelNumbersFromOneChanged() override;
 
     /*!
      * @brief Get the channel group member that was played last.
@@ -440,11 +443,6 @@ namespace PVR
 
   protected:
     /*!
-     * @brief Init settings
-     */
-    void InitSettings();
-
-    /*!
      * @brief Remove deleted group members from this group.
      * @param groupMembers The group members to use to update this list.
      * @return The removed members .
@@ -475,12 +473,12 @@ namespace PVR
      */
     bool UpdateClientPriorities();
 
+    std::shared_ptr<CPVRChannelGroupSettings> GetSettings() const;
+
     int m_iGroupType = PVR_GROUP_TYPE_DEFAULT; /*!< The type of this group */
     int m_iGroupId = INVALID_GROUP_ID; /*!< The ID of this group in the database */
     bool m_bLoaded = false; /*!< True if this container is loaded, false otherwise */
     bool m_bChanged = false; /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
-    bool m_bUsingBackendChannelOrder = false; /*!< true to use the channel order from backends, false otherwise */
-    bool m_bUsingBackendChannelNumbers = false; /*!< true to use the channel numbers from 1 backend, false otherwise */
     time_t m_iLastWatched = 0; /*!< last time group has been watched */
     uint64_t m_iLastOpened = 0; /*!< time in milliseconds from epoch this group was last opened */
     bool m_bHidden = false; /*!< true if this group is hidden, false otherwise */
@@ -492,8 +490,11 @@ namespace PVR
     mutable CCriticalSection m_critSection;
     std::vector<int> m_failedClients;
     CEventSource<PVREvent> m_events;
-    bool m_bStartGroupChannelNumbersFromOne = false; /*!< true if we start group channel numbers from one when not using backend channel numbers, false otherwise */
-    bool m_bSyncChannelGroups = false; /*!< true if channel groups should be synced with the backend, false otherwise */
+    mutable std::shared_ptr<CPVRChannelGroupSettings> m_settings;
+
+    // the settings singleton shared between all group instances
+    static CCriticalSection m_settingsSingletonCritSection;
+    static std::weak_ptr<CPVRChannelGroupSettings> m_settingsSingleton;
 
   private:
     /*!
@@ -516,6 +517,8 @@ namespace PVR
      */
     bool AddAndUpdateGroupMembers(
         const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers);
+
+    void OnSettingChanged();
 
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
 
