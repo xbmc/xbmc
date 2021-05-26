@@ -62,8 +62,19 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
 
   if (list && address)
   {
-    const std::wstring type(list->Next->Element->LocalName);
     const std::wstring addr(address);
+    std::wstring type(L"Unspecified");
+    WSD_NAME_LIST* pList = list; // first element of list
+
+    do
+    {
+      if (pList->Element && pList->Element->LocalName)
+        type = std::wstring(pList->Element->LocalName);
+      if (pList->Next)
+        pList = pList->Next; // next element of list
+      else
+        pList = nullptr; // end of list
+    } while (type != L"Computer" && pList != nullptr);
 
     CLog::Log(LOGDEBUG,
               "[WS-Discovery]: HELLO packet received: device type = '{}', device address = '{}'",
@@ -234,7 +245,7 @@ void CWSDiscoverySupport::Terminate()
 {
   if (m_initialized)
   {
-    CLog::Log(LOGINFO, "[WS-Discovery]: terminate...");
+    CLog::Log(LOGINFO, "[WS-Discovery]: terminating");
     m_initialized = false;
   }
   if (m_provider)
