@@ -62,8 +62,19 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
 
   if (list && address)
   {
-    std::wstring type(list->Next->Element->LocalName);
-    std::wstring addr(address);
+    const std::wstring addr(address);
+    std::wstring type(L"Unspecified");
+    WSD_NAME_LIST* pList = list; // first element of list
+
+    do
+    {
+      if (pList->Element && pList->Element->LocalName)
+        type = std::wstring(pList->Element->LocalName);
+      if (pList->Next)
+        pList = pList->Next; // next element of list
+      else
+        pList = nullptr; // end of list
+    } while (type != L"Computer" && pList != nullptr);
 
     CLog::Log(LOGDEBUG,
               "[WS-Discovery]: HELLO packet received: device type = '{}', device address = '{}'",
@@ -72,9 +83,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
     // filter Printers and other devices that are not "Computers"
     if (type == L"Computer")
     {
-      std::wstring addr(address);
       const std::wstring ip = addr.substr(0, addr.find(L":", 0));
-
       auto it = std::find(m_serversIPs.begin(), m_serversIPs.end(), ip);
 
       // inserts server IP if not exist in list
@@ -102,7 +111,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
 
   if (address)
   {
-    std::wstring addr(address);
+    const std::wstring addr(address);
 
     CLog::Log(LOGDEBUG, "[WS-Discovery]: BYE packet received: device address = '{}'", FromW(addr));
 
@@ -236,7 +245,7 @@ void CWSDiscoverySupport::Terminate()
 {
   if (m_initialized)
   {
-    CLog::Log(LOGINFO, "[WS-Discovery]: terminate...");
+    CLog::Log(LOGINFO, "[WS-Discovery]: terminating");
     m_initialized = false;
   }
   if (m_provider)
@@ -268,7 +277,7 @@ std::vector<std::wstring> CWSDiscoverySupport::GetServersIPs()
   return m_sink->GetServersIPs();
 }
 
-std::wstring CWSDiscoverySupport::ResolveHostName(const std::wstring serverIP)
+std::wstring CWSDiscoverySupport::ResolveHostName(const std::wstring& serverIP)
 {
   std::wstring hostName = serverIP;
 

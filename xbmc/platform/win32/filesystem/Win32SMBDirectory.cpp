@@ -433,15 +433,16 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
   do
   {
     DWORD resCount = -1;
-    DWORD bufSize = buf.size();
-    result = WNetEnumResourceW(netEnum, &resCount, buf.get(), &bufSize);
+    size_t bufSize = buf.size();
+    result = WNetEnumResourceW(netEnum, &resCount, buf.get(), reinterpret_cast<LPDWORD>(&bufSize));
     if (result == NO_ERROR)
     {
       if (bufSize > buf.size())
       { // buffer is too small
         buf.allocate(bufSize); // discard buffer content and extend the buffer
         bufSize = buf.size();
-        result = WNetEnumResourceW(netEnum, &resCount, buf.get(), &bufSize);
+        result =
+            WNetEnumResourceW(netEnum, &resCount, buf.get(), reinterpret_cast<LPDWORD>(&bufSize));
         if (result != NO_ERROR || bufSize > buf.size())
           errorFlag = true; // hardly ever happens
       }
