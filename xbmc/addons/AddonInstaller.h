@@ -101,6 +101,19 @@ public:
   bool InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
                                  const ADDON::RepositoryPtr& repo);
 
+  /*! \brief Remove a single dependency from the system
+   \param dependsId the dependency to remove
+   \return true on successful uninstall, false on failure.
+   */
+  bool RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const;
+
+  /*!
+   * \brief Removes all orphaned dependency add-ons recursively. Removal may orphan further
+   *        dependencies, so loop until no orphaned is left on the system
+   * \return Names of dependencies that have effectively been removed
+   */
+  std::vector<std::string> RemoveOrphanedDepsRecursively() const;
+
   /*! \brief Installs a vector of addons
    *  \param addons the list of addons to install
    *  \param wait if the method should wait for all the DoInstall jobs to finish or if it should return right away
