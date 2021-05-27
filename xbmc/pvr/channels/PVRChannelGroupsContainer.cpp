@@ -163,17 +163,6 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::
   return channelTV;
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetLastPlayedGroup(int iChannelID /* = -1 */) const
-{
-  std::shared_ptr<CPVRChannelGroup> groupTV = m_groupsTV->GetLastPlayedGroup(iChannelID);
-  std::shared_ptr<CPVRChannelGroup> groupRadio = m_groupsRadio->GetLastPlayedGroup(iChannelID);
-
-  if (!groupTV || (groupRadio && groupTV->LastWatched() < groupRadio->LastWatched()))
-    return groupRadio;
-
-  return groupTV;
-}
-
 bool CPVRChannelGroupsContainer::CreateChannelEpgs()
 {
   return m_groupsTV->CreateChannelEpgs() && m_groupsRadio->CreateChannelEpgs();
