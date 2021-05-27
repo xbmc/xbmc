@@ -628,9 +628,9 @@ void CDVDRadioRDSData::Process()
 
   while (!m_bStop)
   {
-    CDVDMsg* pMsg;
+    std::shared_ptr<CDVDMsg> pMsg;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, 2000, iPriority);
+    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2000, iPriority);
 
     if (ret == MSGQ_TIMEOUT)
     {
@@ -648,20 +648,19 @@ void CDVDRadioRDSData::Process()
     {
       CSingleLock lock(m_critSection);
 
-      DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
+      DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
 
       ProcessUECP(pPacket->pData, pPacket->iSize);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      m_speed = std::static_pointer_cast<CDVDMsgInt>(pMsg)->m_value;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)
           || pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
       ResetRDSCache();
     }
-    pMsg->Release();
   }
 }
 
@@ -673,7 +672,7 @@ void CDVDRadioRDSData::Flush()
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   m_messageQueue.Flush();
-  m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+  m_messageQueue.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH));
 }
 
 void CDVDRadioRDSData::OnExit()

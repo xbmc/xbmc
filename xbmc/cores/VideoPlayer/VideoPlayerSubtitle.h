@@ -38,7 +38,7 @@ public:
   }
 
   bool AcceptsData() const override;
-  void SendMessage(CDVDMsg* pMsg, int priority = 0) override;
+  void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override;
   void FlushMessages() override {}
   bool OpenStream(CDVDStreamInfo hints) override { return OpenStream(hints, hints.filename); }
   bool OpenStream(CDVDStreamInfo &hints, std::string& filename);

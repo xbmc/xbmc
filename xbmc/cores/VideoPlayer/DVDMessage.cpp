@@ -43,6 +43,8 @@ CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(unsigned int timeout, unsig
 
 CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
 {
+  m_p->condition.notifyAll();
+
   delete m_p;
 }
 
@@ -80,17 +82,6 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 void CDVDMsgGeneralSynchronize::Wait(std::atomic<bool>& abort, unsigned int source)
 {
   while(!Wait(100, source) && !abort);
-}
-
-long CDVDMsgGeneralSynchronize::Release()
-{
-  CSingleLock lock(m_p->section);
-  long count = --m_refs;
-  m_p->condition.notifyAll();
-  lock.Leave();
-  if (count == 0)
-    delete this;
-  return count;
 }
 
 /**

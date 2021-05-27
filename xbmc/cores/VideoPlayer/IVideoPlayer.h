@@ -39,7 +39,7 @@ public:
   virtual ~IDVDStreamPlayer() = default;
   virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
-  virtual void SendMessage(CDVDMsg* pMsg, int priority = 0) = 0;
+  virtual void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) = 0;
   virtual void FlushMessages() = 0;
   virtual bool IsInited() const = 0;
   virtual bool AcceptsData() const = 0;
@@ -82,7 +82,7 @@ public:
   bool AcceptsData() const override = 0;
   virtual bool HasData() const = 0;
   bool IsInited() const override = 0;
-  void SendMessage(CDVDMsg* pMsg, int priority = 0) override = 0;
+  void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
   virtual void EnableSubtitle(bool bEnable) = 0;
   virtual bool IsSubtitleEnabled() = 0;
   virtual double GetSubtitleDelay() = 0;
@@ -111,7 +111,7 @@ public:
   virtual bool HasData() const = 0;
   virtual int  GetLevel() const = 0;
   bool IsInited() const override = 0;
-  void SendMessage(CDVDMsg* pMsg, int priority = 0) override = 0;
+  void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
   virtual void SetVolume(float fVolume) {};
   virtual void SetMute(bool bOnOff) {};
   virtual void SetDynamicRangeCompression(long drc) = 0;

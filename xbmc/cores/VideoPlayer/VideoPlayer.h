@@ -416,7 +416,7 @@ protected:
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
   IDVDStreamPlayer* GetStreamPlayer(unsigned int player);
-  void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
+  void SendPlayerMessage(std::shared_ptr<CDVDMsg> pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream);

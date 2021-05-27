@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "DVDResource.h"
 #include "FileItem.h"
 #include "cores/IPlayer.h"
 
@@ -18,7 +17,7 @@
 
 struct DemuxPacket;
 
-class CDVDMsg : public IDVDResourceCounted<CDVDMsg>
+class CDVDMsg
 {
 public:
   enum Message
@@ -72,7 +71,7 @@ public:
     m_message = msg;
   }
 
-  ~CDVDMsg() override = default;
+  virtual ~CDVDMsg() = default;
 
   /**
    * checks for message type
@@ -85,11 +84,6 @@ public:
   inline Message GetMessageType()
   {
     return m_message;
-  }
-
-  long GetNrOfReferences()
-  {
-    return m_refs;
   }
 
 private:
@@ -113,7 +107,6 @@ class CDVDMsgGeneralSynchronize : public CDVDMsg
 public:
   CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources);
  ~CDVDMsgGeneralSynchronize() override;
-  long Release() override;
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
@@ -132,6 +125,9 @@ public:
     : CDVDMsg(type)
     , m_value(value)
   {}
+
+  ~CDVDMsgType() override = default;
+
   operator T() { return m_value; }
   T m_value;
 };
@@ -150,6 +146,8 @@ class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 {
 public:
   explicit CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
+  ~CDVDMsgPlayerSetAudioStream() override = default;
+
   int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
@@ -159,6 +157,8 @@ class CDVDMsgPlayerSetVideoStream : public CDVDMsg
 {
 public:
   explicit CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
+  ~CDVDMsgPlayerSetVideoStream() override = default;
+
   int GetStreamId() const { return m_streamId; }
 private:
   int m_streamId;
@@ -168,6 +168,8 @@ class CDVDMsgPlayerSetSubtitleStream : public CDVDMsg
 {
 public:
   explicit CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
+  ~CDVDMsgPlayerSetSubtitleStream() override = default;
+
   int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
@@ -177,6 +179,8 @@ class CDVDMsgPlayerSetState : public CDVDMsg
 {
 public:
   explicit CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
+  ~CDVDMsgPlayerSetState() override = default;
+
   std::string GetState() { return m_state; }
 private:
   std::string m_state;
@@ -199,6 +203,8 @@ public:
   explicit CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK),
     m_mode(mode)
   {}
+  ~CDVDMsgPlayerSeek() override = default;
+
   double GetTime() { return m_mode.time; }
   bool GetRelative() { return m_mode.relative; }
   bool GetBackward() { return m_mode.backward; }
@@ -218,6 +224,7 @@ class CDVDMsgPlayerSeekChapter : public CDVDMsg
       : CDVDMsg(PLAYER_SEEK_CHAPTER)
       , m_iChapter(iChapter)
     {}
+    ~CDVDMsgPlayerSeekChapter() override = default;
 
     int GetChapter() const { return m_iChapter; }
 
@@ -239,6 +246,7 @@ public:
   : CDVDMsg(PLAYER_SETSPEED)
   , m_params(params)
   {}
+  ~CDVDMsgPlayerSetSpeed() override = default;
 
   int GetSpeed() const { return m_params.m_speed; }
   bool IsTempo() const { return m_params.m_isTempo; }
@@ -262,6 +270,7 @@ public:
   : CDVDMsg(PLAYER_OPENFILE)
   , m_params(params)
   {}
+  ~CDVDMsgOpenFile() override = default;
 
   CFileItem& GetItem() { return m_params.m_item; }
   CPlayerOptions& GetOptions() { return m_params.m_options; }
@@ -293,6 +302,7 @@ class CDVDMsgDemuxerReset : public CDVDMsg
 {
 public:
   CDVDMsgDemuxerReset() : CDVDMsg(DEMUXER_RESET)  {}
+  ~CDVDMsgDemuxerReset() override = default;
 };
 
 
@@ -314,6 +324,7 @@ class CDVDMsgSubtitleClutChange : public CDVDMsg
 {
 public:
   explicit CDVDMsgSubtitleClutChange(uint8_t* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
+  ~CDVDMsgSubtitleClutChange() override = default;
+
   uint8_t m_data[16][4];
-private:
 };
