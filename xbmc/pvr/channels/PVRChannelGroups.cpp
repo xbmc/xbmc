@@ -407,19 +407,19 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastGroup() const
   return std::shared_ptr<CPVRChannelGroup>();
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastPlayedGroup(int iChannelID /* = -1 */) const
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastPlayedGroup() const
 {
-  std::shared_ptr<CPVRChannelGroup> group;
+  std::shared_ptr<CPVRChannelGroup> lastPlayedGroup;
 
   CSingleLock lock(m_critSection);
-  for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
+  for (const auto& group : m_groups)
   {
-    if ((*it)->LastWatched() > 0 && (!group || (*it)->LastWatched() > group->LastWatched()) &&
-        (iChannelID == -1 || (iChannelID >= 0 && (*it)->IsGroupMember(iChannelID))) && !(*it)->IsHidden())
-      group = (*it);
+    if (group->LastWatched() > 0 &&
+        (!lastPlayedGroup || group->LastWatched() > lastPlayedGroup->LastWatched()))
+      lastPlayedGroup = group;
   }
 
-  return group;
+  return lastPlayedGroup;
 }
 
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastOpenedGroup() const
