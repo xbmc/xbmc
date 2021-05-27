@@ -4,6 +4,6 @@ set(SOURCES ContextMenus.cpp
 
 set(HEADERS ContextMenus.h
             GUIDialogFavourites.h
-            FavouritesService)
+            FavouritesService.h)
 
 core_add_library(favourites)
