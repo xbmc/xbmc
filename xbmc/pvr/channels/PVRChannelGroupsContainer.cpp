@@ -97,15 +97,6 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelById(int iCha
   return channel;
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelByEpgId(int iEpgId) const
-{
-  std::shared_ptr<CPVRChannel> channel = m_groupsTV->GetGroupAll()->GetByChannelEpgID(iEpgId);
-  if (!channel)
-    channel = m_groupsRadio->GetGroupAll()->GetByChannelEpgID(iEpgId);
-
-  return channel;
-}
-
 std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)

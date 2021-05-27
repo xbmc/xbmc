@@ -271,13 +271,6 @@ namespace PVR
     void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
     /*!
-     * @brief Get a channel given it's EPG ID.
-     * @param iEpgID The channel EPG ID.
-     * @return The channel or NULL if it wasn't found.
-     */
-    std::shared_ptr<CPVRChannel> GetByChannelEpgID(int iEpgID) const;
-
-    /*!
      * @brief Get the channel group member that was played last.
      * @param iCurrentChannel The channelid of the current channel that is playing, or -1 if none
      * @return The requested channel group member or nullptr.

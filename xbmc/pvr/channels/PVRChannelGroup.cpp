@@ -315,19 +315,6 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelID(int iChannelID) co
   return {};
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
-{
-  CSingleLock lock(m_critSection);
-
-  for (const auto& memberPair : m_members)
-  {
-    if (memberPair.second->Channel()->EpgID() == iEpgID)
-      return memberPair.second->Channel();
-  }
-
-  return {};
-}
-
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGroupMember(
     int iCurrentChannel /* = -1 */) const
 {
