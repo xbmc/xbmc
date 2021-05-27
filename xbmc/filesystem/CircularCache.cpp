@@ -10,6 +10,7 @@
 
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <string.h>
@@ -215,12 +216,18 @@ int64_t CCircularCache::Seek(int64_t pos)
      * sufficient due to variable filesystem chunksize
      */
     m_cur = m_end;
+
     lock.Leave();
     WaitForData((size_t)(pos - m_cur), 5000);
     lock.Enter();
+
+    if (pos < m_beg || pos > m_end)
+      CLog::Log(LOGDEBUG,
+                "CCircularCache::{} - ({}) Wait for data failed for pos {}, ended up at {}",
+                __FUNCTION__, fmt::ptr(this), pos, m_cur);
   }
 
-  if(pos >= m_beg && pos <= m_end)
+  if (pos >= m_beg && pos <= m_end)
   {
     m_cur = pos;
     return pos;
@@ -249,6 +256,11 @@ int64_t CCircularCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
   if (IsCachedPosition(iFilePosition))
     return m_end;
   return iFilePosition;
+}
+
+int64_t CCircularCache::CachedDataStartPos()
+{
+  return m_beg;
 }
 
 int64_t CCircularCache::CachedDataEndPos()
