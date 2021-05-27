@@ -58,6 +58,7 @@
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/JobManager.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
@@ -2931,8 +2932,9 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::SUBTITLE_ADDFILE))
     {
-      int id = AddSubtitleFile(static_cast<CDVDMsgType<std::string>*>(pMsg)->m_value);
-      if (id >= 0)
+      const auto subtitleMsg = static_cast<CDVDMsgType<SSubtitleMsg>*>(pMsg)->m_value;
+      int id = AddSubtitleFile(subtitleMsg.path, "", subtitleMsg.name, subtitleMsg.language);
+      if (id >= 0 && subtitleMsg.activate)
       {
         SetSubtitle(id);
         SetSubtitleVisibleInternal(true);
@@ -4468,7 +4470,18 @@ int64_t CVideoPlayer::GetChapterPos(int chapterIdx)
 
 void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
 {
-  m_messenger.Put(new CDVDMsgType<std::string>(CDVDMsg::SUBTITLE_ADDFILE, strSubPath));
+  AddSubtitle(strSubPath, "", "", true);
+}
+
+void CVideoPlayer::AddSubtitle(const std::string& strSubPath, const std::string& name,
+  const std::string& language, bool activate /* = true */)
+{
+  SSubtitleMsg msg;
+  msg.path = strSubPath;
+  msg.name = name;
+  msg.language = language;
+  msg.activate = activate;
+  m_messenger.Put(new CDVDMsgType<SSubtitleMsg>(CDVDMsg::SUBTITLE_ADDFILE, msg));
 }
 
 bool CVideoPlayer::IsCaching() const
@@ -4490,7 +4503,8 @@ double CVideoPlayer::GetQueueTime()
   return std::max(a, v) * 8000.0 / 100;
 }
 
-int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
+int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename,
+  const std::string& name, const std::string& language)
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
@@ -4547,11 +4561,26 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
   s.filename = filename;
-  ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(m_item.GetDynPath(), filename);
-  s.name = info.name;
-  s.language = info.language;
-  if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
-    s.flags = static_cast<StreamFlags>(info.flag);
+  s.name = name;
+
+  if (!language.empty())
+  {
+    std::string langCode;
+    if (g_LangCodeExpander.ConvertToISO6392B(language, langCode))
+      s.language = langCode;
+  }
+
+  if (s.name.empty() || s.language.empty())
+  {
+    ExternalStreamInfo info =
+      CUtil::GetExternalStreamDetailsFromFilename(m_item.GetDynPath(), filename);
+    if (s.name.empty())
+      s.name = info.name;
+    if (s.language.empty())
+      s.language = info.language;
+    if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
+      s.flags = static_cast<StreamFlags>(info.flag);
+  }
 
   m_SelectionStreams.Update(s);
   UpdateContent();

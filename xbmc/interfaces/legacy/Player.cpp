@@ -436,6 +436,19 @@ namespace XBMCAddon
       g_application.SeekTime( pTime );
     }
 
+    void Player::addSubtitle(const char* subtitleFile, const char* name, const char* language,
+      bool activate /* = true */)
+    {
+      XBMC_TRACE;
+      if (subtitleFile == nullptr || name == nullptr || language == nullptr)
+        return;
+
+      if (g_application.GetAppPlayer().HasPlayer())
+      {
+        g_application.GetAppPlayer().AddSubtitle(subtitleFile, name, language, activate);
+      }
+    }
+
     void Player::setSubtitles(const char* cLine)
     {
       XBMC_TRACE;

@@ -514,6 +514,26 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Player
+      /// @brief \python_func{ addSubtitle(subtitleFile, name, language, activate) }
+      ///-----------------------------------------------------------------------
+      /// Add subtitle file with name and language and optionally activate it.
+      ///
+      /// @param subtitleFile        File to use as the source of subtitles
+      /// @param name                Name of the subtitle to display
+      /// @param language            Language of the subtitle to use
+      /// @param activate            Whether or not to activate the subtitle
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      addSubtitle(...);
+#else
+      void addSubtitle(const char* subtitleFile, const char* name, const char* language,
+        bool activate = true);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
       /// @brief \python_func{ setSubtitles(subtitleFile) }
       /// Set subtitle file and enable subtitles.
       ///
@@ -786,4 +806,3 @@ namespace XBMCAddon
     };
   }
 }
-
