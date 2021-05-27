@@ -433,6 +433,7 @@ constexpr const char* CSettings::SETTING_ADDONS_SHOW_RUNNING;
 constexpr const char* CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES;
 constexpr const char* CSettings::SETTING_ADDONS_UPDATEMODE;
 constexpr const char* CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES;
+constexpr const char* CSettings::SETTING_ADDONS_REMOVE_ORPHANED_DEPENDENCIES;
 constexpr const char* CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER;
 constexpr const char* CSettings::SETTING_GENERAL_ADDONBROKENFILTER;
 constexpr const char* CSettings::SETTING_SOURCE_VIDEOS;
@@ -1051,6 +1052,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
   settingSet.insert(CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES);
+  settingSet.insert(CSettings::SETTING_ADDONS_REMOVE_ORPHANED_DEPENDENCIES);
   settingSet.insert(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
   GetSettingsManager()->RegisterCallback(&ADDON::CAddonSystemSettings::GetInstance(), settingSet);
 

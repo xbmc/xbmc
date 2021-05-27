@@ -21180,7 +21180,37 @@ msgctxt "#36637"
 msgid "Note that add-ons installed from zip (excluding served repositories) will not auto-update and must be manually updated. Would you like to proceed?"
 msgstr ""
 
-#empty strings from id 36638 to 36898
+#. Menuitem at "Settings -> System -> Add-ons"
+#: ./system/settings/settings.xml
+msgctxt "#36638"
+msgid "Remove all orphaned dependencies"
+msgstr ""
+
+#. Description of setting with label #36638 "Remove all orphaned dependencies"
+#: system/settings/settings.xml
+msgctxt "#36639"
+msgid "Remove all modules and support libraries that have been automatically installed as a dependency to other add-ons and are in an orphaned state."
+msgstr ""
+
+#. Dialog caption
+#: xbmc/addons/AddonSystemSettings.cpp
+msgctxt "#36640"
+msgid "Orphaned dependencies"
+msgstr ""
+
+#. Dialog text if orphaned dependencies were found and removed
+#: xbmc/addons/AddonSystemSettings.cpp
+msgctxt "#36641"
+msgid "The following orphaned dependency add-ons were removed from your system: {0:s}."
+msgstr ""
+
+#. Dialog text if no more orphaned dependencies left on the system
+#: xbmc/addons/AddonSystemSettings.cpp
+msgctxt "#36642"
+msgid "No orphaned dependency add-ons to remove."
+msgstr ""
+
+#empty strings from id 36643 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml

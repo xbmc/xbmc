@@ -298,6 +298,39 @@ bool CAddonMgr::HasAvailableUpdates()
   return !GetAvailableUpdates().empty();
 }
 
+std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetOrphanedDependencies() const
+{
+  std::vector<std::shared_ptr<IAddon>> allAddons;
+  GetAddonsInternal(ADDON_UNKNOWN, allAddons, OnlyEnabled::YES, CheckIncompatible::YES);
+
+  std::vector<std::shared_ptr<IAddon>> orphanedDependencies;
+  for (const auto& addon : allAddons)
+  {
+    if (IsOrphaned(addon, allAddons))
+    {
+      orphanedDependencies.emplace_back(addon);
+    }
+  }
+
+  return orphanedDependencies;
+}
+
+bool CAddonMgr::IsOrphaned(const std::shared_ptr<IAddon>& addon,
+                           const std::vector<std::shared_ptr<IAddon>>& allAddons) const
+{
+  if (CServiceBroker::GetAddonMgr().IsSystemAddon(addon->ID()) ||
+      !CAddonType::IsDependencyType(addon->MainType()))
+    return false;
+
+  auto dependsOnCapturedAddon = [&addon](const std::shared_ptr<IAddon>& _) {
+    const auto& deps = _->GetDependencies();
+    return std::any_of(deps.begin(), deps.end(),
+                       [&addon](const DependencyInfo& dep) { return dep.id == addon->ID(); });
+  };
+
+  return std::none_of(allAddons.begin(), allAddons.end(), dependsOnCapturedAddon);
+}
+
 bool CAddonMgr::GetAddonsForUpdate(VECADDONS& addons) const
 {
   return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::YES, CheckIncompatible::YES);
