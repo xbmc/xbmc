@@ -69,7 +69,7 @@ int CSimpleFileCache::Open()
   m_filename = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
   if (m_filename.empty())
   {
-    CLog::Log(LOGERROR, "{} - Unable to generate a new filename", __FUNCTION__);
+    CLog::Log(LOGERROR, "CSimpleFileCache::{} - Unable to generate a new filename", __FUNCTION__);
     Close();
     return CACHE_RC_ERROR;
   }
@@ -78,14 +78,16 @@ int CSimpleFileCache::Open()
 
   if (!m_cacheFileWrite->OpenForWrite(fileURL, false))
   {
-    CLog::LogF(LOGERROR, "failed to create file \"{}\" for writing", m_filename);
+    CLog::Log(LOGERROR, "CSimpleFileCache::{} - Failed to create file \"{}\" for writing",
+              __FUNCTION__, m_filename);
     Close();
     return CACHE_RC_ERROR;
   }
 
   if (!m_cacheFileRead->Open(fileURL))
   {
-    CLog::LogF(LOGERROR, "failed to open file \"{}\" for reading", m_filename);
+    CLog::Log(LOGERROR, "CSimpleFileCache::{} - Failed to open file \"{}\" for reading",
+              __FUNCTION__, m_filename);
     Close();
     return CACHE_RC_ERROR;
   }
@@ -104,7 +106,8 @@ void CSimpleFileCache::Close()
   m_cacheFileRead->Close();
 
   if (!m_filename.empty() && !m_cacheFileRead->Delete(CURL(m_filename)))
-    CLog::LogF(LOGWARNING, "failed to delete temporary file \"{}\"", m_filename);
+    CLog::Log(LOGWARNING, "SimpleFileCache::{} - Failed to delete cache file \"{}\"", __FUNCTION__,
+              m_filename);
 
   m_filename.clear();
 }
@@ -123,7 +126,8 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
         m_cacheFileWrite->Write(pBuffer, std::min(iSize, static_cast<size_t>(SSIZE_MAX)));
     if (lastWritten <= 0)
     {
-      CLog::LogF(LOGERROR, "failed to write to file");
+      CLog::Log(LOGERROR, "SimpleFileCache::{} - <{}> Failed to write to cache", __FUNCTION__,
+                m_filename);
       return CACHE_RC_ERROR;
     }
     m_nWritePosition += lastWritten;
@@ -160,7 +164,8 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
       break;
     if (lastRead < 0)
     {
-      CLog::LogF(LOGERROR, "failed to read from file");
+      CLog::Log(LOGERROR, "CSimpleFileCache::{} - <{}> Failed to read from cache", __FUNCTION__,
+                m_filename);
       return CACHE_RC_ERROR;
     }
     m_nReadPosition += lastRead;
@@ -198,21 +203,24 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 
   if (iTarget < 0)
   {
-    CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, request seek before start of cache.");
+    CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Request seek before start of cache",
+              __FUNCTION__, m_filename);
     return CACHE_RC_ERROR;
   }
 
   int64_t nDiff = iTarget - m_nWritePosition;
   if (nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT))
   {
-    CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek - Attempt to seek past read data");
+    CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Attempt to seek past read data", __FUNCTION__,
+              m_filename);
     return CACHE_RC_ERROR;
   }
 
   m_nReadPosition = m_cacheFileRead->Seek(iTarget, SEEK_SET);
   if (m_nReadPosition != iTarget)
   {
-    CLog::LogF(LOGERROR, "can't seek file");
+    CLog::Log(LOGERROR, "CSimpleFileCache::{} - <{}> Can't seek cache file", __FUNCTION__,
+              m_filename);
     return CACHE_RC_ERROR;
   }
 
