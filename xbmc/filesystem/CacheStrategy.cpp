@@ -329,7 +329,8 @@ int64_t CDoubleCache::Seek(int64_t iFilePosition)
   if (!m_pCache->IsCachedPosition(iFilePosition) &&
        m_pCacheOld && m_pCacheOld->IsCachedPosition(iFilePosition))
   {
-    return CACHE_RC_ERROR; // Request seek event, so caches are swapped
+    // Return error to trigger a seek event which will swap the caches:
+    return CACHE_RC_ERROR;
   }
 
   return m_pCache->Seek(iFilePosition); // Normal seek
@@ -337,13 +338,18 @@ int64_t CDoubleCache::Seek(int64_t iFilePosition)
 
 bool CDoubleCache::Reset(int64_t iSourcePosition)
 {
+  /* Check if we should (not) swap the caches. Note that when both caches have the
+   * requested position, we prefer the cache that has the most forward data
+   */
   if (m_pCache->IsCachedPosition(iSourcePosition) &&
       (!m_pCacheOld || !m_pCacheOld->IsCachedPosition(iSourcePosition) ||
        m_pCache->CachedDataEndPos() >= m_pCacheOld->CachedDataEndPos()))
   {
+    // No swap: Just use current cache
     return m_pCache->Reset(iSourcePosition);
   }
 
+  // Need to swap caches
   CCacheStrategy* pCacheTmp;
   if (!m_pCacheOld)
   {
@@ -359,7 +365,7 @@ bool CDoubleCache::Reset(int64_t iSourcePosition)
     pCacheTmp = m_pCacheOld;
   }
 
-  // Swap caches
+  // Perform actual swap:
   m_pCacheOld = m_pCache;
   m_pCache = pCacheTmp;
 
@@ -388,6 +394,10 @@ int64_t CDoubleCache::CachedDataEndPos()
 
 int64_t CDoubleCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 {
+  /* Return the position on source we would end up after a cache-seek(/reset)
+   * Note that we select the cache that has the most forward data already cached
+   * for this position
+   */
   int64_t ret = m_pCache->CachedDataEndPosIfSeekTo(iFilePosition);
   if (m_pCacheOld)
     return std::max(ret, m_pCacheOld->CachedDataEndPosIfSeekTo(iFilePosition));
