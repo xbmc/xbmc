@@ -33,10 +33,6 @@
 #endif
 #include <fmt/format.h>
 
-#if FMT_VERSION >= 40000
-#include <fmt/printf.h>
-#endif
-
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
 
@@ -72,11 +68,6 @@ class StringUtils
 public:
   /*! \brief Get a formatted string similar to sprintf
 
-  Beware that this does not support directly passing in
-  std::string objects. You need to call c_str() to pass
-  the const char* buffer representing the value of the
-  std::string object.
-
   \param fmt Format of the resulting string
   \param ... variable number of value type arguments
   \return Formatted string
@@ -85,21 +76,13 @@ public:
   static std::string Format(const std::string& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
-    if (result == fmt)
-      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
-
-    return result;
+    return ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
   }
   template<typename... Args>
   static std::wstring Format(const std::wstring& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
-    if (result == fmt)
-      result = ::fmt::sprintf(fmt, EnumToInt(std::forward<Args>(args))...);
-
-    return result;
+    return ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
   }
 
   static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
