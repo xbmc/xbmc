@@ -270,7 +270,7 @@ void CFileCache::Process()
       }
       if (!sourceSeekFailed)
       {
-        const bool bCompleteReset = m_pCache->Reset(m_seekPos, false);
+        const bool bCompleteReset = m_pCache->Reset(m_seekPos);
         m_readPos = m_seekPos;
         m_writePos = m_pCache->CachedDataEndPos();
         assert(m_writePos == cacheMaxPos);

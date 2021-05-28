@@ -221,9 +221,9 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   return iFilePosition;
 }
 
-bool CSimpleFileCache::Reset(int64_t iSourcePosition, bool clearAnyway)
+bool CSimpleFileCache::Reset(int64_t iSourcePosition)
 {
-  if (!clearAnyway && IsCachedPosition(iSourcePosition))
+  if (IsCachedPosition(iSourcePosition))
   {
     m_nReadPosition = m_cacheFileRead->Seek(iSourcePosition - m_nStartPosition, SEEK_SET);
     return false;
@@ -327,13 +327,13 @@ int64_t CDoubleCache::Seek(int64_t iFilePosition)
   return m_pCache->Seek(iFilePosition); // Normal seek
 }
 
-bool CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
+bool CDoubleCache::Reset(int64_t iSourcePosition)
 {
-  if (!clearAnyway && m_pCache->IsCachedPosition(iSourcePosition)
-      && (!m_pCacheOld || !m_pCacheOld->IsCachedPosition(iSourcePosition)
-          || m_pCache->CachedDataEndPos() >= m_pCacheOld->CachedDataEndPos()))
+  if (m_pCache->IsCachedPosition(iSourcePosition) &&
+      (!m_pCacheOld || !m_pCacheOld->IsCachedPosition(iSourcePosition) ||
+       m_pCache->CachedDataEndPos() >= m_pCacheOld->CachedDataEndPos()))
   {
-    return m_pCache->Reset(iSourcePosition, clearAnyway);
+    return m_pCache->Reset(iSourcePosition);
   }
   if (!m_pCacheOld)
   {
@@ -341,14 +341,14 @@ bool CDoubleCache::Reset(int64_t iSourcePosition, bool clearAnyway)
     if (pCacheNew->Open() != CACHE_RC_OK)
     {
       delete pCacheNew;
-      return m_pCache->Reset(iSourcePosition, clearAnyway);
+      return m_pCache->Reset(iSourcePosition);
     }
-    bool bRes = pCacheNew->Reset(iSourcePosition, clearAnyway);
+    bool bRes = pCacheNew->Reset(iSourcePosition);
     m_pCacheOld = m_pCache;
     m_pCache = pCacheNew;
     return bRes;
   }
-  bool bRes = m_pCacheOld->Reset(iSourcePosition, clearAnyway);
+  bool bRes = m_pCacheOld->Reset(iSourcePosition);
   CCacheStrategy *tmp = m_pCacheOld;
   m_pCacheOld = m_pCache;
   m_pCache = tmp;

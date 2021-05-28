@@ -229,10 +229,10 @@ int64_t CCircularCache::Seek(int64_t pos)
   return CACHE_RC_ERROR;
 }
 
-bool CCircularCache::Reset(int64_t pos, bool clearAnyway)
+bool CCircularCache::Reset(int64_t pos)
 {
   CSingleLock lock(m_sync);
-  if (!clearAnyway && IsCachedPosition(pos))
+  if (IsCachedPosition(pos))
   {
     m_cur = pos;
     return false;
