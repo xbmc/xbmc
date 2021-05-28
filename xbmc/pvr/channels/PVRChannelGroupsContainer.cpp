@@ -37,7 +37,6 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   if (m_bIsUpdating)
     return false;
   m_bIsUpdating = true;
-  m_bUpdateChannelsOnly = bChannelsOnly;
   lock.Leave();
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Updating {}", bChannelsOnly ? "channels" : "channel groups");

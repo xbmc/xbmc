@@ -167,7 +167,6 @@ namespace PVR
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */
     CCriticalSection m_critSection;
-    bool m_bUpdateChannelsOnly = false;
     bool m_bIsUpdating = false;
     std::shared_ptr<CPVRChannelGroup> m_lastPlayedGroups[2]; /*!< used to store the last played groups */
 
