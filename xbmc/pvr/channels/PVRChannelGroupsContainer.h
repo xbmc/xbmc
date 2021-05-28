@@ -110,13 +110,6 @@ namespace PVR
     std::shared_ptr<CPVRChannel> GetChannelById(int iChannelId) const;
 
     /*!
-     * @brief Get a channel given it's EPG ID.
-     * @param iEpgId The EPG ID of the channel.
-     * @return The channel or NULL if it wasn't found.
-     */
-    std::shared_ptr<CPVRChannel> GetChannelByEpgId(int iEpgId) const;
-
-    /*!
      * @brief Get the channel for the given epg tag.
      * @param epgTag The epg tag.
      * @return The channel.
@@ -153,13 +146,6 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember() const;
 
     /*!
-     * @brief The group that was played last and optionally contains the given channel.
-     * @param iChannelID The channel ID
-     * @return The last watched group.
-     */
-    std::shared_ptr<CPVRChannelGroup> GetLastPlayedGroup(int iChannelID = -1) const;
-
-    /*!
      * @brief Create EPG tags for channels in all internal channel groups.
      * @return True if EPG tags were created successfully.
      */
@@ -181,7 +167,6 @@ namespace PVR
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */
     CCriticalSection m_critSection;
-    bool m_bUpdateChannelsOnly = false;
     bool m_bIsUpdating = false;
     std::shared_ptr<CPVRChannelGroup> m_lastPlayedGroups[2]; /*!< used to store the last played groups */
 

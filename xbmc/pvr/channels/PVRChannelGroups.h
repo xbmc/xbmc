@@ -117,11 +117,9 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroup> GetLastGroup() const;
 
     /*!
-     * @brief The group that was played last and optionally contains the given channel.
-     * @param iChannelID The channel ID
-     * @return The last watched group.
+     * @return The last played group.
      */
-    std::shared_ptr<CPVRChannelGroup> GetLastPlayedGroup(int iChannelID = -1) const;
+    std::shared_ptr<CPVRChannelGroup> GetLastPlayedGroup() const;
 
     /*!
      * @return The last opened group.
