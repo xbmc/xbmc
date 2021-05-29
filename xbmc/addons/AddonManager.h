@@ -26,7 +26,7 @@ namespace ADDON
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
-  enum class AllowCheckForUpdates;
+  enum class AllowCheckForUpdates : bool;
 
   enum class AddonCheckType
   {
@@ -41,6 +41,12 @@ namespace ADDON
   };
 
   enum class OnlyEnabledRootAddon : bool
+  {
+    YES = true,
+    NO = false,
+  };
+
+  enum class CheckIncompatible : bool
   {
     YES = true,
     NO = false,
@@ -517,20 +523,16 @@ namespace ADDON
     /*!
      * \brief Retrieves list of outdated addons as well as their related
      *        available updates and stores them into map.
-     * \param[out] addonsWithUpdate target map
-     * \return true or false
+     * \return map of outdated addons with their update
      */
-    bool GetAddonsWithAvailableUpdate(
-        std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const;
+    std::map<std::string, CAddonWithUpdate> GetAddonsWithAvailableUpdate() const;
 
     /*!
      * \brief Retrieves list of compatible addon versions of all origins
      * \param[in] addonId addon to look up
-     * \param[out] compatibleVersions target vector to be filled
-     * \return true or false
+     * \return vector containing compatible addon versions
      */
-    bool GetCompatibleVersions(const std::string& addonId,
-                               std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
+    std::vector<std::shared_ptr<IAddon>> GetCompatibleVersions(const std::string& addonId) const;
 
     /*!
      * \brief Return number of available updates formatted as string
@@ -557,8 +559,8 @@ namespace ADDON
 
     bool GetAddonsInternal(const TYPE& type,
                            VECADDONS& addons,
-                           bool onlyEnabled,
-                           bool checkIncompatible = false) const;
+                           OnlyEnabled onlyEnabled,
+                           CheckIncompatible checkIncompatible) const;
 
     bool EnableSingle(const std::string& id);
 

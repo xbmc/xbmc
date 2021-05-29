@@ -26,40 +26,40 @@ namespace ADDON
 
 class CAddonDatabase;
 
-enum class BackgroundJob
+enum class BackgroundJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class ModalJob
+enum class ModalJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class AutoUpdateJob
+enum class AutoUpdateJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class DependencyJob
+enum class DependencyJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class InstallModalPrompt
+enum class InstallModalPrompt : bool
 {
-  PROMPT,
-  NO_PROMPT,
+  PROMPT = true,
+  NO_PROMPT = false,
 };
 
-enum class AllowCheckForUpdates
+enum class AllowCheckForUpdates : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
 class CAddonInstaller : public IJobCallback

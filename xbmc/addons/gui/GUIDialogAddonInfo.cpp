@@ -328,16 +328,15 @@ void CGUIDialogAddonInfo::OnSelectVersion()
   const std::string& processAddonId = m_item->GetAddonInfo()->ID();
   EntryPoint entryPoint = m_localAddon ? EntryPoint::UPDATE : EntryPoint::INSTALL;
 
-  std::vector<std::shared_ptr<IAddon>> compatibleVersions;
-  std::vector<std::pair<AddonVersion, std::string>> versions;
-
   // get all compatible versions of an addon-id regardless of their origin
-  CServiceBroker::GetAddonMgr().GetCompatibleVersions(processAddonId, compatibleVersions);
+  std::vector<std::shared_ptr<IAddon>> compatibleVersions =
+      CServiceBroker::GetAddonMgr().GetCompatibleVersions(processAddonId);
 
+  std::vector<std::pair<AddonVersion, std::string>> versions;
   versions.reserve(compatibleVersions.size());
+
   for (const auto& compatibleVersion : compatibleVersions)
-    versions.emplace_back(
-        std::make_pair(compatibleVersion->Version(), compatibleVersion->Origin()));
+    versions.emplace_back(compatibleVersion->Version(), compatibleVersion->Origin());
 
   CAddonDatabase database;
   database.Open();

@@ -726,10 +726,9 @@ bool CAddonInstallJob::DoWork()
     // we only do pinning/unpinning for non-zip installs and not system origin
     if (!m_addon->Origin().empty() && m_addon->Origin() != ORIGIN_SYSTEM)
     {
-      std::vector<std::shared_ptr<IAddon>> compatibleVersions;
-
       // get all compatible versions of an addon-id regardless of their origin
-      CServiceBroker::GetAddonMgr().GetCompatibleVersions(m_addon->ID(), compatibleVersions);
+      std::vector<std::shared_ptr<IAddon>> compatibleVersions =
+          CServiceBroker::GetAddonMgr().GetCompatibleVersions(m_addon->ID());
 
       // find the latest version for the origin we installed from
       AddonVersion latestVersion; // initializes to 0.0.0
