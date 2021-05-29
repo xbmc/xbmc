@@ -201,20 +201,30 @@ bool CProcessorHD::InitProcessor()
     }
   }
 
-  // Check if HLG color space conversion is supported by driver
   ComPtr<ID3D11VideoProcessorEnumerator1> pEnumerator1;
 
   if (SUCCEEDED(m_pEnumerator.As(&pEnumerator1)))
   {
     DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
     BOOL supported = 0;
-    HRESULT hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+    HRESULT hr;
+
+    // Check if HLG color space conversion is supported by driver
+    hr = pEnumerator1->CheckVideoProcessorFormatConversion(
         DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020, format,
         DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
     m_bSupportHLG = SUCCEEDED(hr) && !!supported;
+
+    // Check if HDR10 RGB limited range output is supported by driver
+    hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, format,
+        DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020, &supported);
+    m_bSupportHDR10Limited = SUCCEEDED(hr) && !!supported;
   }
 
   CLog::LogF(LOGDEBUG, "HLG color space conversion is{}supported.", m_bSupportHLG ? " " : " NOT ");
+  CLog::LogF(LOGDEBUG, "HDR10 RGB limited range output is{}supported.",
+             m_bSupportHDR10Limited ? " " : " NOT ");
 
   return true;
 }
@@ -406,7 +416,7 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(CRenderBuffer* view,
   return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
 }
 
-DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(CRenderBuffer* view)
+DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(CRenderBuffer* view, bool supportHDR)
 {
   DXGI_COLOR_SPACE_TYPE color;
 
@@ -420,8 +430,16 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(CRenderBuffer* view)
   if (view->primaries == AVCOL_PRI_BT2020 && (view->color_transfer == AVCOL_TRC_SMPTE2084 ||
                                               view->color_transfer == AVCOL_TRC_ARIB_STD_B67))
   {
-    color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                                               : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+    if (supportHDR)
+    {
+      color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                                                 : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+    }
+    else
+    {
+      color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
+                                                 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
+    }
   }
 
   return color;
@@ -534,9 +552,12 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   ComPtr<ID3D11VideoContext1> videoCtx1;
   if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
   {
+    bool supportHDR = DX::Windowing()->IsHDROutput() &&
+                      (m_bSupportHDR10Limited || !DX::Windowing()->UseLimitedColor());
+
     const DXGI_COLOR_SPACE_TYPE sourceColor =
-        GetDXGIColorSpaceSource(views[2], DX::Windowing()->IsHDROutput(), m_bSupportHLG);
-    const DXGI_COLOR_SPACE_TYPE targetColor = GetDXGIColorSpaceTarget(views[2]);
+        GetDXGIColorSpaceSource(views[2], supportHDR, m_bSupportHLG);
+    const DXGI_COLOR_SPACE_TYPE targetColor = GetDXGIColorSpaceTarget(views[2], supportHDR);
 
     videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
                                                   sourceColor);
