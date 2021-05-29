@@ -26,7 +26,7 @@ namespace ADDON
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
-  enum class AllowCheckForUpdates;
+  enum class AllowCheckForUpdates : bool;
 
   enum class AddonCheckType
   {
@@ -41,6 +41,12 @@ namespace ADDON
   };
 
   enum class OnlyEnabledRootAddon : bool
+  {
+    YES = true,
+    NO = false,
+  };
+
+  enum class CheckIncompatible : bool
   {
     YES = true,
     NO = false,
@@ -557,8 +563,8 @@ namespace ADDON
 
     bool GetAddonsInternal(const TYPE& type,
                            VECADDONS& addons,
-                           bool onlyEnabled,
-                           bool checkIncompatible = false) const;
+                           OnlyEnabled onlyEnabled,
+                           CheckIncompatible checkIncompatible) const;
 
     bool EnableSingle(const std::string& id);
 

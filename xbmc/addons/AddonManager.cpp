@@ -299,27 +299,27 @@ bool CAddonMgr::HasAvailableUpdates()
 
 bool CAddonMgr::GetAddonsForUpdate(VECADDONS& addons) const
 {
-  return GetAddonsInternal(ADDON_UNKNOWN, addons, true, true);
+  return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::YES, CheckIncompatible::YES);
 }
 
 bool CAddonMgr::GetAddons(VECADDONS& addons) const
 {
-  return GetAddonsInternal(ADDON_UNKNOWN, addons, true);
+  return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::YES, CheckIncompatible::NO);
 }
 
 bool CAddonMgr::GetAddons(VECADDONS& addons, const TYPE& type)
 {
-  return GetAddonsInternal(type, addons, true);
+  return GetAddonsInternal(type, addons, OnlyEnabled::YES, CheckIncompatible::NO);
 }
 
 bool CAddonMgr::GetInstalledAddons(VECADDONS& addons)
 {
-  return GetAddonsInternal(ADDON_UNKNOWN, addons, false);
+  return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::NO, CheckIncompatible::NO);
 }
 
 bool CAddonMgr::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
 {
-  return GetAddonsInternal(type, addons, false);
+  return GetAddonsInternal(type, addons, OnlyEnabled::NO, CheckIncompatible::NO);
 }
 
 bool CAddonMgr::GetDisabledAddons(VECADDONS& addons)
@@ -405,8 +405,8 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
 
 bool CAddonMgr::GetAddonsInternal(const TYPE& type,
                                   VECADDONS& addons,
-                                  bool onlyEnabled,
-                                  bool checkIncompatible) const
+                                  OnlyEnabled onlyEnabled,
+                                  CheckIncompatible checkIncompatible) const
 {
   CSingleLock lock(m_critSection);
 
@@ -415,9 +415,9 @@ bool CAddonMgr::GetAddonsInternal(const TYPE& type,
     if (type != ADDON_UNKNOWN && !addonInfo.second->HasType(type))
       continue;
 
-    if (onlyEnabled &&
-        ((!checkIncompatible && IsAddonDisabled(addonInfo.second->ID())) ||
-         (checkIncompatible &&
+    if (onlyEnabled == OnlyEnabled::YES &&
+        ((checkIncompatible == CheckIncompatible::NO && IsAddonDisabled(addonInfo.second->ID())) ||
+         (checkIncompatible == CheckIncompatible::YES &&
           IsAddonDisabledExcept(addonInfo.second->ID(), AddonDisabledReason::INCOMPATIBLE))))
       continue;
 
