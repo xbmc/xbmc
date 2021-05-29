@@ -93,13 +93,13 @@ void CGUIWindowSystemInfo::FrameMove()
   if (m_section == CONTROL_BT_DEFAULT)
   {
     SET_CONTROL_LABEL(40, g_localizeStrings.Get(20154));
-    SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
-    SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
-    SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-    SetControlLabel(i++, "%s %s", 13283, SYSTEM_OS_VERSION_INFO);
-    SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
-    SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
-    SetControlLabel(i++, "%s: %s", 12395, SYSTEM_BATTERY_LEVEL);
+    SetControlLabel(i++, "{}: {}", 158, SYSTEM_FREE_MEMORY);
+    SetControlLabel(i++, "{}: {}", 150, NETWORK_IP_ADDRESS);
+    SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
+    SetControlLabel(i++, "{} {}", 13283, SYSTEM_OS_VERSION_INFO);
+    SetControlLabel(i++, "{}: {}", 12390, SYSTEM_UPTIME);
+    SetControlLabel(i++, "{}: {}", 12394, SYSTEM_TOTALUPTIME);
+    SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
   }
 
   else if (m_section == CONTROL_BT_STORAGE)
@@ -118,20 +118,20 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
     SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(NETWORK_LINK_STATE));
-    SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
-    SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
-    SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_MASK);
-    SetControlLabel(i++, "%s: %s", 13160, NETWORK_GATEWAY_ADDRESS);
-    SetControlLabel(i++, "%s: %s", 13161, NETWORK_DNS1_ADDRESS);
-    SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);
-    SetControlLabel(i++, "%s %s", 13295, SYSTEM_INTERNET_STATE);
+    SetControlLabel(i++, "{}: {}", 149, NETWORK_MAC_ADDRESS);
+    SetControlLabel(i++, "{}: {}", 150, NETWORK_IP_ADDRESS);
+    SetControlLabel(i++, "{}: {}", 13159, NETWORK_SUBNET_MASK);
+    SetControlLabel(i++, "{}: {}", 13160, NETWORK_GATEWAY_ADDRESS);
+    SetControlLabel(i++, "{}: {}", 13161, NETWORK_DNS1_ADDRESS);
+    SetControlLabel(i++, "{}: {}", 20307, NETWORK_DNS2_ADDRESS);
+    SetControlLabel(i++, "{} {}", 13295, SYSTEM_INTERNET_STATE);
   }
 
   else if (m_section == CONTROL_BT_VIDEO)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
     SET_CONTROL_LABEL(i++,CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
-    SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
+    SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
 
     auto renderingSystem = CServiceBroker::GetRenderSystem();
     if (renderingSystem)
@@ -160,7 +160,7 @@ void CGUIWindowSystemInfo::FrameMove()
                           StringUtils::Format("{} {}", g_localizeStrings.Get(39153), platform));
     }
 
-    SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
+    SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
   }
 
   else if (m_section == CONTROL_BT_HARDWARE)
@@ -195,14 +195,14 @@ void CGUIWindowSystemInfo::FrameMove()
         SET_CONTROL_LABEL(i++, "Serial: " + serial);
 
       // temperature can't really be conditional because of localization units
-      SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
+      SetControlLabel(i++, "{} {}", 22011, SYSTEM_CPU_TEMPERATURE);
 
       // we can check if the cpufrequency is not 0 (default if not implemented)
       // but we have to call through CGUIInfoManager -> CSystemGUIInfo -> CSysInfo
       // to limit the frequency of updates
       static float cpuFreq = cpuInfo->GetCPUFrequency();
       if (cpuFreq > 0)
-        SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
+        SetControlLabel(i++, "{} {}", 13284, SYSTEM_CPUFREQUENCY);
     }
   }
 
@@ -211,16 +211,17 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40, g_localizeStrings.Get(19166));
     int i = 2;
 
-    SetControlLabel(i++, "%s: %s", 19120, PVR_BACKEND_NUMBER);
+    SetControlLabel(i++, "{}: {}", 19120, PVR_BACKEND_NUMBER);
     i++;  // empty line
-    SetControlLabel(i++, "%s: %s", 19012, PVR_BACKEND_NAME);
-    SetControlLabel(i++, "%s: %s", 19114, PVR_BACKEND_VERSION);
-    SetControlLabel(i++, "%s: %s", 19115, PVR_BACKEND_HOST);
-    SetControlLabel(i++, "%s: %s", 19116, PVR_BACKEND_DISKSPACE);
-    SetControlLabel(i++, "%s: %s", 19019, PVR_BACKEND_CHANNELS);
-    SetControlLabel(i++, "%s: %s", 19163, PVR_BACKEND_RECORDINGS);
-    SetControlLabel(i++, "%s: %s", 19168, PVR_BACKEND_DELETED_RECORDINGS);  // Deleted and recoverable recordings
-    SetControlLabel(i++, "%s: %s", 19025, PVR_BACKEND_TIMERS);
+    SetControlLabel(i++, "{}: {}", 19012, PVR_BACKEND_NAME);
+    SetControlLabel(i++, "{}: {}", 19114, PVR_BACKEND_VERSION);
+    SetControlLabel(i++, "{}: {}", 19115, PVR_BACKEND_HOST);
+    SetControlLabel(i++, "{}: {}", 19116, PVR_BACKEND_DISKSPACE);
+    SetControlLabel(i++, "{}: {}", 19019, PVR_BACKEND_CHANNELS);
+    SetControlLabel(i++, "{}: {}", 19163, PVR_BACKEND_RECORDINGS);
+    SetControlLabel(i++, "{}: {}", 19168,
+                    PVR_BACKEND_DELETED_RECORDINGS); // Deleted and recoverable recordings
+    SetControlLabel(i++, "{}: {}", 19025, PVR_BACKEND_TIMERS);
   }
 
   else if (m_section == CONTROL_BT_POLICY)
