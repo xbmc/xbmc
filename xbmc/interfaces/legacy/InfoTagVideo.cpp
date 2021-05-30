@@ -940,14 +940,14 @@ namespace XBMCAddon
     {
       CDateTime firstAiredDate;
       firstAiredDate.SetFromDateString(firstAired);
-      infoTag->m_firstAired = std::move(firstAiredDate);
+      infoTag->m_firstAired = firstAiredDate;
     }
 
     void InfoTagVideo::setLastPlayedRaw(CVideoInfoTag* infoTag, const String& lastPlayed)
     {
       CDateTime lastPlayedDate;
       lastPlayedDate.SetFromDBDateTime(lastPlayed);
-      infoTag->m_lastPlayed = std::move(lastPlayedDate);
+      infoTag->m_lastPlayed = lastPlayedDate;
     }
 
     void InfoTagVideo::setAlbumRaw(CVideoInfoTag* infoTag, const String& album)
@@ -984,7 +984,7 @@ namespace XBMCAddon
     {
       CDateTime dateAddedDate;
       dateAddedDate.SetFromDBDateTime(dateAdded);
-      infoTag->m_dateAdded = std::move(dateAddedDate);
+      infoTag->m_dateAdded = dateAddedDate;
     }
 
     void InfoTagVideo::setMediaTypeRaw(CVideoInfoTag* infoTag, const String& mediaType)

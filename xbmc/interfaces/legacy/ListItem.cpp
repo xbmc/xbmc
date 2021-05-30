@@ -1047,7 +1047,7 @@ namespace XBMCAddon
     void ListItem::addPropertyRaw(std::string type, CVariant value)
     {
       StringUtils::ToLower(type);
-      item->SetProperty(std::move(type), std::move(value));
+      item->SetProperty(type, value);
     }
 
     void ListItem::addSubtitlesRaw(const std::vector<std::string>& subtitles)
