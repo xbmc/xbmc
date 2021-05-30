@@ -26,6 +26,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <utility>
 
 //------------------------------------------------------------------------------
 // Video
@@ -123,7 +124,7 @@ void CDVDFactoryCodec::RegisterHWVideoCodec(const std::string& id, CreateHWVideo
 {
   CSingleLock lock(videoCodecSection);
 
-  m_hwVideoCodecs[id] = createFunc;
+  m_hwVideoCodecs[id] = std::move(createFunc);
 }
 
 void CDVDFactoryCodec::ClearHWVideoCodecs()
@@ -150,7 +151,7 @@ void CDVDFactoryCodec::RegisterHWAccel(const std::string& id, CreateHWAccel crea
 {
   CSingleLock lock(videoCodecSection);
 
-  m_hwAccels[id] = createFunc;
+  m_hwAccels[id] = std::move(createFunc);
 }
 
 void CDVDFactoryCodec::ClearHWAccels()
@@ -213,7 +214,7 @@ void CDVDFactoryCodec::RegisterHWAudioCodec(const std::string& id, CreateHWAudio
 {
   CSingleLock lock(audioCodecSection);
 
-  m_hwAudioCodecs[id] = createFunc;
+  m_hwAudioCodecs[id] = std::move(createFunc);
 }
 
 void CDVDFactoryCodec::ClearHWAudioCodecs()

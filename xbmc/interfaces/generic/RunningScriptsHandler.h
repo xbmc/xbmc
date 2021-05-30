@@ -31,7 +31,10 @@ protected:
   using CScriptRunner::SetDone;
   using CScriptRunner::StartScript;
 
-  bool RunScript(TScript* script, ADDON::AddonPtr addon, const std::string& path, bool resume)
+  bool RunScript(TScript* script,
+                 const ADDON::AddonPtr& addon,
+                 const std::string& path,
+                 bool resume)
   {
     if (script == nullptr || addon == nullptr || path.empty())
       return false;

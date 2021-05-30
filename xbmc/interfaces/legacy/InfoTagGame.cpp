@@ -138,7 +138,7 @@ void InfoTagGame::setPlatformRaw(KODI::GAME::CGameInfoTag* infoTag, const String
   infoTag->SetPlatform(platform);
 }
 
-void InfoTagGame::setGenresRaw(KODI::GAME::CGameInfoTag* infoTag, std::vector<String> genres)
+void InfoTagGame::setGenresRaw(KODI::GAME::CGameInfoTag* infoTag, const std::vector<String>& genres)
 {
   infoTag->SetGenres(genres);
 }

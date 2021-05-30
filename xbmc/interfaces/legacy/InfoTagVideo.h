@@ -2490,7 +2490,7 @@ namespace XBMCAddon
       ///
       setCast(...);
 #else
-      void setCast(std::vector<const Actor*> actors);
+      void setCast(const std::vector<const Actor*>& actors);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2552,7 +2552,7 @@ namespace XBMCAddon
       ///
       addSeasons(...);
 #else
-      void addSeasons(std::vector<Tuple<int, std::string>> namedSeasons);
+      void addSeasons(const std::vector<Tuple<int, std::string>>& namedSeasons);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2665,7 +2665,7 @@ namespace XBMCAddon
       static void setRatingRaw(CVideoInfoTag* infoTag,
                                float rating,
                                int votes = 0,
-                               std::string type = "",
+                               const std::string& type = "",
                                bool isDefault = false);
       static void setRatingsRaw(CVideoInfoTag* infoTag,
                                 const std::map<String, Tuple<float, int>>& ratings,
@@ -2709,7 +2709,7 @@ namespace XBMCAddon
 
       static void addSeasonRaw(CVideoInfoTag* infoTag, int number, std::string name = "");
       static void addSeasonsRaw(CVideoInfoTag* infoTag,
-                                std::vector<Tuple<int, std::string>> namedSeasons);
+                                const std::vector<Tuple<int, std::string>>& namedSeasons);
 
       static void addStreamRaw(CVideoInfoTag* infoTag, CStreamDetail* stream);
       static void finalizeStreamsRaw(CVideoInfoTag* infoTag);

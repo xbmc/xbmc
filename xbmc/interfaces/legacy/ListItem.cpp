@@ -193,7 +193,7 @@ namespace XBMCAddon
       if (!item) return;
 
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      xbmc::InfoTagVideo::addSeasonRaw(GetVideoInfoTag(), number, name);
+      xbmc::InfoTagVideo::addSeasonRaw(GetVideoInfoTag(), number, std::move(name));
     }
 
     void ListItem::select(bool selected)
@@ -941,7 +941,7 @@ namespace XBMCAddon
                                                            std::string value /* = "" */)
     {
       return getStringArray(
-          alt, tag, value,
+          alt, tag, std::move(value),
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
@@ -950,7 +950,7 @@ namespace XBMCAddon
                                                            std::string value /* = "" */)
     {
       return getStringArray(
-          alt, tag, value,
+          alt, tag, std::move(value),
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
     }
 
@@ -979,9 +979,9 @@ namespace XBMCAddon
       item->m_strTitle = std::move(title);
     }
 
-    void ListItem::setPathRaw(std::string path)
+    void ListItem::setPathRaw(const std::string& path)
     {
-      item->SetPath(std::move(path));
+      item->SetPath(path);
     }
 
     void ListItem::setCountRaw(int count)
@@ -1038,16 +1038,16 @@ namespace XBMCAddon
       item->SetContentLookup(enable);
     }
 
-    void ListItem::addArtRaw(std::string type, std::string url)
+    void ListItem::addArtRaw(std::string type, const std::string& url)
     {
       StringUtils::ToLower(type);
       item->SetArt(type, url);
     }
 
-    void ListItem::addPropertyRaw(std::string type, CVariant value)
+    void ListItem::addPropertyRaw(std::string type, const CVariant& value)
     {
       StringUtils::ToLower(type);
-      item->SetProperty(std::move(type), std::move(value));
+      item->SetProperty(type, value);
     }
 
     void ListItem::addSubtitlesRaw(const std::vector<std::string>& subtitles)

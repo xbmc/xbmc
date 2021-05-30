@@ -24,17 +24,23 @@ protected:
 
   ADDON::AddonPtr GetAddon() const;
 
-  bool StartScript(ADDON::AddonPtr addon, const std::string& path);
-  bool RunScript(ADDON::AddonPtr addon, const std::string& path, int handle, bool resume);
+  bool StartScript(const ADDON::AddonPtr& addon, const std::string& path);
+  bool RunScript(const ADDON::AddonPtr& addon, const std::string& path, int handle, bool resume);
 
   void SetDone();
 
-  static int ExecuteScript(ADDON::AddonPtr addon, const std::string& path, bool resume);
-  static int ExecuteScript(ADDON::AddonPtr addon, const std::string& path, int handle, bool resume);
+  static int ExecuteScript(const ADDON::AddonPtr& addon, const std::string& path, bool resume);
+  static int ExecuteScript(const ADDON::AddonPtr& addon,
+                           const std::string& path,
+                           int handle,
+                           bool resume);
 
 private:
-  bool RunScriptInternal(
-      ADDON::AddonPtr addon, const std::string& path, int handle, bool resume, bool wait = true);
+  bool RunScriptInternal(const ADDON::AddonPtr& addon,
+                         const std::string& path,
+                         int handle,
+                         bool resume,
+                         bool wait = true);
   bool WaitOnScriptResult(int scriptId, const std::string& path, const std::string& name);
 
   ADDON::AddonPtr m_addon;

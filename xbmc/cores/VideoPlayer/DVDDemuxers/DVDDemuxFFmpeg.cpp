@@ -87,9 +87,9 @@ bool AttachmentIsFont(const AVDictionaryEntry* dict)
   if (dict)
   {
     const std::string mimeType = dict->value;
-    return std::find_if(font_mimetypes.begin(), font_mimetypes.end(), [&mimeType](std::string str) {
-             return str == mimeType;
-           }) != font_mimetypes.end();
+    return std::find_if(font_mimetypes.begin(), font_mimetypes.end(),
+                        [&mimeType](const std::string& str) { return str == mimeType; }) !=
+           font_mimetypes.end();
   }
   return false;
 }

@@ -91,7 +91,7 @@ protected:
   void Process() override;
 
   bool ProcessDecoderOutput(double &frametime, double &pts);
-  void SendMessageBack(std::shared_ptr<CDVDMsg> pMsg, int priority = 0);
+  void SendMessageBack(const std::shared_ptr<CDVDMsg>& pMsg, int priority = 0);
   MsgQueueReturnCode GetMessage(std::shared_ptr<CDVDMsg>& pMsg,
                                 unsigned int iTimeoutInMilliSeconds,
                                 int& priority);

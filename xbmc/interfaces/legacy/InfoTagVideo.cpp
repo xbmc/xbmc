@@ -16,6 +16,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <utility>
+
 namespace XBMCAddon
 {
   namespace xbmc
@@ -576,7 +578,7 @@ namespace XBMCAddon
     void InfoTagVideo::setTags(std::vector<String> tags)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
-      setTagsRaw(infoTag, tags);
+      setTagsRaw(infoTag, std::move(tags));
     }
 
     void InfoTagVideo::setProductionCode(const String& productionCode)
@@ -656,7 +658,7 @@ namespace XBMCAddon
       setArtistsRaw(infoTag, std::move(artists));
     }
 
-    void InfoTagVideo::setCast(std::vector<const Actor*> actors)
+    void InfoTagVideo::setCast(const std::vector<const Actor*>& actors)
     {
       std::vector<SActorInfo> cast;
       cast.reserve(actors.size());
@@ -678,10 +680,10 @@ namespace XBMCAddon
     void InfoTagVideo::addSeason(int number, std::string name /* = "" */)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
-      addSeasonRaw(infoTag, number, name);
+      addSeasonRaw(infoTag, number, std::move(name));
     }
 
-    void InfoTagVideo::addSeasons(std::vector<Tuple<int, std::string>> namedSeasons)
+    void InfoTagVideo::addSeasons(const std::vector<Tuple<int, std::string>>& namedSeasons)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       addSeasonsRaw(infoTag, namedSeasons);
@@ -807,7 +809,7 @@ namespace XBMCAddon
     void InfoTagVideo::setRatingRaw(CVideoInfoTag* infoTag,
                                     float rating,
                                     int votes /* = 0 */,
-                                    std::string type /* = "" */,
+                                    const std::string& type /* = "" */,
                                     bool isDefault /* = false */)
     {
       infoTag->SetRating(rating, votes, type, isDefault);
@@ -928,7 +930,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::setTagsRaw(CVideoInfoTag* infoTag, std::vector<String> tags)
     {
-      infoTag->SetTags(tags);
+      infoTag->SetTags(std::move(tags));
     }
 
     void InfoTagVideo::setProductionCodeRaw(CVideoInfoTag* infoTag, const String& productionCode)
@@ -940,14 +942,14 @@ namespace XBMCAddon
     {
       CDateTime firstAiredDate;
       firstAiredDate.SetFromDateString(firstAired);
-      infoTag->m_firstAired = std::move(firstAiredDate);
+      infoTag->m_firstAired = firstAiredDate;
     }
 
     void InfoTagVideo::setLastPlayedRaw(CVideoInfoTag* infoTag, const String& lastPlayed)
     {
       CDateTime lastPlayedDate;
       lastPlayedDate.SetFromDBDateTime(lastPlayed);
-      infoTag->m_lastPlayed = std::move(lastPlayedDate);
+      infoTag->m_lastPlayed = lastPlayedDate;
     }
 
     void InfoTagVideo::setAlbumRaw(CVideoInfoTag* infoTag, const String& album)
@@ -984,7 +986,7 @@ namespace XBMCAddon
     {
       CDateTime dateAddedDate;
       dateAddedDate.SetFromDBDateTime(dateAdded);
-      infoTag->m_dateAdded = std::move(dateAddedDate);
+      infoTag->m_dateAdded = dateAddedDate;
     }
 
     void InfoTagVideo::setMediaTypeRaw(CVideoInfoTag* infoTag, const String& mediaType)
@@ -1025,7 +1027,7 @@ namespace XBMCAddon
     }
 
     void InfoTagVideo::addSeasonsRaw(CVideoInfoTag* infoTag,
-                                     std::vector<Tuple<int, std::string>> namedSeasons)
+                                     const std::vector<Tuple<int, std::string>>& namedSeasons)
     {
       for (const auto& season : namedSeasons)
         addSeasonRaw(infoTag, season.first(), season.second());
