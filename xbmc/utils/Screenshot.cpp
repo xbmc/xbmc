@@ -102,7 +102,8 @@ void CScreenShot::TakeScreenshot()
 
   if (!strDir.empty())
   {
-    std::string file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strDir, "screenshot%05d.png"), 65535);
+    std::string file =
+        CUtil::GetNextFilename(URIUtils::AddFileToFolder(strDir, "screenshot{:05}.png"), 65535);
 
     if (!file.empty())
     {
