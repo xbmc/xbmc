@@ -65,7 +65,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     pclose(fp);
   }
 
-  for (auto ip : addresses)
+  for (const auto& ip : addresses)
   {
     cmd = "nmblookup -A " + ip;
     fp = popen(cmd.c_str(), "r");
