@@ -72,11 +72,11 @@ std::string ReplayGain::Get() const
 
   std::string rg;
   if (Get(ALBUM).Valid())
-    rg = StringUtils::Format("{:.3f},{:.3f},", Get(ALBUM).Gain(), Get(ALBUM).Peak());
+    rg = fmt::format("{:.3f},{:.3f},", Get(ALBUM).Gain(), Get(ALBUM).Peak());
   else
     rg = "-1000, -1,";
   if (Get(TRACK).Valid())
-    rg += StringUtils::Format("{:.3f},{:.3f}", Get(TRACK).Gain(), Get(TRACK).Peak());
+    rg += fmt::format("{:.3f},{:.3f}", Get(TRACK).Gain(), Get(TRACK).Peak());
   else
     rg += "-1000, -1";
   return rg;
