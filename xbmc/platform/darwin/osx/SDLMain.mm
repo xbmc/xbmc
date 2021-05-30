@@ -220,27 +220,11 @@ static void setupWindowMenu(void)
   CFRelease(url2);
 }
 
+// Doesnt currently get called. Keep in case we fix the root cause
 - (void) applicationWillTerminate: (NSNotification *) note
 {
-  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
-    name:NSWorkspaceDidMountNotification object:nil];
-
-  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
-    name:NSWorkspaceDidUnmountNotification object:nil];
-
-  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-
-  [center removeObserver:self name:MediaKeyPower object:nil];
-  [center removeObserver:self name:MediaKeySoundMute object:nil];
-  [center removeObserver:self name:MediaKeySoundUp object:nil];
-  [center removeObserver:self name:MediaKeySoundDown object:nil];
-  [center removeObserver:self name:MediaKeyPlayPauseNotification object:nil];
-  [center removeObserver:self name:MediaKeyFastNotification object:nil];
-  [center removeObserver:self name:MediaKeyRewindNotification object:nil];
-  [center removeObserver:self name:MediaKeyNextNotification object:nil];
-  [center removeObserver:self name:MediaKeyPreviousNotification object:nil];
-
-  [[HotKeyController sharedController] disableTap];
+  // disabled as currently main() explicitly calls this.
+  // [self appshutdownCleanup];
 }
 
 - (void) applicationWillResignActive:(NSNotification *) note
@@ -266,6 +250,32 @@ static void setupWindowMenu(void)
   {
     // empty
   }
+}
+
+- (void)appshutdownCleanup
+{
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
+                                                                name:NSWorkspaceDidMountNotification
+                                                              object:nil];
+
+  [[[NSWorkspace sharedWorkspace] notificationCenter]
+      removeObserver:self
+                name:NSWorkspaceDidUnmountNotification
+              object:nil];
+
+  NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+
+  [center removeObserver:self name:MediaKeyPower object:nil];
+  [center removeObserver:self name:MediaKeySoundMute object:nil];
+  [center removeObserver:self name:MediaKeySoundUp object:nil];
+  [center removeObserver:self name:MediaKeySoundDown object:nil];
+  [center removeObserver:self name:MediaKeyPlayPauseNotification object:nil];
+  [center removeObserver:self name:MediaKeyFastNotification object:nil];
+  [center removeObserver:self name:MediaKeyRewindNotification object:nil];
+  [center removeObserver:self name:MediaKeyNextNotification object:nil];
+  [center removeObserver:self name:MediaKeyPreviousNotification object:nil];
+
+  [[HotKeyController sharedController] disableTap];
 }
 
 // Called after the internal event loop has started running.
@@ -558,7 +568,7 @@ int main(int argc, char *argv[])
     status = SDL_main(gArgc, gArgv);
     SDL_Quit();
 
-    [xbmc_delegate applicationWillTerminate:NULL];
+    [xbmc_delegate appshutdownCleanup];
 
     return status;
   }
