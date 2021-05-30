@@ -26,6 +26,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
+#include "smarthome/guiinfo/SmartHomeProperty.h"
 #include "utils/ArtUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/FileUtils.h"
@@ -37,9 +38,11 @@
 #include <algorithm>
 #include <array>
 #include <charconv>
+#include <chrono>
 #include <cmath>
 #include <functional>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -4677,6 +4680,228 @@ constexpr std::array<InfoMap, 29> retroplayer = {{
     {"videofilter", RETROPLAYER_VIDEO_FILTER},
     {"stretchmode", RETROPLAYER_STRETCH_MODE},
     {"videorotation", RETROPLAYER_VIDEO_ROTATION},
+}};
+// clang-format on
+
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_SmartHome SmartHome
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`SmartHome.System(name).IsActive(timeout)`</b>,
+///                  \anchor SmartHome_System_IsActive
+///                  _boolean_,
+///     @return Evaluates to true if the system has sent telemetry within the
+///     specified timeout, in seconds
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_IsActive `SmartHome.System(name).IsActive(timeout)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).Property(property\,type[\,format])`</b>,
+///                  \anchor SmartHome_System_Property
+///                  _string_,
+///     Returns the value of a generic property for the named smart-home
+///     system. Supported property types are `bool`\, `int8`\, `int16`\,
+///     `int32`\, `int64`\, `uint8`\, `uint16`\, `uint32`\, `uint64`\,
+///     `float32`\, `float64` and `string`. The optional format uses fmt
+///     syntax; for example\, `{:.1f} V` formats a floating-point value as
+///     `7.8 V`.
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_Property `SmartHome.System(name).Property(property\,type[\,format])`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).CPUTemperature`</b>,
+///                  \anchor SmartHome_System_CPUTemperature
+///                  _string_,
+///     @return The CPU temperature of the given system, in localized units
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_CPUTemperature `SmartHome.System(name).CPUTemperature`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).CPUUtilization`</b>,
+///                  \anchor SmartHome_System_CPUUtilization
+///                  _string_,
+///     @return The CPU utilization of the given system, in percent
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_CPUUtilization `SmartHome.System(name).CPUUtilization`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).CPUFrequency`</b>,
+///                  \anchor SmartHome_System_CPUFrequency
+///                  _string_,
+///     @return The CPU frequency of the given system, formatted with an appropriate unit
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_CPUFrequency `SmartHome.System(name).CPUFrequency`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).RAMUtilization`</b>,
+///                  \anchor SmartHome_System_RAMUtilization
+///                  _string_,
+///     @return The RAM utilization of the given system, in percent
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_RAMUtilization `SmartHome.System(name).RAMUtilization`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).BatteryCharge`</b>,
+///                  \anchor SmartHome_System_BatteryCharge
+///                  _string_,
+///     @return The current charge of the system's battery, in percent
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_BatteryCharge `SmartHome.System(name).BatteryCharge`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).BatteryLoad`</b>,
+///                  \anchor SmartHome_System_BatteryLoad
+///                  _string_,
+///     @return The current load provided by the system's battery, in Watts
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_BatteryLoad `SmartHome.System(name).BatteryLoad`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).PowerMeter(name).Voltage([format])`</b>,
+///                  \anchor SmartHome_System_PowerMeter_Voltage
+///                  _string_,
+///     Returns the voltage reported by the named power meter for the named smart-home system. The
+///     optional terminal parameter is an fmt format string. Units are not appended automatically;
+///     for example\, `Voltage({:.1f} V)` returns `7.2 V`.
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_PowerMeter_Voltage `SmartHome.System(name).PowerMeter(name).Voltage([format])`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).PowerMeter(name).Current([format])`</b>,
+///                  \anchor SmartHome_System_PowerMeter_Current
+///                  _string_,
+///     Returns the current reported by the named power meter for the named smart-home system. The
+///     optional terminal parameter is an fmt format string. Units are not appended automatically;
+///     for example\, `Current({:.2f} A)` returns `1.34 A`.
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_PowerMeter_Current `SmartHome.System(name).PowerMeter(name).Current([format])`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).PowerMeter(name).Power([format])`</b>,
+///                  \anchor SmartHome_System_PowerMeter_Power
+///                  _string_,
+///     Returns the power reported by the named power meter for the named smart-home system. The
+///     optional terminal parameter is an fmt format string. Units are not appended automatically;
+///     for example\, `Power({:.1f} W)` returns `3.1 W`.
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_PowerMeter_Power `SmartHome.System(name).PowerMeter(name).Power([format])`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.System(name).PowerMeter(name).CurrentShare(other[\,format])`</b>,
+///                  \anchor SmartHome_System_PowerMeter_CurrentShare
+///                  _string_,
+///     Returns this meter's percentage of the combined current of this meter and `other`. At or
+///     below 0.25 A combined current\, the result is 50; from 0.25 A to 0.75 A\, the measured share
+///     is progressively blended toward 50; at or above 0.75 A\, the measured share is returned.
+///     The optional terminal parameter is an fmt format string. A percent sign is not appended
+///     automatically; for example\, `CurrentShare(power_meter_1\,{:.0f} %)` returns `39 %`.
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_System_PowerMeter_CurrentShare `SmartHome.System(name).PowerMeter(name).CurrentShare(other[\,format])`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).ForwardSpeed`</b>,
+///                  \anchor SmartHome_Vehicle_ForwardSpeed
+///                  _string_,
+///     @return The current forward speed of the movable vehicle, in m/s
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_ForwardSpeed `SmartHome.Vehicle(name).ForwardSpeed`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).ForwardSpeedStdDev`</b>,
+///                  \anchor SmartHome_Vehicle_ForwardSpeedStdDev
+///                  _string_,
+///     @return The standard deviation (1-sigma uncertainty) of the forward speed, in m/s
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_ForwardSpeedStdDev `SmartHome.Vehicle(name).ForwardSpeedStdDev`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).Roll`</b>,
+///                  \anchor SmartHome_Vehicle_Roll
+///                  _string_,
+///     @return The current roll of the movable vehicle, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_Roll `SmartHome.Vehicle(name).Roll`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).RollStdDev`</b>,
+///                  \anchor SmartHome_Vehicle_RollStdDev
+///                  _string_,
+///     @return The standard deviation (1-sigma uncertainty) of the current roll, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_RollStdDev `SmartHome.Vehicle(name).RollStdDev`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).Pitch`</b>,
+///                  \anchor SmartHome_Vehicle_Pitch
+///                  _string_,
+///     @return The current pitch of the movable vehicle, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_Pitch `SmartHome.Vehicle(name).Pitch`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).PitchStdDev`</b>,
+///                  \anchor SmartHome_Vehicle_PitchStdDev
+///                  _string_,
+///     @return The standard deviation (1-sigma uncertainty) of the current pitch, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_PitchStdDev `SmartHome.Vehicle(name).PitchStdDev`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).Yaw`</b>,
+///                  \anchor SmartHome_Vehicle_Yaw
+///                  _string_,
+///     @return The current yaw of the movable vehicle, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_Yaw `SmartHome.Vehicle(name).Yaw`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).YawStdDev`</b>,
+///                  \anchor SmartHome_Vehicle_YawStdDev
+///                  _string_,
+///     @return The standard deviation (1-sigma uncertainty) of the current yaw, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_YawStdDev `SmartHome.Vehicle(name).YawStdDev`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).Tilt`</b>,
+///                  \anchor SmartHome_Vehicle_Tilt
+///                  _string_,
+///     @return The current tilt magnitude of the movable vehicle, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_Tilt `SmartHome.Vehicle(name).Tilt`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.Vehicle(name).TiltStdDev`</b>,
+///                  \anchor SmartHome_Vehicle_TiltStdDev
+///                  _string_,
+///     @return The standard deviation (1-sigma uncertainty) of the current tilt magnitude, in degrees
+///     <p><hr>
+///     @skinning_v24 **[New Infolabel]** \link SmartHome_Vehicle_TiltStdDev `SmartHome.Vehicle(name).TiltStdDev`\endlink
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+// clang-format off
+constexpr std::array<InfoMap, 18> smarthome = {{
+    {"isactive",            SMARTHOME_IS_ACTIVE},
+    {"cputemperature",      SMARTHOME_CPU_TEMPERATURE},
+    {"cpuutilization",      SMARTHOME_CPU_UTILIZATION},
+    {"cpufrequency",        SMARTHOME_CPU_FREQUENCY},
+    {"ramutilization",      SMARTHOME_RAM_UTILIZATION},
+    {"batterycharge",       SMARTHOME_BATTERY_CHARGE},
+    {"batteryload",         SMARTHOME_BATTERY_LOAD},
+    {"property",            SMARTHOME_PROPERTY},
+    {"forwardspeed",        SMARTHOME_FORWARD_SPEED},
+    {"forwardspeedstddev",  SMARTHOME_FORWARD_SPEED_STD_DEV},
+    {"roll",                SMARTHOME_ROLL},
+    {"rollstddev",          SMARTHOME_ROLL_STD_DEV},
+    {"pitch",               SMARTHOME_PITCH},
+    {"pitchstddev",         SMARTHOME_PITCH_STD_DEV},
+    {"yaw",                 SMARTHOME_YAW},
+    {"yawstddev",           SMARTHOME_YAW_STD_DEV},
+    {"tilt",                SMARTHOME_TILT},
+    {"tiltstddev",          SMARTHOME_TILT_STD_DEV},
 }};
 // clang-format on
 
@@ -11825,6 +12050,117 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
             return AddMultiInfo(
                 CGUIInfo(control_label.val, controlID, atoi(info[2].param(0).c_str())));
           return 0;
+        }
+      }
+    }
+    else if (info[0].Name() == "smarthome")
+    {
+      if (info[1].Name() == "system")
+      {
+        // Parameter is system name
+        const std::string systemName = info[1].param();
+
+        if (systemName.empty())
+          return 0;
+
+        if (info[2].Name() == "property")
+        {
+          if (info[2].num_params() != 2 && info[2].num_params() != 3)
+            return 0;
+
+          const std::string& propertyName = info[2].param(0);
+          const std::string& typeName = info[2].param(1);
+          const std::string propertyFormat = info[2].num_params() == 3 ? info[2].param(2) : "";
+          const auto type = KODI::SMART_HOME::SmartHomePropertyTypeFromString(typeName);
+          if (propertyName.empty() || !type ||
+              !KODI::SMART_HOME::IsValidSmartHomePropertyFormat(*type, propertyFormat))
+            return 0;
+
+          return AddMultiInfo(
+              CGUIInfo(SMARTHOME_PROPERTY, systemName, propertyName, typeName, propertyFormat));
+        }
+
+        if (info[2].Name() == "powermeter")
+        {
+          if (info[2].num_params() != 1 || info.size() != 4)
+            return 0;
+
+          const std::string& powerMeterName = info[2].param();
+          if (powerMeterName.empty())
+            return 0;
+
+          const bool currentShare = info[3].Name() == "currentshare";
+          if ((!currentShare && info[3].num_params() > 1) ||
+              (currentShare && info[3].num_params() != 1 && info[3].num_params() != 2))
+            return 0;
+
+          const std::string otherPowerMeterName = currentShare ? info[3].param(0) : "";
+          const std::string format = currentShare
+                                         ? (info[3].num_params() == 2 ? info[3].param(1) : "")
+                                         : (info[3].num_params() == 1 ? info[3].param() : "");
+          if ((currentShare && otherPowerMeterName.empty()) ||
+              !KODI::SMART_HOME::IsValidSmartHomeNumberFormat(format))
+            return 0;
+
+          int label = 0;
+          if (info[3].Name() == "voltage")
+            label = SMARTHOME_POWER_METER_VOLTAGE;
+          else if (info[3].Name() == "current")
+            label = SMARTHOME_POWER_METER_CURRENT;
+          else if (info[3].Name() == "power")
+            label = SMARTHOME_POWER_METER_POWER;
+          else if (currentShare)
+            label = SMARTHOME_POWER_METER_CURRENT_SHARE;
+          else
+            return 0;
+
+          return AddMultiInfo(
+              CGUIInfo(label, systemName, powerMeterName, otherPowerMeterName, format));
+        }
+
+        // Get next info
+        for (const auto& systemLabel : smarthome)
+        {
+          if (info[2].Name() == systemLabel.str)
+          {
+            int timeoutMs = 0;
+            if (info[2].Name() == "isactive")
+            {
+              const std::string& timeoutParam = info[2].param();
+              if (!timeoutParam.empty())
+              {
+                const float timeoutSeconds = StringUtils::ToFloat(timeoutParam, 0.0f);
+                if (timeoutSeconds > 0.0f)
+                {
+                  const auto timeout = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      std::chrono::duration<float>(timeoutSeconds));
+                  if (timeout.count() > 0)
+                  {
+                    const auto clampedTimeout = std::min(
+                        timeout, std::chrono::milliseconds{std::numeric_limits<int>::max()});
+                    timeoutMs = static_cast<int>(clampedTimeout.count());
+                  }
+                }
+              }
+            }
+            return AddMultiInfo(
+                CGUIInfo(systemLabel.val, 2, 0, 0, systemName, timeoutMs)); // 2 => absolute
+          }
+        }
+      }
+      else if (info[1].Name() == "vehicle")
+      {
+        // Parameter is vehicle name
+        const std::string vehicleName = info[1].param();
+
+        // Get next info
+        for (const auto& vehicleLabel : smarthome)
+        {
+          if (info[2].Name() == vehicleLabel.str)
+          {
+            return AddMultiInfo(
+                CGUIInfo(vehicleLabel.val, 2, 0, 0, vehicleName, 0)); // 2 => absolute
+          }
         }
       }
     }

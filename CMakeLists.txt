@@ -108,6 +108,7 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+option(ENABLE_ROS2        "Enable ROS 2 support?" OFF)
 
 # Internal Depends - supported on all platforms
 
@@ -293,6 +294,20 @@ set(optional_deps Alsa>=1.0.27
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
 
+# ROS dependencies. Keep in alphabetical order please
+list(APPEND optional_deps
+  ament_cmake
+  builtin_interfaces
+  geometry_msgs
+  image_transport
+  oasis_msgs
+  rcl_interfaces
+  rclcpp
+  rmw
+  sensor_msgs
+  std_msgs
+)
+
 # Remove excluded platform specific optional_deps
 foreach(excludedep ${PLATFORM_OPTIONAL_DEPS_EXCLUDE})
   list(FILTER optional_deps EXCLUDE REGEX ${excludedep})
@@ -338,6 +353,10 @@ if(ENABLE_AIRTUNES)
   if(TARGET ${APP_NAME_LC}::Shairplay)
     core_require_dep(Shairplay)
   endif()
+endif()
+
+if (ENABLE_ROS2)
+  list(APPEND DEP_DEFINES "-DHAS_ROS2=1")
 endif()
 
 # We unset this after the bulk of our find calls are complete. Ideally we would want this enabled
