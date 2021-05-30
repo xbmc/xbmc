@@ -320,11 +320,11 @@ bool CSettingControlRange::Deserialize(const TiXmlNode *node, bool update /* = f
 bool CSettingControlRange::SetFormat(const std::string &format)
 {
   if (StringUtils::EqualsNoCase(format, "percentage"))
-    m_valueFormat = "%i %%";
+    m_valueFormat = "{} %";
   else if (StringUtils::EqualsNoCase(format, "integer"))
-    m_valueFormat = "%d";
+    m_valueFormat = "{:d}";
   else if (StringUtils::EqualsNoCase(format, "number"))
-    m_valueFormat = "%.1f";
+    m_valueFormat = "{:.1f}";
   else if (StringUtils::EqualsNoCase(format, "date") ||
            StringUtils::EqualsNoCase(format, "time"))
     m_valueFormat.clear();
