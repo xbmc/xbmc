@@ -151,29 +151,14 @@ namespace PVR
      */
     bool CreateChannelEpgs();
 
-    /*!
-     * @brief Return the group which was previous played.
-     * @return The group which was previous played.
-     */
-    std::shared_ptr<CPVRChannelGroup> GetPreviousPlayedGroup();
+  private:
+    CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
+    CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&) = delete;
 
-    /*!
-     * @brief Set the last played group.
-     * @param The last played group
-     */
-    void SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup>& group);
-
-  protected:
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */
     CCriticalSection m_critSection;
     bool m_bIsUpdating = false;
-    std::shared_ptr<CPVRChannelGroup> m_lastPlayedGroups[2]; /*!< used to store the last played groups */
-
-  private :
-    CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
-    CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&) = delete;
-
     bool m_bLoaded = false;
   };
 }

@@ -46,6 +46,9 @@ namespace PVR
     IGNORE_NUMBERING_FROM_ONE = 1
   };
 
+  using GroupMemberPair =
+      std::pair<std::shared_ptr<CPVRChannelGroupMember>, std::shared_ptr<CPVRChannelGroupMember>>;
+
   class CPVRChannelGroup : public IChannelGroupSettingsCallback
   {
     friend class CPVRDatabase;
@@ -252,6 +255,12 @@ namespace PVR
      */
     std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember(
         int iCurrentChannel = -1) const;
+
+    /*!
+     * @brief Get the last and previous to last played channel group members.
+     * @return The members. pair.first contains the last, pair.second the previous to last member.
+     */
+    GroupMemberPair GetLastAndPreviousToLastPlayedChannelGroupMember() const;
 
     /*!
      * @brief Get a channel group member given it's active channel number
