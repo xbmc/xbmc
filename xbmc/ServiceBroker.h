@@ -103,6 +103,11 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
+
+namespace SMART_HOME
+{
+class CSmartHomeServices;
+}
 } // namespace KODI
 
 namespace PERIPHERALS
@@ -218,6 +223,8 @@ public:
       const std::shared_ptr<speech::ISpeechRecognition>& speechRecognition);
   static void UnregisterSpeechRecognition();
   static std::shared_ptr<speech::ISpeechRecognition> GetSpeechRecognition();
+
+  static KODI::SMART_HOME::CSmartHomeServices& GetSmartHomeServices();
 
 private:
   std::shared_ptr<CAppParams> m_appParams;

@@ -1,0 +1,27 @@
+set(HEADERS IRos2.h)
+
+if (ENABLE_ROS2)
+  list(APPEND SOURCES Ros2.cpp
+                      Ros2InputPublisher.cpp
+                      Ros2Node.cpp
+                      Ros2Translator.cpp
+                      Ros2VideoSubscription.cpp
+  )
+  list(APPEND HEADERS Ros2.h
+                      Ros2InputPublisher.h
+                      Ros2Node.h
+                      Ros2Translator.h
+                      Ros2VideoSubscription.h
+  )
+
+  core_add_library(smarthome_ros2)
+
+  # TODO: Why is this needed? Link error started occuring after an image_transport PR
+  target_link_libraries(smarthome_ros2
+    image_transport::image_transport
+  )
+else()
+  if (NOT ENABLE_STATIC_LIBS)
+    core_add_library(smarthome_ros2)
+  endif()
+endif()

@@ -66,6 +66,11 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
+
+namespace SMART_HOME
+{
+class CSmartHomeServices;
+}
 } // namespace KODI
 
 namespace MEDIA_DETECT
@@ -147,6 +152,8 @@ public:
   MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
 #endif
 
+  KODI::SMART_HOME::CSmartHomeServices& GetSmartHomeServices();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -197,4 +204,5 @@ protected:
 #if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   std::unique_ptr<MEDIA_DETECT::CDetectDVDMedia> m_DetectDVDType;
 #endif
+  std::unique_ptr<KODI::SMART_HOME::CSmartHomeServices> m_smartHomeServices;
 };
