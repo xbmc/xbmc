@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <utility>
 
 namespace XBMCAddon
 {
@@ -20,7 +21,7 @@ namespace xbmcaddon
 {
 
 template<class TSetting>
-bool GetSettingValue(std::shared_ptr<CSettingsBase> settings,
+bool GetSettingValue(const std::shared_ptr<CSettingsBase>& settings,
                      const std::string& key,
                      typename TSetting::Value& value)
 {
@@ -36,7 +37,7 @@ bool GetSettingValue(std::shared_ptr<CSettingsBase> settings,
 }
 
 template<class TSetting>
-bool GetSettingValueList(std::shared_ptr<CSettingsBase> settings,
+bool GetSettingValueList(const std::shared_ptr<CSettingsBase>& settings,
                          const std::string& key,
                          std::function<typename TSetting::Value(CVariant)> transform,
                          std::vector<typename TSetting::Value>& values)
@@ -55,7 +56,7 @@ bool GetSettingValueList(std::shared_ptr<CSettingsBase> settings,
 }
 
 template<class TSetting>
-bool SetSettingValue(std::shared_ptr<CSettingsBase> settings,
+bool SetSettingValue(const std::shared_ptr<CSettingsBase>& settings,
                      const std::string& key,
                      typename TSetting::Value value)
 {
@@ -71,7 +72,7 @@ bool SetSettingValue(std::shared_ptr<CSettingsBase> settings,
 }
 
 template<class TSetting>
-bool SetSettingValueList(std::shared_ptr<CSettingsBase> settings,
+bool SetSettingValueList(const std::shared_ptr<CSettingsBase>& settings,
                          const std::string& key,
                          const std::vector<typename TSetting::Value>& values)
 {
@@ -91,7 +92,7 @@ bool SetSettingValueList(std::shared_ptr<CSettingsBase> settings,
   return settings->SetList(key, variantValues);
 }
 
-Settings::Settings(std::shared_ptr<CSettingsBase> settings) : settings(settings)
+Settings::Settings(std::shared_ptr<CSettingsBase> settings) : settings(std::move(settings))
 {
 }
 
@@ -133,7 +134,7 @@ String Settings::getString(const char* id) throw(XBMCAddon::WrongTypeException)
 
 std::vector<bool> Settings::getBoolList(const char* id) throw(XBMCAddon::WrongTypeException)
 {
-  const auto transform = [](CVariant value) { return value.asBoolean(); };
+  const auto transform = [](const CVariant& value) { return value.asBoolean(); };
   std::vector<bool> values;
   if (!GetSettingValueList<CSettingBool>(settings, id, transform, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[boolean]\" for \"%s\"", id);
@@ -143,7 +144,7 @@ std::vector<bool> Settings::getBoolList(const char* id) throw(XBMCAddon::WrongTy
 
 std::vector<int> Settings::getIntList(const char* id) throw(XBMCAddon::WrongTypeException)
 {
-  const auto transform = [](CVariant value) { return value.asInteger32(); };
+  const auto transform = [](const CVariant& value) { return value.asInteger32(); };
   std::vector<int> values;
   if (!GetSettingValueList<CSettingInt>(settings, id, transform, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[integer]\" for \"%s\"", id);
@@ -153,7 +154,7 @@ std::vector<int> Settings::getIntList(const char* id) throw(XBMCAddon::WrongType
 
 std::vector<double> Settings::getNumberList(const char* id) throw(XBMCAddon::WrongTypeException)
 {
-  const auto transform = [](CVariant value) { return value.asDouble(); };
+  const auto transform = [](const CVariant& value) { return value.asDouble(); };
   std::vector<double> values;
   if (!GetSettingValueList<CSettingNumber>(settings, id, transform, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[number]\" for \"%s\"", id);
@@ -163,7 +164,7 @@ std::vector<double> Settings::getNumberList(const char* id) throw(XBMCAddon::Wro
 
 std::vector<String> Settings::getStringList(const char* id) throw(XBMCAddon::WrongTypeException)
 {
-  const auto transform = [](CVariant value) { return value.asString(); };
+  const auto transform = [](const CVariant& value) { return value.asString(); };
   std::vector<std::string> values;
   if (!GetSettingValueList<CSettingString>(settings, id, transform, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[string]\" for \"%s\"", id);

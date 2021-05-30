@@ -171,7 +171,7 @@ public:
 #endif
 
 #ifndef SWIG
-  static void setResolutionRaw(CPictureInfoTag* infoTag, String resolution);
+  static void setResolutionRaw(CPictureInfoTag* infoTag, const String& resolution);
   static void setResolutionRaw(CPictureInfoTag* infoTag, int width, int height);
   static void setDateTimeTakenRaw(CPictureInfoTag* infoTag, String datetimetaken);
 #endif

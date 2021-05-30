@@ -64,7 +64,7 @@ void InfoTagPicture::setDateTimeTaken(const String& datetimetaken)
   setDateTimeTakenRaw(infoTag, datetimetaken);
 }
 
-void InfoTagPicture::setResolutionRaw(CPictureInfoTag* infoTag, String resolution)
+void InfoTagPicture::setResolutionRaw(CPictureInfoTag* infoTag, const String& resolution)
 {
   infoTag->SetInfo("resolution", resolution);
 }

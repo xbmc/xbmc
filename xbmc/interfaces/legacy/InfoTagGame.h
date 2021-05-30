@@ -378,7 +378,7 @@ public:
 #ifndef SWIG
   static void setTitleRaw(KODI::GAME::CGameInfoTag* infoTag, const String& title);
   static void setPlatformRaw(KODI::GAME::CGameInfoTag* infoTag, const String& platform);
-  static void setGenresRaw(KODI::GAME::CGameInfoTag* infoTag, std::vector<String> genres);
+  static void setGenresRaw(KODI::GAME::CGameInfoTag* infoTag, const std::vector<String>& genres);
   static void setPublisherRaw(KODI::GAME::CGameInfoTag* infoTag, const String& publisher);
   static void setDeveloperRaw(KODI::GAME::CGameInfoTag* infoTag, const String& developer);
   static void setOverviewRaw(KODI::GAME::CGameInfoTag* infoTag, const String& overview);

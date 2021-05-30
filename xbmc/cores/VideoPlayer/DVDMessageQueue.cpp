@@ -84,17 +84,19 @@ void CDVDMessageQueue::End()
   m_bAbortRequest = false;
 }
 
-MsgQueueReturnCode CDVDMessageQueue::Put(std::shared_ptr<CDVDMsg> pMsg, int priority)
+MsgQueueReturnCode CDVDMessageQueue::Put(const std::shared_ptr<CDVDMsg>& pMsg, int priority)
 {
   return Put(pMsg, priority, true);
 }
 
-MsgQueueReturnCode CDVDMessageQueue::PutBack(std::shared_ptr<CDVDMsg> pMsg, int priority)
+MsgQueueReturnCode CDVDMessageQueue::PutBack(const std::shared_ptr<CDVDMsg>& pMsg, int priority)
 {
   return Put(pMsg, priority, false);
 }
 
-MsgQueueReturnCode CDVDMessageQueue::Put(std::shared_ptr<CDVDMsg> pMsg, int priority, bool front)
+MsgQueueReturnCode CDVDMessageQueue::Put(const std::shared_ptr<CDVDMsg>& pMsg,
+                                         int priority,
+                                         bool front)
 {
   CSingleLock lock(m_section);
 

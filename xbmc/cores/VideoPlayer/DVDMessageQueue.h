@@ -61,8 +61,8 @@ public:
   void Abort();
   void End();
 
-  MsgQueueReturnCode Put(std::shared_ptr<CDVDMsg> pMsg, int priority = 0);
-  MsgQueueReturnCode PutBack(std::shared_ptr<CDVDMsg> pMsg, int priority = 0);
+  MsgQueueReturnCode Put(const std::shared_ptr<CDVDMsg>& pMsg, int priority = 0);
+  MsgQueueReturnCode PutBack(const std::shared_ptr<CDVDMsg>& pMsg, int priority = 0);
 
   /**
    * msg,       message type from DVDMessage.h
@@ -96,7 +96,7 @@ public:
   bool IsDataBased() const;
 
 private:
-  MsgQueueReturnCode Put(std::shared_ptr<CDVDMsg> pMsg, int priority, bool front);
+  MsgQueueReturnCode Put(const std::shared_ptr<CDVDMsg>& pMsg, int priority, bool front);
   void UpdateTimeFront();
   void UpdateTimeBack();
 

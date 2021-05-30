@@ -274,7 +274,7 @@ inline void CVideoPlayerVideo::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int pr
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
 }
 
-inline void CVideoPlayerVideo::SendMessageBack(std::shared_ptr<CDVDMsg> pMsg, int priority)
+inline void CVideoPlayerVideo::SendMessageBack(const std::shared_ptr<CDVDMsg>& pMsg, int priority)
 {
   m_messageQueue.PutBack(pMsg, priority);
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());

@@ -7,69 +7,65 @@
  */
 
 #include "VideoPlayer.h"
-#include "VideoPlayerRadioRDS.h"
-#include "system.h"
 
-#include "DVDInputStreams/DVDInputStream.h"
-#include "DVDInputStreams/DVDFactoryInputStream.h"
-#include "DVDInputStreams/DVDInputStreamNavigator.h"
-#if defined(HAVE_LIBBLURAY)
-#include "DVDInputStreams/DVDInputStreamBluray.h"
-#endif
-#include "DVDInputStreams/InputStreamPVRBase.h"
-
+#include "Application.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxCC.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
-#include "DVDDemuxers/DVDDemuxFFmpeg.h"
-
 #include "DVDFileInfo.h"
-
-#include "utils/LangCodeExpander.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-
-#include "utils/URIUtils.h"
+#include "DVDInputStreams/DVDFactoryInputStream.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#if defined(HAVE_LIBBLURAY)
+#include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
+#include "DVDInputStreams/DVDInputStreamNavigator.h"
+#include "DVDInputStreams/InputStreamPVRBase.h"
+#include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
+#include "LangInfo.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "VideoPlayerAudio.h"
+#include "VideoPlayerRadioRDS.h"
 #include "cores/Cut.h"
 #include "cores/DataCacheCore.h"
+#include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
-#include "Application.h"
-#include "ServiceBroker.h"
+#include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-
-#include "DVDDemuxers/DVDDemuxCC.h"
-#include "cores/FFmpeg.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#include "storage/MediaManager.h"
+#include "utils/JobManager.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
-#include "utils/Variant.h"
-#include "storage/MediaManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
-#include "Util.h"
-#include "LangInfo.h"
-#include "URL.h"
-
-#include "VideoPlayerAudio.h"
 #include "windowing/WinSystem.h"
-#include "DVDCodecs/DVDCodecUtils.h"
 
 #include <iterator>
+#include <utility>
+
+#include "system.h"
 
 using namespace KODI::MESSAGING;
 
@@ -2410,7 +2406,7 @@ void CVideoPlayer::SendPlayerMessage(std::shared_ptr<CDVDMsg> pMsg, unsigned int
 {
   IDVDStreamPlayer* player = GetStreamPlayer(target);
   if(player)
-    player->SendMessage(pMsg, 0);
+    player->SendMessage(std::move(pMsg), 0);
 }
 
 void CVideoPlayer::OnExit()
