@@ -395,11 +395,11 @@ std::string CDatabaseQueryRule::FormatWhereClause(const std::string &negate, con
   std::string query;
   if (m_field != 0)
   {
-    std::string fmt = "%s";
+    std::string fmt = "{}";
     if (GetFieldType(m_field) == NUMERIC_FIELD)
-      fmt = "CAST(%s as DECIMAL(6,1))";
+      fmt = "CAST({} as DECIMAL(6,1))";
     else if (GetFieldType(m_field) == SECONDS_FIELD)
-      fmt = "CAST(%s as INTEGER)";
+      fmt = "CAST({} as INTEGER)";
 
     query = StringUtils::Format(fmt, GetField(m_field, strType));
     query += negate + parameter;

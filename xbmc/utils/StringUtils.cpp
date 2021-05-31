@@ -1531,7 +1531,7 @@ std::string StringUtils::SizeToString(int64_t size)
   }
 
   if (!i)
-    strLabel = StringUtils::Format("%.lf B", s);
+    strLabel = StringUtils::Format("{:.f} B", s);
   else if (i == ARRAY_SIZE(prefixes))
   {
     if (s >= 1000.0)
