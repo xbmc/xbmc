@@ -13,3 +13,8 @@
 CAppParams::CAppParams() : m_playlist(std::make_unique<CFileItemList>())
 {
 }
+
+void CAppParams::SetRawArgs(std::vector<std::string> args)
+{
+  m_rawArgs = std::move(args);
+}
