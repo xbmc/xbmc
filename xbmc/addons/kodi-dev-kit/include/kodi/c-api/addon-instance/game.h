@@ -241,7 +241,7 @@ extern "C"
   ///
   typedef struct game_stream_video_properties
   {
-    /// @brief The to used pixel format
+    /// @brief The stream's pixel format
     GAME_PIXEL_FORMAT format;
 
     /// @brief The nominal used width
