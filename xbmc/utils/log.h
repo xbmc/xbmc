@@ -62,14 +62,14 @@ public:
 
   Logger GetLogger(const std::string& loggerName);
 
-  template<typename Char, typename... Args>
-  static inline void Log(int level, const Char* format, Args&&... args)
+  template<typename... Args>
+  static inline void Log(int level, const char* format, Args&&... args)
   {
     Log(MapLogLevel(level), format, std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
-  static inline void Log(int level, uint32_t component, const Char* format, Args&&... args)
+  template<typename... Args>
+  static inline void Log(int level, uint32_t component, const char* format, Args&&... args)
   {
     if (!GetInstance().CanLogComponent(component))
       return;
@@ -77,16 +77,16 @@ public:
     Log(level, format, std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
-  static inline void Log(spdlog::level::level_enum level, const Char* format, Args&&... args)
+  template<typename... Args>
+  static inline void Log(spdlog::level::level_enum level, const char* format, Args&&... args)
   {
     GetInstance().FormatAndLogInternal(level, format, std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
+  template<typename... Args>
   static inline void Log(spdlog::level::level_enum level,
                          uint32_t component,
-                         const Char* format,
+                         const char* format,
                          Args&&... args)
   {
     if (!GetInstance().CanLogComponent(component))
@@ -95,18 +95,18 @@ public:
     Log(level, format, std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
+  template<typename... Args>
   static inline void LogFunction(int level,
                                  const char* functionName,
-                                 const Char* format,
+                                 const char* format,
                                  Args&&... args)
   {
     LogFunction(MapLogLevel(level), functionName, format, std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
+  template<typename... Args>
   static inline void LogFunction(
-      int level, const char* functionName, uint32_t component, const Char* format, Args&&... args)
+      int level, const char* functionName, uint32_t component, const char* format, Args&&... args)
   {
     if (!GetInstance().CanLogComponent(component))
       return;
@@ -114,10 +114,10 @@ public:
     LogFunction(level, functionName, format, std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
+  template<typename... Args>
   static inline void LogFunction(spdlog::level::level_enum level,
                                  const char* functionName,
-                                 const Char* format,
+                                 const char* format,
                                  Args&&... args)
   {
     if (functionName == nullptr || strlen(functionName) == 0)
@@ -127,11 +127,11 @@ public:
                                                  std::forward<Args>(args)...);
   }
 
-  template<typename Char, typename... Args>
+  template<typename... Args>
   static inline void LogFunction(spdlog::level::level_enum level,
                                  const char* functionName,
                                  uint32_t component,
-                                 const Char* format,
+                                 const char* format,
                                  Args&&... args)
   {
     if (!GetInstance().CanLogComponent(component))
@@ -155,35 +155,20 @@ private:
                                                   const char* format,
                                                   Args&&... args)
   {
-    GetInstance().FormatAndLogInternal(
-        level, StringUtils::Format("{0:s}: {1:s}", functionName, format).c_str(),
-        std::forward<Args>(args)...);
+    GetInstance().FormatAndLogInternal(level,
+                                       StringUtils::Format("{0:s}: {1:s}", functionName, format),
+                                       std::forward<Args>(args)...);
   }
 
   template<typename... Args>
-  static inline void FormatAndLogFunctionInternal(spdlog::level::level_enum level,
-                                                  const char* functionName,
-                                                  const wchar_t* format,
-                                                  Args&&... args)
-  {
-    GetInstance().FormatAndLogInternal(
-        level, StringUtils::Format(L"{0:s}: {1:s}", functionName, format).c_str(),
-        std::forward<Args>(args)...);
-  }
-
-  template<typename Char, typename... Args>
   inline void FormatAndLogInternal(spdlog::level::level_enum level,
-                                   const Char* format,
+                                   std::string format,
                                    Args&&... args)
   {
-    // TODO: for now we manually format the messages to support both python- and printf-style formatting.
-    //       this can be removed once all log messages have been adjusted to python-style formatting
-    auto logString = StringUtils::Format(format, std::forward<Args>(args)...);
-
     // fixup newline alignment, number of spaces should equal prefix length
-    StringUtils::Replace(logString, "\n", "\n                                                   ");
+    StringUtils::Replace(format, "\n", "\n                                                   ");
 
-    m_defaultLogger->log(level, std::move(logString));
+    m_defaultLogger->log(level, format, std::forward<Args>(args)...);
   }
 
   Logger CreateLogger(const std::string& loggerName);
