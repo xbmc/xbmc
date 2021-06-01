@@ -306,7 +306,8 @@ static int Screenshot(const std::vector<std::string>& params)
     {
       if (XFILE::CDirectory::Exists(strSaveToPath))
       {
-        std::string file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%05d.png"), 65535);
+        std::string file = CUtil::GetNextFilename(
+            URIUtils::AddFileToFolder(strSaveToPath, "screenshot{:05}.png"), 65535);
 
         if (!file.empty())
         {

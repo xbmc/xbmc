@@ -70,7 +70,7 @@ protected:
   CSettingControlFormattedRange() = default;
 
   int m_formatLabel = -1;
-  std::string m_formatString = "%i";
+  std::string m_formatString = "{}";
   int m_minimumLabel = -1;
 };
 
@@ -265,7 +265,7 @@ public:
 protected:
   int m_formatLabel = 21469;
   int m_valueFormatLabel = -1;
-  std::string m_valueFormat = "%s";
+  std::string m_valueFormat = "{}";
 };
 
 class CSettingControlTitle : public ISettingControl

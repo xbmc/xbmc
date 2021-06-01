@@ -188,7 +188,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         std::shared_ptr<CSettingInt> settingInt = std::make_shared<CSettingInt>(
             setting->GetId(), *std::static_pointer_cast<CSettingInt>(setting));
         if (settingInt->GetTranslatableOptions().empty())
-          settingInt->SetControl(GetSliderControl("integer", false, -1, usePopup, -1, "%i"));
+          settingInt->SetControl(GetSliderControl("integer", false, -1, usePopup, -1, "{:d}"));
         else
           settingInt->SetControl(GetSpinnerControl("string"));
 
@@ -200,7 +200,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
       {
         std::shared_ptr<CSettingNumber> settingNumber = std::make_shared<CSettingNumber>(
             setting->GetId(), *std::static_pointer_cast<CSettingNumber>(setting));
-        settingNumber->SetControl(GetSliderControl("number", false, -1, usePopup, -1, "%2.2f"));
+        settingNumber->SetControl(GetSliderControl("number", false, -1, usePopup, -1, "{:2.2f}"));
 
         settingCopy = std::static_pointer_cast<CSetting>(settingNumber);
         break;

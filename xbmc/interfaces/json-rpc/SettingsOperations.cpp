@@ -744,7 +744,7 @@ bool CSettingsOperations::SerializeSettingControl(
     std::shared_ptr<const CSettingControlSpinner> spinner = std::static_pointer_cast<const CSettingControlSpinner>(control);
     if (spinner->GetFormatLabel() >= 0)
       obj["formatlabel"] = g_localizeStrings.Get(spinner->GetFormatLabel());
-    else if (!spinner->GetFormatString().empty() && spinner->GetFormatString() != "%i")
+    else if (!spinner->GetFormatString().empty() && spinner->GetFormatString() != "{:d}")
       obj["formatlabel"] = spinner->GetFormatString();
     if (spinner->GetMinimumLabel() >= 0)
       obj["minimumlabel"] = g_localizeStrings.Get(spinner->GetMinimumLabel());
