@@ -437,6 +437,10 @@ TEST(TestStringUtils, SizeToString)
   ref = "2.00 GB";
   var = StringUtils::SizeToString(2147483647);
   EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "0.00 B";
+  var = StringUtils::SizeToString(0);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
 TEST(TestStringUtils, EmptyString)
