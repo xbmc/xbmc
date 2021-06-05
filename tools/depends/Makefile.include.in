@@ -71,10 +71,10 @@ CPPFLAGS=@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/incl
 FFMPEG_CONFIGURE_OPTIONS=@ffmpeg_options@
 
 
-PATH:=@prefix@/@tool_dir@/bin:$(PATH)
 ifneq (@use_build_toolchain@,)
   PATH:=@use_build_toolchain@/bin:@use_build_toolchain@/usr/bin:$(PATH)
 endif
+PATH:=@prefix@/@tool_dir@/bin:$(PATH)
 LD_FOR_BUILD=@LD_FOR_BUILD@
 ifneq (@use_ccache@,yes)
   CC_FOR_BUILD=@CC_FOR_BUILD@
