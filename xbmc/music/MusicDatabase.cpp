@@ -2209,58 +2209,67 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
        but SQLite not support updatable joins.
     */
     m_pDS->exec("CREATE TABLE tempDisco "
-                "(strAlbum TEXT, iYear INTEGER, mbid TEXT, idAlbum INTEGER)");
+                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
+    m_pDS->exec("CREATE TABLE tempAlbum "
+                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
 
     std::string strSQL;
-    strSQL = PrepareSQL("INSERT INTO tempDisco(strAlbum, iYear, mbid, idAlbum) "
-                        "SELECT strAlbum, CAST(discography.strYear AS INTEGER) AS iYear, "
+    strSQL = PrepareSQL("INSERT INTO tempDisco(strAlbum, strYear, mbid, idAlbum) "
+                        "SELECT strAlbum, SUBSTR(discography.strYear, 1, 4) AS strYear, "
                         "strReleaseGroupMBID, NULL "
                         "FROM discography WHERE idArtist = %i",
                         idArtist);
     m_pDS->exec(strSQL);
 
-    // Match albums on release group mbid, if multi-releases then first used
-    strSQL = "UPDATE tempDisco SET idAlbum = (SELECT album.idAlbum FROM album "
-             "WHERE album.strReleaseGroupMBID = tempDisco.mbid "
-             "AND album.strReleaseGroupMBID IS NOT NULL)";
-    m_pDS->exec(strSQL);
-    // Match remaining to albums by artist on title and year
-    strSQL = PrepareSQL("UPDATE tempDisco SET idAlbum = (SELECT album.idAlbum FROM album "
-                        "JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
-                        "WHERE album_artist.idArtist = %i "
-                        "AND NOT EXISTS(SELECT 1 FROM tempDisco AS td "
-                        "WHERE td.idAlbum = album.idAlbum) "
-                        "AND CAST(strOrigReleaseDate AS INTEGER) = tempDisco.iYear "
-                        "AND album.strAlbum = tempDisco.strAlbum) "
-                        "WHERE tempDisco.idAlbum is NULL",
+    strSQL = PrepareSQL("INSERT INTO tempAlbum(strAlbum, strYear, mbid, idAlbum) "
+                        "SELECT strAlbum, SUBSTR(strOrigReleaseDate, 1, 4) AS strYear, "
+                        "strReleaseGroupMBID, album.idAlbum "
+                        "FROM album JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
+                        "WHERE idArtist = %i",
                         idArtist);
-    m_pDS->exec(strSQL);
-    // Match remaining to albums by artist on title only
-    strSQL = PrepareSQL("UPDATE tempDisco SET idAlbum = (SELECT album.idAlbum FROM album "
-                        "JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
-                        "WHERE album_artist.idArtist = %i "
-                        "AND NOT EXISTS(SELECT 1 FROM tempDisco AS td "
-                        "WHERE td.idAlbum = album.idAlbum) "
-                        "AND album.strAlbum = tempDisco.strAlbum) "
-                        "WHERE tempDisco.idAlbum is NULL",
-                        idArtist);
-    m_pDS->exec(strSQL);
-    // Use year from album table, when matched by name only it could be different
-    strSQL = PrepareSQL("UPDATE tempDisco "
-                        "SET iYear = (SELECT CAST(album.strOrigReleaseDate AS INTEGER) FROM album "
-                        "WHERE album.idAlbum = tempDisco.idAlbum) "
-                        "WHERE tempDisco.idAlbum > 0");
     m_pDS->exec(strSQL);
 
-    // Combine distinctly with albums by artist that are not in discography
-    strSQL =
-        PrepareSQL("SELECT strAlbum, iYear, idAlbum FROM tempDisco "
-                   "UNION "
-                   "SELECT strAlbum, CAST(strOrigReleaseDate AS INTEGER) AS iYear, album.idAlbum "
-                   "FROM album JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
-                   "WHERE album_artist.idArtist = %i "
-                   "ORDER BY iYear, strAlbum, idAlbum",
-                   idArtist);
+    // Match albums on release group mbid, if multi-releases then first used
+    // Only use albums credited to this artist
+    strSQL = "UPDATE tempDisco SET idAlbum = (SELECT tempAlbum.idAlbum FROM tempAlbum "
+             "WHERE tempAlbum.mbid = tempDisco.mbid AND tempAlbum.mbid IS NOT NULL)";
+    m_pDS->exec(strSQL);
+    //Delete matched albums
+    strSQL = "DELETE FROM tempAlbum "
+             "WHERE EXISTS(SELECT 1 FROM tempDisco WHERE tempDisco.idAlbum = tempAlbum.idAlbum)";
+    m_pDS->exec(strSQL);
+
+    // Match remaining to albums by artist on title and year
+    strSQL = "UPDATE tempDisco SET idAlbum = (SELECT idAlbum FROM tempAlbum "
+             "WHERE tempAlbum.strAlbum = tempDisco.strAlbum "
+             "AND tempAlbum.strYear = tempDisco.strYear) "
+             "WHERE tempDisco.idAlbum is NULL";
+    m_pDS->exec(strSQL);
+    //Delete matched albums
+    strSQL = "DELETE FROM tempAlbum "
+             "WHERE EXISTS(SELECT 1 FROM tempDisco WHERE tempDisco.idAlbum = tempAlbum.idAlbum)";
+    m_pDS->exec(strSQL);
+
+    // Match remaining to albums by artist on title only
+    strSQL = "UPDATE tempDisco SET idAlbum = (SELECT idAlbum FROM tempAlbum "
+             "WHERE tempAlbum.strAlbum = tempDisco.strAlbum) "
+             "WHERE tempDisco.idAlbum is NULL";
+    m_pDS->exec(strSQL);
+    // Use year from album table, when matched by title only as it could be different
+    strSQL = "UPDATE tempDisco SET strYear = (SELECT strYear FROM tempAlbum "
+             "WHERE tempAlbum.idAlbum = tempDisco.idAlbum) "
+             "WHERE EXISTS(SELECT 1 FROM tempAlbum WHERE tempAlbum.idAlbum = tempDisco.idAlbum)";
+    m_pDS->exec(strSQL);
+    //Delete matched albums
+    strSQL = "DELETE FROM tempAlbum "
+             "WHERE EXISTS(SELECT 1 FROM tempDisco WHERE tempDisco.idAlbum = tempAlbum.idAlbum)";
+    m_pDS->exec(strSQL);
+
+    // Combine distinctly with any remaining unmatched albums by artist
+    strSQL = "SELECT strAlbum, strYear, idAlbum FROM tempDisco "
+             "UNION "
+             "SELECT strAlbum, strYear, idAlbum FROM tempAlbum "
+             "ORDER BY strYear, strAlbum, idAlbum";
 
     if (!m_pDS->query(strSQL))
       return false;
@@ -2280,7 +2289,7 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
       if (!strAlbum.empty())
       {
         CFileItemPtr pItem(new CFileItem(strAlbum));
-        pItem->SetLabel2(m_pDS->fv("iYear").get_asString());
+        pItem->SetLabel2(m_pDS->fv("strYear").get_asString());
         pItem->GetMusicInfoTag()->SetDatabaseId(idAlbum, MediaTypeAlbum);
         items.Add(pItem);
       }
@@ -2290,12 +2299,14 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
     // cleanup
     m_pDS->close();
     m_pDS->exec("DROP TABLE tempDisco");
+    m_pDS->exec("DROP TABLE tempAlbum");
 
     return true;
   }
   catch (...)
   {
     m_pDS->exec("DROP TABLE tempDisco");
+    m_pDS->exec("DROP TABLE tempAlbum");
     CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
   return false;
