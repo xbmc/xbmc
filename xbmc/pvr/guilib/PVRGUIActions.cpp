@@ -1551,9 +1551,13 @@ namespace PVR
   {
     CFileItemPtr pvrItem(item);
     if (URIUtils::IsPVRChannel(item->GetPath()) && !item->HasPVRChannelInfoTag())
-      pvrItem = std::make_shared<CFileItem>(
+    {
+      const std::shared_ptr<CPVRChannelGroupMember> groupMember =
           CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelGroupMemberByPath(
-              item->GetPath()));
+              item->GetPath());
+      if (groupMember)
+        pvrItem = std::make_shared<CFileItem>(groupMember);
+    }
     else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
       pvrItem = std::make_shared<CFileItem>(CServiceBroker::GetPVRManager().Recordings()->GetByPath(item->GetPath()));
 
