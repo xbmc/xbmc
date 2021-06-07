@@ -13380,7 +13380,6 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: addons/skin.estuary/xml/Variables.xml
-#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#20416"
 msgid "First aired"
 msgstr ""
@@ -13668,7 +13667,12 @@ msgctxt "#20472"
 msgid "Show all performers for music videos"
 msgstr ""
 
-#empty strings from id 20473 to 21329
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#20473"
+msgid "Premiered"
+msgstr ""
+
+#empty strings from id 20474 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
