@@ -749,12 +749,16 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   int closestMatch;
   unsigned int requestedChannels = wfxex.Format.nChannels;
   unsigned int noOfCh;
+  uint64_t desired_map = CAESinkFactoryWin::SpeakerMaskFromAEChannels(format.m_channelLayout);
 
   /* The requested format is not supported by the device.  Find something that works */
+  CLog::Log(LOGDEBUG,
+            "AESinkWASAPI: Input channels are [{}] - Trying to find a matching output layout",
+            std::string(format.m_channelLayout));
   for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)
   {
-    // if requested layout is not supported, try standard layouts with at least
-    // the number of channels as requested
+    // if requested layout is not supported, try standard layouts which contain
+    // at least the same channels as the input source
     // as the last resort try stereo
     if (layout == ARRAYSIZE(layoutsList))
     {
@@ -765,9 +769,14 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
     {
       wfxex.dwChannelMask = CAESinkFactoryWin::ChLayoutToChMask(layoutsList[layout], &noOfCh);
       wfxex.Format.nChannels = noOfCh;
-      if (noOfCh < requestedChannels)
-        continue;
+      int res = desired_map & wfxex.dwChannelMask;
+      if (res != desired_map)
+        continue; // output channel layout doesn't match input channels
     }
+    CAEChannelInfo foundChannels;
+    CAESinkFactoryWin::AEChannelsFromSpeakerMask(foundChannels, wfxex.dwChannelMask);
+    CLog::Log(LOGDEBUG, "AESinkWASAPI: Trying matching channel layout [{}]",
+              std::string(foundChannels));
 
     for (int j = 0; j < sizeof(testFormats)/sizeof(sampleFormat); j++)
     {
@@ -814,6 +823,8 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
         goto initialize;
       }
     }
+    CLog::Log(LOGDEBUG, "AESinkWASAPI: Format [{}] not supported by driver",
+              std::string(foundChannels));
   }
 
   CLog::LogF(LOGERROR, "Unable to locate a supported output format for the device.  "
