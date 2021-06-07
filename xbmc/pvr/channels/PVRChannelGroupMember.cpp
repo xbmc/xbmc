@@ -9,6 +9,7 @@
 #include "PVRChannelGroupMember.h"
 
 #include "ServiceBroker.h"
+#include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
@@ -16,22 +17,18 @@
 #include "utils/DatabaseUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 using namespace PVR;
 
-CPVRChannelGroupMember::CPVRChannelGroupMember(const std::shared_ptr<CPVRChannel>& channel,
+CPVRChannelGroupMember::CPVRChannelGroupMember(int iGroupID,
                                                const std::string& groupName,
-                                               const CPVRChannelNumber& channelNumber,
-                                               int iClientPriority,
-                                               int iOrder,
-                                               const CPVRChannelNumber& clientChannelNumber)
-  : m_channel(channel),
-    m_channelNumber(channelNumber),
-    m_clientChannelNumber(clientChannelNumber),
-    m_iClientPriority(iClientPriority),
-    m_iOrder(iOrder)
+                                               const std::shared_ptr<CPVRChannel>& channel)
+  : m_iGroupID(iGroupID),
+    m_clientChannelNumber(channel->ClientChannelNumber()),
+    m_iOrder(channel->ClientOrder())
 {
-  // init m_path
+  SetChannel(channel);
   SetGroupName(groupName);
 }
 
@@ -39,6 +36,15 @@ void CPVRChannelGroupMember::Serialize(CVariant& value) const
 {
   value["channelnumber"] = m_channelNumber.GetChannelNumber();
   value["subchannelnumber"] = m_channelNumber.GetSubChannelNumber();
+}
+
+void CPVRChannelGroupMember::SetChannel(const std::shared_ptr<CPVRChannel>& channel)
+{
+  // note: no need to set m_bChanged, as these values are not persisted in the db
+  m_channel = channel;
+  m_iClientID = channel->ClientID();
+  m_iChannelUID = channel->UniqueID();
+  m_bIsRadio = channel->IsRadio();
 }
 
 void CPVRChannelGroupMember::ToSortable(SortItem& sortable, Field field) const
@@ -56,12 +62,22 @@ void CPVRChannelGroupMember::ToSortable(SortItem& sortable, Field field) const
   }
 }
 
+void CPVRChannelGroupMember::SetGroupID(int iGroupID)
+{
+  if (m_iGroupID != iGroupID)
+  {
+    m_iGroupID = iGroupID;
+    m_bChanged = true;
+  }
+}
+
 void CPVRChannelGroupMember::SetGroupName(const std::string& groupName)
 {
-  const std::shared_ptr<CPVRClient> client =
-      CServiceBroker::GetPVRManager().GetClient(m_channel->ClientID());
+  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientID);
   if (client)
-    m_path = CPVRChannelsPath(m_channel->IsRadio(), groupName, client->ID(), m_channel->UniqueID());
+    m_path = CPVRChannelsPath(m_bIsRadio, groupName, client->ID(), m_iChannelUID);
+  else
+    CLog::LogF(LOGERROR, "Unable to obtain instance for client id: {}", m_iClientID);
 }
 
 void CPVRChannelGroupMember::SetChannelNumber(const CPVRChannelNumber& channelNumber)
@@ -98,4 +114,13 @@ void CPVRChannelGroupMember::SetOrder(int iOrder)
     m_iOrder = iOrder;
     m_bChanged = true;
   }
+}
+
+bool CPVRChannelGroupMember::QueueDelete()
+{
+  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+  if (!database)
+    return false;
+
+  return database->QueueDeleteQuery(*this);
 }

@@ -24,6 +24,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
@@ -890,15 +891,15 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups)
       m_clientCapabilities.SupportsChannelGroups());
 }
 
-PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup* group)
+PVR_ERROR CPVRClient::GetChannelGroupMembers(
+    CPVRChannelGroup* group, std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers)
 {
   return DoAddonCall(
       __func__,
-      [this, group](const AddonInstance* addon)
-      {
+      [this, group, &groupMembers](const AddonInstance* addon) {
         ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
-        handle.dataAddress = group;
+        handle.dataAddress = &groupMembers;
 
         PVR_CHANNEL_GROUP tag;
         WriteClientGroupInfo(*group, tag);
@@ -915,12 +916,11 @@ PVR_ERROR CPVRClient::GetChannelsAmount(int& iChannels)
   });
 }
 
-PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup& channels, bool radio)
+PVR_ERROR CPVRClient::GetChannels(bool radio, std::vector<std::shared_ptr<CPVRChannel>>& channels)
 {
   return DoAddonCall(
       __func__,
-      [this, &channels, radio](const AddonInstance* addon)
-      {
+      [this, radio, &channels](const AddonInstance* addon) {
         ADDON_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = &channels;
@@ -1708,7 +1708,8 @@ void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
 
     // transfer this entry to the groups container
     CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
-    CPVRChannelGroup transferGroup(*group, kodiGroups->GetGroupAll());
+    const auto transferGroup =
+        std::make_shared<CPVRChannelGroup>(*group, kodiGroups->GetGroupAll());
     kodiGroups->UpdateFromClient(transferGroup);
   });
 }
@@ -1724,7 +1725,6 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
       return;
     }
 
-    CPVRChannelGroup* group = static_cast<CPVRChannelGroup*>(handle->dataAddress);
     const std::shared_ptr<CPVRChannel> channel =
         CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId,
                                                                        client->GetID());
@@ -1733,11 +1733,13 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
       CLog::LogF(LOGERROR, "Cannot find group '{}' or channel '{}'", member->strGroupName,
                  member->iChannelUniqueId);
     }
-    else if (group->IsRadio() == channel->IsRadio())
+    else
     {
-      // add this entry to the group
-      group->AddToGroup(channel, CPVRChannelNumber(), member->iOrder, true,
-                        CPVRChannelNumber(member->iChannelNumber, member->iSubChannelNumber));
+      auto* groupMembers =
+          static_cast<std::vector<std::shared_ptr<CPVRChannelGroupMember>>*>(handle->dataAddress);
+      groupMembers->emplace_back(
+          std::make_shared<CPVRChannelGroupMember>(-1, // real id will be added later
+                                                   member->strGroupName, channel));
     }
   });
 }
@@ -1770,13 +1772,8 @@ void CPVRClient::cb_transfer_channel_entry(void* kodiInstance,
       return;
     }
 
-    // transfer this entry to the internal channels group
-    const std::shared_ptr<CPVRChannel> transferChannel =
-        std::make_shared<CPVRChannel>(*channel, client->GetID());
-    CPVRChannelGroupInternal* channels =
-        static_cast<CPVRChannelGroupInternal*>(handle->dataAddress);
-    channels->UpdateFromClient(transferChannel, transferChannel->ClientChannelNumber(),
-                               channel->iOrder);
+    auto* channels = static_cast<std::vector<std::shared_ptr<CPVRChannel>>*>(handle->dataAddress);
+    channels->emplace_back(std::make_shared<CPVRChannel>(*channel, client->GetID()));
   });
 }
 

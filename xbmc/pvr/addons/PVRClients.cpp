@@ -543,11 +543,16 @@ PVR_ERROR CPVRClients::SetEPGMaxFutureDays(int iFutureDays)
   });
 }
 
-PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal* group, std::vector<int>& failedClients)
+PVR_ERROR CPVRClients::GetChannels(bool bRadio,
+                                   std::vector<std::shared_ptr<CPVRChannel>>& channels,
+                                   std::vector<int>& failedClients)
 {
-  return ForCreatedClients(__FUNCTION__, [group](const std::shared_ptr<CPVRClient>& client) {
-    return client->GetChannels(*group, group->IsRadio());
-  }, failedClients);
+  return ForCreatedClients(
+      __FUNCTION__,
+      [bRadio, &channels](const std::shared_ptr<CPVRClient>& client) {
+        return client->GetChannels(bRadio, channels);
+      },
+      failedClients);
 }
 
 PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups* groups, std::vector<int>& failedClients)
@@ -557,11 +562,17 @@ PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups* groups, std::vector<i
   }, failedClients);
 }
 
-PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup* group, std::vector<int>& failedClients)
+PVR_ERROR CPVRClients::GetChannelGroupMembers(
+    CPVRChannelGroup* group,
+    std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers,
+    std::vector<int>& failedClients)
 {
-  return ForCreatedClients(__FUNCTION__, [group](const std::shared_ptr<CPVRClient>& client) {
-    return client->GetChannelGroupMembers(group);
-  }, failedClients);
+  return ForCreatedClients(
+      __FUNCTION__,
+      [group, &groupMembers](const std::shared_ptr<CPVRClient>& client) {
+        return client->GetChannelGroupMembers(group, groupMembers);
+      },
+      failedClients);
 }
 
 std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelScan() const

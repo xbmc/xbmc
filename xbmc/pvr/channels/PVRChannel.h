@@ -49,7 +49,7 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Delete this channel from the database and delete the corresponding EPG table if it exists.
+     * @brief Delete this channel from the database.
      * @return True if it was deleted successfully, false otherwise.
      */
     bool QueueDelete();
