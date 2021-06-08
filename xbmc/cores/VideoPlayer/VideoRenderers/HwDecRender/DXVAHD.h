@@ -49,7 +49,7 @@ public:
   void OnDestroyDevice(bool) override { CSingleLock lock(m_section); UnInit(); }
 
   static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(CRenderBuffer* view, bool supportHDR, bool supportHLG);
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(CRenderBuffer* view);
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(CRenderBuffer* view, bool supportHDR);
 
 protected:
   bool ReInit();
@@ -69,6 +69,7 @@ protected:
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps = {};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
   bool m_bSupportHLG = false;
+  bool m_bSupportHDR10Limited = false;
 
   struct ProcAmpInfo
   {
