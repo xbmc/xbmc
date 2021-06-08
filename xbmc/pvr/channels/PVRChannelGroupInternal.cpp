@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
@@ -26,7 +25,6 @@
 #include <vector>
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
   : CPVRChannelGroup(CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287)), nullptr),
@@ -167,54 +165,29 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
   return removedMembers;
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(const std::shared_ptr<CPVRChannel>& channel,
-                                          const CPVRChannelNumber& channelNumber,
-                                          int iOrder)
+bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
 {
-  bool bReturn(false);
-  CSingleLock lock(m_critSection);
+  bool bReturn = false;
 
-  /* get the group member, because we need the channel ID in this group, and the channel from this group */
+  if (IsGroupMember(channel))
+    return bReturn;
+
   const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetByUniqueID(channel->StorageId());
   if (!groupMember)
     return bReturn;
 
-  bool bSort = false;
+  channel->SetHidden(false);
 
-  /* switch the hidden flag */
-  if (groupMember->Channel()->IsHidden())
-  {
-    groupMember->Channel()->SetHidden(false);
-    if (m_iHiddenChannels > 0)
-      m_iHiddenChannels--;
-
-    bSort = true;
-  }
-
-  unsigned int iChannelNumber = channelNumber.GetChannelNumber();
-  if (!channelNumber.IsValid() || iChannelNumber > (m_members.size() - m_iHiddenChannels))
-    iChannelNumber = m_members.size() - m_iHiddenChannels;
-
-  if (groupMember->ChannelNumber().GetChannelNumber() != iChannelNumber)
-  {
-    groupMember->SetChannelNumber(
-        CPVRChannelNumber(iChannelNumber, channelNumber.GetSubChannelNumber()));
-    bSort = true;
-  }
-
-  if (bSort)
-    SortAndRenumber();
-
-  bReturn = Persist();
-
-  return bReturn;
-}
-
-bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
-{
   CSingleLock lock(m_critSection);
 
-  return AddToGroup(channel, CPVRChannelNumber(), 0);
+  if (m_iHiddenChannels > 0)
+    m_iHiddenChannels--;
+
+  const unsigned int iChannelNumber = m_members.size() - m_iHiddenChannels;
+  groupMember->SetChannelNumber(CPVRChannelNumber(iChannelNumber, 0));
+
+  SortAndRenumber();
+  return bReturn;
 }
 
 bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
@@ -222,31 +195,14 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
   if (!IsGroupMember(channel))
     return false;
 
-  /* check if this channel is currently playing if we are hiding it */
-  const std::shared_ptr<CPVRChannel> currentChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
-  if (currentChannel && currentChannel == channel)
-  {
-    HELPERS::ShowOKDialogText(CVariant{19098}, CVariant{19102});
-    return false;
-  }
+  channel->SetHidden(true);
 
   CSingleLock lock(m_critSection);
 
-  if (!channel->IsHidden())
-  {
-    channel->SetHidden(true);
-    ++m_iHiddenChannels;
-  }
-  else
-  {
-    channel->SetHidden(false);
-    if (m_iHiddenChannels > 0)
-      --m_iHiddenChannels;
-  }
+  ++m_iHiddenChannels;
 
   SortAndRenumber();
-
-  return Persist();
+  return true;
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
