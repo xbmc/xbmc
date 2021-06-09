@@ -30,6 +30,9 @@ namespace PVR
     explicit CPVRSettings(const std::set<std::string>& settingNames);
     ~CPVRSettings() override;
 
+    void RegisterCallback(ISettingCallback* callback);
+    void UnregisterCallback(ISettingCallback* callback);
+
     // ISettingsHandler implementation
     void OnSettingsLoaded() override;
 
@@ -66,6 +69,7 @@ namespace PVR
 
     mutable CCriticalSection m_critSection;
     std::map<std::string, std::shared_ptr<CSetting>> m_settings;
+    std::set<ISettingCallback*> m_callbacks;
 
     static unsigned int m_iInstances;
   };
