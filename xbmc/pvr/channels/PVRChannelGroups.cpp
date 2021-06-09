@@ -12,7 +12,9 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -389,19 +391,36 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastGroup() const
   return std::shared_ptr<CPVRChannelGroup>();
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastPlayedGroup() const
+GroupMemberPair CPVRChannelGroups::GetLastAndPreviousToLastPlayedChannelGroupMember() const
 {
-  std::shared_ptr<CPVRChannelGroup> lastPlayedGroup;
-
   CSingleLock lock(m_critSection);
-  for (const auto& group : m_groups)
+  if (m_groups.empty())
+    return {};
+
+  auto groups = m_groups;
+  lock.Leave();
+
+  std::sort(groups.begin(), groups.end(),
+            [](const auto& a, const auto& b) { return a->LastWatched() > b->LastWatched(); });
+
+  // Last is always 'first' of last played group.
+  const GroupMemberPair members = groups[0]->GetLastAndPreviousToLastPlayedChannelGroupMember();
+  std::shared_ptr<CPVRChannelGroupMember> last = members.first;
+
+  // Previous to last is either 'second' of first group or 'first' of second group.
+  std::shared_ptr<CPVRChannelGroupMember> previousToLast = members.second;
+  if (groups.size() > 1 && groups[0]->LastWatched() && groups[1]->LastWatched() && members.second &&
+      members.second->Channel()->LastWatched())
   {
-    if (group->LastWatched() > 0 &&
-        (!lastPlayedGroup || group->LastWatched() > lastPlayedGroup->LastWatched()))
-      lastPlayedGroup = group;
+    if (groups[1]->LastWatched() >= members.second->Channel()->LastWatched())
+    {
+      const GroupMemberPair membersPreviousToLastPlayedGroup =
+          groups[1]->GetLastAndPreviousToLastPlayedChannelGroupMember();
+      previousToLast = membersPreviousToLastPlayedGroup.first;
+    }
   }
 
-  return lastPlayedGroup;
+  return {last, previousToLast};
 }
 
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastOpenedGroup() const

@@ -157,16 +157,3 @@ bool CPVRChannelGroupsContainer::CreateChannelEpgs()
 {
   return m_groupsTV->CreateChannelEpgs() && m_groupsRadio->CreateChannelEpgs();
 }
-
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetPreviousPlayedGroup()
-{
-  CSingleLock lock(m_critSection);
-  return m_lastPlayedGroups[0];
-}
-
-void CPVRChannelGroupsContainer::SetLastPlayedGroup(const std::shared_ptr<CPVRChannelGroup>& group)
-{
-  CSingleLock lock(m_critSection);
-  m_lastPlayedGroups[0] = m_lastPlayedGroups[1];
-  m_lastPlayedGroups[1] = group;
-}

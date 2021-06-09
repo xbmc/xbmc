@@ -128,9 +128,9 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroup> GetLastGroup() const;
 
     /*!
-     * @return The last played group.
+     * @return The last and previous to last played channel group members. pair.first contains the last, pair.second the previous to last member.
      */
-    std::shared_ptr<CPVRChannelGroup> GetLastPlayedGroup() const;
+    GroupMemberPair GetLastAndPreviousToLastPlayedChannelGroupMember() const;
 
     /*!
      * @return The last opened group.

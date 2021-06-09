@@ -310,6 +310,31 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGr
   return groupMember;
 }
 
+GroupMemberPair CPVRChannelGroup::GetLastAndPreviousToLastPlayedChannelGroupMember() const
+{
+  CSingleLock lock(m_critSection);
+  if (m_sortedMembers.empty())
+    return {};
+
+  auto members = m_sortedMembers;
+  lock.Leave();
+
+  std::sort(members.begin(), members.end(), [](const auto& a, const auto& b) {
+    return a->Channel()->LastWatched() > b->Channel()->LastWatched();
+  });
+
+  std::shared_ptr<CPVRChannelGroupMember> last;
+  std::shared_ptr<CPVRChannelGroupMember> previousToLast;
+  if (members[0]->Channel()->LastWatched())
+  {
+    last = members[0];
+    if (members.size() > 1 && members[1]->Channel()->LastWatched())
+      previousToLast = members[1];
+  }
+
+  return {last, previousToLast};
+}
+
 CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const
 {
   CSingleLock lock(m_critSection);
