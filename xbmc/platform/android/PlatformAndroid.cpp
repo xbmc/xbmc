@@ -29,6 +29,14 @@ bool CPlatformAndroid::InitStageOne()
   if (!CPlatformPosix::InitStageOne())
     return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  
+  setenv("JAVA_HOME", CSpecialProtocol::TranslatePath("special://xbmcbin/j2re-image/").c_str(), 1);
+
+  setenv("JDK_HOME", CSpecialProtocol::TranslatePath("special://xbmcbin/j2re-image/").c_str(), 1);
+
+  setenv("LIBBLURAY_CP", CSpecialProtocol::TranslatePath("special://xbmcbin/j2re-image/").c_str(), 1);
+
+  setenv("LIBBLURAY_CACHE_ROOT", CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/cache/").c_str(), 1);
 
   setenv("OS", "Linux", true); // for python scripts that check the OS
 
