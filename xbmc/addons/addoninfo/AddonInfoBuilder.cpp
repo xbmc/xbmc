@@ -109,10 +109,6 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
    * - CDateTime lastUsed;
    * - std::string origin;
    */
-  const char* cstring; /* "C" string point where parts from TinyXML becomes
-                          stored, is used as this to prevent double use of
-                          calls and to prevent not wanted "C++" throws if
-                          std::string want to become set with nullptr! */
 
   if (!StringUtils::EqualsNoCase(element->Value(), "addon"))
   {
@@ -127,14 +123,13 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
    *        version="???"
    *        provider-name="???">
    */
-  cstring = element->Attribute("id");
-  addon->m_id = cstring ? cstring : "";
-  cstring = element->Attribute("name");
-  addon->m_name = cstring ? cstring : "";
-  cstring = element->Attribute("version");
-  addon->m_version = AddonVersion(cstring ? cstring : "");
-  cstring = element->Attribute("provider-name");
-  addon->m_author = cstring ? cstring : "";
+  addon->m_id = StringUtils::CreateFromCString(element->Attribute("id"));
+  addon->m_name = StringUtils::CreateFromCString(element->Attribute("name"));
+  addon->m_author = StringUtils::CreateFromCString(element->Attribute("provider-name"));
+
+  const std::string version = StringUtils::CreateFromCString(element->Attribute("version"));
+  addon->m_version = AddonVersion(version);
+
   if (addon->m_id.empty() || addon->m_version.empty())
   {
     CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file '{}' doesn't contain required values on <addon ... > id='{}', version='{}'",
@@ -161,8 +156,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   const TiXmlElement* backwards = element->FirstChildElement("backwards-compatibility");
   if (backwards)
   {
-    cstring = backwards->Attribute("abi");
-    addon->m_minversion = AddonVersion(cstring ? cstring : "");
+    const std::string minVersion = StringUtils::CreateFromCString(backwards->Attribute("abi"));
+    addon->m_minversion = AddonVersion(minVersion);
   }
 
   /*
@@ -176,16 +171,17 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   {
     for (const TiXmlElement* child = requires->FirstChildElement("import"); child != nullptr; child = child->NextSiblingElement("import"))
     {
-      cstring = child->Attribute("addon");
-      if (cstring)
+      if (child->Attribute("addon"))
       {
-        const char* versionMin = child->Attribute("minversion");
-        const char* version = child->Attribute("version");
+        const std::string minVersion =
+            StringUtils::CreateFromCString(child->Attribute("minversion"));
+        const std::string version = StringUtils::CreateFromCString(child->Attribute("version"));
+
         bool optional = false;
         child->QueryBoolAttribute("optional", &optional);
 
-        addon->m_dependencies.emplace_back(cstring, AddonVersion(versionMin), AddonVersion(version),
-                                           optional);
+        addon->m_dependencies.emplace_back(child->Attribute("addon"), AddonVersion(minVersion),
+                                           AddonVersion(version), optional);
       }
     }
   }
@@ -211,8 +207,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
    */
   for (const TiXmlElement* child = element->FirstChildElement("extension"); child != nullptr; child = child->NextSiblingElement("extension"))
   {
-    cstring = child->Attribute("point");
-    std::string point = cstring ? cstring : "";
+    const std::string point = StringUtils::CreateFromCString(child->Attribute("point"));
 
     if (point == "kodi.addon.metadata" || point == "xbmc.addon.metadata")
     {
@@ -373,7 +368,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
 
       CAddonType addonType(type);
       if (ParseXMLTypes(addonType, addon, child))
-        addon->m_types.push_back(std::move(addonType));
+        addon->m_types.emplace_back(std::move(addonType));
     }
   }
 
@@ -384,7 +379,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   if (addon->m_types.empty())
   {
     CAddonType addonType(ADDON_UNKNOWN);
-    addon->m_types.push_back(std::move(addonType));
+    addon->m_types.emplace_back(std::move(addonType));
   }
 
   addon->m_mainType = addon->m_types[0].Type();
@@ -468,13 +463,7 @@ bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType,
 
 bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXmlElement* element)
 {
-  const char* cstring; /* "C" string point where parts from TinyXML becomes
-                          stored, is used as this to prevent double use of
-                          calls and to prevent not wanted "C++" throws if
-                          std::string want to become set with nullptr! */
-
-  cstring = element->Attribute("point");
-  addonExt.m_point = cstring ? cstring : "";
+  addonExt.m_point = StringUtils::CreateFromCString(element->Attribute("point"));
 
   EXT_VALUE extension;
   const TiXmlAttribute* attribute = element->FirstAttribute();
@@ -483,27 +472,24 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
     std::string name = attribute->Name();
     if (name != "point")
     {
-      cstring = attribute->Value();
-      if (cstring)
+      const std::string value = StringUtils::CreateFromCString(attribute->Value());
+      if (!value.empty())
       {
-        std::string value = cstring;
         name = "@" + name;
-        extension.push_back(std::make_pair(name, SExtValue(value)));
+        extension.emplace_back(std::make_pair(name, SExtValue(value)));
       }
     }
     attribute = attribute->Next();
   }
   if (!extension.empty())
-    addonExt.m_values.push_back(std::pair<std::string, EXT_VALUE>("", std::move(extension)));
+    addonExt.m_values.emplace_back(std::pair<std::string, EXT_VALUE>("", std::move(extension)));
 
   const TiXmlElement* childElement = element->FirstChildElement();
   while (childElement)
   {
-    cstring = childElement->Value();
-    if (cstring)
+    const std::string id = StringUtils::CreateFromCString(childElement->Value());
+    if (!id.empty())
     {
-      std::string id = cstring;
-
       EXT_VALUE extension;
       const TiXmlAttribute* attribute = childElement->FirstAttribute();
       while (attribute)
@@ -511,34 +497,34 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
         std::string name = attribute->Name();
         if (name != "point")
         {
-          cstring = attribute->Value();
-          if (cstring)
+          const std::string value = StringUtils::CreateFromCString(attribute->Value());
+          if (!value.empty())
           {
-            std::string value = cstring;
             name = id + "@" + name;
-            extension.push_back(std::make_pair(name, SExtValue(value)));
+            extension.emplace_back(std::make_pair(name, SExtValue(value)));
           }
         }
         attribute = attribute->Next();
       }
 
-      cstring = childElement->GetText();
-      if (cstring)
+      const std::string childElementText = StringUtils::CreateFromCString(childElement->GetText());
+
+      if (!childElementText.empty())
       {
-        extension.push_back(std::make_pair(id, SExtValue(cstring)));
+        extension.emplace_back(std::make_pair(id, SExtValue(childElementText)));
       }
 
       if (!extension.empty())
-        addonExt.m_values.push_back(std::make_pair(id, std::move(extension)));
+        addonExt.m_values.emplace_back(std::make_pair(id, std::move(extension)));
 
-      if (!cstring)
+      if (childElementText.empty())
       {
         const TiXmlElement* childSubElement = childElement->FirstChildElement();
         if (childSubElement)
         {
           CAddonExtensions subElement;
           if (ParseXMLExtension(subElement, childElement))
-            addonExt.m_children.push_back(std::make_pair(id, std::move(subElement)));
+            addonExt.m_children.emplace_back(std::make_pair(id, std::move(subElement)));
         }
       }
     }

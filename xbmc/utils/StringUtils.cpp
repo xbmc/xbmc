@@ -1843,3 +1843,8 @@ const std::locale& StringUtils::GetOriginalLocale() noexcept
 {
   return g_langInfo.GetOriginalLocale();
 }
+
+std::string StringUtils::CreateFromCString(const char* cstr)
+{
+  return cstr != nullptr ? std::string(cstr) : std::string();
+}
