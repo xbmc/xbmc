@@ -185,7 +185,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
         m_lastWatchedUpdateTimer->Stop(true);
 
       m_lastWatchedUpdateTimer.reset(new CLastWatchedUpdateTimer(*this, channel, CDateTime::GetUTCDateTime()));
-      m_lastWatchedUpdateTimer->Start(iLastWatchedDelay);
+      m_lastWatchedUpdateTimer->Start(std::chrono::milliseconds(iLastWatchedDelay));
     }
     else
     {

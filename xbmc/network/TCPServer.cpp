@@ -23,6 +23,8 @@
 #include "websocket/WebSocketManager.h"
 #include "Network.h"
 
+using namespace std::chrono_literals;
+
 #if defined(TARGET_WINDOWS) || defined(HAVE_LIBBLUETOOTH)
 static const char     bt_service_name[] = "XBMC JSON-RPC";
 static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";
@@ -123,7 +125,7 @@ void CTCPServer::Process()
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
-      CThread::Sleep(1000);
+      CThread::Sleep(1000ms);
       Initialize();
     }
     else if (res > 0)
@@ -189,7 +191,7 @@ void CTCPServer::Process()
             CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed: {}", errno);
             if (EBADF == errno)
             {
-              CThread::Sleep(1000);
+              CThread::Sleep(1000ms);
               Initialize();
               break;
             }

@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <limits>
 
+using namespace std::chrono_literals;
+
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {
   CSingleLock lock(groupListMutex);
@@ -68,61 +70,7 @@ namespace XbmcThreads
    */
   CEvent* CEventGroup::wait()
   {
-    return wait(std::numeric_limits<unsigned int>::max());
-  }
-
-  /**
-   * This will block until any one of the CEvents in the group are
-   * signaled or the timeout is reached. If an event is signaled then
-   * it will return a pointer to that CEvent, otherwise it will return
-   * NULL.
-   */
-  // locking is ALWAYS done in this order:
-  //  CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
-  //
-  // Notice that this method doesn't grab the CEvent::groupListMutex at all. This
-  // is fine. It just grabs the CEventGroup::mutex and THEN the individual
-  // CEvent::mutex's
-  CEvent* CEventGroup::wait(unsigned int milliseconds)
-  {
-    CSingleLock lock(mutex); // grab CEventGroup::mutex
-    numWaits++;
-
-    // ==================================================
-    // This block checks to see if any child events are
-    // signaled and sets 'signaled' to the first one it
-    // finds.
-    // ==================================================
-    signaled = nullptr;
-    for (auto* cur : events)
-    {
-      CSingleLock lock2(cur->mutex);
-      if (cur->signaled)
-        signaled = cur;
-    }
-    // ==================================================
-
-    if(!signaled)
-    {
-      // both of these release the CEventGroup::mutex
-      if (milliseconds == std::numeric_limits<unsigned int>::max())
-        condVar.wait(mutex);
-      else
-        condVar.wait(mutex,milliseconds);
-    } // at this point the CEventGroup::mutex is reacquired
-    numWaits--;
-
-    // signaled should have been set by a call to CEventGroup::Set
-    CEvent* ret = signaled;
-    if (numWaits == 0)
-    {
-      if (signaled)
-        // This acquires and releases the CEvent::mutex. This is fine since the
-        //  CEventGroup::mutex is already being held
-        signaled->WaitMSec(0); // reset the event if needed
-      signaled = nullptr;  // clear the signaled if all the waiters are gone
-    }
-    return ret;
+    return wait(std::chrono::milliseconds::max());
   }
 
   CEventGroup::CEventGroup(std::initializer_list<CEvent*> eventsList)

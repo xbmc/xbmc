@@ -46,6 +46,7 @@
 
 using namespace PVR;
 using namespace KODI::GUILIB::GUIINFO;
+using namespace std::chrono_literals;
 
 CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
 {
@@ -185,7 +186,7 @@ void CPVRGUIInfo::Process()
       iLoop = 0;
 
     if (!m_bStop)
-      CThread::Sleep(500);
+      CThread::Sleep(500ms);
   }
 }
 

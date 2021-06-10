@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "threads/Event.h"
+#include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 

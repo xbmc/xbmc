@@ -11,12 +11,10 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#endif
+#include <algorithm>
 
 using namespace XFILE;
-
+using namespace std::chrono_literals;
 
 Pipe::Pipe(const std::string &name, int nMaxSize)
 {
@@ -98,12 +96,12 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
   }
 
   while (!m_bReadyForRead && !m_bEof)
-    m_readEvent.WaitMSec(100);
+    m_readEvent.Wait(100ms);
 
   int nResult = 0;
   if (!IsEmpty())
   {
-    int nToRead = min((int)m_buffer.getMaxReadSize(), nMaxSize);
+    int nToRead = std::min(static_cast<int>(m_buffer.getMaxReadSize()), nMaxSize);
     m_buffer.ReadData(buf, nToRead);
     nResult = nToRead;
   }
@@ -120,18 +118,18 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
     lock.Leave();
 
     bool bHasData = false;
-    int nMillisLeft = nWaitMillis;
-    if (nMillisLeft < 0)
-      nMillisLeft = 5*60*1000; // arbitrary. 5 min.
+    auto nMillisLeft = std::chrono::milliseconds(nWaitMillis);
+    if (nMillisLeft < 0ms)
+      nMillisLeft = 300000ms; // arbitrary. 5 min.
 
     do
     {
       for (size_t l=0; l<m_listeners.size(); l++)
         m_listeners[l]->OnPipeUnderFlow();
 
-      bHasData = m_readEvent.WaitMSec(min(200,nMillisLeft));
-      nMillisLeft -= 200;
-    } while (!bHasData && nMillisLeft > 0 && !m_bEof);
+      bHasData = m_readEvent.Wait(std::min(200ms, nMillisLeft));
+      nMillisLeft -= 200ms;
+    } while (!bHasData && nMillisLeft > 0ms && !m_bEof);
 
     lock.Enter();
     DecRef();
@@ -141,7 +139,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
 
     if (bHasData)
     {
-      int nToRead = min((int)m_buffer.getMaxReadSize(), nMaxSize);
+      int nToRead = std::min(static_cast<int>(m_buffer.getMaxReadSize()), nMaxSize);
       m_buffer.ReadData(buf, nToRead);
       nResult = nToRead;
     }
@@ -172,7 +170,8 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
       for (size_t l=0; l<m_listeners.size(); l++)
         m_listeners[l]->OnPipeOverFlow();
 
-      bool bClear = nWaitMillis < 0 ? m_writeEvent.Wait() : m_writeEvent.WaitMSec(nWaitMillis);
+      bool bClear = nWaitMillis < 0 ? m_writeEvent.Wait()
+                                    : m_writeEvent.Wait(std::chrono::milliseconds(nWaitMillis));
       lock.Enter();
       if (bClear && (int)m_buffer.getMaxWriteSize() >= nSize)
       {

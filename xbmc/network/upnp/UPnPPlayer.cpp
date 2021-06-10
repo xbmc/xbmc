@@ -38,6 +38,7 @@
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
+using namespace std::chrono_literals;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 
@@ -190,7 +191,7 @@ CUPnPPlayer::~CUPnPPlayer()
 
 static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUIDialogBusy*& dialog)
 {
-  if(event.WaitMSec(0))
+  if (event.Wait(0ms))
     return NPT_SUCCESS;
 
   if (!CGUIDialogBusy::WaitOnEvent(event))
@@ -418,7 +419,8 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
                                                          , file.GetPath().c_str()
                                                          , (const char*)tmp
                                                          , m_delegate), failed);
-  if(!m_delegate->m_resevent.WaitMSec(10000)) goto failed;
+  if (!m_delegate->m_resevent.Wait(10000ms))
+    goto failed;
   NPT_CHECK_LABEL_WARNING(m_delegate->m_resstatus, failed);
   return true;
 
@@ -435,7 +437,8 @@ bool CUPnPPlayer::CloseFile(bool reopen)
     NPT_CHECK_LABEL(m_control->Stop(m_delegate->m_device
                                   , m_delegate->m_instance
                                   , m_delegate), failed);
-    if(!m_delegate->m_resevent.WaitMSec(10000)) goto failed;
+    if (!m_delegate->m_resevent.Wait(10000ms))
+      goto failed;
     NPT_CHECK_LABEL(m_delegate->m_resstatus, failed);
   }
 

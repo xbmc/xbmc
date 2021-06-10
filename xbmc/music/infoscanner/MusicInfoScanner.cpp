@@ -1948,7 +1948,7 @@ void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
   if (milliseconds > 10)
   {
     CEvent m_StopEvent;
-    m_StopEvent.WaitMSec(milliseconds);
+    m_StopEvent.Wait(std::chrono::milliseconds(milliseconds));
   }
   else
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));

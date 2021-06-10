@@ -16,11 +16,16 @@
 
 #include <algorithm>
 
-#define RUMBLE_TEST_DURATION_MS 1000 // Per motor
-#define RUMBLE_NOTIFICATION_DURATION_MS 300
+using namespace std::chrono_literals;
+
+namespace
+{
+constexpr auto RUMBLE_TEST_DURATION_MS = 1000ms; // Per motor
+constexpr auto RUMBLE_NOTIFICATION_DURATION_MS = 300ms;
 
 // From game.controller.default profile
 #define WEAK_MOTOR_NAME "rightmotor"
+} // namespace
 
 using namespace KODI;
 using namespace JOYSTICK;

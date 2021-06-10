@@ -109,7 +109,7 @@ bool CZeroconfBrowserAndroid::doResolveService(CZeroconfBrowser::ZeroconfService
   CZeroconfBrowserAndroidResolve resolver;
   m_manager.resolveService(service, resolver);
 
-  if (!resolver.m_resolutionDone.WaitMSec(f_timeout * 1000))
+  if (!resolver.m_resolutionDone.Wait(std::chrono::duration<double, std::milli>(f_timeout * 1000)))
   {
     CLog::Log(LOGERROR, "ZeroconfBrowserAndroid: DNSServiceResolve Timeout error");
     return false;

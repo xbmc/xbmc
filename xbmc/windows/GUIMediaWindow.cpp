@@ -75,6 +75,7 @@
 
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 namespace
 {
@@ -2275,7 +2276,7 @@ bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
       m_updateEvent.Set();
     }, nullptr, CJob::PRIORITY_NORMAL);
 
-    while (!m_updateEvent.WaitMSec(1))
+    while (!m_updateEvent.Wait(1ms))
     {
       if (!ProcessRenderLoop(false))
         break;
@@ -2295,7 +2296,7 @@ void CGUIMediaWindow::CancelUpdateItems()
   {
     m_rootDir.CancelDirectory();
     m_updateAborted = true;
-    if (!m_updateEvent.WaitMSec(5000))
+    if (!m_updateEvent.Wait(5000ms))
     {
       CLog::Log(LOGERROR, "CGUIMediaWindow::CancelUpdateItems - error cancel update");
     }

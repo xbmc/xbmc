@@ -10,6 +10,8 @@
 
 #include <cassert>
 
+using namespace std::chrono_literals;
+
 COSScreenSaverX11::COSScreenSaverX11(Display* dpy)
 : m_dpy(dpy), m_screensaverResetTimer(std::bind(&COSScreenSaverX11::ResetScreenSaver, this))
 {
@@ -20,7 +22,7 @@ void COSScreenSaverX11::Inhibit()
 {
   // disallow the screensaver by periodically calling XResetScreenSaver(),
   // for some reason setting a 0 timeout with XSetScreenSaver doesn't work with gnome
-  m_screensaverResetTimer.Start(5000, true);
+  m_screensaverResetTimer.Start(5000ms, true);
 }
 
 void COSScreenSaverX11::Uninhibit()

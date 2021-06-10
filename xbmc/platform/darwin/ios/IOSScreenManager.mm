@@ -26,6 +26,8 @@
 #include <objc/runtime.h>
 #include <sys/resource.h>
 
+using namespace std::chrono_literals;
+
 const CGFloat timeSwitchingToExternalSecs = 6.0;
 const CGFloat timeSwitchingToInternalSecs = 2.0;
 const CGFloat timeFadeSecs                = 2.0;
@@ -172,7 +174,7 @@ static CEvent screenChangeEvent;
   if([NSThread currentThread] != [NSThread mainThread])
   {
     [self performSelectorOnMainThread:@selector(changeScreenSelector:) withObject:dict  waitUntilDone:YES];
-    screenChangeEvent.WaitMSec(30000);
+    screenChangeEvent.Wait(30000ms);
   }
   else
   {

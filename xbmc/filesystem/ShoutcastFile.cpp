@@ -34,6 +34,7 @@
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 CShoutcastFile::CShoutcastFile() :
   IFile(), CThread("ShoutcastFile")
@@ -336,7 +337,7 @@ void CShoutcastFile::Process()
 {
   while (!m_bStop)
   {
-    if (m_tagChange.WaitMSec(500))
+    if (m_tagChange.Wait(500ms))
     {
       CSingleLock lock(m_tagSection);
       while (!m_bStop && !m_tags.empty())
@@ -345,7 +346,7 @@ void CShoutcastFile::Process()
         if (m_cacheReader->GetPosition() < front.first) // tagpos
         {
           CSingleExit ex(m_tagSection);
-          CThread::Sleep(20);
+          CThread::Sleep(20ms);
         }
         else
         {

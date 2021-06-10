@@ -235,7 +235,7 @@ bool Protocol::SendOutMessageSync(
   msg->event->Reset();
   SendOutMessage(signal, data, size, msg);
 
-  if (!msg->event->WaitMSec(timeout))
+  if (!msg->event->Wait(std::chrono::milliseconds(timeout)))
   {
     const CSingleLock lock(criticalSection);
     if (msg->replyMessage)
@@ -266,7 +266,7 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPa
   msg->event->Reset();
   SendOutMessage(signal, payload, msg);
 
-  if (!msg->event->WaitMSec(timeout))
+  if (!msg->event->Wait(std::chrono::milliseconds(timeout)))
   {
     const CSingleLock lock(criticalSection);
     if (msg->replyMessage)

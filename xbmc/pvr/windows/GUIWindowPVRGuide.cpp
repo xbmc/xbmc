@@ -48,6 +48,7 @@
 
 using namespace KODI::MESSAGING;
 using namespace PVR;
+using namespace std::chrono_literals;
 
 CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile)
   : CGUIWindowPVRBase(bRadio, id, xmlFile), m_bChannelSelectionRestored(false)
@@ -911,11 +912,11 @@ void CPVRRefreshTimelineItemsThread::Process()
 
       iLastEpgItemsCount = iCurrentEpgItemsCount;
 
-      m_ready.WaitMSec(1000); // boosted update cycle
+      m_ready.Wait(1000ms); // boosted update cycle
     }
     else
     {
-      m_ready.WaitMSec(5000); // normal update cycle
+      m_ready.Wait(5000ms); // normal update cycle
     }
 
     m_ready.Reset();

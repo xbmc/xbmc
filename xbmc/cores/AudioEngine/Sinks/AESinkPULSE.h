@@ -12,6 +12,7 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
 #include <atomic>

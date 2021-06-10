@@ -11,6 +11,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace std::chrono_literals;
+
 class CTestStopWatchThread : public CThread
 {
 public:
@@ -46,7 +48,7 @@ TEST(TestStopWatch, ElapsedTime)
   CStopWatch a;
   CTestStopWatchThread thread;
   a.Start();
-  thread.Sleep(1);
+  thread.Sleep(1ms);
   EXPECT_GT(a.GetElapsedSeconds(), 0.0f);
   EXPECT_GT(a.GetElapsedMilliseconds(), 0.0f);
 }
@@ -56,9 +58,9 @@ TEST(TestStopWatch, Reset)
   CStopWatch a;
   CTestStopWatchThread thread;
   a.StartZero();
-  thread.Sleep(2);
+  thread.Sleep(2ms);
   EXPECT_GT(a.GetElapsedMilliseconds(), 1);
-  thread.Sleep(3);
+  thread.Sleep(3ms);
   a.Reset();
   EXPECT_LT(a.GetElapsedMilliseconds(), 5);
 }

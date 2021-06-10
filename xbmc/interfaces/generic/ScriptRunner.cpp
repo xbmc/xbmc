@@ -22,6 +22,8 @@
 
 #include <vector>
 
+using namespace std::chrono_literals;
+
 ADDON::AddonPtr CScriptRunner::GetAddon() const
 {
   return m_addon;
@@ -127,7 +129,7 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
   // keep the render loop alive
   if (g_application.IsCurrentThread())
   {
-    if (!m_scriptDone.WaitMSec(20))
+    if (!m_scriptDone.Wait(20ms))
     {
       // observe the script until it's finished while showing the busy dialog
       CRunningScriptObserver scriptObs(scriptId, m_scriptDone);
@@ -149,13 +151,13 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
   {
     // wait for the script to finish or be cancelled
     while (!IsCancelled() && CScriptInvocationManager::GetInstance().IsRunning(scriptId) &&
-           !m_scriptDone.WaitMSec(20))
+           !m_scriptDone.Wait(20ms))
       ;
 
     // give the script 30 seconds to exit before we attempt to stop it
     XbmcThreads::EndTime timer(30000);
     while (!timer.IsTimePast() && CScriptInvocationManager::GetInstance().IsRunning(scriptId) &&
-           !m_scriptDone.WaitMSec(20))
+           !m_scriptDone.Wait(20ms))
       ;
   }
 

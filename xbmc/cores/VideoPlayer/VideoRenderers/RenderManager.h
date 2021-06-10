@@ -15,6 +15,7 @@
 #include "cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
+#include "threads/SystemClock.h"
 #include "utils/Geometry.h"
 #include "windowing/Resolution.h"
 

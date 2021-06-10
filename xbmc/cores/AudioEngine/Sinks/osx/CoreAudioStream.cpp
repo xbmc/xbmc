@@ -12,6 +12,8 @@
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
 #include "utils/log.h"
 
+using namespace std::chrono_literals;
+
 CCoreAudioStream::CCoreAudioStream()
 {
   m_OriginalVirtualFormat.mFormatID = 0;
@@ -290,7 +292,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
                 (uint)m_StreamId, StreamDescriptionToString(checkVirtualFormat, formatString));
       break;
     }
-    m_virtual_format_event.WaitMSec(100);
+    m_virtual_format_event.Wait(100ms);
   }
   return true;
 }
@@ -383,7 +385,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
                 (uint)m_StreamId, StreamDescriptionToString(checkPhysicalFormat, formatString));
       break;
     }
-    m_physical_format_event.WaitMSec(100);
+    m_physical_format_event.Wait(100ms);
   }
 
   return true;

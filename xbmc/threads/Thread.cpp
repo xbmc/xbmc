@@ -200,7 +200,7 @@ void CThread::StopThread(bool bWait /*= true*/)
   if (lthread != nullptr && bWait && !IsCurrentThread())
   {
     lock.Leave();
-    if (!Join(0xFFFFFFFF)) // eh?
+    if (!Join(std::chrono::milliseconds::max())) // eh?
       lthread->join();
     m_thread = nullptr;
   }
@@ -230,15 +230,7 @@ void CThread::TermHandler()
 {
 }
 
-void CThread::Sleep(unsigned int milliseconds)
-{
-  if (milliseconds > 10 && IsCurrentThread())
-    m_StopEvent.WaitMSec(milliseconds);
-  else
-    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
-}
-
-bool CThread::Join(unsigned int milliseconds)
+bool CThread::Join(std::chrono::milliseconds duration)
 {
   CSingleLock l(m_CriticalSection);
   std::thread* lthread = m_thread;
@@ -249,7 +241,7 @@ bool CThread::Join(unsigned int milliseconds)
 
     {
       CSingleExit exit(m_CriticalSection); // don't hold the thread lock while we're waiting
-      std::future_status stat = m_future.wait_for(std::chrono::milliseconds(milliseconds));
+      std::future_status stat = m_future.wait_for(duration);
       if (stat != std::future_status::ready)
         return false;
     }

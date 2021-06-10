@@ -22,11 +22,14 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include <memory>
 #include <utility>
 #include <vector>
+
+using namespace std::chrono_literals;
 
 namespace PVR
 {
@@ -431,7 +434,7 @@ void CPVREpgContainer::Process()
       iLastSave = iNow;
     }
 
-    CThread::Sleep(1000);
+    CThread::Sleep(1000ms);
   }
 
   // store data on exit

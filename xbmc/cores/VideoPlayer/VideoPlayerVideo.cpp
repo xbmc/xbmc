@@ -26,6 +26,8 @@
 #include <numeric>
 #include <sstream>
 
+using namespace std::chrono_literals;
+
 class CDVDMsgVideoCodecChange : public CDVDMsg
 {
 public:
@@ -885,7 +887,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
       if (inputPts >= renderPts)
       {
         m_rewindStalled = true;
-        CThread::Sleep(50);
+        CThread::Sleep(50ms);
       }
       return OUTPUT_DROPPED;
     }

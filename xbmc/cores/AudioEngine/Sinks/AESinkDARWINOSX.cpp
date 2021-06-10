@@ -14,6 +14,7 @@
 #include "cores/AudioEngine/Sinks/osx/AEDeviceEnumerationOSX.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHardware.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
+#include "threads/SystemClock.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -428,7 +429,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
     // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, timeout);
+    condVar.wait(mutex, std::chrono::milliseconds(timeout));
     if (!m_started && timer.IsTimePast())
     {
       CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout);
@@ -455,7 +456,7 @@ void CAESinkDARWINOSX::Drain()
   {
     CSingleLock lock(mutex);
     XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, timeout);
+    condVar.wait(mutex, std::chrono::milliseconds(timeout));
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and don't

@@ -15,6 +15,8 @@
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
 
+using namespace std::chrono_literals;
+
 #define PROGRESS_CONTROL 10
 
 class CBusyWaiter : public CThread
@@ -74,7 +76,7 @@ bool CGUIDialogBusy::Wait(IRunnable *runnable, unsigned int displaytime, bool al
 bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 100 */, bool allowCancel /* = true */)
 {
   bool cancelled = false;
-  if (!event.WaitMSec(displaytime))
+  if (!event.Wait(std::chrono::milliseconds(displaytime)))
   {
     // throw up the progress
     CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
@@ -87,7 +89,7 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
 
       dialog->Open();
 
-      while(!event.WaitMSec(1))
+      while (!event.Wait(1ms))
       {
         dialog->ProcessRenderLoop(false);
         if (allowCancel && dialog->IsCanceled())

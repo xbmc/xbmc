@@ -19,6 +19,8 @@
 #include "platform/darwin/tvos/XBMCController.h"
 #endif
 
+using namespace std::chrono_literals;
+
 static CEvent keyboardFinishedEvent;
 
 @implementation KeyboardView
@@ -94,7 +96,7 @@ static CEvent keyboardFinishedEvent;
   });
 
   // we are waiting on the user finishing the keyboard
-  while (!keyboardFinishedEvent.WaitMSec(500))
+  while (!keyboardFinishedEvent.Wait(500ms))
   {
   }
 }

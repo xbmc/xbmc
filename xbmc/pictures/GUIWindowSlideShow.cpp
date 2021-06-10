@@ -43,6 +43,7 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
@@ -91,7 +92,7 @@ void CBackgroundPicLoader::Process()
   unsigned int count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
-    if (AbortableWait(m_loadPic,10) == WAIT_SIGNALED)
+    if (AbortableWait(m_loadPic, 10ms) == WAIT_SIGNALED)
     {
       if (m_pCallback)
       {

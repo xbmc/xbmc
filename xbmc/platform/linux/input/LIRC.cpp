@@ -21,6 +21,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+using namespace std::chrono_literals;
+
 CLirc::CLirc() : CThread("Lirc")
 {
 }
@@ -52,7 +54,7 @@ void CLirc::Process()
     throw std::runtime_error("CSettings needs to exist before starting CLirc");
 
   while (!settings->IsLoaded())
-    CThread::Sleep(1000);
+    CThread::Sleep(1000ms);
 
   m_profileId = settingsComponent->GetProfileManager()->GetCurrentProfileId();
   m_irTranslator.Load("Lircmap.xml");
@@ -72,7 +74,7 @@ void CLirc::Process()
       if (!CheckDaemon())
       {
         CSingleExit lock(m_critSection);
-        CThread::Sleep(1000);
+        CThread::Sleep(1000ms);
         continue;
       }
 
@@ -80,7 +82,7 @@ void CLirc::Process()
       if (m_fd <= 0)
       {
         CSingleExit lock(m_critSection);
-        CThread::Sleep(1000);
+        CThread::Sleep(1000ms);
         continue;
       }
     }
@@ -92,7 +94,7 @@ void CLirc::Process()
       if (ret < 0)
       {
         lirc_deinit();
-        CThread::Sleep(1000);
+        CThread::Sleep(1000ms);
         break;
       }
       if (code != nullptr)

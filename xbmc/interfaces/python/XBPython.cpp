@@ -622,7 +622,7 @@ bool XBPython::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
 {
   // wait for either this event our our global event
   XbmcThreads::CEventGroup eventGroup{&hEvent, &m_globalEvent};
-  CEvent* ret = eventGroup.wait(milliseconds);
+  CEvent* ret = eventGroup.wait(std::chrono::milliseconds(milliseconds));
   if (ret)
     m_globalEvent.Reset();
   return ret != NULL;

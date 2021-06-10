@@ -23,6 +23,7 @@
 #include "utils/log.h"
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 CTextureCache &CTextureCache::GetInstance()
 {
@@ -152,7 +153,7 @@ std::string CTextureCache::CacheImage(const std::string& image,
   // wait for currently processing job to end.
   while (true)
   {
-    m_completeEvent.WaitMSec(1000);
+    m_completeEvent.Wait(1000ms);
     {
       CSingleLock lock(m_processingSection);
       if (m_processinglist.find(url) == m_processinglist.end())

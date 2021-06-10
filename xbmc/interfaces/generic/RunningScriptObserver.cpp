@@ -10,6 +10,8 @@
 
 #include "interfaces/generic/ScriptInvocationManager.h"
 
+using namespace std::chrono_literals;
+
 CRunningScriptObserver::CRunningScriptObserver(int scriptId, CEvent& evt)
   : m_scriptId(scriptId), m_event(evt), m_stopEvent(true), m_thread(this, "ScriptObs")
 {
@@ -30,7 +32,7 @@ void CRunningScriptObserver::Run()
       m_event.Set();
       break;
     }
-  } while (!m_stopEvent.WaitMSec(20));
+  } while (!m_stopEvent.Wait(20ms));
 }
 
 void CRunningScriptObserver::Abort()

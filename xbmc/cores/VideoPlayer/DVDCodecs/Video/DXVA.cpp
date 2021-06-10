@@ -38,6 +38,7 @@
 
 using namespace DXVA;
 using namespace Microsoft::WRL;
+using namespace std::chrono_literals;
 
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A,      0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_C,      0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
@@ -1372,7 +1373,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     lock.Leave();
     // wait app device restoration
-    m_event.WaitMSec(2000);
+    m_event.Wait(2000ms);
     lock.Enter();
 
     // still in lost state after 2sec

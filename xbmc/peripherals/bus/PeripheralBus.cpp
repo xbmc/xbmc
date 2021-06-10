@@ -17,8 +17,12 @@
 #include "utils/log.h"
 
 using namespace PERIPHERALS;
+using namespace std::chrono_literals;
 
-#define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 5000
+namespace
+{
+constexpr auto PERIPHERAL_DEFAULT_RESCAN_INTERVAL = 5000ms;
+}
 
 CPeripheralBus::CPeripheralBus(const std::string& threadname,
                                CPeripherals& manager,
@@ -218,7 +222,7 @@ void CPeripheralBus::Process(void)
       break;
 
     if (!m_bStop)
-      m_triggerEvent.WaitMSec(m_iRescanTime);
+      m_triggerEvent.Wait(m_iRescanTime);
   }
 }
 

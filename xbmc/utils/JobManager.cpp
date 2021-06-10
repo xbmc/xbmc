@@ -16,6 +16,8 @@
 #include <functional>
 #include <stdexcept>
 
+using namespace std::chrono_literals;
+
 bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
 {
   if (m_callback)
@@ -371,7 +373,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
       return job;
     // no jobs are left - sleep for 30 seconds to allow new jobs to come in
     lock.Leave();
-    bool newJob = m_jobEvent.WaitMSec(30000);
+    bool newJob = m_jobEvent.Wait(30000ms);
     lock.Enter();
     if (!newJob)
       break;

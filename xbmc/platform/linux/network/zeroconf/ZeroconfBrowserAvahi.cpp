@@ -167,7 +167,7 @@ bool CZeroconfBrowserAvahi::doResolveService ( CZeroconfBrowser::ZeroconfService
   } // end of this block releases lock of eventloop
 
   //wait for resolve to return or timeout
-  m_resolved_event.WaitMSec(f_timeout*1000);
+  m_resolved_event.Wait(std::chrono::duration<double, std::milli>(f_timeout * 1000));
   {
     ScopedEventLoopBlock lock ( mp_poll );
     fr_service = m_resolving_service;

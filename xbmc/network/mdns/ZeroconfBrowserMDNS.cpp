@@ -24,8 +24,9 @@
 #include "platform/win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
 
-extern HWND g_hWnd;
+using namespace std::chrono_literals;
 
+extern HWND g_hWnd;
 
 CZeroconfBrowserMDNS::CZeroconfBrowserMDNS()
 {
@@ -349,7 +350,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
   // when using the embedded mdns service the call to DNSServiceProcessResult
   // above will not block until the resolving was finished - instead we have to
   // wait for resolve to return or timeout
-  m_resolved_event.WaitMSec(f_timeout * 1000);
+  m_resolved_event.Wait(std::chrono::duration<double, std::milli>(f_timeout * 1000));
 #endif //HAS_MDNS_EMBEDDED
   fr_service = m_resolving_service;
 
@@ -385,7 +386,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
     // wait for resolve to return or timeout
     // give it 2 secs for resolving (resolving in mdns is cached and queued
     // in timeslices off 1 sec
-    m_addrinfo_event.WaitMSec(2000);
+    m_addrinfo_event.Wait(2000ms);
 #endif //HAS_MDNS_EMBEDDED
     fr_service = m_resolving_service;
 

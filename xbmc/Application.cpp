@@ -212,6 +212,7 @@ using namespace KODI::MESSAGING;
 using namespace ActiveAE;
 
 using namespace XbmcThreads;
+using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
@@ -625,7 +626,7 @@ bool CApplication::Initialize()
 
   std::string localizedStr = g_localizeStrings.Get(24150);
   int iDots = 1;
-  while (!event.WaitMSec(1000))
+  while (!event.Wait(1000ms))
   {
     if (databaseManager.IsUpgrading())
       CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
@@ -669,7 +670,7 @@ bool CApplication::Initialize()
             CJob::PRIORITY_DEDICATED);
         localizedStr = g_localizeStrings.Get(24151);
         iDots = 1;
-        while (!event.WaitMSec(1000))
+        while (!event.Wait(1000ms))
         {
           CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr +
                                                         std::string(iDots, '.'));

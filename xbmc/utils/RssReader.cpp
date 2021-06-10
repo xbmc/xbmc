@@ -29,6 +29,7 @@
 #define RSS_COLOR_CHANNEL   2
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -167,7 +168,7 @@ void CRssReader::Process()
             break;
           }
           else if (nRetries > 0)
-            CThread::Sleep(5000); // Network problems? Retry, but not immediately.
+            CThread::Sleep(5000ms); // Network problems? Retry, but not immediately.
           else
             CLog::Log(LOGERROR, "Unable to obtain rss feed: {}", strUrl);
         }

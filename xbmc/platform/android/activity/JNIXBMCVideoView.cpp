@@ -115,7 +115,7 @@ void CJNIXBMCVideoView::surfaceDestroyed(CJNISurfaceHolder holder)
 
 bool CJNIXBMCVideoView::waitForSurface(unsigned int millis)
 {
-  return m_surfaceCreated.WaitMSec(millis);
+  return m_surfaceCreated.Wait(std::chrono::milliseconds(millis));
 }
 
 void CJNIXBMCVideoView::add()

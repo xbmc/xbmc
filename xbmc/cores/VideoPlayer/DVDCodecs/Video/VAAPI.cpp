@@ -49,6 +49,8 @@ extern "C" {
 #endif
 
 using namespace VAAPI;
+using namespace std::chrono_literals;
+
 #define NUM_RENDER_PICS 7
 
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPI = "videoplayer.usevaapi";
@@ -964,7 +966,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
       }
     }
 
-    if (!m_inMsgEvent.WaitMSec(2000))
+    if (!m_inMsgEvent.Wait(2000ms))
       break;
   }
 
@@ -988,7 +990,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   if (state == VAAPI_LOST)
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Check waiting for display reset event");
-    if (!m_DisplayEvent.WaitMSec(4000))
+    if (!m_DisplayEvent.Wait(4000ms))
     {
       CLog::Log(LOGERROR, "VAAPI::Check - device didn't reset in reasonable time");
       state = VAAPI_RESET;
@@ -1852,7 +1854,7 @@ void COutput::Process()
     }
 
     // wait for message
-    else if (m_outMsgEvent.WaitMSec(m_extTimeout))
+    else if (m_outMsgEvent.Wait(std::chrono::milliseconds(m_extTimeout)))
     {
       continue;
     }

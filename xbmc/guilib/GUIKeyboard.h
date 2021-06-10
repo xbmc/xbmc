@@ -64,7 +64,7 @@ class CGUIKeyboard : public ITimerCallback
     void startAutoCloseTimer(unsigned int autoCloseMs)
     {
       if ( autoCloseMs > 0 )
-        m_idleTimer.Start(autoCloseMs, false);
+        m_idleTimer.Start(std::chrono::milliseconds(autoCloseMs), false);
     }
 
     void resetAutoCloseTimer()

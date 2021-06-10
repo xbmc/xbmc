@@ -36,13 +36,22 @@ public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
   virtual ~CThread();
   void Create(bool bAutoDelete = false);
-  void Sleep(unsigned int milliseconds);
+
+  template<typename Rep, typename Period>
+  void Sleep(std::chrono::duration<Rep, Period> duration)
+  {
+    if (duration > std::chrono::milliseconds(10) && IsCurrentThread())
+      m_StopEvent.Wait(duration);
+    else
+      std::this_thread::sleep_for(duration);
+  }
+
   bool IsAutoDelete() const;
   virtual void StopThread(bool bWait = true);
   bool IsRunning() const;
 
   bool IsCurrentThread() const;
-  bool Join(unsigned int milliseconds);
+  bool Join(std::chrono::milliseconds duration);
 
   inline static const std::thread::id GetCurrentThreadId()
   {
@@ -82,10 +91,13 @@ protected:
    *  stop is called on the thread the wait will return with a response
    *  indicating what happened.
    */
-  inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis = -1 /* indicates wait forever*/)
+  inline WaitResponse AbortableWait(CEvent& event,
+                                    std::chrono::milliseconds duration =
+                                        std::chrono::milliseconds(-1) /* indicates wait forever*/)
   {
     XbmcThreads::CEventGroup group{&event, &m_StopEvent};
-    CEvent* result = timeoutMillis < 0 ? group.wait() : group.wait(timeoutMillis);
+    CEvent* result =
+        duration < std::chrono::milliseconds::zero() ? group.wait() : group.wait(duration);
     return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
   }

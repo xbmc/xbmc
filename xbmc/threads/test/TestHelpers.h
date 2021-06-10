@@ -12,28 +12,26 @@
 
 #include <gtest/gtest.h>
 
-#define MILLIS(x) x
-
-inline static void SleepMillis(unsigned int millis)
+template<class E>
+inline static bool waitForWaiters(E& event, int numWaiters, std::chrono::milliseconds duration)
 {
-  std::this_thread::sleep_for(std::chrono::milliseconds(millis));
-}
-
-template<class E> inline static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
-{
-  for( int i = 0; i < milliseconds; i++)
+  for (auto i = std::chrono::milliseconds::zero(); i < duration; i++)
   {
     if (event.getNumWaits() == numWaiters)
       return true;
-    SleepMillis(1);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+
   return false;
 }
 
-inline static bool waitForThread(std::atomic<long>& mutex, int numWaiters, int milliseconds)
+inline static bool waitForThread(std::atomic<long>& mutex,
+                                 int numWaiters,
+                                 std::chrono::milliseconds duration)
 {
   CCriticalSection sec;
-  for( int i = 0; i < milliseconds; i++)
+  for (auto i = std::chrono::milliseconds::zero(); i < duration; i++)
   {
     if (mutex == (long)numWaiters)
       return true;
@@ -41,8 +39,10 @@ inline static bool waitForThread(std::atomic<long>& mutex, int numWaiters, int m
     {
       CSingleLock tmplock(sec); // kick any memory syncs
     }
-    SleepMillis(1);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+
   return false;
 }
 
@@ -76,14 +76,8 @@ public:
   inline thread(thread& other) : f(other.f), cthread(other.cthread) { other.f = NULL; other.cthread = NULL; }
   inline thread& operator=(thread& other) { f = other.f; other.f = NULL; cthread = other.cthread; other.cthread = NULL; return *this; }
 
-  void join()
-  {
-    cthread->Join(static_cast<unsigned int>(-1));
-  }
+  void join() { cthread->Join(std::chrono::milliseconds::max()); }
 
-  bool timed_join(unsigned int millis)
-  {
-    return cthread->Join(millis);
-  }
+  bool timed_join(std::chrono::milliseconds duration) { return cthread->Join(duration); }
 };
 

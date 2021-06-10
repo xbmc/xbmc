@@ -25,12 +25,18 @@
 
 using namespace KODI;
 using namespace GAME;
+using namespace std::chrono_literals;
+
+namespace
+{
 
 #define ESC_KEY_CODE 27
 #define SKIPPING_DETECTION_MS 200
 
 // Duration to wait for axes to neutralize after mapping is finished
-#define POST_MAPPING_WAIT_TIME_MS (5 * 1000)
+constexpr auto POST_MAPPING_WAIT_TIME_MS = 5000ms;
+
+} // namespace
 
 CGUIConfigurationWizard::CGUIConfigurationWizard()
   : CThread("GUIConfigurationWizard"), m_actionMap(new KEYBOARD::CKeymapActionMap)
@@ -185,8 +191,8 @@ void CGUIConfigurationWizard::Process(void)
     if (bInMotion)
     {
       CLog::Log(LOGDEBUG, "Configuration wizard: waiting {}ms for axes to neutralize",
-                POST_MAPPING_WAIT_TIME_MS);
-      m_motionlessEvent.WaitMSec(POST_MAPPING_WAIT_TIME_MS);
+                POST_MAPPING_WAIT_TIME_MS.count());
+      m_motionlessEvent.Wait(POST_MAPPING_WAIT_TIME_MS);
     }
   }
 

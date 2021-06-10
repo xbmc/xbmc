@@ -49,6 +49,7 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
@@ -488,7 +489,7 @@ void CAutorun::HandleAutorun()
     return ;
   }
 
-  if (mediadetect.m_evAutorun.WaitMSec(0))
+  if (mediadetect.m_evAutorun.Wait(0ms))
   {
     ExecuteAutorun();
     mediadetect.m_evAutorun.Reset();

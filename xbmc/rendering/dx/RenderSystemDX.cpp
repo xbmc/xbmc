@@ -39,6 +39,7 @@ using namespace KODI;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
+using namespace std::chrono_literals;
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   , m_interlaced(false)
@@ -285,7 +286,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
     timer.Set(5);
     while (!m_decodingTimer.IsTimePast() && !timer.IsTimePast())
     {
-      m_decodingEvent.wait(lock, 1);
+      m_decodingEvent.wait(lock, 1ms);
     }
   }
 

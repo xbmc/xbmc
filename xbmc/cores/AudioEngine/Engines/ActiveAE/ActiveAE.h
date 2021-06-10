@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "guilib/DispResource.h"
+#include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
 #include <list>

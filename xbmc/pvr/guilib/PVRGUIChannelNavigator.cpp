@@ -19,6 +19,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/Job.h"
 #include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"

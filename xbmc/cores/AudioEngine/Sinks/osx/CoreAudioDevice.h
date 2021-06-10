@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cores/AudioEngine/Sinks/osx/CoreAudioStream.h"
+#include "threads/SystemClock.h"
 
 #include <list>
 #include <string>

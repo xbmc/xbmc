@@ -59,6 +59,7 @@
 using namespace KODI;
 using namespace MESSAGING;
 using namespace WINDOWING;
+using namespace std::chrono_literals;
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the NSWindowDidMoveNotification callback.
@@ -171,7 +172,7 @@ NSOpenGLContext* CWinSystemOSXImpl::m_lastOwnedContext = nil;
 // but no device reset for 3 secs
 // a timeout fires the reset callback
 // (for ensuring that e.x. AE isn't stuck)
-#define LOST_DEVICE_TIMEOUT_MS 3000
+constexpr auto LOST_DEVICE_TIMEOUT_MS = 3000ms;
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 //------------------------------------------------------------------------------------------

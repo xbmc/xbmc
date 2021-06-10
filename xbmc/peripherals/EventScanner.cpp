@@ -151,7 +151,7 @@ void CEventScanner::Process()
     auto waitTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(nextScan - now);
 
     if (!m_bStop && waitTimeMs.count() > 0)
-      m_scanEvent.WaitMSec(waitTimeMs.count());
+      m_scanEvent.Wait(waitTimeMs);
   }
 }
 

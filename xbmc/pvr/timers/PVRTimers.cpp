@@ -32,6 +32,12 @@
 #include <vector>
 
 using namespace PVR;
+using namespace std::chrono_literals;
+
+namespace
+{
+constexpr auto MAX_NOTIFICATION_DELAY = 10s;
+}
 
 bool CPVRTimersContainer::UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTag>& timer)
 {
@@ -165,14 +171,12 @@ bool CPVRTimers::LoadFromDatabase()
 
 void CPVRTimers::Process()
 {
-  static const unsigned int MAX_NOTIFICATION_DELAY = 10; // secs
-
   while (!m_bStop)
   {
     // update all timers not owned by a client (e.g. reminders)
-    UpdateEntries(MAX_NOTIFICATION_DELAY);
+    UpdateEntries(MAX_NOTIFICATION_DELAY.count());
 
-    CThread::Sleep(MAX_NOTIFICATION_DELAY * 1000);
+    CThread::Sleep(MAX_NOTIFICATION_DELAY);
   }
 }
 

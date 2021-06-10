@@ -41,7 +41,7 @@ CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThre
 
 void CDelayedMessage::Process()
 {
-  CThread::Sleep(m_delay);
+  CThread::Sleep(std::chrono::milliseconds(m_delay));
 
   if (!m_bStop)
     CApplicationMessenger::GetInstance().PostMsg(m_msg.dwMessage, m_msg.param1, m_msg.param1, m_msg.lpVoid, m_msg.strParam, m_msg.params);

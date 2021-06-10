@@ -13,6 +13,7 @@
 
 using namespace MUSIC_GRABBER;
 using namespace ADDON;
+using namespace std::chrono_literals;
 
 CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper) : CThread("MusicInfoScraper")
 {
@@ -121,7 +122,7 @@ void CMusicInfoScraper::LoadArtistInfo()
 
 bool CMusicInfoScraper::Completed()
 {
-  return Join(10);
+  return Join(10ms);
 }
 
 bool CMusicInfoScraper::Succeeded()

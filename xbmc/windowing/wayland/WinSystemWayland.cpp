@@ -56,6 +56,7 @@
 using namespace KODI::WINDOWING;
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
+using namespace std::chrono_literals;
 
 namespace
 {
@@ -1400,7 +1401,7 @@ void CWinSystemWayland::PrepareFramePresentation()
     // while it is minimized (since the wait needs to be interrupted for that).
     // -> Use Wait with timeout here so we can maintain a reasonable frame rate
     //    even when the window is not visible and we do not get any frame callbacks.
-    if (m_frameCallbackEvent.WaitMSec(50))
+    if (m_frameCallbackEvent.Wait(50ms))
     {
       // Only reset frame callback object a callback was received so a
       // new one is not requested continuously

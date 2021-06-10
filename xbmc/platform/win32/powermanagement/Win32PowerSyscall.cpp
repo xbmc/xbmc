@@ -46,7 +46,7 @@ void CWin32PowerStateWorker::Process(void)
 {
   while (!m_bStop)
   {
-    if (AbortableWait(m_queryEvent, -1) == WAIT_SIGNALED)
+    if (AbortableWait(m_queryEvent) == WAIT_SIGNALED)
     {
       PowerManagement(m_state.load());
       m_state.exchange(POWERSTATE_NONE);

@@ -1431,7 +1431,7 @@ bool CGUIAddonWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIAddonWindow::WaitForActionEvent(unsigned int timeout)
 {
-  m_actionEvent.WaitMSec(timeout);
+  m_actionEvent.Wait(std::chrono::milliseconds(timeout));
   m_actionEvent.Reset();
 }
 

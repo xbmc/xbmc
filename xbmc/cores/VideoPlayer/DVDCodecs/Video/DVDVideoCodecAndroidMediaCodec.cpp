@@ -144,7 +144,7 @@ void CMediaCodecVideoBuffer::Set(int bufferId, int textureId,
 
 bool CMediaCodecVideoBuffer::WaitForFrame(int millis)
 {
-  return m_frameready->WaitMSec(millis);
+  return m_frameready->Wait(std::chrono::milliseconds(millis));
 }
 
 void CMediaCodecVideoBuffer::ReleaseOutputBuffer(bool render, int64_t displayTime, CMediaCodecVideoBufferPool* pool)

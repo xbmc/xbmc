@@ -131,7 +131,7 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     // Update/Set key
     m_keyToRepeat = event;
     // Start timer with initial delay
-    m_keyRepeatTimer.Start(m_keyRepeatDelay, false);
+    m_keyRepeatTimer.Start(std::chrono::milliseconds(m_keyRepeatDelay), false);
   }
   else
   {
@@ -160,7 +160,7 @@ XBMC_Event CInputProcessorKeyboard::SendKey(unsigned char scancode, XBMCKey key,
 void CInputProcessorKeyboard::KeyRepeatTimeout()
 {
   // Reset ourselves
-  m_keyRepeatTimer.RestartAsync(m_keyRepeatInterval);
+  m_keyRepeatTimer.RestartAsync(std::chrono::milliseconds(m_keyRepeatInterval));
   // Simulate repeat: Key up and down
   XBMC_Event event = m_keyToRepeat;
   event.type = XBMC_KEYUP;

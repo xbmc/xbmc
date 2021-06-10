@@ -44,6 +44,7 @@
 
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
+using namespace std::chrono_literals;
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -369,7 +370,7 @@ void CAirPlayServer::Process()
     if (res < 0)
     {
       CLog::Log(LOGERROR, "AIRPLAY Server: Select failed");
-      CThread::Sleep(1000);
+      CThread::Sleep(1000ms);
       Initialize();
     }
     else if (res > 0)
@@ -412,7 +413,7 @@ void CAirPlayServer::Process()
             CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: {}", errno);
             if (EBADF == errno)
             {
-              CThread::Sleep(1000);
+              CThread::Sleep(1000ms);
               Initialize();
               break;
             }

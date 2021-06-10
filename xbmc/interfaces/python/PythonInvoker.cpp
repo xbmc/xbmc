@@ -60,6 +60,7 @@ extern "C" FILE* fopen_utf8(const char* _Filename, const char* _Mode);
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
 
@@ -495,7 +496,7 @@ bool CPythonInvoker::stop(bool abort)
       lock.Leave();
 
     XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
-    while (!m_stoppedEvent.WaitMSec(15))
+    while (!m_stoppedEvent.Wait(15ms))
     {
       if (timeout.IsTimePast())
       {

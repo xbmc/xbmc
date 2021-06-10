@@ -10,11 +10,10 @@
 
 #include <algorithm>
 
+using namespace std::chrono_literals;
+
 CTimer::CTimer(std::function<void()> const& callback)
-  : CThread("Timer"),
-    m_callback(callback),
-    m_timeout(std::chrono::milliseconds(0)),
-    m_interval(false)
+  : CThread("Timer"), m_callback(callback), m_timeout(0ms), m_interval(false)
 { }
 
 CTimer::CTimer(ITimerCallback *callback)
@@ -26,12 +25,12 @@ CTimer::~CTimer()
   Stop(true);
 }
 
-bool CTimer::Start(uint32_t timeout, bool interval /* = false */)
+bool CTimer::Start(std::chrono::milliseconds timeout, bool interval /* = false */)
 {
-  if (m_callback == NULL || timeout == 0 || IsRunning())
+  if (m_callback == NULL || timeout == 0ms || IsRunning())
     return false;
 
-  m_timeout = std::chrono::milliseconds(timeout);
+  m_timeout = timeout;
   m_interval = interval;
 
   Create();
@@ -50,10 +49,10 @@ bool CTimer::Stop(bool wait /* = false */)
   return true;
 }
 
-void CTimer::RestartAsync(uint32_t timeout)
+void CTimer::RestartAsync(std::chrono::milliseconds timeout)
 {
-  m_timeout = std::chrono::milliseconds(timeout);
-  m_endTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);
+  m_timeout = timeout;
+  m_endTime = std::chrono::steady_clock::now() + timeout;
   m_eventTimeout.Set();
 }
 
@@ -64,8 +63,7 @@ bool CTimer::Restart()
 
   Stop(true);
 
-  //! @todo: fix method to use std::chrono::milliseconds
-  return Start(m_timeout.count(), m_interval);
+  return Start(m_timeout, m_interval);
 }
 
 float CTimer::GetElapsedSeconds() const
@@ -94,7 +92,7 @@ void CTimer::Process()
     // wait the necessary time
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(m_endTime - currentTime);
 
-    if (!m_eventTimeout.WaitMSec(duration.count()))
+    if (!m_eventTimeout.Wait(duration))
     {
       currentTime = std::chrono::steady_clock::now();
       if (m_endTime <= currentTime)

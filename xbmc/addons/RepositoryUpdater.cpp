@@ -31,6 +31,8 @@
 #include <iterator>
 #include <vector>
 
+using namespace std::chrono_literals;
+
 namespace ADDON
 {
 
@@ -165,7 +167,7 @@ void CRepositoryUpdater::OnTimeout()
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
   {
     CLog::Log(LOGDEBUG,"CRepositoryUpdater: busy playing. postponing scheduled update");
-    m_timer.RestartAsync(2 * 60 * 1000);
+    m_timer.RestartAsync(2min);
     return;
   }
 
@@ -240,7 +242,7 @@ void CRepositoryUpdater::ScheduleUpdate()
               nextCheck.GetAsLocalizedDateTime(), delta / 1000);
   }
 
-  if (!m_timer.Start(delta))
+  if (!m_timer.Start(std::chrono::milliseconds(delta)))
     CLog::Log(LOGERROR,"CRepositoryUpdater: failed to start timer");
 }
 }

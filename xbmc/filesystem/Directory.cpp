@@ -27,6 +27,7 @@
 #include "utils/log.h"
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 #define TIME_TO_BUSY_DIALOG 500
 
@@ -91,13 +92,13 @@ public:
 
   bool Wait(unsigned int timeout)
   {
-    return m_result->m_event.WaitMSec(timeout);
+    return m_result->m_event.Wait(std::chrono::milliseconds(timeout));
   }
 
   bool GetDirectory(CFileItemList& list)
   {
     /* if it was not finished or failed, return failure */
-    if(!m_result->m_event.WaitMSec(0) || !m_result->m_result)
+    if (!m_result->m_event.Wait(0ms) || !m_result->m_result)
     {
       list.Clear();
       return false;

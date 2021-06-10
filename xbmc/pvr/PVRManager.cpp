@@ -44,6 +44,7 @@
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
+using namespace std::chrono_literals;
 
 namespace PVR
 {
@@ -89,7 +90,7 @@ public:
 
   bool WaitForJobs(unsigned int milliSeconds)
   {
-    return m_triggerEvent.WaitMSec(milliSeconds);
+    return m_triggerEvent.Wait(std::chrono::milliseconds(milliSeconds));
   }
 
 
@@ -485,7 +486,7 @@ void CPVRManager::Process()
   while (!LoadComponents(progressHandler) && IsInitialising())
   {
     CLog::Log(LOGWARNING, "PVR Manager failed to load data, retrying");
-    CThread::Sleep(1000);
+    CThread::Sleep(1000ms);
 
     if (progressHandler && progressTimeout.IsTimePast())
     {
@@ -625,7 +626,7 @@ bool CPVRManager::LoadComponents(CPVRGUIProgressHandler* progressHandler)
 {
   /* load at least one client */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
-    CThread::Sleep(50);
+    CThread::Sleep(50ms);
 
   if (!IsInitialising() || !m_addons->HasCreatedClients())
     return false;

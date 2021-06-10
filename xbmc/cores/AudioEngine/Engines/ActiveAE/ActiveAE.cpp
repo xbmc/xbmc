@@ -1102,7 +1102,7 @@ void CActiveAE::Process()
     }
 
     // wait for message
-    else if (m_outMsgEvent.WaitMSec(m_extTimeout))
+    else if (m_outMsgEvent.Wait(std::chrono::milliseconds(m_extTimeout)))
     {
       m_extTimeout = timer.MillisLeft();
       continue;

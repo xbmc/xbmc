@@ -21,6 +21,8 @@
 #include <QuartzCore/CVDisplayLink.h>
 #include <unistd.h>
 
+using namespace std::chrono_literals;
+
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} setting up OSX", __FUNCTION__);
@@ -82,7 +84,7 @@ void CVideoSyncOsx::OnLostDisplay()
   if (!m_displayLost)
   {
     m_displayLost = true;
-    m_lostEvent.WaitMSec(1000);
+    m_lostEvent.Wait(1000ms);
   }
 }
 
