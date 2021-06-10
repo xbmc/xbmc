@@ -368,7 +368,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
 
       CAddonType addonType(type);
       if (ParseXMLTypes(addonType, addon, child))
-        addon->m_types.push_back(std::move(addonType));
+        addon->m_types.emplace_back(std::move(addonType));
     }
   }
 
@@ -379,7 +379,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   if (addon->m_types.empty())
   {
     CAddonType addonType(ADDON_UNKNOWN);
-    addon->m_types.push_back(std::move(addonType));
+    addon->m_types.emplace_back(std::move(addonType));
   }
 
   addon->m_mainType = addon->m_types[0].Type();
@@ -501,7 +501,7 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
           if (!value.empty())
           {
             name = id + "@" + name;
-            extension.push_back(std::make_pair(name, SExtValue(value)));
+            extension.emplace_back(std::make_pair(name, SExtValue(value)));
           }
         }
         attribute = attribute->Next();
@@ -511,11 +511,11 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
 
       if (!childElementText.empty())
       {
-        extension.push_back(std::make_pair(id, SExtValue(childElementText)));
+        extension.emplace_back(std::make_pair(id, SExtValue(childElementText)));
       }
 
       if (!extension.empty())
-        addonExt.m_values.push_back(std::make_pair(id, std::move(extension)));
+        addonExt.m_values.emplace_back(std::make_pair(id, std::move(extension)));
 
       if (childElementText.empty())
       {
@@ -524,7 +524,7 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
         {
           CAddonExtensions subElement;
           if (ParseXMLExtension(subElement, childElement))
-            addonExt.m_children.push_back(std::make_pair(id, std::move(subElement)));
+            addonExt.m_children.emplace_back(std::make_pair(id, std::move(subElement)));
         }
       }
     }
