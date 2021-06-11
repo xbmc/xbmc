@@ -1641,6 +1641,9 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(loc);
+
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &vertexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
