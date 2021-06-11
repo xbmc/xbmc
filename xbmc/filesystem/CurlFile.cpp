@@ -675,9 +675,12 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   // set CA bundle file
   std::string caCert = CSpecialProtocol::TranslatePath(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caTrustFile);
+#ifdef TARGET_WINDOWS_STORE
+  // UWP Curl - Setting CURLOPT_CAINFO with a valid cacert file path is required for UWP
+  g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, "system\\certs\\cacert.pem");
+#endif
   if (!caCert.empty() && XFILE::CFile::Exists(caCert))
     g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
-
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
