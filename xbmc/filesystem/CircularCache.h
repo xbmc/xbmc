@@ -29,9 +29,10 @@ public:
     int64_t WaitForData(unsigned int minimum, unsigned int iMillis) override;
 
     int64_t Seek(int64_t pos) override;
-    bool Reset(int64_t pos, bool clearAnyway=true) override;
+    bool Reset(int64_t pos) override;
 
     int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition) override;
+    int64_t CachedDataStartPos() override;
     int64_t CachedDataEndPos() override;
     bool IsCachedPosition(int64_t iFilePosition) override;
 

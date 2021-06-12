@@ -255,8 +255,9 @@ void CFileCache::Process()
     if (m_seekEvent.Wait(0ms))
     {
       m_seekEvent.Reset();
-      int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
+      const int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
       const bool cacheReachEOF = (cacheMaxPos == m_fileSize);
+
       bool sourceSeekFailed = false;
       if (!cacheReachEOF)
       {
@@ -269,9 +270,10 @@ void CFileCache::Process()
           sourceSeekFailed = true;
         }
       }
+
       if (!sourceSeekFailed)
       {
-        const bool bCompleteReset = m_pCache->Reset(m_seekPos, false);
+        const bool bCompleteReset = m_pCache->Reset(m_seekPos);
         m_readPos = m_seekPos;
         m_writePos = m_pCache->CachedDataEndPos();
         assert(m_writePos == cacheMaxPos);
@@ -531,7 +533,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     if (m_seekPossible == 0)
       return m_nSeekResult;
 
-    /* never request closer to end than 2k, speeds up tag reading */
+    // Never request closer to end than one chunk. Speeds up tag reading
     m_seekPos = std::min(iTarget, std::max((int64_t)0, m_fileSize - m_chunkSize));
 
     m_seekEvent.Set();
