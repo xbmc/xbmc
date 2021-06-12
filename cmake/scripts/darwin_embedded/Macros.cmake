@@ -2,7 +2,9 @@ function(core_link_library lib wraplib)
   if(CMAKE_GENERATOR MATCHES "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL Ninja)
     set(wrapper_obj cores/dll-loader/exports/CMakeFiles/wrapper.dir/wrapper.c.o)
   elseif(CMAKE_GENERATOR MATCHES "Xcode")
-    set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$(CURRENT_VARIANT)/$(CURRENT_ARCH)/wrapper.o)
+    # CURRENT_VARIANT is an Xcode env var
+    # CPU is a project cmake var
+    set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$(CURRENT_VARIANT)/${CPU}/wrapper.o)
   else()
     message(FATAL_ERROR "Unsupported generator in core_link_library")
   endif()
@@ -52,8 +54,7 @@ function(core_link_library lib wraplib)
                      COMMAND ${CMAKE_C_COMPILER}
                      ARGS    ${CUSTOM_COMMAND_ARGS_LDFLAGS} ${export} -Wl,-force_load ${link_lib} ${extra_libs}
                              -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${extension}
-                     DEPENDS ${target} wrapper.def wrapper
-                     VERBATIM)
+                     DEPENDS ${target} wrapper.def wrapper)
 
   get_filename_component(libname ${wraplib} NAME_WE)
   add_custom_target(wrap_${libname} ALL DEPENDS ${wraplib}-${ARCH}${extension})
