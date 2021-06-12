@@ -3,7 +3,7 @@ PLATFORM=$(NATIVEPLATFORM)
 DEPS= ../../Makefile.include Makefile
 
 APPNAME=cmake
-VERSION=3.18.4
+VERSION=3.20.3
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
