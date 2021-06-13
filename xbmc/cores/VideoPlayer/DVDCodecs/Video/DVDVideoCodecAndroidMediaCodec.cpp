@@ -1260,24 +1260,39 @@ void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(CJNIMediaFormat& mediaform
 std::vector<uint8_t> CDVDVideoCodecAndroidMediaCodec::GetHDRStaticMetadata()
 {
   std::vector<uint8_t> metadata;
-  if (m_hints.masteringMetadata && m_hints.contentLightMetadata)
+  if (m_hints.masteringMetadata)
   {
-    static const double MAX_CHROMATICITY = 5000;
+    // for more information, see CTA+861.3-A standard document
+    static const double MAX_CHROMATICITY = 50000;
+    static const double MAX_LUMINANCE = 10000;
     metadata.resize(25);
     metadata[0] = 0;
-    short* data = reinterpret_cast<short*>(&metadata[1]);
-    data[0] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * MAX_CHROMATICITY + 0.5);
-    data[1] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * MAX_CHROMATICITY + 0.5);
-    data[2] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * MAX_CHROMATICITY + 0.5);
-    data[3] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * MAX_CHROMATICITY + 0.5);
-    data[4] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * MAX_CHROMATICITY + 0.5);
-    data[5] = static_cast<short>(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * MAX_CHROMATICITY + 0.5);
-    data[6] = static_cast<short>(av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
-    data[7] = static_cast<short>(av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
-    data[8] = static_cast<short>(av_q2d(m_hints.masteringMetadata->max_luminance) + 0.5);
-    data[9] = static_cast<short>(av_q2d(m_hints.masteringMetadata->min_luminance) + 0.5);
-    data[10] = static_cast<short>(m_hints.contentLightMetadata->MaxCLL);
-    data[11] = static_cast<short>(m_hints.contentLightMetadata->MaxFALL);
+    unsigned short* data = reinterpret_cast<unsigned short*>(&metadata[1]);
+    data[0] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * MAX_CHROMATICITY + 0.5);
+    data[1] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * MAX_CHROMATICITY + 0.5);
+    data[2] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * MAX_CHROMATICITY + 0.5);
+    data[3] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * MAX_CHROMATICITY + 0.5);
+    data[4] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * MAX_CHROMATICITY + 0.5);
+    data[5] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * MAX_CHROMATICITY + 0.5);
+    data[6] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
+    data[7] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
+    data[8] = static_cast<unsigned short>(av_q2d(m_hints.masteringMetadata->max_luminance) + 0.5);
+    data[9] = static_cast<unsigned short>(
+        av_q2d(m_hints.masteringMetadata->min_luminance) * MAX_LUMINANCE + 0.5);
+    // we can have HDR content that does not provide content light level metadata
+    if (m_hints.contentLightMetadata)
+    {
+      data[10] = static_cast<unsigned short>(m_hints.contentLightMetadata->MaxCLL);
+      data[11] = static_cast<unsigned short>(m_hints.contentLightMetadata->MaxFALL);
+    }
   }
   return metadata;
 }
