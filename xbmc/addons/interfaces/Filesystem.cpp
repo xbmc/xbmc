@@ -999,7 +999,7 @@ bool Interface_Filesystem::io_control_get_seek_possible(void* kodiBase, void* fi
   {
     CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
               kodiBase, file);
-    return -1;
+    return false;
   }
 
   return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SEEK_POSSIBLE, nullptr) != 0
@@ -1016,7 +1016,7 @@ bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
   {
     CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}, status='{}')",
               __FUNCTION__, kodiBase, file, static_cast<const void*>(status));
-    return -1;
+    return false;
   }
 
   SCacheStatus data = {};
@@ -1039,7 +1039,7 @@ bool Interface_Filesystem::io_control_set_cache_rate(void* kodiBase, void* file,
   {
     CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
               kodiBase, file);
-    return -1;
+    return false;
   }
 
   return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_SETRATE, &rate) >= 0 ? true
@@ -1053,7 +1053,7 @@ bool Interface_Filesystem::io_control_set_retry(void* kodiBase, void* file, bool
   {
     CLog::Log(LOGERROR, "Interface_VFS::{} - invalid data (addon='{}', file='{}')", __FUNCTION__,
               kodiBase, file);
-    return -1;
+    return false;
   }
 
   return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SET_RETRY, &retry) >= 0 ? true
