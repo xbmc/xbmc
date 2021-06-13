@@ -199,8 +199,8 @@
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="154" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[20416]: [/COLOR]$INFO[ListItem.Premiered]" />
-						<param name="altlabel" value="$LOCALIZE[20416]: $INFO[ListItem.Premiered]" />
+						<param name="label" value="[COLOR button_focus]$VAR[FirstAiredLabel]: [/COLOR]$INFO[ListItem.Premiered]" />
+						<param name="altlabel" value="$VAR[FirstAiredLabel]: $INFO[ListItem.Premiered]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Premiered)" />
 					</include>
 					<include content="InfoDialogMetadata">
