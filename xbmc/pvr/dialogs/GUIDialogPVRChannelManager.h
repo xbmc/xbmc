@@ -51,6 +51,9 @@ namespace PVR
     void SetData(int iItem);
     void RenameChannel(const CFileItemPtr& pItem);
 
+    void ClearChannelOptions();
+    void EnableChannelOptions(bool bEnable);
+
     bool OnPopupMenu(int iItem);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool OnActionMove(const CAction& action);
@@ -70,11 +73,12 @@ namespace PVR
     bool OnClickButtonNewChannel();
 
     bool PersistChannel(const CFileItemPtr& pItem, const std::shared_ptr<CPVRChannelGroup>& group, unsigned int* iChannelNumber);
-    void SetItemsUnchanged();
+
+    bool HasChangedItems() const;
+    void SetItemChanged(const CFileItemPtr& pItem);
 
     bool m_bIsRadio = false;
     bool m_bMovingMode = false;
-    bool m_bContainsChanges = false;
     bool m_bAllowNewChannel = false;
     bool m_bAllowRenumber = false;
 
