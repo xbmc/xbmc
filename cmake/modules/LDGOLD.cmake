@@ -1,6 +1,4 @@
 option(ENABLE_LDGOLD "Use GNU gold linker" ON)
-
-set(LDGOLD_FOUND FALSE)
 if(ENABLE_LDGOLD)
   execute_process(COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
   if(LD_VERSION MATCHES "GNU gold")
