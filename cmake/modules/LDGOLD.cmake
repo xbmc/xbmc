@@ -10,7 +10,7 @@ if(ENABLE_LDGOLD)
   else()
     message(WARNING "GNU gold linker is not available, falling back to default system linker")
   endif()
-else()
+elseif(NOT ENABLE_LLD)
   message(STATUS "Linker: Default system linker")
 endif()
 
