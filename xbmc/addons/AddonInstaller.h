@@ -62,6 +62,12 @@ enum class AllowCheckForUpdates : bool
   NO = false,
 };
 
+enum class RecurseOrphaned : bool
+{
+  YES = true,
+  NO = false,
+};
+
 class CAddonInstaller : public IJobCallback
 {
 public:
@@ -286,12 +292,14 @@ public:
   CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
 
   bool DoWork() override;
+  void SetRecurseOrphaned(RecurseOrphaned recurseOrphaned) { m_recurseOrphaned = recurseOrphaned; };
 
 private:
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
   bool m_removeData;
+  RecurseOrphaned m_recurseOrphaned = RecurseOrphaned::YES;
 };
 
 }; // namespace ADDON
