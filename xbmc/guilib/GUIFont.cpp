@@ -237,7 +237,8 @@ float CGUIFont::GetTextWidth( const vecText &text )
 {
   if (!m_font) return 0;
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  return m_font->GetTextWidthInternal(text.begin(), text.end()) * CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX();
+  return m_font->GetTextWidthInternal(text) *
+         CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX();
 }
 
 float CGUIFont::GetCharWidth( character_t ch )
