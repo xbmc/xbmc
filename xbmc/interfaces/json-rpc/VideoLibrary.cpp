@@ -970,11 +970,14 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
   else
   {
     cmd = "exportlibrary2(video, separate, dummy";
-    if (parameterObject["options"].asBoolean("images"))
+    if (parameterObject["options"]["images"].isBoolean() &&
+        parameterObject["options"]["images"].asBoolean() == true)
       cmd += ", artwork";
-    if (parameterObject["options"].asBoolean("overwrite"))
+    if (parameterObject["options"]["overwrite"].isBoolean() &&
+        parameterObject["options"]["overwrite"].asBoolean() == true)
       cmd += ", overwrite";
-    if (parameterObject["options"].asBoolean("actorthumbs"))
+    if (parameterObject["options"]["actorthumbs"].isBoolean() &&
+        parameterObject["options"]["actorthumbs"].asBoolean() == true)
       cmd += ", actorthumbs";
     cmd += ")";
   }
