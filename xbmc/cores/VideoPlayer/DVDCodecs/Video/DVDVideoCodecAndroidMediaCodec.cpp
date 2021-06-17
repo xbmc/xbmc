@@ -56,7 +56,6 @@
 
 #include "system.h"
 
-
 static const char* XMEDIAFORMAT_KEY_ROTATION = "rotation-degrees";
 static const char* XMEDIAFORMAT_KEY_SLICE = "slice-height";
 static const char* XMEDIAFORMAT_KEY_CROP_LEFT = "crop-left";
@@ -588,6 +587,27 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
       m_mime = "video/wvc1";
       m_formatname = "amc-vc1";
+      break;
+    }
+    case AV_CODEC_ID_AV1:
+    {
+      switch (hints.profile)
+      {
+        case FF_PROFILE_AV1_MAIN:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AV1ProfileMain8;
+          break;
+        case FF_PROFILE_AV1_HIGH:
+        case FF_PROFILE_AV1_PROFESSIONAL:
+          goto FAIL;
+          break;
+        default:
+          break;
+      }
+      m_mime = "video/av01";
+      m_formatname = "amc-av1";
+      free(m_hints.extradata);
+      m_hints.extradata = nullptr;
+      m_hints.extrasize = 0;
       break;
     }
     default:
