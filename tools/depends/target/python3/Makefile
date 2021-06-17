@@ -23,6 +23,10 @@ ifeq ($(OS), darwin_embedded)
                   ac_cv_func_getgroups=no
 endif
 
+ifeq ($(OS), linux)
+  EXTRA_CONFIGURE=ac_cv_pthread=yes
+endif
+
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-shared \
