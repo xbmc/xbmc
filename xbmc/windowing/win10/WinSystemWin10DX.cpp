@@ -164,7 +164,7 @@ void CWinSystemWin10DX::InitHooks(IDXGIOutput* pOutput)
 
 bool CWinSystemWin10DX::IsHDRDisplay()
 {
-  return (CWIN32Util::GetWindowsHDRStatus() != HDR_STATUS::HDR_UNSUPPORTED);
+  return false; // use tone mapping by default on Xbox
 }
 
 HDR_STATUS CWinSystemWin10DX::GetOSHDRStatus()
