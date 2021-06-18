@@ -314,7 +314,7 @@ void CUDisks2Provider::DriveAdded(Drive *drive)
   }
 }
 
-bool CUDisks2Provider::DriveRemoved(std::string object)
+bool CUDisks2Provider::DriveRemoved(const std::string& object)
 {
   CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Drive removed ({})", object);
 
@@ -363,7 +363,7 @@ void CUDisks2Provider::BlockAdded(Block *block, bool isNew)
   }
 }
 
-bool CUDisks2Provider::BlockRemoved(std::string object)
+bool CUDisks2Provider::BlockRemoved(const std::string& object)
 {
   CLog::Log(LOGDEBUG, LOGDBUS, "UDisks2: Block removed ({})", object);
 

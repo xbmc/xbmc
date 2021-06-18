@@ -113,9 +113,9 @@ private:
   void GetDisks(VECSOURCES &devices, bool enumerateRemovable);
 
   void DriveAdded(Drive *drive);
-  bool DriveRemoved(std::string object);
+  bool DriveRemoved(const std::string& object);
   void BlockAdded(Block *block, bool isNew = true);
-  bool BlockRemoved(std::string object);
+  bool BlockRemoved(const std::string& object);
   void FilesystemAdded(Filesystem *fs, bool isNew = true);
   bool FilesystemRemoved(const char *object, IStorageEventsCallback *callback);
 
