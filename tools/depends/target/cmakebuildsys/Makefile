@@ -11,9 +11,12 @@ ifeq ($(Configuration),)
 endif
 
 ifeq ($(OS),darwin_embedded)
-  CMAKE_BUILD_ARGUMENTS = -G Xcode
+  # cmake toolset option buildsystem selects the legacy xcode build system
+  # cmake 3.19+ with xcode 12 defaults to the new build system. Stick with the legacy
+  # system for now for our building
+  CMAKE_BUILD_ARGUMENTS = -G Xcode -T buildsystem=1
 else ifeq ($(GEN),Xcode)
-  CMAKE_BUILD_ARGUMENTS = -G Xcode
+  CMAKE_BUILD_ARGUMENTS = -G Xcode -T buildsystem=1
 else
   CMAKE_BUILD_ARGUMENTS = -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$(Configuration)
 endif
