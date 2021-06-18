@@ -98,6 +98,7 @@ bool CPVRChannelGroupInternal::Update()
 
   // create group members for the channels
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
+  groupMembers.reserve(channels.size());
   for (const auto& channel : channels)
   {
     groupMembers.emplace_back(
