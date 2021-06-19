@@ -76,7 +76,7 @@ void CPVRSettings::UnregisterCallback(ISettingCallback* callback)
 
 void CPVRSettings::Init(const std::set<std::string>& settingNames)
 {
-  for (auto settingName : settingNames)
+  for (const auto& settingName : settingNames)
   {
     SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingName);
     if (!setting)

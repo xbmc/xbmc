@@ -101,7 +101,7 @@ void KODI::UTILS::GL::GlErrorCallback(GLenum source, GLenum type, GLuint id, GLe
   CLog::Log(LOGDEBUG, "OpenGL(ES) Debugging:\nSource: {}\nType: {}\nSeverity: {}\nID: {}\nMessage: {}", sourceStr, typeStr, severityStr, id, message);
 }
 
-static void PrintMatrix(const GLfloat* matrix, std::string matrixName)
+static void PrintMatrix(const GLfloat* matrix, const std::string& matrixName)
 {
   CLog::Log(LOGDEBUG, "{}:\n{:> 10.3f} {:> 10.3f} {:> 10.3f} {:> 10.3f}\n{:> 10.3f} {:> 10.3f} {:> 10.3f} {:> 10.3f}\n{:> 10.3f} {:> 10.3f} {:> 10.3f} {:> 10.3f}\n{:> 10.3f} {:> 10.3f} {:> 10.3f} {:> 10.3f}",
                       matrixName,
