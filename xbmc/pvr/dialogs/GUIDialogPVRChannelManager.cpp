@@ -759,9 +759,9 @@ void CGUIDialogPVRChannelManager::Update()
     m_bAllowNewChannel = true;
 
   if (m_bAllowNewChannel)
-    SET_CONTROL_VISIBLE(BUTTON_NEW_CHANNEL);
+    CONTROL_ENABLE(BUTTON_NEW_CHANNEL);
   else
-    SET_CONTROL_HIDDEN(BUTTON_NEW_CHANNEL);
+    CONTROL_DISABLE(BUTTON_NEW_CHANNEL);
 
   Renumber();
   m_viewControl.SetItems(*m_channelItems);
