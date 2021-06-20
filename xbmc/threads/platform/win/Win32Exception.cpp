@@ -265,9 +265,6 @@ cleanup:
 
 bool win32_exception::ShouldHook()
 {
-  if (!IsWindows8OrGreater())
-    return true;
-
   bool result = true;
 
   auto module = ::LoadLibrary(L"kernel32.dll");

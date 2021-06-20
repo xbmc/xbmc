@@ -295,8 +295,7 @@ bool CContext::CreateContext()
       featureLevels.push_back(D3D_FEATURE_LEVEL_12_1);
       featureLevels.push_back(D3D_FEATURE_LEVEL_12_0);
     }
-    if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
-      featureLevels.push_back(D3D_FEATURE_LEVEL_11_1);
+    featureLevels.push_back(D3D_FEATURE_LEVEL_11_1);
     featureLevels.push_back(D3D_FEATURE_LEVEL_11_0);
     featureLevels.push_back(D3D_FEATURE_LEVEL_10_1);
     featureLevels.push_back(D3D_FEATURE_LEVEL_10_0);
