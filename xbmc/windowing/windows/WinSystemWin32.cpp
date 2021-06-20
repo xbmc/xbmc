@@ -44,7 +44,6 @@ CWinSystemWin32::CWinSystemWin32()
   , PtrGetGestureInfo(nullptr)
   , PtrSetGestureConfig(nullptr)
   , PtrCloseGestureInfoHandle(nullptr)
-  , PtrEnableNonClientDpiScaling(nullptr)
   , m_hWnd(nullptr)
   , m_hMonitor(nullptr)
   , m_hInstance(nullptr)
@@ -126,8 +125,6 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
     PtrGetGestureInfo = reinterpret_cast<pGetGestureInfo>(GetProcAddress(hUser32, "GetGestureInfo"));
     PtrSetGestureConfig = reinterpret_cast<pSetGestureConfig>(GetProcAddress(hUser32, "SetGestureConfig"));
     PtrCloseGestureInfoHandle = reinterpret_cast<pCloseGestureInfoHandle>(GetProcAddress(hUser32, "CloseGestureInfoHandle"));
-    // if available, enable automatic DPI scaling of the non-client area portions of the window.
-    PtrEnableNonClientDpiScaling = reinterpret_cast<pEnableNonClientDpiScaling>(GetProcAddress(hUser32, "EnableNonClientDpiScaling"));
   }
 
   UpdateStates(fullScreen);
