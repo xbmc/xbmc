@@ -21,6 +21,10 @@ ifeq ($(OS), linux)
   PLUGIN_BUILD_FLAGS+=-DCMAKE_SHARED_LINKER_FLAGS="$(LDFLAGS) -pthread"
 endif
 
+ifeq ($(TARGET_PLATFORM),appletvos)
+  PLUGIN_BUILD_FLAGS+=-DHAVE_UCONTEXT_H= -DHAVE_FILE_UCONTEXT_H=
+endif
+
 all: .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
