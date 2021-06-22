@@ -12,7 +12,6 @@ BASE_URL=https://www.openssl.org/source
 # configuration settings
 ifeq ($(OS), linux)
   TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
-  OPENSSLPLATFORM=linux-$(MESON_CPU)
 endif
 ifeq ($(OS), android)
   TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -D__ANDROID_API__=$(NDK_LEVEL)
@@ -33,7 +32,12 @@ ifeq ($(OS), osx)
   OPENSSLPLATFORM=darwin64-$(CPU)-cc
 endif
 
-CONFIGURE=./Configure $(OPENSSLPLATFORM) no-shared zlib no-tests $(TARGETOPT) --prefix=$(PREFIX)
+ifeq ($(OS), linux)
+  # config auto detects well on linux
+  CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-tests no-asm $(TARGETOPT) --prefix=$(PREFIX)
+else
+  CONFIGURE=./Configure $(OPENSSLPLATFORM) no-shared zlib no-tests $(TARGETOPT) --prefix=$(PREFIX)
+endif
 
 LIBDYLIB=$(PLATFORM)/libssl.a
 
