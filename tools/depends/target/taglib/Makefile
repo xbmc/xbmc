@@ -8,6 +8,12 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
 BASE_URL=https://taglib.org/releases
 
+ifeq ($(OS),android)
+  FLAGS=-DCMAKE_C_FLAGS="-std=c++11 $(CFLAGS)"
+  FLAGS+=-DCMAKE_CXX_FLAGS="-std=c++11 $(CXXFLAGS)"
+  FLAGS+=-DCMAKE_CPP_FLAGS="-std=c++11 $(CPPFLAGS)"
+endif
+
 LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libtag.a
 all: .installed-$(PLATFORM)
 
@@ -18,7 +24,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM)/build; $(CMAKE) -DCMAKE_LIBRARY_PATH=$(TOOLCHAIN)/lib/$(HOST) -DCMAKE_CXX_FLAGS="$(CXXFLAGS) -std=c++11" -DBUILD_SHARED_LIBS=OFF ..
+	cd $(PLATFORM)/build; $(CMAKE) -DCMAKE_LIBRARY_PATH=$(TOOLCHAIN)/lib/$(HOST) $(FLAGS) -DBUILD_SHARED_LIBS=OFF ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
