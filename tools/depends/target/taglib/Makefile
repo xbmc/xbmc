@@ -8,9 +8,6 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
 BASE_URL=https://taglib.org/releases
 
-# taglib explicitly requires >= c++11
-export CXXFLAGS+= -std=c++11
-
 LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/libtag.a
 all: .installed-$(PLATFORM)
 
@@ -21,7 +18,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM)/build; $(CMAKE) -DCMAKE_LIBRARY_PATH=$(TOOLCHAIN)/lib/$(HOST) -DBUILD_SHARED_LIBS=OFF ..
+	cd $(PLATFORM)/build; $(CMAKE) -DCMAKE_LIBRARY_PATH=$(TOOLCHAIN)/lib/$(HOST) -DCMAKE_CXX_FLAGS="$(CXXFLAGS) -std=c++11" -DBUILD_SHARED_LIBS=OFF ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
