@@ -47,10 +47,8 @@ class CSetting : public ISetting,
                  public std::enable_shared_from_this<CSetting>
 {
 public:
-  CSetting(const std::string& id,
-           CSettingsManager* settingsManager = nullptr,
-           const std::string& name = "CSetting");
-  CSetting(const std::string& id, const CSetting& setting, const std::string& name = "CSetting");
+  CSetting(const std::string& id, CSettingsManager* settingsManager = nullptr);
+  CSetting(const std::string& id, const CSetting& setting);
   ~CSetting() override = default;
 
   virtual std::shared_ptr<CSetting> Clone(const std::string &id) const = 0;
@@ -95,6 +93,19 @@ public:
   // implementation of ISettingCallback
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
+  /*!
+   \brief Deserializes the given XML node to retrieve a setting object's identifier and
+          whether the setting is a reference to another setting or not.
+
+   \param node XML node containing a setting object's identifier
+   \param identification Will contain the deserialized setting object's identifier
+   \param isReference Whether the setting is a reference to the setting with the determined identifier
+   \return True if a setting object's identifier was deserialized, false otherwise
+   */
+  static bool DeserializeIdentification(const TiXmlNode* node,
+                                        std::string& identification,
+                                        bool& isReference);
+
 protected:
   // implementation of ISettingCallback
   bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
@@ -125,6 +136,7 @@ protected:
 
   std::string m_referencedId;
 
+private:
   static Logger s_logger;
 };
 
@@ -140,16 +152,10 @@ public:
   static SettingType Type() { return TSettingType; }
 
 protected:
-  CTraitedSetting(const std::string& id,
-                  CSettingsManager* settingsManager = nullptr,
-                  const std::string& name = "CTraitedSetting")
-    : CSetting(id, settingsManager, name)
+  CTraitedSetting(const std::string& id, CSettingsManager* settingsManager = nullptr)
+    : CSetting(id, settingsManager)
   { }
-  CTraitedSetting(const std::string& id,
-                  const CTraitedSetting& setting,
-                  const std::string& name = "CTraitedSetting")
-    : CSetting(id, setting, name)
-  { }
+  CTraitedSetting(const std::string& id, const CTraitedSetting& setting) : CSetting(id, setting) {}
   ~CTraitedSetting() override = default;
 };
 
@@ -210,6 +216,8 @@ protected:
   std::string m_delimiter = "|";
   int m_minimumItems = 0;
   int m_maximumItems = -1;
+
+  static Logger s_logger;
 };
 
 /*!
@@ -242,11 +250,15 @@ public:
   void SetDefault(bool value);
 
 private:
+  static constexpr Value DefaultValue = false;
+
   void copy(const CSettingBool &setting);
   bool fromString(const std::string &strValue, bool &value) const;
 
-  bool m_value = false;
-  bool m_default = false;
+  bool m_value = DefaultValue;
+  bool m_default = DefaultValue;
+
+  static Logger s_logger;
 };
 
 /*!
@@ -310,14 +322,19 @@ public:
   void SetOptionsSort(SettingOptionsSort optionsSort) { m_optionsSort = optionsSort; }
 
 private:
+  static constexpr Value DefaultValue = 0;
+  static constexpr Value DefaultMin = DefaultValue;
+  static constexpr Value DefaultStep = 1;
+  static constexpr Value DefaultMax = DefaultValue;
+
   void copy(const CSettingInt &setting);
   static bool fromString(const std::string &strValue, int &value);
 
-  int m_value = 0;
-  int m_default = 0;
-  int m_min = 0;
-  int m_step = 1;
-  int m_max = 0;
+  int m_value = DefaultValue;
+  int m_default = DefaultValue;
+  int m_min = DefaultMin;
+  int m_step = DefaultStep;
+  int m_max = DefaultMax;
   TranslatableIntegerSettingOptions m_translatableOptions;
   IntegerSettingOptions m_options;
   std::string m_optionsFillerName;
@@ -325,6 +342,8 @@ private:
   void *m_optionsFillerData = nullptr;
   IntegerSettingOptions m_dynamicOptions;
   SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
+
+  static Logger s_logger;
 };
 
 /*!
@@ -366,14 +385,21 @@ public:
   void SetMaximum(double maximum) { m_max = maximum; }
 
 private:
+  static constexpr Value DefaultValue = 0.0;
+  static constexpr Value DefaultMin = DefaultValue;
+  static constexpr Value DefaultStep = 1.0;
+  static constexpr Value DefaultMax = DefaultValue;
+
   virtual void copy(const CSettingNumber &setting);
   static bool fromString(const std::string &strValue, double &value);
 
-  double m_value = 0.0;
-  double m_default = 0.0;
-  double m_min = 0.0;
-  double m_step = 1.0;
-  double m_max = 0.0;
+  double m_value = DefaultValue;
+  double m_default = DefaultValue;
+  double m_min = DefaultMin;
+  double m_step = DefaultStep;
+  double m_max = DefaultMax;
+
+  static Logger s_logger;
 };
 
 /*!
@@ -432,6 +458,8 @@ public:
   void SetOptionsSort(SettingOptionsSort optionsSort) { m_optionsSort = optionsSort; }
 
 protected:
+  static const Value DefaultValue;
+
   virtual void copy(const CSettingString &setting);
 
   std::string m_value;
@@ -445,6 +473,8 @@ protected:
   void *m_optionsFillerData = nullptr;
   StringSettingOptions m_dynamicOptions;
   SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
+
+  static Logger s_logger;
 };
 
 /*!
@@ -481,5 +511,9 @@ public:
   void SetData(const std::string& data) { m_data = data; }
 
 protected:
+  virtual void copy(const CSettingAction& setting);
+
   std::string m_data;
+
+  static Logger s_logger;
 };

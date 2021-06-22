@@ -97,7 +97,8 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
   while (settingElement != nullptr)
   {
     std::string settingId;
-    if (CSettingCategory::DeserializeIdentification(settingElement, settingId))
+    bool isReference;
+    if (CSetting::DeserializeIdentification(settingElement, settingId, isReference))
     {
       auto settingIt = std::find_if(m_settings.begin(), m_settings.end(),
         [&settingId](const SettingPtr& setting)
@@ -126,10 +127,20 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
 
       if (setting == nullptr)
         s_logger->error("unable to create new setting \"{}\"", settingId);
-      else if (!setting->Deserialize(settingElement, update))
-        s_logger->warn("unable to read setting \"{}\"", settingId);
-      else if (!update)
-        addISetting(settingElement, setting, m_settings);
+      else
+      {
+        if (!setting->Deserialize(settingElement, update))
+          s_logger->warn("unable to read setting \"{}\"", settingId);
+        else
+        {
+          // if the setting is a reference turn it into one
+          if (isReference)
+            setting->MakeReference();
+
+          if (!update)
+            addISetting(settingElement, setting, m_settings);
+        }
+      }
     }
 
     settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);

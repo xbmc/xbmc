@@ -31,12 +31,12 @@
       </group>
     </category>
   </section>
-  <section id="pvr" >
+  <section id="pvr">
     <category id="pvrpowermanagement">
-        <setting id="pvrpowermanagement.setwakeupcmd">
-          <default></default>
-          <visible>false</visible>
-        </setting>
+      <setting id="pvrpowermanagement.setwakeupcmd">
+        <default></default>
+        <visible>false</visible>
+      </setting>
     </category>
   </section>
   <section id="games">

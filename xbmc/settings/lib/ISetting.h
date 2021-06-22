@@ -114,12 +114,25 @@ public:
   static bool DeserializeIdentification(const TiXmlNode *node, std::string &identification);
 
 protected:
+  static constexpr int DefaultLabel = -1;
+  /*!
+   \brief Deserializes the given XML node to retrieve a setting object's identifier from the given attribute.
+
+   \param node XML node containing a setting object's identifier
+   \param attribute Attribute which contains the setting object's identifier
+   \param identification Will contain the deserialized setting object's identifier
+   \return True if a setting object's identifier was deserialized, false otherwise
+   */
+  static bool DeserializeIdentificationFromAttribute(const TiXmlNode* node,
+                                                     const std::string& attribute,
+                                                     std::string& identification);
+
   std::string m_id;
   CSettingsManager *m_settingsManager;
 
 private:
   bool m_visible = true;
-  int m_label = -1;
+  int m_label = DefaultLabel;
   int m_help = -1;
   bool m_meetsRequirements = true;
   CSettingRequirement m_requirementCondition;

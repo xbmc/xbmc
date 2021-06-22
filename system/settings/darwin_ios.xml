@@ -15,7 +15,7 @@
     </category>
     <category id="discs">
       <group id="3">
-      <visible>false</visible>
+        <visible>false</visible>
       </group>
     </category>
   </section>

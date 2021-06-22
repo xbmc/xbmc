@@ -43,7 +43,7 @@
             <dependency type="enable">
               <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
             </dependency>
-           </dependencies>
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevdpauvc1" type="boolean" parent="videoplayer.usevdpau" label="13445" help="13446">
@@ -55,7 +55,7 @@
             <dependency type="enable">
               <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
             </dependency>
-           </dependencies>
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">

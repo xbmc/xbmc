@@ -68,19 +68,15 @@ bool DeserializeOptionsSort(const TiXmlElement* optionsElement, SettingOptionsSo
 
 Logger CSetting::s_logger;
 
-CSetting::CSetting(const std::string& id,
-                   CSettingsManager* settingsManager /* = nullptr */,
-                   const std::string& name /* = "CSetting" */)
+CSetting::CSetting(const std::string& id, CSettingsManager* settingsManager /* = nullptr */)
   : ISetting(id, settingsManager)
 {
   if (s_logger == nullptr)
-    s_logger = CServiceBroker::GetLogging().GetLogger(name);
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSetting");
 }
 
-CSetting::CSetting(const std::string& id,
-                   const CSetting& setting,
-                   const std::string& name /* = "CSetting" */)
-  : CSetting(id, setting.m_settingsManager, name)
+CSetting::CSetting(const std::string& id, const CSetting& setting)
+  : CSetting(id, setting.m_settingsManager)
 {
   Copy(setting);
 }
@@ -283,6 +279,24 @@ void CSetting::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
   m_callback->OnSettingAction(setting);
 }
 
+bool CSetting::DeserializeIdentification(const TiXmlNode* node,
+                                         std::string& identification,
+                                         bool& isReference)
+{
+  isReference = false;
+
+  // first check if we can simply retrieve the setting's identifier
+  if (ISetting::DeserializeIdentification(node, identification))
+    return true;
+
+  // otherwise try to retrieve a reference to another setting's identifier
+  if (!DeserializeIdentificationFromAttribute(node, SETTING_XML_ATTR_REFERENCE, identification))
+    return false;
+
+  isReference = true;
+  return true;
+}
+
 bool CSetting::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                const char* oldSettingId,
                                const TiXmlNode* oldSettingNode)
@@ -324,17 +338,22 @@ void CSetting::Copy(const CSetting &setting)
   m_changed = setting.m_changed;
 }
 
+Logger CSettingList::s_logger;
+
 CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingList"), m_definition(std::move(settingDefinition))
-{ }
+  : CSetting(id, settingsManager), m_definition(std::move(settingDefinition))
+{
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingList");
+}
 
 CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            int label,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingList"), m_definition(std::move(settingDefinition))
+  : CSettingList(id, settingDefinition, settingsManager)
 {
   SetLabel(label);
 }
@@ -638,12 +657,15 @@ std::string CSettingList::toString(const SettingList &values) const
   return StringUtils::Join(strValues, m_delimiter);
 }
 
+Logger CSettingBool::s_logger;
+
 CSettingBool::CSettingBool(const std::string& id, CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingBool")
-{ }
+  : CSettingBool(id, DefaultLabel, DefaultValue, settingsManager)
+{
+}
 
 CSettingBool::CSettingBool(const std::string& id, const CSettingBool& setting)
-  : CTraitedSetting(id, setting, "CSettingBool")
+  : CSettingBool(id, setting.m_settingsManager)
 {
   copy(setting);
 }
@@ -652,9 +674,12 @@ CSettingBool::CSettingBool(const std::string& id,
                            int label,
                            bool value,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingBool"), m_value(value), m_default(value)
+  : CTraitedSetting(id, settingsManager), m_value(value), m_default(value)
 {
   SetLabel(label);
+
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingBool");
 }
 
 SettingPtr CSettingBool::Clone(const std::string &id) const
@@ -780,12 +805,14 @@ bool CSettingBool::fromString(const std::string &strValue, bool &value) const
   return false;
 }
 
+Logger CSettingInt::s_logger;
+
 CSettingInt::CSettingInt(const std::string& id, CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingInt")
+  : CSettingInt(id, DefaultLabel, DefaultValue, settingsManager)
 { }
 
 CSettingInt::CSettingInt(const std::string& id, const CSettingInt& setting)
-  : CTraitedSetting(id, setting, "CSettingInt")
+  : CSettingInt(id, setting.m_settingsManager)
 {
   copy(setting);
 }
@@ -794,7 +821,7 @@ CSettingInt::CSettingInt(const std::string& id,
                          int label,
                          int value,
                          CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingInt"), m_value(value), m_default(value)
+  : CSettingInt(id, label, value, DefaultMin, DefaultStep, DefaultMax, settingsManager)
 {
   SetLabel(label);
 }
@@ -806,7 +833,7 @@ CSettingInt::CSettingInt(const std::string& id,
                          int step,
                          int maximum,
                          CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingInt"),
+  : CTraitedSetting(id, settingsManager),
     m_value(value),
     m_default(value),
     m_min(minimum),
@@ -814,6 +841,9 @@ CSettingInt::CSettingInt(const std::string& id,
     m_max(maximum)
 {
   SetLabel(label);
+
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingInt");
 }
 
 CSettingInt::CSettingInt(const std::string& id,
@@ -821,12 +851,9 @@ CSettingInt::CSettingInt(const std::string& id,
                          int value,
                          const TranslatableIntegerSettingOptions& options,
                          CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingInt"),
-    m_value(value),
-    m_default(value),
-    m_translatableOptions(options)
+  : CSettingInt(id, label, value, settingsManager)
 {
-  SetLabel(label);
+  SetTranslatableOptions(options);
 }
 
 SettingPtr CSettingInt::Clone(const std::string &id) const
@@ -1126,13 +1153,15 @@ bool CSettingInt::fromString(const std::string &strValue, int &value)
   return true;
 }
 
+Logger CSettingNumber::s_logger;
+
 CSettingNumber::CSettingNumber(const std::string& id,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingNumber")
+  : CSettingNumber(id, DefaultLabel, DefaultValue, settingsManager)
 { }
 
 CSettingNumber::CSettingNumber(const std::string& id, const CSettingNumber& setting)
-  : CTraitedSetting(id, setting, "CSettingNumber")
+  : CSettingNumber(id, setting.m_settingsManager)
 {
   copy(setting);
 }
@@ -1141,11 +1170,8 @@ CSettingNumber::CSettingNumber(const std::string& id,
                                int label,
                                float value,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingNumber"),
-    m_value(static_cast<double>(value)),
-    m_default(static_cast<double>(value))
+  : CSettingNumber(id, label, value, DefaultMin, DefaultStep, DefaultMax, settingsManager)
 {
-  SetLabel(label);
 }
 
 CSettingNumber::CSettingNumber(const std::string& id,
@@ -1155,7 +1181,7 @@ CSettingNumber::CSettingNumber(const std::string& id,
                                float step,
                                float maximum,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingNumber"),
+  : CTraitedSetting(id, settingsManager),
     m_value(static_cast<double>(value)),
     m_default(static_cast<double>(value)),
     m_min(static_cast<double>(minimum)),
@@ -1163,6 +1189,9 @@ CSettingNumber::CSettingNumber(const std::string& id,
     m_max(static_cast<double>(maximum))
 {
   SetLabel(label);
+
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingNumber");
 }
 
 SettingPtr CSettingNumber::Clone(const std::string &id) const
@@ -1326,13 +1355,16 @@ bool CSettingNumber::fromString(const std::string &strValue, double &value)
   return true;
 }
 
+const CSettingString::Value CSettingString::DefaultValue;
+Logger CSettingString::s_logger;
+
 CSettingString::CSettingString(const std::string& id,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingString")
+  : CSettingString(id, DefaultLabel, DefaultValue, settingsManager)
 { }
 
 CSettingString::CSettingString(const std::string& id, const CSettingString& setting)
-  : CTraitedSetting(id, setting, "CSettingString")
+  : CSettingString(id, setting.m_settingsManager)
 {
   copy(setting);
 }
@@ -1341,9 +1373,12 @@ CSettingString::CSettingString(const std::string& id,
                                int label,
                                const std::string& value,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CTraitedSetting(id, settingsManager, "CSettingString"), m_value(value), m_default(value)
+  : CTraitedSetting(id, settingsManager), m_value(value), m_default(value)
 {
   SetLabel(label);
+
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingString");
 }
 
 SettingPtr CSettingString::Clone(const std::string &id) const
@@ -1593,22 +1628,29 @@ void CSettingString::copy(const CSettingString &setting)
   m_dynamicOptions = setting.m_dynamicOptions;
 }
 
+Logger CSettingAction::s_logger;
+
 CSettingAction::CSettingAction(const std::string& id,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingAction")
+  : CSettingAction(id, DefaultLabel, settingsManager)
 { }
 
 CSettingAction::CSettingAction(const std::string& id,
                                int label,
                                CSettingsManager* settingsManager /* = nullptr */)
-  : CSetting(id, settingsManager, "CSettingAction")
+  : CSetting(id, settingsManager)
 {
   SetLabel(label);
+
+  if (s_logger == nullptr)
+    s_logger = CServiceBroker::GetLogging().GetLogger("CSettingAction");
 }
 
 CSettingAction::CSettingAction(const std::string& id, const CSettingAction& setting)
-  : CSetting(id, setting, "CSettingAction"), m_data(setting.m_data)
-{ }
+  : CSettingAction(id, setting.m_settingsManager)
+{
+  copy(setting);
+}
 
 SettingPtr CSettingAction::Clone(const std::string &id) const
 {
@@ -1635,4 +1677,12 @@ bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false *
   m_data = XMLUtils::GetString(node, SETTING_XML_ELM_DATA);
 
   return true;
+}
+
+void CSettingAction::copy(const CSettingAction& setting)
+{
+  CSetting::Copy(setting);
+
+  CExclusiveLock lock(m_critical);
+  m_data = setting.m_data;
 }

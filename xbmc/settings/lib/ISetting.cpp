@@ -46,7 +46,14 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   return m_requirementCondition.Deserialize(requirementNode);
 }
 
-bool ISetting::DeserializeIdentification(const TiXmlNode *node, std::string &identification)
+bool ISetting::DeserializeIdentification(const TiXmlNode* node, std::string& identification)
+{
+  return DeserializeIdentificationFromAttribute(node, SETTING_XML_ATTR_ID, identification);
+}
+
+bool ISetting::DeserializeIdentificationFromAttribute(const TiXmlNode* node,
+                                                      const std::string& attribute,
+                                                      std::string& identification)
 {
   if (node == nullptr)
     return false;
@@ -55,11 +62,11 @@ bool ISetting::DeserializeIdentification(const TiXmlNode *node, std::string &ide
   if (element == nullptr)
     return false;
 
-  auto idAttribute = element->Attribute(SETTING_XML_ATTR_ID);
-  if (idAttribute == nullptr || strlen(idAttribute) <= 0)
+  auto idAttribute = element->Attribute(attribute);
+  if (idAttribute == nullptr || idAttribute->empty())
     return false;
 
-  identification = idAttribute;
+  identification = *idAttribute;
   return true;
 }
 
