@@ -15,6 +15,10 @@ ifeq ($(OS), linux)
 endif
 ifeq ($(OS), android)
   TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -D__ANDROID_API__=$(NDK_LEVEL)
+  # openssl 1.x incorrectly uses ANDROID_NDK_HOME, when openssl 3.x.x comes in use ANDROID_NDK_ROOT
+  # see https://github.com/openssl/openssl/pull/11206
+  export ANDROID_NDK_HOME=$(NDKROOT)
+  export PATH:=$(TOOLCHAIN)/bin:$(PATH)
   ifeq ($(MESON_CPU), aarch64)
     OPENSSLPLATFORM=android-arm64
   else
@@ -33,7 +37,7 @@ ifeq ($(OS), osx)
 endif
 
 ifeq ($(OS), linux)
-  # config auto detects well on linux
+  # config auto detects well on linux. Do we need MACHINE ??
   CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-tests no-asm $(TARGETOPT) --prefix=$(PREFIX)
 else
   CONFIGURE=./Configure $(OPENSSLPLATFORM) no-shared zlib no-tests $(TARGETOPT) --prefix=$(PREFIX)
