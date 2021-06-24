@@ -31,10 +31,13 @@
 #undef FMT_DEPRECATED
 #define FMT_DEPRECATED
 #endif
-#include <fmt/format.h>
-
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
+
+#include <fmt/format.h>
+#if FMT_VERSION >= 80000
+#include <fmt/xchar.h>
+#endif
 
 /*! \brief  C-processor Token stringification
 
