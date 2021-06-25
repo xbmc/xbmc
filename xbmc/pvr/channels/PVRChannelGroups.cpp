@@ -308,11 +308,7 @@ bool CPVRChannelGroups::LoadFromDb()
 
   // load all channels from the database
   std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>> channels;
-  if (database->Get(m_bRadio, channels) == 0)
-  {
-    CLog::LogFC(LOGDEBUG, LOGPVR, "No channels in the database");
-    return false;
-  }
+  database->Get(m_bRadio, channels);
   CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} channels from the database", channels.size(),
               m_bRadio ? "radio" : "TV");
 
