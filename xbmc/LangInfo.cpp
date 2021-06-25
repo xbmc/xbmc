@@ -979,6 +979,18 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 
   m_currentRegion->SetGlobalLocale();
 
+  // Check if locale is affected by "Turkish I"
+  // See https://github.com/xbmc/xbmc/issues/19883 for details
+  if (std::tolower('i') != std::tolower('I'))
+  {
+    CLog::Log(
+        LOGWARNING,
+        "region '{}' is affected by 'Turkish I' problem - falling back to default region '{}'",
+        m_currentRegion->m_strName, m_defaultRegion.m_strName);
+    m_currentRegion = &m_defaultRegion;
+    m_currentRegion->SetGlobalLocale();
+  }
+
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings->GetString(CSettings::SETTING_LOCALE_SHORTDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetShortDateFormat(m_currentRegion->m_strDateFormatShort);
