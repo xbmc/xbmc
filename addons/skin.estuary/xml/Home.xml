@@ -430,10 +430,17 @@
 							<param name="item_treshold" value="1"/>
 						</include>
 					</control>
-					<include content="ImageWidget" condition="!System.HasPVRAddon">
+					<include content="ImageWidget" condition="!System.HasPVRAddon + !System.Platform.TVOS">
 						<param name="text_label" value="$LOCALIZE[31143]" />
 						<param name="button_label" value="$LOCALIZE[31144]" />
 						<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://all/kodi.pvrclient,return)"/>
+						<param name="button_id" value="12400"/>
+						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoTVButton)"/>
+					</include>
+					<include content="ImageWidget" condition="!System.HasPVRAddon + System.Platform.TVOS">
+						<param name="text_label" value="$LOCALIZE[31143]" />
+						<param name="button_label" value="$LOCALIZE[31144]" />
+						<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://user/kodi.pvrclient,return)"/>
 						<param name="button_id" value="12400"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoTVButton)"/>
 					</include>
@@ -507,10 +514,17 @@
 							<param name="item_treshold" value="1"/>
 						</include>
 					</control>
-					<include content="ImageWidget" condition="!System.HasPVRAddon">
+					<include content="ImageWidget" condition="!System.HasPVRAddon + !System.Platform.TVOS">
 						<param name="text_label" value="$LOCALIZE[31143]" />
 						<param name="button_label" value="$LOCALIZE[31144]" />
 						<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://all/kodi.pvrclient,return)"/>
+						<param name="button_id" value="13400"/>
+						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoRadioButton)"/>
+					</include>
+					<include content="ImageWidget" condition="!System.HasPVRAddon + System.Platform.TVOS">
+						<param name="text_label" value="$LOCALIZE[31143]" />
+						<param name="button_label" value="$LOCALIZE[31144]" />
+						<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://user/kodi.pvrclient,return)"/>
 						<param name="button_id" value="13400"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoRadioButton)"/>
 					</include>
