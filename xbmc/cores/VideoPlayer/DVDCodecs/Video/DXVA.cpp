@@ -1081,24 +1081,6 @@ static bool HasATIMP2Bug(AVCodecContext* avctx)
       && avctx->color_trc == AVCOL_TRC_GAMMA28;
 }
 
-// UHD HEVC Main10 causes crash on Xbox One S/X
-static bool HasXbox4kHevcMain10Bug(AVCodecContext* avctx)
-{
-  if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
-    return false;
-
-  if (avctx->codec_id != AV_CODEC_ID_HEVC)
-    return false;
-
-  if (avctx->profile != FF_PROFILE_HEVC_MAIN_10)
-    return false;
-
-  if (avctx->height <= 1080 || avctx->width <= 1920)
-    return false;
-
-  return true;
-}
-
 static bool CheckCompatibility(AVCodecContext* avctx)
 {
   if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && HasATIMP2Bug(avctx))
@@ -1201,16 +1183,12 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   case AV_CODEC_ID_HEVC:
     /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
        all coding features have enough room to work with */
+    m_surface_alignment = 128;
+    // a driver may use multi-thread decoding internally (PC only)
     if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
-    {
-      m_surface_alignment = 128;
-      // a driver may use multi-thread decoding internally
       m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount();
-    }
-
     // by specification hevc decoder can hold up to 8 unique refs
-    /* For some reason avctx->refs returns always 1 ref frame (tested
-       with well known 3 refs frames encodes) */
+    // ffmpeg may report only 1 refs frame when is unknown or not present in headers
     m_refs += (avctx->refs > 1) ? avctx->refs : 8;
     break;
   case AV_CODEC_ID_H264:
@@ -1242,14 +1220,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
                "Current available video memory ({} MB) is insufficient 4K video decoding (DXVA2) "
                "using {} surfaces. Decoder surfaces has been limited to 16.", videoMem / MB, m_refs);
     m_refs = 16;
-  }
-
-  /* On the Xbox 1/S with limited memory we have to
-     limit refs to avoid crashing device completely */
-  if (HasXbox4kHevcMain10Bug(avctx) && m_refs > 16)
-  {
-    CLog::LogFunction(LOGWARNING, "DXVA", "source requires to much refs which is not supported on Xbox One S/X. dxva will not be used.");
-    return false;
   }
 
   if (!OpenDecoder())
