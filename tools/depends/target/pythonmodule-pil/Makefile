@@ -31,10 +31,12 @@ ifeq ($(OS),android)
           sed -i -e 's/import sys/import os, sys /' \
                  -e '/__file__/ s/_imaging/lib_imaging/g' \
                  -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /'  _imaging*.py
+	cd $(PYTHON_SITE_PKG)/PIL && find . -type d -name '__pycache__' -exec rm -rf {} +
 else ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 # All apple platforms require the egg to be extracted
 	cd $(PYTHON_SITE_PKG) && unzip -o ./Pillow-*.egg
 	cd $(PYTHON_SITE_PKG) && rm -rf Pillow-*.egg
+	cd $(PYTHON_SITE_PKG)/PIL && find . -type d -name '__pycache__' -exec rm -rf {} +
 endif
 	touch $@
 
