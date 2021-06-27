@@ -600,7 +600,7 @@ CDateTime CPVREpgTagsContainer::GetLastEndTime() const
   if (m_database)
   {
     const CDateTime dbResult = m_database->GetLastEndTime(m_iEpgID);
-    if (result.IsValid() || (dbResult.IsValid() && dbResult > result))
+    if (!result.IsValid() || (dbResult.IsValid() && dbResult > result))
       result = dbResult;
   }
 
