@@ -30,6 +30,7 @@ ifeq ($(OS),android)
 	cd $(PYTHON_SITE_PKG)/PIL && \
           sed -i -e 's/import sys/import os, sys /' \
                  -e '/__file__/ s/_imaging/lib_imaging/g' \
+                 -e '/__loader__/ s/ del / print("Kodi Testing: ", __file__); del /g' \
                  -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /'  _imaging*.py
 	cd $(PYTHON_SITE_PKG)/PIL && find . -type d -name '__pycache__' -exec rm -rf {} +
 else ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
