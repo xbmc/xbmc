@@ -12,18 +12,6 @@ ARCHIVE=$(SOURCE).tar.gz
 
 PYTHONPATH=PYTHONPATH="$(PYTHON_SITE_PKG)"
 
-# TODO - remove for android/osx
-ifeq ($(OS),android)
-  LDSHARED="$(CC) -shared"
-  CC+=" $(CFLAGS)"
-endif
-ifeq ($(OS),osx)
-  LDSHARED="$(CC) -shared"
-  LDFLAGS+=" -lpython"
-endif
-
-#export LDSHARED LDFLAGS CC PYTHONPATH
-
 LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(PYTHON_VERSION).egg
 
 all: .installed-$(PLATFORM)
