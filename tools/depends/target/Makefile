@@ -106,10 +106,10 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-crossenv: pythonmodule-setuptools
-pythonmodule-pycryptodome: $(PYMODULE_DEPS) pythonmodule-crossenv
-pythonmodule-pil: bzip2 $(PYMODULE_DEPS) pythonmodule-crossenv $(ZLIB) libjpeg-turbo libpng freetype2
-pythonmodule-setuptools: $(PYMODULE_DEPS) python3
+pythonmodule-crossenv: python3
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) pythonmodule-setuptools
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) pythonmodule-setuptools $(ZLIB) libjpeg-turbo libpng freetype2
+pythonmodule-setuptools: $(PYMODULE_DEPS) pythonmodule-crossenv
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
 libcec: p8-platform

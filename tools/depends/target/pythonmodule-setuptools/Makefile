@@ -10,7 +10,7 @@ VERSION=53.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-PYTHONPATH=$(PYTHON_SITE_PKG)
+PYTHONPATH=PYTHONPATH="$(PYTHON_SITE_PKG)"
 
 # TODO - remove for android/osx
 ifeq ($(OS),android)
@@ -22,7 +22,7 @@ ifeq ($(OS),osx)
   LDFLAGS+=" -lpython"
 endif
 
-export LDSHARED LDFLAGS CC PYTHONPATH
+#export LDSHARED LDFLAGS CC PYTHONPATH
 
 LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(PYTHON_VERSION).egg
 
@@ -36,11 +36,12 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 $(LIBDYLIB): $(PLATFORM)
-	mkdir -p $(PLATFORM)/output
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py build_ext
+	. $(NATIVEPREFIX)/bin/$(PYTHON_TARGETENV)/bin/activate \
+	&& cd $(PLATFORM) && $(PYTHONPATH) cross-python setup.py build_ext
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
+	. $(NATIVEPREFIX)/bin/$(PYTHON_TARGETENV)/bin/activate \
+	&& cd $(PLATFORM) && $(PYTHONPATH) cross-python setup.py install --prefix=$(PREFIX)
 	touch $@
 
 clean:
