@@ -50,17 +50,17 @@
         "print('-->Python Interpreter Initialized<--')\n" \
         ""
 
-#if defined(TARGET_ANDROID)
+//#if defined(TARGET_ANDROID)
 
-#define RUNSCRIPT_COMPLIANT \
-  RUNSCRIPT_PREAMBLE RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
+//#define RUNSCRIPT_COMPLIANT \
+//  RUNSCRIPT_PREAMBLE RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
 
-#else
+//#else
 
 #define RUNSCRIPT_COMPLIANT \
   RUNSCRIPT_PREAMBLE RUNSCRIPT_POSTSCRIPT
 
-#endif
+//#endif
 
 namespace PythonBindings {
 PyObject* PyInit_Module_xbmcdrm(void);
