@@ -171,6 +171,9 @@ if command_exists gdb; then
   fi
 fi
 
+# Unset CTYPE, LANG and ALL - see issue #19883
+unset LC_CTYPE LC_ALL LANG
+
 LOOP=1
 while [ $(( $LOOP )) = "1" ]
 do
