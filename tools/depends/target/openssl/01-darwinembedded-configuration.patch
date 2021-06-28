@@ -1,0 +1,20 @@
+--- a/Configurations/10-main.conf
++++ b/Configurations/10-main.conf
+@@ -1640,11 +1640,16 @@
+     },
+     "ios64-cross" => {
+         inherit_from     => [ "darwin-common", asm("aarch64_asm") ],
+-        cflags           => add("-arch arm64 -mios-version-min=7.0.0 -isysroot \$(CROSS_TOP)/SDKs/\$(CROSS_SDK) -fno-common"),
++        cflags           => add("-fno-common"),
+         sys_id           => "iOS",
+         bn_ops           => "SIXTY_FOUR_BIT_LONG RC4_CHAR",
+         perlasm_scheme   => "ios64",
+     },
++    "tvos64-cross-arm64" => {
++        inherit_from     => [ "darwin-common", "ios64-cross", asm("aarch64_asm") ],
++        defines          => [ "HAVE_FORK=0" ],
++        sys_id           => "tvOS",
++    },
+ 
+ ##### GNU Hurd
+     "hurd-x86" => {
