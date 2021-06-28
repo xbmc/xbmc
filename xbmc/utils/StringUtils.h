@@ -36,6 +36,9 @@
 #if FMT_VERSION >= 40000
 #include <fmt/printf.h>
 #endif
+#if FMT_VERSION >= 80000
+#include <fmt/xchar.h>
+#endif
 
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
