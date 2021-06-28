@@ -6,24 +6,13 @@ APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 # lib name, version
 LIBNAME=setuptools
-VERSION=18.4
+VERSION=53.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python3.8/site-packages/"
-ifeq ($(OS),android)
-#PYTHONPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PREFIX)/lib/python3.8/site-packages/"
-endif
-ifeq ($(OS),osx)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -lpython" PYTHONPATH="$(PREFIX)/lib/python3.8/site-packages/"
-endif
-ifeq ($(OS),darwin_embedded)
-PYTHON_O=$(abs_top_srcdir)/target/python3/$(PLATFORM)/Programs/python.o
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python3.8/site-packages/"
-endif
+PYTHONPATH=PYTHONPATH="$(PYTHON_SITE_PKG)"
 
-LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py3.8.egg
+LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(PYTHON_VERSION).egg
 
 all: .installed-$(PLATFORM)
 
@@ -35,11 +24,12 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 $(LIBDYLIB): $(PLATFORM)
-	mkdir -p $(PLATFORM)/output
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)
+	. $(NATIVEPREFIX)/bin/$(PYTHON_TARGETENV)/bin/activate \
+	&& cd $(PLATFORM) && $(PYTHONPATH) cross-python setup.py build_ext
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
+	. $(NATIVEPREFIX)/bin/$(PYTHON_TARGETENV)/bin/activate \
+	&& cd $(PLATFORM) && $(PYTHONPATH) cross-python setup.py install --prefix=$(PREFIX)
 	touch $@
 
 clean:

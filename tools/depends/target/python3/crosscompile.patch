@@ -18,23 +18,6 @@
  case $MACHDEP in
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -38,7 +38,6 @@
- MAINCC=		@MAINCC@
- LINKCC=		@LINKCC@
- AR=		@AR@
--READELF=	@READELF@
- SOABI=		@SOABI@
- LDVERSION=	@LDVERSION@
- LIBPYTHON=	@LIBPYTHON@
-@@ -608,7 +607,7 @@
- 		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
- 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
- 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
--		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
-+		PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
- 
- 
- # Build static library
 @@ -1600,10 +1599,11 @@
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -61,20 +44,15 @@
  
  # This global variable is used to hold the list of modules to be disabled.
  DISABLED_MODULE_LIST = []
-@@ -38,7 +38,7 @@
-     return sys.platform
+@@ -362,8 +362,9 @@
  
+             # If a module has already been built or has been disabled in the
+             # Setup files, don't build it here.
+-            if ext.name in sysconf_built:
+-                mods_built.append(ext)
++            # Disable sysconf check for crosscompile builds
++            #if ext.name in sysconf_built:
++            #    mods_built.append(ext)
+             if ext.name in sysconf_dis:
+                 mods_disabled.append(ext)
  
--CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ)
-+CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
- HOST_PLATFORM = get_platform()
- MS_WINDOWS = (HOST_PLATFORM == 'win32')
- CYGWIN = (HOST_PLATFORM == 'cygwin')
-@@ -310,6 +310,7 @@
-         self.extensions.append(ext)
- 
-     def build_extensions(self):
-+        return
-         self.srcdir = sysconfig.get_config_var('srcdir')
-         if not self.srcdir:
-             # Maybe running on Windows but not using CYGWIN?

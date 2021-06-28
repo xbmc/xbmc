@@ -13,6 +13,7 @@ DEPENDS = \
 	python3 libshairplay libfmt libspdlog \
 	libplist libcec libbluray tinyxml \
 	taglib libusb libnfs \
+	pythonmodule-crossenv \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg crossguid libudfread \
 	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
@@ -26,8 +27,9 @@ endif
 ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libcec libusb
   ifeq ($(TARGET_PLATFORM),appletvos)
-    DEPENDS += boblight
+    DEPENDS += boblight dummy-libxbmc
     EXCLUDED_DEPENDS += libshairplay libplist
+    PYMODULE_DEPS = dummy-libxbmc
   endif
   DEPENDS += darwin-embedded-entitlements
 endif
@@ -104,9 +106,10 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
-pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
-pythonmodule-setuptools: $(PYMODULE_DEPS) python3
+pythonmodule-crossenv: python3
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) pythonmodule-setuptools
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) pythonmodule-setuptools $(ZLIB) libjpeg-turbo libpng freetype2
+pythonmodule-setuptools: $(PYMODULE_DEPS) pythonmodule-crossenv
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
 libcec: p8-platform
@@ -148,6 +151,7 @@ test-dependencies:
 
 
 distclean::
+	rm -f $(PREFIX)/share/cross-file.meson
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
 
 HOST_LIB_PKGCONFIG := $(firstword $(wildcard /usr/lib64/pkgconfig /usr/lib/$(HOST)/pkgconfig))

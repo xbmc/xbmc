@@ -1,15 +1,12 @@
 include ../../Makefile.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile distutil.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.8.5
+VERSION=3.8.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-CWD=$(shell pwd)
-HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
-BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc --with-system-ffi
 ifeq ($(OS),linux)
@@ -36,6 +33,7 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
+	cd $(PLATFORM); patch -p1 -i ../distutil.patch
 	cd $(PLATFORM); $(MAKE) install
 	touch $(LIBDYLIB)
 	touch $@

@@ -5,6 +5,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
                  target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
+AC_CANONICAL_BUILD
 
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_14.m4])
@@ -141,16 +142,18 @@ else
 fi
 
 use_host=$host_alias
+use_build=$build_cpu-$build_vendor-$build_os
 
+# all configure depends builds are considered cross_compiling
+# cross_compiling!=yes env var is used to allow individual target dependencies to be built
+# for linux platforms without building all dependencies
 cross_compiling="yes"
 if test "x$host" = "x$build"; then
   use_host=$build_cpu-$build_os
-  cross_compiling="no"
 fi
 
 deps_dir=$use_host-$build_type
 tool_dir=$build_cpu-$build_os-native
-cross_compiling="yes"
 
 case $build in
   aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*)
@@ -270,7 +273,7 @@ case $host in
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
     optimize_flags="-Os"
-    platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
+    platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib"
 
     case $host in
       arm*-*linux-android*)
@@ -303,7 +306,7 @@ case $host in
       esac
 
     platform_cxxflags="$platform_cflags -frtti"
-    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
+    platform_includes="-I$prefix/$deps_dir/include"
     platform_os="android"
     meson_system="android"
     #android builds are always cross
@@ -638,6 +641,7 @@ AC_SUBST(meson_system)
 AC_SUBST(meson_cpu)
 AC_SUBST(use_debug)
 AC_SUBST(use_host)
+AC_SUBST(use_build)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)
 AC_SUBST(use_cpu)
@@ -687,6 +691,7 @@ echo -e "ccache:\t\t $use_ccache"
 echo -e "build type:\t\t $build_type"
 echo -e "toolchain:\t\t $use_toolchain"
 echo -e "cpu:\t\t\t $use_cpu"
+echo -e "build:\t\t $use_build"
 echo -e "host:\t\t $use_host"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t\t $platform_cxxflags"

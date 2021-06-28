@@ -62,10 +62,6 @@ gl_cv_func_gettimeofday_clobber=no
 if test "@platform_os@" = "android"; then
   ac_cv_func_srand=yes
   ac_cv_func_rand=yes
-
-  #python: android doesn't have libutil
-  PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lssl -lcrypto"
-
 fi
 
 if test "@platform_os@" = "darwin_embedded"; then

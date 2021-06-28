@@ -30,7 +30,7 @@
  
 --- a/Lib/subprocess.py
 +++ b/Lib/subprocess.py
-@@ -737,6 +737,8 @@
+@@ -741,6 +741,8 @@
                   restore_signals=True, start_new_session=False,
                   pass_fds=(), *, encoding=None, errors=None, text=None):
          """Create new Popen instance."""
@@ -39,7 +39,7 @@
          _cleanup()
          # Held while anything is calling waitpid before returncode has been
          # updated to prevent clobbering returncode if wait() or poll() are
-@@ -936,6 +936,7 @@
+@@ -940,6 +942,7 @@
          if not self._child_created:
              # We didn't get to successfully create a child process.
              return
@@ -47,7 +47,7 @@
          if self.returncode is None:
              # Not reading subprocess exit status creates a zombie process which
              # is only destroyed at the parent python process exit
-@@ -1566,6 +1566,7 @@
+@@ -1570,6 +1573,7 @@
              else:
                  args = list(args)
  
@@ -55,7 +55,7 @@
              if shell:
                  # On Android the default shell is at '/system/bin/sh'.
                  unix_shell = ('/system/bin/sh' if
-@@ -1643,6 +1643,7 @@
+@@ -1647,6 +1651,7 @@
                              errpipe_read, errpipe_write,
                              restore_signals, start_new_session, preexec_fn)
                      self._child_created = True
@@ -63,7 +63,7 @@
                  finally:
                      # be sure the FD is closed no matter what
                      os.close(errpipe_write)
-@@ -1662,6 +1662,7 @@
+@@ -1666,6 +1671,7 @@
              finally:
                  # be sure the FD is closed no matter what
                  os.close(errpipe_read)
@@ -71,7 +71,7 @@
  
              if errpipe_data:
                  try:
-@@ -1721,7 +1724,7 @@
+@@ -1725,7 +1731,7 @@
                  raise SubprocessError("Unknown child exit status!")
  
  
@@ -80,7 +80,7 @@
                  _WNOHANG=os.WNOHANG, _ECHILD=errno.ECHILD):
              """Check if child process has terminated.  Returns returncode
              attribute.
-@@ -1730,6 +1733,8 @@
+@@ -1734,6 +1740,8 @@
              outside of the local scope (nor can any methods it calls).
  
              """
@@ -91,7 +91,7 @@
                      # Something else is busy calling waitpid.  Don't allow two
 --- a/Lib/urllib/request.py
 +++ b/Lib/urllib/request.py
-@@ -2616,11 +2616,9 @@
+@@ -2625,11 +2625,9 @@
  
  
  if sys.platform == 'darwin':
@@ -104,7 +104,7 @@
  
      def getproxies_macosx_sysconf():
          """Return a dictionary of scheme -> proxy server URL mappings.
-@@ -2628,7 +2628,7 @@
+@@ -2637,7 +2635,7 @@
          This function uses the MacOSX framework SystemConfiguration
          to fetch the proxy information.
          """
@@ -113,7 +113,7 @@
  
  
  
-@@ -2641,9 +2641,9 @@
+@@ -2650,9 +2648,9 @@
          """
          proxies = getproxies_environment()
          if proxies:
