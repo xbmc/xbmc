@@ -46,6 +46,7 @@ namespace PVR
   private:
     void Clear();
     void Update();
+    void PromptAndSaveList();
     void SaveList();
     void Renumber();
     void SetData(int iItem);
