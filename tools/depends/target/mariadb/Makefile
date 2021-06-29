@@ -24,6 +24,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../01-android.patch
 	cd $(PLATFORM); patch -p1 -i ../02-symbol_rename-gnutls_clash.patch
 	cd $(PLATFORM); patch -p1 -i ../03-cmake3.20_syntax_fix.patch
+ifeq ($(OS),linux)
+	cd $(PLATFORM); patch -p1 -i ../04-pthread.patch
+endif
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) -DWITH_UNIT_TESTS:BOOL=OFF -DWITH_EXTERNAL_ZLIB:BOOL=ON -DWITH_CURL:BOOL=OFF ..
 
 $(LIBDYLIB): $(PLATFORM)
