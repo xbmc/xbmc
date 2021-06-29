@@ -266,21 +266,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonCancel(CGUIMessage& message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage& message)
 {
-  if (HasChangedItems())
-  {
-    CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return true;
-
-    pDialog->SetHeading(CVariant{20052});
-    pDialog->SetLine(0, CVariant{""});
-    pDialog->SetLine(1, CVariant{19212});
-    pDialog->SetLine(2, CVariant{20103});
-    pDialog->Open();
-
-    if (pDialog->IsConfirmed())
-      SaveList();
-  }
+  PromptAndSaveList();
 
   m_iSelected = 0;
   m_bMovingMode = false;
@@ -454,6 +440,8 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage& message)
 
 bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage& message)
 {
+  PromptAndSaveList();
+
   /* Load group manager dialog */
   CGUIDialogPVRGroupManager* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRGroupManager>(WINDOW_DIALOG_PVR_GROUP_MANAGER);
   if (!pDlgInfo)
@@ -470,6 +458,8 @@ bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage& message
 
 bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
 {
+  PromptAndSaveList();
+
   int iSelection = 0;
   if (CServiceBroker::GetPVRManager().Clients()->CreatedClientAmount() > 1)
   {
@@ -503,7 +493,23 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     }
 
     if (ret == PVR_ERROR_NO_ERROR)
+    {
+      CFileItemList prevChannelItems;
+      prevChannelItems.Assign(*m_channelItems);
+
       Update();
+
+      for (int index = 0; index < m_channelItems->Size(); ++index)
+      {
+        if (!prevChannelItems.Contains(m_channelItems->Get(index)->GetPath()))
+        {
+          m_iSelected = index;
+          m_viewControl.SetSelectedItem(m_iSelected);
+          SetData(m_iSelected);
+          break;
+        }
+      }
+    }
     else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
       HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else
@@ -634,12 +640,19 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
+    PromptAndSaveList();
+
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*pItem);
     PVR_ERROR ret = PVR_ERROR_UNKNOWN;
     if (client)
       ret = client->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag());
 
-    if (ret == PVR_ERROR_NOT_IMPLEMENTED)
+    if (ret == PVR_ERROR_NO_ERROR)
+    {
+      Update();
+      SetData(m_iSelected);
+    }
+    else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
       HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else if (ret != PVR_ERROR_NO_ERROR)
       HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029}); // "Add-on error", "Check the log for more information about this message."
@@ -719,6 +732,8 @@ void CGUIDialogPVRChannelManager::Update()
   // No channels available, nothing to do.
   if(!channels)
     return;
+
+  channels->Update();
 
   const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers = channels->GetMembers();
   std::shared_ptr<CFileItem> channelFile;
@@ -847,6 +862,28 @@ bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr& pItem, cons
                               pItem->GetProperty("UseEPG").asBoolean(),
                               pItem->GetProperty("ParentalLocked").asBoolean(),
                               pItem->GetProperty("UserSetIcon").asBoolean());
+}
+
+void CGUIDialogPVRChannelManager::PromptAndSaveList()
+{
+  if (!HasChangedItems())
+    return;
+
+  CGUIDialogYesNo* pDialogYesNo =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+  if (pDialogYesNo)
+  {
+    pDialogYesNo->SetHeading(CVariant{20052});
+    pDialogYesNo->SetLine(0, CVariant{""});
+    pDialogYesNo->SetLine(1, CVariant{19212});
+    pDialogYesNo->SetLine(2, CVariant{20103});
+    pDialogYesNo->Open();
+
+    if (pDialogYesNo->IsConfirmed())
+      SaveList();
+    else
+      Update();
+  }
 }
 
 void CGUIDialogPVRChannelManager::SaveList()
