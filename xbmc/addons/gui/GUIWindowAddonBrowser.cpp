@@ -28,6 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "platform/Platform.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -627,6 +628,17 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
 std::string CGUIWindowAddonBrowser::GetStartFolder(const std::string& dir)
 {
   if (StringUtils::StartsWith(dir, "addons://"))
-    return dir;
+  {
+    if (StringUtils::StartsWith(dir, "addons://default_binary_addons_source/"))
+    {
+      const bool all = CServiceBroker::GetPlatform().SupportsUserInstalledBinaryAddons();
+      std::string startDir = dir;
+      StringUtils::Replace(startDir, "/default_binary_addons_source/", all ? "/all/" : "/user/");
+      return startDir;
+    }
+    else
+      return dir;
+  }
+
   return CGUIMediaWindow::GetStartFolder(dir);
 }

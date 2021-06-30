@@ -21,4 +21,5 @@ class CPlatformWin10 : public CPlatform
 
     bool InitStageOne() override;
     void PlatformSyslog() override;
+    bool SupportsUserInstalledBinaryAddons() override;
 };

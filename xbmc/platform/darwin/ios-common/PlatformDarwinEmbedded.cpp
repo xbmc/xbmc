@@ -53,3 +53,8 @@ bool CPlatformDarwinEmbedded::InitStageTwo()
 
   return true;
 }
+
+bool CPlatformDarwinEmbedded::SupportsUserInstalledBinaryAddons()
+{
+  return false;
+}

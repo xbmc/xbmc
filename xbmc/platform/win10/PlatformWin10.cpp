@@ -45,3 +45,8 @@ void CPlatformWin10::PlatformSyslog()
 {
   CWIN32Util::PlatformSyslog();
 }
+
+bool CPlatformWin10::SupportsUserInstalledBinaryAddons()
+{
+  return false;
+}
