@@ -253,6 +253,7 @@
 #define VIDEOPLAYER_USER_RATING       277
 #define VIDEOPLAYER_DBID              278
 #define VIDEOPLAYER_TVSHOWDBID        279
+#define VIDEOPLAYER_HDR_TYPE          280
 
 // Range of videoplayer infolabels that work with offset and position
 #define VIDEOPLAYER_OFFSET_POSITION_FIRST VIDEOPLAYER_TITLE
@@ -948,6 +949,7 @@
 #define LISTITEM_TVSHOWDBID         (LISTITEM_START + 205)
 #define LISTITEM_ALBUMSTATUS        (LISTITEM_START + 206)
 #define LISTITEM_ISAUTOUPDATEABLE   (LISTITEM_START + 207)
+#define LISTITEM_VIDEO_HDR_TYPE     (LISTITEM_START + 208)
 
 #define LISTITEM_END                (LISTITEM_START + 2500)
 

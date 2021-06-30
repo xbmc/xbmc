@@ -511,13 +511,17 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 
   bool skipCreateStreams = false;
   bool isBluray = pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY);
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray)
+  // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray &&
+      m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
     m_checkTransportStream = true;
     skipCreateStreams = true;
   }
-  else if (!iformat || (strcmp(iformat->name, "mpegts") != 0))
+  else if (!iformat || ((strcmp(iformat->name, "mpegts") != 0) ||
+           ((strcmp(iformat->name, "mpegts") == 0) &&
+            m_pFormatContext->streams[0]->codecpar->codec_id == AV_CODEC_ID_HEVC)))
   {
     m_streaminfo = true;
   }
@@ -1643,11 +1647,26 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         int size = 0;
         uint8_t* side_data = nullptr;
 
+        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
+        if (side_data && size)
+          st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
+        else if (st->colorPrimaries == AVCOL_PRI_BT2020)
+        {
+          if (st->colorTransferCharacteristic == AVCOL_TRC_SMPTE2084) // hdr10
+            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
+          else if (st->colorTransferCharacteristic == AVCOL_TRC_ARIB_STD_B67) // hlg
+            st->hdr_type = StreamHdrType::HDR_TYPE_HLG;
+        }
+
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
         if (side_data && size)
         {
           st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
               *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
+          // file could be SMPTE2086 which FFmpeg currently returns as unknown so use the presence
+          // of static metadata to detect it
+          if (st->masteringMetaData->has_primaries && st->masteringMetaData->has_luminance)
+            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
         }
 
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, &size);

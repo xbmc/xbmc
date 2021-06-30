@@ -145,6 +145,7 @@ typedef enum {
   FieldNoOfChannels,
   FieldAlbumStatus,
   FieldAlbumDuration,
+  FieldHdrType,
   FieldMax
 } Field;
 

@@ -10,7 +10,6 @@
 
 #include "LangInfo.h"
 #include "StreamUtils.h"
-#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Variant.h"
@@ -32,7 +31,8 @@ CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo &info, int duration
   m_iDuration(duration),
   m_strCodec(info.codecName),
   m_strStereoMode(info.stereoMode),
-  m_strLanguage(info.language)
+  m_strLanguage(info.language),
+  m_strHdrType(CStreamDetails::HdrTypeToString(info.hdrType))
 {
 }
 
@@ -47,6 +47,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_iDuration;
     ar << m_strStereoMode;
     ar << m_strLanguage;
+    ar << m_strHdrType;
   }
   else
   {
@@ -57,6 +58,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar >> m_iDuration;
     ar >> m_strStereoMode;
     ar >> m_strLanguage;
+    ar >> m_strHdrType;
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
@@ -68,6 +70,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["duration"] = m_iDuration;
   value["stereomode"] = m_strStereoMode;
   value["language"] = m_strLanguage;
+  value["hdrtype"] = m_strHdrType;
 }
 
 bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
@@ -398,6 +401,16 @@ int CStreamDetails::GetVideoHeight(int idx) const
     return 0;
 }
 
+std::string CStreamDetails::GetVideoHdrType( int idx) const
+{
+  const CStreamDetailVideo* item =
+      static_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
+  if (item)
+    return item->m_strHdrType;
+  else
+    return "";
+}
+
 int CStreamDetails::GetVideoDuration(int idx) const
 {
   const CStreamDetailVideo *item = static_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
@@ -624,4 +637,20 @@ bool CStreamDetails::SetStreams(const VideoStreamInfo& videoInfo, int videoDurat
     AddStream(new CStreamDetailSubtitle(subtitleInfo));
   DetermineBestStreams();
   return true;
+}
+
+std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
+{
+  switch (hdrType)
+  {
+    case StreamHdrType::HDR_TYPE_DOLBYVISION:
+      return "dolbyvision";
+    case StreamHdrType::HDR_TYPE_HDR10:
+      return "hdr10";
+    case StreamHdrType::HDR_TYPE_HLG:
+      return "hlg";
+    case StreamHdrType::HDR_TYPE_NONE:
+    default:
+      return "";
+  }
 }

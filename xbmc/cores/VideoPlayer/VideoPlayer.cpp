@@ -523,6 +523,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
         s.aspect_ratio = vstream->fAspect;
         s.stereo_mode = vstream->stereo_mode;
         s.bitrate = vstream->iBitRate;
+        s.hdrType = vstream->hdr_type;
       }
       if(stream->type == STREAM_AUDIO)
       {
@@ -5122,6 +5123,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
   info.videoAspectRatio = s.aspect_ratio;
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;
+  info.hdrType = s.hdrType;
 }
 
 int CVideoPlayer::GetVideoStreamCount() const
