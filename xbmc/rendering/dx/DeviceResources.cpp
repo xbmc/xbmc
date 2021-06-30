@@ -609,8 +609,11 @@ void DX::DeviceResources::ResizeBuffers()
     swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     swapChainDesc.Stereo = bHWStereoEnabled;
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    // HDR 60 fps needs 6 buffers to avoid frame drops but it's good for all
-    swapChainDesc.BufferCount = 6;
+#ifdef TARGET_WINDOWS_DESKTOP
+    swapChainDesc.BufferCount = 6; // HDR 60 fps needs 6 buffers to avoid frame drops
+#else
+    swapChainDesc.BufferCount = 3; // Xbox don't like 6 backbuffers (3 is fine even for 4K 60 fps)
+#endif
     // FLIP_DISCARD improves performance (needed in some systems for 4K HDR 60 fps)
     swapChainDesc.SwapEffect = CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
                                    ? DXGI_SWAP_EFFECT_FLIP_DISCARD
