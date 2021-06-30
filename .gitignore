@@ -46,6 +46,7 @@ cmake-kits.json
 *.apk
 *.class
 *.dwo
+*.wget-hsts
 
 # Windows specific generated files
 *.appx
