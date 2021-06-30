@@ -196,6 +196,7 @@ struct SelectionStream
   CRect VideoRect;
   std::string stereo_mode;
   float aspect_ratio = 0.0f;
+  StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
 };
 
 class CSelectionStreams

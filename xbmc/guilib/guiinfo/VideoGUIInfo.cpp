@@ -492,6 +492,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 
         value = CURL(value).GetWithoutUserDetails();
         return true;
+      case LISTITEM_VIDEO_HDR_TYPE:
+        value = tag->m_streamDetails.GetVideoHdrType();
+        return true;
     }
   }
 
@@ -552,6 +555,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       return true;
     case VIDEOPLAYER_VIDEO_RESOLUTION:
       value = CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
+      return true;
+    case VIDEOPLAYER_HDR_TYPE:
+      value = CStreamDetails::HdrTypeToString(m_videoInfo.hdrType);
       return true;
     case VIDEOPLAYER_AUDIO_CODEC:
       value = m_audioInfo.codecName;

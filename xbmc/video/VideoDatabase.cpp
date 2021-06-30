@@ -178,7 +178,8 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
     "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
     "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
-    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text)");
+    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text, "
+    "strHdrType text)");
 
   CLog::Log(LOGINFO, "create sets table");
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text)");
@@ -3057,13 +3058,15 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
                              "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, "
-                             "iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage) "
-                             "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s')",
+                             "iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage,  "
+                             "strHdrType)"
+                             "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s')",
                              idFile, (int)CStreamDetail::VIDEO, details.GetVideoCodec(i).c_str(),
                              static_cast<double>(details.GetVideoAspect(i)),
                              details.GetVideoWidth(i), details.GetVideoHeight(i),
                              details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
-                             details.GetVideoLanguage(i).c_str()));
+                             details.GetVideoLanguage(i).c_str(),
+                             details.GetVideoHdrType(i).c_str()));
     }
     for (int i=1; i<=details.GetAudioStreamCount(); i++)
     {
@@ -3894,6 +3897,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
           p->m_iDuration = pDS->fv(10).get_asInt();
           p->m_strStereoMode = pDS->fv(11).get_asString();
           p->m_strLanguage = pDS->fv(12).get_asString();
+          p->m_strHdrType = pDS->fv(13).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -5830,11 +5834,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 119)
     m_pDS->exec("ALTER TABLE path ADD allAudio bool");
+  if (iVersion < 120)
+  {
+    m_pDS->exec("ALTER TABLE streamdetails ADD strHdrType text");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 119;
+  return 120;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
