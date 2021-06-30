@@ -461,7 +461,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   PromptAndSaveList();
 
   int iSelection = 0;
-  if (CServiceBroker::GetPVRManager().Clients()->CreatedClientAmount() > 1)
+  if (m_clientsWithSettingsList.size() > 1)
   {
     CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
     if (!pDlgSelect)
