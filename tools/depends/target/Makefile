@@ -15,7 +15,7 @@ DEPENDS = \
 	taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg crossguid libudfread \
-	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d
+	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d xz
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -93,7 +93,7 @@ curl: openssl nghttp2
 harfbuzz: meson-cross-file $(ICONV)
 libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
 libmicrohttpd: gnutls libgcrypt libgpg-error
-python3: expat gettext libxml2 sqlite3 openssl libffi bzip2
+python3: expat gettext libxml2 sqlite3 openssl libffi bzip2 xz
 libcdio: $(ICONV)
 libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
