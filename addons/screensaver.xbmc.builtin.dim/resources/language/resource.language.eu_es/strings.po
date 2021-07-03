@@ -16,6 +16,3 @@ msgstr ""
 "Language: eu_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#30000"
-msgid "Dim level"
-msgstr "Iluntze maila"

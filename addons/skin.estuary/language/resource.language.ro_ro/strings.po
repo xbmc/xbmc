@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -124,6 +124,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Decalaj temporal"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr "Următoarea difuzare"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Arată decorul"
@@ -159,6 +163,10 @@ msgstr "Pagini"
 msgctxt "#31036"
 msgid "items"
 msgstr "Elemente"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr "Pista selectată"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -255,6 +263,10 @@ msgstr "de"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opțiuni de alimentare"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr "Lungime totală"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -368,6 +380,10 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Caută pe YouTube"
 
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr "Comută subtitlul"
+
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Elimină acest element din meniul principal"
@@ -426,7 +442,7 @@ msgstr "Setări conexe meniului principal: Configurați ecranul inițial cum vă
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Alegeți pachetul de decoruri pentru temă"
+msgstr "Alegeți pachetul de decoruri pentru costum"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -439,6 +455,10 @@ msgstr "Selectare rezoluție"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Rămas"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Binar"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -480,6 +500,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Căutare suplimente"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr "În cinematografe"
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr "În curând în cinematografe"
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Categorii"
@@ -487,6 +515,10 @@ msgstr "Categorii"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Alegeți pachetul de decoruri"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Origine"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -518,7 +550,7 @@ msgstr "Editare categorii"
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr "Mod touch"
+msgstr "Mod tactil"
 
 msgctxt "#31159"
 msgid "Artwork"

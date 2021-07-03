@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -215,6 +215,10 @@ msgstr "Arial-il põhinev"
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "Tagasihüppeks vajuta [B]vasakut[/B] või edasihüppeks [B]paremat[/B] klahvi"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Kaaderhaaval liikumiseks vajuta [B]paremat[/B] klahvi"
 
 msgctxt "#31056"
 msgid "Go to playlist"

@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fa_IR\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -63,6 +63,10 @@ msgstr "حذف گروه"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "بر اساس قلم Arial"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "پلی لیست موسیقی"
 
 msgctxt "#31067"
 msgid "Event log"

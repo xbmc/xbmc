@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 msgctxt "#31002"
 msgid "Audio Settings"
@@ -99,6 +99,18 @@ msgstr "Użytkownik"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Zaktualizowano:"
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr "Zaznacz + X"
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr "Zaznacz + B"
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr "Zaznacz + Start"
 
 msgctxt "#31043"
 msgid "PAUSED"

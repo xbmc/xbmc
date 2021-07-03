@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -395,6 +395,10 @@ msgstr "ローカルライブラリ検索"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "YouTube検索"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr "字幕を切り替える"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"

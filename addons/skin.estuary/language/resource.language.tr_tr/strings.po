@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr_TR\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -395,6 +395,10 @@ msgstr "Yerel kitaplıkta ara"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "YouTube'da ara"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr "Altyazıyı değiştir"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
