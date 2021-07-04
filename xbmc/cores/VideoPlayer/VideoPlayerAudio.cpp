@@ -407,8 +407,11 @@ void CVideoPlayerAudio::Process()
       {
         onlyPrioMsgs = true;
       }
-
-    } // demuxer packet
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAY_RESET))
+    {
+      m_displayReset = true;
+    }
   }
 }
 
@@ -454,6 +457,17 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     if (m_processInfo.IsRealtimeStream() && m_synctype != SYNC_RESAMPLE)
     {
       m_synctype = SYNC_RESAMPLE;
+      if (SwitchCodecIfNeeded())
+      {
+        audioframe.nb_frames = 0;
+        return false;
+      }
+    }
+
+    // Display reset event has occurred
+    // See if we should enable passthrough
+    if (m_displayReset)
+    {
       if (SwitchCodecIfNeeded())
       {
         audioframe.nb_frames = 0;
@@ -598,7 +612,13 @@ bool CVideoPlayerAudio::AcceptsData() const
 
 bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 {
-  CLog::Log(LOGDEBUG, "CVideoPlayerAudio: stream props changed, checking for passthrough");
+  if (m_displayReset)
+    CLog::Log(LOGINFO, "CVideoPlayerAudio: display reset occurred, checking for passthrough");
+  else
+    CLog::Log(LOGDEBUG, "CVideoPlayerAudio: stream props changed, checking for passthrough");
+
+  m_displayReset = false;
+
   bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_processInfo.IsRealtimeStream() || m_synctype == SYNC_RESAMPLE)
     allowpassthrough = false;

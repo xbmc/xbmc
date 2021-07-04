@@ -4933,6 +4933,7 @@ void CVideoPlayer::OnResetDisplay()
   m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false), 1);
   m_clock.Pause(false);
   m_displayLost = false;
+  m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
 }
 
 void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
