@@ -22,7 +22,7 @@ msgstr "亮度等级"
 
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
-msgstr "等级，以百分比表示屏幕保持照明的强度。"
+msgstr "屏幕照明强度的百分比。"
 
 msgctxt "#30002"
 msgid "Preferences"

@@ -16,6 +16,3 @@ msgstr ""
 "Language: mk_MK\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
-msgctxt "#30000"
-msgid "Dim level"
-msgstr "Ниво на стемнување"

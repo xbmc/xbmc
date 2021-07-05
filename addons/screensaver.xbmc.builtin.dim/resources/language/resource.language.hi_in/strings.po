@@ -15,7 +15,3 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hi_IN\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgctxt "#30000"
-msgid "Dim level"
-msgstr "डिम का ताल"

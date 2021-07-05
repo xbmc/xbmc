@@ -16,6 +16,3 @@ msgstr ""
 "Language: id_ID\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "#30000"
-msgid "Dim level"
-msgstr "Tingkat redup"

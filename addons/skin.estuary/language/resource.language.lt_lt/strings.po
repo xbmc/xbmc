@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Ichabod Fletchman
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: lt_LT\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -212,6 +212,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial pagrindu"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr "Paspauskite [B]kairėn[/B] norėdami žengti atgal ar [B]dešinėn[/B], jei norite žengti pirmyn"
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr "Paspauskite [B]dešinėn[/B] norėdami perjungti kadrą pirmyn"
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Eiti į grojaraštį"
@@ -388,6 +396,10 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Ieškoti YouTube"
 
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr "Perjungti subtitrus"
+
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Pašalinti šį pagrindinio meniu elementą"
@@ -460,6 +472,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Liko"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr "Dvejetainis"
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Paspauskite čia norėdami peržiūrėti naujausius pakeitimus..."
@@ -515,6 +531,10 @@ msgstr "Kategorijos"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Pasirinkti žanrų Fanart paketą"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr "Kilmė"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -583,3 +603,11 @@ msgstr "Profilio avataras"
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animuoti foną"
+
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr "Muzikiniams vaizdo įrašams rodyti plakatus vietoje miniatiūrų"
+
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr "Su iliustracijomis susiję nustatymai."

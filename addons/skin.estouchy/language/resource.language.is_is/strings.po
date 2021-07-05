@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: is_IS\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
 
 msgctxt "#31002"
 msgid "Audio Settings"
@@ -170,7 +170,7 @@ msgstr "Staðsetning"
 
 msgctxt "#31202"
 msgid "View"
-msgstr "Sýn"
+msgstr "Skoða"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -210,7 +210,7 @@ msgstr "Textavarp"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Sjálfgildi útlits"
+msgstr "Sjálfgefið í skinni"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -218,7 +218,7 @@ msgstr "Byggt á Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Breyta útlitinu · Breyta tungumáli og landssvæði · Breyta útliti skráarlista · Velja skjáhvílu"
+msgstr "Breyta útlitinu · Breyta tungumáli og landssvæði · Breyta útliti skráalista · Setja upp skjáhvílu"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
@@ -258,11 +258,11 @@ msgstr "Veldu Kodi notanda[CR]til að skrá inn og hala áfram"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Heimavalmynd"
+msgstr "Upphafsvalmynd"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Viðbætur við heimavalmynd"
+msgstr "Viðbætur við upphafsskjá"
 
 msgctxt "#31550"
 msgid "Backgrounds"
