@@ -1,0 +1,70 @@
+name: Sync addon metadata translations
+
+on:
+  push:
+    branches: [ master, main ]
+    paths:
+      - '**skin.estuary**addon.xml'
+      - '**skin.estuary**resource.language.**strings.po'
+      - '**skin.estouchy**addon.xml'
+      - '**skin.estouchy**resource.language.**strings.po'
+      - '**audioencoder.kodi.builtin.aac**addon.xml'
+      - '**audioencoder.kodi.builtin.aac**resource.language.**strings.po'
+      - '**audioencoder.kodi.builtin.wma**addon.xml'
+      - '**audioencoder.kodi.builtin.wma**resource.language.**strings.po'
+      - '**screensaver.xbmc.builtin.dim**addon.xml'
+      - '**screensaver.xbmc.builtin.dim**resource.language.**strings.po'
+
+jobs:
+  default:
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+
+    strategy:
+
+      fail-fast: false
+      matrix:
+        python-version: [ 3.9 ]
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          path: project
+
+      - name: Checkout sync_addon_metadata_translations repository
+        uses: actions/checkout@v2
+        with:
+          repository: xbmc/sync_addon_metadata_translations
+          path: sync_addon_metadata_translations
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install sync_addon_metadata_translations/
+
+      - name: Run sync-addon-metadata-translations
+        run: |
+          sync-addon-metadata-translations --path ./skin.estuary/
+          sync-addon-metadata-translations --path ./skin.estouchy/
+          sync-addon-metadata-translations --path ./audioencoder.kodi.builtin.aac/
+          sync-addon-metadata-translations --path ./audioencoder.kodi.builtin.wma/
+          sync-addon-metadata-translations --path ./screensaver.xbmc.builtin.dim/
+        working-directory: ./project/addons
+
+      - name: Create PR for sync-addon-metadata-translations changes
+        uses: peter-evans/create-pull-request@v3.10.0
+        with:
+          commit-message: Sync of addon metadata translations
+          title: Sync of addon metadata translations
+          body: Sync of addon metadata translations triggered by ${{ github.sha }}
+          branch: amt-sync
+          delete-branch: true
+          path: ./project
+          reviewers: gade01
