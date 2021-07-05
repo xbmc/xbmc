@@ -63,6 +63,7 @@ class CDecoderFilterManager;
 class CMediaManager;
 class CCPUInfo;
 class CLog;
+class CPlatform;
 
 namespace KODI
 {
@@ -105,6 +106,7 @@ public:
   static PVR::CPVRManager &GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
+  static CPlatform& GetPlatform();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();

@@ -19,4 +19,6 @@ public:
 
   bool InitStageOne() override;
   bool InitStageTwo() override;
+
+  bool SupportsUserInstalledBinaryAddons() override;
 };
