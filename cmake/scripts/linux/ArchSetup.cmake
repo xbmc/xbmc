@@ -37,10 +37,8 @@ else()
   endif()
 endif()
 
-if((CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
-    AND CMAKE_COMPILER_IS_GNUCXX)
-  # Make sure we strip binaries in Release build
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+
+if(CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
 
   # LTO Support, requires cmake >= 3.9
   if(CMAKE_VERSION VERSION_EQUAL 3.9.0 OR CMAKE_VERSION VERSION_GREATER 3.9.0)
@@ -50,13 +48,44 @@ if((CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
       check_ipo_supported(RESULT HAVE_LTO OUTPUT _output)
       if(HAVE_LTO)
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+
         # override flags to enable parallel processing
         set(NJOBS 2)
         if(USE_LTO MATCHES "^[0-9]+$")
           set(NJOBS ${USE_LTO})
         endif()
-        set(CMAKE_CXX_COMPILE_OPTIONS_IPO -flto=${NJOBS} -fno-fat-lto-objects)
-        set(CMAKE_C_COMPILE_OPTIONS_IPO -flto=${NJOBS} -fno-fat-lto-objects)
+
+        if(CMAKE_COMPILER_IS_GNUCXX)
+          # GCC
+          # Make sure we strip binaries in Release build
+          set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+          set(CMAKE_CXX_COMPILE_OPTIONS_IPO -flto=${NJOBS} -fno-fat-lto-objects)
+          set(CMAKE_C_COMPILE_OPTIONS_IPO -flto=${NJOBS} -fno-fat-lto-objects)
+        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+          # CLANG
+          set(ENABLE_GOLD OFF CACHE BOOL "gold linker forced to off" FORCE)
+          set(ENABLE_LLD ON CACHE BOOL "lld linker forced to on" FORCE)
+
+          include(LLD)
+          if(NOT LLD_FOUND)
+	    message(FATAL_ERROR "Clang LTO support requires lld, set ENABLE_LLD=ON")
+          endif()
+
+          find_package(LLVM REQUIRED)
+
+          if(NOT CLANG_LTO_CACHE)
+            set(CLANG_LTO_CACHE ${PROJECT_BINARY_DIR}/.clang-lto.cache)
+          endif()
+          if(USE_LTO STREQUAL "all")
+            set(NJOBS ${USE_LTO})
+          endif()
+
+          set(CMAKE_CXX_COMPILE_OPTIONS_IPO -flto=thin)
+          set(CMAKE_C_COMPILE_OPTIONS_IPO -flto=thin)
+          set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--thinlto-jobs=${NJOBS},--thinlto-cache-dir=${CLANG_LTO_CACHE}")
+          set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+          set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+        endif()
       else()
         message(WARNING "LTO optimization not supported: ${_output}")
         unset(_output)
@@ -71,7 +100,12 @@ if(KODI_DEPENDSBUILD)
   set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 endif()
 
-include(LDGOLD)
+if(NOT ENABLE_LLD AND NOT LDGOLD_FOUND)
+  include(LDGOLD)
+endif()
+if(NOT ENABLE_GOLD AND ENABLE_LLD AND NOT LDD_FOUND)
+  include(LLD)
+endif()
 
 include(CheckIncludeFiles)
 check_include_files("linux/udmabuf.h" HAVE_LINUX_UDMABUF)
