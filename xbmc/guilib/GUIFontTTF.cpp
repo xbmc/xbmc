@@ -27,7 +27,7 @@
 
 // stuff for freetype
 #include <ft2build.h>
-
+#include <harfbuzz/hb-ft.h>
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "system_gl.h"
 #endif
@@ -227,6 +227,9 @@ void CGUIFontTTF::Clear()
   m_posY = 0;
   m_nestedBeginCount = 0;
 
+  if (m_hbFont)
+    hb_font_destroy(m_hbFont);
+  m_hbFont = nullptr;
   if (m_face)
     g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
@@ -250,7 +253,9 @@ bool CGUIFontTTF::Load(
 
   if (!m_face)
     return false;
-
+  m_hbFont = hb_ft_font_create(m_face, 0);
+  if (!m_hbFont)
+    return false;
   /*
    the values used are described below
 
@@ -325,7 +330,7 @@ bool CGUIFontTTF::Load(
   m_posY = -(int)GetTextureLineHeight();
 
   // cache the ellipses width
-  Character *ellipse = GetCharacter(L'.');
+  Character* ellipse = GetCharacter(L'.', 0);
   if (ellipse) m_ellipsesWidth = ellipse->advance;
 
   return true;
@@ -367,7 +372,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
   }
 
   Begin();
-
+  std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
   bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
@@ -406,7 +411,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
     // Check if we will really need to truncate or justify the text
     if ( alignment & XBFONT_TRUNCATED )
     {
-      if ( maxPixelWidth <= 0.0f || GetTextWidthInternal(text.begin(), text.end()) <= maxPixelWidth)
+      if (maxPixelWidth <= 0.0f || GetTextWidthInternal(text, glyphs) <= maxPixelWidth)
         alignment &= ~XBFONT_TRUNCATED;
     }
     else if ( alignment & XBFONT_JUSTIFIED )
@@ -422,7 +427,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
     if ( alignment & (XBFONT_RIGHT | XBFONT_CENTER_X) )
     {
       // Get the extent of this line
-      float w = GetTextWidthInternal( text.begin(), text.end() );
+      float w = GetTextWidthInternal(text, glyphs);
 
       if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth + 0.5f ) // + 0.5f due to rounding issues
         w = maxPixelWidth;
@@ -439,12 +444,12 @@ void CGUIFontTTF::DrawTextInternal(float x,
       // first compute the size of the text to render in both characters and pixels
       unsigned int numSpaces = 0;
       float linePixels = 0;
-      for (const auto& pos : text)
+      for (const auto& glyph : glyphs)
       {
-        Character* ch = GetCharacter(pos);
+        Character* ch = GetCharacter(text[glyph.glyphInfo.cluster], glyph.glyphInfo.codepoint);
         if (ch)
         {
-          if ((pos & 0xffff) == L' ')
+          if ((text[glyph.glyphInfo.cluster] & 0xffff) == L' ')
             numSpaces +=  1;
           linePixels += ch->advance;
         }
@@ -454,16 +459,18 @@ void CGUIFontTTF::DrawTextInternal(float x,
     }
 
     float cursorX = 0; // current position along the line
+    float offsetX = 0;
+    float offsetY = 0;
 
     // Collect all the Character info in a first pass, in case any of them
     // are not currently cached and cause the texture to be enlarged, which
     // would invalidate the texture coordinates.
     std::queue<Character> characters;
     if (alignment & XBFONT_TRUNCATED)
-      GetCharacter(L'.');
-    for (const auto& pos : text)
+      GetCharacter(L'.', 0);
+    for (const auto& glyph : glyphs)
     {
-      Character* ch = GetCharacter(pos);
+      Character* ch = GetCharacter(text[glyph.glyphInfo.cluster], glyph.glyphInfo.codepoint);
       if (!ch)
       {
         Character null = {};
@@ -478,19 +485,18 @@ void CGUIFontTTF::DrawTextInternal(float x,
       cursorX += ch->advance;
     }
     cursorX = 0;
-
-    for (const auto& pos : text)
+    for (const auto& glyph : glyphs)
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      UTILS::Color color = (pos & 0xff0000) >> 16;
+      UTILS::Color color = (text[glyph.glyphInfo.cluster] & 0xff0000) >> 16;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
 
       // grab the next character
       Character *ch = &characters.front();
-      if (ch->letterAndStyle == 0)
+      if (ch->letter == 0)
       {
         characters.pop();
         continue;
@@ -503,7 +509,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
         {
           // Yup. Let's draw the ellipses, then bail
           // Perhaps we should really bail to the next line in this case??
-          Character *period = GetCharacter(L'.');
+          Character* period = GetCharacter(L'.', 0);
           if (!period)
             break;
 
@@ -518,10 +524,15 @@ void CGUIFontTTF::DrawTextInternal(float x,
       else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
         break;  // exceeded max allowed width - stop rendering
 
-      RenderCharacter(startX + cursorX, startY, ch, color, !scrolling, *tempVertices);
+      offsetX = static_cast<float>(
+          MathUtils::round_int(static_cast<double>(glyph.glyphPosition.x_offset) / 64));
+      offsetY = static_cast<float>(
+          MathUtils::round_int(static_cast<double>(glyph.glyphPosition.y_offset) / 64));
+      RenderCharacter(startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
+                      *tempVertices);
       if ( alignment & XBFONT_JUSTIFIED )
       {
-        if ((pos & 0xffff) == L' ')
+        if ((text[glyph.glyphInfo.cluster] & 0xffff) == L' ')
           cursorX += ch->advance + spacePerSpaceCharacter;
         else
           cursorX += ch->advance;
@@ -568,19 +579,26 @@ void CGUIFontTTF::DrawTextInternal(float x,
   End();
 }
 
+
+float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
+{
+  std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
+  return GetTextWidthInternal(text, glyphs);
+}
+
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTF::GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end)
+float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>& glyphs)
 {
   float width = 0;
-  while (start != end)
+  for (auto it = glyphs.begin(); it != glyphs.end(); it++)
   {
-    Character *c = GetCharacter(*start++);
+    Character* c = GetCharacter(text[(*it).glyphInfo.cluster], (*it).glyphInfo.codepoint);
     if (c)
     {
       // If last character in line, we want to add render width
       // and not advance distance - this makes sure that italic text isn't
       // choped on the end (as render width is larger than advance then).
-      if (start == end)
+      if (it == glyphs.end())
         width += std::max(c->right - c->left + c->offsetX, c->advance);
       else
         width += c->advance;
@@ -591,7 +609,7 @@ float CGUIFontTTF::GetTextWidthInternal(vecText::const_iterator start, vecText::
 
 float CGUIFontTTF::GetCharWidthInternal(character_t ch)
 {
-  Character *c = GetCharacter(ch);
+  Character* c = GetCharacter(ch, 0);
   if (c) return c->advance;
   return 0;
 }
@@ -615,7 +633,99 @@ unsigned int CGUIFontTTF::GetTextureLineHeight() const
   return m_cellHeight + spacing_between_characters_in_texture;
 }
 
-CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
+std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecText& text)
+{
+  std::vector<Glyph> glyphs;
+  if (text.empty())
+  {
+    return glyphs;
+  }
+  std::vector<hb_script_t> scripts;
+  std::vector<RunInfo> runs;
+  hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
+  hb_script_t lastScript;
+  int lastScriptIndex = -1;
+  int lastSetIndex = -1;
+
+  for (const auto& character : text)
+  {
+    scripts.emplace_back(hb_unicode_script(ufuncs, static_cast<wchar_t>(0xffff & character)));
+  }
+
+  // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
+  for (unsigned int i = 0; i < scripts.size(); i++)
+  {
+    if (scripts[i] == HB_SCRIPT_COMMON || scripts[i] == HB_SCRIPT_INHERITED)
+    {
+      if (lastScriptIndex != -1)
+      {
+        scripts[i] = lastScript;
+        lastSetIndex = i;
+      }
+    }
+    else
+    {
+      for (unsigned int j = lastSetIndex + 1; j < i; j++)
+        scripts[j] = scripts[i];
+      lastScript = scripts[i];
+      lastScriptIndex = i;
+      lastSetIndex = i;
+    }
+  }
+
+  lastScript = scripts[0];
+  int lastRunStart = 0;
+
+  for (unsigned int i = 0; i <= scripts.size(); i++)
+  {
+    if (i == scripts.size() || scripts[i] != lastScript)
+    {
+      RunInfo run{};
+      run.startOffset = lastRunStart;
+      run.endOffset = i;
+      run.script = lastScript;
+      runs.emplace_back(run);
+
+      if (i < scripts.size())
+      {
+        lastScript = scripts[i];
+        lastRunStart = i;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  for (auto& run : runs)
+  {
+    run.buffer = hb_buffer_create();
+    hb_buffer_set_direction(run.buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
+    hb_buffer_set_script(run.buffer, run.script);
+
+    for (int j = run.startOffset; j < run.endOffset; j++)
+    {
+      hb_buffer_add(run.buffer, static_cast<wchar_t>(0xffff & text[j]), j);
+    }
+
+    hb_buffer_set_content_type(run.buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
+    hb_shape(m_hbFont, run.buffer, nullptr, 0);
+    unsigned int glyphCount;
+    run.glyphInfos = hb_buffer_get_glyph_infos(run.buffer, &glyphCount);
+    run.glyphPositions = hb_buffer_get_glyph_positions(run.buffer, &glyphCount);
+
+    for (size_t k = 0; k < glyphCount; k++)
+    {
+      glyphs.emplace_back(run.glyphInfos[k], run.glyphPositions[k]);
+    }
+
+    hb_buffer_destroy(run.buffer);
+  }
+  return glyphs;
+}
+
+CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyphIndex)
 {
   wchar_t letter = (wchar_t)(chr & 0xffff);
   character_t style = (chr & 0x7000000) >> 24;
@@ -627,22 +737,22 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
   // quick access to ascii chars
   if (letter < 255)
   {
-    character_t ch = (style << 8) | letter;
+    character_t ch = (style << 8) | glyphIndex;
     if (ch < LOOKUPTABLE_SIZE && m_charquick[ch])
       return m_charquick[ch];
   }
 
-  // letters are stored based on style and letter
-  character_t ch = (style << 16) | letter;
+  // letters are stored based on style and glyph
+  character_t ch = (style << 16) | glyphIndex;
 
   int low = 0;
   int high = m_numChars - 1;
   while (low <= high)
   {
     int mid = (low + high) >> 1;
-    if (ch > m_char[mid].letterAndStyle)
+    if (ch > m_char[mid].glyphAndStyle)
       low = mid + 1;
-    else if (ch < m_char[mid].letterAndStyle)
+    else if (ch < m_char[mid].glyphAndStyle)
       high = mid - 1;
     else
       return &m_char[mid];
@@ -672,13 +782,13 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
   unsigned int nestedBeginCount = m_nestedBeginCount;
   m_nestedBeginCount = 1;
   if (nestedBeginCount) End();
-  if (!CacheCharacter(letter, style, m_char + low))
+  if (!CacheCharacter(letter, style, m_char + low, glyphIndex))
   { // unable to cache character - try clearing them all out and starting over
     CLog::Log(LOGDEBUG, "{}: Unable to cache character.  Clearing character cache of {} characters",
               __FUNCTION__, m_numChars);
     ClearCharacterCache();
     low = 0;
-    if (!CacheCharacter(letter, style, m_char + low))
+    if (!CacheCharacter(letter, style, m_char + low, glyphIndex))
     {
       CLog::Log(LOGERROR, "{}: Unable to cache character (out of memory?)", __FUNCTION__);
       if (nestedBeginCount) Begin();
@@ -693,9 +803,9 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
   memset(m_charquick, 0, sizeof(m_charquick));
   for(int i=0;i<m_numChars;i++)
   {
-    if ((m_char[i].letterAndStyle & 0xffff) < 255)
+    if (m_char[i].letter < 255)
     {
-      character_t ch = ((m_char[i].letterAndStyle & 0xffff0000) >> 8) | (m_char[i].letterAndStyle & 0xff);
+      character_t ch = ((m_char[i].glyphAndStyle & 0xffff0000) >> 8) | (m_char[i].glyphIndex);
       m_charquick[ch] = m_char+i;
     }
   }
@@ -703,12 +813,13 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
   return m_char + low;
 }
 
-bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
+bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex)
 {
-  int glyph_index = FT_Get_Char_Index( m_face, letter );
+  if (!glyphIndex)
+    glyphIndex = FT_Get_Char_Index(m_face, letter);
 
   FT_Glyph glyph = NULL;
-  if (FT_Load_Glyph( m_face, glyph_index, FT_LOAD_TARGET_LIGHT ))
+  if (FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
   {
     CLog::Log(LOGDEBUG, "{} Failed to load glyph {:x}", __FUNCTION__,
               static_cast<uint32_t>(letter));
@@ -790,7 +901,9 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch)
     }
   }
   // set the character in our table
-  ch->letterAndStyle = (style << 16) | letter;
+  ch->glyphAndStyle = (style << 16) | glyphIndex;
+  ch->glyphIndex = glyphIndex;
+  ch->letter = letter;
   ch->offsetX = (short)bitGlyph->left;
   ch->offsetY = (short)m_cellBaseLine - bitGlyph->top;
   ch->left = isEmptyGlyph ? 0 : ((float)m_posX + ch->offsetX);

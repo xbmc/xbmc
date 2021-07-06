@@ -8,13 +8,17 @@
 
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <vector>
-
-#include "utils/auto_buffer.h"
 #include "utils/Color.h"
 #include "utils/Geometry.h"
+#include "utils/auto_buffer.h"
+
+#include <stdint.h>
+#include <string>
+#include <vector>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <harfbuzz/hb.h>
 
 #ifdef HAS_DX
 #include <DirectXMath.h>
@@ -88,17 +92,48 @@ public:
 protected:
   explicit CGUIFontTTF(const std::string& strFileName);
 
+
+  struct Glyph
+  {
+    hb_glyph_info_t glyphInfo;
+    hb_glyph_position_t glyphPosition;
+
+    // converter for harfbuzz library
+    Glyph(hb_glyph_info_t gInfo, hb_glyph_position_t gPos)
+    {
+      glyphInfo = gInfo;
+      glyphPosition = gPos;
+    }
+    Glyph() {}
+  };
+
   struct Character
   {
     short offsetX, offsetY;
     float left, top, right, bottom;
     float advance;
-    character_t letterAndStyle;
+    FT_UInt glyphIndex;
+    character_t glyphAndStyle;
+    wchar_t letter;
   };
+
+  struct RunInfo
+  {
+    int startOffset;
+    int endOffset;
+    hb_buffer_t* buffer;
+    hb_script_t script;
+    hb_glyph_info_t* glyphInfos;
+    hb_glyph_position_t* glyphPositions;
+  };
+
   void AddReference();
   void RemoveReference();
 
-  float GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end);
+  std::vector<Glyph> GetHarfBuzzShapedGlyphs(const vecText& text);
+
+  float GetTextWidthInternal(const vecText& text);
+  float GetTextWidthInternal(const vecText& text, std::vector<Glyph>& glyph);
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetTextBaseLine() const { return (float)m_cellBaseLine; }
@@ -112,8 +147,8 @@ protected:
   std::string m_strFilename;
 
   // Stuff for pre-rendering for speed
-  inline Character *GetCharacter(character_t letter);
-  bool CacheCharacter(wchar_t letter, uint32_t style, Character *ch);
+  Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
+  bool CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex);
   void RenderCharacter(float posX, float posY, const Character *ch, UTILS::Color color, bool roundX, std::vector<SVertex> &vertices);
   void ClearCharacterCache();
 
@@ -155,6 +190,8 @@ protected:
   // freetype stuff
   FT_Face    m_face;
   FT_Stroker m_stroker;
+
+  hb_font_t* m_hbFont = nullptr;
 
   float m_originX;
   float m_originY;
