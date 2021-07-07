@@ -1578,7 +1578,8 @@ unsigned int CDVDRadioRDSData::DecodeEPPTransmitterInfo(uint8_t *msgElement)
         return 7;
     }
 
-    m_RDS_IsRBDS = countryName == "US" ? true : false;
+    // The United States, Canada, and Mexico use the RBDS standard
+    m_RDS_IsRBDS = (countryName == "US" || countryName == "CA" || countryName == "MX");
 
     m_currentInfoTag->SetCountry(countryName);
   }
