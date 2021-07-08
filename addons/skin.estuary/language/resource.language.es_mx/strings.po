@@ -16,6 +16,18 @@ msgstr ""
 "Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "Máscara Estuary por phil65 y Piers. (La máscara predeterminada de Kodi)"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Estuary es la máscara por defecto para Kodi 17.0 y superior. Su objetivo es ser fácil de entender y usar para los usuarios nuevos a Kodi."
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Estuary es la máscara predeterminada de Kodi, eliminarla puede causar problemas"
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Reproduciendo ahora"

@@ -16,6 +16,14 @@ msgstr ""
 "Language: ca_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Estalvi de pantalla que enfosqueix la pantalla"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferències"

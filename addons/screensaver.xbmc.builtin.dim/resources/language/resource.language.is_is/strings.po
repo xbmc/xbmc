@@ -16,6 +16,14 @@ msgstr ""
 "Language: is_IS\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Skjáhvíla sem lækkar birtustigið á skjánum"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dimma er einföld skjáhvíla sem lækkar birtustigið á skjánum (deyfa út) um stillanlegt gildi á milli 20 og 100%"
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Birtustig"

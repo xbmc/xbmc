@@ -17,6 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "Estuary presvlaka autora phil65 i Piersa. (uobičajena Kodi presvlaka)"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Estuary je uobičajena presvlaka za Kodi 17.0 i novije inačice. To je pokušaj da se novim korisnicima olakša prvo korištenje i kasnija upotreba Kodija."
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Estuary je uobičajena presvlaka za Kodi, njegovim uklanjanjem može uzrokovati poteškoće"
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Trenutno se reproducira"

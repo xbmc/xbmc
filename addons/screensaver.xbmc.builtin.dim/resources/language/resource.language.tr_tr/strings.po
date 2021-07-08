@@ -16,6 +16,14 @@ msgstr ""
 "Language: tr_TR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Ekranınızı karanlıklaştıran ekran koruyucu"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim ekran koruyucusu, değeri %20 ile %100 arasında ayarlanabilen ve ekranınızı karanlıklaştıran (silikleştiren) basit bir ekran koruyucudur."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Parlaklık düzeyi"

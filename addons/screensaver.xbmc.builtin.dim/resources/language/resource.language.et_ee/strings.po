@@ -16,6 +16,14 @@ msgstr ""
 "Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Ekraanisäästja, mis hämardab ekraani"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Lihtne ekraanisäästja, mis hämardab (tumestab) ekraani vastavalt valitud väärtusele vahemikus 20 kuni 100%."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Heleduse tase"

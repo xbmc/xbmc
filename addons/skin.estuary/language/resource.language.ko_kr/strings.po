@@ -17,6 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "phil65가 만든 Estuary 스킨. (Kodi 기본 스킨)"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Estuary는 Kodi 17.0이상의 기본 스킨입니다. 처음 Kodi를 접하는 사용자가 쉽게 이해하고 사용할 수 있도록 만들었습니다."
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Estuary는 Kodi의 기본스킨으로 제거시 문제가 생길 수 있습니다."
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "지금 재생 중"

@@ -8,6 +8,28 @@
 		<res width="1706" height="960" aspect="16:9" default="true" folder="xml"/>
 	</extension>
 	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<license>Creative Commons Attribution-Share Alike 3.0 United States</license>
+		<forum>http://forum.kodi.tv/forumdisplay.php?fid=261</forum>
+		<website></website>
+		<email></email>
+		<source>https://github.com/xbmc/xbmc/</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+			<screenshot>resources/screenshot-01.jpg</screenshot>
+			<screenshot>resources/screenshot-02.jpg</screenshot>
+			<screenshot>resources/screenshot-03.jpg</screenshot>
+			<screenshot>resources/screenshot-04.jpg</screenshot>
+			<screenshot>resources/screenshot-05.jpg</screenshot>
+			<screenshot>resources/screenshot-06.jpg</screenshot>
+			<screenshot>resources/screenshot-07.jpg</screenshot>
+			<screenshot>resources/screenshot-08.jpg</screenshot>
+			<screenshot>resources/screenshot-09.jpg</screenshot>
+			<screenshot>resources/screenshot-10.jpg</screenshot>
+			<screenshot>resources/screenshot-11.jpg</screenshot>
+			<screenshot>resources/screenshot-12.jpg</screenshot>
+		</assets>
 		<summary lang="af_ZA">Oortreksel vir raakskerm toestelle</summary>
 		<summary lang="am_ET">ለ ተችስክሪን አካሎች ቆዳ</summary>
 		<summary lang="be_BY">Абалонка для сэнсарных прылад</summary>
@@ -102,27 +124,5 @@
 		<description lang="vi_VN">Giao diện được thiết kế để sử dụng trên thiết bị màn hình cảm ứng như máy tính bảng và điện thoại thông minh</description>
 		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
 		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計。</description>
-		<platform>all</platform>
-		<license>Creative Commons Attribution-Share Alike 3.0 United States</license>
-		<forum>http://forum.kodi.tv/forumdisplay.php?fid=261</forum>
-		<website></website>
-		<email></email>
-		<source>https://github.com/xbmc/xbmc/</source>
-		<assets>
-			<icon>resources/icon.png</icon>
-			<fanart>resources/fanart.jpg</fanart>
-			<screenshot>resources/screenshot-01.jpg</screenshot>
-			<screenshot>resources/screenshot-02.jpg</screenshot>
-			<screenshot>resources/screenshot-03.jpg</screenshot>
-			<screenshot>resources/screenshot-04.jpg</screenshot>
-			<screenshot>resources/screenshot-05.jpg</screenshot>
-			<screenshot>resources/screenshot-06.jpg</screenshot>
-			<screenshot>resources/screenshot-07.jpg</screenshot>
-			<screenshot>resources/screenshot-08.jpg</screenshot>
-			<screenshot>resources/screenshot-09.jpg</screenshot>
-			<screenshot>resources/screenshot-10.jpg</screenshot>
-			<screenshot>resources/screenshot-11.jpg</screenshot>
-			<screenshot>resources/screenshot-12.jpg</screenshot>
-		</assets>
 	</extension>
 </addon>

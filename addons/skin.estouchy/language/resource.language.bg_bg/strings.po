@@ -16,6 +16,14 @@ msgstr ""
 "Language: bg_BG\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Облик за устройства със сензорен екран"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Обликът е разработен за ползване на устройства със сензорен екран, като таблети и телефони."
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Звукови настройки"

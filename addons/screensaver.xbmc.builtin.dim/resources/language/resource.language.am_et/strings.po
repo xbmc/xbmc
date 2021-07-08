@@ -16,6 +16,14 @@ msgstr ""
 "Language: am_ET\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "መመልከቻ ማዳኛ የ እርስዎን መመልከቻ ፈዘዝ ያደርገዋል "
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "የ መመልከቻ ማዳኛ ማደብዘዣ የ እርስዎን መመልከቻ ያፈዘዋል (ማፍዘዣ) የ እርስዎን መመልከቻ ዋጋ በ 20 እና በ 100% መካከል"
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "ምርጫዎች"

@@ -16,6 +16,18 @@ msgstr ""
 "Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "Estuary felszín. Készítette phil65 és Piers. (Kodi alapértelmezett felszín)"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Az Estuary az alapértelmezett felszín a 17.0 és újabb Kodi kiadásokban.  Megpróbál könnyen kezelhető és használható lenni, az újonc Kodi felhasználóknak is."
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Az Estuary az alapértelmezett Kodi felszín. Eltávolítása problémákat okozhat."
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Most játszott"

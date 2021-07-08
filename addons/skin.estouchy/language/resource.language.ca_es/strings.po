@@ -16,6 +16,14 @@ msgstr ""
 "Language: ca_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Aparença per als dispositius amb pantalla tàctil"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Opcions de l'àudio"

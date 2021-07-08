@@ -16,6 +16,14 @@ msgstr ""
 "Language: he_IL\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "שומר מסך אשר מעמעם את המסך"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "שומר המסך Dim הוא שומר מסך פשוט אשר מעמעם את המסך לערך מוגדר בין 20% ל־100%."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "העדפות"

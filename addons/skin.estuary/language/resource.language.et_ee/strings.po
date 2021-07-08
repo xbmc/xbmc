@@ -17,6 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "Estuary rüü autor on phil65. (Kodi vaikerüü)"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Estuary on Kodi vaikerüü versioonist 17.0. Kodi esmakasutajatel on rüüd kerge mõista ja kasutada."
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Estuary on Kodi vaikerüü, selle eemaldamine võib põhjustada probleeme"
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Hetkel eetris"

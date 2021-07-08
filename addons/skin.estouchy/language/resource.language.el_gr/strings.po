@@ -16,6 +16,14 @@ msgstr ""
 "Language: el_GR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Κέλυφος για συσκευές με οθόνη αφής"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Κέλυφος σχεδιασμένο για να χρησιμοποιηθεί σε συσκευές με οθόνη αφής όπως ταμπλέτες και έξυπνα κινητά."
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Ρυθμίσεις ήχου"

@@ -16,6 +16,14 @@ msgstr ""
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Bildschirmschoner zum Abdunkeln des Bildschirmes"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Präferenzen"

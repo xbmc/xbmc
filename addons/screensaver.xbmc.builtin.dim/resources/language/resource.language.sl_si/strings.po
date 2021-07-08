@@ -16,6 +16,14 @@ msgstr ""
 "Language: sl_SI\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Ohranjevalnik zaslona, ki zatemni zaslon"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim je enostaven ohranjevalnik zaslona, ki zatemni zaslon do izbrane svetlosti med 20 in 100%."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Stopnja svetlosti"

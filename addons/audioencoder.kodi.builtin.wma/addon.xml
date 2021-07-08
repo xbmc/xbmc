@@ -9,11 +9,11 @@
     extension=".wma"
     library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">WMA Audio Encoder</summary>
-    <description lang="en_GB">Windows Media Audio, Microsoft’s lossy audio format.</description>
     <platform>all</platform>
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="en_GB">WMA Audio Encoder</summary>
+    <description lang="en_GB">Windows Media Audio, Microsoft’s lossy audio format.</description>
   </extension>
 </addon>
