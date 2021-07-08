@@ -69,7 +69,7 @@
     <description lang="am_ET">የ መመልከቻ ማዳኛ ማደብዘዣ የ እርስዎን መመልከቻ ያፈዘዋል (ማፍዘዣ) የ እርስዎን መመልከቻ ዋጋ በ 20 እና በ 100% መካከል</description>
     <description lang="ar_SA">Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
     <description lang="be_BY">Dim - просты ахоўнік экрана, які будзе паступова зацямняць экран. Значэнне зацямнення можа змяняцца ад 20 да 100%.</description>
-    <description lang="bg_BG">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
+    <description lang="bg_BG">Скрийнсейвърът &quot;Dim&quot; затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca_ES">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
     <description lang="cs_CZ">Spořič obrazovky Dim je jednoduchý spořič obrazovky, který ztmaví (posupně) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100 %.</description>
     <description lang="cy_GB">Mae arbedwr sgrin Dim yn arbedwr sgrin syml sy'n pylu (tywyllu) eich sgrin i werth gosodadwy rhwyg 20 a 100%.</description>
@@ -107,11 +107,11 @@
     <description lang="nb_NO">Dim er en enkel skjermsparer som dimmer skjermen din til en justerbar verdi mellom 20-100%</description>
     <description lang="nl_NL">De Dim-schermbeveiliging is een eenvoudige schermbeveiliging die uw scherm geleidelijk dimt. U kunt een waarde van 20 tot 100% instellen.</description>
     <description lang="pl_PL">Wygaszacz Przyciemnienie jest prostym wygaszaczem, który płynnie przyciemnia (wygasza) ekran do ustawionego poziomu między 20-100%.</description>
-    <description lang="pt_BR">O Dim ("Escurecer") é um protetor de tela simples que diminui a intensidade da luz de sua tela (escurece), com um valor selecionável entre 20 e 100%.</description>
-    <description lang="pt_PT">O protetor de ecrã "Dim" é um protetor simples que obscurece (diminui a intensidade luminosa) o seu ecrã para um valor entre 20 e 100%.</description>
+    <description lang="pt_BR">O Dim (&quot;Escurecer&quot;) é um protetor de tela simples que diminui a intensidade da luz de sua tela (escurece), com um valor selecionável entre 20 e 100%.</description>
+    <description lang="pt_PT">O protetor de ecrã &quot;Dim&quot; é um protetor simples que obscurece (diminui a intensidade luminosa) o seu ecrã para um valor entre 20 e 100%.</description>
     <description lang="ro_RO">Dim este un protector de ecran simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% .</description>
     <description lang="ru_RU">Эта заставка постепенно затемняет изображение на экране до заданного значения (от 20% до 100%).</description>
-    <description lang="sk_SK">"Dim" šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
+    <description lang="sk_SK">&quot;Dim&quot; šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
     <description lang="sl_SI">Dim je enostaven ohranjevalnik zaslona, ki zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
     <description lang="sq_AL">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
     <description lang="sr_RS">Чувар екрана Пригуши је једноставан чувар екрана који ће пригушити (избледети) ваш екран на подешену вредност између 20 и 100% .</description>

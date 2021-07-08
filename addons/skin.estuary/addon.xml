@@ -15,7 +15,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="af_ZA">Estuary oortreksel deur phil65. (Kodi se bestek oortreksel)</summary>
-		<summary lang="be_BY">Абалонка "Estuary" ад phil65. (прадвызначаная абалонка Kodi)</summary>
+		<summary lang="be_BY">Абалонка &quot;Estuary&quot; ад phil65. (прадвызначаная абалонка Kodi)</summary>
 		<summary lang="bg_BG">Estuary облик от phil65 и Piers. (стандартния облик на Kodi)</summary>
 		<summary lang="ca_ES">Aparença Estuary per phil65 i Piers. (aparença predeterminada de Kodi)</summary>
 		<summary lang="cs_CZ">Vzhled Estuary od autora phil65. (Výchozí vzhled Kodi)</summary>
