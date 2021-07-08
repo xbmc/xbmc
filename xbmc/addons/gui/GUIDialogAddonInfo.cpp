@@ -15,6 +15,7 @@
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/IAddon.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
@@ -644,15 +645,20 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
             }
           }
 
-          item->SetLabel2(StringUtils::Format(
-              g_localizeStrings.Get(messageId), it.m_depInfo.versionMin.asString(),
-              it.m_installed ? it.m_installed->Version().asString() : "",
-              it.m_available ? it.m_available->Version().asString() : "",
-              it.m_depInfo.optional ? g_localizeStrings.Get(24184) : ""));
+          if (entryPoint == EntryPoint::SHOW_DEPENDENCIES ||
+              infoAddon->MainType() != ADDON_SCRIPT_MODULE ||
+              !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::NO))
+          {
+            item->SetLabel2(StringUtils::Format(
+                g_localizeStrings.Get(messageId), it.m_depInfo.versionMin.asString(),
+                it.m_installed ? it.m_installed->Version().asString() : "",
+                it.m_available ? it.m_available->Version().asString() : "",
+                it.m_depInfo.optional ? g_localizeStrings.Get(24184) : ""));
 
-          item->SetArt("icon", infoAddon->Icon());
-          item->SetProperty("addon_id", it.m_depInfo.id);
-          items.Add(item);
+            item->SetArt("icon", infoAddon->Icon());
+            item->SetProperty("addon_id", it.m_depInfo.id);
+            items.Add(item);
+          }
         }
       }
       else
@@ -744,9 +750,6 @@ void CGUIDialogAddonInfo::BuildDependencyList()
   m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(),
                                                           OnlyEnabledRootAddon::NO);
 
-  const bool showAllDependencies =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showAllDependencies;
-
   for (const auto& dep : m_deps)
   {
     std::shared_ptr<IAddon> addonInstalled;
@@ -767,33 +770,43 @@ void CGUIDialogAddonInfo::BuildDependencyList()
 
     if (!addonInstalled)
     {
-      // after pushing the install button the dependency install dialog will
-      // pop up only if non-module dependencies are going to be installed or
-      // dependencies are unavailable. the latter is for informational purposes
 
-      if (showAllDependencies || !addonAvailable ||
-          addonAvailable->MainType() != ADDON_SCRIPT_MODULE)
+      // after pushing the install button the dependency install dialog
+      // will be opened only if...
+      // - dependencies are unavailable (for informational purposes) OR
+      // - the dependency is not a script/module                     OR
+      // - the script/module is not available at an official repo
+      if (!addonAvailable || addonAvailable->MainType() != ADDON_SCRIPT_MODULE ||
+          !CAddonRepos::IsFromOfficialRepo(addonAvailable, CheckAddonPath::NO))
+      {
+        m_showDepDialogOnInstall = true;
+      }
+    }
+    else
+    {
+
+      // only display dialog if updates for already installed dependencies will install
+      if (addonAvailable && addonAvailable->Version() > addonInstalled->Version())
       {
         m_showDepDialogOnInstall = true;
       }
     }
 
-    // AddonType ADDON_SCRIPT_MODULE needs to be filtered as these low-level add-ons
-    // should be hidden to the user in the dependency select dialog
+    m_depsInstalledWithAvailable.emplace_back(dep, addonInstalled, addonAvailable);
 
-    if (showAllDependencies ||
-        (addonInstalled && addonInstalled->MainType() != ADDON_SCRIPT_MODULE) ||
-        (addonAvailable && addonAvailable->MainType() != ADDON_SCRIPT_MODULE) ||
-        (!addonAvailable && !addonInstalled))
-    {
-      m_depsInstalledWithAvailable.emplace_back(dep, addonInstalled, addonAvailable);
-    }
+    // sort criteria in dialog:
+    // 1. optional add-ons to top
+    // 2. scripts/modules to bottom
+    std::sort(m_depsInstalledWithAvailable.begin(), m_depsInstalledWithAvailable.end(),
+              [](const auto& a, const auto& b) {
+                if (a.m_depInfo.optional != b.m_depInfo.optional)
+                {
+                  return a.m_depInfo.optional;
+                }
 
-    // sort optional add-ons to top of the list
-
-    std::sort(
-        m_depsInstalledWithAvailable.begin(), m_depsInstalledWithAvailable.end(),
-        [](const auto& a, const auto& b) { return a.m_depInfo.optional > b.m_depInfo.optional; });
+                const std::shared_ptr<IAddon>& depA = a.m_installed ? a.m_installed : a.m_available;
+                return (depA && depA->MainType() != ADDON_SCRIPT_MODULE);
+              });
   }
 }
 
