@@ -14,4 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hi_IN\n"
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr ""
+
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"

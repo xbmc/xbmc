@@ -16,3 +16,11 @@ msgstr ""
 "Language: cy_GB\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Arbedwr sgrin sy'n pylu eich sgrin"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Mae arbedwr sgrin Dim yn arbedwr sgrin syml sy'n pylu (tywyllu) eich sgrin i werth gosodadwy rhwyg 20 a 100%."
+

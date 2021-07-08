@@ -16,6 +16,14 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "AAC Audio Encoder"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
+msgstr ""
+
 #. Bitrate to use on for compression
 #: resources/settings.xml
 msgctxt "#30000"

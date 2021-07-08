@@ -16,6 +16,14 @@ msgstr ""
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Ulkoasu kosketusnäyttölaitteille"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Ulkoasu on suunniteltu käytettäväksi kosketusnäyttölaitteissa, esimerkiksi tableteissa ja älypuhelimissa"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Ääniasetukset"

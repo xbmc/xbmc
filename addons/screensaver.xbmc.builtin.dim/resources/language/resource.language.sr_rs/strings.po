@@ -16,6 +16,14 @@ msgstr ""
 "Language: sr_RS\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Чувар екрана који пригушује ваш екран"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Чувар екрана Пригуши је једноставан чувар екрана који ће пригушити (избледети) ваш екран на подешену вредност између 20 и 100% ."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Подешавања"

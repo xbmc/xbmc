@@ -16,6 +16,14 @@ msgstr ""
 "Language: ja_JP\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "スキンはタッチスクリーンデバイス向けです"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "スキンのデザインは、タッチスクリーンデバイスであるタブレットやスマホなどでの使用を想定されています"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "オーディオ設定"

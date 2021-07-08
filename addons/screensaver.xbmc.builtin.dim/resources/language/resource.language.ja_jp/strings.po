@@ -16,6 +16,14 @@ msgstr ""
 "Language: ja_JP\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "スクリーンセーバー モード"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim はシンプルなスクリーンセーバーで、画面を(フェードアウトで)薄暗くします。値は20%から100%まで設定可能です。"
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "輝度"

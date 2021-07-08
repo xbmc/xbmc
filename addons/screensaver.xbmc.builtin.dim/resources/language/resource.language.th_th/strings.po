@@ -16,3 +16,11 @@ msgstr ""
 "Language: th_TH\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "สกรีนเซฟเวอร์ที่หรี่หน้าจอของคุณ"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "สกรีนเซฟเวอร์หรี่หน้าจอเป็นสกรีนเซฟเวอร์แบบพื้นฐานที่ช่วยหรี่หน้าจอของคุณซึ่งสามารถตั้งค่าการหรี่หน้าจอได้ตั้งแต่ 20% ถึง 100%"
+

@@ -16,3 +16,11 @@ msgstr ""
 "Language: tg_TJ\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Пардаи экран бо таъсири «Пардаи экрани камнур»"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Ин пардаи экран бо таъсири «Пардаи экрани камнур» хеле осон мебошад, ки сатҳи камнури экранро то дараҷае байни 20% ва 100% тағйир меёбад."
+

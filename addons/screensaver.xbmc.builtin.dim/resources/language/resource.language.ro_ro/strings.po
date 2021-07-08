@@ -16,6 +16,14 @@ msgstr ""
 "Language: ro_RO\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Protector de ecran ce întunecă ecranul"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim este un protector de ecran simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% ."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferințe"

@@ -16,6 +16,14 @@ msgstr ""
 "Language: cy_GB\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr ""
+
 msgctxt "#31006"
 msgid "Visualization Presets"
 msgstr "Rhagosodiaid Delweddu"

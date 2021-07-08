@@ -16,6 +16,14 @@ msgstr ""
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Näytönsäästäjä, joka himmentää näytön"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Kirkkauden taso"

@@ -16,6 +16,14 @@ msgstr ""
 "Language: sr_RS@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Čuvar ekrana koji prigušuje vaš ekran"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Čuvar ekrana Priguši je jednostavan čuvar ekrana koji će prigušiti (izbledeti) vaš ekran na podešenu vrednost između 20 i 100% ."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Podešavanja"

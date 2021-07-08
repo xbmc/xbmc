@@ -16,6 +16,14 @@ msgstr ""
 "Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Felület érintőképernyős eszközöknek"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Audió beállítások"

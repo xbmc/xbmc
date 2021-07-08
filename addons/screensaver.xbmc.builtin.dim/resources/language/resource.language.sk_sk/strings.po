@@ -17,6 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Šetrič obrazovky, ktorý zatemní  Vašu obrazovku "
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "\"Dim\" šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Úroveň jasu"

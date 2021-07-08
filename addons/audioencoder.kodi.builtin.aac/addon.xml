@@ -9,11 +9,11 @@
     extension=".m4a"
     library="dummy.so"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">AAC Audio Encoder</summary>
-    <description lang="en_GB">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <platform>all</platform>
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="en_GB">AAC Audio Encoder</summary>
+    <description lang="en_GB">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
   </extension>
 </addon>

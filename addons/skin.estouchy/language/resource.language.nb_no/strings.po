@@ -16,6 +16,14 @@ msgstr ""
 "Language: nb_NO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Drakt for enheter med berøringsskjerm"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Drakt designet for å bli brukt på enheter med berørningsskjerm, som smarttelefoner og lesebrett"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Lydinstillinger"

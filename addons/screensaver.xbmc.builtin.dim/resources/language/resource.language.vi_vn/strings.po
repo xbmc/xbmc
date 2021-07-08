@@ -16,3 +16,11 @@ msgstr ""
 "Language: vi_VN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Trình bảo vệ màn hình này làm mờ màn hình của bạn"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Trình bảo vệ Dim là trình bảo vệ đơn giản để làm tối (mờ dần) màn hình của bạn theo giá trị được sắp đặt từ 20 cho đến 100%."
+

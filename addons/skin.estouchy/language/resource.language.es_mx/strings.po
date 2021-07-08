@@ -16,6 +16,14 @@ msgstr ""
 "Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Máscara para dispositivos con pantalla táctil"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Máscara diseñada para ser usada en dispositivos de pantalla táctil como tabletas y teléfonos inteligentes"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Configuración de Audio"

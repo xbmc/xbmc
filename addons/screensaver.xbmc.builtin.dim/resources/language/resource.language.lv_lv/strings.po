@@ -16,3 +16,11 @@ msgstr ""
 "Language: lv_LV\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Ekrānsaudzētājs, kas aptumšo jūsu ekrānu"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Aptumsuma ekrānsaudzētājs ir vienkāršs ekrānsaudzētājs, kas aptumšo (padara tumšāku) jūsu ekrānu līdz uzstādāmai robežai starp 20 un 100%."
+

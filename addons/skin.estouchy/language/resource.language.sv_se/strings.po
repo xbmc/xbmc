@@ -16,6 +16,14 @@ msgstr ""
 "Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Skal för enheter med pekskärm"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Skal avsedd att användas på enheter med pekskärm som surfplattor och smarttelefoner"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Ljudinställningar"

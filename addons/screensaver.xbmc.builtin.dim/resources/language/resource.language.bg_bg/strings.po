@@ -16,6 +16,14 @@ msgstr ""
 "Language: bg_BG\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Скрийнсейвър, който затъмнява екрана"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Скрийнсейвърът \"Dim\" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%)."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Ниво на яркост"

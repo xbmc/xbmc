@@ -16,6 +16,14 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "WMA Audio Encoder"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Windows Media Audio, Microsoft’s lossy audio format."
+msgstr ""
+
 #. Bitrate to use on for compression
 #: resources/settings.xml
 msgctxt "#30000"
