@@ -16,6 +16,14 @@ msgstr ""
 "Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Képernyővédő ami elhalványítja a képernyőt"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Fényerő szintje"

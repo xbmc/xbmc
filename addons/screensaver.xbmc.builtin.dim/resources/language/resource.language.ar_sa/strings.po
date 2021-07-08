@@ -16,3 +16,11 @@ msgstr ""
 "Language: ar_SA\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "شاشة توقف تمكن من تظليم الشاشة"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%"
+

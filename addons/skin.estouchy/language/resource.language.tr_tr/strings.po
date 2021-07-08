@@ -16,6 +16,14 @@ msgstr ""
 "Language: tr_TR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Dokunmatik ekranlı aygıtlar için dış görünüm"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Bu dış görünüm tabletler ve akıllı telefonlar gibi dokunmatik ekranlı aygıtlarda kullanılmak üzere tasarlandı"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Ses Ayarları"

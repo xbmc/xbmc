@@ -17,6 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "phil65 开发的 Estuary 皮肤（Kodi 的默认皮肤）。"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Estuary 是 Kodi 17.0 的默认皮肤。它力求使首次使用 Kodi 的用户易于上手。"
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Estuary 是 Kodi 的默认皮肤，删除它可能导致故障。"
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "正在播放"

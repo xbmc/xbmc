@@ -16,6 +16,14 @@ msgstr ""
 "Language: szl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Skōra dlŏ maszin z tykowym ekranym"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Skōra dlŏ maszin ze tykowym ekranym, jak tablety i smartfōny."
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Sztelōnki klangu"

@@ -16,3 +16,11 @@ msgstr ""
 "Language: fa_IR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "محافظ تاریک کننده صفحه نمایش"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "محافظ تاریک کننده صفحه نمایش یک محافظ ساده است که نور صفحه نمایش را (بطور تدریجی) تا سطح تعریف شده بین 20 تا 100% کم می کند."
+

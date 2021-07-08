@@ -16,6 +16,14 @@ msgstr ""
 "Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Schermbeveiliging die je scherm dimt"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "De Dim-schermbeveiliging is een eenvoudige schermbeveiliging die uw scherm geleidelijk dimt. U kunt een waarde van 20 tot 100% instellen."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Voorkeuren"

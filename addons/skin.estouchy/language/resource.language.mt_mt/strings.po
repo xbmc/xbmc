@@ -16,6 +16,14 @@ msgstr ""
 "Language: mt_MT\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr ""
+
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Qed jaħdem..."

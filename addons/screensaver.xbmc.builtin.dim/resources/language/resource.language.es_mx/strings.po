@@ -17,6 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Protector de pantalla que obscurece su pantalla"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "El protector de pantalla de obscurecimiento, es un protector simple que obscurece (fade out) su pantalla en un valor entre 20 y 100%"
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Nivel de brillo"

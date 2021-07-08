@@ -16,6 +16,14 @@ msgstr ""
 "Language: ms_MY\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Kulit untuk peranti skrin sentuh"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Kulit direka untuk digunakan pada peranti berskrin sentuh seperti tablet dan telefon pintar"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Tetapan Audio"

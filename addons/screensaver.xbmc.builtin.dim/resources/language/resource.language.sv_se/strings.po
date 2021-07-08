@@ -16,6 +16,14 @@ msgstr ""
 "Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "En skärmsläckare som tonar ned din skärm"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%"
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Nivå för ljusstyrka"

@@ -16,6 +16,14 @@ msgstr ""
 "Language: af_ZA\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Sluimerskerm wat jou skerm verdof"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Die Verdof sluimerskerm is 'n eenvoudige sluimerskerm wat jou skerm verdof (uit vaag) tot 'n stelbare waarde tussen 20 en 100%"
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Helderheid vlak"

@@ -16,6 +16,14 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "讓螢幕變暗的螢幕保護程式"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "暗化螢幕保護程式單純將螢幕變暗，暗化值可設定在20%至100%之間。"
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "喜好設定"

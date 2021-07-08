@@ -17,6 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Costum pentru dispozitive cu ecran tactil"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Costum proiectat pentru a fi utilizat pe dispozitivele cu ecran tactil cum sunt tabletele și telefoanele deștepte"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Setări audio"

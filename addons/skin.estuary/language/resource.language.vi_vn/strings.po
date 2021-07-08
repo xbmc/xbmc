@@ -16,6 +16,18 @@ msgstr ""
 "Language: vi_VN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Estuary skin by phil65. (Kodi's default skin)"
+msgstr "Giao diện Estuary của phil65. (Giao diện mặc định của Kodi)"
+
+msgctxt "Addon Description"
+msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
+msgstr "Estuary là giao diện mặc định cho Kodi 17.0 trở lên. Nó dễ dàng cho người dùng Kodi lần đầu tiên hiểu và sử dụng."
+
+msgctxt "Addon Disclaimer"
+msgid "Estuary is the default skin for Kodi, removing it may cause issues"
+msgstr "Estuary là giao diện mặc định cho Kodi, loại bỏ nó có thể gây ra sự cố"
+
 msgctxt "#31000"
 msgid "Now playing"
 msgstr "Đang phát"

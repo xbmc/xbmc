@@ -16,6 +16,14 @@ msgstr ""
 "Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "화면을 어둡게 하는 화면 보호기"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Dim 화면보호기는 화면을 어둡게(페이드 아웃)하는 간단한 화면 보호기 입니다. 어둡게 하는 정도를 20-100%사이에서 설정할 수 있습니다."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "밝기 수준"

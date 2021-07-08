@@ -16,6 +16,14 @@ msgstr ""
 "Language: ms_MY\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Penyelamat skrin yang memalapkan skrin anda"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Penyelamat skrin malap adapah penyelamat skrin ringkas yang memalapkan (lenyapkan) skrin anda kepada nilai boleh ditetap diantara 20 hingga 100%."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Keutamaan"

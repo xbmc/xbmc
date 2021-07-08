@@ -16,6 +16,14 @@ msgstr ""
 "Language: gl_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "O  protector de pantalla atenúa a súa pantalla"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Este protector de pantalla atenuará a súa pantalla nun valor configurábel entre o 20% e o 100%."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Nivel de brillo"

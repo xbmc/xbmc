@@ -14,4 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: kn_IN\n"
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr ""
+
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"

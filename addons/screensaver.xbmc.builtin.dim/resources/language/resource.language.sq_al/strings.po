@@ -16,6 +16,14 @@ msgstr ""
 "Language: sq_AL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Ruajtës ekrani, që errëson ekranin"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. "
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferenca"

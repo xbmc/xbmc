@@ -16,6 +16,14 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "淡出屏幕保护程序"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "淡出屏保是一个简单的屏幕保护程序，它使你的屏幕显示内容变暗（淡出效果），暗化度可在20%至100%之间调节。"
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "亮度等级"

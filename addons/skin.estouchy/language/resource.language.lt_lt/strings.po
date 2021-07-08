@@ -17,6 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 "X-Generator: Weblate 4.7.1\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Teminė išvaizda liečiamiesiems įrenginiams"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Garso nustatymai"

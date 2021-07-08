@@ -16,6 +16,14 @@ msgstr ""
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Un économiseur qui assombrit l'écran"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "L'économiseur Dim est un simple économiseur qui assombrira l'écran. L'assombrissement est paramétrable de 20 à 100 %."
+
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Niveau de luminosité"

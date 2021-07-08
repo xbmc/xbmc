@@ -16,6 +16,14 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Spořič obrazovky, který ztmaví vaši obrazovku"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "Spořič obrazovky Dim je jednoduchý spořič obrazovky, který ztmaví (posupně) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100 %."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Předvolby"

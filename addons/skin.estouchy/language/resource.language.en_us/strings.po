@@ -16,6 +16,14 @@ msgstr ""
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Skin for touchscreen devices"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Skin designed to be used on touchscreen devices like tablets and smartphones"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Audio Settings"

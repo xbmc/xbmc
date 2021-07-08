@@ -16,3 +16,11 @@ msgstr ""
 "Language: mk_MK\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Заштита што го стемнува екранот"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "ДИМ Заштитата на екран е едноставно стемнување на екранот, може да се одбере вредност помеѓу 20 и 100%"
+

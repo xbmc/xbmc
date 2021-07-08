@@ -16,6 +16,14 @@ msgstr ""
 "Language: pt_PT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Screensaver that dims your screen"
+msgstr "Protetor de ecrã que obscurece o seu ecrã"
+
+msgctxt "Addon Description"
+msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
+msgstr "O protetor de ecrã \"Dim\" é um protetor simples que obscurece (diminui a intensidade luminosa) o seu ecrã para um valor entre 20 e 100%."
+
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferências"

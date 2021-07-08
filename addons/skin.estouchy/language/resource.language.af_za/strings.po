@@ -16,6 +16,14 @@ msgstr ""
 "Language: af_ZA\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Oortreksel vir raakskerm toestelle"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik"
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Klank Instellings"

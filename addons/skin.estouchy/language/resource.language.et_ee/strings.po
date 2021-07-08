@@ -16,6 +16,14 @@ msgstr ""
 "Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Skin for touchscreen devices"
+msgstr "Puutetundlike seadmete rüü"
+
+msgctxt "Addon Description"
+msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
+msgstr "Rüü on mõeldud kasutamiseks puutetundlike seadmetega nagu tahvelarvutid ja nutitelefonid."
+
 msgctxt "#31002"
 msgid "Audio Settings"
 msgstr "Heli seaded"
