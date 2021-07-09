@@ -64,6 +64,13 @@
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
 
+#if defined(HAS_FILESYSTEM_SMB)
+#if defined(TARGET_WINDOWS)
+#else // defined(TARGET_POSIX)
+#include "platform/posix/filesystem/SMBWSDiscovery.h"
+#endif
+#endif
+
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif
@@ -107,32 +114,33 @@ CNetworkServices::CNetworkServices()
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
   std::set<std::string> settingSet{
-    CSettings::SETTING_SERVICES_WEBSERVER,
-    CSettings::SETTING_SERVICES_WEBSERVERPORT,
-    CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION,
-    CSettings::SETTING_SERVICES_WEBSERVERUSERNAME,
-    CSettings::SETTING_SERVICES_WEBSERVERPASSWORD,
-    CSettings::SETTING_SERVICES_WEBSERVERSSL,
-    CSettings::SETTING_SERVICES_ZEROCONF,
-    CSettings::SETTING_SERVICES_AIRPLAY,
-    CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL,
-    CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT,
-    CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD,
-    CSettings::SETTING_SERVICES_AIRPLAYPASSWORD,
-    CSettings::SETTING_SERVICES_UPNP,
-    CSettings::SETTING_SERVICES_UPNPSERVER,
-    CSettings::SETTING_SERVICES_UPNPRENDERER,
-    CSettings::SETTING_SERVICES_UPNPCONTROLLER,
-    CSettings::SETTING_SERVICES_ESENABLED,
-    CSettings::SETTING_SERVICES_ESPORT,
-    CSettings::SETTING_SERVICES_ESALLINTERFACES,
-    CSettings::SETTING_SERVICES_ESINITIALDELAY,
-    CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY,
-    CSettings::SETTING_SMB_WINSSERVER,
-    CSettings::SETTING_SMB_WORKGROUP,
-    CSettings::SETTING_SMB_MINPROTOCOL,
-    CSettings::SETTING_SMB_MAXPROTOCOL,
-    CSettings::SETTING_SMB_LEGACYSECURITY
+      CSettings::SETTING_SERVICES_WEBSERVER,
+      CSettings::SETTING_SERVICES_WEBSERVERPORT,
+      CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION,
+      CSettings::SETTING_SERVICES_WEBSERVERUSERNAME,
+      CSettings::SETTING_SERVICES_WEBSERVERPASSWORD,
+      CSettings::SETTING_SERVICES_WEBSERVERSSL,
+      CSettings::SETTING_SERVICES_ZEROCONF,
+      CSettings::SETTING_SERVICES_AIRPLAY,
+      CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL,
+      CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT,
+      CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD,
+      CSettings::SETTING_SERVICES_AIRPLAYPASSWORD,
+      CSettings::SETTING_SERVICES_UPNP,
+      CSettings::SETTING_SERVICES_UPNPSERVER,
+      CSettings::SETTING_SERVICES_UPNPRENDERER,
+      CSettings::SETTING_SERVICES_UPNPCONTROLLER,
+      CSettings::SETTING_SERVICES_ESENABLED,
+      CSettings::SETTING_SERVICES_ESPORT,
+      CSettings::SETTING_SERVICES_ESALLINTERFACES,
+      CSettings::SETTING_SERVICES_ESINITIALDELAY,
+      CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY,
+      CSettings::SETTING_SMB_WINSSERVER,
+      CSettings::SETTING_SMB_WORKGROUP,
+      CSettings::SETTING_SMB_MINPROTOCOL,
+      CSettings::SETTING_SMB_MAXPROTOCOL,
+      CSettings::SETTING_SMB_LEGACYSECURITY,
+      CSettings::SETTING_SERVICES_WSDISCOVERY,
   };
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
@@ -467,6 +475,19 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
       return RefreshEventServer();
   }
 
+#if defined(HAS_FILESYSTEM_SMB)
+  else if (settingId == CSettings::SETTING_SERVICES_WSDISCOVERY)
+  {
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
+    {
+      if (!StartWSDiscovery())
+        return false;
+    }
+    else
+      return StopWSDiscovery();
+  }
+#endif // HAS_FILESYSTEM_SMB
+
   return true;
 }
 
@@ -558,6 +579,7 @@ void CNetworkServices::Start()
   StartAirTunesServer();
   StartAirPlayServer();
   StartRss();
+  StartWSDiscovery();
 }
 
 void CNetworkServices::Stop(bool bWait)
@@ -574,6 +596,7 @@ void CNetworkServices::Stop(bool bWait)
   StopJSONRPCServer(bWait);
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
+  StopWSDiscovery();
 }
 
 bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
@@ -622,6 +645,11 @@ bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
     case ES_ZEROCONF:
       // the callback will take care of starting/stopping zeroconf
       ret = settings->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, start);
+      break;
+
+    case ES_WSDISCOVERY:
+      // the callback will take care of starting/stopping WS-Discovery
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_WSDISCOVERY, start);
       break;
 
     default:
@@ -1183,6 +1211,41 @@ bool CNetworkServices::StopZeroconf()
 
   return true;
 #endif // HAS_ZEROCONF
+  return false;
+}
+
+bool CNetworkServices::StartWSDiscovery()
+{
+#if defined(HAS_FILESYSTEM_SMB)
+  if (!m_settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY))
+    return false;
+
+  if (IsWSDiscoveryRunning())
+    return true;
+
+  return CServiceBroker::GetWSDiscovery().StartServices();
+#endif // HAS_FILESYSTEM_SMB
+  return false;
+}
+
+bool CNetworkServices::IsWSDiscoveryRunning()
+{
+#if defined(HAS_FILESYSTEM_SMB)
+  return CServiceBroker::GetWSDiscovery().IsRunning();
+#endif // HAS_FILESYSTEM_SMB
+  return false;
+}
+
+bool CNetworkServices::StopWSDiscovery()
+{
+#if defined(HAS_FILESYSTEM_SMB)
+  if (!IsWSDiscoveryRunning())
+    return true;
+
+  CServiceBroker::GetWSDiscovery().StopServices();
+
+  return true;
+#endif // HAS_FILESYSTEM_SMB
   return false;
 }
 

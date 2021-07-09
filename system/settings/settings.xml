@@ -2254,6 +2254,13 @@
           </dependencies>
         </setting>
       </group>
+      <group id="3" label="37047">
+        <setting id="services.wsdiscovery" type="boolean" label="37048" help="37049">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="weather" label="8" help="36316">
       <group id="1" label="16000">

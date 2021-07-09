@@ -221,6 +221,9 @@ void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
   list.emplace_back(g_localizeStrings.Get(679), LOGCEC);
 #endif
   list.emplace_back(g_localizeStrings.Get(682), LOGDATABASE);
+#if defined(HAS_FILESYSTEM_SMB)
+  list.emplace_back(g_localizeStrings.Get(37050), LOGWSDISCOVERY);
+#endif
 }
 
 Logger CLog::GetLogger(const std::string& loggerName)

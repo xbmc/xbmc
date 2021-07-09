@@ -26,6 +26,14 @@
 #include "interfaces/python/XBPython.h"
 #include "network/Network.h"
 #include "peripherals/Peripherals.h"
+#if defined(HAS_FILESYSTEM_SMB)
+#include "network/IWSDiscovery.h"
+#if defined(TARGET_WINDOWS)
+// ToDo
+#else // !defined(TARGET_WINDOWS)
+#include "platform/posix/filesystem/SMBWSDiscovery.h"
+#endif // defined(TARGET_WINDOWS)
+#endif // HAS_FILESYSTEM_SMB
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
@@ -184,6 +192,10 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
+#if defined(HAS_FILESYSTEM_SMB)
+  m_WSDiscovery = WSDiscovery::IWSDiscovery::GetInstance();
+#endif
+
   if (!m_Platform->InitStageThree())
     return false;
 
@@ -195,6 +207,9 @@ void CServiceManager::DeinitStageThree()
 {
   init_level = 2;
 
+#if defined(HAS_FILESYSTEM_SMB)
+  m_WSDiscovery.reset();
+#endif
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   m_DetectDVDType->StopThread();
   m_DetectDVDType.reset();
@@ -245,6 +260,13 @@ void CServiceManager::DeinitStageOne()
   m_XBPython.reset();
 #endif
 }
+
+#if defined(HAS_FILESYSTEM_SMB)
+WSDiscovery::IWSDiscovery& CServiceManager::GetWSDiscovery()
+{
+  return *m_WSDiscovery;
+}
+#endif
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
 {
