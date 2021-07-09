@@ -16086,7 +16086,7 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#29900"
-msgid "Radiotext Plus info"
+msgid "RadioText Plus info"
 msgstr ""
 
 #. Music band name which make the song (if present)
