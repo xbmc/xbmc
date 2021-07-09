@@ -21417,7 +21417,24 @@ msgctxt "#37046"
 msgid "1080"
 msgstr ""
 
-#empty strings from id 37047 to 38010
+#: system/settings/settings.xml
+msgctxt "#37047"
+msgid "WS-Discovery"
+msgstr ""
+
+#. Setting #37048 Enable WS-Discovery Service"
+#: system/settings/settings.xml
+msgctxt "#37048"
+msgid "Enable WS-Discovery Service"
+msgstr ""
+
+#. Description of setting #37048 Enable WS-Discovery Service"
+#: system/settings/settings.xml
+msgctxt "#37049"
+msgid "Enable service to search for SMB services using the WS-Discovery protocol"
+msgstr ""
+
+#empty strings from id 37050 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml

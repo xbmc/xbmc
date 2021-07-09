@@ -64,6 +64,13 @@
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
 
+#if defined(HAS_FILESYSTEM_SMB)
+#if defined(TARGET_WINDOWS)
+#else // defined(TARGET_POSIX)
+#include "platform/posix/filesystem/SMBWSDiscovery.h"
+#endif
+#endif
+
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif
@@ -132,7 +139,8 @@ CNetworkServices::CNetworkServices()
     CSettings::SETTING_SMB_WORKGROUP,
     CSettings::SETTING_SMB_MINPROTOCOL,
     CSettings::SETTING_SMB_MAXPROTOCOL,
-    CSettings::SETTING_SMB_LEGACYSECURITY
+    CSettings::SETTING_SMB_LEGACYSECURITY,
+    CSettings::SETTING_SERVICES_WSDISCOVERY,
   };
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
@@ -467,6 +475,19 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
       return RefreshEventServer();
   }
 
+#if defined(HAS_FILESYSTEM_SMB)
+  else if (settingId == CSettings::SETTING_SERVICES_WSDISCOVERY)
+  {
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
+    {
+      if (!StartWSDiscovery())
+        return false;
+    }
+    else
+      return StopWSDiscovery();
+  }
+#endif // HAS_FILESYSTEM_SMB
+
   return true;
 }
 
@@ -558,6 +579,7 @@ void CNetworkServices::Start()
   StartAirTunesServer();
   StartAirPlayServer();
   StartRss();
+  StartWSDiscovery();
 }
 
 void CNetworkServices::Stop(bool bWait)
@@ -574,6 +596,7 @@ void CNetworkServices::Stop(bool bWait)
   StopJSONRPCServer(bWait);
   StopAirPlayServer(bWait);
   StopAirTunesServer(bWait);
+  StopWSDiscovery();
 }
 
 bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
@@ -622,6 +645,11 @@ bool CNetworkServices::StartServer(enum ESERVERS server, bool start)
     case ES_ZEROCONF:
       // the callback will take care of starting/stopping zeroconf
       ret = settings->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, start);
+      break;
+
+    case ES_WSDISCOVERY:
+      // the callback will take care of starting/stopping zeroconf
+      ret = settings->SetBool(CSettings::SETTING_SERVICES_WSDISCOVERY, start);
       break;
 
     default:
@@ -1183,6 +1211,43 @@ bool CNetworkServices::StopZeroconf()
 
   return true;
 #endif // HAS_ZEROCONF
+  return false;
+}
+
+bool CNetworkServices::StartWSDiscovery()
+{
+#if defined(HAS_FILESYSTEM_SMB)
+  if (!m_settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY))
+    return false;
+
+  if (IsWSDiscoveryRunning())
+    return true;
+
+  CLog::Log(LOGINFO, "Starting WS-Discovery");
+  return CServiceBroker::GetWSDiscovery().StartServices();
+#endif // HAS_FILESYSTEM_SMB
+  return false;
+}
+
+bool CNetworkServices::IsWSDiscoveryRunning()
+{
+#if defined(HAS_FILESYSTEM_SMB)
+  return CServiceBroker::GetWSDiscovery().IsRunning();
+#endif // HAS_FILESYSTEM_SMB
+  return false;
+}
+
+bool CNetworkServices::StopWSDiscovery()
+{
+#if defined(HAS_FILESYSTEM_SMB)
+  if (!IsWSDiscoveryRunning())
+    return true;
+
+  CLog::Log(LOGINFO, "Stopping WS-Discovery");
+  CServiceBroker::GetWSDiscovery().StopServices();
+
+  return true;
+#endif // HAS_FILESYSTEM_SMB
   return false;
 }
 

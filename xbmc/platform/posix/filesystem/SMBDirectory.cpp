@@ -32,6 +32,8 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include "platform/posix/filesystem/SMBWSDiscovery.h"
+
 #include <libsmbclient.h>
 
 struct CachedDirEntry
@@ -66,6 +68,18 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string strAuth;
 
   lock.Leave(); // OpenDir is locked
+
+  // if url provided does not having anything except smb protocol
+  // Do a WS-Discovery search to find possible smb servers to mimic smbv1
+  // behaviour
+  if (strRoot == "smb://")
+  {
+    // ToDo: Check settings WSD daemon enabled
+    WSDiscovery::CWSDiscoveryPosix& WSInstance =
+        dynamic_cast<WSDiscovery::CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
+    return WSInstance.GetServerList(items);
+  }
+
   int fd = OpenDir(url, strAuth);
   if (fd < 0)
     return false;
