@@ -57,7 +57,7 @@
 					<align>right</align>
 					<include>Animation_BottomSlide</include>
 					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
+					<itemgap>5</itemgap>
 					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
@@ -65,6 +65,10 @@
 					</include>
 					<include content="MediaFlag">
 					<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]" />
+					</include>
+					<include content="MediaFlag">
+						<param name="texture" value="$INFO[VideoPlayer.HdrType,flags/videohdr/,.png]" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.HdrType)" />
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
