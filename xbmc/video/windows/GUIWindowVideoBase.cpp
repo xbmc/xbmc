@@ -885,7 +885,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
-          buttons.Add(CONTEXT_BUTTON_PLAY_NEXT, 10008);       // Play next
+          buttons.Add(CONTEXT_BUTTON_PLAY_NEXT, 10009); // Play next
         }
       }
 

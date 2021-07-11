@@ -130,7 +130,7 @@
   all configured parameters, like startup directory.
 */
 #define TMSG_GUI_PREVIOUS_WINDOW          TMSG_MASK_WINDOWMANAGER + 10
-
+#define TMSG_GUI_SETPROPERTY TMSG_MASK_WINDOWMANAGER + 11
 
 #define TMSG_CALLBACK                     800
 

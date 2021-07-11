@@ -108,3 +108,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(true, false);
 }
 
+bool CRenderSystemBase::ClearBuffers(UTILS::Color color)
+{
+  return ClearBuffers(UTILS::Color4f(color));
+}

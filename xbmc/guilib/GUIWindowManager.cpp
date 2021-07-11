@@ -21,6 +21,7 @@
 #include "events/windows/GUIWindowEventLog.h"
 #include "favourites/GUIDialogFavourites.h"
 #include "input/Key.h"
+#include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
@@ -38,6 +39,7 @@
 #include "settings/windows/GUIWindowSettings.h"
 #include "settings/windows/GUIWindowSettingsCategory.h"
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
+#include "settings/windows/GUIWindowTestPattern.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -177,6 +179,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowFileManager);
   Add(new CGUIWindowSettings);
   Add(new CGUIWindowSystemInfo);
+  Add(new CGUIWindowTestPattern);
   Add(new CGUIWindowSettingsScreenCalibration);
   Add(new CGUIWindowSettingsCategory);
   Add(new CGUIWindowVideoNav);
@@ -392,6 +395,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_VISUALISATION);
     DestroyWindow(WINDOW_SETTINGS_MENU);
     DestroyWindow(WINDOW_SETTINGS_PROFILES);
+    DestroyWindow(WINDOW_TEST_PATTERN);
     DestroyWindow(WINDOW_SCREEN_CALIBRATION);
     DestroyWindow(WINDOW_SYSTEM_INFORMATION);
     DestroyWindow(WINDOW_SCREENSAVER);
@@ -1080,7 +1084,40 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
     }
     pMsg->SetResult(static_cast<int>(dialogOK->IsConfirmed()));
   }
+
+  case TMSG_GUI_SETPROPERTY:
+  {
+
+    if (pMsg->lpVoid)
+    {
+      const CVariant* params = static_cast<const CVariant*>(pMsg->lpVoid);
+      const std::string& key = (*params)["key"].asString();
+      const CVariant& value = (*params)["value"];
+      int iWindowID = CWindowTranslator::TranslateWindow((*params)["window"].asString());
+
+      if (iWindowID == -1)
+      {
+        iWindowID = GetActiveWindowOrDialog();
+      }
+
+      CGUIWindow* pNewWindow = GetWindow(iWindowID);
+      if (pNewWindow)
+      {
+        pNewWindow->SetProperty(key, value);
+        pNewWindow->SetInvalid();
+      }
+      else
+      { // nothing to see here - move along
+        CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files",
+                  iWindowID - WINDOW_HOME);
+      }
+
+      delete params;
+    }
+  }
   break;
+
+    break;
   }
 }
 

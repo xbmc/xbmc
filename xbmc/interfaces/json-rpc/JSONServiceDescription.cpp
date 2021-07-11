@@ -168,6 +168,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
   { "GUI.SetStereoscopicMode",                      CGUIOperations::SetStereoscopicMode },
   { "GUI.GetStereoscopicModes",                     CGUIOperations::GetStereoscopicModes },
+  { "GUI.SetWindowProperty",                        CGUIOperations::SetWindowProperty },
 
 // PVR operations
   { "PVR.GetProperties",                            CPVROperations::GetProperties },

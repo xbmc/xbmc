@@ -112,17 +112,31 @@ public:
   void GenerateMipmaps();
 
   // static methods
-  static void DrawQuad(const CPoint points[4], UTILS::Color color, CD3DTexture *texture, const CRect *texCoords,
-    SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+  static void DrawQuad(const CPoint points[4],
+                       UTILS::Color4f color,
+                       CD3DTexture* texture,
+                       const CRect* texCoords,
+                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
-  static void DrawQuad(const CPoint points[4], UTILS::Color color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords,
-    SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+  static void DrawQuad(const CPoint points[4],
+                       UTILS::Color4f color,
+                       unsigned numViews,
+                       ID3D11ShaderResourceView** view,
+                       const CRect* texCoords,
+                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
-  static void DrawQuad(const CRect &coords, UTILS::Color color, CD3DTexture *texture, const CRect *texCoords,
-    SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+  static void DrawQuad(const CRect& coords,
+                       UTILS::Color4f color,
+                       CD3DTexture* texture,
+                       const CRect* texCoords,
+                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
-  static void DrawQuad(const CRect &coords, UTILS::Color color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords,
-    SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+  static void DrawQuad(const CRect& coords,
+                       UTILS::Color4f color,
+                       unsigned numViews,
+                       ID3D11ShaderResourceView** view,
+                       const CRect* texCoords,
+                       SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   void OnDestroyDevice(bool fatal) override;
   void OnCreateDevice() override;

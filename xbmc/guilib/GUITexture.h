@@ -69,6 +69,11 @@ public:
   virtual CGUITexture* Clone() const = 0;
 
   static void DrawQuad(const CRect& coords,
+                       UTILS::Color4f color,
+                       CTexture* texture = nullptr,
+                       const CRect* texCoords = nullptr);
+
+  static void DrawQuad(const CRect& coords,
                        UTILS::Color color,
                        CTexture* texture = nullptr,
                        const CRect* texCoords = nullptr);

@@ -573,7 +573,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
-        buttons.Add(CONTEXT_BUTTON_PLAY_NEXT, 10008); //play next
+        buttons.Add(CONTEXT_BUTTON_PLAY_NEXT, 10009); //play next
 
         // allow a folder to be ad-hoc queued and played by the default player
         if (item->m_bIsFolder || (item->IsPlayList() &&
