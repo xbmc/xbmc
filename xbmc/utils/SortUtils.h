@@ -46,7 +46,8 @@ typedef enum {
 /// GUI to set this sort type.
 ///
 ///@{
-typedef enum {
+typedef enum
+{
   /// __0__  :
   SortByNone = 0,
   /// __1__  : Sort by Name                       <em>(String: <b><c>Label</c></b>)</em>
@@ -161,6 +162,8 @@ typedef enum {
   SortByOrigDate,
   /// __56__ : Sort by BPM                        <em>(String: <b><c>bpm</c></b>)</em>
   SortByBPM,
+  /// __57__ : Sort by original title             <em>(String: <b><c>OriginalTitle</c></b>)</em>
+  SortByOriginalTitle,
 } SortBy;
 ///@}
 
