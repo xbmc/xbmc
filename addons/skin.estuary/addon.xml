@@ -36,7 +36,7 @@
 		<summary lang="ca_ES">Aparença Estuary per phil65 i Piers. (aparença predeterminada de Kodi)</summary>
 		<summary lang="cs_CZ">Vzhled Estuary od autora phil65. (Výchozí vzhled Kodi)</summary>
 		<summary lang="da_DK">Estuary skin af phil65 (Kodi's standard brugerflade).</summary>
-		<summary lang="de_DE">Estuary Skin von phil65 und Piers. (Kodi-Standardskin)</summary>
+		<summary lang="de_DE">Estuary Skin von phil65. (Kodi-Standardskin)</summary>
 		<summary lang="el_GR">Το κέλυφος Estuary από τον phil65 και τον Pier. (προεπιλεγμένο κέλυφος του Kodi)</summary>
 		<summary lang="en_GB">Estuary skin by phil65. (Kodi's default skin)</summary>
 		<summary lang="en_NZ">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
@@ -133,11 +133,12 @@
 		<disclaimer lang="cs_CZ">Estuary je výchozí vzhled pro Kodi, jeho odebrání může způsobit problémy</disclaimer>
 		<disclaimer lang="cy_GB">Estuary yw croen diofyn Kodi. Efallai bydd ei dynnu yn achosi problemau</disclaimer>
 		<disclaimer lang="da_DK">Estuary er standard brugerfladen. Fjernes det kan der opstå problemer.</disclaimer>
-		<disclaimer lang="de_DE">Estuary ist der Standardskin von Kodi. Ein Entfernen des Skins kann Probleme verursachen.</disclaimer>
+		<disclaimer lang="de_DE">Estuary ist der Standardskin von Kodi. Ein Entfernen des Skins kann Probleme verursachen</disclaimer>
 		<disclaimer lang="el_GR">Το Estuary είναι η προεπιλεγμένη αμφίεση για το Kodi. Η αφαίρεσή του μπορεί να δημιουργήσει προβλήματα.</disclaimer>
 		<disclaimer lang="en_GB">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
 		<disclaimer lang="en_NZ">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
 		<disclaimer lang="en_US">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
+		<disclaimer lang="eo">Plural-Forms: nplurals=2; plural=(n != 1);\n</disclaimer>
 		<disclaimer lang="es_AR">Estuary es el skin por defecto de Kodi. Borrarlo puede causar problemas</disclaimer>
 		<disclaimer lang="es_ES">Estuary es el skin por defecto de Kodi. Desinstalarlo puede causar problemas.</disclaimer>
 		<disclaimer lang="es_MX">Estuary es la máscara predeterminada de Kodi, eliminarla puede causar problemas</disclaimer>
@@ -153,8 +154,10 @@
 		<disclaimer lang="is_IS">Estuary er sjálfgefið skinn fyrir Kodi, ef það er fjarlægt gætu komið upp ýmis vandamál</disclaimer>
 		<disclaimer lang="it_IT">Estuary è la skin predefinita di Kodi, rimuoverla potrebbe causare problemi</disclaimer>
 		<disclaimer lang="ja_JP">EstuaryはKodiのデフォルトスキンなので、これを削除するとうまく動かなくなる可能性があります</disclaimer>
+		<disclaimer lang="kn_IN">Plural-Forms: nplurals=2; plural=(n > 1);\n</disclaimer>
 		<disclaimer lang="ko_KR">Estuary는 Kodi의 기본스킨으로 제거시 문제가 생길 수 있습니다.</disclaimer>
 		<disclaimer lang="lt_LT">Estuary yra numatytoji Kodi teminė išvaizda, jos pašalinimas gali sukelti problemų</disclaimer>
+		<disclaimer lang="ml_IN">Plural-Forms: nplurals=2; plural=(n != 1);\n</disclaimer>
 		<disclaimer lang="ms_MY">Estuary ialah kulit lalai Kodi, mengubahnya boleh menimbulkan isu.</disclaimer>
 		<disclaimer lang="nb_NO">Estuary er forvalgt drakt for Kodi, dersom du fjerner det kan det forårsake problemer.</disclaimer>
 		<disclaimer lang="nl_NL">Estuary is de standaardskin voor Kodi, het verwijderen van Estuary kan leiden tot problemen.</disclaimer>
@@ -163,11 +166,13 @@
 		<disclaimer lang="pt_PT">O Estuary é o visual por omissão do Kodi; se o remover, poderá ter alguns problemas</disclaimer>
 		<disclaimer lang="ro_RO">Estuary este tema implicită pentru Kodi, eliminarea ei poate cauza probleme</disclaimer>
 		<disclaimer lang="ru_RU">Estuary — это стандартная обложка Kodi, и ее удаление может привести к возникновению проблем</disclaimer>
+		<disclaimer lang="si_LK">Plural-Forms: nplurals=2; plural=(n != 1);\n</disclaimer>
 		<disclaimer lang="sk_SK">Estuary je predvolený vzhľad pre Kodi, jeho odstránenie môže spôsobiť problémy</disclaimer>
 		<disclaimer lang="sr_RS">Estuary је подразумевана маска за Kodi, уклањање може изазвати проблеме</disclaimer>
 		<disclaimer lang="sr_RS@latin">Estuary je podrazumevana maska za Kodi, uklanjanje može izazvati probleme</disclaimer>
 		<disclaimer lang="sv_SE">Estuary är Kodis standardskal. Om du tar bort det kan det orsaka problem.</disclaimer>
 		<disclaimer lang="szl">Estuary je wychodnōm skōrōm Kodi, jij uchrōniynie może sprŏwiać niyprzileżytości</disclaimer>
+		<disclaimer lang="te_IN">Plural-Forms: nplurals=2; plural=(n != 1);\n</disclaimer>
 		<disclaimer lang="th_TH">Estuary เป็นหน้าตาเริ่มต้นสำหรับ Kodi, การลบมัน อาจทำให้เกิดปัญหา</disclaimer>
 		<disclaimer lang="tr_TR">Estuary Kodi için varsayılan dış görünümdür, kaldırmak sorunlara yol açabilir</disclaimer>
 		<disclaimer lang="uk_UA">Estuary — основна обкладинка Kodi, і її видалення може призвести до проблем</disclaimer>
