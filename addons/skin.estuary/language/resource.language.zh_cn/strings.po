@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "未播专辑"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "最近录像"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "最近播放的频道"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "已评分"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "最近播放的频道"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "选择 Kodi 用户配置文件[CR]登录并继续"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "图标墙"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "平移"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "信息墙"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "墙"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "图文字幕"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "宽列表"
@@ -601,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "显示同人画背景"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "选择个人配置标识种类"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "用户配置名称"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "用户配置头像"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "动态背景"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "对于音乐电视，显示海报而不是缩略图"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "艺术图片相关的设置。"

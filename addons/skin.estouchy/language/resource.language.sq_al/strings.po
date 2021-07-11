@@ -53,6 +53,11 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Në Funksionim..."
 
+# empty string with id 31010
+msgctxt "#31011"
+msgid "Recent"
+msgstr ""
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filma"
@@ -61,9 +66,33 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Episodet"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr ""
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumet"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr ""
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr ""
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr ""
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr ""
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr ""
 
 msgctxt "#31024"
 msgid "Page"
@@ -72,6 +101,27 @@ msgstr "Faqe"
 msgctxt "#31030"
 msgid "Info List"
 msgstr "Lista Info"
+
+# empty strings from id 31031 to 31037
+msgctxt "#31038"
+msgid "Login"
+msgstr ""
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr ""
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr ""
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -84,6 +134,10 @@ msgstr "PËRSHPEJTO"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "RIKTHE"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr ""
 
 msgctxt "#31049"
 msgid "End Time"
@@ -141,6 +195,11 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Pajisës i të Dhënave"
 
+# empty strings from id 31304 to 31308
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr ""
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "I Loguar së Fundmi"
@@ -157,6 +216,11 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Shkarko Titra"
 
+# empty string with id 31357
+msgctxt "#31358"
+msgid "Teletext"
+msgstr ""
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Standarte e Maskës"
@@ -169,9 +233,52 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ndrysho maskën - Cakto gjuhen dhe rajonin - Ndrysho opcionet e listës skedeve - Cakto një Ekran-ruajtese"
 
+# empty strings from id 31401 to 31404
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr ""
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr ""
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr ""
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr ""
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr ""
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr ""
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr ""
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr ""
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Zgjedho Kodi profilin [CR]për të rregjistruar dhe vazhdo"
+
+# empty strings from id 31422 to 31547
+# Skin Setting Options
+msgctxt "#31548"
+msgid "Home menu"
+msgstr ""
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr ""
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -181,9 +288,41 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Shkurtore së Shtuesit"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr ""
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr ""
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr ""
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr ""
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Live TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr ""
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr ""
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr ""
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr ""
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -196,3 +335,32 @@ msgstr "Riemro Grupet"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Fshij Grupet"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr ""
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr ""
+
+# empty strings from id 31566 to 31899
+msgctxt "#31900"
+msgid "First Run"
+msgstr ""
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr ""
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr ""
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr ""
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr ""

@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Albums non lus"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Enregistrements récents"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Chaînes écoutées récemment"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Evalué"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Chaînes écoutées récemment"
@@ -137,6 +140,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Décalage temporel"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Afficher le fanart"
@@ -172,6 +179,10 @@ msgstr "Pages"
 msgctxt "#31036"
 msgid "items"
 msgstr "éléments"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -217,6 +228,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "D’après Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Aller à la liste de lecture"
@@ -228,6 +247,14 @@ msgstr "Afficher l’écran de connexion au démarrage"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Connexion automatique au démarrage"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -268,6 +295,10 @@ msgstr "par"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Options de fermeture"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -325,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Choisissez votre profil d’utilisateur Kodi[CR]pour vous connecter et poursuivre"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Mur d’icônes"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Maj."
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Mur d’informations"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Mur"
@@ -357,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Télétexte"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Liste large"
@@ -380,6 +416,10 @@ msgstr "Rechercher dans la médiathèque locale"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Rechercher sur YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -453,6 +493,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restant"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Cliquer ici pour visualiser les derniers changements…"
@@ -493,6 +537,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Rechercher des addiciels"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Catégories"
@@ -500,6 +552,10 @@ msgstr "Catégories"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Sélectionner le paquet de fanart de genre"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -553,18 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Afficher le fanart en arrière-plan"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Choisir le genre d’identification du profil"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nom du profil"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar du profil"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animer l’arrière-plan"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

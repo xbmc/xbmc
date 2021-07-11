@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Непускани албуми"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Последни записи"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Последно възпроизвеждани канали"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "С възрастова препоръка"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Последно възпроизвеждани канали"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Изберете потребителски профил,[CR]за да продължите"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Стена от иконки"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Отместване"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Стена с информация"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Стена"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Телетекст"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Широк списък"
@@ -408,6 +416,10 @@ msgstr "Търси в библиотеката"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Търси в YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -597,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Показване на фен-арт за фон"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Изберете начин за идентифициране на профила"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Име на профила"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Снимка на профила"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Анимиране на фон"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Показване на плакати вместо миниатюри за музикалните видеа"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Категорията съдържа настройки свързани с изображенията."

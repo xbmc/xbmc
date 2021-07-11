@@ -25,14 +25,17 @@ msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
 msgstr "\"Dim\" šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%."
 
+#. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "Úroveň jasu"
 
+#. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
 msgstr "Úroveň v percentách, ako silno má zostať obrazovka osvetlená."
 
+#. Setting category name
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "Preferencie"

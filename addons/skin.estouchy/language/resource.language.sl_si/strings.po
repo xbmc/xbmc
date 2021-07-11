@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/kodi-main/language/sl_SI/)\n"
+"Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sl_SI\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgctxt "Addon Summary"
@@ -52,6 +52,11 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Prosim, po?akajte..."
 
+# empty string with id 31010
+msgctxt "#31011"
+msgid "Recent"
+msgstr ""
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmi"
@@ -60,9 +65,33 @@ msgctxt "#31014"
 msgid "Episodes"
 msgstr "Epizod"
 
+msgctxt "#31015"
+msgid "Player info"
+msgstr ""
+
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumi"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr ""
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr ""
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr ""
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr ""
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr ""
 
 msgctxt "#31024"
 msgid "Page"
@@ -76,6 +105,22 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Prijava"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr ""
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr ""
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr ""
+
 msgctxt "#31043"
 msgid "PAUSED"
 msgstr "PREKINITEV"
@@ -87,6 +132,10 @@ msgstr "PREVIJANJE NAPREJ"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "NAZAJ"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr ""
 
 msgctxt "#31049"
 msgid "End Time"
@@ -144,6 +193,11 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Ponudnik"
 
+# empty strings from id 31304 to 31308
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr ""
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Zadnja prijava"
@@ -176,9 +230,52 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Zamenjajte preobleko ? Dolo?ite jezik in regijo ? Spremenite mo?nosti seznamov ? Nastavite ohranjevalnik zaslona"
 
+# empty strings from id 31401 to 31404
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr ""
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr ""
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr ""
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr ""
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr ""
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr ""
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr ""
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr ""
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Izberite va? Kodi uporabni?ki profil[CR]za prijavo in nadaljujte"
+
+# empty strings from id 31422 to 31547
+# Skin Setting Options
+msgctxt "#31548"
+msgid "Home menu"
+msgstr ""
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr ""
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -243,3 +340,24 @@ msgstr "Pokaži skrito"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Pokaži izbrisano"
+
+# empty strings from id 31566 to 31899
+msgctxt "#31900"
+msgid "First Run"
+msgstr ""
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr ""
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr ""
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr ""
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr ""

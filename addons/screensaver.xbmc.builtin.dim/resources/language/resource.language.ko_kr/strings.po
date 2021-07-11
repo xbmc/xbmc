@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Addon Summary"
@@ -24,14 +24,17 @@ msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
 msgstr "Dim 화면보호기는 화면을 어둡게(페이드 아웃)하는 간단한 화면 보호기 입니다. 어둡게 하는 정도를 20-100%사이에서 설정할 수 있습니다."
 
+#. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
 msgid "Brightness level"
 msgstr "밝기 수준"
 
+#. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
 msgstr "화면을 밝게 비출 퍼센트 수준"
 
+#. Setting category name
 msgctxt "#30002"
 msgid "Preferences"
 msgstr "설정"

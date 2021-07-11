@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Çalınmamış albümler"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "En son kayıtlar"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Son oynatılan kanallar"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Derecelendirildi"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Son oynatılan kanallar"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Simge Duvarı"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Kaydır"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Bilgi Duvarı"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Duvar"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teleteks"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Geniş Liste"
@@ -601,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Arka plan fanartını göster"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Profil kimliğini görüntüleme türünü seçin"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profil adı"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profil avatarı"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Arka plana animasyon ekle"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Müzik videoları için küçük resimler yerine poster gösterin"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Resimle ilgili ayarlar."

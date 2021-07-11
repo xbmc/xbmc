@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/kodi-main/language/sv_SE/)\n"
+"Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -88,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Ospelade album"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nya inspelningar"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Nyligen spelade kanaler"
@@ -100,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Betygsatt"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Nyligen spelade kanaler"
@@ -228,6 +231,10 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
 msgstr "Tryck på [B]vänster[/B] för att gå tillbaka eller [B]höger[/B] för att gå framåt"
 
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Gå till spellista"
@@ -239,6 +246,14 @@ msgstr "Visa inloggningsskärmen vid uppstart"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatisk inloggning vid uppstart"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -340,18 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Ikonvägg"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Skifta"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infovägg"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Vägg"
@@ -372,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Text-tv"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Bred lista"
@@ -532,6 +552,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Välj genre-fanart paket"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Osedda musikvideor"
@@ -584,26 +608,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Visa Fanart-bakgrund"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Välj typ av profilidentifiering"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilnamn"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profil avatar"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animera bakgrund"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Visa affischer istället för miniatyrbilder för musikvideor"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Inställningar för omslag."

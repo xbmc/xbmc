@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Belarusian (Belarus) (http://www.transifex.com/projects/p/kodi-main/language/be_BY/)\n"
+"Language: be_BY\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: be_BY\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgctxt "Addon Summary"
@@ -88,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Непраслуханыя альбомы"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Нядаўнія запісы"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Нядаўна гледжаныя каналы"
@@ -100,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Ацэнена"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Нядаўна гледжаныя каналы"
@@ -136,6 +139,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Таймшыфт"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Паказваць ілюстрацыі"
@@ -159,6 +166,10 @@ msgstr "Чарга"
 msgctxt "#31033"
 msgid "Your rating"
 msgstr "Ваша ацэнка"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
 
 msgctxt "#31035"
 msgid "Pages"
@@ -216,6 +227,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Заснаваны на Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Перайсці ў спіс прайгравання"
@@ -227,6 +246,14 @@ msgstr "Паказаць экран ўваходу падчас запуску"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Аўтаматычна ўваходзіць у сістэму падчас запуску"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -328,18 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Абярыце профіль карыстальніка Kodi[CR], каб увайсці і працягнуць"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Значкі"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Сцяна інфармацыі"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Сцяна"
@@ -360,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Тэлетэкст"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Шырокі спіс"
@@ -383,6 +415,10 @@ msgstr "Пошук у бібліятэцы"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Пошук на YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -456,6 +492,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Засталося"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Націсніце тут, каб праглядзець апошнія змены..."
@@ -496,6 +536,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Пошук дапаўненняў"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Катэгорыі"
@@ -503,6 +551,10 @@ msgstr "Катэгорыі"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Абраць набор ілюстрацый да жанраў"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -556,18 +608,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Паказваць ілюстрацыі як фон"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Абраць тып ідэнтыфікацыі профілю"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Назва профілю"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Выява профілю"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Анімаваны фон"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

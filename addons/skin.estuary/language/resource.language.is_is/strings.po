@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Icelandic (Iceland) (http://www.transifex.com/projects/p/kodi-main/language/is_IS/)\n"
+"Language: is_IS\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: is_IS\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
 
 msgctxt "Addon Summary"
@@ -88,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Óspilaðar hljómplötur"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nýlegar upptökur"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Nýlega spilaðar rásir"
@@ -100,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Einkunn"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Nýlega spilaðar rásir"
@@ -352,18 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Veldu Kodi notanda[CR]til að skrá þig inn og halda áfram"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Táknmyndaveggur"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Upplýsingaveggur"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Skjáveggur"
@@ -384,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Textavarp"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Breiðlisti"
@@ -600,26 +608,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Birta aðdáendamynd sem bakgrunn"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Veldu gerð notandaauðkenningar"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nafn notanda"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Notandatáknmynd"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Lifandi bakgrunnur"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Birta veggspjöld frekar en smámyndir fyrir tónlistarmyndbönd"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Stillingar tengdar myndefni."
