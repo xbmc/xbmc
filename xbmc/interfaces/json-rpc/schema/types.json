@@ -771,12 +771,12 @@
   "Video.Fields.MusicVideo": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the streamdetails and/or tag field will result in increased response times",
+      "description": "Requesting the streamdetails, uniqueid and/or tag field will result in increased response times",
       "enum": [ "title", "playcount", "runtime", "director",
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
                 "fanart", "thumbnail", "file", "resume", "dateadded",
-                "tag", "art", "rating", "userrating", "premiered" ]
+                "tag", "art", "rating", "userrating", "premiered", "uniqueid" ]
     }
   },
   "Video.Cast": {
@@ -988,7 +988,8 @@
       "tag": { "$ref": "Array.String" },
       "rating": { "type": "number" },
       "userrating": { "type": "integer" },
-      "premiered": { "type": "string" }
+      "premiered": { "type": "string" },
+      "uniqueid": { "$ref": "Media.UniqueID" }
     }
   },
   "PVR.Property.Name": {
