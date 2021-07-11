@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/kodi-main/language/vi_VN/)\n"
+"Language: vi_VN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: vi_VN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Addon Summary"
@@ -107,6 +107,18 @@ msgstr "Đăng nhập"
 msgctxt "#31039"
 msgid "Updated:"
 msgstr "Đã cập nhật:"
+
+msgctxt "#31040"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31041"
+msgid "Select + B"
+msgstr ""
+
+msgctxt "#31042"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -232,9 +244,35 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Định cấu hình các hành động được sử dụng trong khi phát · Định cấu hình cách phát nội dung đa phương tiện"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr ""
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr ""
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr ""
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr ""
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Chọn profile Kodi[CR]để tiếp tục đăng nhập"
+
+# empty strings from id 31422 to 31547
+# Skin Setting Options
+msgctxt "#31548"
+msgid "Home menu"
+msgstr ""
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr ""
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -244,6 +282,10 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Phím tắt tiện ích"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr ""
+
 msgctxt "#31553"
 msgid "Use Custom Background"
 msgstr "Sử dụng nền tùy chọn"
@@ -252,9 +294,21 @@ msgctxt "#31554"
 msgid "Background:"
 msgstr "Nền:"
 
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr ""
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Kênh TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr ""
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr ""
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -276,6 +330,31 @@ msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Xoá nhóm"
 
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr ""
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr ""
+
+# empty strings from id 31566 to 31899
+msgctxt "#31900"
+msgid "First Run"
+msgstr ""
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr ""
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr ""
+
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
 msgstr "Khi bạn đang phát âm thanh hoặc video, tiêu đề mục sẽ xuất hiện ở phía trên màn hình. Chạm vào nó sẽ đưa bạn đến cửa sổ video hoặc hình ảnh toàn màn hình."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr ""

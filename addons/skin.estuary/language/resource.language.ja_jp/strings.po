@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "再生していないアルバム"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "最近の録画"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "最近再生したチャンネル"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "評価済"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "最近再生したチャンネル"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Kodiユーザープロファイルを選択して[CR]ログインしてください"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "アイコン壁紙"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "シフト"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "インフォウォール"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "ウォール"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "文字多重放送"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "ワイドリスト"
@@ -601,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "背景にファンアートを表示"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "プロファイルの確認と種類を選択"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "プロファイル名"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "プロファイルアバター"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "アニメーション背景"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "ミュージックビデオのサムネイルの代わりにポスターを表示する"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "アートワーク関連の設定。"

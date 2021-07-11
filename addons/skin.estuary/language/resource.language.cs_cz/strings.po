@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Nepřehraná alba"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nedávné nahrávky"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Nedávno sledované kanály"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Certifikace"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Nedávno sledované programy"
@@ -136,6 +139,10 @@ msgstr "Nenalezeny žádné oblíbené. Pomocí místní nabídky můžete na te
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Časový posun"
+
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -221,6 +228,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Založeno na Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Přejít na seznam stop"
@@ -232,6 +247,14 @@ msgstr "Zobrazit přihlašovací obrazovku při spuštění"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatické přihlášení po spuštění"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -333,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Vyberte svůj uživatelský profil Kodi[CR]pro přihlášení a pokračování"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Stěna ikon"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Posun"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infostěna"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Zeď"
@@ -365,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Široký seznam"
@@ -388,6 +416,10 @@ msgstr "Vyhledat v místní knihovně"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Vyhledat na YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -460,6 +492,10 @@ msgstr "Vyberte rozlišení"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Zbývá"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -573,18 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Zobrazit fanart na pozadí"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Zvolte typ identifikace profilu"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Název profilu"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar profilu"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animovat pozadí"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

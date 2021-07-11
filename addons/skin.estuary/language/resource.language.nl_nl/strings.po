@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Niet-afgespeelde albums"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Recente opnames"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Onlangs afgespeelde kanalen"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Waardering"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Onlangs afgespeelde kanalen"
@@ -137,6 +140,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Toon fanart"
@@ -172,6 +179,10 @@ msgstr "Pagina's"
 msgctxt "#31036"
 msgid "items"
 msgstr "items"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -217,6 +228,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Gebaseerd op Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Ga naar afspeellijst"
@@ -228,6 +247,14 @@ msgstr "Toon inlogscherm bij opstarten"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatisch inloggen tijdens opstarten"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -329,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecteer je Kodi-gebruikersprofiel[CR]om in te loggen en door te gaan"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "iconenmuur"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Scheiden"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infomuur"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Muur"
@@ -361,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Brede lijst"
@@ -384,6 +416,10 @@ msgstr "Zoek in lokale bibliotheek"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Zoek in YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -457,6 +493,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Resterend"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Klik hier om de laatste veranderingen te zien..."
@@ -497,6 +537,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Zoek add-ons"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Categoriëen"
@@ -504,6 +552,10 @@ msgstr "Categoriëen"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Selecteer genre fanartpakket"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -557,18 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Toon fanartachtergrond"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Kies het type profielidentificatie"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profielnaam"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profielafbeelding"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Achtergrondanimatie"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-05 22:17+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2021-07-11 07:18+0000\n"
+"Last-Translator: Kai Sommerfeld <kai.sommerfeld@gmx.com>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/de_de/>\n"
 "Language: de_de\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Skin für Touchscreen-Geräte"
 
 msgctxt "Addon Description"
 msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
-msgstr "Dieses Skin wurde für die Benutzung mit Touchscreen-Geräten wie Tablets und Handys entworfen"
+msgstr "Dieser Skin wurde für die Verwendung mit Touchscreen-Geräten, wie Tablets und Handys, entworfen"
 
 msgctxt "#31002"
 msgid "Audio Settings"
@@ -67,7 +67,7 @@ msgstr "Episoden"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr "Spieler-Information"
+msgstr "Player-Informationen"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -75,11 +75,11 @@ msgstr "Alben"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr "PVR-Info"
+msgstr "PVR-Informationen"
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr "Player-Info"
+msgstr "Player-Informationen"
 
 msgctxt "#31019"
 msgid "Video decoder"
@@ -91,7 +91,7 @@ msgstr "Pixel-Format"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "System Speicher-Auslastung"
+msgstr "Systemspeicherauslastung"
 
 msgctxt "#31024"
 msgid "Page"
@@ -99,7 +99,7 @@ msgstr "Seite"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Infoliste"
+msgstr "Informationsliste"
 
 msgctxt "#31038"
 msgid "Login"
@@ -127,15 +127,15 @@ msgstr "PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "SCHNELL VORSPULEN"
+msgstr "SCHNELLER VORLAUF"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "ZURÜCKSPULEN"
+msgstr "RÜCKLAUF"
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr "Wiedergabe-Geschwindigkeit"
+msgstr "Wiedergabegeschwindigkeit"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -195,7 +195,7 @@ msgstr "Datenlieferant"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "System Speicher-Auslastung:"
+msgstr "Systemspeicherauslastung:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -227,35 +227,35 @@ msgstr "Arial-basiert"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Skin ändern - Sprache und Region festlegen - Dateiauflistungsoptionen ändern - Bildschirmschoner einrichten"
+msgstr "Skin anpassen · Sprache und Region festlegen · Dateiauflistungsoptionen ändern · Bildschirmschoner einrichten"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Konfiguriere und verwalte die Medienfreigabedienste · Konfiguriere und verwalte den Wetterdienst"
+msgstr "Medienfreigabedienste konfigurieren und verwalten · Wetterdienst konfigurieren und verwalten"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Anzeige einstellen · Audio konfigurieren · Internetzugriff konfigurieren · Stromsparfunktion konfigurieren · Protokollierung konfigurieren"
+msgstr "Anzeige konfigurieren · Audio konfigurieren · Internetzugriff konfigurieren · Stromsparfunktionen konfigurieren · Protokollierung konfigurieren"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Verwalte deine installierten Addons · Suche und installiere Addons von kodi.tv · Ändere die Einstellungen der Addons"
+msgstr "Installierte Addons verwalten · Addons suchen und installieren von kodi.tv · Einstellungen der Addons ändern"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Konfiguriere Aktionen, um sie während der Wiedergabe zu nutzen · Konfiguriere wie Medieninhalten abgespielt werden"
+msgstr "Wiedergabe-Aktionen konfigurieren · Konfigurieren, wie Medieninhalten wiedergegeben werden"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Konfiguriere Bibliothek Quellen · Wie Medien angezeigt werden · Konfiguriere wie in Bibliotheken navigiert wird"
+msgstr "Bibliotheksquellen konfigurieren · Inhalt der Medienauflistungen anzeigen · Bibliotheksnavigation konfigurieren"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Skin konfigurieren · Region einstellen · Steuerung konfigurieren · Bildschirmschoner konfigurieren · Mastersperre konfigurieren"
+msgstr "Skin konfigurieren · Region einstellen · Steuerung konfigurieren · Bildschirmschoner konfigurieren · Master-Sperre konfigurieren"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Deine Profile konfigurieren · Sperren-Optionen einstellen · Anmeldebildschirm aktivieren"
+msgstr "Profile konfigurieren · Sperren-Optionen einstellen · Anmeldebildschirm aktivieren"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
@@ -263,15 +263,15 @@ msgstr "Systeminformation anzeigen · Hardware Statistiken · Speicherkapazität
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Wählen Sie Ihr Kodi-Benutzerprofil[CR]zum Anmelden und Fortfahren aus"
+msgstr "Bitte Kodi-Benutzerprofil zum Anmelden auswählen"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Startmenü"
+msgstr "Hauptmenü"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Add-ons auf Startseite"
+msgstr "Addons auf der Startseite"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -279,7 +279,7 @@ msgstr "Hintergründe"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Add-on-Verknüpfung"
+msgstr "Addon-Verknüpfung"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -295,11 +295,11 @@ msgstr "Hintergrund:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Fernseheinstellungen konfigurieren · Vollbildinformationen ändern · EPG-Dateneinstellungen verwalten"
+msgstr "TV-Einstellungen konfigurieren · Vollbildinformationen ändern · Programm-Guide-Einstellungen verwalten"
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Live-Fernsehen"
+msgstr "TV"
 
 msgctxt "#31557"
 msgid "Hide video background"
@@ -331,7 +331,7 @@ msgstr "Gruppe löschen"
 
 msgctxt "#31564"
 msgid "Show hidden"
-msgstr "Verborgene anzeigen"
+msgstr "Versteckte anzeigen"
 
 msgctxt "#31565"
 msgid "Show deleted"
@@ -343,15 +343,15 @@ msgstr "Erster Start"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Zwei Dinge über das Navigieren mit Estouchy"
+msgstr "Zwei wichtige Dinge über das Navigieren mit Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Das Kodi-Logo fungiert als 'Home'-Knopf. Das Drücken bringt dich zurück zum Hauptbildschirm."
+msgstr "Das Kodi-Logo fungiert als 'Home'-Knopf. Das Drücken aktiviert den Hauptbildschirm."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Während Musik oder ein Video spielt, erscheint der Titel am oberen Bildschirmrand. Das Tippen des Titels aktiviert die Vollbild-Wiedergabe."
+msgstr "Während Musik oder ein Video wiedergegeben wird, erscheint der Titel am oberen Bildschirmrand. Das Antippen des Titels aktiviert die Vollbild-Wiedergabe."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

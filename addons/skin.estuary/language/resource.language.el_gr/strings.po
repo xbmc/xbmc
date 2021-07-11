@@ -61,6 +61,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Μη προβληθείσες ταινίες"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Λήψη εικονιδίων"
@@ -85,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Μη παιγμένα άλμπουμ"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Πρόσφατες εγγραφές"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Πρόσφατα παιγμένα κανάλια"
@@ -97,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Αξιολογημένο/α"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Πρόσφατα παιγμένα κανάλια"
@@ -121,6 +128,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Τύπος προβολής"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Δεν βρέθηκαν αγαπημένα. Μπορείτε να προσθέσετε οποιοδήποτε αντικείμενο από την προβολή πολυμέσων σε αυτή τη λίστα χρησιμοποιώντας το κεντρικό μενού."
@@ -128,6 +139,10 @@ msgstr "Δεν βρέθηκαν αγαπημένα. Μπορείτε να προ
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
+
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -164,6 +179,10 @@ msgstr "Σελίδες"
 msgctxt "#31036"
 msgid "items"
 msgstr "Αντικείμενα"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -209,6 +228,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Βασισμένη στην Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Μετάβαση στη λίστα αναπαραγωγής"
@@ -220,6 +247,14 @@ msgstr "Προβολή οθόνης εισόδου κατά την έναρξη"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Αυτόματη είσοδος κατά την έναρξη"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -260,6 +295,10 @@ msgstr "ανά"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Επιλογές Ενέργειας"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -317,14 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
 
+#. viewtype name
+msgctxt "#31099"
+msgid "IconWall"
+msgstr ""
+
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Τοίχος πληροφοριών"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Τοίχος"
@@ -345,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Ευρεία λίστα"
@@ -368,6 +416,10 @@ msgstr "Αναζήτηση στην τοπική βιβλιοθήκη"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Αναζήτηση στο Youtube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -429,9 +481,21 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Επιλογή πακέτου fanart"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Απομένουν"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -461,6 +525,10 @@ msgctxt "#31142"
 msgid "Play speed"
 msgstr "Ταχύτητα αναπαραγωγής"
 
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Εισαγωγή Περιηγητή πρόσθετων"
@@ -469,9 +537,25 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Αναζήτηση προσθέτων"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Κατηγορίες"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr ""
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -480,6 +564,14 @@ msgstr "Μη προβληθέντα βίντεο"
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Τυχαία μουσικά βίντεο"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr ""
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr ""
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -497,10 +589,52 @@ msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Λειτουργία αφής"
 
+msgctxt "#31159"
+msgid "Artwork"
+msgstr ""
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr ""
+
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Αριθμητικό πληκτρολόγιο"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr ""
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr ""
+
+#. Choose profile identifier
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Όνομα προφίλ"
+
+#. Label for the kind of profile identification
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

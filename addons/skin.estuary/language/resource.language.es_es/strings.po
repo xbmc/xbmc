@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Álbumes sin reproducir"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Grabaciones recientes"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Canales reproducidos recientemente"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Puntuados"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Canales reproducidos recientemente"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Seleccione su perfil de usuario de Kodi[CR]para iniciar sesión y continuar"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Muro de Iconos"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Mays."
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Muro de información"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Muro"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletexto"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lista amplia"
@@ -601,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Mostrar fondo fanart"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Elegir el tipo de identificación de perfil"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nombre de perfil"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar de perfil"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animar fondo"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Mostrar carteles en lugar de miniaturas para vídeos musicales"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Ajustes relacionado con ilustraciones"

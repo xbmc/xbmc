@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Silesian (http://www.transifex.com/projects/p/kodi-main/language/szl/)\n"
+"Language: szl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: szl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "Addon Summary"
@@ -60,6 +60,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Filmy niyôbejzdrzane"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Sebier ikōny"
@@ -84,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Niygrane albōmy"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nŏjnowsze nagrania"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Kanały ôstatnio ôdtwŏrzane"
@@ -96,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Ôcyniōne"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Kanały ôstatnio ôdtwŏrzane"
@@ -120,6 +127,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Widzik"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Niy ma wertownych. Możesz przidŏć leda jakõ pozycyjõ do tego wykŏzu z poziōmu widzikōw mydiōw, bez myni kōntekstowe."
@@ -128,6 +139,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Timeshift"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Pokŏż fototapetã"
@@ -135,6 +150,10 @@ msgstr "Pokŏż fototapetã"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Ôstatnie logowanie"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr ""
 
 msgctxt "#31031"
 msgid "Version info"
@@ -159,6 +178,10 @@ msgstr "Zajty"
 msgctxt "#31036"
 msgid "items"
 msgstr "elymyntōw"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -204,6 +227,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Podane na Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Przejdź do playlisty"
@@ -216,9 +247,21 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Loguj autōmatycznie po sztartniyńciu"
 
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Elymynty przodnigo myni"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr ""
 
 msgctxt "#31063"
 msgid "Sections"
@@ -251,6 +294,10 @@ msgstr "po"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Sztelōnki zasiylaniŏ"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -308,14 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Ôbier swōj profil Kodi,[CR]coby sie wlogować i kōntynuować"
 
+#. viewtype name
+msgctxt "#31099"
+msgid "IconWall"
+msgstr ""
+
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Ściana informacyji"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Ściana"
@@ -336,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Szyroki wykŏz"
@@ -359,6 +415,10 @@ msgstr "Szukej w lokalnyj bibliŏtyce"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Szukej w YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -416,9 +476,25 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Sztelōnki przodnigo myni: Kōnfiguruj przodnie myni do swojich ôbmiyłowań."
 
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr ""
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Ôstało"
+
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -448,10 +524,116 @@ msgctxt "#31142"
 msgid "Play speed"
 msgstr "Gibkość ôdtwŏrzaniŏ"
 
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Wlyź do przeziyrŏczki przidŏwkōw"
 
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr ""
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr ""
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr ""
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr ""
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr ""
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr ""
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr ""
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr ""
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr ""
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr ""
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr ""
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr ""
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr ""
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr ""
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr ""
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr ""
+
+#. Choose profile identifier
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Miano profilu"
+
+#. Label for the kind of profile identification
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

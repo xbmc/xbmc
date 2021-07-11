@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Neperklausyti albumai"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Naujausi įrašai"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Neseniai žiūrėti kanalai"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Įvertinta"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Neseniai žiūrėti kanalai"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Pasirinkite savo Kodi profilį[CR]norėdami prisijungti ir tęsti"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Piktogramų siena"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Postūmis"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infosiena"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Siena"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekstas"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Platus sąrašas"
@@ -601,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Rodyti Fanart fone"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Pasirinkite profilio identifikacijos būdą"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilio vardas"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profilio avataras"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animuoti foną"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Muzikiniams vaizdo įrašams rodyti plakatus vietoje miniatiūrų"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Su iliustracijomis susiję nustatymai."

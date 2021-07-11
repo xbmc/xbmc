@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Welsh (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/cy_GB/)\n"
+"Language: cy_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cy_GB\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
 
 msgctxt "Addon Summary"
@@ -24,3 +24,17 @@ msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
 msgstr "Mae arbedwr sgrin Dim yn arbedwr sgrin syml sy'n pylu (tywyllu) eich sgrin i werth gosodadwy rhwyg 20 a 100%."
 
+#. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
+msgctxt "#30000"
+msgid "Brightness level"
+msgstr ""
+
+#. Setting help text
+msgctxt "#30001"
+msgid "Level in percent of how strongly the screen remains illuminated."
+msgstr ""
+
+#. Setting category name
+msgctxt "#30002"
+msgid "Preferences"
+msgstr ""

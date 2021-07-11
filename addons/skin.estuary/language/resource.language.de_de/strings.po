@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-06 07:25+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2021-07-11 07:18+0000\n"
+"Last-Translator: Kai Sommerfeld <kai.sommerfeld@gmx.com>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/de_de/>\n"
 "Language: de_de\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr "Estuary Skin von phil65 und Piers. (Kodi-Standardskin)"
+msgstr "Estuary Skin von phil65. (Kodi-Standardskin)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
@@ -27,7 +27,7 @@ msgstr "Estuary ist der Standardskin für Kodi 17.0 und höher. Ziel war es, ein
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr "Estuary ist der Standardskin von Kodi. Ein Entfernen des Skins kann Probleme verursachen."
+msgstr "Estuary ist der Standardskin von Kodi. Ein Entfernen des Skins kann Probleme verursachen"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -39,7 +39,7 @@ msgstr "Suchen ..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Medien-Fanart als Hintergrund nutzen (wenn verfügbar)"
+msgstr "Medien-Fanart als Hintergrund verwenden"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -67,7 +67,7 @@ msgstr "Kategorie-Widgets aktivieren"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "Symbole herunterladen"
+msgstr "Symbole downloaden"
 
 msgctxt "#31010"
 msgid "In progress movies"
@@ -75,7 +75,7 @@ msgstr "Begonnene Filme"
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr "Meistgespielte Alben"
+msgstr "Meist gehörte Alben"
 
 msgctxt "#31012"
 msgid "Random albums"
@@ -87,12 +87,14 @@ msgstr "Zufällige Interpreten"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "Ungespielte Alben"
+msgstr "Ungehörte Alben"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Zuletzt gemachte Aufnahmen"
+msgstr "Zuletzt erstellte Aufnahmen"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Zuletzt gesehene Kanäle"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Bewertung"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Zuletzt gehörte Kanäle"
@@ -131,7 +134,7 @@ msgstr "Bewertung, die für Medieninhalte angezeigt werden soll"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Keine Favoriten gespeichert. Es kann jedes beliebige Element aus den Medienansichten via Rechtsklick zu den Favoriten hinzugefügt werden."
+msgstr "Keine Favoriten gefunden. Es kann jedes beliebige Element aus den Medienansichten via Kontextmenü zu den Favoriten hinzugefügt werden."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -143,7 +146,7 @@ msgstr "Nächste Folgen"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Fanart zeigen"
+msgstr "Fanart anzeigen"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -179,7 +182,7 @@ msgstr "Einträge"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr "Ausgewählter Titel"
+msgstr "Ausgewählter Track"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -199,7 +202,7 @@ msgstr "Wiedergabelisten-Einstellungen"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Typ einstellen und Regeln für die intelligente Wiedergabeliste hinzufügen. Diese Art von Wiedergabeliste ist dynamisch und beinhaltet alle Medien aus der Bibliothek, welche die gesetzten Regeln erfüllen."
+msgstr "Typ festlegen und Regeln für eine intelligente Wiedergabeliste hinzufügen. Diese Art von Wiedergabeliste ist dynamisch und beinhaltet alle Medien aus der Bibliothek, welche die gesetzten Regeln erfüllen."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -239,11 +242,11 @@ msgstr "Zur Wiedergabeliste ..."
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Login-Screen beim Programmstart anzeigen"
+msgstr "Anmeldebildschirm beim Programmstart anzeigen"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Automatischer Login beim Programmstart"
+msgstr "Automatische Anmeldung beim Programmstart"
 
 msgctxt "#31059"
 msgid "Select + X"
@@ -259,11 +262,11 @@ msgstr "Hauptmenüeinträge"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Fanart-Sammlung für Wetterbildschirm wählen"
+msgstr "Fanart-Sammlung für Wetterbildschirm auswählen"
 
 msgctxt "#31063"
 msgid "Sections"
-msgstr "Sektionen"
+msgstr "Abschnitte"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -275,11 +278,11 @@ msgstr "Musikwiedergabeliste"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Ereignisse"
+msgstr "Ereignisprotokoll"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "Presets wählen"
+msgstr "Voreinstellungen auswählen"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -319,7 +322,7 @@ msgstr "Liedtexte-Addon"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Liedtexte-Addon-Einstellungen"
+msgstr "Einstellungen für das Liedtexte-Addon"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -335,11 +338,11 @@ msgstr "Videomenü"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr "Wetterinformationen in Kopfleiste anzeigen"
+msgstr "Wetterinformationen in der Kopfleiste anzeigen"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "Slide-Animationen benutzen"
+msgstr "Slide-Animationen verwenden"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -351,20 +354,24 @@ msgstr "Kanaleinstellungen"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Bitte Kodi-Benutzerprofil zum[CR]Anmelden und Fortfahren auswählen"
+msgstr "Bitte Kodi-Benutzerprofil zum Anmelden auswählen"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "IconWall"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "InfoWall"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Wall"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
@@ -395,7 +403,7 @@ msgstr "Zu „Dateien“ ..."
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Persönliche Fotos anschauen oder eines der vielen Bilder-Addons aus dem offiziellen Repository ausprobieren."
+msgstr "Persönliche Fotos anschauen oder eines der vielen Bilder-Addons aus dem offiziellen Repository downloaden."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -409,13 +417,17 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "YouTube durchsuchen"
 
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr "Untertitel umschalten"
+
 msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Diesen Hauptmenüeintrag entfernen"
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr "Menü editieren"
+msgstr "Menü bearbeiten"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
@@ -431,7 +443,7 @@ msgstr "Es ist noch kein Wetterinformationsanbieter eingerichtet. Um Wetterinfor
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Wetterinformationsanbieter wählen"
+msgstr "Wetterinformationsanbieter festlegen"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
@@ -451,7 +463,7 @@ msgstr "[B]OK[/B] zum Lesen der Handlung drücken"
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr "Icons zeigen"
+msgstr "Symbole anzeigen"
 
 msgctxt "#31128"
 msgid "Contributors"
@@ -463,11 +475,11 @@ msgstr "Allgemeine Einstellungen, die für den gesamten Skin gelten."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Einstellungen für das Hauptmenü. Der Hauptbildschirm kann nach Belieben angepaßt werden."
+msgstr "Einstellungen für das Hauptmenü. Der Hauptbildschirm kann gemäß persönlicher Vorlieben angepaßt werden."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Fanart-Sammlung für Skin wählen"
+msgstr "Fanart-Sammlung für Skin auswählen"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -515,7 +527,7 @@ msgstr "Wiedergabegeschwindigkeit"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muss ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR"
+msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muss ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -555,11 +567,11 @@ msgstr "Zufällige Musikvideos"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein von der Community bereitgestelltes Addon herunterladen und installieren."
+msgstr "Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein passendes Addon herunterladen und installieren."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "[B]OK[/B] zum Wechseln des Ortes drücken"
+msgstr "[B]OK[/B] zum Umschalten des Ortes drücken"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -571,7 +583,7 @@ msgstr "Hintergrundmuster auswählen"
 
 msgctxt "#31157"
 msgid "Edit categories"
-msgstr "Kategorien anpassen"
+msgstr "Kategorien bearbeiten"
 
 msgctxt "#31158"
 msgid "Touch mode"
@@ -591,32 +603,38 @@ msgstr "Zifferneingabe"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository herunterladen."
+msgstr "Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository downloaden."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Fanart-Hintergrund anzeigen"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Art der Profilidentifikation auswählen"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilname"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profil-Avatar"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Hintergrund animieren"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Für Musikvideos Poster anstelle von Vorschaulbildern zeigen"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Einstellungen für Artwork"

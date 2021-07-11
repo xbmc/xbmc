@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Erreproduzitu gabeko albumak"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Grabazio berriak"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Orain dela gutxi erreproduzitutako kanalak"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Klasifikatuta"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Orain dela gutxi erreproduzitutako kanalak"
@@ -137,6 +140,10 @@ msgctxt "#31026"
 msgid "Timeshift"
 msgstr "Denbora aldaketa"
 
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Irakutsi fanart-a"
@@ -172,6 +179,10 @@ msgstr "Orriak"
 msgctxt "#31036"
 msgid "items"
 msgstr "elementu"
+
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -217,6 +228,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial-en oinarritua"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Joan erreprodukzio zerrendara"
@@ -228,6 +247,14 @@ msgstr "Erakutsi saio hasierako pantaila abioan"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Hasi saioa automatikoki abioan"
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -268,6 +295,10 @@ msgstr "norena"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energia-aukerak"
+
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -325,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Hautatu zure Kodi profila[CR] saioa hasi eta jarraitzeko"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Ikono horma"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Maius"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Informazio horma"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Horma"
@@ -357,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletestua"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Zerrenda zabala"
@@ -380,6 +416,10 @@ msgstr "Bilatu liburutegi lokalean"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Bilatu YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -453,6 +493,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Geratzen dena"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Klikatu hemen azken aldaketak ikusteko..."
@@ -493,6 +537,14 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Bilatu gehigarriak"
 
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Kategoriak"
@@ -500,6 +552,10 @@ msgstr "Kategoriak"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Hautatu generoaren fanart paketea"
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -553,6 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Irakutsi fanart atzean"
 
+#. Choose profile identifier
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilaren izena"
+
+#. Label for the kind of profile identification
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

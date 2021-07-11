@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/kodi-main/language/ms_MY/)\n"
+"Language: ms_MY\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ms_MY\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Addon Summary"
@@ -88,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Album belum dimainkan"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Rakaman baru-baru ini"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Saluran dimainkan baru-baru ini"
@@ -100,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Ditarafkan"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Saluran dimainkan baru-baru ini"
@@ -224,6 +227,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Berasaskan Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Pergi ke senarai main"
@@ -344,18 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Pilih Profil pengguna Kodi anda[CR]untuk daftar masuk dan teruskan"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "DindingIkon"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "DindingInfo"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Dinding"
@@ -376,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teleteks"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "SenaraiLebar"
@@ -399,6 +415,10 @@ msgstr "Gelintar pustaka setempat"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Gelintar YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -472,6 +492,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Berbaki"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "Klik di sini untuk melihat perubahan terkini..."
@@ -528,6 +552,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Pilih pek seni peminat genre"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "Video muzik belum ditonton"
@@ -580,18 +608,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Menunjuk latar balakang seni peminat"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Pilih jenis pengenalpastian profil"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nama profil"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar profil"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animasikan latar belakang"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

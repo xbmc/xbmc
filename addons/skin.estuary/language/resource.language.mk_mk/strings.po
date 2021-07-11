@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Macedonian (Macedonia) (http://www.transifex.com/projects/p/kodi-main/language/mk_MK/)\n"
+"Language: mk_MK\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: mk_MK\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
 msgctxt "Addon Summary"
@@ -36,6 +36,10 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Барај..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr ""
+
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Режим на кино"
@@ -55,6 +59,10 @@ msgstr "Произволни филмови"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Негледани филмови"
+
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -80,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Неслушани албуми"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Неодамна снимени"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Неодамна гледани канали"
@@ -92,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Оценет"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Неодамна гледани канали"
@@ -115,6 +126,30 @@ msgstr "Сортирано по"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Начин на гледање"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr ""
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr ""
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr ""
+
+msgctxt "#31027"
+msgid "Next aired"
+msgstr ""
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr ""
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr ""
 
 msgctxt "#31030"
 msgid "System memory usage"
@@ -144,6 +179,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "записи"
 
+msgctxt "#31037"
+msgid "Selected track"
+msgstr ""
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Премотај наназад"
@@ -159,6 +198,10 @@ msgstr "Производител на камера"
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Опции за списоци"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr ""
 
 msgctxt "#31044"
 msgid "Add group"
@@ -184,13 +227,41 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Базирано на Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Оди до список"
 
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr ""
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr ""
+
+msgctxt "#31059"
+msgid "Select + X"
+msgstr ""
+
+msgctxt "#31060"
+msgid "Select + Start"
+msgstr ""
+
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Елементи на гловното мени"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr ""
 
 msgctxt "#31063"
 msgid "Sections"
@@ -224,6 +295,10 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Опции за напојување"
 
+msgctxt "#31073"
+msgid "Total length"
+msgstr ""
+
 msgctxt "#31074"
 msgid "Total duration"
 msgstr "Вкупно времетрање"
@@ -231,6 +306,11 @@ msgstr "Вкупно времетрање"
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Филмски сетови"
+
+# empty strings from id 31076 to 31078
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr ""
 
 msgctxt "#31080"
 msgid "Ends at"
@@ -256,18 +336,43 @@ msgctxt "#31092"
 msgid "Video menu"
 msgstr "Видео мени"
 
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr ""
+
+# empty string with id 31094
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr ""
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Локален превод е достапен"
 
+msgctxt "#31097"
+msgid "Channel options"
+msgstr ""
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr ""
+
+#. viewtype name
+msgctxt "#31099"
+msgid "IconWall"
+msgstr ""
+
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Инфо Ѕид"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Ѕид"
@@ -276,9 +381,31 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Внеси текст..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr ""
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr ""
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Телетекст"
+
+#. viewtype name
+msgctxt "#31107"
+msgid "WideList"
+msgstr ""
+
+# empty strings from id 31108 to 31109
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr ""
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr ""
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -292,33 +419,146 @@ msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Барај на YouTube"
 
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr ""
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr ""
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr ""
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr ""
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr ""
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr ""
+
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Негледани ТВ шоуа"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr ""
+
+# empty string with id 31124
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr ""
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr ""
 
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Прикажувај икони"
 
+msgctxt "#31128"
+msgid "Contributors"
+msgstr ""
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr ""
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr ""
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr ""
+
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Одбери програм"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
 
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Преостанува"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr ""
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr ""
+
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Информации за процесот на плеерот"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr ""
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr ""
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr ""
 
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "Брзина"
 
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr ""
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr ""
+
+msgctxt "#31146"
+msgid "In cinemas"
+msgstr ""
+
+msgctxt "#31147"
+msgid "In cinemas soon"
+msgstr ""
+
 msgctxt "#31148"
 msgid "Categories"
 msgstr "Категории"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr ""
+
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -328,18 +568,76 @@ msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Произволни музички спотови"
 
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr ""
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr ""
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr ""
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr ""
+
 msgctxt "#31157"
 msgid "Edit categories"
 msgstr "Уреди категории"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr ""
 
 msgctxt "#31159"
 msgid "Artwork"
 msgstr "Декорации"
 
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr ""
+
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Нумеричка тастатура"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr ""
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr ""
+
+#. Choose profile identifier
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Име на профил"
+
+#. Label for the kind of profile identification
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31167"
+msgid "Animate background"
+msgstr ""
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""

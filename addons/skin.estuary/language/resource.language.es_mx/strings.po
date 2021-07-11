@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/kodi-main/language/es_MX/)\n"
+"Language: es_MX\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -88,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Álbumes no reproducidos"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Grabaciones recientes"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Canales reproducidos recientemente"
@@ -100,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Clasificado"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Canales reproducidos recientemente"
@@ -352,18 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecciona tu perfil de usuario de Kodi[CR]para acceder y continuar"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Mural de íconos"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Mays."
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Mural de información"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Mural"
@@ -384,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletexto"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lista ancha"
@@ -600,26 +608,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Mostrar Fanart de fondo"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Elige el tipo de identificación de perfiles"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nombre de perfil"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Avatar del perfil"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Animar fondo"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Mostrar pósteres en vez de miniaturas para videos musicales"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Configuración relacionada al arte"

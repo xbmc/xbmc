@@ -89,10 +89,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "Esitamata albumid"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Viimased salvestused"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Viimased vaadatud kanalid"
@@ -101,6 +103,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "Vanusepiirang"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "Viimased kuulatud kanalid"
@@ -353,18 +356,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Vali sisse logimiseks Kodi kasutaja profiil[CR]ja jätka"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "Ikoonisein"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Riba"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "Infosein"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "Sein"
@@ -385,6 +392,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletekst"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lai nimekiri"
@@ -601,26 +609,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Näita fännide loodud pilte"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "Vali profiili tuvastuse liik"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profiili nimi"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profiili avatar"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "Tausta animeerimine"
 
+#. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
 msgstr "Kuva muusikavideote jaoks postereid mitte pisipilte"
 
+#. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Taustapiltidega seotud seaded."

@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-main/language/zh_TW/)\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Addon Summary"
@@ -88,10 +88,12 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr "還沒聽過的專輯"
 
+#. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "最近的錄影"
 
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "最近收看的頻道"
@@ -100,6 +102,7 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr "分級"
 
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
 msgstr "最近收聽的頻道"
@@ -224,6 +227,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "基於 Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
+msgstr ""
+
+msgctxt "#31055"
+msgid "Press [B]Right[/B] to frame advance"
+msgstr ""
+
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "檢視播放列表"
@@ -344,18 +355,22 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "選擇您的 Kodi 使用者設定檔[CR]登入並繼續"
 
+#. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
 msgstr "圖示牆"
 
+#. viewtype name
 msgctxt "#31100"
 msgid "Shift"
 msgstr "橫列海報"
 
+#. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr "資訊牆"
 
+#. viewtype name
 msgctxt "#31102"
 msgid "Wall"
 msgstr "海報牆"
@@ -376,6 +391,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr "電傳聞訊"
 
+#. viewtype name
 msgctxt "#31107"
 msgid "WideList"
 msgstr "寬版面列表"
@@ -399,6 +415,10 @@ msgstr "搜尋本地資料庫"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "搜尋YouTube"
+
+msgctxt "#31115"
+msgid "Toggle subtitle"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -472,6 +492,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "後結束"
 
+msgctxt "#31135"
+msgid "Binary"
+msgstr ""
+
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "按這裡以檢視最新的更新項目..."
@@ -528,6 +552,10 @@ msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "選擇影音類型的粉絲自製圖集"
 
+msgctxt "#31150"
+msgid "Origin"
+msgstr ""
+
 msgctxt "#31151"
 msgid "Unwatched music videos"
 msgstr "還沒看過的音樂影片"
@@ -580,18 +608,32 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "顯示劇照背景"
 
+#. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
 msgstr "選擇設定檔案的標識類型"
 
+#. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "設定檔名稱"
 
+#. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "個人資料圖像"
 
+#. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
 msgstr "動畫背景"
+
+#. Label of a setting
+msgctxt "#31168"
+msgid "Show posters instead of thumbs for musicvideos"
+msgstr ""
+
+#. Description label for skin settings area
+msgctxt "#31169"
+msgid "Artwork related settings."
+msgstr ""
