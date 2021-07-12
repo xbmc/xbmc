@@ -676,15 +676,13 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
         PVR_ERROR ret = client->DeleteChannel(channel);
         if (ret == PVR_ERROR_NO_ERROR)
         {
-          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel);
-          m_channelItems->Remove(m_iSelected);
-
-          Renumber();
-          m_viewControl.SetItems(*m_channelItems);
-          if (m_iSelected >= m_channelItems->Size())
-            m_iSelected = m_channelItems->Size() - 1;
-          m_viewControl.SetSelectedItem(m_iSelected);
-          SetData(m_iSelected);
+          CPVRChannelGroups* groups =
+              CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
+          if (groups)
+          {
+            groups->Update();
+            Update();
+          }
         }
         else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
           HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
