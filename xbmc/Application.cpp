@@ -2992,12 +2992,9 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   // check if VideoPlayer should set file item stream details from its current streams
   if (file.GetProperty("get_stream_details_from_player").asBoolean()
       || ((!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails())
-      && (file.IsDiscImage()
+      && (URIUtils::IsBluray(file.GetPath())
       || file.IsDVDFile()
-      || file.IsBDFile()
-      || file.IsBluray()
-      || file.IsDVD()
-      || file.IsOnDVD())))
+      || file.IsDiscImage())))
     m_appPlayer.SetUpdateStreamDetails();
 
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
