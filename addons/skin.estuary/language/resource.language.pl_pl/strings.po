@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-05 22:17+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2021-07-11 16:15+0000\n"
+"Last-Translator: Marek Adamski <fevbew@wp.pl>\n"
 "Language-Team: Polish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/pl_pl/>\n"
 "Language: pl_pl\n"
 "MIME-Version: 1.0\n"
@@ -238,7 +238,7 @@ msgstr "Naciśnij przycisk [B]W prawo[/B], aby przewinąć klatkę"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Przejdź do Listy"
+msgstr "Przejdź do listy"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -250,11 +250,11 @@ msgstr "Loguj automatycznie po uruchomieniu"
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr "Wybierz + X"
+msgstr "Select + X"
 
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr "Zaznacz + Start"
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -495,7 +495,7 @@ msgstr "Pozostało"
 
 msgctxt "#31135"
 msgid "Binary"
-msgstr ""
+msgstr "Binarny"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -555,7 +555,7 @@ msgstr "Wybierz pakiet fototapet gatunków"
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr ""
+msgstr "Pochodzenie"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -632,7 +632,7 @@ msgstr "Animowane tło"
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr ""
+msgstr "Pokazuj plakaty zamiast miniatur dla teledysków"
 
 #. Description label for skin settings area
 msgctxt "#31169"

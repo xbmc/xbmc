@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-08 21:54+0000\n"
+"PO-Revision-Date: 2021-07-12 18:15+0000\n"
 "Last-Translator: vdkbsd <valexgus@gmail.com>\n"
 "Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ru_ru/>\n"
 "Language: ru_ru\n"
@@ -142,7 +142,7 @@ msgstr "Таймшифт"
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr ""
+msgstr "Следующий эфир"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -182,7 +182,7 @@ msgstr "Объекты"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr ""
+msgstr "Выбранный трек"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -230,11 +230,11 @@ msgstr "На основе Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr ""
+msgstr "Нажмите [B]Влево[/B], чтобы сделать шаг назад, или [B]Вправо[/B], чтобы сделать шаг вперёд"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr ""
+msgstr "Нажмите [B]Вправо[/B], чтобы перейти на кадр вперёд"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -419,7 +419,7 @@ msgstr "Искать в YouTube"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr ""
+msgstr "Переключить субтитры"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -539,11 +539,11 @@ msgstr "Поиск дополнений"
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr ""
+msgstr "В кинотеатрах"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr ""
+msgstr "Скоро в кинотеатрах"
 
 msgctxt "#31148"
 msgid "Categories"
@@ -607,7 +607,7 @@ msgstr "Играйте в свои личные игры или загрузит
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Показать фанатный фон"
+msgstr "Показывать фанарт в фоне"
 
 #. Choose profile identifier
 msgctxt "#31164"
@@ -632,9 +632,9 @@ msgstr "Анимированный фон"
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr ""
+msgstr "Показывать постеры вместо миниатюр для музыкальных клипов"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr ""
+msgstr "Параметры, относящиеся к иллюстрациям."
