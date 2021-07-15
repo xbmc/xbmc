@@ -979,6 +979,16 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 
   m_currentRegion->SetGlobalLocale();
 
+  // Check if locale is not affected by #19883
+  int test19883 = std::tolower('i') - std::tolower('I');
+  if (test19883 != 0)
+  {
+    CLog::Log(LOGWARNING, "region '{}' is affected by #19883 - falling back to default region '{}'",
+              m_currentRegion->m_strName, m_defaultRegion.m_strName);
+    m_currentRegion = &m_defaultRegion;
+    m_currentRegion->SetGlobalLocale();
+  }
+
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings->GetString(CSettings::SETTING_LOCALE_SHORTDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetShortDateFormat(m_currentRegion->m_strDateFormatShort);
