@@ -540,7 +540,6 @@ public:
 protected:
   bool CheckSuccess(VAStatus status, const std::string& function);
   void Close();
-  DllLibSSE4 m_dllSSE4;
   uint8_t *m_cache;
   AVFilterGraph* m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
